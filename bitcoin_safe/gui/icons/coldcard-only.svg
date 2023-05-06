@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 48.560009 80"
+   version="1.1"
+   sodipodi:docname="coldcard-only.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   width="48.560009"
+   height="80"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview41"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="8.05"
+     inkscape:cx="14.84472"
+     inkscape:cy="40"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1,.cls-2{fill:#fff;}.cls-2,.cls-3{fill-rule:evenodd;}.cls-4{fill:#ff0032;}.cls-5{fill:#00d30d;}</style>
+  </defs>
+  <path
+     d="M 5.61,78.7 A 4.28,4.28 0 0 1 1.33,74.42 V 5.64 A 4.28,4.28 0 0 1 5.61,1.36 h 37.34 a 4.29,4.29 0 0 1 4.29,4.28 v 68.78 a 4.29,4.29 0 0 1 -4.29,4.28 z"
+     id="path6" />
+  <path
+     class="cls-1"
+     d="m 42.95,1.36 a 4.29,4.29 0 0 1 4.29,4.28 V 74.42 A 4.29,4.29 0 0 1 42.95,78.7 H 5.61 A 4.28,4.28 0 0 1 1.33,74.42 V 5.64 A 4.28,4.28 0 0 1 5.61,1.36 h 37.34 m 0,-0.89 H 5.61 A 5.18,5.18 0 0 0 0.44,5.64 v 68.78 a 5.18,5.18 0 0 0 5.17,5.18 h 37.34 a 5.18,5.18 0 0 0 5.18,-5.18 V 5.64 A 5.18,5.18 0 0 0 42.95,0.47 Z"
+     id="path8" />
+  <path
+     class="cls-1"
+     d="M 42.95,0 H 5.61 A 5.62,5.62 0 0 0 0,5.61 V 74.39 A 5.61,5.61 0 0 0 5.61,80 h 37.34 a 5.61,5.61 0 0 0 5.61,-5.61 V 5.64 A 5.63,5.63 0 0 0 42.95,0 Z M 5.61,2.72 h 37.34 v 0 a 2.93,2.93 0 0 1 2.93,2.92 v 68.75 a 2.93,2.93 0 0 1 -2.93,2.92 H 5.61 A 2.92,2.92 0 0 1 2.69,74.39 V 5.64 A 2.92,2.92 0 0 1 5.61,2.72 Z"
+     id="path10" />
+  <rect
+     class="cls-1"
+     x="5.8399992"
+     y="7.9099998"
+     width="36.84"
+     height="66.510002"
+     rx="1.8"
+     id="rect12" />
+  <circle
+     id="Oval"
+     cx="12.95"
+     cy="36.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-2"
+     data-name="Oval"
+     cx="12.95"
+     cy="47.380001"
+     r="4.6900001" />
+  <circle
+     id="Oval-3"
+     data-name="Oval"
+     cx="12.95"
+     cy="57.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-4"
+     data-name="Oval"
+     cx="12.95"
+     cy="68.349998"
+     r="4.6900001" />
+  <circle
+     id="Oval-5"
+     data-name="Oval"
+     cx="24.09"
+     cy="36.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-6"
+     data-name="Oval"
+     cx="24.09"
+     cy="47.380001"
+     r="4.6900001" />
+  <circle
+     id="Oval-7"
+     data-name="Oval"
+     cx="24.09"
+     cy="57.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-8"
+     data-name="Oval"
+     cx="24.09"
+     cy="68.349998"
+     r="4.6900001" />
+  <circle
+     id="Oval-9"
+     data-name="Oval"
+     cx="35.260002"
+     cy="36.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-10"
+     data-name="Oval"
+     cx="35.260002"
+     cy="47.380001"
+     r="4.6900001" />
+  <circle
+     id="Oval-11"
+     data-name="Oval"
+     cx="35.260002"
+     cy="57.869999"
+     r="4.6900001" />
+  <circle
+     id="Oval-12"
+     data-name="Oval"
+     cx="35.260002"
+     cy="68.349998"
+     r="4.6900001" />
+  <path
+     class="cls-2"
+     d="M 42.95,31.14 H 5.61 A 3.37,3.37 0 0 1 2.24,27.77 V 6.18 A 3.37,3.37 0 0 1 5.61,2.81 h 37.34 a 3.37,3.37 0 0 1 3.37,3.37 v 21.56 a 3.36,3.36 0 0 1 -3.37,3.4 z"
+     id="path26" />
+  <path
+     class="cls-3"
+     d="M 42.95,30.57 H 5.61 A 3.37,3.37 0 0 1 2.24,27.2 V 5.64 A 3.37,3.37 0 0 1 5.61,2.27 h 37.34 a 3.37,3.37 0 0 1 3.37,3.37 V 27.2 a 3.35,3.35 0 0 1 -3.37,3.37 z"
+     id="path28" />
+  <path
+     class="cls-2"
+     d="M 29.57,24.28 H 9.51 a 1,1 0 0 1 -1,-1 V 12.69 a 1,1 0 0 1 1,-1 h 20 a 1,1 0 0 1 1,1 v 10.58 a 1,1 0 0 1 -0.94,1.01 z"
+     id="path30" />
+</svg>
