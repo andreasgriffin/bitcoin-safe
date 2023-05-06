@@ -20,8 +20,10 @@
 - [ ] Network UI configuration (ip of Bitcoin CBF node, and electrum server)
 - [ ] Send, Receive Tab
 - [ ] Address and TX labeling using categories
+- [ ] Label p2p Synchronization via nostr direct encrypted messages
 - [ ] Coin selection using categories
-- [ ] Address, TX dialogs 
+- [ ] Address, TX dialogs (need redesign. Electrums are too complicated)
+- [ ] Adding pytest for rigorous UI testing
 
 #### Screenshots
 
