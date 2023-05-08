@@ -44,6 +44,7 @@
  * ```shell
    git clone https://github.com/andreasgriffin/bdk-ffi.git
    cd bdk-ffi
+   cd bdk-python
    git checkout cbf
    pip install --requirement requirements.txt
    bash ./generate.sh
@@ -51,7 +52,7 @@
    pip install ./dist/bdkpython-0.28.3.whl --force-reinstall
    python -m unittest --verbose tests/test_bdk.py
    ```
-
+   
  * 
 
  * Install Bitcoin Safe
