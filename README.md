@@ -49,7 +49,7 @@
    pip install --requirement requirements.txt
    bash ./generate.sh
    python setup.py bdist_wheel --verbose
-   pip install ./dist/bdkpython-0.28.3.whl --force-reinstall
+   pip install ./dist/bdkpython-0.28.0.dev0-py3-none-any.whl --force-reinstall
    python -m unittest --verbose tests/test_bdk.py
    ```
    
