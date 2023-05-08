@@ -40,14 +40,37 @@ class KeyStoreTypes:
     watch_only = KeyStoreType('watch_only', "Watch-Only", "xPub / Public Key\nInformation", ["key-hole-icon.svg"])
     
 
+
+# class SignallingProperty():
+#     value_changed = Signal()
+
+#     def __init__(self, initial_value=None, value_type=str):
+#         super().__init__()
+#         self._value = initial_value
+#         self._value_type = value_type
+
+#     @property
+#     def value(self):
+#         return self._value
+
+#     @value.setter
+#     def value(self, new_value):
+#         new_value = self._value_type(new_value)
+#         if self._value != new_value:
+#             self._value = new_value
+#             self.value_changed.emit()
+
+
+
 class KeyStore:
-    def __init__(self, xpub, fingerprint, derivation_path:str, label, type:KeyStoreType, mnemonic:bdk.Mnemonic=None) -> None:
+    def __init__(self, xpub, fingerprint, derivation_path:str, label, type:KeyStoreType, mnemonic:bdk.Mnemonic=None, description:str='') -> None:
         self.xpub = xpub
         self.fingerprint = fingerprint
         self.derivation_path = derivation_path
         self.label = label
         self.type = type
         self.mnemonic = mnemonic
+        self.description = description
         
     def __repr__(self) -> str:
         return str(self.__dict__)
@@ -75,7 +98,7 @@ class KeyStore:
         
     
     def clone(self):
-        return KeyStore(self.xpub, self.fingerprint, self.derivation_path, self.label, self.type, self.mnemonic)
+        return KeyStore(self.xpub, self.fingerprint, self.derivation_path, self.label, self.type, self.mnemonic, self.description)
     
     
     def from_other_keystore(self, other_keystore):        
@@ -85,3 +108,5 @@ class KeyStore:
         self.label = other_keystore.label
         self.type = other_keystore.type                
         self.mnemonic = other_keystore.mnemonic
+        self.description = other_keystore.description
+        

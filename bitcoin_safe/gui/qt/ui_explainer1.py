@@ -2,7 +2,6 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
-from numpy import outer
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon, add_centered, add_centered_icons, create_button
 
 

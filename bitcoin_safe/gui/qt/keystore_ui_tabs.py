@@ -9,7 +9,7 @@ from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_b
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, QTWalletSignals, Listener, Signal
 from typing import List
-
+from .block_change_signals import BlockChangesSignals
 
 class KeyStoreUIWalletType:
     def __init__(self) -> None:
@@ -54,7 +54,14 @@ class KeyStoreUIDefault:
         self.signal_derivation_path_changed = Signal('signal_derivation_path_changed')
 
         self.tab = self.create()
-    
+        self.block_change_signals = BlockChangesSignals([
+            self.edit_derivation_path,
+            self.edit_fingerprint,
+            self.edit_label,
+            self.edit_xpub,
+            self.textEdit_description,
+            self.comboBox_keystore_type,
+        ])    
     
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())   
@@ -104,8 +111,8 @@ class KeyStoreUIDefault:
 
         self.verticalLayout_5.addWidget(self.label_4)
 
-        self.textEdit_2 = QTextEdit(self.widget_6)
-        self.verticalLayout_5.addWidget(self.textEdit_2)
+        self.textEdit_description = QTextEdit(self.widget_6)
+        self.verticalLayout_5.addWidget(self.textEdit_description)
 
 
         self.verticalLayout_3.addWidget(self.widget_6)
@@ -122,7 +129,7 @@ class KeyStoreUIDefault:
         label_derivation_path.setText(QCoreApplication.translate("tab", u"Derivation Path", None))
         label_xpub.setText(QCoreApplication.translate("tab", u"xPub", None))
         self.label_4.setText(QCoreApplication.translate("tab", u"Description", None))
-        self.textEdit_2.setPlaceholderText(QCoreApplication.translate("tab", u"Useful information about signer", None))
+        self.textEdit_description.setPlaceholderText(QCoreApplication.translate("tab", u"Useful information about signer", None))
 
 
         self.edit_xpub.textChanged.connect(self.signal_xpub_changed)
@@ -150,7 +157,8 @@ class KeyStoreUIDefault:
                             self.edit_derivation_path.text(),
                             self.edit_label.text(),
                             self.get_comboBox_keystore_type(),
-                            None
+                            None,
+                            self.textEdit_description.toPlainText(),
                             ) 
             
     def set_ui_from_keystore(self, keystore:KeyStore): 
@@ -159,6 +167,7 @@ class KeyStoreUIDefault:
         self.edit_derivation_path.setText(keystore.derivation_path if keystore.derivation_path  else '')
         self.edit_label.setText(keystore.label)
         self.set_comboBox_keystore_type(keystore.type)        
+        self.textEdit_description.setPlainText(keystore.description)
 
 
         from ...util import DEVELOPMENT_PREFILLS

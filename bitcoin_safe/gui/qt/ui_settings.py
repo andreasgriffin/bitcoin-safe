@@ -13,7 +13,7 @@ from ...signals import Signals, QTWalletSignals, Listener, Signal
 from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
 from enum import Enum, auto
-
+from .block_change_signals import BlockChangesSignals
 
 class WalletSettingsUI():
         def __init__(self, wallet:Wallet) -> None:
@@ -31,15 +31,20 @@ class WalletSettingsUI():
                         keystore_ui = KeyStoreUI(keystore, self.tabs_widget_signers)
                         self.keystore_uis.append(keystore_ui) 
 
+                self.block_change_signals = BlockChangesSignals(
+                        own_widgets=[self.spin_gap, self.spin_req, self.spin_signers],
+                )
+
                 self.xpub_listener =  Listener(lambda x: self.set_descriptor_in_ui(use_ui_values=True), 
                                                connect_to_signals=(
                                                        [ui.keystore_ui_default.signal_xpub_changed for ui in self.keystore_uis]+
                                                        [ui.keystore_ui_default.signal_fingerprint_changed for ui in self.keystore_uis]+
                                                        [ui.keystore_ui_default.signal_derivation_path_changed for ui in self.keystore_uis]
-                                                       )) 
+                                                       ))                 
                 self.set_ui_from_wallet(self.wallet)                            
 
                 self.signal_qtwallet_apply_setting_changes = Signal('signal_qtwallet_apply_setting_changes')
+                self.signal_qtwallet_cancel_setting_changes = Signal('signal_qtwallet_cancel_setting_changes')
                 self.box_button_bar = self.create_button_bar()
         
                 # self.tab_wallet_xpub_tab = self.create_wallet_xpub_tab()
@@ -83,33 +88,35 @@ class WalletSettingsUI():
                         
         
         def set_ui_from_wallet(self, wallet:Wallet):
-                self.spin_req.setMinimum(1)
-                self.spin_req.setMaximum(len(wallet.keystores))
-                self.spin_req.setValue(wallet.threshold)           
+                self.cloned_wallet = None
+                with self.block_change_signals:
+                        self.spin_req.setMinimum(1)
+                        self.spin_req.setMaximum(len(wallet.keystores))
+                        self.spin_req.setValue(wallet.threshold)           
 
-                self.spin_signers.setMinimum(wallet.threshold)
-                self.spin_signers.setMaximum(10)
-                self.spin_signers.setValue(len( wallet.keystores))                
-                
-                if self.spin_req.value() < self.spin_signers.value():
-                        labels_of_recovery_signers = [f"\"{keystore.label}\"" for keystore in wallet.keystores][self.spin_req.value():]
-                        self.spin_req.setToolTip(f'In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n'
-                                                 f'In case of loss of 1 of the devices, you can recover your funds using\n {" or ".join(labels_of_recovery_signers)} and send the funds to a new wallet.')     
-                if self.spin_req.value() == self.spin_signers.value()  != 1:
-                        self.spin_req.setToolTip(f'Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer ynay benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5')     
-                if self.spin_req.value() == self.spin_signers.value()  == 1:
-                        self.spin_req.setToolTip(f'A single signing device can sign outgoing transactions.')     
+                        self.spin_signers.setMinimum(wallet.threshold)
+                        self.spin_signers.setMaximum(10)
+                        self.spin_signers.setValue(len( wallet.keystores))                
+                        
+                        if self.spin_req.value() < self.spin_signers.value():
+                                labels_of_recovery_signers = [f"\"{keystore.label}\"" for keystore in wallet.keystores][self.spin_req.value():]
+                                self.spin_req.setToolTip(f'In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n'
+                                                        f'In case of loss of 1 of the devices, you can recover your funds using\n {" or ".join(labels_of_recovery_signers)} and send the funds to a new wallet.')     
+                        if self.spin_req.value() == self.spin_signers.value()  != 1:
+                                self.spin_req.setToolTip(f'Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer ynay benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5')     
+                        if self.spin_req.value() == self.spin_signers.value()  == 1:
+                                self.spin_req.setToolTip(f'A single signing device can sign outgoing transactions.')     
 
-                self.spin_gap.setValue(wallet.gap)
-                
-                self.set_keystore_ui_from_wallet(wallet)
+                        self.spin_gap.setValue(wallet.gap)
+                        
+                        self.set_keystore_ui_from_wallet(wallet)
     
         def set_wallet_from_ui(self, wallet:Wallet=None):
                 if wallet is None:
                         wallet = self.wallet
                 
-                for keystore_ui in self.keystore_uis:
-                        keystore_ui.set_keystore_from_ui_values() 
+                for keystore, keystore_ui in zip(wallet.keystores, self.keystore_uis):
+                        keystore_ui.set_keystore_from_ui_values(keystore) 
                 wallet.set_address_type(self.get_address_type_from_ui())
                 wallet.set_gap(self.get_gap_from_ui())
 
@@ -117,13 +124,16 @@ class WalletSettingsUI():
                 wallet.set_threshold(m)
                 
                 assert len(wallet.keystores) == len(self.keystore_uis)
-                if len(wallet.keystores) != len(self.keystore_uis):
-                        print(wallet.keystores, self.keystore_uis)
+                # if len(wallet.keystores) != len(self.keystore_uis):
+                #         print(wallet.keystores, self.keystore_uis)
         
                 wallet.set_number_of_keystores(n, cloned_reference_keystores=[k.clone() for k in self.wallet.keystores] )
                 
                 for i, keystore in enumerate(wallet.keystores):
                         keystore.label = wallet.signer_names(wallet.threshold, i)
+                
+                # print([k.serialize() for k in wallet.keystores])
+                # print([k.serialize() for k in self.wallet.keystores])
                 
         
         def set_combo_box_address_type_default(self):
@@ -308,6 +318,7 @@ class WalletSettingsUI():
                 self.verticalLayout_2.addWidget(box_button_bar, 0, Qt.AlignRight)
         
                 self.button_cancel.setText(QCoreApplication.translate("tab", u"Cancel changes", None))
+                self.button_cancel.clicked.connect(self.signal_qtwallet_cancel_setting_changes)
                 self.button_apply.setText(QCoreApplication.translate("tab", u"Apply changes", None))
 
                 

@@ -8,9 +8,10 @@ from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_Q
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, QTWalletSignals, Listener, Signal
+from ...util import compare_dictionaries
 from typing import List
 from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUIWalletType
-
+from .block_change_signals import BlockChangesSignals
 
 class KeyStoreUI:
     def __init__(self, keystore:KeyStore, tabs:QTabWidget) -> None:
@@ -19,10 +20,14 @@ class KeyStoreUI:
         
         self.keystore_ui_default = KeyStoreUIDefault(tabs)
         self.keystore_ui_wallet_type = KeyStoreUIWalletType()
+        
+        self.block_change_signals = BlockChangesSignals(
+                sub_instances=[self.keystore_ui_default.block_change_signals]
+        )
+        
                 
         add_tab_to_tabs(self.tabs, self.keystore_ui_wallet_type.tab, self.icon_for_label(keystore.label), keystore.label, keystore.label,   focus=True)
-        self.set_ui_from_keystore(self.keystore)        
-        
+        self.set_ui_from_keystore(self.keystore)                
         self.click_watch_only_listener =  Listener(self.onclick_button_watch_only, 
                                         connect_to_signals=[self.keystore_ui_wallet_type.signal_click_watch_only] )         
 
@@ -33,14 +38,16 @@ class KeyStoreUI:
         self.tabs.removeTab(self.tabs.indexOf(self.keystore_ui_default.tab))
         self.tabs.removeTab(self.tabs.indexOf(self.keystore_ui_wallet_type.tab))
                 
-    def set_keystore_from_ui_values(self) -> KeyStore:
-        # check if UI was created
+    def set_keystore_from_ui_values(self, keystore:KeyStore):
         ui_keystore = self.keystore_ui_default.get_ui_values_as_keystore()
-        
-        self.keystore.from_other_keystore(ui_keystore)
+        if not keystore:
+            keystore = self.keystore
+        keystore.from_other_keystore(ui_keystore)
 
+    def changed_ui_values(self) -> KeyStore:
+        return compare_dictionaries(self.keystore, self.keystore_ui_default.get_ui_values_as_keystore()                        )
 
-    def set_ui_from_keystore(self, keystore:KeyStore):
+    def set_ui_from_keystore(self, keystore:KeyStore):        
         for tab in [self.keystore_ui_default.tab, self.keystore_ui_wallet_type.tab]:
             index = self.tabs.indexOf(tab)
             if index>=0:

@@ -22,7 +22,7 @@ from .ui_settings import WalletSettingsUI
 from ...wallet import AddressTypes, AddressType
 from enum import Enum, auto
 from .password_question import PasswordQuestion
-
+from threading import Lock
 from bitcoin_safe import wallet
 
 
@@ -95,6 +95,7 @@ class QTWallet():
         self.password = None
         self.signals = signals
         
+        
         self.history_tab, self.history_list, self.history_model = None, None, None
         self.addresses_tab, self.address_list = None, None
         self.utxo_tab, self.utxo_list = None, None
@@ -109,6 +110,10 @@ class QTWallet():
         self.wallet.save(self.password, self.wallet.basename())
     
                 
+        
+    def cancel_setting_changes(self):
+        self.wallet_settings_ui.set_ui_from_wallet(self.wallet)
+        
         
     def apply_setting_changes(self):
         self.wallet_settings_ui.set_wallet_from_ui()
@@ -159,6 +164,8 @@ class QTWallet():
 
         self.listener_apply_setting_changes =  Listener(self.apply_setting_changes, 
                                                 connect_to_signals=[wallet_settings_ui.signal_qtwallet_apply_setting_changes]) 
+        self.listener_cancel_setting_changes =  Listener(self.cancel_setting_changes, 
+                                                connect_to_signals=[wallet_settings_ui.signal_qtwallet_cancel_setting_changes]) 
 
         return wallet_settings_ui.tab, wallet_settings_ui   
 

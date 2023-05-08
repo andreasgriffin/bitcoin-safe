@@ -49,7 +49,6 @@ import functools
 from abc import abstractmethod, ABC
 import socket
 
-import attr
 import aiohttp
 from aiohttp_socks import ProxyConnector, ProxyType
 import aiorpcx
@@ -58,7 +57,6 @@ import dns.resolver
 
 from .i18n import _
 from .logging import get_logger, Logger
-from bdkpython import Descriptor
 
 TX_HEIGHT_FUTURE = -3
 TX_HEIGHT_LOCAL = -2
@@ -80,6 +78,23 @@ DEVELOPMENT_PREFILLS = True
 
 
 _logger = get_logger(__name__)
+
+
+
+def compare_dictionaries(dict1, dict2):
+    # Get unique keys from both dictionaries
+    unique_keys = set(dict1.keys()) ^ set(dict2.keys())
+    
+    # Get keys with different values
+    differing_values = {k for k in dict1 if k in dict2 and dict1[k] != dict2[k]}
+    
+    # Combine unique keys and differing values
+    keys_to_include = unique_keys | differing_values
+    
+    # Create a new dictionary with only the differing entries
+    result = {k: dict1.get(k, dict2.get(k)) for k in keys_to_include}
+    
+    return result
 
 
 def inv_dict(d):
@@ -339,33 +354,6 @@ class Fiat(object):
         assert self.ccy == other.ccy
         return Fiat(self.value + other.value, self.ccy)
 
-
-class MyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        # note: this does not get called for namedtuples :(  https://bugs.python.org/issue30343
-        from .transaction import Transaction, TxOutput
-        from .lnutil import UpdateAddHtlc
-        if isinstance(obj, UpdateAddHtlc):
-            return obj.to_tuple()
-        if isinstance(obj, Transaction):
-            return obj.serialize()
-        if isinstance(obj, TxOutput):
-            return obj.to_legacy_tuple()
-        if isinstance(obj, Satoshis):
-            return str(obj)
-        if isinstance(obj, Fiat):
-            return str(obj)
-        if isinstance(obj, Decimal):
-            return str(obj)
-        if isinstance(obj, datetime):
-            return obj.isoformat(' ')[:-3]
-        if isinstance(obj, set):
-            return list(obj)
-        if isinstance(obj, bytes): # for nametuples in lnchannel
-            return obj.hex()
-        if hasattr(obj, 'to_json') and callable(obj.to_json):
-            return obj.to_json()
-        return super(MyEncoder, self).default(obj)
 
 
 class ThreadJob(Logger):
@@ -1064,159 +1052,6 @@ LIGHTNING_URI_SCHEME = 'lightning'
 
 class InvalidBitcoinURI(Exception): pass
 
-
-# TODO rename to parse_bip21_uri or similar
-def parse_URI(
-    uri: str,
-    on_pr: Callable[['PaymentRequest'], None] = None,
-    *,
-    loop: asyncio.AbstractEventLoop = None,
-) -> dict:
-    """Raises InvalidBitcoinURI on malformed URI."""
-    from . import bitcoin
-    from .bitcoin import COIN, TOTAL_COIN_SUPPLY_LIMIT_IN_BTC
-
-    if not isinstance(uri, str):
-        raise InvalidBitcoinURI(f"expected string, not {repr(uri)}")
-
-    if ':' not in uri:
-        if not is_address(uri):
-            raise InvalidBitcoinURI("Not a bitcoin address")
-        return {'address': uri}
-
-    u = urllib.parse.urlparse(uri)
-    if u.scheme.lower() != BITCOIN_BIP21_URI_SCHEME:
-        raise InvalidBitcoinURI("Not a bitcoin URI")
-    address = u.path
-
-    # python for android fails to parse query
-    if address.find('?') > 0:
-        address, query = u.path.split('?')
-        pq = urllib.parse.parse_qs(query)
-    else:
-        pq = urllib.parse.parse_qs(u.query)
-
-    for k, v in pq.items():
-        if len(v) != 1:
-            raise InvalidBitcoinURI(f'Duplicate Key: {repr(k)}')
-
-    out = {k: v[0] for k, v in pq.items()}
-    if address:
-        if not is_address(address):
-            raise InvalidBitcoinURI(f"Invalid bitcoin address: {address}")
-        out['address'] = address
-    if 'amount' in out:
-        am = out['amount']
-        try:
-            m = re.match(r'([0-9.]+)X([0-9])', am)
-            if m:
-                k = int(m.group(2)) - 8
-                amount = Decimal(m.group(1)) * pow(Decimal(10), k)
-            else:
-                amount = Decimal(am) * COIN
-            if amount > TOTAL_COIN_SUPPLY_LIMIT_IN_BTC * COIN:
-                raise InvalidBitcoinURI(f"amount is out-of-bounds: {amount!r} BTC")
-            out['amount'] = int(amount)
-        except Exception as e:
-            raise InvalidBitcoinURI(f"failed to parse 'amount' field: {repr(e)}") from e
-    if 'message' in out:
-        out['message'] = out['message']
-        out['memo'] = out['message']
-    if 'time' in out:
-        try:
-            out['time'] = int(out['time'])
-        except Exception as e:
-            raise InvalidBitcoinURI(f"failed to parse 'time' field: {repr(e)}") from e
-    if 'exp' in out:
-        try:
-            out['exp'] = int(out['exp'])
-        except Exception as e:
-            raise InvalidBitcoinURI(f"failed to parse 'exp' field: {repr(e)}") from e
-    if 'sig' in out:
-        try:
-            out['sig'] = bitcoin.base_decode(out['sig'], base=58).hex()
-        except Exception as e:
-            raise InvalidBitcoinURI(f"failed to parse 'sig' field: {repr(e)}") from e
-    if 'lightning' in out:
-        try:
-            lnaddr = lndecode(out['lightning'])
-        except LnDecodeException as e:
-            raise InvalidBitcoinURI(f"Failed to decode 'lightning' field: {e!r}") from e
-        amount_sat = out.get('amount')
-        if amount_sat:
-            # allow small leeway due to msat precision
-            if abs(amount_sat - int(lnaddr.get_amount_sat())) > 1:
-                raise InvalidBitcoinURI("Inconsistent lightning field in bip21: amount")
-        address = out.get('address')
-        ln_fallback_addr = lnaddr.get_fallback_address()
-        if address and ln_fallback_addr:
-            if ln_fallback_addr != address:
-                raise InvalidBitcoinURI("Inconsistent lightning field in bip21: address")
-
-    r = out.get('r')
-    sig = out.get('sig')
-    name = out.get('name')
-    if on_pr and (r or (name and sig)):
-        @log_exceptions
-        async def get_payment_request():
-            from . import paymentrequest as pr
-            if name and sig:
-                s = pr.serialize_request(out).SerializeToString()
-                request = pr.PaymentRequest(s)
-            else:
-                request = await pr.get_payment_request(r)
-            if on_pr:
-                on_pr(request)
-        loop = loop or get_asyncio_loop()
-        asyncio.run_coroutine_threadsafe(get_payment_request(), loop)
-
-    return out
-
-
-def create_bip21_uri(addr, amount_sat: Optional[int], message: Optional[str],
-                     *, extra_query_params: Optional[dict] = None) -> str:
-    if not is_address(addr):
-        return ""
-    if extra_query_params is None:
-        extra_query_params = {}
-    query = []
-    if amount_sat:
-        query.append('amount=%s'%format_satoshis_plain(amount_sat))
-    if message:
-        query.append('message=%s'%urllib.parse.quote(message))
-    for k, v in extra_query_params.items():
-        if not isinstance(k, str) or k != urllib.parse.quote(k):
-            raise Exception(f"illegal key for URI: {repr(k)}")
-        v = urllib.parse.quote(v)
-        query.append(f"{k}={v}")
-    p = urllib.parse.ParseResult(
-        scheme=BITCOIN_BIP21_URI_SCHEME,
-        netloc='',
-        path=addr,
-        params='',
-        query='&'.join(query),
-        fragment='',
-    )
-    return str(urllib.parse.urlunparse(p))
-
-
-def maybe_extract_lightning_payment_identifier(data: str) -> Optional[str]:
-    data = data.strip()  # whitespaces
-    data = data.lower()
-    if data.startswith(LIGHTNING_URI_SCHEME + ':ln'):
-        cut_prefix = LIGHTNING_URI_SCHEME + ':'
-        data = data[len(cut_prefix):]
-    if data.startswith('ln'):
-        return data
-    return None
-
-
-def is_uri(data: str) -> bool:
-    data = data.lower()
-    if (data.startswith(LIGHTNING_URI_SCHEME + ":") or
-            data.startswith(BITCOIN_BIP21_URI_SCHEME + ':')):
-        return True
-    return False
 
 
 class FailedToParsePaymentIdentifier(Exception):

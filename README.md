@@ -36,3 +36,49 @@
 ![screenshot0](docs/screenshot-details.png)
 
 ![screenshot0](docs/screenshot-addresses.png)
+
+## Installation
+
+ * Installation of bdk with compact filters
+
+ * ```shell
+   git clone https://github.com/andreasgriffin/bdk-ffi.git
+   cd bdk-ffi
+   git checkout cbf
+   pip install --requirement requirements.txt
+   bash ./generate.sh
+   python setup.py bdist_wheel --verbose
+   pip install ./dist/bdkpython-0.28.3.whl --force-reinstall
+   python -m unittest --verbose tests/test_bdk.py
+   ```
+
+ * 
+
+ * Install Bitcoin Safe
+
+```sh
+pip install bitcoin_safe
+```
+
+* Run Specter
+
+```sh
+python -m cryptoadvance.specter server 
+```
+
+* Upgrade Specter
+
+```sh
+pip install cryptoadvance.specter --upgrade
+```
+
+
+
+### Development
+
+```shell
+pipreqs  --savepath requirements.in  --force .
+pip-compile --generate-hashes --resolver=backtracking   requirements.in
+pip install --requirement requirements.txt 
+```
+

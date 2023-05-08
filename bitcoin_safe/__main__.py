@@ -4,7 +4,7 @@ import cProfile
 from pstats import Stats, SortKey
 
 
-from .bitcoin_safe_main import main
+from .main import main
 import asyncio
 
     

@@ -296,7 +296,7 @@ Information</string>
               </widget>
              </item>
              <item>
-              <widget class="QTextEdit" name="textEdit_2">
+              <widget class="QTextEdit" name="textEdit_description">
                <property name="enabled">
                 <bool>true</bool>
                </property>

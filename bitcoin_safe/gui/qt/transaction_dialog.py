@@ -42,19 +42,6 @@ from PySide2.QtWidgets import (QDialog, QLabel, QPushButton, QHBoxLayout, QVBoxL
 import qrcode
 from qrcode import exceptions
 
-from electrum.simple_config import SimpleConfig
-from electrum.util import quantize_feerate
-from electrum import bitcoin
-
-from electrum.bitcoin import base_encode, NLOCKTIME_BLOCKHEIGHT_MAX
-from electrum.i18n import _
-from electrum.plugin import run_hook
-from electrum import simple_config
-from electrum.transaction import SerializationError, Transaction, PartialTransaction, PartialTxInput, TxOutpoint
-from electrum.transaction import TxinDataFetchProgress
-from electrum.logging import get_logger
-from electrum.util import ShortID, get_asyncio_loop
-from electrum.network import Network
 
 from . import util
 from .util import (MessageBoxMixin, read_QIcon, Buttons, icon_path,
