@@ -228,7 +228,7 @@ class Ui_Form(object):
         self.label_12.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">\u2192</span></p></body></html>", None))
         self.groupBox_5.setTitle(QCoreApplication.translate("Form", u"3)", None))
         self.label_10.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:12pt;\">Backup each 24 secret words (paper or steel) + the wallet descriptor in a secure location.</span></p></body></html>", None))
-        self.label_11.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:12pt;\">Do not skip this step!</span></p><p><span style=\" font-size:12pt;\">Write each 24 secret words on paper or in steel.</span></p></body></html>", None))
+        self.label_11.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:12pt;\">Do not skip this step!</span></p><p><span style=\" font-size:12pt;\">This backup is the only way to recover your funds.</span></p></body></html>", None))
         self.label_15.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">\u2192</span></p></body></html>", None))
         self.groupBox_6.setTitle(QCoreApplication.translate("Form", u"4)", None))
 

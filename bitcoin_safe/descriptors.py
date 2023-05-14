@@ -87,8 +87,7 @@ def get_default_address_type(is_multisig) -> AddressType:
 
 import colorsys
 
-def generate_keystore_part_of_descriptor(xpubs, fingerprints, receiving_change_number, derivation_paths, use_html=False, replace_keystore_with_dummy=False):
-
+def generate_keystore_part_of_descriptor(xpubs, fingerprints, receiving_change_number, derivation_paths, use_html=False, replace_keystore_with_dummy=False) -> str:
     def float_rgb_to_hex(r_float, g_float, b_float):
         r_int, g_int, b_int = [int(round(x * 255)) for x in (r_float, g_float, b_float)]
         hex_color = "#{:02X}{:02X}{:02X}".format(r_int, g_int, b_int)
@@ -111,7 +110,7 @@ def generate_keystore_part_of_descriptor(xpubs, fingerprints, receiving_change_n
     key_parts = [
         keystore(xpub, fingerprint, derivation_path, i, use_html=use_html)
         for i, (xpub, fingerprint, derivation_path) in enumerate(zip(xpubs, fingerprints, derivation_paths))]  
-    return key_parts
+    return ','.join(key_parts)
 
 
 def generate_output_descriptors(xpubs, fingerprints, threshold:int, derivation_paths, desc_template , network, replace_keystore_with_dummy=False, use_html=False, combined_descriptors=False):    
@@ -121,10 +120,10 @@ def generate_output_descriptors(xpubs, fingerprints, threshold:int, derivation_p
 
     if len(xpubs)>1:    
         def desc(key_parts):
-            return  desc_template(f"sortedmulti({threshold},{','.join(key_parts)})")  
+            return  desc_template(f"sortedmulti({threshold},{key_parts})")  
     else:
         def desc(key_parts):
-            return  desc_template(key_parts)  
+            return  desc_template(key_parts)
 
     if combined_descriptors:
         return [desc(generate_keystore_part_of_descriptor(xpubs, fingerprints, '<0;1>', derivation_paths, use_html=use_html, replace_keystore_with_dummy=replace_keystore_with_dummy )) ]
@@ -142,6 +141,8 @@ def generate_output_descriptors_from_keystores(threshold:int, address_type:Addre
                                         replace_keystore_with_dummy=replace_keystore_with_dummy, 
                                         use_html=use_html,
                                         combined_descriptors=combined_descriptors)
+        if combined_descriptors:
+            assert len(output_descriptors) == 1
         return output_descriptors
     
     
@@ -165,3 +166,6 @@ def generate_bdk_descriptors(threshold:int, address_type:AddressType, keystores:
         return [bdk.Descriptor(d, network) for d in output_descriptors]
 
 
+# def descriptor_to_keystores(string_descriptor, network) -> List[KeyStore]:
+#     descriptor = bdk.Descriptor(string_descriptor, network)
+    

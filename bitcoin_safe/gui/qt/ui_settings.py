@@ -86,6 +86,7 @@ class WalletSettingsUI():
                 for keystore, keystore_ui in zip(wallet.keystores, self.keystore_uis):
                         keystore_ui.set_ui_from_keystore(keystore)                
                         
+                        
         
         def set_ui_from_wallet(self, wallet:Wallet):
                 self.cloned_wallet = None
