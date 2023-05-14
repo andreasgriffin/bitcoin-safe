@@ -60,7 +60,7 @@ class WalletSettingsUI():
 
         def ui_keystore_ui_change(self, *args):
                 self.set_wallet_from_keystore_ui(self.get_cloned_wallet())
-                self.set_descriptor_in_ui(self.get_cloned_wallet())
+                self.set_ui_descriptor(self.get_cloned_wallet())
 
 
         def get_cloned_wallet(self) -> Wallet:
@@ -73,7 +73,9 @@ class WalletSettingsUI():
                 cloned_wallet = self.get_cloned_wallet()
                 self.set_wallet_from_keystore_ui(cloned_wallet)                
 
-                self.set_descriptor_in_ui(cloned_wallet)                                        
+                self.set_ui_descriptor(cloned_wallet)                                        
+                self.set_keystore_ui_from_wallet(cloned_wallet)
+                self.set_wallet_ui_from_wallet(cloned_wallet)
                 assert len(cloned_wallet.keystores) == len(self.keystore_uis)
                 
                 
@@ -82,7 +84,7 @@ class WalletSettingsUI():
 
         def on_descriptor_pasted(self, new_value):
                 self.on_descriptor_change(new_value)
-                self.set_descriptor_in_ui(self.get_cloned_wallet())
+                self.set_ui_descriptor(self.get_cloned_wallet())
                 
         def on_descriptor_change(self, new_value):
                 cloned_wallet = self.get_cloned_wallet()
@@ -95,22 +97,23 @@ class WalletSettingsUI():
 
                 cloned_wallet.set_wallet_from_descriptor(new_value, recreate_bdk_wallet=False)
                 self.set_wallet_ui_from_wallet(cloned_wallet)                                        
-                self.set_keystore_ui_from_wallet(cloned_wallet)                                        
+                self.set_keystore_ui_from_wallet(cloned_wallet)                     
+                self.disable_fields()                   
                 assert len(cloned_wallet.keystores) == len(self.keystore_uis)
 
 
         def on_spin_threshold_changed(self, new_value):
-                return self.on_wallet_ui_changes()
+                self.on_wallet_ui_changes()
 
         def on_spin_signer_changed(self, new_value):
-                return self.on_wallet_ui_changes()
+                self.on_wallet_ui_changes()
 
 
-        def set_keystore_uis(self, wallet:Wallet):
+        def _set_keystore_tabs(self, wallet:Wallet):
                 # add keystore_ui if necessary
                 if len(self.keystore_uis) < len(wallet.keystores):
                         for i in range(len(self.keystore_uis), len(wallet.keystores)):
-                                self.keystore_uis.append(KeyStoreUI(wallet.keystores[i], self.tabs_widget_signers))
+                                self.keystore_uis.append(KeyStoreUI(wallet.keystores[i], self.tabs_widget_signers, self.wallet.network))
                 # remove keystore_ui if necessary
                 elif  len(self.keystore_uis) > len(wallet.keystores):
                         for i in range(len(wallet.keystores), len(self.keystore_uis)):
@@ -123,7 +126,7 @@ class WalletSettingsUI():
 
 
         def set_keystore_ui_from_wallet(self, wallet:Wallet):
-                self.set_keystore_uis(wallet)                      
+                self._set_keystore_tabs(wallet)                      
                 for keystore, keystore_ui in zip(wallet.keystores, self.keystore_uis):
                         keystore_ui.set_ui_from_keystore(keystore)                
                         
@@ -163,7 +166,7 @@ class WalletSettingsUI():
                 with self.block_change_signals:
                         self.set_wallet_ui_from_wallet(wallet)
                         self.set_keystore_ui_from_wallet(wallet)
-                        self.set_descriptor_in_ui(wallet)
+                        self.set_ui_descriptor(wallet)
 
 
 
@@ -228,7 +231,7 @@ class WalletSettingsUI():
         #                                                                 )        
         #         return descriptors
                                         
-        def set_descriptor_in_ui(self,  wallet:Wallet):
+        def set_ui_descriptor(self,  wallet:Wallet):
                 # check if the descriptor actually CAN be calculated to a reasonable degree
                 
                 descriptors = generate_output_descriptors_from_keystores(wallet.threshold,
@@ -254,11 +257,8 @@ class WalletSettingsUI():
                 else:
                         self.label_of.setDisabled(True)
                         self.spin_signers.setDisabled(True)
-                        
-        def disable_ui_elements(self, disable_m_of_n=False, disable_address_type=False):
-                self.spin_req.setDisabled(disable_m_of_n) 
-                self.spin_signers.setDisabled(disable_m_of_n) 
-                self.comboBox_address_type.setDisabled(disable_address_type) 
+                  
+                
         
         def create_wallet_type_and_descriptor(self):
                 box_wallet_type_and_descriptor = QWidget(self.tab)

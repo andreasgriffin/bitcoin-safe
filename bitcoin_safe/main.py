@@ -73,14 +73,14 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     
     def click_create_single_signature_wallet(self):
         qtwallet = self.next_step_after_welcome_screen((1,1))
-        qtwallet.wallet_settings_ui.disable_ui_elements(disable_m_of_n=True, disable_address_type=True)
+        qtwallet.wallet_settings_ui.disable_fields()
     
     def click_multisig_signature(self):
         add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer1.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet')
 
     def click_create_multisig_signature_wallet(self):
         qtwallet = self.next_step_after_welcome_screen((2,3))
-        qtwallet.wallet_settings_ui.disable_ui_elements(disable_m_of_n=True, disable_address_type=True)
+        qtwallet.wallet_settings_ui.disable_fields()
         
     def click_custom_signature(self):     
         return self.next_step_after_welcome_screen((3,5))
