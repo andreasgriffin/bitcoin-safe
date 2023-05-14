@@ -224,7 +224,7 @@ class HistoryNode(CustomNode):
 
 
 
-from ...signals import Signals, Listener
+from ...signals import Signals
 class HistoryModel(CustomModel, Logger):
 
     def __init__(self, parent, fx, config, wallet:Wallet, signals:Signals):
@@ -238,7 +238,7 @@ class HistoryModel(CustomModel, Logger):
         self.transactions = OrderedDictWithIndex()
         self.tx_status_cache = {}  # type: Dict[str, Tuple[int, str]]
         
-        self.listener_are_in_coincontrol = Listener(self.refresh, connect_to_signals=[signals.addresses_updated]) 
+        signals.addresses_updated.connect(self.refresh)
 
     def set_view(self, history_list: 'HistoryList'):
         # FIXME HistoryModel and HistoryList mutually depend on each other.

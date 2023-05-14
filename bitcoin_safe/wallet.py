@@ -14,7 +14,7 @@ from bitcoin_safe import keystore
 from .pythonbdk_types import *
 from .storage import Storage
 from threading import Lock
-from .descriptors import AddressType, AddressTypes, get_default_address_type, generate_bdk_descriptors
+from .descriptors import AddressType, AddressTypes, get_default_address_type, generate_bdk_descriptors, descriptor_infos, generate_output_descriptors_from_keystores
 import json
 import enum
 
@@ -57,6 +57,20 @@ class Wallet():
                                         ]
         self.set_address_type( initial_address_type)
     
+    
+    def temporary_descriptors(self, use_html=False):
+        """
+        These is a descriptor that can be generated without having all keystore information.
+        This is useful for UI 
+        """        
+        return generate_output_descriptors_from_keystores(self.threshold,
+                                                          self.address_type,
+                                                          self.keystores,
+                                                          self.network,
+                                                            replace_keystore_with_dummy=False,
+                                                            use_html=use_html,
+                                                            combined_descriptors=True
+                                                            )        
     
     def serialize(self):
         d = {}
@@ -162,8 +176,30 @@ class Wallet():
     
     
     
+
+    def set_wallet_from_descriptor(self, string_descriptor, recreate_bdk_wallet=True):
+                                        
+        infos = descriptor_infos(string_descriptor, self.network)                
+                        
+        self.set_number_of_keystores(len(infos['keystores']), cloned_reference_keystores=[k.clone() for k in infos['keystores']] )
+        for self_keystore, descriptor_keystore in zip(self.keystores, infos['keystores']):
+            self_keystore.from_other_keystore(descriptor_keystore)
+        
+        self.set_address_type(infos['address_type'])
+        self.set_threshold(infos['threshold'])
+        
+        
+        for i, keystore in enumerate(self.keystores):
+                keystore.label = self.signer_names(self.threshold, i)
+                
+        if recreate_bdk_wallet:
+            self.recreate_bdk_wallet()
+        
+        # print([k.serialize() for k in wallet.keystores])
+        # print([k.serialize() for k in self.wallet.keystores])    
     
-    def recrate_bdk_wallet(self):
+    
+    def recreate_bdk_wallet(self):
         self.create_wallet(self.threshold, self.keystores, self.address_type)
     
     def set_keystores(self, keystores):

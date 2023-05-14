@@ -109,8 +109,6 @@ class AspectRatioSvgWidget(QSvgWidget):
     
 
 def add_centered_icons(paths, parent, outer_layout, direction='h', alignment=Qt.AlignCenter, max_sizes=None):
-    if "seed-plate.svg" in paths:
-        print('now') 
     max_sizes = max_sizes if max_sizes else [(60,80) for path in paths]
     svg_widgets = [AspectRatioSvgWidget(icon_path(path), *max_size)  for max_size, path in zip(max_sizes, paths)]
     add_centered(svg_widgets, parent, outer_layout, direction=direction, alignment=alignment)

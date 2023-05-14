@@ -16,7 +16,7 @@ from .utxo_list import UTXOList
 from .util import add_tab_to_tabs, format_amount_and_units, format_amount
 
 from ...util import start_in_background_thread
-from ...signals import Signals, Listener
+from ...signals import Signals
 from ...i18n import _
 from .ui_settings import WalletSettingsUI
 from ...wallet import AddressTypes, AddressType
@@ -112,12 +112,12 @@ class QTWallet():
                 
         
     def cancel_setting_changes(self):
-        self.wallet_settings_ui.set_ui_from_wallet(self.wallet)
+        self.wallet_settings_ui.set_all_ui_from_wallet(self.wallet)
         
         
     def apply_setting_changes(self):
-        self.wallet_settings_ui.set_wallet_from_ui()
-        self.wallet.recrate_bdk_wallet() # this must be after set_wallet_from_ui, but before create_wallet_tabs
+        self.wallet_settings_ui.set_wallet_from_keystore_ui()
+        self.wallet.recreate_bdk_wallet() # this must be after set_wallet_from_keystore_ui, but before create_wallet_tabs
         
         self.sync()
         self.refresh_caches_and_ui_lists()
@@ -162,11 +162,8 @@ class QTWallet():
         wallet_settings_ui = WalletSettingsUI(wallet=self.wallet)
         add_tab_to_tabs(self.tabs, wallet_settings_ui.tab, read_QIcon("preferences.png"), "Settings", "settings")
 
-        self.listener_apply_setting_changes =  Listener(self.apply_setting_changes, 
-                                                connect_to_signals=[wallet_settings_ui.signal_qtwallet_apply_setting_changes]) 
-        self.listener_cancel_setting_changes =  Listener(self.cancel_setting_changes, 
-                                                connect_to_signals=[wallet_settings_ui.signal_qtwallet_cancel_setting_changes]) 
-
+        wallet_settings_ui.signal_qtwallet_apply_setting_changes.connect(self.apply_setting_changes)
+        wallet_settings_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
         return wallet_settings_ui.tab, wallet_settings_ui   
 
     def create_pre_wallet_tab(self ):

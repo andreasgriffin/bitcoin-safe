@@ -7,19 +7,21 @@ from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signals, QTWalletSignals, Listener, Signal
+from ...signals import Signals, QTWalletSignals,  Signal
 from ...util import compare_dictionaries
 from typing import List
 from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUIWalletType
 from .block_change_signals import BlockChangesSignals
+import bdkpython as bdk
+
 
 class KeyStoreUI:
-    def __init__(self, keystore:KeyStore, tabs:QTabWidget) -> None:
+    def __init__(self, keystore:KeyStore, tabs:QTabWidget, network:bdk.Network) -> None:
         self.keystore = keystore
         self.tabs = tabs
         
-        self.keystore_ui_default = KeyStoreUIDefault(tabs)
-        self.keystore_ui_wallet_type = KeyStoreUIWalletType()
+        self.keystore_ui_default = KeyStoreUIDefault(tabs, network)
+        self.keystore_ui_wallet_type = KeyStoreUIWalletType(network)
         
         self.block_change_signals = BlockChangesSignals(
                 sub_instances=[self.keystore_ui_default.block_change_signals]
@@ -27,9 +29,8 @@ class KeyStoreUI:
         
                 
         add_tab_to_tabs(self.tabs, self.keystore_ui_wallet_type.tab, self.icon_for_label(keystore.label), keystore.label, keystore.label,   focus=True)
-        self.set_ui_from_keystore(self.keystore)                
-        self.click_watch_only_listener =  Listener(self.onclick_button_watch_only, 
-                                        connect_to_signals=[self.keystore_ui_wallet_type.signal_click_watch_only] )         
+        self.set_ui_from_keystore(self.keystore)            
+        self.keystore_ui_wallet_type.signal_click_watch_only.connect(self.onclick_button_watch_only)    
 
     def icon_for_label(self, label):
         return read_QIcon("key-gray.png") if label.startswith('Recovery') else read_QIcon("key.png")
@@ -65,5 +66,4 @@ class KeyStoreUI:
         self.keystore.set_type(KeyStoreTypes.watch_only)
         add_tab_to_tabs(self.tabs, self.keystore_ui_default.tab, read_QIcon("key.png"), self.keystore.label, self.keystore.label, position=index, focus=True)
         self.set_ui_from_keystore(self.keystore)
-        
-            
+

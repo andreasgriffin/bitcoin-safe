@@ -1,7 +1,8 @@
 import bdkpython as bdk
-from .keystore import KeyStore
-from typing import List
+from .keystore import KeyStore, KeyStoreTypes
+from typing import Dict, List, Tuple
 import html 
+import re
 
 # https://bitcoin.design/guide/glossary/address/
 # https://learnmeabitcoin.com/technical/derivation-paths
@@ -166,6 +167,65 @@ def generate_bdk_descriptors(threshold:int, address_type:AddressType, keystores:
         return [bdk.Descriptor(d, network) for d in output_descriptors]
 
 
-# def descriptor_to_keystores(string_descriptor, network) -> List[KeyStore]:
-#     descriptor = bdk.Descriptor(string_descriptor, network)
+def descriptor_infos(string_descriptor:str, network=None) -> Dict:
+    def extract_groups(string, pattern):
+        match = re.match(pattern, string)
+        if match is None:
+            raise ValueError(f"'{string}' does not match the required pattern!")
+        return match.groups()
+
+    def extract_keystore(keystore_string):
+        """
+        Splits 1 keystore,e.g. "[a42c6dd3/84'/1'/0']xpub/0/*"
+        into fingerprint, derivation_path, xpub, wallet_path
+        
+        It also replaces the "'" into "h"
+        """
+        fingerprint, derivation_path, xpub, further_derivation_path = extract_groups(keystore_string, r'\[(.*?)\/(.*)\](.*?)\/(.*)')
+        # TODO handle other further_derivation_path
+        assert further_derivation_path == "<0;1>/*"
+        
+        return KeyStore(xpub, fingerprint, 'm/'+derivation_path, label='', type=KeyStoreTypes.watch_only)
     
+    
+    string_descriptor = string_descriptor.strip()
+    
+    # First split the descriptor like:
+    # "wpkh"
+    # "[a42c6dd3/84'/1'/0']xpub/0/*"
+    groups = [g.rstrip(')') for g in extract_groups(string_descriptor, r'(.*)\((.*)\)')] # remove trailing )
+    for p in groups:
+        print(p)
+    
+
+    # do the keystore parts
+    is_single_sig = len(groups) == 2
+    is_multisig = 'multi' in groups[0]
+    assert is_multisig != is_single_sig
+    threshold = 1    
+    if is_multisig:
+        threshold, *keystore_strings = groups[1].split(',')
+        keystores = [extract_keystore(keystore_string) for keystore_string in keystore_strings]
+    elif is_single_sig:
+        keystores = [extract_keystore(groups[1])]
+    else:
+        raise Exception('descriptor could not be matched to single or multisig')
+
+    # address type
+    used_desc_template = f'{groups[0]}()' + (')' if '(' in groups[0] else '')
+    address_type = None
+    for temp_address_type in AddressTypes.__dict__.values():    
+        if not isinstance(temp_address_type, AddressType):
+            continue
+        if temp_address_type.desc_template('') == used_desc_template:
+            address_type = temp_address_type
+            break
+        
+    # warn if the derivation path deviates from the recommended
+    if network:
+        for keystore in keystores:
+            if keystore.derivation_path != address_type.derivation_path(network):
+                print(f'Warning: The derivation path of {keystore} is not the default')
+    
+    
+    return {'threshold':threshold, 'is_multisig':is_multisig, 'keystores':keystores, 'address_type':address_type}

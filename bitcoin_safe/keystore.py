@@ -8,15 +8,16 @@ from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNING, COLOR_LIGHTNING, COLOR_UNCONFIRMED, COLOR_UNMATURED
 from .gui.qt.util import add_tab_to_tabs, read_QIcon
-from .signals import Signals,  Listener, QTWalletSignals
+from .signals import Signals,   QTWalletSignals
 import bdkpython as bdk
 
 class KeyStoreType():
-    def __init__(self, id, name, description, icon_filename) -> None:
+    def __init__(self, id, name, description, icon_filename, networks='all') -> None:
         self.id = id
         self.name = name
         self.description = description
         self.icon_filename = icon_filename
+        self.networks = [bdk.Network.BITCOIN, bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.SIGNET] if networks == 'all' else networks
         
         
     def serialize(self):
@@ -25,7 +26,7 @@ class KeyStoreType():
         return d
         
     @classmethod
-    def deserialize(cls, dct):
+    def deserialize(cls, dct):        
         assert dct.get("__class__") == cls.__name__
         if "__class__" in dct:
             del dct["__class__"]
@@ -38,7 +39,15 @@ class KeyStoreTypes:
     hwi = KeyStoreType('hwi', 'USB Hardware Wallet', "Connect \nUSB \nHardware Wallet", ["usb.svg"])
     psbt = KeyStoreType('psbp', "SD or QR Code", "Import signer details\nvia SD card or QR code", ["qr-code.svg", "sd-card.svg"])
     watch_only = KeyStoreType('watch_only', "Watch-Only", "xPub / Public Key\nInformation", ["key-hole-icon.svg"])
+    seed = KeyStoreType('seed', "Seed", "Mnemonic Seed", ["seed-plate.svg"], networks=[]) # add networks here to make the seed option visible
     
+    @classmethod
+    def list_types(cls, network:bdk.Network):
+        return [v for v in [cls.hwi, cls.psbt, cls.watch_only, cls.seed] if    network in v.networks]
+
+    @classmethod
+    def list_names(cls, network:bdk.Network):
+        return [v.name for v in cls.list_types(network)]
 
 
 # class SignallingProperty():

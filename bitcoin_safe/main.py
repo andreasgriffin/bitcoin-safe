@@ -16,7 +16,7 @@ from .gui.qt.qt_wallet import QTWallet
 from .gui.qt.password_question import PasswordQuestion
 from .gui.qt.balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNING, COLOR_LIGHTNING, COLOR_UNCONFIRMED, COLOR_UNMATURED
 from .gui.qt.util import add_tab_to_tabs, read_QIcon, MessageBoxMixin
-from .signals import Signals,  Listener, QTWalletSignals
+from .signals import Signals,  QTWalletSignals
 from bdkpython import Network
 from typing import Dict
 
@@ -30,7 +30,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
         self.signals = Signals()
         #connect the listeners
-        self.listener_show_address = Listener(self.show_address, connect_to_signals=[self.signals.show_address]) 
+        self.signals.show_address.connect(self.show_address)
         
         self.blockchain_type = BlockchainType.CompactBlockFilter
         
@@ -42,11 +42,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.welcome_screen.ui_explainer0.set_onclick_proceed(self.click_create_single_signature_wallet)
         self.welcome_screen.ui_explainer1.set_onclick_proceed(self.click_create_multisig_signature_wallet)
 
-        self.listeners = [
-            Listener(self.event_wallet_tab_added, connect_to_signals=[self.signals.event_wallet_tab_added]),
-            Listener(self.event_wallet_tab_closed, connect_to_signals=[self.signals.event_wallet_tab_closed]),
-            
-        ]
+        self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
+        self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed) 
     
     def open_wallet(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", "", "All Files (*);;Text Files (*.bitcoinsafe)")        

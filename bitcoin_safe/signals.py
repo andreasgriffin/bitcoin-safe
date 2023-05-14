@@ -38,20 +38,6 @@ class SingularSignal(Signal):
         return responses[0] if responses else responses
 
 
-class Listener:
-    def __init__(self, on_signal_received, connect_to_signals=None, name=None):
-        self.name = name if name else on_signal_received.__name__ 
-        self.on_signal_received = self.default_on_signal_received if on_signal_received is None else on_signal_received
-        if connect_to_signals:
-            for signal in connect_to_signals:
-                self.connect(signal)
-        
-    def connect(self, signal):
-        signal.connect(self.on_signal_received)
-        
-    def default_on_signal_received(self, *args, **kwargs):
-        print(f"{self.name} received signal: {args, kwargs}")
-
 
 
 from typing import List, Dict
@@ -89,7 +75,6 @@ class Signals:
         self.event_wallet_tab_closed = Signal('event_wallet_tab_closed')
         self.event_wallet_tab_added = Signal('event_wallet_tab_added')
         
-        # 1 listener = SingularSignal
         self.tx_from_text = SingularSignal('tx_from_text')
         self.update_all_in_qt_wallet = SingularSignal('update_all_in_qt_wallet')
 
@@ -108,20 +93,3 @@ class Signals:
 
         
     
-
-if __name__ == '__main__' :
-
-
-    # Create multiple instances of the listener
-    listener1 = Listener()
-    listener2 = Listener()
-    listener3 = Listener()
-
-    # Connect each listener to the signal
-    signal = Signal('my_signal')
-    listener1.connect(signal)
-    listener2.connect(signal)
-    listener3.connect(signal)
-
-    # Emit the signal
-    signal('Hello, world!')    

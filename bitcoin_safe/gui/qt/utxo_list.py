@@ -39,7 +39,7 @@ from ...util import is_address
 from .util import ColorScheme, MONOSPACE_FONT, EnterButton,   format_amount, format_amount_and_units, MessageBoxMixin
 from .my_treeview import MyTreeView
 import bdkpython as bdk
-from ...signals import Signals, Listener
+from ...signals import Signals
 
 PartialTxInput =PartialTxOutput = bdk.PartiallySignedTransaction
 
@@ -84,9 +84,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setSortingEnabled(True)
         
-        self.listener_utxo_update = Listener(self.update, connect_to_signals=[signals.utxos_updated]) 
-        self.listener_are_in_coincontrol = Listener(self.are_in_coincontrol, connect_to_signals=[signals.qt_wallet_signals[self.wallet.id].are_in_coincontrol]) 
-        self.listener_remove_from_coincontrol = Listener(self.remove_from_coincontrol, connect_to_signals=[signals.qt_wallet_signals[self.wallet.id].remove_from_coincontrol]) 
+        signals.utxos_updated.connect(self.update)
+        signals.qt_wallet_signals[self.wallet.id].are_in_coincontrol.connect(self.are_in_coincontrol)
+        signals.qt_wallet_signals[self.wallet.id].remove_from_coincontrol.connect(self.remove_from_coincontrol)
 
 
     def create_toolbar(self, config):

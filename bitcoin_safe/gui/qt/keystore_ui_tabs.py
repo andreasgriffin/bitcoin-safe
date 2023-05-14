@@ -7,13 +7,16 @@ from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon, create_button
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signals, QTWalletSignals, Listener, Signal
+from ...signals import Signals, QTWalletSignals,  Signal
 from typing import List
 from .block_change_signals import BlockChangesSignals
+import bdkpython as bdk
 
 class KeyStoreUIWalletType:
-    def __init__(self) -> None:
+    def __init__(self, network) -> None:
         self.signal_click_watch_only = Signal('signal_click_watch_only')
+        self.signal_click_seed = Signal('signal_click_seed')
+        self.network = network
         self.tab = self.create()
 
 
@@ -32,6 +35,9 @@ class KeyStoreUIWalletType:
         button = create_button(KeyStoreTypes.psbt.description, (KeyStoreTypes.psbt.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
         self.button_xpub = create_button(KeyStoreTypes.watch_only.description, (KeyStoreTypes.watch_only.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
         self.button_xpub.clicked.connect(self.signal_click_watch_only)
+        if self.network in KeyStoreTypes.seed.networks:
+            self.button_seed = create_button(KeyStoreTypes.seed.description, (KeyStoreTypes.seed.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
+            self.button_seed.clicked.connect(self.signal_click_seed)
 
 
         self.horizontalLayout_5.addWidget(self.widget_7)
@@ -46,8 +52,9 @@ class KeyStoreUIWalletType:
 
 
 class KeyStoreUIDefault:
-    def __init__(self, tabs:QTabWidget) -> None:
+    def __init__(self, tabs:QTabWidget, network:bdk.Network) -> None:
         self.tabs = tabs
+        self.network = network
         
         self.signal_xpub_changed = Signal('xpub_changed')
         self.signal_fingerprint_changed = Signal('signal_fingerprint_changed')
@@ -63,6 +70,9 @@ class KeyStoreUIDefault:
             self.comboBox_keystore_type,
         ])    
     
+    
+
+    
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())   
     
@@ -76,6 +86,7 @@ class KeyStoreUIDefault:
         label_keystore_type = QLabel(self.box_left)
         
         self.comboBox_keystore_type = QComboBox(self.box_left)                
+        self.comboBox_keystore_type.addItems(KeyStoreTypes.list_names(self.network))
         label_keystore_label = QLabel(self.box_left)
         self.edit_label = QLineEdit(self.box_left)                
         self.label_6 = QLabel(self.box_left)
@@ -133,22 +144,35 @@ class KeyStoreUIDefault:
 
 
         self.edit_xpub.textChanged.connect(self.signal_xpub_changed)
-        self.edit_fingerprint.textChanged.connect(self.signal_fingerprint_changed)
+        self.edit_fingerprint.textChanged.connect(self.on_edit_fingerprint)
         self.edit_derivation_path.textChanged.connect(self.signal_derivation_path_changed)
         self.edit_label.textChanged.connect(self.on_label_change)
 
 
         return tab   
+
+
+    def set_formatting(self):
+        if len(self.edit_fingerprint.text()) != 8:
+            self.edit_fingerprint.setStyleSheet("QLineEdit { background-color: #ff6c54; }")
+        else:
+            self.edit_fingerprint.setStyleSheet("QLineEdit { background-color: white; }")
+
+        
+
+    def on_edit_fingerprint(self, new_value):
+        self.set_formatting()
+        self.signal_fingerprint_changed()
+        
     
         
     def set_comboBox_keystore_type(self, keystore_type:KeyStoreType):
-        keys = [v.name for k,v in KeyStoreTypes.__dict__.items() if not k.startswith('_')]
-        self.comboBox_keystore_type.addItems(keys)
+        keys = KeyStoreTypes.list_names(self.network)
         self.comboBox_keystore_type.setCurrentIndex(keys.index(keystore_type.name))
         
 
     def get_comboBox_keystore_type(self) -> KeyStoreType:
-        keystore_types = [v for k,v in KeyStoreTypes.__dict__.items() if not k.startswith('_')]
+        keystore_types = KeyStoreTypes.list_types(self.network)
         return keystore_types[self.comboBox_keystore_type.currentIndex()]
                             
     def get_ui_values_as_keystore(self) -> KeyStore:
@@ -162,12 +186,16 @@ class KeyStoreUIDefault:
                             ) 
             
     def set_ui_from_keystore(self, keystore:KeyStore): 
-        self.edit_xpub.setText(keystore.xpub if keystore.xpub  else '')
-        self.edit_fingerprint.setText(keystore.fingerprint if keystore.fingerprint  else '')
-        self.edit_derivation_path.setText(keystore.derivation_path if keystore.derivation_path  else '')
-        self.edit_label.setText(keystore.label)
-        self.set_comboBox_keystore_type(keystore.type)        
-        self.textEdit_description.setPlainText(keystore.description)
+        with self.block_change_signals:
+            self.edit_xpub.setText(keystore.xpub if keystore.xpub  else '')
+            self.edit_fingerprint.setText(keystore.fingerprint if keystore.fingerprint  else '')
+            self.edit_derivation_path.setText(keystore.derivation_path if keystore.derivation_path  else '')
+            self.edit_label.setText(keystore.label)
+            self.set_comboBox_keystore_type(keystore.type)        
+            self.textEdit_description.setPlainText(keystore.description)
+                
+            self.set_formatting()
+
 
 
         from ...util import DEVELOPMENT_PREFILLS

@@ -73,7 +73,7 @@ class AddressTypeFilter(IntEnum):
             self.CHANGE: _('Change'),
         }[self]
 
-from ...signals import Signals, Listener
+from ...signals import Signals
 
 class AddressList(MyTreeView, MessageBoxMixin):
 
@@ -118,7 +118,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.setModel(self.proxy)
         self.update()
         self.sortByColumn(self.Columns.TYPE, Qt.AscendingOrder)
-        self.listener_addresses_updated = Listener(self.update, connect_to_signals=[signals.addresses_updated]) 
+        signals.addresses_updated.connect(self.update)
 
     def on_double_click(self, idx):
         addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
