@@ -52,12 +52,12 @@
    python -m unittest --verbose tests/test_bdk.py
    ```
    
- * Install Bitcoin Safe
+ * Run Bitcoin Safe
 
 ```sh
 git clone https://github.com/andreasgriffin/bitcoin-safe.git
 cd bitcoin-safe
-pip install bitcoin_safe
+python -m bitcoin_safe
 ```
 
 
