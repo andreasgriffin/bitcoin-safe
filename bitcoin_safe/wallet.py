@@ -268,10 +268,17 @@ class Wallet():
             raise NotImplementedError
         
         if address_type.bdk_descriptor:
-            # ensure that the desc_template is called from bdk.Descriptor itself, not from this_address_type            
+            # TODO: Currently only single sig implemented, since bdk only has single sig templates
+            keystore = keystores[0]
+            print(keystore.mnemonic)
             self.descriptors = [
-                                address_type.bdk_descriptor(bdk.DescriptorPublicKey.from_string(keystores[0].xpub), 
-                                                            keystores[0].fingerprint, 
+                                address_type.bdk_descriptor(bdk.DescriptorPublicKey.from_string(keystore.xpub), 
+                                                            keystore.fingerprint, 
+                                                            keychainkind, 
+                                                            self.network)
+                                if not keystore.mnemonic else 
+                                address_type.bdk_descriptor_secret(
+                                                            bdk.DescriptorSecretKey(self.network, keystore.mnemonic, ''),
                                                             keychainkind, 
                                                             self.network)
                             for keychainkind in [bdk.KeychainKind.EXTERNAL, bdk.KeychainKind.INTERNAL]]

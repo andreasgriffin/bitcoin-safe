@@ -12,7 +12,7 @@ from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 
-class KeyStoreUIWalletType:
+class KeyStoreUITypeChooser:
     def __init__(self, network) -> None:
         self.signal_click_watch_only = Signal('signal_click_watch_only')
         self.signal_click_seed = Signal('signal_click_seed')
@@ -57,6 +57,7 @@ class KeyStoreUIDefault:
         self.network = network
         
         self.signal_xpub_changed = Signal('xpub_changed')
+        self.signal_seed_changed = Signal('signal_seed_changed')
         self.signal_fingerprint_changed = Signal('signal_fingerprint_changed')
         self.signal_derivation_path_changed = Signal('signal_derivation_path_changed')
 
@@ -71,6 +72,25 @@ class KeyStoreUIDefault:
         ])    
     
     
+    def seed_visibility(self, visible=False):
+
+        def is_widget_in_layout(widget, layout):
+            return widget.parent() is layout
+
+        if visible and not is_widget_in_layout(self.label_seed, self.formLayout):
+            self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
+        if visible and not is_widget_in_layout(self.edit_seed, self.formLayout):
+            self.formLayout.setWidget(5, QFormLayout.FieldRole, self.edit_seed) 
+        
+        if not visible and is_widget_in_layout(self.label_seed, self.formLayout):
+            self.formLayout.removeWidget(self.label_seed)
+        if not visible and is_widget_in_layout(self.edit_seed, self.formLayout):
+            self.formLayout.removeWidget(self.edit_seed) 
+            
+            
+        self.edit_xpub.setEnabled(not visible)
+        self.edit_fingerprint.setEnabled(not visible)
+        
 
     
     def on_label_change(self):
@@ -95,6 +115,8 @@ class KeyStoreUIDefault:
         self.edit_derivation_path = QLineEdit(self.box_left)
         label_xpub = QLabel(self.box_left)
         self.edit_xpub = QLineEdit(self.box_left)
+        self.label_seed = QLabel()
+        self.edit_seed = QLineEdit()
         
 
         # put them on the formLayout
@@ -139,11 +161,13 @@ class KeyStoreUIDefault:
         self.label_6.setText(QCoreApplication.translate("tab", u"Fingerprint", None))
         label_derivation_path.setText(QCoreApplication.translate("tab", u"Derivation Path", None))
         label_xpub.setText(QCoreApplication.translate("tab", u"xPub", None))
+        self.label_seed.setText(QCoreApplication.translate("tab", u"Seed", None))
         self.label_4.setText(QCoreApplication.translate("tab", u"Description", None))
         self.textEdit_description.setPlaceholderText(QCoreApplication.translate("tab", u"Useful information about signer", None))
 
 
         self.edit_xpub.textChanged.connect(self.signal_xpub_changed)
+        self.edit_seed.textChanged.connect(self.signal_seed_changed)
         self.edit_fingerprint.textChanged.connect(self.on_edit_fingerprint)
         self.edit_derivation_path.textChanged.connect(self.signal_derivation_path_changed)
         self.edit_label.textChanged.connect(self.on_label_change)
@@ -153,7 +177,9 @@ class KeyStoreUIDefault:
 
 
     def set_formatting(self):
-        if len(self.edit_fingerprint.text()) != 8:
+        # disable this for now.
+        return 
+        if self.edit_fingerprint.isEnabled() and len(self.edit_fingerprint.text()) != 8:
             self.edit_fingerprint.setStyleSheet("QLineEdit { background-color: #ff6c54; }")
         else:
             self.edit_fingerprint.setStyleSheet("QLineEdit { background-color: white; }")
@@ -176,12 +202,14 @@ class KeyStoreUIDefault:
         return keystore_types[self.comboBox_keystore_type.currentIndex()]
                             
     def get_ui_values_as_keystore(self) -> KeyStore:
+        seed_str = self.edit_seed.text()
+        mnemonic = bdk.Mnemonic.from_string(seed_str) if seed_str else None
         return KeyStore(self.edit_xpub.text(),
                             self.edit_fingerprint.text(),
                             self.edit_derivation_path.text(),
                             self.edit_label.text(),
                             self.get_comboBox_keystore_type(),
-                            None,
+                            mnemonic,
                             self.textEdit_description.toPlainText(),
                             ) 
             

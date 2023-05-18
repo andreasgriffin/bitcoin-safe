@@ -49,6 +49,8 @@ class WalletSettingsUI():
                                 [ui.keystore_ui_default.signal_derivation_path_changed for ui in self.keystore_uis]
                                 ):
                         signal.connect(self.ui_keystore_ui_change)
+                for ui in self.keystore_uis:
+                        ui.keystore_ui_default.signal_seed_changed.connect(self.ui_seed_ui_change)
                 self.disable_fields()
                 self.set_all_ui_from_wallet(self.wallet)                            
 
@@ -56,6 +58,13 @@ class WalletSettingsUI():
         
                 # self.tab_wallet_xpub_tab = self.create_wallet_xpub_tab()
                 # self.tabs_widget_signers.addTab(self.tab_wallet_xpub_tab, "Signer Settings")
+
+
+        def ui_seed_ui_change(self, *args):
+                self.ui_keystore_ui_change()
+                                
+                # set xpub and fingerprint from seed
+                # TODO. not available yet in BDK
 
 
         def ui_keystore_ui_change(self, *args):

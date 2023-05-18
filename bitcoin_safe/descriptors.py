@@ -9,18 +9,18 @@ import re
 # https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki
 # Safe to use are only those with a bdk desc_template  
 class AddressType:
-    def __init__(self, name, is_multisig, derivation_path=None, desc_template=None, desc_template_secret=None, info_url=None, description=None, bdk_descriptor=None) -> None:
+    def __init__(self, name, is_multisig, derivation_path=None, desc_template=None, bdk_descriptor_secret=None, info_url=None, description=None, bdk_descriptor=None) -> None:
         self.name = name
         self.is_multisig = is_multisig
         self.derivation_path = derivation_path
         self.desc_template = desc_template
-        self.desc_template_secret = desc_template_secret
+        self.bdk_descriptor_secret = bdk_descriptor_secret
         self.info_url = info_url
         self.description = description
         self.bdk_descriptor = bdk_descriptor
 
     def clone(self):
-        return AddressType(self.name, self.is_multisig, self.derivation_path, self.desc_template, self.desc_template_secret,
+        return AddressType(self.name, self.is_multisig, self.derivation_path, self.desc_template, self.bdk_descriptor_secret,
                            self.info_url, self.description, self.bdk_descriptor)
 
 class AddressTypes:
@@ -30,7 +30,7 @@ class AddressTypes:
                 derivation_path=lambda network: f"m/44h/{0 if network==bdk.Network.BITCOIN else 1}h/0h", 
                 desc_template=lambda x: f'pkh({x})',
                 bdk_descriptor=bdk.Descriptor.new_bip44_public,
-                desc_template_secret=bdk.Descriptor.new_bip44,
+                bdk_descriptor_secret=bdk.Descriptor.new_bip44,
                 info_url='https://learnmeabitcoin.com/technical/derivation-paths',
                 description='Legacy (single sig) addresses that look like 1addresses',
                 )
@@ -40,7 +40,7 @@ class AddressTypes:
                 derivation_path=lambda network: f"m/49h/{0 if network==bdk.Network.BITCOIN else 1}h/0h",
                 desc_template=lambda x: f'sh(wpkh({x}))',
                 bdk_descriptor=bdk.Descriptor.new_bip49_public,
-                desc_template_secret=bdk.Descriptor.new_bip49,
+                bdk_descriptor_secret=bdk.Descriptor.new_bip49,
                 info_url='https://learnmeabitcoin.com/technical/derivation-paths',
                 description='Nested (single sig) addresses that look like 3addresses',
             )
@@ -50,7 +50,7 @@ class AddressTypes:
                 derivation_path=lambda network: f"m/84h/{0 if network==bdk.Network.BITCOIN else 1}h/0h",
                 desc_template=lambda x: f'wpkh({x})',
                 bdk_descriptor=bdk.Descriptor.new_bip84_public,
-                desc_template_secret=bdk.Descriptor.new_bip84,
+                bdk_descriptor_secret=bdk.Descriptor.new_bip84,
                 info_url='https://learnmeabitcoin.com/technical/derivation-paths',
                 description='SegWit (single sig) addresses that look like bc1addresses',
             )
@@ -59,7 +59,7 @@ class AddressTypes:
                 False,
                 derivation_path=lambda network: f"m/86h/{0 if network==bdk.Network.BITCOIN else 1}h/0h",    
                 desc_template=lambda x: f'tr({x})',
-                desc_template_secret=None,
+                bdk_descriptor_secret=None,
                 info_url='https://github.com/bitcoin/bips/blob/master/bip-0386.mediawiki',
                 description='Taproot (single sig) addresses ',
             )
@@ -68,7 +68,7 @@ class AddressTypes:
                 True,
                 derivation_path=lambda network: f"m/48h/{0 if network==bdk.Network.BITCOIN else 1}h/0h/1h",
                 desc_template=lambda x: f'sh(wsh({x}))',
-                desc_template_secret=None,
+                bdk_descriptor_secret=None,
                 info_url='https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki',
                 description='Nested (multi sig) addresses that look like 3addresses',
             )
@@ -77,7 +77,7 @@ class AddressTypes:
                 True,
                 derivation_path=lambda network: f"m/48h/{0 if network==bdk.Network.BITCOIN else 1}h/0h/2h",
                 desc_template=lambda x: f'wsh({x})',
-                desc_template_secret=None,
+                bdk_descriptor_secret=None,
                 info_url='https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki',
                 description='SegWit (multi sig) addresses that look like bc1addresses',
             )

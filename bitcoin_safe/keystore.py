@@ -39,7 +39,7 @@ class KeyStoreTypes:
     hwi = KeyStoreType('hwi', 'USB Hardware Wallet', "Connect \nUSB \nHardware Wallet", ["usb.svg"])
     psbt = KeyStoreType('psbp', "SD or QR Code", "Import signer details\nvia SD card or QR code", ["qr-code.svg", "sd-card.svg"])
     watch_only = KeyStoreType('watch_only', "Watch-Only", "xPub / Public Key\nInformation", ["key-hole-icon.svg"])
-    seed = KeyStoreType('seed', "Seed", "Mnemonic Seed", ["seed-plate.svg"], networks=[]) # add networks here to make the seed option visible
+    seed = KeyStoreType('seed', "Seed", "Mnemonic Seed\n(Testnet only)", ["seed-plate.svg"], networks=[bdk.Network.REGTEST,bdk.Network.TESTNET, bdk.Network.SIGNET]) # add networks here to make the seed option visible
     
     @classmethod
     def list_types(cls, network:bdk.Network):

@@ -43,8 +43,7 @@
 
  * ```shell
    git clone https://github.com/andreasgriffin/bdk-ffi.git
-   cd bdk-ffi
-   cd bdk-python
+   cd bdk-ffi/bdk-python
    git checkout cbf
    pip install --requirement requirements.txt
    bash ./generate.sh
@@ -53,24 +52,12 @@
    python -m unittest --verbose tests/test_bdk.py
    ```
    
- * 
-
  * Install Bitcoin Safe
 
 ```sh
+git clone https://github.com/andreasgriffin/bitcoin-safe.git
+cd bitcoin-safe
 pip install bitcoin_safe
-```
-
-* Run Specter
-
-```sh
-python -m cryptoadvance.specter server 
-```
-
-* Upgrade Specter
-
-```sh
-pip install cryptoadvance.specter --upgrade
 ```
 
 
