@@ -199,8 +199,6 @@ class WalletSettingsUI():
         
         def set_combo_box_address_type_default(self):
                 address_types = self.wallet.get_address_types()
-                addres_type_names = [a.name for a in address_types]
-                self.comboBox_address_type.addItems(addres_type_names)
                 self.comboBox_address_type.setCurrentIndex(address_types.index(get_default_address_type(self.wallet.is_multisig())))
         
         def get_address_type_from_ui(self) -> AddressType:
@@ -296,6 +294,9 @@ class WalletSettingsUI():
                 h_address_type.addWidget(label_address_type)
 
                 self.comboBox_address_type = QComboBox(box_address_type)
+                address_types = self.wallet.get_address_types()
+                addres_type_names = [a.name for a in address_types]
+                self.comboBox_address_type.addItems(addres_type_names)
                 h_address_type.addWidget(self.comboBox_address_type)
 
 

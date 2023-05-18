@@ -8,6 +8,9 @@ from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, resize, qresize
 from .ui_explainer0 import Ui_Form as Ui_Explainer0
 from .ui_explainer1 import Ui_Form as Ui_Explainer1
+from ...signals import Signal
+from ...util import call_call_functions
+
 
 class NewWalletWelcomeScreen():    
     def __init__(self, main_tabs, network:Network) -> None:
@@ -20,6 +23,19 @@ class NewWalletWelcomeScreen():
         self.create_ui()
         self.create_ui_explainer0()
         self.create_ui_explainer1()
+        
+        
+        # connect signals
+        self.signal_onclick_multisig_signature = Signal('signal_onclick_multisig_signature')
+        self.signal_onclick_single_signature = Signal('onclick_single_signature')
+        self.signal_onclick_custom_signature = Signal('onclick_custom_signature')
+
+
+        self.pushButton_multisig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature]))
+        self.pushButton_singlesig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature]))
+        self.pushButton_custom_wallet.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature]))
+    
+
         
     
     def add_new_wallet_welcome_tab(self):
@@ -169,19 +185,3 @@ class NewWalletWelcomeScreen():
         if index>=0:
             self.main_tabs.removeTab(index)
         
-    
-    def set_onclick_multisig_signature(self, f):
-        def wrapped_f():
-            self.remove_tab()
-            f()        
-        self.pushButton_multisig.clicked.connect(wrapped_f)
-    def set_onclick_single_signature(self, f):
-        def wrapped_f():
-            self.remove_tab()
-            f()        
-        self.pushButton_singlesig.clicked.connect(wrapped_f)
-    def set_onclick_custom_signature(self, f):
-        def wrapped_f():
-            self.remove_tab()
-            f()        
-        self.pushButton_custom_wallet.clicked.connect(wrapped_f)

@@ -13,20 +13,19 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon, add_centered, add_centered_icons, create_button
+from ...signals import Signal
+from ...util import call_call_functions
 
 
 class Ui_Form(object):
-    def __init__(self, tabs) -> None:
+    def __init__(self, main_tabs) -> None:
         self.tab = QWidget()
-        self.tabs = tabs
+        self.main_tabs = main_tabs
+
+        self.signal_onclick_proceed = Signal('signal_onclick_proceed') 
 
 
-    def set_onclick_proceed(self, f):
-        index = self.tabs.indexOf(self.tab)
-        if index>=0:
-            self.tabs.removeTab(index)
-        
-        self.pushButton_proceed.clicked.connect(f)
+
         
     def setupUi(self):
         Form = self.tab
@@ -220,10 +219,25 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.groupBox_2)
 
 
+
+        # connect signals
+        self.pushButton_proceed.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_proceed])) 
+
+
+
         self.retranslateUi(Form)
 
         QMetaObject.connectSlotsByName(Form)
     # setupUi
+
+
+    def remove_tab(self):
+        index = self.main_tabs.indexOf(self.tab)
+        if index>=0:
+            self.main_tabs.removeTab(index)
+        
+
+
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))

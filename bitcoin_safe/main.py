@@ -36,11 +36,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
         self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=Network.REGTEST)
         self.welcome_screen.add_new_wallet_welcome_tab()
-        self.welcome_screen.set_onclick_single_signature(self.click_single_signature)
-        self.welcome_screen.set_onclick_multisig_signature(self.click_multisig_signature)
-        self.welcome_screen.set_onclick_custom_signature(self.click_custom_signature)
-        self.welcome_screen.ui_explainer0.set_onclick_proceed(self.click_create_single_signature_wallet)
-        self.welcome_screen.ui_explainer1.set_onclick_proceed(self.click_create_multisig_signature_wallet)
+        self.welcome_screen.signal_onclick_single_signature.connect(self.click_single_signature)
+        self.welcome_screen.signal_onclick_multisig_signature.connect(self.click_multisig_signature)
+        self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
+        self.welcome_screen.ui_explainer0.signal_onclick_proceed.connect(self.click_create_single_signature_wallet)
+        self.welcome_screen.ui_explainer1.signal_onclick_proceed.connect(self.click_create_multisig_signature_wallet)
 
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed) 
@@ -168,10 +168,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def close_tab(self, index):        
         # if self.tab_wallets.widget(index) == self.welcome_screen.tab:
         #     return
+        
         self.tab_wallets.removeTab(index)
         
         
         qt_wallet = self.get_qt_wallet(self.tab_wallets.widget(index))
+        print(qt_wallet)
         self.remove_qt_wallet(qt_wallet) 
         
         self.event_wallet_tab_closed()

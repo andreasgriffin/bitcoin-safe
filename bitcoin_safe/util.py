@@ -80,7 +80,10 @@ DEVELOPMENT_PREFILLS = False
 _logger = get_logger(__name__)
 
 
-
+def call_call_functions(functions):
+    for f in functions:
+        f()
+        
 def compare_dictionaries(dict1, dict2):
     # Get unique keys from both dictionaries
     unique_keys = set(dict1.keys()) ^ set(dict2.keys())
