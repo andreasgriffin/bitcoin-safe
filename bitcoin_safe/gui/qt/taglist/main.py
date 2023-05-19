@@ -1,6 +1,8 @@
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
+import json 
+
 
 def rescale(value, old_min, old_max, new_min, new_max):
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
@@ -23,7 +25,18 @@ class CustomListWidgetItem(QListWidgetItem):
         b = int(rescale(b, 0, 255, 100, 255))
 
         return QColor(r, g, b)
-    
+
+    def mimeData(self):
+        mime_data = QMimeData()
+        d = {
+            'type':'drag_tag',
+            'tag':self.text(),
+                     }
+
+        json_string = json.dumps(d).encode()
+        mime_data.setData('application/json', json_string)        
+        return mime_data      
+
 
 class CustomDelegate(QStyledItemDelegate):
     def __init__(self, parent) -> None:
@@ -87,19 +100,43 @@ class DeleteButton(QPushButton):
         super(DeleteButton, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
 
-    def dragEnterEvent(self, event):
-        if event.mimeData().text():
-            event.acceptProposedAction()
+    def dragEnterEvent(self, event):    
+        print(event.mimeData().data('application/json'))
+        if event.mimeData().hasFormat('application/json'):            
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            
+            d = json.loads(json_string)
+            print(d)
+            if d.get('type') == 'drag_tag':
+                event.acceptProposedAction()
+                return
+
+        event.ignore()
+            
 
     def dropEvent(self, event):
-        self.delete_item.emit(event.mimeData().text())
-        event.acceptProposedAction()
+        if event.mimeData().hasFormat('application/json'):            
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            
+            d = json.loads(json_string)
+            print(d)
+            if d.get('type') == 'drag_tag':
+                self.delete_item.emit(d.get('tag'))
+                event.acceptProposedAction()
+                return
+            
+        event.ignore()
+            
+
 
 
 class CustomListWidget(QListWidget):
     item_selected = Signal(object)
     item_deleted = Signal(object)
     item_renamed = Signal(object, object)
+    address_dropped = Signal(object)
 
     def __init__(self, add_tag_field, delete_button, parent=None):
         super(CustomListWidget, self).__init__(parent)
@@ -108,7 +145,14 @@ class CustomListWidget(QListWidget):
 
         self.setItemDelegate(CustomDelegate(self))
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
         self.setDragEnabled(True)
+        self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDefaultDropAction(Qt.MoveAction)
+
         self.itemClicked.connect(self.on_item_clicked)
         self.itemChanged.connect(self.on_item_changed)  # new
 
@@ -175,35 +219,61 @@ class CustomListWidget(QListWidget):
     def startDrag(self, action):
         item = self.currentItem()
         rect = self.visualItemRect(item)
-        mime_data = QMimeData()
-        mime_data.setText(item.text())
+        
         drag = QDrag(self)
-        drag.setMimeData(mime_data)
+        drag.setMimeData(item.mimeData())
+        
         pixmap = self.viewport().grab(rect)
         cursor_pos = self.mapFromGlobal(QCursor.pos())
         drag.setPixmap(pixmap)
         drag.setHotSpot(cursor_pos - rect.topLeft())
         self.add_tag_field.hide()
         self.delete_button.show()
-        drag.exec_(action)
 
         result = drag.exec_(action)
             
-        self.handle_drag_end()
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
-
-    def dragLeaveEvent(self, event):
-        self.add_tag_field.show()
-        self.delete_button.hide()
-
-
-    def handle_drag_end(self):
         self.add_tag_field.show()
         self.delete_button.hide()
         
+    def dragEnterEvent(self, event):
+        event.acceptProposedAction()
+        if event.mimeData().hasFormat('application/json'):
+            print('accept')
+            # tag = self.itemAt(event.pos())        
+            
+            # data_bytes = event.mimeData().data('application/json')
+            # json_string = bytes(data_bytes).decode()  # convert bytes to string
+            # dropped_addresses = json.loads(json_string)
+            # print(f'drag enter {dropped_addresses,   tag.text()}')
+
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+            
+        
+        
+    def dropEvent(self, event):
+        print('drop')
+        if event.mimeData().hasFormat('application/json'):
+            tag = self.itemAt(event.pos())
+            
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            
+            d = json.loads(json_string)
+            if d.get('type') == 'drag_addresses':
+                if tag is not None:
+                    d = {
+                        'dropped_addresses':d.get('addresses'),
+                        'tag':tag.text(),
+                    }    
+                    print(d)
+                    self.address_dropped.emit(d)     
+                event.accept()
+                return
+
+        event.ignore()
+
     def delete_item(self, item_text):
         for i in range(self.count()):
             item = self.item(i)

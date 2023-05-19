@@ -28,22 +28,57 @@ import enum
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from PySide2.QtCore import Qt, QPersistentModelIndex, QModelIndex
-from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QMouseEvent
+from PySide2.QtCore import Qt, QPersistentModelIndex, QModelIndex, QMimeData, QPoint
+from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QMouseEvent, QDrag, QPixmap, QCursor, QRegion, QPainter
 from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu
 
 from bitcoin_safe.wallet import Wallet
 
 from ...i18n import _
 from ...util import InternalAddressCorruption, block_explorer_URL
-
+import json
 
 
 from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen
 from .my_treeview import MyTreeView, MySortModel
 
 
+class Columns(MyTreeView.BaseColumnsEnum):
+    TYPE = enum.auto()
+    ADDRESS = enum.auto()
+    LABEL = enum.auto()
+    COIN_BALANCE = enum.auto()
+    FIAT_BALANCE = enum.auto()
+    NUM_TXS = enum.auto()
 
+
+class MyStandardItemModel(QStandardItemModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+
+    def flags(self, index):
+        if index.column() == Columns.ADDRESS:  # only enable dragging for column 1
+            return super().flags(index) | Qt.ItemIsDragEnabled
+        else:
+            return super().flags(index)
+
+    def mimeData(self, indexes):
+        mime_data = QMimeData()
+        d = {
+            'type':'drag_addresses',
+            'addresses':[],
+                     }
+
+        for index in indexes:
+            if index.isValid() and index.column() == Columns.ADDRESS:
+                d['addresses'].append(self.data(index))
+        
+        json_string = json.dumps(d).encode()
+        mime_data.setData('application/json', json_string)        
+        return mime_data    
+    
+    
 class AddressUsageStateFilter(IntEnum):
     ALL = 0
     UNUSED = 1
@@ -77,14 +112,6 @@ from ...signals import Signals
 
 class AddressList(MyTreeView, MessageBoxMixin):
 
-    class Columns(MyTreeView.BaseColumnsEnum):
-        TYPE = enum.auto()
-        ADDRESS = enum.auto()
-        LABEL = enum.auto()
-        COIN_BALANCE = enum.auto()
-        FIAT_BALANCE = enum.auto()
-        NUM_TXS = enum.auto()
-
     filter_columns = [Columns.TYPE, Columns.ADDRESS, Columns.LABEL, Columns.COIN_BALANCE]
 
     ROLE_SORT_ORDER = Qt.UserRole + 1000
@@ -94,8 +121,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def __init__(self, fx, config, wallet:Wallet, signals:Signals):
         super().__init__(
             config=config,
-            stretch_column=self.Columns.LABEL,
-            editable_columns=[self.Columns.LABEL],
+            stretch_column=Columns.LABEL,
+            editable_columns=[Columns.LABEL],
         )
         self.fx = fx
         self.wallet = wallet
@@ -112,14 +139,58 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.used_button.currentIndexChanged.connect(self.toggle_used)
         for addr_usage_state in AddressUsageStateFilter.__members__.values():  # type: AddressUsageStateFilter
             self.used_button.addItem(addr_usage_state.ui_text())
-        self.std_model = QStandardItemModel(self)
+        self.std_model = MyStandardItemModel(self)
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
         self.update()
-        self.sortByColumn(self.Columns.TYPE, Qt.AscendingOrder)
+        self.sortByColumn(Columns.TYPE, Qt.AscendingOrder)
         signals.addresses_updated.connect(self.update)
 
+        self.setDragEnabled(True)
+        self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDefaultDropAction(Qt.MoveAction)
+
+
+    def startDrag(self, action):
+        indexes = self.selectedIndexes()
+        if indexes:
+            drag = QDrag(self)
+            mime_data = self.model().mimeData(indexes)
+            drag.setMimeData(mime_data)
+
+            total_height = sum(self.visualRect(index).height() for index in indexes)
+            max_width = max(self.visualRect(index).width() for index in indexes)
+
+            pixmap = QPixmap(max_width, total_height)
+            pixmap.fill(Qt.transparent)
+
+            painter = QPainter(pixmap)
+            current_height = 0
+            for index in indexes:
+                if index.column() != Columns.ADDRESS:
+                    continue
+                rect = self.visualRect(index)
+                temp_pixmap = QPixmap(rect.size())
+                self.viewport().render(temp_pixmap, QPoint(), QRegion(rect))
+                painter.drawPixmap(0, current_height, temp_pixmap)
+                current_height += rect.height()
+            painter.end()
+
+            cursor_pos = self.mapFromGlobal(QCursor.pos())
+            visual_rect = self.visualRect(indexes[0]).bottomLeft()
+            hotspot_pos = cursor_pos - visual_rect
+            # the y offset is always off, so just set it completely to 0
+            hotspot_pos.setY(0)
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(hotspot_pos)
+
+            drag.exec_(action)
+
+            
     def on_double_click(self, idx):
         addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
         self.signals.show_address(addr)
@@ -151,12 +222,12 @@ class AddressList(MyTreeView, MessageBoxMixin):
         else:
             ccy = _('Fiat')
         headers = {
-            self.Columns.TYPE: _('Type'),
-            self.Columns.ADDRESS: _('Address'),
-            self.Columns.LABEL: _('Label'),
-            self.Columns.COIN_BALANCE: _('Balance'),
-            self.Columns.FIAT_BALANCE: ccy + ' ' + _('Balance'),
-            self.Columns.NUM_TXS: _('Tx'),
+            Columns.TYPE: _('Type'),
+            Columns.ADDRESS: _('Address'),
+            Columns.LABEL: _('Label'),
+            Columns.COIN_BALANCE: _('Balance'),
+            Columns.FIAT_BALANCE: ccy + ' ' + _('Balance'),
+            Columns.NUM_TXS: _('Tx'),
         }
         self.update_headers(headers)
 
@@ -202,43 +273,43 @@ class AddressList(MyTreeView, MessageBoxMixin):
             if self.show_used == AddressUsageStateFilter.FUNDED_OR_UNUSED and is_used_and_empty:
                 continue
             num_shown += 1
-            labels = [""] * len(self.Columns)
-            labels[self.Columns.ADDRESS] = address
+            labels = [""] * len(Columns)
+            labels[Columns.ADDRESS] = address
             address_item = [QStandardItem(e) for e in labels]
             # align text and set fonts
             for i, item in enumerate(address_item):
                 item.setTextAlignment(Qt.AlignVCenter)
-                if i not in (self.Columns.TYPE, self.Columns.LABEL):
+                if i not in (Columns.TYPE, Columns.LABEL):
                     item.setFont(QFont(MONOSPACE_FONT))
             self.set_editability(address_item)
-            address_item[self.Columns.FIAT_BALANCE].setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            address_item[Columns.FIAT_BALANCE].setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             # setup column 0
             if self.wallet.is_change(address):
-                address_item[self.Columns.TYPE].setText(_('change'))
-                address_item[self.Columns.TYPE].setBackground(ColorScheme.YELLOW.as_color(True))
+                address_item[Columns.TYPE].setText(_('change'))
+                address_item[Columns.TYPE].setBackground(ColorScheme.YELLOW.as_color(True))
                 address_path = self.wallet.get_address_index_tuple(address, bdk.KeychainKind.INTERNAL)
             else:
-                address_item[self.Columns.TYPE].setText(_('receiving'))
-                address_item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
+                address_item[Columns.TYPE].setText(_('receiving'))
+                address_item[Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
                 address_path = self.wallet.get_address_index_tuple(address, bdk.KeychainKind.EXTERNAL)
             address_item[0].setData(address, self.ROLE_ADDRESS_STR)
-            address_item[self.Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
+            address_item[Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
             address_path_str = self.wallet.get_address_path_str(address)
             if address_path_str is not None:
-                address_item[self.Columns.TYPE].setToolTip(address_path_str)
+                address_item[Columns.TYPE].setToolTip(address_path_str)
             # add item
             count = self.std_model.rowCount()
             self.std_model.insertRow(count, address_item)
             self.refresh_row(address, count)
-            address_idx = self.std_model.index(count, self.Columns.LABEL)
+            address_idx = self.std_model.index(count, Columns.LABEL)
             if address == current_address:
                 set_address = QPersistentModelIndex(address_idx)
         self.set_current_idx(set_address)
         # show/hide columns
         if self.should_show_fiat():
-            self.showColumn(self.Columns.FIAT_BALANCE)
+            self.showColumn(Columns.FIAT_BALANCE)
         else:
-            self.hideColumn(self.Columns.FIAT_BALANCE)
+            self.hideColumn(Columns.FIAT_BALANCE)
         self.filter()
         self.proxy.setDynamicSortFilter(True)
         # update counter
@@ -259,21 +330,21 @@ class AddressList(MyTreeView, MessageBoxMixin):
             fiat_balance_str = fx.value_str(balance, rate)
         else:
             fiat_balance_str = ''
-        address_item = [self.std_model.item(row, col) for col in self.Columns]
-        address_item[self.Columns.LABEL].setText(label)
-        address_item[self.Columns.COIN_BALANCE].setText(balance_text)
-        address_item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
-        address_item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
-        address_item[self.Columns.NUM_TXS].setText("%d"%num)
+        address_item = [self.std_model.item(row, col) for col in Columns]
+        address_item[Columns.LABEL].setText(label)
+        address_item[Columns.COIN_BALANCE].setText(balance_text)
+        address_item[Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
+        address_item[Columns.FIAT_BALANCE].setText(fiat_balance_str)
+        address_item[Columns.NUM_TXS].setText("%d"%num)
         c = ColorScheme.BLUE.as_color(True) if self.wallet.is_frozen_address(address) else self._default_bg_brush
-        address_item[self.Columns.ADDRESS].setBackground(c)
+        address_item[Columns.ADDRESS].setBackground(c)
         if address in self.addresses_beyond_gap_limit:
-            address_item[self.Columns.ADDRESS].setBackground(ColorScheme.RED.as_color(True))
+            address_item[Columns.ADDRESS].setBackground(ColorScheme.RED.as_color(True))
 
     def create_menu(self, position):
         from electrum.wallet import Multisig_Wallet
         is_multisig = isinstance(self.wallet, Multisig_Wallet)
-        selected = self.selected_in_column(self.Columns.ADDRESS)
+        selected = self.selected_in_column(Columns.ADDRESS)
         if not selected:
             return
         multi_select = len(selected) > 1
@@ -288,8 +359,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 return
             addr = addrs[0]
             menu.addAction(_('Details'), lambda:  self.signals.show_address(addr))
-            addr_column_title = self.std_model.horizontalHeaderItem(self.Columns.LABEL).text()
-            addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
+            addr_column_title = self.std_model.horizontalHeaderItem(Columns.LABEL).text()
+            addr_idx = idx.sibling(idx.row(), Columns.LABEL)
             self.add_copy_menu(menu, idx)
             persistent = QPersistentModelIndex(addr_idx)
             menu.addAction(_("Edit {}").format(addr_column_title), lambda p=persistent: self.edit(QModelIndex(p)))
@@ -333,7 +404,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         super().place_text_on_clipboard(text, title=title)
 
     def get_edit_key_from_coordinate(self, row, col):
-        if col != self.Columns.LABEL:
+        if col != Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, 0, role=self.ROLE_ADDRESS_STR)
 

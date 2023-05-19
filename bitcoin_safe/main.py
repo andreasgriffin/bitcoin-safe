@@ -19,6 +19,8 @@ from .gui.qt.util import add_tab_to_tabs, read_QIcon, MessageBoxMixin
 from .signals import Signals,  QTWalletSignals
 from bdkpython import Network
 from typing import Dict
+from .storage import Storage
+import json, os
 
 
 
@@ -27,6 +29,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         super().__init__()
         self.qt_wallets :Dict[QTWallet] = {}
         self.fx = None
+        self.config_file = '.bitcoin_safe.config'
         
         self.signals = Signals()
         #connect the listeners
@@ -45,11 +48,24 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed) 
     
-    def open_wallet(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", "", "All Files (*);;Text Files (*.bitcoinsafe)")        
+    
+        self.open_last_opened_wallets()
+        
+        
+    def open_last_opened_wallets(self):
+        if not os.path.isfile(self.config_file):
+            return
+        storage = Storage()
+        application_data = json.loads( storage.load(None, self.config_file)   )
+        for file_path in application_data['last_wallet_files']:
+            self.open_wallet(file_path=file_path)
+    
+    def open_wallet(self, file_path=None):
         if not file_path:
-            print("No file selected")    
-            return    
+            file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", "", "All Files (*);;Text Files (*.bitcoinsafe)")        
+            if not file_path:
+                print("No file selected")    
+                return    
 
         print(f"Selected file: {file_path}")
         self.ui_password_question = PasswordQuestion()
@@ -186,7 +202,19 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                         
 
 
-            
+
+    def closeEvent(self, event):
+        storage = Storage()
+        human_readable = True
+        application_data =  {
+            'last_wallet_files': [qt_wallet.wallet.basename()  for qt_wallet in self.qt_wallets.values()]
+        }
+        storage.save(json.dumps(application_data, indent=4 if human_readable else None,
+                                sort_keys=bool(human_readable),                                
+                                ), None, '.bitcoin_safe.config')
+                        
+        super().closeEvent(event)
+                    
 
 async def main():
     app = QApplication(sys.argv)

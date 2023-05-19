@@ -94,6 +94,9 @@ class KeyStore:
     @classmethod
     def deserialize(cls, dct):
         assert dct.get("__class__") == cls.__name__
+        
+        dct['mnemonic'] = bdk.Mnemonic.from_string(dct['mnemonic']) 
+        
         if "__class__" in dct:
             del dct["__class__"]
         return KeyStore(**dct)
@@ -107,7 +110,8 @@ class KeyStore:
         
     
     def clone(self):
-        return KeyStore(self.xpub, self.fingerprint, self.derivation_path, self.label, self.type, self.mnemonic, self.description)
+        mnemonic_clone = bdk.Mnemonic.from_string(self.mnemonic.as_string()) if self.mnemonic else None
+        return KeyStore(self.xpub, self.fingerprint, self.derivation_path, self.label, self.type, mnemonic_clone , self.description)
     
     
     def from_other_keystore(self, other_keystore):        

@@ -47,10 +47,9 @@ class Storage():
         self.encrypt = Encrypt()
 
 
-    def save(self, message, password, filename):
-        token = self.encrypt.password_encrypt(message.encode(), password)
-        if not password:
-            token = message.encode()
+    def save(self, message, password, filename): 
+        token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
+
         with open(filename, 'wb') as f:
             f.write(token)
         
