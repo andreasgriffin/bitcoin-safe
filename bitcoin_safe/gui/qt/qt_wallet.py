@@ -179,7 +179,7 @@ class QTWallet():
         self.network =  Network(self.wallet)
                 
         self.history_tab, self.history_list, self.history_model = self._create_hist_tab(self.tabs)
-        self.addresses_tab, self.address_list = self._create_addresses_tab(self.tabs)        
+        self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
         self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
         if not self.wallet_settings_tab:
             self.settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()
@@ -335,17 +335,37 @@ class QTWallet():
     def get_tabs(self, tab_widget):
         return  [tab_widget.widget(i) for i in range(tab_widget.count())] 
 
-    def create_list_tab(self, l:HistoryList):
+    def create_list_tab(self, l:HistoryList, horizontal_widgets_left=None, horizontal_widgets_right=None):
         w = QWidget()
         w.searchable_list = l
         vbox = QVBoxLayout()
         w.setLayout(vbox)
         #vbox.setContentsMargins(0, 0, 0, 0)
         #vbox.setSpacing(0)
+        
+        # create a horizontal widget and layout        
+        horizontal = QWidget()
+        hbox = QHBoxLayout()
+                
+        if horizontal_widgets_left:
+            for widget in horizontal_widgets_left:
+                hbox.addWidget(widget)                
+        
+        hbox.addWidget(l)
+
+        if horizontal_widgets_right:
+            for widget in horizontal_widgets_right:
+                hbox.addWidget(widget)
+        
+        horizontal.setLayout(hbox)
+        
+              
+        vbox.addWidget(horizontal)
+        
+        
         toolbar = l.create_toolbar(self.config)
         if toolbar:
             vbox.addLayout(toolbar)
-        vbox.addWidget(l)
         return w
     
     def _create_hist_tab(self, tabs): 
@@ -366,10 +386,13 @@ class QTWallet():
 
     def _create_addresses_tab(self, tabs):
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
-        tab =  self.create_list_tab(l)
+        from .taglist import TagList
+        tags = TagList()
+        tags.setMaximumWidth(150)
+        tab =  self.create_list_tab(l,horizontal_widgets_left=[tags])
 
         add_tab_to_tabs(tabs, tab, read_QIcon("tab_addresses.png"), "Addresses", "addresses", position=1)
-        return tab, l        
+        return tab, l, tags
 
 
 

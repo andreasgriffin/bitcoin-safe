@@ -165,16 +165,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             del self.signals.qt_wallet_signals[qt_wallet.wallet.id]
 
 
-    def close_tab(self, index):        
-        # if self.tab_wallets.widget(index) == self.welcome_screen.tab:
-        #     return
-        
+    def close_tab(self, index):                   
+        qt_wallet = self.get_qt_wallet(tab=self.tab_wallets.widget(index))
         self.tab_wallets.removeTab(index)
-        
-        
-        qt_wallet = self.get_qt_wallet(self.tab_wallets.widget(index))
-        print(qt_wallet)
-        self.remove_qt_wallet(qt_wallet) 
+        if qt_wallet:
+            self.remove_qt_wallet(qt_wallet) 
         
         self.event_wallet_tab_closed()
         
