@@ -133,6 +133,7 @@ class DeleteButton(QPushButton):
 
 
 class CustomListWidget(QListWidget):
+    item_added = Signal(object)
     item_selected = Signal(object)
     item_deleted = Signal(object)
     item_renamed = Signal(object, object)
@@ -179,6 +180,7 @@ class CustomListWidget(QListWidget):
         item = CustomListWidgetItem(item_text)
         item.setFlags(item.flags() | Qt.ItemIsEditable)
         self.addItem(item)
+        self.item_added.emit(item)
         return item
 
     def on_item_clicked(self, item):
@@ -291,11 +293,11 @@ class CustomListWidget(QListWidget):
             yield item.text()
 
 
-class TagList(QWidget):
-    default_placeholder_text = 'Add new tag'
-    
-    def __init__(self, parent=None, tags=None):
+class TagList(QWidget):    
+    def __init__(self, parent=None, tags=None, tag_name = 'tag'):
         super(TagList, self).__init__(parent)
+        self.tag_name = tag_name
+        self.default_placeholder_text = f'Add new {self.tag_name}'
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
@@ -303,7 +305,7 @@ class TagList(QWidget):
         self.input_field.setPlaceholderText(self.default_placeholder_text)
         self.input_field.returnPressed.connect(self.add_new_tag_from_input_field)
 
-        self.delete_button = DeleteButton('Delete item', self)
+        self.delete_button = DeleteButton(f'Delete {self.tag_name}', self)
         self.delete_button.hide()
 
         self.list_widget = CustomListWidget(self.input_field, self.delete_button)
@@ -329,7 +331,7 @@ class TagList(QWidget):
         if item:
             self.input_field.setPlaceholderText(self.default_placeholder_text)
         else:
-            self.input_field.setPlaceholderText('This tag exists already.')
+            self.input_field.setPlaceholderText(f'This {self.tag_name} exists already.')
         self.input_field.clear()
 
     def tag_exists(self, tag):

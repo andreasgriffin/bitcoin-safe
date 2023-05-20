@@ -67,9 +67,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                 print("No file selected")    
                 return    
 
-        print(f"Selected file: {file_path}")
-        self.ui_password_question = PasswordQuestion()
-        password = self.ui_password_question.ask_for_password()            
+        print(f"Selected file: {file_path}")                
+        password = None
+        if Storage().has_password(file_path):
+            self.ui_password_question = PasswordQuestion()
+            password = self.ui_password_question.ask_for_password()        
+             
         try:
             wallet = Wallet.load(password, file_path)
         except:

@@ -23,24 +23,17 @@ class KeyStoreUITypeChooser:
     def create(self):
         tab = QWidget()
 
-        # 1. tab with connection setting
-        self.horizontalLayout_5 = QHBoxLayout(tab)
-        self.widget_7 = QWidget(tab)
-        self.horizontalLayout_7 = QHBoxLayout(self.widget_7)
-        # self.horizontalLayout_7.setContentsMargins(10, 6, 10, 6)
-            
+        self.layout_keystore_buttons = QHBoxLayout(tab)
 
 
-        button = create_button(KeyStoreTypes.hwi.description, (KeyStoreTypes.hwi.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
-        button = create_button(KeyStoreTypes.psbt.description, (KeyStoreTypes.psbt.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
-        self.button_xpub = create_button(KeyStoreTypes.watch_only.description, (KeyStoreTypes.watch_only.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
+        button = create_button(KeyStoreTypes.hwi.description, (KeyStoreTypes.hwi.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
+        button = create_button(KeyStoreTypes.psbt.description, (KeyStoreTypes.psbt.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
+        self.button_xpub = create_button(KeyStoreTypes.watch_only.description, (KeyStoreTypes.watch_only.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
         self.button_xpub.clicked.connect(self.signal_click_watch_only)
         if self.network in KeyStoreTypes.seed.networks:
-            self.button_seed = create_button(KeyStoreTypes.seed.description, (KeyStoreTypes.seed.icon_filename), parent=self.widget_7 , outer_layout= self.horizontalLayout_7)
+            self.button_seed = create_button(KeyStoreTypes.seed.description, (KeyStoreTypes.seed.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
             self.button_seed.clicked.connect(self.signal_click_seed)
 
-
-        self.horizontalLayout_5.addWidget(self.widget_7)
 
         return tab
 

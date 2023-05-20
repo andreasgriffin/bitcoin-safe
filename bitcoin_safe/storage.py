@@ -52,7 +52,17 @@ class Storage():
 
         with open(filename, 'wb') as f:
             f.write(token)
+    
+    @classmethod
+    def has_password(cls, filename) -> bool:
+        with open(filename, 'rb') as f:
+            token = f.read()
         
+        if token.decode()[0] == '{':
+            return False
+        
+        return True
+            
             
     def load(self, password, filename) -> str:
         with open(filename, 'rb') as f:

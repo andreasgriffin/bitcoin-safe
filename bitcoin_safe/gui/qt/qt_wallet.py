@@ -24,6 +24,7 @@ from enum import Enum, auto
 from .password_question import PasswordQuestion
 from threading import Lock
 from bitcoin_safe import wallet
+from .category_list import CategoryList
 
 
 class StatusBarButton(QToolButton):
@@ -380,8 +381,7 @@ class QTWallet():
 
     def _create_addresses_tab(self, tabs):
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
-        from .taglist import TagList
-        tags = TagList()
+        tags = CategoryList(self.wallet.categories)
         tags.setMaximumWidth(150)
         tab =  self.create_list_tab(l,horizontal_widgets_left=[tags])
 

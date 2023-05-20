@@ -41,7 +41,7 @@ class Wallet():
     """
     If any bitcoin logic (ontop of bdk) has to be done, then here is the place
     """
-    def __init__(self, id, threshold:int, signers:int = 1, network=bdk.Network.REGTEST, blockchain_choice=BlockchainType.CompactBlockFilter, keystores:List[KeyStore]=None, address_type:AddressType=None, gap=200, gap_change=20, descriptors=None):
+    def __init__(self, id, threshold:int, signers:int = 1, network=bdk.Network.REGTEST, blockchain_choice=BlockchainType.CompactBlockFilter, keystores:List[KeyStore]=None, address_type:AddressType=None, gap=200, gap_change=20, descriptors=None, categories=[]):
         self.bdkwallet = None
         self.network = network
         self.id = id
@@ -53,6 +53,7 @@ class Wallet():
         self.blockchain_choice = blockchain_choice
         self.cache = {}
         self.write_lock = Lock()
+        self.categories = categories
         
         initial_address_type = address_type if address_type else get_default_address_type(signers>1)
         self.keystores: List[KeyStore] = keystores if keystores is not None else [
@@ -82,7 +83,7 @@ class Wallet():
     def serialize(self):
         d = {}
 
-        keys = ['id', 'threshold', 'gap', 'gap_change', 'blockchain_choice', 'keystores', 'network']
+        keys = ['id', 'threshold', 'gap', 'gap_change', 'blockchain_choice', 'keystores', 'network', 'categories']
         full_dict = self.__dict__
         for k in keys:            
             d[k] = full_dict[k]

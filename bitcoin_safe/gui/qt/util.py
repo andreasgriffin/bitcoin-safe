@@ -120,7 +120,12 @@ def add_centered_icons(paths, parent, outer_layout, direction='h', alignment=Qt.
 
 def create_button(text, icon_paths, parent, outer_layout, max_sizes=None):
         button = QPushButton(parent)
-        button.setMinimumSize(QSize(0, 150))
+        button.setMaximumHeight(200)
+        # Set the vertical size policy of the button to Expanding
+        size_policy = button.sizePolicy()
+        size_policy.setVerticalPolicy(size_policy.Expanding)
+        button.setSizePolicy(size_policy)
+        
         outer_layout.addWidget(button)
         
         # add the icons to       
