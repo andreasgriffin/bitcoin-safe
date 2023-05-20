@@ -3,12 +3,17 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import json 
 from ..util import AddressDragInfo
+import hashlib
+
+def hash_string(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
 
 def rescale(value, old_min, old_max, new_min, new_max):
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
 
 def hash_color(text):
-    hash_value = hash(text) & 0xffffff
+    hash_value = int(hash_string(text),16) & 0xffffff
     r = (hash_value & 0xff0000) >> 16
     g = (hash_value & 0x00ff00) >> 8
     b = hash_value & 0x0000ff

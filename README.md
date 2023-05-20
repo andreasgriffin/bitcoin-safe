@@ -25,6 +25,10 @@
 - [ ] Address, TX dialogs (need redesign. Electrums are too complicated)
 - [ ] Adding pytest for rigorous UI testing
 
+#### UX
+
+![screenshot0](docs/gif-addresses.gif)
+
 #### Screenshots
 
 ![screenshot0](docs/screenshot0.png)
