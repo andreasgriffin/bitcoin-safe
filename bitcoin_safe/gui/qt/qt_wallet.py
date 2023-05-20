@@ -336,38 +336,32 @@ class QTWallet():
         return  [tab_widget.widget(i) for i in range(tab_widget.count())] 
 
     def create_list_tab(self, l:HistoryList, horizontal_widgets_left=None, horizontal_widgets_right=None):
-        w = QWidget()
-        w.searchable_list = l
-        vbox = QVBoxLayout()
-        w.setLayout(vbox)
-        #vbox.setContentsMargins(0, 0, 0, 0)
-        #vbox.setSpacing(0)
-        
         # create a horizontal widget and layout        
-        horizontal = QWidget()
-        hbox = QHBoxLayout()
+        h = QWidget()
+        h.searchable_list = l
+        hbox = QHBoxLayout(h)
+        h.setLayout(hbox)
                 
         if horizontal_widgets_left:
             for widget in horizontal_widgets_left:
                 hbox.addWidget(widget)                
-        
-        hbox.addWidget(l)
 
-        if horizontal_widgets_right:
-            for widget in horizontal_widgets_right:
-                hbox.addWidget(widget)
-        
-        horizontal.setLayout(hbox)
-        
-              
-        vbox.addWidget(horizontal)
-        
-        
+
+        w = QWidget()
+        vbox = QVBoxLayout()
+        w.setLayout(vbox)
         toolbar = l.create_toolbar(self.config)
         if toolbar:
             vbox.addLayout(toolbar)
-        return w
-    
+
+        vbox.addWidget(l)
+        hbox.addWidget(w)
+
+        if horizontal_widgets_right:
+            for widget in horizontal_widgets_right:
+                hbox.addWidget(widget)        
+        return h
+
     def _create_hist_tab(self, tabs): 
         hm = HistoryModel(self.tab, self.fx, self.config, self.wallet, self.signals)
         l = HistoryList(self.fx, self.config, self.signals,  self.wallet, hm)

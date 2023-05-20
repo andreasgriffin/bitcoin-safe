@@ -19,6 +19,13 @@ import json
 import enum
 
 
+class OutputInfo:
+    def __init__(self, outpoint:OutPoint, tx:bdk.Transaction) -> None:
+        self.outpoint = outpoint
+        self.tx = tx
+
+    
+
 def locked(func):
     def wrapper(self, *args, **kwargs):
         with self.lock:
@@ -614,40 +621,43 @@ class Wallet():
     
     @cache_method
     def get_received_send_maps(self):
-        addresses_funded: Dict[OutPoint, str]     = {}
-        received:  Dict[AddressInfoMin, Dict[OutPoint, bdk.Transaction]] = defaultdict(dict)   #  address: txid: tx
-        send:      Dict[AddressInfoMin, Dict[OutPoint, bdk.Transaction]] = defaultdict(dict)   #  address: txid: tx
+        hash_outpoint_to_address: Dict[int, str]     = {}  # hash(out_point), address
+        received:  Dict[str, List[OutputInfo]] = {}   #  address: OutputInfo
+        send:      Dict[str, List[OutputInfo]] = {}   #  address: OutputInfo
         
         # build the received dict
         for tx in self.get_list_transactions():
             for vout, output in enumerate(tx.transaction.output()):
                 out_point = OutPoint(tx.txid, vout)
-                address_info = self.address_info_min(self.get_address_of_output(output))
-                if address_info is None:
+                address = self.get_address_of_output(output)
+                if address is None:
                     continue
-                received[address_info][out_point] = tx
-                addresses_funded[out_point] = address_info
+                if address not in received: 
+                    received[address] = []
+                received[address].append(OutputInfo(out_point, tx)) 
+                hash_outpoint_to_address[hash(out_point)] = address
                 
         # check if any input tx is in transactions_involving_address
         for tx in self.get_list_transactions():
             for input in tx.transaction.input():
                 out_point = OutPoint.from_bdk_outpoint(input.previous_output)
-                if out_point in addresses_funded:
-                    address = addresses_funded[out_point]
-                    send[address][out_point] = tx
+                if out_point in hash_outpoint_to_address:
+                    address = hash_outpoint_to_address[hash(out_point)]
+                    if address not in send: 
+                        send[address] = []
+                    send[address].append(OutputInfo(out_point, tx)) 
                     
         return received, send
         
         
         
     def bdk_received_and_send_involving_address(self, address):
-        received, send = self.get_received_send_maps()                        
-        return received[address], send[address]
+        received, send = self.get_received_send_maps()        
+        return received.get(address, []), send.get(address, [])
         
     def bdk_txs_involving_address(self, address):   
         received, send = self.bdk_received_and_send_involving_address(address)
-        received.update(send)
-        return received
+        return received + send 
         
 
     def get_utxos(self):
