@@ -28,9 +28,11 @@ import enum
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from PySide2.QtCore import Qt, QPersistentModelIndex, QModelIndex, QMimeData, QPoint
+from PySide2.QtCore import Qt, QPersistentModelIndex, QModelIndex, QMimeData, QPoint, Signal
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QMouseEvent, QDrag, QPixmap, QCursor, QRegion, QPainter
 from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu
+from jsonschema import draft201909_format_checker
+from bitcoin_safe.gui.qt.category_list import CategoryList
 
 from bitcoin_safe.wallet import Wallet
 
@@ -39,13 +41,14 @@ from ...util import InternalAddressCorruption, block_explorer_URL
 import json
 
 
-from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen
+from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen, AddressDragInfo
 from .my_treeview import MyTreeView, MySortModel
 
 
 class Columns(MyTreeView.BaseColumnsEnum):
     TYPE = enum.auto()
     ADDRESS = enum.auto()
+    CATEGORY = enum.auto()
     LABEL = enum.auto()
     COIN_BALANCE = enum.auto()
     FIAT_BALANCE = enum.auto()
@@ -111,8 +114,9 @@ class AddressTypeFilter(IntEnum):
 from ...signals import Signals
 
 class AddressList(MyTreeView, MessageBoxMixin):
+    signal_tag_dropped = Signal(AddressDragInfo)
 
-    filter_columns = [Columns.TYPE, Columns.ADDRESS, Columns.LABEL, Columns.COIN_BALANCE]
+    filter_columns = [Columns.TYPE, Columns.ADDRESS, Columns.CATEGORY, Columns.LABEL, Columns.COIN_BALANCE]
 
     ROLE_SORT_ORDER = Qt.UserRole + 1000
     ROLE_ADDRESS_STR = Qt.UserRole + 1001
@@ -190,6 +194,38 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
             drag.exec_(action)
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat('application/json'):
+            print('accept') 
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+            
+        
+        
+    def dropEvent(self, event):
+        index = self.indexAt(event.pos())
+        if not index.isValid():
+            # Handle the case where the drop is not on a valid index
+            return
+
+        if event.mimeData().hasFormat('application/json'):
+            model = self.model()
+            hit_address = model.data(model.index(index.row(), Columns.ADDRESS)) 
+            
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            
+            d = json.loads(json_string)
+            if d.get('type') == 'drag_tag':
+                if hit_address is not None:
+                    drag_info = AddressDragInfo([d.get('tag')], [hit_address])
+                    print(drag_info)
+                    self.signal_tag_dropped.emit(drag_info)     
+                event.accept()
+                return
+
+        event.ignore()
             
     def on_double_click(self, idx):
         addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
@@ -224,6 +260,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         headers = {
             Columns.TYPE: _('Type'),
             Columns.ADDRESS: _('Address'),
+            Columns.CATEGORY: _('Category'),
             Columns.LABEL: _('Label'),
             Columns.COIN_BALANCE: _('Balance'),
             Columns.FIAT_BALANCE: ccy + ' ' + _('Balance'),
@@ -319,6 +356,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         assert row is not None
         address = key
         label = self.wallet.get_label_for_address(address)
+        category = self.wallet.get_category_for_address(address)
         num = self.wallet.get_address_history_len(address)
         c, u, x = self.wallet.get_addr_balance(address)
         balance = c + u + x
@@ -332,6 +370,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
             fiat_balance_str = ''
         address_item = [self.std_model.item(row, col) for col in Columns]
         address_item[Columns.LABEL].setText(label)
+        address_item[Columns.CATEGORY].setText(category)        
+        address_item[Columns.CATEGORY].setBackground(CategoryList.color(category))
         address_item[Columns.COIN_BALANCE].setText(balance_text)
         address_item[Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
         address_item[Columns.FIAT_BALANCE].setText(fiat_balance_str)

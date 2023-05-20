@@ -1,6 +1,8 @@
 from collections import defaultdict
 import bdkpython as bdk 
 from typing import Sequence, Set, Tuple
+
+from bitcoin_safe.signals import Signal
 from .util import balance_dict, OrderedDictWithIndex, Satoshis, timestamp_to_datetime, TxMinedInfo, format_fee_satoshis, format_time
 from .util import TX_HEIGHT_FUTURE, TX_HEIGHT_INF, TX_HEIGHT_LOCAL, TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED, TX_STATUS, THOUSANDS_SEP, cache_method
 import time 
@@ -41,7 +43,7 @@ class Wallet():
     """
     If any bitcoin logic (ontop of bdk) has to be done, then here is the place
     """
-    def __init__(self, id, threshold:int, signers:int = 1, network=bdk.Network.REGTEST, blockchain_choice=BlockchainType.CompactBlockFilter, keystores:List[KeyStore]=None, address_type:AddressType=None, gap=200, gap_change=20, descriptors=None, categories=[]):
+    def __init__(self, id, threshold:int, signers:int = 1, network=bdk.Network.REGTEST, blockchain_choice=BlockchainType.CompactBlockFilter, keystores:List[KeyStore]=None, address_type:AddressType=None, gap=200, gap_change=20, descriptors=None, categories=None, category=None, labels=None):
         self.bdkwallet = None
         self.network = network
         self.id = id
@@ -53,7 +55,9 @@ class Wallet():
         self.blockchain_choice = blockchain_choice
         self.cache = {}
         self.write_lock = Lock()
-        self.categories = categories
+        self.categories = categories if categories else []
+        self.labels = labels if labels else {}
+        self.category = category if category else {}
         
         initial_address_type = address_type if address_type else get_default_address_type(signers>1)
         self.keystores: List[KeyStore] = keystores if keystores is not None else [
@@ -64,6 +68,8 @@ class Wallet():
                                             for i in range(signers)
                                         ]
         self.set_address_type( initial_address_type)
+        
+        self.signal_category_added = Signal('signal_category_added')
     
     
     def temporary_descriptors(self, use_html=False):
@@ -83,7 +89,7 @@ class Wallet():
     def serialize(self):
         d = {}
 
-        keys = ['id', 'threshold', 'gap', 'gap_change', 'blockchain_choice', 'keystores', 'network', 'categories']
+        keys = ['id', 'threshold', 'gap', 'gap_change', 'blockchain_choice', 'keystores', 'network', 'categories', 'category', 'labels']
         full_dict = self.__dict__
         for k in keys:            
             d[k] = full_dict[k]
@@ -693,19 +699,31 @@ class Wallet():
     def get_witness_script(self, address):
         return None
         
+    def get_category_for_address(self, address):
+        return self.category.get(address, '')
         
     def get_label_for_address(self, address):
-        return ''
+        return self.labels.get(address, '')
     
     def get_label_for_txid(self, txid):
-        return ''
+        return self.labels.get(txid, '')
     
     def is_frozen_address(self, address):
         return False
     def is_frozen_coin(self, utxo):
         return False
     
-    
+    def set_label(self, key, label):
+        self.labels[key] = label
+
+    def set_category(self, key, category):
+        if category not in self.categories:
+            self.add_category(category)
+        self.category[key] = category
+
+    def add_category(self, category):
+        self.categories.append(category)
+        self.signal_category_added(category)
     
     def is_up_to_date(self):
         return True

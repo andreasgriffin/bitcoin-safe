@@ -13,7 +13,7 @@ from .balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNIN
 from .history_list import HistoryList, HistoryModel
 from .address_list import AddressList
 from .utxo_list import UTXOList
-from .util import add_tab_to_tabs, format_amount_and_units, format_amount
+from .util import add_tab_to_tabs, format_amount_and_units, format_amount, AddressDragInfo
 
 from ...util import start_in_background_thread
 from ...signals import Signals
@@ -25,7 +25,6 @@ from .password_question import PasswordQuestion
 from threading import Lock
 from bitcoin_safe import wallet
 from .category_list import CategoryList
-
 
 class StatusBarButton(QToolButton):
     # note: this class has a custom stylesheet applied in stylesheet_patcher.py
@@ -86,7 +85,7 @@ class FX():
  
 
 class QTWallet():
-    def __init__(self, wallet, config, signals:Signals):    
+    def __init__(self, wallet:Wallet, config, signals:Signals):    
         self.wallet = wallet
         self.password = None
         self.wallet_settings_tab = None
@@ -98,10 +97,11 @@ class QTWallet():
         
         
         self.history_tab, self.history_list, self.history_model = None, None, None
-        self.addresses_tab, self.address_list = None, None
+        self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
         self.utxo_tab, self.utxo_list = None, None
         
         self._create_wallet_tab_and_subtabs()
+        
     
     def __repr__(self) -> str:
         return f'QTWallet({self.__dict__})'    
@@ -190,7 +190,16 @@ class QTWallet():
         self.update_status()
         self.tabs.setCurrentIndex(0)
 
+        self.wallet.signal_category_added.connect(self.address_list_tags.refresh)
+        self.address_list.signal_tag_dropped.connect(self.set_category)
+        self.address_list_tags.signal_addresses_dropped.connect(self.set_category)
 
+
+    def set_category(self, address_drag_info:AddressDragInfo):
+        for address in address_drag_info.addresses:
+            for category in address_drag_info.tags:
+                self.wallet.set_category(address, category)
+        self.address_list.update()
 
     def create_status_bar(self, tab, outer_layout):
         sb = QStatusBar()

@@ -1,1 +1,1 @@
-from .main import TagList 
+from .main import TagList, hash_color

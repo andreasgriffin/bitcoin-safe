@@ -2,10 +2,23 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import json 
-
+from ..util import AddressDragInfo
 
 def rescale(value, old_min, old_max, new_min, new_max):
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
+
+def hash_color(text):
+    hash_value = hash(text) & 0xffffff
+    r = (hash_value & 0xff0000) >> 16
+    g = (hash_value & 0x00ff00) >> 8
+    b = hash_value & 0x0000ff
+
+    r = int(rescale(r, 0, 255, 100, 255))
+    g = int(rescale(g, 0, 255, 100, 255))
+    b = int(rescale(b, 0, 255, 100, 255))
+
+    return QColor(r, g, b)
+
 
 class CustomListWidgetItem(QListWidgetItem):
     def __init__(self, item_text, parent=None):
@@ -15,16 +28,7 @@ class CustomListWidgetItem(QListWidgetItem):
         self.setData(Qt.UserRole + 1, self.color)
 
     def hash_color(self):
-        hash_value = hash(self.text()) & 0xffffff
-        r = (hash_value & 0xff0000) >> 16
-        g = (hash_value & 0x00ff00) >> 8
-        b = hash_value & 0x0000ff
-
-        r = int(rescale(r, 0, 255, 100, 255))
-        g = int(rescale(g, 0, 255, 100, 255))
-        b = int(rescale(b, 0, 255, 100, 255))
-
-        return QColor(r, g, b)
+        return hash_color(self.text())
 
     def mimeData(self):
         mime_data = QMimeData()
@@ -101,7 +105,6 @@ class DeleteButton(QPushButton):
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event):    
-        print(event.mimeData().data('application/json'))
         if event.mimeData().hasFormat('application/json'):            
             data_bytes = event.mimeData().data('application/json')
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -137,7 +140,7 @@ class CustomListWidget(QListWidget):
     item_selected = Signal(object)
     item_deleted = Signal(object)
     item_renamed = Signal(object, object)
-    address_dropped = Signal(object)
+    signal_addresses_dropped = Signal(AddressDragInfo)
 
     def __init__(self, add_tag_field, delete_button, parent=None):
         super(CustomListWidget, self).__init__(parent)
@@ -238,7 +241,6 @@ class CustomListWidget(QListWidget):
         self.delete_button.hide()
         
     def dragEnterEvent(self, event):
-        event.acceptProposedAction()
         if event.mimeData().hasFormat('application/json'):
             print('accept')
             # tag = self.itemAt(event.pos())        
@@ -265,12 +267,9 @@ class CustomListWidget(QListWidget):
             d = json.loads(json_string)
             if d.get('type') == 'drag_addresses':
                 if tag is not None:
-                    d = {
-                        'dropped_addresses':d.get('addresses'),
-                        'tag':tag.text(),
-                    }    
-                    print(d)
-                    self.address_dropped.emit(d)     
+                    drag_info = AddressDragInfo([tag.text()], d.get('addresses')) 
+                    print(drag_info)
+                    self.signal_addresses_dropped.emit(drag_info)     
                 event.accept()
                 return
 
@@ -316,10 +315,17 @@ class TagList(QWidget):
         self.delete_button.delete_item.connect(self.list_widget.delete_item)
         
         if tags:
-            for tag in tags:
-                self.list_widget.add_item(tag) 
+            self.recreate(tags)
         
+    def recreate(self, tags):
+        # delete all items
+        for i in range(self.list_widget.count()):
+            self.list_widget.takeItem(i)
         
+        # add all back
+        for tag in tags:
+            self.list_widget.add_item(tag) 
+
     def add(self, new_tag) -> CustomListWidgetItem:
         if not self.tag_exists(new_tag):
             return self.list_widget.add_item(new_tag) 

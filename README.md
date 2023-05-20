@@ -41,7 +41,7 @@
 
  * Installation of bdk with compact filters
 
- * ```shell
+   ```shell
    git clone https://github.com/andreasgriffin/bdk-ffi.git
    cd bdk-ffi/bdk-python
    git checkout cbf
@@ -51,14 +51,23 @@
    pip install ./dist/bdkpython-0.28.0.dev0-py3-none-any.whl --force-reinstall
    python -m unittest --verbose tests/test_bdk.py
    ```
-   
+
+ * Run a bitcoin regtest node with compact block filters enabled. The simplest is to use this [docker](https://github.com/BitcoinDevelopersAcademy/bit-container#2-create-regtest-aliases-to-start-stop-view-logs-and-send-cli-commands-to-container) container. You can create the alias:
+
+   ```sh
+   alias rt-start='sudo docker run -d --rm -p 127.0.0.1:18443-18444:18443-18444/tcp -p 127.0.0.1:60401:60401/tcp --name electrs bitcoindevkit/electrs'
+   alias rt-stop='sudo docker kill electrs'
+   alias rt-logs='sudo docker container logs electrs'
+   alias rt-cli='sudo docker exec -it electrs /root/bitcoin-cli -regtest   $@'
+   ```
+
  * Run Bitcoin Safe
 
-```sh
-git clone https://github.com/andreasgriffin/bitcoin-safe.git
-cd bitcoin-safe
-python -m bitcoin_safe
-```
+   ```sh
+   git clone https://github.com/andreasgriffin/bitcoin-safe.git
+   cd bitcoin-safe
+   python -m bitcoin_safe
+   ```
 
 
 

@@ -273,8 +273,7 @@ class HistoryModel(CustomModel, Logger):
     def should_show_capital_gains(self):
         return self.should_show_fiat() and self.config.get('history_rates_capital_gains', False)
 
-    @profiler
-    def refresh(self, reason: str):
+    def refresh(self, reason: str=None):
         self.logger.info(f"refreshing... reason: {reason}")
         # assert self.qt_wallet.main_window.loop == threading.current_thread(), 'must be called from GUI thread'
         assert self.view, 'view not set'
