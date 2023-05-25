@@ -2,7 +2,7 @@ from collections import defaultdict
 import bdkpython as bdk 
 from typing import Sequence, Set, Tuple
 
-from bitcoin_safe.signals import Signal
+from .tx import TXInfos
 from .util import balance_dict, OrderedDictWithIndex, Satoshis, timestamp_to_datetime, TxMinedInfo, format_fee_satoshis, format_time
 from .util import TX_HEIGHT_FUTURE, TX_HEIGHT_INF, TX_HEIGHT_LOCAL, TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED, TX_STATUS, THOUSANDS_SEP, cache_method
 import time 
@@ -12,14 +12,14 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union, NamedTuple, Sequ
 from .keystore import KeyStore, KeyStoreType, KeyStoreTypes
 import bdkpython as bdk
 import html
-from bitcoin_safe import keystore
+from . import keystore
 from .pythonbdk_types import *
 from .storage import Storage
 from threading import Lock
 from .descriptors import AddressType, AddressTypes, get_default_address_type, generate_bdk_descriptors, descriptor_infos, generate_output_descriptors_from_keystores
 import json
 import enum
-
+from .tx import TXInfos
 
 class OutputInfo:
     def __init__(self, outpoint:OutPoint, tx:bdk.Transaction) -> None:
@@ -58,6 +58,7 @@ class Wallet():
         self.categories = categories if categories else []
         self.labels = labels if labels else {}
         self.category = category if category else {}
+                
         
         initial_address_type = address_type if address_type else get_default_address_type(signers>1)
         self.keystores: List[KeyStore] = keystores if keystores is not None else [
@@ -69,7 +70,7 @@ class Wallet():
                                         ]
         self.set_address_type( initial_address_type)
         
-        self.signal_category_added = Signal('signal_category_added')
+    
     
     
     def temporary_descriptors(self, use_html=False):
@@ -541,8 +542,8 @@ class Wallet():
 
     def get_addresses(self) -> Sequence[str]:
         # note: overridden so that the history can be cleared.
-        # addresses are ordered based on derivation
-        out = self.get_receiving_addresses()
+        # addresses are ordered based on derivation        
+        out = self.get_receiving_addresses().copy()
         out += self.get_change_addresses()
         return out
 
@@ -585,11 +586,12 @@ class Wallet():
     def get_all_known_addresses_beyond_gap_limit(self):
         return []
         
-    def get_address_of_output(self, output) -> str:
-        if output.value == 0: 
+    @cache_method
+    def get_address_of_txout(self, txout:bdk.TxOut) -> str:
+        if txout.value == 0: 
             return None
         else:
-            return bdk.Address.from_script(output.script_pubkey, self.network).as_string()
+            return bdk.Address.from_script(txout.script_pubkey, self.network).as_string()
     
 
     @cache_method
@@ -606,11 +608,11 @@ class Wallet():
         for i, utxo in enumerate(utxos):
             tx = self.get_bdk_tx(utxo.outpoint.txid)
 
-            for output in tx.transaction.output():
-                address = self.get_address_of_output(output)
+            for txout in tx.transaction.output():
+                address = self.get_address_of_txout(txout)
                 if address is None:
                     continue
-                balances[address][0] += output.value
+                balances[address][0] += txout.value
                 balances[address][1] += 0
                 balances[address][2] += 0
                 
@@ -634,9 +636,9 @@ class Wallet():
         
         # build the received dict
         for tx in self.get_list_transactions():
-            for vout, output in enumerate(tx.transaction.output()):
+            for vout, txout in enumerate(tx.transaction.output()):
+                address = self.get_address_of_txout(txout)
                 out_point = OutPoint(tx.txid, vout)
-                address = self.get_address_of_output(output)
                 if address is None:
                     continue
                 if address not in received: 
@@ -723,7 +725,6 @@ class Wallet():
 
     def add_category(self, category):
         self.categories.append(category)
-        self.signal_category_added(category)
     
     def is_up_to_date(self):
         return True
@@ -825,3 +826,26 @@ class Wallet():
             status_str += ' [%s]'%(', '.join(extra))
         return status, status_str
     
+
+    def create_tx(self, txinfos:TXInfos):
+        if not txinfos.utxo_strings and not txinfos.categories:
+            raise Exception('No inputs provided')
+
+        outpoints = []        
+        
+        if txinfos.utxo_strings:
+            outpoints += [OutPoint.from_str(s) for s in txinfos.utxo_strings]
+            
+        if txinfos.categories:
+            outpoints += [utxo.outpoint for utxo in self.bdkwallet.list_unspent() if                      
+                    self.category.get(self.get_address_of_txout(utxo.txout)) in txinfos.categories
+                    ]
+        for outpoint in outpoints:
+            txinfos.tx_builder = txinfos.tx_builder.add_utxo(outpoint)        
+            
+        
+        tx_final = txinfos.tx_builder.finish(self.bdkwallet)
+        
+        print(json.loads(tx_final.psbt.json_serialize()))
+                
+        return tx_final

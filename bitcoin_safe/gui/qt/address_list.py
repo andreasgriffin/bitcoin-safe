@@ -32,7 +32,7 @@ from PySide2.QtCore import Qt, QPersistentModelIndex, QModelIndex, QMimeData, QP
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QMouseEvent, QDrag, QPixmap, QCursor, QRegion, QPainter
 from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu
 from jsonschema import draft201909_format_checker
-from bitcoin_safe.gui.qt.category_list import CategoryList
+from .category_list import CategoryEditor
 
 from bitcoin_safe.wallet import Wallet
 
@@ -41,8 +41,9 @@ from ...util import InternalAddressCorruption, block_explorer_URL
 import json
 
 
-from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen, AddressDragInfo
+from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen
 from .my_treeview import MyTreeView, MySortModel
+from .taglist import AddressDragInfo
 
 
 class Columns(MyTreeView.BaseColumnsEnum):
@@ -129,8 +130,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
             editable_columns=[Columns.LABEL],
         )
         self.fx = fx
-        self.wallet = wallet
         self.signals = signals
+        self.wallet = wallet
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
@@ -149,7 +150,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.setModel(self.proxy)
         self.update()
         self.sortByColumn(Columns.TYPE, Qt.AscendingOrder)
-        signals.addresses_updated.connect(self.update)
+        self.signals.addresses_updated.connect(self.update)
+        self.signals.category_updated.connect(self.update)
 
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
@@ -371,7 +373,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         address_item = [self.std_model.item(row, col) for col in Columns]
         address_item[Columns.LABEL].setText(label)
         address_item[Columns.CATEGORY].setText(category)        
-        address_item[Columns.CATEGORY].setBackground(CategoryList.color(category))
+        address_item[Columns.CATEGORY].setBackground(CategoryEditor.color(category))
         address_item[Columns.COIN_BALANCE].setText(balance_text)
         address_item[Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
         address_item[Columns.FIAT_BALANCE].setText(fiat_balance_str)
@@ -451,5 +453,5 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)
         self.signals.addresses_updated()
-        self.signals.utxos_updated()
+        # self.signals.utxos_updated()
         self.signals.completions_updated()

@@ -30,6 +30,7 @@ import copy
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont
 from PySide2.QtWidgets import QAbstractItemView, QMenu, QLabel, QHBoxLayout, QApplication
+from .category_list import CategoryEditor
 
 from bitcoin_safe.wallet import Wallet
 
@@ -51,6 +52,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
     class Columns(MyTreeView.BaseColumnsEnum):
         OUTPOINT = enum.auto()
         ADDRESS = enum.auto()
+        CATEGORY = enum.auto()
         LABEL = enum.auto()
         AMOUNT = enum.auto()
         PARENTS = enum.auto()
@@ -59,22 +61,24 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.OUTPOINT: _('Output point'),
         Columns.ADDRESS: _('Address'),
         Columns.PARENTS: _('Parents'),
+        Columns.CATEGORY: _('Category'),
         Columns.LABEL: _('Label'),
         Columns.AMOUNT: _('Amount'),
     }
-    filter_columns = [Columns.ADDRESS, Columns.LABEL, Columns.OUTPOINT]
+    filter_columns = [Columns.ADDRESS, Columns.CATEGORY, Columns.LABEL, Columns.OUTPOINT]
     stretch_column = Columns.LABEL
 
     ROLE_PREVOUT_STR = Qt.UserRole + 1000
     key_role = ROLE_PREVOUT_STR
 
-    def __init__(self, config, wallet:Wallet, signals:Signals):
+    def __init__(self, config, wallet:Wallet, signals:Signals, hidden_columns=None):
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
             editable_columns=[self.Columns.LABEL],
             )
         self.config = config
+        self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self._spend_set = set()
         self._utxo_dict = {}
@@ -121,7 +125,10 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             self.refresh_row(name, idx)
         self.filter()
         self.update_coincontrol_bar()
-        self.num_coins_label.setText(_('{} unspent transaction outputs').format(len(utxos)))
+        if hasattr(self, 'num_coins_label'):
+            self.num_coins_label.setText(_('{} unspent transaction outputs').format(len(utxos)))
+        for hidden_column in self.hidden_columns:
+            self.hideColumn(hidden_column)
 
     def update_coincontrol_bar(self):
         # update coincontrol status bar
@@ -143,6 +150,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         txid = utxo.outpoint.txid
         parents = self.wallet.get_tx_parents(txid)
         utxo_item[self.Columns.PARENTS].setText('%6s'%len(parents))
+        address = self.wallet.get_utxo_address( utxo).as_string()
+        category = self.wallet.get_category_for_address(address)
+        utxo_item[self.Columns.CATEGORY].setText(category)        
         label = self.wallet.get_label_for_txid(txid) or ''
         utxo_item[self.Columns.LABEL].setText(label)
         SELECTED_TO_SPEND_TOOLTIP = _('Coin selected to be spent')
@@ -155,12 +165,14 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         for col in utxo_item:
             col.setBackground(color)
             col.setToolTip(tooltip)
-        if self.wallet.is_frozen_address( self.wallet.get_utxo_address( utxo).as_string()):
+        if self.wallet.is_frozen_address(address):
             utxo_item[self.Columns.ADDRESS].setBackground(ColorScheme.BLUE.as_color(True))
             utxo_item[self.Columns.ADDRESS].setToolTip(_('Address is frozen'))
         if self.wallet.is_frozen_coin(utxo):
             utxo_item[self.Columns.OUTPOINT].setBackground(ColorScheme.BLUE.as_color(True))
             utxo_item[self.Columns.OUTPOINT].setToolTip(f"{key}\n{_('Coin is frozen')}")
+
+        utxo_item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
 
     def get_selected_outpoints(self) -> List[str]:
         if not self.model():

@@ -23,6 +23,7 @@
 - [ ] Label p2p Synchronization via nostr direct encrypted messages
 - [ ] Coin selection using categories
 - [ ] Address, TX dialogs (need redesign. Electrums are too complicated)
+- [ ] Opportunistic consolidation within coin categories, when fees are low
 - [ ] Adding pytest for rigorous UI testing
 
 #### UX
@@ -40,6 +41,8 @@
 ![screenshot0](docs/screenshot-details.png)
 
 ![screenshot0](docs/screenshot-addresses.png)
+
+![screenshot0](docs/screenshot-send.png)
 
 ## Installation
 

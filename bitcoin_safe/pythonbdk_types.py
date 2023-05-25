@@ -14,6 +14,11 @@ class OutPoint(bdk.OutPoint):
     def from_bdk_outpoint(cls, bdk_outpoint:bdk.OutPoint):
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
 
+    @classmethod
+    def from_str(cls, outpoint_str:str):
+        txid, vout = outpoint_str.split(':')
+        return OutPoint(txid, int(vout))
+
 
 
 

@@ -63,14 +63,6 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (f"{TRANSACTION_FILE_EXTENSION_FILT
 
 
 
-class AddressDragInfo:
-    def __init__(self, tags, addresses) -> None:
-        self.tags = tags
-        self.addresses = addresses
-
-    def __repr__(self) -> str:
-        return f'AddressDragInfo({self.tags}, {self.addresses})'
-
 def resize(x,y, x_max, y_max):
     def resize_one_side(a,b , amax):
             a_new = min(amax, a)

@@ -44,9 +44,9 @@ from typing import List, Dict
 
 class QTWalletSignals:
     def __init__(self) -> None:
-        self.add_to_coincontrol = SingularSignal('add_to_coincontrol')
-        self.remove_from_coincontrol = SingularSignal('remove_from_coincontrol')
-        self.are_in_coincontrol = SingularSignal('are_in_coincontrol')
+        self.add_to_coincontrol = Signal('add_to_coincontrol')
+        self.remove_from_coincontrol = Signal('remove_from_coincontrol')
+        self.are_in_coincontrol = Signal('are_in_coincontrol')
         
 
 from collections import defaultdict
@@ -71,6 +71,7 @@ class Signals:
         self.utxos_updated = Signal('utxos_updated')
         self.addresses_updated = Signal('addresses_updated')
         self.labels_updated = Signal('labels_updated')        
+        self.category_updated = Signal('category_updated')        
         self.completions_updated = Signal('completions_updated')        
         self.event_wallet_tab_closed = Signal('event_wallet_tab_closed')
         self.event_wallet_tab_added = Signal('event_wallet_tab_added')

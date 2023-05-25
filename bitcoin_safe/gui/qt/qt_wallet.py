@@ -13,7 +13,9 @@ from .balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNIN
 from .history_list import HistoryList, HistoryModel
 from .address_list import AddressList
 from .utxo_list import UTXOList
-from .util import add_tab_to_tabs, format_amount_and_units, format_amount, AddressDragInfo
+from .util import add_tab_to_tabs, format_amount_and_units, format_amount
+from .taglist import AddressDragInfo
+from .ui_tx import UITX
 
 from ...util import start_in_background_thread
 from ...signals import Signals
@@ -24,7 +26,7 @@ from enum import Enum, auto
 from .password_question import PasswordQuestion
 from threading import Lock
 from bitcoin_safe import wallet
-from .category_list import CategoryList
+from .category_list import CategoryEditor
 
 class StatusBarButton(QToolButton):
     # note: this class has a custom stylesheet applied in stylesheet_patcher.py
@@ -99,9 +101,10 @@ class QTWallet():
         self.history_tab, self.history_list, self.history_model = None, None, None
         self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
         self.utxo_tab, self.utxo_list = None, None
+        self.send_tab = None
         
         self._create_wallet_tab_and_subtabs()
-        
+            
     
     def __repr__(self) -> str:
         return f'QTWallet({self.__dict__})'    
@@ -138,7 +141,9 @@ class QTWallet():
             
             if self.history_tab:
                 self.address_list.update()
-                self.utxo_list.update()
+                self.address_list_tags.update()
+                self.signals.category_updated()
+                self.signals.utxos_updated()
                 self.history_list.update()
             else:
                 self.create_wallet_tabs()
@@ -167,6 +172,28 @@ class QTWallet():
         wallet_settings_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
         return wallet_settings_ui.tab, wallet_settings_ui   
 
+
+    def _get_sub_texts_for_uitx(self):
+        d = {}
+        for utxo in self.wallet.get_utxos():
+            address = self.wallet.get_utxo_address(utxo).as_string()
+            category = self.wallet.get_category_for_address(address)        
+            if category not in d:
+                d[category] = []    
+            d[category].append(utxo)
+        
+        return [f'{len(d.get(category, []))} Inputs' for category in self.wallet.categories]
+
+    def _create_send_tab(self, tabs): 
+        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS])        
+        
+        uitx = UITX(self.wallet.categories, utxo_list, self.wallet.get_receiving_addresses, self.wallet.get_change_addresses, self.signals, self._get_sub_texts_for_uitx)
+        add_tab_to_tabs(self.tabs, uitx.tab, read_QIcon("tab_send.png"), "Send", "send")        
+                
+        uitx.signal_create_tx.connect(self.wallet.create_tx)
+        return uitx.tab, uitx                            
+    
+
     def create_pre_wallet_tab(self ):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"        
         self.wallet_settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()        
@@ -181,6 +208,7 @@ class QTWallet():
                 
         self.history_tab, self.history_list, self.history_model = self._create_hist_tab(self.tabs)
         self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
+        self.send_tab, self.uitx = self._create_send_tab(self.tabs)        
         self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
         if not self.wallet_settings_tab:
             self.settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()
@@ -190,16 +218,15 @@ class QTWallet():
         self.update_status()
         self.tabs.setCurrentIndex(0)
 
-        self.wallet.signal_category_added.connect(self.address_list_tags.refresh)
         self.address_list.signal_tag_dropped.connect(self.set_category)
-        self.address_list_tags.signal_addresses_dropped.connect(self.set_category)
+        self.address_list_tags.list_widget.signal_addresses_dropped.connect(self.set_category)
 
 
     def set_category(self, address_drag_info:AddressDragInfo):
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.set_category(address, category)
-        self.address_list.update()
+        self.signals.category_updated()
 
     def create_status_bar(self, tab, outer_layout):
         sb = QStatusBar()
@@ -384,20 +411,32 @@ class QTWallet():
         
         
         return tab, l, hm
-                
-     
 
+     
+    def _subtexts_for_categories(self):           
+        d = {}
+        for address in self.wallet.get_addresses():
+            category = self.wallet.get_category_for_address(address)
+            if category not in d:
+                d[category] = []
+            
+            d[category].append(address)
+        
+        return [f'{len(d.get(category, []))} Addresses' for  category in self.wallet.categories]
 
     def _create_addresses_tab(self, tabs):
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
-        tags = CategoryList(self.wallet.categories)
+
+        tags = CategoryEditor(self.wallet.categories, self.signals, get_sub_texts=self._subtexts_for_categories)
         tags.setMaximumWidth(150)
-        tab =  self.create_list_tab(l,horizontal_widgets_left=[tags])
+        tab = self.create_list_tab(l,horizontal_widgets_left=[tags])
 
         add_tab_to_tabs(tabs, tab, read_QIcon("tab_addresses.png"), "Addresses", "addresses", position=1)
         return tab, l, tags
 
 
+            
+                
 
     def _create_utxo_tab(self, tabs):
         l = UTXOList(self.config, self.wallet, self.signals)
@@ -407,29 +446,29 @@ class QTWallet():
         return tab, l        
 
 
-    def update_tabs(self, wallet=None):
-        if wallet is None:
-            wallet = self.wallet
-        if wallet != self.wallet:
-            return
-        self.history_model.refresh('update_tabs')
-        # self.receive_tab.request_list.update()
-        # self.receive_tab.update_current_request()
-        # self.send_tab.invoice_list.update()
-        self.address_list.update()
-        self.utxo_list.update()
-        # self.contact_list.update()
-        # self.channels_list.update_rows.emit(wallet)
-        # self.update_completions()
+    # def update_tabs(self, wallet=None):
+    #     if wallet is None:
+    #         wallet = self.wallet
+    #     if wallet != self.wallet:
+    #         return
+    #     self.history_model.refresh('update_tabs')
+    #     # self.receive_tab.request_list.update()
+    #     # self.receive_tab.update_current_request()
+    #     # self.send_tab.invoice_list.update()
+    #     self.address_list.update()
+    #     self.utxo_list.update()
+    #     # self.contact_list.update()
+    #     # self.channels_list.update_rows.emit(wallet)
+    #     # self.update_completions()
 
-    def refresh_tabs(self, wallet=None):
-        self.history_model.refresh('refresh_tabs')
-        # self.receive_tab.request_list.refresh_all()
-        # self.send_tab.invoice_list.refresh_all()
-        self.address_list.refresh_all()
-        self.utxo_list.refresh_all()
-        # self.contact_list.refresh_all()
-        # self.channels_list.update_rows.emit(self.wallet)
+    # def refresh_tabs(self, wallet=None):
+    #     self.history_model.refresh('refresh_tabs')
+    #     # self.receive_tab.request_list.refresh_all()
+    #     # self.send_tab.invoice_list.refresh_all()
+    #     self.address_list.refresh_all()
+    #     self.utxo_list.refresh_all()        
+    #     # self.contact_list.refresh_all()
+    #     # self.channels_list.update_rows.emit(self.wallet)
 
         
     def sync(self, threaded=True):
