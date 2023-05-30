@@ -370,6 +370,7 @@ class HistoryModel(CustomModel, Logger):
             self.view.showColumn(col) if b else self.view.hideColumn(col)
         # txid
         set_visible(HistoryColumns.TXID, False)
+        set_visible(HistoryColumns.BALANCE, False)
         set_visible(HistoryColumns.SHORT_ID, False)
         # fiat
         history = self.should_show_fiat()
@@ -429,6 +430,7 @@ class HistoryModel(CustomModel, Logger):
             fiat_cg_title =  '%s '%fx.ccy + _('Capital Gains')
         return {
             HistoryColumns.STATUS: _('Date'),
+            HistoryColumns.CATEGORIES: _('Categories'),
             HistoryColumns.DESCRIPTION: _('Description'),
             HistoryColumns.AMOUNT: _('Amount'),
             HistoryColumns.BALANCE: _('Balance'),
@@ -461,6 +463,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
 
     class Columns(MyTreeView.BaseColumnsEnum):
         STATUS = enum.auto()
+        CATEGORIES = enum.auto()
         DESCRIPTION = enum.auto()
         AMOUNT = enum.auto()
         BALANCE = enum.auto()
@@ -472,6 +475,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
 
     filter_columns = [
         Columns.STATUS,
+        Columns.CATEGORIES,
         Columns.DESCRIPTION,
         Columns.AMOUNT,
         Columns.TXID,

@@ -11,6 +11,8 @@ from typing import List
 from .utxo_list import UTXOList
 from ...tx import TXInfos
 from ...signals import Signals
+from .barchart import MempoolBarChart
+from ...mempool import get_prio_fees, fee_to_color
 
 class UITX(object):
     def __init__(self, categories:List[str], utxo_list:UTXOList, get_receiving_addresses, get_change_addresses, signals:Signals, get_sub_texts) -> None:
@@ -29,6 +31,113 @@ class UITX(object):
         self.tab = QWidget()
         self.horizontalLayout = QHBoxLayout(self.tab)
         
+        self.create_inputs(self.horizontalLayout)
+        
+
+        self.widget_right_hand_side = QWidget(self.tab)
+        
+        self.widget_right_hand_side_layout = QVBoxLayout(self.widget_right_hand_side)        
+        
+        self.widget_right_top = QWidget(self.tab)
+        self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)        
+        self.create_outputs(self.widget_right_top_layout)
+        self.create_fee_box(self.widget_right_top_layout)
+        
+        self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
+
+
+        self.create_button_bar(self.widget_right_hand_side_layout)
+
+
+
+        self.horizontalLayout.addWidget(self.widget_right_hand_side)
+
+
+        self.retranslateUi()
+
+        QMetaObject.connectSlotsByName(self.tab)
+
+        self.tab_changed(0)
+        self.tabs_inputs.currentChanged.connect(self.tab_changed)
+        self.button_create_tx.clicked.connect(lambda : self.signal_create_tx(self.get_ui_tx_infos))
+
+    def create_button_bar(self, layout):
+        self.button_bar = QWidget(self.widget_right_hand_side)
+        self.button_bar_layout = QHBoxLayout(self.button_bar)
+
+        self.button_save_tx = QPushButton(self.button_bar)
+        self.button_save_tx.setMinimumHeight(30)
+        self.button_bar_layout.addWidget(self.button_save_tx)
+
+        self.button_create_tx = QPushButton(self.button_bar)
+        self.button_create_tx.setMinimumHeight(30)
+        self.button_bar_layout.addWidget(self.button_create_tx)
+
+
+        layout.addWidget(self.button_bar)        
+
+
+    def update_spin_fee(self):
+        self.spin_fee.setRange(1, self.mempool.data[:,0].max())  # Set the acceptable range 
+
+    def set_spin_fee(self, fee):
+        self.spin_fee.setValue(fee)
+        
+
+    def create_fee_box(self, layout):
+
+
+        # add the groupBox_Fee
+        self.groupBox_Fee = QGroupBox()
+        self.groupBox_Fee.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.groupBox_Fee.setAlignment(Qt.AlignTop)
+        self.layout_h_fee = QHBoxLayout(self.groupBox_Fee)                
+        # self.layout_h_fee.setContentsMargins(0, layout.contentsMargins().top(), 0, layout.contentsMargins().bottom())  # Remove margins
+
+        #  add the mempool bar on the left
+        self.mempool = MempoolBarChart()
+        self.mempool.signal_click.connect(self.set_spin_fee)
+        self.mempool.set_data_from_file('data.csv')
+        self.mempool.chart.setMaximumWidth(25)
+        self.layout_h_fee.addWidget(self.mempool.chart)
+        
+        # and the rest on the right
+        self.widget_right_hand_side_fees = QWidget(self.groupBox_Fee)
+        self.widget_right_hand_side_fees_layout = QVBoxLayout(self.widget_right_hand_side_fees)                
+        self.widget_right_hand_side_fees_layout.setContentsMargins(0, layout.contentsMargins().top(), 0, layout.contentsMargins().bottom())  # Remove margins
+        self.widget_right_hand_side_fees_layout.setAlignment(Qt.AlignVCenter)
+        self.layout_h_fee.addWidget(self.widget_right_hand_side_fees)
+                
+        self.spin_fee = QDoubleSpinBox()
+        self.spin_fee.setRange(0.0, 100.0)  # Set the acceptable range
+        self.spin_fee.setSingleStep(1)  # Set the step size
+        self.spin_fee.setDecimals(1)  # Set the number of decimal places
+        self.mempool.signal_data_updated.connect(self.update_spin_fee)
+        
+        self.spin_fee.setMaximumWidth(45)
+        self.widget_right_hand_side_fees_layout.addWidget(self.spin_fee)        
+
+        self.spin_label = QLabel()
+        self.spin_label.setText("sat/vB")
+        self.widget_right_hand_side_fees_layout.addWidget(self.spin_label)        
+
+            
+
+        for fee, text in zip(get_prio_fees(self.mempool.data), ["High", "Mid", "Low"]):
+            button = QPushButton()
+            button.setStyleSheet("QPushButton { color: "+ fee_to_color(fee) +"; }")            
+            button.setMaximumWidth(30)
+            button.setText(text)
+            def onclick(*args, value=fee):
+                return self.spin_fee.setValue(value)
+            button.clicked.connect(onclick)
+            self.widget_right_hand_side_fees_layout.addWidget(button)        
+
+
+        layout.addWidget(self.groupBox_Fee)
+
+    def create_inputs(self, layout):
+
         self.tabs_inputs = QTabWidget(self.tab)
         self.tabs_inputs.setMinimumWidth(200)
         self.tab_inputs_categories = QWidget(self.tab)
@@ -43,7 +152,7 @@ class UITX(object):
 
 
         # Taglist
-        self.category_list = CategoryList(self.categories, self.signals, get_sub_texts) 
+        self.category_list = CategoryList(self.categories, self.signals, self.get_sub_texts) 
         self.verticalLayout_inputs.addWidget(self.label_select_input_categories)
         self.verticalLayout_inputs.addWidget(self.category_list)
 
@@ -59,67 +168,8 @@ class UITX(object):
         # utxo list
         self.verticalLayout_inputs_utxos.addWidget(self.utxo_list)
 
+        layout.addWidget(self.tabs_inputs)        
 
-
-        self.horizontalLayout.addWidget(self.tabs_inputs)
-
-        self.widget_right_hand_side = QWidget(self.tab)
-        self.widget_right_hand_side.setMinimumWidth(500)
-        self.widget_right_hand_side.setMaximumWidth(800)
-        
-        self.verticalLayout = QVBoxLayout(self.widget_right_hand_side)
-        self.groupBox_outputs = QGroupBox(self.widget_right_hand_side)
-        self.vertical_in_groupBox_outputs = QVBoxLayout(self.groupBox_outputs)
-
-        # recipients        
-        self.recipients =  Recipients(self.get_receiving_addresses, self.get_change_addresses)
-        self.vertical_in_groupBox_outputs.addWidget(self.recipients)
-        
-        
-
-        self.verticalLayout.addWidget(self.groupBox_outputs)
-
-        self.groupBox_Fee = QGroupBox(self.widget_right_hand_side)
-        self.groupBox_Fee.setAlignment(Qt.AlignVCenter)
-        self.groupBox_Fee.setMinimumHeight(90)
-        # self.groupBox_Fee.setMaximumHeight(200)
-                
-                
-        self.slider_fee = CustomSlider(unit="Sats/vByte", label_text='Amount: ', parent=self.groupBox_Fee)
-        
-        self.label_mempool_feelist = QLabel(self.groupBox_Fee)
-        self.label_mempool_feelist.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        # add the widget with the slider on the left, and the fee list on the right
-        self.layout_h_fee = QHBoxLayout(self.groupBox_Fee)
-        self.layout_h_fee.addWidget(self.slider_fee)
-        self.layout_h_fee.addWidget(self.label_mempool_feelist)
-
-        self.verticalLayout.addWidget(self.groupBox_Fee)
-
-        self.widget_2 = QWidget(self.widget_right_hand_side)
-        self.widget_2.setMaximumSize(QSize(16777215, 50))
-        self.horizontalLayout_2 = QHBoxLayout(self.widget_2)
-
-        self.button_create_tx = QPushButton(self.widget_2)
-
-        self.horizontalLayout_2.addWidget(self.button_create_tx)
-
-
-        self.verticalLayout.addWidget(self.widget_2)
-
-
-        self.horizontalLayout.addWidget(self.widget_right_hand_side)
-
-
-        self.retranslateUi()
-
-        QMetaObject.connectSlotsByName(self.tab)
-
-        self.set_fee_rates(1, 2,10,30,100)
-        self.tab_changed(0)
-        self.tabs_inputs.currentChanged.connect(self.tab_changed)
-        self.button_create_tx.clicked.connect(lambda : self.signal_create_tx(self.get_ui_tx_infos))
 
     @property
     def get_ui_tx_infos(self):
@@ -127,7 +177,7 @@ class UITX(object):
 
         for recipient in self.recipients.recipients:
             infos.add_recipient(**recipient)        
-        infos.set_fee_rate(self.slider_fee.value)
+        infos.set_fee_rate(self.spin_fee.value())
 
         if self.tabs_inputs.currentWidget() == self.tab_inputs_categories:
             infos.categories = self.category_list.get_selected()
@@ -137,6 +187,26 @@ class UITX(object):
                                   for idx in self.utxo_list.selected_in_column(self.utxo_list.Columns.OUTPOINT)]
             
         return infos
+
+
+
+    def create_outputs(self, layout, parent=None):
+        self.groupBox_outputs = QGroupBox(parent)
+        self.vertical_in_groupBox_outputs = QVBoxLayout(self.groupBox_outputs)
+
+        # recipients        
+        self.recipients =  Recipients(self.get_receiving_addresses, self.get_change_addresses)
+        self.vertical_in_groupBox_outputs.addWidget(self.recipients)
+
+
+        self.groupBox_outputs.setMinimumWidth(300)
+        self.groupBox_outputs.setMaximumWidth(800)
+        
+        
+        layout.addWidget(self.groupBox_outputs)
+
+
+
 
     def update_categories(self):
         self.category_list.clear()
@@ -150,25 +220,10 @@ class UITX(object):
 "by merging small inputs now", None))
         self.groupBox_outputs.setTitle(QCoreApplication.translate("self.tab", u"Outputs", None))
         self.groupBox_Fee.setTitle(QCoreApplication.translate("self.tab", u"Fee", None))
-        self.label_mempool_feelist.setText(QCoreApplication.translate("self.tab", u"Low prio fee:  xx Sat\n"
-"Mid prio fee:  xx Sat\n"
-"High prio fee:  xx Sat\n"
-"", None))
-        self.button_create_tx.setText(QCoreApplication.translate("self.tab", u"Create Transaction (PSBT)", None))
+        self.button_save_tx.setText(QCoreApplication.translate("self.tab", u"Save transaction", None))
+        self.button_create_tx.setText(QCoreApplication.translate("self.tab", u"Next Step: Sign Transaction with hardware signers", None))
     # retranslateUi
 
-
-
-    def set_fee_rates(self, min_relay_fee, low, mid, high, max_fee):
-        self.slider_fee.min_val = min_relay_fee
-        self.slider_fee.max_val = max_fee
-        self.slider_fee.tick_interval = max_fee // 50
-        self.slider_fee.color_ranges = [[low, mid, '#7cb342'],
-                                                [mid, high, '#fb8c00'],
-                                                [high, max_fee, '#d81b60']]
-                                                
-        self.label_mempool_feelist.setText(f"Low prio: <font color='#7cb342'>{low}</font> {self.slider_fee.unit}<br>Mid prio: <font color='#fb8c00'>{mid}</font> {self.slider_fee.unit}<br>High prio: <font color='#d81b60'>{high}</font> {self.slider_fee.unit}")
-        
 
 
 
@@ -180,9 +235,9 @@ class UITX(object):
 
         if index == 0:
             self.tabs_inputs.setMaximumWidth(200)
-            self.widget_right_hand_side.setMaximumWidth(80000)
+            self.groupBox_outputs.setMaximumWidth(80000)
         elif index == 1:
             self.tabs_inputs.setMaximumWidth(80000)
-            self.widget_right_hand_side.setMaximumWidth(500)
+            self.groupBox_outputs.setMaximumWidth(500)
 
 
