@@ -41,7 +41,7 @@ class NewWalletWelcomeScreen():
         
     
     def add_new_wallet_welcome_tab(self):
-        add_tab_to_tabs(self.main_tabs, self.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet')
+        add_tab_to_tabs(self.main_tabs, self.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet', focus=True)
 
     
     def create_ui_explainer0(self):

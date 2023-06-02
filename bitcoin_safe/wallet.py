@@ -651,7 +651,7 @@ class Wallet():
         for tx in self.get_list_transactions():
             for input in tx.transaction.input():
                 out_point = OutPoint.from_bdk_outpoint(input.previous_output)
-                if out_point in hash_outpoint_to_address:
+                if hash(out_point) in hash_outpoint_to_address:
                     address = hash_outpoint_to_address[hash(out_point)]
                     if address not in send: 
                         send[address] = []

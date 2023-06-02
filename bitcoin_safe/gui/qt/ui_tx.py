@@ -364,7 +364,7 @@ class UITX_Viewer():
         
         
         self.lower_widget = QWidget(self.main_widget)
-        self.lower_widget.setMaximumHeight(250)
+        self.lower_widget.setMaximumHeight(220)
         self.main_widget_layout.addWidget(self.lower_widget)
         self.lower_widget_layout = QHBoxLayout(self.lower_widget)
         

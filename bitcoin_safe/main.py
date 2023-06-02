@@ -51,7 +51,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.blockchain_type = BlockchainType.CompactBlockFilter
         
         self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.network)
-        self.welcome_screen.add_new_wallet_welcome_tab()
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_single_signature)
         self.welcome_screen.signal_onclick_multisig_signature.connect(self.click_multisig_signature)
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
@@ -61,8 +60,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed) 
     
-    
-        self.open_last_opened_wallets()
+        number_opened_wallets = self.open_last_opened_wallets()
+        if not number_opened_wallets:            
+            self.welcome_screen.add_new_wallet_welcome_tab()
         
         
     def open_tx(self, file_path=None):                   
@@ -106,8 +106,13 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             return
         storage = Storage()
         application_data = json.loads( storage.load(None, self.config_file)   )
+        
+        opened_wallets = False
         for file_path in application_data['last_wallet_files']:
-            self.open_wallet(file_path=file_path)
+            n = self.open_wallet(file_path=file_path) 
+            opened_wallets = opened_wallets and bool(n)
+        
+        return opened_wallets
     
     def open_wallet(self, file_path=None):
         if not file_path:
@@ -116,7 +121,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                 logger.debug("No file selected")
                 return    
 
-        logger.debug(f"Selected file: {file_path}")                
+        logger.debug(f"Selected file: {file_path}")     
+        if not os.path.isfile(file_path):
+            logger.debug(f"There is no such file: {file_path}")     
+            return
         password = None
         if Storage().has_password(file_path):
             self.ui_password_question = PasswordQuestion()
@@ -130,13 +138,15 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         qt_wallet = self.add_qt_wallet(wallet)        
         qt_wallet.password = password        
         qt_wallet.sync()
+        
+        return True
     
     def save_current_wallet(self):
         return self.get_qt_wallet().save()
         
 
     def click_single_signature(self):
-        add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer0.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet')
+        add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer0.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet', focus=True)
 
     
     def click_create_single_signature_wallet(self):
@@ -144,7 +154,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         qtwallet.wallet_settings_ui.disable_fields()
     
     def click_multisig_signature(self):
-        add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer1.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet')
+        add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer1.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet', focus=True)
 
     def click_create_multisig_signature_wallet(self):
         qtwallet = self.next_step_after_welcome_screen((2,3))
@@ -154,7 +164,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         return self.next_step_after_welcome_screen((3,5))
         
         
-        
+
+    def new_wallet(self):                   
+        self.welcome_screen.add_new_wallet_welcome_tab()
+            
     def new_wallet_id(self) -> str:
         return 'new'+str(len(self.qt_wallets))
 

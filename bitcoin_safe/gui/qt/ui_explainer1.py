@@ -136,18 +136,10 @@ class Ui_Form(object):
         self.label_10.setWordWrap(True)
 
 
-        add_centered_icons(["seed-plate.svg"]*3, self.groupBox_5, self.verticalLayout_4)
+        add_centered_icons(["seed-plate.svg"]*3, self.groupBox_5, self.verticalLayout_4, max_sizes=[(50,80)])
+        add_centered_icons(["descriptor.svg"], self.groupBox_5, self.verticalLayout_4, max_sizes=(200,60))
         
         
-        self.descriptor = QLabel(self.groupBox_5)
-        font = QFont()
-        font.setItalic(True)
-        font.setPointSize(10)
-        self.descriptor.setFont(font)        
-        self.descriptor.setWordWrap(True)
-        self.descriptor.setText("Descriptor: wsh(sortedmulti(2,...")
-        self.verticalLayout_4.addWidget(self.descriptor)
-
         self.verticalLayout_4.addWidget(self.label_10)
 
         self.verticalSpacer_4 = QSpacerItem(20, 18, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -184,8 +176,8 @@ class Ui_Form(object):
 
         self.pushButton_proceed = create_button("Create 'Bitcoin Safe' Wallet\nand import all \nhardware wallets\n as signers",
                                                 ("usb.svg", "qr-code.svg", "sd-card.svg"), self.groupBox_6, self.verticalLayout_5,
-                                                max_sizes=[(40,40)]*3)
-        self.verticalSpacer_5 = QSpacerItem(20, 58, QSizePolicy.Minimum, QSizePolicy.Expanding)
+                                                max_sizes=[(40,40)]*3, button_max_height=None)
+        self.verticalSpacer_5 = QSpacerItem(20, 58, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_5)
 
@@ -217,6 +209,16 @@ class Ui_Form(object):
 
         QMetaObject.connectSlotsByName(Form)
     # setupUi
+    
+    
+
+
+    def remove_tab(self):
+        index = self.main_tabs.indexOf(self.tab)
+        if index>=0:
+            self.main_tabs.removeTab(index)
+        
+    
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))

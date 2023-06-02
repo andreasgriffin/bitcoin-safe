@@ -186,12 +186,12 @@ class Ui_Form(object):
 
         self.pushButton_proceed = create_button("Create 'Bitcoin Safe' Wallet\nand import the \nhardware wallet\n as the signer",
                                                 ("usb.svg", "qr-code.svg", "sd-card.svg"), self.groupBox_6, self.verticalLayout_5,
-                                                max_sizes=[(40,40)]*3)
+                                                max_sizes=[(40,40)]*3, button_max_height=None)
 
 
         # self.verticalLayout_5.addWidget(self.pushButton_proceed)
 
-        self.verticalSpacer_5 = QSpacerItem(20, 58, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 58, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_5)
 

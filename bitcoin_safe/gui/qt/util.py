@@ -112,6 +112,11 @@ class AspectRatioSvgWidget(QSvgWidget):
 
 def add_centered_icons(paths, parent, outer_layout, direction='h', alignment=Qt.AlignCenter, max_sizes=None):
     max_sizes = max_sizes if max_sizes else [(60,80) for path in paths]
+    if isinstance( max_sizes[0], (float, int)):
+        max_sizes = [max_sizes]
+    if len(paths) > 1 and len(max_sizes)==1:
+        max_sizes = max_sizes*len(paths)
+    
     svg_widgets = [AspectRatioSvgWidget(icon_path(path), *max_size)  for max_size, path in zip(max_sizes, paths)]
     add_centered(svg_widgets, parent, outer_layout, direction=direction, alignment=alignment)
     return svg_widgets
@@ -120,9 +125,10 @@ def add_centered_icons(paths, parent, outer_layout, direction='h', alignment=Qt.
 
 
 
-def create_button(text, icon_paths, parent, outer_layout, max_sizes=None):
+def create_button(text, icon_paths, parent, outer_layout, max_sizes=None, button_max_height=200):
         button = QPushButton(parent)
-        button.setMaximumHeight(200)
+        if button_max_height:
+            button.setMaximumHeight(button_max_height)
         # Set the vertical size policy of the button to Expanding
         size_policy = button.sizePolicy()
         size_policy.setVerticalPolicy(size_policy.Expanding)
