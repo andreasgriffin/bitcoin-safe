@@ -1,18 +1,15 @@
-from curses import keyname
-import enum
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from qtrangeslider import QRangeSlider
-from PySide2.QtSvg import QSvgWidget
-from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
 from ...wallet import AddressTypes, AddressType, Wallet
 from ...descriptors import  get_default_address_type, generate_bdk_descriptors, generate_output_descriptors_from_keystores, descriptor_infos
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signals, QTWalletSignals,  Signal
+from ...signals import Signals,  Signal
 from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
-from enum import Enum, auto
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import MyTextEdit
 

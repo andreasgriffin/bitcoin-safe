@@ -1,4 +1,7 @@
 
+import logging
+logger = logging.getLogger(__name__)
+
 class BlockChangesSignals:
     def __init__(self, own_widgets=None, sub_instances=None):
         self.own_widgets = own_widgets if own_widgets else []

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 
 # source: http://stackoverflow.com/questions/2758159/how-to-embed-a-python-interpreter-in-a-pyqt-widget
 

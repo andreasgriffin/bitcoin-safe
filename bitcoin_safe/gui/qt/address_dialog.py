@@ -22,6 +22,8 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import logging
+logger = logging.getLogger(__name__)
 
 from typing import TYPE_CHECKING
 
@@ -35,6 +37,7 @@ from .util import WindowModalDialog, ButtonsLineEdit, ShowQRLineEdit, ColorSchem
 from .history_list import HistoryList, HistoryModel
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
+
 
 
 class AddressHistoryModel(HistoryModel):

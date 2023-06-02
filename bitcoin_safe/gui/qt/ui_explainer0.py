@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'explainer0vrbMeb.ui'
-##
-## Created by: Qt User Interface Compiler version 5.15.3
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
+import logging
+logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
 from PySide2.QtGui import *

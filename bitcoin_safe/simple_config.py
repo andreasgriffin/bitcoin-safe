@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import json
 import threading
 import time
@@ -17,7 +20,6 @@ from .util import base_units, base_unit_name_to_decimal_point, decimal_point_to_
 from .util import format_satoshis, format_fee_satoshis, os_chmod
 from .util import user_dir, make_dir, NoDynamicFeeEstimates, quantize_feerate
 from .i18n import _
-from .logging import get_logger, Logger
 
 
 FEE_ETA_TARGETS = [25, 10, 5, 2]
@@ -44,13 +46,12 @@ FEERATE_PER_KW_MIN_RELAY_LIGHTNING = 253
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 
 
-_logger = get_logger(__name__)
 
 
 FINAL_CONFIG_VERSION = 3
 
 
-class SimpleConfig(Logger):
+class SimpleConfig(logging.Logger):
     """
     The SimpleConfig class is responsible for handling operations involving
     configuration files.
@@ -141,7 +142,7 @@ class SimpleConfig(Logger):
             path = os.path.join(path, 'signet')
             make_dir(path, allow_symlink=False)
 
-        self.logger.info(f"electrum directory {path}")
+        logger.info(f"electrum directory {path}")
         return path
 
     def rename_config_keys(self, config, keypairs, deprecation_warning=False):
@@ -152,7 +153,7 @@ class SimpleConfig(Logger):
                 if new_key not in config:
                     config[new_key] = config[old_key]
                     if deprecation_warning:
-                        self.logger.warning('Note that the {} variable has been deprecated. '
+                        logger.warning('Note that the {} variable has been deprecated. '
                                             'You should use {} instead.'.format(old_key, new_key))
                 del config[old_key]
                 updated = True
@@ -160,13 +161,13 @@ class SimpleConfig(Logger):
 
     def set_key(self, key, value, save=True):
         if not self.is_modifiable(key):
-            self.logger.warning(f"not changing config key '{key}' set on the command line")
+            logger.warning(f"not changing config key '{key}' set on the command line")
             return
         try:
             json.dumps(key)
             json.dumps(value)
         except:
-            self.logger.info(f"json error: cannot save {repr(key)} ({repr(value)})")
+            logger.info(f"json error: cannot save {repr(key)} ({repr(value)})")
             return
         self._set_key_in_user_config(key, value, save)
 
@@ -197,7 +198,7 @@ class SimpleConfig(Logger):
 
     def upgrade(self):
         with self.lock:
-            self.logger.info('upgrading config')
+            logger.info('upgrading config')
 
             self.convert_version_2()
             self.convert_version_3()
@@ -250,7 +251,7 @@ class SimpleConfig(Logger):
     def get_config_version(self):
         config_version = self.get('config_version', 1)
         if config_version > FINAL_CONFIG_VERSION:
-            self.logger.warning('config version ({}) is higher than latest ({})'
+            logger.warning('config version ({}) is higher than latest ({})'
                                 .format(config_version, FINAL_CONFIG_VERSION))
         return config_version
 
@@ -320,7 +321,7 @@ class SimpleConfig(Logger):
             self.set_key('recently_open', recent)
 
     def set_session_timeout(self, seconds):
-        self.logger.info(f"session timeout -> {seconds} seconds")
+        logger.info(f"session timeout -> {seconds} seconds")
         self.set_key('session_timeout', seconds)
 
     def get_session_timeout(self):
@@ -728,7 +729,7 @@ def read_user_config(path):
             data = f.read()
         result = json.loads(data)
     except Exception as exc:
-        _logger.warning(f"Cannot read config file at {config_path}: {exc}")
+        logger.warning(f"Cannot read config file at {config_path}: {exc}")
         return {}
     if not type(result) is dict:
         return {}

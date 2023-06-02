@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import bdkpython as bdk
 from .keystore import KeyStore, KeyStoreTypes
 from typing import Dict, List, Tuple
@@ -194,9 +197,7 @@ def descriptor_infos(string_descriptor:str, network=None) -> Dict:
     # "wpkh"
     # "[a42c6dd3/84'/1'/0']xpub/0/*"
     groups = [g.rstrip(')') for g in extract_groups(string_descriptor, r'(.*)\((.*)\)')] # remove trailing )
-    for p in groups:
-        print(p)
-    
+    logger.debug(f'groups {groups}')
 
     # do the keystore parts
     is_single_sig = len(groups) == 2
@@ -225,7 +226,7 @@ def descriptor_infos(string_descriptor:str, network=None) -> Dict:
     if network:
         for keystore in keystores:
             if keystore.derivation_path != address_type.derivation_path(network):
-                print(f'Warning: The derivation path of {keystore} is not the default')
+                logger.warning(f'Warning: The derivation path of {keystore} is not the default')
     
     
     return {'threshold':threshold, 'is_multisig':is_multisig, 'keystores':keystores, 'address_type':address_type}

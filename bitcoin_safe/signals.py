@@ -1,3 +1,7 @@
+import logging
+logger = logging.getLogger(__name__)
+
+
 import threading
 class Signal:
     def __init__(self, name=None):
@@ -19,10 +23,13 @@ class Signal:
     def emit(self, *args, **kwargs):
         responses = []
         if not self.slots:
-            print(f'Signal {self.name}.emit() was called, but no listeners {self.slots} are listening.')
+            logger.debug(f'Signal {self.name}.emit() was called, but no listeners {self.slots} are listening.')
             
         with self.lock:
             for slot in self.slots:
+                name = f'{slot.__self__.__class__.__name__}.'  if str(slot.__class__) == "<class 'method'>" else ''
+                name += f'{slot.__name__}{args, kwargs}'
+                logger.debug(f'Signal {self.name}.emit() --> {name}')
                 responses.append( slot(*args, **kwargs))
         return responses
 
@@ -42,12 +49,6 @@ class SingularSignal(Signal):
 
 from typing import List, Dict
 
-class QTWalletSignals:
-    def __init__(self) -> None:
-        self.add_to_coincontrol = Signal('add_to_coincontrol')
-        self.remove_from_coincontrol = Signal('remove_from_coincontrol')
-        self.are_in_coincontrol = Signal('are_in_coincontrol')
-        
 
 from collections import defaultdict
 class Signals:
@@ -68,6 +69,7 @@ class Signals:
     I immediately break the rule however for SingularSignal, which is a function call
     """
     def __init__(self) -> None:
+        self.open_tx = Signal('open_tx')
         self.utxos_updated = Signal('utxos_updated')
         self.addresses_updated = Signal('addresses_updated')
         self.labels_updated = Signal('labels_updated')        
@@ -90,7 +92,6 @@ class Signals:
         self.show_onchain_invoice = SingularSignal('show_onchain_invoice')
         self.save_transaction_into_wallet = SingularSignal('save_transaction_into_wallet')
         
-        self.qt_wallet_signals: Dict[str, QTWalletSignals] = defaultdict(QTWalletSignals)
 
         
     

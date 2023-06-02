@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtWidgets import QTextEdit, QApplication
 from PySide2.QtGui import QKeySequence, QKeyEvent
 from PySide2.QtCore import Qt, QEvent, Signal

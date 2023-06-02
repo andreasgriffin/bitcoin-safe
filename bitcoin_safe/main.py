@@ -1,3 +1,11 @@
+import logging
+from .logging import setup_logging
+
+setup_logging()
+logger = logging.getLogger(__name__)
+
+
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -16,28 +24,33 @@ from .gui.qt.qt_wallet import QTWallet
 from .gui.qt.password_question import PasswordQuestion
 from .gui.qt.balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNING, COLOR_LIGHTNING, COLOR_UNCONFIRMED, COLOR_UNMATURED
 from .gui.qt.util import add_tab_to_tabs, read_QIcon, MessageBoxMixin
-from .signals import Signals,  QTWalletSignals
+from .signals import Signals
 from bdkpython import Network
 from typing import Dict
 from .storage import Storage
 import json, os
-
+import bdkpython as bdk
+from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
+from .gui.qt.utxo_list import UTXOList
+from .wallets import Wallets
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
-    def __init__(self):
+    def __init__(self, network=Network.REGTEST):
         super().__init__()
+        self.network = network
         self.qt_wallets :Dict[QTWallet] = {}
         self.fx = None
         self.config_file = '.bitcoin_safe.config'
-        
+
         self.signals = Signals()
         #connect the listeners
         self.signals.show_address.connect(self.show_address)
+        self.signals.open_tx.connect(self.open_tx_in_tab)
         
         self.blockchain_type = BlockchainType.CompactBlockFilter
         
-        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=Network.REGTEST)
+        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.network)
         self.welcome_screen.add_new_wallet_welcome_tab()
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_single_signature)
         self.welcome_screen.signal_onclick_multisig_signature.connect(self.click_multisig_signature)
@@ -52,6 +65,42 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.open_last_opened_wallets()
         
         
+    def open_tx(self, file_path=None):                   
+        if not file_path:
+            file_path, _ = QFileDialog.getOpenFileName(self, "Open Transaction/PSBT", "", "All Files (*);;Text Files (*.psbt)")        
+            if not file_path:
+                logger.debug("No file selected")
+                return    
+
+        logger.debug(f"Selected file: {file_path}")            
+        with open(file_path, "r") as file:
+            string_content = file.read()
+            
+        self.signals.open_tx(string_content)
+
+
+    def open_tx_in_tab(self, tx):
+        if isinstance(tx, bdk.TxBuilderResult):
+            print('is bdk.TxBuilderResult')
+        if isinstance(tx, bdk.PartiallySignedTransaction):
+            print('is bdk.PartiallySignedTransaction')
+        if isinstance(tx, str):
+            print('tx is str. Trying to convert to psbt or raw transaction')
+            tx = bdk.PartiallySignedTransaction(tx)
+            
+        if isinstance(tx, bdk.TransactionDetails):
+            print('is bdk.TransactionDetails')
+                        
+                        
+        # wallets is nothing but a way to access all wallets easier        
+        wallets = Wallets(lambda: [qtwallet.wallet for qtwallet in self.qt_wallets.values()])
+                        
+        viewer = UITX_Viewer(tx, wallets, self.signals, network=self.network)         
+        
+        add_tab_to_tabs(self.tab_wallets, viewer.main_widget, read_QIcon("offline_tx.png"), "Transaction", "tx", focus=True)
+        
+        
+        
     def open_last_opened_wallets(self):
         if not os.path.isfile(self.config_file):
             return
@@ -64,10 +113,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", "", "All Files (*);;Text Files (*.bitcoinsafe)")        
             if not file_path:
-                print("No file selected")    
+                logger.debug("No file selected")
                 return    
 
-        print(f"Selected file: {file_path}")                
+        logger.debug(f"Selected file: {file_path}")                
         password = None
         if Storage().has_password(file_path):
             self.ui_password_question = PasswordQuestion()
@@ -125,8 +174,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         else:
             qt_wallet.create_pre_wallet_tab()
         self.qt_wallets[wallet.id] = qt_wallet
-        add_tab_to_tabs(self.tab_wallets, qt_wallet.tab, read_QIcon("file.png"), qt_wallet.wallet.id, qt_wallet.wallet.id)
-        self.tab_wallets.setCurrentIndex(self.tab_wallets.count()-1)
+        add_tab_to_tabs(self.tab_wallets, qt_wallet.tab, read_QIcon("file.png"), qt_wallet.wallet.id, qt_wallet.wallet.id, focus=True)
         return qt_wallet
         
     def import_descriptor(self):
@@ -180,8 +228,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                 self.tab_wallets.removeTab(i)
 
         del self.qt_wallets[qt_wallet.wallet.id]
-        if qt_wallet.wallet.id in self.signals.qt_wallet_signals:
-            del self.signals.qt_wallet_signals[qt_wallet.wallet.id]
 
 
     def close_tab(self, index):                   
@@ -195,7 +241,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
     def import_wallet(self):
         # Handle import wallet event
-        print("Import wallet")
+        logger.debug("Import wallet")
 
 
 
@@ -220,6 +266,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                     
 
 async def main():
+    
     app = QApplication(sys.argv)
     loop = qasync.QEventLoop(app)
     asyncio.set_event_loop(loop)

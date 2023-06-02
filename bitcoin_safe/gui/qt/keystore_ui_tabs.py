@@ -1,16 +1,19 @@
-from curses import keyname
+import logging
+
+from bitcoin_safe import keystore
+logger = logging.getLogger(__name__)
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from qtrangeslider import QRangeSlider
-from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon, create_button
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signals, QTWalletSignals,  Signal
+from ...signals import  Signal
 from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
+from ...signer import AbstractSigner, SignerWallet
 
 class KeyStoreUITypeChooser:
     def __init__(self, network) -> None:
@@ -39,6 +42,38 @@ class KeyStoreUITypeChooser:
 
 
             
+    
+    
+        
+
+class KeyStoreUISigner:
+    def __init__(self, signer:AbstractSigner, network) -> None:
+        self.signer = signer
+
+        self.signal_sign_with_seed = Signal('signal_sign_with_seed')
+        self.network = network
+        self.tab = self.create()
+
+
+    def create(self):
+        tab = QWidget()
+
+        self.layout_keystore_buttons = QHBoxLayout(tab)
+
+
+        # button = create_button(KeyStoreTypes.hwi.description, (KeyStoreTypes.hwi.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
+
+        if self.network in KeyStoreTypes.seed.networks and type(self.signer) == SignerWallet:
+            self.button_seed = create_button(KeyStoreTypes.seed.description, (KeyStoreTypes.seed.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
+            self.button_seed.clicked.connect(self.signal_sign_with_seed)
+
+
+        return tab
+
+
+        
+    
+                
     
     
         
@@ -187,7 +222,8 @@ class KeyStoreUIDefault:
         
     def set_comboBox_keystore_type(self, keystore_type:KeyStoreType):
         keys = KeyStoreTypes.list_names(self.network)
-        self.comboBox_keystore_type.setCurrentIndex(keys.index(keystore_type.name))
+        if keystore_type:
+            self.comboBox_keystore_type.setCurrentIndex(keys.index(keystore_type.name))
         
 
     def get_comboBox_keystore_type(self) -> KeyStoreType:
@@ -216,6 +252,11 @@ class KeyStoreUIDefault:
             self.textEdit_description.setPlainText(keystore.description)
                 
             self.set_formatting()
+
+            if keystore.type:
+                self.seed_visibility(keystore.type.id == KeyStoreTypes.seed.id)
+            if keystore.mnemonic:
+                self.edit_seed.setText(keystore.mnemonic.as_string())
 
 
 

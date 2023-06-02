@@ -1,11 +1,13 @@
-import sys
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QToolTip
 from PySide2.QtCore import Qt, QRectF
 from PySide2.QtGui import QBrush, QColor, QPainter
 from PySide2.QtCore import QPointF
 from PySide2.QtCore import Qt, QRectF
 from PySide2.QtGui import QColor, QBrush, QFont
-from PySide2.QtWidgets import QGraphicsLineItem
+from PySide2.QtWidgets import QGraphicsLineItem, QGraphicsItem
 from PySide2.QtGui import QPen
 from PySide2.QtCore import Qt
 import numpy as np
@@ -38,17 +40,17 @@ class BarSegment(QGraphicsRectItem):
 
 
 
-class BlockLine(QGraphicsLineItem):
-    def __init__(self, blocknumber: int, fee, parent= None) -> None:
-        self.y = blocknumber*1e6
+class Line(QGraphicsLineItem):
+    def __init__(self, y: float, fee, hover_text, parent= None) -> None:
+        self.y = y
         self.fee = fee
         super().__init__(0, self.y, 1, self.y, parent)
-        self.blocknumber = blocknumber
+        self.hover_text = hover_text
         
         self.setAcceptHoverEvents(True)  # Ensures the item can respond to hover events
 
     def hoverEnterEvent(self, event):
-        QToolTip.showText(event.screenPos(), f"Limit of {round(self.blocknumber)}-th predicted block ({round(self.fee,1)} sat/vB)")
+        QToolTip.showText(event.screenPos(), self.hover_text)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
@@ -61,7 +63,7 @@ class SingleBarChart(QGraphicsView):
         super().__init__(scene, parent)
         self.total_height = 0
         self.signal_click = Signal('signal_click')
-
+        self.current_fee = None
 
         # Set the cursor to a hand cursor
         self.setCursor(QCursor(Qt.PointingHandCursor))
@@ -77,19 +79,28 @@ class SingleBarChart(QGraphicsView):
         self.signal_click(scene_point.y())
         super().mousePressEvent(event)  # call the parent class's method
         
-    def add_segment(self, fee, height, color):
-        self.scene().addItem(BarSegment(self.total_height, fee, height, color=color))        
+    def add_segment(self, fee, height, color) -> QGraphicsItem:
+        segment = BarSegment(self.total_height, fee, height, color=color)
+        self.scene().addItem(segment)        
         self.total_height += height
+        return segment
 
-
-    def add_horizontal_line(self, y, fee, color='gray'):
+    def add_horizontal_line(self, y, fee, hover_text, color='gray') -> QGraphicsItem:
         pen = QPen(QColor(color))
         pen.setWidth(self.total_height/100) 
-        line = BlockLine(y, fee)
+        line = Line(y, fee, hover_text)
         line.setPen(pen)
         line.setZValue(1)  # Ensure that lines are drawn on top of bars        
-        self.scene().addItem(line)
+        self.scene().addItem(line)        
+        return line
 
+    def set_current_fee(self, y, fee, color='black'):
+        if self.current_fee:
+            self.scene().removeItem(self.current_fee)
+            self.current_fee = None 
+            
+        self.current_fee = self.add_horizontal_line(y, fee, hover_text=f'Current transaction fee = {round(fee,1)} Sat/vB', color=color)
+        
 
 
 class MempoolBarChart:
@@ -147,7 +158,7 @@ class MempoolBarChart:
         # draw lines
         for block, fee in get_block_min_fees(self.data):
             y_block = block +1
-            self.chart.add_horizontal_line(y_block, fee)
+            self.chart.add_horizontal_line(y_block*1e6, fee, f"Limit of {round(block+1)}-th predicted block ({round(fee,1)} sat/vB)")
 
 
         self.scene.setSceneRect(0, 0, 1, self.chart.total_height)  # set height of the scene based on total bar heights

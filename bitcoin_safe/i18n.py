@@ -22,15 +22,17 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import logging
+logger = logging.getLogger(__name__)
+
+
 import os
 from typing import Optional
 
 import gettext
 
-from .logging import get_logger
 
-
-_logger = get_logger(__name__)
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
 
 # set initial default language, based on OS-locale
@@ -40,9 +42,9 @@ language = gettext.translation('electrum', LOCALE_DIR, fallback=True)
 try:
     _lang = language.info().get('language', None)
 except Exception as e:
-    _logger.info(f"gettext setting initial language to ?? (error: {e!r})")
+    logger.info(f"gettext setting initial language to ?? (error: {e!r})")
 else:
-    _logger.info(f"gettext setting initial language to {_lang!r}")
+    logger.info(f"gettext setting initial language to {_lang!r}")
 
 
 # note: do not use old-style (%) formatting inside translations,
@@ -61,7 +63,7 @@ def _(x: str) -> str:
 
 
 def set_language(x: Optional[str]) -> None:
-    _logger.info(f"setting language to {x!r}")
+    logger.info(f"setting language to {x!r}")
     global language
     if x:
         language = gettext.translation('electrum', LOCALE_DIR, fallback=True, languages=[x])

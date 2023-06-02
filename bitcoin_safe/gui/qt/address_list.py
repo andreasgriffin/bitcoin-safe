@@ -23,6 +23,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 import bdkpython as bdk
 import enum
 from enum import IntEnum
@@ -198,7 +202,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasFormat('application/json'):
-            print('accept') 
+            logger.debug('accept drag enter') 
             event.acceptProposedAction()
         else:
             event.ignore()
@@ -222,7 +226,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             if d.get('type') == 'drag_tag':
                 if hit_address is not None:
                     drag_info = AddressDragInfo([d.get('tag')], [hit_address])
-                    print(drag_info)
+                    logger.debug(f'drag_info {drag_info}')
                     self.signal_tag_dropped.emit(drag_info)     
                 event.accept()
                 return
@@ -426,12 +430,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
             menu.addAction(_("Freeze"), lambda: self.signals.set_frozen_state_of_addresses(addrs, True))
             menu.addAction(_("Unfreeze"), lambda: self.signals.set_frozen_state_of_addresses(addrs, False))
 
-        coins = self.wallet.get_spendable_coins(addrs)
-        if coins:
-            if self.signals.qt_wallet_signals[self.wallet.id].are_in_coincontrol(coins):
-                menu.addAction(_("Remove from coin control"), lambda: self.signals.qt_wallet_signals[self.wallet.id].remove_from_coincontrol(coins))
-            else:
-                menu.addAction(_("Add to coin control"), lambda: self.signals.qt_wallet_signals[self.wallet.id].add_to_coincontrol(coins))
 
         #run_hook('receive_menu', menu, addrs, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))

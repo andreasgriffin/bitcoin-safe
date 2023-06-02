@@ -2,6 +2,9 @@
 # Distributed under the MIT software license, see the accompanying
 # file LICENCE or http://www.opensource.org/licenses/mit-license.php
 
+import logging
+logger = logging.getLogger(__name__)
+
 from functools import wraps
 import threading
 import time
@@ -36,14 +39,14 @@ class RateLimiter(Logger):
         self.obj = weakref.ref(obj) # keep a weak reference to the object to prevent cycles
         self.func = func
         Logger.__init__(self)
-        #self.logger.debug(f"*** Created: {func=},{obj=},{rate=}")
+        #logger.debug(f"*** Created: {func=},{obj=},{rate=}")
 
     def diagnostic_name(self):
         return "{}:{}".format("rate_limited",self.qn)
 
     def kill_timer(self):
         if self.timer:
-            #self.logger.debug("deleting timer")
+            #logger.debug("deleting timer")
             try:
                 self.timer.stop()
                 self.timer.deleteLater()
@@ -53,7 +56,7 @@ class RateLimiter(Logger):
                     # QTimer is deleted by Qt before this call path executes.
                     # This call path may be executed from a queued connection in
                     # some circumstances, hence the crazyness (I think).
-                    self.logger.debug("advisory: QTimer was already deleted by Qt, ignoring...")
+                    logger.debug("advisory: QTimer was already deleted by Qt, ignoring...")
                 else:
                     raise
             finally:
@@ -81,13 +84,13 @@ class RateLimiter(Logger):
     def _invoke(self, args, kwargs):
         self._push_args(args, kwargs)  # since we're collating, save latest invocation's args unconditionally. any future invocation will use the latest saved args.
         self.ctr += 1 # increment call counter
-        #self.logger.debug(f"args_saved={args}, kwarg_saved={kwargs}")
+        #logger.debug(f"args_saved={args}, kwarg_saved={kwargs}")
         if not self.timer: # check if there's a pending invocation already
             now = time.time()
             diff = float(self.rate) - (now - self.last_ts)
             if diff <= 0:
                 # Time since last invocation was greater than self.rate, so call the function directly now.
-                #self.logger.debug("calling directly")
+                #logger.debug("calling directly")
                 return self._doIt()
             else:
                 # Time since last invocation was less than self.rate, so defer to the future with a timer.
@@ -96,12 +99,12 @@ class RateLimiter(Logger):
                 #self.timer.destroyed.connect(lambda x=None,qn=self.qn: print(qn,"Timer deallocated"))
                 self.timer.setSingleShot(True)
                 self.timer.start(int(diff*1e3))
-                #self.logger.debug("deferring")
+                #logger.debug("deferring")
         else:
             # We had a timer active, which means as future call will occur. So return early and let that call happenin the future.
             # Note that a side-effect of this aborted invocation was to update self.saved_args.
             pass
-            #self.logger.debug("ignoring (already scheduled)")
+            #logger.debug("ignoring (already scheduled)")
 
     def _pop_args(self):
         args, kwargs = self.saved_args # grab the latest collated invocation's args. this attribute is always defined.
@@ -112,10 +115,10 @@ class RateLimiter(Logger):
         self.saved_args = (args, kwargs)
 
     def _doIt(self):
-        #self.logger.debug("called!")
+        #logger.debug("called!")
         t0 = time.time()
         args, kwargs = self._pop_args()
-        #self.logger.debug(f"args_actually_used={args}, kwarg_actually_used={kwargs}")
+        #logger.debug(f"args_actually_used={args}, kwarg_actually_used={kwargs}")
         ctr0 = self.ctr # read back current call counter to compare later for reentrancy detection
         retval = self.func(*args, **kwargs) # and.. call the function. use latest invocation's args
         was_reentrant = self.ctr != ctr0 # if ctr is not the same, func() led to a call this function!
@@ -126,7 +129,7 @@ class RateLimiter(Logger):
             self.last_ts = tf
         else:
             if time_taken > float(self.rate):
-                self.logger.debug(f"method took too long: {time_taken} > {self.rate}. Fudging timestamps to compensate.")
+                logger.debug(f"method took too long: {time_taken} > {self.rate}. Fudging timestamps to compensate.")
                 self.last_ts = tf # Hmm. This function takes longer than its rate to complete. so mark its last run time as 'now'. This breaks the rate but at least prevents this function from starving the CPU (benforces a delay).
             else:
                 self.last_ts = t0 # Function takes less than rate to complete, so mark its t0 as when we entered to keep the rate constant.
@@ -134,14 +137,14 @@ class RateLimiter(Logger):
         if self.timer: # timer is not None if and only if we were a delayed (collated) invocation.
             if was_reentrant:
                 # we got a reentrant call to this function as a result of calling func() above! re-schedule the timer.
-                self.logger.debug("*** detected a re-entrant call, re-starting timer")
+                logger.debug("*** detected a re-entrant call, re-starting timer")
                 time_left = float(self.rate) - (tf - self.last_ts)
                 self.timer.start(time_left*1e3)
             else:
                 # We did not get a reentrant call, so kill the timer so subsequent calls can schedule the timer and/or call func() immediately.
                 self.kill_timer()
         elif was_reentrant:
-            self.logger.debug("*** detected a re-entrant call")
+            logger.debug("*** detected a re-entrant call")
 
         return retval
 
@@ -186,7 +189,7 @@ class RateLimiterClassLvl(RateLimiter):
             if obj:
                 args,kwargs = weak_dict[obj]
                 obj_name = obj.diagnostic_name() if hasattr(obj, "diagnostic_name") else obj
-                #self.logger.debug(f"calling for {obj_name}, timer={bool(self.timer)}")
+                #logger.debug(f"calling for {obj_name}, timer={bool(self.timer)}")
                 self.func_target(obj, *args, **kwargs)
 
     def __init__(self, rate, ts_after, obj, func):

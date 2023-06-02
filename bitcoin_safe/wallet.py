@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from collections import defaultdict
 import bdkpython as bdk 
 from typing import Sequence, Set, Tuple
@@ -5,14 +8,10 @@ from typing import Sequence, Set, Tuple
 from .tx import TXInfos
 from .util import balance_dict, OrderedDictWithIndex, Satoshis, timestamp_to_datetime, TxMinedInfo, format_fee_satoshis, format_time
 from .util import TX_HEIGHT_FUTURE, TX_HEIGHT_INF, TX_HEIGHT_LOCAL, TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED, TX_STATUS, THOUSANDS_SEP, cache_method
-import time 
-from decimal import Decimal
 from .i18n import _
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union, NamedTuple, Sequence, Dict, Any, Set, Iterable
 from .keystore import KeyStore, KeyStoreType, KeyStoreTypes
 import bdkpython as bdk
-import html
-from . import keystore
 from .pythonbdk_types import *
 from .storage import Storage
 from threading import Lock
@@ -65,7 +64,7 @@ class Wallet():
                                             KeyStore(None, None, 
                                                      initial_address_type.derivation_path(self.network), 
                                                      label=self.signer_names(threshold, i), 
-                                                     type=KeyStoreTypes.watch_only) 
+                                                     type=None) 
                                             for i in range(signers)
                                         ]
         self.set_address_type( initial_address_type)
@@ -112,7 +111,7 @@ class Wallet():
                 
         wallet = Wallet(**dct)
         
-        wallet.create_descriptor_wallet(wallet.descriptors[0], wallet.descriptors[1])                
+        wallet.create_wallet(wallet.threshold, wallet.keystores, wallet.address_type)                
         wallet.tips = tips
                 
         return wallet
@@ -210,8 +209,6 @@ class Wallet():
         if recreate_bdk_wallet:
             self.recreate_bdk_wallet()
         
-        # print([k.serialize() for k in wallet.keystores])
-        # print([k.serialize() for k in self.wallet.keystores])    
     
     
     def recreate_bdk_wallet(self):
@@ -285,7 +282,6 @@ class Wallet():
         if address_type.bdk_descriptor:
             # TODO: Currently only single sig implemented, since bdk only has single sig templates
             keystore = keystores[0]
-            print(keystore.mnemonic)
             self.descriptors = [
                                 address_type.bdk_descriptor(bdk.DescriptorPublicKey.from_string(keystore.xpub), 
                                                             keystore.fingerprint, 
@@ -387,20 +383,19 @@ class Wallet():
             self._init_blockchain()
 
         def update(progress:float, message:str):
-            print(progress, message)
+            logger.info((progress, message))
         progress = bdk.Progress()
         progress.update = update        
                 
-        print(self.bdkwallet)
         self.bdkwallet.sync(self.blockchain, progress) 
-        print(f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }")        
+        logger.info(f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }")        
         
     def get_address(self):        
         # print new receive address
         address_info = self.bdkwallet.get_address(bdk.AddressIndex.LAST_UNUSED())
         address = address_info.address
         index = address_info.index
-        print(f"New address: {address.as_string()} at index {index}")
+        logger.info(f"New address: {address.as_string()} at index {index}")
         return address_info
 
     def output_addresses(self, transaction):
@@ -489,7 +484,7 @@ class Wallet():
     def list_tx_addresses(self, transaction):
         in_addresses = self.list_input_addresses(transaction)
         out_addresses = self.output_addresses(transaction)
-        print(f'{transaction.txid}: {[(a.as_string() if a else None) for a in in_addresses]} --> {[(a.as_string() if a else None) for a in out_addresses]}')
+        logger.debug(f'{transaction.txid}: {[(a.as_string() if a else None) for a in in_addresses]} --> {[(a.as_string() if a else None) for a in out_addresses]}')
         return {'in':in_addresses, 'out':out_addresses}
         
 
@@ -501,13 +496,13 @@ class Wallet():
             bdk_get_address = self.bdkwallet.get_internal_address if is_change else self.bdkwallet.get_address
             
             current_tip = self._get_tip(is_change=is_change)
-            print(f'current_tip = {current_tip},  value = {value}')
+            logger.debug(f'current_tip = {current_tip},  value = {value}')
             if value >  current_tip:         
-                print(f'indexing {value - current_tip} new addresses')   
+                logger.debug(f'indexing {value - current_tip} new addresses')   
                 [bdk_get_address(bdk.AddressIndex.NEW()) for i in range(current_tip, value) ]   # NEW addess them to the watch list            
 
             new_tip = self._get_tip(is_change=is_change)
-            print(f'new_tip = {new_tip},  value = {value}')
+            logger.debug(f'new_tip = {new_tip},  value = {value}')
             assert new_tip == value
 
 
@@ -593,6 +588,12 @@ class Wallet():
         else:
             return bdk.Address.from_script(txout.script_pubkey, self.network).as_string()
     
+    
+    
+
+    @cache_method
+    def get_utxos(self) -> List[bdk.LocalUtxo]:
+        return self.bdkwallet.list_unspent()
 
     @cache_method
     def get_address_balances(self) -> Dict[AddressInfoMin, Tuple[int, int, int]]:
@@ -602,7 +603,7 @@ class Wallet():
         def zero_balances():
             return [0,0,0]
         
-        utxos = self.bdkwallet.list_unspent()
+        utxos = self.get_utxos()
         balances : Dict[str, Tuple[int, int, int]] = defaultdict(zero_balances)
         
         for i, utxo in enumerate(utxos):
@@ -669,7 +670,7 @@ class Wallet():
         return received + send 
         
 
-    def get_utxos(self):
+    def get_utxos(self) -> List[bdk.LocalUtxo]:
         return self.bdkwallet.list_unspent() 
         
     def address_is_used(self, address):
@@ -827,7 +828,7 @@ class Wallet():
         return status, status_str
     
 
-    def create_tx(self, txinfos:TXInfos):
+    def create_psbt(self, txinfos:TXInfos) -> bdk.PartiallySignedTransaction:
         if not txinfos.utxo_strings and not txinfos.categories:
             raise Exception('No inputs provided')
 
@@ -846,6 +847,6 @@ class Wallet():
         
         tx_final = txinfos.tx_builder.finish(self.bdkwallet)
         
-        print(json.loads(tx_final.psbt.json_serialize()))
-                
-        return tx_final
+        logger.info(json.loads(tx_final.psbt.json_serialize()))
+        
+        return tx_final.psbt

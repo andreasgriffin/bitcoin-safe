@@ -1,6 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel
 from PySide2.QtCore import Qt, QRectF
-from PySide2.QtGui import QPainter, QColor
 
 class CustomSlider(QWidget):
     def __init__(self, min_val=0, max_val=100, tick_interval=10, unit="BTC", label_text='', parent=None):

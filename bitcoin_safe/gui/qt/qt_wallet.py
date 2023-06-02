@@ -1,6 +1,5 @@
-
-import imp
-from bitcoin_safe.keystore import KeyStore
+import logging
+logger = logging.getLogger(__name__)
 
 from bitcoin_safe.wallet import Wallet
 from .util import format_amount, read_QIcon
@@ -15,18 +14,16 @@ from .address_list import AddressList
 from .utxo_list import UTXOList
 from .util import add_tab_to_tabs, format_amount_and_units, format_amount
 from .taglist import AddressDragInfo
-from .ui_tx import UITX
+from .ui_tx import UITX_Creator, UITX_Viewer
 
 from ...util import start_in_background_thread
 from ...signals import Signals
 from ...i18n import _
 from .ui_settings import WalletSettingsUI
-from ...wallet import AddressTypes, AddressType
-from enum import Enum, auto
 from .password_question import PasswordQuestion
-from threading import Lock
-from bitcoin_safe import wallet
 from .category_list import CategoryEditor
+from ...tx import TXInfos
+import bdkpython as bdk
 
 class StatusBarButton(QToolButton):
     # note: this class has a custom stylesheet applied in stylesheet_patcher.py
@@ -129,7 +126,7 @@ class QTWallet():
 
     def refresh_caches_and_ui_lists(self):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
-        print('start refresh cashe')
+        logger.debug('start refresh cashe')
         self.wallet.reset_cache()
         
         def threaded():
@@ -137,7 +134,7 @@ class QTWallet():
             
         def on_finished():
             # now do the UI
-            print('start refresh ui')
+            logger.debug('start refresh ui')
             
             if self.history_tab:
                 self.address_list.update()
@@ -172,7 +169,6 @@ class QTWallet():
         wallet_settings_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
         return wallet_settings_ui.tab, wallet_settings_ui   
 
-
     def _get_sub_texts_for_uitx(self):
         d = {}
         for utxo in self.wallet.get_utxos():
@@ -181,18 +177,34 @@ class QTWallet():
             if category not in d:
                 d[category] = []    
             d[category].append(utxo)
+            
+        def sum_value(category):
+            utxos = d.get(category)
+            if not utxos:
+                return 0
+            return sum([utxo.txout.value for utxo in utxos])
+            
         
-        return [f'{len(d.get(category, []))} Inputs' for category in self.wallet.categories]
+        return [f'{len(d.get(category, []))} Inputs: {format_amount(sum_value(category))} Sats' for category in self.wallet.categories]
 
     def _create_send_tab(self, tabs): 
-        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS])        
+        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
         
-        uitx = UITX(self.wallet.categories, utxo_list, self.wallet.get_receiving_addresses, self.wallet.get_change_addresses, self.signals, self._get_sub_texts_for_uitx)
-        add_tab_to_tabs(self.tabs, uitx.tab, read_QIcon("tab_send.png"), "Send", "send")        
+        uitx_creator = UITX_Creator(self.wallet.categories, utxo_list, self.wallet.get_receiving_addresses, self.wallet.get_change_addresses, self.signals, self._get_sub_texts_for_uitx)
+        add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
                 
-        uitx.signal_create_tx.connect(self.wallet.create_tx)
-        return uitx.tab, uitx                            
+        uitx_creator.signal_create_tx.connect(self.create_psbt)
+        self.signals.category_updated.connect(utxo_list.update)        
+        return uitx_creator.main_widget, uitx_creator                            
     
+
+                
+
+    def create_psbt(self, txinfos:TXInfos):
+        psbt = self.wallet.create_psbt(txinfos)
+        self.signals.open_tx(psbt) 
+        
+
 
     def create_pre_wallet_tab(self ):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"        
@@ -208,8 +220,8 @@ class QTWallet():
                 
         self.history_tab, self.history_list, self.history_model = self._create_hist_tab(self.tabs)
         self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
-        self.send_tab, self.uitx = self._create_send_tab(self.tabs)        
-        self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
+        self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)        
+        # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
         if not self.wallet_settings_tab:
             self.settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()
         
@@ -474,7 +486,7 @@ class QTWallet():
     def sync(self, threaded=True):
         def do_sync():            
             self.wallet.sync()
-            print('finished sync')
+            logger.debug('finished sync')
         def on_finished():
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
@@ -484,7 +496,7 @@ class QTWallet():
         else:
             do_sync()
             on_finished()
-        print(future)
+        logger.debug(str(future))
                     
         
         

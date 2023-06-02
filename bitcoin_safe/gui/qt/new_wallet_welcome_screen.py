@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
 from PySide2.QtGui import *

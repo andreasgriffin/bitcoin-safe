@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import requests
 import numpy as np
 
@@ -69,7 +72,7 @@ def fetch_mempool_histogram():
         return np.array(data["fee_histogram"])
     else:
         # If the request was unsuccessful, print the status code
-        print("Request failed with status code:", response.status_code)
+        logger.error("Request failed with status code:", response.status_code)
 
 
 
@@ -90,7 +93,12 @@ def get_cutoff_fee_rate(data, last_block_template=10):
     return get_min_feerates_of_blocktemplates(data, last_block_template)
 
 
-
+def fee_to_depth(data, fee):
+    indizes = np.where(data[:,0]>= fee)
+    if len(indizes)==0:
+        return 0
+    return data[indizes,1].sum()
+    
 
 def blocks_to_min_fees(data, blocks):
     block_sive_invbytes = 4e6 / 4  #  4e6 is the max WU of a block

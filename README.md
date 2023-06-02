@@ -44,6 +44,8 @@
 
 ![screenshot0](docs/screenshot-send.png)
 
+![screenshot0](docs/screenshot-tx.png)
+
 ## Installation
 
  * Installation of bdk with compact filters

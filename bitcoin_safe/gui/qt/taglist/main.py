@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -144,7 +147,7 @@ class DeleteButton(QPushButton):
             json_string = bytes(data_bytes).decode()  # convert bytes to string
             
             d = json.loads(json_string)
-            print(d)
+            logger.debug(f'dragEnterEvent: Got {d}')
             if d.get('type') == 'drag_tag':
                 event.acceptProposedAction()
                 return
@@ -158,7 +161,7 @@ class DeleteButton(QPushButton):
             json_string = bytes(data_bytes).decode()  # convert bytes to string
             
             d = json.loads(json_string)
-            print(d)
+            logger.debug(f'dropEvent: Got {d}')
             if d.get('type') == 'drag_tag':
                 self.delete_item.emit(d.get('tag'))
                 event.acceptProposedAction()
@@ -293,10 +296,11 @@ class CustomListWidget(QListWidget):
             # print('accept')
             # tag = self.itemAt(event.pos())        
             
-            # data_bytes = event.mimeData().data('application/json')
-            # json_string = bytes(data_bytes).decode()  # convert bytes to string
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
+            logger.warning(f'dragEnterEvent: {json_string}')
 
             event.acceptProposedAction()
         else:
@@ -305,7 +309,7 @@ class CustomListWidget(QListWidget):
         
         
     def dropEvent(self, event):
-        print('drop')
+        logger.debug('drop')
         if event.mimeData().hasFormat('application/json'):
             tag = self.itemAt(event.pos())
             
@@ -316,7 +320,7 @@ class CustomListWidget(QListWidget):
             if d.get('type') == 'drag_addresses':
                 if tag is not None:
                     drag_info = AddressDragInfo([tag.text()], d.get('addresses')) 
-                    print(drag_info)
+                    logger.debug(f'dropEvent: {drag_info}')
                     self.signal_addresses_dropped.emit(drag_info)     
                 event.accept()
                 return
@@ -394,7 +398,7 @@ class TagEditor(QWidget):
             return self.list_widget.add(new_tag, sub_text=sub_text) 
     
     def add_new_tag_from_input_field(self):
-        new_tag = self.input_field.text()
+        new_tag = self.input_field.text().strip().capitalize()
         item = self.add(new_tag)
         if item:
             self.input_field.setPlaceholderText(self.default_placeholder_text)

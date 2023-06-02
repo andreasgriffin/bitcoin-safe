@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 from functools import partial
 from typing import Callable
 

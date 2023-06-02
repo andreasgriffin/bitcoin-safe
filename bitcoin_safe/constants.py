@@ -23,6 +23,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 import os
 import json
 

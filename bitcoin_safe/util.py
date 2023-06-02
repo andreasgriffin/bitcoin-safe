@@ -20,7 +20,10 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import binascii
+
+import logging
+logger = logging.getLogger(__name__)
+
 import os, sys, re, json
 from collections import defaultdict, OrderedDict
 from typing import (NamedTuple, Union, TYPE_CHECKING, Tuple, Optional, Callable, Any,
@@ -56,7 +59,6 @@ import certifi
 import dns.resolver
 
 from .i18n import _
-from .logging import get_logger, Logger
 
 TX_HEIGHT_FUTURE = -3
 TX_HEIGHT_LOCAL = -2
@@ -77,7 +79,6 @@ TX_STATUS = [
 DEVELOPMENT_PREFILLS = False
 
 
-_logger = get_logger(__name__)
 
 
 def call_call_functions(functions):
@@ -132,7 +133,7 @@ from qasync import QThreadExecutor
 def start_in_background_thread(my_function, name='job', on_finished=None):            
     async def outer(my_function, name='job', on_finished=None):                
         if on_finished is None:
-            on_finished = lambda: print(f'{name} finished')
+            on_finished = lambda: logger.debug(f'{name} finished')
 
         loop = asyncio.get_running_loop()
         with QThreadExecutor(1) as exec:
@@ -361,99 +362,6 @@ class Fiat(object):
 
 
 
-class ThreadJob(Logger):
-    """A job that is run periodically from a thread's main loop.  run() is
-    called from that thread's context.
-    """
-
-    def __init__(self):
-        Logger.__init__(self)
-
-    def run(self):
-        """Called periodically from the thread"""
-        pass
-
-class DebugMem(ThreadJob):
-    '''A handy class for debugging GC memory leaks'''
-    def __init__(self, classes, interval=30):
-        ThreadJob.__init__(self)
-        self.next_time = 0
-        self.classes = classes
-        self.interval = interval
-
-    def mem_stats(self):
-        import gc
-        self.logger.info("Start memscan")
-        gc.collect()
-        objmap = defaultdict(list)
-        for obj in gc.get_objects():
-            for class_ in self.classes:
-                if isinstance(obj, class_):
-                    objmap[class_].append(obj)
-        for class_, objs in objmap.items():
-            self.logger.info(f"{class_.__name__}: {len(objs)}")
-        self.logger.info("Finish memscan")
-
-    def run(self):
-        if time.time() > self.next_time:
-            self.mem_stats()
-            self.next_time = time.time() + self.interval
-
-class DaemonThread(threading.Thread, Logger):
-    """ daemon thread that terminates cleanly """
-
-    LOGGING_SHORTCUT = 'd'
-
-    def __init__(self):
-        threading.Thread.__init__(self)
-        Logger.__init__(self)
-        self.parent_thread = threading.current_thread()
-        self.running = False
-        self.running_lock = threading.Lock()
-        self.job_lock = threading.Lock()
-        self.jobs = []
-        self.stopped_event = threading.Event()  # set when fully stopped
-
-    def add_jobs(self, jobs):
-        with self.job_lock:
-            self.jobs.extend(jobs)
-
-    def run_jobs(self):
-        # Don't let a throwing job disrupt the thread, future runs of
-        # itself, or other jobs.  This is useful protection against
-        # malformed or malicious server responses
-        with self.job_lock:
-            for job in self.jobs:
-                try:
-                    job.run()
-                except Exception as e:
-                    self.logger.exception('')
-
-    def remove_jobs(self, jobs):
-        with self.job_lock:
-            for job in jobs:
-                self.jobs.remove(job)
-
-    def start(self):
-        with self.running_lock:
-            self.running = True
-        return threading.Thread.start(self)
-
-    def is_running(self):
-        with self.running_lock:
-            return self.running and self.parent_thread.is_alive()
-
-    def stop(self):
-        with self.running_lock:
-            self.running = False
-
-    def on_stop(self):
-        if 'ANDROID_DATA' in os.environ:
-            import jnius
-            jnius.detach()
-            self.logger.info("jnius detach")
-        self.logger.info("stopped")
-        self.stopped_event.set()
 
 
 def print_stderr(*args):
@@ -495,7 +403,7 @@ def constant_time_compare(val1, val2):
 
 
 # decorator that prints execution time
-_profiler_logger = _logger.getChild('profiler')
+_profiler_logger = logger.getChild('profiler')
 def profiler(func):
     def do_profile(args, kw_args):
         name = func.__qualname__
@@ -530,7 +438,7 @@ def ensure_sparse_file(filename):
         try:
             os.system('fsutil sparse setflag "{}" 1'.format(filename))
         except Exception as e:
-            _logger.info(f'error marking file {filename} as sparse: {e}')
+            logger.info(f'error marking file {filename} as sparse: {e}')
 
 
 def get_headers_dir(config):
@@ -1024,7 +932,7 @@ def block_explorer_tuple(config: 'SimpleConfig') -> Optional[Tuple[str, dict]]:
             return custom_be, _block_explorer_default_api_loc
         if isinstance(custom_be, (tuple, list)) and len(custom_be) == 2:
             return tuple(custom_be)
-        _logger.warning(f"not using 'block_explorer_custom' from config. "
+        logger.warning(f"not using 'block_explorer_custom' from config. "
                         f"expected a str or a pair but got {custom_be!r}")
         return None
     else:
@@ -1128,10 +1036,10 @@ def read_json_file(path):
             data = json.loads(f.read())
     #backwards compatibility for JSONDecodeError
     except ValueError:
-        _logger.exception('')
+        logger.exception('')
         raise FileImportFailed(_("Invalid JSON code."))
     except BaseException as e:
-        _logger.exception('')
+        logger.exception('')
         raise FileImportFailed(e)
     return data
 
@@ -1141,7 +1049,7 @@ def write_json_file(path, data):
         with open(path, 'w+', encoding='utf-8') as f:
             json.dump(data, f, indent=4, sort_keys=True, cls=MyEncoder)
     except (IOError, os.error) as e:
-        _logger.exception('')
+        logger.exception('')
         raise FileExportFailed(e)
 
 
@@ -1152,7 +1060,7 @@ def os_chmod(path, mode):
     except OSError as e:
         xdg_runtime_dir = os.environ.get("XDG_RUNTIME_DIR", None)
         if xdg_runtime_dir and is_subpath(path, xdg_runtime_dir):
-            _logger.info(f"Tried to chmod in tmpfs. Skipping... {e!r}")
+            logger.info(f"Tried to chmod in tmpfs. Skipping... {e!r}")
         else:
             raise
 
@@ -1188,7 +1096,7 @@ def log_exceptions(func):
         except asyncio.CancelledError as e:
             raise
         except BaseException as e:
-            mylogger = self.logger if hasattr(self, 'logger') else _logger
+            mylogger = logger if hasattr(self, 'logger') else logger
             try:
                 mylogger.exception(f"Exception in {func.__name__}: {repr(e)}")
             except BaseException as e2:
@@ -1411,75 +1319,6 @@ aiorpcx.curio._set_task_deadline   = _aiorpcx_monkeypatched_set_task_deadline
 aiorpcx.curio._unset_task_deadline = _aiorpcx_monkeypatched_unset_task_deadline
 
 
-class NetworkJobOnDefaultServer(Logger, ABC):
-    """An abstract base class for a job that runs on the main network
-    interface. Every time the main interface changes, the job is
-    restarted, and some of its internals are reset.
-    """
-    def __init__(self, network: 'Network'):
-        Logger.__init__(self)
-        self.network = network
-        self.interface = None  # type: Interface
-        self._restart_lock = asyncio.Lock()
-        # Ensure fairness between NetworkJobs. e.g. if multiple wallets
-        # are open, a large wallet's Synchronizer should not starve the small wallets:
-        self._network_request_semaphore = asyncio.Semaphore(100)
-
-        self._reset()
-        # every time the main interface changes, restart:
-        register_callback(self._restart, ['default_server_changed'])
-        # also schedule a one-off restart now, as there might already be a main interface:
-        asyncio.run_coroutine_threadsafe(self._restart(), network.asyncio_loop)
-
-    def _reset(self):
-        """Initialise fields. Called every time the underlying
-        server connection changes.
-        """
-        self.taskgroup = OldTaskGroup()
-        self.reset_request_counters()
-
-    async def _start(self, interface: 'Interface'):
-        self.interface = interface
-        await interface.taskgroup.spawn(self._run_tasks(taskgroup=self.taskgroup))
-
-    @abstractmethod
-    async def _run_tasks(self, *, taskgroup: OldTaskGroup) -> None:
-        """Start tasks in taskgroup. Called every time the underlying
-        server connection changes.
-        """
-        # If self.taskgroup changed, don't start tasks. This can happen if we have
-        # been restarted *just now*, i.e. after the _run_tasks coroutine object was created.
-        if taskgroup != self.taskgroup:
-            raise asyncio.CancelledError()
-
-    async def stop(self, *, full_shutdown: bool = True):
-        if full_shutdown:
-            unregister_callback(self._restart)
-        await self.taskgroup.cancel_remaining()
-
-    @log_exceptions
-    async def _restart(self, *args):
-        interface = self.network.interface
-        if interface is None:
-            return  # we should get called again soon
-
-        async with self._restart_lock:
-            await self.stop(full_shutdown=False)
-            self._reset()
-            await self._start(interface)
-
-    def reset_request_counters(self):
-        self._requests_sent = 0
-        self._requests_answered = 0
-
-    def num_requests_sent_and_answered(self) -> Tuple[int, int]:
-        return self._requests_sent, self._requests_answered
-
-    @property
-    def session(self):
-        s = self.interface.session
-        assert s is not None
-        return s
 
 
 def detect_tor_socks_proxy() -> Optional[Tuple[str, int]]:
@@ -1786,12 +1625,12 @@ class EventListener:
 
     def register_callbacks(self):
         for name, method in self._list_callbacks():
-            #_logger.debug(f'registering callback {method}')
+            #logger.debug(f'registering callback {method}')
             register_callback(method, [name])
 
     def unregister_callbacks(self):
         for name, method in self._list_callbacks():
-            #_logger.debug(f'unregistering callback {method}')
+            #logger.debug(f'unregistering callback {method}')
             unregister_callback(method)
 
 

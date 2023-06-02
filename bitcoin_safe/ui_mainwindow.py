@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -71,9 +74,16 @@ class Ui_MainWindow(QMainWindow):
 
         self.menu_wallet.addAction(_("Sync"), self.sync).setShortcut(QKeySequence("F5"))
 
+
+        # menu transaction
+        self.menu_transaction = self.menubar.addMenu(_("&Transaction"))
+        self.menu_transaction.addAction("Load Transaction from file", self.open_tx).setShortcut(QKeySequence("Ctrl+L"))        
+
+
         # assigne menu bar
         self.setMenuBar(self.menubar)
         
+
 
 
     def new_wallet(self):                   
@@ -87,4 +97,7 @@ class Ui_MainWindow(QMainWindow):
     def toggle_search(self):
         pass
     def sync(self):
+        pass
+
+    def open_tx(self):                   
         pass

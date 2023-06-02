@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from .taglist import TagEditor, CustomListWidget
 from typing import List
 from ...signals import Signals, Signal

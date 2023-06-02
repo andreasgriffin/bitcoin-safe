@@ -24,12 +24,12 @@
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Tab 1</string>
+          <string>Inputs</string>
          </attribute>
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="title">
-          <string>Tab 2</string>
+          <string>Outputs</string>
          </attribute>
         </widget>
        </widget>
@@ -37,7 +37,7 @@
       <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="title">
-         <string>GroupBox</string>
+         <string>fees</string>
         </property>
        </widget>
       </item>
@@ -46,9 +46,12 @@
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidget_2">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>Tab 1</string>
+       <string>Keystore</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="tab_4">

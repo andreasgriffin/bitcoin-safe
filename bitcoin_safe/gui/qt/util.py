@@ -1,5 +1,6 @@
-import asyncio
-import enum
+import logging
+logger = logging.getLogger(__name__)
+
 import os.path
 import time
 import sys
@@ -32,7 +33,6 @@ from PySide2.QtWidgets import (QPushButton, QLabel, QMessageBox, QHBoxLayout,
 from ...i18n import _, languages
 from ...util import FileImportFailed, FileExportFailed, make_aiohttp_session, resource_path
 from ...util import EventListener, event_listener, is_address
-from ...logging import Logger
 from PySide2.QtSvg import QSvgWidget
 
 
@@ -970,7 +970,7 @@ class PasswordLineEdit(QLineEdit):
         super().clear()
 
 
-class TaskThread(QThread, Logger):
+class TaskThread(QThread):
     '''Thread that runs background tasks.  Callbacks are guaranteed
     to happen in the context of its parent.'''
 
@@ -985,7 +985,6 @@ class TaskThread(QThread, Logger):
 
     def __init__(self, parent, on_error=None):
         QThread.__init__(self, parent)
-        Logger.__init__(self)
         self.on_error = on_error
         self.tasks = queue.Queue()
         self._cur_task = None  # type: Optional[TaskThread.Task]
@@ -995,7 +994,7 @@ class TaskThread(QThread, Logger):
 
     def add(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
         if self._stopping:
-            self.logger.warning(f"stopping or already stopped but tried to add new task.")
+            logger.warning(f"stopping or already stopped but tried to add new task.")
             return
         on_error = on_error or self.on_error
         task_ = TaskThread.Task(task, on_success, on_done, on_error, cancel=cancel)

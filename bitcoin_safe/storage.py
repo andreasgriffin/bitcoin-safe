@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
  
 # from https://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password
 import secrets
@@ -68,12 +71,12 @@ class Storage():
         with open(filename, 'rb') as f:
             token = f.read()
         
-        # if chr(token[0]) == '{':
-        #     print('No password required')
-        #     return token.decode()            
+    
         if not password:
+            logger.debug(f'Opening {filename} without password')
             return token.decode()
         else:
+            logger.debug(f'Decrypting {filename}')
             return self.encrypt.password_decrypt(token, password).decode()
             
 

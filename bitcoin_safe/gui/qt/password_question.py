@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QApplication
 
 class PasswordQuestion(QDialog):

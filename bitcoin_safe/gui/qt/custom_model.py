@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 # loosely based on
 # http://trevorius.com/scrapbook/uncategorized/pyqt-custom-abstractitemmodel/
 

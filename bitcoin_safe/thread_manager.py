@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import time
 from concurrent.futures import ThreadPoolExecutor
 import threading
@@ -15,7 +18,7 @@ class ThreadManager():
         
     def start_thread(self, my_function, name='job', on_job_done=None, lock=None):        
         if on_job_done is None:
-            on_job_done = lambda future: print(f'{name} finished with result {future.result()}\nThere are {len(self.futures)} jobs in the queue')
+            on_job_done = lambda future: logger.debug(f'{name} finished with result {future.result()}\nThere are {len(self.futures)} jobs in the queue')
         
         
         
@@ -45,7 +48,7 @@ class ThreadManager():
 if __name__ == '__main__':
 
     def my_function():
-        print('Start sleep')
+        logger.debug('Start sleep')
         time.sleep(2)
 
         

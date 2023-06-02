@@ -23,7 +23,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import asyncio
+import logging
+logger = logging.getLogger(__name__)
+
 import enum
 import os.path
 import time
@@ -54,10 +56,6 @@ from PySide2.QtWidgets import (QPushButton, QLabel, QMessageBox, QHBoxLayout,
                              QMenu, QStyleOptionViewItem, QLayout, QLayoutItem, QAbstractButton,
                              QGraphicsEffect, QGraphicsScene, QGraphicsPixmapItem, QSizePolicy)
 
-from ...i18n import _, languages
-from .util import FileImportFailed, FileExportFailed, make_aiohttp_session, resource_path
-from .util import EventListener, event_listener
-from ...logging import Logger
 from .util import read_QIcon, do_copy
 
 

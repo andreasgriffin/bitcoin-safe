@@ -1,4 +1,6 @@
-from curses import keyname
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -7,12 +9,19 @@ from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signals, QTWalletSignals,  Signal
+from ...signals import Signals,   Signal
 from ...util import compare_dictionaries
 from typing import List
-from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUITypeChooser
+from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUISigner, KeyStoreUITypeChooser
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
+from ...signer import AbstractSigner
+
+
+def icon_for_label(label):
+    return read_QIcon("key-gray.png") if label.startswith('Recovery') else read_QIcon("key.png")
+
+
 
 
 class KeyStoreUI:
@@ -27,15 +36,16 @@ class KeyStoreUI:
                 sub_instances=[self.keystore_ui_default.block_change_signals]
         )
         
-                
-        add_tab_to_tabs(self.tabs, self.keystore_ui_type_chooser.tab, self.icon_for_label(keystore.label), keystore.label, keystore.label,   focus=True)
+
+        if keystore.type is None:
+            add_tab_to_tabs(self.tabs, self.keystore_ui_type_chooser.tab, icon_for_label(keystore.label), keystore.label, keystore.label,   focus=True)
+        else:
+            add_tab_to_tabs(self.tabs, self.keystore_ui_default.tab, icon_for_label(keystore.label), self.keystore.label, self.keystore.label, focus=True)
+            
         self.set_ui_from_keystore(self.keystore)            
         self.keystore_ui_type_chooser.signal_click_watch_only.connect(self.onclick_button_watch_only)    
         self.keystore_ui_type_chooser.signal_click_seed.connect(self.onclick_button_seed)    
 
-    def icon_for_label(self, label):
-        return read_QIcon("key-gray.png") if label.startswith('Recovery') else read_QIcon("key.png")
-        
     def remove_tab(self):
         self.tabs.removeTab(self.tabs.indexOf(self.keystore_ui_default.tab))
         self.tabs.removeTab(self.tabs.indexOf(self.keystore_ui_type_chooser.tab))
@@ -54,22 +64,66 @@ class KeyStoreUI:
             index = self.tabs.indexOf(tab)
             if index>=0:
                 self.tabs.setTabText(index,  keystore.label)
-                self.tabs.setTabIcon(index,  self.icon_for_label(keystore.label))
+                self.tabs.setTabIcon(index,  icon_for_label(keystore.label))
                 
         self.keystore_ui_default.set_ui_from_keystore(keystore)
     
 
+
+    def switch_to_tab(self, tab):
+        index = None
+        for remove_tab in [self.keystore_ui_type_chooser.tab, self.keystore_ui_default.tab]:
+            # save index to put the new tab exactly there
+            index = self.tabs.indexOf(remove_tab)
+            self.tabs.removeTab(index)
+                        
+        add_tab_to_tabs(self.tabs, tab, icon_for_label(self.keystore.label), self.keystore.label, self.keystore.label, position=index, focus=True)
+    
     
     def onclick_button_watch_only(self):
-        index = self.tabs.indexOf(self.keystore_ui_type_chooser.tab)
-        self.tabs.removeTab(index)
-                        
+        self.switch_to_tab( self.keystore_ui_default.tab) 
+        
         self.keystore.set_type(KeyStoreTypes.watch_only)
-        add_tab_to_tabs(self.tabs, self.keystore_ui_default.tab, read_QIcon("key.png"), self.keystore.label, self.keystore.label, position=index, focus=True)
         self.set_ui_from_keystore(self.keystore)
 
     
     def onclick_button_seed(self):
-        self.onclick_button_watch_only()
-        self.keystore_ui_default.seed_visibility(True)
+        self.switch_to_tab( self.keystore_ui_default.tab) 
+        
+        self.keystore.set_type(KeyStoreTypes.seed)
+        self.set_ui_from_keystore(self.keystore)
 
+
+
+
+
+class SignerUI:
+    def __init__(self, signer:AbstractSigner, psbt:bdk.PartiallySignedTransaction, tabs:QTabWidget, network:bdk.Network) -> None:
+        self.signer = signer
+        self.psbt = psbt
+        self.tabs = tabs
+        
+        self.signal_is_finalized = Signal("signal_is_finalized")
+    
+        self.ui_signer = KeyStoreUISigner(signer, network)
+        
+        self.ui_signer.signal_sign_with_seed.connect(self.sign)
+
+        add_tab_to_tabs(self.tabs, self.ui_signer.tab, icon_for_label(signer.label), self.signer.label, self.signer.label, focus=True)
+            
+
+        
+    def remove_tab(self):
+        self.tabs.removeTab(self.tabs.indexOf(self.ui_signer.tab))
+        
+        
+    def sign(self):
+        res = self.signer.sign(self.psbt, None)
+        logger.info(f'Signing of tx {self.psbt.txid()} resulted in {res}')
+        if res:
+            self.signal_is_finalized()
+        return res
+        
+    
+    
+    

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -8,7 +11,7 @@ from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNING, COLOR_LIGHTNING, COLOR_UNCONFIRMED, COLOR_UNMATURED
 from .gui.qt.util import add_tab_to_tabs, read_QIcon
-from .signals import Signals,   QTWalletSignals
+from .signals import Signals
 import bdkpython as bdk
 
 class KeyStoreType():

@@ -23,6 +23,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 from typing import Optional, List, Dict, Sequence, Set, TYPE_CHECKING
 import enum
 import copy
@@ -50,6 +54,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
     _utxo_dict: Dict[str, PartialTxInput]  # coin name -> coin
 
     class Columns(MyTreeView.BaseColumnsEnum):
+        WALLET_ID = enum.auto()
         OUTPOINT = enum.auto()
         ADDRESS = enum.auto()
         CATEGORY = enum.auto()
@@ -58,6 +63,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         PARENTS = enum.auto()
 
     headers = {
+        Columns.WALLET_ID: _('Wallet'),
         Columns.OUTPOINT: _('Output point'),
         Columns.ADDRESS: _('Address'),
         Columns.PARENTS: _('Parents'),
@@ -75,7 +81,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
-            editable_columns=[self.Columns.LABEL],
+            editable_columns=[],
             )
         self.config = config
         self.hidden_columns = hidden_columns if hidden_columns else []
@@ -89,21 +95,17 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.setSortingEnabled(True)
         
         signals.utxos_updated.connect(self.update)
-        signals.qt_wallet_signals[self.wallet.id].are_in_coincontrol.connect(self.are_in_coincontrol)
-        signals.qt_wallet_signals[self.wallet.id].remove_from_coincontrol.connect(self.remove_from_coincontrol)
 
 
     def create_toolbar(self, config):
         toolbar, menu = self.create_toolbar_with_menu('')
         self.num_coins_label = toolbar.itemAt(0).widget()
-        menu.addAction(_('Coin control'), lambda: self.add_selection_to_coincontrol())
         return toolbar
 
     def update(self):
         # not calling maybe_defer_update() as it interferes with coincontrol status bar
         utxos = self.wallet.get_utxos()
         # utxos.sort(key=lambda x: x.block_height, reverse=True)
-        # self._maybe_reset_coincontrol(utxos)
         self._utxo_dict = {}
         self.model().clear()
         self.update_headers(self.__class__.headers)
@@ -124,29 +126,16 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             self.model().insertRow(idx, utxo_item)
             self.refresh_row(name, idx)
         self.filter()
-        self.update_coincontrol_bar()
         if hasattr(self, 'num_coins_label'):
             self.num_coins_label.setText(_('{} unspent transaction outputs').format(len(utxos)))
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-    def update_coincontrol_bar(self):
-        # update coincontrol status bar
-        if bool(self._spend_set):
-            coins = [self._utxo_dict[x] for x in self._spend_set]
-            coins = self._filter_frozen_coins(coins)
-            amount = sum(x.value_sats() for x in coins)
-            amount_str = format_amount_and_units(amount)
-            num_outputs_str = _("{} outputs available ({} total)").format(len(coins), len(self._utxo_dict))
-            # self.main_window.set_coincontrol_msg(_("Coin control active") + f': {num_outputs_str}, {amount_str}')
-        else:
-            # self.main_window.set_coincontrol_msg(None)
-            pass
-
     def refresh_row(self, key, row):
         assert row is not None
         utxo = self._utxo_dict[key]
         utxo_item = [self.std_model.item(row, col) for col in self.Columns]
+        utxo_item[self.Columns.WALLET_ID].setText(self.wallet.id)
         txid = utxo.outpoint.txid
         parents = self.wallet.get_tx_parents(txid)
         utxo_item[self.Columns.PARENTS].setText('%6s'%len(parents))
@@ -186,65 +175,18 @@ class UTXOList(MyTreeView, MessageBoxMixin):
                      not self.wallet.is_frozen_coin(utxo))]
         return coins
 
-    def are_in_coincontrol(self, coins: List[PartialTxInput]) -> bool:
-        return all([utxo.prevout.to_str() in self._spend_set for utxo in coins])
-
-    def add_to_coincontrol(self, coins: List[PartialTxInput]):
-        coins = self._filter_frozen_coins(coins)
-        for utxo in coins:
-            self._spend_set.add(utxo.prevout.to_str())
-        self._refresh_coincontrol()
-
-    def remove_from_coincontrol(self, coins: List[PartialTxInput]):
-        for utxo in coins:
-            self._spend_set.remove(utxo.prevout.to_str())
-        self._refresh_coincontrol()
-
-    def clear_coincontrol(self):
-        self._spend_set.clear()
-        self._refresh_coincontrol()
-
-    def add_selection_to_coincontrol(self):
-        if bool(self._spend_set):
-            self.clear_coincontrol()
-            return
-        selected = self.get_selected_outpoints()
-        coins = [self._utxo_dict[name] for name in selected]
-        if not coins:
-            self.show_error(_('You need to select coins from the list first.\nUse ctrl+left mouse button to select multiple items'))
-            return
-        self.add_to_coincontrol(coins)
-
-    def _refresh_coincontrol(self):
-        self.refresh_all()
-        self.update_coincontrol_bar()
-        self.selectionModel().clearSelection()
-
     def get_spend_list(self) -> Optional[Sequence[PartialTxInput]]:
         if not bool(self._spend_set):
             return None
         utxos = [self._utxo_dict[x] for x in self._spend_set]
         return copy.deepcopy(utxos)  # copy so that side-effects don't affect utxo_dict
 
-    def _maybe_reset_coincontrol(self, current_wallet_utxos: Sequence[PartialTxInput]) -> None:
-        if not bool(self._spend_set):
-            return
-        # if we spent one of the selected UTXOs, just reset selection
-        utxo_set = {utxo.prevout.to_str() for utxo in current_wallet_utxos}
-        if not all([prevout_str in utxo_set for prevout_str in self._spend_set]):
-            self._spend_set.clear()
-
-
-    
 
 
     def pay_to_clipboard_address(self, coins):
         addr = QApplication.clipboard().text()
         outputs = [PartialTxOutput.from_address_and_value(addr, '!')]
-        #self.clear_coincontrol()
-        self.add_to_coincontrol(coins)
         self.main_window.send_tab.pay_onchain_dialog(outputs)
-        self.clear_coincontrol()
 
     def on_double_click(self, idx):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_PREVOUT_STR)
@@ -276,10 +218,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         m = menu_spend.addAction(_("send to address in clipboard"), lambda: self.pay_to_clipboard_address(coins))
         m.setEnabled(self.clipboard_contains_address())
         # coin control
-        if self.are_in_coincontrol(coins):
-            menu.addAction(_("Remove from coin control"), lambda: self.remove_from_coincontrol(coins))
-        else:
-            menu.addAction(_("Add to coin control"), lambda: self.add_to_coincontrol(coins))
         # Freeze menu
         if len(coins) == 1:
             utxo = coins[0]

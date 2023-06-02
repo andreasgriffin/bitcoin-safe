@@ -23,8 +23,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
+logger = logging.getLogger(__name__)
+
 import os
-import sys
 import time
 import datetime
 from datetime import date
@@ -45,7 +47,6 @@ from ...i18n import _
 from ...util import (block_explorer_URL, profiler, TxMinedInfo,
                            OrderedDictWithIndex, timestamp_to_datetime,
                            Satoshis, Fiat, format_time)
-from ...logging import get_logger, Logger
 
 from .custom_model import CustomNode, CustomModel
 from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
@@ -54,8 +55,6 @@ from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
 from .my_treeview import MyTreeView
 from ...wallet import Wallet    
 
-
-_logger = get_logger(__name__)
 
 
 # note: this list needs to be kept in sync with another in kivy
@@ -225,11 +224,10 @@ class HistoryNode(CustomNode):
 
 
 from ...signals import Signals
-class HistoryModel(CustomModel, Logger):
+class HistoryModel(CustomModel):
 
     def __init__(self, parent, fx, config, wallet:Wallet, signals:Signals):
         CustomModel.__init__(self, parent, len(HistoryColumns))
-        Logger.__init__(self)
         self.fx = fx
         self.config = config
         self.wallet = wallet
@@ -274,7 +272,7 @@ class HistoryModel(CustomModel, Logger):
         return self.should_show_fiat() and self.config.get('history_rates_capital_gains', False)
 
     def refresh(self, reason: str=None):
-        self.logger.info(f"refreshing... reason: {reason}")
+        logger.info(f"refreshing... reason: {reason}")
         # assert self.qt_wallet.main_window.loop == threading.current_thread(), 'must be called from GUI thread'
         assert self.view, 'view not set'
         if self.view.maybe_defer_update():
@@ -696,7 +694,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         try:
             from electrum.plot import plot_history, NothingToPlotException
         except Exception as e:
-            _logger.error(f"could not import electrum.plot. This feature needs matplotlib to be installed. exc={e!r}")
+            logger.error(f"could not import electrum.plot. This feature needs matplotlib to be installed. exc={e!r}")
             self.show_message(
                 _("Can't plot history.") + '\n' +
                 _("Perhaps some dependencies are missing...") + " (matplotlib?)" + '\n' +

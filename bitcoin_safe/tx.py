@@ -1,5 +1,7 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import bdkpython as bdk
-import json
 
 class TXInfos:
     "A wrapper around tx_builder to collect even more infos"
