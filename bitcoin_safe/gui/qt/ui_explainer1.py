@@ -137,7 +137,7 @@ class Ui_Form(object):
 
 
         add_centered_icons(["seed-plate.svg"]*3, self.groupBox_5, self.verticalLayout_4, max_sizes=[(50,80)])
-        add_centered_icons(["descriptor.svg"], self.groupBox_5, self.verticalLayout_4, max_sizes=(200,60))
+        add_centered_icons(["descriptor3.svg"], self.groupBox_5, self.verticalLayout_4, max_sizes=(200,65))
         
         
         self.verticalLayout_4.addWidget(self.label_10)
