@@ -451,5 +451,4 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)
         self.signals.addresses_updated()
-        # self.signals.utxos_updated()
-        self.signals.completions_updated()
+

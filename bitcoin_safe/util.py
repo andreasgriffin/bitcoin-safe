@@ -158,6 +158,8 @@ def cache_method(func):
 
 
 
+def reduce_dict(d):
+    return {k:v for k,v in d.items() if v}
 
 
 def is_address(address) -> bool:

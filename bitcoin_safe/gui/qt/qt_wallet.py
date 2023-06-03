@@ -85,14 +85,14 @@ class FX():
 
 class QTWallet():
     def __init__(self, wallet:Wallet, config, signals:Signals):    
-        self.wallet = wallet
+        self.signals = signals
+        self.set_wallet(wallet)
         self.password = None
         self.wallet_settings_tab = None
         self.config = config
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
         self.password = None
-        self.signals = signals
         
         
         self.history_tab, self.history_list, self.history_model = None, None, None
@@ -190,7 +190,7 @@ class QTWallet():
     def _create_send_tab(self, tabs): 
         utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
         
-        uitx_creator = UITX_Creator(self.wallet.categories, utxo_list, self.wallet.get_receiving_addresses, self.wallet.get_change_addresses, self.signals, self._get_sub_texts_for_uitx)
+        uitx_creator = UITX_Creator(self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx)
         add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
                 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
@@ -211,7 +211,14 @@ class QTWallet():
         self.wallet_settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()        
 
     def set_wallet(self, wallet:Wallet):
-        self.wallet = wallet        
+        self.wallet = wallet     
+        self.signals.get_addresses.connect(self.wallet.get_addresses, name=self.wallet.id)           
+        self.signals.get_receiving_addresses.connect(self.wallet.get_receiving_addresses, name=self.wallet.id)           
+        self.signals.get_change_addresses.connect(self.wallet.get_change_addresses, name=self.wallet.id)           
+        self.signals.get_label_for_address.connect(self.wallet.get_label_for_address, name=self.wallet.id)           
+        self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)           
+        self.signals.utxo_of_outpoint.connect(self.wallet.utxo_of_outpoint, name=self.wallet.id)           
+        
 
     def create_wallet_tabs(self):
         "Create tabs.  set_wallet be called first"

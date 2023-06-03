@@ -16,7 +16,6 @@ from ...tx import TXInfos
 from ...signals import Signals
 from .barchart import MempoolBarChart
 from ...mempool import get_prio_fees, fee_to_color, fee_to_depth
-from ...wallets import Wallets
 from PySide2.QtGui import QPixmap, QImage
 from ...qr import create_psbt_qr
 from PIL import Image
@@ -52,8 +51,8 @@ def create_groupbox(layout, title=None):
     return g, g_layout
 
 
-def create_recipients(layout, get_receiving_addresses,  get_change_addresses, parent=None, allow_edit=True):
-    recipients =  Recipients(get_receiving_addresses, get_change_addresses, allow_edit=allow_edit)
+def create_recipients(layout, signals:Signals, parent=None, allow_edit=True):
+    recipients =  Recipients(signals, allow_edit=allow_edit)
     recipients.add_recipient()
     layout.addWidget(recipients)
     recipients.setMinimumWidth(250)    
@@ -322,9 +321,8 @@ class FeeGroup:
 
 
 class UITX_Viewer():
-    def __init__(self, psbt:bdk.PartiallySignedTransaction, wallets:Wallets, signals:Signals, network:bdk.Network) -> None:
+    def __init__(self, psbt:bdk.PartiallySignedTransaction, signals:Signals, network:bdk.Network) -> None:
         self.psbt:bdk.PartiallySignedTransaction = psbt
-        self.wallets = wallets
         self.signals = signals
         self.network = network
 
@@ -356,7 +354,9 @@ class UITX_Viewer():
         self.tabs_inputs_outputs.addTab(self.tab_outputs, 'Outputs')        
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
         
-        self.recipients = create_recipients(self.tab_outputs_layout, wallets.get_receiving_addresses_merged, wallets.get_change_addresses_merged, allow_edit=False)
+        self.recipients = create_recipients(self.tab_outputs_layout, 
+                                            self.signals,
+                                            allow_edit=False)
 
 
         # fee
@@ -400,7 +400,14 @@ class UITX_Viewer():
     def add_all_signer_tabs(self):
         # collect all wallets
         inputs:List[bdk.TxIn] = self.psbt.extract_tx().input()
-        wallet_for_inputs = [self.wallets.wallet_of_outpoint( this_input.previous_output)   for this_input in inputs]
+        
+        wallet_for_inputs = []
+        for this_input in inputs:            
+            for wallet_id, utxo in self.signals.utxo_of_outpoint(this_input.previous_output).items():
+                if utxo:                   
+                    wallet = [wallet for wallet in self.signals.get_wallets() if wallet.id == wallet_id][0]
+                    wallet_for_inputs.append(wallet)
+            
         if None in wallet_for_inputs:
             logger.warning(f'Cannot sign for all the inputs {wallet_for_inputs.index(None)} with the currently opened wallets')
         
@@ -432,6 +439,8 @@ class UITX_Viewer():
         
         
 
+
+
     def set_psbt(self, psbt:bdk.PartiallySignedTransaction):
         self.psbt:bdk.PartiallySignedTransaction = psbt
         self.export_psbt.set_psbt(psbt)
@@ -443,28 +452,19 @@ class UITX_Viewer():
         
         def get_recipient_dict(i, output):
             address_str = bdk.Address.from_script(output.script_pubkey, self.network).as_string()
-            d = {'amount':output.value, 'address':address_str} 
-            
-            wallet = self.wallets.wallet_of_address(address_str)
-            if wallet:
-                d['label'] = wallet.get_label_for_address(address_str)
-            
-            
-            d['groupbox_title'] = f'Output {i+1} to wallet {wallet.id}' if wallet else f'Output {i+1}'
+            d = {'amount':output.value, 'address':address_str}                                     
+            d['groupbox_title'] = f'Output {i+1}'
             return d
         
         self.recipients.recipients = [get_recipient_dict(i, output) for i, output in enumerate(outputs)]
 
 
 class UITX_Creator():
-    def __init__(self, categories:List[str], utxo_list:UTXOList, get_receiving_addresses, get_change_addresses, signals:Signals, get_sub_texts) -> None:
+    def __init__(self, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts) -> None:
         self.categories = categories
         self.utxo_list = utxo_list
         self.signals = signals
         self.get_sub_texts = get_sub_texts
-        
-        self.get_receiving_addresses = get_receiving_addresses
-        self.get_change_addresses = get_change_addresses
         
         
         self.signal_create_tx = Signal('signal_create_tx')
@@ -484,7 +484,7 @@ class UITX_Creator():
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)        
         
         self.groupBox_outputs, self.groupBox_outputs_layout = create_groupbox(self.widget_right_top_layout)
-        self.recipients = create_recipients(self.groupBox_outputs_layout, get_receiving_addresses, get_change_addresses)
+        self.recipients = create_recipients(self.groupBox_outputs_layout, self.signals)
 
         self.fee_group = FeeGroup(self.widget_right_top_layout)
         

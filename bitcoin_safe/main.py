@@ -32,7 +32,6 @@ import json, os
 import bdkpython as bdk
 from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
 from .gui.qt.utxo_list import UTXOList
-from .wallets import Wallets
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
@@ -92,10 +91,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             print('is bdk.TransactionDetails')
                         
                         
-        # wallets is nothing but a way to access all wallets easier        
-        wallets = Wallets(lambda: [qtwallet.wallet for qtwallet in self.qt_wallets.values()])
-                        
-        viewer = UITX_Viewer(tx, wallets, self.signals, network=self.network)         
+        viewer = UITX_Viewer(tx, self.signals, network=self.network)         
         
         add_tab_to_tabs(self.tab_wallets, viewer.main_widget, read_QIcon("offline_tx.png"), "Transaction", "tx", focus=True)
         
@@ -107,10 +103,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         storage = Storage()
         application_data = json.loads( storage.load(None, self.config_file)   )
         
-        opened_wallets = False
+        opened_wallets = 0
         for file_path in application_data['last_wallet_files']:
-            n = self.open_wallet(file_path=file_path) 
-            opened_wallets = opened_wallets and bool(n)
+            n = int(self.open_wallet(file_path=file_path) )
+            opened_wallets += n
         
         return opened_wallets
     
@@ -188,6 +184,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             qt_wallet.create_pre_wallet_tab()
         self.qt_wallets[wallet.id] = qt_wallet
         add_tab_to_tabs(self.tab_wallets, qt_wallet.tab, read_QIcon("file.png"), qt_wallet.wallet.id, qt_wallet.wallet.id, focus=True)
+        
+        self.signals.get_wallets.connect(lambda: [qt_wallet.wallet for qt_wallet in self.qt_wallets.values()])        
         return qt_wallet
         
     def import_descriptor(self):

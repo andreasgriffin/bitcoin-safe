@@ -589,6 +589,15 @@ class Wallet():
             return bdk.Address.from_script(txout.script_pubkey, self.network).as_string()
     
     
+            
+    def utxo_of_outpoint(self, outpoint:bdk.OutPoint):
+        def outpoint_tuple(outpoint:bdk.OutPoint):
+            return (outpoint.txid, outpoint.vout)
+        
+        for utxo in self.get_utxos():
+            if outpoint_tuple(outpoint) == outpoint_tuple(utxo.outpoint) :
+                return utxo                        
+        
     
 
     @cache_method

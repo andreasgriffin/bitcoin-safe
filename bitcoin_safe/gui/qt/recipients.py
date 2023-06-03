@@ -5,7 +5,7 @@ from typing import List, Dict
 import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from .util import ColorScheme
-
+from ...signals import Signals
 
 class CloseButton(QtWidgets.QPushButton):
     def __init__(self, parent=None):
@@ -25,10 +25,9 @@ class CloseButton(QtWidgets.QPushButton):
 class RecipientGroupBox(QtWidgets.QGroupBox):
     close_signal = QtCore.Signal(QtWidgets.QGroupBox)
 
-    def __init__(self, get_receiving_addresses, get_change_addresses, allow_edit=True):
+    def __init__(self, signals:Signals, allow_edit=True):
         super().__init__()
-        self.get_receiving_addresses = get_receiving_addresses
-        self.get_change_addresses = get_change_addresses
+        self.signals = signals
         self.allow_edit = allow_edit
         
         self.close_button = CloseButton(self) if allow_edit else None
@@ -64,6 +63,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.setFixedHeight(120) # Set fixed height as required
 
         self.address_line_edit.textChanged.connect(self.format_address_field)
+        self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
         self.close_signal.connect(self.close)
 
     def resizeEvent(self, event):
@@ -105,12 +105,30 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_button.setEnabled(state)
 
+    def set_label_placeholder_text(self):
+        addresses_dict = self.signals.get_addresses()        
+        
+        wallet_id = None
+        label = None
+        for wallet_id, addresses in addresses_dict.items():
+            if self.address in addresses:
+                wallet_id = wallet_id
+                label = self.signals.get_label_for_address(self.address)[wallet_id]
+            
+        if wallet_id:            
+            self.label_line_edit.setPlaceholderText(f'In wallet {wallet_id}: {label}')        
+        else:
+            self.label_line_edit.setPlaceholderText('Enter label for recipient address')        
+        
+        
+        
+
     def format_address_field(self, *args):
-        palette = QtGui.QPalette() 
-        if self.address in self.get_receiving_addresses():
+        palette = QtGui.QPalette()
+        if self.address in sum(self.signals.get_receiving_addresses().values(), []):
             background_color = ColorScheme.GREEN.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
-        elif self.address in self.get_change_addresses():
+        elif self.address in sum(self.signals.get_change_addresses().values(), []):
             background_color = ColorScheme.YELLOW.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
         else:
@@ -120,10 +138,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
 
 class Recipients(QtWidgets.QWidget):
-    def __init__(self, get_receiving_addresses, get_change_addresses, allow_edit=True):
+    def __init__(self, signals:Signals, allow_edit=True):
         super().__init__()
-        self.get_receiving_addresses = get_receiving_addresses
-        self.get_change_addresses = get_change_addresses
+        self.signals = signals
         self.allow_edit = allow_edit
         
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -146,7 +163,7 @@ class Recipients(QtWidgets.QWidget):
             self.main_layout.addWidget(self.add_recipient_button)
 
     def add_recipient(self, address=None, label=None, amount=None, groupbox_title=None):
-        recipient = RecipientGroupBox(self.get_receiving_addresses, self.get_change_addresses, allow_edit=self.allow_edit)
+        recipient = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
         if groupbox_title:
             recipient.setTitle(groupbox_title)
         if address:
@@ -182,9 +199,7 @@ class Recipients(QtWidgets.QWidget):
             self.remove_recipient_widget(recipient)
         
         for i, recipient in enumerate(recipient_list):
-            self.add_recipient(address=recipient['address'], label=recipient['label'], amount=recipient['amount'],
-                               groupbox_title=recipient['groupbox_title']  if 'groupbox_title' in recipient else None
-                               )
+            self.add_recipient(**recipient)
 
 
 if __name__ == "__main__":

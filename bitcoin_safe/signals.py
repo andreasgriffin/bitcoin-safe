@@ -6,31 +6,35 @@ import threading
 class Signal:
     def __init__(self, name=None):
         self.name = name 
-        self.slots = []
+        self.slots = {}
         self.lock = threading.Lock()
                 
-    def connect(self, slot):
+    def connect(self, slot, name=None):
         with self.lock:
-            self.slots.append(slot)
+            key = name if name and (name not in self.slots)  else str(slot)
+            self.slots[key] = slot
         
     def disconnect(self, slot):
         with self.lock:
-            self.slots.remove(slot)
+            keys, values = zip(*list(self.slots.items())) 
+            idx = values.index(slot)
+            del self.slots[keys[idx]]
     
     def __call__(self, *args, **kwargs):
         return self.emit(*args, **kwargs)
     
     def emit(self, *args, **kwargs):
-        responses = []
+        responses = {}
         if not self.slots:
             logger.debug(f'Signal {self.name}.emit() was called, but no listeners {self.slots} are listening.')
             
         with self.lock:
-            for slot in self.slots:
+            for key, slot in self.slots.items():
                 name = f'{slot.__self__.__class__.__name__}.'  if str(slot.__class__) == "<class 'method'>" else ''
-                name += f'{slot.__name__}{args, kwargs}'
+                name += f'{slot.__name__}{args, kwargs}' 
+                name += f' with key={key}'  if key else ''
                 logger.debug(f'Signal {self.name}.emit() --> {name}')
-                responses.append( slot(*args, **kwargs))
+                responses[key] = slot(*args, **kwargs)
         return responses
 
 class SingularSignal(Signal):
@@ -42,7 +46,7 @@ class SingularSignal(Signal):
     
     def emit(self, *args, **kwargs):
         responses = super().emit(*args, **kwargs)
-        return responses[0] if responses else responses
+        return list(responses.values())[0] if responses else responses
 
 
 
@@ -91,6 +95,14 @@ class Signals:
         self.bump_fee_dialog = SingularSignal('bump_fee_dialog')
         self.show_onchain_invoice = SingularSignal('show_onchain_invoice')
         self.save_transaction_into_wallet = SingularSignal('save_transaction_into_wallet')
+        
+        self.get_addresses = Signal('get_addresses')
+        self.get_receiving_addresses = Signal('get_receiving_addresses')
+        self.get_change_addresses = Signal('get_change_addresses')
+        self.get_label_for_address = Signal('get_label_for_address')
+        self.get_utxos = Signal('get_utxos')
+        self.utxo_of_outpoint = Signal('utxo_of_outpoint')
+        self.get_wallets = SingularSignal('get_wallets')
         
 
         
