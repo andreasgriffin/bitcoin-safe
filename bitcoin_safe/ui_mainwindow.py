@@ -7,17 +7,17 @@ from PySide2.QtWidgets import *
 from .i18n import _
 from .gui.qt.util import read_QIcon
 from .gui.qt.balance_dialog import BalanceToolButton
+from .config import UserConfig
+from PySide2.QtCore import QLocale
 
-
-            
             
             
 class Ui_MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.config = {}
+        self.config = UserConfig.load()
         self.setupUi(self)
-        
+                
 
 
     def setupUi(self, MainWindow:QWidget):            
@@ -49,7 +49,7 @@ class Ui_MainWindow(QMainWindow):
 
         self.setMinimumWidth(640)
         self.setMinimumHeight(400)
-        if self.config.get("is_maximized"):
+        if self.config.is_maximized:
             self.showMaximized()
 
         # self.setWindowIcon(read_QIcon("electrum.png"))

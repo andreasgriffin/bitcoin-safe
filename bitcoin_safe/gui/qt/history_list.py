@@ -46,15 +46,15 @@ from PySide2.QtWidgets import (QMenu, QHeaderView, QLabel, QMessageBox,
 from ...i18n import _
 from ...util import (block_explorer_URL, profiler, TxMinedInfo,
                            OrderedDictWithIndex, timestamp_to_datetime,
-                           Satoshis, Fiat, format_time)
+                           Satoshis, format_satoshis, Fiat, format_time)
 
 from .custom_model import CustomNode, CustomModel
 from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
                    filename_field, AcceptFileDragDrop, WindowModalDialog,
-                   CloseButton, webopen, WWLabel, format_amount, MessageBoxMixin)
+                   CloseButton, webopen, WWLabel,  MessageBoxMixin)
 from .my_treeview import MyTreeView
 from ...wallet import Wallet    
-
+from .category_list import CategoryEditor
 
 
 # note: this list needs to be kept in sync with another in kivy
@@ -111,34 +111,50 @@ class HistoryNode(CustomNode):
         assert index.isValid()
         col = index.column()
         tx_item = self.get_data()
-        is_lightning = tx_item.get('lightning', False)
-        timestamp = tx_item['timestamp']
+
         short_id = None
-        if is_lightning:
-            status = 0
-            if timestamp is None:
-                status_str = 'unconfirmed'
+        
+        txid = tx_item['txid']
+        txpos_in_block = tx_item.get('txpos_in_block')
+        if txpos_in_block is not None and txpos_in_block >= 0:
+            short_id = f"{tx_item['height']}x{txpos_in_block}"
+        short_id = self.set_label(f'{txid[:8]}...') if short_id is None else short_id
+        conf = tx_item['confirmations']
+        try:
+            status, status_str = self.model.tx_status_cache[txid]
+        except KeyError:
+            tx_mined_info = self.model.tx_mined_info_from_tx_item(tx_item)
+            status, status_str = self.model.wallet.get_tx_status(txid, tx_mined_info)
+
+
+        # Handle the BackgroundRole
+        if role == Qt.BackgroundRole and index.column() == HistoryList.Columns.CATEGORIES:
+            if len(tx_item.get('categories', [None]))>1:
+                return None
+            # Get the first category for the item, if any
+            category = tx_item.get('categories')
+            if not category:
+                return None
             else:
-                status_str = format_time(int(timestamp))
-        else:
-            txid = tx_item['txid']
-            txpos_in_block = tx_item.get('txpos_in_block')
-            if txpos_in_block is not None and txpos_in_block >= 0:
-                short_id = f"{tx_item['height']}x{txpos_in_block}"
-            conf = tx_item['confirmations']
-            try:
-                status, status_str = self.model.tx_status_cache[txid]
-            except KeyError:
-                tx_mined_info = self.model.tx_mined_info_from_tx_item(tx_item)
-                status, status_str = self.model.wallet.get_tx_status(txid, tx_mined_info)
+                category = list(category)[0]
+            if category is not None:
+                # Derive the color from the category and return it as a QColor object
+                color_name = CategoryEditor.color(category)
+                return QColor(color_name)
+            else:
+                # No category, return default color
+                return None
+
 
         if role == ROLE_SORT_ORDER:
             d = {
                 HistoryColumns.STATUS:
                     # respect sort order of self.transactions (wallet.get_full_history)
                     -index.row(),
-                HistoryColumns.DESCRIPTION:
+                HistoryColumns.LABEL:
                     tx_item['label'] if 'label' in tx_item else None,
+                HistoryColumns.CATEGORIES:
+                    tx_item['categories'] if 'categories' in tx_item else None,
                 HistoryColumns.AMOUNT:
                     (tx_item['bc_value'].value if 'bc_value' in tx_item else 0)\
                     + (tx_item['ln_value'].value if 'ln_value' in tx_item else 0),
@@ -150,7 +166,7 @@ class HistoryNode(CustomNode):
                     tx_item['acquisition_price'].value if 'acquisition_price' in tx_item else None,
                 HistoryColumns.FIAT_CAP_GAINS:
                     tx_item['capital_gain'].value if 'capital_gain' in tx_item else None,
-                HistoryColumns.TXID: txid if not is_lightning else None,
+                HistoryColumns.TXID: txid,
                 HistoryColumns.SHORT_ID: short_id,
             }
             return self.set_label(d[col])
@@ -158,29 +174,28 @@ class HistoryNode(CustomNode):
             return self.set_label(get_item_key(tx_item))
         if role not in (Qt.DisplayRole, Qt.EditRole):
             if col == HistoryColumns.STATUS and role == Qt.DecorationRole:
-                icon = "lightning" if is_lightning else TX_ICONS[status]
+                icon = TX_ICONS[status]
                 return self.set_label(read_QIcon(icon))
             elif col == HistoryColumns.STATUS and role == Qt.ToolTipRole:
-                if is_lightning:
-                    msg = 'lightning transaction'
-                else:  # on-chain
-                    if tx_item['height'] == TX_HEIGHT_LOCAL:
-                        # note: should we also explain double-spends?
-                        msg = _("This transaction is only available on your local machine.\n"
-                                "The currently connected server does not know about it.\n"
-                                "You can either broadcast it now, or simply remove it.")
-                    else:
-                        msg = str(conf) + _(" confirmation" + ("s" if conf != 1 else ""))
+                if tx_item['height'] == TX_HEIGHT_LOCAL:
+                    # note: should we also explain double-spends?
+                    msg = _("This transaction is only available on your local machine.\n"
+                            "The currently connected server does not know about it.\n"
+                            "You can either broadcast it now, or simply remove it.")
+                else:
+                    msg = str(conf) + _(" confirmation" + ("s" if conf != 1 else ""))
                 return self.set_label(msg)
-            elif col > HistoryColumns.DESCRIPTION and role == Qt.TextAlignmentRole:
+            elif col == HistoryColumns.SHORT_ID and role == Qt.ToolTipRole:
+                return self.set_label(txid)
+            elif col > HistoryColumns.LABEL and role == Qt.TextAlignmentRole:
                 return self.set_label(int(Qt.AlignRight | Qt.AlignVCenter))
-            elif col > HistoryColumns.DESCRIPTION and role == Qt.FontRole:
+            elif col > HistoryColumns.LABEL and role == Qt.FontRole:
                 monospace_font = self.set_label(MONOSPACE_FONT)
                 return self.set_label(monospace_font)
-            #elif col == HistoryColumns.DESCRIPTION and role == Qt.DecorationRole and not is_lightning\
+            #elif col == HistoryColumns.LABEL and role == Qt.DecorationRole and not is_lightning\
             #        and self.parent.wallet.invoices.paid.get(txid):
             #    return QVariant(read_QIcon("seal"))
-            elif col in (HistoryColumns.DESCRIPTION, HistoryColumns.AMOUNT) \
+            elif col in (HistoryColumns.LABEL, HistoryColumns.AMOUNT) \
                     and role == Qt.ForegroundRole and tx_item['value'].value < 0:
                 red_brush = QBrush(QColor("#BC1E1E"))
                 return red_brush
@@ -192,17 +207,21 @@ class HistoryNode(CustomNode):
             
         if col == HistoryColumns.STATUS:
             return self.set_label(status_str)
-        elif col == HistoryColumns.DESCRIPTION and 'label' in tx_item:
+        elif col == HistoryColumns.LABEL and 'label' in tx_item:
             return self.set_label(tx_item['label'])
+        elif col == HistoryColumns.CATEGORIES and 'categories' in tx_item:
+            category_str = ', '.join(tx_item['categories']) 
+            # category_str = ', '.join( [f"<font color='{CategoryEditor.color(category).name()}'>{category}</font>" for category in tx_item['categories']]) 
+            return self.set_label(category_str)
         elif col == HistoryColumns.AMOUNT:
             bc_value = tx_item['bc_value'].value if 'bc_value' in tx_item else 0
             ln_value = tx_item['ln_value'].value if 'ln_value' in tx_item else 0
             value = bc_value + ln_value
-            v_str = format_amount(value, is_diff=True, whitespaces=True)
+            v_str = format_satoshis(value, is_diff=True)
             return self.set_label(v_str)
         elif col == HistoryColumns.BALANCE:
             balance = tx_item['balance'].value
-            balance_str = format_amount(balance, whitespaces=True)
+            balance_str = format_satoshis(balance)
             return self.set_label(balance_str)
         elif col == HistoryColumns.FIAT_VALUE and 'fiat_value' in tx_item:
             value_str = self.model.fx.format_fiat(tx_item['fiat_value'].value)
@@ -216,9 +235,12 @@ class HistoryNode(CustomNode):
             cg = tx_item['capital_gain'].value
             return self.set_label(self.model.fx.format_fiat(cg))
         elif col == HistoryColumns.TXID:
-            return self.set_label(txid) if not is_lightning else self.set_label('')
+            return self.set_label(txid)
         elif col == HistoryColumns.SHORT_ID:
-            return self.set_label(short_id or "")
+            return short_id
+
+
+
         return  
 
 
@@ -247,7 +269,7 @@ class HistoryModel(CustomModel):
     def update_label(self, index):
         tx_item = index.internalPointer().get_data()
         tx_item['label'] = self.wallet.get_label_for_txid(get_item_key(tx_item))
-        topLeft = bottomRight = self.createIndex(index.row(), HistoryColumns.DESCRIPTION)
+        topLeft = bottomRight = self.createIndex(index.row(), HistoryColumns.LABEL)
         self.dataChanged.emit(topLeft, bottomRight, [Qt.DisplayRole])
         self.signals.utxos_updated.emit()
         # self.qt_wallet.utxo_list.update()
@@ -369,7 +391,7 @@ class HistoryModel(CustomModel):
         # txid
         set_visible(HistoryColumns.TXID, False)
         set_visible(HistoryColumns.BALANCE, False)
-        set_visible(HistoryColumns.SHORT_ID, False)
+        # set_visible(HistoryColumns.SHORT_ID, False)
         # fiat
         history = self.should_show_fiat()
         cap_gains = self.should_show_capital_gains()
@@ -428,8 +450,8 @@ class HistoryModel(CustomModel):
             fiat_cg_title =  '%s '%fx.ccy + _('Capital Gains')
         return {
             HistoryColumns.STATUS: _('Date'),
-            HistoryColumns.CATEGORIES: _('Categories'),
-            HistoryColumns.DESCRIPTION: _('Description'),
+            HistoryColumns.CATEGORIES: _('Category'),
+            HistoryColumns.LABEL: _('Label'),
             HistoryColumns.AMOUNT: _('Amount'),
             HistoryColumns.BALANCE: _('Balance'),
             HistoryColumns.FIAT_VALUE: fiat_title,
@@ -462,7 +484,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
     class Columns(MyTreeView.BaseColumnsEnum):
         STATUS = enum.auto()
         CATEGORIES = enum.auto()
-        DESCRIPTION = enum.auto()
+        LABEL = enum.auto()
         AMOUNT = enum.auto()
         BALANCE = enum.auto()
         FIAT_VALUE = enum.auto()
@@ -474,11 +496,13 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
     filter_columns = [
         Columns.STATUS,
         Columns.CATEGORIES,
-        Columns.DESCRIPTION,
+        Columns.LABEL,
         Columns.AMOUNT,
         Columns.TXID,
         Columns.SHORT_ID,
     ]
+    
+    column_alignments = {Columns.AMOUNT:Qt.AlignRight, Columns.BALANCE:Qt.AlignRight, Columns.CATEGORIES:Qt.AlignCenter}
 
     def tx_item_from_proxy_row(self, proxy_row):
         hm_idx = self.model().mapToSource(self.model().index(proxy_row, 0))
@@ -497,8 +521,8 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
     def __init__(self, fx, config, signals:Signals, wallet:Wallet, model: HistoryModel):
         super().__init__(
             config=config,
-            stretch_column=HistoryColumns.DESCRIPTION,
-            editable_columns=[HistoryColumns.DESCRIPTION, HistoryColumns.FIAT_VALUE],
+            stretch_column=HistoryColumns.LABEL,
+            editable_columns=[HistoryColumns.LABEL, HistoryColumns.FIAT_VALUE],
         )
         self.hm = model
         self.fx = fx
@@ -527,6 +551,10 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         for col in HistoryColumns:
             sm = QHeaderView.Stretch if col == self.stretch_column else QHeaderView.ResizeToContents
             self.header().setSectionResizeMode(col, sm)
+
+
+        self.signals.category_updated.connect(self.update)
+        self.signals.labels_updated.connect(self.update)
 
     def update(self):
         self.hm.refresh('HistoryList.update()')
@@ -635,7 +663,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         flow = summary['flow']
         start_date = start.get('date')
         end_date = end.get('date')
-        format_amount_value = lambda x: format_amount(x.value) + ' ' + self.config.get_base_unit()
+        format_amount_value = lambda x: format_satoshis(x.value) + ' ' + self.config.get_base_unit()
         format_fiat = lambda x: str(x) + ' ' + self.fx.ccy
 
         d = WindowModalDialog(self, _("Summary"))
@@ -712,9 +740,10 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         tx_item = index.internalPointer().get_data()
         column = index.column()
         key = get_item_key(tx_item)
-        if column == HistoryColumns.DESCRIPTION:
-            if self.wallet.set_label(key, text): #changed
-                self.hm.update_label(index)
+        if column == HistoryColumns.LABEL:
+            self.wallet.set_label(key, text)
+                # self.hm.update_label(index)
+            self.signals.labels_updated()
                 # self.main_window.update_completions()
         elif column == HistoryColumns.FIAT_VALUE:
             self.wallet.set_fiat_value(key, self.fx.ccy, text, self.fx, tx_item['value'].value)
@@ -736,7 +765,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
             super().mouseDoubleClickEvent(event)
         else:
             tx_hash = tx_item['txid']
-            tx = self.wallet.get_bdk_tx(tx_hash)
+            tx = self.wallet.get_tx(tx_hash)
             if not tx:
                 return
             self.signals.show_transaction(tx)
@@ -745,7 +774,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
     # def on_double_click(self, idx):
     #     tx_item = idx.internalPointer().get_data()
     #     txid = tx_item['txid']
-    #     tx = self.wallet.get_bdk_tx(txid)
+    #     tx = self.wallet.get_tx(txid)
     #     if not tx:
     #         return
     #     self.signals.show_transaction(tx)
@@ -773,7 +802,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         tx_item = idx.internalPointer().get_data()
 
         txid = tx_item['txid']
-        tx = self.wallet.get_bdk_tx(txid)
+        tx = self.wallet.get_tx(txid)
         if not tx:
             return
         tx_URL = block_explorer_URL(self.config, 'tx', txid)
@@ -901,6 +930,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
     def get_role_data_from_coordinate(self, row, col, *, role):
         idx = self.model().mapToSource(self.model().index(row, col))
         return self.hm.data(idx, role) 
+
 
 
 HistoryColumns = HistoryList.Columns

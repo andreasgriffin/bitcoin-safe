@@ -12,7 +12,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import json
 from typing import Dict
-from threading import Lock
+import enum, os
+import bdkpython as bdk
 
 class Encrypt(): 
     def _derive_key(self, password: bytes, salt: bytes, iterations: int) -> bytes:
@@ -50,7 +51,7 @@ class Storage():
         self.encrypt = Encrypt()
 
 
-    def save(self, message, password, filename): 
+    def save(self, message, filename, password=None): 
         token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
 
         with open(filename, 'wb') as f:
@@ -67,7 +68,7 @@ class Storage():
         return True
             
             
-    def load(self, password, filename) -> str:
+    def load(self, filename,  password=None) -> str:
         with open(filename, 'rb') as f:
             token = f.read()
         
@@ -81,28 +82,76 @@ class Storage():
             
 
 
-if __name__ == '__main__':
-    # e = Encrypt()
-    # message = 'John DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn Doe'
-    # password = 'mypass'
-    # token = e.password_encrypt(message.encode(), password)
-    # print(token)
-    # print(e.password_decrypt(token, password).decode())
 
 
-    s = Storage()
-    org_text = 'my message\nsssss'
-    s.save(org_text, 'aaa', 'test.txt')
-    
-    
-    new_text = s.load('aaa', 'test.txt')
-    
-    assert org_text == new_text 
-    print(new_text)
-    
+class ClassSerializer:
+
+    @classmethod
+    def general_deserializer(cls, globals):
+
+        def deserializer(dct):
+            cls_string = dct.get("__class__")  # e.g. KeyStore
+            if cls_string and cls_string in globals:
+                obj_cls = globals[cls_string]
+                if hasattr(obj_cls, 'deserialize'):  # is there KeyStore.deserialize ? 
+                    return obj_cls.deserialize(dct)  # do: KeyStore.deserialize(**dct)
+            if dct.get("__enum__"):
+                obj_cls = globals.get(dct["name"])                
+                if not obj_cls:
+                    obj_cls = getattr(bdk, dct["name"])  # if the class name is not imported directly, then try bdk
+                if obj_cls:
+                    return getattr(obj_cls, dct["value"])
+            # For normal cases, json.loads will handle default JSON data types
+            # No need to use json.Decoder here, just return the dictionary as-is
+            return dct
+        return deserializer
+
+    @classmethod
+    def general_serializer(cls, obj):
+        if isinstance(obj, enum.Enum):
+            return {"__enum__": True, "name": obj.__class__.__name__, "value": obj.name}
+        if hasattr(obj, 'serialize'):
+            return obj.serialize()
+        # Fall back to the default JSON serializer
+        return json.JSONEncoder().default(obj)                            
 
 
-    print(b64e('my wallet'.encode()))
+
+class BaseSaveableClass:
+    global_variables = None
+
+    def serialize(self):
+        d = {}
+        d["__class__"] = self.__class__.__name__
+        return d
+        
+    @classmethod
+    def deserialize(cls, dct):
+        assert dct.get("__class__") == cls.__name__
+        del dct["__class__"]
+            
+            
+    def save(self, filename, password=None):
+
+        directory = os.path.dirname(filename)
+        # Create the directories
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        
+
+
+        human_readable = not bool(password)                           
+        storage = Storage()
+        storage.save(json.dumps(self, default=ClassSerializer.general_serializer, 
+                                indent=4 if human_readable else None,
+                                sort_keys=bool(human_readable),                                
+                                ), filename, password=password)
+        
     
-    
-    
+    @classmethod
+    def load(cls, filename, password=None):     
+        storage = Storage()
+        
+        json_string = storage.load(filename, password=password)
+        return json.loads(json_string, object_hook=ClassSerializer.general_deserializer(cls.global_variables))
+            

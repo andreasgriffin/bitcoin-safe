@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
 )
 
 from electrum.i18n import _
-from electrum.simple_config import SimpleConfig
+from electrum.simple_config import UserConfig
 
 from .util import WindowModalDialog, WWLabel, getSaveFileName
 
@@ -130,7 +130,7 @@ class QRDialog(WindowModalDialog):
             show_text=False,
             help_text=None,
             show_copy_text_btn=False,
-            config: SimpleConfig,
+            config: UserConfig,
     ):
         WindowModalDialog.__init__(self, parent, title)
         self.config = config

@@ -170,14 +170,6 @@ def add_tab_to_tabs(tabs:QTabWidget, tab, icon, description, name, position=None
         if focus:
             tabs.setCurrentIndex(position)
 
-def format_amount( value, whitespaces=True, **kwargs):
-    s = str(value)
-    if whitespaces:
-        s = '{:,}'.format(value).replace(',', ' ')
-    return s
-
-def format_amount_and_units(value, **kwargs):
-    return f'{format_amount(value)} sats'
             
                 
             
@@ -506,7 +498,7 @@ def text_dialog(
         ok_label,
         default=None,
         allow_multi=False,
-        config: 'SimpleConfig',
+        config: 'UserConfig',
 ):
     from .qrtextedit import ScanQRTextEdit
     dialog = WindowModalDialog(parent, title)
@@ -657,7 +649,7 @@ class GenericInputHandler:
     def input_qr_from_camera(
             self,
             *,
-            config: 'SimpleConfig',
+            config: 'UserConfig',
             allow_multi: bool = False,
             show_error: Callable[[str], None],
             setText: Callable[[str], None] = None,
@@ -715,7 +707,7 @@ class GenericInputHandler:
     def input_file(
             self,
             *,
-            config: 'SimpleConfig',
+            config: 'UserConfig',
             show_error: Callable[[str], None],
             setText: Callable[[str], None] = None,
     ) -> None:
@@ -830,7 +822,7 @@ class OverlayControlMixin(GenericInputHandler):
         )
         self.addButton("copy.png", input_paste_from_clipboard, _("Paste from clipboard"))
 
-    def add_qr_show_button(self, *, config: 'SimpleConfig', title: Optional[str] = None):
+    def add_qr_show_button(self, *, config: 'UserConfig', title: Optional[str] = None):
         if title is None:
             title = _("QR code")
 
@@ -856,7 +848,7 @@ class OverlayControlMixin(GenericInputHandler):
     def add_qr_input_combined_button(
             self,
             *,
-            config: 'SimpleConfig',
+            config: 'UserConfig',
             allow_multi: bool = False,
             show_error: Callable[[str], None],
             setText: Callable[[str], None] = None,
@@ -889,7 +881,7 @@ class OverlayControlMixin(GenericInputHandler):
     def add_qr_input_from_camera_button(
             self,
             *,
-            config: 'SimpleConfig',
+            config: 'UserConfig',
             allow_multi: bool = False,
             show_error: Callable[[str], None],
             setText: Callable[[str], None] = None,
@@ -908,7 +900,7 @@ class OverlayControlMixin(GenericInputHandler):
     def add_file_input_button(
             self,
             *,
-            config: 'SimpleConfig',
+            config: 'UserConfig',
             show_error: Callable[[str], None],
             setText: Callable[[str], None] = None,
     ) -> None:
@@ -1156,7 +1148,7 @@ def export_meta_gui(electrum_window: 'ElectrumWindow', title, exporter):
                                      .format(title, str(filename)))
 
 
-def getOpenFileName(*, parent, title, filter="", config: 'SimpleConfig') -> Optional[str]:
+def getOpenFileName(*, parent, title, filter="", config: 'UserConfig') -> Optional[str]:
     """Custom wrapper for getOpenFileName that remembers the path selected by the user."""
     directory = config.get('io_dir', os.path.expanduser('~'))
     fileName, __ = QFileDialog.getOpenFileName(parent, title, directory, filter)
@@ -1173,7 +1165,7 @@ def getSaveFileName(
         filter="",
         default_extension: str = None,
         default_filter: str = None,
-        config: 'SimpleConfig',
+        config: 'UserConfig',
 ) -> Optional[str]:
     """Custom wrapper for getSaveFileName that remembers the path selected by the user."""
     directory = config.get('io_dir', os.path.expanduser('~'))

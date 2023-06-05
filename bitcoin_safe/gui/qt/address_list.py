@@ -41,14 +41,14 @@ from .category_list import CategoryEditor
 from bitcoin_safe.wallet import Wallet
 
 from ...i18n import _
-from ...util import InternalAddressCorruption, block_explorer_URL
+from ...util import InternalAddressCorruption, block_explorer_URL, format_satoshis
 import json
 
 
-from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, format_amount, webopen
+from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin,  webopen
 from .my_treeview import MyTreeView, MySortModel
 from .taglist import AddressDragInfo
-
+from .html_delegate import HTMLDelegate
 
 class Columns(MyTreeView.BaseColumnsEnum):
     TYPE = enum.auto()
@@ -122,6 +122,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
     signal_tag_dropped = Signal(AddressDragInfo)
 
     filter_columns = [Columns.TYPE, Columns.ADDRESS, Columns.CATEGORY, Columns.LABEL, Columns.COIN_BALANCE]
+    column_alignments = {Columns.COIN_BALANCE:Qt.AlignRight, Columns.NUM_TXS: Qt.AlignRight, Columns.CATEGORY:Qt.AlignCenter}
 
     ROLE_SORT_ORDER = Qt.UserRole + 1000
     ROLE_ADDRESS_STR = Qt.UserRole + 1001
@@ -155,6 +156,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.update()
         self.sortByColumn(Columns.TYPE, Qt.AscendingOrder)
         self.signals.addresses_updated.connect(self.update)
+        self.signals.labels_updated.connect(self.update)
         self.signals.category_updated.connect(self.update)
 
         self.setDragEnabled(True)
@@ -366,7 +368,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         num = self.wallet.get_address_history_len(address)
         c, u, x = self.wallet.get_addr_balance(address)
         balance = c + u + x
-        balance_text = format_amount(balance, whitespaces=True)
+        balance_text = format_satoshis(balance)
         # create item
         fx = self.fx
         if self.should_show_fiat():
@@ -378,17 +380,15 @@ class AddressList(MyTreeView, MessageBoxMixin):
         address_item[Columns.LABEL].setText(label)
         address_item[Columns.CATEGORY].setText(category)        
         address_item[Columns.CATEGORY].setBackground(CategoryEditor.color(category))
-        address_item[Columns.COIN_BALANCE].setText(balance_text)
+        address_item[Columns.COIN_BALANCE].setText(balance_text)        
+        # address_item[Columns.COIN_BALANCE].setData(HTMLDelegate(), self.ROLE_CUSTOM_PAINT)        
         address_item[Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
         address_item[Columns.FIAT_BALANCE].setText(fiat_balance_str)
         address_item[Columns.NUM_TXS].setText("%d"%num)
-        c = ColorScheme.BLUE.as_color(True) if self.wallet.is_frozen_address(address) else self._default_bg_brush
-        address_item[Columns.ADDRESS].setBackground(c)
         if address in self.addresses_beyond_gap_limit:
             address_item[Columns.ADDRESS].setBackground(ColorScheme.RED.as_color(True))
 
     def create_menu(self, position):
-        from electrum.wallet import Multisig_Wallet
         is_multisig = isinstance(self.wallet, Multisig_Wallet)
         selected = self.selected_in_column(Columns.ADDRESS)
         if not selected:
@@ -420,15 +420,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
-            if not self.wallet.is_frozen_address(addr):
-                menu.addAction(_("Freeze"), lambda: self.signals.set_frozen_state_of_addresses([addr], True))
-            else:
-                menu.addAction(_("Unfreeze"), lambda: self.signals.set_frozen_state_of_addresses([addr], False))
-
-        else:
-            # multiple items selected
-            menu.addAction(_("Freeze"), lambda: self.signals.set_frozen_state_of_addresses(addrs, True))
-            menu.addAction(_("Unfreeze"), lambda: self.signals.set_frozen_state_of_addresses(addrs, False))
 
 
         #run_hook('receive_menu', menu, addrs, self.wallet)
@@ -450,5 +441,5 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)
-        self.signals.addresses_updated()
+        self.signals.labels_updated()
 

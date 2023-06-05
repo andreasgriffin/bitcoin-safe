@@ -24,7 +24,7 @@ class KeyStoreType():
         
         
     def serialize(self):
-        d = self.__dict__
+        d = self.__dict__.copy()
         d["__class__"] = self.__class__.__name__
         return d
         
@@ -89,7 +89,7 @@ class KeyStore:
 
 
     def serialize(self):
-        d = self.__dict__
+        d = self.__dict__.copy()
         d['mnemonic'] = self.mnemonic.as_string() if self.mnemonic else self.mnemonic
         d["__class__"] = self.__class__.__name__
         return d
@@ -103,8 +103,7 @@ class KeyStore:
         if "__class__" in dct:
             del dct["__class__"]
         return KeyStore(**dct)
-        
-
+    
     def set_type(self, type):
         self.type = type
         

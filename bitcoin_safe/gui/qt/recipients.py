@@ -6,6 +6,7 @@ import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from .util import ColorScheme
 from ...signals import Signals
+from .spinbox import CustomDoubleSpinBox
 
 class CloseButton(QtWidgets.QPushButton):
     def __init__(self, parent=None):
@@ -44,11 +45,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.label_line_edit.setPlaceholderText("Enter label here")
 
         self.amount_layout = QtWidgets.QHBoxLayout()
-        self.amount_spin_box = QtWidgets.QDoubleSpinBox()
+        self.amount_spin_box = CustomDoubleSpinBox()
         if not allow_edit:
             self.amount_spin_box.setReadOnly(True)
-        self.amount_spin_box.setDecimals(0)  # Set the number of decimal places
-        self.amount_spin_box.setRange(0, 21e6*1e8) # Define range as required
         self.send_max_button = QtWidgets.QPushButton("Send max")
         self.send_max_button.setMaximumWidth(80)
         self.amount_layout.addWidget(self.amount_spin_box)
@@ -109,14 +108,14 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         addresses_dict = self.signals.get_addresses()        
         
         wallet_id = None
-        label = None
+        label = ''
         for wallet_id, addresses in addresses_dict.items():
             if self.address in addresses:
                 wallet_id = wallet_id
                 label = self.signals.get_label_for_address(self.address)[wallet_id]
             
         if wallet_id:            
-            self.label_line_edit.setPlaceholderText(f'In wallet {wallet_id}: {label}')        
+            self.label_line_edit.setPlaceholderText(label)        
         else:
             self.label_line_edit.setPlaceholderText('Enter label for recipient address')        
         

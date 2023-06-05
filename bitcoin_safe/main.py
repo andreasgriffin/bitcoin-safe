@@ -32,15 +32,14 @@ import json, os
 import bdkpython as bdk
 from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
 from .gui.qt.utxo_list import UTXOList
+from .config import UserConfig
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
-    def __init__(self, network=Network.REGTEST):
+    def __init__(self):
         super().__init__()
-        self.network = network
         self.qt_wallets :Dict[QTWallet] = {}
         self.fx = None
-        self.config_file = '.bitcoin_safe.config'
 
         self.signals = Signals()
         #connect the listeners
@@ -49,7 +48,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
         self.blockchain_type = BlockchainType.CompactBlockFilter
         
-        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.network)
+        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.config.network)
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_single_signature)
         self.welcome_screen.signal_onclick_multisig_signature.connect(self.click_multisig_signature)
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
@@ -91,20 +90,15 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             print('is bdk.TransactionDetails')
                         
                         
-        viewer = UITX_Viewer(tx, self.signals, network=self.network)         
+        viewer = UITX_Viewer(tx, self.signals, network=self.config.network)         
         
         add_tab_to_tabs(self.tab_wallets, viewer.main_widget, read_QIcon("offline_tx.png"), "Transaction", "tx", focus=True)
         
         
         
     def open_last_opened_wallets(self):
-        if not os.path.isfile(self.config_file):
-            return
-        storage = Storage()
-        application_data = json.loads( storage.load(None, self.config_file)   )
-        
         opened_wallets = 0
-        for file_path in application_data['last_wallet_files']:
+        for file_path in self.config.last_wallet_files:
             n = int(self.open_wallet(file_path=file_path) )
             opened_wallets += n
         
@@ -127,10 +121,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             password = self.ui_password_question.ask_for_password()        
              
         try:
-            wallet = Wallet.load(password, file_path)
+            wallet = Wallet.load(file_path, password)
         except:
             self.show_error('Error. Wallet could not be loaded. Please try another password.')
             raise
+        print(wallet)
         qt_wallet = self.add_qt_wallet(wallet)        
         qt_wallet.password = password        
         qt_wallet.sync()
@@ -159,7 +154,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def click_custom_signature(self):     
         return self.next_step_after_welcome_screen((3,5))
         
-        
 
     def new_wallet(self):                   
         self.welcome_screen.add_new_wallet_welcome_tab()
@@ -171,7 +165,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def next_step_after_welcome_screen(self, m_of_n) -> QTWallet:
         id = self.new_wallet_id()   
         m,n = m_of_n
-        wallet = Wallet(id=id, threshold=m, signers=n,  blockchain_choice=self.blockchain_type, network=Network.REGTEST)         
+        wallet = Wallet(id=id, threshold=m, signers=n,  blockchain_choice=self.blockchain_type, network=self.config.network)         
         return self.add_qt_wallet(wallet)
         
         
@@ -190,7 +184,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
     def import_descriptor(self):
         descriptor = self.text_descriptor.toPlainText()
-        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=Network.REGTEST)         
+        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=self.config.network)         
         wallet.create_descriptor_wallet(descriptor)  
               
         self.add_qt_wallet(wallet) 
@@ -198,7 +192,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
     def import_seed(self):
         seed = self.text_seed.toPlainText()
-        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=Network.REGTEST)         
+        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=self.config.network)         
         wallet.create_seed_wallet(seed)
         self.qt_wallets[wallet.id] = QTWallet(wallet, self.tab_wallets, self.config, self.signals)
 
@@ -259,20 +253,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def sync(self):   
         for qt_wallet in self.qt_wallets.values():        
             qt_wallet.sync()     
-                        
 
-
-
+        
     def closeEvent(self, event):
-        storage = Storage()
-        human_readable = True
-        application_data =  {
-            'last_wallet_files': [qt_wallet.wallet.basename()  for qt_wallet in self.qt_wallets.values()]
-        }
-        storage.save(json.dumps(application_data, indent=4 if human_readable else None,
-                                sort_keys=bool(human_readable),                                
-                                ), None, '.bitcoin_safe.config')
-                        
+        self.config.last_wallet_files = [os.path.join( self.config.wallet_dir,  qt_wallet.wallet.basename())
+                                         for qt_wallet in self.qt_wallets.values()]
+        self.config.save()                        
         super().closeEvent(event)
                     
 

@@ -4,7 +4,7 @@ from functools import partial
 from typing import Callable
 
 from ...i18n import _
-from ...simple_config import SimpleConfig
+from ...config import UserConfig
 
 from .util import ButtonsTextEdit, MessageBoxMixin, ColorScheme, read_QIcon
 from .util import get_iconname_camera, get_iconname_qrcode
@@ -12,7 +12,7 @@ from .util import get_iconname_camera, get_iconname_qrcode
 
 class ShowQRTextEdit(ButtonsTextEdit):
 
-    def __init__(self, text=None, *, config: SimpleConfig):
+    def __init__(self, text=None, *, config: UserConfig):
         ButtonsTextEdit.__init__(self, text)
         self.setReadOnly(True)
         self.add_qr_show_button(config=config)
@@ -29,7 +29,7 @@ class ScanQRTextEdit(ButtonsTextEdit, MessageBoxMixin):
     def __init__(
             self, text="", allow_multi: bool = False,
             *,
-            config: SimpleConfig,
+            config: UserConfig,
             setText: Callable[[str], None] = None,
             is_payto = False,
     ):
@@ -79,7 +79,7 @@ class ScanQRTextEdit(ButtonsTextEdit, MessageBoxMixin):
 
 class ScanShowQRTextEdit(ButtonsTextEdit, MessageBoxMixin):
 
-    def __init__(self, text="", allow_multi: bool = False, *, config: SimpleConfig):
+    def __init__(self, text="", allow_multi: bool = False, *, config: UserConfig):
         ButtonsTextEdit.__init__(self, text)
         self.setReadOnly(False)
         self.add_qr_input_combined_button(config=config, show_error=self.show_error, allow_multi=allow_multi)

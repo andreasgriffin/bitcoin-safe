@@ -39,9 +39,9 @@ from .category_list import CategoryEditor
 from bitcoin_safe.wallet import Wallet
 
 from ...i18n import _
-from ...util import is_address
+from ...util import is_address, Satoshis, format_satoshis
 
-from .util import ColorScheme, MONOSPACE_FONT, EnterButton,   format_amount, format_amount_and_units, MessageBoxMixin
+from .util import ColorScheme, MONOSPACE_FONT, EnterButton,    MessageBoxMixin
 from .my_treeview import MyTreeView
 import bdkpython as bdk
 from ...signals import Signals
@@ -115,7 +115,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             labels = [""] * len(self.Columns)
             labels[self.Columns.OUTPOINT] = str(name)
             labels[self.Columns.ADDRESS] = self.wallet.get_utxo_address(utxo).as_string()
-            labels[self.Columns.AMOUNT] = format_amount(utxo.txout.value, whitespaces=True)
+            labels[self.Columns.AMOUNT] = format_satoshis(utxo.txout.value)
             utxo_item = [QStandardItem(x) for x in labels]
             self.set_editability(utxo_item)
             utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_PREVOUT_STR)
@@ -154,12 +154,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         for col in utxo_item:
             col.setBackground(color)
             col.setToolTip(tooltip)
-        if self.wallet.is_frozen_address(address):
-            utxo_item[self.Columns.ADDRESS].setBackground(ColorScheme.BLUE.as_color(True))
-            utxo_item[self.Columns.ADDRESS].setToolTip(_('Address is frozen'))
-        if self.wallet.is_frozen_coin(utxo):
-            utxo_item[self.Columns.OUTPOINT].setBackground(ColorScheme.BLUE.as_color(True))
-            utxo_item[self.Columns.OUTPOINT].setToolTip(f"{key}\n{_('Coin is frozen')}")
 
         utxo_item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
 
@@ -169,11 +163,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         items = self.selected_in_column(self.Columns.OUTPOINT)
         return [x.data(self.ROLE_PREVOUT_STR) for x in items]
 
-    def _filter_frozen_coins(self, coins: List[PartialTxInput]) -> List[PartialTxInput]:
-        coins = [utxo for utxo in coins
-                 if (not self.wallet.is_frozen_address(utxo.address) and
-                     not self.wallet.is_frozen_coin(utxo))]
-        return coins
 
     def get_spend_list(self) -> Optional[Sequence[PartialTxInput]]:
         if not bool(self._spend_set):
@@ -222,29 +211,20 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         if len(coins) == 1:
             utxo = coins[0]
             addr = utxo.address
-            menu_freeze = menu.addMenu(_("Freeze"))
-            if not self.wallet.is_frozen_coin(utxo):
-                menu_freeze.addAction(_("Freeze Coin"), lambda: self.wallet.set_frozen_state_of_coins([utxo], True))
-            else:
-                menu_freeze.addAction(_("Unfreeze Coin"), lambda: self.wallet.set_frozen_state_of_coins([utxo], False))
-            if not self.wallet.is_frozen_address(addr):
-                menu_freeze.addAction(_("Freeze Address"), lambda: self.wallet.set_frozen_state_of_addresses([addr], True))
-            else:
-                menu_freeze.addAction(_("Unfreeze Address"), lambda: self.wallet.set_frozen_state_of_addresses([addr], False))
         elif len(coins) > 1:  # multiple items selected
             menu.addSeparator()
             addrs = [utxo.address for utxo in coins]
-            is_coin_frozen = [self.wallet.is_frozen_coin(utxo) for utxo in coins]
-            is_addr_frozen = [self.wallet.is_frozen_address(utxo.address) for utxo in coins]
-            menu_freeze = menu.addMenu(_("Freeze"))
-            if not all(is_coin_frozen):
-                menu_freeze.addAction(_("Freeze Coins"), lambda: self.wallet.set_frozen_state_of_coins(coins, True))
-            if any(is_coin_frozen):
-                menu_freeze.addAction(_("Unfreeze Coins"), lambda: self.wallet.set_frozen_state_of_coins(coins, False))
-            if not all(is_addr_frozen):
-                menu_freeze.addAction(_("Freeze Addresses"), lambda: self.wallet.set_frozen_state_of_addresses(addrs, True))
-            if any(is_addr_frozen):
-                menu_freeze.addAction(_("Unfreeze Addresses"), lambda: self.wallet.set_frozen_state_of_addresses(addrs, False))
+            # is_coin_frozen = [self.wallet.is_frozen_coin(utxo) for utxo in coins]
+            # is_addr_frozen = [self.wallet.is_frozen_address(utxo.address) for utxo in coins]
+            # menu_freeze = menu.addMenu(_("Freeze"))
+            # if not all(is_coin_frozen):
+            #     menu_freeze.addAction(_("Freeze Coins"), lambda: self.wallet.set_frozen_state_of_coins(coins, True))
+            # if any(is_coin_frozen):
+            #     menu_freeze.addAction(_("Unfreeze Coins"), lambda: self.wallet.set_frozen_state_of_coins(coins, False))
+            # if not all(is_addr_frozen):
+            #     menu_freeze.addAction(_("Freeze Addresses"), lambda: self.wallet.set_frozen_state_of_addresses(addrs, True))
+            # if any(is_addr_frozen):
+            #     menu_freeze.addAction(_("Unfreeze Addresses"), lambda: self.wallet.set_frozen_state_of_addresses(addrs, False))
 
         menu.exec_(self.viewport().mapToGlobal(position))
 

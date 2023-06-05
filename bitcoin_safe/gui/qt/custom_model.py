@@ -7,11 +7,14 @@ logger = logging.getLogger(__name__)
 from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import (Qt, QPersistentModelIndex, QModelIndex, QAbstractItemModel,
                           QSortFilterProxyModel, QItemSelectionModel, QDate, QPoint)
+from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont
 
 
-class CustomNode:
+class CustomNode(QStandardItem):
 
     def __init__(self, model: 'CustomModel', data):
+        super().__init__()
+        
         self.model = model
         self._data = data
         self._children = []

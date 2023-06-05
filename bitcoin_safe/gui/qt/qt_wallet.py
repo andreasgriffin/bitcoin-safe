@@ -1,8 +1,9 @@
 import logging
+from bitcoin_safe.config import UserConfig
 logger = logging.getLogger(__name__)
 
 from bitcoin_safe.wallet import Wallet
-from .util import format_amount, read_QIcon
+from .util import read_QIcon
 from typing import List
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -12,11 +13,11 @@ from .balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNIN
 from .history_list import HistoryList, HistoryModel
 from .address_list import AddressList
 from .utxo_list import UTXOList
-from .util import add_tab_to_tabs, format_amount_and_units, format_amount
+from .util import add_tab_to_tabs 
 from .taglist import AddressDragInfo
 from .ui_tx import UITX_Creator, UITX_Viewer
 
-from ...util import start_in_background_thread
+from ...util import start_in_background_thread, Satoshis, format_satoshis
 from ...signals import Signals
 from ...i18n import _
 from .ui_settings import WalletSettingsUI
@@ -24,6 +25,7 @@ from .password_question import PasswordQuestion
 from .category_list import CategoryEditor
 from ...tx import TXInfos
 import bdkpython as bdk
+import os
 
 class StatusBarButton(QToolButton):
     # note: this class has a custom stylesheet applied in stylesheet_patcher.py
@@ -84,7 +86,7 @@ class FX():
  
 
 class QTWallet():
-    def __init__(self, wallet:Wallet, config, signals:Signals):    
+    def __init__(self, wallet:Wallet, config:UserConfig, signals:Signals):    
         self.signals = signals
         self.set_wallet(wallet)
         self.password = None
@@ -108,9 +110,8 @@ class QTWallet():
     
     def save(self): 
         self.password = self.ui_password_question.ask_for_password()  if not self.password else self.password
-        self.wallet.save(self.password, self.wallet.basename())
+        self.wallet.save( os.path.join( self.config.wallet_dir,  self.wallet.basename()), password=self.password)
     
-                
         
     def cancel_setting_changes(self):
         self.wallet_settings_ui.set_all_ui_from_wallet(self.wallet)
@@ -185,7 +186,7 @@ class QTWallet():
             return sum([utxo.txout.value for utxo in utxos])
             
         
-        return [f'{len(d.get(category, []))} Inputs: {format_amount(sum_value(category))} Sats' for category in self.wallet.categories]
+        return [f'{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category))} Sats' for category in self.wallet.categories]
 
     def _create_send_tab(self, tabs): 
         utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
@@ -350,7 +351,7 @@ class QTWallet():
                     (_('On-chain'), COLOR_CONFIRMED, confirmed), 
                 ])
                 balance = confirmed + unconfirmed + unmatured + frozen  
-                balance_text =  _("Balance") + ": %s "%(format_amount_and_units(balance))
+                balance_text =  _("Balance") + ": %s "%(format_satoshis(balance, str_unit=True))
                 # append fiat balance and price
                 if self.fx.is_enabled():
                     balance_text += self.fx.get_fiat_status_text(balance,

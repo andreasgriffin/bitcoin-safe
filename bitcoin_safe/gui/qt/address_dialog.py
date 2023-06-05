@@ -23,6 +23,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+
+from bitcoin_safe.util import format_fee_satoshis
 logger = logging.getLogger(__name__)
 
 from typing import TYPE_CHECKING
@@ -33,10 +35,11 @@ from bitcoin_safe.gui import qt
 
 from ...i18n import _
 
-from .util import WindowModalDialog, ButtonsLineEdit, ShowQRLineEdit, ColorScheme, Buttons, CloseButton, format_amount
+from .util import WindowModalDialog, ButtonsLineEdit, ShowQRLineEdit, ColorScheme, Buttons, CloseButton
 from .history_list import HistoryList, HistoryModel
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
+from ...util import format_satoshis
 
 
 
@@ -113,7 +116,7 @@ class AddressDialog(WindowModalDialog):
         vbox.addWidget(self.hw)
 
         vbox.addLayout(Buttons(CloseButton(self)))
-        self.format_amount = format_amount
+        self.format_amount = format_satoshis
         addr_hist_model.refresh('address dialog constructor')
 
     def show_qr(self):

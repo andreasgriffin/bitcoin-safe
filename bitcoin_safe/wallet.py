@@ -13,12 +13,13 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union, NamedTuple, Sequ
 from .keystore import KeyStore, KeyStoreType, KeyStoreTypes
 import bdkpython as bdk
 from .pythonbdk_types import *
-from .storage import Storage
+from .storage import Storage, ClassSerializer, BaseSaveableClass
 from threading import Lock
 from .descriptors import AddressType, AddressTypes, get_default_address_type, generate_bdk_descriptors, descriptor_infos, generate_output_descriptors_from_keystores
 import json
 import enum
 from .tx import TXInfos
+from .util import clean_list, Satoshis
 
 class OutputInfo:
     def __init__(self, outpoint:OutPoint, tx:bdk.Transaction) -> None:
@@ -38,10 +39,13 @@ class BlockchainType(enum.Enum):
     Electrum = enum.auto()
             
             
-class Wallet():
+class Wallet(BaseSaveableClass):
     """
     If any bitcoin logic (ontop of bdk) has to be done, then here is the place
     """
+    version = 0.1
+    global_variables = globals()
+
     def __init__(self, id, threshold:int, signers:int = 1, network=bdk.Network.REGTEST, blockchain_choice=BlockchainType.CompactBlockFilter, keystores:List[KeyStore]=None, address_type:AddressType=None, gap=200, gap_change=20, descriptors=None, categories=None, category=None, labels=None):
         self.bdkwallet = None
         self.network = network
@@ -54,6 +58,7 @@ class Wallet():
         self.blockchain_choice = blockchain_choice
         self.cache = {}
         self.write_lock = Lock()
+        self.local_txs = []
         self.categories = categories if categories else []
         self.labels = labels if labels else {}
         self.category = category if category else {}
@@ -87,27 +92,36 @@ class Wallet():
                                                             )        
     
     def serialize(self):
-        d = {}
+        d = super().serialize()
 
-        keys = ['id', 'threshold', 'gap', 'gap_change', 'blockchain_choice', 'keystores', 'network', 'categories', 'category', 'labels']
-        full_dict = self.__dict__
+        keys = ['id', 
+                'threshold', 
+                'gap', 
+                'gap_change', 
+                'blockchain_choice', 
+                'keystores', 
+                'network', 
+                'categories', 
+                'category', 
+                'labels',
+                ]
+        full_dict = self.__dict__.copy()
         for k in keys:            
             d[k] = full_dict[k]
 
         d['descriptors'] = [descriptor.as_string() for descriptor in self.descriptors]
         d['tips'] = self.tips
-
-        d["__class__"] = self.__class__.__name__
+        d['version'] = self.version
         return d
         
     @classmethod
     def deserialize(cls, dct):
-        assert dct.get("__class__") == cls.__name__
+        super().deserialize(dct)
         dct['descriptors'] = [bdk.Descriptor(descriptor, network=dct['network'])  for descriptor in dct['descriptors']]
-        del dct["__class__"]
 
         tips = dct['tips']
         del dct['tips']
+        del dct['version']
                 
         wallet = Wallet(**dct)
         
@@ -116,46 +130,6 @@ class Wallet():
                 
         return wallet
         
-            
-    def save(self, password, filename):
-        human_readable = not bool(password)
-        # special json
-        def general_serializer(obj):
-            if isinstance(obj, enum.Enum):
-                return {"__enum__": True, "name": obj.__class__.__name__, "value": obj.name}
-            if hasattr(obj, 'serialize'):
-                return obj.serialize()
-            # Fall back to the default JSON serializer
-            return json.JSONEncoder().default(obj)                            
-        
-        storage = Storage()
-        storage.save(json.dumps(self, default=general_serializer, 
-                                indent=4 if human_readable else None,
-                                sort_keys=bool(human_readable),                                
-                                ), password, filename)
-        
-    
-    @classmethod
-    def load(cls, password, filename): # returns a Wallet instance
-        def general_deserializer(dct):
-            cls_string = dct.get("__class__")  # e.g. KeyStore
-            if cls_string and cls_string in globals():
-                obj_cls = globals()[cls_string]
-                if hasattr(obj_cls, 'deserialize'):  # is there KeyStore.deserialize ? 
-                    return obj_cls.deserialize(dct)  # do: KeyStore.deserialize(**dct)
-            if dct.get("__enum__"):
-                obj_cls = globals().get(dct["name"])                
-                if not obj_cls:
-                    obj_cls = getattr(bdk, dct["name"])  # if the class name is not imported directly, then try bdk
-                if obj_cls:
-                    return getattr(obj_cls, dct["value"])
-            # For normal cases, json.loads will handle default JSON data types
-            # No need to use json.Decoder here, just return the dictionary as-is
-            return dct
-
-        storage = Storage()
-        json_string = storage.load(password, filename)
-        return json.loads(json_string, object_hook=general_deserializer)
         
     def basename(self):
         import string, os
@@ -405,13 +379,12 @@ class Wallet():
             add = bdk.Address.from_script(output.script_pubkey, self.network) if output.value != 0 else None
             addresses.append(add)
         return addresses
-            
+                
     
-    def get_bdk_tx(self, txid):
-        txs = list(self.get_list_transactions())
-        txids = [tx.txid for tx in txs]
-        if txid in txids:
-            return txs[txids.index(txid)]
+    def get_tx(self, txid)-> bdk.TransactionDetails:
+        txs = {tx.txid:tx for tx in  self.get_list_transactions()}
+        if txid in txs:
+            return txs[txid]
 
 
     def get_tx_parents(self, txid) -> Dict:
@@ -427,14 +400,14 @@ class Wallet():
         result = {}
         parents = []
         uncles = []
-        tx = self.get_bdk_tx(txid)
+        tx = self.get_tx(txid)
         assert tx, f"cannot find {txid}"
         for i, txin in enumerate(tx.transaction.input()):
             _txid = txin.previous_output.txid 
             parents.append(_txid)
             # detect address reuse
             addr = self.get_txin_address(txin)
-            received, sent = self.bdk_received_and_send_involving_address(addr)
+            received, sent = self.get_received_and_send_involving_address(addr)
             # if len(sent) > 1:
             #     my_txid, my_height, my_pos = sent[txin.prevout.to_str()]
             #     assert my_txid == txid
@@ -453,7 +426,7 @@ class Wallet():
 
     def get_txin_address(self, txin):
         previous_output = txin.previous_output
-        tx = self.get_bdk_tx(previous_output.txid)
+        tx = self.get_tx(previous_output.txid)
         if tx:        
             output_for_input = tx.transaction.output()[previous_output.vout]
             return bdk.Address.from_script(output_for_input.script_pubkey, self.network)
@@ -581,7 +554,6 @@ class Wallet():
     def get_all_known_addresses_beyond_gap_limit(self):
         return []
         
-    @cache_method
     def get_address_of_txout(self, txout:bdk.TxOut) -> str:
         if txout.value == 0: 
             return None
@@ -616,7 +588,7 @@ class Wallet():
         balances : Dict[str, Tuple[int, int, int]] = defaultdict(zero_balances)
         
         for i, utxo in enumerate(utxos):
-            tx = self.get_bdk_tx(utxo.outpoint.txid)
+            tx = self.get_tx(utxo.outpoint.txid)
 
             for txout in tx.transaction.output():
                 address = self.get_address_of_txout(txout)
@@ -635,11 +607,11 @@ class Wallet():
         return self.get_address_balances()[address]
     
     @cache_method
-    def get_list_transactions(self):
+    def get_list_transactions(self) -> List[bdk.TransactionDetails]:
         return self.bdkwallet.list_transactions(True)
     
     @cache_method
-    def get_received_send_maps(self):
+    def get_received_send_maps(self) -> Tuple[Dict[str, List[OutputInfo]], Dict[str, List[OutputInfo]]]:
         hash_outpoint_to_address: Dict[int, str]     = {}  # hash(out_point), address
         received:  Dict[str, List[OutputInfo]] = {}   #  address: OutputInfo
         send:      Dict[str, List[OutputInfo]] = {}   #  address: OutputInfo
@@ -670,13 +642,13 @@ class Wallet():
         
         
         
-    def bdk_received_and_send_involving_address(self, address):
+    def get_received_and_send_involving_address(self, address) -> Tuple[List[OutputInfo], List[OutputInfo]]:
         received, send = self.get_received_send_maps()        
-        return received.get(address, []), send.get(address, [])
+        return received.get(address, []).copy(), send.get(address, []).copy()
         
-    def bdk_txs_involving_address(self, address):   
-        received, send = self.bdk_received_and_send_involving_address(address)
-        return received + send 
+    def get_txs_involving_address(self, address) -> List[OutputInfo]:   
+        received, send = self.get_received_and_send_involving_address(address)
+        return received.copy() + send.copy()
         
 
     def get_utxos(self) -> List[bdk.LocalUtxo]:
@@ -686,10 +658,10 @@ class Wallet():
         """
         Check if any tx had this address as an output
         """
-        return bool(self.bdk_txs_involving_address(address))
+        return bool(self.get_txs_involving_address(address))
 
     def get_address_history_len(self, address): 
-        return len(self.bdk_txs_involving_address(address))
+        return len(self.get_txs_involving_address(address))
 
     @cache_method
     def get_addresses_and_address_infos(self) -> Tuple[List[str], List[bdk.AddressInfo]]:
@@ -713,20 +685,46 @@ class Wallet():
         
     def get_category_for_address(self, address):
         return self.category.get(address, '')
+    
+    def get_categories_for_txid(self, txid):        
+        tx = self.get_tx(txid)
+        l = [[self.get_address_of_txout(output), output.value] for output in tx.transaction.output()]
+        logger.debug(str((txid[:10], l)))
+        l = clean_list([self.get_category_for_address(self.get_address_of_txout(output)) 
+                            for output in tx.transaction.output()])
+        return l
         
-    def get_label_for_address(self, address):
-        return self.labels.get(address, '')
     
-    def get_label_for_txid(self, txid):
-        return self.labels.get(txid, '')
     
-    def is_frozen_address(self, address):
-        return False
-    def is_frozen_coin(self, utxo):
-        return False
+    def get_label_for_address(self, address, autofill_from_txs=True):
+        label = self.labels.get(address, '')
+        
+        if not label and autofill_from_txs:
+            txs = self.get_txs_involving_address(address)
+                        
+            tx_labels = clean_list([self.get_label_for_txid(tx.tx.txid, autofill_from_addresses=False)
+                              for tx in txs ])
+            label = ', '.join(tx_labels)
+
+        return label
+    
+    
+    def get_label_for_txid(self, txid, autofill_from_addresses=True):
+        label = self.labels.get(txid, '')
+        
+        if not label and autofill_from_addresses:
+            tx = self.get_tx(txid)
+            address_labels = clean_list([self.get_label_for_address(self.get_address_of_txout(output), autofill_from_txs=False) 
+                              for output in tx.transaction.output()])
+            label = ', '.join(address_labels)
+        return label
+    
     
     def set_label(self, key, label):
+        if self.labels.get(key, None) == label:
+            return False
         self.labels[key] = label
+        return True
 
     def set_category(self, key, category):
         if category not in self.categories:
@@ -749,17 +747,17 @@ class Wallet():
         """
         
         balance = self.bdkwallet.get_balance() 
-        return [0, balance.immature, balance.trusted_pending + balance.untrusted_pending , balance.confirmed]
+        return [0, Satoshis(balance.immature), Satoshis(balance.trusted_pending + balance.untrusted_pending ), Satoshis(balance.confirmed)]
         
         
         
         
     def get_utxo_name(self, utxo):
-        tx = self.get_bdk_tx( utxo.outpoint.txid)
+        tx = self.get_tx( utxo.outpoint.txid)
         return f'{tx.txid}:{utxo.outpoint.vout}'
 
     def get_utxo_address(self, utxo):
-        tx = self.get_bdk_tx( utxo.outpoint.txid)
+        tx = self.get_tx( utxo.outpoint.txid)
         return self.output_addresses(tx)[utxo.outpoint.vout]
 
         
@@ -789,6 +787,7 @@ class Wallet():
                 'balance': Satoshis(balance),
                 'date': timestamp_to_datetime(timestamp),
                 'label': self.get_label_for_txid(tx.txid),
+                'categories': self.get_categories_for_txid(tx.txid),
                 'txpos_in_block': None, # not in bdk
             }
             transactions.append( d)
@@ -806,7 +805,7 @@ class Wallet():
             num_blocks_remainining = max(0, num_blocks_remainining)
             return 2, f'in {num_blocks_remainining} blocks'
         if conf == 0:
-            tx = self.get_bdk_tx(txid)
+            tx = self.get_tx(txid)
             if not tx:
                 return 2, 'unknown'
             is_final =  True # TODO: tx and tx.is_final()

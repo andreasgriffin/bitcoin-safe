@@ -12,3 +12,4 @@ qasync==0.24.0
 qrcode==7.4.2
 QtRangeSlider==0.1.5
 setuptools==67.7.2
+appdirs==1.4.4

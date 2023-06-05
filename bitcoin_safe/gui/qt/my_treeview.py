@@ -57,6 +57,9 @@ from PySide2.QtWidgets import (QPushButton, QLabel, QMessageBox, QHBoxLayout,
                              QGraphicsEffect, QGraphicsScene, QGraphicsPixmapItem, QSizePolicy)
 
 from .util import read_QIcon, do_copy
+from PySide2.QtWidgets import QApplication, QTreeView, QStyledItemDelegate
+from PySide2.QtGui import QTextDocument, QAbstractTextDocumentLayout, QPalette
+from PySide2.QtCore import QSize, Qt
 
 
 
@@ -126,6 +129,7 @@ class MySortModel(QSortFilterProxyModel):
 class ElectrumItemDelegate(QStyledItemDelegate):
     def __init__(self, tv: 'MyTreeView'):
         super().__init__(tv)
+        self.icon_shift_right = 30
         self.tv = tv
         self.opened = None
         def on_closeEditor(editor: QLineEdit, hint):
@@ -143,66 +147,45 @@ class ElectrumItemDelegate(QStyledItemDelegate):
         self.closeEditor.connect(on_closeEditor)
         self.commitData.connect(on_commitData)
 
+
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        option.displayAlignment = self.tv.column_alignments.get(index.column(), Qt.AlignLeft) 
+
     def createEditor(self, parent, option, idx):
         self.opened = QPersistentModelIndex(idx)
         self.tv.is_editor_open = True
         return super().createEditor(parent, option, idx)
 
+
+
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, idx: QModelIndex) -> None:
         custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
-        
         if custom_data is None:
             return super().paint(painter, option, idx)
         else:
-            # let's call the default paint method first; to paint the background (e.g. selection)
-            super().paint(painter, option, idx)
-            # and now paint on top of that
-
-            # Set font and create QFontMetrics
-            font = painter.font()
-            metrics = QFontMetrics(font)
-            
-            # Convert custom_data to str if it's not already
-            if not isinstance(custom_data, str):
-                custom_data = str(custom_data)
-
-            # Calculate the position to draw the text at
-            text_width = metrics.horizontalAdvance(custom_data)
-            x = option.rect.x() + (option.rect.width() - text_width) // 2
-            y = option.rect.y() + ((option.rect.height() - metrics.height()) // 2) + metrics.ascent()
-
-            # Draw the custom_data as text
-            painter.drawText(x, y, custom_data)
+            custom_data.paint(painter, option, idx)
             
             
+
     def helpEvent(self, evt: QHelpEvent, view: QAbstractItemView, option: QStyleOptionViewItem, idx: QModelIndex) -> bool:
         custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
         if custom_data is None:
             return super().helpEvent(evt, view, option, idx)
         else:
             if evt.type() == QEvent.ToolTip:
-                return False # no tooltips for now
-                # if custom_data.show_tooltip(evt):
-                #     return True
+                if custom_data.show_tooltip(evt):
+                    return True
         return super().helpEvent(evt, view, option, idx)
 
-    # def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex) -> QSize:
-    #     custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
-    #     if not custom_data:
-    #         return super().sizeHint(option, idx)
-    #     else:
-    #         default_size = super().sizeHint(option, idx)
-            
-    #         font = option.font
-    #         metrics = QFontMetrics(font)
-
-    #         # Convert custom_data to str if it's not already
-    #         if not isinstance(custom_data, str):
-    #             custom_data = str(custom_data)
-
-    #         # Calculate the size hint based on the custom_data
-    #         bounding_rect = metrics.boundingRect(custom_data)
-    #         return QSize(bounding_rect.width(), bounding_rect.height())
+    def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex) -> QSize:
+        custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
+        if custom_data is None:
+            return super().sizeHint(option, idx)
+        else:
+            # default_size = super().sizeHint(option, idx)
+            return custom_data.sizeHint(option, idx)
+                    
         
 class MyTreeView(QTreeView):
 
@@ -212,6 +195,7 @@ class MyTreeView(QTreeView):
     ROLE_FILTER_DATA    = Qt.UserRole + 103
 
     filter_columns: Iterable[int]
+    column_alignments: Dict[int, int] = {}
 
     class BaseColumnsEnum(enum.IntEnum):
         @staticmethod
@@ -260,6 +244,12 @@ class MyTreeView(QTreeView):
 
         self._default_bg_brush = QStandardItem().background()
         self.proxy = None # history, and address tabs use a proxy
+
+
+        # Here's where we set the font globally for the view
+        font = QFont("Arial", 10)
+        self.setFont(font)
+
 
     def create_menu(self, position: QPoint) -> None:
         pass

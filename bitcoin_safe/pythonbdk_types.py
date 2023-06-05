@@ -43,7 +43,7 @@ class AddressInfoMin():
         return AddressInfoMin(bdk_address_info.address.as_string(), bdk_address_info.index, bdk_address_info.keychain)
         
     def serialize(self):
-        d = self.__dict__
+        d = self.__dict__.copy()
         d["__class__"] = self.__class__.__name__
         return d
         

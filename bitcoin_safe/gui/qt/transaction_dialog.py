@@ -26,6 +26,8 @@
 import asyncio
 
 import logging
+
+from ...util import Satoshis, format_satoshis
 logger = logging.getLogger(__name__)
 
 import concurrent.futures
@@ -56,7 +58,7 @@ from .util import (MessageBoxMixin, read_QIcon, Buttons, icon_path,
                    get_iconname_qrcode, format_fiat_and_units)
 from .rate_limiter import rate_limited
 from .my_treeview import create_toolbar_with_menu
-from .util import do_copy, format_amount 
+from .util import do_copy 
 
 
 
@@ -205,7 +207,7 @@ class TxInOutWidget(QWidget):
                 cursor.insertText(" " * max(0, 42 - len(address_str)), tcf_ext)  # padding
                 cursor.insertText('\t', tcf_ext)
                 # value
-                value_str = format_amount(value, whitespaces=True)
+                value_str = format_satoshis(value)
                 cursor.insertText(value_str, tcf_ext)
             cursor.insertBlock()
 
@@ -301,7 +303,7 @@ class TxInOutWidget(QWidget):
                 copy_list += [(_("Copy Address"), lambda: do_copy(addr))]
             txin_value = self.wallet.adb.get_txin_value(txin)
             if txin_value:
-                value_str = format_amount(txin_value)
+                value_str = format_satoshis(txin_value)
                 copy_list += [(_("Copy Amount"), lambda: do_copy(value_str))]
 
         for item in show_list:
@@ -343,7 +345,7 @@ class TxInOutWidget(QWidget):
                 show_list += [(_("Address Details"), lambda: self.signals.show_address(addr, parent=self))]
             copy_list += [(_("Copy Address"), lambda: do_copy(addr))]
         txout_value = self.tx.outputs()[txout_idx].value
-        value_str = format_amount(txout_value)
+        value_str = format_satoshis(txout_value)
         copy_list += [(_("Copy Amount"), lambda: do_copy(value_str))]
 
         for item in show_list:
@@ -781,9 +783,9 @@ class TxDialog(QDialog, MessageBoxMixin):
             amount_str = ''
         else:
             if amount > 0:
-                amount_str = _("Amount received:") + ' %s'% format_amount(amount) + ' ' + base_unit
+                amount_str = _("Amount received:") + ' %s'% format_satoshis(amount, str_unit=base_unit)
             else:
-                amount_str = _("Amount sent:") + ' %s' % format_amount(-amount) + ' ' + base_unit
+                amount_str = _("Amount sent:") + ' %s' % format_satoshis(-amount, str_unit=base_unit)
             if fx.is_enabled():
                 if tx_item_fiat:  # historical tx -> using historical price
                     amount_str += ' ({})'.format(tx_item_fiat['fiat_value'].to_ui_string())
@@ -803,7 +805,7 @@ class TxDialog(QDialog, MessageBoxMixin):
             else:
                 fee_str = _("Fee") + ': ' + _("unknown")
         else:
-            fee_str = _("Fee") + f': {format_amount(fee)} {base_unit}'
+            fee_str = _("Fee") + f': {format_satoshis(fee, str_unit=base_unit)}'
             if fx.is_enabled():
                 if tx_item_fiat:  # historical tx -> using historical price
                     fee_str += ' ({})'.format(tx_item_fiat['fiat_fee'].to_ui_string())
@@ -830,17 +832,7 @@ class TxDialog(QDialog, MessageBoxMixin):
             self.fee_warning_icon.setVisible(bool(risk_of_burning_coins))
         self.fee_label.setText(fee_str)
         self.size_label.setText(size_str)
-        if ln_amount is None or ln_amount == 0:
-            ln_amount_str = ''
-        elif ln_amount > 0:
-            ln_amount_str = _('Amount received in channels') + ': ' + format_amount(ln_amount) + ' ' + base_unit
-        else:
-            assert ln_amount < 0, f"{ln_amount!r}"
-            ln_amount_str = _('Amount withdrawn from channels') + ': ' + format_amount(-ln_amount) + ' ' + base_unit
-        if ln_amount_str:
-            self.ln_amount_label.setText(ln_amount_str)
-        else:
-            self.ln_amount_label.hide()
+
         show_psbt_only_widgets = isinstance(self.tx, PartialTransaction)
         for widget in self.psbt_only_widgets:
             if isinstance(widget, QMenu):

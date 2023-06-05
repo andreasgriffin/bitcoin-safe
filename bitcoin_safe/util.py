@@ -51,12 +51,14 @@ import secrets
 import functools
 from abc import abstractmethod, ABC
 import socket
+import enum
 
 import aiohttp
 from aiohttp_socks import ProxyConnector, ProxyType
 import aiorpcx
 import certifi
 import dns.resolver
+from PySide2.QtCore import QLocale
 
 from .i18n import _
 
@@ -77,7 +79,6 @@ TX_STATUS = [
 
 
 DEVELOPMENT_PREFILLS = False
-
 
 
 
@@ -131,6 +132,8 @@ from qasync import QThreadExecutor
 
 
 def start_in_background_thread(my_function, name='job', on_finished=None):            
+    # my_function()
+    # on_finished()
     async def outer(my_function, name='job', on_finished=None):                
         if on_finished is None:
             on_finished = lambda: logger.debug(f'{name} finished')
@@ -145,6 +148,7 @@ def start_in_background_thread(my_function, name='job', on_finished=None):
         
 
 def cache_method(func):
+    "Only use this method with arguments that can be represented as a string"
     def wrapper(self, *args, **kwargs):        
         cache_key = f'{func.__name__}({args, kwargs})'
         if self.cache.get(cache_key):
@@ -158,8 +162,11 @@ def cache_method(func):
 
 
 
-def reduce_dict(d):
+def clean_dict(d):
     return {k:v for k,v in d.items() if v}
+
+def clean_list(l):
+    return {v for v in l if v}
 
 
 def is_address(address) -> bool:
@@ -298,7 +305,7 @@ class Satoshis(object):
     def __new__(cls, value):
         self = super(Satoshis, cls).__new__(cls)
         # note: 'value' sometimes has msat precision
-        self.value = value
+        self.value = int(value)
         return self
 
     def __repr__(self):
@@ -666,36 +673,41 @@ assert len(THOUSANDS_SEP) == 1, f"THOUSANDS_SEP has unexpected len. {THOUSANDS_S
 
 
 def format_satoshis(
-        x: Union[int, float, Decimal, str, None],  # amount in satoshis
-        *,
-        num_zeros: int = 0,
-        decimal_point: int = 8,  # how much to shift decimal point to left (default: sat->BTC)
-        precision: int = 0,  # extra digits after satoshi precision
+        x: Union[int, float, Decimal, str, Satoshis, None],  # amount in satoshis
         is_diff: bool = False,  # if True, enforce a leading sign (+/-)
-        whitespaces: bool = False,  # if True, add whitespaces, to align numbers in a column
-        add_thousands_sep: bool = False,  # if True, add whitespaces, for better readability of the numbers
+        add_thousands_sep: bool = True,  # if True, add whitespaces, for better readability of the numbers
+        add_satohis_whitesapces:bool = True,
+        str_unit=None,
 ) -> str:
+    decimal_point = 8
+    
+    
+    locale = QLocale.system()
+    decimal_separator = locale.decimalPoint()
+    
+    
     if x is None:
         return 'unknown'
     if parse_max_spend(x):
         return f'max({x})'
-    assert isinstance(x, (int, float, Decimal)), f"{x!r} should be a number"
+    assert isinstance(x, (int, float, Decimal, Satoshis)), f"{x!r} should be a number"
     # lose redundant precision
-    x = Decimal(x).quantize(Decimal(10) ** (-precision))
-    # format string
-    overall_precision = decimal_point + precision  # max digits after final decimal point
-    decimal_format = "." + str(overall_precision) if overall_precision > 0 else ""
+    x = Decimal(x)
+    
+        
+    # format string        
+    decimal_format = "." + str(decimal_point) if decimal_point > 0 else ""
     if is_diff:
         decimal_format = '+' + decimal_format
     # initial result
     scale_factor = pow(10, decimal_point)
     result = ("{:" + decimal_format + "f}").format(x / scale_factor)
-    if "." not in result: result += "."
-    result = result.rstrip('0')
+
     # add extra decimal places (zeros)
     integer_part, fract_part = result.split(".")
-    if len(fract_part) < num_zeros:
-        fract_part += "0" * (num_zeros - len(fract_part))
+    
+    
+
     # add whitespaces as thousands' separator for better readability of numbers
     if add_thousands_sep:
         sign = integer_part[0] if integer_part[0] in ("+", "-") else ""
@@ -703,20 +715,18 @@ def format_satoshis(
             integer_part = integer_part[1:]
         integer_part = "{:,}".format(int(integer_part)).replace(',', THOUSANDS_SEP)
         integer_part = sign + integer_part
-        fract_part = THOUSANDS_SEP.join(fract_part[i:i+3] for i in range(0, len(fract_part), 3))
+        
+    if add_satohis_whitesapces:
+        fract_part = THOUSANDS_SEP.join([fract_part[0:2], fract_part[2:5], fract_part[5:]  ] )
+        
     result = integer_part + DECIMAL_POINT + fract_part
-    # add leading/trailing whitespaces so that numbers can be aligned in a column
-    if whitespaces:
-        target_fract_len = overall_precision
-        target_integer_len = 14 - decimal_point  # should be enough for up to unsigned 999999 BTC
-        if add_thousands_sep:
-            target_fract_len += max(0, (target_fract_len - 1) // 3)
-            target_integer_len += max(0, (target_integer_len - 1) // 3)
-        # add trailing whitespaces
-        result += " " * (target_fract_len - len(fract_part))
-        # add leading whitespaces
-        target_total_len = target_integer_len + 1 + target_fract_len
-        result = " " * (target_total_len - len(result)) + result
+    
+    
+    def strip(v):
+        return str(v).strip().replace(' ','').replace(THOUSANDS_SEP,'').replace(DECIMAL_POINT,'').replace(',','')
+    # sanity check that the number wasn't changed
+    assert int(strip(result)) == int(strip(x))
+    
     return result
 
 
@@ -902,32 +912,7 @@ signet_block_explorers = {
 
 _block_explorer_default_api_loc = {'tx': 'tx/', 'addr': 'address/'}
 
-
-def block_explorer_info():
-    from . import constants
-    if constants.net.NET_NAME == "testnet":
-        return testnet_block_explorers
-    elif constants.net.NET_NAME == "signet":
-        return signet_block_explorers
-    return mainnet_block_explorers
-
-
-def block_explorer(config: 'SimpleConfig') -> Optional[str]:
-    """Returns name of selected block explorer,
-    or None if a custom one (not among hardcoded ones) is configured.
-    """
-    if config.get('block_explorer_custom') is not None:
-        return None
-    default_ = 'Blockstream.info'
-    be_key = config.get('block_explorer', default_)
-    be_tuple = block_explorer_info().get(be_key)
-    if be_tuple is None:
-        be_key = default_
-    assert isinstance(be_key, str), f"{be_key!r} should be str"
-    return be_key
-
-
-def block_explorer_tuple(config: 'SimpleConfig') -> Optional[Tuple[str, dict]]:
+def block_explorer_tuple(config: 'UserConfig') -> Optional[Tuple[str, dict]]:
     custom_be = config.get('block_explorer_custom')
     if custom_be:
         if isinstance(custom_be, str):
@@ -942,7 +927,7 @@ def block_explorer_tuple(config: 'SimpleConfig') -> Optional[Tuple[str, dict]]:
         return block_explorer_info().get(block_explorer(config))
 
 
-def block_explorer_URL(config: 'SimpleConfig', kind: str, item: str) -> Optional[str]:
+def block_explorer_URL(config: 'UserConfig', kind: str, item: str) -> Optional[str]:
     be_tuple = block_explorer_tuple(config)
     if not be_tuple:
         return
@@ -1142,63 +1127,6 @@ class TxMinedInfo(NamedTuple):
         return None
 
 
-class ShortID(bytes):
-
-    def __repr__(self):
-        return f"<ShortID: {format_short_id(self)}>"
-
-    def __str__(self):
-        return format_short_id(self)
-
-    @classmethod
-    def from_components(cls, block_height: int, tx_pos_in_block: int, output_index: int) -> 'ShortID':
-        bh = block_height.to_bytes(3, byteorder='big')
-        tpos = tx_pos_in_block.to_bytes(3, byteorder='big')
-        oi = output_index.to_bytes(2, byteorder='big')
-        return ShortID(bh + tpos + oi)
-
-    @classmethod
-    def from_str(cls, scid: str) -> 'ShortID':
-        """Parses a formatted scid str, e.g. '643920x356x0'."""
-        components = scid.split("x")
-        if len(components) != 3:
-            raise ValueError(f"failed to parse ShortID: {scid!r}")
-        try:
-            components = [int(x) for x in components]
-        except ValueError:
-            raise ValueError(f"failed to parse ShortID: {scid!r}") from None
-        return ShortID.from_components(*components)
-
-    @classmethod
-    def normalize(cls, data: Union[None, str, bytes, 'ShortID']) -> Optional['ShortID']:
-        if isinstance(data, ShortID) or data is None:
-            return data
-        if isinstance(data, str):
-            assert len(data) == 16
-            return ShortID.fromhex(data)
-        if isinstance(data, (bytes, bytearray)):
-            assert len(data) == 8
-            return ShortID(data)
-
-    @property
-    def block_height(self) -> int:
-        return int.from_bytes(self[:3], byteorder='big')
-
-    @property
-    def txpos(self) -> int:
-        return int.from_bytes(self[3:6], byteorder='big')
-
-    @property
-    def output_index(self) -> int:
-        return int.from_bytes(self[6:8], byteorder='big')
-
-
-def format_short_id(short_channel_id: Optional[bytes]):
-    if not short_channel_id:
-        return _('Not yet available')
-    return str(int.from_bytes(short_channel_id[:3], 'big')) \
-        + 'x' + str(int.from_bytes(short_channel_id[3:6], 'big')) \
-        + 'x' + str(int.from_bytes(short_channel_id[6:], 'big'))
 
 
 def make_aiohttp_session(proxy: Optional[dict], headers=None, timeout=None):
