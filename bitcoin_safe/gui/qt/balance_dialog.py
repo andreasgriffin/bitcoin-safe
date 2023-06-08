@@ -148,8 +148,8 @@ class BalanceDialog(WindowModalDialog):
         self.config = parent.config
         self.fx = parent.fx
 
-        confirmed, unconfirmed, unmatured, frozen, lightning, f_lightning = self.wallet.get_balances_for_piechart()
 
+        confirmed, unconfirmed, unmatured = self.wallet.get_balances_for_piechart()
         frozen_str =  self.config.format_amount_and_units(frozen)
         confirmed_str =  self.config.format_amount_and_units(confirmed)
         unconfirmed_str =  self.config.format_amount_and_units(unconfirmed)
@@ -167,12 +167,10 @@ class BalanceDialog(WindowModalDialog):
         piechart = PieChartWidget(
             max(120, 9 * font_height()),
             [
-                (_('Frozen'), COLOR_FROZEN, frozen),
-                (_('Unmatured'), COLOR_UNMATURED, unmatured),
-                (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed),
-                (_('On-chain'), COLOR_CONFIRMED, confirmed),
-                (_('Lightning'), COLOR_LIGHTNING, lightning),
-                (_('Lightning frozen'), COLOR_FROZEN_LIGHTNING, f_lightning),
+                (_('Frozen'), COLOR_FROZEN, frozen.value),
+                (_('Unmatured'), COLOR_UNMATURED, unmatured.value),
+                (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed.value),
+                (_('On-chain'), COLOR_CONFIRMED, confirmed.value),
             ]
         )
 

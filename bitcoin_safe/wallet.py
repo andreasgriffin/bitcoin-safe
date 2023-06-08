@@ -648,8 +648,8 @@ class Wallet(BaseSaveableClass):
         
     def get_txs_involving_address(self, address) -> List[OutputInfo]:   
         received, send = self.get_received_and_send_involving_address(address)
-        return received.copy() + send.copy()
-        
+        return received.copy() + send.copy()    
+    
 
     def get_utxos(self) -> List[bdk.LocalUtxo]:
         return self.bdkwallet.list_unspent() 
@@ -723,6 +723,10 @@ class Wallet(BaseSaveableClass):
     def set_label(self, key, label):
         if self.labels.get(key, None) == label:
             return False
+        if not label:
+            del self.labels[key]
+            return
+        
         self.labels[key] = label
         return True
 
@@ -740,14 +744,15 @@ class Wallet(BaseSaveableClass):
     
     def get_balances_for_piechart(self):
         """
-        (_('Frozen'), COLOR_FROZEN, frozen),
-        (_('Unmatured'), COLOR_UNMATURED, unmatured),
-        (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed),
         (_('On-chain'), COLOR_CONFIRMED, confirmed),
+        (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed),
+        (_('Unmatured'), COLOR_UNMATURED, unmatured),
+        
+        # see https://docs.rs/bdk/latest/bdk/struct.Balance.html
         """
         
         balance = self.bdkwallet.get_balance() 
-        return [0, Satoshis(balance.immature), Satoshis(balance.trusted_pending + balance.untrusted_pending ), Satoshis(balance.confirmed)]
+        return [Satoshis(balance.confirmed),  Satoshis(balance.trusted_pending + balance.untrusted_pending ), Satoshis(balance.immature)]
         
         
         
@@ -761,12 +766,22 @@ class Wallet(BaseSaveableClass):
         return self.output_addresses(tx)[utxo.outpoint.vout]
 
         
-    def get_full_history(self):  
+    def get_full_history(self, address_domain=None):  
         transactions = []
         balance = 0
-                        
+
+        txid_domain = None
+        if address_domain:
+            # get txids that one is interested in
+            txid_domain = []
+            for address in address_domain:
+                txid_domain += [outputinfo.tx.txid for outputinfo in self.get_txs_involving_address(address)]
+                
         monotonic_timestamp = 0
         for tx in self.get_list_transactions(): 
+            if (txid_domain is not None) and (tx.txid not in txid_domain):
+                continue
+            
             value_delta = tx.received - tx .sent
             balance += value_delta
             timestamp = tx.confirmation_time.timestamp if tx.confirmation_time else 100

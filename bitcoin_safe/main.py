@@ -106,7 +106,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     
     def open_wallet(self, file_path=None):
         if not file_path:
-            file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", "", "All Files (*);;Text Files (*.bitcoinsafe)")        
+            file_path, _ = QFileDialog.getOpenFileName(self, "Open Wallet", self.config.wallet_dir, "All Files (*);;Text Files (*.bitcoinsafe)")        
             if not file_path:
                 logger.debug("No file selected")
                 return    

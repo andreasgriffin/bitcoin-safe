@@ -41,7 +41,7 @@ from PySide2.QtCore import (Qt, QPersistentModelIndex, QModelIndex, QAbstractIte
                           QSortFilterProxyModel, QItemSelectionModel, QDate, QPoint)
 from PySide2.QtWidgets import (QMenu, QHeaderView, QLabel, QMessageBox, 
                              QPushButton, QComboBox, QVBoxLayout, QCalendarWidget,
-                             QGridLayout)
+                             QGridLayout, QAbstractItemView)
 
 from ...i18n import _
 from ...util import (block_explorer_URL, profiler, TxMinedInfo,
@@ -105,6 +105,7 @@ class HistoryNode(CustomNode):
     def set_label(self, value=''):
         return value
 
+
     def get_data_for_role(self, index: QModelIndex, role: Qt.ItemDataRole):
         # note: this method is performance-critical.
         # it is called a lot, and so must run extremely fast.
@@ -146,7 +147,32 @@ class HistoryNode(CustomNode):
                 return None
 
 
-        if role == ROLE_SORT_ORDER:
+        if role in [MyTreeView.ROLE_CLIPBOARD_DATA]:
+            d = {
+                HistoryColumns.STATUS:
+                    # respect sort order of self.transactions (wallet.get_full_history)
+                    conf,
+                HistoryColumns.LABEL:
+                    tx_item['label'] if 'label' in tx_item else None,
+                HistoryColumns.CATEGORIES:
+                    tx_item['categories'] if 'categories' in tx_item else None,
+                HistoryColumns.AMOUNT:
+                    (tx_item['bc_value'].value if 'bc_value' in tx_item else 0)\
+                    + (tx_item['ln_value'].value if 'ln_value' in tx_item else 0),
+                HistoryColumns.BALANCE:
+                    (tx_item['balance'].value if 'balance' in tx_item else 0),
+                HistoryColumns.FIAT_VALUE:
+                    tx_item['fiat_value'].value if 'fiat_value' in tx_item else None,
+                HistoryColumns.FIAT_ACQ_PRICE:
+                    tx_item['acquisition_price'].value if 'acquisition_price' in tx_item else None,
+                HistoryColumns.FIAT_CAP_GAINS:
+                    tx_item['capital_gain'].value if 'capital_gain' in tx_item else None,
+                HistoryColumns.TXID: txid,
+                HistoryColumns.SHORT_ID: short_id,
+            }
+            return self.set_label(d[col])
+
+        if role in [ROLE_SORT_ORDER]:
             d = {
                 HistoryColumns.STATUS:
                     # respect sort order of self.transactions (wallet.get_full_history)
@@ -308,7 +334,7 @@ class HistoryModel(CustomModel):
         wallet = self.wallet
         self.set_visibility_of_columns()
         
-        transactions = wallet.get_full_history()
+        transactions = wallet.get_full_history(address_domain=self.get_domain())
         
         if transactions == self.transactions:
             return
@@ -551,6 +577,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         for col in HistoryColumns:
             sm = QHeaderView.Stretch if col == self.stretch_column else QHeaderView.ResizeToContents
             self.header().setSectionResizeMode(col, sm)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
 
         self.signals.category_updated.connect(self.update)
@@ -786,7 +813,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
                 continue
             column_title = self.hm.headerData(column, Qt.Horizontal, Qt.DisplayRole)
             idx2 = idx.sibling(idx.row(), column)
-            column_data = (self.hm.data(idx2, Qt.DisplayRole) or '').strip()
+            column_data = str(self.hm.data(idx2, self.ROLE_CLIPBOARD_DATA) or '')
             cc.addAction(
                 column_title,
                 lambda text=column_data, title=column_title:
@@ -806,12 +833,12 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         if not tx:
             return
         tx_URL = block_explorer_URL(self.config, 'tx', txid)
-        tx_details = self.wallet.get_tx_info(tx)
-        is_unconfirmed = tx_details.tx_mined_status.height <= 0
+        # tx_details = self.wallet.get_tx_info(tx)
+        # is_unconfirmed = tx.confirmation_time.height <= 0
         menu = QMenu()
-        menu.addAction(_("Details"), lambda: self.signals.show_transaction(tx))
-        if tx_details.can_remove:
-            menu.addAction(_("Remove"), lambda: self.remove_local_tx(txid))
+        # menu.addAction(_("Details"), lambda: self.signals.show_transaction(tx))
+        # if tx_details.can_remove:
+        #     menu.addAction(_("Remove"), lambda: self.remove_local_tx(txid))
         copy_menu = self.add_copy_menu(menu, idx)
         copy_menu.addAction(_("Transaction ID"), lambda: self.place_text_on_clipboard(txid, title="TXID"))
         menu_edit = menu.addMenu(_("Edit"))
@@ -822,21 +849,21 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
             persistent = QPersistentModelIndex(org_idx.sibling(org_idx.row(), c))
             menu_edit.addAction(_("{}").format(label), lambda p=persistent: self.edit(QModelIndex(p)))
 
-        if is_unconfirmed and tx:
-            if tx_details.can_bump:
-                menu.addAction(_("Increase fee"), lambda: self.signals.bump_fee_dialog(tx))
-            else:
-                if tx_details.can_cpfp:
-                    menu.addAction(_("Child pays for parent"), lambda: self.signals.cpfp_dialog(tx))
-            if tx_details.can_dscancel:
-                menu.addAction(_("Cancel (double-spend)"), lambda: self.signals.dscancel_dialog(tx))
-        invoices = self.wallet.get_relevant_invoices_for_tx(txid)
-        if len(invoices) == 1:
-            menu.addAction(_("View invoice"), lambda inv=invoices[0]: self.signals.show_onchain_invoice(inv))
-        elif len(invoices) > 1:
-            menu_invs = menu.addMenu(_("Related invoices"))
-            for inv in invoices:
-                menu_invs.addAction(_("View invoice"), lambda inv=inv: self.signals.show_onchain_invoice(inv))
+        # if is_unconfirmed and tx:
+        #     if tx_details.can_bump:
+        #         menu.addAction(_("Increase fee"), lambda: self.signals.bump_fee_dialog(tx))
+        #     else:
+        #         if tx_details.can_cpfp:
+        #             menu.addAction(_("Child pays for parent"), lambda: self.signals.cpfp_dialog(tx))
+        #     if tx_details.can_dscancel:
+        #         menu.addAction(_("Cancel (double-spend)"), lambda: self.signals.dscancel_dialog(tx))
+        # invoices = self.wallet.get_relevant_invoices_for_tx(txid)
+        # if len(invoices) == 1:
+        #     menu.addAction(_("View invoice"), lambda inv=invoices[0]: self.signals.show_onchain_invoice(inv))
+        # elif len(invoices) > 1:
+        #     menu_invs = menu.addMenu(_("Related invoices"))
+        #     for inv in invoices:
+        #         menu_invs.addAction(_("View invoice"), lambda inv=inv: self.signals.show_onchain_invoice(inv))
         if tx_URL:
             menu.addAction(_("View on block explorer"), lambda: webopen(tx_URL))
         menu.exec_(self.viewport().mapToGlobal(position))

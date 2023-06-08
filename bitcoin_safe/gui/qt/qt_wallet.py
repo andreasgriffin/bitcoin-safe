@@ -281,7 +281,7 @@ class QTWallet():
         # self.password_button = StatusBarButton(QIcon(), _("Password"), self.change_password_dialog, sb_height)
         # sb.addPermanentWidget(self.password_button)
 
-        # sb.addPermanentWidget(StatusBarButton(read_QIcon("preferences.png"), _("Preferences"), self.settings_dialog, sb_height))
+        sb.addPermanentWidget(StatusBarButton(read_QIcon("preferences.png"), _("Preferences"), self.settings_dialog, sb_height))
         # self.seed_button = StatusBarButton(read_QIcon("seed.png"), _("Seed"), self.show_seed_dialog, sb_height)
         # sb.addPermanentWidget(self.seed_button)
         # self.lightning_button = StatusBarButton(read_QIcon("lightning.png"), _("Lightning Network"), self.gui_object.show_lightning_dialog, sb_height)
@@ -294,6 +294,8 @@ class QTWallet():
         # run_hook('create_status_bar', sb)
         outer_layout.addWidget(sb)
         
+    def settings_dialog(self):
+        pass
         
     def show_network_dialog(self):
         pass
@@ -343,15 +345,14 @@ class QTWallet():
                 icon = read_QIcon("status_lagging%s.png"%fork_str)
             else:
                 network_text = _("Connected")
-                confirmed, unconfirmed, unmatured, frozen = self.wallet.get_balances_for_piechart()
+                confirmed, unconfirmed, unmatured = self.wallet.get_balances_for_piechart()
                 self.balance_label.update_list([
-                    (_('Frozen'), COLOR_FROZEN, frozen),
-                    (_('Unmatured'), COLOR_UNMATURED, unmatured),
-                    (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed),
-                    (_('On-chain'), COLOR_CONFIRMED, confirmed), 
+                    (_('Unmatured'), COLOR_UNMATURED, unmatured.value),
+                    (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed.value),
+                    (_('On-chain'), COLOR_CONFIRMED, confirmed.value), 
                 ])
-                balance = confirmed + unconfirmed + unmatured + frozen  
-                balance_text =  _("Balance") + ": %s "%(format_satoshis(balance, str_unit=True))
+                balance = confirmed + unconfirmed + unmatured   
+                balance_text =  _("Balance") + f": {balance.str_with_unit()} "
                 # append fiat balance and price
                 if self.fx.is_enabled():
                     balance_text += self.fx.get_fiat_status_text(balance,
@@ -498,7 +499,7 @@ class QTWallet():
         def on_finished():
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
-            # self.update_status()
+            self.update_status()
         if threaded:
             future = start_in_background_thread(do_sync, on_finished=on_finished)
         else:

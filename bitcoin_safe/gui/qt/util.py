@@ -1402,15 +1402,15 @@ def clipboard_contains_address():
     text = QApplication.clipboard().text()
     return is_address(text)
 
-def do_copy(self, text: str, *, title: str = None) -> None:
+def do_copy(text: str, *, title: str = None) -> None:
     QApplication.clipboard().setText(text)
     message = _("Text copied to Clipboard") if title is None else _("{} copied to Clipboard").format(title)
     show_tooltip_after_delay(message)
 
-def show_tooltip_after_delay(self, message):
+def show_tooltip_after_delay(message):
     timer = QTimer()
     # tooltip cannot be displayed immediately when called from a menu; wait 200ms
-    timer.singleShot(200, lambda: QToolTip.showText(QCursor.pos(), message, self))
+    timer.singleShot(200, lambda: QToolTip.showText(QCursor.pos(), message))
     
 
     

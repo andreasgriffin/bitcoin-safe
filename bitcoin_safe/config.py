@@ -38,6 +38,7 @@ class UserConfig(BaseSaveableClass):
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.wallet_dir = os.path.join(self.config_dir, str(self.network))
         self.is_maximized = False
+        self.block_explorer:str = 'mempool.space'
 
 
     def get(self, key, default=None):

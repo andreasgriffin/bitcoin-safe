@@ -21,6 +21,7 @@ class CustomNode(QStandardItem):
         self._parent = None
         self._row = 0
 
+
     def get_data(self):
         return self._data
 
@@ -101,3 +102,12 @@ class CustomModel(QtCore.QAbstractItemModel):
             return None
         node = index.internalPointer()
         return node.get_data_for_role(index, role)
+
+
+
+    def itemFromIndex(self, index):
+        if index.isValid():
+            item = index.internalPointer()
+            if item:
+                return item
+        return None

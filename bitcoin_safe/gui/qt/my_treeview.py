@@ -60,8 +60,10 @@ from .util import read_QIcon, do_copy
 from PySide2.QtWidgets import QApplication, QTreeView, QStyledItemDelegate
 from PySide2.QtGui import QTextDocument, QAbstractTextDocumentLayout, QPalette
 from PySide2.QtCore import QSize, Qt
-
-
+from ...i18n import _
+import csv
+import io
+from PySide2 import QtCore, QtWidgets, QtGui
 
 class MyMenu(QMenu):
 
@@ -268,6 +270,8 @@ class MyTreeView(QTreeView):
         item = self.item_from_index(idx)
         if item:
             return item.data(role)
+        
+
 
     def item_from_index(self, idx: QModelIndex) -> Optional[QStandardItem]:
         model = self.model()
@@ -276,7 +280,8 @@ class MyTreeView(QTreeView):
             return model.sourceModel().itemFromIndex(idx)
         else:
             return model.itemFromIndex(idx)
-
+        
+        
     def original_model(self) -> QAbstractItemModel:
         model = self.model()
         if isinstance(model, QSortFilterProxyModel):
@@ -304,10 +309,58 @@ class MyTreeView(QTreeView):
     def keyPressEvent(self, event):
         if self.itemDelegate().opened:
             return
-        if event.key() in [Qt.Key_F2, Qt.Key_Return, Qt.Key_Enter]:
+        if event.key() in [Qt.Key_Return, Qt.Key_Enter]:
             self.on_activated(self.selectionModel().currentIndex())
             return
-        super().keyPressEvent(event)
+        if event.key() in [Qt.Key_F2]:
+            if not self.editable_columns:
+                return
+            idx = self.selectionModel().currentIndex()
+            idx = idx.sibling(idx.row(), list(self.editable_columns)[0])
+            self.edit(QModelIndex(QPersistentModelIndex(idx)))
+            return
+
+        if (event.modifiers() & QtCore.Qt.ControlModifier) and (event.key() == QtCore.Qt.Key_C):
+            selection = self.selectionModel().selection().indexes()
+            if selection:
+                self.copyRowsToClipboard(set([index.row() for index in selection]))
+        else:
+            super().keyPressEvent(event)
+            
+    
+
+    def copyRowsToClipboard(self, row_numbers):
+        
+        def get_data(row,col):
+            model = self.original_model()  # assuming this is a QAbstractItemModel or subclass
+            index = model.index(row, col)
+            
+            if hasattr(model, 'data'):
+                return model.data(index, self.ROLE_CLIPBOARD_DATA)
+            else:
+                item = self.item_from_index(index)
+                if item:
+                    return item.data(self.ROLE_CLIPBOARD_DATA)
+                
+        
+        row_numbers = sorted(row_numbers)        
+        
+        table = []
+        headers = [self.model().headerData(i, QtCore.Qt.Horizontal) 
+                   for i in range(self.model().columnCount())]  # retrieve headers
+        table.append(headers)  # write headers to table
+
+
+        for row in row_numbers:
+            row_data = []
+            for column in self.Columns:
+                row_data.append(get_data(row, column))
+            table.append(row_data)
+
+        stream = io.StringIO()
+        writer = csv.writer(stream)
+        writer.writerows(table)
+        do_copy(stream.getvalue(), title=f'{len(row_numbers)} rows have ben copied as csv')
 
     def mouseDoubleClickEvent(self, event: QMouseEvent):
         idx: QModelIndex = self.indexAt(event.pos())
@@ -445,6 +498,8 @@ class MyTreeView(QTreeView):
                          lambda text=clipboard_data, title=column_title:
                          self.place_text_on_clipboard(text, title=title))
         return cc
+    
+    
 
     def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
         do_copy(text, title=title)

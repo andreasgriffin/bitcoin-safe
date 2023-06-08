@@ -314,7 +314,7 @@ class Satoshis(object):
     def __str__(self):
         # note: precision is truncated to satoshis here
         return format_satoshis(self.value)
-
+    
     def __eq__(self, other):
         return self.value == other.value
 
@@ -323,6 +323,9 @@ class Satoshis(object):
 
     def __add__(self, other):
         return Satoshis(self.value + other.value)
+
+    def str_with_unit(self):
+        return format_satoshis(self.value, str_unit=True)
 
 
 # note: this is not a NamedTuple as then its json encoding cannot be customized
@@ -727,6 +730,9 @@ def format_satoshis(
     # sanity check that the number wasn't changed
     assert int(strip(result)) == int(strip(x))
     
+    
+    if str_unit:
+        result += ' Sats'
     return result
 
 
@@ -912,6 +918,17 @@ signet_block_explorers = {
 
 _block_explorer_default_api_loc = {'tx': 'tx/', 'addr': 'address/'}
 
+
+
+
+def block_explorer_info(network:bdk.Network):
+    if network in [bdk.Network.TESTNET, bdk.Network.REGTEST]:
+        return testnet_block_explorers
+    elif network == bdk.Network.SIGNET:
+        return signet_block_explorers
+    return mainnet_block_explorers
+
+
 def block_explorer_tuple(config: 'UserConfig') -> Optional[Tuple[str, dict]]:
     custom_be = config.get('block_explorer_custom')
     if custom_be:
@@ -924,7 +941,9 @@ def block_explorer_tuple(config: 'UserConfig') -> Optional[Tuple[str, dict]]:
         return None
     else:
         # using one of the hardcoded block explorers
-        return block_explorer_info().get(block_explorer(config))
+        return block_explorer_info(config.network).get(config.block_explorer)
+
+
 
 
 def block_explorer_URL(config: 'UserConfig', kind: str, item: str) -> Optional[str]:
