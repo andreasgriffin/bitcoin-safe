@@ -79,6 +79,10 @@ class Ui_MainWindow(QMainWindow):
         self.menu_transaction = self.menubar.addMenu(_("&Transaction"))
         self.menu_transaction.addAction("Load Transaction from file", self.open_tx).setShortcut(QKeySequence("Ctrl+L"))        
 
+        # menu settings
+        self.menu_transaction = self.menubar.addMenu(_("&Settings"))
+        self.menu_transaction.addAction("Network Settings", self.open_network_settings).setShortcut(QKeySequence("Ctrl+I"))        
+
 
         # assigne menu bar
         self.setMenuBar(self.menubar)
@@ -100,4 +104,7 @@ class Ui_MainWindow(QMainWindow):
         pass
 
     def open_tx(self):                   
+        pass
+
+    def open_network_settings(self):                   
         pass

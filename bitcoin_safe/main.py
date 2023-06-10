@@ -14,8 +14,7 @@ from PySide2.QtWidgets import *
 from .ui_mainwindow import Ui_MainWindow
 from .wallet import BlockchainType, Wallet
 import sys
-import asyncio
-import qasync
+
 
 
 from .i18n import _
@@ -33,11 +32,14 @@ import bdkpython as bdk
 from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
 from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
+from .gui.qt.network_settings import NetworkSettingsUI
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def __init__(self):
         super().__init__()
+
+
         self.qt_wallets :Dict[QTWallet] = {}
         self.fx = None
 
@@ -46,9 +48,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx.connect(self.open_tx_in_tab)
         
-        self.blockchain_type = BlockchainType.CompactBlockFilter
         
-        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.config.network)
+        self.network_settings_ui = NetworkSettingsUI(self.config)
+        self.signals.show_network_settings.connect(self.open_network_settings)
+        self.network_settings_ui.signal_new_network_settings.connect(self.restart)
+
+        self.welcome_screen = NewWalletWelcomeScreen(self.tab_wallets, network=self.config.network_settings.network)
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_single_signature)
         self.welcome_screen.signal_onclick_multisig_signature.connect(self.click_multisig_signature)
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
@@ -62,6 +67,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         if not number_opened_wallets:            
             self.welcome_screen.add_new_wallet_welcome_tab()
         
+        
+
+    def open_network_settings(self):      
+        self.network_settings_ui.show()
+
+                
         
     def open_tx(self, file_path=None):                   
         if not file_path:
@@ -90,7 +101,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             print('is bdk.TransactionDetails')
                         
                         
-        viewer = UITX_Viewer(tx, self.signals, network=self.config.network)         
+        viewer = UITX_Viewer(tx, self.signals, network=self.config.network_settings.network)         
         
         add_tab_to_tabs(self.tab_wallets, viewer.main_widget, read_QIcon("offline_tx.png"), "Transaction", "tx", focus=True)
         
@@ -98,7 +109,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
     def open_last_opened_wallets(self):
         opened_wallets = 0
-        for file_path in self.config.last_wallet_files:
+        for file_path in self.config.last_wallet_files.get(str(self.config.network_settings.network), []):
             n = int(self.open_wallet(file_path=file_path) )
             opened_wallets += n
         
@@ -121,7 +132,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             password = self.ui_password_question.ask_for_password()        
              
         try:
-            wallet = Wallet.load(file_path, password)
+            wallet = Wallet.load(file_path, self.config, password)
         except:
             self.show_error('Error. Wallet could not be loaded. Please try another password.')
             raise
@@ -165,7 +176,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def next_step_after_welcome_screen(self, m_of_n) -> QTWallet:
         id = self.new_wallet_id()   
         m,n = m_of_n
-        wallet = Wallet(id=id, threshold=m, signers=n,  blockchain_choice=self.blockchain_type, network=self.config.network)         
+        wallet = Wallet(id=id, threshold=m, signers=n,  config=self.config)         
         return self.add_qt_wallet(wallet)
         
         
@@ -184,7 +195,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
     def import_descriptor(self):
         descriptor = self.text_descriptor.toPlainText()
-        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=self.config.network)         
+        wallet = Wallet(id='import'+str(len(self.qt_wallets)),   config=self.config)         
         wallet.create_descriptor_wallet(descriptor)  
               
         self.add_qt_wallet(wallet) 
@@ -192,7 +203,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
     def import_seed(self):
         seed = self.text_seed.toPlainText()
-        wallet = Wallet(id='import'+str(len(self.qt_wallets)),  blockchain_choice=self.blockchain_type, network=self.config.network)         
+        wallet = Wallet(id='import'+str(len(self.qt_wallets)),    config=self.config)         
         wallet.create_seed_wallet(seed)
         self.qt_wallets[wallet.id] = QTWallet(wallet, self.tab_wallets, self.config, self.signals)
 
@@ -256,23 +267,22 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         
     def closeEvent(self, event):
-        self.config.last_wallet_files = [os.path.join( self.config.wallet_dir,  qt_wallet.wallet.basename())
+        self.config.last_wallet_files[str(self.config.network_settings.network)] = [os.path.join( self.config.wallet_dir,  qt_wallet.wallet.basename())
                                          for qt_wallet in self.qt_wallets.values()]
         self.config.save()                        
         super().closeEvent(event)
-                    
+                        
+                        
+    def restart(self):
+        close_event = QCloseEvent()
+        self.closeEvent(close_event)
 
-async def main():
-    
-    app = QApplication(sys.argv)
-    loop = qasync.QEventLoop(app)
-    asyncio.set_event_loop(loop)
+        if close_event.isAccepted():
+            QCoreApplication.quit()  # equivalent to QCoreApplication.exit(0)
+            status = QProcess.startDetached(sys.executable, ['-m', 'bitcoin_safe'] + sys.argv[1:])
+            if (not status):
+                sys.exit(-1)
+        else:
+            # The close event was not accepted, so the application will not quit.
+            pass
 
-    window = MainWindow()
-    window.show()
-
-    with loop:
-        loop.run_forever()
-
-if __name__ == "__main__":
-    asyncio.run(main())

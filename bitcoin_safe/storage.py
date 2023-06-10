@@ -87,13 +87,15 @@ class Storage():
 class ClassSerializer:
 
     @classmethod
-    def general_deserializer(cls, globals):
+    def general_deserializer(cls, globals, class_kwargs):
 
         def deserializer(dct):
             cls_string = dct.get("__class__")  # e.g. KeyStore
             if cls_string and cls_string in globals:
                 obj_cls = globals[cls_string]
                 if hasattr(obj_cls, 'deserialize'):  # is there KeyStore.deserialize ? 
+                    if class_kwargs.get(cls_string): #  apply additional arguments to the class deserialize
+                        dct.update(class_kwargs.get(cls_string))
                     return obj_cls.deserialize(dct)  # do: KeyStore.deserialize(**dct)
             if dct.get("__enum__"):
                 obj_cls = globals.get(dct["name"])                
@@ -149,9 +151,11 @@ class BaseSaveableClass:
         
     
     @classmethod
-    def load(cls, filename, password=None):     
+    def load(cls, filename, password=None, class_kwargs=None):   
+        "class_kwargs example:  class_kwargs= {'Wallet':{'config':config}}"    
+        class_kwargs = class_kwargs if class_kwargs else {}
         storage = Storage()
         
         json_string = storage.load(filename, password=password)
-        return json.loads(json_string, object_hook=ClassSerializer.general_deserializer(cls.global_variables))
+        return json.loads(json_string, object_hook=ClassSerializer.general_deserializer(cls.global_variables, class_kwargs))
             

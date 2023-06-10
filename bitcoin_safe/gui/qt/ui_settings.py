@@ -33,7 +33,7 @@ class WalletSettingsUI():
                 self.verticalLayout_2.addWidget(self.tabs_widget_signers)
                 
                 for keystore in wallet.keystores:
-                        keystore_ui = KeyStoreUI(keystore, self.tabs_widget_signers, self.wallet.network)
+                        keystore_ui = KeyStoreUI(keystore, self.tabs_widget_signers, self.wallet.config.network_settings.network)
                         self.keystore_uis.append(keystore_ui) 
 
                 self.block_change_signals = BlockChangesSignals(
@@ -119,7 +119,7 @@ class WalletSettingsUI():
                 # add keystore_ui if necessary
                 if len(self.keystore_uis) < len(wallet.keystores):
                         for i in range(len(self.keystore_uis), len(wallet.keystores)):
-                                self.keystore_uis.append(KeyStoreUI(wallet.keystores[i], self.tabs_widget_signers, self.wallet.network))
+                                self.keystore_uis.append(KeyStoreUI(wallet.keystores[i], self.tabs_widget_signers, self.wallet.config.network_settings.network))
                 # remove keystore_ui if necessary
                 elif  len(self.keystore_uis) > len(wallet.keystores):
                         for i in range(len(wallet.keystores), len(self.keystore_uis)):
@@ -241,7 +241,7 @@ class WalletSettingsUI():
                 descriptors = generate_output_descriptors_from_keystores(wallet.threshold,
                                                                                  wallet.address_type,
                                                                                  wallet.keystores,
-                                                                                 wallet.network,
+                                                                                 wallet.config.network_settings.network,
                                                                                  replace_keystore_with_dummy=True,
                                                                                  use_html=True,
                                                                                  combined_descriptors=True

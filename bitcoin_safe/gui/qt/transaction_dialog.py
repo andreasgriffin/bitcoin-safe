@@ -27,6 +27,8 @@ import asyncio
 
 import logging
 
+from bitcoin_safe.config import UserConfig
+
 from ...util import Satoshis, format_satoshis
 logger = logging.getLogger(__name__)
 
@@ -378,7 +380,7 @@ class TxDialog(QDialog, MessageBoxMixin):
 
     throttled_update_sig = Signal()  # emit from thread to do update in main thread
 
-    def __init__(self, tx: Transaction, fx, wallet, config, signals:Signals, prompt_if_unsaved, external_keypairs=None, parent=None):
+    def __init__(self, tx: Transaction, fx, wallet, config:UserConfig, signals:Signals, prompt_if_unsaved, external_keypairs=None, parent=None):
         '''Transactions in the wallet will show their description.
         Pass desc to give a description for txs not yet in the wallet.
         '''
@@ -516,7 +518,7 @@ class TxDialog(QDialog, MessageBoxMixin):
                 self,
                 _("Adding info to tx, from network..."),
                 lambda: Network.run_from_another_thread(
-                    tx.add_info_from_network(self.wallet.network, timeout=10)),
+                    tx.add_info_from_network(self.config.network_settings.network, timeout=10)),
             )
         else:
             self.maybe_fetch_txin_data()
@@ -938,7 +940,7 @@ class TxDialog(QDialog, MessageBoxMixin):
             return
         if self._fetch_txin_data_fut is not None:
             return
-        network = self.wallet.network
+        network = self.config.network_settings.network
         def progress_cb(prog: TxinDataFetchProgress):
             self._fetch_txin_data_progress = prog
             self.throttled_update_sig.emit()

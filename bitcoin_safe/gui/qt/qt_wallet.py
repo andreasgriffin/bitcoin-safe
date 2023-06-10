@@ -53,7 +53,7 @@ class StatusBarButton(QToolButton):
             
             
 
-class Network():
+class LegacyNetwork():
     def __init__(self, wallet):
         self.proxy = None
         self.wallet = wallet
@@ -224,7 +224,7 @@ class QTWallet():
     def create_wallet_tabs(self):
         "Create tabs.  set_wallet be called first"
         assert bool(self.wallet)
-        self.network =  Network(self.wallet)
+        self.legacy_network =  LegacyNetwork(self.wallet)
                 
         self.history_tab, self.history_list, self.history_model = self._create_hist_tab(self.tabs)
         self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
@@ -288,8 +288,8 @@ class QTWallet():
         # sb.addPermanentWidget(self.lightning_button)
         # self.update_lightning_icon()
         self.status_button = None
-        if self.network:
-            self.status_button = StatusBarButton(read_QIcon("status_disconnected.png"), _("Network"), self.show_network_dialog, sb_height)
+        if self.legacy_network:
+            self.status_button = StatusBarButton(read_QIcon("status_disconnected.png"), _("Network"), self.signals.show_network_settings, sb_height)
             sb.addPermanentWidget(self.status_button)
         # run_hook('create_status_bar', sb)
         outer_layout.addWidget(sb)
@@ -297,9 +297,7 @@ class QTWallet():
     def settings_dialog(self):
         pass
         
-    def show_network_dialog(self):
-        pass
-        
+
 
     def toggle_search(self):
         self.search_box.setHidden(not self.search_box.isHidden())
@@ -324,14 +322,14 @@ class QTWallet():
         network_text = ""
         balance_text = ""
 
-        if self.network is None:
+        if self.legacy_network is None:
             network_text = _("Offline")
             icon = read_QIcon("status_disconnected.png")
 
-        elif self.network.is_connected():
-            server_height = self.network.get_server_height()
-            server_lag = self.network.get_local_height() - server_height
-            fork_str = "_fork" if len(self.network.get_blockchains())>1 else ""
+        elif self.legacy_network.is_connected():
+            server_height = self.legacy_network.get_server_height()
+            server_lag = self.legacy_network.get_local_height() - server_height
+            fork_str = "_fork" if len(self.legacy_network.get_blockchains())>1 else ""
             # Server height can be 0 after switching to a new server
             # until we get a headers subscription request response.
             # Display the synchronizing message in that case.
@@ -357,12 +355,12 @@ class QTWallet():
                 if self.fx.is_enabled():
                     balance_text += self.fx.get_fiat_status_text(balance,
                         self.base_unit(), self.get_decimal_point()) or ''
-                if not self.network.proxy:
+                if not self.legacy_network.proxy:
                     icon = read_QIcon("status_connected%s.png"%fork_str)
                 else:
                     icon = read_QIcon("status_connected_proxy%s.png"%fork_str)
         else:
-            if self.network.proxy:
+            if self.legacy_network.proxy:
                 network_text = "{} ({})".format(_("Not connected"), _("proxy enabled"))
             else:
                 network_text = _("Not connected")

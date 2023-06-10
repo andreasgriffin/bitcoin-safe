@@ -4,11 +4,27 @@ import cProfile
 from pstats import Stats, SortKey
 
 
-from .main import main
-import asyncio
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
+from .main import MainWindow
+import asyncio
+import qasync, sys
     
     
+async def main():
+    
+    app = QApplication(sys.argv)
+    loop = qasync.QEventLoop(app)
+    asyncio.set_event_loop(loop)
+
+    window = MainWindow()
+    window.show()
+
+    with loop:
+        loop.run_forever()
+
 
 if __name__ == '__main__':
     from .util import DEVELOPMENT_PREFILLS

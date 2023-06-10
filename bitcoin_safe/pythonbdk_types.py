@@ -1,4 +1,5 @@
 import bdkpython as bdk
+import enum
 
 
 
@@ -55,7 +56,47 @@ class AddressInfoMin():
         return cls(**dct)
             
     
-         
+
+class BlockchainType(enum.Enum):
+    CompactBlockFilter = enum.auto()
+    Electrum = enum.auto()
+    
+    @classmethod
+    def from_text(cls, t):
+        if t == "Compact Block Filters":
+            return cls.CompactBlockFilter
+        elif t == "Electrum Server":
+            return cls.Electrum    
+    
+    @classmethod
+    def to_text(cls, t):
+        if t == cls.CompactBlockFilter:
+            return "Compact Block Filters"
+        elif t == cls.Electrum:
+            return "Electrum Server"
+            
+
+
+class CBFServerType(enum.Enum):
+    Automatic = enum.auto()
+    Manual = enum.auto()
+    
+    @classmethod
+    def from_text(cls, t):
+        if t == "Automatic":
+            return cls.Automatic
+        elif t == "Manual":
+            return cls.Manual    
+    
+    @classmethod
+    def to_text(cls, t):
+        if t == cls.Automatic:
+            return "Automatic"
+        elif t == cls.Manual:
+            return "Manual"
+            
+    
+    
     
 if __name__ == '__main__':
     testdict = {}

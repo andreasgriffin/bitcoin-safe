@@ -107,4 +107,4 @@ class Signals:
         
 
         
-    
+        self.show_network_settings = Signal('show_network_settings')

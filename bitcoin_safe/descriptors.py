@@ -119,8 +119,8 @@ def generate_keystore_part_of_descriptor(xpubs, fingerprints, receiving_change_n
 
 def generate_output_descriptors(xpubs, fingerprints, threshold:int, derivation_paths, desc_template , network, replace_keystore_with_dummy=False, use_html=False, combined_descriptors=False):    
     " combined_descriptors: see https://github.com/bitcoin/bitcoin/pull/22838 for  "
-    if network==bdk.Network.BITCOIN:
-        raise NotImplementedError('On mainnet are only wallet templaes from bdk suppoted.')
+    # if network==bdk.Network.BITCOIN:
+    #     raise NotImplementedError('On mainnet are only wallet templates from bdk suppoted.')
 
     if len(xpubs)>1:    
         def desc(key_parts):
@@ -186,7 +186,7 @@ def descriptor_infos(string_descriptor:str, network=None) -> Dict:
         """
         fingerprint, derivation_path, xpub, further_derivation_path = extract_groups(keystore_string, r'\[(.*?)\/(.*)\](.*?)\/(.*)')
         # TODO handle other further_derivation_path
-        assert further_derivation_path == "<0;1>/*"
+        assert further_derivation_path in ["<0;1>/*", "0/*", "1/*"]
         
         return KeyStore(xpub, fingerprint, 'm/'+derivation_path, label='', type=KeyStoreTypes.watch_only)
     

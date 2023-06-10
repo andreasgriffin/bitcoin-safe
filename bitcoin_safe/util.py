@@ -941,7 +941,7 @@ def block_explorer_tuple(config: 'UserConfig') -> Optional[Tuple[str, dict]]:
         return None
     else:
         # using one of the hardcoded block explorers
-        return block_explorer_info(config.network).get(config.block_explorer)
+        return block_explorer_info(config.network_settings.network).get(config.block_explorer)
 
 
 
