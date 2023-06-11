@@ -22,7 +22,7 @@ class NetworkSettingsUI(QWidget):
 
         self.server_type_comboBox = QComboBox(self)
         self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.CompactBlockFilter))
-        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Electrum))
+        # self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Electrum))
         
         self.layout.addWidget(self.server_type_comboBox)
 

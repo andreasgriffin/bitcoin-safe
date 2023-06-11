@@ -133,8 +133,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
              
         try:
             wallet = Wallet.load(file_path, self.config, password)
-        except:
-            self.show_error('Error. Wallet could not be loaded. Please try another password.')
+        except Exception as e:
+            error_type, error_value, error_traceback = sys.exc_info()
+            error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__}: {error_value}"
+            self.show_error(error_message)
             raise
         print(wallet)
         qt_wallet = self.add_qt_wallet(wallet)        
@@ -145,6 +147,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     
     def save_current_wallet(self):
         return self.get_qt_wallet().save()
+        
+    def save_all_wallets(self):
+        for qt_wallet in self.qt_wallets.values():
+            qt_wallet.save()
         
 
     def click_single_signature(self):
@@ -266,10 +272,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             qt_wallet.sync()     
 
         
-    def closeEvent(self, event):
+    def closeEvent(self, event):        
         self.config.last_wallet_files[str(self.config.network_settings.network)] = [os.path.join( self.config.wallet_dir,  qt_wallet.wallet.basename())
                                          for qt_wallet in self.qt_wallets.values()]
-        self.config.save()                        
+        self.config.save()      
+        self.save_all_wallets()                  
         super().closeEvent(event)
                         
                         

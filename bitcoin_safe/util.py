@@ -80,6 +80,15 @@ TX_STATUS = [
 
 DEVELOPMENT_PREFILLS = False
 
+import bdkpython as bdk
+
+def psbt_to_hex(psbt:bdk.PartiallySignedTransaction):
+    tx = psbt.extract_tx().serialize()
+    return bytes(tx).hex()    
+    
+
+
+
 
 
 def call_call_functions(functions):

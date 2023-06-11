@@ -10,7 +10,7 @@ from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_Q
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals,   Signal
-from ...util import compare_dictionaries
+from ...util import compare_dictionaries, psbt_to_hex
 from typing import List
 from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUISigner, KeyStoreUITypeChooser
 from .block_change_signals import BlockChangesSignals
@@ -103,7 +103,7 @@ class SignerUI:
         self.psbt = psbt
         self.tabs = tabs
         
-        self.signal_is_finalized = Signal("signal_is_finalized")
+        self.signal_signature_added = Signal("signal_signature_added")
     
         self.ui_signer = KeyStoreUISigner(signer, network)
         
@@ -118,12 +118,18 @@ class SignerUI:
         
         
     def sign(self):
-        res = self.signer.sign(self.psbt, None)
-        logger.info(f'Signing of tx {self.psbt.txid()} resulted in {res}')
-        if res:
-            self.signal_is_finalized()
-        return res
+        # sign transaction - this method mutates transaction, so we copy it first
+        psbt2 = bdk.PartiallySignedTransaction(self.psbt.serialize())
+    
+        logger.debug(f'psbt before signing: {psbt_to_hex(psbt2)}')
         
+        signing_was_successful:bool = self.signer.sign(psbt2, None)
+
+        if signing_was_successful:
+            logger.debug(f'psbt after signing: {psbt_to_hex(psbt2)}')
+            self.signal_signature_added(psbt2)
+        else:
+            logger.debug(f'signign failed')
     
     
     

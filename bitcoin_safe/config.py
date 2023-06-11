@@ -86,12 +86,13 @@ class UserConfig(BaseSaveableClass):
         self.network_settings = NetworkConfig()
         self.last_wallet_files:Dict[str, List[str]] = {}   # network:[file_path0] 
         self.data_dir = appdirs.user_data_dir(self.app_name)
-        self.wallet_dir = os.path.join(self.config_dir, str(self.network_settings.network))
         self.is_maximized = False
         self.block_explorer:str = 'mempool.space'
 
 
-
+    @property
+    def wallet_dir(self):
+        return os.path.join(self.config_dir, str(self.network_settings.network))
             
     
 
@@ -104,7 +105,7 @@ class UserConfig(BaseSaveableClass):
 
     def serialize(self): 
         d = super().serialize()
-        d.update(self.__dict__        )
+        d.update(self.__dict__)
         return d
 
     @classmethod

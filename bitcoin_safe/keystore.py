@@ -98,7 +98,7 @@ class KeyStore:
     def deserialize(cls, dct):
         assert dct.get("__class__") == cls.__name__
         
-        dct['mnemonic'] = bdk.Mnemonic.from_string(dct['mnemonic']) 
+        dct['mnemonic'] = bdk.Mnemonic.from_string(dct['mnemonic'])  if dct['mnemonic'] else None
         
         if "__class__" in dct:
             del dct["__class__"]

@@ -1,4 +1,4 @@
-bitcoin_p2p==0.1
+bitcoin_p2p==0.3.1
 aiohttp==3.8.4
 aiohttp_socks==0.8.0
 aiorpcX==0.22.1

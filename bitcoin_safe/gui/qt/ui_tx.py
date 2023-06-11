@@ -24,6 +24,7 @@ from ...keystore import KeyStore
 from .util import read_QIcon
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
+from ...util import psbt_to_hex
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
@@ -393,7 +394,9 @@ class UITX_Viewer():
         
         
     def broadcast(self):
-        self.signers[0].wallet.blockchain.broadcast(self.psbt.extract_tx())
+        logger.debug(f'broadcasting {psbt_to_hex(self.psbt)}')
+        tx = self.psbt.extract_tx()
+        self.signers[0].wallet.blockchain.broadcast(tx)
         self.signal_broadcast_tx()
 
 
@@ -428,13 +431,12 @@ class UITX_Viewer():
         self.signeruis = []
         for signer in self.signers: 
             signerui = SignerUI(signer, self.psbt, self.tabs_signers, self.network)              
-            signerui.signal_is_finalized.connect(self.signing_finalized)
+            signerui.signal_signature_added.connect(self.signature_added)
             self.signeruis.append(signerui)
         
 
-    def signing_finalized(self):
-        print('endable')
-        self.set_psbt(self.psbt)
+    def signature_added(self, psbt_with_signatures:bdk.PartiallySignedTransaction):
+        self.set_psbt(psbt_with_signatures)
         self.button_broadcast_tx.setEnabled(True)
         
         

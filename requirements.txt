@@ -132,9 +132,9 @@ bdkpython==0.28.3 \
     --hash=sha256:ee9c503af56c7d2d185b9755c528500ed887dec417b081727fb889525aa7e760 \
     --hash=sha256:f7e33511c16c34a3bc65b4f0d42c577c996e9303bcbee23c11d98fc5552e5b65
     # via -r requirements.in
-bitcoin-p2p==0.1 \
-    --hash=sha256:2313edb492c85de60832aaeecce146d569a6483a2a245b71ff566c2fdfefa21e \
-    --hash=sha256:83f9ab928ea54c89abb5fd4d36567da5e36c36a4af35e4b251ab9dc00c05ef09
+bitcoin-p2p==0.3.1 \
+    --hash=sha256:0292ee23db1386f8b1819b165a458fcf3933f6ff8f51e363d9b863d255f40927 \
+    --hash=sha256:68b6a325646042eaecf630aa07d9b70b3934bf72964dc7bb344c3ddb5dcf7416
     # via -r requirements.in
 certifi==2023.5.7 \
     --hash=sha256:0f0d56dc5a6ad56fd4ba36484d6cc34451e1c6548c61daad8c320169f91eddc7 \
