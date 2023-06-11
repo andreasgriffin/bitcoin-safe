@@ -136,22 +136,6 @@ DECIMAL_POINT_DEFAULT = 5  # mBTC
 class UnknownBaseUnit(Exception): pass
 
 import bdkpython as bdk 
-import asyncio
-from qasync import QThreadExecutor  
-
-
-def start_in_background_thread(my_function, name='job', on_finished=None):            
-    # my_function()
-    # on_finished()
-    async def outer(my_function, name='job', on_finished=None):                
-        if on_finished is None:
-            on_finished = lambda: logger.debug(f'{name} finished')
-
-        loop = asyncio.get_running_loop()
-        with QThreadExecutor(1) as exec:
-            await loop.run_in_executor(exec, my_function)
-        on_finished()
-    return asyncio.create_task(outer(my_function, name=name, on_finished=on_finished))     
 
 
         

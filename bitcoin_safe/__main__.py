@@ -9,21 +9,15 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from .main import MainWindow
-import asyncio
-import qasync, sys
+import sys
     
     
-async def main():
+def main():
     
     app = QApplication(sys.argv)
-    loop = qasync.QEventLoop(app)
-    asyncio.set_event_loop(loop)
-
     window = MainWindow()
     window.show()
-
-    with loop:
-        loop.run_forever()
+    app.exec_()
 
 
 if __name__ == '__main__':
@@ -31,7 +25,7 @@ if __name__ == '__main__':
     do_profiling =  DEVELOPMENT_PREFILLS
     if do_profiling:
         with cProfile.Profile() as pr:
-            asyncio.run(main())      
+            main()
 
         with open('profiling_stats.txt', 'w') as stream:
             stats = Stats(pr, stream=stream)
@@ -40,4 +34,4 @@ if __name__ == '__main__':
             stats.dump_stats('.prof_stats')
             stats.print_stats()
     else:
-        asyncio.run(main())      
+        main()

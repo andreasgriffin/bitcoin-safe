@@ -63,8 +63,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed) 
     
-        number_opened_wallets = self.open_last_opened_wallets()
-        if not number_opened_wallets:            
+        opened_qt_wallets = self.open_last_opened_wallets()
+        if not opened_qt_wallets:            
             self.welcome_screen.add_new_wallet_welcome_tab()
         
         
@@ -108,11 +108,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
         
     def open_last_opened_wallets(self):
-        opened_wallets = 0
+        opened_wallets = []
         for file_path in self.config.last_wallet_files.get(str(self.config.network_settings.network), []):
-            n = int(self.open_wallet(file_path=file_path) )
-            opened_wallets += n
-        
+            qt_wallet = self.open_wallet(file_path=file_path)
+            if qt_wallet:
+                opened_wallets.append(qt_wallet)        
         return opened_wallets
     
     def open_wallet(self, file_path=None):
@@ -129,21 +129,19 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         password = None
         if Storage().has_password(file_path):
             self.ui_password_question = PasswordQuestion()
-            password = self.ui_password_question.ask_for_password()        
-             
+            password = self.ui_password_question.ask_for_password()                     
         try:
             wallet = Wallet.load(file_path, self.config, password)
         except Exception as e:
             error_type, error_value, error_traceback = sys.exc_info()
             error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__}: {error_value}"
             self.show_error(error_message)
-            raise
-        print(wallet)
+            return
+
         qt_wallet = self.add_qt_wallet(wallet)        
         qt_wallet.password = password        
-        qt_wallet.sync()
-        
-        return True
+        qt_wallet.sync()        
+        return qt_wallet
     
     def save_current_wallet(self):
         return self.get_qt_wallet().save()
@@ -159,14 +157,14 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     
     def click_create_single_signature_wallet(self):
         qtwallet = self.next_step_after_welcome_screen((1,1))
-        qtwallet.wallet_settings_ui.disable_fields()
+        qtwallet.wallet_descriptor_ui.disable_fields()
     
     def click_multisig_signature(self):
         add_tab_to_tabs(self.tab_wallets, self.welcome_screen.ui_explainer1.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet', focus=True)
 
     def click_create_multisig_signature_wallet(self):
         qtwallet = self.next_step_after_welcome_screen((2,3))
-        qtwallet.wallet_settings_ui.disable_fields()
+        qtwallet.wallet_descriptor_ui.disable_fields()
         
     def click_custom_signature(self):     
         return self.next_step_after_welcome_screen((3,5))

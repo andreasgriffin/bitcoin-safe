@@ -17,10 +17,11 @@ from .util import add_tab_to_tabs
 from .taglist import AddressDragInfo
 from .ui_tx import UITX_Creator, UITX_Viewer
 
-from ...util import start_in_background_thread, Satoshis, format_satoshis
+from ...thread_manager import ThreadManager
+from ...util import  Satoshis, format_satoshis
 from ...signals import Signals
 from ...i18n import _
-from .ui_settings import WalletSettingsUI
+from .ui_descriptor import WalletDescriptorUI
 from .password_question import PasswordQuestion
 from .category_list import CategoryEditor
 from ...tx import TXInfos
@@ -87,14 +88,14 @@ class FX():
 
 class QTWallet():
     def __init__(self, wallet:Wallet, config:UserConfig, signals:Signals):    
+        self.thread_manager = ThreadManager()
         self.signals = signals
         self.set_wallet(wallet)
         self.password = None
-        self.wallet_settings_tab = None
+        self.wallet_descriptor_tab = None
         self.config = config
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
-        self.password = None
         
         
         self.history_tab, self.history_list, self.history_model = None, None, None
@@ -109,16 +110,15 @@ class QTWallet():
         return f'QTWallet({self.__dict__})'    
     
     def save(self): 
-        self.password = self.ui_password_question.ask_for_password()  if not self.password else self.password
-        self.wallet.save( os.path.join( self.config.wallet_dir,  self.wallet.basename()), password=self.password)
-    
-        
+         self.password = self.ui_password_question.ask_for_password()
+         self.wallet.save( os.path.join( self.config.wallet_dir,  self.wallet.basename()), password=self.password)
+            
     def cancel_setting_changes(self):
-        self.wallet_settings_ui.set_all_ui_from_wallet(self.wallet)
+        self.wallet_descriptor_ui.set_all_ui_from_wallet(self.wallet)
         
         
     def apply_setting_changes(self):
-        self.wallet_settings_ui.set_wallet_from_keystore_ui()
+        self.wallet_descriptor_ui.set_wallet_from_keystore_ui()
         self.wallet.recreate_bdk_wallet() # this must be after set_wallet_from_keystore_ui, but before create_wallet_tabs
         
         self.sync()
@@ -146,7 +146,7 @@ class QTWallet():
             else:
                 self.create_wallet_tabs()
             
-        start_in_background_thread(threaded, name='Update wallet UI', on_finished=on_finished)
+        self.thread_manager.start_in_background_thread(threaded, on_finished=on_finished, name='Update wallet UI')
             
     
     
@@ -163,12 +163,12 @@ class QTWallet():
     
     def create_and_add_settings_tab(self):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
-        wallet_settings_ui = WalletSettingsUI(wallet=self.wallet)
-        add_tab_to_tabs(self.tabs, wallet_settings_ui.tab, read_QIcon("preferences.png"), "Settings", "settings")
+        wallet_descriptor_ui = WalletDescriptorUI(wallet=self.wallet)
+        add_tab_to_tabs(self.tabs, wallet_descriptor_ui.tab, read_QIcon("preferences.png"), "Descriptor", "descriptor")
 
-        wallet_settings_ui.signal_qtwallet_apply_setting_changes.connect(self.apply_setting_changes)
-        wallet_settings_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
-        return wallet_settings_ui.tab, wallet_settings_ui   
+        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.apply_setting_changes)
+        wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
+        return wallet_descriptor_ui.tab, wallet_descriptor_ui   
 
     def _get_sub_texts_for_uitx(self):
         d = {}
@@ -209,7 +209,7 @@ class QTWallet():
 
     def create_pre_wallet_tab(self ):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"        
-        self.wallet_settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()        
+        self.wallet_descriptor_tab, self.wallet_descriptor_ui = self.create_and_add_settings_tab()        
 
     def set_wallet(self, wallet:Wallet):
         self.wallet = wallet     
@@ -230,8 +230,8 @@ class QTWallet():
         self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
         self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)        
         # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
-        if not self.wallet_settings_tab:
-            self.settings_tab, self.wallet_settings_ui = self.create_and_add_settings_tab()
+        if not self.wallet_descriptor_tab:
+            self.settings_tab, self.wallet_descriptor_ui = self.create_and_add_settings_tab()
         
         self.create_status_bar(self.tab, self.outer_layout)
 
@@ -495,11 +495,12 @@ class QTWallet():
             self.wallet.sync()
             logger.debug('finished sync')
         def on_finished():
+            logger.debug('start updating lists')
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
             self.update_status()
         if threaded:
-            future = start_in_background_thread(do_sync, on_finished=on_finished)
+            future = self.thread_manager.start_in_background_thread(do_sync, on_finished=on_finished)
         else:
             do_sync()
             on_finished()

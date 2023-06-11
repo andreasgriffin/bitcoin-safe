@@ -13,7 +13,7 @@ from typing import List, Tuple
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import MyTextEdit
 
-class WalletSettingsUI():
+class WalletDescriptorUI():
         def __init__(self, wallet:Wallet) -> None:
                 self.wallet = wallet
                 self.cloned_wallet:Wallet = None  # any temporary changes (before apply) are applied to this cloned_wallet. If it is None, then no change was made
@@ -53,9 +53,6 @@ class WalletSettingsUI():
 
                 self.box_button_bar = self.create_button_bar()
         
-                # self.tab_wallet_xpub_tab = self.create_wallet_xpub_tab()
-                # self.tabs_widget_signers.addTab(self.tab_wallet_xpub_tab, "Signer Settings")
-
 
         def ui_seed_ui_change(self, *args):
                 self.ui_keystore_ui_change()
