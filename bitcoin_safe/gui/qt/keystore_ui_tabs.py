@@ -15,10 +15,11 @@ from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 from ...signer import AbstractSigner, SignerWallet
 
-class KeyStoreUITypeChooser:
+class KeyStoreUITypeChooser(QObject):
+    signal_click_watch_only = Signal()
+    signal_click_seed = Signal()
     def __init__(self, network) -> None:
-        self.signal_click_watch_only = Signal('signal_click_watch_only')
-        self.signal_click_seed = Signal('signal_click_seed')
+        super().__init__()
         self.network = network
         self.tab = self.create()
 
@@ -46,11 +47,11 @@ class KeyStoreUITypeChooser:
     
         
 
-class KeyStoreUISigner:
+class KeyStoreUISigner(QObject):
     def __init__(self, signer:AbstractSigner, network) -> None:
+        super().__init__()
         self.signer = signer
 
-        self.signal_sign_with_seed = Signal('signal_sign_with_seed')
         self.network = network
         self.tab = self.create()
 
@@ -65,7 +66,6 @@ class KeyStoreUISigner:
 
         if self.network in KeyStoreTypes.seed.networks and type(self.signer) == SignerWallet:
             self.button_seed = create_button(KeyStoreTypes.seed.description, (KeyStoreTypes.seed.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
-            self.button_seed.clicked.connect(self.signal_sign_with_seed)
 
 
         return tab
@@ -79,15 +79,16 @@ class KeyStoreUISigner:
         
 
 
-class KeyStoreUIDefault:
+class KeyStoreUIDefault(QObject):
+    signal_xpub_changed = Signal()
+    signal_seed_changed = Signal()
+    signal_fingerprint_changed = Signal()
+    signal_derivation_path_changed = Signal()
     def __init__(self, tabs:QTabWidget, network:bdk.Network) -> None:
+        super().__init__()
         self.tabs = tabs
         self.network = network
         
-        self.signal_xpub_changed = Signal('xpub_changed')
-        self.signal_seed_changed = Signal('signal_seed_changed')
-        self.signal_fingerprint_changed = Signal('signal_fingerprint_changed')
-        self.signal_derivation_path_changed = Signal('signal_derivation_path_changed')
 
         self.tab = self.create()
         self.block_change_signals = BlockChangesSignals([

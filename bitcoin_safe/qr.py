@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import qrcode
 import bdkpython as bdk
 
@@ -10,8 +11,15 @@ def create_psbt_qr(psbt:bdk.PartiallySignedTransaction):
         box_size=10,
         border=4, 
     )
-    qr.add_data(psbt.serialize())
-    qr.make(fit=True)
+    data = psbt.serialize()
 
-    img = qr.make_image(fill_color="black", back_color="white")
-    return img
+    try:    
+        qr.add_data(data)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+        return img
+
+    except:
+        logger.error(f'Could not create qr code of size {len(data)}')
+        return None

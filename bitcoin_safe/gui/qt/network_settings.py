@@ -2,11 +2,13 @@ from PySide2.QtWidgets import (QApplication, QWidget, QVBoxLayout, QComboBox,
                                QStackedWidget, QFormLayout, QLineEdit)
 from PySide2.QtWidgets import QHBoxLayout, QPushButton
 from ...config import UserConfig
-from ...signals import Signal
+from PySide2.QtCore import Signal
 from ...pythonbdk_types import *
 from ...config import NetworkConfig, get_default_port
 
 class NetworkSettingsUI(QWidget):
+    signal_new_network_settings = Signal()
+    
     def __init__(self, config:UserConfig, parent=None):
         super().__init__(parent)
         
@@ -71,7 +73,6 @@ class NetworkSettingsUI(QWidget):
         self.applyButton = QPushButton(u"Apply && Restart")
         self.applyButton.clicked.connect(self.on_apply_click)
         
-        self.signal_new_network_settings = Signal('signal_new_network_settings')
         
 
         self.buttonLayout.addWidget(self.cancelButton)

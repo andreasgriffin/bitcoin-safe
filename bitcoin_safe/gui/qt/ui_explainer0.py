@@ -6,16 +6,17 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon, add_centered, add_centered_icons, create_button
-from ...signals import Signal
+from PySide2.QtCore import Signal
 from ...util import call_call_functions
 
 
-class Ui_Form(object):
+class Ui_Form(QObject):
+    signal_onclick_proceed = Signal() 
     def __init__(self, main_tabs) -> None:
+        super().__init__()
         self.tab = QWidget()
         self.main_tabs = main_tabs
 
-        self.signal_onclick_proceed = Signal('signal_onclick_proceed') 
 
 
 

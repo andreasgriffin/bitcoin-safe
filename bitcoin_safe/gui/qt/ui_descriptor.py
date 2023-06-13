@@ -13,25 +13,28 @@ from typing import List, Tuple
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import MyTextEdit
 
-class WalletDescriptorUI():
+class WalletDescriptorUI(QObject):
+        signal_descriptor_pasted = Signal(str)
+        signal_descriptor_change_apply = Signal(str)
+        signal_qtwallet_apply_setting_changes = Signal()
+        signal_qtwallet_cancel_setting_changes = Signal()
+
         def __init__(self, wallet:Wallet) -> None:
+                super().__init__()
                 self.wallet = wallet
                 self.cloned_wallet:Wallet = None  # any temporary changes (before apply) are applied to this cloned_wallet. If it is None, then no change was made
                 self.tab = QWidget()
                 self.verticalLayout_2 = QVBoxLayout(self.tab)
 
                 self.keystore_uis : List[KeyStoreUI] = []
-                self.signal_descriptor_pasted = Signal('signal_descriptor_pasted')
-                self.signal_descriptor_pasted.connect(self.on_descriptor_pasted)
-                self.signal_descriptor_change_apply = Signal('signal_descriptor_change_apply')
-                self.signal_descriptor_change_apply.connect(self.on_descriptor_change)
-                self.signal_qtwallet_apply_setting_changes = Signal('signal_qtwallet_apply_setting_changes')
-                self.signal_qtwallet_cancel_setting_changes = Signal('signal_qtwallet_cancel_setting_changes')
                 
                 self.create_wallet_type_and_descriptor()                    
                 self.tabs_widget_signers = QTabWidget(self.tab)
                 self.verticalLayout_2.addWidget(self.tabs_widget_signers)
                 
+                self.signal_descriptor_pasted.connect(self.on_descriptor_pasted)
+                self.signal_descriptor_change_apply.connect(self.on_descriptor_change)
+
                 for keystore in wallet.keystores:
                         keystore_ui = KeyStoreUI(keystore, self.tabs_widget_signers, self.wallet.config.network_settings.network)
                         self.keystore_uis.append(keystore_ui) 

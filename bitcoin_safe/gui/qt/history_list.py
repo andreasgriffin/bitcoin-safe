@@ -544,11 +544,12 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
                     return True
             return False
 
-    def __init__(self, fx, config, signals:Signals, wallet:Wallet, model: HistoryModel):
+    def __init__(self, fx, config, signals:Signals, wallet:Wallet, model: HistoryModel, parent=None):
         super().__init__(
             config=config,
             stretch_column=HistoryColumns.LABEL,
             editable_columns=[HistoryColumns.LABEL, HistoryColumns.FIAT_VALUE],
+            parent=parent
         )
         self.hm = model
         self.fx = fx
@@ -770,7 +771,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         if column == HistoryColumns.LABEL:
             self.wallet.set_label(key, text)
                 # self.hm.update_label(index)
-            self.signals.labels_updated()
+            self.signals.labels_updated.emit()
                 # self.main_window.update_completions()
         elif column == HistoryColumns.FIAT_VALUE:
             self.wallet.set_fiat_value(key, self.fx.ccy, text, self.fx, tx_item['value'].value)
@@ -795,7 +796,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
             tx = self.wallet.get_tx(tx_hash)
             if not tx:
                 return
-            self.signals.show_transaction(tx)
+            self.signals.show_transaction.emit(tx)
 
 
     # def on_double_click(self, idx):
@@ -880,18 +881,18 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         self.wallet.adb.remove_transaction(txid)
         self.wallet.save_db()
         # need to update at least: history_list, utxo_list, address_list
-        self.signals.update_all_in_qt_wallet()
+        self.signals.update_all_in_qt_wallet.emit()
 
     def onFileAdded(self, fn):
         try:
             with open(fn) as f:
-                tx = self.signals.tx_from_text(f.read())
+                tx = self.signals.tx_from_text.emit(f.read())
         except IOError as e:
             self.show_error(e)
             return
         if not tx:
             return
-        self.signals.save_transaction_into_wallet(tx)
+        self.signals.save_transaction_into_wallet.emit(tx)
 
     def export_history_dialog(self):
         d = WindowModalDialog(self, _('Export History'))

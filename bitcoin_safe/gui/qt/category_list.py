@@ -3,7 +3,8 @@ logger = logging.getLogger(__name__)
 
 from .taglist import TagEditor, CustomListWidget
 from typing import List
-from ...signals import Signals, Signal
+from PySide2.QtCore import Signal
+from ...signals import Signals
 from .taglist import hash_color
 from PySide2.QtGui import QBrush, QColor, QPainterPath, QMouseEvent
 
@@ -53,14 +54,14 @@ class CategoryEditor(TagEditor):
         if  item.text()  in self.categories:            
             return
         self.categories.append(item.text())
-        self.signals.category_updated()
+        self.signals.category_updated.emit()
         
     def on_delete(self, item):
         if item.text() not in self.categories:
             return
         idx = self.categories.index(item.text() )
         self.categories.pop(idx)
-        self.signals.category_updated()
+        self.signals.category_updated.emit()
                 
     def refresh(self):
         self.list_widget.recreate(self.categories, sub_texts=self.get_sub_texts())

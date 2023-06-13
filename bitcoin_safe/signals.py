@@ -1,10 +1,13 @@
 import logging
 from typing import Callable, List, Dict
 logger = logging.getLogger(__name__)
+from PySide2.QtCore import Signal, QObject
 
+from typing import List, Dict
+import bdkpython as bdk
 
 import threading
-class Signal:
+class SignalFunction:
     def __init__(self, name=None):
         self.name = name 
         self.slots = {}
@@ -27,18 +30,29 @@ class Signal:
     def emit(self, *args, **kwargs):
         responses = {}
         if not self.slots:
-            logger.debug(f'Signal {self.name}.emit() was called, but no listeners {self.slots} are listening.')
+            logger.debug(f'SignalFunction {self.name}.emit() was called, but no listeners {self.slots} are listening.')
             
+        delete_slots = []
         with self.lock:
             for key, slot in self.slots.items():
                 name = f'{slot.__self__.__class__.__name__}.'  if str(slot.__class__) == "<class 'method'>" else ''
                 name += f'{slot.__name__}{args, kwargs}' 
                 name += f' with key={key}'  if key else ''
-                logger.debug(f'Signal {self.name}.emit() --> {name}')
-                responses[key] = slot(*args, **kwargs)
+                logger.debug(f'SignalFunction {self.name}.emit() --> {name}')
+                try:
+                    responses[key] = slot(*args, **kwargs)
+                except:
+                    logger.warning(f'{slot} with key {key} could not be called. The slot will be deleted.')   
+                    delete_slots.append(slot)                 
+                    continue
+        
+        for slot in delete_slots:
+            self.disconnect(slot)
+                    
         return responses
 
-class SingularSignal(Signal):
+
+class SingularSignalFunction(SignalFunction):
     def connect(self, slot):
         if not self.slots:
             super().connect(slot)
@@ -52,11 +66,7 @@ class SingularSignal(Signal):
 
 
 
-from typing import List, Dict
-
-
-from collections import defaultdict
-class Signals:
+class Signals(QObject):
     """
     The idea here is to define events that might need to trigger updates of the UI or other events  (careful of circular loops)
     
@@ -71,40 +81,41 @@ class Signals:
             need_utxo_list_update
             
     
-    I immediately break the rule however for SingularSignal, which is a function call
+    I immediately break the rule however for Signal, which is a function call
     """
-    def __init__(self) -> None:
-        self.open_tx = Signal('open_tx')
-        self.utxos_updated = Signal('utxos_updated')
-        self.addresses_updated = Signal('addresses_updated')
-        self.labels_updated = Signal('labels_updated')        
-        self.category_updated = Signal('category_updated')        
-        self.completions_updated = Signal('completions_updated')        
-        self.event_wallet_tab_closed = Signal('event_wallet_tab_closed')
-        self.event_wallet_tab_added = Signal('event_wallet_tab_added')
-        
-        self.tx_from_text = SingularSignal('tx_from_text')
-        self.update_all_in_qt_wallet = SingularSignal('update_all_in_qt_wallet')
+    open_tx = Signal(object)
+    utxos_updated = Signal()
+    addresses_updated = Signal()
+    labels_updated = Signal()        
+    category_updated = Signal()        
+    completions_updated = Signal()        
+    event_wallet_tab_closed = Signal()
+    event_wallet_tab_added = Signal()
+    
+    update_all_in_qt_wallet = Signal()
 
-        self.show_utxo = SingularSignal('show_utxo')
-        self.show_address = SingularSignal('show_address')
-        self.show_private_key = SingularSignal('show_private_key')
+    show_utxo = Signal(object)
+    show_address = Signal(str)
+    show_private_key = Signal(str)
 
-        self.show_transaction = SingularSignal('show_transaction')
-        self.cpfp_dialog = SingularSignal('cpfp_dialog')
-        self.dscancel_dialog = SingularSignal('dscancel_dialog')
-        self.bump_fee_dialog = SingularSignal('bump_fee_dialog')
-        self.show_onchain_invoice = SingularSignal('show_onchain_invoice')
-        self.save_transaction_into_wallet = SingularSignal('save_transaction_into_wallet')
-        
-        self.get_addresses = Signal('get_addresses')
-        self.get_receiving_addresses = Signal('get_receiving_addresses')
-        self.get_change_addresses = Signal('get_change_addresses')
-        self.get_label_for_address = Signal('get_label_for_address')
-        self.get_utxos = Signal('get_utxos')
-        self.utxo_of_outpoint = Signal('utxo_of_outpoint')
-        self.get_wallets = SingularSignal('get_wallets')
-        
+    show_transaction = Signal(bdk.TransactionDetails)
+    cpfp_dialog = Signal(bdk.TransactionDetails)
+    dscancel_dialog = Signal()
+    bump_fee_dialog = Signal()
+    show_onchain_invoice = Signal()
+    save_transaction_into_wallet = Signal(object)
+    
+    
+    tx_from_text = SignalFunction()
+    
+    get_addresses = SignalFunction()
+    get_receiving_addresses = SignalFunction()
+    get_change_addresses = SignalFunction()
+    get_label_for_address = SignalFunction()
+    get_utxos = SignalFunction()
+    utxo_of_outpoint = SignalFunction()
+    get_wallets = SignalFunction()
+    
 
-        
-        self.show_network_settings = Signal('show_network_settings')
+    
+    show_network_settings = Signal()

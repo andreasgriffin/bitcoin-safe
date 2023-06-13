@@ -221,7 +221,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
         if event.mimeData().hasFormat('application/json'):
             model = self.model()
-            hit_address = model.data(model.index(index.row(), Columns.ADDRESS)) 
+            hit_address = model.data(model.index(index.row(), self.Columns.ADDRESS)) 
             
             data_bytes = event.mimeData().data('application/json')
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -239,7 +239,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             
     def on_double_click(self, idx):
         addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
-        self.signals.show_address(addr)
+        self.signals.show_address.emit(addr)
 
     def create_toolbar(self, config=None):
         toolbar, menu = self.create_toolbar_with_menu('')
@@ -413,7 +413,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             if not item:
                 return
             addr = addrs[0]
-            menu.addAction(_('Details'), lambda:  self.signals.show_address(addr))
+            menu.addAction(_('Details'), lambda:  self.signals.show_address.emit(addr))
             addr_column_title = self.std_model.horizontalHeaderItem(self.Columns.LABEL).text()
             addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
             self.add_copy_menu(menu, idx)
@@ -451,5 +451,5 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)
-        self.signals.labels_updated()
+        self.signals.labels_updated.emit()
 

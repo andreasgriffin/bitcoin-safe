@@ -267,10 +267,10 @@ class TxInOutWidget(QWidget):
         assert target
         if bitcoin.is_address(target):
             # target was an address, open address dialog
-            self.signals.show_address(target, parent=self)
+            self.signals.show_address.emit(target, parent=self)
         else:
             # target was a txid, open new tx dialog
-            self.signals.do_process_from_txid(txid=target, parent=self)
+            self.signals.do_process_from_txid.emit(txid=target, parent=self)
 
     def on_context_menu_for_inputs(self, pos: QPoint):
         i_text = self.inputs_textedit
@@ -301,7 +301,7 @@ class TxInOutWidget(QWidget):
             addr = self.wallet.adb.get_txin_address(txin)
             if addr:
                 if self.wallet.is_mine(addr):
-                    show_list += [(_("Address Details"), lambda: self.signals.show_address(addr, parent=self))]
+                    show_list += [(_("Address Details"), lambda: self.signals.show_address.emit(addr, parent=self))]
                 copy_list += [(_("Copy Address"), lambda: do_copy(addr))]
             txin_value = self.wallet.adb.get_txin_value(txin)
             if txin_value:
@@ -344,7 +344,7 @@ class TxInOutWidget(QWidget):
             copy_list += [(_("Copy") + " " + _("Outpoint"), lambda: do_copy(outpoint.to_str()))]
         if addr := self.tx.outputs()[txout_idx].address:
             if self.wallet.is_mine(addr):
-                show_list += [(_("Address Details"), lambda: self.signals.show_address(addr, parent=self))]
+                show_list += [(_("Address Details"), lambda: self.signals.show_address.emit(addr, parent=self))]
             copy_list += [(_("Copy Address"), lambda: do_copy(addr))]
         txout_value = self.tx.outputs()[txout_idx].value
         value_str = format_satoshis(txout_value)
@@ -422,9 +422,9 @@ class TxDialog(QDialog, MessageBoxMixin):
         def on_edited():
             text = self.tx_desc.text()
             if self.wallet.set_label(txid, text):
-                self.signals.addresses_updated()
-                self.signals.utxos_updated()
-                self.signals.labels_updated()
+                self.signals.addresses_updated.emit()
+                self.signals.utxos_updated.emit()
+                self.signals.labels_updated.emit()
         self.tx_desc.editingFinished.connect(on_edited)
         self.tx_desc.addCopyButton()
         vbox.addWidget(self.tx_desc)
@@ -524,12 +524,12 @@ class TxDialog(QDialog, MessageBoxMixin):
             self.maybe_fetch_txin_data()
 
     def do_broadcast(self):
-        self.signals.push_top_level_window(self)
-        self.signals.send_tab.save_pending_invoice()
+        self.signals.push_top_level_window.emit(self)
+        self.signals.send_tab.save_pending_invoice.emit()
         try:
-            self.signals.broadcast_transaction(self.tx)
+            self.signals.broadcast_transaction.emit(self.tx)
         finally:
-            self.signals.pop_top_level_window(self)
+            self.signals.pop_top_level_window.emit(self)
         self.saved = True
         self.update()
 
@@ -598,7 +598,7 @@ class TxDialog(QDialog, MessageBoxMixin):
                 """out of the QR code as it would not fit. This might cause issues if signing offline. """
                 """As a workaround, try exporting the tx as file or text instead.""")
         try:
-            self.signals.show_qrcode(qr_data, 'Transaction', parent=self, help_text=help_text)
+            self.signals.show_qrcode.emit(qr_data, 'Transaction', parent=self, help_text=help_text)
         except qrcode.exceptions.DataOverflowError:
             self.show_error(_('Failed to display QR code.') + '\n' +
                             _('Transaction is too large in size.'))
@@ -611,18 +611,18 @@ class TxDialog(QDialog, MessageBoxMixin):
                 self.prompt_if_unsaved = True
                 self.saved = False
             self.update()
-            self.signals.pop_top_level_window(self)
+            self.signals.pop_top_level_window.emit(self)
 
         self.sign_button.setDisabled(True)
-        self.signals.push_top_level_window(self)
-        self.signals.sign_tx(self.tx, callback=sign_done, external_keypairs=self.external_keypairs)
+        self.signals.push_top_level_window.emit(self)
+        self.signals.sign_tx.emit(self.tx, callback=sign_done, external_keypairs=self.external_keypairs)
 
     def save(self):
-        self.signals.push_top_level_window(self)
-        if self.signals.save_transaction_into_wallet(self.tx):
+        self.signals.push_top_level_window.emit(self)
+        if self.signals.save_transaction_into_wallet.emit(self.tx):
             self.save_button.setDisabled(True)
             self.saved = True
-        self.signals.pop_top_level_window(self)
+        self.signals.pop_top_level_window.emit(self)
 
     def export_to_file(self, *, tx: Transaction = None):
         if tx is None:
@@ -673,7 +673,7 @@ class TxDialog(QDialog, MessageBoxMixin):
         )
         if not text:
             return
-        tx = self.signals.tx_from_text(text)
+        tx = self.signals.tx_from_text.emit(text)
         if not tx:
             return
         try:
@@ -695,7 +695,7 @@ class TxDialog(QDialog, MessageBoxMixin):
         )
         if not text:
             return
-        tx = self.signals.tx_from_text(text)
+        tx = self.signals.tx_from_text.emit(text)
         if not tx:
             return
         try:

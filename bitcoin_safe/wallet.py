@@ -75,7 +75,6 @@ class Wallet(BaseSaveableClass):
         
     
     
-    
     def temporary_descriptors(self, use_html=False):
         """
         These is a descriptor that can be generated without having all keystore information.
@@ -850,7 +849,7 @@ class Wallet(BaseSaveableClass):
         return status, status_str
     
 
-    def create_psbt(self, txinfos:TXInfos) -> bdk.PartiallySignedTransaction:
+    def create_psbt(self, txinfos:TXInfos) -> TXInfos:
         if not txinfos.utxo_strings and not txinfos.categories:
             raise Exception('No inputs provided')
 
@@ -866,9 +865,13 @@ class Wallet(BaseSaveableClass):
         for outpoint in outpoints:
             txinfos.tx_builder = txinfos.tx_builder.add_utxo(outpoint)        
             
+        builder_result:bdk.TxBuilderResult = txinfos.tx_builder.finish(self.bdkwallet)
         
-        tx_final = txinfos.tx_builder.finish(self.bdkwallet)
+        self.tips = [tip + 1 for tip in self.tips]
         
-        logger.info(json.loads(tx_final.psbt.json_serialize()))
         
-        return tx_final.psbt
+        logger.info(json.loads(builder_result.psbt.json_serialize()))
+        logger.debug(f'psbt fee after finalized {builder_result.psbt.fee_rate().as_sat_per_vb()}')
+        
+        txinfos.builder_result = builder_result
+        return txinfos

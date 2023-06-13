@@ -12,7 +12,7 @@ from PySide2.QtGui import QPen
 from PySide2.QtCore import Qt
 import numpy as np
 from ...mempool import get_block_min_fees, chartColors, bin_data, feeLevels, fetch_mempool_histogram, index_of_sum_until_including
-from ...signals import Signal
+from PySide2.QtCore import Signal, QObject
 from PySide2.QtGui import QCursor
 
 class BarSegment(QGraphicsRectItem):
@@ -59,10 +59,11 @@ class Line(QGraphicsLineItem):
 
 
 class SingleBarChart(QGraphicsView):
+    signal_click = Signal(float)
+    
     def __init__(self, scene, parent=None):
         super().__init__(scene, parent)
         self.total_height = 0
-        self.signal_click = Signal('signal_click')
         self.current_fee = None
 
         # Set the cursor to a hand cursor
@@ -103,13 +104,14 @@ class SingleBarChart(QGraphicsView):
         
 
 
-class MempoolBarChart:
+class MempoolBarChart(QObject):
+    signal_data_updated = Signal()
+    signal_click = Signal(float)
     def __init__(self) -> None:
+        super().__init__()
         self.data = None
         self.plotting_histogram = None
         
-        self.signal_data_updated = Signal("signal_data_updated")
-        self.signal_click = Signal("signal_data_updated")
         
         self.scene = QGraphicsScene()
         self.chart = SingleBarChart(self.scene)
@@ -165,5 +167,4 @@ class MempoolBarChart:
 
 
         return self.chart 
-
 

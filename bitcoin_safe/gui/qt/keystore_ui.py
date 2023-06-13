@@ -97,17 +97,17 @@ class KeyStoreUI:
 
 
 
-class SignerUI:
+class SignerUI(QObject):
+    signal_signature_added = Signal(bdk.PartiallySignedTransaction)
     def __init__(self, signer:AbstractSigner, psbt:bdk.PartiallySignedTransaction, tabs:QTabWidget, network:bdk.Network) -> None:
+        super().__init__()
         self.signer = signer
         self.psbt = psbt
         self.tabs = tabs
         
-        self.signal_signature_added = Signal("signal_signature_added")
     
-        self.ui_signer = KeyStoreUISigner(signer, network)
-        
-        self.ui_signer.signal_sign_with_seed.connect(self.sign)
+        self.ui_signer = KeyStoreUISigner(signer, network)        
+        self.ui_signer.button_seed.clicked.connect(lambda: self.sign())  # with lambda function it works. But not without. No idea why
 
         add_tab_to_tabs(self.tabs, self.ui_signer.tab, icon_for_label(signer.label), self.signer.label, self.signer.label, focus=True)
             
@@ -127,7 +127,9 @@ class SignerUI:
 
         if signing_was_successful:
             logger.debug(f'psbt after signing: {psbt_to_hex(psbt2)}')
-            self.signal_signature_added(psbt2)
+            logger.debug(f'psbt after signing: fee  {psbt2.fee_rate().as_sat_per_vb()}')
+
+            self.signal_signature_added.emit(psbt2)
         else:
             logger.debug(f'signign failed')
     

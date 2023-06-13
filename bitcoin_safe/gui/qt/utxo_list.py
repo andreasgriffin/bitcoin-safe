@@ -180,7 +180,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
     def on_double_click(self, idx):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_PREVOUT_STR)
         utxo = self._utxo_dict[outpoint]
-        self.signals.show_utxo(utxo)
+        self.signals.show_utxo.emit(utxo)
 
     def create_menu(self, position):
         selected = self.get_selected_outpoints()
@@ -199,7 +199,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             tx = self.wallet.adb.get_transaction(txid)
             if tx:
                 label = self.wallet.get_label_for_txid(txid)
-                menu.addAction(_("Privacy analysis"), lambda: self.signals.show_utxo(utxo))
+                menu.addAction(_("Privacy analysis"), lambda: self.signals.show_utxo.emit(utxo))
             cc = self.add_copy_menu(menu, idx)
             cc.addAction(_("Long Output point"), lambda: self.place_text_on_clipboard(utxo.prevout.to_str(), title="Long Output point"))
         # fully spend

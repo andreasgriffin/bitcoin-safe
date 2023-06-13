@@ -109,7 +109,7 @@ class AddressDialog(WindowModalDialog):
             vbox.addWidget(der_path_e)
 
         addr_hist_model = AddressHistoryModel(self, self.qt_wallet, self.address)
-        self.hw = HistoryList(self.fx, self.config, self.signals,  self.wallet, addr_hist_model)
+        self.hw = HistoryList(self.fx, self.config, self.signals,  self.wallet, addr_hist_model, parent=self)
         self.hw.num_tx_label = QLabel('')
         addr_hist_model.set_view(self.hw)
         vbox.addWidget(self.hw.num_tx_label)

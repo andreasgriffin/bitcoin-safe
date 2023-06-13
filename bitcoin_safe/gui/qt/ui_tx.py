@@ -15,7 +15,7 @@ from .utxo_list import UTXOList
 from ...tx import TXInfos
 from ...signals import Signals
 from .barchart import MempoolBarChart
-from ...mempool import get_prio_fees, fee_to_color, fee_to_depth
+from ...mempool import get_prio_fees, fee_to_color, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
 from ...qr import create_psbt_qr
 from PIL import Image
@@ -25,6 +25,8 @@ from .util import read_QIcon
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
 from ...util import psbt_to_hex
+from .block_buttons import MempoolButtons, MempoolProjectedBlock
+from ...mempool import MempoolData
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
@@ -126,12 +128,13 @@ class EnlargedImage(QLabel):
 
                 
 
-class ExportPSBT:
+class ExportPSBT(QObject):
+    signal_export_psbt_to_file = Signal()
     def __init__(self, layout, allow_edit=False) -> None:
+        super().__init__()
         self.psbt = None
         self.tabs = QTabWidget()
         self.tabs.setMaximumWidth(300)
-        self.signal_export_psbt_to_file = Signal('signal_export_psbt_to_file')
         self.signal_export_psbt_to_file.connect(self.export_psbt)        
 
         # qr
@@ -139,6 +142,7 @@ class ExportPSBT:
         self.tab_qr_layout = QHBoxLayout(self.tab_qr)
         self.tab_qr_layout.setAlignment(Qt.AlignVCenter)
         self.qr_label = QRLabel()
+        self.qr_label.setWordWrap(True)
         self.tab_qr_layout.addWidget(self.qr_label)
         self.tabs.addTab(self.tab_qr, 'QR')
         
@@ -216,8 +220,11 @@ class ExportPSBT:
         json_text = json.dumps( json.loads(json_text), indent=4 )
         self.edit_json.setText(json_text)
         
-        
-        self.qr_label.set_image( create_psbt_qr(psbt)  )
+        img = create_psbt_qr(psbt)
+        if img:
+            self.qr_label.set_image(img)
+        else:
+            self.qr_label.setText('Data too large.\nNo QR Code could be generated')
 
         
         
@@ -250,7 +257,7 @@ class ExportPSBT:
 
 
 class FeeGroup:
-    def __init__(self, layout, allow_edit=True) -> None:
+    def __init__(self, mempool_data:MempoolData, layout, allow_edit=True, is_viewer=False) -> None:
         self.allow_edit = allow_edit
         
         # add the groupBox_Fee
@@ -258,23 +265,25 @@ class FeeGroup:
         self.groupBox_Fee.setTitle("Fee")
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.groupBox_Fee.setAlignment(Qt.AlignTop)
-        layout_h_fee = QHBoxLayout(self.groupBox_Fee)                
-        # layout_h_fee.setContentsMargins(0, layout.contentsMargins().top(), 0, layout.contentsMargins().bottom())  # Remove margins
+        layout_h_fee = QVBoxLayout(self.groupBox_Fee)                
+        layout_h_fee.setAlignment(Qt.AlignHCenter)
+        layout_h_fee.setContentsMargins(layout.contentsMargins().left()/5, layout.contentsMargins().top()/5, layout.contentsMargins().right()/5, layout.contentsMargins().bottom()/5)
 
-        #  add the mempool bar on the left
-        self.mempool = MempoolBarChart()
+        if is_viewer:
+            self.mempool = MempoolProjectedBlock(mempool_data)
+        else:
+            self.mempool = MempoolButtons(mempool_data, button_count=3)
+            
         if allow_edit:
-            self.mempool.signal_click.connect(self.set_fee)
-        self.mempool.set_data_from_file('data.csv')
-        self.mempool.chart.setMaximumWidth(25)
-        layout_h_fee.addWidget(self.mempool.chart)
+            self.mempool.signal_click.connect(self.set_fee)        
+        layout_h_fee.addWidget(self.mempool.button_group, alignment=Qt.AlignHCenter)
         
-        # and the rest on the right
-        widget_right_hand_side_fees = QWidget(self.groupBox_Fee)
-        widget_right_hand_side_fees_layout = QVBoxLayout(widget_right_hand_side_fees)                
-        widget_right_hand_side_fees_layout.setContentsMargins(0, layout.contentsMargins().top(), 0, layout.contentsMargins().bottom())  # Remove margins
-        widget_right_hand_side_fees_layout.setAlignment(Qt.AlignVCenter)
-        layout_h_fee.addWidget(widget_right_hand_side_fees)
+        
+        
+        self.widget_around_spin_box = QWidget()
+        self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
+        self.widget_around_spin_box_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+        layout_h_fee.addWidget(self.widget_around_spin_box, alignment=Qt.AlignHCenter)
                 
         self.spin_fee = QDoubleSpinBox()
         if not allow_edit:
@@ -282,38 +291,28 @@ class FeeGroup:
         self.spin_fee.setRange(0.0, 100.0)  # Set the acceptable range
         self.spin_fee.setSingleStep(1)  # Set the step size
         self.spin_fee.setDecimals(1)  # Set the number of decimal places
-        self.spin_fee.editingFinished.connect(lambda: self._set_chart_fee(self.spin_fee.value()))
-        self.mempool.signal_data_updated.connect(self.update_spin_fee)
-                
         self.spin_fee.setMaximumWidth(45)
-        widget_right_hand_side_fees_layout.addWidget(self.spin_fee)        
+        self.spin_fee.editingFinished.connect(lambda: self.set_fee(self.spin_fee.value()))
+        # self.mempool.mempool_data.signal_current_data_updated.connect(self.update_spin_fee)
+                
+        self.widget_around_spin_box_layout.addWidget(self.spin_fee)        
 
-        spin_label = QLabel()
-        spin_label.setText("sat/vB")
-        widget_right_hand_side_fees_layout.addWidget(spin_label)        
+        self.spin_label = QLabel()
+        self.spin_label.setText("sat/vB")
+        self.widget_around_spin_box_layout.addWidget(self.spin_label)  
+              
+        self.spin_label2 = QLabel()
+        layout_h_fee.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)        
             
 
-        for fee, text in zip(get_prio_fees(self.mempool.data), ["High", "Mid", "Low"]):
-            button = QPushButton()
-            button.setStyleSheet("QPushButton { color: "+ fee_to_color(fee) +"; }")            
-            button.setMaximumWidth(30)
-            button.setText(text)
-            def onclick(*args, value=fee):
-                return self.spin_fee.setValue(value)
-            button.clicked.connect(onclick)
-            if allow_edit:
-                widget_right_hand_side_fees_layout.addWidget(button)        
-
-
         layout.addWidget(self.groupBox_Fee)
-
-    def _set_chart_fee(self, fee):
-        self.mempool.chart.set_current_fee( fee_to_depth(self.mempool.data, fee), fee, color='black' )
 
             
     def set_fee(self, fee):
         self.spin_fee.setValue(fee)
-        self._set_chart_fee(fee)
+        self.mempool.set_fee(fee)
+        
+        self.spin_label2.setText(f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee)}. Block")
         
     def update_spin_fee(self):
         self.spin_fee.setRange(1, self.mempool.data[:,0].max())  # Set the acceptable range 
@@ -321,16 +320,19 @@ class FeeGroup:
 
 
 
-class UITX_Viewer():
-    def __init__(self, psbt:bdk.PartiallySignedTransaction, signals:Signals, network:bdk.Network) -> None:
+class UITX_Viewer(QObject):
+    signal_edit_tx = Signal()
+    signal_save_psbt = Signal()
+    signal_broadcast_tx = Signal()
+    def __init__(self, psbt:bdk.PartiallySignedTransaction, signals:Signals, network:bdk.Network, mempool_data:MempoolData, fee_rate=None) -> None:
+        super().__init__()
         self.psbt:bdk.PartiallySignedTransaction = psbt
         self.signals = signals
         self.network = network
+        self.mempool_data = mempool_data
+        self.fee_rate = fee_rate
 
         self.signers:List[SignerWallet] = []
-        self.signal_edit_tx = Signal('signal_edit_tx')
-        self.signal_save_psbt = Signal('signal_save_psbt')
-        self.signal_broadcast_tx = Signal('signal_broadcast_tx')
 
         
         self.main_widget = QWidget()
@@ -361,7 +363,7 @@ class UITX_Viewer():
 
 
         # fee
-        self.fee_group = FeeGroup(self.upper_widget_layout, allow_edit=False)
+        self.fee_group = FeeGroup(self.mempool_data, self.upper_widget_layout, allow_edit=False, is_viewer=True)
         
         
         self.lower_widget = QWidget(self.main_widget)
@@ -390,14 +392,14 @@ class UITX_Viewer():
                                                                                                                    ])
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
-        self.set_psbt(psbt)
+        self.set_psbt(psbt, fee_rate=fee_rate)
         
         
     def broadcast(self):
         logger.debug(f'broadcasting {psbt_to_hex(self.psbt)}')
         tx = self.psbt.extract_tx()
         self.signers[0].wallet.blockchain.broadcast(tx)
-        self.signal_broadcast_tx()
+        self.signal_broadcast_tx.emit()
 
 
     def add_all_signer_tabs(self):
@@ -406,9 +408,9 @@ class UITX_Viewer():
         
         wallet_for_inputs = []
         for this_input in inputs:            
-            for wallet_id, utxo in self.signals.utxo_of_outpoint(this_input.previous_output).items():
+            for wallet_id, utxo in self.signals.utxo_of_outpoint.emit(this_input.previous_output).items():
                 if utxo:                   
-                    wallet = [wallet for wallet in self.signals.get_wallets() if wallet.id == wallet_id][0]
+                    wallet = [wallet for wallet in self.signals.get_wallets.emit().values() if wallet.id == wallet_id][0]
                     wallet_for_inputs.append(wallet)
             
         if None in wallet_for_inputs:
@@ -431,23 +433,25 @@ class UITX_Viewer():
         self.signeruis = []
         for signer in self.signers: 
             signerui = SignerUI(signer, self.psbt, self.tabs_signers, self.network)              
-            signerui.signal_signature_added.connect(self.signature_added)
+            signerui.signal_signature_added.connect(lambda psbt: self.signature_added(psbt))
             self.signeruis.append(signerui)
         
 
     def signature_added(self, psbt_with_signatures:bdk.PartiallySignedTransaction):
-        self.set_psbt(psbt_with_signatures)
-        self.button_broadcast_tx.setEnabled(True)
-        
-        
+        has_all_signatures = True   # TODO: This needs to be actually checked
+        self.set_psbt(psbt_with_signatures, fee_rate=None if has_all_signatures else self.fee_rate)
+        self.button_broadcast_tx.setEnabled(True)     
 
 
 
-    def set_psbt(self, psbt:bdk.PartiallySignedTransaction):
+
+    def set_psbt(self, psbt:bdk.PartiallySignedTransaction, fee_rate=None):
         self.psbt:bdk.PartiallySignedTransaction = psbt
         self.export_psbt.set_psbt(psbt)
         
-        self.fee_group.set_fee(self.psbt.fee_rate().as_sat_per_vb())            
+        fee_rate = self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
+        
+        self.fee_group.set_fee(fee_rate)            
         
         outputs :List[bdk.TxOut] = psbt.extract_tx().output()
         
@@ -461,15 +465,16 @@ class UITX_Viewer():
         self.recipients.recipients = [get_recipient_dict(i, output) for i, output in enumerate(outputs)]
 
 
-class UITX_Creator():
-    def __init__(self, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts) -> None:
+class UITX_Creator(QObject):
+    signal_create_tx = Signal(TXInfos)
+    def __init__(self, mempool_data:MempoolData, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts) -> None:
+        super().__init__()
         self.categories = categories
         self.utxo_list = utxo_list
         self.signals = signals
         self.get_sub_texts = get_sub_texts
         
         
-        self.signal_create_tx = Signal('signal_create_tx')
         
 
         self.main_widget = QWidget()
@@ -488,13 +493,13 @@ class UITX_Creator():
         self.groupBox_outputs, self.groupBox_outputs_layout = create_groupbox(self.widget_right_top_layout)
         self.recipients = create_recipients(self.groupBox_outputs_layout, self.signals)
 
-        self.fee_group = FeeGroup(self.widget_right_top_layout)
+        self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
         
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
 
         (self.button_create_tx,) = create_button_bar(self.widget_right_hand_side_layout, button_texts=["Next Step: Sign Transaction with hardware signers"])
-        self.button_create_tx.clicked.connect(lambda : self.signal_create_tx(self.get_ui_tx_infos))
+        self.button_create_tx.clicked.connect(lambda: self.signal_create_tx.emit(self.get_ui_tx_infos))
 
 
 
@@ -552,6 +557,8 @@ class UITX_Creator():
 
         for recipient in self.recipients.recipients:
             infos.add_recipient(**recipient)        
+            
+        logger.debug(f'set psbt builder fee {self.fee_group.spin_fee.value()}')
         infos.set_fee_rate(self.fee_group.spin_fee.value())
 
         if self.tabs_inputs.currentWidget() == self.tab_inputs_categories:

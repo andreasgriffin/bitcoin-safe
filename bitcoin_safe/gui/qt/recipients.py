@@ -105,14 +105,14 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.send_max_button.setEnabled(state)
 
     def set_label_placeholder_text(self):
-        addresses_dict = self.signals.get_addresses()        
+        addresses_dict = self.signals.get_addresses.emit()        
         
         wallet_id = None
         label = ''
         for wallet_id, addresses in addresses_dict.items():
             if self.address in addresses:
                 wallet_id = wallet_id
-                label = self.signals.get_label_for_address(self.address)[wallet_id]
+                label = self.signals.get_label_for_address.emit(self.address)[wallet_id]
             
         if wallet_id:            
             self.label_line_edit.setPlaceholderText(label)        
@@ -124,10 +124,10 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
     def format_address_field(self, *args):
         palette = QtGui.QPalette()
-        if self.address in sum(self.signals.get_receiving_addresses().values(), []):
+        if self.address in sum(self.signals.get_receiving_addresses.emit().values(), []):
             background_color = ColorScheme.GREEN.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
-        elif self.address in sum(self.signals.get_change_addresses().values(), []):
+        elif self.address in sum(self.signals.get_change_addresses.emit().values(), []):
             background_color = ColorScheme.YELLOW.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
         else:

@@ -3,8 +3,7 @@ logger = logging.getLogger(__name__)
 
 import requests
 import numpy as np
-
-
+from PySide2.QtCore import QObject, Signal
 
 feeLevels = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200,
   250, 300, 350, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -100,6 +99,10 @@ def fee_to_depth(data, fee):
     return data[indizes,1].sum()
     
 
+def fee_to_blocknumber(data, fee):
+    depth = fee_to_depth(data, fee)
+    return max(int(np.ceil(depth/1e6)),  1)
+
 def blocks_to_min_fees(data, blocks):
     block_sive_invbytes = 4e6 / 4  #  4e6 is the max WU of a block
     fees = []
@@ -137,3 +140,30 @@ def bin_data(bin_edges,  data):
     return np.array(aggregated_data)
 
     
+
+
+
+class MempoolData(QObject):
+    signal_current_data_updated = Signal()
+    
+    def __init__(self) -> None:
+        super().__init__()
+        
+        self.current_timestamp = 0
+        self.current_data = np.array([[]])
+
+        
+        
+
+    def set_data_from_file(self, datafile=None):
+        self.data = np.loadtxt(datafile, delimiter=",")
+        self.signal_current_data_updated.emit()
+        
+    def set_data(self, data):
+        self.data = data
+        self.signal_current_data_updated.emit()
+
+    def set_data_from_mempoolspace(self):
+        self.data = fetch_mempool_histogram()
+        self.signal_current_data_updated.emit()
+        

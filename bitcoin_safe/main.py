@@ -1,4 +1,6 @@
 import logging
+
+from bitcoin_safe.tx import TXInfos
 from .logging import setup_logging
 
 setup_logging()
@@ -33,7 +35,7 @@ from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
 from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
-
+from .mempool import MempoolData
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def __init__(self):
@@ -42,6 +44,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         self.qt_wallets :Dict[QTWallet] = {}
         self.fx = None
+        self.mempool_data = MempoolData()
+        # self.mempool_data.set_data_from_mempoolspace()
+        self.mempool_data.set_data_from_file('data.csv')
 
         self.signals = Signals()
         #connect the listeners
@@ -74,7 +79,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
                 
         
-    def open_tx(self, file_path=None):                   
+    def open_tx_file(self, file_path=None):                   
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(self, "Open Transaction/PSBT", "", "All Files (*);;Text Files (*.psbt)")        
             if not file_path:
@@ -85,23 +90,44 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         with open(file_path, "r") as file:
             string_content = file.read()
             
-        self.signals.open_tx(string_content)
+        self.signals.open_tx.emit(string_content)
 
 
     def open_tx_in_tab(self, tx):
-        if isinstance(tx, bdk.TxBuilderResult):
-            print('is bdk.TxBuilderResult')
+        psbt: bdk.PartiallySignedTransaction = None
+        fee_rate = None
+        
+        logger.debug(f'tx is of type {type(tx)}')
+        
+        # converting to TxBuilderResult
+        if isinstance(tx, TXInfos):
+            fee_rate = tx.fee_rate                                
+
+            if not tx.builder_result:
+                logger.info('trying to tx.finish(wallet)')
+                tx = self.get_qt_wallet().wallet.create_psbt(tx)
+
+            tx = tx.builder_result # then it is processed in the next if stament
+            logger.debug(f'Converted TXInfos --> {type(tx)}')
+
+            
+        if isinstance(tx, bdk.TxBuilderResult):            
+            psbt = tx.psbt
+            logger.debug(f'Converted TxBuilderResult --> {type(psbt)}')            
+            
         if isinstance(tx, bdk.PartiallySignedTransaction):
-            print('is bdk.PartiallySignedTransaction')
+            logger.debug(f'Got a PartiallySignedTransaction')            
+            psbt = tx
         if isinstance(tx, str):
-            print('tx is str. Trying to convert to psbt or raw transaction')
             tx = bdk.PartiallySignedTransaction(tx)
+            logger.debug(f'Converted str to {type(tx)}')            
             
         if isinstance(tx, bdk.TransactionDetails):
             print('is bdk.TransactionDetails')
+            raise Exception('cannot handle TransactionDetails')
                         
                         
-        viewer = UITX_Viewer(tx, self.signals, network=self.config.network_settings.network)         
+        viewer = UITX_Viewer(psbt, self.signals, network=self.config.network_settings.network,mempool_data=self.mempool_data, fee_rate=fee_rate)         
         
         add_tab_to_tabs(self.tab_wallets, viewer.main_widget, read_QIcon("offline_tx.png"), "Transaction", "tx", focus=True)
         
@@ -185,7 +211,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         
         
     def add_qt_wallet(self, wallet:Wallet) -> QTWallet:
-        qt_wallet = QTWallet(wallet, self.config, self.signals)
+        qt_wallet = QTWallet(wallet, self.config, self.signals, self.mempool_data)
         
         if wallet.bdkwallet:
             qt_wallet.create_wallet_tabs()
@@ -194,7 +220,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.qt_wallets[wallet.id] = qt_wallet
         add_tab_to_tabs(self.tab_wallets, qt_wallet.tab, read_QIcon("file.png"), qt_wallet.wallet.id, qt_wallet.wallet.id, focus=True)
         
-        self.signals.get_wallets.connect(lambda: [qt_wallet.wallet for qt_wallet in self.qt_wallets.values()])        
         return qt_wallet
         
     def import_descriptor(self):
@@ -203,15 +228,15 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         wallet.create_descriptor_wallet(descriptor)  
               
         self.add_qt_wallet(wallet) 
-        self.signals.event_wallet_tab_added()
+        self.signals.event_wallet_tab_added.emit()
 
     def import_seed(self):
         seed = self.text_seed.toPlainText()
         wallet = Wallet(id='import'+str(len(self.qt_wallets)),    config=self.config)         
         wallet.create_seed_wallet(seed)
-        self.qt_wallets[wallet.id] = QTWallet(wallet, self.tab_wallets, self.config, self.signals)
+        self.qt_wallets[wallet.id] = QTWallet(wallet, self.tab_wallets, self.config, self.signals, self.mempool_data)
 
-        self.signals.event_wallet_tab_added()
+        self.signals.event_wallet_tab_added.emit()
 
     def get_qt_wallet(self, tab=None) -> QTWallet:
         wallet_tab = self.tab_wallets.currentWidget() if tab is None else tab

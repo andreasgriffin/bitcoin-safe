@@ -1,5 +1,6 @@
 import logging
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.mempool import MempoolData
 logger = logging.getLogger(__name__)
 
 from bitcoin_safe.wallet import Wallet
@@ -87,9 +88,10 @@ class FX():
  
 
 class QTWallet():
-    def __init__(self, wallet:Wallet, config:UserConfig, signals:Signals):    
+    def __init__(self, wallet:Wallet, config:UserConfig, signals:Signals, mempool_data:MempoolData):    
         self.thread_manager = ThreadManager()
         self.signals = signals
+        self.mempool_data = mempool_data
         self.set_wallet(wallet)
         self.password = None
         self.wallet_descriptor_tab = None
@@ -140,8 +142,8 @@ class QTWallet():
             if self.history_tab:
                 self.address_list.update()
                 self.address_list_tags.update()
-                self.signals.category_updated()
-                self.signals.utxos_updated()
+                self.signals.category_updated.emit()
+                self.signals.utxos_updated.emit()
                 self.history_list.update()
             else:
                 self.create_wallet_tabs()
@@ -191,21 +193,26 @@ class QTWallet():
     def _create_send_tab(self, tabs): 
         utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
         
-        uitx_creator = UITX_Creator(self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx)
+        uitx_creator = UITX_Creator(self.mempool_data, self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx)
         add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
                 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
-        self.signals.category_updated.connect(utxo_list.update)        
+        uitx_creator.main_widget.searchable_list = utxo_list
+                        
         return uitx_creator.main_widget, uitx_creator                            
     
 
                 
 
     def create_psbt(self, txinfos:TXInfos):
-        psbt = self.wallet.create_psbt(txinfos)
-        self.signals.open_tx(psbt) 
+        txinfos = self.wallet.create_psbt(txinfos)
         
-
+        self.wallet.reset_cache()
+        # self.signals.category_updated()
+        self.signals.labels_updated.emit()
+        
+        self.signals.open_tx.emit(txinfos) 
+        
 
     def create_pre_wallet_tab(self ):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"        
@@ -219,6 +226,7 @@ class QTWallet():
         self.signals.get_label_for_address.connect(self.wallet.get_label_for_address, name=self.wallet.id)           
         self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)           
         self.signals.utxo_of_outpoint.connect(self.wallet.utxo_of_outpoint, name=self.wallet.id)           
+        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)
         
 
     def create_wallet_tabs(self):
@@ -246,7 +254,7 @@ class QTWallet():
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.set_category(address, category)
-        self.signals.category_updated()
+        self.signals.category_updated.emit()
 
     def create_status_bar(self, tab, outer_layout):
         sb = QStatusBar()
