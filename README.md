@@ -17,14 +17,26 @@
 
 #### TODOs (a lot)
 
-- [ ] Network UI configuration (ip of Bitcoin CBF node, and electrum server)
-- [ ] Send, Receive Tab
+- [x] Network UI configuration 
+  - [x] Setting of custom CBF node ip and port
+
+- [x] Send
+  - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
+  - [x] Opportunistic consolidation within coin categories, when fees are low
+  - [ ] Hardware wallets: USB, SD card, QR code reader
+
+- [ ] Receive Tab
 - [ ] Address and TX labeling using categories
-- [ ] Label p2p Synchronization via nostr direct encrypted messages
-- [ ] Coin selection using categories
+  - [x] Works
+  - [ ] Needs improvements (ui + backend)
+  - [ ] Label p2p Synchronization via nostr direct encrypted messages
+
 - [ ] Address, TX dialogs (need redesign. Electrums are too complicated)
-- [ ] Opportunistic consolidation within coin categories, when fees are low
-- [ ] Adding pytest for rigorous UI testing
+- [ ] Adding tests for rigorous UI testing
+- [ ] Wallet password dialog needs improvement
+- [ ] Wallet settings  (location, password,...) needs a tab
+- [ ] Include listening to p2p traffic for new tx announcements
+- [ ] Include desktop notifications (via tray icon)
 
 #### UX
 

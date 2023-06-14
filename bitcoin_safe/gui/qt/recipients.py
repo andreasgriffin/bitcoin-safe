@@ -125,15 +125,27 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         
 
     def format_address_field(self, *args):
+        def get_walletid_of_address(address, addresses_dict):
+            for wallet_id, address_list in addresses_dict.items():
+                if address in address_list:
+                    return wallet_id
+        
+        
         palette = QtGui.QPalette()
-        if self.address in sum(self.signals.get_receiving_addresses.emit().values(), []):
+        receiving_addresses_dict = self.signals.get_receiving_addresses.emit()
+        change_addresses_dict = self.signals.get_change_addresses.emit()
+        
+        if self.address in sum(receiving_addresses_dict.values(), []):
             background_color = ColorScheme.GREEN.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
-        elif self.address in sum(self.signals.get_change_addresses.emit().values(), []):
+            self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, receiving_addresses_dict)}"')
+        elif self.address in sum(change_addresses_dict.values(), []):
             background_color = ColorScheme.YELLOW.as_color(background=True)  
             palette.setColor(QtGui.QPalette.Base, background_color) 
+            self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, change_addresses_dict)}"')
         else:
             palette = self.address_line_edit.style().standardPalette()
+            self.setTitle('')
             
         self.address_line_edit.setPalette(palette)
 
