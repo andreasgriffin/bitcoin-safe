@@ -72,7 +72,14 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         if not opened_qt_wallets:            
             self.welcome_screen.add_new_wallet_welcome_tab()
         
-        
+
+    def _init_tray(self):
+        self.tray = QSystemTrayIcon(self.tray_icon(), None)
+        self.tray.setToolTip('Bitcoin Safe')
+        self.tray.activated.connect(self.tray_activated)
+        self.build_tray_menu()
+        self.tray.show()
+                
 
     def open_network_settings(self):      
         self.network_settings_ui.show()

@@ -43,7 +43,6 @@ class Ui_MainWindow(QMainWindow):
         # central_widget 
         central_widget = QScrollArea()
         vbox = QVBoxLayout(central_widget)
-        vbox.setContentsMargins(0, 0, 0, 0)
         vbox.addWidget(tabs)
         self.setCentralWidget(central_widget)
 

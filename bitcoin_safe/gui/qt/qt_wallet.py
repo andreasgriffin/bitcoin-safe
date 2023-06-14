@@ -192,17 +192,35 @@ class QTWallet():
 
     def _create_send_tab(self, tabs): 
         utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
-        
+                
         uitx_creator = UITX_Creator(self.mempool_data, self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx)
         add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
                 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
+        uitx_creator.signal_set_category_coin_selection.connect(self.set_coin_selection_in_sent_tab)
         uitx_creator.main_widget.searchable_list = utxo_list
                         
         return uitx_creator.main_widget, uitx_creator                            
     
 
-                
+    def set_coin_selection_in_sent_tab(self, txinfos:TXInfos):
+        coin_selection_dict = self.wallet.create_coin_selection_dict(txinfos, 5)
+        
+        model = self.uitx_creator.utxo_list.model()
+        # Get the selection model from the view
+        selection = self.uitx_creator.utxo_list.selectionModel()
+        
+        utxo_names = [self.wallet.get_utxo_name(utxo) for utxo in coin_selection_dict['selected_utxos']]
+
+        # Select rows with an ID in id_list
+        for row in range(model.rowCount()):
+            index = model.index(row, self.uitx_creator.utxo_list.Columns.OUTPOINT) 
+            utxo_name = model.data(index)
+            if utxo_name in utxo_names:
+                selection.select(index, QItemSelectionModel.Select|QItemSelectionModel.Rows)
+            else:
+                selection.select(index, QItemSelectionModel.Deselect|QItemSelectionModel.Rows)
+
 
     def create_psbt(self, txinfos:TXInfos):
         txinfos = self.wallet.create_psbt(txinfos)

@@ -725,7 +725,7 @@ def format_satoshis(
     
     
     if str_unit:
-        result += ' Sats'
+        result += ' BTC'
     return result
 
 

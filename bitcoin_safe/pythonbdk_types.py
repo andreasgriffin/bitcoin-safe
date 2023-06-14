@@ -1,7 +1,11 @@
 import bdkpython as bdk
 import enum
 
-
+class Recipient:
+    def __init__(self, address, amount, label=None) -> None:
+        self.address = address
+        self.amount = amount
+        self.label = label
 
     
 class OutPoint(bdk.OutPoint): 
@@ -20,6 +24,10 @@ class OutPoint(bdk.OutPoint):
         txid, vout = outpoint_str.split(':')
         return OutPoint(txid, int(vout))
 
+    def __eq__(self, other):
+        if isinstance(other, OutPoint):
+            return (self.txid, self.vout) == (other.txid, other.vout)
+        return False        
 
 
 

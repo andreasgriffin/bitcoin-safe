@@ -58,6 +58,7 @@ def fee_to_color(fee):
 
 
 def fetch_mempool_histogram():
+    logger.info('Fetching mempool data from mempool.space')
 
     # Send GET request to an API endpoint
     response = requests.get('https://mempool.space/api/mempool')

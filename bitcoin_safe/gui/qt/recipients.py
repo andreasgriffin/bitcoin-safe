@@ -1,4 +1,6 @@
 import logging
+
+from bitcoin_safe.pythonbdk_types import Recipient
 logger = logging.getLogger(__name__)
 
 from typing import List, Dict
@@ -161,18 +163,14 @@ class Recipients(QtWidgets.QWidget):
         if allow_edit:
             self.main_layout.addWidget(self.add_recipient_button)
 
-    def add_recipient(self, address=None, label=None, amount=None, groupbox_title=None):
-        recipient = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
-        if groupbox_title:
-            recipient.setTitle(groupbox_title)
-        if address:
-            recipient.address = address
-        if label:
-            recipient.label = label
-        if amount:
-            recipient.amount = amount
-        recipient.close_signal.connect(lambda: self.remove_recipient_widget(recipient))
-        self.recipient_list_content_layout.addWidget(recipient)
+    def add_recipient(self, recipient:Recipient):
+        recipient_box = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
+        recipient_box.address = recipient.address
+        recipient_box.amount = recipient.amount
+        if recipient.label:
+            recipient_box.label = recipient.label
+        recipient_box.close_signal.connect(lambda: self.remove_recipient_widget(recipient))
+        self.recipient_list_content_layout.addWidget(recipient_box)
 
 
     def remove_recipient_widget(self, recipient):
@@ -186,7 +184,8 @@ class Recipients(QtWidgets.QWidget):
         for i in range(self.recipient_list_content_layout.count()):
             layout_item = self.recipient_list_content_layout.itemAt(i)
             recipient:RecipientGroupBox = layout_item.wid
-            l.append({'address':recipient.address, 'label':recipient.label, 'amount':recipient.amount})
+            if recipient.address and recipient.amount:
+                l.append(Recipient(recipient.address, recipient.amount, recipient.label if recipient.label else None))
         return l
 
     @recipients.setter
@@ -194,12 +193,11 @@ class Recipients(QtWidgets.QWidget):
         # remove all old ones
         for i in reversed(range(self.recipient_list_content_layout.count())):
             layout_item = self.recipient_list_content_layout.itemAt(i)
-            recipient:RecipientGroupBox = layout_item.wid
-            self.remove_recipient_widget(recipient)
+            recipient_box:RecipientGroupBox = layout_item.wid
+            self.remove_recipient_widget(recipient_box)
         
         for i, recipient in enumerate(recipient_list):
-            self.add_recipient(**recipient)
-
+            self.add_recipient(recipient)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])

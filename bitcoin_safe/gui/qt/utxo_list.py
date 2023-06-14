@@ -60,6 +60,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         CATEGORY = enum.auto()
         LABEL = enum.auto()
         AMOUNT = enum.auto()
+        SATOSHIS = enum.auto()
         PARENTS = enum.auto()
 
     headers = {
@@ -70,6 +71,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORY: _('Category'),
         Columns.LABEL: _('Label'),
         Columns.AMOUNT: _('Amount'),
+        Columns.SATOSHIS: _('SATOSHIS'),
     }
     filter_columns = [Columns.ADDRESS, Columns.CATEGORY, Columns.LABEL, Columns.OUTPOINT]
     stretch_column = Columns.LABEL
@@ -116,6 +118,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             labels[self.Columns.OUTPOINT] = str(name)
             labels[self.Columns.ADDRESS] = self.wallet.get_utxo_address(utxo).as_string()
             labels[self.Columns.AMOUNT] = format_satoshis(utxo.txout.value)
+            labels[self.Columns.SATOSHIS] =  str(utxo.txout.value)
             utxo_item = [QStandardItem(x) for x in labels]
             self.set_editability(utxo_item)
             utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_PREVOUT_STR)

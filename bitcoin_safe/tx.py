@@ -1,7 +1,10 @@
 import logging
+
+from .pythonbdk_types import Recipient
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
+from typing import List
 
 class TXInfos:
     "A wrapper around tx_builder to collect even more infos"
@@ -13,15 +16,17 @@ class TXInfos:
         
         self.tx_builder = bdk.TxBuilder()        
         self.tx_builder = self.tx_builder.enable_rbf()
+        self.recipients:List[Recipient] = []
         
         self.builder_result: bdk.TxBuilderResult = None
         
         
         
-    def add_recipient(self, address, amount, label=None):
-        self.tx_builder = self.tx_builder.add_recipient(bdk.Address(address).script_pubkey(), amount)        
-        if label:
-            self.labels[address] = label
+    def add_recipient(self, recipient:Recipient):
+        self.recipients.append(recipient)
+        self.tx_builder = self.tx_builder.add_recipient(bdk.Address(recipient.address).script_pubkey(), recipient.amount)        
+        if recipient.label:
+            self.labels[recipient.address] = recipient.label
             
     def set_fee_rate(self, feerate):
         self.fee_rate = feerate

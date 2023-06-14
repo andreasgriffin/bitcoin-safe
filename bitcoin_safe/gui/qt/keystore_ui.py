@@ -4,7 +4,6 @@ logger = logging.getLogger(__name__)
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from qtrangeslider import QRangeSlider
 from PySide2.QtSvg import QSvgWidget
 from .util import  icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
 from ...wallet import AddressTypes, get_default_address_type, Wallet, generate_bdk_descriptors

@@ -82,6 +82,7 @@ def center_in_widget(widgets, parent, direction='h', alignment=Qt.AlignCenter):
     outer_layout.setAlignment(alignment)
     for widget in widgets:
             outer_layout.addWidget(widget)
+            # outer_layout.setAlignment(widget, alignment)
     return outer_layout
 
 

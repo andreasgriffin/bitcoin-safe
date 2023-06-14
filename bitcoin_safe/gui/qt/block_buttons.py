@@ -2,13 +2,14 @@ from PySide2.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QApplic
 from PySide2.QtCore import Qt
 import numpy as np
 from ...mempool import MempoolData, get_block_min_fees, chartColors, bin_data, feeLevels, fetch_mempool_histogram, index_of_sum_until_including, fee_to_depth, fee_to_blocknumber
+from .util import center_in_widget
 from PySide2.QtCore import Signal, QObject
 from typing import List, Dict
+from PySide2.QtWidgets import QSizePolicy
 
 class BlockButton(QPushButton):
     def __init__(self, size=100, parent=None):
         super().__init__(parent)
-
 
         # Create labels for each text line
         self.labels = [QLabel() for _ in range(4)]
@@ -16,20 +17,17 @@ class BlockButton(QPushButton):
             label.setAlignment(Qt.AlignCenter)
             label.setWordWrap(True)
             label.setAttribute(Qt.WA_TransparentForMouseEvents)
-
-
-
-        # Add labels to button layout
-        self.layout = QVBoxLayout()
-        for label in self.labels:
-            self.layout.addWidget(label)
-        self.setLayout(self.layout)
-
-
+            # label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    
+    
+        layout = center_in_widget(self.labels, self, direction='v')
 
         # Ensure buttons are square
-        self.setMinimumSize(size, size)
-        self.setMaximumSize(size, size)
+        self.setMinimumHeight(size)
+        self.setMinimumWidth(size)
+        # self.setMaximumWidth(size)
+        # self.setMinimumSize(size, 10)
+        # self.setMaximumSize(size, size)
 
 
     def update_title(self, title:str):
@@ -53,10 +51,9 @@ class VerticalButtonGroup(QWidget):
     
     def __init__(self, button_count=3, parent=None):
         super().__init__(parent)
-        self.layout = QVBoxLayout(self)
+        layout = QVBoxLayout(self)
         
         self.buttons:List[BlockButton] = []
-
 
         # Create buttons
         for i in range(button_count):            
@@ -75,10 +72,8 @@ class VerticalButtonGroup(QWidget):
             button.clicked.connect(create_signal_handler(i))
 
             self.buttons.append(button)
-            self.layout.addWidget(button)
-            self.layout.setAlignment(button, Qt.AlignCenter)
-
-        self.setLayout(self.layout)
+            layout.addWidget(button)
+            layout.setAlignment(button, Qt.AlignCenter)
 
 
 

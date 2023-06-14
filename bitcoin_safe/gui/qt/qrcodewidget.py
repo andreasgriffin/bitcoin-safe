@@ -5,10 +5,10 @@ from typing import Optional
 import qrcode
 import qrcode.exceptions
 
-from PyQt5.QtGui import QColor, QPen
-import PyQt5.QtGui as QtGui
-from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtWidgets import (
+from PySide2.QtGui import QColor, QPen
+import PySide2.QtGui as QtGui
+from PySide2.QtCore import Qt, QRect
+from PySide2.QtWidgets import (
     QApplication, QVBoxLayout, QTextEdit, QHBoxLayout, QPushButton, QWidget,
     QFileDialog,
 )

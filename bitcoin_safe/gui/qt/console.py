@@ -9,9 +9,9 @@ import os
 import re
 import traceback
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from PySide2 import QtCore
+from PySide2 import QtGui
+from PySide2 import QtWidgets
 
 from ... import util
 from ...i18n import _

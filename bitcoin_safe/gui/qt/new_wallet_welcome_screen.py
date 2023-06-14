@@ -31,9 +31,9 @@ class NewWalletWelcomeScreen(QObject):
         self.create_ui_explainer1()
         
 
-        self.pushButton_multisig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature]))
-        self.pushButton_singlesig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature]))
-        self.pushButton_custom_wallet.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature]))
+        self.pushButton_multisig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature.emit]))
+        self.pushButton_singlesig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature.emit]))
+        self.pushButton_custom_wallet.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature.emit]))
     
 
         

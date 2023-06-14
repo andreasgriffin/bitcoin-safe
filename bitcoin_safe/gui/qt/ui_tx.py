@@ -24,9 +24,10 @@ from ...keystore import KeyStore
 from .util import read_QIcon
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
-from ...util import psbt_to_hex
+from ...util import psbt_to_hex, Satoshis
 from .block_buttons import MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData
+from ...pythonbdk_types import Recipient
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
@@ -56,7 +57,7 @@ def create_groupbox(layout, title=None):
 
 def create_recipients(layout, signals:Signals, parent=None, allow_edit=True):
     recipients =  Recipients(signals, allow_edit=allow_edit)
-    recipients.add_recipient()
+    recipients.add_recipient(Recipient('', 0))
     layout.addWidget(recipients)
     recipients.setMinimumWidth(250)    
     
@@ -456,17 +457,18 @@ class UITX_Viewer(QObject):
         outputs :List[bdk.TxOut] = psbt.extract_tx().output()
         
         
-        def get_recipient_dict(i, output):
-            address_str = bdk.Address.from_script(output.script_pubkey, self.network).as_string()
-            d = {'amount':output.value, 'address':address_str}                                     
-            d['groupbox_title'] = f'Output {i+1}'
-            return d
         
-        self.recipients.recipients = [get_recipient_dict(i, output) for i, output in enumerate(outputs)]
+        self.recipients.recipients = [Recipient(
+                                    address=bdk.Address.from_script(output.script_pubkey, self.network).as_string(),
+                                    amount=output.value
+                                        )
+                                      for output in outputs]
 
 
 class UITX_Creator(QObject):
     signal_create_tx = Signal(TXInfos)
+    signal_set_category_coin_selection = Signal(TXInfos)
+    
     def __init__(self, mempool_data:MempoolData, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts) -> None:
         super().__init__()
         self.categories = categories
@@ -474,6 +476,7 @@ class UITX_Creator(QObject):
         self.signals = signals
         self.get_sub_texts = get_sub_texts
         
+        utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
         
         
 
@@ -499,7 +502,7 @@ class UITX_Creator(QObject):
 
 
         (self.button_create_tx,) = create_button_bar(self.widget_right_hand_side_layout, button_texts=["Next Step: Sign Transaction with hardware signers"])
-        self.button_create_tx.clicked.connect(lambda: self.signal_create_tx.emit(self.get_ui_tx_infos))
+        self.button_create_tx.clicked.connect(lambda: self.signal_create_tx.emit(self.get_ui_tx_infos()))
 
 
 
@@ -513,7 +516,18 @@ class UITX_Creator(QObject):
         self.tab_changed(0)
         self.tabs_inputs.currentChanged.connect(self.tab_changed)
 
-        
+    
+    def sum_amount_selected_utxos(self) -> Satoshis:
+        sum_values = 0
+        for index in self.utxo_list.selectionModel().selectedRows():
+            # Assuming that the column of interest is column 1
+            value = index.sibling(index.row(), self.utxo_list.Columns.SATOSHIS).data()
+            if value is not None and value.isdigit():
+                sum_values += float(value)
+        return Satoshis(sum_values)
+    
+    def update_labels(self):
+        self.uxto_selected_label.setText(f'Currently {self.sum_amount_selected_utxos().str_with_unit()} selected')
 
 
     def create_inputs_selector(self, layout):
@@ -546,25 +560,29 @@ class UITX_Creator(QObject):
 
 
         # utxo list
+        self.uxto_selected_label = QLabel(self.main_widget)
+        self.verticalLayout_inputs_utxos.addWidget(self.uxto_selected_label)
         self.verticalLayout_inputs_utxos.addWidget(self.utxo_list)
 
         layout.addWidget(self.tabs_inputs)        
 
 
-    @property
-    def get_ui_tx_infos(self):
+    def get_ui_tx_infos(self, use_this_tab=None):
         infos = TXInfos()
 
         for recipient in self.recipients.recipients:
-            infos.add_recipient(**recipient)        
+            infos.add_recipient(recipient)        
             
         logger.debug(f'set psbt builder fee {self.fee_group.spin_fee.value()}')
         infos.set_fee_rate(self.fee_group.spin_fee.value())
 
-        if self.tabs_inputs.currentWidget() == self.tab_inputs_categories:
+        if not use_this_tab:
+            use_this_tab = self.tabs_inputs.currentWidget()
+        
+        if use_this_tab == self.tab_inputs_categories:
             infos.categories = self.category_list.get_selected()
         
-        if self.tabs_inputs.currentWidget() == self.tab_inputs_utxos:
+        if use_this_tab == self.tab_inputs_utxos:
             infos.utxo_strings = [self.utxo_list.item_from_index(idx).text()
                                   for idx in self.utxo_list.selected_in_column(self.utxo_list.Columns.OUTPOINT)]
             
@@ -600,5 +618,9 @@ class UITX_Creator(QObject):
         elif index == 1:
             self.tabs_inputs.setMaximumWidth(80000)
             self.groupBox_outputs.setMaximumWidth(500)
+            
+            # take the coin selection from the category to the utxo tab
+            self.signal_set_category_coin_selection.emit(self.get_ui_tx_infos(self.tab_inputs_categories))
+            
 
 

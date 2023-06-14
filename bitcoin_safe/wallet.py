@@ -1,3 +1,4 @@
+from distutils.log import debug
 import logging
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,7 @@ import json
 from .tx import TXInfos
 from .util import clean_list, Satoshis
 from .config import UserConfig
+import numpy as np
 
 class OutputInfo:
     def __init__(self, outpoint:OutPoint, tx:bdk.Transaction) -> None:
@@ -560,14 +562,10 @@ class Wallet(BaseSaveableClass):
     
     
             
-    def utxo_of_outpoint(self, outpoint:bdk.OutPoint):
-        def outpoint_tuple(outpoint:bdk.OutPoint):
-            return (outpoint.txid, outpoint.vout)
-        
+    def utxo_of_outpoint(self, outpoint:bdk.OutPoint) -> bdk.LocalUtxo:
         for utxo in self.get_utxos():
-            if outpoint_tuple(outpoint) == outpoint_tuple(utxo.outpoint) :
+            if OutPoint.from_bdk_outpoint(outpoint) == OutPoint.from_bdk_outpoint(utxo.outpoint) :
                 return utxo                        
-        
     
 
     @cache_method
@@ -848,8 +846,49 @@ class Wallet(BaseSaveableClass):
             status_str += ' [%s]'%(', '.join(extra))
         return status, status_str
     
+    
+    
+    def coin_select(self, outpoints, total_sent_value, fee_rate, opportunistic_merging_fee_rate=5) -> Dict[str, object]:
+        def outpoint_value(output:bdk.OutPoint):
+            return self.utxo_of_outpoint(outpoint).txout.value
 
-    def create_psbt(self, txinfos:TXInfos) -> TXInfos:
+
+        # coin selection
+        outpoints = outpoints.copy()
+        np.random.shuffle(outpoints)
+        selected_outpoints = []
+        selected_value = 0
+        opportunistic_merging_utxos = []
+        for outpoint in outpoints:            
+            utxo = self.utxo_of_outpoint(outpoint)                      
+            selected_value += utxo.txout.value
+            selected_outpoints.append(outpoint)                                    
+            if selected_value>=total_sent_value:
+                break
+        selected_utxos = [self.utxo_of_outpoint(o) for o in selected_outpoints]
+        logger.debug(f'Selected {len(selected_outpoints)} outpoints with {Satoshis(selected_value).str_with_unit()}')
+                
+        # now opportunistically  add additional outputs for merging
+        if fee_rate <= opportunistic_merging_fee_rate:
+            non_selected_outpoints = list(set([OutPoint.from_bdk_outpoint(o) for o in outpoints]) 
+                                      - set([OutPoint.from_bdk_outpoint(o) for o in selected_outpoints]))
+            
+            non_selected_utxos = [self.utxo_of_outpoint(o) for o in non_selected_outpoints]    
+            
+            number_of_opportunistic_outpoints = np.random.randint(0, len(non_selected_utxos)//2)  # never choose more than half of all remaining outputs
+                        
+            opportunistic_merging_utxos = sorted(non_selected_utxos, key=outpoint_value)[:number_of_opportunistic_outpoints]
+            logger.debug(f'Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos])).str_with_unit()}')
+            
+            # add to selected_utxos
+            selected_utxos += opportunistic_merging_utxos
+            
+        return {
+            'selected_utxos':selected_utxos, 
+            'opportunistic_merging_utxos':opportunistic_merging_utxos, 
+                }
+
+    def create_coin_selection_dict(self, txinfos:TXInfos, opportunistic_merging_fee_rate=5) -> Dict[str, object]:
         if not txinfos.utxo_strings and not txinfos.categories:
             raise Exception('No inputs provided')
 
@@ -862,8 +901,24 @@ class Wallet(BaseSaveableClass):
             outpoints += [utxo.outpoint for utxo in self.bdkwallet.list_unspent() if                      
                     self.category.get(self.get_address_of_txout(utxo.txout)) in txinfos.categories
                     ]
-        for outpoint in outpoints:
-            txinfos.tx_builder = txinfos.tx_builder.add_utxo(outpoint)        
+        
+        total_sent_value = sum([recipient.amount for recipient in txinfos.recipients])
+        # TODO: Add here also the fee amount (but I don't know it yet)
+
+        coin_selection_dict = self.coin_select(
+            outpoints=outpoints,
+            total_sent_value=total_sent_value,
+            fee_rate=txinfos.fee_rate,
+            opportunistic_merging_fee_rate=opportunistic_merging_fee_rate
+        )
+        return coin_selection_dict
+    
+
+    def create_psbt(self, txinfos:TXInfos, opportunistic_merging_fee_rate=5) -> TXInfos:
+        coin_selection_dict = self.create_coin_selection_dict(txinfos, opportunistic_merging_fee_rate)
+        
+        for utxo in coin_selection_dict['selected_utxos']:
+            txinfos.tx_builder = txinfos.tx_builder.add_utxo(utxo.outpoint)        
             
         builder_result:bdk.TxBuilderResult = txinfos.tx_builder.finish(self.bdkwallet)
         
