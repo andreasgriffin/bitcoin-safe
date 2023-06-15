@@ -1,4 +1,6 @@
 import logging
+
+from matplotlib import category
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.mempool import MempoolData
 logger = logging.getLogger(__name__)
@@ -20,7 +22,7 @@ from .ui_tx import UITX_Creator, UITX_Viewer
 
 from ...thread_manager import ThreadManager
 from ...util import  Satoshis, format_satoshis
-from ...signals import Signals
+from ...signals import Signals, UpdateFilter
 from ...i18n import _
 from .ui_descriptor import WalletDescriptorUI
 from .password_question import PasswordQuestion
@@ -140,11 +142,11 @@ class QTWallet():
             logger.debug('start refresh ui')
             
             if self.history_tab:
-                self.address_list.update()
-                self.address_list_tags.update()
-                self.signals.category_updated.emit()
+                # self.address_list.update()
+                # self.address_list_tags.update()
+                self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
                 self.signals.utxos_updated.emit()
-                self.history_list.update()
+                # self.history_list.update()
             else:
                 self.create_wallet_tabs()
             
@@ -191,9 +193,10 @@ class QTWallet():
         return [f'{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category))} Sats' for category in self.wallet.categories]
 
     def _create_send_tab(self, tabs): 
-        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID])        
+        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID, UTXOList.Columns.SATOSHIS])        
                 
-        uitx_creator = UITX_Creator(self.mempool_data, self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx)
+        uitx_creator = UITX_Creator(self.mempool_data, self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx, 
+                                    enable_opportunistic_merging_fee_rate=self.config.enable_opportunistic_merging_fee_rate)
         add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
                 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
@@ -204,7 +207,7 @@ class QTWallet():
     
 
     def set_coin_selection_in_sent_tab(self, txinfos:TXInfos):
-        coin_selection_dict = self.wallet.create_coin_selection_dict(txinfos, 5)
+        coin_selection_dict = self.wallet.create_coin_selection_dict(txinfos)
         
         model = self.uitx_creator.utxo_list.model()
         # Get the selection model from the view
@@ -226,7 +229,7 @@ class QTWallet():
         txinfos = self.wallet.create_psbt(txinfos)
         
         self.wallet.reset_cache()
-        # self.signals.category_updated()
+        self.signals.category_updated.emit(UpdateFilter(addresses=[recipient.address for recipient in txinfos.recipients]))
         self.signals.labels_updated.emit()
         
         self.signals.open_tx.emit(txinfos) 
@@ -266,13 +269,25 @@ class QTWallet():
 
         self.address_list.signal_tag_dropped.connect(self.set_category)
         self.address_list_tags.list_widget.signal_addresses_dropped.connect(self.set_category)
+        self.address_list_tags.delete_button.signal_addresses_dropped.connect(self.set_category)
+        self.address_list_tags.list_widget.signal_tag_deleted.connect(self.delete_category)
+        self.address_list_tags.list_widget.signal_tag_renamed.connect(self.rename_category)
+
+
+    def rename_category(self, old_category, new_category):
+        affected_keys = self.wallet.rename_category(old_category, new_category)
+        self.signals.category_updated.emit(UpdateFilter(addresses=affected_keys, categories=[category], txids=affected_keys))
+
+    def delete_category(self, category):
+        affected_keys = self.wallet.delete_category(category)
+        self.signals.category_updated.emit(UpdateFilter(addresses=affected_keys, categories=[category], txids=affected_keys))
 
 
     def set_category(self, address_drag_info:AddressDragInfo):
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.set_category(address, category)
-        self.signals.category_updated.emit()
+        self.signals.category_updated.emit(UpdateFilter(addresses=address_drag_info.addresses, categories=address_drag_info.tags))
 
     def create_status_bar(self, tab, outer_layout):
         sb = QStatusBar()
@@ -484,7 +499,7 @@ class QTWallet():
                 
 
     def _create_utxo_tab(self, tabs):
-        l = UTXOList(self.config, self.wallet, self.signals)
+        l = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[ UTXOList.Columns.SATOSHIS])
         tab =  self.create_list_tab(l)
 
         add_tab_to_tabs(tabs, tab, read_QIcon("tab_coins.png"), "Coins", "utxo", position=2)

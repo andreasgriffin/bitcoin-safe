@@ -727,6 +727,11 @@ class Wallet(BaseSaveableClass):
         return True
 
     def set_category(self, key, category):
+        if category is None:
+            if key in self.category:
+                del self.category[key]
+            return 
+        
         if category not in self.categories:
             self.add_category(category)
         self.category[key] = category
@@ -848,7 +853,7 @@ class Wallet(BaseSaveableClass):
     
     
     
-    def coin_select(self, outpoints, total_sent_value, fee_rate, opportunistic_merging_fee_rate=5) -> Dict[str, object]:
+    def coin_select(self, outpoints, total_sent_value, fee_rate, opportunistic_merge_utxos) -> Dict[str, object]:
         def outpoint_value(output:bdk.OutPoint):
             return self.utxo_of_outpoint(outpoint).txout.value
 
@@ -869,7 +874,7 @@ class Wallet(BaseSaveableClass):
         logger.debug(f'Selected {len(selected_outpoints)} outpoints with {Satoshis(selected_value).str_with_unit()}')
                 
         # now opportunistically  add additional outputs for merging
-        if fee_rate <= opportunistic_merging_fee_rate:
+        if opportunistic_merge_utxos:
             non_selected_outpoints = list(set([OutPoint.from_bdk_outpoint(o) for o in outpoints]) 
                                       - set([OutPoint.from_bdk_outpoint(o) for o in selected_outpoints]))
             
@@ -888,19 +893,25 @@ class Wallet(BaseSaveableClass):
             'opportunistic_merging_utxos':opportunistic_merging_utxos, 
                 }
 
-    def create_coin_selection_dict(self, txinfos:TXInfos, opportunistic_merging_fee_rate=5) -> Dict[str, object]:
+    def create_coin_selection_dict(self, txinfos:TXInfos) -> Dict[str, object]:
         if not txinfos.utxo_strings and not txinfos.categories:
-            raise Exception('No inputs provided')
+            logger.warning('No inputs provided for coin selection')
 
         outpoints = []        
         
         if txinfos.utxo_strings:
-            outpoints += [OutPoint.from_str(s) for s in txinfos.utxo_strings]
-            
-        if txinfos.categories:
+            outpoints += [OutPoint.from_str(s) for s in txinfos.utxo_strings]            
+        elif txinfos.categories:
             outpoints += [utxo.outpoint for utxo in self.bdkwallet.list_unspent() if                      
                     self.category.get(self.get_address_of_txout(utxo.txout)) in txinfos.categories
-                    ]
+                    ]            
+        else:
+            logger.debug('No utxos or categories for coin selection')
+            return  {
+            'selected_utxos':[], 
+            'opportunistic_merging_utxos':[], 
+                }
+            
         
         total_sent_value = sum([recipient.amount for recipient in txinfos.recipients])
         # TODO: Add here also the fee amount (but I don't know it yet)
@@ -909,13 +920,13 @@ class Wallet(BaseSaveableClass):
             outpoints=outpoints,
             total_sent_value=total_sent_value,
             fee_rate=txinfos.fee_rate,
-            opportunistic_merging_fee_rate=opportunistic_merging_fee_rate
+            opportunistic_merge_utxos=txinfos.opportunistic_merge_utxos
         )
         return coin_selection_dict
     
 
-    def create_psbt(self, txinfos:TXInfos, opportunistic_merging_fee_rate=5) -> TXInfos:
-        coin_selection_dict = self.create_coin_selection_dict(txinfos, opportunistic_merging_fee_rate)
+    def create_psbt(self, txinfos:TXInfos) -> TXInfos:
+        coin_selection_dict = self.create_coin_selection_dict(txinfos)
         
         for utxo in coin_selection_dict['selected_utxos']:
             txinfos.tx_builder = txinfos.tx_builder.add_utxo(utxo.outpoint)        
@@ -930,3 +941,31 @@ class Wallet(BaseSaveableClass):
         
         txinfos.builder_result = builder_result
         return txinfos
+    
+    
+    def rename_category(self, old_category, new_category):
+        affected_keys = []
+        for key, this_category in list(self.category.items()):
+            if this_category == old_category:
+                affected_keys.append(key)
+                self.category[key] == new_category
+        
+        if old_category in self.categories:
+            idx = self.categories.index(old_category)
+            self.categories.pop(idx)
+            self.categories.insert(idx, new_category)
+        return affected_keys
+    
+    def delete_category(self, category) -> List[str]:
+        affected_keys = []
+        for key, this_category in list(self.category.items()):
+            if this_category == category:
+                affected_keys.append(key)
+                del self.category[key]
+                
+        
+        if category in self.categories:
+            idx = self.categories.index(category)
+            self.categories.pop(idx)    
+            
+        return affected_keys

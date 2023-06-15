@@ -88,6 +88,7 @@ class UserConfig(BaseSaveableClass):
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.block_explorer:str = 'mempool.space'
+        self.enable_opportunistic_merging_fee_rate = 5
 
 
     @property

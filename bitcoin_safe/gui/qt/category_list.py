@@ -4,8 +4,8 @@ logger = logging.getLogger(__name__)
 from .taglist import TagEditor, CustomListWidget
 from typing import List
 from PySide2.QtCore import Signal
-from ...signals import Signals
-from .taglist import hash_color
+from ...signals import Signals, UpdateFilter
+from .taglist import hash_color, AddressDragInfo
 from PySide2.QtGui import QBrush, QColor, QPainterPath, QMouseEvent
 
 
@@ -20,9 +20,9 @@ class CategoryList(CustomListWidget):
         self.signals = signals
         self.signals.category_updated.connect(self.refresh)
         
-        self.refresh()
+        self.refresh(UpdateFilter(refresh_all=True))
             
-    def refresh(self):
+    def refresh(self, update_filter:UpdateFilter):
         self.recreate(self.categories, sub_texts=self.get_sub_texts())
         
     @classmethod
@@ -46,24 +46,24 @@ class CategoryEditor(TagEditor):
         self.signals = signals
         self.signals.category_updated.connect(self.refresh)
         
-        self.list_widget.item_deleted.connect(self.on_delete)
-        self.list_widget.item_added.connect(self.on_added)
+        self.list_widget.signal_tag_deleted.connect(self.on_delete)
+        self.list_widget.signal_tag_added.connect(self.on_added)
     
 
-    def on_added(self, item):
-        if  item.text()  in self.categories:            
+    def on_added(self, category):
+        if  category  in self.categories:            
             return
-        self.categories.append(item.text())
-        self.signals.category_updated.emit()
+        self.categories.append(category)
+        self.signals.category_updated.emit(UpdateFilter(categories=[category]))
         
-    def on_delete(self, item):
-        if item.text() not in self.categories:
+    def on_delete(self, category):
+        if category not in self.categories:
             return
-        idx = self.categories.index(item.text() )
-        self.categories.pop(idx)
-        self.signals.category_updated.emit()
+        idx = self.categories.index(category)
+        self.categories.pop(idx)                                
+        self.signals.category_updated.emit(UpdateFilter(categories=[category]))
                 
-    def refresh(self):
+    def refresh(self, update_filter:UpdateFilter):
         self.list_widget.recreate(self.categories, sub_texts=self.get_sub_texts())
         
     @classmethod

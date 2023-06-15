@@ -7,6 +7,16 @@ from typing import List, Dict
 import bdkpython as bdk
 
 import threading
+
+
+class UpdateFilter:
+    def __init__(self, addresses:List[str]=None, categories:List[str]=None, txids:List[str]=None, refresh_all=False) -> None:
+        self.addresses = addresses if addresses else []
+        self.categories = categories if categories else []
+        self.txids = txids if txids else []
+        self.refresh_all = refresh_all
+
+
 class SignalFunction:
     def __init__(self, name=None):
         self.name = name 
@@ -87,7 +97,7 @@ class Signals(QObject):
     utxos_updated = Signal()
     addresses_updated = Signal()
     labels_updated = Signal()        
-    category_updated = Signal()        
+    category_updated = Signal(UpdateFilter)        
     completions_updated = Signal()        
     event_wallet_tab_closed = Signal()
     event_wallet_tab_added = Signal()

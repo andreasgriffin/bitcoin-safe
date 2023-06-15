@@ -13,6 +13,7 @@ class TXInfos:
         self.categories = []
         self.utxo_strings = []
         self.fee_rate = None
+        self.opportunistic_merge_utxos = True
         
         self.tx_builder = bdk.TxBuilder()        
         self.tx_builder = self.tx_builder.enable_rbf()

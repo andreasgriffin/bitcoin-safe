@@ -135,7 +135,8 @@ class CustomDelegate(QStyledItemDelegate):
 
 
 class DeleteButton(QPushButton):
-    delete_item = Signal(str)
+    signal_delete_item = Signal(str)
+    signal_addresses_dropped = Signal(AddressDragInfo)
 
     def __init__(self, *args, **kwargs):
         super(DeleteButton, self).__init__(*args, **kwargs)
@@ -148,13 +149,18 @@ class DeleteButton(QPushButton):
             
             d = json.loads(json_string)
             logger.debug(f'dragEnterEvent: Got {d}')
-            if d.get('type') == 'drag_tag':
+            if d.get('type') == 'drag_tag' or d.get('type') == 'drag_addresses':
                 event.acceptProposedAction()
                 return
 
         event.ignore()
             
 
+    def dragLeaveEvent(self, event):
+        "this is just to hide/undide the button"
+        logger.debug('Drag has left the delete button')
+        
+        
     def dropEvent(self, event):
         if event.mimeData().hasFormat('application/json'):            
             data_bytes = event.mimeData().data('application/json')
@@ -163,9 +169,16 @@ class DeleteButton(QPushButton):
             d = json.loads(json_string)
             logger.debug(f'dropEvent: Got {d}')
             if d.get('type') == 'drag_tag':
-                self.delete_item.emit(d.get('tag'))
+                self.signal_delete_item.emit(d.get('tag'))
                 event.acceptProposedAction()
                 return
+            if d.get('type') == 'drag_addresses':
+                drag_info = AddressDragInfo([None], d.get('addresses')) 
+                logger.debug(f'dropEvent: {drag_info}')
+                self.signal_addresses_dropped.emit(drag_info)     
+                event.accept()
+                return
+            
             
         event.ignore()
             
@@ -173,10 +186,10 @@ class DeleteButton(QPushButton):
 
 
 class CustomListWidget(QListWidget):
-    item_added = Signal(object)
-    item_selected = Signal(object)
-    item_deleted = Signal(object)
-    item_renamed = Signal(object, object)
+    signal_tag_added = Signal(str)
+    signal_tag_selected = Signal(str)
+    signal_tag_deleted = Signal(str)
+    signal_tag_renamed = Signal(object, object)
     signal_addresses_dropped = Signal(AddressDragInfo)
     signal_start_drag = Signal(object)
     signal_stop_drag = Signal(object)
@@ -220,11 +233,11 @@ class CustomListWidget(QListWidget):
         item = CustomListWidgetItem(item_text, sub_text=sub_text)
         item.setFlags(item.flags() | Qt.ItemIsEditable)
         self.addItem(item)
-        self.item_added.emit(item)
+        self.signal_tag_added.emit(item_text)
         return item
 
     def on_item_clicked(self, item):
-        self.item_selected.emit(item)
+        self.signal_tag_selected.emit(item.text())
         # print( [item.text() for item in self.selectedItems()])        
 
     def on_item_changed(self, item):  # new
@@ -246,7 +259,7 @@ class CustomListWidget(QListWidget):
             old_text = item.text()
             item.setText(new_text)
             item.setBackground()
-            self.item_renamed.emit(old_text, new_text)
+            self.signal_tag_renamed.emit(old_text, new_text)
 
     def setAllSelection(self, selected=True):
         for i in range(self.count()):
@@ -300,7 +313,7 @@ class CustomListWidget(QListWidget):
             json_string = bytes(data_bytes).decode()  # convert bytes to string
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
-            logger.warning(f'dragEnterEvent: {json_string}')
+            logger.debug(f'dragEnterEvent: {json_string}')
 
             event.acceptProposedAction()
         else:
@@ -332,7 +345,7 @@ class CustomListWidget(QListWidget):
             item = self.item(i)
             if item.text() == item_text:
                 self.takeItem(i)
-                self.item_deleted.emit(item)
+                self.signal_tag_deleted.emit(item_text)
                 break
         
     def get_items(self) -> CustomListWidgetItem:
@@ -373,20 +386,62 @@ class TagEditor(QWidget):
         self.layout.addWidget(self.input_field)
         self.layout.addWidget(self.delete_button)
         self.layout.addWidget(self.list_widget)
-        self.list_widget.signal_start_drag.connect(self.start_drag)
-        self.list_widget.signal_stop_drag.connect(self.stop_drag)
+        self.list_widget.signal_start_drag.connect(self.show_delete_button)
+        self.list_widget.signal_stop_drag.connect(self.hide_delete_button)
+        self.list_widget.signal_addresses_dropped.connect(self.hide_delete_button)
+        self.delete_button.signal_delete_item.connect(self.list_widget.delete_item)
+        self.delete_button.signal_addresses_dropped.connect(self.hide_delete_button)
 
-        self.delete_button.delete_item.connect(self.list_widget.delete_item)
+
+        self.setAcceptDrops(True)
+
         
         if tags:
             self.list_widget.recreate(tags, sub_texts=sub_texts)
             
+        
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat('application/json'):
+            # print('accept')
+            # tag = self.itemAt(event.pos())        
             
-    def start_drag(self):
+            data_bytes = event.mimeData().data('application/json')
+            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            # dropped_addresses = json.loads(json_string)
+            # print(f'drag enter {dropped_addresses,   tag.text()}')
+            logger.debug(f'dragEnterEvent: {json_string}')
+
+            event.acceptProposedAction()
+            
+            logger.debug(f'show_delete_button')
+            self.show_delete_button()            
+        else:
+            event.ignore()
+            
+                
+    def dragLeaveEvent(self, event):
+        "this is just to hide/undide the button"
+        if not self.rect().contains(self.mapFromGlobal(QCursor.pos())):
+            logger.debug("Drag operation left the TagEditor")
+            self.hide_delete_button()
+        else:
+            event.ignore()
+
+
+    def dropEvent(self, event):
+        if event.mimeData().hasFormat('application/json'):
+            self.hide_delete_button()
+        else:
+            event.ignore()
+
+            
+            
+    def show_delete_button(self, *args):
         self.input_field.hide()
         self.delete_button.show()
 
-    def stop_drag(self):
+    def hide_delete_button(self, *args):
         self.input_field.show()
         self.delete_button.hide()
         

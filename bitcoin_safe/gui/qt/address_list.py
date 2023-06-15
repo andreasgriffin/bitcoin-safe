@@ -24,6 +24,8 @@
 # SOFTWARE.
 
 import logging
+
+from matplotlib import category
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +51,7 @@ from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin,  webopen
 from .my_treeview import MyTreeView, MySortModel
 from .taglist import AddressDragInfo
 from .html_delegate import HTMLDelegate
+from ...signals import UpdateFilter
 
 
 
@@ -159,7 +162,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.sortByColumn(AddressList.Columns.TYPE, Qt.AscendingOrder)
         self.signals.addresses_updated.connect(self.update)
         self.signals.labels_updated.connect(self.update)
-        self.signals.category_updated.connect(self.update)
+        self.signals.category_updated.connect(self.update_with_filter)
 
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
@@ -289,6 +292,25 @@ class AddressList(MyTreeView, MessageBoxMixin):
             return
         self.show_used = AddressUsageStateFilter(state)
         self.update()
+        
+        
+    def update_with_filter(self, update_filter:UpdateFilter):   
+        if update_filter.refresh_all:
+            return self.update()
+        
+        model = self.model()
+        # Select rows with an ID in id_list
+        for row in range(model.rowCount()):
+            address = model.data(model.index(row, self.Columns.ADDRESS))
+            if (address in update_filter.addresses
+                or
+               model.data(model.index(row, self.Columns.CATEGORY)) in update_filter.categories 
+               ):
+                logger.debug(f'Updating row {row}: {address}')
+                self.refresh_row(address, row)
+            
+
+        
 
     def update(self):
         if self.maybe_defer_update():

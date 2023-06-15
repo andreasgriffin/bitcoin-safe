@@ -55,7 +55,7 @@ from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
 from .my_treeview import MyTreeView
 from ...wallet import Wallet    
 from .category_list import CategoryEditor
-
+from ...signals import UpdateFilter
 
 # note: this list needs to be kept in sync with another in kivy
 TX_ICONS = [
@@ -581,11 +581,18 @@ class HistoryList(MyTreeView, AcceptFileDragDrop, MessageBoxMixin):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
 
-        self.signals.category_updated.connect(self.update)
+        self.signals.category_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update)
 
+
+    def update_with_filter(self, update_filter:UpdateFilter):           
+        return self.update()
+            
+
     def update(self):
-        self.hm.refresh('HistoryList.update()')
+        return self.hm.refresh('HistoryList.update()')
+        
+                
                 
 
 

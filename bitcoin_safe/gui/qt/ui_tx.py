@@ -28,6 +28,7 @@ from ...util import psbt_to_hex, Satoshis
 from .block_buttons import MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData
 from ...pythonbdk_types import Recipient
+from PySide2.QtCore import Signal, QObject
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
@@ -257,8 +258,11 @@ class ExportPSBT(QObject):
             return selected_file
 
 
-class FeeGroup:
+class FeeGroup(QObject):
+    signal_set_fee = Signal(float)
     def __init__(self, mempool_data:MempoolData, layout, allow_edit=True, is_viewer=False) -> None:
+        super().__init__()
+        
         self.allow_edit = allow_edit
         
         # add the groupBox_Fee
@@ -314,6 +318,7 @@ class FeeGroup:
         self.mempool.set_fee(fee)
         
         self.spin_label2.setText(f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee)}. Block")
+        self.signal_set_fee.emit(fee)
         
     def update_spin_fee(self):
         self.spin_fee.setRange(1, self.mempool.data[:,0].max())  # Set the acceptable range 
@@ -469,12 +474,13 @@ class UITX_Creator(QObject):
     signal_create_tx = Signal(TXInfos)
     signal_set_category_coin_selection = Signal(TXInfos)
     
-    def __init__(self, mempool_data:MempoolData, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts) -> None:
+    def __init__(self, mempool_data:MempoolData, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts, enable_opportunistic_merging_fee_rate=5) -> None:
         super().__init__()
         self.categories = categories
         self.utxo_list = utxo_list
         self.signals = signals
         self.get_sub_texts = get_sub_texts
+        self.enable_opportunistic_merging_fee_rate = enable_opportunistic_merging_fee_rate
         
         utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
         
@@ -497,6 +503,7 @@ class UITX_Creator(QObject):
         self.recipients = create_recipients(self.groupBox_outputs_layout, self.signals)
 
         self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
+        self.fee_group.signal_set_fee.connect(self.on_set_fee)
         
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
@@ -541,8 +548,8 @@ class UITX_Creator(QObject):
         self.verticalLayout_inputs = QVBoxLayout(self.tab_inputs_categories)
         self.label_select_input_categories = QLabel('Select a category that fits best to the recipient')
         self.label_select_input_categories.setWordWrap(True)
-        self.checkBox__reduce_future_fees = QCheckBox(self.tab_inputs_categories)
-        self.checkBox__reduce_future_fees.setChecked(True)
+        self.checkBox_reduce_future_fees = QCheckBox(self.tab_inputs_categories)
+        self.checkBox_reduce_future_fees.setChecked(True)
 
 
         # Taglist
@@ -550,7 +557,7 @@ class UITX_Creator(QObject):
         self.verticalLayout_inputs.addWidget(self.label_select_input_categories)
         self.verticalLayout_inputs.addWidget(self.category_list)
 
-        self.verticalLayout_inputs.addWidget(self.checkBox__reduce_future_fees)
+        self.verticalLayout_inputs.addWidget(self.checkBox_reduce_future_fees)
 
 
         # tab utxos
@@ -567,8 +574,13 @@ class UITX_Creator(QObject):
         layout.addWidget(self.tabs_inputs)        
 
 
+    def on_set_fee(self, fee):
+        self.checkBox_reduce_future_fees.setChecked(fee<= self.enable_opportunistic_merging_fee_rate)
+
+
     def get_ui_tx_infos(self, use_this_tab=None):
         infos = TXInfos()
+        infos.opportunistic_merge_utxos = self.checkBox_reduce_future_fees.isChecked()
 
         for recipient in self.recipients.recipients:
             infos.add_recipient(recipient)        
@@ -601,7 +613,7 @@ class UITX_Creator(QObject):
 
     def retranslateUi(self):
         self.main_widget.setWindowTitle(QCoreApplication.translate("self.main_widget", u"self.main_widget", None))   
-        self.checkBox__reduce_future_fees.setText(QCoreApplication.translate("self.main_widget", u"Reduce future fees\n"
+        self.checkBox_reduce_future_fees.setText(QCoreApplication.translate("self.main_widget", u"Reduce future fees\n"
 "by merging small inputs now", None))
 
 
