@@ -564,7 +564,7 @@ class Wallet(BaseSaveableClass):
             
     def utxo_of_outpoint(self, outpoint:bdk.OutPoint) -> bdk.LocalUtxo:
         for utxo in self.get_utxos():
-            if OutPoint.from_bdk_outpoint(outpoint) == OutPoint.from_bdk_outpoint(utxo.outpoint) :
+            if OutPoint.from_bdk(outpoint) == OutPoint.from_bdk(utxo.outpoint) :
                 return utxo                        
     
 
@@ -627,7 +627,7 @@ class Wallet(BaseSaveableClass):
         # check if any input tx is in transactions_involving_address
         for tx in self.get_list_transactions():
             for input in tx.transaction.input():
-                out_point = OutPoint.from_bdk_outpoint(input.previous_output)
+                out_point = OutPoint.from_bdk(input.previous_output)
                 if hash(out_point) in hash_outpoint_to_address:
                     address = hash_outpoint_to_address[hash(out_point)]
                     if address not in send: 
@@ -853,36 +853,41 @@ class Wallet(BaseSaveableClass):
     
     
     
-    def coin_select(self, outpoints, total_sent_value, fee_rate, opportunistic_merge_utxos) -> Dict[str, object]:
-        def outpoint_value(output:bdk.OutPoint):
-            return self.utxo_of_outpoint(outpoint).txout.value
-
+    def coin_select(self, utxos, total_sent_value, fee_rate, opportunistic_merge_utxos) -> Dict[str, object]:
+        def utxo_value(utxo:bdk.LocalUtxo):
+            return utxo.txout.value
+        def is_outpoint_in_list(outpoint, utxos):
+            outpoint = OutPoint.from_bdk(outpoint)
+            for utxo in utxos:
+                if outpoint == OutPoint.from_bdk(utxo.outpoint):
+                    return True
+            return False
 
         # coin selection
-        outpoints = outpoints.copy()
-        np.random.shuffle(outpoints)
-        selected_outpoints = []
+        utxos = utxos.copy()
+        np.random.shuffle(utxos)
+        selected_utxos = []
         selected_value = 0
         opportunistic_merging_utxos = []
-        for outpoint in outpoints:            
-            utxo = self.utxo_of_outpoint(outpoint)                      
+        for utxo in utxos:            
             selected_value += utxo.txout.value
-            selected_outpoints.append(outpoint)                                    
+            selected_utxos.append(utxo)                                    
             if selected_value>=total_sent_value:
                 break
-        selected_utxos = [self.utxo_of_outpoint(o) for o in selected_outpoints]
-        logger.debug(f'Selected {len(selected_outpoints)} outpoints with {Satoshis(selected_value).str_with_unit()}')
+        logger.debug(f'Selected {len(selected_utxos)} outpoints with {Satoshis(selected_value).str_with_unit()}')
                 
         # now opportunistically  add additional outputs for merging
         if opportunistic_merge_utxos:
-            non_selected_outpoints = list(set([OutPoint.from_bdk_outpoint(o) for o in outpoints]) 
-                                      - set([OutPoint.from_bdk_outpoint(o) for o in selected_outpoints]))
+            non_selected_utxos = [utxo 
+                                  for utxo in utxos
+                                  if not is_outpoint_in_list(utxo.outpoint, selected_utxos)
+                                  ]    
             
-            non_selected_utxos = [self.utxo_of_outpoint(o) for o in non_selected_outpoints]    
             
-            number_of_opportunistic_outpoints = np.random.randint(0, len(non_selected_utxos)//2)  # never choose more than half of all remaining outputs
+            # never choose more than half of all remaining outputs
+            number_of_opportunistic_outpoints = np.random.randint(0, len(non_selected_utxos)//2) if   len(non_selected_utxos)//2> 0 else 0
                         
-            opportunistic_merging_utxos = sorted(non_selected_utxos, key=outpoint_value)[:number_of_opportunistic_outpoints]
+            opportunistic_merging_utxos = sorted(non_selected_utxos, key=utxo_value)[:number_of_opportunistic_outpoints]
             logger.debug(f'Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos])).str_with_unit()}')
             
             # add to selected_utxos
@@ -892,20 +897,34 @@ class Wallet(BaseSaveableClass):
             'selected_utxos':selected_utxos, 
             'opportunistic_merging_utxos':opportunistic_merging_utxos, 
                 }
+    
+    def get_all_input_utxos(self, txinfos:TXInfos) -> List[OutPoint]:
+        if not txinfos.utxo_strings and not txinfos.categories:
+            logger.warning('No inputs provided for coin selection')
+
+        utxos = []        
+        
+        if txinfos.utxo_strings:
+            utxos += [self.utxo_of_outpoint(OutPoint.from_str(s)) for s in txinfos.utxo_strings]            
+        elif txinfos.categories:
+            utxos += [utxo for utxo in self.bdkwallet.list_unspent() if                      
+                    self.category.get(self.get_address_of_txout(utxo.txout)) in txinfos.categories
+                    ]            
+        else:
+            logger.debug('No utxos or categories for coin selection')
+            return  []
+        
+        return utxos
+    
+    
 
     def create_coin_selection_dict(self, txinfos:TXInfos) -> Dict[str, object]:
         if not txinfos.utxo_strings and not txinfos.categories:
             logger.warning('No inputs provided for coin selection')
 
-        outpoints = []        
         
-        if txinfos.utxo_strings:
-            outpoints += [OutPoint.from_str(s) for s in txinfos.utxo_strings]            
-        elif txinfos.categories:
-            outpoints += [utxo.outpoint for utxo in self.bdkwallet.list_unspent() if                      
-                    self.category.get(self.get_address_of_txout(utxo.txout)) in txinfos.categories
-                    ]            
-        else:
+        utxos = self.get_all_input_utxos(txinfos)
+        if not utxos:
             logger.debug('No utxos or categories for coin selection')
             return  {
             'selected_utxos':[], 
@@ -917,31 +936,85 @@ class Wallet(BaseSaveableClass):
         # TODO: Add here also the fee amount (but I don't know it yet)
 
         coin_selection_dict = self.coin_select(
-            outpoints=outpoints,
+            utxos=utxos,
             total_sent_value=total_sent_value,
             fee_rate=txinfos.fee_rate,
             opportunistic_merge_utxos=txinfos.opportunistic_merge_utxos
         )
         return coin_selection_dict
     
-
-    def create_psbt(self, txinfos:TXInfos) -> TXInfos:
-        coin_selection_dict = self.create_coin_selection_dict(txinfos)
-        
-        for utxo in coin_selection_dict['selected_utxos']:
-            txinfos.tx_builder = txinfos.tx_builder.add_utxo(utxo.outpoint)        
+    def _get_tx_builder_result(self, txinfos:TXInfos) -> bdk.TxBuilderResult:
+        logger.debug(f'_get_tx_builder_result called with {txinfos.__dict__}')
+        tx_builder = bdk.TxBuilder()        
+        tx_builder = tx_builder.enable_rbf()
+        tx_builder = tx_builder.fee_rate(txinfos.fee_rate)
+        tx_builder = tx_builder.manually_selected_only()
+        txinfos.coin_selection_dict_result = self.create_coin_selection_dict(txinfos)
+        for utxo in  txinfos.coin_selection_dict_result['selected_utxos']:
+            tx_builder = tx_builder.add_utxo(utxo.outpoint)        
             
-        builder_result:bdk.TxBuilderResult = txinfos.tx_builder.finish(self.bdkwallet)
+        for recipient in txinfos.recipients:
+            amount = recipient.amount
+            if recipient.checked_max_amount:    
+                # allow_shrinking does only exist for bumping transactions. Here we set the amount to above the dust limit, here simply set as 1000 Satoshi. The TxBuilderResult is used to calculate the fee and set the maximum amount manually.
+                raise Exception('_get_tx_builder_result cannot have an active checked_max_amount. This has to be handled in the outer function')       
+            tx_builder = tx_builder.add_recipient(bdk.Address(recipient.address).script_pubkey(), amount)                            
+        return tx_builder.finish(self.bdkwallet)
+
+
+    def create_psbt(self, txinfos:TXInfos) -> TXInfos:                                    
+        # if there is a checked_max_amount, one has to create the transaction fisrt, get the toal paid fee, and deduct it from the checked_max_amount outpoint
+        number_checked_max_amount = sum([recipient.checked_max_amount for recipient in txinfos.recipients])
+        if number_checked_max_amount:
+            temp_infos = txinfos.clone()
+            for recipient in temp_infos.recipients:
+                if recipient.checked_max_amount:
+                    # set amount to minimum. temp_infos is just to calculate the total fee
+                    logger.debug(f"number_inputs = { len(self.get_all_input_utxos(txinfos))}")
+                    estimated_size_in_input_and_output = 200 # this is grossly overestimated, but it should be low enough to still require all utxos
+                    recipient.amount -= txinfos.fee_rate*estimated_size_in_input_and_output* (len(txinfos.recipients) + len(self.get_all_input_utxos(txinfos)))
+                    recipient.checked_max_amount = False
+            
+            temp_result = self._get_tx_builder_result(temp_infos)
+            absolute_fee = temp_result.transaction_details.fee
+            logger.debug(f'total projected fee {absolute_fee}')
+            
+            # correct the amounts in txinfos, to deduct the fee from the checked_max_amount
+            for recipient in txinfos.recipients:
+                if recipient.checked_max_amount:  
+                    old_amount = recipient.amount
+                    recipient.amount -= absolute_fee//number_checked_max_amount
+                    recipient.checked_max_amount = False
+                    logger.debug(f'reduced checked_max_amount from {old_amount} to {recipient.amount}')
+            
+            
+        builder_result = self._get_tx_builder_result(txinfos)
         
         self.tips = [tip + 1 for tip in self.tips]
-        
-        
+                
         logger.info(json.loads(builder_result.psbt.json_serialize()))
         logger.debug(f'psbt fee after finalized {builder_result.psbt.fee_rate().as_sat_per_vb()}')
         
+        
+        # get category of first utxo
+        categories = clean_list(sum([
+            list(self.get_categories_for_txid(utxo.outpoint.txid))
+            for utxo in txinfos.coin_selection_dict_result['selected_utxos']], []))
+        category = categories[0]
+        logger.debug(f'Selecting category {category} out of {categories} for the output addresses')
+        
+        # set labels and categries        
         txinfos.builder_result = builder_result
+        for recipient in txinfos.recipients:
+            if recipient.label:
+                self.labels[recipient.address] = recipient.label
+                if categories:
+                    self.category[recipient.address] = category
+                
+
         return txinfos
-    
+
+
     
     def rename_category(self, old_category, new_category):
         affected_keys = []

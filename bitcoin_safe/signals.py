@@ -125,6 +125,7 @@ class Signals(QObject):
     get_utxos = SignalFunction()
     utxo_of_outpoint = SignalFunction()
     get_wallets = SignalFunction()
+    signal_get_all_input_utxos = SignalFunction() # returns dict of list of LocalUtxo
     
 
     

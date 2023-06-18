@@ -15,20 +15,24 @@ class TXInfos:
         self.fee_rate = None
         self.opportunistic_merge_utxos = True
         
-        self.tx_builder = bdk.TxBuilder()        
-        self.tx_builder = self.tx_builder.enable_rbf()
         self.recipients:List[Recipient] = []
         
-        self.builder_result: bdk.TxBuilderResult = None
-        
+        self.coin_selection_dict_result = None
+        self.builder_result:bdk.TxBuilderResult = None
         
         
     def add_recipient(self, recipient:Recipient):
         self.recipients.append(recipient)
-        self.tx_builder = self.tx_builder.add_recipient(bdk.Address(recipient.address).script_pubkey(), recipient.amount)        
-        if recipient.label:
-            self.labels[recipient.address] = recipient.label
             
     def set_fee_rate(self, feerate):
         self.fee_rate = feerate
-        self.tx_builder = self.tx_builder.fee_rate(feerate)
+
+    def clone(self):
+        infos = TXInfos()
+        infos.labels = self.labels.copy()
+        infos.categories = self.categories.copy()
+        infos.utxo_strings = self.utxo_strings.copy()
+        infos.fee_rate = self.fee_rate
+        infos.opportunistic_merge_utxos = self.opportunistic_merge_utxos
+        infos.recipients = [r.clone() for r in self.recipients]
+        return infos

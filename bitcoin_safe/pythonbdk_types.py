@@ -2,10 +2,15 @@ import bdkpython as bdk
 import enum
 
 class Recipient:
-    def __init__(self, address, amount, label=None) -> None:
+    def __init__(self, address, amount, label=None, checked_max_amount=False) -> None:
         self.address = address
         self.amount = amount
         self.label = label
+        self.checked_max_amount = checked_max_amount
+
+    def clone(self):
+        return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
+        
 
     
 class OutPoint(bdk.OutPoint): 
@@ -16,7 +21,7 @@ class OutPoint(bdk.OutPoint):
         return hash(self.__key__())    
          
     @classmethod
-    def from_bdk_outpoint(cls, bdk_outpoint:bdk.OutPoint):
+    def from_bdk(cls, bdk_outpoint:bdk.OutPoint):
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
 
     @classmethod
@@ -28,7 +33,7 @@ class OutPoint(bdk.OutPoint):
         if isinstance(other, OutPoint):
             return (self.txid, self.vout) == (other.txid, other.vout)
         return False        
-
+ 
 
 
 class AddressInfoMin():

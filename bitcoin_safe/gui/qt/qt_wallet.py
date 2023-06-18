@@ -249,6 +249,7 @@ class QTWallet():
         self.signals.utxo_of_outpoint.connect(self.wallet.utxo_of_outpoint, name=self.wallet.id)           
         self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)
         
+        self.signals.signal_get_all_input_utxos.connect(self.wallet.get_all_input_utxos, name=self.wallet.id)
 
     def create_wallet_tabs(self):
         "Create tabs.  set_wallet be called first"

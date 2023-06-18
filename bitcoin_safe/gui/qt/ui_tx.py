@@ -6,7 +6,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from .category_list import CategoryList
-from .recipients import Recipients
+from .recipients import Recipients, CustomDoubleSpinBox
 from .slider import CustomSlider
 from ...signals import  Signal
 import bdkpython as bdk
@@ -29,6 +29,8 @@ from .block_buttons import MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
+
+
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
@@ -54,16 +56,6 @@ def create_groupbox(layout, title=None):
     g_layout = QVBoxLayout(g)
     layout.addWidget(g)
     return g, g_layout
-
-
-def create_recipients(layout, signals:Signals, parent=None, allow_edit=True):
-    recipients =  Recipients(signals, allow_edit=allow_edit)
-    recipients.add_recipient(Recipient('', 0))
-    layout.addWidget(recipients)
-    recipients.setMinimumWidth(250)    
-    
-    return recipients
-
 
 
 
@@ -326,16 +318,32 @@ class FeeGroup(QObject):
 
 
 
-class UITX_Viewer(QObject):
+class UITX_Base(QObject):
+    def __init__(self, signals:Signals, mempool_data:MempoolData) -> None:
+        super().__init__()
+        self.signals = signals
+        self.mempool_data = mempool_data
+
+
+
+
+    def create_recipients(self, layout, parent=None, allow_edit=True):
+        recipients =  Recipients(self.signals, allow_edit=allow_edit)        
+        layout.addWidget(recipients)
+        recipients.setMinimumWidth(250)                            
+        return recipients
+
+
+
+
+class UITX_Viewer(UITX_Base):
     signal_edit_tx = Signal()
     signal_save_psbt = Signal()
     signal_broadcast_tx = Signal()
     def __init__(self, psbt:bdk.PartiallySignedTransaction, signals:Signals, network:bdk.Network, mempool_data:MempoolData, fee_rate=None) -> None:
-        super().__init__()
+        super().__init__(signals=signals, mempool_data=mempool_data)
         self.psbt:bdk.PartiallySignedTransaction = psbt
-        self.signals = signals
         self.network = network
-        self.mempool_data = mempool_data
         self.fee_rate = fee_rate
 
         self.signers:List[SignerWallet] = []
@@ -363,8 +371,7 @@ class UITX_Viewer(QObject):
         self.tabs_inputs_outputs.addTab(self.tab_outputs, 'Outputs')        
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
         
-        self.recipients = create_recipients(self.tab_outputs_layout, 
-                                            self.signals,
+        self.recipients = self.create_recipients(self.tab_outputs_layout, 
                                             allow_edit=False)
 
 
@@ -470,15 +477,14 @@ class UITX_Viewer(QObject):
                                       for output in outputs]
 
 
-class UITX_Creator(QObject):
+class UITX_Creator(UITX_Base):
     signal_create_tx = Signal(TXInfos)
     signal_set_category_coin_selection = Signal(TXInfos)
     
     def __init__(self, mempool_data:MempoolData, categories:List[str], utxo_list:UTXOList,  signals:Signals, get_sub_texts, enable_opportunistic_merging_fee_rate=5) -> None:
-        super().__init__()
+        super().__init__(signals=signals, mempool_data=mempool_data)
         self.categories = categories
         self.utxo_list = utxo_list
-        self.signals = signals
         self.get_sub_texts = get_sub_texts
         self.enable_opportunistic_merging_fee_rate = enable_opportunistic_merging_fee_rate
         
@@ -500,7 +506,10 @@ class UITX_Creator(QObject):
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)        
         
         self.groupBox_outputs, self.groupBox_outputs_layout = create_groupbox(self.widget_right_top_layout)
-        self.recipients = create_recipients(self.groupBox_outputs_layout, self.signals)
+        self.recipients = self.create_recipients(self.groupBox_outputs_layout)
+        self.recipients.signal_clicked_send_max_button.connect(lambda recipient_group_box: self.set_max_amount(recipient_group_box.amount_spin_box))
+        self.recipients.add_recipient()                
+
 
         self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
         self.fee_group.signal_set_fee.connect(self.on_set_fee)
@@ -603,6 +612,30 @@ class UITX_Creator(QObject):
 
 
 
+    def set_max_amount(self, spin_box:CustomDoubleSpinBox):
+        txinfos = self.get_ui_tx_infos()
+        utxos_dict = self.signals.signal_get_all_input_utxos.emit(txinfos)
+        total_input_value = sum([
+            utxo.txout.value
+            for wallet_id, utxos in utxos_dict.items()
+            for utxo in utxos
+            ])
+        
+        total_output_value = sum([
+            recipient.amount
+            for recipient in txinfos.recipients            
+        ]) # this includes the old value of the spinbox
+        
+        logger.debug(str((total_input_value, total_output_value, spin_box.value())))
+        
+        
+        max_available_amount = total_input_value - total_output_value  
+        spin_box.setValue(spin_box.value()  + max_available_amount   )
+
+
+
+
+
 
 
     def update_categories(self):
@@ -634,5 +667,3 @@ class UITX_Creator(QObject):
             # take the coin selection from the category to the utxo tab
             self.signal_set_category_coin_selection.emit(self.get_ui_tx_infos(self.tab_inputs_categories))
             
-
-

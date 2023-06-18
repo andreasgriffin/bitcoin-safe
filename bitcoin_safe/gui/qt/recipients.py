@@ -7,7 +7,7 @@ from typing import List, Dict
 import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from .util import ColorScheme
-from ...signals import Signals
+from ...signals import Signals, SignalFunction
 from .spinbox import CustomDoubleSpinBox
 
 class CloseButton(QtWidgets.QPushButton):
@@ -22,16 +22,18 @@ class CloseButton(QtWidgets.QPushButton):
 
     def close_groupbox(self):
         if self.parent():
-            self.parent().close_signal.emit(self)
+            self.parent().signal_close.emit(self)
 
 
 class RecipientGroupBox(QtWidgets.QGroupBox):
-    close_signal = QtCore.Signal(QtWidgets.QGroupBox)
+    signal_close = QtCore.Signal(QtWidgets.QGroupBox)
+    signal_set_max_amount = QtCore.Signal(CustomDoubleSpinBox)
 
     def __init__(self, signals:Signals, allow_edit=True):
         super().__init__()
         self.signals = signals
         self.allow_edit = allow_edit
+
         
         self.close_button = CloseButton(self) if allow_edit else None
 
@@ -51,7 +53,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         if not allow_edit:
             self.amount_spin_box.setReadOnly(True)
         self.send_max_button = QtWidgets.QPushButton("Send max")
+        self.send_max_button.setCheckable(True)        
         self.send_max_button.setMaximumWidth(80)
+        self.send_max_button.clicked.connect(self.on_send_max_button_click)
         self.amount_layout.addWidget(self.amount_spin_box)
         if allow_edit:
             self.amount_layout.addWidget(self.send_max_button)
@@ -65,7 +69,12 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         self.address_line_edit.textChanged.connect(self.format_address_field)
         self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
-        self.close_signal.connect(self.close)
+        self.signal_close.connect(self.close)
+
+    def on_send_max_button_click(self):
+        # self.amount_spin_box.setValue(0)
+        self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
+        self.signal_set_max_amount.emit(self.amount_spin_box)
 
     def resizeEvent(self, event):
         if self.close_button:
@@ -151,6 +160,8 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
 
 class Recipients(QtWidgets.QWidget):
+    signal_added_recipient = QtCore.Signal(RecipientGroupBox)
+    signal_clicked_send_max_button = QtCore.Signal(RecipientGroupBox)
     def __init__(self, signals:Signals, allow_edit=True):
         super().__init__()
         self.signals = signals
@@ -171,34 +182,42 @@ class Recipients(QtWidgets.QWidget):
 
         self.add_recipient_button = QtWidgets.QPushButton("+ Add Recipient")
         self.add_recipient_button.setStyleSheet("background-color: green")
-        self.add_recipient_button.clicked.connect(self.add_recipient)
+        self.add_recipient_button.clicked.connect(lambda:self.add_recipient())
         if allow_edit:
             self.main_layout.addWidget(self.add_recipient_button)
 
-    def add_recipient(self, recipient:Recipient):
+    def add_recipient(self, recipient:Recipient=None):
+        if recipient is None:
+            recipient = Recipient("", 0)
         recipient_box = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
         if recipient.label:
             recipient_box.label = recipient.label
-        recipient_box.close_signal.connect(lambda: self.remove_recipient_widget(recipient))
+        recipient_box.signal_close.connect(lambda: self.remove_recipient_widget(recipient))
         self.recipient_list_content_layout.addWidget(recipient_box)
-
+        
+        recipient_box.send_max_button.clicked.connect(lambda: self.signal_clicked_send_max_button.emit(recipient_box))
+        self.signal_added_recipient.emit(recipient_box)
+        return recipient_box
 
     def remove_recipient_widget(self, recipient):
         recipient.setParent(None)
         self.recipient_list_content_layout.removeWidget(recipient)
         recipient.deleteLater()
 
+        
+
     @property
-    def recipients(self):
+    def recipients(self) -> List[Recipient]:
         l = []
         for i in range(self.recipient_list_content_layout.count()):
             layout_item = self.recipient_list_content_layout.itemAt(i)
-            recipient:RecipientGroupBox = layout_item.wid
-            if recipient.address and recipient.amount:
-                l.append(Recipient(recipient.address, recipient.amount, recipient.label if recipient.label else None))
-        return l
+            recipient_box:RecipientGroupBox = layout_item.wid
+            l.append(Recipient(recipient_box.address, recipient_box.amount, recipient_box.label if recipient_box.label else None, 
+                               checked_max_amount=recipient_box.send_max_button.isChecked()))
+        return l        
+        
 
     @recipients.setter
     def recipients(self, recipient_list:List[Dict[str, object]]):

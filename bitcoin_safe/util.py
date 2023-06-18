@@ -159,7 +159,7 @@ def clean_dict(d):
     return {k:v for k,v in d.items() if v}
 
 def clean_list(l):
-    return {v for v in l if v}
+    return [v for v in l if v]
 
 
 def is_address(address) -> bool:
