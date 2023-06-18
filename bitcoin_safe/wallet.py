@@ -364,7 +364,7 @@ class Wallet(BaseSaveableClass):
         self.bdkwallet.sync(self.blockchain, progress) 
         logger.info(f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }")        
         
-    def get_address(self):        
+    def get_address(self) -> bdk.AddressInfo:        
         # print new receive address
         address_info = self.bdkwallet.get_address(bdk.AddressIndex.LAST_UNUSED())
         address = address_info.address
@@ -372,7 +372,7 @@ class Wallet(BaseSaveableClass):
         logger.info(f"New address: {address.as_string()} at index {index}")
         return address_info
 
-    def output_addresses(self, transaction):
+    def output_addresses(self, transaction) -> List[bdk.Address]:
         #print(f'Getting output addresses for txid {transaction.txid}')
         addresses = []
         for output in transaction.transaction.output(): 
@@ -1009,9 +1009,7 @@ class Wallet(BaseSaveableClass):
             if recipient.label:
                 self.labels[recipient.address] = recipient.label
                 if categories:
-                    self.category[recipient.address] = category
-                
-
+                    self.category[recipient.address] = category                
         return txinfos
 
 

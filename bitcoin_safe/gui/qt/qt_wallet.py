@@ -1,4 +1,5 @@
 import logging
+from unittest import signals
 
 from matplotlib import category
 from bitcoin_safe.config import UserConfig
@@ -241,13 +242,19 @@ class QTWallet():
 
     def set_wallet(self, wallet:Wallet):
         self.wallet = wallet     
+        
+        # for name, signal in self.signals.__dict__.items():
+        #     if hasattr(self.wallet, name) and callable(getattr(self.wallet, name)):
+        #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)           
+                
         self.signals.get_addresses.connect(self.wallet.get_addresses, name=self.wallet.id)           
+        self.signals.address_is_used.connect(self.wallet.address_is_used, name=self.wallet.id)           
         self.signals.get_receiving_addresses.connect(self.wallet.get_receiving_addresses, name=self.wallet.id)           
         self.signals.get_change_addresses.connect(self.wallet.get_change_addresses, name=self.wallet.id)           
         self.signals.get_label_for_address.connect(self.wallet.get_label_for_address, name=self.wallet.id)           
         self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)           
         self.signals.utxo_of_outpoint.connect(self.wallet.utxo_of_outpoint, name=self.wallet.id)           
-        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)
+        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)        
         
         self.signals.signal_get_all_input_utxos.connect(self.wallet.get_all_input_utxos, name=self.wallet.id)
 

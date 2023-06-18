@@ -10,6 +10,26 @@ from .util import ColorScheme
 from ...signals import Signals, SignalFunction
 from .spinbox import CustomDoubleSpinBox
 
+
+from PySide2.QtWidgets import QMessageBox, QApplication
+import sys
+
+def dialog_replace_with_new_receiving_address(address):
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle("Address Already Used")
+    msg_box.setText(f"Address {address} was used already. Would you like to get a fresh receiving address?")
+    msg_box.setIcon(QMessageBox.Question)
+    keep_button = msg_box.addButton("Keep address", QMessageBox.NoRole)
+    ok_button = msg_box.addButton("OK", QMessageBox.YesRole)
+    msg_box.exec_()
+
+    if msg_box.clickedButton() == ok_button:
+        return True
+    elif msg_box.clickedButton() == keep_button:
+        return False
+
+
+
 class CloseButton(QtWidgets.QPushButton):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -134,6 +154,10 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         
 
     def format_address_field(self, *args):
+        def get_was_used(address):
+            return any(self.signals.address_is_used.emit(self.address).values())
+        
+        
         def get_walletid_of_address(address, addresses_dict):
             for wallet_id, address_list in addresses_dict.items():
                 if address in address_list:
@@ -144,14 +168,25 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         receiving_addresses_dict = self.signals.get_receiving_addresses.emit()
         change_addresses_dict = self.signals.get_change_addresses.emit()
         
-        if self.address in sum(receiving_addresses_dict.values(), []):
-            background_color = ColorScheme.GREEN.as_color(background=True)  
-            palette.setColor(QtGui.QPalette.Base, background_color) 
-            self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, receiving_addresses_dict)}"')
-        elif self.address in sum(change_addresses_dict.values(), []):
-            background_color = ColorScheme.YELLOW.as_color(background=True)  
-            palette.setColor(QtGui.QPalette.Base, background_color) 
-            self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, change_addresses_dict)}"')
+
+        
+        if self.address in sum(receiving_addresses_dict.values(), []) or self.address in sum(change_addresses_dict.values(), []):                            
+            if get_was_used(self.address):
+                if dialog_replace_with_new_receiving_address(self.address):
+                    # find an address that is not used yet
+                    wallet_id_of_address = get_walletid_of_address(self.address, receiving_addresses_dict)
+                    wallets_dict = self.signals.get_wallets()
+                    address_info = wallets_dict[wallet_id_of_address].get_address()
+                    self.address = address_info.address.as_string()
+                    
+            if self.address in sum(receiving_addresses_dict.values(), []):
+                background_color = ColorScheme.GREEN.as_color(background=True)  
+                palette.setColor(QtGui.QPalette.Base, background_color) 
+                self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, receiving_addresses_dict)}"')
+            elif self.address in sum(change_addresses_dict.values(), []):
+                background_color = ColorScheme.YELLOW.as_color(background=True)  
+                palette.setColor(QtGui.QPalette.Base, background_color) 
+                self.setTitle(f'Receiver is wallet "{get_walletid_of_address(self.address, change_addresses_dict)}"')
         else:
             palette = self.address_line_edit.style().standardPalette()
             self.setTitle('')

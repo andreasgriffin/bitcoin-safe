@@ -119,6 +119,7 @@ class Signals(QObject):
     tx_from_text = SignalFunction()
     
     get_addresses = SignalFunction()
+    address_is_used = SignalFunction(str)
     get_receiving_addresses = SignalFunction()
     get_change_addresses = SignalFunction()
     get_label_for_address = SignalFunction()
