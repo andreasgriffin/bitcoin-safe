@@ -4,6 +4,7 @@ from unittest import signals
 from matplotlib import category
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.mempool import MempoolData
+
 logger = logging.getLogger(__name__)
 
 from bitcoin_safe.wallet import Wallet
@@ -13,30 +14,39 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from .balance_dialog import BalanceToolButton
-from .balance_dialog import COLOR_FROZEN, COLOR_CONFIRMED, COLOR_FROZEN_LIGHTNING, COLOR_LIGHTNING, COLOR_UNCONFIRMED, COLOR_UNMATURED
+from .balance_dialog import (
+    COLOR_FROZEN,
+    COLOR_CONFIRMED,
+    COLOR_FROZEN_LIGHTNING,
+    COLOR_LIGHTNING,
+    COLOR_UNCONFIRMED,
+    COLOR_UNMATURED,
+)
 from .history_list import HistoryList, HistoryModel
 from .address_list import AddressList
 from .utxo_list import UTXOList
-from .util import add_tab_to_tabs 
+from .util import add_tab_to_tabs, Message
 from .taglist import AddressDragInfo
 from .ui_tx import UITX_Creator, UITX_Viewer
 
 from ...thread_manager import ThreadManager
-from ...util import  Satoshis, format_satoshis
+from ...util import Satoshis, format_satoshis
 from ...signals import Signals, UpdateFilter
 from ...i18n import _
 from .ui_descriptor import WalletDescriptorUI
 from .password_question import PasswordQuestion
 from .category_list import CategoryEditor
 from ...tx import TXInfos
+from ...pythonbdk_types import Error
 import bdkpython as bdk
 import os
+
 
 class StatusBarButton(QToolButton):
     # note: this class has a custom stylesheet applied in stylesheet_patcher.py
     def __init__(self, icon, tooltip, func, sb_height):
         QToolButton.__init__(self)
-        self.setText('')
+        self.setText("")
         self.setIcon(icon)
         self.setToolTip(tooltip)
         self.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -49,49 +59,55 @@ class StatusBarButton(QToolButton):
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def onPress(self, checked=False):
-        '''Drops the unwanted PySide2 "checked" argument'''
+        """Drops the unwanted PySide2 "checked" argument"""
         self.func()
 
     def keyPressEvent(self, e):
         if e.key() in [Qt.Key_Return, Qt.Key_Enter]:
             self.func()
-            
-            
 
-class LegacyNetwork():
+
+class LegacyNetwork:
     def __init__(self, wallet):
         self.proxy = None
         self.wallet = wallet
-    
+
     def is_connected(self):
         return bool(self.get_server_height())
-        
+
     def get_server_height(self):
         if self.wallet.blockchain:
             return self.wallet.blockchain.get_height()
-        
+
     def get_local_height(self):
         return self.get_server_height()
-        
+
     def get_blockchains(self):
         return [self.wallet.blockchain] if self.wallet.blockchain else []
 
-class FX():
+
+class FX:
     def __init__(self):
         pass
-    
+
     def is_enabled(self):
         return False
-    
+
     def can_have_history(self):
         return False
+
     def has_history(self):
         return False
- 
- 
 
-class QTWallet():
-    def __init__(self, wallet:Wallet, config:UserConfig, signals:Signals, mempool_data:MempoolData):    
+
+class QTWallet:
+    def __init__(
+        self,
+        wallet: Wallet,
+        config: UserConfig,
+        signals: Signals,
+        mempool_data: MempoolData,
+    ):
         self.thread_manager = ThreadManager()
         self.signals = signals
         self.mempool_data = mempool_data
@@ -101,47 +117,46 @@ class QTWallet():
         self.config = config
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
-        
-        
+
         self.history_tab, self.history_list, self.history_model = None, None, None
         self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
         self.utxo_tab, self.utxo_list = None, None
         self.send_tab = None
-        
+
         self._create_wallet_tab_and_subtabs()
-            
-    
+
     def __repr__(self) -> str:
-        return f'QTWallet({self.__dict__})'    
-    
-    def save(self): 
-         self.password = self.ui_password_question.ask_for_password()
-         self.wallet.save( os.path.join( self.config.wallet_dir,  self.wallet.basename()), password=self.password)
-            
+        return f"QTWallet({self.__dict__})"
+
+    def save(self):
+        self.password = self.ui_password_question.ask_for_password()
+        self.wallet.save(
+            os.path.join(self.config.wallet_dir, self.wallet.basename()),
+            password=self.password,
+        )
+
     def cancel_setting_changes(self):
         self.wallet_descriptor_ui.set_all_ui_from_wallet(self.wallet)
-        
-        
+
     def apply_setting_changes(self):
         self.wallet_descriptor_ui.set_wallet_from_keystore_ui()
-        self.wallet.recreate_bdk_wallet() # this must be after set_wallet_from_keystore_ui, but before create_wallet_tabs
-        
+        self.wallet.recreate_bdk_wallet()  # this must be after set_wallet_from_keystore_ui, but before create_wallet_tabs
+
         self.sync()
         self.refresh_caches_and_ui_lists()
 
-
     def refresh_caches_and_ui_lists(self):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
-        logger.debug('start refresh cashe')
+        logger.debug("start refresh cashe")
         self.wallet.reset_cache()
-        
+
         def threaded():
             self.wallet.fill_commonly_used_caches()
-            
+
         def on_finished():
             # now do the UI
-            logger.debug('start refresh ui')
-            
+            logger.debug("start refresh ui")
+
             if self.history_tab:
                 # self.address_list.update()
                 # self.address_list_tags.update()
@@ -150,152 +165,244 @@ class QTWallet():
                 # self.history_list.update()
             else:
                 self.create_wallet_tabs()
-            
-        self.thread_manager.start_in_background_thread(threaded, on_finished=on_finished, name='Update wallet UI')
-            
-    
-    
+
+        self.thread_manager.start_in_background_thread(
+            threaded, on_finished=on_finished, name="Update wallet UI"
+        )
+
     def _create_wallet_tab_and_subtabs(self):
         "Create a tab, and layout, that other UI components can fit inside"
         # create UI part
         self.tab = QWidget()
         self.tab.setObjectName(self.wallet.id)
-            
+
         self.outer_layout = QVBoxLayout(self.tab)
         # add the tab_widget for  history, utx, send tabs
         self.tabs = QTabWidget(self.tab)
         self.outer_layout.addWidget(self.tabs)
-    
+
     def create_and_add_settings_tab(self):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = WalletDescriptorUI(wallet=self.wallet)
-        add_tab_to_tabs(self.tabs, wallet_descriptor_ui.tab, read_QIcon("preferences.png"), "Descriptor", "descriptor")
+        add_tab_to_tabs(
+            self.tabs,
+            wallet_descriptor_ui.tab,
+            read_QIcon("preferences.png"),
+            "Descriptor",
+            "descriptor",
+        )
 
-        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.apply_setting_changes)
-        wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
-        return wallet_descriptor_ui.tab, wallet_descriptor_ui   
+        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
+            self.apply_setting_changes
+        )
+        wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(
+            self.cancel_setting_changes
+        )
+        return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
     def _get_sub_texts_for_uitx(self):
         d = {}
         for utxo in self.wallet.get_utxos():
             address = self.wallet.get_utxo_address(utxo).as_string()
-            category = self.wallet.get_category_for_address(address)        
+            category = self.wallet.get_category_for_address(address)
             if category not in d:
-                d[category] = []    
+                d[category] = []
             d[category].append(utxo)
-            
+
         def sum_value(category):
             utxos = d.get(category)
             if not utxos:
                 return 0
             return sum([utxo.txout.value for utxo in utxos])
-            
-        
-        return [f'{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category))} Sats' for category in self.wallet.categories]
 
-    def _create_send_tab(self, tabs): 
-        utxo_list = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.PARENTS, UTXOList.Columns.WALLET_ID, UTXOList.Columns.SATOSHIS])        
-                
-        uitx_creator = UITX_Creator(self.mempool_data, self.wallet.categories, utxo_list, self.signals, self._get_sub_texts_for_uitx, 
-                                    enable_opportunistic_merging_fee_rate=self.config.enable_opportunistic_merging_fee_rate)
-        add_tab_to_tabs(self.tabs, uitx_creator.main_widget, read_QIcon("tab_send.png"), "Send", "send")        
-                
+        return [
+            f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category))} Sats"
+            for category in self.wallet.categories
+        ]
+
+    def _create_send_tab(self, tabs):
+        utxo_list = UTXOList(
+            self.config,
+            self.wallet,
+            self.signals,
+            hidden_columns=[
+                UTXOList.Columns.OUTPOINT,
+                UTXOList.Columns.PARENTS,
+                UTXOList.Columns.WALLET_ID,
+                UTXOList.Columns.SATOSHIS,
+            ],
+        )
+
+        uitx_creator = UITX_Creator(
+            self.mempool_data,
+            self.wallet.categories,
+            utxo_list,
+            self.signals,
+            self._get_sub_texts_for_uitx,
+            enable_opportunistic_merging_fee_rate=self.config.enable_opportunistic_merging_fee_rate,
+        )
+        add_tab_to_tabs(
+            self.tabs,
+            uitx_creator.main_widget,
+            read_QIcon("tab_send.png"),
+            "Send",
+            "send",
+        )
+
         uitx_creator.signal_create_tx.connect(self.create_psbt)
-        uitx_creator.signal_set_category_coin_selection.connect(self.set_coin_selection_in_sent_tab)
+        uitx_creator.signal_set_category_coin_selection.connect(
+            self.set_coin_selection_in_sent_tab
+        )
         uitx_creator.main_widget.searchable_list = utxo_list
-                        
-        return uitx_creator.main_widget, uitx_creator                            
-    
 
-    def set_coin_selection_in_sent_tab(self, txinfos:TXInfos):
+        return uitx_creator.main_widget, uitx_creator
+
+    def set_coin_selection_in_sent_tab(self, txinfos: TXInfos):
         coin_selection_dict = self.wallet.create_coin_selection_dict(txinfos)
-        
+
         model = self.uitx_creator.utxo_list.model()
         # Get the selection model from the view
         selection = self.uitx_creator.utxo_list.selectionModel()
-        
-        utxo_names = [self.wallet.get_utxo_name(utxo) for utxo in coin_selection_dict['selected_utxos']]
+
+        utxo_names = [
+            self.wallet.get_utxo_name(utxo)
+            for utxo in coin_selection_dict["selected_utxos"]
+        ]
 
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
-            index = model.index(row, self.uitx_creator.utxo_list.Columns.OUTPOINT) 
+            index = model.index(row, self.uitx_creator.utxo_list.Columns.OUTPOINT)
             utxo_name = model.data(index)
             if utxo_name in utxo_names:
-                selection.select(index, QItemSelectionModel.Select|QItemSelectionModel.Rows)
+                selection.select(
+                    index, QItemSelectionModel.Select | QItemSelectionModel.Rows
+                )
             else:
-                selection.select(index, QItemSelectionModel.Deselect|QItemSelectionModel.Rows)
+                selection.select(
+                    index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows
+                )
 
+    def create_psbt(self, txinfos: TXInfos):
+        try:
+            txinfos = self.wallet.create_psbt(txinfos)
+        except Error.NoUtxosSelected:
+            Message("No Input Category or UTXO was selected", title="er").show_error()
+            raise
 
-    def create_psbt(self, txinfos:TXInfos):
-        txinfos = self.wallet.create_psbt(txinfos)
-        
         self.wallet.reset_cache()
-        self.signals.category_updated.emit(UpdateFilter(addresses=[recipient.address for recipient in txinfos.recipients]))
+        self.signals.category_updated.emit(
+            UpdateFilter(
+                addresses=[recipient.address for recipient in txinfos.recipients]
+            )
+        )
         self.signals.labels_updated.emit()
-        
-        self.signals.open_tx.emit(txinfos) 
-        
 
-    def create_pre_wallet_tab(self ):
-        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"        
-        self.wallet_descriptor_tab, self.wallet_descriptor_ui = self.create_and_add_settings_tab()        
+        self.signals.open_tx.emit(txinfos)
 
-    def set_wallet(self, wallet:Wallet):
-        self.wallet = wallet     
-        
+    def create_pre_wallet_tab(self):
+        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
+        (
+            self.wallet_descriptor_tab,
+            self.wallet_descriptor_ui,
+        ) = self.create_and_add_settings_tab()
+
+    def set_wallet(self, wallet: Wallet):
+        self.wallet = wallet
+
         # for name, signal in self.signals.__dict__.items():
         #     if hasattr(self.wallet, name) and callable(getattr(self.wallet, name)):
-        #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)           
-                
-        self.signals.get_addresses.connect(self.wallet.get_addresses, name=self.wallet.id)           
-        self.signals.address_is_used.connect(self.wallet.address_is_used, name=self.wallet.id)           
-        self.signals.get_receiving_addresses.connect(self.wallet.get_receiving_addresses, name=self.wallet.id)           
-        self.signals.get_change_addresses.connect(self.wallet.get_change_addresses, name=self.wallet.id)           
-        self.signals.get_label_for_address.connect(self.wallet.get_label_for_address, name=self.wallet.id)           
-        self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)           
-        self.signals.utxo_of_outpoint.connect(self.wallet.utxo_of_outpoint, name=self.wallet.id)           
-        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)        
-        
-        self.signals.signal_get_all_input_utxos.connect(self.wallet.get_all_input_utxos, name=self.wallet.id)
+        #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)
+
+        self.signals.get_addresses.connect(
+            self.wallet.get_addresses, name=self.wallet.id
+        )
+        self.signals.address_is_used.connect(
+            self.wallet.address_is_used, name=self.wallet.id
+        )
+        self.signals.get_receiving_addresses.connect(
+            self.wallet.get_receiving_addresses, name=self.wallet.id
+        )
+        self.signals.get_change_addresses.connect(
+            self.wallet.get_change_addresses, name=self.wallet.id
+        )
+        self.signals.get_label_for_address.connect(
+            self.wallet.get_label_for_address, name=self.wallet.id
+        )
+        self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)
+        self.signals.utxo_of_outpoint.connect(
+            self.wallet.utxo_of_outpoint, name=self.wallet.id
+        )
+        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)
+
+        self.signals.signal_get_all_input_utxos.connect(
+            self.wallet.get_all_input_utxos, name=self.wallet.id
+        )
 
     def create_wallet_tabs(self):
         "Create tabs.  set_wallet be called first"
         assert bool(self.wallet)
-        self.legacy_network =  LegacyNetwork(self.wallet)
-                
-        self.history_tab, self.history_list, self.history_model = self._create_hist_tab(self.tabs)
-        self.addresses_tab, self.address_list, self.address_list_tags = self._create_addresses_tab(self.tabs)        
-        self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)        
-        # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)        
+        self.legacy_network = LegacyNetwork(self.wallet)
+
+        self.history_tab, self.history_list, self.history_model = self._create_hist_tab(
+            self.tabs
+        )
+        (
+            self.addresses_tab,
+            self.address_list,
+            self.address_list_tags,
+        ) = self._create_addresses_tab(self.tabs)
+        self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)
+        # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)
         if not self.wallet_descriptor_tab:
-            self.settings_tab, self.wallet_descriptor_ui = self.create_and_add_settings_tab()
-        
+            (
+                self.settings_tab,
+                self.wallet_descriptor_ui,
+            ) = self.create_and_add_settings_tab()
+
         self.create_status_bar(self.tab, self.outer_layout)
 
         self.update_status()
         self.tabs.setCurrentIndex(0)
 
         self.address_list.signal_tag_dropped.connect(self.set_category)
-        self.address_list_tags.list_widget.signal_addresses_dropped.connect(self.set_category)
-        self.address_list_tags.delete_button.signal_addresses_dropped.connect(self.set_category)
-        self.address_list_tags.list_widget.signal_tag_deleted.connect(self.delete_category)
-        self.address_list_tags.list_widget.signal_tag_renamed.connect(self.rename_category)
-
+        self.address_list_tags.list_widget.signal_addresses_dropped.connect(
+            self.set_category
+        )
+        self.address_list_tags.delete_button.signal_addresses_dropped.connect(
+            self.set_category
+        )
+        self.address_list_tags.list_widget.signal_tag_deleted.connect(
+            self.delete_category
+        )
+        self.address_list_tags.list_widget.signal_tag_renamed.connect(
+            self.rename_category
+        )
 
     def rename_category(self, old_category, new_category):
         affected_keys = self.wallet.rename_category(old_category, new_category)
-        self.signals.category_updated.emit(UpdateFilter(addresses=affected_keys, categories=[category], txids=affected_keys))
+        self.signals.category_updated.emit(
+            UpdateFilter(
+                addresses=affected_keys, categories=[category], txids=affected_keys
+            )
+        )
 
     def delete_category(self, category):
         affected_keys = self.wallet.delete_category(category)
-        self.signals.category_updated.emit(UpdateFilter(addresses=affected_keys, categories=[category], txids=affected_keys))
+        self.signals.category_updated.emit(
+            UpdateFilter(
+                addresses=affected_keys, categories=[category], txids=affected_keys
+            )
+        )
 
-
-    def set_category(self, address_drag_info:AddressDragInfo):
+    def set_category(self, address_drag_info: AddressDragInfo):
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.set_category(address, category)
-        self.signals.category_updated.emit(UpdateFilter(addresses=address_drag_info.addresses, categories=address_drag_info.tags))
+        self.signals.category_updated.emit(
+            UpdateFilter(
+                addresses=address_drag_info.addresses, categories=address_drag_info.tags
+            )
+        )
 
     def create_status_bar(self, tab, outer_layout):
         sb = QStatusBar()
@@ -330,7 +437,14 @@ class QTWallet():
         # self.password_button = StatusBarButton(QIcon(), _("Password"), self.change_password_dialog, sb_height)
         # sb.addPermanentWidget(self.password_button)
 
-        sb.addPermanentWidget(StatusBarButton(read_QIcon("preferences.png"), _("Preferences"), self.settings_dialog, sb_height))
+        sb.addPermanentWidget(
+            StatusBarButton(
+                read_QIcon("preferences.png"),
+                _("Preferences"),
+                self.settings_dialog,
+                sb_height,
+            )
+        )
         # self.seed_button = StatusBarButton(read_QIcon("seed.png"), _("Seed"), self.show_seed_dialog, sb_height)
         # sb.addPermanentWidget(self.seed_button)
         # self.lightning_button = StatusBarButton(read_QIcon("lightning.png"), _("Lightning Network"), self.gui_object.show_lightning_dialog, sb_height)
@@ -338,31 +452,30 @@ class QTWallet():
         # self.update_lightning_icon()
         self.status_button = None
         if self.legacy_network:
-            self.status_button = StatusBarButton(read_QIcon("status_disconnected.png"), _("Network"), self.signals.show_network_settings, sb_height)
+            self.status_button = StatusBarButton(
+                read_QIcon("status_disconnected.png"),
+                _("Network"),
+                self.signals.show_network_settings,
+                sb_height,
+            )
             sb.addPermanentWidget(self.status_button)
         # run_hook('create_status_bar', sb)
         outer_layout.addWidget(sb)
-        
+
     def settings_dialog(self):
         pass
-        
-
 
     def toggle_search(self):
         self.search_box.setHidden(not self.search_box.isHidden())
         if not self.search_box.isHidden():
             self.search_box.setFocus()
         else:
-            self.do_search('')
+            self.do_search("")
 
     def do_search(self, t):
         tab = self.tabs.currentWidget()
-        if hasattr(tab, 'searchable_list'):
-            tab.searchable_list.filter(t)        
-            
-            
-            
-        
+        if hasattr(tab, "searchable_list"):
+            tab.searchable_list.filter(t)
 
     def update_status(self):
         if not self.wallet:
@@ -378,36 +491,47 @@ class QTWallet():
         elif self.legacy_network.is_connected():
             server_height = self.legacy_network.get_server_height()
             server_lag = self.legacy_network.get_local_height() - server_height
-            fork_str = "_fork" if len(self.legacy_network.get_blockchains())>1 else ""
+            fork_str = "_fork" if len(self.legacy_network.get_blockchains()) > 1 else ""
             # Server height can be 0 after switching to a new server
             # until we get a headers subscription request response.
             # Display the synchronizing message in that case.
             if not self.wallet.is_up_to_date() or server_height == 0:
                 num_sent, num_answered = self.wallet.get_history_sync_state_details()
-                network_text = ("{} ({}/{})"
-                                .format(_("Synchronizing..."), num_answered, num_sent))
+                network_text = "{} ({}/{})".format(
+                    _("Synchronizing..."), num_answered, num_sent
+                )
                 icon = read_QIcon("status_waiting.png")
             elif server_lag > 1:
                 network_text = _("Server is lagging ({} blocks)").format(server_lag)
-                icon = read_QIcon("status_lagging%s.png"%fork_str)
+                icon = read_QIcon("status_lagging%s.png" % fork_str)
             else:
                 network_text = _("Connected")
-                confirmed, unconfirmed, unmatured = self.wallet.get_balances_for_piechart()
-                self.balance_label.update_list([
-                    (_('Unmatured'), COLOR_UNMATURED, unmatured.value),
-                    (_('Unconfirmed'), COLOR_UNCONFIRMED, unconfirmed.value),
-                    (_('On-chain'), COLOR_CONFIRMED, confirmed.value), 
-                ])
-                balance = confirmed + unconfirmed + unmatured   
-                balance_text =  _("Balance") + f": {balance.str_with_unit()} "
+                (
+                    confirmed,
+                    unconfirmed,
+                    unmatured,
+                ) = self.wallet.get_balances_for_piechart()
+                self.balance_label.update_list(
+                    [
+                        (_("Unmatured"), COLOR_UNMATURED, unmatured.value),
+                        (_("Unconfirmed"), COLOR_UNCONFIRMED, unconfirmed.value),
+                        (_("On-chain"), COLOR_CONFIRMED, confirmed.value),
+                    ]
+                )
+                balance = confirmed + unconfirmed + unmatured
+                balance_text = _("Balance") + f": {balance.str_with_unit()} "
                 # append fiat balance and price
                 if self.fx.is_enabled():
-                    balance_text += self.fx.get_fiat_status_text(balance,
-                        self.base_unit(), self.get_decimal_point()) or ''
+                    balance_text += (
+                        self.fx.get_fiat_status_text(
+                            balance, self.base_unit(), self.get_decimal_point()
+                        )
+                        or ""
+                    )
                 if not self.legacy_network.proxy:
-                    icon = read_QIcon("status_connected%s.png"%fork_str)
+                    icon = read_QIcon("status_connected%s.png" % fork_str)
                 else:
-                    icon = read_QIcon("status_connected_proxy%s.png"%fork_str)
+                    icon = read_QIcon("status_connected_proxy%s.png" % fork_str)
         else:
             if self.legacy_network.proxy:
                 network_text = "{} ({})".format(_("Not connected"), _("proxy enabled"))
@@ -435,22 +559,24 @@ class QTWallet():
         # self.tasks_label.setText(name)
         # self.tasks_label.setVisible(num_tasks > 0)
 
-
-
     def get_tabs(self, tab_widget):
-        return  [tab_widget.widget(i) for i in range(tab_widget.count())] 
+        return [tab_widget.widget(i) for i in range(tab_widget.count())]
 
-    def create_list_tab(self, l:HistoryList, horizontal_widgets_left=None, horizontal_widgets_right=None):
-        # create a horizontal widget and layout        
+    def create_list_tab(
+        self,
+        l: HistoryList,
+        horizontal_widgets_left=None,
+        horizontal_widgets_right=None,
+    ):
+        # create a horizontal widget and layout
         h = QWidget()
         h.searchable_list = l
         hbox = QHBoxLayout(h)
         h.setLayout(hbox)
-                
+
         if horizontal_widgets_left:
             for widget in horizontal_widgets_left:
-                hbox.addWidget(widget)                
-
+                hbox.addWidget(widget)
 
         w = QWidget()
         vbox = QVBoxLayout()
@@ -464,55 +590,70 @@ class QTWallet():
 
         if horizontal_widgets_right:
             for widget in horizontal_widgets_right:
-                hbox.addWidget(widget)        
+                hbox.addWidget(widget)
         return h
 
-    def _create_hist_tab(self, tabs): 
+    def _create_hist_tab(self, tabs):
         hm = HistoryModel(self.tab, self.fx, self.config, self.wallet, self.signals)
-        l = HistoryList(self.fx, self.config, self.signals,  self.wallet, hm)
+        l = HistoryList(self.fx, self.config, self.signals, self.wallet, hm)
         hm.set_view(l)
         l.searchable_list = l
-        tab =  self.create_list_tab(l)
+        tab = self.create_list_tab(l)
 
-        add_tab_to_tabs(tabs, tab, read_QIcon("tab_history.png"), "History", "history", position=0)
-        
-        
-        
+        add_tab_to_tabs(
+            tabs, tab, read_QIcon("tab_history.png"), "History", "history", position=0
+        )
+
         return tab, l, hm
 
-     
-    def _subtexts_for_categories(self):           
+    def _subtexts_for_categories(self):
         d = {}
         for address in self.wallet.get_addresses():
             category = self.wallet.get_category_for_address(address)
             if category not in d:
                 d[category] = []
-            
+
             d[category].append(address)
-        
-        return [f'{len(d.get(category, []))} Addresses' for  category in self.wallet.categories]
+
+        return [
+            f"{len(d.get(category, []))} Addresses"
+            for category in self.wallet.categories
+        ]
 
     def _create_addresses_tab(self, tabs):
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
 
-        tags = CategoryEditor(self.wallet.categories, self.signals, get_sub_texts=self._subtexts_for_categories)
+        tags = CategoryEditor(
+            self.wallet.categories,
+            self.signals,
+            get_sub_texts=self._subtexts_for_categories,
+        )
         tags.setMaximumWidth(150)
-        tab = self.create_list_tab(l,horizontal_widgets_left=[tags])
+        tab = self.create_list_tab(l, horizontal_widgets_left=[tags])
 
-        add_tab_to_tabs(tabs, tab, read_QIcon("tab_addresses.png"), "Addresses", "addresses", position=1)
+        add_tab_to_tabs(
+            tabs,
+            tab,
+            read_QIcon("tab_addresses.png"),
+            "Addresses",
+            "addresses",
+            position=1,
+        )
         return tab, l, tags
 
-
-            
-                
-
     def _create_utxo_tab(self, tabs):
-        l = UTXOList(self.config, self.wallet, self.signals, hidden_columns=[ UTXOList.Columns.SATOSHIS])
-        tab =  self.create_list_tab(l)
+        l = UTXOList(
+            self.config,
+            self.wallet,
+            self.signals,
+            hidden_columns=[UTXOList.Columns.SATOSHIS],
+        )
+        tab = self.create_list_tab(l)
 
-        add_tab_to_tabs(tabs, tab, read_QIcon("tab_coins.png"), "Coins", "utxo", position=2)
-        return tab, l        
-
+        add_tab_to_tabs(
+            tabs, tab, read_QIcon("tab_coins.png"), "Coins", "utxo", position=2
+        )
+        return tab, l
 
     # def update_tabs(self, wallet=None):
     #     if wallet is None:
@@ -534,26 +675,26 @@ class QTWallet():
     #     # self.receive_tab.request_list.refresh_all()
     #     # self.send_tab.invoice_list.refresh_all()
     #     self.address_list.refresh_all()
-    #     self.utxo_list.refresh_all()        
+    #     self.utxo_list.refresh_all()
     #     # self.contact_list.refresh_all()
     #     # self.channels_list.update_rows.emit(self.wallet)
 
-        
     def sync(self, threaded=True):
-        def do_sync():            
+        def do_sync():
             self.wallet.sync()
-            logger.debug('finished sync')
+            logger.debug("finished sync")
+
         def on_finished():
-            logger.debug('start updating lists')
+            logger.debug("start updating lists")
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
             self.update_status()
+
         if threaded:
-            future = self.thread_manager.start_in_background_thread(do_sync, on_finished=on_finished)
+            future = self.thread_manager.start_in_background_thread(
+                do_sync, on_finished=on_finished
+            )
         else:
             do_sync()
             on_finished()
         logger.debug(str(future))
-                    
-        
-        
