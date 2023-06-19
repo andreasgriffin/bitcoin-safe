@@ -1174,8 +1174,7 @@ class Wallet(BaseSaveableClass):
         )
         return coin_selection_dict
 
-    def _get_tx_builder_result(self, txinfos: TXInfos) -> bdk.TxBuilderResult:
-        logger.debug(f"_get_tx_builder_result called with {txinfos.__dict__}")
+    def create_psbt(self, txinfos: TXInfos) -> TXInfos:
         tx_builder = bdk.TxBuilder()
         tx_builder = tx_builder.enable_rbf()
         tx_builder = tx_builder.fee_rate(txinfos.fee_rate)
@@ -1185,56 +1184,13 @@ class Wallet(BaseSaveableClass):
             tx_builder = tx_builder.add_utxo(utxo.outpoint)
 
         for recipient in txinfos.recipients:
-            amount = recipient.amount
             if recipient.checked_max_amount:
-                # allow_shrinking does only exist for bumping transactions. Here we set the amount to above the dust limit, here simply set as 1000 Satoshi. The TxBuilderResult is used to calculate the fee and set the maximum amount manually.
-                raise Exception(
-                    "_get_tx_builder_result cannot have an active checked_max_amount. This has to be handled in the outer function"
+                tx_builder.drain_to(bdk.Address(recipient.address).script_pubkey())
+            else:
+                tx_builder = tx_builder.add_recipient(
+                    bdk.Address(recipient.address).script_pubkey(), recipient.amount
                 )
-            tx_builder = tx_builder.add_recipient(
-                bdk.Address(recipient.address).script_pubkey(), amount
-            )
-        return tx_builder.finish(self.bdkwallet)
-
-    def create_psbt(self, txinfos: TXInfos) -> TXInfos:
-        # if there is a checked_max_amount, one has to create the transaction fisrt, get the toal paid fee, and deduct it from the checked_max_amount outpoint
-        number_checked_max_amount = sum(
-            [recipient.checked_max_amount for recipient in txinfos.recipients]
-        )
-        if number_checked_max_amount:
-            temp_infos = txinfos.clone()
-            for recipient in temp_infos.recipients:
-                if recipient.checked_max_amount:
-                    # set amount to minimum. temp_infos is just to calculate the total fee
-                    logger.debug(
-                        f"number_inputs = { len(self.get_all_input_utxos(txinfos))}"
-                    )
-                    estimated_size_in_input_and_output = 200  # this is grossly overestimated, but it should be low enough to still require all utxos
-                    recipient.amount -= (
-                        txinfos.fee_rate
-                        * estimated_size_in_input_and_output
-                        * (
-                            len(txinfos.recipients)
-                            + len(self.get_all_input_utxos(txinfos))
-                        )
-                    )
-                    recipient.checked_max_amount = False
-
-            temp_result = self._get_tx_builder_result(temp_infos)
-            absolute_fee = temp_result.transaction_details.fee
-            logger.debug(f"total projected fee {absolute_fee}")
-
-            # correct the amounts in txinfos, to deduct the fee from the checked_max_amount
-            for recipient in txinfos.recipients:
-                if recipient.checked_max_amount:
-                    old_amount = recipient.amount
-                    recipient.amount -= absolute_fee // number_checked_max_amount
-                    recipient.checked_max_amount = False
-                    logger.debug(
-                        f"reduced checked_max_amount from {old_amount} to {recipient.amount}"
-                    )
-
-        builder_result = self._get_tx_builder_result(txinfos)
+        builder_result = tx_builder.finish(self.bdkwallet)
 
         self.tips = [tip + 1 for tip in self.tips]
 
