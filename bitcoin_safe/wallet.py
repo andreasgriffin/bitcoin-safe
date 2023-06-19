@@ -90,7 +90,7 @@ class Wallet(BaseSaveableClass):
         signers: int = 1,
         keystores: List[KeyStore] = None,
         address_type: AddressType = None,
-        gap=200,
+        gap=20,
         gap_change=20,
         descriptors=None,
         categories=None,
@@ -117,6 +117,10 @@ class Wallet(BaseSaveableClass):
         self.cache = {}
         self.write_lock = Lock()
         self.local_txs = []
+        self.max_tips = [
+            0,
+            0,
+        ]  # this is needed because there is currently no way to get the real tip from bdkwallet
         self.categories = categories if categories else []
         self.labels = labels if labels else {}
         self.category = category if category else {}
@@ -498,12 +502,19 @@ class Wallet(BaseSaveableClass):
             f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }"
         )
 
-    def get_address(self) -> bdk.AddressInfo:
+    def get_address(self, force_new=False) -> bdk.AddressInfo:
         # print new receive address
-        address_info = self.bdkwallet.get_address(bdk.AddressIndex.LAST_UNUSED())
-        address = address_info.address
+        address_info = self.bdkwallet.get_address(
+            bdk.AddressIndex.NEW() if force_new else bdk.AddressIndex.LAST_UNUSED()
+        )
+        address = address_info.address.as_string()
         index = address_info.index
-        logger.info(f"New address: {address.as_string()} at index {index}")
+        self.update_tip(last_recieving_index=index)
+
+        if address in self.category or address in self.labels:
+            return self.get_address(force_new=True)
+
+        logger.info(f"New address: {address} at index {index}")
         return address_info
 
     def output_addresses(self, transaction) -> List[bdk.Address]:
@@ -610,7 +621,12 @@ class Wallet(BaseSaveableClass):
             if is_change
             else self.bdkwallet.get_address
         )
-        return bdk_get_address(bdk.AddressIndex.LAST_UNUSED()).index
+        new_tip = max(
+            bdk_get_address(bdk.AddressIndex.LAST_UNUSED()).index,
+            self.max_tips[int(is_change)],
+        )
+        self.max_tips[int(is_change)] = new_tip
+        return new_tip
 
     def _set_tip(self, value, is_change):
         with self.write_lock:
@@ -632,6 +648,14 @@ class Wallet(BaseSaveableClass):
             new_tip = self._get_tip(is_change=is_change)
             logger.debug(f"new_tip = {new_tip},  value = {value}")
             assert new_tip == value
+
+    def update_tip(self, last_recieving_index=None, last_change_index=None):
+        self.tip = [
+            max(t, last_index if last_index else 0)
+            for t, last_index in zip(
+                self.tip, [last_recieving_index, last_change_index]
+            )
+        ]
 
     @property
     def tips(self):
@@ -667,7 +691,7 @@ class Wallet(BaseSaveableClass):
         )
         result = [
             bdk_get_address(bdk.AddressIndex.PEEK(i))
-            for i in range(slice_start, slice_stop)
+            for i in range(slice_start, slice_stop + 1)
         ]
         return result
 

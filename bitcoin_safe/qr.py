@@ -3,17 +3,15 @@ import qrcode
 import bdkpython as bdk
 
 
-def create_psbt_qr(psbt:bdk.PartiallySignedTransaction):
+def create_psbt_qr(data: str):
 
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
-        border=4, 
+        border=4,
     )
-    data = psbt.serialize()
-
-    try:    
+    try:
         qr.add_data(data)
         qr.make(fit=True)
 
@@ -21,5 +19,5 @@ def create_psbt_qr(psbt:bdk.PartiallySignedTransaction):
         return img
 
     except:
-        logger.error(f'Could not create qr code of size {len(data)}')
+        logger.error(f"Could not create qr code of size {len(data)}")
         return None

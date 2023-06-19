@@ -1,47 +1,62 @@
 import logging
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from .util import  read_QIcon, add_tab_to_tabs
+from .util import read_QIcon, add_tab_to_tabs
 from bdkpython import Network
 from PySide2.QtSvg import QSvgWidget
-from .util import  icon_path, resize, qresize
+from .util import icon_path, resize, qresize, add_centered_icons
 from .ui_explainer0 import Ui_Form as Ui_Explainer0
 from .ui_explainer1 import Ui_Form as Ui_Explainer1
 from PySide2.QtCore import Signal
 from ...util import call_call_functions
 
 
-class NewWalletWelcomeScreen(QObject):    
+class NewWalletWelcomeScreen(QObject):
     signal_onclick_multisig_signature = Signal()
     signal_onclick_single_signature = Signal()
     signal_onclick_custom_signature = Signal()
 
-    def __init__(self, main_tabs, network:Network) -> None:
+    def __init__(self, main_tabs, network: Network) -> None:
         super().__init__()
         self.main_tabs = main_tabs
-        
-        self.name = 'New wallet tab'
+
+        self.name = "New wallet tab"
         self.network = network
-        
+
         self.create_ui()
         self.create_ui_explainer0()
         self.create_ui_explainer1()
-        
 
-        self.pushButton_multisig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature.emit]))
-        self.pushButton_singlesig.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature.emit]))
-        self.pushButton_custom_wallet.clicked.connect(lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature.emit]))
-    
+        self.pushButton_multisig.clicked.connect(
+            lambda: call_call_functions(
+                [self.remove_tab, self.signal_onclick_multisig_signature.emit]
+            )
+        )
+        self.pushButton_singlesig.clicked.connect(
+            lambda: call_call_functions(
+                [self.remove_tab, self.signal_onclick_single_signature.emit]
+            )
+        )
+        self.pushButton_custom_wallet.clicked.connect(
+            lambda: call_call_functions(
+                [self.remove_tab, self.signal_onclick_custom_signature.emit]
+            )
+        )
 
-        
-    
     def add_new_wallet_welcome_tab(self):
-        add_tab_to_tabs(self.main_tabs, self.tab,  read_QIcon("file.png"), 'Create new wallet', 'Create new wallet', focus=True)
+        add_tab_to_tabs(
+            self.main_tabs,
+            self.tab,
+            read_QIcon("file.png"),
+            "Create new wallet",
+            "Create new wallet",
+            focus=True,
+        )
 
-    
     def create_ui_explainer0(self):
         self.ui_explainer0 = Ui_Explainer0(self.main_tabs)
         self.ui_explainer0.setupUi()
@@ -49,7 +64,6 @@ class NewWalletWelcomeScreen(QObject):
     def create_ui_explainer1(self):
         self.ui_explainer1 = Ui_Explainer1(self.main_tabs)
         self.ui_explainer1.setupUi()
-
 
     def create_ui(self):
         self.tab = QWidget()
@@ -67,25 +81,22 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_1signingdevice = QGroupBox(self.groupBox_singlesig)
         self.groupBox_1signingdevice.setEnabled(True)
         self.horizontalLayout_4 = QHBoxLayout(self.groupBox_1signingdevice)
-        
 
-
-
-        self.svg_widget = QSvgWidget(icon_path("coldcard-only.svg")) 
-        self.svg_widget.setMinimumSize(qresize(self.svg_widget.sizeHint(), (60,80)))
-        self.svg_widget.setMaximumSize(qresize(self.svg_widget.sizeHint(), (60,80)))
+        self.svg_widget = QSvgWidget(icon_path("coldcard-only.svg"))
+        self.svg_widget.setMinimumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
+        self.svg_widget.setMaximumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
         self.horizontalLayout_4.addWidget(self.svg_widget)
 
-
         # set size of groupbox according to svg
-        self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.groupBox_1signingdevice.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Fixed
+        )
 
         self.verticalLayout.addWidget(self.groupBox_1signingdevice)
 
         self.pushButton_singlesig = QPushButton(self.groupBox_singlesig)
 
         self.verticalLayout.addWidget(self.pushButton_singlesig)
-
 
         self.horizontalLayout_2.addWidget(self.groupBox_singlesig)
 
@@ -107,22 +118,22 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_3signingdevices.setEnabled(True)
         self.horizontalLayout_3 = QHBoxLayout(self.groupBox_3signingdevices)
 
-        for i in range(3):
-            svg_widget = QSvgWidget(icon_path("coldcard-only.svg")) 
-            svg_widget.setMinimumSize(qresize(svg_widget.sizeHint(), (60,80)))
-            svg_widget.setMaximumSize(qresize(svg_widget.sizeHint(), (60,80))) 
-            self.horizontalLayout_3.addWidget(svg_widget)
+        add_centered_icons(
+            ["coldcard-only.svg"] * 2 + ["usb-stick.svg"],
+            self.groupBox_3signingdevices,
+            self.horizontalLayout_3,
+            max_sizes=[(60, 80), (60, 80), (60, 50)],
+        )
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
         # set size of groupbox according to svg
-        self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-
-
+        self.groupBox_3signingdevices.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Fixed
+        )
 
         self.pushButton_multisig = QPushButton(self.groupBox_multisig)
 
         self.verticalLayout_multisig.addWidget(self.pushButton_multisig)
-
 
         self.horizontalLayout_2.addWidget(self.groupBox_multisig)
 
@@ -138,15 +149,14 @@ class NewWalletWelcomeScreen(QObject):
 
         self.verticalLayout_2.addWidget(self.pushButton_custom_wallet)
 
-
         self.horizontalLayout_2.addWidget(self.groupBox_3)
-
-
-
 
         # self.groupBox_singlesig.setTitle(QCoreApplication.translate("Form", u"Single Signature Wallet", None))
         self.label_singlesig.setAlignment(Qt.AlignTop)
-        self.label_singlesig.setText(QCoreApplication.translate("Form", u"""<h1>Single Signature Wallet</h1>
+        self.label_singlesig.setText(
+            QCoreApplication.translate(
+                "Form",
+                """<h1>Single Signature Wallet</h1>
 <p>For large funds (but not life savings)</p>
 <p>Pros:</p>
 <ul>
@@ -156,12 +166,22 @@ class NewWalletWelcomeScreen(QObject):
 <p>Cons:</p>
 <ul>
 <li>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</li>
-</ul>""", None))
-        self.groupBox_1signingdevice.setTitle(QCoreApplication.translate("Form", u"1 signing devices", None))
-        self.pushButton_singlesig.setText(QCoreApplication.translate("Form", u"Choose Single Signature", None))
+</ul>""",
+                None,
+            )
+        )
+        self.groupBox_1signingdevice.setTitle(
+            QCoreApplication.translate("Form", "1 signing devices", None)
+        )
+        self.pushButton_singlesig.setText(
+            QCoreApplication.translate("Form", "Choose Single Signature", None)
+        )
         # self.groupBox_multisig.setTitle(QCoreApplication.translate("Form", u"2 of 3 Multi-Signature Wallet", None))
         self.label_multisig.setAlignment(Qt.AlignTop)
-        self.label_multisig.setText(QCoreApplication.translate("Form", u"""<h1>2 of 3 Multi-Signature Wallet</h1>
+        self.label_multisig.setText(
+            QCoreApplication.translate(
+                "Form",
+                """<h1>2 of 3 Multi-Signature Wallet</h1>
 <p>For life savings</p>
 <p>Pros:</p>
 <ul>
@@ -172,16 +192,30 @@ class NewWalletWelcomeScreen(QObject):
 <li>3 secure locations to store the seed backups (on paper or steel) + wallet descriptor are needed</li>
 <li>Backing up the wallet file (or descriptor) is required to recreate wallet</li>
 </ul>
-""", None))
-        self.groupBox_3signingdevices.setTitle(QCoreApplication.translate("Form", u"3 signing devices", None))
-        self.pushButton_multisig.setText(QCoreApplication.translate("Form", u"Choose Multi-Signature", None))
+""",
+                None,
+            )
+        )
+        self.groupBox_3signingdevices.setTitle(
+            QCoreApplication.translate("Form", "3 signing devices", None)
+        )
+        self.pushButton_multisig.setText(
+            QCoreApplication.translate("Form", "Choose Multi-Signature", None)
+        )
         # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
         self.label_custom.setAlignment(Qt.AlignTop)
-        self.label_custom.setText(QCoreApplication.translate("Form", u"<html><head/><body><h1>Custom Wallet</h1><p>Pros:</p><p>Customize the wallet to your needs</p><p>Cons:</p><p>Less support material online in case of recovery</p></body></html>", None))
-        self.pushButton_custom_wallet.setText(QCoreApplication.translate("Form", u"Create custom wallet", None))
-    
+        self.label_custom.setText(
+            QCoreApplication.translate(
+                "Form",
+                "<html><head/><body><h1>Custom Wallet</h1><p>Pros:</p><p>Customize the wallet to your needs</p><p>Cons:</p><p>Less support material online in case of recovery</p></body></html>",
+                None,
+            )
+        )
+        self.pushButton_custom_wallet.setText(
+            QCoreApplication.translate("Form", "Create custom wallet", None)
+        )
+
     def remove_tab(self):
         index = self.main_tabs.indexOf(self.tab)
-        if index>=0:
+        if index >= 0:
             self.main_tabs.removeTab(index)
-        

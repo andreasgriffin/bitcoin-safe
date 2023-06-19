@@ -25,27 +25,38 @@
 import logging
 
 from bitcoin_safe.util import format_fee_satoshis
+
 logger = logging.getLogger(__name__)
 
 from typing import TYPE_CHECKING
 
-from PySide2.QtWidgets import QVBoxLayout, QLabel
+from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QHBoxLayout
 
 from bitcoin_safe.gui import qt
 
 from ...i18n import _
 
-from .util import WindowModalDialog, ButtonsLineEdit, ShowQRLineEdit, ColorScheme, Buttons, CloseButton
+from .util import (
+    WindowModalDialog,
+    ButtonsLineEdit,
+    ShowQRLineEdit,
+    ColorScheme,
+    Buttons,
+    CloseButton,
+    ShowCopyLineEdit,
+)
 from .history_list import HistoryList, HistoryModel
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
 from ...util import format_satoshis
-
+from .qrcodewidget import QRLabel
 
 
 class AddressHistoryModel(HistoryModel):
-    def __init__(self, window, qt_wallet,  address:str):
-        super().__init__(window, qt_wallet.fx, qt_wallet.config, qt_wallet.wallet, qt_wallet.signals)
+    def __init__(self, window, qt_wallet, address: str):
+        super().__init__(
+            window, qt_wallet.fx, qt_wallet.config, qt_wallet.wallet, qt_wallet.signals
+        )
         self.address = address
 
     def get_domain(self):
@@ -56,7 +67,6 @@ class AddressHistoryModel(HistoryModel):
 
 
 class AddressDialog(WindowModalDialog):
-
     def __init__(self, fx, config, qt_wallet, address: str, parent=None):
         WindowModalDialog.__init__(self, parent, _("Address"))
         self.address = address
@@ -71,57 +81,79 @@ class AddressDialog(WindowModalDialog):
         vbox = QVBoxLayout()
         self.setLayout(vbox)
 
-        vbox.addWidget(QLabel(_("Address") + ":"))
-        self.addr_e = ShowQRLineEdit(self.address, self.config, title=_("Address"))
-        vbox.addWidget(self.addr_e)
+        upper_widget = QWidget()
+        upper_widget_layout = QHBoxLayout(upper_widget)
+        upper_widget_layout.setContentsMargins(0, 0, 0, 0)
+        vbox.addWidget(upper_widget)
+
+        upper_left_widget = QWidget()
+        upper_left_widget_layout = QVBoxLayout(upper_left_widget)
+        upper_left_widget_layout.setContentsMargins(0, 0, 0, 0)
+        upper_widget_layout.addWidget(upper_left_widget)
+
+        upper_left_widget_layout.addWidget(QLabel(_("Address") + ":"))
+        self.addr_e = ShowCopyLineEdit(self.address, self.config, title=_("Address"))
+        upper_left_widget_layout.addWidget(self.addr_e)
 
         try:
             pubkeys = self.wallet.get_public_keys(address)
         except BaseException as e:
             pubkeys = None
         if pubkeys:
-            vbox.addWidget(QLabel(_("Public keys") + ':'))
+            upper_left_widget_layout.addWidget(QLabel(_("Public keys") + ":"))
             for pubkey in pubkeys:
                 pubkey_e = ShowQRLineEdit(pubkey, self.config, title=_("Public Key"))
-                vbox.addWidget(pubkey_e)
-
+                upper_left_widget_layout.addWidget(pubkey_e)
 
         redeem_script = self.wallet.get_redeem_script(address)
         if redeem_script:
-            vbox.addWidget(QLabel(_("Redeem Script") + ':'))
+            upper_left_widget_layout.addWidget(QLabel(_("Redeem Script") + ":"))
             redeem_e = ShowQRTextEdit(text=redeem_script, config=self.config)
             redeem_e.addCopyButton()
-            vbox.addWidget(redeem_e)
+            upper_left_widget_layout.addWidget(redeem_e)
 
         witness_script = self.wallet.get_witness_script(address)
         if witness_script:
-            vbox.addWidget(QLabel(_("Witness Script") + ':'))
+            upper_left_widget_layout.addWidget(QLabel(_("Witness Script") + ":"))
             witness_e = ShowQRTextEdit(text=witness_script, config=self.config)
             witness_e.addCopyButton()
-            vbox.addWidget(witness_e)
+            upper_left_widget_layout.addWidget(witness_e)
 
         address_path_str = self.wallet.get_address_path_str(address)
         if address_path_str:
-            vbox.addWidget(QLabel(_("Derivation path") + ':'))
+            upper_left_widget_layout.addWidget(QLabel(_("Derivation path") + ":"))
             der_path_e = ButtonsLineEdit(address_path_str)
             der_path_e.addCopyButton()
             der_path_e.setReadOnly(True)
-            vbox.addWidget(der_path_e)
+            upper_left_widget_layout.addWidget(der_path_e)
+
+        self.qr_code = QRLabel()
+        self.qr_code.set_data(address)
+        self.qr_code.setMaximumWidth(100)
+        self.qr_code.setMaximumHeight(100)
+        upper_widget_layout.addWidget(self.qr_code)
 
         addr_hist_model = AddressHistoryModel(self, self.qt_wallet, self.address)
-        self.hw = HistoryList(self.fx, self.config, self.signals,  self.wallet, addr_hist_model, parent=self)
-        self.hw.num_tx_label = QLabel('')
+        self.hw = HistoryList(
+            self.fx,
+            self.config,
+            self.signals,
+            self.wallet,
+            addr_hist_model,
+            parent=self,
+        )
+        self.hw.num_tx_label = QLabel("")
         addr_hist_model.set_view(self.hw)
         vbox.addWidget(self.hw.num_tx_label)
         vbox.addWidget(self.hw)
 
         vbox.addLayout(Buttons(CloseButton(self)))
         self.format_amount = format_satoshis
-        addr_hist_model.refresh('address dialog constructor')
+        addr_hist_model.refresh("address dialog constructor")
 
     def show_qr(self):
         text = self.address
         try:
-            self.window.show_qrcode(text, 'Address', parent=self)
+            self.window.show_qrcode(text, "Address", parent=self)
         except Exception as e:
             self.show_message(repr(e))

@@ -1,4 +1,5 @@
 import logging
+
 logger = logging.getLogger(__name__)
 from typing import Optional
 
@@ -9,14 +10,102 @@ from PySide2.QtGui import QColor, QPen
 import PySide2.QtGui as QtGui
 from PySide2.QtCore import Qt, QRect
 from PySide2.QtWidgets import (
-    QApplication, QVBoxLayout, QTextEdit, QHBoxLayout, QPushButton, QWidget,
+    QApplication,
+    QVBoxLayout,
+    QTextEdit,
+    QHBoxLayout,
+    QPushButton,
+    QWidget,
     QFileDialog,
 )
 
-from electrum.i18n import _
-from electrum.simple_config import UserConfig
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+
+from PIL import Image
+from PIL.ImageQt import ImageQt
 
 from .util import WindowModalDialog, WWLabel, getSaveFileName
+from ...qr import create_psbt_qr
+from ...config import UserConfig
+
+
+class QRLabel(QLabel):
+    def __init__(self, *args, clickable=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setScaledContents(True)  # Enable automatic scaling
+        self.pil_image = None
+        self.enlarged_image = None
+
+    def enlarge_image(self):
+        if not self.enlarged_image:
+            return
+
+        if self.enlarged_image.isVisible():
+            self.enlarged_image.close()
+        else:
+            self.enlarged_image.show()
+
+    def mousePressEvent(self, event):
+        self.enlarge_image()
+
+    def set_image(self, pil_image):
+        self.pil_image = pil_image
+        self.enlarged_image = EnlargedImage(self.pil_image)
+        qpix = QPixmap.fromImage(ImageQt(self.pil_image))
+        self.setPixmap(qpix)
+
+    def resizeEvent(self, event):
+        size = min(self.width(), self.height())
+        self.resize(size, size)
+
+    def sizeHint(self):
+        size = min(super().sizeHint().width(), super().sizeHint().height())
+        return QSize(size, size)
+
+    def minimumSizeHint(self):
+        size = min(
+            super().minimumSizeHint().width(), super().minimumSizeHint().height()
+        )
+        return QSize(size, size)
+
+    def set_data(self, data: str, error_text="No QR Code"):
+        img = create_psbt_qr(data)
+        if img:
+            self.set_image(img)
+        else:
+            self.setText(error_text)
+
+
+class EnlargedImage(QLabel):
+    def __init__(self, image):
+        super().__init__()
+        self.setScaledContents(True)  # Enable automatic scaling
+
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        screen_resolution = QApplication.desktop().screenGeometry()
+        screen_fraction = 3 / 4
+        self.width = self.height = (
+            min(screen_resolution.width(), screen_resolution.height()) * screen_fraction
+        )
+        self.setGeometry(
+            (screen_resolution.width() - self.width) / 2,
+            (screen_resolution.height() - self.height) / 2,
+            self.width,
+            self.height,
+        )
+
+        self.image = image
+        qpix = QPixmap.fromImage(ImageQt(self.image))
+        self.setPixmap(qpix)
+
+    def mousePressEvent(self, event):
+        self.close()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
 
 
 class QrCodeDataOverflow(qrcode.exceptions.DataOverflowError):
@@ -24,7 +113,6 @@ class QrCodeDataOverflow(qrcode.exceptions.DataOverflowError):
 
 
 class QRCodeWidget(QWidget):
-
     def __init__(self, data=None, *, manual_size: bool = False):
         QWidget.__init__(self)
         self.data = None
@@ -56,13 +144,12 @@ class QRCodeWidget(QWidget):
 
         self.update()
 
-
     def paintEvent(self, e):
         if not self.data:
             return
 
         black = QColor(0, 0, 0, 255)
-        grey  = QColor(196, 196, 196, 255)
+        grey = QColor(196, 196, 196, 255)
         white = QColor(255, 255, 255, 255)
         black_pen = QPen(black) if self.isEnabled() else QPen(grey)
         black_pen.setJoinStyle(Qt.MiterJoin)
@@ -84,15 +171,15 @@ class QRCodeWidget(QWidget):
         r = qp.viewport()
         framesize = min(r.width(), r.height())
         self._framesize = framesize
-        boxsize = int(framesize/(k + 2))
+        boxsize = int(framesize / (k + 2))
         if boxsize < 2:
-            qp.drawText(0, 20, 'Cannot draw QR code:')
-            qp.drawText(0, 40, 'Boxsize too small')
+            qp.drawText(0, 20, "Cannot draw QR code:")
+            qp.drawText(0, 40, "Boxsize too small")
             qp.end()
             return
-        size = k*boxsize
-        left = (framesize - size)/2
-        top = (framesize - size)/2
+        size = k * boxsize
+        left = (framesize - size) / 2
+        top = (framesize - size) / 2
         # Draw white background with margin
         qp.setBrush(white)
         qp.setPen(white)
@@ -104,8 +191,11 @@ class QRCodeWidget(QWidget):
             for c in range(k):
                 if matrix[r][c]:
                     qp.drawRect(
-                        int(left+c*boxsize), int(top+r*boxsize),
-                        boxsize - 1, boxsize - 1)
+                        int(left + c * boxsize),
+                        int(top + r * boxsize),
+                        boxsize - 1,
+                        boxsize - 1,
+                    )
         qp.end()
 
     def grab(self) -> QtGui.QPixmap:
@@ -120,17 +210,16 @@ class QRCodeWidget(QWidget):
 
 
 class QRDialog(WindowModalDialog):
-
     def __init__(
-            self,
-            *,
-            data,
-            parent=None,
-            title="",
-            show_text=False,
-            help_text=None,
-            show_copy_text_btn=False,
-            config: UserConfig,
+        self,
+        *,
+        data,
+        parent=None,
+        title="",
+        show_text=False,
+        help_text=None,
+        show_copy_text_btn=False,
+        config: UserConfig,
     ):
         WindowModalDialog.__init__(self, parent, title)
         self.config = config
@@ -159,7 +248,7 @@ class QRDialog(WindowModalDialog):
             if not filename:
                 return
             p = qrw.grab()
-            p.save(filename, 'png')
+            p.save(filename, "png")
             self.show_message(_("QR code saved to file") + " " + filename)
 
         def copy_image_to_clipboard():

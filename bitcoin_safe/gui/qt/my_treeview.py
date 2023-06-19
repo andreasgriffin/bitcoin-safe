@@ -24,6 +24,7 @@
 # SOFTWARE.
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 import enum
@@ -37,24 +38,87 @@ import os
 import webbrowser
 from decimal import Decimal
 from functools import partial, lru_cache, wraps
-from typing import (NamedTuple, Callable, Optional, TYPE_CHECKING, Union, List, Dict, Any,
-                    Sequence, Iterable, Tuple, Type)
+from typing import (
+    NamedTuple,
+    Callable,
+    Optional,
+    TYPE_CHECKING,
+    Union,
+    List,
+    Dict,
+    Any,
+    Sequence,
+    Iterable,
+    Tuple,
+    Type,
+)
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtGui import (QFont, QColor, QCursor, QPixmap, QStandardItem, QImage,
-                         QPalette, QIcon, QFontMetrics, QShowEvent, QPainter, QHelpEvent, QMouseEvent)
+from PySide2.QtGui import (
+    QFont,
+    QColor,
+    QCursor,
+    QPixmap,
+    QStandardItem,
+    QImage,
+    QPalette,
+    QIcon,
+    QFontMetrics,
+    QShowEvent,
+    QPainter,
+    QHelpEvent,
+    QMouseEvent,
+)
 from PySide2.QtCore import Signal
-from PySide2.QtCore import (Qt, QPersistentModelIndex, QModelIndex,   
-                            QCoreApplication, QItemSelectionModel, QThread,
-                          QSortFilterProxyModel, QSize, QLocale, QAbstractItemModel,
-                          QEvent, QRect, QPoint, QObject)
-from PySide2.QtWidgets import (QPushButton, QLabel, QMessageBox, QHBoxLayout,
-                             QAbstractItemView, QVBoxLayout, QLineEdit,
-                             QStyle, QDialog, QGroupBox, QButtonGroup, QRadioButton,
-                             QFileDialog, QWidget, QToolButton, QTreeView, QPlainTextEdit,
-                             QHeaderView, QApplication, QToolTip, QTreeWidget, QStyledItemDelegate,
-                             QMenu, QStyleOptionViewItem, QLayout, QLayoutItem, QAbstractButton,
-                             QGraphicsEffect, QGraphicsScene, QGraphicsPixmapItem, QSizePolicy)
+from PySide2.QtCore import (
+    Qt,
+    QPersistentModelIndex,
+    QModelIndex,
+    QCoreApplication,
+    QItemSelectionModel,
+    QThread,
+    QSortFilterProxyModel,
+    QSize,
+    QLocale,
+    QAbstractItemModel,
+    QEvent,
+    QRect,
+    QPoint,
+    QObject,
+)
+from PySide2.QtWidgets import (
+    QPushButton,
+    QLabel,
+    QMessageBox,
+    QHBoxLayout,
+    QAbstractItemView,
+    QVBoxLayout,
+    QLineEdit,
+    QStyle,
+    QDialog,
+    QGroupBox,
+    QButtonGroup,
+    QRadioButton,
+    QFileDialog,
+    QWidget,
+    QToolButton,
+    QTreeView,
+    QPlainTextEdit,
+    QHeaderView,
+    QApplication,
+    QToolTip,
+    QTreeWidget,
+    QStyledItemDelegate,
+    QMenu,
+    QStyleOptionViewItem,
+    QLayout,
+    QLayoutItem,
+    QAbstractButton,
+    QGraphicsEffect,
+    QGraphicsScene,
+    QGraphicsPixmapItem,
+    QSizePolicy,
+)
 
 from .util import read_QIcon, do_copy
 from PySide2.QtWidgets import QApplication, QTreeView, QStyledItemDelegate
@@ -65,22 +129,26 @@ import csv
 import io
 from PySide2 import QtCore, QtWidgets, QtGui
 
-class MyMenu(QMenu):
 
+class MyMenu(QMenu):
     def __init__(self, config):
         QMenu.__init__(self)
         self.setToolTipsVisible(True)
         self.config = config
 
-    def addToggle(self, text: str, callback, *, tooltip=''):
+    def addToggle(self, text: str, callback, *, tooltip=""):
         m = self.addAction(text, callback)
         m.setCheckable(True)
         m.setToolTip(tooltip)
         return m
 
-    def addConfig(self, text:str, name:str, default:bool, *, tooltip='', callback=None):
+    def addConfig(
+        self, text: str, name: str, default: bool, *, tooltip="", callback=None
+    ):
         b = self.config.get(name, default)
-        m = self.addAction(text, lambda: self._do_toggle_config(name, default, callback))
+        m = self.addAction(
+            text, lambda: self._do_toggle_config(name, default, callback)
+        )
         m.setCheckable(True)
         m.setChecked(b)
         m.setToolTip(tooltip)
@@ -108,7 +176,6 @@ def create_toolbar_with_menu(config, title):
     return toolbar, menu
 
 
-
 class MySortModel(QSortFilterProxyModel):
     def __init__(self, parent, *, sort_role):
         super().__init__(parent)
@@ -128,17 +195,20 @@ class MySortModel(QSortFilterProxyModel):
         except:
             return v1 < v2
 
+
 class ElectrumItemDelegate(QStyledItemDelegate):
-    def __init__(self, tv: 'MyTreeView'):
+    def __init__(self, tv: "MyTreeView"):
         super().__init__(tv)
         self.icon_shift_right = 30
         self.tv = tv
         self.opened = None
+
         def on_closeEditor(editor: QLineEdit, hint):
             self.opened = None
             self.tv.is_editor_open = False
             if self.tv._pending_update:
                 self.tv.update()
+
         def on_commitData(editor: QLineEdit):
             new_text = editor.text()
             idx = QModelIndex(self.opened)
@@ -146,31 +216,37 @@ class ElectrumItemDelegate(QStyledItemDelegate):
             edit_key = self.tv.get_edit_key_from_coordinate(row, col)
             assert edit_key is not None, (idx.row(), idx.column())
             self.tv.on_edited(idx, edit_key=edit_key, text=new_text)
+
         self.closeEditor.connect(on_closeEditor)
         self.commitData.connect(on_commitData)
 
-
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
-        option.displayAlignment = self.tv.column_alignments.get(index.column(), Qt.AlignLeft) 
+        option.displayAlignment = self.tv.column_alignments.get(
+            index.column(), Qt.AlignLeft
+        )
 
     def createEditor(self, parent, option, idx):
         self.opened = QPersistentModelIndex(idx)
         self.tv.is_editor_open = True
         return super().createEditor(parent, option, idx)
 
-
-
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, idx: QModelIndex) -> None:
+    def paint(
+        self, painter: QPainter, option: QStyleOptionViewItem, idx: QModelIndex
+    ) -> None:
         custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
         if custom_data is None:
             return super().paint(painter, option, idx)
         else:
             custom_data.paint(painter, option, idx)
-            
-            
 
-    def helpEvent(self, evt: QHelpEvent, view: QAbstractItemView, option: QStyleOptionViewItem, idx: QModelIndex) -> bool:
+    def helpEvent(
+        self,
+        evt: QHelpEvent,
+        view: QAbstractItemView,
+        option: QStyleOptionViewItem,
+        idx: QModelIndex,
+    ) -> bool:
         custom_data = idx.data(MyTreeView.ROLE_CUSTOM_PAINT)
         if custom_data is None:
             return super().helpEvent(evt, view, option, idx)
@@ -187,14 +263,14 @@ class ElectrumItemDelegate(QStyledItemDelegate):
         else:
             # default_size = super().sizeHint(option, idx)
             return custom_data.sizeHint(option, idx)
-                    
-        
+
+
 class MyTreeView(QTreeView):
 
     ROLE_CLIPBOARD_DATA = Qt.UserRole + 100
-    ROLE_CUSTOM_PAINT   = Qt.UserRole + 101
-    ROLE_EDIT_KEY       = Qt.UserRole + 102
-    ROLE_FILTER_DATA    = Qt.UserRole + 103
+    ROLE_CUSTOM_PAINT = Qt.UserRole + 101
+    ROLE_EDIT_KEY = Qt.UserRole + 102
+    ROLE_FILTER_DATA = Qt.UserRole + 103
 
     filter_columns: Iterable[int]
     column_alignments: Dict[int, int] = {}
@@ -211,13 +287,13 @@ class MyTreeView(QTreeView):
         self,
         *,
         parent: Optional[QWidget] = None,
-        config = None,
+        config=None,
         stretch_column: Optional[int] = None,
         editable_columns: Optional[Sequence[int]] = None,
     ):
-        parent = parent 
+        parent = parent
         super().__init__(parent)
-        self.config = config 
+        self.config = config
         self.stretch_column = stretch_column
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
@@ -245,13 +321,11 @@ class MyTreeView(QTreeView):
         self._forced_update = False
 
         self._default_bg_brush = QStandardItem().background()
-        self.proxy = None # history, and address tabs use a proxy
-
+        self.proxy = None  # history, and address tabs use a proxy
 
         # Here's where we set the font globally for the view
         font = QFont("Arial", 10)
         self.setFont(font)
-
 
     def create_menu(self, position: QPoint) -> None:
         pass
@@ -270,8 +344,6 @@ class MyTreeView(QTreeView):
         item = self.item_from_index(idx)
         if item:
             return item.data(role)
-        
-
 
     def item_from_index(self, idx: QModelIndex) -> Optional[QStandardItem]:
         model = self.model()
@@ -280,8 +352,7 @@ class MyTreeView(QTreeView):
             return model.sourceModel().itemFromIndex(idx)
         else:
             return model.itemFromIndex(idx)
-        
-        
+
     def original_model(self) -> QAbstractItemModel:
         model = self.model()
         if isinstance(model, QSortFilterProxyModel):
@@ -293,7 +364,26 @@ class MyTreeView(QTreeView):
         if set_current:
             assert isinstance(set_current, QPersistentModelIndex)
             assert set_current.isValid()
-            self.selectionModel().select(QModelIndex(set_current), QItemSelectionModel.SelectCurrent)
+            self.selectionModel().select(
+                QModelIndex(set_current), QItemSelectionModel.SelectCurrent
+            )
+
+    def select_rows(self, content, column, role=Qt.DisplayRole):
+        last_selected_index = None
+        model = self.model()
+        selection_model = self.selectionModel()
+        for row in range(model.rowCount()):
+            index = model.index(row, column)
+            this_content = model.data(index, role)
+            if this_content == content:
+                # Select the item
+                selection_model.select(
+                    index, QItemSelectionModel.Select | QItemSelectionModel.Rows
+                )
+                last_selected_index = index
+        if last_selected_index:
+            # Scroll to the last selected index
+            self.scrollTo(last_selected_index)
 
     def update_headers(self, headers: Union[List[str], Dict[int, str]]):
         # headers is either a list of column names, or a dict: (col_idx->col_name)
@@ -303,7 +393,11 @@ class MyTreeView(QTreeView):
         self.original_model().setHorizontalHeaderLabels(col_names)
         self.header().setStretchLastSection(False)
         for col_idx in headers:
-            sm = QHeaderView.Stretch if col_idx == self.stretch_column else QHeaderView.ResizeToContents
+            sm = (
+                QHeaderView.Stretch
+                if col_idx == self.stretch_column
+                else QHeaderView.ResizeToContents
+            )
             self.header().setSectionResizeMode(col_idx, sm)
 
     def keyPressEvent(self, event):
@@ -320,36 +414,37 @@ class MyTreeView(QTreeView):
             self.edit(QModelIndex(QPersistentModelIndex(idx)))
             return
 
-        if (event.modifiers() & QtCore.Qt.ControlModifier) and (event.key() == QtCore.Qt.Key_C):
+        if (event.modifiers() & QtCore.Qt.ControlModifier) and (
+            event.key() == QtCore.Qt.Key_C
+        ):
             selection = self.selectionModel().selection().indexes()
             if selection:
                 self.copyRowsToClipboard(set([index.row() for index in selection]))
         else:
             super().keyPressEvent(event)
-            
-    
 
     def copyRowsToClipboard(self, row_numbers):
-        
-        def get_data(row,col):
-            model = self.original_model()  # assuming this is a QAbstractItemModel or subclass
+        def get_data(row, col):
+            model = (
+                self.original_model()
+            )  # assuming this is a QAbstractItemModel or subclass
             index = model.index(row, col)
-            
-            if hasattr(model, 'data'):
+
+            if hasattr(model, "data"):
                 return model.data(index, self.ROLE_CLIPBOARD_DATA)
             else:
                 item = self.item_from_index(index)
                 if item:
                     return item.data(self.ROLE_CLIPBOARD_DATA)
-                
-        
-        row_numbers = sorted(row_numbers)        
-        
-        table = []
-        headers = [self.model().headerData(i, QtCore.Qt.Horizontal) 
-                   for i in range(self.model().columnCount())]  # retrieve headers
-        table.append(headers)  # write headers to table
 
+        row_numbers = sorted(row_numbers)
+
+        table = []
+        headers = [
+            self.model().headerData(i, QtCore.Qt.Horizontal)
+            for i in range(self.model().columnCount())
+        ]  # retrieve headers
+        table.append(headers)  # write headers to table
 
         for row in row_numbers:
             row_data = []
@@ -360,7 +455,9 @@ class MyTreeView(QTreeView):
         stream = io.StringIO()
         writer = csv.writer(stream)
         writer.writerows(table)
-        do_copy(stream.getvalue(), title=f'{len(row_numbers)} rows have ben copied as csv')
+        do_copy(
+            stream.getvalue(), title=f"{len(row_numbers)} rows have ben copied as csv"
+        )
 
     def mouseDoubleClickEvent(self, event: QMouseEvent):
         idx: QModelIndex = self.indexAt(event.pos())
@@ -369,7 +466,7 @@ class MyTreeView(QTreeView):
         if not idx.isValid():
             # can happen e.g. before list is populated for the first time
             return
-        
+
         if idx.column() in self.editable_columns:
             super().mouseDoubleClickEvent(event)
         else:
@@ -418,7 +515,9 @@ class MyTreeView(QTreeView):
         return self.get_role_data_from_coordinate(row, col, role=self.ROLE_EDIT_KEY)
 
     def get_filter_data_from_coordinate(self, row, col) -> str:
-        filter_data = self.get_role_data_from_coordinate(row, col, role=self.ROLE_FILTER_DATA)
+        filter_data = self.get_role_data_from_coordinate(
+            row, col, role=self.ROLE_FILTER_DATA
+        )
         if filter_data:
             return filter_data
         txt = self.get_text_from_coordinate(row, col)
@@ -494,17 +593,18 @@ class MyTreeView(QTreeView):
             clipboard_data = item_col.data(self.ROLE_CLIPBOARD_DATA)
             if clipboard_data is None:
                 clipboard_data = item_col.text().strip()
-            cc.addAction(column_title,
-                         lambda text=clipboard_data, title=column_title:
-                         self.place_text_on_clipboard(text, title=title))
+            cc.addAction(
+                column_title,
+                lambda text=clipboard_data, title=column_title: self.place_text_on_clipboard(
+                    text, title=title
+                ),
+            )
         return cc
-    
-    
 
     def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
         do_copy(text, title=title)
 
-    def showEvent(self, e: 'QShowEvent'):
+    def showEvent(self, e: "QShowEvent"):
         super().showEvent(e)
         if e.isAccepted() and self._pending_update:
             self._forced_update = True
@@ -513,8 +613,9 @@ class MyTreeView(QTreeView):
 
     def maybe_defer_update(self) -> bool:
         """Returns whether we should defer an update/refresh."""
-        defer = (not self._forced_update
-                 and (not self.isVisible() or self.is_editor_open))
+        defer = not self._forced_update and (
+            not self.isVisible() or self.is_editor_open
+        )
         # side-effect: if we decide to defer update, the state will become stale:
         self._pending_update = defer
         return defer
@@ -546,5 +647,3 @@ class MyTreeView(QTreeView):
         if row is not None:
             self.std_model.takeRow(row)
         self.hide_if_empty()
-
-

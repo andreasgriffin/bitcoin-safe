@@ -312,6 +312,7 @@ class QTWallet:
         # for name, signal in self.signals.__dict__.items():
         #     if hasattr(self.wallet, name) and callable(getattr(self.wallet, name)):
         #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)
+        self.signals.addresses_updated.connect(self.wallet.reset_cache)
 
         self.signals.get_addresses.connect(
             self.wallet.get_addresses, name=self.wallet.id

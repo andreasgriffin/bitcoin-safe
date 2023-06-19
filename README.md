@@ -17,26 +17,36 @@
 
 #### TODOs (a lot)
 
+- [ ] Add guide steps after the wallet setup
+  - [ ] Create recovery pdf with descriptor and further short instructions 
+  - [ ] Testing the backup
+    - [ ] Send small amount of funds to the wallet
+    - [ ] Wipe the wallet and the hardware wallets
+    - [ ] Restore the wallet + Hardware wallets and send funds to a new address
+
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
-
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
   - [ ] Hardware wallets: USB, SD card, QR code reader
-
-- [ ] Receive Tab
-- [ ] Address and TX labeling using categories
-  - [x] Works
-  - [ ] Needs improvements (ui + backend)
+- [x] Address and TX labeling using categories
   - [ ] Label p2p Synchronization via nostr direct encrypted messages
+- [ ] Address dialog
+  - [ ] automatically create qr code
+  - [ ] move history list to tab 
 
-- [ ] Address, TX dialogs (need redesign. Electrums are too complicated)
+- [ ] TX dialog (need redesign. Electrums are too complicated)
+  - [ ] What does the normal user actually want to see here?
+
 - [ ] Adding tests for rigorous UI testing
 - [ ] Wallet password dialog needs improvement
 - [ ] Wallet settings  (location, password,...) needs a tab
+- [ ] add scan qr code in lots of places
+- [ ] HWI + QR scanning signing
 - [ ] Include listening to p2p traffic for new tx announcements
-- [ ] Include desktop notifications (via tray icon)
+  - [ ] Include desktop notifications (via tray icon)
+
 
 #### UX
 
