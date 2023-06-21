@@ -548,7 +548,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
         menu.addAction(
             _("Copy as csv"),
-            lambda: self.copyRowsToClipboard([r.row() for r in selected]),
+            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)

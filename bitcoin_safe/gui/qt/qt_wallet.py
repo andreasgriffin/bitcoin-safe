@@ -258,16 +258,13 @@ class QTWallet:
         return uitx_creator.main_widget, uitx_creator
 
     def set_coin_selection_in_sent_tab(self, txinfos: TXInfos):
-        coin_selection_dict = self.wallet.create_coin_selection_dict(txinfos)
+        utxos_for_input = self.wallet.create_coin_selection_dict(txinfos)
 
         model = self.uitx_creator.utxo_list.model()
         # Get the selection model from the view
         selection = self.uitx_creator.utxo_list.selectionModel()
 
-        utxo_names = [
-            self.wallet.get_utxo_name(utxo)
-            for utxo in coin_selection_dict["selected_utxos"]
-        ]
+        utxo_names = [self.wallet.get_utxo_name(utxo) for utxo in utxos_for_input.utxos]
 
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
@@ -285,8 +282,8 @@ class QTWallet:
     def create_psbt(self, txinfos: TXInfos):
         try:
             txinfos = self.wallet.create_psbt(txinfos)
-        except Error.NoUtxosSelected:
-            Message("No Input Category or UTXO was selected", title="er").show_error()
+        except Error.NoUtxosSelected as e:
+            Message(e.args[0], title="er").show_error()
             raise
 
         self.wallet.reset_cache()
@@ -376,7 +373,7 @@ class QTWallet:
             self.delete_category
         )
         self.address_list_tags.list_widget.signal_tag_renamed.connect(
-            self.rename_category
+            lambda old, new: self.rename_category(old, new)
         )
 
     def rename_category(self, old_category, new_category):

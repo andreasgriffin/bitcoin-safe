@@ -30,6 +30,7 @@ from ...mempool import MempoolData
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
 from .qrcodewidget import QRLabel
+from ...wallet import UtxosForInputs
 
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
@@ -592,12 +593,14 @@ class UITX_Creator(UITX_Base):
 
     def set_max_amount(self, spin_box: CustomDoubleSpinBox):
         txinfos = self.get_ui_tx_infos()
-        utxos_dict = self.signals.signal_get_all_input_utxos.emit(txinfos)
+        utxos_dict: Dict[
+            str, UtxosForInputs
+        ] = self.signals.signal_get_all_input_utxos.emit(txinfos)
         total_input_value = sum(
             [
                 utxo.txout.value
                 for wallet_id, utxos in utxos_dict.items()
-                for utxo in utxos
+                for utxo in utxos.utxos
             ]
         )
 

@@ -275,6 +275,8 @@ class MyTreeView(QTreeView):
     filter_columns: Iterable[int]
     column_alignments: Dict[int, int] = {}
 
+    key_column = 0
+
     class BaseColumnsEnum(enum.IntEnum):
         @staticmethod
         def _generate_next_value_(name: str, start: int, count: int, last_values):
@@ -328,7 +330,18 @@ class MyTreeView(QTreeView):
         self.setFont(font)
 
     def create_menu(self, position: QPoint) -> None:
-        pass
+        selected = self.selected_in_column(self.Columns.ADDRESS)
+        if not selected:
+            return
+        menu = QMenu()
+
+        menu.addAction(
+            _("Copy as csv"),
+            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+        )
+
+        # run_hook('receive_menu', menu, addrs, self.wallet)
+        menu.exec_(self.viewport().mapToGlobal(position))
 
     def set_editability(self, items):
         for idx, i in enumerate(items):
@@ -414,16 +427,39 @@ class MyTreeView(QTreeView):
             self.edit(QModelIndex(QPersistentModelIndex(idx)))
             return
 
-        if (event.modifiers() & QtCore.Qt.ControlModifier) and (
-            event.key() == QtCore.Qt.Key_C
-        ):
+        if (event.modifiers() & Qt.ControlModifier) and (event.key() == Qt.Key_C):
             selection = self.selectionModel().selection().indexes()
             if selection:
-                self.copyRowsToClipboard(set([index.row() for index in selection]))
+                self.copyKeyRoleToClipboard(set([index.row() for index in selection]))
         else:
             super().keyPressEvent(event)
 
-    def copyRowsToClipboard(self, row_numbers):
+    def copyKeyRoleToClipboard(self, row_numbers):
+        def get_data(row, col):
+            model = self.original_model()
+            index = model.index(row, self.key_column)
+
+            if hasattr(model, "data"):
+                key = model.data(index, self.key_role)
+                return key
+            else:
+                item = self.item_from_index(index)
+                if item:
+                    key = item.data(self.key_role)
+                    return key
+
+        row_numbers = sorted(row_numbers)
+
+        stream = io.StringIO()
+        for row in row_numbers:
+            stream.write(
+                get_data(row, self.key_role) + "\n"
+            )  # append newline character after each row
+        do_copy(
+            stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text"
+        )
+
+    def copyRowsToClipboardAsCSV(self, row_numbers):
         def get_data(row, col):
             model = (
                 self.original_model()
@@ -622,7 +658,7 @@ class MyTreeView(QTreeView):
 
     def find_row_by_key(self, key) -> Optional[int]:
         for row in range(0, self.std_model.rowCount()):
-            item = self.std_model.item(row, 0)
+            item = self.std_model.item(row, self.key_column)
             if item.data(self.key_role) == key:
                 return row
 
@@ -630,7 +666,7 @@ class MyTreeView(QTreeView):
         if self.maybe_defer_update():
             return
         for row in range(0, self.std_model.rowCount()):
-            item = self.std_model.item(row, 0)
+            item = self.std_model.item(row, self.key_column)
             key = item.data(self.key_role)
             self.refresh_row(key, row)
 

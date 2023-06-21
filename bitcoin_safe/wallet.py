@@ -1,4 +1,3 @@
-from distutils.log import debug
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,6 +5,8 @@ logger = logging.getLogger(__name__)
 from collections import defaultdict
 import bdkpython as bdk
 from typing import Sequence, Set, Tuple
+from .pythonbdk_types import Error
+from .gui.qt.util import Message
 
 from .tx import TXInfos
 from .util import (
@@ -59,6 +60,18 @@ from .tx import TXInfos
 from .util import clean_list, Satoshis
 from .config import UserConfig
 import numpy as np
+
+
+class UtxosForInputs:
+    def __init__(
+        self, utxos, included_opportunistic_merging_utxos=None, spend_all_utxos=False
+    ) -> None:
+        if included_opportunistic_merging_utxos is None:
+            included_opportunistic_merging_utxos = []
+
+        self.utxos = utxos
+        self.included_opportunistic_merging_utxos = included_opportunistic_merging_utxos
+        self.spend_all_utxos = spend_all_utxos
 
 
 class OutputInfo:
@@ -502,17 +515,23 @@ class Wallet(BaseSaveableClass):
             f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }"
         )
 
-    def get_address(self, force_new=False) -> bdk.AddressInfo:
+    def get_address(self, force_new=False, is_change=False) -> bdk.AddressInfo:
+        bdk_get_address = (
+            self.bdkwallet.get_internal_address
+            if is_change
+            else self.bdkwallet.get_address
+        )
+
         # print new receive address
-        address_info = self.bdkwallet.get_address(
+        address_info = bdk_get_address(
             bdk.AddressIndex.NEW() if force_new else bdk.AddressIndex.LAST_UNUSED()
         )
         address = address_info.address.as_string()
         index = address_info.index
-        self.update_tip(last_recieving_index=index)
+        self.update_tip(new_last_index=index, is_change=is_change)
 
         if address in self.category or address in self.labels:
-            return self.get_address(force_new=True)
+            return self.get_address(force_new=True, is_change=is_change)
 
         logger.info(f"New address: {address} at index {index}")
         return address_info
@@ -649,13 +668,11 @@ class Wallet(BaseSaveableClass):
             logger.debug(f"new_tip = {new_tip},  value = {value}")
             assert new_tip == value
 
-    def update_tip(self, last_recieving_index=None, last_change_index=None):
-        self.tip = [
-            max(t, last_index if last_index else 0)
-            for t, last_index in zip(
-                self.tip, [last_recieving_index, last_change_index]
-            )
-        ]
+    def update_tip(self, new_last_index=None, is_change=False):
+        new_tip = [0, 0]
+        new_tip[int(is_change)] = new_last_index
+
+        self.tip = [max(old, new) for old, new in zip(self.tip, new_tip)]
 
     @property
     def tips(self):
@@ -1070,8 +1087,8 @@ class Wallet(BaseSaveableClass):
         return status, status_str
 
     def coin_select(
-        self, utxos, total_sent_value, fee_rate, opportunistic_merge_utxos
-    ) -> Dict[str, object]:
+        self, utxos, total_sent_value, opportunistic_merge_utxos
+    ) -> Dict[str, UtxosForInputs]:
         def utxo_value(utxo: bdk.LocalUtxo):
             return utxo.txout.value
 
@@ -1119,15 +1136,13 @@ class Wallet(BaseSaveableClass):
                 f"Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos])).str_with_unit()}"
             )
 
-            # add to selected_utxos
-            selected_utxos += opportunistic_merging_utxos
+        return UtxosForInputs(
+            utxos=selected_utxos + opportunistic_merging_utxos,
+            included_opportunistic_merging_utxos=opportunistic_merging_utxos,
+            spend_all_utxos=True,
+        )
 
-        return {
-            "selected_utxos": selected_utxos,
-            "opportunistic_merging_utxos": opportunistic_merging_utxos,
-        }
-
-    def get_all_input_utxos(self, txinfos: TXInfos) -> List[OutPoint]:
+    def get_all_input_utxos(self, txinfos: TXInfos) -> UtxosForInputs:
         if not txinfos.utxo_strings and not txinfos.categories:
             logger.warning("No inputs provided for coin selection")
 
@@ -1138,7 +1153,7 @@ class Wallet(BaseSaveableClass):
                 self.utxo_of_outpoint(OutPoint.from_str(s))
                 for s in txinfos.utxo_strings
             ]
-        elif txinfos.categories:
+        elif txinfos.categories:  # this will not be added if txinfos.utxo_strings
             utxos += [
                 utxo
                 for utxo in self.bdkwallet.list_unspent()
@@ -1147,40 +1162,42 @@ class Wallet(BaseSaveableClass):
             ]
         else:
             logger.debug("No utxos or categories for coin selection")
-            return []
 
-        return utxos
+        return UtxosForInputs(utxos=utxos, spend_all_utxos=bool(txinfos.utxo_strings))
 
-    def create_coin_selection_dict(self, txinfos: TXInfos) -> Dict[str, object]:
+    def create_coin_selection_dict(self, txinfos: TXInfos) -> UtxosForInputs:
         if not txinfos.utxo_strings and not txinfos.categories:
             logger.warning("No inputs provided for coin selection")
 
-        utxos = self.get_all_input_utxos(txinfos)
-        if not utxos:
-            logger.debug("No utxos or categories for coin selection")
-            return {
-                "selected_utxos": [],
-                "opportunistic_merging_utxos": [],
-            }
+        utxos_for_input = self.get_all_input_utxos(txinfos)
+        if not utxos_for_input:
+            logger.warning("No utxos or categories for coin selection")
+            return UtxosForInputs(utxos=[])
 
         total_sent_value = sum([recipient.amount for recipient in txinfos.recipients])
-        # TODO: Add here also the fee amount (but I don't know it yet)
 
-        coin_selection_dict = self.coin_select(
-            utxos=utxos,
-            total_sent_value=total_sent_value,
-            fee_rate=txinfos.fee_rate,
-            opportunistic_merge_utxos=txinfos.opportunistic_merge_utxos,
-        )
-        return coin_selection_dict
+        # check if you should spend all utxos, then there is no coin selection necessary
+        if utxos_for_input.spend_all_utxos:
+            return utxos_for_input
+        # if more opportunistic_merge should be done, than I have to use my coin selection
+        elif txinfos.opportunistic_merge_utxos:
+            # use my coin selection algo, which uses more utxos than needed
+            return self.coin_select(
+                utxos=utxos_for_input.utxos,
+                total_sent_value=total_sent_value,
+                opportunistic_merge_utxos=txinfos.opportunistic_merge_utxos,
+            )
+        else:
+            # otherwise let the bdk wallet decide on the minimal coins to be spent, out of the utxos
+            return UtxosForInputs(utxos=utxos_for_input.utxos, spend_all_utxos=False)
 
     def create_psbt(self, txinfos: TXInfos) -> TXInfos:
         tx_builder = bdk.TxBuilder()
         tx_builder = tx_builder.enable_rbf()
         tx_builder = tx_builder.fee_rate(txinfos.fee_rate)
         tx_builder = tx_builder.manually_selected_only()
-        txinfos.coin_selection_dict_result = self.create_coin_selection_dict(txinfos)
-        for utxo in txinfos.coin_selection_dict_result["selected_utxos"]:
+        txinfos.utxos_for_input = self.create_coin_selection_dict(txinfos)
+        for utxo in txinfos.utxos_for_input.utxos:
             tx_builder = tx_builder.add_utxo(utxo.outpoint)
 
         for recipient in txinfos.recipients:
@@ -1190,7 +1207,18 @@ class Wallet(BaseSaveableClass):
                 tx_builder = tx_builder.add_recipient(
                     bdk.Address(recipient.address).script_pubkey(), recipient.amount
                 )
-        builder_result = tx_builder.finish(self.bdkwallet)
+
+        # manually add a change output for draining all added utxos
+        if txinfos.utxos_for_input.spend_all_utxos:
+            tx_builder.drain_to(
+                self.get_address(is_change=True).address.script_pubkey()
+            )
+
+        try:
+            builder_result = tx_builder.finish(self.bdkwallet)
+        except Error.NoRecipients as e:
+            Message(e.args[0], title="er").show_error()
+            raise
 
         self.tips = [tip + 1 for tip in self.tips]
 
@@ -1204,7 +1232,7 @@ class Wallet(BaseSaveableClass):
             sum(
                 [
                     list(self.get_categories_for_txid(utxo.outpoint.txid))
-                    for utxo in txinfos.coin_selection_dict_result["selected_utxos"]
+                    for utxo in txinfos.utxos_for_input.utxos
                 ],
                 [],
             )
@@ -1215,20 +1243,44 @@ class Wallet(BaseSaveableClass):
         )
 
         # set labels and categries
-        txinfos.builder_result = builder_result
+        if category:
+            self.set_recipient_category_from_inputs(
+                builder_result.psbt.extract_tx().output(), category
+            )
         for recipient in txinfos.recipients:
+            # this does not include the change output
             if recipient.label:
                 self.labels[recipient.address] = recipient.label
-                if categories:
-                    self.category[recipient.address] = category
+
+        txinfos.builder_result = builder_result
         return txinfos
+
+    def set_recipient_category_from_inputs(
+        self, outputs: List[bdk.TxOut], category: str
+    ):
+        "Will assign all outputs (also change) the category"
+        if not category:
+            return
+
+        recipients = [
+            Recipient(
+                address=bdk.Address.from_script(
+                    output.script_pubkey, self.network
+                ).as_string(),
+                amount=output.value,
+            )
+            for output in outputs
+        ]
+
+        for recipient in recipients:
+            self.category[recipient.address] = category
 
     def rename_category(self, old_category, new_category):
         affected_keys = []
         for key, this_category in list(self.category.items()):
             if this_category == old_category:
                 affected_keys.append(key)
-                self.category[key] == new_category
+                self.category[key] = new_category
 
         if old_category in self.categories:
             idx = self.categories.index(old_category)
