@@ -49,8 +49,10 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.qt_wallets: Dict[QTWallet] = {}
         self.fx = None
         self.mempool_data = MempoolData()
-        # self.mempool_data.set_data_from_mempoolspace()
-        self.mempool_data.set_data_from_file("data.csv")
+        if os.path.isfile("data.csv"):
+            self.mempool_data.set_data_from_file("data.csv")
+        else:
+            self.mempool_data.set_data_from_mempoolspace()
 
         self.signals = Signals()
         # connect the listeners

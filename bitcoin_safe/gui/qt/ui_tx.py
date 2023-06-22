@@ -26,11 +26,14 @@ from .keystore_ui import SignerUI
 from ...signer import SignerWallet
 from ...util import psbt_to_hex, Satoshis
 from .block_buttons import MempoolButtons, MempoolProjectedBlock
-from ...mempool import MempoolData
+from ...mempool import MempoolData, fees_of_depths
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
 from .qrcodewidget import QRLabel
 from ...wallet import UtxosForInputs
+
+
+max_reasonable_fee_rate_fallback = 100
 
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
@@ -186,7 +189,7 @@ class ExportPSBT(QObject):
 
 
 class FeeGroup(QObject):
-    signal_set_fee = Signal(float)
+    signal_set_fee_rate = Signal(float)
 
     def __init__(
         self, mempool_data: MempoolData, layout, allow_edit=True, is_viewer=False
@@ -200,9 +203,9 @@ class FeeGroup(QObject):
         self.groupBox_Fee.setTitle("Fee")
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.groupBox_Fee.setAlignment(Qt.AlignTop)
-        layout_h_fee = QVBoxLayout(self.groupBox_Fee)
-        layout_h_fee.setAlignment(Qt.AlignHCenter)
-        layout_h_fee.setContentsMargins(
+        groupBox_Fee_layout = QVBoxLayout(self.groupBox_Fee)
+        groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
+        groupBox_Fee_layout.setContentsMargins(
             layout.contentsMargins().left() / 5,
             layout.contentsMargins().top() / 5,
             layout.contentsMargins().right() / 5,
@@ -215,50 +218,76 @@ class FeeGroup(QObject):
             self.mempool = MempoolButtons(mempool_data, button_count=3)
 
         if allow_edit:
-            self.mempool.signal_click.connect(self.set_fee)
-        layout_h_fee.addWidget(self.mempool.button_group, alignment=Qt.AlignHCenter)
+            self.mempool.signal_click.connect(self.set_fee_rate)
+        groupBox_Fee_layout.addWidget(
+            self.mempool.button_group, alignment=Qt.AlignHCenter
+        )
+
+        self.high_fee_warning_label = QLabel()
+        self.high_fee_warning_label.setText("High Warning")
+        self.high_fee_warning_label.setHidden(True)
+        groupBox_Fee_layout.addWidget(
+            self.high_fee_warning_label, alignment=Qt.AlignHCenter
+        )
 
         self.widget_around_spin_box = QWidget()
         self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
         self.widget_around_spin_box_layout.setContentsMargins(
             0, 0, 0, 0
         )  # Remove margins
-        layout_h_fee.addWidget(self.widget_around_spin_box, alignment=Qt.AlignHCenter)
+        groupBox_Fee_layout.addWidget(
+            self.widget_around_spin_box, alignment=Qt.AlignHCenter
+        )
 
-        self.spin_fee = QDoubleSpinBox()
+        self.spin_fee_rate = QDoubleSpinBox()
         if not allow_edit:
-            self.spin_fee.setReadOnly(True)
-        self.spin_fee.setRange(0.0, 100.0)  # Set the acceptable range
-        self.spin_fee.setSingleStep(1)  # Set the step size
-        self.spin_fee.setDecimals(1)  # Set the number of decimal places
-        self.spin_fee.setMaximumWidth(45)
-        self.spin_fee.editingFinished.connect(
-            lambda: self.set_fee(self.spin_fee.value())
+            self.spin_fee_rate.setReadOnly(True)
+        self.spin_fee_rate.setRange(0.0, 1000)  # Set the acceptable range
+        self.spin_fee_rate.setSingleStep(1)  # Set the step size
+        self.spin_fee_rate.setDecimals(1)  # Set the number of decimal places
+        self.spin_fee_rate.setMaximumWidth(55)
+        self.spin_fee_rate.editingFinished.connect(
+            lambda: self.set_fee_rate(self.spin_fee_rate.value())
         )
         # self.mempool.mempool_data.signal_current_data_updated.connect(self.update_spin_fee)
 
-        self.widget_around_spin_box_layout.addWidget(self.spin_fee)
+        self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
 
         self.spin_label = QLabel()
         self.spin_label.setText("sat/vB")
         self.widget_around_spin_box_layout.addWidget(self.spin_label)
 
         self.spin_label2 = QLabel()
-        layout_h_fee.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)
+        groupBox_Fee_layout.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)
 
         layout.addWidget(self.groupBox_Fee)
 
-    def set_fee(self, fee):
-        self.spin_fee.setValue(fee)
-        self.mempool.set_fee(fee)
+    def set_fee_rate(self, fee_rate):
+        self.spin_fee_rate.setValue(fee_rate)
+        self.mempool.set_fee_rate(fee_rate)
+
+        # warning
+        warning = ""
+
+        fees = fees_of_depths(self.mempool.mempool_data.data, [1e6])
+        max_reasonable_fee_rate = (
+            fees[0] * 2 if fees else max_reasonable_fee_rate_fallback
+        )
+
+        if fee_rate > max_reasonable_fee_rate:
+            warning = "<font color='red'><b>High feerate</b></font>"
+
+        if warning:
+            self.high_fee_warning_label.setText(warning)
+        self.high_fee_warning_label.setHidden(not warning)
 
         self.spin_label2.setText(
-            f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee)}. Block"
+            f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
         )
-        self.signal_set_fee.emit(fee)
+        self.signal_set_fee_rate.emit(fee_rate)
 
     def update_spin_fee(self):
-        self.spin_fee.setRange(
+        self.spin_fee_rate.setRange(
             1, self.mempool.data[:, 0].max()
         )  # Set the acceptable range
 
@@ -321,7 +350,7 @@ class UITX_Viewer(UITX_Base):
             self.tab_outputs_layout, allow_edit=False
         )
 
-        # fee
+        # fee_rate
         self.fee_group = FeeGroup(
             self.mempool_data,
             self.upper_widget_layout,
@@ -426,7 +455,7 @@ class UITX_Viewer(UITX_Base):
             self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
         )
 
-        self.fee_group.set_fee(fee_rate)
+        self.fee_group.set_fee_rate(fee_rate)
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
 
@@ -488,7 +517,7 @@ class UITX_Creator(UITX_Base):
         self.recipients.add_recipient()
 
         self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
-        self.fee_group.signal_set_fee.connect(self.on_set_fee)
+        self.fee_group.signal_set_fee_rate.connect(self.on_set_fee_rate)
 
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
@@ -560,9 +589,9 @@ class UITX_Creator(UITX_Base):
 
         layout.addWidget(self.tabs_inputs)
 
-    def on_set_fee(self, fee):
+    def on_set_fee_rate(self, fee_rate):
         self.checkBox_reduce_future_fees.setChecked(
-            fee <= self.enable_opportunistic_merging_fee_rate
+            fee_rate <= self.enable_opportunistic_merging_fee_rate
         )
 
     def get_ui_tx_infos(self, use_this_tab=None):
@@ -572,8 +601,10 @@ class UITX_Creator(UITX_Base):
         for recipient in self.recipients.recipients:
             infos.add_recipient(recipient)
 
-        logger.debug(f"set psbt builder fee {self.fee_group.spin_fee.value()}")
-        infos.set_fee_rate(self.fee_group.spin_fee.value())
+        logger.debug(
+            f"set psbt builder fee_rate {self.fee_group.spin_fee_rate.value()}"
+        )
+        infos.set_fee_rate(self.fee_group.spin_fee_rate.value())
 
         if not use_this_tab:
             use_this_tab = self.tabs_inputs.currentWidget()
