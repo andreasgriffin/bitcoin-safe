@@ -42,7 +42,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
             bdk.Network.BITCOIN: 8333,
             bdk.Network.REGTEST: 18444,
             bdk.Network.TESTNET: 18333,
-            bdk.Network.SIGNET: 18333,
+            bdk.Network.SIGNET: 38333,
         }
         return d[network]
     elif server_type == BlockchainType.Electrum:
