@@ -185,12 +185,12 @@ class NewWalletWelcomeScreen(QObject):
 <p>For life savings</p>
 <p>Pros:</p>
 <ul>
-<li>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + all (master) public keys</li>
+<li>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor</li>
 </ul>
 <p>Cons:</p>
 <ul>
-<li>3 secure locations to store the seed backups (on paper or steel) + wallet descriptor are needed</li>
-<li>Backing up the wallet file (or descriptor) is required to recreate wallet</li>
+<li>3 secure locations (each with 1 seed backup on steel + wallet descriptor are needed)</li>
+<li>Backing up the wallet descriptor is necessary to recreate wallet</li>
 </ul>
 """,
                 None,
