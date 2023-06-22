@@ -500,15 +500,17 @@ class Wallet(BaseSaveableClass):
         self.blockchain = bdk.Blockchain(blockchain_config)
         return self.blockchain
 
-    def sync(self):
+    def sync(self, progress_function_threadsafe=None):
         if self.blockchain is None:
             self.init_blockchain()
 
-        def update(progress: float, message: str):
-            logger.info((progress, message))
+        if not progress_function_threadsafe:
+
+            def progress_function_threadsafe(progress: float, message: str):
+                logger.info((progress, message))
 
         progress = bdk.Progress()
-        progress.update = update
+        progress.update = progress_function_threadsafe
 
         self.bdkwallet.sync(self.blockchain, progress)
         logger.info(

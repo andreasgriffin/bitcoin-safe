@@ -11,8 +11,8 @@
   - **Easier** labels by using categories (e.g.  from Hodlhodl, from Bisq, from Peach, ...)
 - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
 - Chain data with **Compact Block Filters** by default (other options like bitcoin rpc, electrum perhaps later)
-  * Compact Block Filter are **fast** and **private**
-  * Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/207#issuecomment-1507486619) and [here](https://github.com/thunderbiscuit/bdk-ffi/pull/6)
+  * Compact Block Filters are **fast** and **private**
+  * Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/379)
 - **Secure** by default: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is just reckless)
 
 #### TODOs (a lot)
@@ -29,7 +29,7 @@
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
-  - [ ] Hardware wallets: USB, SD card, QR code reader
+  - [ ] Hardware wallets: HWI USB, SD card, QR code reader
 - [x] Address and TX labeling using categories
   - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
 - [x] Address dialog
@@ -39,10 +39,9 @@
 - [ ] Adding tests for rigorous UI testing
 - [ ] Wallet settings  (location, password,...) needs a tab
 - [ ] add scan qr code in lots of places
-- [ ] HWI + QR scanning signing
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
-- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (maybe 2. layer of encryption)
+- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (+ 2. layer of encryption)
 
 
 #### UX

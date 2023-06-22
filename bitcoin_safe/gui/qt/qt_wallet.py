@@ -100,7 +100,9 @@ class FX:
         return False
 
 
-class QTWallet:
+class QTWallet(QObject):
+    signal_settext_balance_label = Signal(str)
+
     def __init__(
         self,
         wallet: Wallet,
@@ -108,6 +110,8 @@ class QTWallet:
         signals: Signals,
         mempool_data: MempoolData,
     ):
+        super().__init__()
+
         self.thread_manager = ThreadManager()
         self.signals = signals
         self.mempool_data = mempool_data
@@ -414,6 +418,7 @@ class QTWallet:
         self.balance_label.setAutoRaise(True)
         # self.balance_label.clicked.connect(self.show_balance_dialog)
         sb.addWidget(self.balance_label)
+        self.signal_settext_balance_label.connect(self.balance_label.setText)
 
         font_height = QFontMetrics(self.balance_label.font()).height()
         sb_height = max(35, int(2 * font_height))
@@ -683,8 +688,13 @@ class QTWallet:
     #     # self.channels_list.update_rows.emit(self.wallet)
 
     def sync(self, threaded=True):
+        def progress_function_threadsafe(progress: float, message: str):
+            self.signal_settext_balance_label.emit(
+                f"Syncing wallet: {round(progress)}%  {message}"
+            )
+
         def do_sync():
-            self.wallet.sync()
+            self.wallet.sync(progress_function_threadsafe=progress_function_threadsafe)
             logger.debug("finished sync")
 
         def on_finished():
