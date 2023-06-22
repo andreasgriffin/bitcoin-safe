@@ -34,7 +34,7 @@ from ...util import Satoshis, format_satoshis
 from ...signals import Signals, UpdateFilter
 from ...i18n import _
 from .ui_descriptor import WalletDescriptorUI
-from .password_question import PasswordQuestion
+from .password_question import PasswordQuestion, PasswordCreation
 from .category_list import CategoryEditor
 from ...tx import TXInfos
 from ...pythonbdk_types import Error
@@ -129,9 +129,14 @@ class QTWallet:
         return f"QTWallet({self.__dict__})"
 
     def save(self):
-        self.password = self.ui_password_question.ask_for_password()
+        file_path = os.path.join(self.config.wallet_dir, self.wallet.basename())
+
+        # if it is the first time saving, then the user can ste a password
+        if not os.path.isfile(file_path):
+            self.password = PasswordCreation().get_password()
+
         self.wallet.save(
-            os.path.join(self.config.wallet_dir, self.wallet.basename()),
+            file_path,
             password=self.password,
         )
 

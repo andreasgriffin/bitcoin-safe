@@ -23,29 +23,26 @@
     - [ ] Send small amount of funds to the wallet
     - [ ] Wipe the wallet and the hardware wallets
     - [ ] Restore the wallet + Hardware wallets and send funds to a new address
-
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
+- [x] CTRL + C  and CSV export across all tables
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
   - [ ] Hardware wallets: USB, SD card, QR code reader
 - [x] Address and TX labeling using categories
-  - [ ] Label p2p Synchronization via nostr direct encrypted messages
-- [ ] Address dialog
-  - [ ] automatically create qr code
-  - [ ] move history list to tab 
-
+  - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
+- [x] Address dialog
+  - [x] automatically create qr code
 - [ ] TX dialog (need redesign. Electrums are too complicated)
   - [ ] What does the normal user actually want to see here?
-
 - [ ] Adding tests for rigorous UI testing
-- [ ] Wallet password dialog needs improvement
 - [ ] Wallet settings  (location, password,...) needs a tab
 - [ ] add scan qr code in lots of places
 - [ ] HWI + QR scanning signing
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
+- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (maybe 2. layer of encryption)
 
 
 #### UX
