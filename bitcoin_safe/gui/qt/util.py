@@ -423,6 +423,7 @@ class Message:
     def __init__(
         self, msg, parent=None, title=None, icon=None, msecs=None, **kwargs
     ) -> None:
+
         self.msg = msg
         self.parent = parent
         self.title = title
