@@ -12,6 +12,7 @@ from ...config import UserConfig
 from PySide2.QtCore import Signal
 from ...pythonbdk_types import *
 from ...config import NetworkConfig, get_default_port
+from PySide2.QtCore import Qt
 
 
 class NetworkSettingsUI(QWidget):
@@ -34,6 +35,7 @@ class NetworkSettingsUI(QWidget):
         self.server_type_comboBox.addItem(
             BlockchainType.to_text(BlockchainType.CompactBlockFilter)
         )
+        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.RPC))
         # self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Electrum))
 
         self.layout.addWidget(self.server_type_comboBox)
@@ -80,6 +82,22 @@ class NetworkSettingsUI(QWidget):
 
         self.stackedWidget.addWidget(self.electrumServerTab)
 
+        # RPC
+        self.rpcTab = QWidget()
+        self.rpcTabLayout = QFormLayout(self.rpcTab)
+
+        self.rpc_ip_address_edit = QLineEdit(self.rpcTab)
+        self.rpc_port_edit = QLineEdit(self.rpcTab)
+        self.rpc_username_edit = QLineEdit(self.rpcTab)
+        self.rpc_password_edit = QLineEdit(self.rpcTab)
+
+        self.rpcTabLayout.addRow("IP Address:", self.rpc_ip_address_edit)
+        self.rpcTabLayout.addRow("Port:", self.rpc_port_edit)
+        self.rpcTabLayout.addRow("Username:", self.rpc_username_edit)
+        self.rpcTabLayout.addRow("Password:", self.rpc_password_edit)
+
+        self.stackedWidget.addWidget(self.rpcTab)
+
         # Create buttons and layout
         self.buttonLayout = QHBoxLayout()
         self.cancelButton = QPushButton("Cancel")
@@ -92,8 +110,6 @@ class NetworkSettingsUI(QWidget):
 
         self.layout.addLayout(self.buttonLayout)
 
-        self.set_ui(self.config.network_settings)
-
         # Signals and Slots
         self.network_combobox.currentIndexChanged.connect(self.on_network_change)
         self.server_type_comboBox.currentIndexChanged.connect(
@@ -103,23 +119,42 @@ class NetworkSettingsUI(QWidget):
             self.enableIPPortLineEdit
         )
 
+        self.set_ui(self.config.network_settings)
+
     def set_server_type_comboBox(self, new_index: int):
-        if self.server_type_comboBox.currentIndex() != new_index:
-            self.server_type_comboBox.setCurrentIndex(new_index)
-        self.stackedWidget.setCurrentIndex(new_index)
+        if self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
+            BlockchainType.CompactBlockFilter
+        ):
+            self.stackedWidget.setCurrentWidget(self.compactBlockFiltersTab)
+        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
+            BlockchainType.Electrum
+        ):
+            self.stackedWidget.setCurrentWidget(self.electrumServerTab)
+        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
+            BlockchainType.RPC
+        ):
+            self.stackedWidget.setCurrentWidget(self.rpcTab)
 
     def on_network_change(self, new_index: int):
-        if self.electrum_port_edit.text() == self.electrum_port_edit.placeholderText():
+        if (
+            self.electrum_port_edit.text().strip()
+            == self.electrum_port_edit.placeholderText()
+        ):
             self.electrum_port_edit.setText(
                 str(get_default_port(self.network, BlockchainType.Electrum))
             )
 
         if (
-            self.compactblockfilters_port_edit.text()
+            self.compactblockfilters_port_edit.text().strip()
             == self.compactblockfilters_port_edit.placeholderText()
         ):
             self.compactblockfilters_port_edit.setText(
                 str(get_default_port(self.network, BlockchainType.CompactBlockFilter))
+            )
+
+        if self.rpc_port_edit.text().strip() == self.rpc_port_edit.placeholderText():
+            self.rpc_port_edit.setText(
+                str(get_default_port(self.network, BlockchainType.RPC))
             )
 
         self.electrum_port_edit.setPlaceholderText(
@@ -127,6 +162,9 @@ class NetworkSettingsUI(QWidget):
         )
         self.compactblockfilters_port_edit.setPlaceholderText(
             str(get_default_port(self.network, BlockchainType.CompactBlockFilter))
+        )
+        self.rpc_port_edit.setPlaceholderText(
+            str(get_default_port(self.network, BlockchainType.RPC))
         )
 
     def on_apply_click(self):
@@ -145,6 +183,13 @@ class NetworkSettingsUI(QWidget):
             if str(network) == network_str:
                 return network
 
+    # Override keyPressEvent method
+    def keyPressEvent(self, event):
+        # Check if the pressed key is 'Esc'
+        if event.key() == Qt.Key_Escape:
+            # Close the widget
+            self.on_cancel_click()
+
     def get_network_settings_from_ui(self):
         network_config = NetworkConfig()
         network_config.network = self.network
@@ -154,6 +199,10 @@ class NetworkSettingsUI(QWidget):
         network_config.compactblockfilters_port = self.compactblockfilters_port
         network_config.electrum_ip = self.electrum_ip
         network_config.electrum_port = self.electrum_port
+        network_config.rpc_ip = self.rpc_ip
+        network_config.rpc_port = self.rpc_port
+        network_config.rpc_username = self.rpc_username
+        network_config.rpc_password = self.rpc_password
 
         return network_config
 
@@ -165,6 +214,10 @@ class NetworkSettingsUI(QWidget):
         self.compactblockfilters_port = network_config.compactblockfilters_port
         self.electrum_ip = network_config.electrum_ip
         self.electrum_port = network_config.electrum_port
+        self.rpc_ip = network_config.rpc_ip
+        self.rpc_port = network_config.rpc_port
+        self.rpc_username = network_config.rpc_username
+        self.rpc_password = network_config.rpc_password
 
     def enableIPPortLineEdit(self, index):
         if self.cbf_server_typeComboBox.itemText(index) == "Manual":
@@ -190,9 +243,7 @@ class NetworkSettingsUI(QWidget):
 
     @server_type.setter
     def server_type(self, server_type: BlockchainType):
-        index = self.server_type_comboBox.findText(BlockchainType.to_text(server_type))
-        if index != -1:
-            self.set_server_type_comboBox(index)
+        self.server_type_comboBox.setCurrentText(BlockchainType.to_text(server_type))
 
     @property
     def cbf_server_type(self):
@@ -238,6 +289,38 @@ class NetworkSettingsUI(QWidget):
     @electrum_port.setter
     def electrum_port(self, port):
         self.electrum_port_edit.setText(str(port))
+
+    @property
+    def rpc_ip(self):
+        return self.rpc_ip_address_edit.text()
+
+    @rpc_ip.setter
+    def rpc_ip(self, ip):
+        self.rpc_ip_address_edit.setText(ip if ip else "")
+
+    @property
+    def rpc_port(self):
+        return self.rpc_port_edit.text()
+
+    @rpc_port.setter
+    def rpc_port(self, port):
+        self.rpc_port_edit.setText(str(port))
+
+    @property
+    def rpc_username(self):
+        return self.rpc_username_edit.text()
+
+    @rpc_username.setter
+    def rpc_username(self, username):
+        self.rpc_username_edit.setText(username if username else "")
+
+    @property
+    def rpc_password(self):
+        return self.rpc_password_edit.text()
+
+    @rpc_password.setter
+    def rpc_password(self, password):
+        self.rpc_password_edit.setText(password if password else "")
 
 
 if __name__ == "__main__":

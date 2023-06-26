@@ -45,25 +45,12 @@ from .util import (
     CloseButton,
     ShowCopyLineEdit,
 )
-from .history_list import HistoryList, HistoryModel
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
 from ...util import format_satoshis
 from .qrcodewidget import QRLabel
-
-
-class AddressHistoryModel(HistoryModel):
-    def __init__(self, window, qt_wallet, address: str):
-        super().__init__(
-            window, qt_wallet.fx, qt_wallet.config, qt_wallet.wallet, qt_wallet.signals
-        )
-        self.address = address
-
-    def get_domain(self):
-        return [self.address]
-
-    def should_include_lightning_payments(self) -> bool:
-        return False
+from .hist_list import HistList
+from ...wallet import Wallet
 
 
 class AddressDialog(WindowModalDialog):
@@ -72,7 +59,7 @@ class AddressDialog(WindowModalDialog):
         self.address = address
         self.fx = fx
         self.config = config
-        self.wallet = qt_wallet.wallet
+        self.wallet: Wallet = qt_wallet.wallet
         self.signals = qt_wallet.signals
         self.qt_wallet = qt_wallet
         self.saved = True
@@ -133,23 +120,26 @@ class AddressDialog(WindowModalDialog):
         self.qr_code.setMaximumHeight(100)
         upper_widget_layout.addWidget(self.qr_code)
 
-        addr_hist_model = AddressHistoryModel(self, self.qt_wallet, self.address)
-        self.hw = HistoryList(
+        self.hist_list = HistList(
             self.fx,
             self.config,
             self.signals,
-            self.wallet,
-            addr_hist_model,
-            parent=self,
+            self.wallet.id,
+            hidden_columns=[
+                HistList.Columns.WALLET_ID,
+                HistList.Columns.BALANCE,
+                HistList.Columns.SATOSHIS,
+                HistList.Columns.TXID,
+            ],
+            txid_domain=[
+                output_info.outpoint.txid
+                for output_info in self.wallet.get_txs_involving_address(address)
+            ],
         )
-        self.hw.num_tx_label = QLabel("")
-        addr_hist_model.set_view(self.hw)
-        vbox.addWidget(self.hw.num_tx_label)
-        vbox.addWidget(self.hw)
+        vbox.addWidget(self.hist_list)
 
         vbox.addLayout(Buttons(CloseButton(self)))
         self.format_amount = format_satoshis
-        addr_hist_model.refresh("address dialog constructor")
 
     def show_qr(self):
         text = self.address

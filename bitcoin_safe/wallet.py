@@ -62,6 +62,53 @@ from .config import UserConfig
 import numpy as np
 
 
+class TxConfirmationStatus(enum.Enum):
+    CONFIRMED = 1
+    UNCONFIRMED = 0
+    UNCONF_PARENT = -1
+    LOCAL = -2
+
+    @classmethod
+    def to_str(cls, status):
+        if status == cls.CONFIRMED:
+            return "Confirmed"
+        if status == cls.UNCONFIRMED:
+            return "Unconfirmed"
+        if status == cls.UNCONF_PARENT:
+            return "Unconfirmed parent"
+        if status == cls.LOCAL:
+            return "Local"
+
+
+class TxStatus:
+    def __init__(self, tx: bdk.TransactionDetails, blockchain: bdk.Blockchain) -> None:
+        self.tx = tx
+
+        # from .util import (
+        #     TX_HEIGHT_FUTURE,
+        #     TX_HEIGHT_INF,
+        #     TX_HEIGHT_LOCAL,
+        #     TX_HEIGHT_UNCONF_PARENT,
+        #     TX_HEIGHT_UNCONFIRMED,
+        #     TX_STATUS,
+        #     THOUSANDS_SEP,
+        #     cache_method,
+        # )
+
+        self.confirmation_status = TxConfirmationStatus.UNCONFIRMED
+        if tx.confirmation_time:
+            self.confirmation_status = TxConfirmationStatus.CONFIRMED
+
+        self.confirmations = (
+            blockchain.get_height() - tx.confirmation_time.height + 1
+            if tx.confirmation_time
+            else 0
+        )
+        self.sort_id = (
+            self.confirmations if self.confirmations else self.confirmation_status.value
+        )
+
+
 class UtxosForInputs:
     def __init__(
         self, utxos, included_opportunistic_merging_utxos=None, spend_all_utxos=False
@@ -447,6 +494,9 @@ class Wallet(BaseSaveableClass):
             if (not k.startswith("_")) and v.is_multisig == is_multisig
         ]
 
+    def get_tx_status(self, tx: bdk.TransactionDetails) -> TxStatus:
+        return TxStatus(tx, self.blockchain)
+
     def init_blockchain(self):
         """
         https://github.com/BitcoinDevelopersAcademy/bit-container
@@ -457,7 +507,6 @@ class Wallet(BaseSaveableClass):
         alias rt-logs='sudo docker container logs electrs'
         alias rt-cli='sudo docker exec -it electrs /root/bitcoin-cli -regtest  '
         """
-        print(type(self.config.network_settings.server_type))
         if self.config.network_settings.server_type == BlockchainType.Electrum:
             if self.config.network_settings.network == bdk.Network.REGTEST:
                 blockchain_config = bdk.BlockchainConfig.ELECTRUM(
@@ -496,7 +545,19 @@ class Wallet(BaseSaveableClass):
                     start_height,
                 )
             )
-
+        elif self.config.network_settings.server_type == BlockchainType.RPC:
+            blockchain_config = bdk.BlockchainConfig.RPC(
+                bdk.RpcConfig(
+                    f"{self.config.network_settings.rpc_ip}:{self.config.network_settings.rpc_port}",
+                    bdk.Auth.USER_PASS(
+                        self.config.network_settings.rpc_username,
+                        self.config.network_settings.rpc_password,
+                    ),
+                    self.config.network_settings.network,
+                    self.id,
+                    None,
+                )
+            )
         self.blockchain = bdk.Blockchain(blockchain_config)
         return self.blockchain
 
@@ -802,14 +863,14 @@ class Wallet(BaseSaveableClass):
 
         for i, utxo in enumerate(utxos):
             tx = self.get_tx(utxo.outpoint.txid)
+            txout = tx.transaction.output()[utxo.outpoint.vout]
 
-            for txout in tx.transaction.output():
-                address = self.get_address_of_txout(txout)
-                if address is None:
-                    continue
-                balances[address][0] += txout.value
-                balances[address][1] += 0
-                balances[address][2] += 0
+            address = self.get_address_of_txout(txout)
+            if address is None:
+                continue
+            balances[address][0] += txout.value
+            balances[address][1] += 0
+            balances[address][2] += 0
 
         return balances
 
@@ -1023,14 +1084,20 @@ class Wallet(BaseSaveableClass):
             value_delta = tx.received - tx.sent
             balance += value_delta
             timestamp = tx.confirmation_time.timestamp if tx.confirmation_time else 100
-            height = tx.confirmation_time.height if tx.confirmation_time else 0
+
+            # TODO: Correct this.
+            height = tx.confirmation_time.height if tx.confirmation_time else None
 
             monotonic_timestamp = max(monotonic_timestamp, timestamp)
             d = {
                 "txid": tx.txid,
                 "fee_sat": tx.fee,
-                "height": height,
-                "confirmations": self.blockchain.get_height() - height + 1,
+                "height": height
+                if height is not None
+                else self.blockchain.get_height() + 1,
+                "confirmations": self.blockchain.get_height() - height + 1
+                if height is not None
+                else -1,
                 "timestamp": timestamp,
                 "monotonic_timestamp": monotonic_timestamp,
                 "incoming": True if value_delta > 0 else False,
@@ -1044,49 +1111,49 @@ class Wallet(BaseSaveableClass):
                 "txpos_in_block": None,  # not in bdk
             }
             transactions.append(d)
-        return transactions
+        return sorted(transactions, key=lambda x: x["height"])
 
-    def get_tx_status(self, txid, tx_mined_info: TxMinedInfo):
-        extra = []
-        height = tx_mined_info.height
-        conf = tx_mined_info.conf
-        timestamp = tx_mined_info.timestamp
-        if height == TX_HEIGHT_FUTURE:
-            num_blocks_remainining = (
-                tx_mined_info.wanted_height - self.blockchain.get_height()
-            )
-            num_blocks_remainining = max(0, num_blocks_remainining)
-            return 2, f"in {num_blocks_remainining} blocks"
-        if conf == 0:
-            tx = self.get_tx(txid)
-            if not tx:
-                return 2, "unknown"
-            is_final = True  # TODO: tx and tx.is_final()
-            fee = tx.fee
-            if fee is not None:
-                size = tx.transaction.size()
-                fee_per_byte = fee / size
-                extra.append(format_fee_satoshis(fee_per_byte) + " sat/b")
-            # if fee is not None and height in (TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED) \
-            #    and self.config.has_fee_mempool():
-            #     exp_n = self.config.fee_to_depth(fee_per_byte)
-            #     if exp_n is not None:
-            #         extra.append(self.config.get_depth_mb_str(exp_n))
-            if height == TX_HEIGHT_LOCAL:
-                status = 3
-            elif height == TX_HEIGHT_UNCONF_PARENT:
-                status = 1
-            elif height == TX_HEIGHT_UNCONFIRMED:
-                status = 0
-            else:
-                status = 2  # not SPV verified
-        else:
-            status = 3 + min(conf, 6)
-        time_str = format_time(timestamp) if timestamp else _("unknown")
-        status_str = TX_STATUS[status] if status < 4 else time_str
-        if extra:
-            status_str += " [%s]" % (", ".join(extra))
-        return status, status_str
+    # def get_tx_status(self, txid, tx_mined_info: TxMinedInfo):
+    #     extra = []
+    #     height = tx_mined_info.height
+    #     conf = tx_mined_info.conf
+    #     timestamp = tx_mined_info.timestamp
+    #     if height == TX_HEIGHT_FUTURE:
+    #         num_blocks_remainining = (
+    #             tx_mined_info.wanted_height - self.blockchain.get_height()
+    #         )
+    #         num_blocks_remainining = max(0, num_blocks_remainining)
+    #         return 2, f"in {num_blocks_remainining} blocks"
+    #     if conf == 0:
+    #         tx = self.get_tx(txid)
+    #         if not tx:
+    #             return 2, "unknown"
+    #         is_final = True  # TODO: tx and tx.is_final()
+    #         fee = tx.fee
+    #         if fee is not None:
+    #             size = tx.transaction.size()
+    #             fee_per_byte = fee / size
+    #             extra.append(format_fee_satoshis(fee_per_byte) + " sat/b")
+    #         # if fee is not None and height in (TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED) \
+    #         #    and self.config.has_fee_mempool():
+    #         #     exp_n = self.config.fee_to_depth(fee_per_byte)
+    #         #     if exp_n is not None:
+    #         #         extra.append(self.config.get_depth_mb_str(exp_n))
+    #         if height == TX_HEIGHT_LOCAL:
+    #             status = 3
+    #         elif height == TX_HEIGHT_UNCONF_PARENT:
+    #             status = 1
+    #         elif height == TX_HEIGHT_UNCONFIRMED:
+    #             status = 0
+    #         else:
+    #             status = 2  # not SPV verified
+    #     else:
+    #         status = 3 + min(conf, 6)
+    #     time_str = format_time(timestamp) if timestamp else _("unknown")
+    #     status_str = TX_STATUS[status] if status < 4 else time_str
+    #     if extra:
+    #         status_str += " [%s]" % (", ".join(extra))
+    #     return status, status_str
 
     def coin_select(
         self, utxos, total_sent_value, opportunistic_merge_utxos
@@ -1197,32 +1264,51 @@ class Wallet(BaseSaveableClass):
         tx_builder = bdk.TxBuilder()
         tx_builder = tx_builder.enable_rbf()
         tx_builder = tx_builder.fee_rate(txinfos.fee_rate)
-        tx_builder = tx_builder.manually_selected_only()
+
         txinfos.utxos_for_input = self.create_coin_selection_dict(txinfos)
-        for utxo in txinfos.utxos_for_input.utxos:
-            tx_builder = tx_builder.add_utxo(utxo.outpoint)
+        selected_outpoints = [
+            OutPoint.from_bdk(utxo.outpoint) for utxo in txinfos.utxos_for_input.utxos
+        ]
+
+        if txinfos.utxos_for_input.spend_all_utxos:
+            # spend_all_utxos requires using add_utxo
+            tx_builder = tx_builder.manually_selected_only()
+            # add coins that MUST be spend
+            for outpoint in selected_outpoints:
+                tx_builder = tx_builder.add_utxo(outpoint)
+            # manually add a change output for draining all added utxos
+            tx_builder = tx_builder.drain_to(
+                self.get_address(is_change=True).address.script_pubkey()
+            )
+        else:
+            # exclude all other coins, to leave only selected_outpoints to choose from
+            unspendable_outpoints = [
+                utxo.outpoint
+                for utxo in self.get_utxos()
+                if OutPoint.from_bdk(utxo.outpoint) not in selected_outpoints
+            ]
+            tx_builder = tx_builder.unspendable(unspendable_outpoints)
 
         for recipient in txinfos.recipients:
             if recipient.checked_max_amount:
-                tx_builder.drain_to(bdk.Address(recipient.address).script_pubkey())
+                tx_builder = tx_builder.drain_to(
+                    bdk.Address(recipient.address).script_pubkey()
+                )
             else:
                 tx_builder = tx_builder.add_recipient(
                     bdk.Address(recipient.address).script_pubkey(), recipient.amount
                 )
 
-        # manually add a change output for draining all added utxos
-        if txinfos.utxos_for_input.spend_all_utxos:
-            tx_builder.drain_to(
-                self.get_address(is_change=True).address.script_pubkey()
-            )
-
         try:
-            builder_result = tx_builder.finish(self.bdkwallet)
+            builder_result: bdk.TxBuilderResult = tx_builder.finish(self.bdkwallet)
         except Error.NoRecipients as e:
             Message(e.args[0], title="er").show_error()
             raise
 
         self.tips = [tip + 1 for tip in self.tips]
+
+        inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
+        logger.debug(str(len(inputs)))
 
         logger.info(json.loads(builder_result.psbt.json_serialize()))
         logger.debug(
@@ -1239,7 +1325,7 @@ class Wallet(BaseSaveableClass):
                 [],
             )
         )
-        category = categories[0]
+        category = categories[0] if categories else None
         logger.debug(
             f"Selecting category {category} out of {categories} for the output addresses"
         )

@@ -73,20 +73,29 @@
    cd bdk-ffi/bdk-python
    git checkout cbf
    pip install --requirement requirements.txt
-   bash ./generate.sh
-   python setup.py bdist_wheel --verbose
-   pip install ./dist/bdkpython-*.whl --force-reinstall
+   rm -R dist && bash ./generate.sh  && python setup.py bdist_wheel --verbose &&  pip install ./dist/bdkpython-*.whl --force-reinstall
    python -m unittest --verbose tests/test_bdk.py
    ```
-
+   
  * Run a bitcoin regtest node with compact block filters enabled. The simplest is to use this [docker](https://github.com/BitcoinDevelopersAcademy/bit-container#2-create-regtest-aliases-to-start-stop-view-logs-and-send-cli-commands-to-container) container. You can create the alias:
 
    ```sh
-   alias rt-start='sudo docker run -d --rm -p 127.0.0.1:18443-18444:18443-18444/tcp -p 127.0.0.1:60401:60401/tcp --name electrs bitcoindevkit/electrs'
+   alias rt-start='echo -e "rpcuser=bitcoin\nrpcpassword=bitcoin" > /tmp/bitcoin.conf &&  sudo docker run -d -v /tmp/bitcoin.conf:/root/.bitcoin/bitcoin.conf --rm -p 127.0.0.1:18443-18444:18443-18444/tcp -p 127.0.0.1:60401:60401/tcp --name electrs bitcoindevkit/electrs   '
    alias rt-stop='sudo docker kill electrs'
    alias rt-logs='sudo docker container logs electrs'
    alias rt-cli='sudo docker exec -it electrs /root/bitcoin-cli -regtest   $@'
    ```
+
+   * Network Settings
+     * Connect via Compact Block Filters (experimental):
+       * IP: 127.0.0.1
+       * Port: 18444
+
+     * Connect via RPC (reliable, but slow):
+       * IP: 127.0.0.1
+       * Port: 18443
+       * Username: bitcoin
+       * Password: bitcoin
 
  * Run Bitcoin Safe
 
@@ -104,5 +113,11 @@
 pipreqs  --savepath requirements.in  --force .
 pip-compile --generate-hashes --resolver=backtracking   requirements.in
 pip install --requirement requirements.txt 
+```
+
+and for formatting
+
+```shell
+pre-commit install
 ```
 

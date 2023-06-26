@@ -25,14 +25,16 @@ class UpdateFilter:
 
 
 class SignalFunction:
-    def __init__(self, name=None):
-        self.name = name
+    def __init__(self, slot_name=None):
+        self.slot_name = slot_name
         self.slots = {}
         self.lock = threading.Lock()
 
-    def connect(self, slot, name=None):
+    def connect(self, slot, slot_name=None):
         with self.lock:
-            key = name if name and (name not in self.slots) else str(slot)
+            key = (
+                slot_name if slot_name and (slot_name not in self.slots) else str(slot)
+            )
             self.slots[key] = slot
 
     def disconnect(self, slot):
@@ -44,16 +46,21 @@ class SignalFunction:
     def __call__(self, *args, **kwargs):
         return self.emit(*args, **kwargs)
 
-    def emit(self, *args, **kwargs):
+    def emit(self, *args, slot_name=None, **kwargs):
+        allow_list = [slot_name] if isinstance(slot_name, str) else slot_name
+
         responses = {}
         if not self.slots:
             logger.debug(
-                f"SignalFunction {self.name}.emit() was called, but no listeners {self.slots} are listening."
+                f"SignalFunction {self.slot_name}.emit() was called, but no listeners {self.slots} are listening."
             )
 
         delete_slots = []
         with self.lock:
             for key, slot in self.slots.items():
+                if allow_list and key not in allow_list:
+                    continue
+
                 name = (
                     f"{slot.__self__.__class__.__name__}."
                     if str(slot.__class__) == "<class 'method'>"
@@ -61,7 +68,7 @@ class SignalFunction:
                 )
                 name += f"{slot.__name__}{args, kwargs}"
                 name += f" with key={key}" if key else ""
-                logger.debug(f"SignalFunction {self.name}.emit() --> {name}")
+                logger.debug(f"SignalFunction {self.slot_name}.emit() --> {name}")
                 try:
                     responses[key] = slot(*args, **kwargs)
                 except:
@@ -110,7 +117,7 @@ class Signals(QObject):
     open_tx = Signal(object)
     utxos_updated = Signal()
     addresses_updated = Signal()
-    labels_updated = Signal()
+    labels_updated = Signal(UpdateFilter)
     category_updated = Signal(UpdateFilter)
     completions_updated = Signal()
     event_wallet_tab_closed = Signal()
@@ -133,14 +140,6 @@ class Signals(QObject):
 
     tx_from_text = SignalFunction()
 
-    get_addresses = SignalFunction()
-    address_is_used = SignalFunction(str)
-    get_receiving_addresses = SignalFunction()
-    get_change_addresses = SignalFunction()
-    get_label_for_address = SignalFunction()
-    get_utxos = SignalFunction()
-    utxo_of_outpoint = SignalFunction()
     get_wallets = SignalFunction()
-    signal_get_all_input_utxos = SignalFunction()  # returns dict of list of LocalUtxo
 
     show_network_settings = Signal()

@@ -1,5 +1,5 @@
 import logging
-from bitcoin_safe.tx import TXInfos
+from .tx import TXInfos
 from .logging import setup_logging
 
 setup_logging()
@@ -31,7 +31,7 @@ from .gui.qt.balance_dialog import (
 from .gui.qt.util import add_tab_to_tabs, read_QIcon, MessageBoxMixin, Message
 from .signals import Signals
 from bdkpython import Network
-from typing import Dict
+from typing import Dict, List
 from .storage import Storage
 import json, os
 import bdkpython as bdk
@@ -40,6 +40,7 @@ from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
 from .mempool import MempoolData
+from .pythonbdk_types import OutPoint
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
@@ -163,16 +164,32 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             logger.debug(f"Got a PartiallySignedTransaction")
             psbt = tx
         if isinstance(tx, str):
-            tx = bdk.PartiallySignedTransaction(tx)
+            psbt = bdk.PartiallySignedTransaction(tx)
             logger.debug(f"Converted str to {type(tx)}")
 
         if isinstance(tx, bdk.TransactionDetails):
             print("is bdk.TransactionDetails")
             raise Exception("cannot handle TransactionDetails")
 
+        inputs: List[bdk.TxIn] = psbt.extract_tx().input()
+        utxo_list = UTXOList(
+            self.config,
+            self.signals,
+            hidden_columns=[
+                UTXOList.Columns.OUTPOINT,
+                UTXOList.Columns.PARENTS,
+                UTXOList.Columns.SATOSHIS,
+            ],
+            outpoint_domain=[
+                OutPoint.from_bdk(input.previous_output)
+                for input in psbt.extract_tx().input()
+            ],
+        )
+
         viewer = UITX_Viewer(
             psbt,
             self.signals,
+            utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
             fee_rate=fee_rate,
@@ -186,6 +203,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             "tx",
             focus=True,
         )
+
+        viewer.main_widget.searchable_list = utxo_list
+        return viewer.main_widget, viewer
 
     def open_last_opened_wallets(self):
         opened_wallets = []
@@ -348,6 +368,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             if self.tab_wallets.widget(i) == qt_wallet.tab:
                 self.tab_wallets.removeTab(i)
 
+        qt_wallet.disconnect_signals()
         del self.qt_wallets[qt_wallet.wallet.id]
 
     def close_tab(self, index):

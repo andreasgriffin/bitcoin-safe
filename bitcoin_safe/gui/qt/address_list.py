@@ -196,7 +196,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.update()
         self.sortByColumn(AddressList.Columns.TYPE, Qt.AscendingOrder)
         self.signals.addresses_updated.connect(self.update)
-        self.signals.labels_updated.connect(self.update)
+        self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 
         self.setDragEnabled(True)
@@ -417,7 +417,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             # align text and set fonts
             for i, item in enumerate(address_item):
                 item.setTextAlignment(Qt.AlignVCenter)
-                if i not in (self.Columns.TYPE, self.Columns.LABEL):
+                if i in (self.Columns.ADDRESS,):
                     item.setFont(QFont(MONOSPACE_FONT))
             self.set_editability(address_item)
             address_item[self.Columns.FIAT_BALANCE].setTextAlignment(
@@ -570,4 +570,4 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)
-        self.signals.labels_updated.emit()
+        self.signals.labels_updated.emit(UpdateFilter(addresses=[edit_key]))

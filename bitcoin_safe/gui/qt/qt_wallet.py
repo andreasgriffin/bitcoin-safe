@@ -22,7 +22,7 @@ from .balance_dialog import (
     COLOR_UNCONFIRMED,
     COLOR_UNMATURED,
 )
-from .history_list import HistoryList, HistoryModel
+from .hist_list import HistList
 from .address_list import AddressList
 from .utxo_list import UTXOList
 from .util import add_tab_to_tabs, Message
@@ -115,6 +115,7 @@ class QTWallet(QObject):
         self.thread_manager = ThreadManager()
         self.signals = signals
         self.mempool_data = mempool_data
+        self._connected_signals = []
         self.set_wallet(wallet)
         self.password = None
         self.wallet_descriptor_tab = None
@@ -122,7 +123,7 @@ class QTWallet(QObject):
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
 
-        self.history_tab, self.history_list, self.history_model = None, None, None
+        self.history_tab, self.history_list = None, None
         self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
         self.utxo_tab, self.utxo_list = None, None
         self.send_tab = None
@@ -232,8 +233,8 @@ class QTWallet(QObject):
     def _create_send_tab(self, tabs):
         utxo_list = UTXOList(
             self.config,
-            self.wallet,
             self.signals,
+            wallet_id=self.wallet.id,
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
@@ -291,17 +292,16 @@ class QTWallet(QObject):
     def create_psbt(self, txinfos: TXInfos):
         try:
             txinfos = self.wallet.create_psbt(txinfos)
-        except Error.NoUtxosSelected as e:
+        except Exception as e:
             Message(e.args[0], title="er").show_error()
             raise
 
-        self.wallet.reset_cache()
-        self.signals.category_updated.emit(
-            UpdateFilter(
-                addresses=[recipient.address for recipient in txinfos.recipients]
-            )
+        update_filter = UpdateFilter(
+            addresses=[recipient.address for recipient in txinfos.recipients]
         )
-        self.signals.labels_updated.emit()
+        self.wallet.reset_cache()
+        self.signals.category_updated.emit(update_filter)
+        self.signals.labels_updated.emit(update_filter)
 
         self.signals.open_tx.emit(txinfos)
 
@@ -312,37 +312,24 @@ class QTWallet(QObject):
             self.wallet_descriptor_ui,
         ) = self.create_and_add_settings_tab()
 
+    def connect_signal(self, signal, f, **kwargs):
+        signal.connect(f, **kwargs)
+        self._connected_signals.append((signal, f))
+
+    def disconnect_signals(self):
+        for signal, f in self._connected_signals:
+            signal.disconnect(f)
+
     def set_wallet(self, wallet: Wallet):
         self.wallet = wallet
 
         # for name, signal in self.signals.__dict__.items():
         #     if hasattr(self.wallet, name) and callable(getattr(self.wallet, name)):
         #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)
-        self.signals.addresses_updated.connect(self.wallet.reset_cache)
+        self.connect_signal(self.signals.addresses_updated, self.wallet.reset_cache)
 
-        self.signals.get_addresses.connect(
-            self.wallet.get_addresses, name=self.wallet.id
-        )
-        self.signals.address_is_used.connect(
-            self.wallet.address_is_used, name=self.wallet.id
-        )
-        self.signals.get_receiving_addresses.connect(
-            self.wallet.get_receiving_addresses, name=self.wallet.id
-        )
-        self.signals.get_change_addresses.connect(
-            self.wallet.get_change_addresses, name=self.wallet.id
-        )
-        self.signals.get_label_for_address.connect(
-            self.wallet.get_label_for_address, name=self.wallet.id
-        )
-        self.signals.get_utxos.connect(self.wallet.get_utxos, name=self.wallet.id)
-        self.signals.utxo_of_outpoint.connect(
-            self.wallet.utxo_of_outpoint, name=self.wallet.id
-        )
-        self.signals.get_wallets.connect(lambda: self.wallet, name=self.wallet.id)
-
-        self.signals.signal_get_all_input_utxos.connect(
-            self.wallet.get_all_input_utxos, name=self.wallet.id
+        self.connect_signal(
+            self.signals.get_wallets, lambda: self.wallet, slot_name=self.wallet.id
         )
 
     def create_wallet_tabs(self):
@@ -350,9 +337,7 @@ class QTWallet(QObject):
         assert bool(self.wallet)
         self.legacy_network = LegacyNetwork(self.wallet)
 
-        self.history_tab, self.history_list, self.history_model = self._create_hist_tab(
-            self.tabs
-        )
+        self.history_tab, self.history_list = self._create_hist_tab(self.tabs)
         (
             self.addresses_tab,
             self.address_list,
@@ -572,7 +557,7 @@ class QTWallet(QObject):
 
     def create_list_tab(
         self,
-        l: HistoryList,
+        l: HistList,
         horizontal_widgets_left=None,
         horizontal_widgets_right=None,
     ):
@@ -602,17 +587,25 @@ class QTWallet(QObject):
         return h
 
     def _create_hist_tab(self, tabs):
-        hm = HistoryModel(self.tab, self.fx, self.config, self.wallet, self.signals)
-        l = HistoryList(self.fx, self.config, self.signals, self.wallet, hm)
-        hm.set_view(l)
-        l.searchable_list = l
+        l = HistList(
+            fx=self.fx,
+            config=self.config,
+            signals=self.signals,
+            wallet_id=self.wallet.id,
+            hidden_columns=[
+                HistList.Columns.WALLET_ID,
+                HistList.Columns.BALANCE,
+                HistList.Columns.SATOSHIS,
+                HistList.Columns.TXID,
+            ],
+        )
         tab = self.create_list_tab(l)
 
         add_tab_to_tabs(
             tabs, tab, read_QIcon("tab_history.png"), "History", "history", position=0
         )
 
-        return tab, l, hm
+        return tab, l
 
     def _subtexts_for_categories(self):
         d = {}
@@ -652,8 +645,8 @@ class QTWallet(QObject):
     def _create_utxo_tab(self, tabs):
         l = UTXOList(
             self.config,
-            self.wallet,
             self.signals,
+            wallet_id=self.wallet.id,
             hidden_columns=[UTXOList.Columns.SATOSHIS],
         )
         tab = self.create_list_tab(l)

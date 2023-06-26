@@ -37,6 +37,10 @@ class QRLabel(QLabel):
         self.setScaledContents(True)  # Enable automatic scaling
         self.pil_image = None
         self.enlarged_image = None
+        self.clickable = clickable
+        # Set the cursor to a pointing hand if the label is clickable
+        if clickable:
+            self.setCursor(Qt.PointingHandCursor)
 
     def enlarge_image(self):
         if not self.enlarged_image:
@@ -48,7 +52,8 @@ class QRLabel(QLabel):
             self.enlarged_image.show()
 
     def mousePressEvent(self, event):
-        self.enlarge_image()
+        if self.clickable:
+            self.enlarge_image()
 
     def set_image(self, pil_image):
         self.pil_image = pil_image

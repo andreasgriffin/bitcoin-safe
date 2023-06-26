@@ -30,7 +30,7 @@ from ...mempool import MempoolData, fees_of_depths
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
 from .qrcodewidget import QRLabel
-from ...wallet import UtxosForInputs
+from ...wallet import UtxosForInputs, Wallet
 
 
 max_reasonable_fee_rate_fallback = 100
@@ -314,6 +314,7 @@ class UITX_Viewer(UITX_Base):
         self,
         psbt: bdk.PartiallySignedTransaction,
         signals: Signals,
+        utxo_list: UTXOList,
         network: bdk.Network,
         mempool_data: MempoolData,
         fee_rate=None,
@@ -322,6 +323,7 @@ class UITX_Viewer(UITX_Base):
         self.psbt: bdk.PartiallySignedTransaction = psbt
         self.network = network
         self.fee_rate = fee_rate
+        self.utxo_list = utxo_list
 
         self.signers: List[SignerWallet] = []
 
@@ -336,11 +338,13 @@ class UITX_Viewer(UITX_Base):
         self.tabs_inputs_outputs = QTabWidget(self.main_widget)
         self.upper_widget_layout.addWidget(self.tabs_inputs_outputs)
 
-        #
+        # inputs
         self.tab_inputs = QWidget(self.main_widget)
         self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
+        self.tab_inputs_layout.addWidget(utxo_list)
         self.tabs_inputs_outputs.addTab(self.tab_inputs, "Inputs")
 
+        # outputs
         self.tab_outputs = QWidget(self.main_widget)
         self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
         self.tabs_inputs_outputs.addTab(self.tab_outputs, "Outputs")
@@ -389,6 +393,7 @@ class UITX_Viewer(UITX_Base):
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
         self.set_psbt(psbt, fee_rate=fee_rate)
+        self.utxo_list.update()
 
     def broadcast(self):
         logger.debug(f"broadcasting {psbt_to_hex(self.psbt)}")
@@ -397,21 +402,22 @@ class UITX_Viewer(UITX_Base):
         self.signal_broadcast_tx.emit()
 
     def add_all_signer_tabs(self):
+        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
+
+        def get_wallet_of_outpoint(outpoint: bdk.OutPoint) -> Wallet:
+            for wallet in wallets_dict.values():
+                utxo = wallet.utxo_of_outpoint(outpoint)
+                if utxo:
+                    return wallet
+
         # collect all wallets
         inputs: List[bdk.TxIn] = self.psbt.extract_tx().input()
 
-        wallet_for_inputs = []
+        wallet_for_inputs: List[Wallet] = []
         for this_input in inputs:
-            for wallet_id, utxo in self.signals.utxo_of_outpoint.emit(
-                this_input.previous_output
-            ).items():
-                if utxo:
-                    wallet = [
-                        wallet
-                        for wallet in self.signals.get_wallets.emit().values()
-                        if wallet.id == wallet_id
-                    ][0]
-                    wallet_for_inputs.append(wallet)
+            wallet_of_input = get_wallet_of_outpoint(this_input.previous_output)
+            if wallet_of_input:
+                wallet_for_inputs.append(wallet_of_input)
 
         if None in wallet_for_inputs:
             logger.warning(
@@ -420,7 +426,7 @@ class UITX_Viewer(UITX_Base):
 
         logger.debug(f"wallet_for_inputs {[w.id for w in wallet_for_inputs]}")
 
-        signers = []
+        signers: List[SignerWallet] = []
         for wallet in set(wallet_for_inputs):  # removes all duplicate wallets
             for keystore in wallet.keystores:
                 # TODO: once the bdk ffi has Signers (also hardware signers), I cann add here the signers
@@ -623,17 +629,13 @@ class UITX_Creator(UITX_Base):
         return infos
 
     def set_max_amount(self, spin_box: CustomDoubleSpinBox):
+        wallets: List[Wallet] = self.signals.get_wallets().values()
+
         txinfos = self.get_ui_tx_infos()
-        utxos_dict: Dict[
-            str, UtxosForInputs
-        ] = self.signals.signal_get_all_input_utxos.emit(txinfos)
-        total_input_value = sum(
-            [
-                utxo.txout.value
-                for wallet_id, utxos in utxos_dict.items()
-                for utxo in utxos.utxos
-            ]
-        )
+
+        utxos = sum([wallet.get_all_input_utxos(txinfos) for wallet in wallets], [])
+
+        total_input_value = sum([utxo.txout.value for utxo in utxos])
 
         total_output_value = sum(
             [recipient.amount for recipient in txinfos.recipients]

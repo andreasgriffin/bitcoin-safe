@@ -25,6 +25,8 @@
 
 import logging
 
+from bitcoin_safe.pythonbdk_types import OutPoint
+
 logger = logging.getLogger(__name__)
 
 
@@ -53,12 +55,9 @@ from .my_treeview import MyTreeView
 import bdkpython as bdk
 from ...signals import Signals
 
-PartialTxInput = PartialTxOutput = bdk.PartiallySignedTransaction
-
 
 class UTXOList(MyTreeView, MessageBoxMixin):
-    _spend_set: Set[str]  # coins selected by the user to spend from
-    _utxo_dict: Dict[str, PartialTxInput]  # coin name -> coin
+    _utxo_dict: Dict[str, bdk.LocalUtxo]  # coin name -> coin
 
     class Columns(MyTreeView.BaseColumnsEnum):
         WALLET_ID = enum.auto()
@@ -92,18 +91,25 @@ class UTXOList(MyTreeView, MessageBoxMixin):
     key_role = ROLE_PREVOUT_STR
     key_column = Columns.OUTPOINT
 
-    def __init__(self, config, wallet: Wallet, signals: Signals, hidden_columns=None):
+    def __init__(
+        self,
+        config,
+        signals: Signals,
+        wallet_id=None,
+        outpoint_domain=None,
+        hidden_columns=None,
+    ):
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
             editable_columns=[],
         )
         self.config = config
+        self.wallet_id = wallet_id
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
-        self._spend_set = set()
+        self.outpoint_domain = outpoint_domain
         self._utxo_dict = {}
-        self.wallet = wallet
         self.std_model = QStandardItemModel(self)
         self.setModel(self.std_model)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -117,38 +123,49 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         return toolbar
 
     def update(self):
+        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
+
         # not calling maybe_defer_update() as it interferes with coincontrol status bar
-        utxos = self.wallet.get_utxos()
+        utxos_dict = {
+            wallet_id: wallet.get_utxos() for wallet_id, wallet in wallets_dict.items()
+        }
         # utxos.sort(key=lambda x: x.block_height, reverse=True)
         self._utxo_dict = {}
         self.model().clear()
         self.update_headers(self.__class__.headers)
-        for idx, utxo in enumerate(utxos):
-            name = self.wallet.get_utxo_name(utxo)
-            self._utxo_dict[name] = utxo
-            labels = [""] * len(self.Columns)
-            labels[self.Columns.OUTPOINT] = str(name)
-            labels[self.Columns.ADDRESS] = self.wallet.get_utxo_address(
-                utxo
-            ).as_string()
-            labels[self.Columns.AMOUNT] = format_satoshis(utxo.txout.value)
-            labels[self.Columns.SATOSHIS] = str(utxo.txout.value)
-            utxo_item = [QStandardItem(x) for x in labels]
-            self.set_editability(utxo_item)
-            utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_PREVOUT_STR)
-            utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_CLIPBOARD_DATA)
-            utxo_item[self.Columns.ADDRESS].setFont(QFont(MONOSPACE_FONT))
-            utxo_item[self.Columns.ADDRESS].setData(
-                labels[self.Columns.ADDRESS], self.ROLE_CLIPBOARD_DATA
-            )
-            utxo_item[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
-            utxo_item[self.Columns.AMOUNT].setData(
-                utxo.txout.value, self.ROLE_CLIPBOARD_DATA
-            )
-            utxo_item[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
-            utxo_item[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
-            self.model().insertRow(idx, utxo_item)
-            self.refresh_row(name, idx)
+        idx = 0
+        for wallet_id, utxos in utxos_dict.items():
+            wallet: Wallet = wallets_dict[wallet_id]
+            for utxo in utxos:
+                if (
+                    self.outpoint_domain is not None
+                    and OutPoint.from_bdk(utxo.outpoint) not in self.outpoint_domain
+                ):
+                    continue
+                name = wallet.get_utxo_name(utxo)
+                self._utxo_dict[name] = utxo
+                labels = [""] * len(self.Columns)
+                labels[self.Columns.OUTPOINT] = str(name)
+                labels[self.Columns.ADDRESS] = wallet.get_utxo_address(utxo).as_string()
+                labels[self.Columns.AMOUNT] = format_satoshis(utxo.txout.value)
+                labels[self.Columns.SATOSHIS] = str(utxo.txout.value)
+                utxo_item = [QStandardItem(x) for x in labels]
+                self.set_editability(utxo_item)
+                utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_PREVOUT_STR)
+                utxo_item[self.Columns.OUTPOINT].setData(name, self.ROLE_CLIPBOARD_DATA)
+                utxo_item[self.Columns.ADDRESS].setFont(QFont(MONOSPACE_FONT))
+                utxo_item[self.Columns.ADDRESS].setData(
+                    labels[self.Columns.ADDRESS], self.ROLE_CLIPBOARD_DATA
+                )
+                utxo_item[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
+                utxo_item[self.Columns.AMOUNT].setData(
+                    utxo.txout.value, self.ROLE_CLIPBOARD_DATA
+                )
+                utxo_item[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
+                utxo_item[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
+                self.model().insertRow(idx, utxo_item)
+                self.refresh_row(name, idx, wallet)
+                idx += 1
         self.filter()
         if hasattr(self, "num_coins_label"):
             self.num_coins_label.setText(
@@ -157,32 +174,26 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-    def refresh_row(self, key, row):
+    def refresh_row(self, key, row, wallet):
         assert row is not None
         utxo = self._utxo_dict[key]
         utxo_item = [self.std_model.item(row, col) for col in self.Columns]
-        utxo_item[self.Columns.WALLET_ID].setText(self.wallet.id)
-        utxo_item[self.Columns.WALLET_ID].setData(
-            self.wallet.id, self.ROLE_CLIPBOARD_DATA
-        )
+        utxo_item[self.Columns.WALLET_ID].setText(wallet.id)
+        utxo_item[self.Columns.WALLET_ID].setData(wallet.id, self.ROLE_CLIPBOARD_DATA)
         txid = utxo.outpoint.txid
-        parents = self.wallet.get_tx_parents(txid)
+        parents = wallet.get_tx_parents(txid)
         utxo_item[self.Columns.PARENTS].setText("%6s" % len(parents))
         utxo_item[self.Columns.PARENTS].setData(len(parents), self.ROLE_CLIPBOARD_DATA)
-        address = self.wallet.get_utxo_address(utxo).as_string()
-        category = self.wallet.get_category_for_address(address)
+        address = wallet.get_utxo_address(utxo).as_string()
+        category = wallet.get_category_for_address(address)
         utxo_item[self.Columns.CATEGORY].setText(category)
         utxo_item[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
-        label = self.wallet.get_label_for_txid(txid) or ""
+        label = wallet.get_label_for_txid(txid) or ""
         utxo_item[self.Columns.LABEL].setText(label)
         utxo_item[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
         SELECTED_TO_SPEND_TOOLTIP = _("Coin selected to be spent")
-        if key in self._spend_set:
-            tooltip = key + "\n" + SELECTED_TO_SPEND_TOOLTIP
-            color = ColorScheme.GREEN.as_color(True)
-        else:
-            tooltip = key
-            color = self._default_bg_brush
+        tooltip = key
+        color = self._default_bg_brush
         for col in utxo_item:
             col.setBackground(color)
             col.setToolTip(tooltip)
@@ -195,15 +206,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         items = self.selected_in_column(self.Columns.OUTPOINT)
         return [x.data(self.ROLE_PREVOUT_STR) for x in items]
 
-    def get_spend_list(self) -> Optional[Sequence[PartialTxInput]]:
-        if not bool(self._spend_set):
-            return None
-        utxos = [self._utxo_dict[x] for x in self._spend_set]
-        return copy.deepcopy(utxos)  # copy so that side-effects don't affect utxo_dict
-
     def pay_to_clipboard_address(self, coins):
         addr = QApplication.clipboard().text()
-        outputs = [PartialTxOutput.from_address_and_value(addr, "!")]
+        outputs = [bdk.LocalUtxo.from_address_and_value(addr, "!")]
         self.main_window.send_tab.pay_onchain_dialog(outputs)
 
     def on_double_click(self, idx):
@@ -212,53 +217,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         )
         utxo = self._utxo_dict[outpoint]
         self.signals.show_utxo.emit(utxo)
-
-    # def create_menu(self, position):
-    #     selected = self.get_selected_outpoints()
-    #     menu = QMenu()
-    #     menu.setSeparatorsCollapsible(
-    #         True
-    #     )  # consecutive separators are merged together
-    #     coins = [self._utxo_dict[name] for name in selected]
-    #     if not coins:
-    #         return
-    #     if len(coins) == 1:
-    #         idx = self.indexAt(position)
-    #         if not idx.isValid():
-    #             return
-    #         utxo = coins[0]
-    #         txid = utxo.prevout.txid.hex()
-    #         # "Details"
-    #         tx = self.wallet.adb.get_transaction(txid)
-    #         if tx:
-    #             label = self.wallet.get_label_for_txid(txid)
-    #             menu.addAction(
-    #                 _("Privacy analysis"), lambda: self.signals.show_utxo.emit(utxo)
-    #             )
-    #         cc = self.add_copy_menu(menu, idx)
-    #         cc.addAction(
-    #             _("Long Output point"),
-    #             lambda: self.place_text_on_clipboard(
-    #                 utxo.prevout.to_str(), title="Long Output point"
-    #             ),
-    #         )
-    #     # fully spend
-    #     menu_spend = menu.addMenu(_("Fully spend") + "…")
-    #     m = menu_spend.addAction(
-    #         _("send to address in clipboard"),
-    #         lambda: self.pay_to_clipboard_address(coins),
-    #     )
-    #     m.setEnabled(self.clipboard_contains_address())
-    #     # coin control
-    #     # Freeze menu
-    #     if len(coins) == 1:
-    #         utxo = coins[0]
-    #         addr = utxo.address
-    #     elif len(coins) > 1:  # multiple items selected
-    #         menu.addSeparator()
-    #         addrs = [utxo.address for utxo in coins]
-
-    #     menu.exec_(self.viewport().mapToGlobal(position))
 
     def get_filter_data_from_coordinate(self, row, col):
         if col == self.Columns.OUTPOINT:

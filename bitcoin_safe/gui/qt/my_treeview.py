@@ -161,8 +161,11 @@ class MyMenu(QMenu):
             callback()
 
 
-def create_toolbar_with_menu(config, title):
+def create_toolbar_with_menu(config, title, export_as_csv=None):
     menu = MyMenu(config)
+    if export_as_csv:
+        menu.addAction(_("Export as CSV"), export_as_csv)
+
     toolbar_button = QToolButton()
     toolbar_button.clicked.connect(lambda: menu.exec_(QCursor.pos()))
     toolbar_button.setIcon(read_QIcon("preferences.png"))
@@ -459,7 +462,7 @@ class MyTreeView(QTreeView):
             stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text"
         )
 
-    def copyRowsToClipboardAsCSV(self, row_numbers):
+    def get_rows_as_csv(self, row_numbers):
         def get_data(row, col):
             model = (
                 self.original_model()
@@ -487,6 +490,11 @@ class MyTreeView(QTreeView):
             for column in self.Columns:
                 row_data.append(get_data(row, column))
             table.append(row_data)
+
+        return table
+
+    def copyRowsToClipboardAsCSV(self, row_numbers):
+        table = self.get_rows_as_csv()
 
         stream = io.StringIO()
         writer = csv.writer(stream)
@@ -602,8 +610,24 @@ class MyTreeView(QTreeView):
         self.toolbar_buttons = buttons
         return hbox
 
+    def export_as_csv(self, file_path=None):
+        if not file_path:
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "Export csv", "", "All Files (*);;Text Files (*.csv)"
+            )
+            if not file_path:
+                logger.debug("No file selected")
+                return
+        table = self.get_rows_as_csv(row_numbers=list(range(self.model().rowCount())))
+        with open(file_path, "w") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerows(table)
+        logger.info(f"Table with {len(table)} rows saved to {file_path}")
+
     def create_toolbar_with_menu(self, title):
-        return create_toolbar_with_menu(self.config, title)
+        return create_toolbar_with_menu(
+            self.config, title, export_as_csv=self.export_as_csv
+        )
 
     def show_toolbar(self, state, config=None):
         if state == self.toolbar_shown:

@@ -74,6 +74,7 @@ class AddressInfoMin:
 class BlockchainType(enum.Enum):
     CompactBlockFilter = enum.auto()
     Electrum = enum.auto()
+    RPC = enum.auto()
 
     @classmethod
     def from_text(cls, t):
@@ -81,6 +82,8 @@ class BlockchainType(enum.Enum):
             return cls.CompactBlockFilter
         elif t == "Electrum Server":
             return cls.Electrum
+        elif t == "RPC":
+            return cls.RPC
 
     @classmethod
     def to_text(cls, t):
@@ -88,6 +91,8 @@ class BlockchainType(enum.Enum):
             return "Compact Block Filters"
         elif t == cls.Electrum:
             return "Electrum Server"
+        elif t == cls.RPC:
+            return "RPC"
 
 
 class CBFServerType(enum.Enum):

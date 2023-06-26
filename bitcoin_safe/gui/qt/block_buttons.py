@@ -159,14 +159,6 @@ class MempoolProjectedBlock(QObject):
     def _fill_buttton_text(self):
         if self.mempool_data is None:
             return
-
-        def fees_of_depths(depths):
-            fee_borders_indizes = [
-                index_of_sum_until_including(self.mempool_data.data[:, 1], depth)
-                for depth in depths
-            ]
-            return [self.mempool_data.data[i, 0] for i in fee_borders_indizes]
-
         block_number = fee_to_blocknumber(self.mempool_data.data, self.fee_rate)
         depths = np.array([block_number - 1, block_number]) * 1e6
         block_fee_borders = fees_of_depths(self.mempool_data.data, depths)

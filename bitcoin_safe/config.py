@@ -53,6 +53,14 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
             bdk.Network.SIGNET: 51001,
         }
         return d[network]
+    elif server_type == BlockchainType.RPC:
+        d = {
+            bdk.Network.BITCOIN: 8332,
+            bdk.Network.REGTEST: 18443,
+            bdk.Network.TESTNET: 18332,
+            bdk.Network.SIGNET: 38332,
+        }
+        return d[network]
 
 
 class NetworkConfig(BaseSaveableClass):
@@ -66,6 +74,10 @@ class NetworkConfig(BaseSaveableClass):
         )
         self.electrum_ip = "127.0.0.1"
         self.electrum_port = get_default_port(self.network, BlockchainType.Electrum)
+        self.rpc_ip = "127.0.0.1"
+        self.rpc_port = get_default_port(self.network, BlockchainType.RPC)
+        self.rpc_username = "bitcoin"
+        self.rpc_password = ""
 
     def serialize(self):
         d = super().serialize()
