@@ -13,10 +13,11 @@ from ...mempool import (
     fee_to_blocknumber,
     fees_of_depths,
 )
-from .util import center_in_widget
+from .util import center_in_widget, open_website
 from PySide2.QtCore import Signal, QObject
 from typing import List, Dict
 from PySide2.QtWidgets import QSizePolicy
+import bdkpython as bdk
 
 
 class BlockButton(QPushButton):
@@ -45,31 +46,46 @@ class BlockButton(QPushButton):
             f"<span style='color: black; font-size: 16px;'>{title}</span>"
         )
 
-    def update_median_fee(self, median_fee: float):
+    def update_median_fee(self, median_fee: float, is_exact=False):
+        if isinstance(median_fee, str):
+            s = median_fee
+        else:
+            if is_exact:
+                s = f"{round(median_fee, 1)} Sat/vB"
+            else:
+                s = f"~{int(median_fee)} Sat/vB"
+
         self.labels[1].setText(
-            f"<span style='color: black; font-size: 12px;'>~{int(median_fee)} sat/vB</span>"
+            f"<span style='color: black; font-size: 12px;'>{s}</span>"
         )
 
     def update_fee_range(self, min_fee, max_fee):
+        if isinstance(min_fee, str):
+            s = min_fee
+        else:
+            s = f"{int(min_fee)} - {int(max_fee)} Sat/vB"
+
         self.labels[2].setText(
-            f"<span style='color: darkorange; font-size: 10px;'>{int(min_fee)} - {int(max_fee)} sat/vB</span>"
+            f"<span style='color: darkorange; font-size: 10px;'>{s}</span>"
         )
 
     def update_bottom_text(self, blocknumber):
-        if blocknumber < 6:
-            self.labels[3].setText(
-                f"<span style='color: black; font-size: 12px;'>~in {(blocknumber)*10} min</span>"
-            )
+        if isinstance(blocknumber, str):
+            s = blocknumber
+        elif blocknumber < 6:
+            s = f"~in {(blocknumber)*10} min</span>"
         else:
-            self.labels[3].setText(
-                f"<span style='color: black; font-size: 12px;'>~in {round(blocknumber/6)} hours</span>"
-            )
+            s = f"~in {round(blocknumber/6)} hours"
+
+        self.labels[3].setText(
+            f"<span style='color: black; font-size: 12px;'>{s}</span>"
+        )
 
 
 class VerticalButtonGroup(QWidget):
     signal_button_click = Signal(int)
 
-    def __init__(self, button_count=3, parent=None):
+    def __init__(self, button_count=3, parent=None, size=100):
         super().__init__(parent)
         layout = QVBoxLayout(self)
 
@@ -77,7 +93,7 @@ class VerticalButtonGroup(QWidget):
 
         # Create buttons
         for i in range(button_count):
-            button = BlockButton()
+            button = BlockButton(size=size, parent=self)
             button.update_title("Next Block" if i == 0 else f"{i+1}. Block")
             button.update_median_fee(37)
             button.update_fee_range(32, 336)
@@ -133,7 +149,7 @@ class MempoolButtons(QObject):
         print(i, self.median_block_fee_borders[i])
         self.signal_click.emit(self.median_block_fee_borders[i])
 
-    def set_fee_rate(self, fee_rate):
+    def set_fee_rate(self, fee_rate, **kwargs):
         self.fee_rate = fee_rate
 
 
@@ -152,7 +168,7 @@ class MempoolProjectedBlock(QObject):
         # self.mempool_data.signal_current_data_updated.connect(self._fill_buttton_text)
         self.button_group.signal_button_click.connect(self._on_button_click)
 
-    def set_fee_rate(self, fee_rate):
+    def set_fee_rate(self, fee_rate, **kwargs):
         self.fee_rate = fee_rate
         self._fill_buttton_text()
 
@@ -175,6 +191,46 @@ class MempoolProjectedBlock(QObject):
     def _on_button_click(self, i: int):
         print(i, self.median_block_fee_borders[i])
         self.signal_click.emit(self.median_block_fee_borders[i])
+
+
+class ConfirmedBlock(QObject):
+    signal_click = Signal(str)  # txid
+
+    def __init__(
+        self,
+        mempool_data,
+        txid: str = None,
+        confirmation_time: bdk.BlockTime = None,
+        fee_rate=1,
+        parent=None,
+    ) -> None:
+        super().__init__()
+
+        self.mempool_data = mempool_data
+        self.button_group = VerticalButtonGroup(button_count=1, parent=parent, size=130)
+        self.set_fee_rate(txid, confirmation_time, fee_rate)
+
+        # self.mempool_data.signal_current_data_updated.connect(self._fill_buttton_text)
+        self.button_group.signal_button_click.connect(self._on_button_click)
+
+    def set_fee_rate(self, txid: str, confirmation_time: bdk.BlockTime, fee_rate):
+        self.fee_rate = fee_rate
+        self.confirmation_time = confirmation_time
+        self.txid = txid
+        self._fill_buttton_text()
+
+    def _fill_buttton_text(self):
+        if not self.confirmation_time:
+            return
+        for i, button in enumerate(self.button_group.buttons):
+            button.update_title(f"Block {self.confirmation_time.height}")
+            button.update_median_fee("Confirmed")
+            button.update_fee_range(f"{round(self.fee_rate, 1 )} Sat/vB", None)
+            button.update_bottom_text("visit\nmempool.space")
+
+    def _on_button_click(self, i: int):
+        open_website(f"https://mempool.space/tx/{self.txid}")
+        self.signal_click.emit(self.txid)
 
 
 if __name__ == "__main__":

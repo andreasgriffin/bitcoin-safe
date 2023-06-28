@@ -73,38 +73,12 @@ import json
 from ...rpc import send_rpc_command
 
 from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, webopen, do_copy
-from .my_treeview import MyTreeView, MySortModel
+from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
 from .taglist import AddressDragInfo
 from .html_delegate import HTMLDelegate
 from ...signals import UpdateFilter
 
-
-class MyStandardItemModel(QStandardItemModel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def flags(self, index):
-        if (
-            index.column() == AddressList.Columns.ADDRESS
-        ):  # only enable dragging for column 1
-            return super().flags(index) | Qt.ItemIsDragEnabled
-        else:
-            return super().flags(index)
-
-    def mimeData(self, indexes):
-        mime_data = QMimeData()
-        d = {
-            "type": "drag_addresses",
-            "addresses": [],
-        }
-
-        for index in indexes:
-            if index.isValid() and index.column() == AddressList.Columns.ADDRESS:
-                d["addresses"].append(self.data(index))
-
-        json_string = json.dumps(d).encode()
-        mime_data.setData("application/json", json_string)
-        return mime_data
+from ...signals import Signals
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -137,9 +111,6 @@ class AddressTypeFilter(IntEnum):
         }[self]
 
 
-from ...signals import Signals
-
-
 class AddressList(MyTreeView, MessageBoxMixin):
     signal_tag_dropped = Signal(AddressDragInfo)
 
@@ -165,9 +136,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORY: Qt.AlignCenter,
     }
 
-    ROLE_SORT_ORDER = Qt.UserRole + 1000
-    ROLE_ADDRESS_STR = Qt.UserRole + 1001
-    key_role = ROLE_ADDRESS_STR
+    key_column = 1
 
     def __init__(self, fx, config, wallet: Wallet, signals: Signals):
         super().__init__(
@@ -196,7 +165,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             AddressUsageStateFilter.__members__.values()
         ):  # type: AddressUsageStateFilter
             self.used_button.addItem(addr_usage_state.ui_text())
-        self.std_model = MyStandardItemModel(self)
+        self.std_model = MyStandardItemModel(self, drag_key="addresses")
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
@@ -280,7 +249,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
+        addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
         self.signals.show_address.emit(addr)
 
     def create_toolbar(self, config: UserConfig = None):
@@ -293,7 +262,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.button_fresh_address = QPushButton("Copy fresh receive address")
         self.button_fresh_address.clicked.connect(self.get_address)
         toolbar.insertWidget(1, self.button_fresh_address)
-        self.button_new_address = QPushButton("+ Add \& Copy receive address")
+        self.button_new_address = QPushButton("+ Add receive address")
         self.button_new_address.clicked.connect(
             lambda: self.get_address(force_new=True)
         )
@@ -402,9 +371,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def update(self):
         if self.maybe_defer_update():
             return
-        current_address = self.get_role_data_for_current_item(
-            col=0, role=self.ROLE_ADDRESS_STR
-        )
+        current_key = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
         if self.show_change == AddressTypeFilter.RECEIVING:
             addr_list = self.wallet.get_receiving_addresses()
         elif self.show_change == AddressTypeFilter.CHANGE:
@@ -450,14 +417,11 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 address, self.ROLE_CLIPBOARD_DATA
             )
             # align text and set fonts
-            for i, item in enumerate(address_item):
-                item.setTextAlignment(Qt.AlignVCenter)
-                if i in (self.Columns.ADDRESS,):
-                    item.setFont(QFont(MONOSPACE_FONT))
+            # for i, item in enumerate(address_item):
+            #     item.setTextAlignment(Qt.AlignVCenter)
+            #     if i in (self.Columns.ADDRESS,):
+            #         item.setFont(QFont(MONOSPACE_FONT))
             self.set_editability(address_item)
-            address_item[self.Columns.FIAT_BALANCE].setTextAlignment(
-                Qt.AlignRight | Qt.AlignVCenter
-            )
             # setup column 0
             if self.wallet.is_change(address):
                 address_item[self.Columns.TYPE].setText(_("change"))
@@ -481,7 +445,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 address_path = self.wallet.get_address_index_tuple(
                     address, bdk.KeychainKind.EXTERNAL
                 )
-            address_item[0].setData(address, self.ROLE_ADDRESS_STR)
+            address_item[0].setData(address, self.ROLE_KEY)
             address_item[self.Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
             address_path_str = self.wallet.get_address_path_str(address)
             if address_path_str is not None:
@@ -491,7 +455,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             self.std_model.insertRow(count, address_item)
             self.refresh_row(address, count)
             address_idx = self.std_model.index(count, self.Columns.LABEL)
-            if address == current_address:
+            if address == current_key:
                 set_address = QPersistentModelIndex(address_idx)
         self.set_current_idx(set_address)
         # show/hide self.Columns
@@ -601,7 +565,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def get_edit_key_from_coordinate(self, row, col):
         if col != self.Columns.LABEL:
             return None
-        return self.get_role_data_from_coordinate(row, 0, role=self.ROLE_ADDRESS_STR)
+        return self.get_role_data_from_coordinate(row, 0, role=self.ROLE_KEY)
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.set_label(edit_key, text)

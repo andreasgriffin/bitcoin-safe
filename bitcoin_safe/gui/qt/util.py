@@ -131,6 +131,26 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 )
 
 
+TX_ICONS = [
+    "unconfirmed.png",
+    "clock1.png",
+    "clock2.png",
+    "clock3.png",
+    "clock4.png",
+    "clock5.png",
+    "confirmed.png",
+]
+
+
+def sort_id_to_icon(sort_id):
+    if sort_id < 0:
+        return "offline_tx.png"
+    if sort_id > len(TX_ICONS) - 1:
+        sort_id = len(TX_ICONS) - 1
+
+    return TX_ICONS[sort_id]
+
+
 def create_buy_coldcard_button():
     button = QPushButton()
     button.setObjectName("button")

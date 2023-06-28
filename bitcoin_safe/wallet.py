@@ -122,7 +122,7 @@ class UtxosForInputs:
 
 
 class OutputInfo:
-    def __init__(self, outpoint: OutPoint, tx: bdk.Transaction) -> None:
+    def __init__(self, outpoint: OutPoint, tx: bdk.TransactionDetails) -> None:
         self.outpoint = outpoint
         self.tx = tx
 
@@ -599,18 +599,12 @@ class Wallet(BaseSaveableClass):
         logger.info(f"New address: {address} at index {index}")
         return address_info
 
-    def output_addresses(self, transaction) -> List[bdk.Address]:
+    def get_output_addresses(self, transaction) -> List[bdk.Address]:
         # print(f'Getting output addresses for txid {transaction.txid}')
-        addresses = []
-        for output in transaction.transaction.output():
-            add = (
-                bdk.Address.from_script(
-                    output.script_pubkey, self.config.network_settings.network
-                )
-                if output.value != 0
-                else None
-            )
-            addresses.append(add)
+        addresses = [
+            self.get_address_of_txout(output)
+            for output in transaction.transaction.output()
+        ]
         return addresses
 
     def get_tx(self, txid) -> bdk.TransactionDetails:
@@ -689,7 +683,7 @@ class Wallet(BaseSaveableClass):
 
     def list_tx_addresses(self, transaction):
         in_addresses = self.list_input_addresses(transaction)
-        out_addresses = self.output_addresses(transaction)
+        out_addresses = self.get_output_addresses(transaction)
         logger.debug(
             f"{transaction.txid}: {[(a.as_string() if a else None) for a in in_addresses]} --> {[(a.as_string() if a else None) for a in out_addresses]}"
         )
@@ -886,6 +880,20 @@ class Wallet(BaseSaveableClass):
         return self.bdkwallet.list_transactions(True)
 
     @cache_method
+    def get_outpoint_dict(
+        self, txs: List[bdk.TransactionDetails], must_be_mine=True
+    ) -> Dict[OutPoint, bdk.TransactionDetails]:
+        can_belong_to_any = not must_be_mine
+
+        d = {}
+        for txdetails in txs:
+            for vout, txout in enumerate(txdetails.transaction.output()):
+                if can_belong_to_any or self.bdkwallet.is_mine(txout.script_pubkey):
+                    outpoint = OutPoint(txdetails.txid, vout)
+                    d[outpoint] = txdetails
+        return d
+
+    @cache_method
     def get_received_send_maps(
         self,
     ) -> Tuple[Dict[str, List[OutputInfo]], Dict[str, List[OutputInfo]]]:
@@ -1016,7 +1024,7 @@ class Wallet(BaseSaveableClass):
     def set_label(self, key, label):
         if self.labels.get(key, None) == label:
             return False
-        if not label:
+        if not label and key in self.labels:
             del self.labels[key]
             return
 
@@ -1058,7 +1066,7 @@ class Wallet(BaseSaveableClass):
 
     def get_utxo_address(self, utxo):
         tx = self.get_tx(utxo.outpoint.txid)
-        return self.output_addresses(tx)[utxo.outpoint.vout]
+        return self.get_output_addresses(tx)[utxo.outpoint.vout]
 
     def get_full_history(self, address_domain=None):
         transactions = []
@@ -1328,15 +1336,26 @@ class Wallet(BaseSaveableClass):
             f"Selecting category {category} out of {categories} for the output addresses"
         )
 
-        # set labels and categries
+        # the category is automatically copied from the input(s)
         if category:
             self.set_recipient_category_from_inputs(
                 builder_result.psbt.extract_tx().output(), category
             )
+        # the label is not copied from the inputs
         for recipient in txinfos.recipients:
             # this does not include the change output
             if recipient.label:
                 self.labels[recipient.address] = recipient.label
+        # add a label for the change output
+        for txout in builder_result.psbt.extract_tx().output():
+            address = self.get_address_of_txout(txout)
+            if not self.is_change(address):
+                continue
+            labels = [
+                recipient.label for recipient in txinfos.recipients if recipient.label
+            ]
+            if address and labels:
+                self.labels[address] = ",".join(labels)
 
         txinfos.builder_result = builder_result
         return txinfos

@@ -21,6 +21,9 @@ class OutPoint(bdk.OutPoint):
     def __hash__(self):
         return hash(self.__key__())
 
+    def __str__(self):
+        return f"{self.txid}:{self.vout}"
+
     @classmethod
     def from_bdk(cls, bdk_outpoint: bdk.OutPoint):
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)

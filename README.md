@@ -63,6 +63,8 @@
 
 ![screenshot0](docs/gif-addresses.gif)
 
+![screenshot0](docs/send-tx.gif)
+
 #### Screenshots
 
 ![screenshot0](docs/screenshot0.png)

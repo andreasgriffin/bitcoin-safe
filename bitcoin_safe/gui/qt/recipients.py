@@ -67,15 +67,11 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         form_layout = QtWidgets.QFormLayout()
         self.address_line_edit = QtWidgets.QLineEdit()
         self.address_line_edit.setPlaceholderText("Enter address here")
-        if not allow_edit:
-            self.address_line_edit.setReadOnly(True)
         self.label_line_edit = QtWidgets.QLineEdit()
         self.label_line_edit.setPlaceholderText("Enter label here")
 
         self.amount_layout = QtWidgets.QHBoxLayout()
         self.amount_spin_box = CustomDoubleSpinBox()
-        if not allow_edit:
-            self.amount_spin_box.setReadOnly(True)
         self.send_max_button = QtWidgets.QPushButton("Send max")
         self.send_max_button.setCheckable(True)
         self.send_max_button.setMaximumWidth(80)
@@ -87,6 +83,12 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         form_layout.addRow("address:", self.address_line_edit)
         form_layout.addRow("label:", self.label_line_edit)
         form_layout.addRow("amount:", self.amount_layout)
+
+        if not allow_edit:
+            self.address_line_edit.setReadOnly(True)
+            self.label_line_edit.setReadOnly(True)
+            self.amount_spin_box.setReadOnly(True)
+
         layout.addLayout(form_layout)
 
         self.setFixedHeight(120)  # Set fixed height as required
@@ -151,6 +153,8 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         if wallet_id:
             self.label_line_edit.setPlaceholderText(label)
+            if not self.allow_edit:
+                self.label_line_edit.setText(label)
         else:
             self.label_line_edit.setPlaceholderText("Enter label for recipient address")
 
@@ -176,11 +180,11 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
             if wallet_of_address.is_change(self.address):
                 background_color = ColorScheme.YELLOW.as_color(background=True)
                 palette.setColor(QtGui.QPalette.Base, background_color)
-                self.setTitle(f'Receiver is wallet "{wallet_of_address.id}"')
+                self.setTitle(f'Recipient is wallet "{wallet_of_address.id}"')
             else:
                 background_color = ColorScheme.GREEN.as_color(background=True)
                 palette.setColor(QtGui.QPalette.Base, background_color)
-                self.setTitle(f'Receiver is wallet "{wallet_of_address.id}"')
+                self.setTitle(f'Recipient is wallet "{wallet_of_address.id}"')
         else:
             palette = self.address_line_edit.style().standardPalette()
             self.setTitle("")
@@ -199,9 +203,11 @@ class Recipients(QtWidgets.QWidget):
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.recipient_list = QtWidgets.QScrollArea()
         self.recipient_list.setWidgetResizable(True)
+        self.recipient_list.setToolTip("Recipients")
 
         self.recipient_list_content = QtWidgets.QWidget()
         self.recipient_list_content_layout = QtWidgets.QVBoxLayout(

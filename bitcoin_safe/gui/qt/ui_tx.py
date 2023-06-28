@@ -21,11 +21,11 @@ from PySide2.QtGui import QPixmap, QImage
 from ...qr import create_psbt_qr
 
 from ...keystore import KeyStore
-from .util import read_QIcon
+from .util import read_QIcon, open_website
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
 from ...util import psbt_to_hex, Satoshis, serialized_to_hex
-from .block_buttons import MempoolButtons, MempoolProjectedBlock
+from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData, fees_of_depths
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
@@ -70,8 +70,10 @@ class ExportData(QObject):
         self.serialized_title = serialized_title
         self.seralized = None
         self.json_str = None
+        self.txid = None
         self.tabs = QTabWidget()
         self.tabs.setMaximumWidth(300)
+        self.tabs.setMaximumHeight(200)
         self.signal_export_to_file.connect(self.export_to_file)
 
         # qr
@@ -107,11 +109,15 @@ class ExportData(QObject):
 
         # psbt
         self.tab_seralized = QWidget()
-        self.tab_psbt_layout = QVBoxLayout(self.tab_seralized)
+        self.form_layout = QFormLayout(self.tab_seralized)
+        self.txid_edit = QLineEdit()
+        self.txid_edit.setReadOnly(True)
+        self.form_layout.addRow("TxId", self.txid_edit)
         self.edit_seralized = QTextEdit()
         if not allow_edit:
             self.edit_seralized.setReadOnly(True)
-        self.tab_psbt_layout.addWidget(self.edit_seralized)
+        self.form_layout.addRow("Tx", self.edit_seralized)
+
         self.set_tab_visibility(
             self.tab_seralized, True, self.serialized_title, index=1
         )
@@ -154,14 +160,17 @@ class ExportData(QObject):
         elif self.tabs.indexOf(tab) != -1 and not visible:
             self.tabs.removeTab(self.tabs.indexOf(tab))
 
-    def set_data(self, seralized=None, json_str=None):
+    def set_data(self, txid=None, seralized=None, json_str=None):
         self.seralized = seralized
         self.json_str = json_str
+        self.txid = txid
 
         self.set_tab_visibility(self.tab_json, bool(json_str), "JSON", index=2)
         self.set_tab_visibility(
             self.tab_seralized, bool(seralized), self.serialized_title, index=2
         )
+        if txid:
+            self.txid_edit.setText(txid)
         if seralized:
             self.edit_seralized.setText(seralized)
 
@@ -209,11 +218,18 @@ class FeeGroup(QObject):
     signal_set_fee_rate = Signal(float)
 
     def __init__(
-        self, mempool_data: MempoolData, layout, allow_edit=True, is_viewer=False
+        self,
+        mempool_data: MempoolData,
+        layout,
+        allow_edit=True,
+        is_viewer=False,
+        confirmation_time=None,
     ) -> None:
         super().__init__()
 
         self.allow_edit = allow_edit
+        self.confirmation_time: bdk.BlockTime = None
+        self.txid = None
 
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
@@ -229,7 +245,9 @@ class FeeGroup(QObject):
             layout.contentsMargins().bottom() / 5,
         )
 
-        if is_viewer:
+        if confirmation_time:
+            self.mempool = ConfirmedBlock(mempool_data)
+        elif is_viewer:
             self.mempool = MempoolProjectedBlock(mempool_data)
         else:
             self.mempool = MempoolButtons(mempool_data, button_count=3)
@@ -243,18 +261,20 @@ class FeeGroup(QObject):
         self.high_fee_warning_label = QLabel()
         self.high_fee_warning_label.setText("High Warning")
         self.high_fee_warning_label.setHidden(True)
-        groupBox_Fee_layout.addWidget(
-            self.high_fee_warning_label, alignment=Qt.AlignHCenter
-        )
+        if not confirmation_time:
+            groupBox_Fee_layout.addWidget(
+                self.high_fee_warning_label, alignment=Qt.AlignHCenter
+            )
 
         self.widget_around_spin_box = QWidget()
         self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
         self.widget_around_spin_box_layout.setContentsMargins(
             0, 0, 0, 0
         )  # Remove margins
-        groupBox_Fee_layout.addWidget(
-            self.widget_around_spin_box, alignment=Qt.AlignHCenter
-        )
+        if not confirmation_time:
+            groupBox_Fee_layout.addWidget(
+                self.widget_around_spin_box, alignment=Qt.AlignHCenter
+            )
 
         self.spin_fee_rate = QDoubleSpinBox()
         if not allow_edit:
@@ -271,17 +291,24 @@ class FeeGroup(QObject):
         self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
 
         self.spin_label = QLabel()
-        self.spin_label.setText("sat/vB")
-        self.widget_around_spin_box_layout.addWidget(self.spin_label)
+        self.spin_label.setText("Sat/vB")
+        if not confirmation_time:
+            self.widget_around_spin_box_layout.addWidget(self.spin_label)
 
         self.spin_label2 = QLabel()
-        groupBox_Fee_layout.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)
+        if not confirmation_time:
+            groupBox_Fee_layout.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)
 
-        layout.addWidget(self.groupBox_Fee)
+        layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
-    def set_fee_rate(self, fee_rate):
+    def set_fee_rate(
+        self, fee_rate, confirmation_time: bdk.BlockTime = None, txid=None
+    ):
         self.spin_fee_rate.setValue(fee_rate)
-        self.mempool.set_fee_rate(fee_rate)
+        self.mempool.set_fee_rate(
+            fee_rate=fee_rate, txid=txid, confirmation_time=confirmation_time
+        )
+        self.confirmation_time = confirmation_time
 
         # warning
         warning = ""
@@ -301,12 +328,51 @@ class FeeGroup(QObject):
         self.spin_label2.setText(
             f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
         )
+
         self.signal_set_fee_rate.emit(fee_rate)
 
     def update_spin_fee(self):
         self.spin_fee_rate.setRange(
             1, self.mempool.data[:, 0].max()
         )  # Set the acceptable range
+
+
+# class BlockExplorerGroup(QObject):
+#     signal_clicked = Signal(float)
+
+#     def __init__(
+#         self, txid, layout
+#     ) -> None:
+#         super().__init__()
+
+
+#         # add the groupBox
+#         self.groupBox = QGroupBox()
+#         self.groupBox.setTitle("Block Explorer")
+#         self.groupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+#         self.groupBox.setAlignment(Qt.AlignTop)
+
+#         groupBox_Fee_layout = QVBoxLayout(self.groupBox)
+#         groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
+
+
+#         # add edit field with txid
+#         self.edit = QLineEdit(self.groupBox)
+#         self.edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+#         self.edit.setReadOnly(True)
+#         groupBox_Fee_layout.addWidget(self.edit)
+#         # add button
+#         self.button = QPushButton(self.groupBox)
+#         groupBox_Fee_layout.addWidget(self.button)
+
+
+#         self.set_txid(txid)
+#         layout.addWidget(self.groupBox, alignment=Qt.AlignHCenter)
+
+
+#     def set_txid(self, txid):
+#         self.edit.setText(txid)
+#         self.button.clicked.connect(lambda: open_website(f'https://mempool.space/tx/{txid}'))
 
 
 class UITX_Base(QObject):
@@ -473,7 +539,7 @@ class UIPSBT_Viewer(UITX_Base):
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_rate=None):
         self.psbt: bdk.PartiallySignedTransaction = psbt
         self.export_widget.set_data(
-            json_str=psbt.json_serialize(), seralized=psbt.serialize()
+            txid=psbt.txid(), json_str=psbt.json_serialize(), seralized=psbt.serialize()
         )
 
         fee_rate = (
@@ -508,12 +574,15 @@ class UITX_Viewer(UITX_Base):
         network: bdk.Network,
         mempool_data: MempoolData,
         blockchain: bdk.Blockchain = None,
+        fee=None,
+        confirmation_time: bdk.BlockTime = None,
     ) -> None:
         super().__init__(signals=signals, mempool_data=mempool_data)
         self.tx: bdk.Transaction = tx
         self.blockchain = blockchain
         self.network = network
         self.utxo_list = utxo_list
+        self.confirmation_time = confirmation_time
 
         self.main_widget = QWidget()
         self.main_widget_layout = QVBoxLayout(self.main_widget)
@@ -542,21 +611,44 @@ class UITX_Viewer(UITX_Base):
             self.tab_outputs_layout, allow_edit=False
         )
 
+        # right side bar
+        self.right_sidebar = QWidget(self.main_widget)
+        self.right_sidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.upper_widget_layout.addWidget(self.right_sidebar)
+        self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
+
+        # QSizePolicy.Fixed: The widget has a fixed size and cannot be resized.
+        # QSizePolicy.Minimum: The widget can be shrunk to its minimum size hint.
+        # QSizePolicy.Maximum: The widget can be expanded up to its maximum size hint.
+        # QSizePolicy.Preferred: The widget can be resized, but it prefers to be the size of its size hint.
+        # QSizePolicy.Expanding: The widget can be resized and prefers to expand to take up as much space as possible.
+        # QSizePolicy.MinimumExpanding: The widget can be resized and tries to be as small as possible but can expand if necessary.
+        # QSizePolicy.Ignored: The widget's size hint is ignored and it can be any size.
+
         # fee_rate
         self.fee_group = FeeGroup(
             self.mempool_data,
-            self.upper_widget_layout,
+            self.right_sidebar_layout,
             allow_edit=False,
             is_viewer=True,
+            confirmation_time=confirmation_time,
+        )
+        self.fee_group.groupBox_Fee.setSizePolicy(
+            QSizePolicy.Fixed, QSizePolicy.Expanding
+        )
+
+        # # txid and block explorers
+        # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
+
+        # exports
+        self.export_widget = ExportData(
+            self.right_sidebar_layout, allow_edit=False, serialized_title="Transaction"
         )
 
         self.lower_widget = QWidget(self.main_widget)
         self.lower_widget.setMaximumHeight(220)
         self.main_widget_layout.addWidget(self.lower_widget)
         self.lower_widget_layout = QHBoxLayout(self.lower_widget)
-
-        # exports
-        self.export_widget = ExportData(self.lower_widget_layout, allow_edit=False)
 
         # buttons
         (
@@ -573,7 +665,7 @@ class UITX_Viewer(UITX_Base):
         )
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
-        self.set_tx(tx)
+        self.set_tx(tx, fee=fee, confirmation_time=confirmation_time)
         self.utxo_list.update()
 
     def broadcast(self):
@@ -581,13 +673,19 @@ class UITX_Viewer(UITX_Base):
         self.blockchain.broadcast(self.tx)
         self.signal_broadcast_tx.emit()
 
-    def set_tx(self, tx: bdk.Transaction, fee=None):
+    def set_tx(
+        self, tx: bdk.Transaction, fee=None, confirmation_time: bdk.BlockTime = None
+    ):
         self.tx: bdk.Transaction = tx
-        self.export_widget.set_data(seralized=serialized_to_hex(tx.serialize()))
+        self.export_widget.set_data(
+            seralized=serialized_to_hex(tx.serialize()), txid=tx.txid()
+        )
 
         fee_rate = fee / self.tx.vsize() if fee is not None else 0
 
-        self.fee_group.set_fee_rate(fee_rate)
+        self.fee_group.set_fee_rate(
+            fee_rate=fee_rate, confirmation_time=confirmation_time
+        )
 
         outputs: List[bdk.TxOut] = self.tx.output()
 
@@ -600,6 +698,10 @@ class UITX_Viewer(UITX_Base):
             )
             for output in outputs
         ]
+
+        self.fee_group.set_fee_rate(
+            fee_rate=fee_rate, confirmation_time=confirmation_time, txid=tx.txid()
+        )
 
 
 class UITX_Creator(UITX_Base):
@@ -637,10 +739,8 @@ class UITX_Creator(UITX_Base):
         self.widget_right_top = QWidget(self.main_widget)
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)
 
-        self.groupBox_outputs, self.groupBox_outputs_layout = create_groupbox(
-            self.widget_right_top_layout
-        )
-        self.recipients = self.create_recipients(self.groupBox_outputs_layout)
+        self.recipients = self.create_recipients(self.widget_right_top_layout)
+
         self.recipients.signal_clicked_send_max_button.connect(
             lambda recipient_group_box: self.set_max_amount(
                 recipient_group_box.amount_spin_box
@@ -649,6 +749,9 @@ class UITX_Creator(UITX_Base):
         self.recipients.add_recipient()
 
         self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
+        self.fee_group.groupBox_Fee.setSizePolicy(
+            QSizePolicy.Fixed, QSizePolicy.Expanding
+        )
         self.fee_group.signal_set_fee_rate.connect(self.on_set_fee_rate)
 
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
@@ -796,10 +899,10 @@ class UITX_Creator(UITX_Base):
 
         if index == 0:
             self.tabs_inputs.setMaximumWidth(200)
-            self.groupBox_outputs.setMaximumWidth(80000)
+            self.recipients.setMaximumWidth(80000)
         elif index == 1:
             self.tabs_inputs.setMaximumWidth(80000)
-            self.groupBox_outputs.setMaximumWidth(500)
+            self.recipients.setMaximumWidth(500)
 
             # take the coin selection from the category to the utxo tab
             self.signal_set_category_coin_selection.emit(

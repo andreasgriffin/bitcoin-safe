@@ -126,8 +126,28 @@ from PySide2.QtGui import QTextDocument, QAbstractTextDocumentLayout, QPalette
 from PySide2.QtCore import QSize, Qt
 from ...i18n import _
 import csv
-import io
+import io, json
 from PySide2 import QtCore, QtWidgets, QtGui
+
+from PySide2.QtCore import (
+    Qt,
+    QPersistentModelIndex,
+    QModelIndex,
+    QMimeData,
+    QPoint,
+    Signal,
+)
+from PySide2.QtGui import (
+    QStandardItemModel,
+    QStandardItem,
+    QFont,
+    QMouseEvent,
+    QDrag,
+    QPixmap,
+    QCursor,
+    QRegion,
+    QPainter,
+)
 
 
 class MyMenu(QMenu):
@@ -177,6 +197,35 @@ def create_toolbar_with_menu(config, title, export_as_csv=None):
     toolbar.addStretch()
     toolbar.addWidget(toolbar_button)
     return toolbar, menu
+
+
+class MyStandardItemModel(QStandardItemModel):
+    def __init__(self, parent, drag_key="addresses"):
+        super().__init__(parent)
+        self.drag_key = drag_key
+
+    def flags(self, index):
+        if (
+            index.column() == self.parent().key_column
+        ):  # only enable dragging for column 1
+            return super().flags(index) | Qt.ItemIsDragEnabled
+        else:
+            return super().flags(index)
+
+    def mimeData(self, indexes):
+        mime_data = QMimeData()
+        d = {
+            "type": f"drag_{self.drag_key}",
+            self.drag_key: [],
+        }
+
+        for index in indexes:
+            if index.isValid() and index.column() == self.parent().key_column:
+                d[self.drag_key].append(self.data(index))
+
+        json_string = json.dumps(d).encode()
+        mime_data.setData("application/json", json_string)
+        return mime_data
 
 
 class MySortModel(QSortFilterProxyModel):
@@ -274,6 +323,8 @@ class MyTreeView(QTreeView):
     ROLE_CUSTOM_PAINT = Qt.UserRole + 101
     ROLE_EDIT_KEY = Qt.UserRole + 102
     ROLE_FILTER_DATA = Qt.UserRole + 103
+    ROLE_SORT_ORDER = Qt.UserRole + 1000
+    ROLE_KEY = Qt.UserRole + 1001
 
     filter_columns: Iterable[int]
     column_alignments: Dict[int, int] = {}

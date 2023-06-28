@@ -209,7 +209,7 @@ class QTWallet(QObject):
     def _get_sub_texts_for_uitx(self):
         d = {}
         for utxo in self.wallet.get_utxos():
-            address = self.wallet.get_utxo_address(utxo).as_string()
+            address = self.wallet.get_utxo_address(utxo)
             category = self.wallet.get_category_for_address(address)
             if category not in d:
                 d[category] = []
@@ -222,15 +222,18 @@ class QTWallet(QObject):
             return sum([utxo.txout.value for utxo in utxos])
 
         return [
-            f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category))} Sats"
+            f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category)).str_with_unit()}"
             for category in self.wallet.categories
         ]
 
     def _create_send_tab(self, tabs):
+        def get_outpoints():
+            return [utxo.outpoint for utxo in self.wallet.get_utxos()]
+
         utxo_list = UTXOList(
             self.config,
             self.signals,
-            wallet_id=self.wallet.id,
+            get_outpoints=get_outpoints,
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
@@ -293,7 +296,7 @@ class QTWallet(QObject):
             raise
 
         update_filter = UpdateFilter(
-            addresses=[recipient.address for recipient in txinfos.recipients]
+            addresses=[recipient.address for recipient in txinfos.recipients],
         )
         self.wallet.reset_cache()
         self.signals.category_updated.emit(update_filter)
@@ -385,9 +388,19 @@ class QTWallet(QObject):
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.set_category(address, category)
+
+        outputinfos = sum(
+            [
+                self.wallet.get_txs_involving_address(address)
+                for address in address_drag_info.addresses
+            ],
+            [],
+        )
         self.signals.category_updated.emit(
             UpdateFilter(
-                addresses=address_drag_info.addresses, categories=address_drag_info.tags
+                addresses=address_drag_info.addresses,
+                categories=address_drag_info.tags,
+                txids=[outputinfo.tx.txid for outputinfo in outputinfos],
             )
         )
 
@@ -451,6 +464,7 @@ class QTWallet(QObject):
     def toggle_search(self):
         self.search_box.setHidden(not self.search_box.isHidden())
         if not self.search_box.isHidden():
+            self.search_box.setText("")
             self.search_box.setFocus()
         else:
             self.do_search("")
@@ -593,19 +607,24 @@ class QTWallet(QObject):
         )
         return tab, l, tags
 
-    def _create_utxo_tab(self, tabs):
-        l = UTXOList(
-            self.config,
-            self.signals,
-            wallet_id=self.wallet.id,
-            hidden_columns=[UTXOList.Columns.SATOSHIS],
-        )
-        tab = self.create_list_tab(l)
+    # def _create_utxo_tab(self, tabs):
+    #     "deprecated"
+    #     outpoins = [
+    #         utxo.outpoint   for utxo in self.wallet.get_utxos()
+    #     ]
 
-        add_tab_to_tabs(
-            tabs, tab, read_QIcon("tab_coins.png"), "Coins", "utxo", position=2
-        )
-        return tab, l
+    #     l = UTXOList(
+    #         self.config,
+    #         self.signals,
+    #         outpoint_domain=outpoins,
+    #         hidden_columns=[UTXOList.Columns.SATOSHIS],
+    #     )
+    #     tab = self.create_list_tab(l)
+
+    #     add_tab_to_tabs(
+    #         tabs, tab, read_QIcon("tab_coins.png"), "Coins", "utxo", position=2
+    #     )
+    #     return tab, l
 
     def sync(self, threaded=True):
         self.signal_start_synchronization.emit()

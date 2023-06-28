@@ -46,56 +46,14 @@ from .util import (
     webopen,
     do_copy,
     read_QIcon,
+    TX_ICONS,
+    sort_id_to_icon,
 )
 from .my_treeview import MyTreeView, MySortModel
 from .taglist import AddressDragInfo
 from .html_delegate import HTMLDelegate
 from ...signals import UpdateFilter
-
-TX_ICONS = [
-    "unconfirmed.png",
-    "clock1.png",
-    "clock2.png",
-    "clock3.png",
-    "clock4.png",
-    "clock5.png",
-    "confirmed.png",
-]
-
-
-def sort_id_to_icon(sort_id):
-    if sort_id < 0:
-        return "offline_tx.png"
-    if sort_id > len(TX_ICONS) - 1:
-        sort_id = len(TX_ICONS) - 1
-
-    return TX_ICONS[sort_id]
-
-
-class MyStandardItemModel(QStandardItemModel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def flags(self, index):
-        if index.column() == HistList.Columns.TXID:  # only enable dragging for column 1
-            return super().flags(index) | Qt.ItemIsDragEnabled
-        else:
-            return super().flags(index)
-
-    def mimeData(self, indexes):
-        mime_data = QMimeData()
-        d = {
-            "type": "drag_addresses",
-            "addresses": [],
-        }
-
-        for index in indexes:
-            if index.isValid() and index.column() == HistList.Columns.TXID:
-                d["addresses"].append(self.data(index))
-
-        json_string = json.dumps(d).encode()
-        mime_data.setData("application/json", json_string)
-        return mime_data
+from PySide2.QtGui import QStandardItem, QBrush, QColor
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -169,11 +127,10 @@ class HistList(MyTreeView, MessageBoxMixin):
         Columns.STATUS: Qt.AlignCenter,
         Columns.WALLET_ID: Qt.AlignCenter,
         Columns.CATEGORIES: Qt.AlignCenter,
+        Columns.SATOSHIS: Qt.AlignRight,
+        Columns.BALANCE: Qt.AlignRight,
+        Columns.AMOUNT: Qt.AlignRight,
     }
-
-    ROLE_SORT_ORDER = Qt.UserRole + 1000
-    ROLE_TXID_STR = Qt.UserRole + 1001
-    key_role = ROLE_TXID_STR
 
     def __init__(
         self,
@@ -216,7 +173,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         #     AddressUsageStateFilter.__members__.values()
         # ):  # type: AddressUsageStateFilter
         #     self.used_button.addItem(addr_usage_state.ui_text())
-        self.std_model = MyStandardItemModel(self)
+        self.std_model = QStandardItemModel(self)
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
@@ -300,7 +257,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        txid = self.get_role_data_for_current_item(col=0, role=self.key_role)
+        txid = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
         wallet, tx_details = self._tx_dict[txid]
         self.signals.show_transaction.emit(tx_details)
 
@@ -364,8 +321,8 @@ class HistList(MyTreeView, MessageBoxMixin):
         self._tx_dict = {}
         wallets: List[Wallet] = self.signals.get_wallets().values()
 
-        current_txid = self.get_role_data_for_current_item(
-            col=self.key_column, role=self.key_role
+        current_key = self.get_role_data_for_current_item(
+            col=self.key_column, role=self.ROLE_KEY
         )
 
         self.proxy.setDynamicSortFilter(
@@ -407,25 +364,30 @@ class HistList(MyTreeView, MessageBoxMixin):
                     wallet.id, self.ROLE_CLIPBOARD_DATA
                 )
                 items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
+                if amount < 0:
+                    items[self.Columns.AMOUNT].setData(
+                        QBrush(QColor("red")), Qt.ForegroundRole
+                    )
                 items[self.Columns.SATOSHIS].setData(amount, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.BALANCE].setData(0, self.ROLE_CLIPBOARD_DATA)  # TODO
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
-                # align text and set fonts
-                for i, item in enumerate(items):
-                    item.setTextAlignment(Qt.AlignVCenter)
-                    if i in (self.Columns.TXID,):
-                        item.setFont(QFont(MONOSPACE_FONT))
+                # # align text and set fonts
+                # for i, item in enumerate(items):
+                #     item.setTextAlignment(Qt.AlignVCenter)
+                #     if i in (self.Columns.TXID,):
+                #         item.setFont(QFont(MONOSPACE_FONT))
+
                 self.set_editability(items)
 
-                items[self.key_column].setData(tx.txid, self.key_role)
+                items[self.key_column].setData(tx.txid, self.ROLE_KEY)
                 num_shown += 1
                 # add item
                 count = self.std_model.rowCount()
                 self.std_model.insertRow(count, items)
                 self.refresh_row(tx.txid, count)
                 idx = self.std_model.index(count, self.Columns.LABEL)
-                if tx.txid == current_txid:
+                if tx.txid == current_key:
                     set_idx = QPersistentModelIndex(idx)
         if set_idx:
             self.set_current_idx(set_idx)
@@ -533,7 +495,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(
-            row, self.key_column, role=self.key_role
+            row, self.key_column, role=self.ROLE_KEY
         )
 
     def on_edited(self, idx, edit_key, *, text):
@@ -541,4 +503,13 @@ class HistList(MyTreeView, MessageBoxMixin):
         wallet, tx = self._tx_dict[txid]
 
         wallet.set_label(edit_key, text)
-        self.signals.labels_updated.emit(UpdateFilter(txids=[txid]))
+
+        self.signals.labels_updated.emit(
+            UpdateFilter(
+                txids=[txid],
+                addresses=[
+                    wallet.get_address_of_txout(txout)
+                    for txout in tx.transaction.output()
+                ],
+            )
+        )

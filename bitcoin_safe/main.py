@@ -145,26 +145,35 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.open_tx.emit(string_content)
 
     def open_tx_like_in_tab(self, txlike):
-        if isinstance(txlike, bdk.TransactionDetails):
+        logger.debug(f"Trying to open tx with type {type(txlike)}")
+        if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
             return self.open_tx_in_tab(txlike)
         else:
             return self.open_psbt_in_tab(txlike)
 
-    def open_tx_in_tab(self, tx):
+    def open_tx_in_tab(self, txlike):
+        tx: bdk.Transaction = None
+        fee = None
+        confirmation_time = None
+        if isinstance(txlike, bdk.TransactionDetails):
+            logger.debug(f"Got a PartiallySignedTransaction")
+            tx = txlike.transaction
+            fee = txlike.fee
+            confirmation_time = txlike.confirmation_time
+        elif isinstance(txlike, bdk.Transaction):
+            tx = txlike
 
-        logger.debug(str(tx))
+        def get_outpoints():
+            return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
 
         utxo_list = UTXOList(
             self.config,
             self.signals,
+            get_outpoints=get_outpoints,
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
                 UTXOList.Columns.SATOSHIS,
-            ],
-            outpoint_domain=[
-                OutPoint.from_bdk(input.previous_output)
-                for input in tx.transaction.input()
             ],
         )
 
@@ -174,6 +183,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
+            fee=fee,
+            confirmation_time=confirmation_time,
         )
 
         add_tab_to_tabs(
@@ -220,17 +231,20 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             print("is bdk.TransactionDetails")
             raise Exception("cannot handle TransactionDetails")
 
+        def get_outpoints():
+            return [
+                OutPoint.from_bdk(input.previous_output)
+                for input in psbt.extract_tx().input()
+            ]
+
         utxo_list = UTXOList(
             self.config,
             self.signals,
+            get_outpoints=get_outpoints,
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
                 UTXOList.Columns.SATOSHIS,
-            ],
-            outpoint_domain=[
-                OutPoint.from_bdk(input.previous_output)
-                for input in psbt.extract_tx().input()
             ],
         )
 

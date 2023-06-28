@@ -102,6 +102,10 @@ def serialized_to_hex(serialized):
     return bytes(serialized).hex()
 
 
+def hex_to_serialized(hex_string):
+    return bytes.fromhex(hex_string)
+
+
 def psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
     return serialized_to_hex(psbt.extract_tx().serialize())
 

@@ -4,7 +4,7 @@ from typing import Callable, List, Dict
 logger = logging.getLogger(__name__)
 from PySide2.QtCore import Signal, QObject
 
-from typing import List, Dict
+from typing import List, Dict, Set
 import bdkpython as bdk
 
 import threading
@@ -13,14 +13,14 @@ import threading
 class UpdateFilter:
     def __init__(
         self,
-        addresses: List[str] = None,
-        categories: List[str] = None,
-        txids: List[str] = None,
+        addresses: Set[str] = None,
+        categories: Set[str] = None,
+        txids: Set[str] = None,
         refresh_all=False,
     ) -> None:
-        self.addresses = addresses if addresses else []
-        self.categories = categories if categories else []
-        self.txids = txids if txids else []
+        self.addresses = set(addresses) if addresses else set()
+        self.categories = set(categories) if categories else set()
+        self.txids = txids if txids else set()
         self.refresh_all = refresh_all
 
 
