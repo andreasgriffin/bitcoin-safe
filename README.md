@@ -1,19 +1,34 @@
 # Bitcoin Safe
 
-### A savings wallet for the whole family
+### Long-term Bitcoin savings made Easy
 
 ## Currently Pre-ALPHA -- Use only on regtest 
 
 #### Goals
 
-- An **easy** to use Bitcoin wallet for the entire family
-  - Wallet setup with **best practices** built in the wallet setup
-  - **Easier** labels by using categories (e.g.  from Hodlhodl, from Bisq, from Peach, ...)
-- Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
-- Chain data with **Compact Block Filters** by default (other options like bitcoin rpc, electrum perhaps later)
-  * Compact Block Filters are **fast** and **private**
-  * Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/379)
-- **Secure** by default: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is just reckless)
+- **Easy** Bitcoin wallet for long-term cold storage
+  - **Best practices** built into the wallet setup 
+  - **Easier** address labels by using categories (e.g.  "KYC", "Non-KYC", "Work",  "Friends", ...) 
+    - Automatic coin selection within categories
+  - **Easier** fee selection for non-technical users 
+  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
+    * Opportunistic merging of small utxos when fees are low
+- **Fast**: Chain data with **Compact Block Filters** by default 
+  - Compact Block Filters are **fast** and **private**
+  - Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/379), and will be included in bdk 1.0
+
+- **Secure**: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is  reckless)
+  - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
+  - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
+
+
+#### Design principles
+
+* KISS
+* If a new user needs a tutorial video, it is too difficult
+* Only present safe options to the user (on mainnet) (warnings are typically ignored by everyone)
+* Add options only if they are needed
+  * Example: 1 unified amount formatting (credit to Seed Signer) is sufficient:  0.12 345 678 BTC     (no mBTC , Sats, needed)
 
 #### TODOs (a lot)
 
@@ -66,6 +81,14 @@
 
 ## Installation
 
+ * Install Bitcoin Safe dependencies
+
+   ```sh
+   git clone https://github.com/andreasgriffin/bitcoin-safe.git
+   cd bitcoin-safe
+   pip install --requirement requirements.txt 
+   ```
+   
  * Installation of bdk with compact filters
 
    ```shell
@@ -100,7 +123,6 @@
  * Run Bitcoin Safe
 
    ```sh
-   git clone https://github.com/andreasgriffin/bitcoin-safe.git
    cd bitcoin-safe
    python -m bitcoin_safe
    ```
@@ -109,15 +131,18 @@
 
 ### Development
 
+* Change requirements:
+
 ```shell
 pipreqs  --savepath requirements.in  --force .
 pip-compile --generate-hashes --resolver=backtracking   requirements.in
 pip install --requirement requirements.txt 
 ```
 
-and for formatting
+* Automatic commit formatting
 
 ```shell
+pip install pre-commit
 pre-commit install
 ```
 

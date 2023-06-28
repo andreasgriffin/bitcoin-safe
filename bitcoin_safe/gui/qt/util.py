@@ -96,7 +96,8 @@ from PySide2.QtWidgets import (
     QSizePolicy,
     QTabWidget,
 )
-
+from PySide2.QtCore import QUrl
+from PySide2.QtGui import QDesktopServices
 from ...i18n import _, languages
 from ...util import (
     FileImportFailed,
@@ -128,6 +129,31 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
     f"{TRANSACTION_FILE_EXTENSION_FILTER_ONLY_COMPLETE_TX};;"
     f"All files (*)"
 )
+
+
+def create_buy_coldcard_button():
+    button = QPushButton()
+    button.setObjectName("button")
+    button.clicked.connect(
+        lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
+    )
+    button.setText("Buy a Coldcard\n5% off")
+    return button
+
+
+def create_buy_bitbox_button():
+    button = QPushButton()
+    button.setObjectName("button")
+    button.clicked.connect(
+        lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
+    )
+
+    button.setText("Buy a Bitbox02")
+    return button
+
+
+def open_website(url):
+    QDesktopServices.openUrl(QUrl(url))
 
 
 def resize(x, y, x_max, y_max):

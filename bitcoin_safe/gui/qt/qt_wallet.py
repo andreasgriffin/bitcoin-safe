@@ -27,7 +27,7 @@ from .address_list import AddressList
 from .utxo_list import UTXOList
 from .util import add_tab_to_tabs, Message
 from .taglist import AddressDragInfo
-from .ui_tx import UITX_Creator, UITX_Viewer
+from .ui_tx import UITX_Creator, UIPSBT_Viewer
 
 from ...thread_manager import ThreadManager
 from ...util import Satoshis, format_satoshis
@@ -67,25 +67,6 @@ class StatusBarButton(QToolButton):
             self.func()
 
 
-class LegacyNetwork:
-    def __init__(self, wallet):
-        self.proxy = None
-        self.wallet = wallet
-
-    def is_connected(self):
-        return bool(self.get_server_height())
-
-    def get_server_height(self):
-        if self.wallet.blockchain:
-            return self.wallet.blockchain.get_height()
-
-    def get_local_height(self):
-        return self.get_server_height()
-
-    def get_blockchains(self):
-        return [self.wallet.blockchain] if self.wallet.blockchain else []
-
-
 class FX:
     def __init__(self):
         pass
@@ -102,6 +83,8 @@ class FX:
 
 class QTWallet(QObject):
     signal_settext_balance_label = Signal(str)
+    signal_start_synchronization = Signal()
+    signal_stop_synchronization = Signal()
 
     def __init__(
         self,
@@ -120,6 +103,7 @@ class QTWallet(QObject):
         self.password = None
         self.wallet_descriptor_tab = None
         self.config = config
+        self.is_synchronizing = False
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
 
@@ -129,6 +113,18 @@ class QTWallet(QObject):
         self.send_tab = None
 
         self._create_wallet_tab_and_subtabs()
+        self.signal_start_synchronization.connect(
+            lambda: self.set_synchronization(True)
+        )
+        self.signal_stop_synchronization.connect(
+            lambda: self.set_synchronization(False)
+        )
+        self.signal_start_synchronization.connect(self.update_status)
+        self.signal_stop_synchronization.connect(self.update_status)
+
+    def set_synchronization(self, state):
+        logger.debug(f"Set is_synchronizing {state}")
+        self.is_synchronizing = state
 
     def __repr__(self) -> str:
         return f"QTWallet({self.__dict__})"
@@ -335,7 +331,6 @@ class QTWallet(QObject):
     def create_wallet_tabs(self):
         "Create tabs.  set_wallet be called first"
         assert bool(self.wallet)
-        self.legacy_network = LegacyNetwork(self.wallet)
 
         self.history_tab, self.history_list = self._create_hist_tab(self.tabs)
         (
@@ -430,33 +425,28 @@ class QTWallet(QObject):
         # self.password_button = StatusBarButton(QIcon(), _("Password"), self.change_password_dialog, sb_height)
         # sb.addPermanentWidget(self.password_button)
 
-        sb.addPermanentWidget(
-            StatusBarButton(
-                read_QIcon("preferences.png"),
-                _("Preferences"),
-                self.settings_dialog,
-                sb_height,
-            )
-        )
+        # sb.addPermanentWidget(
+        #     StatusBarButton(
+        #         read_QIcon("preferences.png"),
+        #         _("Preferences"),
+        #         self.settings_dialog,
+        #         sb_height,
+        #     )
+        # )
         # self.seed_button = StatusBarButton(read_QIcon("seed.png"), _("Seed"), self.show_seed_dialog, sb_height)
         # sb.addPermanentWidget(self.seed_button)
         # self.lightning_button = StatusBarButton(read_QIcon("lightning.png"), _("Lightning Network"), self.gui_object.show_lightning_dialog, sb_height)
         # sb.addPermanentWidget(self.lightning_button)
         # self.update_lightning_icon()
-        self.status_button = None
-        if self.legacy_network:
-            self.status_button = StatusBarButton(
-                read_QIcon("status_disconnected.png"),
-                _("Network"),
-                self.signals.show_network_settings,
-                sb_height,
-            )
-            sb.addPermanentWidget(self.status_button)
+        self.status_button = StatusBarButton(
+            read_QIcon("status_disconnected.png"),
+            _("Network"),
+            self.signals.show_network_settings.emit,
+            sb_height,
+        )
+        sb.addPermanentWidget(self.status_button)
         # run_hook('create_status_bar', sb)
         outer_layout.addWidget(sb)
-
-    def settings_dialog(self):
-        pass
 
     def toggle_search(self):
         self.search_box.setHidden(not self.search_box.isHidden())
@@ -477,80 +467,41 @@ class QTWallet(QObject):
         network_text = ""
         balance_text = ""
 
-        if self.legacy_network is None:
+        if self.is_synchronizing:
+            network_text = _("Synchronizing...")
+            icon = read_QIcon("status_waiting.png")
+        elif self.wallet.blockchain and self.wallet.blockchain.get_height():
+            network_text = _("Connected")
+            (
+                confirmed,
+                unconfirmed,
+                unmatured,
+            ) = self.wallet.get_balances_for_piechart()
+            self.balance_label.update_list(
+                [
+                    (_("Unmatured"), COLOR_UNMATURED, unmatured.value),
+                    (_("Unconfirmed"), COLOR_UNCONFIRMED, unconfirmed.value),
+                    (_("On-chain"), COLOR_CONFIRMED, confirmed.value),
+                ]
+            )
+            balance = confirmed + unconfirmed + unmatured
+            balance_text = _("Balance") + f": {balance.str_with_unit()} "
+            # append fiat balance and price
+            if self.fx.is_enabled():
+                balance_text += (
+                    self.fx.get_fiat_status_text(
+                        balance, self.base_unit(), self.get_decimal_point()
+                    )
+                    or ""
+                )
+            icon = read_QIcon("status_connected.png")
+        else:
             network_text = _("Offline")
             icon = read_QIcon("status_disconnected.png")
 
-        elif self.legacy_network.is_connected():
-            server_height = self.legacy_network.get_server_height()
-            server_lag = self.legacy_network.get_local_height() - server_height
-            fork_str = "_fork" if len(self.legacy_network.get_blockchains()) > 1 else ""
-            # Server height can be 0 after switching to a new server
-            # until we get a headers subscription request response.
-            # Display the synchronizing message in that case.
-            if not self.wallet.is_up_to_date() or server_height == 0:
-                num_sent, num_answered = self.wallet.get_history_sync_state_details()
-                network_text = "{} ({}/{})".format(
-                    _("Synchronizing..."), num_answered, num_sent
-                )
-                icon = read_QIcon("status_waiting.png")
-            elif server_lag > 1:
-                network_text = _("Server is lagging ({} blocks)").format(server_lag)
-                icon = read_QIcon("status_lagging%s.png" % fork_str)
-            else:
-                network_text = _("Connected")
-                (
-                    confirmed,
-                    unconfirmed,
-                    unmatured,
-                ) = self.wallet.get_balances_for_piechart()
-                self.balance_label.update_list(
-                    [
-                        (_("Unmatured"), COLOR_UNMATURED, unmatured.value),
-                        (_("Unconfirmed"), COLOR_UNCONFIRMED, unconfirmed.value),
-                        (_("On-chain"), COLOR_CONFIRMED, confirmed.value),
-                    ]
-                )
-                balance = confirmed + unconfirmed + unmatured
-                balance_text = _("Balance") + f": {balance.str_with_unit()} "
-                # append fiat balance and price
-                if self.fx.is_enabled():
-                    balance_text += (
-                        self.fx.get_fiat_status_text(
-                            balance, self.base_unit(), self.get_decimal_point()
-                        )
-                        or ""
-                    )
-                if not self.legacy_network.proxy:
-                    icon = read_QIcon("status_connected%s.png" % fork_str)
-                else:
-                    icon = read_QIcon("status_connected_proxy%s.png" % fork_str)
-        else:
-            if self.legacy_network.proxy:
-                network_text = "{} ({})".format(_("Not connected"), _("proxy enabled"))
-            else:
-                network_text = _("Not connected")
-            icon = read_QIcon("status_disconnected.png")
-
-        # if self.tray:
-        #     # note: don't include balance in systray tooltip, as some OSes persist tooltips,
-        #     #       hence "leaking" the wallet balance (see #5665)
-        #     name_and_version = self.get_app_name_and_version_str()
-        #     self.tray.setToolTip(f"{name_and_version} ({network_text})")
         self.balance_label.setText(balance_text or network_text)
         if self.status_button:
             self.status_button.setIcon(icon)
-
-        # num_tasks = self.num_tasks()
-        # if num_tasks == 0:
-        #     name = ''
-        # elif num_tasks == 1:
-        #     with self._coroutines_scheduled_lock:
-        #         name = list(self._coroutines_scheduled.values())[0]  + '...'
-        # else:
-        #     name = "%d"%num_tasks + _('tasks')  + '...'
-        # self.tasks_label.setText(name)
-        # self.tasks_label.setVisible(num_tasks > 0)
 
     def get_tabs(self, tab_widget):
         return [tab_widget.widget(i) for i in range(tab_widget.count())]
@@ -636,8 +587,8 @@ class QTWallet(QObject):
             tabs,
             tab,
             read_QIcon("tab_addresses.png"),
-            "Addresses",
-            "addresses",
+            "Receive",
+            "receive",
             position=1,
         )
         return tab, l, tags
@@ -656,31 +607,10 @@ class QTWallet(QObject):
         )
         return tab, l
 
-    # def update_tabs(self, wallet=None):
-    #     if wallet is None:
-    #         wallet = self.wallet
-    #     if wallet != self.wallet:
-    #         return
-    #     self.history_model.refresh('update_tabs')
-    #     # self.receive_tab.request_list.update()
-    #     # self.receive_tab.update_current_request()
-    #     # self.send_tab.invoice_list.update()
-    #     self.address_list.update()
-    #     self.utxo_list.update()
-    #     # self.contact_list.update()
-    #     # self.channels_list.update_rows.emit(wallet)
-    #     # self.update_completions()
-
-    # def refresh_tabs(self, wallet=None):
-    #     self.history_model.refresh('refresh_tabs')
-    #     # self.receive_tab.request_list.refresh_all()
-    #     # self.send_tab.invoice_list.refresh_all()
-    #     self.address_list.refresh_all()
-    #     self.utxo_list.refresh_all()
-    #     # self.contact_list.refresh_all()
-    #     # self.channels_list.update_rows.emit(self.wallet)
-
     def sync(self, threaded=True):
+        self.signal_start_synchronization.emit()
+        logger.debug(f'Start {"threaded" if threaded else "non-threaded"} sync')
+
         def progress_function_threadsafe(progress: float, message: str):
             self.signal_settext_balance_label.emit(
                 f"Syncing wallet: {round(progress)}%  {message}"
@@ -694,7 +624,8 @@ class QTWallet(QObject):
             logger.debug("start updating lists")
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
-            self.update_status()
+            self.signal_stop_synchronization.emit()
+            logger.debug("finished updating lists")
 
         if threaded:
             future = self.thread_manager.start_in_background_thread(
@@ -703,4 +634,3 @@ class QTWallet(QObject):
         else:
             do_sync()
             on_finished()
-        logger.debug(str(future))

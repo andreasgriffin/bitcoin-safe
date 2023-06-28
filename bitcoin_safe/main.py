@@ -1,4 +1,6 @@
 import logging
+
+from pyparsing import Optional
 from .tx import TXInfos
 from .logging import setup_logging
 
@@ -35,7 +37,7 @@ from typing import Dict, List
 from .storage import Storage
 import json, os
 import bdkpython as bdk
-from .gui.qt.ui_tx import UITX_Creator, UITX_Viewer
+from .gui.qt.ui_tx import UITX_Creator, UIPSBT_Viewer, UITX_Viewer
 from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
@@ -58,7 +60,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals = Signals()
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
-        self.signals.open_tx.connect(self.open_tx_in_tab)
+        self.signals.open_tx.connect(self.open_tx_like_in_tab)
 
         self.network_settings_ui = NetworkSettingsUI(self.config)
         self.signals.show_network_settings.connect(self.open_network_settings)
@@ -85,6 +87,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
+        self.signals.chain_data_changed.connect(self.sync)
+
+        self.signals.show_transaction.connect(self.open_tx_in_tab)
 
         self._init_tray()
 
@@ -119,7 +124,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def onTrayIconActivated(self, reason):
         if reason == QSystemTrayIcon.Trigger:
             # self.tray.showMessage("This is a test notification")
-            Message("tesssss").emit_with(self.signals.notification)
+            Message("test").emit_with(self.signals.notification)
 
     def open_network_settings(self):
         self.network_settings_ui.show()
@@ -139,7 +144,51 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         self.signals.open_tx.emit(string_content)
 
+    def open_tx_like_in_tab(self, txlike):
+        if isinstance(txlike, bdk.TransactionDetails):
+            return self.open_tx_in_tab(txlike)
+        else:
+            return self.open_psbt_in_tab(txlike)
+
     def open_tx_in_tab(self, tx):
+
+        logger.debug(str(tx))
+
+        utxo_list = UTXOList(
+            self.config,
+            self.signals,
+            hidden_columns=[
+                UTXOList.Columns.OUTPOINT,
+                UTXOList.Columns.PARENTS,
+                UTXOList.Columns.SATOSHIS,
+            ],
+            outpoint_domain=[
+                OutPoint.from_bdk(input.previous_output)
+                for input in tx.transaction.input()
+            ],
+        )
+
+        viewer = UITX_Viewer(
+            tx,
+            self.signals,
+            utxo_list,
+            network=self.config.network_settings.network,
+            mempool_data=self.mempool_data,
+        )
+
+        add_tab_to_tabs(
+            self.tab_wallets,
+            viewer.main_widget,
+            read_QIcon("offline_tx.png"),
+            "Transaction",
+            "tx",
+            focus=True,
+        )
+
+        viewer.main_widget.searchable_list = utxo_list
+        return viewer.main_widget, viewer
+
+    def open_psbt_in_tab(self, tx):
         psbt: bdk.PartiallySignedTransaction = None
         fee_rate = None
 
@@ -171,7 +220,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             print("is bdk.TransactionDetails")
             raise Exception("cannot handle TransactionDetails")
 
-        inputs: List[bdk.TxIn] = psbt.extract_tx().input()
         utxo_list = UTXOList(
             self.config,
             self.signals,
@@ -186,7 +234,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             ],
         )
 
-        viewer = UITX_Viewer(
+        viewer = UIPSBT_Viewer(
             psbt,
             self.signals,
             utxo_list,

@@ -129,6 +129,8 @@ class Signals(QObject):
     show_address = Signal(str)
     show_private_key = Signal(str)
 
+    chain_data_changed = Signal(str)  # the string is the reason
+
     notification = Signal(object)  # should be a Message instance
 
     show_transaction = Signal(bdk.TransactionDetails)

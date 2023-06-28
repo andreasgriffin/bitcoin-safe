@@ -623,8 +623,6 @@ class Wallet(BaseSaveableClass):
         recursively calls itself and returns a flat dict:
         txid -> list of parent txids
         """
-        if not self.is_up_to_date():
-            return {}
 
         all_transactions = self.get_list_transactions()
 
@@ -698,6 +696,9 @@ class Wallet(BaseSaveableClass):
         return {"in": in_addresses, "out": out_addresses}
 
     def _get_tip(self, is_change):
+        if not self.bdkwallet:
+            return self.max_tips
+
         bdk_get_address = (
             self.bdkwallet.get_internal_address
             if is_change
@@ -1034,9 +1035,6 @@ class Wallet(BaseSaveableClass):
 
     def add_category(self, category):
         self.categories.append(category)
-
-    def is_up_to_date(self):
-        return True
 
     def get_balances_for_piechart(self):
         """

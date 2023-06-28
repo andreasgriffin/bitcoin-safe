@@ -17,6 +17,7 @@ from .util import (
     create_button,
 )
 from PySide2.QtCore import Signal
+from .util import open_website, create_buy_coldcard_button, create_buy_bitbox_button
 from ...util import call_call_functions
 
 
@@ -72,9 +73,7 @@ class Ui_Form(QObject):
 
         self.verticalLayout_2.addItem(self.verticalSpacer)
 
-        self.pushButton_buybitbox = QPushButton(self.groupBox_3)
-        self.pushButton_buybitbox.setObjectName("pushButton_buybitbox")
-
+        self.pushButton_buybitbox = create_buy_bitbox_button()
         self.verticalLayout_2.addWidget(self.pushButton_buybitbox)
 
         self.label_3 = QLabel(self.groupBox_3)
@@ -83,8 +82,7 @@ class Ui_Form(QObject):
 
         self.verticalLayout_2.addWidget(self.label_3)
 
-        self.pushButton_buycoldcard = QPushButton(self.groupBox_3)
-        self.pushButton_buycoldcard.setObjectName("pushButton_buycoldcard")
+        self.pushButton_buycoldcard = create_buy_coldcard_button()
 
         self.verticalLayout_2.addWidget(self.pushButton_buycoldcard)
 
@@ -268,18 +266,12 @@ class Ui_Form(QObject):
                 None,
             )
         )
-        self.pushButton_buybitbox.setText(
-            QCoreApplication.translate("Form", "Buy a Bitbox02", None)
-        )
         self.label_3.setText(
             QCoreApplication.translate(
                 "Form",
                 '<html><head/><body><p align="center"><span style=" font-size:12pt;">or</span></p></body></html>',
                 None,
             )
-        )
-        self.pushButton_buycoldcard.setText(
-            QCoreApplication.translate("Form", "Buy a Coldcard", None)
         )
         self.label_6.setText(
             QCoreApplication.translate(

@@ -93,14 +93,17 @@ TX_STATUS = [
 ]
 
 
-DEVELOPMENT_PREFILLS = False
+DEVELOPMENT_PREFILLS = True
 
 import bdkpython as bdk
 
 
+def serialized_to_hex(serialized):
+    return bytes(serialized).hex()
+
+
 def psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
-    tx = psbt.extract_tx().serialize()
-    return bytes(tx).hex()
+    return serialized_to_hex(psbt.extract_tx().serialize())
 
 
 def call_call_functions(functions):

@@ -166,7 +166,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         wallet_of_address = get_wallet_of_address(self.address)
         if wallet_of_address:
-            if wallet_of_address.address_is_used(self.address):
+            if self.allow_edit and wallet_of_address.address_is_used(self.address):
                 if dialog_replace_with_new_receiving_address(self.address):
                     # find an address that is not used yet
 

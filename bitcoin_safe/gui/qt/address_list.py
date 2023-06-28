@@ -27,6 +27,8 @@ import logging
 
 from matplotlib import category
 
+from ...config import UserConfig, BlockchainType
+
 logger = logging.getLogger(__name__)
 
 
@@ -58,12 +60,17 @@ from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPush
 from jsonschema import draft201909_format_checker
 from .category_list import CategoryEditor
 
-from bitcoin_safe.wallet import Wallet
+from ...wallet import Wallet
 
 from ...i18n import _
-from ...util import InternalAddressCorruption, block_explorer_URL, format_satoshis
+from ...util import (
+    InternalAddressCorruption,
+    block_explorer_URL,
+    format_satoshis,
+    DEVELOPMENT_PREFILLS,
+)
 import json
-
+from ...rpc import send_rpc_command
 
 from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, webopen, do_copy
 from .my_treeview import MyTreeView, MySortModel
@@ -276,21 +283,49 @@ class AddressList(MyTreeView, MessageBoxMixin):
         addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
         self.signals.show_address.emit(addr)
 
-    def create_toolbar(self, config=None):
+    def create_toolbar(self, config: UserConfig = None):
         toolbar, menu = self.create_toolbar_with_menu("")
         self.num_addr_label = toolbar.itemAt(0).widget()
         self.button_get_new_address = toolbar.itemAt(1).widget()
         menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
         # menu.addConfig(_('Show Fiat balances'), 'fiat_address', False, callback=self.main_window.app.update_fiat_signal.emit)
 
-        self.button_fresh_address = QPushButton("Copy fresh address")
+        self.button_fresh_address = QPushButton("Copy fresh receive address")
         self.button_fresh_address.clicked.connect(self.get_address)
         toolbar.insertWidget(1, self.button_fresh_address)
-        self.button_new_address = QPushButton("+ New address")
+        self.button_new_address = QPushButton("+ Add \& Copy receive address")
         self.button_new_address.clicked.connect(
             lambda: self.get_address(force_new=True)
         )
         toolbar.insertWidget(2, self.button_new_address)
+
+        if (
+            config
+            and DEVELOPMENT_PREFILLS
+            and config.network_settings.server_type == BlockchainType.RPC
+        ):
+
+            def mine_to_selected_addresses():
+                selected = self.selected_in_column(self.Columns.ADDRESS)
+                if not selected:
+                    return
+                addresses = [self.item_from_index(item).text() for item in selected]
+
+                for address in addresses:
+                    response = send_rpc_command(
+                        config.network_settings.rpc_ip,
+                        config.network_settings.rpc_port,
+                        config.network_settings.rpc_username,
+                        config.network_settings.rpc_password,
+                        "generatetoaddress",
+                        params=[1, address],
+                    )
+                    logger.info(f"{response}")
+                self.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
+
+            b = QPushButton("Generate to selected adddresses")
+            b.clicked.connect(mine_to_selected_addresses)
+            toolbar.insertWidget(3, b)
 
         hbox = self.create_toolbar_buttons()
         toolbar.insertLayout(3, hbox)

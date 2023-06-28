@@ -24,14 +24,15 @@ from ...keystore import KeyStore
 from .util import read_QIcon
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
-from ...util import psbt_to_hex, Satoshis
+from ...util import psbt_to_hex, Satoshis, serialized_to_hex
 from .block_buttons import MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData, fees_of_depths
 from ...pythonbdk_types import Recipient
 from PySide2.QtCore import Signal, QObject
 from .qrcodewidget import QRLabel
 from ...wallet import UtxosForInputs, Wallet
-
+import json
+from ...pythonbdk_types import robust_address_str_from_script
 
 max_reasonable_fee_rate_fallback = 100
 
@@ -61,15 +62,17 @@ def create_groupbox(layout, title=None):
     return g, g_layout
 
 
-class ExportPSBT(QObject):
-    signal_export_psbt_to_file = Signal()
+class ExportData(QObject):
+    signal_export_to_file = Signal()
 
-    def __init__(self, layout, allow_edit=False) -> None:
+    def __init__(self, layout, allow_edit=False, serialized_title="PSBT") -> None:
         super().__init__()
-        self.psbt = None
+        self.serialized_title = serialized_title
+        self.seralized = None
+        self.json_str = None
         self.tabs = QTabWidget()
         self.tabs.setMaximumWidth(300)
-        self.signal_export_psbt_to_file.connect(self.export_psbt)
+        self.signal_export_to_file.connect(self.export_to_file)
 
         # qr
         self.tab_qr = QWidget()
@@ -103,13 +106,15 @@ class ExportPSBT(QObject):
         self.tab_qr_right_side_layout.addWidget(self.button_save_qr)
 
         # psbt
-        self.tab_psbt = QWidget()
-        self.tab_psbt_layout = QVBoxLayout(self.tab_psbt)
-        self.edit_psbt = QTextEdit()
+        self.tab_seralized = QWidget()
+        self.tab_psbt_layout = QVBoxLayout(self.tab_seralized)
+        self.edit_seralized = QTextEdit()
         if not allow_edit:
-            self.edit_psbt.setReadOnly(True)
-        self.tab_psbt_layout.addWidget(self.edit_psbt)
-        self.tabs.addTab(self.tab_psbt, "PSBT")
+            self.edit_seralized.setReadOnly(True)
+        self.tab_psbt_layout.addWidget(self.edit_seralized)
+        self.set_tab_visibility(
+            self.tab_seralized, True, self.serialized_title, index=1
+        )
 
         # json
         self.tab_json = QWidget()
@@ -118,7 +123,7 @@ class ExportPSBT(QObject):
         if not allow_edit:
             self.edit_json.setReadOnly(True)
         self.tab_json_layout.addWidget(self.edit_json)
-        self.tabs.addTab(self.tab_json, "JSON")
+        self.set_tab_visibility(self.tab_json, True, "JSON", index=2)
 
         # file
         self.tab_file = QWidget()
@@ -126,12 +131,12 @@ class ExportPSBT(QObject):
         self.tab_file_layout.setAlignment(Qt.AlignHCenter)
         self.button_file = QToolButton()
         self.button_file.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.button_file.setText("Export PSBT file")
+        self.button_file.setText(f"Export {self.serialized_title} file")
         self.button_file.setIcon(read_QIcon("download.png"))
         self.button_file.setIconSize(QSize(30, 30))  # 24x24 pixels
-        self.button_file.clicked.connect(self.signal_export_psbt_to_file)
+        self.button_file.clicked.connect(self.signal_export_to_file)
         self.tab_file_layout.addWidget(self.button_file)
-        self.tabs.addTab(self.tab_file, "Export PSBT file")
+        self.tabs.addTab(self.tab_file, f"Export {self.serialized_title} file")
 
         layout.addWidget(self.tabs)
 
@@ -143,22 +148,34 @@ class ExportPSBT(QObject):
             return
         self.qr_label.pil_image.save(filename)
 
-    def set_psbt(self, psbt: bdk.PartiallySignedTransaction):
-        self.psbt: bdk.PartiallySignedTransaction = psbt
-        self.edit_psbt.setText(psbt.serialize())
-        json_text = psbt.json_serialize()
-        import json
+    def set_tab_visibility(self, tab, visible, title, index=0):
+        if self.tabs.indexOf(tab) == -1 and visible:
+            self.tabs.insertTab(index, tab, title)
+        elif self.tabs.indexOf(tab) != -1 and not visible:
+            self.tabs.removeTab(self.tabs.indexOf(tab))
 
-        json_text = json.dumps(json.loads(json_text), indent=4)
-        self.edit_json.setText(json_text)
+    def set_data(self, seralized=None, json_str=None):
+        self.seralized = seralized
+        self.json_str = json_str
 
-        img = create_psbt_qr(psbt.serialize())
-        if img:
-            self.qr_label.set_image(img)
-        else:
-            self.qr_label.setText("Data too large.\nNo QR Code could be generated")
+        self.set_tab_visibility(self.tab_json, bool(json_str), "JSON", index=2)
+        self.set_tab_visibility(
+            self.tab_seralized, bool(seralized), self.serialized_title, index=2
+        )
+        if seralized:
+            self.edit_seralized.setText(seralized)
 
-    def export_psbt(self):
+            img = create_psbt_qr(seralized)
+            if img:
+                self.qr_label.set_image(img)
+            else:
+                self.qr_label.setText("Data too large.\nNo QR Code could be generated")
+
+        if json_str:
+            json_text = json.dumps(json.loads(json_str), indent=4)
+            self.edit_json.setText(json_text)
+
+    def export_to_file(self):
         filename = self.save_file_dialog(
             name_filters=["PSBT Files (*.psbt)", "All Files (*.*)"],
             default_suffix="psbt",
@@ -167,9 +184,9 @@ class ExportPSBT(QObject):
             return
 
         with open(filename, "w") as file:
-            file.write(self.psbt.serialize())
+            file.write(self.ser)
 
-    def save_file_dialog(self, name_filters=None, default_suffix="psbt"):
+    def save_file_dialog(self, name_filters=None):
         options = QFileDialog.Options()
         # options |= QFileDialog.DontUseNativeDialog  # Use Qt-based dialog, not native platform dialog
 
@@ -177,7 +194,7 @@ class ExportPSBT(QObject):
         file_dialog.setOptions(options)
         file_dialog.setWindowTitle("Save File")
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-        file_dialog.setDefaultSuffix(default_suffix)
+        file_dialog.setDefaultSuffix(self.serialized_title.lower())
         if name_filters:
             file_dialog.setNameFilters(name_filters)
 
@@ -305,7 +322,7 @@ class UITX_Base(QObject):
         return recipients
 
 
-class UITX_Viewer(UITX_Base):
+class UIPSBT_Viewer(UITX_Base):
     signal_edit_tx = Signal()
     signal_save_psbt = Signal()
     signal_broadcast_tx = Signal()
@@ -375,7 +392,7 @@ class UITX_Viewer(UITX_Base):
         self.add_all_signer_tabs()
 
         # exports
-        self.export_psbt = ExportPSBT(self.lower_widget_layout, allow_edit=False)
+        self.export_widget = ExportData(self.lower_widget_layout, allow_edit=False)
 
         # buttons
         (
@@ -455,7 +472,9 @@ class UITX_Viewer(UITX_Base):
 
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_rate=None):
         self.psbt: bdk.PartiallySignedTransaction = psbt
-        self.export_psbt.set_psbt(psbt)
+        self.export_widget.set_data(
+            json_str=psbt.json_serialize(), seralized=psbt.serialize()
+        )
 
         fee_rate = (
             self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
@@ -470,6 +489,113 @@ class UITX_Viewer(UITX_Base):
                 address=bdk.Address.from_script(
                     output.script_pubkey, self.network
                 ).as_string(),
+                amount=output.value,
+            )
+            for output in outputs
+        ]
+
+
+class UITX_Viewer(UITX_Base):
+    signal_edit_tx = Signal()
+    signal_save_psbt = Signal()
+    signal_broadcast_tx = Signal()
+
+    def __init__(
+        self,
+        tx: bdk.Transaction,
+        signals: Signals,
+        utxo_list: UTXOList,
+        network: bdk.Network,
+        mempool_data: MempoolData,
+        blockchain: bdk.Blockchain = None,
+    ) -> None:
+        super().__init__(signals=signals, mempool_data=mempool_data)
+        self.tx: bdk.Transaction = tx
+        self.blockchain = blockchain
+        self.network = network
+        self.utxo_list = utxo_list
+
+        self.main_widget = QWidget()
+        self.main_widget_layout = QVBoxLayout(self.main_widget)
+
+        self.upper_widget = QWidget(self.main_widget)
+        self.main_widget_layout.addWidget(self.upper_widget)
+        self.upper_widget_layout = QHBoxLayout(self.upper_widget)
+
+        # in out
+        self.tabs_inputs_outputs = QTabWidget(self.main_widget)
+        self.upper_widget_layout.addWidget(self.tabs_inputs_outputs)
+
+        # inputs
+        self.tab_inputs = QWidget(self.main_widget)
+        self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
+        self.tab_inputs_layout.addWidget(utxo_list)
+        self.tabs_inputs_outputs.addTab(self.tab_inputs, "Inputs")
+
+        # outputs
+        self.tab_outputs = QWidget(self.main_widget)
+        self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
+        self.tabs_inputs_outputs.addTab(self.tab_outputs, "Outputs")
+        self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
+
+        self.recipients = self.create_recipients(
+            self.tab_outputs_layout, allow_edit=False
+        )
+
+        # fee_rate
+        self.fee_group = FeeGroup(
+            self.mempool_data,
+            self.upper_widget_layout,
+            allow_edit=False,
+            is_viewer=True,
+        )
+
+        self.lower_widget = QWidget(self.main_widget)
+        self.lower_widget.setMaximumHeight(220)
+        self.main_widget_layout.addWidget(self.lower_widget)
+        self.lower_widget_layout = QHBoxLayout(self.lower_widget)
+
+        # exports
+        self.export_widget = ExportData(self.lower_widget_layout, allow_edit=False)
+
+        # buttons
+        (
+            self.button_edit_tx,
+            self.button_save_tx,
+            self.button_broadcast_tx,
+        ) = create_button_bar(
+            self.main_widget_layout,
+            button_texts=[
+                "Edit Transaction",
+                "Save Transaction",
+                "Broadcast Transaction",
+            ],
+        )
+        self.button_broadcast_tx.setEnabled(False)
+        self.button_broadcast_tx.clicked.connect(self.broadcast)
+        self.set_tx(tx)
+        self.utxo_list.update()
+
+    def broadcast(self):
+        logger.debug(f"broadcasting {psbt_to_hex(self.tx.serialize())}")
+        self.blockchain.broadcast(self.tx)
+        self.signal_broadcast_tx.emit()
+
+    def set_tx(self, tx: bdk.Transaction, fee=None):
+        self.tx: bdk.Transaction = tx
+        self.export_widget.set_data(seralized=serialized_to_hex(tx.serialize()))
+
+        fee_rate = fee / self.tx.vsize() if fee is not None else 0
+
+        self.fee_group.set_fee_rate(fee_rate)
+
+        outputs: List[bdk.TxOut] = self.tx.output()
+
+        self.recipients.recipients = [
+            Recipient(
+                address=robust_address_str_from_script(
+                    output.script_pubkey, self.network
+                ),
                 amount=output.value,
             )
             for output in outputs

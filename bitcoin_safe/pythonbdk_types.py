@@ -1,5 +1,6 @@
 import bdkpython as bdk
 import enum
+from .util import serialized_to_hex
 
 
 class Recipient:
@@ -112,6 +113,14 @@ class CBFServerType(enum.Enum):
             return "Automatic"
         elif t == cls.Manual:
             return "Manual"
+
+
+def robust_address_str_from_script(script_pubkey, network):
+    try:
+        return bdk.Address.from_script(script_pubkey, network).as_string()
+    except:
+
+        return serialized_to_hex(script_pubkey.to_bytes())
 
 
 class Error:

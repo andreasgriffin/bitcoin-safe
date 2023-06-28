@@ -494,7 +494,7 @@ class MyTreeView(QTreeView):
         return table
 
     def copyRowsToClipboardAsCSV(self, row_numbers):
-        table = self.get_rows_as_csv()
+        table = self.get_rows_as_csv(row_numbers)
 
         stream = io.StringIO()
         writer = csv.writer(stream)

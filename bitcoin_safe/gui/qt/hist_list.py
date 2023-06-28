@@ -300,8 +300,9 @@ class HistList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_ADDRESS_STR)
-        self.signals.show_address.emit(addr)
+        txid = self.get_role_data_for_current_item(col=0, role=self.key_role)
+        wallet, tx_details = self._tx_dict[txid]
+        self.signals.show_transaction.emit(tx_details)
 
     def create_toolbar(self, config=None):
         toolbar, menu = self.create_toolbar_with_menu("")
@@ -346,7 +347,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         if update_filter.refresh_all:
             return self.update()
 
-        model = self.model()
+        model = self.std_model
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
             txid = model.data(model.index(row, self.Columns.TXID))
