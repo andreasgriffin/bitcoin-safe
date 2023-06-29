@@ -74,7 +74,7 @@ import aiorpcx
 import certifi
 import dns.resolver
 from PySide2.QtCore import QLocale
-
+import base64
 from .i18n import _
 
 TX_HEIGHT_FUTURE = -3
@@ -1031,6 +1031,63 @@ def block_explorer_URL(config: "UserConfig", kind: str, item: str) -> Optional[s
     return "".join(url_parts)
 
 
+def decode_serialized_string(input_string):
+    input_string = input_string.strip()
+
+    # Regular expression for a serialized transaction (hex string)
+    serialized_transaction_pattern = re.compile("^[a-fA-F0-9]*$")
+
+    # Regular expression for a Bitcoin address (starts with 1, 3 or bc1)
+    bitcoin_address_pattern = re.compile("^(1|3|bc1)[a-zA-Z0-9]*$")
+
+    # Check if the input string matches the pattern for a serialized transaction
+    if serialized_transaction_pattern.fullmatch(input_string):
+        # Check if it's a txid
+        if len(input_string) == 64:
+            return "txid"
+        # Check if it's a PSBT
+        elif input_string.lower().startswith("70736274ff"):
+            return bdk.PartiallySignedTransaction(bytes.fromhex(input_string))
+        # Check if it's a serialized transaction
+        elif len(input_string) > 40:
+            return bdk.Transaction(hex_to_serialized(input_string))
+
+    # Check if the input string matches the pattern for a Bitcoin address
+    elif bitcoin_address_pattern.fullmatch(input_string):
+        return bdk.Address(input_string)
+
+    # Check for base64 PSBT
+    elif input_string.startswith("cHNidP"):
+        try:
+            # Attempt to decode the base64 string
+            decoded = base64.b64decode(input_string)
+            # Check if decoded string starts with the magic bytes for PSBT
+            if decoded[:5] == b"psbt\xff":
+                return bdk.PartiallySignedTransaction(input_string)
+        except Exception:
+            pass
+
+    # Regular expression for a serialized transaction (hex string)
+    serialized_transaction_pattern = re.compile("^[a-fA-F0-9]*$")
+
+    # Regular expression for a Bitcoin address (starts with 1, 3 or bc1)
+    bitcoin_address_pattern = re.compile("^(1|3|bc1)[a-zA-Z0-9]*$")
+
+    # Check if the input string matches the pattern for a serialized transaction
+    if (
+        serialized_transaction_pattern.fullmatch(input_string)
+        and len(input_string) > 40
+    ):  # 40 is arbitrary, but a tx should be longer than this
+        return bdk.Transaction(serialized_to_hex(input_string))
+
+    # Check if the input string matches the pattern for a Bitcoin address
+    elif bitcoin_address_pattern.fullmatch(input_string):
+        return bdk.Address(input_string)
+
+    # If it matches neither pattern
+    return None
+
+
 # URL decode
 # _ud = re.compile('%([0-9a-hA-H]{2})', re.MULTILINE)
 # urldecode = lambda x: _ud.sub(lambda m: chr(int(m.group(1), 16)), x)
@@ -1165,54 +1222,6 @@ def is_subpath(long_path: str, short_path: str) -> bool:
     return short_path == common
 
 
-def log_exceptions(func):
-    """Decorator to log AND re-raise exceptions."""
-    assert asyncio.iscoroutinefunction(func), "func needs to be a coroutine"
-
-    @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
-        self = args[0] if len(args) > 0 else None
-        try:
-            return await func(*args, **kwargs)
-        except asyncio.CancelledError as e:
-            raise
-        except BaseException as e:
-            mylogger = logger if hasattr(self, "logger") else logger
-            try:
-                mylogger.exception(f"Exception in {func.__name__}: {repr(e)}")
-            except BaseException as e2:
-                print(
-                    f"logging exception raised: {repr(e2)}... orig exc: {repr(e)} in {func.__name__}"
-                )
-            raise
-
-    return wrapper
-
-
-def ignore_exceptions(func):
-    """Decorator to silently swallow all exceptions."""
-    assert asyncio.iscoroutinefunction(func), "func needs to be a coroutine"
-
-    @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
-        try:
-            return await func(*args, **kwargs)
-        except Exception as e:
-            pass
-
-    return wrapper
-
-
-def with_lock(func):
-    """Decorator to enforce a lock on a function call."""
-
-    def func_wrapper(self, *args, **kwargs):
-        with self.lock:
-            return func(self, *args, **kwargs)
-
-    return func_wrapper
-
-
 class TxMinedInfo(NamedTuple):
     height: int  # height of block that mined tx
     conf: Optional[
@@ -1228,166 +1237,6 @@ class TxMinedInfo(NamedTuple):
             assert self.height > 0
             return f"{self.height}x{self.txpos}"
         return None
-
-
-def make_aiohttp_session(proxy: Optional[dict], headers=None, timeout=None):
-    if headers is None:
-        headers = {"User-Agent": "Electrum"}
-    if timeout is None:
-        # The default timeout is high intentionally.
-        # DNS on some systems can be really slow, see e.g. #5337
-        timeout = aiohttp.ClientTimeout(total=45)
-    elif isinstance(timeout, (int, float)):
-        timeout = aiohttp.ClientTimeout(total=timeout)
-    ssl_context = ssl.create_default_context(
-        purpose=ssl.Purpose.SERVER_AUTH, cafile=ca_path
-    )
-
-    if proxy:
-        connector = ProxyConnector(
-            proxy_type=ProxyType.SOCKS5
-            if proxy["mode"] == "socks5"
-            else ProxyType.SOCKS4,
-            host=proxy["host"],
-            port=int(proxy["port"]),
-            username=proxy.get("user", None),
-            password=proxy.get("password", None),
-            rdns=True,
-            ssl=ssl_context,
-        )
-    else:
-        connector = aiohttp.TCPConnector(ssl=ssl_context)
-
-    return aiohttp.ClientSession(headers=headers, timeout=timeout, connector=connector)
-
-
-class OldTaskGroup(aiorpcx.TaskGroup):
-    """Automatically raises exceptions on join; as in aiorpcx prior to version 0.20.
-    That is, when using TaskGroup as a context manager, if any task encounters an exception,
-    we would like that exception to be re-raised (propagated out). For the wait=all case,
-    the OldTaskGroup class is emulating the following code-snippet:
-    ```
-    async with TaskGroup() as group:
-        await group.spawn(task1())
-        await group.spawn(task2())
-
-        async for task in group:
-            if not task.cancelled():
-                task.result()
-    ```
-    So instead of the above, one can just write:
-    ```
-    async with OldTaskGroup() as group:
-        await group.spawn(task1())
-        await group.spawn(task2())
-    ```
-    # TODO see if we can migrate to asyncio.timeout, introduced in python 3.11, and use stdlib instead of aiorpcx.curio...
-    """
-
-    async def join(self):
-        if self._wait is all:
-            exc = False
-            try:
-                async for task in self:
-                    if not task.cancelled():
-                        task.result()
-            except BaseException:  # including asyncio.CancelledError
-                exc = True
-                raise
-            finally:
-                if exc:
-                    await self.cancel_remaining()
-                await super().join()
-        else:
-            await super().join()
-            if self.completed:
-                self.completed.result()
-
-
-# We monkey-patch aiorpcx TimeoutAfter (used by timeout_after and ignore_after API),
-# to fix a timing issue present in asyncio as a whole re timing out tasks.
-# To see the issue we are trying to fix, consider example:
-#     async def outer_task():
-#         async with timeout_after(0.1):
-#             await inner_task()
-# When the 0.1 sec timeout expires, inner_task will get cancelled by timeout_after (=internal cancellation).
-# If around the same time (in terms of event loop iterations) another coroutine
-# cancels outer_task (=external cancellation), there will be a race.
-# Both cancellations work by propagating a CancelledError out to timeout_after, which then
-# needs to decide (in TimeoutAfter.__aexit__) whether it's due to an internal or external cancellation.
-# AFAICT asyncio provides no reliable way of distinguishing between the two.
-# This patch tries to always give priority to external cancellations.
-# see https://github.com/kyuupichan/aiorpcX/issues/44
-# see https://github.com/aio-libs/async-timeout/issues/229
-# see https://bugs.python.org/issue42130 and https://bugs.python.org/issue45098
-# TODO see if we can migrate to asyncio.timeout, introduced in python 3.11, and use stdlib instead of aiorpcx.curio...
-def _aiorpcx_monkeypatched_set_new_deadline(task, deadline):
-    def timeout_task():
-        task._orig_cancel()
-        task._timed_out = (
-            None if getattr(task, "_externally_cancelled", False) else deadline
-        )
-
-    def mycancel(*args, **kwargs):
-        task._orig_cancel(*args, **kwargs)
-        task._externally_cancelled = True
-        task._timed_out = None
-
-    if not hasattr(task, "_orig_cancel"):
-        task._orig_cancel = task.cancel
-        task.cancel = mycancel
-    task._deadline_handle = task._loop.call_at(deadline, timeout_task)
-
-
-def _aiorpcx_monkeypatched_set_task_deadline(task, deadline):
-    ret = _aiorpcx_orig_set_task_deadline(task, deadline)
-    task._externally_cancelled = None
-    return ret
-
-
-def _aiorpcx_monkeypatched_unset_task_deadline(task):
-    if hasattr(task, "_orig_cancel"):
-        task.cancel = task._orig_cancel
-        del task._orig_cancel
-    return _aiorpcx_orig_unset_task_deadline(task)
-
-
-_aiorpcx_orig_set_task_deadline = aiorpcx.curio._set_task_deadline
-_aiorpcx_orig_unset_task_deadline = aiorpcx.curio._unset_task_deadline
-
-aiorpcx.curio._set_new_deadline = _aiorpcx_monkeypatched_set_new_deadline
-aiorpcx.curio._set_task_deadline = _aiorpcx_monkeypatched_set_task_deadline
-aiorpcx.curio._unset_task_deadline = _aiorpcx_monkeypatched_unset_task_deadline
-
-
-def detect_tor_socks_proxy() -> Optional[Tuple[str, int]]:
-    # Probable ports for Tor to listen at
-    candidates = [
-        ("127.0.0.1", 9050),
-        ("127.0.0.1", 9150),
-    ]
-    for net_addr in candidates:
-        if is_tor_socks_port(*net_addr):
-            return net_addr
-    return None
-
-
-def is_tor_socks_port(host: str, port: int) -> bool:
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(0.1)
-            s.connect((host, port))
-            # mimic "tor-resolve 0.0.0.0".
-            # see https://github.com/spesmilo/electrum/issues/7317#issuecomment-1369281075
-            # > this is a socks5 handshake, followed by a socks RESOLVE request as defined in
-            # > [tor's socks extension spec](https://github.com/torproject/torspec/blob/7116c9cdaba248aae07a3f1d0e15d9dd102f62c5/socks-extensions.txt#L63),
-            # > resolving 0.0.0.0, which being an IP, tor resolves itself without needing to ask a relay.
-            s.send(b"\x05\x01\x00\x05\xf0\x00\x03\x070.0.0.0\x00\x00")
-            if s.recv(1024) == b"\x05\x00\x05\x00\x00\x01\x00\x00\x00\x00\x00\x00":
-                return True
-    except socket.error:
-        pass
-    return False
 
 
 AS_LIB_USER_I_WANT_TO_MANAGE_MY_OWN_ASYNCIO_LOOP = False  # used by unit tests

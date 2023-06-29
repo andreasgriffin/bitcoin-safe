@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages, find_namespace_packages
 
 
-
 with open("requirements.txt") as f:
     install_reqs = f.read().strip().split("\n")
 
@@ -19,7 +18,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="bitcoin_safe",
-    version="0.0.1",
+    version="0.1.0",
     author="Andreas Griffin",
     author_email="andreasgriffin@proton.me",
     description="A bitcoin wallet for the whole family.",

@@ -148,6 +148,8 @@ from PySide2.QtGui import (
     QRegion,
     QPainter,
 )
+from PySide2.QtCore import QMimeData, QUrl
+import tempfile
 
 
 class MyMenu(QMenu):
@@ -200,9 +202,13 @@ def create_toolbar_with_menu(config, title, export_as_csv=None):
 
 
 class MyStandardItemModel(QStandardItemModel):
-    def __init__(self, parent, drag_key="addresses"):
+    def __init__(
+        self, parent, drag_key="addresses", get_file_data=None, file_extension="dat"
+    ):
         super().__init__(parent)
         self.drag_key = drag_key
+        self.get_file_data = get_file_data
+        self.file_extension = file_extension
 
     def flags(self, index):
         if (
@@ -214,17 +220,54 @@ class MyStandardItemModel(QStandardItemModel):
 
     def mimeData(self, indexes):
         mime_data = QMimeData()
+        keys = set()
+        for index in indexes:
+            if index.isValid():
+                key = self.item(index.row(), self.parent().key_column).data(
+                    role=MyTreeView.ROLE_KEY
+                )
+                keys.add(key)
+
+        # set the key data for internal drags
         d = {
             "type": f"drag_{self.drag_key}",
             self.drag_key: [],
         }
 
-        for index in indexes:
-            if index.isValid() and index.column() == self.parent().key_column:
-                d[self.drag_key].append(self.data(index))
+        for key in keys:
+            d[self.drag_key].append(key)
 
         json_string = json.dumps(d).encode()
         mime_data.setData("application/json", json_string)
+
+        # set the key data for files
+
+        # List to store the file URLs
+        if self.get_file_data:
+            file_urls = []
+
+            # Iterate through indexes to fetch serialized data using drag keys
+            for key in keys:
+                # Fetch the serialized data using the drag_key
+                data_item = self.get_file_data(key)
+                if not data_item:
+                    continue
+
+                # Create a temporary file
+                file_handle, file_path = tempfile.mkstemp(
+                    suffix=f"_{key}.{self.file_extension}", prefix=""
+                )
+
+                # Write the serialized data to the file
+                with os.fdopen(file_handle, "w") as file:
+                    file.write(data_item)
+
+                # Add the file URL to the list
+                file_urls.append(QUrl.fromLocalFile(file_path))
+
+            # Set the URLs of the files in the mime data
+            mime_data.setUrls(file_urls)
+
         return mime_data
 
 

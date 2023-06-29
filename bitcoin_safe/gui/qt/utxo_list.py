@@ -35,7 +35,7 @@ import enum
 import copy
 
 from PySide2.QtCore import Qt, QPersistentModelIndex
-from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont
+from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
 from PySide2.QtWidgets import (
     QAbstractItemView,
     QMenu,
@@ -256,10 +256,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         sort_id = wallet.get_tx_status(txdetails).sort_id if txdetails else -1
         items[self.Columns.ADDRESS].setData(sort_id, self.ROLE_SORT_ORDER)
 
-        if txdetails:
-            items[self.Columns.ADDRESS].setIcon(read_QIcon(sort_id_to_icon(sort_id)))
-        else:
-            items[self.Columns.ADDRESS].setIcon()
+        items[self.Columns.ADDRESS].setIcon(
+            read_QIcon(sort_id_to_icon(sort_id) if txdetails else None)
+        )
 
         items[self.Columns.WALLET_ID].setText(wallet.id if wallet else "unknown")
         items[self.Columns.WALLET_ID].setData(

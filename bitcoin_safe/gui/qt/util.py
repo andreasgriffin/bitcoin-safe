@@ -102,7 +102,6 @@ from ...i18n import _, languages
 from ...util import (
     FileImportFailed,
     FileExportFailed,
-    make_aiohttp_session,
     resource_path,
 )
 from ...util import EventListener, event_listener, is_address
@@ -1506,6 +1505,8 @@ def icon_path(icon_basename: str):
 
 @lru_cache(maxsize=1000)
 def read_QIcon(icon_basename: str) -> QIcon:
+    if icon_basename is None:
+        return QIcon()
     return QIcon(icon_path(icon_basename))
 
 

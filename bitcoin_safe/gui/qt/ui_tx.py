@@ -65,9 +65,9 @@ def create_groupbox(layout, title=None):
 class ExportData(QObject):
     signal_export_to_file = Signal()
 
-    def __init__(self, layout, allow_edit=False, serialized_title="PSBT") -> None:
+    def __init__(self, layout, allow_edit=False, title_for_serialized="PSBT") -> None:
         super().__init__()
-        self.serialized_title = serialized_title
+        self.title_for_serialized = title_for_serialized
         self.seralized = None
         self.json_str = None
         self.txid = None
@@ -119,7 +119,7 @@ class ExportData(QObject):
         self.form_layout.addRow("Tx", self.edit_seralized)
 
         self.set_tab_visibility(
-            self.tab_seralized, True, self.serialized_title, index=1
+            self.tab_seralized, True, self.title_for_serialized, index=1
         )
 
         # json
@@ -137,12 +137,12 @@ class ExportData(QObject):
         self.tab_file_layout.setAlignment(Qt.AlignHCenter)
         self.button_file = QToolButton()
         self.button_file.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.button_file.setText(f"Export {self.serialized_title} file")
+        self.button_file.setText(f"Export {self.title_for_serialized} file")
         self.button_file.setIcon(read_QIcon("download.png"))
         self.button_file.setIconSize(QSize(30, 30))  # 24x24 pixels
-        self.button_file.clicked.connect(self.signal_export_to_file)
+        self.button_file.clicked.connect(lambda: self.signal_export_to_file.emit())
         self.tab_file_layout.addWidget(self.button_file)
-        self.tabs.addTab(self.tab_file, f"Export {self.serialized_title} file")
+        self.tabs.addTab(self.tab_file, f"Export {self.title_for_serialized} file")
 
         layout.addWidget(self.tabs)
 
@@ -152,6 +152,11 @@ class ExportData(QObject):
         )
         if not filename:
             return
+
+        # Ensure the file has the .png extension
+        if not filename.lower().endswith(".png"):
+            filename += ".png"
+
         self.qr_label.pil_image.save(filename)
 
     def set_tab_visibility(self, tab, visible, title, index=0):
@@ -167,7 +172,7 @@ class ExportData(QObject):
 
         self.set_tab_visibility(self.tab_json, bool(json_str), "JSON", index=2)
         self.set_tab_visibility(
-            self.tab_seralized, bool(seralized), self.serialized_title, index=2
+            self.tab_seralized, bool(seralized), self.title_for_serialized, index=2
         )
         if txid:
             self.txid_edit.setText(txid)
@@ -193,17 +198,24 @@ class ExportData(QObject):
             return
 
         with open(filename, "w") as file:
-            file.write(self.ser)
+            file.write(self.seralized)
 
-    def save_file_dialog(self, name_filters=None):
+    def save_file_dialog(self, name_filters=None, default_suffix=None):
         options = QFileDialog.Options()
         # options |= QFileDialog.DontUseNativeDialog  # Use Qt-based dialog, not native platform dialog
 
         file_dialog = QFileDialog()
         file_dialog.setOptions(options)
         file_dialog.setWindowTitle("Save File")
+        if default_suffix:
+            file_dialog.setDefaultSuffix(default_suffix)
+
+        # Set a default filename
+        if self.txid:
+            file_dialog.selectFile(f"{self.txid}.{default_suffix}")
+
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-        file_dialog.setDefaultSuffix(self.serialized_title.lower())
+        file_dialog.setDefaultSuffix(self.title_for_serialized.lower())
         if name_filters:
             file_dialog.setNameFilters(name_filters)
 
@@ -259,12 +271,23 @@ class FeeGroup(QObject):
         )
 
         self.high_fee_warning_label = QLabel()
-        self.high_fee_warning_label.setText("High Warning")
+        self.high_fee_warning_label.setText(
+            "<font color='red'><b>High feerate</b></font>"
+        )
         self.high_fee_warning_label.setHidden(True)
         if not confirmation_time:
             groupBox_Fee_layout.addWidget(
                 self.high_fee_warning_label, alignment=Qt.AlignHCenter
             )
+
+        self.non_final_fee_label = QLabel()
+        self.non_final_fee_label.setText(
+            "<font color='black'><b>Non-final feerate</b></font>"
+        )
+        self.non_final_fee_label.setHidden(True)
+        groupBox_Fee_layout.addWidget(
+            self.non_final_fee_label, alignment=Qt.AlignHCenter
+        )
 
         self.widget_around_spin_box = QWidget()
         self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
@@ -318,12 +341,7 @@ class FeeGroup(QObject):
             fees[0] * 2 if fees else max_reasonable_fee_rate_fallback
         )
 
-        if fee_rate > max_reasonable_fee_rate:
-            warning = "<font color='red'><b>High feerate</b></font>"
-
-        if warning:
-            self.high_fee_warning_label.setText(warning)
-        self.high_fee_warning_label.setHidden(not warning)
+        self.high_fee_warning_label.setHidden(not (fee_rate > max_reasonable_fee_rate))
 
         self.spin_label2.setText(
             f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
@@ -542,10 +560,10 @@ class UIPSBT_Viewer(UITX_Base):
             txid=psbt.txid(), json_str=psbt.json_serialize(), seralized=psbt.serialize()
         )
 
+        self.fee_group.non_final_fee_label.setHidden(not (fee_rate is None))
         fee_rate = (
             self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
         )
-
         self.fee_group.set_fee_rate(fee_rate)
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
@@ -642,7 +660,9 @@ class UITX_Viewer(UITX_Base):
 
         # exports
         self.export_widget = ExportData(
-            self.right_sidebar_layout, allow_edit=False, serialized_title="Transaction"
+            self.right_sidebar_layout,
+            allow_edit=False,
+            title_for_serialized="Transaction",
         )
 
         self.lower_widget = QWidget(self.main_widget)

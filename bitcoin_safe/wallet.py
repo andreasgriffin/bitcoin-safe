@@ -11,12 +11,8 @@ from .gui.qt.util import Message
 from .tx import TXInfos
 from .util import (
     balance_dict,
-    OrderedDictWithIndex,
     Satoshis,
     timestamp_to_datetime,
-    TxMinedInfo,
-    format_fee_satoshis,
-    format_time,
 )
 from .util import (
     TX_HEIGHT_FUTURE,

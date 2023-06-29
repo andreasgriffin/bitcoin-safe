@@ -445,7 +445,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 address_path = self.wallet.get_address_index_tuple(
                     address, bdk.KeychainKind.EXTERNAL
                 )
-            address_item[0].setData(address, self.ROLE_KEY)
+            address_item[self.key_column].setData(address, self.ROLE_KEY)
             address_item[self.Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
             address_path_str = self.wallet.get_address_path_str(address)
             if address_path_str is not None:

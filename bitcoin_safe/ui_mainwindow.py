@@ -76,8 +76,9 @@ class Ui_MainWindow(QMainWindow):
 
         # menu transaction
         self.menu_transaction = self.menubar.addMenu(_("&Transaction"))
+        self.menu_transaction.addAction("Load Transaction from file", self.open_tx_file)
         self.menu_transaction.addAction(
-            "Load Transaction from file", self.open_tx_file
+            "Load Transaction from text", self.dialog_open_tx_from_str
         ).setShortcut(QKeySequence("Ctrl+L"))
 
         # menu settings

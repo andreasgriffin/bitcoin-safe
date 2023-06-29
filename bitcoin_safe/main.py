@@ -16,7 +16,7 @@ from PySide2.QtWidgets import *
 from .ui_mainwindow import Ui_MainWindow
 from .wallet import BlockchainType, Wallet
 import sys
-
+import re
 
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
@@ -43,6 +43,7 @@ from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
 from .mempool import MempoolData
 from .pythonbdk_types import OutPoint
+from .util import call_call_functions, decode_serialized_string
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
@@ -146,15 +147,68 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
     def open_tx_like_in_tab(self, txlike):
         logger.debug(f"Trying to open tx with type {type(txlike)}")
+
+        if isinstance(txlike, str):
+            res = decode_serialized_string(txlike)
+            if not res:
+                raise Exception(f"{txlike} could not be decoded")
+            if res == "txid":
+                txid = txlike
+                wallets: List[Wallet] = self.signals.get_wallets().values()
+                for wallet in wallets:
+                    txlike = wallet.get_tx(txid)
+                if not txlike:
+                    raise Exception(f"txid {txid} could not be found in wallets")
+            else:
+                txlike = res
+
         if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
             return self.open_tx_in_tab(txlike)
         else:
             return self.open_psbt_in_tab(txlike)
 
+    def dialog_open_tx_from_str(self):
+        def process_input():
+            dialog.close()
+            self.open_tx_like_in_tab(text_edit.toPlainText())
+
+        # Create a QDialog
+        dialog = QDialog()
+        dialog.setWindowTitle("Open Transaction")
+        layout = QVBoxLayout()
+
+        # Create widgets
+        instruction_label = QLabel(
+            "Please paste your Bitcoin Transaction or PSBT in here:"
+        )
+        text_edit = QTextEdit()
+        text_edit.setPlaceholderText("Paste your Bitcoin Transaction or PSBT in here")
+        open_button = QPushButton("Open Transaction")
+        cancel_button = QPushButton("Cancel")
+
+        # Add widgets to layout
+        layout.addWidget(instruction_label)
+        layout.addWidget(text_edit)
+        layout.addWidget(open_button)
+        layout.addWidget(cancel_button)
+        dialog.setLayout(layout)
+
+        # Connect buttons
+        open_button.clicked.connect(process_input)
+        cancel_button.clicked.connect(dialog.close)
+
+        # Connect the returnPressed signal to the same slot as the "Open Transaction" button
+        shortcut = QShortcut(QKeySequence("Return"), dialog)
+        shortcut.activated.connect(process_input)
+
+        # Show dialog
+        dialog.exec_()
+
     def open_tx_in_tab(self, txlike):
         tx: bdk.Transaction = None
         fee = None
         confirmation_time = None
+
         if isinstance(txlike, bdk.TransactionDetails):
             logger.debug(f"Got a PartiallySignedTransaction")
             tx = txlike.transaction

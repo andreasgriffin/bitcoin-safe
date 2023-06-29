@@ -35,7 +35,12 @@ from .category_list import CategoryEditor
 from ...wallet import Wallet, TxConfirmationStatus
 
 from ...i18n import _
-from ...util import InternalAddressCorruption, block_explorer_URL, format_satoshis
+from ...util import (
+    InternalAddressCorruption,
+    block_explorer_URL,
+    format_satoshis,
+    serialized_to_hex,
+)
 import json
 
 
@@ -49,7 +54,7 @@ from .util import (
     TX_ICONS,
     sort_id_to_icon,
 )
-from .my_treeview import MyTreeView, MySortModel
+from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
 from .taglist import AddressDragInfo
 from .html_delegate import HTMLDelegate
 from ...signals import UpdateFilter
@@ -173,7 +178,12 @@ class HistList(MyTreeView, MessageBoxMixin):
         #     AddressUsageStateFilter.__members__.values()
         # ):  # type: AddressUsageStateFilter
         #     self.used_button.addItem(addr_usage_state.ui_text())
-        self.std_model = QStandardItemModel(self)
+        self.std_model = MyStandardItemModel(
+            self,
+            drag_key="txids",
+            get_file_data=self.get_file_data,
+            file_extension="tx",
+        )
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
@@ -189,6 +199,13 @@ class HistList(MyTreeView, MessageBoxMixin):
         self.setDropIndicatorShown(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDefaultDropAction(Qt.MoveAction)
+
+    def get_file_data(self, txid):
+        wallets: List[Wallet] = self.signals.get_wallets().values()
+        for wallet in wallets:
+            txdetails = wallet.get_tx(txid)
+        if txdetails:
+            return serialized_to_hex(txdetails.transaction.serialize())
 
     def startDrag(self, action):
         indexes = self.selectedIndexes()
@@ -206,7 +223,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             painter = QPainter(pixmap)
             current_height = 0
             for index in indexes:
-                if index.column() != self.Columns.ADDRESS:
+                if index.column() != self.key_column:
                     continue
                 rect = self.visualRect(index)
                 temp_pixmap = QPixmap(rect.size())
@@ -229,6 +246,10 @@ class HistList(MyTreeView, MessageBoxMixin):
         if event.mimeData().hasFormat("application/json"):
             logger.debug("accept drag enter")
             event.acceptProposedAction()
+        # This tells the widget to accept file drops
+        elif event.mimeData().hasUrls():
+            logger.debug("accept drag enter")
+            event.acceptProposedAction()
         else:
             event.ignore()
 
@@ -240,7 +261,7 @@ class HistList(MyTreeView, MessageBoxMixin):
 
         if event.mimeData().hasFormat("application/json"):
             model = self.model()
-            hit_address = model.data(model.index(index.row(), self.Columns.ADDRESS))
+            hit_address = model.data(model.index(index.row(), self.key_column))
 
             data_bytes = event.mimeData().data("application/json")
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -253,6 +274,15 @@ class HistList(MyTreeView, MessageBoxMixin):
                     self.signal_tag_dropped.emit(drag_info)
                 event.accept()
                 return
+
+        elif event.mimeData().hasUrls():
+            # Iterate through the list of dropped file URLs
+            for url in event.mimeData().urls():
+                # Convert URL to local file path
+                file_path = url.toLocalFile()
+                # Read and print contents of each file
+                with open(file_path, "r") as file:
+                    self.signals.open_tx.emit(file.read())
 
         event.ignore()
 
@@ -271,13 +301,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         toolbar.insertLayout(3, hbox)
 
         return toolbar
-
-    def get_address(self, force_new=False):
-        address_info = self.wallet.get_address(force_new=force_new)
-        address = address_info.address.as_string()
-        do_copy(address, title=f"Address {address}")
-        self.signals.addresses_updated.emit()
-        self.select_rows(address, self.Columns.ADDRESS)
 
     def get_toolbar_buttons(self):
         return []
@@ -443,7 +466,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         if not selected:
             return
         multi_select = len(selected) > 1
-        addrs = [self.item_from_index(item).text() for item in selected]
+        txids = [self.item_from_index(item).text() for item in selected]
         menu = QMenu()
         if not multi_select:
             idx = self.indexAt(position)
@@ -452,8 +475,10 @@ class HistList(MyTreeView, MessageBoxMixin):
             item = self.item_from_index(idx)
             if not item:
                 return
-            addr = addrs[0]
-            menu.addAction(_("Details"), lambda: self.signals.show_address.emit(addr))
+            txid = txids[0]
+            menu.addAction(
+                _("Details"), lambda: self.signals.show_transaction.emit(txid)
+            )
             addr_column_title = self.std_model.horizontalHeaderItem(
                 self.Columns.LABEL
             ).text()
@@ -464,13 +489,13 @@ class HistList(MyTreeView, MessageBoxMixin):
                 _("Edit {}").format(addr_column_title),
                 lambda p=persistent: self.edit(QModelIndex(p)),
             )
-            # menu.addAction(_("Request payment"), lambda: self.main_window.receive_at(addr))
+            # menu.addAction(_("Request payment"), lambda: self.main_window.receive_at(txid))
             # if self.wallet.can_export():
-            #     menu.addAction(_("Private key"), lambda: self.signals.show_private_key(addr))
+            #     menu.addAction(_("Private key"), lambda: self.signals.show_private_key(txid))
             # if not is_multisig and not self.wallet.is_watching_only():
-            #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(addr))
-            #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(addr))
-            addr_URL = block_explorer_URL(self.config, "addr", addr)
+            #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
+            #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
+            addr_URL = block_explorer_URL(self.config, "tx", txid)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
@@ -479,7 +504,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
-        # run_hook('receive_menu', menu, addrs, self.wallet)
+        # run_hook('receive_menu', menu, txids, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))
 
     # def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
