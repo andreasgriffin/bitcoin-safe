@@ -201,3 +201,32 @@ class Labels(BaseSaveableClass):
                 if category not in self.categories:
                     self.categories.append(category)
         return self.data
+
+    def rename_category(self, old_category, new_category):
+        affected_keys = []
+        for key, item in list(self.data.items()):
+            if (
+                item.get(Key.category.name)
+                and item.get(Key.category.name) == old_category
+            ):
+                item[Key.category.name] = new_category
+                affected_keys.append(key)
+
+        if old_category in self.categories:
+            idx = self.categories.index(old_category)
+            self.categories.pop(idx)
+            self.categories.insert(idx, new_category)
+        return affected_keys
+
+    def delete_category(self, category) -> List[str]:
+        affected_keys = []
+        for key, item in list(self.data.items()):
+            if item.get(Key.category.name) and item.get(Key.category.name) == category:
+                affected_keys.append(key)
+                del item[Key.category.name]
+
+        if category in self.categories:
+            idx = self.categories.index(category)
+            self.categories.pop(idx)
+
+        return affected_keys

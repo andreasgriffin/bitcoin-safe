@@ -27,6 +27,7 @@ from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 from ...signer import AbstractSigner, SignerWallet
+from .util import MnemonicLineEdit
 
 
 class KeyStoreUITypeChooser(QObject):
@@ -168,7 +169,7 @@ class KeyStoreUIDefault(QObject):
         label_xpub = QLabel(self.box_left)
         self.edit_xpub = QLineEdit(self.box_left)
         self.label_seed = QLabel()
-        self.edit_seed = QLineEdit()
+        self.edit_seed = MnemonicLineEdit()
 
         # put them on the formLayout
         self.formLayout = QFormLayout(self.box_left)

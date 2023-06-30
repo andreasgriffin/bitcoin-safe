@@ -70,6 +70,7 @@ from PySide2.QtWidgets import (
     QAbstractItemView,
     QVBoxLayout,
     QLineEdit,
+    QTextEdit,
     QStyle,
     QDialog,
     QGroupBox,
@@ -106,7 +107,7 @@ from ...util import (
 )
 from ...util import EventListener, event_listener, is_address
 from PySide2.QtSvg import QSvgWidget
-
+import bdkpython as bdk
 
 if platform.system() == "Windows":
     MONOSPACE_FONT = "Lucida Console"
@@ -1041,6 +1042,7 @@ class OverlayControlMixin(GenericInputHandler):
         self.overlay_layout.setContentsMargins(0, 0, 0, 0)
         self.overlay_layout.setSpacing(1)
         self._updateOverlayPos()
+        self.buttons = []
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
@@ -1050,6 +1052,7 @@ class OverlayControlMixin(GenericInputHandler):
         frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
         overlay_size = self.overlay_widget.sizeHint()
         x = self.rect().right() - frame_width - overlay_size.width()
+
         y = self.rect().bottom() - overlay_size.height()
         middle = self.middle
         if hasattr(self, "document"):
@@ -1058,9 +1061,12 @@ class OverlayControlMixin(GenericInputHandler):
             if self.rect().height() < (line_spacing * 2):
                 middle = True
         y = (y / 2) + frame_width if middle else y - frame_width
+
+        # Adjusting for scrollbar if visible
         if hasattr(self, "verticalScrollBar") and self.verticalScrollBar().isVisible():
             scrollbar_width = self.style().pixelMetric(QStyle.PM_ScrollBarExtent)
             x -= scrollbar_width
+
         self.overlay_widget.move(int(x), int(y))
 
     def addWidget(self, widget: QWidget):
@@ -1074,7 +1080,21 @@ class OverlayControlMixin(GenericInputHandler):
         button.setCursor(QCursor(Qt.PointingHandCursor))
         button.clicked.connect(on_click)
         self.addWidget(button)
+        self.buttons.append(button)
         return button
+
+    def addRandomMnemonicButton(self):
+        def on_click():
+            self.setText(bdk.Mnemonic(bdk.WordCount.WORDS12).as_string())
+
+        self.addButton("dice.svg", on_click, _("Create random mnemonic"))
+
+    def addResetButton(self, get_reset_text):
+        def on_click():
+            self.setText(get_reset_text())
+
+        button = self.addButton("reset-update.svg", on_click, _("Reset"))
+        button.setStyleSheet("background-color: white;")
 
     def addCopyButton(self):
         def on_copy():
@@ -1225,6 +1245,26 @@ class OverlayControlMixin(GenericInputHandler):
         btn.setMenu(menu)
 
 
+class ButtonsTextEdit(OverlayControlMixin, QTextEdit):
+    def __init__(self, text=None):
+        QTextEdit.__init__(self, text)
+        OverlayControlMixin.__init__(self, middle=True)
+        self.middle = False
+
+    def text(self):
+        return self.toPlainText()
+
+
+class ShowCopyTextEdit(ButtonsTextEdit):
+    """read-only line with qr and copy buttons"""
+
+    def __init__(self, text: str = ""):
+        super().__init__(text)
+        self.setReadOnly(True)
+        # self.setFont(QFont(MONOSPACE_FONT))
+        self.addCopyButton()
+
+
 class ButtonsLineEdit(OverlayControlMixin, QLineEdit):
     def __init__(self, text=None):
         QLineEdit.__init__(self, text)
@@ -1237,19 +1277,35 @@ class ShowQRLineEdit(ButtonsLineEdit):
     def __init__(self, text: str, config, title=None):
         ButtonsLineEdit.__init__(self, text)
         self.setReadOnly(True)
-        self.setFont(QFont(MONOSPACE_FONT))
+        # self.setFont(QFont(MONOSPACE_FONT))
         self.add_qr_show_button(config=config, title=title)
         self.addCopyButton()
+
+
+class ResetLineEdit(ButtonsLineEdit):
+    """read-only line with qr and copy buttons"""
+
+    def __init__(self, get_reset_text):
+        ButtonsLineEdit.__init__(self)
+        self.addResetButton(get_reset_text)
 
 
 class ShowCopyLineEdit(ButtonsLineEdit):
     """read-only line with qr and copy buttons"""
 
-    def __init__(self, text: str, config, title=None):
+    def __init__(self, text: str = ""):
         ButtonsLineEdit.__init__(self, text)
         self.setReadOnly(True)
-        self.setFont(QFont(MONOSPACE_FONT))
+        # self.setFont(QFont(MONOSPACE_FONT))
         self.addCopyButton()
+
+
+class MnemonicLineEdit(ButtonsLineEdit):
+    """read-only line with qr and copy buttons"""
+
+    def __init__(self):
+        ButtonsLineEdit.__init__(self)
+        self.addRandomMnemonicButton()
 
 
 class ButtonsTextEdit(OverlayControlMixin, QPlainTextEdit):

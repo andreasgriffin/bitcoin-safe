@@ -1360,30 +1360,4 @@ class Wallet(BaseSaveableClass):
         ]
 
         for recipient in recipients:
-            self.category[recipient.address] = category
-
-    def rename_category(self, old_category, new_category):
-        affected_keys = []
-        for key, this_category in list(self.category.items()):
-            if this_category == old_category:
-                affected_keys.append(key)
-                self.category[key] = new_category
-
-        if old_category in self.categories:
-            idx = self.categories.index(old_category)
-            self.categories.pop(idx)
-            self.categories.insert(idx, new_category)
-        return affected_keys
-
-    def delete_category(self, category) -> List[str]:
-        affected_keys = []
-        for key, this_category in list(self.category.items()):
-            if this_category == category:
-                affected_keys.append(key)
-                del self.category[key]
-
-        if category in self.categories:
-            idx = self.categories.index(category)
-            self.categories.pop(idx)
-
-        return affected_keys
+            self.labels.set_addr_category(recipient.address, category)

@@ -33,6 +33,7 @@ from .qrcodewidget import QRLabel
 from ...wallet import UtxosForInputs, Wallet
 import json
 from ...pythonbdk_types import robust_address_str_from_script
+from .util import ShowCopyLineEdit, ShowCopyTextEdit
 
 max_reasonable_fee_rate_fallback = 100
 
@@ -110,10 +111,11 @@ class ExportData(QObject):
         # psbt
         self.tab_seralized = QWidget()
         self.form_layout = QFormLayout(self.tab_seralized)
-        self.txid_edit = QLineEdit()
-        self.txid_edit.setReadOnly(True)
+        self.txid_edit = ShowCopyLineEdit()
+        self.txid_edit.buttons[0].setStyleSheet("background-color: white;")
         self.form_layout.addRow("TxId", self.txid_edit)
-        self.edit_seralized = QTextEdit()
+        self.edit_seralized = ShowCopyTextEdit()
+        self.edit_seralized.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
             self.edit_seralized.setReadOnly(True)
         self.form_layout.addRow("Tx", self.edit_seralized)
@@ -125,7 +127,8 @@ class ExportData(QObject):
         # json
         self.tab_json = QWidget()
         self.tab_json_layout = QVBoxLayout(self.tab_json)
-        self.edit_json = QTextEdit()
+        self.edit_json = ShowCopyTextEdit()
+        self.edit_json.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
             self.edit_json.setReadOnly(True)
         self.tab_json_layout.addWidget(self.edit_json)

@@ -426,6 +426,13 @@ class MyTreeView(QTreeView):
         font = QFont("Arial", 10)
         self.setFont(font)
 
+        self.setDragEnabled(True)
+        self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDefaultDropAction(Qt.MoveAction)
+
     def create_menu(self, position: QPoint) -> None:
         selected = self.selected_in_column(self.Columns.ADDRESS)
         if not selected:
@@ -810,3 +817,18 @@ class MyTreeView(QTreeView):
         if row is not None:
             self.std_model.takeRow(row)
         self.hide_if_empty()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            # Iterate through the list of dropped file URLs
+            for url in event.mimeData().urls():
+                # Convert URL to local file path
+                file_path = url.toLocalFile()
+
+                if file_path.endswith(".wallet"):
+                    logger.debug(file_path)
+                    event.accept()
+                    self.signals.open_wallet.emit(file_path)
+                    return
+
+        event.ignore()

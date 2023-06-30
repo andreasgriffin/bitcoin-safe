@@ -14,6 +14,7 @@ from ...wallet import Wallet
 
 from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
+from .util import ShowCopyLineEdit
 
 
 def dialog_replace_with_new_receiving_address(address):
@@ -65,7 +66,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         layout.setContentsMargins(10, 20, 10, 10)  # Left, Top, Right, Bottom margins
 
         form_layout = QtWidgets.QFormLayout()
-        self.address_line_edit = QtWidgets.QLineEdit()
+        self.address_line_edit = (
+            QtWidgets.QLineEdit() if allow_edit else ShowCopyLineEdit()
+        )
         self.address_line_edit.setPlaceholderText("Enter address here")
         self.label_line_edit = QtWidgets.QLineEdit()
         self.label_line_edit.setPlaceholderText("Enter label here")

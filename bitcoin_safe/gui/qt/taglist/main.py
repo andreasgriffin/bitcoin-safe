@@ -184,6 +184,10 @@ class DeleteButton(QPushButton):
         logger.debug("Drag has left the delete button")
 
     def dropEvent(self, event):
+        super().dropEvent(event)
+        if event.isAccepted():
+            return
+
         if event.mimeData().hasFormat("application/json"):
             data_bytes = event.mimeData().data("application/json")
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -342,6 +346,10 @@ class CustomListWidget(QListWidget):
 
     def dropEvent(self, event):
         logger.debug("drop")
+        super().dropEvent(event)
+        if event.isAccepted():
+            return
+
         if event.mimeData().hasFormat("application/json"):
             tag = self.itemAt(event.pos())
 
@@ -395,6 +403,7 @@ class TagEditor(QWidget):
         self.setLayout(self.layout)
 
         self.input_field = QLineEdit()
+        self.input_field.setClearButtonEnabled(True)
         self.input_field.setPlaceholderText(self.default_placeholder_text)
         self.input_field.returnPressed.connect(self.add_new_tag_from_input_field)
 
@@ -443,8 +452,13 @@ class TagEditor(QWidget):
             event.ignore()
 
     def dropEvent(self, event):
+        super().dropEvent(event)
+        if event.isAccepted():
+            return
+
         if event.mimeData().hasFormat("application/json"):
             self.hide_delete_button()
+            event.accept()
         else:
             event.ignore()
 

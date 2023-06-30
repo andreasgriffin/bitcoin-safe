@@ -175,13 +175,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 
-        self.setDragEnabled(True)
-        self.setAcceptDrops(True)
-        self.viewport().setAcceptDrops(True)
-        self.setDropIndicatorShown(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDefaultDropAction(Qt.MoveAction)
-
     def startDrag(self, action):
         indexes = self.selectedIndexes()
         if indexes:
@@ -225,6 +218,10 @@ class AddressList(MyTreeView, MessageBoxMixin):
             event.ignore()
 
     def dropEvent(self, event):
+        super().dropEvent(event)
+        if event.isAccepted():
+            return
+
         index = self.indexAt(event.pos())
         if not index.isValid():
             # Handle the case where the drop is not on a valid index

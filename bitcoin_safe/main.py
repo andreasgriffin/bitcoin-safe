@@ -91,6 +91,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.chain_data_changed.connect(self.sync)
         self.signals.export_bip329_labels.connect(self.export_bip329_labels)
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
+        self.signals.open_wallet.connect(self.open_wallet)
 
         self.signals.show_transaction.connect(self.open_tx_in_tab)
 
@@ -365,6 +366,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         qt_wallet = self.add_qt_wallet(wallet)
         qt_wallet.password = password
+        qt_wallet.file_path = file_path
         qt_wallet.sync()
         return qt_wallet
 

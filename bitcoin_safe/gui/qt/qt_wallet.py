@@ -106,6 +106,7 @@ class QTWallet(QObject):
         self.is_synchronizing = False
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
+        self.file_path = None
 
         self.history_tab, self.history_list = None, None
         self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
@@ -130,14 +131,23 @@ class QTWallet(QObject):
         return f"QTWallet({self.__dict__})"
 
     def save(self):
-        file_path = os.path.join(self.config.wallet_dir, self.wallet.basename())
+        if self.file_path is None:
+            self.file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Export labels",
+                f"{os.path.join(self.config.wallet_dir, self.wallet.basename())}.wallet",
+                "All Files (*);;JSON Files (*.wallet)",
+            )
+            if not self.file_path:
+                logger.debug("No file selected")
+                return
 
         # if it is the first time saving, then the user can ste a password
-        if not os.path.isfile(file_path):
+        if not os.path.isfile(self.file_path):
             self.password = PasswordCreation().get_password()
 
         self.wallet.save(
-            file_path,
+            self.file_path,
             password=self.password,
         )
 
@@ -369,7 +379,7 @@ class QTWallet(QObject):
         )
 
     def rename_category(self, old_category, new_category):
-        affected_keys = self.wallet.rename_category(old_category, new_category)
+        affected_keys = self.wallet.labels.rename_category(old_category, new_category)
         self.signals.category_updated.emit(
             UpdateFilter(
                 addresses=affected_keys, categories=[category], txids=affected_keys
@@ -377,7 +387,7 @@ class QTWallet(QObject):
         )
 
     def delete_category(self, category):
-        affected_keys = self.wallet.delete_category(category)
+        affected_keys = self.wallet.labels.delete_category(category)
         self.signals.category_updated.emit(
             UpdateFilter(
                 addresses=affected_keys, categories=[category], txids=affected_keys
@@ -468,7 +478,7 @@ class QTWallet(QObject):
         self.search_box.selectAll()
 
     def do_search(self, t):
-        row_hidden_states = None
+        row_hidden_states = []
         tab = self.tabs.currentWidget()
         if hasattr(tab, "searchable_list"):
             row_hidden_states = tab.searchable_list.filter(t)
@@ -481,7 +491,7 @@ class QTWallet(QObject):
             self.search_box.setStyleSheet("background-color: #F2C1C3;")  # red
 
     def update_status(self):
-        if not self.wallet:
+        if not self.wallet or "balance_label" not in dir(self):
             return
 
         network_text = ""

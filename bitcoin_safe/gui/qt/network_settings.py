@@ -13,6 +13,7 @@ from PySide2.QtCore import Signal
 from ...pythonbdk_types import *
 from ...config import NetworkConfig, get_default_port
 from PySide2.QtCore import Qt
+from .util import ResetLineEdit
 
 
 class NetworkSettingsUI(QWidget):
@@ -54,15 +55,17 @@ class NetworkSettingsUI(QWidget):
 
         self.compactBlockFiltersLayout.addRow("Mode:", self.cbf_server_typeComboBox)
 
-        self.compactblockfilters_ip_address_edit = QLineEdit(
-            self.compactBlockFiltersTab
-        )
+        self.compactblockfilters_ip_address_edit = QLineEdit()
         self.compactblockfilters_ip_address_edit.setEnabled(False)
         self.compactBlockFiltersLayout.addRow(
             "IP Address:", self.compactblockfilters_ip_address_edit
         )
 
-        self.compactblockfilters_port_edit = QLineEdit(self.compactBlockFiltersTab)
+        self.compactblockfilters_port_edit = ResetLineEdit(
+            lambda: str(
+                get_default_port(self.network, BlockchainType.CompactBlockFilter)
+            )
+        )
         self.compactblockfilters_port_edit.setEnabled(False)
         self.compactBlockFiltersLayout.addRow(
             "Port:", self.compactblockfilters_port_edit
@@ -75,7 +78,9 @@ class NetworkSettingsUI(QWidget):
         self.electrumServerLayout = QFormLayout(self.electrumServerTab)
 
         self.electrum_ip_address_edit = QLineEdit(self.electrumServerTab)
-        self.electrum_port_edit = QLineEdit(self.electrumServerTab)
+        self.electrum_port_edit = ResetLineEdit(
+            lambda: str(get_default_port(self.network, BlockchainType.Electrum))
+        )
 
         self.electrumServerLayout.addRow("IP Address:", self.electrum_ip_address_edit)
         self.electrumServerLayout.addRow("Port:", self.electrum_port_edit)
@@ -87,7 +92,9 @@ class NetworkSettingsUI(QWidget):
         self.rpcTabLayout = QFormLayout(self.rpcTab)
 
         self.rpc_ip_address_edit = QLineEdit(self.rpcTab)
-        self.rpc_port_edit = QLineEdit(self.rpcTab)
+        self.rpc_port_edit = ResetLineEdit(
+            lambda: str(get_default_port(self.network, BlockchainType.RPC))
+        )
         self.rpc_username_edit = QLineEdit(self.rpcTab)
         self.rpc_password_edit = QLineEdit(self.rpcTab)
 
