@@ -257,7 +257,14 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.num_addr_label = toolbar.itemAt(0).widget()
         self.button_get_new_address = toolbar.itemAt(1).widget()
         menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
-        # menu.addConfig(_('Show Fiat balances'), 'fiat_address', False, callback=self.main_window.app.update_fiat_signal.emit)
+        menu.addAction(
+            _("Export Labels"),
+            lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
+        )
+        menu.addAction(
+            _("Import Labels"),
+            lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
+        )
 
         self.button_fresh_address = QPushButton("Copy fresh receive address")
         self.button_fresh_address.clicked.connect(self.get_address)
@@ -472,7 +479,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         assert row is not None
         address = key
         label = self.wallet.get_label_for_address(address)
-        category = self.wallet.get_category_for_address(address)
+        category = self.wallet.labels.get_category(address)
         num = self.wallet.get_address_history_len(address)
         c, u, x = self.wallet.get_addr_balance(address)
         balance = c + u + x
@@ -565,8 +572,10 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def get_edit_key_from_coordinate(self, row, col):
         if col != self.Columns.LABEL:
             return None
-        return self.get_role_data_from_coordinate(row, 0, role=self.ROLE_KEY)
+        return self.get_role_data_from_coordinate(
+            row, self.key_column, role=self.ROLE_KEY
+        )
 
     def on_edited(self, idx, edit_key, *, text):
-        self.wallet.set_label(edit_key, text)
+        self.wallet.labels.set_addr_label(edit_key, text)
         self.signals.labels_updated.emit(UpdateFilter(addresses=[edit_key]))

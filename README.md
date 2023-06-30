@@ -48,7 +48,7 @@
 - [x] Address and TX labeling using categories
   - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
 - [x] Address dialog & TX dialog
-- [ ] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
+- [x] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
 - [ ] Adding tests for rigorous UI testing
 - [ ] Wallet settings  (location, password,...) needs a tab
 - [ ] add scan qr code in lots of places

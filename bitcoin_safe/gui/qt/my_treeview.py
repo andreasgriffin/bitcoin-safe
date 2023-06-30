@@ -662,35 +662,44 @@ class MyTreeView(QTreeView):
         txt = txt.lower()
         return txt
 
-    def hide_row(self, row_num):
+    def hide_row(self, row_num) -> bool:
         """
         row_num is for self.model(). So if there is a proxy, it is the row number
         in that!
+
+        It returns:  is_now_hidden
         """
+        is_now_hidden = False
+
         should_hide = self.should_hide(row_num)
         if not self.current_filter and should_hide is None:
             # no filters at all, neither date nor search
-            self.setRowHidden(row_num, QModelIndex(), False)
-            return
+            is_now_hidden = False
+            self.setRowHidden(row_num, QModelIndex(), is_now_hidden)
+            return is_now_hidden
         for column in self.filter_columns:
             filter_data = self.get_filter_data_from_coordinate(row_num, column)
             if self.current_filter in filter_data:
                 # the filter matched, but the date filter might apply
-                self.setRowHidden(row_num, QModelIndex(), bool(should_hide))
+                is_now_hidden = bool(should_hide)
+                self.setRowHidden(row_num, QModelIndex(), is_now_hidden)
                 break
         else:
             # we did not find the filter in any columns, hide the item
+            is_now_hidden = True
             self.setRowHidden(row_num, QModelIndex(), True)
+        return is_now_hidden
 
-    def filter(self, p=None):
+    def filter(self, p=None) -> List[bool]:
+        "Returns a [row0_is_now_hidden, row1_is_now_hidden, ...]"
         if p is not None:
             p = p.lower()
             self.current_filter = p
-        self.hide_rows()
+        return self.hide_rows()
 
-    def hide_rows(self):
-        for row in range(self.model().rowCount()):
-            self.hide_row(row)
+    def hide_rows(self) -> List[bool]:
+        "Returns a [row0_is_now_hidden, row1_is_now_hidden, ...]"
+        return [self.hide_row(row) for row in range(self.model().rowCount())]
 
     def create_toolbar(self, config):
         return

@@ -87,10 +87,13 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.SATOSHIS: _("SATOSHIS"),
     }
     filter_columns = [
+        Columns.WALLET_ID,
+        Columns.OUTPOINT,
         Columns.ADDRESS,
         Columns.CATEGORY,
         Columns.LABEL,
-        Columns.OUTPOINT,
+        Columns.AMOUNT,
+        Columns.SATOSHIS,
     ]
     column_alignments = {
         Columns.WALLET_ID: Qt.AlignCenter,
@@ -196,6 +199,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             labels[self.Columns.SATOSHIS] = str(txout.value) if txout else "unknown"
             items = [QStandardItem(x) for x in labels]
             self.set_editability(items)
+            items[self.Columns.OUTPOINT].setText(str(outpoint))
             items[self.Columns.OUTPOINT].setData(outpoint, self.ROLE_KEY)
             items[self.Columns.OUTPOINT].setData(
                 str(outpoint), self.ROLE_CLIPBOARD_DATA
@@ -276,7 +280,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             if txout
             else "unknown"
         )
-        category = wallet.get_category_for_address(address) if wallet else ""
+        category = wallet.labels.get_category(address) if wallet else ""
 
         items[self.Columns.CATEGORY].setText(category)
         items[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
@@ -311,8 +315,3 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)
         (wallet, utxo, _) = self._tx_dict[outpoint]
         self.signals.show_utxo.emit(utxo)
-
-    def get_filter_data_from_coordinate(self, row, col):
-        if col == self.Columns.OUTPOINT:
-            return self.get_role_data_from_coordinate(row, col, role=self.ROLE_KEY)
-        return super().get_filter_data_from_coordinate(row, col)

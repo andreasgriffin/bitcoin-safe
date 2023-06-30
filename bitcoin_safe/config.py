@@ -85,8 +85,8 @@ class NetworkConfig(BaseSaveableClass):
         return d
 
     @classmethod
-    def deserialize(cls, dct):
-        super().deserialize(dct)
+    def deserialize(cls, dct, class_kwargs=None):
+        super().deserialize(dct, class_kwargs=class_kwargs)
         u = cls()
 
         for k, v in dct.items():
@@ -98,7 +98,7 @@ class NetworkConfig(BaseSaveableClass):
 class UserConfig(BaseSaveableClass):
     global_variables = globals()
 
-    version = 0.1
+    VERSION = "0.1.0"
     app_name = "bitcoin_safe"
     config_dir = appdirs.user_config_dir(app_name)
     config_file = os.path.join(appdirs.user_config_dir(app_name), app_name + ".conf")
@@ -128,8 +128,8 @@ class UserConfig(BaseSaveableClass):
         return d
 
     @classmethod
-    def deserialize(cls, dct):
-        super().deserialize(dct)
+    def deserialize(cls, dct, class_kwargs=None):
+        super().deserialize(dct, class_kwargs=class_kwargs)
         u = cls()
 
         for k, v in dct.items():

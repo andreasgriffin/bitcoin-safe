@@ -16,8 +16,9 @@ from ...mempool import (
 from .util import center_in_widget, open_website
 from PySide2.QtCore import Signal, QObject
 from typing import List, Dict
-from PySide2.QtWidgets import QSizePolicy
+from PySide2.QtWidgets import QSizePolicy, QScrollArea
 import bdkpython as bdk
+from PySide2.QtCore import QObject, QEvent
 
 
 class BlockButton(QPushButton):
@@ -82,13 +83,19 @@ class BlockButton(QPushButton):
         )
 
 
-class VerticalButtonGroup(QWidget):
+class VerticalButtonGroup(QScrollArea):
     signal_button_click = Signal(int)
 
     def __init__(self, button_count=3, parent=None, size=100):
         super().__init__(parent)
-        layout = QVBoxLayout(self)
+        content_widget = QWidget()
+        self.setWidget(content_widget)
+        layout = QVBoxLayout(content_widget)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # layout.setContentsMargins(20, 5, 20, 5)  # Left, Top, Right, Bottom margins
+        self.installEventFilter(self)
 
+        self.setWidgetResizable(True)
         self.buttons: List[BlockButton] = []
 
         # Create buttons
@@ -110,6 +117,18 @@ class VerticalButtonGroup(QWidget):
             self.buttons.append(button)
             layout.addWidget(button)
             layout.setAlignment(button, Qt.AlignCenter)
+
+    def showEvent(self, event):
+        self.set_horizontal_scroll()
+        super().showEvent(event)
+
+    def set_horizontal_scroll(self):
+        self.horizontalScrollBar().setValue(self.horizontalScrollBar().maximum() / 2)
+
+    def eventFilter(self, obj, event):
+        if obj == self and event.type() == QEvent.Resize:
+            self.set_horizontal_scroll()
+        return super().eventFilter(obj, event)
 
 
 class MempoolButtons(QObject):

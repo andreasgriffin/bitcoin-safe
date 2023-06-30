@@ -31,7 +31,7 @@ from .gui.qt.balance_dialog import (
     COLOR_UNMATURED,
 )
 from .gui.qt.util import add_tab_to_tabs, read_QIcon, MessageBoxMixin, Message
-from .signals import Signals
+from .signals import Signals, UpdateFilter
 from bdkpython import Network
 from typing import Dict, List
 from .storage import Storage
@@ -89,6 +89,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
         self.signals.chain_data_changed.connect(self.sync)
+        self.signals.export_bip329_labels.connect(self.export_bip329_labels)
+        self.signals.import_bip329_labels.connect(self.import_bip329_labels)
 
         self.signals.show_transaction.connect(self.open_tx_in_tab)
 
@@ -365,6 +367,45 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         qt_wallet.password = password
         qt_wallet.sync()
         return qt_wallet
+
+    def export_bip329_labels(self, wallet_id):
+        qt_wallet: QTWallet = self.qt_wallets.get(wallet_id)
+        if not qt_wallet:
+            return
+        s = qt_wallet.wallet.labels.get_bip329_json_str()
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export labels",
+            f"{wallet_id}_labels.jsonl",
+            "All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)",
+        )
+        if not file_path:
+            logger.debug("No file selected")
+            return
+
+        with open(file_path, "w") as file:
+            file.write(s)
+
+    def import_bip329_labels(self, wallet_id):
+        qt_wallet: QTWallet = self.qt_wallets.get(wallet_id)
+        if not qt_wallet:
+            return
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Export labels",
+            "",
+            "All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)",
+        )
+        if not file_path:
+            logger.debug("No file selected")
+            return
+
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+
+        data = qt_wallet.wallet.labels.set_data_from_bip329_json_str(lines)
+        self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
 
     def save_current_wallet(self):
         return self.get_qt_wallet().save()

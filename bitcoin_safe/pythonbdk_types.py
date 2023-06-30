@@ -1,6 +1,7 @@
 import bdkpython as bdk
 import enum
 from .util import serialized_to_hex
+from .storage import SaveAllClass
 
 
 class Recipient:
@@ -39,7 +40,7 @@ class OutPoint(bdk.OutPoint):
         return False
 
 
-class AddressInfoMin:
+class AddressInfoMin(SaveAllClass):
     def __init__(self, address, index, keychain):
         self.address = address
         self.index = index
@@ -61,18 +62,6 @@ class AddressInfoMin:
             bdk_address_info.index,
             bdk_address_info.keychain,
         )
-
-    def serialize(self):
-        d = self.__dict__.copy()
-        d["__class__"] = self.__class__.__name__
-        return d
-
-    @classmethod
-    def deserialize(cls, dct):
-        assert dct.get("__class__") == cls.__name__
-        if "__class__" in dct:
-            del dct["__class__"]
-        return cls(**dct)
 
 
 class BlockchainType(enum.Enum):

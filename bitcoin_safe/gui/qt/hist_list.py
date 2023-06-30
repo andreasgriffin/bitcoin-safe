@@ -527,7 +527,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         txid = edit_key
         wallet, tx = self._tx_dict[txid]
 
-        wallet.set_label(edit_key, text)
+        wallet.labels.set_tx_label(edit_key, text)
 
         self.signals.labels_updated.emit(
             UpdateFilter(

@@ -93,7 +93,7 @@ TX_STATUS = [
 ]
 
 
-DEVELOPMENT_PREFILLS = True
+DEVELOPMENT_PREFILLS = False
 
 import bdkpython as bdk
 

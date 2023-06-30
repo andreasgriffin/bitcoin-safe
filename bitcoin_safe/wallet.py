@@ -56,6 +56,9 @@ from .tx import TXInfos
 from .util import clean_list, Satoshis
 from .config import UserConfig
 import numpy as np
+from .labels import Labels
+import copy
+from packaging import version
 
 
 class TxConfirmationStatus(enum.Enum):
@@ -136,7 +139,7 @@ class Wallet(BaseSaveableClass):
     If any bitcoin logic (ontop of bdk) has to be done, then here is the place
     """
 
-    version = 0.1
+    VERSION = "0.1.1"
     global_variables = globals()
 
     def __init__(
@@ -150,11 +153,12 @@ class Wallet(BaseSaveableClass):
         gap_change=20,
         descriptors=None,
         categories=None,
-        category=None,
-        labels=None,
+        labels: Labels = None,
         network: bdk.Network = None,
         config: UserConfig = None,
     ):
+        super().__init__()
+
         self.bdkwallet = None
         self.id = id
         self.threshold = threshold
@@ -178,8 +182,7 @@ class Wallet(BaseSaveableClass):
             0,
         ]  # this is needed because there is currently no way to get the real tip from bdkwallet
         self.categories = categories if categories else []
-        self.labels = labels if labels else {}
-        self.category = category if category else {}
+        self.labels: Labels = labels if labels else Labels()
 
         initial_address_type = (
             address_type if address_type else get_default_address_type(signers > 1)
@@ -228,16 +231,13 @@ class Wallet(BaseSaveableClass):
             "gap_change",
             "keystores",
             "categories",
-            "category",
             "labels",
         ]
-        full_dict = self.__dict__.copy()
         for k in keys:
-            d[k] = full_dict[k]
+            d[k] = self.__dict__[k]
 
         d["descriptors"] = [descriptor.as_string() for descriptor in self.descriptors]
         d["tips"] = self.tips
-        d["version"] = self.version
         return d
 
     @classmethod
@@ -248,11 +248,37 @@ class Wallet(BaseSaveableClass):
             class_kwargs={"Wallet": {"config": config}},
         )
 
-    @classmethod
-    def deserialize(cls, dct):
-
+    def partital_clone(self):
+        dct = self.serialize()
         super().deserialize(dct)
-        config: UserConfig = dct["config"]  # passed via class_kwargs
+
+        del dct["tips"]
+        wallet = Wallet(**dct, config=self.config)
+        return wallet
+
+    @classmethod
+    def deserialize_migration(cls, dct: Dict):
+        "this class should be oveerwritten in child classes"
+        if version.parse(str(dct["version"])) <= version.parse("0.1.0"):
+            if "labels" in dct:
+                # no real migration. Just delete old data
+                del dct["labels"]
+
+            labels = Labels()
+            for k, v in dct.get("category", {}).items():
+                labels.set_addr_category(k, v)
+
+            del dct["category"]
+            dct["labels"] = labels
+            del dct["version"]
+        return dct
+
+    @classmethod
+    def deserialize(cls, dct, class_kwargs=None):
+        super().deserialize(dct, class_kwargs=class_kwargs)
+        config: UserConfig = class_kwargs[cls.__name__][
+            "config"
+        ]  # passed via class_kwargs
         dct["descriptors"] = [
             bdk.Descriptor(descriptor, network=config.network_settings.network)
             for descriptor in dct["descriptors"]
@@ -260,7 +286,9 @@ class Wallet(BaseSaveableClass):
 
         tips = dct["tips"]
         del dct["tips"]
-        del dct["version"]
+
+        if class_kwargs:
+            dct.update(class_kwargs[cls.__name__])
 
         wallet = Wallet(**dct)
 
@@ -278,22 +306,6 @@ class Wallet(BaseSaveableClass):
             return "".join(c for c in basename if c in valid_chars)
 
         return create_valid_filename(self.id)
-
-    def clone(self):
-        return Wallet(
-            self.id,
-            self.threshold,
-            len(self.keystores),
-            keystores=[keystore.clone() for keystore in self.keystores],
-            address_type=self.address_type.clone(),
-            gap=self.gap,
-            gap_change=self.gap_change,
-            categories=self.categories,
-            category=self.category,
-            labels=self.labels,
-            config=self.config,
-            network=self.network,
-        )
 
     def reset_cache(self):
         self.cache = {}
@@ -589,7 +601,7 @@ class Wallet(BaseSaveableClass):
         index = address_info.index
         self.update_tip(new_last_index=index, is_change=is_change)
 
-        if address in self.category or address in self.labels:
+        if self.labels.get_category(address) or self.labels.get_label(address):
             return self.get_address(force_new=True, is_change=is_change)
 
         logger.info(f"New address: {address} at index {index}")
@@ -967,9 +979,6 @@ class Wallet(BaseSaveableClass):
     def get_witness_script(self, address):
         return None
 
-    def get_category_for_address(self, address):
-        return self.category.get(address, "")
-
     def get_categories_for_txid(self, txid):
         tx = self.get_tx(txid)
         l = [
@@ -979,14 +988,14 @@ class Wallet(BaseSaveableClass):
         logger.debug(str((txid[:10], l)))
         l = clean_list(
             [
-                self.get_category_for_address(self.get_address_of_txout(output))
+                self.labels.get_category(self.get_address_of_txout(output))
                 for output in tx.transaction.output()
             ]
         )
         return l
 
     def get_label_for_address(self, address, autofill_from_txs=True):
-        label = self.labels.get(address, "")
+        label = self.labels.get_label(address, "")
 
         if not label and autofill_from_txs:
             txs = self.get_txs_involving_address(address)
@@ -1002,7 +1011,7 @@ class Wallet(BaseSaveableClass):
         return label
 
     def get_label_for_txid(self, txid, autofill_from_addresses=True):
-        label = self.labels.get(txid, "")
+        label = self.labels.get_label(txid, "")
 
         if not label and autofill_from_addresses:
             tx = self.get_tx(txid)
@@ -1016,29 +1025,6 @@ class Wallet(BaseSaveableClass):
             )
             label = ", ".join(address_labels)
         return label
-
-    def set_label(self, key, label):
-        if self.labels.get(key, None) == label:
-            return False
-        if not label and key in self.labels:
-            del self.labels[key]
-            return
-
-        self.labels[key] = label
-        return True
-
-    def set_category(self, key, category):
-        if category is None:
-            if key in self.category:
-                del self.category[key]
-            return
-
-        if category not in self.categories:
-            self.add_category(category)
-        self.category[key] = category
-
-    def add_category(self, category):
-        self.categories.append(category)
 
     def get_balances_for_piechart(self):
         """

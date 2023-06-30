@@ -210,7 +210,7 @@ class QTWallet(QObject):
         d = {}
         for utxo in self.wallet.get_utxos():
             address = self.wallet.get_utxo_address(utxo)
-            category = self.wallet.get_category_for_address(address)
+            category = self.wallet.labels.get_category(address)
             if category not in d:
                 d[category] = []
             d[category].append(utxo)
@@ -387,7 +387,7 @@ class QTWallet(QObject):
     def set_category(self, address_drag_info: AddressDragInfo):
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
-                self.wallet.set_category(address, category)
+                self.wallet.labels.set_addr_category(address, category)
 
         outputinfos = sum(
             [
@@ -421,8 +421,10 @@ class QTWallet(QObject):
         tab.setStyleSheet("QStatusBar::item { border: 0px;} ")
 
         self.search_box = QLineEdit()
+        self.search_box.setClearButtonEnabled(True)
+        self.search_box.setPlaceholderText("Search here")
         self.search_box.textChanged.connect(self.do_search)
-        self.search_box.hide()
+        self.tabs.currentChanged.connect(lambda: self.do_search(self.search_box.text()))
         sb.addPermanentWidget(self.search_box)
 
         # self.update_check_button = QPushButton("")
@@ -462,17 +464,21 @@ class QTWallet(QObject):
         outer_layout.addWidget(sb)
 
     def toggle_search(self):
-        self.search_box.setHidden(not self.search_box.isHidden())
-        if not self.search_box.isHidden():
-            self.search_box.setText("")
-            self.search_box.setFocus()
-        else:
-            self.do_search("")
+        self.search_box.setFocus()
+        self.search_box.selectAll()
 
     def do_search(self, t):
+        row_hidden_states = None
         tab = self.tabs.currentWidget()
         if hasattr(tab, "searchable_list"):
-            tab.searchable_list.filter(t)
+            row_hidden_states = tab.searchable_list.filter(t)
+
+        # format search field
+        are_all_hidden = all(row_hidden_states)
+        if not row_hidden_states or not are_all_hidden:
+            self.search_box.setStyleSheet("")
+        else:
+            self.search_box.setStyleSheet("background-color: #F2C1C3;")  # red
 
     def update_status(self):
         if not self.wallet:
@@ -575,7 +581,7 @@ class QTWallet(QObject):
     def _subtexts_for_categories(self):
         d = {}
         for address in self.wallet.get_addresses():
-            category = self.wallet.get_category_for_address(address)
+            category = self.wallet.labels.get_category(address)
             if category not in d:
                 d[category] = []
 

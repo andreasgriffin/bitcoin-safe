@@ -1,5 +1,8 @@
 compact-filters-*
 *.psbt
+*.json
+*.tx
+*.jsonl
 .directory
 .vscode
 coding_tests
