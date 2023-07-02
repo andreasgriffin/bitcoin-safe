@@ -358,3 +358,14 @@ def combined_wallet_descriptor(descriptors: Tuple[bdk.Descriptor, bdk.Descriptor
 
     assert descriptors_without_checksum[0].count(f"/{0}/*)") == 1
     return descriptors_without_checksum[0].replace(f"/{0}/*)", f"/<0;1>/*)")
+
+
+def split_wallet_descriptor(descriptor_str: str):
+    logger.warning(
+        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
+    )
+    assert "/<0;1>/*)" in descriptor_str
+
+    return descriptor_str.replace("/<0;1>/*)", "/0/*)"), descriptor_str.replace(
+        "/<0;1>/*)", "/1/*)"
+    )

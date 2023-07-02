@@ -50,6 +50,7 @@ from .descriptors import (
     generate_bdk_descriptors,
     descriptor_infos,
     generate_output_descriptors_from_keystores,
+    split_wallet_descriptor,
 )
 import json
 from .tx import TXInfos
@@ -292,7 +293,7 @@ class Wallet(BaseSaveableClass):
 
         wallet = Wallet(**dct)
 
-        wallet.create_wallet(wallet.threshold, wallet.keystores, wallet.address_type)
+        wallet.create_wallet(dct["descriptors"])
         wallet.tips = tips
 
         return wallet
@@ -346,11 +347,17 @@ class Wallet(BaseSaveableClass):
         for i, keystore in enumerate(self.keystores):
             keystore.label = self.signer_names(self.threshold, i)
 
+        self.descriptors = [
+            bdk.Descriptor(s, self.network)
+            for s in split_wallet_descriptor(string_descriptor)
+        ]
+        # self.descriptors = self.generate_bdk_descriptors(infos["threshold"], infos["keystores"], infos["address_type"])
+
         if recreate_bdk_wallet:
             self.recreate_bdk_wallet()
 
     def recreate_bdk_wallet(self):
-        self.create_wallet(self.threshold, self.keystores, self.address_type)
+        self.create_wallet(self.descriptors)
 
     def set_keystores(self, keystores):
         self.keystores = keystores
@@ -458,18 +465,11 @@ class Wallet(BaseSaveableClass):
             )
         return descriptors
 
-    def create_wallet(
-        self, threshold: int, keystores: List[KeyStore], address_type: AddressType
-    ):
-        self.descriptors = self.generate_bdk_descriptors(
-            threshold=threshold, keystores=keystores, address_type=address_type
-        )
+    def create_wallet(self, descriptors: List[bdk.Descriptor]):
 
         self.create_descriptor_wallet(
             descriptor=self.descriptors[0], change_descriptor=self.descriptors[1]
         )
-        self.threshold = threshold
-        self.address_type = address_type
 
     def create_descriptor_wallet(self, descriptor, change_descriptor=None):
         self.descriptors = [

@@ -128,18 +128,9 @@ class KeyStoreUIDefault(QObject):
         )
 
     def seed_visibility(self, visible=False):
-        def is_widget_in_layout(widget, layout):
-            return widget.parent() is layout
 
-        if visible and not is_widget_in_layout(self.label_seed, self.formLayout):
-            self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
-        if visible and not is_widget_in_layout(self.edit_seed, self.formLayout):
-            self.formLayout.setWidget(5, QFormLayout.FieldRole, self.edit_seed)
-
-        if not visible and is_widget_in_layout(self.label_seed, self.formLayout):
-            self.formLayout.removeWidget(self.label_seed)
-        if not visible and is_widget_in_layout(self.edit_seed, self.formLayout):
-            self.formLayout.removeWidget(self.edit_seed)
+        self.edit_seed.setHidden(not visible)
+        self.label_seed.setHidden(not visible)
 
         self.edit_xpub.setHidden(visible)
         self.edit_fingerprint.setHidden(visible)
@@ -185,6 +176,9 @@ class KeyStoreUIDefault(QObject):
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_derivation_path)
         self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_xpub)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
+        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
+        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.edit_seed)
+        self.seed_visibility()
 
         self.horizontalLayout_6.addWidget(self.box_left)
 

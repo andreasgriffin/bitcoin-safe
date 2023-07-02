@@ -165,7 +165,6 @@ class WalletDescriptorUI(QObject):
             keystore_ui.set_ui_from_keystore(keystore)
 
     def set_wallet_ui_from_wallet(self, wallet: Wallet):
-        self.cloned_wallet = wallet.partital_clone()
         with self.block_change_signals:
             self.spin_req.setMinimum(1)
             self.spin_req.setMaximum(len(wallet.keystores))
