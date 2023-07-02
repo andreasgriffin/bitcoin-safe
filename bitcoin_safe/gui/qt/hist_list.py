@@ -373,7 +373,9 @@ class HistList(MyTreeView, MessageBoxMixin):
 
                 labels = [""] * len(self.Columns)
                 labels[self.Columns.WALLET_ID] = wallet.id
-                labels[self.Columns.AMOUNT] = format_satoshis(amount, is_diff=True)
+                labels[self.Columns.AMOUNT] = format_satoshis(
+                    amount, wallet.network, is_diff=True
+                )
                 labels[self.Columns.SATOSHIS] = str(amount)
                 labels[self.Columns.BALANCE] = str(0)  # TODO
                 labels[self.Columns.TXID] = tx.txid

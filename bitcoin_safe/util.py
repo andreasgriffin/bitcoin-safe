@@ -93,7 +93,7 @@ TX_STATUS = [
 ]
 
 
-DEVELOPMENT_PREFILLS = False
+DEVELOPMENT_PREFILLS = True
 
 import bdkpython as bdk
 
@@ -319,34 +319,30 @@ def to_decimal(x: Union[str, float, int, Decimal]) -> Decimal:
     return Decimal(str(x))
 
 
-# note: this is not a NamedTuple as then its json encoding cannot be customized
-class Satoshis(object):
-    __slots__ = ("value",)
-
-    def __new__(cls, value):
-        self = super(Satoshis, cls).__new__(cls)
-        # note: 'value' sometimes has msat precision
+class Satoshis:
+    def __init__(self, value, network: bdk.Network):
+        self.network = network
         self.value = int(value)
-        return self
 
     def __repr__(self):
         return f"Satoshis({self.value})"
 
     def __str__(self):
         # note: precision is truncated to satoshis here
-        return format_satoshis(self.value)
+        return format_satoshis(self.value, self.network)
 
     def __eq__(self, other):
-        return self.value == other.value
+        return (self.value == other.value) and (self.network == other.network)
 
     def __ne__(self, other):
         return not (self == other)
 
     def __add__(self, other):
-        return Satoshis(self.value + other.value)
+        assert self.network == other.network
+        return Satoshis(self.value + other.value, self.network)
 
     def str_with_unit(self):
-        return format_satoshis(self.value, str_unit=True)
+        return format_satoshis(self.value, self.network, str_unit=True)
 
 
 # note: this is not a NamedTuple as then its json encoding cannot be customized
@@ -686,20 +682,6 @@ def chunks(items, size: int):
         yield items[i : i + size]
 
 
-def format_satoshis_plain(
-    x: Union[int, float, Decimal, str],  # amount in satoshis,
-    *,
-    decimal_point: int = 8,  # how much to shift decimal point to left (default: sat->BTC)
-) -> str:
-    """Display a satoshi amount scaled.  Always uses a '.' as a decimal
-    point and has no thousands separator"""
-    if parse_max_spend(x):
-        return f"max({x})"
-    assert isinstance(x, (int, float, Decimal)), f"{x!r} should be a number"
-    scale_factor = pow(10, decimal_point)
-    return "{:.8f}".format(Decimal(x) / scale_factor).rstrip("0").rstrip(".")
-
-
 # Check that Decimal precision is sufficient.
 # We need at the very least ~20, as we deal with msat amounts, and
 # log10(21_000_000 * 10**8 * 1000) ~= 18.3
@@ -716,8 +698,13 @@ assert len(DECIMAL_POINT) == 1, f"DECIMAL_POINT has unexpected len. {DECIMAL_POI
 assert len(THOUSANDS_SEP) == 1, f"THOUSANDS_SEP has unexpected len. {THOUSANDS_SEP!r}"
 
 
+def unit_str(network: bdk.Network):
+    return "BTC" if network is None or network == bdk.Network.BITCOIN else "tBTC"
+
+
 def format_satoshis(
     x: Union[int, float, Decimal, str, Satoshis, None],  # amount in satoshis
+    network: bdk.Network,
     is_diff: bool = False,  # if True, enforce a leading sign (+/-)
     add_thousands_sep: bool = True,  # if True, add whitespaces, for better readability of the numbers
     add_satohis_whitesapces: bool = True,
@@ -776,16 +763,12 @@ def format_satoshis(
     assert int(strip(result)) == int(strip(x))
 
     if str_unit:
-        result += " BTC"
+        result += f" {unit_str(network)}"
     return result
 
 
 FEERATE_PRECISION = 1  # num fractional decimal places for sat/byte fee rates
 _feerate_quanta = Decimal(10) ** (-FEERATE_PRECISION)
-
-
-def format_fee_satoshis(fee, *, num_zeros=0, precision=None):
-    return format_satoshis(fee)
 
 
 def quantize_feerate(fee) -> Union[None, Decimal, int]:

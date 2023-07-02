@@ -180,6 +180,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         set_idx = None
         for outpoint in self.get_outpoints():
             outpoint = OutPoint.from_bdk(outpoint)
+            wallet: Wallet = self._wallet_dict.get(outpoint, None)
             txdetails = self._tx_dict.get(outpoint, None)
 
             txout = txdetails.transaction.output()[outpoint.vout] if txdetails else None
@@ -194,7 +195,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
                 else "unknown"
             )
             labels[self.Columns.AMOUNT] = (
-                format_satoshis(txout.value) if txout else "unknown"
+                format_satoshis(txout.value, wallet.network) if txout else "unknown"
             )
             labels[self.Columns.SATOSHIS] = str(txout.value) if txout else "unknown"
             items = [QStandardItem(x) for x in labels]
@@ -221,7 +222,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             # add item
             count = self.std_model.rowCount()
             self.std_model.insertRow(count, items)
-            self.refresh_row(outpoint, count, wallet)
+            self.refresh_row(outpoint, count)
             idx = self.std_model.index(count, self.Columns.LABEL)
             if outpoint == current_key:
                 set_idx = QPersistentModelIndex(idx)
@@ -247,7 +248,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-    def refresh_row(self, key: bdk.OutPoint, row, wallet):
+    def refresh_row(self, key: bdk.OutPoint, row):
         assert row is not None
 
         outpoint = OutPoint.from_bdk(key)

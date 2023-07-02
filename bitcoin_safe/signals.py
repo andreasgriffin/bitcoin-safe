@@ -143,6 +143,7 @@ class Signals(QObject):
     tx_from_text = SignalFunction()
 
     get_wallets = SignalFunction()
+    get_network = SignalFunction()
 
     show_network_settings = Signal()
     export_bip329_labels = Signal(str)  # str= wallet_id

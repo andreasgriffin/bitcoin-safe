@@ -18,7 +18,7 @@ from ...signals import Signals
 from .barchart import MempoolBarChart
 from ...mempool import get_prio_fees, fee_to_color, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
-from ...qr import create_psbt_qr
+from ...qr import create_qr
 
 from ...keystore import KeyStore
 from .util import read_QIcon, open_website
@@ -182,7 +182,7 @@ class ExportData(QObject):
         if seralized:
             self.edit_seralized.setText(seralized)
 
-            img = create_psbt_qr(seralized)
+            img = create_qr(seralized)
             if img:
                 self.qr_label.set_image(img)
             else:
@@ -803,7 +803,7 @@ class UITX_Creator(UITX_Base):
             value = index.sibling(index.row(), self.utxo_list.Columns.SATOSHIS).data()
             if value is not None and value.isdigit():
                 sum_values += float(value)
-        return Satoshis(sum_values)
+        return Satoshis(sum_values, self.signals.get_network())
 
     def update_labels(self):
         self.uxto_selected_label.setText(

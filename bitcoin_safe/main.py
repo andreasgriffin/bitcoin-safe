@@ -62,6 +62,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx.connect(self.open_tx_like_in_tab)
+        self.signals.get_network.connect(lambda: self.config.network_settings.network)
 
         self.network_settings_ui = NetworkSettingsUI(self.config)
         self.signals.show_network_settings.connect(self.open_network_settings)
@@ -461,6 +462,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
     def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
         qt_wallet = QTWallet(wallet, self.config, self.signals, self.mempool_data)
+        qt_wallet.signal_close_wallet.connect(lambda: self.remove_qt_wallet(qt_wallet))
 
         if wallet.bdkwallet:
             qt_wallet.create_wallet_tabs()
@@ -529,13 +531,13 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         qt_wallet.disconnect_signals()
         del self.qt_wallets[qt_wallet.wallet.id]
+        self.event_wallet_tab_closed()
 
     def close_tab(self, index):
         qt_wallet = self.get_qt_wallet(tab=self.tab_wallets.widget(index))
         self.tab_wallets.removeTab(index)
         if qt_wallet:
             self.remove_qt_wallet(qt_wallet)
-
         self.event_wallet_tab_closed()
 
     def import_wallet(self):

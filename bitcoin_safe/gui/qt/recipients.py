@@ -1,6 +1,7 @@
 import logging
 
 from bitcoin_safe.pythonbdk_types import Recipient
+from bitcoin_safe.util import Satoshis
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +12,7 @@ from .util import ColorScheme
 from ...signals import Signals, SignalFunction
 from .spinbox import CustomDoubleSpinBox
 from ...wallet import Wallet
+from ...util import unit_str
 
 from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
@@ -74,18 +76,20 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.label_line_edit.setPlaceholderText("Enter label here")
 
         self.amount_layout = QtWidgets.QHBoxLayout()
-        self.amount_spin_box = CustomDoubleSpinBox()
+        self.amount_spin_box = CustomDoubleSpinBox(self.signals.get_network())
+        self.label_unit = QtWidgets.QLabel(unit_str(self.signals.get_network()))
         self.send_max_button = QtWidgets.QPushButton("Send max")
         self.send_max_button.setCheckable(True)
         self.send_max_button.setMaximumWidth(80)
         self.send_max_button.clicked.connect(self.on_send_max_button_click)
         self.amount_layout.addWidget(self.amount_spin_box)
+        self.amount_layout.addWidget(self.label_unit)
         if allow_edit:
             self.amount_layout.addWidget(self.send_max_button)
 
-        form_layout.addRow("address:", self.address_line_edit)
-        form_layout.addRow("label:", self.label_line_edit)
-        form_layout.addRow("amount:", self.amount_layout)
+        form_layout.addRow("Address", self.address_line_edit)
+        form_layout.addRow("Label", self.label_line_edit)
+        form_layout.addRow("Amount", self.amount_layout)
 
         if not allow_edit:
             self.address_line_edit.setReadOnly(True)

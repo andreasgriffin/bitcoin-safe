@@ -421,7 +421,7 @@ class Wallet(BaseSaveableClass):
             descriptor=descriptor, change_descriptor=change_descriptor
         )
 
-    def create_wallet(
+    def generate_bdk_descriptors(
         self, threshold: int, keystores: List[KeyStore], address_type: AddressType
     ):
         # sanity checks
@@ -429,17 +429,10 @@ class Wallet(BaseSaveableClass):
         is_multisig = len(keystores) > 1
         assert address_type.is_multisig == is_multisig
 
-        # check if the desc_template is in bdk and prevent unsafe templates
-        if (
-            self.config.network_settings.network == bdk.Network.BITCOIN
-            and address_type.desc_template.__name__ not in dir(bdk.Descriptor)
-        ):
-            logger.warning("Unsafe mode!")
-
         if address_type.bdk_descriptor:
             # TODO: Currently only single sig implemented, since bdk only has single sig templates
             keystore = keystores[0]
-            self.descriptors = [
+            descriptors = [
                 address_type.bdk_descriptor(
                     bdk.DescriptorPublicKey.from_string(keystore.xpub),
                     keystore.fingerprint,
@@ -460,9 +453,17 @@ class Wallet(BaseSaveableClass):
                 ]
             ]
         else:
-            self.descriptors = generate_bdk_descriptors(
+            descriptors = generate_bdk_descriptors(
                 threshold, address_type, keystores, self.config.network_settings.network
             )
+        return descriptors
+
+    def create_wallet(
+        self, threshold: int, keystores: List[KeyStore], address_type: AddressType
+    ):
+        self.descriptors = self.generate_bdk_descriptors(
+            threshold=threshold, keystores=keystores, address_type=address_type
+        )
 
         self.create_descriptor_wallet(
             descriptor=self.descriptors[0], change_descriptor=self.descriptors[1]
@@ -1037,9 +1038,9 @@ class Wallet(BaseSaveableClass):
 
         balance = self.bdkwallet.get_balance()
         return [
-            Satoshis(balance.confirmed),
-            Satoshis(balance.trusted_pending + balance.untrusted_pending),
-            Satoshis(balance.immature),
+            Satoshis(balance.confirmed, self.network),
+            Satoshis(balance.trusted_pending + balance.untrusted_pending, self.network),
+            Satoshis(balance.immature, self.network),
         ]
 
     def get_utxo_name(self, utxo):
@@ -1089,10 +1090,10 @@ class Wallet(BaseSaveableClass):
                 "timestamp": timestamp,
                 "monotonic_timestamp": monotonic_timestamp,
                 "incoming": True if value_delta > 0 else False,
-                "bc_value": Satoshis(value_delta),
-                "value": Satoshis(value_delta),
-                "bc_balance": Satoshis(balance),
-                "balance": Satoshis(balance),
+                "bc_value": Satoshis(value_delta, self.network),
+                "value": Satoshis(value_delta, self.network),
+                "bc_balance": Satoshis(balance, self.network),
+                "balance": Satoshis(balance, self.network),
                 "date": timestamp_to_datetime(timestamp),
                 "label": self.get_label_for_txid(tx.txid),
                 "categories": self.get_categories_for_txid(tx.txid),
@@ -1168,7 +1169,7 @@ class Wallet(BaseSaveableClass):
             if selected_value >= total_sent_value:
                 break
         logger.debug(
-            f"Selected {len(selected_utxos)} outpoints with {Satoshis(selected_value).str_with_unit()}"
+            f"Selected {len(selected_utxos)} outpoints with {Satoshis(selected_value, self.network).str_with_unit()}"
         )
 
         # now opportunistically  add additional outputs for merging
@@ -1190,7 +1191,7 @@ class Wallet(BaseSaveableClass):
                 :number_of_opportunistic_outpoints
             ]
             logger.debug(
-                f"Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos])).str_with_unit()}"
+                f"Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos]), self.network).str_with_unit()}"
             )
 
         return UtxosForInputs(
@@ -1214,7 +1215,7 @@ class Wallet(BaseSaveableClass):
             utxos += [
                 utxo
                 for utxo in self.bdkwallet.list_unspent()
-                if self.category.get(self.get_address_of_txout(utxo.txout))
+                if self.labels.get_category(self.get_address_of_txout(utxo.txout))
                 in txinfos.categories
             ]
         else:

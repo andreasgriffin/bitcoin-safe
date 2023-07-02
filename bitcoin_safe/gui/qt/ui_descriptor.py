@@ -17,7 +17,8 @@ from ...signals import Signals, Signal
 from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
 from .block_change_signals import BlockChangesSignals
-from .custom_edits import MyTextEdit
+from .custom_edits import DescriptorEdit
+from ...descriptors import combined_wallet_descriptor
 
 
 class WalletDescriptorUI(QObject):
@@ -25,10 +26,11 @@ class WalletDescriptorUI(QObject):
     signal_descriptor_change_apply = Signal(str)
     signal_qtwallet_apply_setting_changes = Signal()
     signal_qtwallet_cancel_setting_changes = Signal()
+    signal_qtwallet_cancel_wallet_creation = Signal()
 
     def __init__(self, wallet: Wallet) -> None:
         super().__init__()
-        self.wallet = wallet
+        self.wallet: Wallet = wallet
         self.cloned_wallet: Wallet = None  # any temporary changes (before apply) are applied to this cloned_wallet. If it is None, then no change was made
         self.tab = QWidget()
         self.verticalLayout_2 = QVBoxLayout(self.tab)
@@ -229,6 +231,16 @@ class WalletDescriptorUI(QObject):
 
         # print([k.serialize() for k in wallet.keystores])
         # print([k.serialize() for k in self.wallet.keystores])
+        try:
+            wallet.descriptors = wallet.generate_bdk_descriptors(
+                threshold=wallet.threshold,
+                keystores=wallet.keystores,
+                address_type=wallet.address_type,
+            )
+        except:
+            logger.warning("Setting wallet.descriptors failed")
+            pass
+        return wallet
 
     def set_combo_box_address_type_default(self):
         address_types = self.wallet.get_address_types()
@@ -265,17 +277,22 @@ class WalletDescriptorUI(QObject):
     def set_ui_descriptor(self, wallet: Wallet):
         # check if the descriptor actually CAN be calculated to a reasonable degree
 
-        descriptors = generate_output_descriptors_from_keystores(
-            wallet.threshold,
-            wallet.address_type,
-            wallet.keystores,
-            wallet.config.network_settings.network,
-            replace_keystore_with_dummy=True,
-            use_html=True,
-            combined_descriptors=True,
-        )
-        with self.block_change_signals:
-            self.edit_descriptor.setText(descriptors[0])
+        try:
+            self.edit_descriptor.setText(combined_wallet_descriptor(wallet.descriptors))
+        except:
+            self.edit_descriptor.setText("Could not be derived from seed")
+
+        # descriptors = generate_output_descriptors_from_keystores(
+        #     wallet.threshold,
+        #     wallet.address_type,
+        #     wallet.keystores,
+        #     wallet.config.network_settings.network,
+        #     replace_keystore_with_dummy=True,
+        #     use_html=True,
+        #     combined_descriptors=True,
+        # )
+        # with self.block_change_signals:
+        #     self.edit_descriptor.setHtml(descriptors[0])
 
     def disable_fields(self):
         with self.block_change_signals:
@@ -368,7 +385,7 @@ class WalletDescriptorUI(QObject):
         # }
         # """)
         self.horizontalLayout_4 = QHBoxLayout(groupBox_wallet_descriptor)
-        self.edit_descriptor = MyTextEdit(groupBox_wallet_descriptor)
+        self.edit_descriptor = DescriptorEdit(lambda: self.wallet)
         self.edit_descriptor.setToolTip(
             f'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
         )
@@ -399,20 +416,25 @@ class WalletDescriptorUI(QObject):
         box_button_bar = QWidget(self.tab)
         layout_buttonbar = QHBoxLayout(box_button_bar)
         layout_buttonbar.setContentsMargins(0, 0, 0, 0)
+
+        def do_cancel():
+            # if this is a settings tab of an already created wallet
+            if self.wallet.bdkwallet:
+                self.signal_qtwallet_cancel_setting_changes.emit()
+            else:
+                self.signal_qtwallet_cancel_wallet_creation.emit()
+
         self.button_cancel = QPushButton(box_button_bar)
+        self.button_cancel.setText("Cancel changes")
         self.button_cancel.setMinimumSize(QSize(150, 0))
+        self.button_cancel.clicked.connect(do_cancel)
         layout_buttonbar.addWidget(self.button_cancel)
 
         self.button_apply = QPushButton(box_button_bar)
+        self.button_apply.setText("Apply changes")
         self.button_apply.setMinimumSize(QSize(150, 0))
-        self.button_apply.clicked.connect(self.signal_qtwallet_apply_setting_changes)
+        self.button_apply.clicked.connect(
+            self.signal_qtwallet_apply_setting_changes.emit
+        )
         layout_buttonbar.addWidget(self.button_apply)
         self.verticalLayout_2.addWidget(box_button_bar, 0, Qt.AlignRight)
-
-        self.button_cancel.setText(
-            QCoreApplication.translate("tab", "Cancel changes", None)
-        )
-        self.button_cancel.clicked.connect(self.signal_qtwallet_cancel_setting_changes)
-        self.button_apply.setText(
-            QCoreApplication.translate("tab", "Apply changes", None)
-        )

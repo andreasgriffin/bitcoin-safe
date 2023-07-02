@@ -480,7 +480,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         num = self.wallet.get_address_history_len(address)
         c, u, x = self.wallet.get_addr_balance(address)
         balance = c + u + x
-        balance_text = format_satoshis(balance)
+        balance_text = format_satoshis(balance, self.wallet.network)
         # create item
         fx = self.fx
         if self.should_show_fiat():
@@ -575,4 +575,9 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.labels.set_addr_label(edit_key, text)
-        self.signals.labels_updated.emit(UpdateFilter(addresses=[edit_key]))
+        self.signals.labels_updated.emit(
+            UpdateFilter(
+                addresses=[edit_key],
+                txids=self.wallet.get_txs_involving_address(edit_key),
+            )
+        )

@@ -157,17 +157,17 @@ class Ui_Form(QObject):
         self.label_10.setWordWrap(True)
 
         add_centered_icons(
-            ["seed-plate.svg"] * 3,
+            ["2of3backup.svg"],
             self.groupBox_5,
             self.verticalLayout_4,
-            max_sizes=[(50, 80)],
+            max_sizes=[(160, 150)],
         )
-        add_centered_icons(
-            ["descriptor3.svg"],
-            self.groupBox_5,
-            self.verticalLayout_4,
-            max_sizes=(200, 65),
-        )
+        # add_centered_icons(
+        #     ["descriptor3.svg"],
+        #     self.groupBox_5,
+        #     self.verticalLayout_4,
+        #     max_sizes=(200, 65),
+        # )
 
         self.verticalLayout_4.addWidget(self.label_10)
 

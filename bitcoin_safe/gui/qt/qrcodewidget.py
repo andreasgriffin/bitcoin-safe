@@ -27,7 +27,7 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 
 from .util import WindowModalDialog, WWLabel, getSaveFileName
-from ...qr import create_psbt_qr
+from ...qr import create_qr
 from ...config import UserConfig
 
 
@@ -76,7 +76,7 @@ class QRLabel(QLabel):
         return QSize(size, size)
 
     def set_data(self, data: str, error_text="No QR Code"):
-        img = create_psbt_qr(data)
+        img = create_qr(data)
         if img:
             self.set_image(img)
         else:

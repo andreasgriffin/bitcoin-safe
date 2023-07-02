@@ -3,7 +3,7 @@ import qrcode
 import bdkpython as bdk
 
 
-def create_psbt_qr(data: str):
+def create_qr(data: str):
 
     qr = qrcode.QRCode(
         version=1,

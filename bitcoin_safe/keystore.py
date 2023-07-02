@@ -123,11 +123,13 @@ class KeyStore(BaseSaveableClass):
     def serialize(self):
         d = super().serialize()
 
-        full_dict = copy.deepcopy(self.__dict__)
+        # you must copy it, so you not't change any calues
+        full_dict = self.__dict__.copy()
         full_dict["mnemonic"] = (
             self.mnemonic.as_string() if self.mnemonic else self.mnemonic
         )
-        d.update(full_dict)
+        # the deepcopy must be done AFTER there is no bdk type in there any more
+        d.update(copy.deepcopy(full_dict))
         return d
 
     @classmethod

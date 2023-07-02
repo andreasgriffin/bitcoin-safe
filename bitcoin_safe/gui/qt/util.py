@@ -266,13 +266,15 @@ def create_button(
     widget1 = QWidget(button)
     widget2 = QWidget(button)
     layout = center_in_widget([widget1, widget2], button, direction="v")
-    layout.setContentsMargins(0, 0, 0, 0)
+    # outer_layout.setContentsMargins(10, 20, 20, 10)  # Left, Top, Right, Bottom margins
+    # layout.setContentsMargins(0, 0, 0, 0)
 
     label_icon = QLabel(button)
+    label_icon.setWordWrap(True)
     label_icon.setText(text)
     label_icon.setAlignment(Qt.AlignHCenter)
     layout = center_in_widget([label_icon], widget1, direction="h")
-    layout.setContentsMargins(0, 0, 0, 0)
+    # layout.setContentsMargins(0, 0, 0, 0)
 
     if not isinstance(icon_paths, (list, tuple)):
         icon_paths = [icon_paths]
@@ -1096,6 +1098,13 @@ class OverlayControlMixin(GenericInputHandler):
         button = self.addButton("reset-update.svg", on_click, _("Reset"))
         button.setStyleSheet("background-color: white;")
 
+    def addPdfButton(self, open_pdf):
+        def on_click():
+            open_pdf()
+
+        button = self.addButton("pdf-file.svg", on_click, _("Create PDF"))
+        button.setStyleSheet("background-color: white;")
+
     def addCopyButton(self):
         def on_copy():
             app = QApplication.instance()
@@ -1248,8 +1257,7 @@ class OverlayControlMixin(GenericInputHandler):
 class ButtonsTextEdit(OverlayControlMixin, QTextEdit):
     def __init__(self, text=None):
         QTextEdit.__init__(self, text)
-        OverlayControlMixin.__init__(self, middle=True)
-        self.middle = False
+        OverlayControlMixin.__init__(self, middle=False)
 
     def text(self):
         return self.toPlainText()
@@ -1308,9 +1316,9 @@ class MnemonicLineEdit(ButtonsLineEdit):
         self.addRandomMnemonicButton()
 
 
-class ButtonsTextEdit(OverlayControlMixin, QPlainTextEdit):
+class ButtonsTextEdit(OverlayControlMixin, QTextEdit):
     def __init__(self, text=None):
-        QPlainTextEdit.__init__(self, text)
+        QTextEdit.__init__(self, text)
         OverlayControlMixin.__init__(self)
         self.setText = self.setPlainText
         self.text = self.toPlainText

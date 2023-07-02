@@ -24,7 +24,6 @@
 # SOFTWARE.
 import logging
 
-from bitcoin_safe.util import format_fee_satoshis
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +78,7 @@ class AddressDialog(WindowModalDialog):
         upper_widget_layout.addWidget(upper_left_widget)
 
         upper_left_widget_layout.addWidget(QLabel(_("Address") + ":"))
-        self.addr_e = ShowCopyLineEdit(self.address, self.config, title=_("Address"))
+        self.addr_e = ShowCopyLineEdit(self.address)
         upper_left_widget_layout.addWidget(self.addr_e)
 
         try:

@@ -85,6 +85,7 @@ class QTWallet(QObject):
     signal_settext_balance_label = Signal(str)
     signal_start_synchronization = Signal()
     signal_stop_synchronization = Signal()
+    signal_close_wallet = Signal()
 
     def __init__(
         self,
@@ -132,11 +133,13 @@ class QTWallet(QObject):
 
     def save(self):
         if self.file_path is None:
+            if not os.path.exists(self.config.wallet_dir):
+                os.makedirs(self.config.wallet_dir, exist_ok=True)
             self.file_path, _ = QFileDialog.getSaveFileName(
-                self,
+                self.parent(),
                 "Export labels",
                 f"{os.path.join(self.config.wallet_dir, self.wallet.basename())}.wallet",
-                "All Files (*);;JSON Files (*.wallet)",
+                "All Files (*);;Wallet Files (*.wallet)",
             )
             if not self.file_path:
                 logger.debug("No file selected")
@@ -214,6 +217,9 @@ class QTWallet(QObject):
         wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(
             self.cancel_setting_changes
         )
+        wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(
+            self.signal_close_wallet.emit
+        )
         return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
     def _get_sub_texts_for_uitx(self):
@@ -232,7 +238,7 @@ class QTWallet(QObject):
             return sum([utxo.txout.value for utxo in utxos])
 
         return [
-            f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category)).str_with_unit()}"
+            f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category), self.wallet.network).str_with_unit()}"
             for category in self.wallet.categories
         ]
 
@@ -662,10 +668,14 @@ class QTWallet(QObject):
             self.signal_stop_synchronization.emit()
             logger.debug("finished updating lists")
 
-        if threaded:
-            future = self.thread_manager.start_in_background_thread(
-                do_sync, on_finished=on_finished
-            )
-        else:
-            do_sync()
-            on_finished()
+        try:
+            if threaded:
+                future = self.thread_manager.start_in_background_thread(
+                    do_sync, on_finished=on_finished
+                )
+            else:
+                do_sync()
+                on_finished()
+
+        except:
+            logger.error("Could not Sync wallet")

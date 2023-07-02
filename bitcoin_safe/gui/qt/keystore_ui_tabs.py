@@ -141,8 +141,10 @@ class KeyStoreUIDefault(QObject):
         if not visible and is_widget_in_layout(self.edit_seed, self.formLayout):
             self.formLayout.removeWidget(self.edit_seed)
 
-        self.edit_xpub.setEnabled(not visible)
-        self.edit_fingerprint.setEnabled(not visible)
+        self.edit_xpub.setHidden(visible)
+        self.edit_fingerprint.setHidden(visible)
+        self.label_xpub.setHidden(visible)
+        self.label_fingerprint.setHidden(visible)
 
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())
@@ -162,11 +164,11 @@ class KeyStoreUIDefault(QObject):
         self.comboBox_keystore_type.addItems(KeyStoreTypes.list_names(self.network))
         label_keystore_label = QLabel(self.box_left)
         self.edit_label = QLineEdit(self.box_left)
-        self.label_6 = QLabel(self.box_left)
+        self.label_fingerprint = QLabel(self.box_left)
         self.edit_fingerprint = QLineEdit(self.box_left)
         label_derivation_path = QLabel(self.box_left)
         self.edit_derivation_path = QLineEdit(self.box_left)
-        label_xpub = QLabel(self.box_left)
+        self.label_xpub = QLabel(self.box_left)
         self.edit_xpub = QLineEdit(self.box_left)
         self.label_seed = QLabel()
         self.edit_seed = MnemonicLineEdit()
@@ -177,11 +179,11 @@ class KeyStoreUIDefault(QObject):
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.comboBox_keystore_type)
         self.formLayout.setWidget(1, QFormLayout.LabelRole, label_keystore_label)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.edit_label)
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_6)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_fingerprint)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.edit_fingerprint)
         self.formLayout.setWidget(3, QFormLayout.LabelRole, label_derivation_path)
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_derivation_path)
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, label_xpub)
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_xpub)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
 
         self.horizontalLayout_6.addWidget(self.box_left)
@@ -203,11 +205,13 @@ class KeyStoreUIDefault(QObject):
 
         label_keystore_type.setText(QCoreApplication.translate("tab", "Type", None))
         label_keystore_label.setText(QCoreApplication.translate("tab", "Label", None))
-        self.label_6.setText(QCoreApplication.translate("tab", "Fingerprint", None))
+        self.label_fingerprint.setText(
+            QCoreApplication.translate("tab", "Fingerprint", None)
+        )
         label_derivation_path.setText(
             QCoreApplication.translate("tab", "Derivation Path", None)
         )
-        label_xpub.setText(QCoreApplication.translate("tab", "xPub", None))
+        self.label_xpub.setText(QCoreApplication.translate("tab", "xPub", None))
         self.label_seed.setText(QCoreApplication.translate("tab", "Seed", None))
         self.label_4.setText(QCoreApplication.translate("tab", "Description", None))
         self.textEdit_description.setPlaceholderText(
@@ -251,10 +255,23 @@ class KeyStoreUIDefault(QObject):
 
     def get_ui_values_as_keystore(self) -> KeyStore:
         seed_str = self.edit_seed.text()
-        mnemonic = bdk.Mnemonic.from_string(seed_str) if seed_str else None
+
+        if seed_str:
+            mnemonic = bdk.Mnemonic.from_string(seed_str)
+            fingerprint = None
+            xpub = None
+        else:
+            mnemonic = None
+            fingerprint = (
+                self.edit_fingerprint.text()
+                if len(self.edit_fingerprint.text()) == 8
+                else None
+            )
+            xpub = self.edit_xpub.text()
+
         return KeyStore(
-            self.edit_xpub.text(),
-            self.edit_fingerprint.text(),
+            xpub,
+            fingerprint,
             self.edit_derivation_path.text(),
             self.edit_label.text(),
             self.get_comboBox_keystore_type(),
@@ -281,13 +298,3 @@ class KeyStoreUIDefault(QObject):
                 self.seed_visibility(keystore.type.id == KeyStoreTypes.seed.id)
             if keystore.mnemonic:
                 self.edit_seed.setText(keystore.mnemonic.as_string())
-
-        from ...util import DEVELOPMENT_PREFILLS
-
-        if DEVELOPMENT_PREFILLS:
-            if not keystore.xpub:
-                self.edit_xpub.setText(
-                    "tpubDDnGNapGEY6AZAdQbfRJgMg9fvz8pUBrLwvyvUqEgcUfgzM6zc2eVK4vY9x9L5FJWdX8WumXuLEDV5zDZnTfbn87vLe9XceCFwTu9so9Kks"
-                )
-            if not keystore.fingerprint:
-                self.edit_fingerprint.setText("a42c6dd3")

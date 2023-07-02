@@ -10,6 +10,7 @@ from .gui.qt.util import read_QIcon
 from .gui.qt.balance_dialog import BalanceToolButton
 from .config import UserConfig
 from PySide2.QtCore import QLocale
+import bdkpython as bdk
 
 
 class Ui_MainWindow(QMainWindow):
@@ -18,13 +19,19 @@ class Ui_MainWindow(QMainWindow):
         self.config = UserConfig.load()
         self.setupUi(self)
 
+    def set_title(self, network: bdk.Network):
+        title = "Bitcoin Safe"
+        if network != bdk.Network.BITCOIN:
+            title += f" - {network.name}"
+        self.setWindowTitle(title)
+
     def setupUi(self, MainWindow: QWidget):
         # sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         # sizePolicy.setHorizontalStretch(0)
         # sizePolicy.setVerticalStretch(0)
         # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         # MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setWindowTitle("Bitcoin Safe")
+        self.set_title(self.config.network_settings.network)
         MainWindow.setWindowIcon(read_QIcon("logo.svg"))
         w, h = 900, 600
         MainWindow.resize(w, h)

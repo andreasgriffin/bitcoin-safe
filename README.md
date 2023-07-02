@@ -16,7 +16,6 @@
 - **Fast**: Chain data with **Compact Block Filters** by default 
   - Compact Block Filters are **fast** and **private**
   - Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/379), and will be included in bdk 1.0
-
 - **Secure**: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is  reckless)
   - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
   - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
@@ -36,8 +35,11 @@
   - [ ] Create recovery pdf with descriptor and further short instructions 
   - [ ] Testing the backup
     - [ ] Send small amount of funds to the wallet
-    - [ ] Wipe the wallet and the hardware wallets
-    - [ ] Restore the wallet + Hardware wallets and send funds to a new address
+    - [ ] Wipe hardware wallets
+    - [ ] Read xpubs from Hardware wallets again
+      - [ ] verify they have not changed
+    - [ ] Create tx and sign with Dev 1 and Dev 2  send to own address
+    - [ ] Create tx and sign with Dev 1 and Dev 3 and sent to own address
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
 - [x] CTRL + C  and CSV export across all tables

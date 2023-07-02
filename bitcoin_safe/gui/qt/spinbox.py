@@ -1,19 +1,22 @@
 from PySide2 import QtCore, QtWidgets, QtGui
 from ...util import Satoshis
+import bdkpython as bdk
 
 
 class CustomDoubleSpinBox(QtWidgets.QDoubleSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
-    def __init__(self, parent=None):
+
+    def __init__(self, network: bdk.Network, parent=None):
         super().__init__(parent)
+        self.network = network
         self.setDecimals(0)  # Set the number of decimal places
-        self.setRange(0, 21e6*1e8) # Define range as required
+        self.setRange(0, 21e6 * 1e8)  # Define range as required
 
     def textFromValue(self, value):
-        return str(Satoshis(value))
+        return str(Satoshis(value, self.network))
 
     def valueFromText(self, text):
-        f = float(text.strip().replace(' ', ''))*1e8
+        f = float(text.strip().replace(" ", "")) * 1e8
         return f
 
     def validate(self, text, pos):

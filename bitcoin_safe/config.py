@@ -113,7 +113,7 @@ class UserConfig(BaseSaveableClass):
 
     @property
     def wallet_dir(self):
-        return os.path.join(self.config_dir, str(self.network_settings.network))
+        return os.path.join(self.config_dir, self.network_settings.network.name)
 
     def get(self, key, default=None):
         "For legacy reasons"
