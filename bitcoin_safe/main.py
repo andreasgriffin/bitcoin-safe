@@ -1,6 +1,8 @@
 import logging
 
 from pyparsing import Optional
+
+from bitcoin_safe.descriptors import combined_wallet_descriptor
 from .tx import TXInfos
 from .logging import setup_logging
 
@@ -14,13 +16,13 @@ from PySide2.QtWidgets import *
 
 
 from .ui_mainwindow import Ui_MainWindow
-from .wallet import BlockchainType, Wallet
+from .wallet import BlockchainType, ProtoWallet, Wallet
 import sys
 import re
 
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
-from .gui.qt.qt_wallet import QTWallet
+from .gui.qt.qt_wallet import QTWallet, QTProtoWallet
 from .gui.qt.password_question import PasswordQuestion
 from .gui.qt.balance_dialog import (
     COLOR_FROZEN,
@@ -59,6 +61,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             self.mempool_data.set_data_from_mempoolspace()
 
         self.signals = Signals()
+        self.qtwallet_tab = None
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx.connect(self.open_tx_like_in_tab)
@@ -428,7 +431,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         )
 
     def click_create_single_signature_wallet(self):
-        qtwallet = self.next_step_after_welcome_screen((1, 1))
+        qtwallet = self.create_qtprotowallet((1, 1))
         qtwallet.wallet_descriptor_ui.disable_fields()
 
     def click_multisig_signature(self):
@@ -442,11 +445,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         )
 
     def click_create_multisig_signature_wallet(self):
-        qtwallet = self.next_step_after_welcome_screen((2, 3))
+        qtwallet = self.create_qtprotowallet((2, 3))
         qtwallet.wallet_descriptor_ui.disable_fields()
 
     def click_custom_signature(self):
-        return self.next_step_after_welcome_screen((3, 5))
+        return self.create_qtprotowallet((3, 5))
 
     def new_wallet(self):
         self.welcome_screen.add_new_wallet_welcome_tab()
@@ -454,20 +457,41 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def new_wallet_id(self) -> str:
         return "new" + str(len(self.qt_wallets))
 
-    def next_step_after_welcome_screen(self, m_of_n) -> QTWallet:
+    def create_qtprotowallet(self, m_of_n) -> QTWallet:
+        def create_wallet():
+            self.tab_wallets.removeTab(self.tab_wallets.indexOf(qtprotowallet.tab))
+            wallet = Wallet.from_protowallet(qtprotowallet.protowallet, id, self.config)
+            qt_wallet = self.add_qt_wallet(wallet)
+            qt_wallet.sync()
+
         id = self.new_wallet_id()
         m, n = m_of_n
-        wallet = Wallet(id=id, threshold=m, signers=n, config=self.config)
-        return self.add_qt_wallet(wallet)
+        protowallet = ProtoWallet(
+            threshold=m, signers=n, network=self.config.network_settings.network
+        )
+        qtprotowallet = QTProtoWallet(
+            id, config=self.config, signals=self.signals, protowallet=protowallet
+        )
+        qtprotowallet.signal_close_wallet.connect(
+            lambda: self.close_tab(self.tab_wallets.indexOf(qtprotowallet.tab))
+        )
+        qtprotowallet.signal_create_wallet.connect(create_wallet)
+
+        add_tab_to_tabs(
+            self.tab_wallets,
+            qtprotowallet.tab,
+            read_QIcon("file.png"),
+            id,
+            id,
+            focus=True,
+        )
+
+        return qtprotowallet
 
     def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
         qt_wallet = QTWallet(wallet, self.config, self.signals, self.mempool_data)
         qt_wallet.signal_close_wallet.connect(lambda: self.remove_qt_wallet(qt_wallet))
 
-        if wallet.bdkwallet:
-            qt_wallet.create_wallet_tabs()
-        else:
-            qt_wallet.create_pre_wallet_tab()
         self.qt_wallets[wallet.id] = qt_wallet
         add_tab_to_tabs(
             self.tab_wallets,
@@ -477,6 +501,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             qt_wallet.wallet.id,
             focus=True,
         )
+        self.signals.event_wallet_tab_added.emit()
 
         return qt_wallet
 
@@ -486,7 +511,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         wallet.create_descriptor_wallet(descriptor)
 
         self.add_qt_wallet(wallet)
-        self.signals.event_wallet_tab_added.emit()
 
     def import_seed(self):
         seed = self.text_seed.toPlainText()

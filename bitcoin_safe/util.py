@@ -158,6 +158,11 @@ class UnknownBaseUnit(Exception):
 
 
 import bdkpython as bdk
+import hashlib
+
+
+def hash_string(text):
+    return hashlib.sha256(text.encode()).hexdigest()
 
 
 def cache_method(func):

@@ -18,18 +18,18 @@ class DescriptorEdit(ButtonsTextEdit):
     signal_key_press = Signal(str)
     signal_pasted_text = Signal(str)
 
-    def __init__(self, get_wallet):
+    def __init__(self, get_wallet=None):
         super().__init__()
         pdf_recovery = BitcoinWalletRecoveryPDF()
 
         def make_and_open_pdf():
-            wallet: Wallet = get_wallet()
-            if not wallet.descriptors:
+            if not get_wallet:
                 Message(
                     "Wallet setup not finished. Please finish before creating a Backup pdf."
                 ).show_error()
                 return
 
+            wallet: Wallet = get_wallet()
             for i, keystore in enumerate(wallet.keystores):
                 title = (
                     f"Wallet {wallet.id} - Backup of Seed {i+1}"

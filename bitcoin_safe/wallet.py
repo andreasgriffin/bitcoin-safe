@@ -7,7 +7,7 @@ import bdkpython as bdk
 from typing import Sequence, Set, Tuple
 from .pythonbdk_types import Error
 from .gui.qt.util import Message
-
+import re
 from .tx import TXInfos
 from .util import (
     balance_dict,
@@ -48,9 +48,10 @@ from .descriptors import (
     AddressTypes,
     get_default_address_type,
     generate_bdk_descriptors,
-    descriptor_infos,
     generate_output_descriptors_from_keystores,
     split_wallet_descriptor,
+    combined_wallet_descriptor,
+    descriptor_info,
 )
 import json
 from .tx import TXInfos
@@ -58,8 +59,8 @@ from .util import clean_list, Satoshis
 from .config import UserConfig
 import numpy as np
 from .labels import Labels
-import copy
 from packaging import version
+from .util import hash_string
 
 
 class TxConfirmationStatus(enum.Enum):
@@ -135,55 +136,25 @@ def locked(func):
     return wrapper
 
 
-class Wallet(BaseSaveableClass):
-    """
-    If any bitcoin logic (ontop of bdk) has to be done, then here is the place
-    """
-
-    VERSION = "0.1.1"
-    global_variables = globals()
-
+# a wallet  during setup phase, with partial information
+class ProtoWallet:
     def __init__(
         self,
-        id,
         threshold: int,
+        network: bdk.Network,
         signers: int = 1,
         keystores: List[KeyStore] = None,
         address_type: AddressType = None,
         gap=20,
         gap_change=20,
-        descriptors=None,
-        categories=None,
-        labels: Labels = None,
-        network: bdk.Network = None,
-        config: UserConfig = None,
     ):
         super().__init__()
 
-        self.bdkwallet = None
-        self.id = id
         self.threshold = threshold
-        self.blockchain = None
-        self.network = network if network else config.network_settings.network
-        # prevent loading a wallet into different networks
-        assert (
-            self.network == config.network_settings.network
-        ), f"Cannot load a wallet for {self.network}, when the network {config.network_settings.network} is configured"
+        self.network = network
+
         self.gap = gap
         self.gap_change = gap_change
-        self.descriptors: List[bdk.Descriptor] = (
-            [] if descriptors is None else descriptors
-        )
-        self.config = config
-        self.cache = {}
-        self.write_lock = Lock()
-        self.local_txs = []
-        self.max_tips = [
-            0,
-            0,
-        ]  # this is needed because there is currently no way to get the real tip from bdkwallet
-        self.categories = categories if categories else []
-        self.labels: Labels = labels if labels else Labels()
 
         initial_address_type = (
             address_type if address_type else get_default_address_type(signers > 1)
@@ -195,16 +166,118 @@ class Wallet(BaseSaveableClass):
                 KeyStore(
                     None,
                     None,
-                    initial_address_type.derivation_path(
-                        self.config.network_settings.network
-                    ),
+                    initial_address_type.derivation_path(network),
                     label=self.signer_names(threshold, i),
                     type=None,
                 )
                 for i in range(signers)
             ]
         )
+
+        # ensure consistency for seed wallets
+        for keystore in self.keystores:
+            keystore.make_consistent(self.network)
+
         self.set_address_type(initial_address_type)
+
+    @classmethod
+    def from_descriptor(
+        cls,
+        string_descriptor: str,
+        network: bdk.Network,
+        org_keystores: List[KeyStore] = None,
+    ):
+        def get_default_keystore(xpub: str):
+            if org_keystores:
+                for keystore in org_keystores:
+                    if keystore.xpub == xpub:
+                        return keystore.clone()
+            logger.warning(
+                f"Could not find the xpub {xpub} in the list of org_keystores."
+            )
+            return KeyStore(
+                None,
+                None,
+                None,
+                label="",
+                type=KeyStoreTypes.watch_only,
+            )
+
+        info = descriptor_info(string_descriptor, network)
+
+        info["keystores"] = [
+            KeyStore(
+                xpub=d["xpub"],
+                fingerprint=d["fingerprint"],
+                derivation_path=d["derivation_path"],
+                label=cls.signer_names(i=i, threshold=info["threshold"]),
+                type=get_default_keystore(d["xpub"]).type,
+            )
+            for i, d in enumerate(info["keystores"])
+        ]
+
+        return ProtoWallet(**info)
+
+    def set_address_type(self, address_type: AddressType):
+        self.address_type = address_type
+        for keystore in self.keystores:
+            keystore.set_derivation_path(address_type.derivation_path(self.network))
+
+    @classmethod
+    def signer_names(self, threshold: int, i: int):
+        i += 1
+        if i <= threshold:
+            return f"Signer {i}"
+        else:
+            return f"Recovery Signer {i}"
+
+    def set_keystores(self, keystores):
+        self.keystores = keystores
+
+    def set_gap(self, gap):
+        self.gap = gap
+
+    def bdk_descriptors(self):
+        return self.generate_bdk_descriptors(
+            threshold=self.threshold,
+            keystores=self.keystores,
+            address_type=self.address_type,
+        )
+
+    def generate_bdk_descriptors(
+        self, threshold: int, keystores: List[KeyStore], address_type: AddressType
+    ):
+        # sanity checks
+        assert threshold <= len(keystores)
+        is_multisig = len(keystores) > 1
+        assert address_type.is_multisig == is_multisig
+
+        if address_type.bdk_descriptor:
+            # TODO: Currently only single sig implemented, since bdk only has single sig templates
+            keystore = keystores[0]
+            descriptors = [
+                address_type.bdk_descriptor(
+                    bdk.DescriptorPublicKey.from_string(keystore.xpub),
+                    keystore.fingerprint,
+                    keychainkind,
+                    self.network,
+                )
+                if not keystore.mnemonic
+                else address_type.bdk_descriptor_secret(
+                    bdk.DescriptorSecretKey(self.network, keystore.mnemonic, ""),
+                    keychainkind,
+                    self.network,
+                )
+                for keychainkind in [
+                    bdk.KeychainKind.EXTERNAL,
+                    bdk.KeychainKind.INTERNAL,
+                ]
+            ]
+        else:
+            descriptors = generate_bdk_descriptors(
+                threshold, address_type, keystores, self.network
+            )
+        return descriptors
 
     def temporary_descriptors(self, use_html=False):
         """
@@ -215,10 +288,111 @@ class Wallet(BaseSaveableClass):
             self.threshold,
             self.address_type,
             self.keystores,
-            self.config.network_settings.network,
+            self.network,
             replace_keystore_with_dummy=False,
             use_html=use_html,
             combined_descriptors=True,
+        )
+
+    def set_number_of_keystores(self, n):
+
+        if n > len(self.keystores):
+            for i in range(len(self.keystores), n):
+                self.keystores.append(
+                    KeyStore(
+                        None,
+                        None,
+                        self.address_type.derivation_path(self.network),
+                        label=self.signer_names(self.threshold, i),
+                        type=None,
+                    )
+                )
+        elif n < len(self.keystores):
+            for i in range(n, len(self.keystores)):
+                self.keystores.pop()  # removes the last item
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
+    def is_multisig(self):
+        return len(self.keystores) > 1
+
+
+class Wallet(BaseSaveableClass):
+    """
+    If any bitcoin logic (ontop of bdk) has to be done, then here is the place
+    """
+
+    VERSION = "0.1.1"
+    global_variables = globals()
+
+    def __init__(
+        self,
+        id,
+        descriptor_str: str,
+        keystores: List[KeyStore] = None,
+        gap=20,
+        gap_change=20,
+        categories=None,
+        labels: Labels = None,
+        network: bdk.Network = None,
+        config: UserConfig = None,
+    ):
+        super().__init__()
+
+        self.bdkwallet = None
+        self.id = id
+        self.blockchain = None
+        self.network = network if network else config.network_settings.network
+        # prevent loading a wallet into different networks
+        assert (
+            self.network == config.network_settings.network
+        ), f"Cannot load a wallet for {self.network}, when the network {config.network_settings.network} is configured"
+        self.gap = gap
+        self.gap_change = gap_change
+        self.descriptor_str: str = descriptor_str
+        self.config = config
+        self.cache = {}
+        self.write_lock = Lock()
+        self.local_txs = []
+        self.max_tips = [
+            0,
+            0,
+        ]  # this is needed because there is currently no way to get the real tip from bdkwallet
+        self.categories = categories if categories else []
+        self.labels: Labels = labels if labels else Labels()
+
+        self.keystores: List[KeyStore] = (
+            keystores if keystores is not None else self.as_protowallet().keystores
+        )
+        self.create_wallet()
+
+    def as_protowallet(self):
+        return ProtoWallet.from_descriptor(
+            self.descriptor_str, network=self.network, org_keystores=self.keystores
+        )
+
+    @classmethod
+    def from_protowallet(cls, protowallet: ProtoWallet, id: str, config: UserConfig):
+
+        descriptors = protowallet.bdk_descriptors()
+        for keystore in protowallet.keystores:
+            keystore.make_consistent(config.network_settings.network)
+            if keystore.derivation_path != protowallet.address_type.derivation_path(
+                config.network_settings.network
+            ):
+                logger.warning(
+                    f"Warning: The derivation path of {keystore} is not the default"
+                )
+
+        return Wallet(
+            id,
+            combined_wallet_descriptor(descriptors),
+            keystores=[k.clone() for k in protowallet.keystores],
+            gap=protowallet.gap,
+            gap_change=protowallet.gap_change,
+            network=protowallet.network,
+            config=config,
         )
 
     def serialize(self):
@@ -226,19 +400,18 @@ class Wallet(BaseSaveableClass):
 
         keys = [
             "id",
-            "threshold",
             "gap",
             "network",
             "gap_change",
             "keystores",
             "categories",
             "labels",
+            "descriptor_str",
+            "tips",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
 
-        d["descriptors"] = [descriptor.as_string() for descriptor in self.descriptors]
-        d["tips"] = self.tips
         return d
 
     @classmethod
@@ -280,10 +453,6 @@ class Wallet(BaseSaveableClass):
         config: UserConfig = class_kwargs[cls.__name__][
             "config"
         ]  # passed via class_kwargs
-        dct["descriptors"] = [
-            bdk.Descriptor(descriptor, network=config.network_settings.network)
-            for descriptor in dct["descriptors"]
-        ]
 
         tips = dct["tips"]
         del dct["tips"]
@@ -293,7 +462,6 @@ class Wallet(BaseSaveableClass):
 
         wallet = Wallet(**dct)
 
-        wallet.create_wallet(dct["descriptors"])
         wallet.tips = tips
 
         return wallet
@@ -311,96 +479,14 @@ class Wallet(BaseSaveableClass):
     def reset_cache(self):
         self.cache = {}
 
-    def signer_names(self, threshold: int, i: int):
-        i += 1
-        if i <= threshold:
-            return f"Signer {i}"
-        else:
-            return f"Recovery Signer {i}"
-
-    def calculate_descriptors(self) -> bdk.Descriptor:
-        return generate_bdk_descriptors(
-            self.threshold,
-            self.address_type,
-            self.keystores,
-            self.config.network_settings.network,
-        )
-
-    def set_wallet_from_descriptor(self, string_descriptor, recreate_bdk_wallet=True):
-
-        infos = descriptor_infos(
-            string_descriptor, self.config.network_settings.network
-        )
-
-        self.set_number_of_keystores(
-            len(infos["keystores"]),
-            cloned_reference_keystores=[k.clone() for k in infos["keystores"]],
-        )
-        for self_keystore, descriptor_keystore in zip(
-            self.keystores, infos["keystores"]
-        ):
-            self_keystore.from_other_keystore(descriptor_keystore)
-
-        self.set_address_type(infos["address_type"])
-        self.set_threshold(infos["threshold"])
-
-        for i, keystore in enumerate(self.keystores):
-            keystore.label = self.signer_names(self.threshold, i)
-
-        self.descriptors = [
-            bdk.Descriptor(s, self.network)
-            for s in split_wallet_descriptor(string_descriptor)
-        ]
-        # self.descriptors = self.generate_bdk_descriptors(infos["threshold"], infos["keystores"], infos["address_type"])
-
-        if recreate_bdk_wallet:
-            self.recreate_bdk_wallet()
-
-    def recreate_bdk_wallet(self):
-        self.create_wallet(self.descriptors)
-
     def set_keystores(self, keystores):
         self.keystores = keystores
-
-    def set_threshold(self, threshold):
-        self.threshold = threshold
-
-    def set_number_of_keystores(self, n, cloned_reference_keystores=None):
-        if cloned_reference_keystores is None:
-            cloned_reference_keystores = []
-        if len(cloned_reference_keystores) < n:
-            cloned_reference_keystores += [
-                KeyStore(
-                    None,
-                    None,
-                    self.address_type.derivation_path(
-                        self.config.network_settings.network
-                    ),
-                    label=self.signer_names(self.threshold, i),
-                    type=KeyStoreTypes.watch_only,
-                )
-                for i in range(n - len(cloned_reference_keystores))
-            ]
-
-        if n > len(self.keystores):
-            for i in range(len(self.keystores), n):
-                self.keystores.append(cloned_reference_keystores[i])
-        elif n < len(self.keystores):
-            for i in range(n, len(self.keystores)):
-                self.keystores.pop()  # removes the last item
 
     def set_gap(self, gap):
         self.gap = gap
 
     def set_wallet_id(self, id):
         self.id = id
-
-    def set_address_type(self, address_type: AddressType):
-        self.address_type = address_type
-        for keystore in self.keystores:
-            keystore.set_derivation_path(
-                address_type.derivation_path(self.config.network_settings.network)
-            )
 
     def create_seed_wallet(self, seed):
         assert (
@@ -428,47 +514,12 @@ class Wallet(BaseSaveableClass):
             descriptor=descriptor, change_descriptor=change_descriptor
         )
 
-    def generate_bdk_descriptors(
-        self, threshold: int, keystores: List[KeyStore], address_type: AddressType
-    ):
-        # sanity checks
-        assert threshold <= len(keystores)
-        is_multisig = len(keystores) > 1
-        assert address_type.is_multisig == is_multisig
-
-        if address_type.bdk_descriptor:
-            # TODO: Currently only single sig implemented, since bdk only has single sig templates
-            keystore = keystores[0]
-            descriptors = [
-                address_type.bdk_descriptor(
-                    bdk.DescriptorPublicKey.from_string(keystore.xpub),
-                    keystore.fingerprint,
-                    keychainkind,
-                    self.config.network_settings.network,
-                )
-                if not keystore.mnemonic
-                else address_type.bdk_descriptor_secret(
-                    bdk.DescriptorSecretKey(
-                        self.config.network_settings.network, keystore.mnemonic, ""
-                    ),
-                    keychainkind,
-                    self.config.network_settings.network,
-                )
-                for keychainkind in [
-                    bdk.KeychainKind.EXTERNAL,
-                    bdk.KeychainKind.INTERNAL,
-                ]
-            ]
-        else:
-            descriptors = generate_bdk_descriptors(
-                threshold, address_type, keystores, self.config.network_settings.network
-            )
-        return descriptors
-
-    def create_wallet(self, descriptors: List[bdk.Descriptor]):
-
+    def create_wallet(self, descriptor_str: str = None):
+        descitpor_str, change_descriptor_str = split_wallet_descriptor(
+            descriptor_str if descriptor_str else self.descriptor_str
+        )
         self.create_descriptor_wallet(
-            descriptor=self.descriptors[0], change_descriptor=self.descriptors[1]
+            descriptor=descitpor_str, change_descriptor=change_descriptor_str
         )
 
     def create_descriptor_wallet(self, descriptor, change_descriptor=None):
@@ -493,15 +544,6 @@ class Wallet(BaseSaveableClass):
 
     def is_multisig(self):
         return len(self.keystores) > 1
-
-    def get_address_types(self, is_multisig=None) -> List[AddressType]:
-        if is_multisig is None:
-            is_multisig = self.is_multisig()
-        return [
-            v
-            for k, v in AddressTypes.__dict__.items()
-            if (not k.startswith("_")) and v.is_multisig == is_multisig
-        ]
 
     def get_tx_status(self, tx: bdk.TransactionDetails) -> TxStatus:
         return TxStatus(tx, self.blockchain)
@@ -563,12 +605,15 @@ class Wallet(BaseSaveableClass):
                         self.config.network_settings.rpc_password,
                     ),
                     self.config.network_settings.network,
-                    self.id,
+                    self._get_uniquie_wallet_id(),
                     None,
                 )
             )
         self.blockchain = bdk.Blockchain(blockchain_config)
         return self.blockchain
+
+    def _get_uniquie_wallet_id(self):
+        return f"{self.id}-{hash_string(self.descriptor_str)}"
 
     def sync(self, progress_function_threadsafe=None):
         if self.blockchain is None:

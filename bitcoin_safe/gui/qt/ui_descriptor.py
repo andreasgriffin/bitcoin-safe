@@ -5,12 +5,13 @@ logger = logging.getLogger(__name__)
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from ...wallet import AddressTypes, AddressType, Wallet
+from ...wallet import Wallet, ProtoWallet
 from ...descriptors import (
     get_default_address_type,
+    AddressType,
     generate_bdk_descriptors,
     generate_output_descriptors_from_keystores,
-    descriptor_infos,
+    get_address_types,
 )
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, Signal
@@ -28,10 +29,15 @@ class WalletDescriptorUI(QObject):
     signal_qtwallet_cancel_setting_changes = Signal()
     signal_qtwallet_cancel_wallet_creation = Signal()
 
-    def __init__(self, wallet: Wallet) -> None:
+    def __init__(self, protowallet: ProtoWallet = None, wallet: Wallet = None) -> None:
         super().__init__()
+        # if we are in the wallet setp process, then wallet = None
         self.wallet: Wallet = wallet
-        self.cloned_wallet: Wallet = None  # any temporary changes (before apply) are applied to this cloned_wallet. If it is None, then no change was made
+
+        self.protowallet: ProtoWallet = (
+            self.wallet.as_protowallet() if self.wallet else protowallet
+        )
+
         self.tab = QWidget()
         self.verticalLayout_2 = QVBoxLayout(self.tab)
 
@@ -44,11 +50,11 @@ class WalletDescriptorUI(QObject):
         self.signal_descriptor_pasted.connect(self.on_descriptor_pasted)
         self.signal_descriptor_change_apply.connect(self.on_descriptor_change)
 
-        for keystore in wallet.keystores:
+        for keystore in self.protowallet.keystores:
             keystore_ui = KeyStoreUI(
                 keystore,
                 self.tabs_widget_signers,
-                self.wallet.config.network_settings.network,
+                self.protowallet.network,
             )
             self.keystore_uis.append(keystore_ui)
 
@@ -76,33 +82,23 @@ class WalletDescriptorUI(QObject):
         for ui in self.keystore_uis:
             ui.keystore_ui_default.signal_seed_changed.connect(self.ui_seed_ui_change)
         self.disable_fields()
-        self.set_all_ui_from_wallet(self.wallet)
+        self.set_all_ui_from_protowallet()
 
         self.box_button_bar = self.create_button_bar()
 
     def ui_seed_ui_change(self, *args):
         self.ui_keystore_ui_change()
 
-        # set xpub and fingerprint from seed
-        # TODO. not available yet in BDK
-
     def ui_keystore_ui_change(self, *args):
-        self.set_wallet_from_keystore_ui(self.get_cloned_wallet())
-        self.set_ui_descriptor(self.get_cloned_wallet())
-
-    def get_cloned_wallet(self) -> Wallet:
-        if not self.cloned_wallet:
-            self.cloned_wallet = self.wallet.partital_clone()
-        return self.cloned_wallet
+        self.set_protowallet_from_keystore_ui()
+        self.set_ui_descriptor()
 
     def on_wallet_ui_changes(self):
-        cloned_wallet = self.get_cloned_wallet()
-        self.set_wallet_from_keystore_ui(cloned_wallet)
+        self.set_protowallet_from_keystore_ui()
 
-        self.set_ui_descriptor(cloned_wallet)
-        self.set_keystore_ui_from_wallet(cloned_wallet)
-        self.set_wallet_ui_from_wallet(cloned_wallet)
-        assert len(cloned_wallet.keystores) == len(self.keystore_uis)
+        self.set_ui_descriptor()
+        self.set_keystore_ui_from_protowallet()
+        self.set_wallet_ui_from_protowallet()
 
     def get_ui_values_as_keystores(self):
         return [
@@ -112,12 +108,10 @@ class WalletDescriptorUI(QObject):
 
     def on_descriptor_pasted(self, new_value):
         self.on_descriptor_change(new_value)
-        self.set_ui_descriptor(self.get_cloned_wallet())
+        self.set_ui_descriptor()
 
     def on_descriptor_change(self, new_value):
-        cloned_wallet = self.get_cloned_wallet()
-
-        # self.set_wallet_from_keystore_ui(cloned_wallet)
+        # self.set_protowallet_from_keystore_ui(cloned_protowallet)
         if (
             hasattr(self, "_edit_descriptor_cache")
             and self._edit_descriptor_cache == new_value
@@ -126,11 +120,9 @@ class WalletDescriptorUI(QObject):
             return
         self._edit_descriptor_cache = new_value
 
-        cloned_wallet.set_wallet_from_descriptor(new_value, recreate_bdk_wallet=False)
-        self.set_wallet_ui_from_wallet(cloned_wallet)
-        self.set_keystore_ui_from_wallet(cloned_wallet)
+        self.set_wallet_ui_from_protowallet()
+        self.set_keystore_ui_from_protowallet()
         self.disable_fields()
-        assert len(cloned_wallet.keystores) == len(self.keystore_uis)
 
     def on_spin_threshold_changed(self, new_value):
         self.on_wallet_ui_changes()
@@ -138,45 +130,45 @@ class WalletDescriptorUI(QObject):
     def on_spin_signer_changed(self, new_value):
         self.on_wallet_ui_changes()
 
-    def _set_keystore_tabs(self, wallet: Wallet):
+    def _set_keystore_tabs(self):
         # add keystore_ui if necessary
-        if len(self.keystore_uis) < len(wallet.keystores):
-            for i in range(len(self.keystore_uis), len(wallet.keystores)):
+        if len(self.keystore_uis) < len(self.protowallet.keystores):
+            for i in range(len(self.keystore_uis), len(self.protowallet.keystores)):
                 self.keystore_uis.append(
                     KeyStoreUI(
-                        wallet.keystores[i],
+                        self.protowallet.keystores[i],
                         self.tabs_widget_signers,
-                        self.wallet.config.network_settings.network,
+                        self.protowallet.network,
                     )
                 )
         # remove keystore_ui if necessary
-        elif len(self.keystore_uis) > len(wallet.keystores):
-            for i in range(len(wallet.keystores), len(self.keystore_uis)):
+        elif len(self.keystore_uis) > len(self.protowallet.keystores):
+            for i in range(len(self.protowallet.keystores), len(self.keystore_uis)):
                 self.keystore_uis[-1].remove_tab()
                 self.keystore_uis.pop()
 
         # now make a second pass and connect point the keystore_ui.keystore correctly
-        for keystore, keystore_ui in zip(self.wallet.keystores, self.keystore_uis):
+        for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.keystore.from_other_keystore(keystore)
 
-    def set_keystore_ui_from_wallet(self, wallet: Wallet):
-        self._set_keystore_tabs(wallet)
-        for keystore, keystore_ui in zip(wallet.keystores, self.keystore_uis):
+    def set_keystore_ui_from_protowallet(self):
+        self._set_keystore_tabs()
+        for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.set_ui_from_keystore(keystore)
 
-    def set_wallet_ui_from_wallet(self, wallet: Wallet):
+    def set_wallet_ui_from_protowallet(self):
         with self.block_change_signals:
             self.spin_req.setMinimum(1)
-            self.spin_req.setMaximum(len(wallet.keystores))
-            self.spin_req.setValue(wallet.threshold)
+            self.spin_req.setMaximum(len(self.protowallet.keystores))
+            self.spin_req.setValue(self.protowallet.threshold)
 
-            self.spin_signers.setMinimum(wallet.threshold)
+            self.spin_signers.setMinimum(self.protowallet.threshold)
             self.spin_signers.setMaximum(10)
-            self.spin_signers.setValue(len(wallet.keystores))
+            self.spin_signers.setValue(len(self.protowallet.keystores))
 
             if self.spin_req.value() < self.spin_signers.value():
                 labels_of_recovery_signers = [
-                    f'"{keystore.label}"' for keystore in wallet.keystores
+                    f'"{keystore.label}"' for keystore in self.protowallet.keystores
                 ][self.spin_req.value() :]
                 self.spin_req.setToolTip(
                     f"In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n"
@@ -191,9 +183,9 @@ class WalletDescriptorUI(QObject):
                     f"A single signing device can sign outgoing transactions."
                 )
 
-            self.spin_gap.setValue(wallet.gap)
+            self.spin_gap.setValue(self.protowallet.gap)
 
-    def set_all_ui_from_wallet(self, wallet: Wallet):
+    def set_all_ui_from_protowallet(self):
         """
         Updates the 3 parts
         - wallet ui (e.g. gap)
@@ -201,54 +193,40 @@ class WalletDescriptorUI(QObject):
         - descriptor ui
         """
         with self.block_change_signals:
-            self.set_wallet_ui_from_wallet(wallet)
-            self.set_keystore_ui_from_wallet(wallet)
-            self.set_ui_descriptor(wallet)
+            self.set_wallet_ui_from_protowallet()
+            self.set_keystore_ui_from_protowallet()
+            self.set_ui_descriptor()
 
-    def set_wallet_from_keystore_ui(self, wallet: Wallet = None):
-        if wallet is None:
-            wallet = self.wallet
-
-        for keystore, keystore_ui in zip(wallet.keystores, self.keystore_uis):
+    def set_protowallet_from_keystore_ui(self):
+        for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.set_keystore_from_ui_values(keystore)
-        wallet.set_address_type(self.get_address_type_from_ui())
-        wallet.set_gap(self.get_gap_from_ui())
+        self.protowallet.set_address_type(self.get_address_type_from_ui())
+        self.protowallet.set_gap(self.get_gap_from_ui())
 
         m, n = self.get_m_of_n_from_ui()
-        wallet.set_threshold(m)
+        self.protowallet.set_threshold(m)
 
-        assert len(wallet.keystores) == len(self.keystore_uis)
+        assert len(self.protowallet.keystores) == len(self.keystore_uis)
         # if len(wallet.keystores) != len(self.keystore_uis):
         #         print(wallet.keystores, self.keystore_uis)
 
-        wallet.set_number_of_keystores(
-            n, cloned_reference_keystores=[k.clone() for k in self.wallet.keystores]
-        )
+        self.protowallet.set_number_of_keystores(n)
 
-        for i, keystore in enumerate(wallet.keystores):
-            keystore.label = wallet.signer_names(wallet.threshold, i)
-
-        # print([k.serialize() for k in wallet.keystores])
-        # print([k.serialize() for k in self.wallet.keystores])
-        try:
-            wallet.descriptors = wallet.generate_bdk_descriptors(
-                threshold=wallet.threshold,
-                keystores=wallet.keystores,
-                address_type=wallet.address_type,
+        for i, keystore in enumerate(self.protowallet.keystores):
+            keystore.label = self.protowallet.signer_names(
+                self.protowallet.threshold, i
             )
-        except:
-            logger.warning("Setting wallet.descriptors failed")
-            pass
-        return wallet
 
     def set_combo_box_address_type_default(self):
-        address_types = self.wallet.get_address_types()
+        address_types = get_address_types(self.protowallet.is_multisig())
         self.comboBox_address_type.setCurrentIndex(
-            address_types.index(get_default_address_type(self.wallet.is_multisig()))
+            address_types.index(
+                get_default_address_type(self.protowallet.is_multisig())
+            )
         )
 
     def get_address_type_from_ui(self) -> AddressType:
-        address_types = self.wallet.get_address_types()
+        address_types = get_address_types(self.protowallet.is_multisig())
 
         address_type = address_types[self.comboBox_address_type.currentIndex()]
 
@@ -261,44 +239,22 @@ class WalletDescriptorUI(QObject):
     def get_gap_from_ui(self) -> int:
         return self.spin_gap.value()
 
-    # def get_descriptor_string_from_keystore_ui(self, use_html=False):
-    #         temp_ui_keystores = [ui.keystore_ui_default.get_ui_values_as_keystore() for ui in  self.keystore_uis]
-    #         descriptors = generate_output_descriptors_from_keystores(self.get_m_of_n_from_ui()[0],
-    #                                                                 self.get_address_type_from_ui(),
-    #                                                                 temp_ui_keystores,
-    #                                                                 self.wallet.network,
-    #                                                                 replace_keystore_with_dummy=False,
-    #                                                                 use_html=use_html,
-    #                                                                 combined_descriptors=True
-    #                                                                 )
-    #         return descriptors
-
-    def set_ui_descriptor(self, wallet: Wallet):
+    def set_ui_descriptor(self):
         # check if the descriptor actually CAN be calculated to a reasonable degree
 
         try:
-            self.edit_descriptor.setText(combined_wallet_descriptor(wallet.descriptors))
+            self.edit_descriptor.setText(
+                combined_wallet_descriptor(self.protowallet.bdk_descriptors())
+            )
         except:
             self.edit_descriptor.setText("Could not be derived from seed")
-
-        # descriptors = generate_output_descriptors_from_keystores(
-        #     wallet.threshold,
-        #     wallet.address_type,
-        #     wallet.keystores,
-        #     wallet.config.network_settings.network,
-        #     replace_keystore_with_dummy=True,
-        #     use_html=True,
-        #     combined_descriptors=True,
-        # )
-        # with self.block_change_signals:
-        #     self.edit_descriptor.setHtml(descriptors[0])
 
     def disable_fields(self):
         with self.block_change_signals:
             self.set_combo_box_address_type_default()
-            self.spin_signers.setValue(len(self.wallet.keystores))
+            self.spin_signers.setValue(len(self.protowallet.keystores))
 
-        if self.wallet.is_multisig():
+        if self.protowallet.is_multisig():
             self.label_of.setEnabled(True)
             self.spin_signers.setEnabled(True)
         else:
@@ -340,7 +296,7 @@ class WalletDescriptorUI(QObject):
         h_address_type.addWidget(label_address_type)
 
         self.comboBox_address_type = QComboBox(box_address_type)
-        address_types = self.wallet.get_address_types()
+        address_types = get_address_types(self.protowallet.is_multisig())
         addres_type_names = [a.name for a in address_types]
         self.comboBox_address_type.addItems(addres_type_names)
         h_address_type.addWidget(self.comboBox_address_type)
@@ -416,17 +372,12 @@ class WalletDescriptorUI(QObject):
         layout_buttonbar = QHBoxLayout(box_button_bar)
         layout_buttonbar.setContentsMargins(0, 0, 0, 0)
 
-        def do_cancel():
-            # if this is a settings tab of an already created wallet
-            if self.wallet.bdkwallet:
-                self.signal_qtwallet_cancel_setting_changes.emit()
-            else:
-                self.signal_qtwallet_cancel_wallet_creation.emit()
-
         self.button_cancel = QPushButton(box_button_bar)
         self.button_cancel.setText("Cancel changes")
         self.button_cancel.setMinimumSize(QSize(150, 0))
-        self.button_cancel.clicked.connect(do_cancel)
+        self.button_cancel.clicked.connect(
+            self.signal_qtwallet_cancel_setting_changes.emit
+        )
         layout_buttonbar.addWidget(self.button_cancel)
 
         self.button_apply = QPushButton(box_button_bar)

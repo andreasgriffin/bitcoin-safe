@@ -1,6 +1,6 @@
 import logging
 
-from bitcoin_safe import keystore
+from bitcoin_safe import descriptors, keystore
 
 logger = logging.getLogger(__name__)
 

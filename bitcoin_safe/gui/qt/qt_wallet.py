@@ -7,7 +7,7 @@ from bitcoin_safe.mempool import MempoolData
 
 logger = logging.getLogger(__name__)
 
-from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet import ProtoWallet, Wallet
 from .util import read_QIcon
 from typing import List
 from PySide2.QtCore import *
@@ -81,7 +81,86 @@ class FX:
         return False
 
 
-class QTWallet(QObject):
+class SignalCarryingObject(QObject):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self._connected_signals = []
+
+    def connect_signal(self, signal, f, **kwargs):
+        signal.connect(f, **kwargs)
+        self._connected_signals.append((signal, f))
+
+    def disconnect_signals(self):
+        for signal, f in self._connected_signals:
+            signal.disconnect(f)
+
+
+class WalletTab(SignalCarryingObject):
+    def __init__(self, wallet_id: str):
+        super().__init__()
+        self.wallet_id = wallet_id
+
+        self._create_wallet_tab_and_subtabs()
+
+    def _create_wallet_tab_and_subtabs(self):
+        "Create a tab, and layout, that other UI components can fit inside"
+        # create UI part
+        self.tab = QWidget()
+        self.tab.setObjectName(self.wallet_id)
+
+        self.outer_layout = QVBoxLayout(self.tab)
+        # add the tab_widget for  history, utx, send tabs
+        self.tabs = QTabWidget(self.tab)
+        self.outer_layout.addWidget(self.tabs)
+
+
+class QTProtoWallet(WalletTab):
+    signal_create_wallet = Signal()
+    signal_close_wallet = Signal()
+
+    def __init__(
+        self,
+        wallet_id: str,
+        protowallet: ProtoWallet,
+        config: UserConfig,
+        signals: Signals,
+    ):
+        super().__init__(wallet_id=wallet_id)
+
+        self.protowallet = protowallet
+        self.config = config
+        self.signals = signals
+
+        self.create_protowallet_tab()
+
+    def create_protowallet_tab(self):
+        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
+        (
+            self.wallet_descriptor_tab,
+            self.wallet_descriptor_ui,
+        ) = self.create_and_add_settings_tab()
+
+    def create_and_add_settings_tab(self):
+        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
+        wallet_descriptor_ui = WalletDescriptorUI(protowallet=self.protowallet)
+        add_tab_to_tabs(
+            self.tabs,
+            wallet_descriptor_ui.tab,
+            read_QIcon("preferences.png"),
+            "Setup wallet",
+            "setup wallet",
+        )
+
+        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
+            self.signal_create_wallet.emit
+        )
+        wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(
+            self.signal_close_wallet.emit
+        )
+        return wallet_descriptor_ui.tab, wallet_descriptor_ui
+
+
+class QTWallet(WalletTab):
     signal_settext_balance_label = Signal(str)
     signal_start_synchronization = Signal()
     signal_stop_synchronization = Signal()
@@ -94,12 +173,11 @@ class QTWallet(QObject):
         signals: Signals,
         mempool_data: MempoolData,
     ):
-        super().__init__()
+        super().__init__(wallet_id=wallet.id)
 
         self.thread_manager = ThreadManager()
         self.signals = signals
         self.mempool_data = mempool_data
-        self._connected_signals = []
         self.set_wallet(wallet)
         self.password = None
         self.wallet_descriptor_tab = None
@@ -114,7 +192,6 @@ class QTWallet(QObject):
         self.utxo_tab, self.utxo_list = None, None
         self.send_tab = None
 
-        self._create_wallet_tab_and_subtabs()
         self.signal_start_synchronization.connect(
             lambda: self.set_synchronization(True)
         )
@@ -123,6 +200,39 @@ class QTWallet(QObject):
         )
         self.signal_start_synchronization.connect(self.update_status)
         self.signal_stop_synchronization.connect(self.update_status)
+
+        self.create_wallet_tabs()
+
+    def apply_setting_changes(self):
+        self.wallet_descriptor_ui.set_protowallet_from_keystore_ui()
+        self.wallet.create_wallet(
+            descriptor_str=self.wallet_descriptor_ui.protowallet.bdk_descriptors()
+        )  # this must be after set_protowallet_from_keystore_ui, but before create_wallet_tabs
+
+        self.sync()
+        self.refresh_caches_and_ui_lists()
+
+    def create_and_add_settings_tab(self):
+        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
+        wallet_descriptor_ui = WalletDescriptorUI(wallet=self.wallet)
+        add_tab_to_tabs(
+            self.tabs,
+            wallet_descriptor_ui.tab,
+            read_QIcon("preferences.png"),
+            "Descriptor",
+            "descriptor",
+        )
+
+        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
+            self.apply_setting_changes
+        )
+        wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(
+            self.cancel_setting_changes
+        )
+        wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(
+            self.signal_close_wallet.emit
+        )
+        return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
     def set_synchronization(self, state):
         logger.debug(f"Set is_synchronizing {state}")
@@ -155,14 +265,7 @@ class QTWallet(QObject):
         )
 
     def cancel_setting_changes(self):
-        self.wallet_descriptor_ui.set_all_ui_from_wallet(self.wallet)
-
-    def apply_setting_changes(self):
-        self.wallet_descriptor_ui.set_wallet_from_keystore_ui()
-        self.wallet.recreate_bdk_wallet()  # this must be after set_wallet_from_keystore_ui, but before create_wallet_tabs
-
-        self.sync()
-        self.refresh_caches_and_ui_lists()
+        self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
     def refresh_caches_and_ui_lists(self):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
@@ -188,39 +291,6 @@ class QTWallet(QObject):
         self.thread_manager.start_in_background_thread(
             threaded, on_finished=on_finished, name="Update wallet UI"
         )
-
-    def _create_wallet_tab_and_subtabs(self):
-        "Create a tab, and layout, that other UI components can fit inside"
-        # create UI part
-        self.tab = QWidget()
-        self.tab.setObjectName(self.wallet.id)
-
-        self.outer_layout = QVBoxLayout(self.tab)
-        # add the tab_widget for  history, utx, send tabs
-        self.tabs = QTabWidget(self.tab)
-        self.outer_layout.addWidget(self.tabs)
-
-    def create_and_add_settings_tab(self):
-        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
-        wallet_descriptor_ui = WalletDescriptorUI(wallet=self.wallet)
-        add_tab_to_tabs(
-            self.tabs,
-            wallet_descriptor_ui.tab,
-            read_QIcon("preferences.png"),
-            "Descriptor",
-            "descriptor",
-        )
-
-        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
-            self.apply_setting_changes
-        )
-        wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(
-            self.cancel_setting_changes
-        )
-        wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(
-            self.signal_close_wallet.emit
-        )
-        return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
     def _get_sub_texts_for_uitx(self):
         d = {}
@@ -320,21 +390,6 @@ class QTWallet(QObject):
 
         self.signals.open_tx.emit(txinfos)
 
-    def create_pre_wallet_tab(self):
-        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
-        (
-            self.wallet_descriptor_tab,
-            self.wallet_descriptor_ui,
-        ) = self.create_and_add_settings_tab()
-
-    def connect_signal(self, signal, f, **kwargs):
-        signal.connect(f, **kwargs)
-        self._connected_signals.append((signal, f))
-
-    def disconnect_signals(self):
-        for signal, f in self._connected_signals:
-            signal.disconnect(f)
-
     def set_wallet(self, wallet: Wallet):
         self.wallet = wallet
 
@@ -359,11 +414,10 @@ class QTWallet(QObject):
         ) = self._create_addresses_tab(self.tabs)
         self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)
         # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)
-        if not self.wallet_descriptor_tab:
-            (
-                self.settings_tab,
-                self.wallet_descriptor_ui,
-            ) = self.create_and_add_settings_tab()
+        (
+            self.settings_tab,
+            self.wallet_descriptor_ui,
+        ) = self.create_and_add_settings_tab()
 
         self.create_status_bar(self.tab, self.outer_layout)
 

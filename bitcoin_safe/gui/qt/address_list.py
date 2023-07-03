@@ -578,6 +578,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.signals.labels_updated.emit(
             UpdateFilter(
                 addresses=[edit_key],
-                txids=self.wallet.get_txs_involving_address(edit_key),
+                txids=[
+                    tx.tx.txid for tx in self.wallet.get_txs_involving_address(edit_key)
+                ],
             )
         )

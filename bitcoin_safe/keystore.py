@@ -21,6 +21,7 @@ from .gui.qt.util import add_tab_to_tabs, read_QIcon
 import bdkpython as bdk
 from .storage import BaseSaveableClass, SaveAllClass
 import copy
+from .descriptors import descriptor_info
 
 
 class KeyStoreType(SaveAllClass):
@@ -116,6 +117,40 @@ class KeyStore(BaseSaveableClass):
         self.type = type
         self.mnemonic = mnemonic
         self.description = description
+
+    def make_consistent(self, network):
+        "Only relevant for seed wallets"
+        if self.mnemonic:
+            # fill xpub and fingerprint from descriptor  (it doesn't matter which template I use, fingerprint and xpub are always identical)
+            descriptor = bdk.Descriptor.new_bip84(
+                secret_key=bdk.DescriptorSecretKey(network, self.mnemonic, ""),
+                keychain=bdk.KeychainKind.EXTERNAL,
+                network=network,
+            )
+            info = descriptor_info(descriptor.as_string(), network)
+
+            assert len(info["keystores"]) == 1
+            info_keystore = info["keystores"][0]
+
+            if self.xpub and self.xpub != info_keystore["xpub"]:
+                logger.error(
+                    f"xpub from mnemonic {info_keystore['xpub']} differs from given xpub {self.xpub}"
+                )
+            if self.fingerprint and self.fingerprint != info_keystore["fingerprint"]:
+                logger.error(
+                    f"fingerprint from mnemonic {info_keystore['fingerprint']} differs from given fingerprint {self.fingerprint}"
+                )
+            if (
+                self.derivation_path
+                and self.derivation_path != info_keystore["derivation_path"]
+            ):
+                logger.error(
+                    f"derivation_path from mnemonic {info_keystore['derivation_path']} differs from given derivation_path {self.derivation_path}"
+                )
+
+            self.xpub = info_keystore["xpub"]
+            self.fingerprint = info_keystore["fingerprint"]
+            self.derivation_path = info_keystore["derivation_path"]
 
     def __repr__(self) -> str:
         return str(self.__dict__)

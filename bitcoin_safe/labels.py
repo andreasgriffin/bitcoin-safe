@@ -50,7 +50,6 @@ from .descriptors import (
     AddressTypes,
     get_default_address_type,
     generate_bdk_descriptors,
-    descriptor_infos,
     generate_output_descriptors_from_keystores,
 )
 import json

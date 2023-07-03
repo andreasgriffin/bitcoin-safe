@@ -3,7 +3,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
-from .keystore import KeyStore, KeyStoreTypes
 from typing import Dict, List, Tuple
 import html
 import re
@@ -110,6 +109,14 @@ def get_default_address_type(is_multisig) -> AddressType:
     return AddressTypes.p2wsh if is_multisig else AddressTypes.p2wpkh
 
 
+def get_address_types(is_multisig) -> List[AddressType]:
+    return [
+        v
+        for k, v in AddressTypes.__dict__.items()
+        if (not k.startswith("_")) and v.is_multisig == is_multisig
+    ]
+
+
 import colorsys
 
 
@@ -207,7 +214,7 @@ def generate_output_descriptors(
 def generate_output_descriptors_from_keystores(
     threshold: int,
     address_type: AddressType,
-    keystores: List[KeyStore],
+    keystores: List["KeyStore"],
     network,
     replace_keystore_with_dummy=False,
     use_html=False,
@@ -232,7 +239,7 @@ def generate_output_descriptors_from_keystores(
 def generate_bdk_descriptors(
     threshold: int,
     address_type: AddressType,
-    keystores: List[KeyStore],
+    keystores: List["KeyStore"],
     network,
     replace_keystore_with_dummy=False,
 ) -> bdk.Descriptor:
@@ -266,33 +273,62 @@ def generate_bdk_descriptors(
         return [bdk.Descriptor(d, network) for d in output_descriptors]
 
 
-def descriptor_infos(string_descriptor: str, network=None) -> Dict:
+def combined_wallet_descriptor(descriptors: Tuple[bdk.Descriptor, bdk.Descriptor]):
+    logger.warning(
+        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
+    )
+    assert len(descriptors) == 2
+
+    descriptors_without_checksum = [d.as_string().split("#")[0] for d in descriptors]
+    assert all(
+        [d.endswith(f"/{i}/*)") for i, d in enumerate(descriptors_without_checksum)]
+    )
+
+    assert descriptors_without_checksum[0].count(f"/{0}/*)") == 1
+    return descriptors_without_checksum[0].replace(f"/{0}/*)", f"/<0;1>/*)")
+
+
+def split_wallet_descriptor(descriptor_str: str):
+    logger.warning(
+        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
+    )
+    assert "/<0;1>/*)" in descriptor_str
+
+    return descriptor_str.replace("/<0;1>/*)", "/0/*)"), descriptor_str.replace(
+        "/<0;1>/*)", "/1/*)"
+    )
+
+
+def descriptor_info(string_descriptor: str, network: bdk.Network):
     def extract_groups(string, pattern):
         match = re.match(pattern, string)
         if match is None:
             raise ValueError(f"'{string}' does not match the required pattern!")
         return match.groups()
 
-    def extract_keystore(keystore_string):
+    def extract_keystore(keystore_string: str):
         """
         Splits 1 keystore,e.g. "[a42c6dd3/84'/1'/0']xpub/0/*"
         into fingerprint, derivation_path, xpub, wallet_path
 
         It also replaces the "'" into "h"
+
+        It overwrites fingerprint, derivation_path, xpub  in default_keystore.
         """
-        fingerprint, derivation_path, xpub, further_derivation_path = extract_groups(
-            keystore_string, r"\[(.*?)\/(.*)\](.*?)\/(.*)"
-        )
+        (
+            fingerprint,
+            derivation_path,
+            xpub,
+            further_derivation_path,
+        ) = extract_groups(keystore_string, r"\[(.*?)\/(.*)\](.*?)\/(.*)")
         # TODO handle other further_derivation_path
         assert further_derivation_path in ["<0;1>/*", "0/*", "1/*"]
 
-        return KeyStore(
-            xpub,
-            fingerprint,
-            "m/" + derivation_path,
-            label="",
-            type=KeyStoreTypes.watch_only,
-        )
+        return {
+            "xpub": xpub,
+            "fingerprint": fingerprint,
+            "derivation_path": "m/" + derivation_path,
+        }
 
     string_descriptor = string_descriptor.strip()
 
@@ -329,43 +365,9 @@ def descriptor_infos(string_descriptor: str, network=None) -> Dict:
             address_type = temp_address_type
             break
 
-    # warn if the derivation path deviates from the recommended
-    if network:
-        for keystore in keystores:
-            if keystore.derivation_path != address_type.derivation_path(network):
-                logger.warning(
-                    f"Warning: The derivation path of {keystore} is not the default"
-                )
-
     return {
         "threshold": threshold,
-        "is_multisig": is_multisig,
+        "signers": len(keystores),
         "keystores": keystores,
-        "address_type": address_type,
+        "network": network,
     }
-
-
-def combined_wallet_descriptor(descriptors: Tuple[bdk.Descriptor, bdk.Descriptor]):
-    logger.warning(
-        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
-    )
-    assert len(descriptors) == 2
-
-    descriptors_without_checksum = [d.as_string().split("#")[0] for d in descriptors]
-    assert all(
-        [d.endswith(f"/{i}/*)") for i, d in enumerate(descriptors_without_checksum)]
-    )
-
-    assert descriptors_without_checksum[0].count(f"/{0}/*)") == 1
-    return descriptors_without_checksum[0].replace(f"/{0}/*)", f"/<0;1>/*)")
-
-
-def split_wallet_descriptor(descriptor_str: str):
-    logger.warning(
-        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
-    )
-    assert "/<0;1>/*)" in descriptor_str
-
-    return descriptor_str.replace("/<0;1>/*)", "/0/*)"), descriptor_str.replace(
-        "/<0;1>/*)", "/1/*)"
-    )
