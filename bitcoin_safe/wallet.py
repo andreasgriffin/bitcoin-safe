@@ -727,6 +727,15 @@ class Wallet(BaseSaveableClass):
             logger.debug(f"new_tip = {new_tip},  value = {value}")
             assert new_tip == value
 
+        # refresh address cache
+        for key in list(self.cache.keys()):
+            if (
+                key.startswith("get_receiving_addresses")
+                or key.startswith("get_change_addresses")
+                or key.startswith("get_bdk_address_infos")
+            ):
+                del self.cache[key]
+
     def update_tip(self, new_last_index=None, is_change=False):
         new_tip = [0, 0]
         new_tip[int(is_change)] = new_last_index
@@ -1307,35 +1316,43 @@ class Wallet(BaseSaveableClass):
             f"Selecting category {txinfos.recipient_category} out of {categories} for the output addresses"
         )
 
+        labels = [
+            recipient.label for recipient in txinfos.recipients if recipient.label
+        ]
+        if labels:
+            self.labels.set_tx_label(
+                builder_result.transaction_details.txid, ",".join(labels)
+            )
+
         txinfos.builder_result = builder_result
         self.set_output_categories_and_labels(txinfos)
         return txinfos
 
     def set_output_categories_and_labels(self, txinfos: TXInfos):
-        # the category is automatically copied from the input(s)
-        self._set_recipient_category_from_inputs(
+        # set category for all outputs
+        self._set_category_for_all_recipients(
             txinfos.builder_result.psbt.extract_tx().output(),
             txinfos.recipient_category,
         )
-        # the label is not copied from the inputs
+
+        # set label for the recipient output
         for recipient in txinfos.recipients:
             # this does not include the change output
             if recipient.label and self.is_my_address(recipient.address):
                 self.labels.set_addr_label(recipient.address, recipient.label)
+
         # add a label for the change output
+        labels = [
+            recipient.label for recipient in txinfos.recipients if recipient.label
+        ]
         for txout in txinfos.builder_result.psbt.extract_tx().output():
             address = self.get_address_of_txout(txout)
             if not self.is_change(address):
                 continue
-            labels = [
-                recipient.label for recipient in txinfos.recipients if recipient.label
-            ]
             if address and labels and self.is_my_address(address):
                 self.labels.set_addr_label(address, ",".join(labels))
 
-    def _set_recipient_category_from_inputs(
-        self, outputs: List[bdk.TxOut], category: str
-    ):
+    def _set_category_for_all_recipients(self, outputs: List[bdk.TxOut], category: str):
         "Will assign all outputs (also change) the category"
         if not category:
             return

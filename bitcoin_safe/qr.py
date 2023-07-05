@@ -1,6 +1,5 @@
 from asyncio.log import logger
 import qrcode
-import bdkpython as bdk
 
 
 def create_qr(data: str):

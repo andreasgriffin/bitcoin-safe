@@ -125,9 +125,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.get_outpoints = get_outpoints
-        self._tx_dict: Dict[
-            OutPoint, bdk.TransactionDetails
-        ] = {}  # outpoint --> txdetails
+        self._tx_dict: Dict[bdk.TransactionDetails] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[OutPoint, Wallet] = {}  # outpoint --> wallet
 
         self.std_model = MyStandardItemModel(self, drag_key="outpoints")
@@ -314,5 +312,4 @@ class UTXOList(MyTreeView, MessageBoxMixin):
 
     def on_double_click(self, idx):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)
-        (wallet, utxo, _) = self._tx_dict[outpoint]
-        self.signals.show_utxo.emit(utxo)
+        self.signals.show_utxo.emit(outpoint)

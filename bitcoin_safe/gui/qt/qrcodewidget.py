@@ -26,7 +26,7 @@ from PySide2.QtWidgets import *
 from PIL import Image
 from PIL.ImageQt import ImageQt
 
-from .util import WindowModalDialog, WWLabel, getSaveFileName
+from .util import WindowModalDialog, WWLabel, getSaveFileName, pil_image_to_qpix
 from ...qr import create_qr
 from ...config import UserConfig
 
@@ -58,8 +58,7 @@ class QRLabel(QLabel):
     def set_image(self, pil_image):
         self.pil_image = pil_image
         self.enlarged_image = EnlargedImage(self.pil_image)
-        qpix = QPixmap.fromImage(ImageQt(self.pil_image))
-        self.setPixmap(qpix)
+        self.setPixmap(pil_image_to_qpix(pil_image))
 
     def resizeEvent(self, event):
         size = min(self.width(), self.height())
@@ -102,8 +101,7 @@ class EnlargedImage(QLabel):
         )
 
         self.image = image
-        qpix = QPixmap.fromImage(ImageQt(self.image))
-        self.setPixmap(qpix)
+        self.setPixmap(pil_image_to_qpix(image))
 
     def mousePressEvent(self, event):
         self.close()

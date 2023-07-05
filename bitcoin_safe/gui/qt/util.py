@@ -1812,6 +1812,20 @@ def show_tooltip_after_delay(message):
     timer.singleShot(200, lambda: QToolTip.showText(QCursor.pos(), message))
 
 
+def pil_image_to_qimage(im):
+    im = im.convert("RGBA")
+    data = im.tobytes("raw", "RGBA")
+    qim = QImage(data, im.size[0], im.size[1], QImage.Format_RGBA8888)
+
+    return qim.copy()  # Making a copy to let data persist after function returns
+
+
+def pil_image_to_qpix(im):
+    return QPixmap.fromImage(
+        pil_image_to_qimage(im)
+    )  # Making a copy to let data persist after function returns
+
+
 if __name__ == "__main__":
     app = QApplication([])
     t = WaitingDialog(
