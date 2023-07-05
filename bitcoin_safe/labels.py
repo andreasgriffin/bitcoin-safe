@@ -1,3 +1,4 @@
+from curses import KEY_A1
 import logging
 from unicodedata import category
 
@@ -45,13 +46,7 @@ import bdkpython as bdk
 from .pythonbdk_types import *
 from .storage import Storage, ClassSerializer, BaseSaveableClass
 from threading import Lock
-from .descriptors import (
-    AddressType,
-    AddressTypes,
-    get_default_address_type,
-    generate_bdk_descriptors,
-    generate_output_descriptors_from_keystores,
-)
+
 import json
 from .tx import TXInfos
 from .util import clean_list, Satoshis
@@ -146,7 +141,7 @@ class Labels(BaseSaveableClass):
     def serialize(self):
         d = super().serialize()
 
-        keys = ["data"]
+        keys = ["data", "categories"]
         for k in keys:
             d[k] = copy.deepcopy(self.__dict__[k])
         return d

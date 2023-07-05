@@ -1,4 +1,5 @@
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 from PySide2.QtWidgets import (
@@ -15,6 +16,17 @@ from PySide2.QtWidgets import (
     QStyle,
 )
 from PySide2.QtGui import QIcon, QFont
+from ...wallet import wallet_basename
+from PySide2.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QMessageBox,
+    QDialogButtonBox,
+)
 
 
 class PasswordQuestion(QDialog):
@@ -166,6 +178,61 @@ class PasswordCreation(QDialog):
             return self.password_input1.text()
         else:
             return None
+
+
+class WalletIdDialog(QDialog):
+    def __init__(self, wallet_dir, parent=None):
+        super().__init__(parent)
+        self.wallet_dir = wallet_dir
+        self.setWindowTitle("Create Wallet")
+
+        # Create layout
+        layout = QVBoxLayout()
+
+        # Add name label and input field
+        self.name_label = QLabel("Wallet Name:")
+        self.name_input = QLineEdit()
+        layout.addWidget(self.name_label)
+        layout.addWidget(self.name_input)
+
+        # Add buttons
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.check_wallet_existence)
+        self.button_box.rejected.connect(self.reject)
+
+        # Add button_box to layout
+        layout.addWidget(self.button_box)
+
+        # Set the layout
+        self.setLayout(layout)
+
+    def check_wallet_existence(self):
+        chosen_wallet_id = self.name_input.text()
+
+        wallet_file = os.path.join(self.wallet_dir, wallet_basename(chosen_wallet_id))
+        if os.path.exists(wallet_file):
+            QMessageBox.warning(
+                self, "Error", "A wallet with the same name already exists."
+            )
+        else:
+            self.accept()  # Accept the dialog if wallet does not exist
+
+
+def question_dialog(text="", title="", no_button_text="No", yes_button_text="Yes"):
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle(title)
+    msg_box.setText(text)
+    msg_box.setIcon(QMessageBox.Question)
+    keep_button = msg_box.addButton(no_button_text, QMessageBox.NoRole)
+    ok_button = msg_box.addButton(yes_button_text, QMessageBox.YesRole)
+    msg_box.exec_()
+
+    if msg_box.clickedButton() == ok_button:
+        return True
+    elif msg_box.clickedButton() == keep_button:
+        return False
 
 
 if __name__ == "__main__":

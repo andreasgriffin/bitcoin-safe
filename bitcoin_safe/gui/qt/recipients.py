@@ -13,6 +13,7 @@ from ...signals import Signals, SignalFunction
 from .spinbox import CustomDoubleSpinBox
 from ...wallet import Wallet
 from ...util import unit_str
+from .dialogs import question_dialog
 
 from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
@@ -20,20 +21,12 @@ from .util import ShowCopyLineEdit
 
 
 def dialog_replace_with_new_receiving_address(address):
-    msg_box = QMessageBox()
-    msg_box.setWindowTitle("Address Already Used")
-    msg_box.setText(
-        f"Address {address} was used already. Would you like to get a fresh receiving address?"
+    return question_dialog(
+        text=f"Address {address} was used already. Would you like to get a fresh receiving address?",
+        title="Address Already Used",
+        no_button_text="Keep address",
+        yes_button_text="OK",
     )
-    msg_box.setIcon(QMessageBox.Question)
-    keep_button = msg_box.addButton("Keep address", QMessageBox.NoRole)
-    ok_button = msg_box.addButton("OK", QMessageBox.YesRole)
-    msg_box.exec_()
-
-    if msg_box.clickedButton() == ok_button:
-        return True
-    elif msg_box.clickedButton() == keep_button:
-        return False
 
 
 class CloseButton(QtWidgets.QPushButton):

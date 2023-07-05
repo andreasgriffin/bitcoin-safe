@@ -129,12 +129,13 @@ class HistList(MyTreeView, MessageBoxMixin):
     }
 
     column_alignments = {
-        Columns.STATUS: Qt.AlignCenter,
         Columns.WALLET_ID: Qt.AlignCenter,
+        Columns.STATUS: Qt.AlignCenter,
         Columns.CATEGORIES: Qt.AlignCenter,
+        Columns.LABEL: Qt.AlignVCenter,
+        Columns.AMOUNT: Qt.AlignRight,
         Columns.SATOSHIS: Qt.AlignRight,
         Columns.BALANCE: Qt.AlignRight,
-        Columns.AMOUNT: Qt.AlignRight,
     }
 
     def __init__(
@@ -394,7 +395,7 @@ class HistList(MyTreeView, MessageBoxMixin):
                 items[self.Columns.BALANCE].setData(0, self.ROLE_CLIPBOARD_DATA)  # TODO
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
-                # # align text and set fonts
+                # align text and set fonts
                 # for i, item in enumerate(items):
                 #     item.setTextAlignment(Qt.AlignVCenter)
                 #     if i in (self.Columns.TXID,):

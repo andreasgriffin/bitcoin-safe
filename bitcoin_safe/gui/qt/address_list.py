@@ -131,17 +131,21 @@ class AddressList(MyTreeView, MessageBoxMixin):
         Columns.COIN_BALANCE,
     ]
     column_alignments = {
-        Columns.COIN_BALANCE: Qt.AlignRight,
-        Columns.NUM_TXS: Qt.AlignRight,
-        Columns.CATEGORY: Qt.AlignCenter,
+        Columns.TYPE: Qt.AlignHCenter | Qt.AlignVCenter,
+        Columns.ADDRESS: Qt.AlignLeft | Qt.AlignVCenter,
+        Columns.CATEGORY: Qt.AlignHCenter | Qt.AlignVCenter,
+        Columns.LABEL: Qt.AlignLeft | Qt.AlignVCenter,
+        Columns.COIN_BALANCE: Qt.AlignRight | Qt.AlignVCenter,
+        Columns.NUM_TXS: Qt.AlignRight | Qt.AlignVCenter,
     }
 
+    stretch_column = Columns.LABEL
     key_column = 1
 
     def __init__(self, fx, config, wallet: Wallet, signals: Signals):
         super().__init__(
             config=config,
-            stretch_column=AddressList.Columns.LABEL,
+            stretch_column=self.stretch_column,
             editable_columns=[AddressList.Columns.LABEL],
         )
         self.fx = fx
@@ -390,9 +394,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
         fx = None
         set_address = None
         num_shown = 0
-        self.addresses_beyond_gap_limit = (
-            self.wallet.get_all_known_addresses_beyond_gap_limit()
-        )
         for address in addr_list:
             c, u, x = self.wallet.get_addr_balance(address)
             balance = c + u + x
@@ -507,10 +508,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
         )
         address_item[self.Columns.NUM_TXS].setText("%d" % num)
         address_item[self.Columns.NUM_TXS].setData(num, self.ROLE_CLIPBOARD_DATA)
-        if address in self.addresses_beyond_gap_limit:
-            address_item[self.Columns.ADDRESS].setBackground(
-                ColorScheme.RED.as_color(True)
-            )
 
     def create_menu(self, position):
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)

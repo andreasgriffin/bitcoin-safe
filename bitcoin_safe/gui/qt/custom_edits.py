@@ -46,7 +46,8 @@ class DescriptorEdit(ButtonsTextEdit):
                 pdf_recovery.open_pdf(temp_file)
 
         self.addCopyButton()
-        self.addPdfButton(make_and_open_pdf)
+        if get_wallet() is not None:
+            self.addPdfButton(make_and_open_pdf)
 
     def keyPressEvent(self, e):
         # If it's a regular key press

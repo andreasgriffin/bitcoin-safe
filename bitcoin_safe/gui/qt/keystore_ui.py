@@ -7,12 +7,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
 from .util import icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
-from ...wallet import (
-    AddressTypes,
-    get_default_address_type,
-    Wallet,
-    generate_bdk_descriptors,
-)
+
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, Signal
 from ...util import compare_dictionaries, psbt_to_hex

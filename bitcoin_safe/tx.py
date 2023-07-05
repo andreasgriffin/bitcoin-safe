@@ -22,6 +22,7 @@ class TXInfos:
 
         self.utxos_for_input = None
         self.builder_result: bdk.TxBuilderResult = None
+        self.recipient_category = None
 
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)

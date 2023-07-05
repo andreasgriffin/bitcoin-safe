@@ -117,174 +117,88 @@ def get_address_types(is_multisig) -> List[AddressType]:
     ]
 
 
-import colorsys
+def descriptor_without_script(descriptor_str: str):
+    # Regular expression pattern to match text inside parentheses
+    pattern = re.compile(r"\((.*?)\)")
+
+    # Search for the pattern in the input string
+    match = pattern.search(descriptor_str)
+
+    # If a match is found, extract and print it
+    if match:
+        return match.group(1)
+
+    else:
+        logger.error("Could not decode descriptor")
+        return ""
 
 
-def generate_keystore_part_of_descriptor(
-    xpubs,
-    fingerprints,
-    receiving_change_number,
-    derivation_paths,
-    use_html=False,
-    replace_keystore_with_dummy=False,
+def make_multisig_descriptor_string(
+    address_type: AddressType, threshold: int, descriptors: List[bdk.Descriptor]
 ) -> str:
-    def float_rgb_to_hex(r_float, g_float, b_float):
-        r_int, g_int, b_int = [int(round(x * 255)) for x in (r_float, g_float, b_float)]
-        hex_color = "#{:02X}{:02X}{:02X}".format(r_int, g_int, b_int)
-        return hex_color
-
-    def keystore(xpub, fingerprint, derivation_path, i, use_html=False):
-        hue = i / len(xpubs) + 0.3
-        hex_color = float_rgb_to_hex(*colorsys.hsv_to_rgb(hue, 1, 0.7))
-        if replace_keystore_with_dummy and (
-            not xpub or not fingerprint or not derivation_path
-        ):
-            s = f"Signer{i+1}"
-        else:
-            s = f"[{derivation_path.replace('m', fingerprint)}]{xpub}/{receiving_change_number}/*"
-
-        if use_html:
-            s = f'<span style="color:{hex_color}">{html.escape(s)}</span>'
-
-        return s
-
-    key_parts = [
-        keystore(xpub, fingerprint, derivation_path, i, use_html=use_html)
-        for i, (xpub, fingerprint, derivation_path) in enumerate(
-            zip(xpubs, fingerprints, derivation_paths)
-        )
+    # ["[189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/0/*", ...]
+    descriptors_without_script = [
+        descriptor_without_script(descriptor.as_string_private())
+        for descriptor in descriptors
     ]
-    return ",".join(key_parts)
-
-
-def generate_output_descriptors(
-    xpubs,
-    fingerprints,
-    threshold: int,
-    derivation_paths,
-    desc_template,
-    network,
-    replace_keystore_with_dummy=False,
-    use_html=False,
-    combined_descriptors=False,
-):
-    "combined_descriptors: see https://github.com/bitcoin/bitcoin/pull/22838 for"
-    # if network==bdk.Network.BITCOIN:
-    #     raise NotImplementedError('On mainnet are only wallet templates from bdk suppoted.')
-
-    if len(xpubs) > 1:
-
-        def desc(key_parts):
-            return desc_template(f"sortedmulti({threshold},{key_parts})")
-
+    if len(descriptors) > 1:
+        return address_type.desc_template(
+            f"sortedmulti({threshold},{','.join(descriptors_without_script)})"
+        )
     else:
-
-        def desc(key_parts):
-            return desc_template(key_parts)
-
-    if combined_descriptors:
-        return [
-            desc(
-                generate_keystore_part_of_descriptor(
-                    xpubs,
-                    fingerprints,
-                    "<0;1>",
-                    derivation_paths,
-                    use_html=use_html,
-                    replace_keystore_with_dummy=replace_keystore_with_dummy,
-                )
-            )
-        ]
-    else:
-        return [
-            desc(
-                generate_keystore_part_of_descriptor(
-                    xpubs,
-                    fingerprints,
-                    receiving_change_number,
-                    derivation_paths,
-                    use_html=use_html,
-                    replace_keystore_with_dummy=replace_keystore_with_dummy,
-                )
-            )
-            for receiving_change_number in range(2)
-        ]
+        return address_type.desc_template(descriptors_without_script[0])
 
 
-def generate_output_descriptors_from_keystores(
+def keystores_to_descriptors(
     threshold: int,
-    address_type: AddressType,
     keystores: List["KeyStore"],
-    network,
-    replace_keystore_with_dummy=False,
-    use_html=False,
-    combined_descriptors=False,
-) -> str:
-    output_descriptors = generate_output_descriptors(
-        [keystore.xpub for keystore in keystores],
-        [keystore.fingerprint for keystore in keystores],
-        threshold,
-        [keystore.derivation_path for keystore in keystores],
-        address_type.desc_template,
-        network,
-        replace_keystore_with_dummy=replace_keystore_with_dummy,
-        use_html=use_html,
-        combined_descriptors=combined_descriptors,
+    address_type: AddressType,
+    network: bdk.Network,
+) -> Tuple[bdk.Descriptor, bdk.Descriptor]:
+
+    bdk_template_available = bool(address_type.bdk_descriptor)
+
+    # [["wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/0/*)#arpc0qa2", "wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/1/*)#arpc0qa2"], ...]
+    if bdk_template_available:
+        all_descriptors = [k.to_descriptors(address_type, network) for k in keystores]
+    else:
+        # there are no bdk multisig descriptor templates yet, so I have to use a single sig template
+        # the script type will be removed anyway in make_multisig_descriptor_string
+        all_descriptors = [
+            k.to_descriptors(AddressTypes.p2wpkh, network) for k in keystores
+        ]
+
+    receive_descriptors = [d[0] for d in all_descriptors]
+    change_descriptors = [d[1] for d in all_descriptors]
+
+    receive_descriptor_str = make_multisig_descriptor_string(
+        address_type, threshold, receive_descriptors
     )
-    if combined_descriptors:
-        assert len(output_descriptors) == 1
-    return output_descriptors
+    change_descriptor_str = make_multisig_descriptor_string(
+        address_type, threshold, change_descriptors
+    )
+
+    # now we convert it back into a bdk descriptor
+    receive_descriptor = bdk.Descriptor(receive_descriptor_str, network=network)
+    change_descriptor = bdk.Descriptor(change_descriptor_str, network=network)
+    return receive_descriptor, change_descriptor
 
 
-def generate_bdk_descriptors(
-    threshold: int,
-    address_type: AddressType,
-    keystores: List["KeyStore"],
-    network,
-    replace_keystore_with_dummy=False,
-) -> bdk.Descriptor:
-
-    if address_type.bdk_descriptor:
-        # single sig currently, thats why no m_of_n goes in here
-        assert len(keystores) == 1
-        return [
-            address_type.bdk_descriptor(
-                keystores[0].xpub, keystores[0].fingerprint, keychainkind, network
-            )
-            for keychainkind in [bdk.KeychainKind.EXTERNAL, bdk.KeychainKind.INTERNAL]
-        ]
-    else:
-        # check if the desc_template is in bdk and prevent unsafe templates
-        if network == bdk.Network.BITCOIN:
-            raise NotImplementedError
-        logger.warning(
-            "This method is unsafe and needs to be replaced by bdk templates once available\n see https://github.com/bitcoindevkit/bdk/issues/1020"
-        )
-
-        output_descriptors = generate_output_descriptors(
-            [keystore.xpub for keystore in keystores],
-            [keystore.fingerprint for keystore in keystores],
-            threshold,
-            [keystore.derivation_path for keystore in keystores],
-            address_type.desc_template,
-            network,
-            replace_keystore_with_dummy=replace_keystore_with_dummy,
-        )
-        return [bdk.Descriptor(d, network) for d in output_descriptors]
-
-
-def combined_wallet_descriptor(descriptors: Tuple[bdk.Descriptor, bdk.Descriptor]):
+def combined_wallet_descriptor(
+    descriptors: Tuple[bdk.Descriptor, bdk.Descriptor]
+) -> str:
     logger.warning(
         "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
     )
     assert len(descriptors) == 2
 
-    descriptors_without_checksum = [d.as_string().split("#")[0] for d in descriptors]
+    descriptors_without_checksum = [
+        d.as_string_private().split("#")[0] for d in descriptors
+    ]
     assert all(
-        [d.endswith(f"/{i}/*)") for i, d in enumerate(descriptors_without_checksum)]
+        [d.count(f"/{i}/*)") == 1 for i, d in enumerate(descriptors_without_checksum)]
     )
 
-    assert descriptors_without_checksum[0].count(f"/{0}/*)") == 1
     return descriptors_without_checksum[0].replace(f"/{0}/*)", f"/<0;1>/*)")
 
 
@@ -299,7 +213,25 @@ def split_wallet_descriptor(descriptor_str: str):
     )
 
 
-def descriptor_info(string_descriptor: str, network: bdk.Network):
+def descriptor_strings_to_descriptors(
+    descriptor_str: str, network: bdk.Network
+) -> Tuple[bdk.Descriptor]:
+    change_descriptor_str = None
+    # check if the descriptor_str is a combined one:
+    if "/<0;1>/*)" in descriptor_str:
+        descriptor_str, change_descriptor_str = split_wallet_descriptor(descriptor_str)
+
+    return [
+        bdk.Descriptor(descriptor_str, network=network),
+        bdk.Descriptor(change_descriptor_str, network=network)
+        if change_descriptor_str
+        else None,
+    ]
+
+
+def descriptor_info(descriptor_str: str, network: bdk.Network):
+    "gets the xpub (not xpriv) information"
+
     def extract_groups(string, pattern):
         match = re.match(pattern, string)
         if match is None:
@@ -330,30 +262,31 @@ def descriptor_info(string_descriptor: str, network: bdk.Network):
             "derivation_path": "m/" + derivation_path,
         }
 
-    string_descriptor = string_descriptor.strip()
+    descriptor_str = descriptor_str.strip()
+    # these are now bdk single or multisig descriptors
+    descriptors = descriptor_strings_to_descriptors(descriptor_str, network)
+    # get the public descriptor string info
+    public_descriptor_str = descriptors[0].as_string()
 
     # First split the descriptor like:
     # "wpkh"
     # "[a42c6dd3/84'/1'/0']xpub/0/*"
     groups = [
-        g.rstrip(")") for g in extract_groups(string_descriptor, r"(.*)\((.*)\)")
+        g.rstrip(")") for g in extract_groups(public_descriptor_str, r"(.*)\((.*)\)")
     ]  # remove trailing )
     logger.debug(f"groups {groups}")
 
     # do the keystore parts
-    is_single_sig = len(groups) == 2
     is_multisig = "multi" in groups[0]
-    assert is_multisig != is_single_sig
     threshold = 1
     if is_multisig:
         threshold, *keystore_strings = groups[1].split(",")
         keystores = [
             extract_keystore(keystore_string) for keystore_string in keystore_strings
         ]
-    elif is_single_sig:
-        keystores = [extract_keystore(groups[1])]
     else:
-        raise Exception("descriptor could not be matched to single or multisig")
+        assert len(groups) == 2
+        keystores = [extract_keystore(groups[1])]
 
     # address type
     used_desc_template = f"{groups[0]}()" + (")" if "(" in groups[0] else "")
@@ -361,12 +294,15 @@ def descriptor_info(string_descriptor: str, network: bdk.Network):
     for temp_address_type in AddressTypes.__dict__.values():
         if not isinstance(temp_address_type, AddressType):
             continue
-        if temp_address_type.desc_template("") == used_desc_template:
+        if (
+            temp_address_type.desc_template("sortedmulti()" if is_multisig else "")
+            == used_desc_template
+        ):
             address_type = temp_address_type
             break
 
     return {
-        "threshold": threshold,
+        "threshold": int(threshold),
         "signers": len(keystores),
         "keystores": keystores,
         "network": network,

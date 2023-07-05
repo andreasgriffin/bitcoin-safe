@@ -1,3 +1,4 @@
+from distutils.util import change_root
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,13 +46,12 @@ from .storage import Storage, ClassSerializer, BaseSaveableClass
 from threading import Lock
 from .descriptors import (
     AddressType,
-    AddressTypes,
     get_default_address_type,
-    generate_bdk_descriptors,
-    generate_output_descriptors_from_keystores,
     split_wallet_descriptor,
     combined_wallet_descriptor,
     descriptor_info,
+    keystores_to_descriptors,
+    descriptor_strings_to_descriptors,
 )
 import json
 from .tx import TXInfos
@@ -136,6 +136,17 @@ def locked(func):
     return wrapper
 
 
+def wallet_basename(id):
+    import string, os
+
+    def create_valid_filename(filename):
+        basename = os.path.basename(filename)
+        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        return "".join(c for c in basename if c in valid_chars) + ".wallet"
+
+    return create_valid_filename(id)
+
+
 # a wallet  during setup phase, with partial information
 class ProtoWallet:
     def __init__(
@@ -174,10 +185,6 @@ class ProtoWallet:
             ]
         )
 
-        # ensure consistency for seed wallets
-        for keystore in self.keystores:
-            keystore.make_consistent(self.network)
-
         self.set_address_type(initial_address_type)
 
     @classmethod
@@ -185,16 +192,10 @@ class ProtoWallet:
         cls,
         string_descriptor: str,
         network: bdk.Network,
-        org_keystores: List[KeyStore] = None,
     ):
-        def get_default_keystore(xpub: str):
-            if org_keystores:
-                for keystore in org_keystores:
-                    if keystore.xpub == xpub:
-                        return keystore.clone()
-            logger.warning(
-                f"Could not find the xpub {xpub} in the list of org_keystores."
-            )
+        "creates a ProtoWallet from the xpub (not xpriv)"
+
+        def get_default_keystore():
             return KeyStore(
                 None,
                 None,
@@ -211,7 +212,7 @@ class ProtoWallet:
                 fingerprint=d["fingerprint"],
                 derivation_path=d["derivation_path"],
                 label=cls.signer_names(i=i, threshold=info["threshold"]),
-                type=get_default_keystore(d["xpub"]).type,
+                type=get_default_keystore().type,
             )
             for i, d in enumerate(info["keystores"])
         ]
@@ -247,52 +248,27 @@ class ProtoWallet:
     def generate_bdk_descriptors(
         self, threshold: int, keystores: List[KeyStore], address_type: AddressType
     ):
+
         # sanity checks
         assert threshold <= len(keystores)
         is_multisig = len(keystores) > 1
         assert address_type.is_multisig == is_multisig
 
+        # always choos the bdk template if available
         if address_type.bdk_descriptor:
             # TODO: Currently only single sig implemented, since bdk only has single sig templates
-            keystore = keystores[0]
-            descriptors = [
-                address_type.bdk_descriptor(
-                    bdk.DescriptorPublicKey.from_string(keystore.xpub),
-                    keystore.fingerprint,
-                    keychainkind,
-                    self.network,
-                )
-                if not keystore.mnemonic
-                else address_type.bdk_descriptor_secret(
-                    bdk.DescriptorSecretKey(self.network, keystore.mnemonic, ""),
-                    keychainkind,
-                    self.network,
-                )
-                for keychainkind in [
-                    bdk.KeychainKind.EXTERNAL,
-                    bdk.KeychainKind.INTERNAL,
-                ]
-            ]
+            descriptors = keystores[0].to_descriptors(self.address_type, self.network)
         else:
-            descriptors = generate_bdk_descriptors(
-                threshold, address_type, keystores, self.network
+            logger.warning(
+                "Descrioptor creation via a non-bdk template. This is dangerous!"
+            )
+            descriptors = keystores_to_descriptors(
+                threshold,
+                keystores=keystores,
+                address_type=address_type,
+                network=self.network,
             )
         return descriptors
-
-    def temporary_descriptors(self, use_html=False):
-        """
-        These is a descriptor that can be generated without having all keystore information.
-        This is useful for UI
-        """
-        return generate_output_descriptors_from_keystores(
-            self.threshold,
-            self.address_type,
-            self.keystores,
-            self.network,
-            replace_keystore_with_dummy=False,
-            use_html=use_html,
-            combined_descriptors=True,
-        )
 
     def set_number_of_keystores(self, n):
 
@@ -363,21 +339,34 @@ class Wallet(BaseSaveableClass):
         self.labels: Labels = labels if labels else Labels()
 
         self.keystores: List[KeyStore] = (
-            keystores if keystores is not None else self.as_protowallet().keystores
+            keystores
+            if keystores is not None
+            else ProtoWallet.from_descriptor(
+                self.descriptor_str, network=self.network
+            ).keystores
         )
-        self.create_wallet()
+        self.create_wallet_from_descriptor_str()
 
     def as_protowallet(self):
-        return ProtoWallet.from_descriptor(
-            self.descriptor_str, network=self.network, org_keystores=self.keystores
+        # fill the protowallet with the xpub info
+        protowallet = ProtoWallet.from_descriptor(
+            self.descriptor_str, network=self.network
         )
+        # fill all fields that the public info doesn't contain
+        if self.keystores:
+            # fill the fields, that the descrioptor doesn't contain
+            for own_keystore, keystore in zip(self.keystores, protowallet.keystores):
+                keystore.type = own_keystore.type
+                keystore.mnemonic = own_keystore.mnemonic
+                keystore.description = own_keystore.description
+                keystore.label = own_keystore.label
+        return protowallet
 
     @classmethod
     def from_protowallet(cls, protowallet: ProtoWallet, id: str, config: UserConfig):
 
         descriptors = protowallet.bdk_descriptors()
         for keystore in protowallet.keystores:
-            keystore.make_consistent(config.network_settings.network)
             if keystore.derivation_path != protowallet.address_type.derivation_path(
                 config.network_settings.network
             ):
@@ -407,10 +396,12 @@ class Wallet(BaseSaveableClass):
             "categories",
             "labels",
             "descriptor_str",
-            "tips",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
+
+        # include properties (they are not in __dict__)
+        d["tips"] = self.tips
 
         return d
 
@@ -458,6 +449,7 @@ class Wallet(BaseSaveableClass):
         del dct["tips"]
 
         if class_kwargs:
+            # must contain "Wallet":{"config": ... }
             dct.update(class_kwargs[cls.__name__])
 
         wallet = Wallet(**dct)
@@ -465,16 +457,6 @@ class Wallet(BaseSaveableClass):
         wallet.tips = tips
 
         return wallet
-
-    def basename(self):
-        import string, os
-
-        def create_valid_filename(filename):
-            basename = os.path.basename(filename)
-            valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-            return "".join(c for c in basename if c in valid_chars)
-
-        return create_valid_filename(self.id)
 
     def reset_cache(self):
         self.cache = {}
@@ -488,51 +470,16 @@ class Wallet(BaseSaveableClass):
     def set_wallet_id(self, id):
         self.id = id
 
-    def create_seed_wallet(self, seed):
-        assert (
-            self.config.network_settings.network != bdk.Network.BITCOIN
-        )  # do not allow seeds on mainnet
+    def create_wallet_from_descriptor_str(self, descriptor_str=None):
+        if descriptor_str is None:
+            descriptor_str = self.descriptor_str
+        self.descriptors = descriptor_strings_to_descriptors(
+            descriptor_str, self.network
+        )
+        self.create_wallet(self.descriptors)
 
-        self.seed = seed
-        mnemonic = bdk.Mnemonic.from_string(seed)
-
-        descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(
-                self.config.network_settings.network, mnemonic, ""
-            ),
-            keychain=bdk.KeychainKind.EXTERNAL,
-            network=self.config.network_settings.network,
-        )
-        change_descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(
-                self.config.network_settings.network, mnemonic, ""
-            ),
-            keychain=bdk.KeychainKind.INTERNAL,
-            network=self.config.network_settings.network,
-        )
-        self.create_descriptor_wallet(
-            descriptor=descriptor, change_descriptor=change_descriptor
-        )
-
-    def create_wallet(self, descriptor_str: str = None):
-        descitpor_str, change_descriptor_str = split_wallet_descriptor(
-            descriptor_str if descriptor_str else self.descriptor_str
-        )
-        self.create_descriptor_wallet(
-            descriptor=descitpor_str, change_descriptor=change_descriptor_str
-        )
-
-    def create_descriptor_wallet(self, descriptor, change_descriptor=None):
-        self.descriptors = [
-            bdk.Descriptor(descriptor, network=self.config.network_settings.network)
-            if isinstance(descriptor, str)
-            else descriptor,
-            bdk.Descriptor(
-                change_descriptor, network=self.config.network_settings.network
-            )
-            if isinstance(change_descriptor, str)
-            else change_descriptor,
-        ]
+    def create_wallet(self, descriptors):
+        self.descriptors = descriptors
 
         self.bdkwallet = bdk.Wallet(
             descriptor=self.descriptors[0],
@@ -540,7 +487,6 @@ class Wallet(BaseSaveableClass):
             network=self.config.network_settings.network,
             database_config=bdk.DatabaseConfig.MEMORY(),
         )
-        # print(f"Wallet created successfully {self.bdkwallet}")
 
     def is_multisig(self):
         return len(self.keystores) > 1
@@ -558,6 +504,16 @@ class Wallet(BaseSaveableClass):
         alias rt-logs='sudo docker container logs electrs'
         alias rt-cli='sudo docker exec -it electrs /root/bitcoin-cli -regtest  '
         """
+        if self.config.network_settings.network == bdk.Network.BITCOIN:
+            start_height = 0  # segwit block 481824
+        elif self.config.network_settings.network in [
+            bdk.Network.REGTEST,
+            bdk.Network.SIGNET,
+        ]:
+            start_height = 0
+        elif self.config.network_settings.network == bdk.Network.TESTNET:
+            start_height = 2000000
+
         if self.config.network_settings.server_type == BlockchainType.Electrum:
             if self.config.network_settings.network == bdk.Network.REGTEST:
                 blockchain_config = bdk.BlockchainConfig.ELECTRUM(
@@ -576,15 +532,6 @@ class Wallet(BaseSaveableClass):
             == BlockchainType.CompactBlockFilter
         ):
             folder = f"./compact-filters-{self.id}-{self.config.network_settings.network.name}"
-            if self.config.network_settings.network == bdk.Network.BITCOIN:
-                start_height = 481824
-            elif self.config.network_settings.network in [
-                bdk.Network.REGTEST,
-                bdk.Network.SIGNET,
-            ]:
-                start_height = 0
-            elif self.config.network_settings.network == bdk.Network.TESTNET:
-                start_height = 2000000
             blockchain_config = bdk.BlockchainConfig.COMPACT_FILTERS(
                 bdk.CompactFiltersConfig(
                     [
@@ -606,7 +553,7 @@ class Wallet(BaseSaveableClass):
                     ),
                     self.config.network_settings.network,
                     self._get_uniquie_wallet_id(),
-                    None,
+                    bdk.RpcSyncParams(0, 0, 0, 10),
                 )
             )
         self.blockchain = bdk.Blockchain(blockchain_config)
@@ -878,9 +825,6 @@ class Wallet(BaseSaveableClass):
         if index_tuple is not None:
             return AddressInfoMin(address, index_tuple[1], keychain)
 
-    def get_all_known_addresses_beyond_gap_limit(self):
-        return []
-
     def get_address_of_txout(self, txout: bdk.TxOut) -> str:
         if txout.value == 0:
             return None
@@ -896,7 +840,8 @@ class Wallet(BaseSaveableClass):
 
     @cache_method
     def get_utxos(self) -> List[bdk.LocalUtxo]:
-        return self.bdkwallet.list_unspent()
+        unspent = self.bdkwallet.list_unspent()
+        return unspent
 
     @cache_method
     def get_address_balances(self) -> Dict[AddressInfoMin, Tuple[int, int, int]]:
@@ -989,9 +934,6 @@ class Wallet(BaseSaveableClass):
         received, send = self.get_received_and_send_involving_address(address)
         return received.copy() + send.copy()
 
-    def get_utxos(self) -> List[bdk.LocalUtxo]:
-        return self.bdkwallet.list_unspent()
-
     def address_is_used(self, address):
         """
         Check if any tx had this address as an output
@@ -1031,7 +973,6 @@ class Wallet(BaseSaveableClass):
             [self.get_address_of_txout(output), output.value]
             for output in tx.transaction.output()
         ]
-        logger.debug(str((txid[:10], l)))
         l = clean_list(
             [
                 self.labels.get_category(self.get_address_of_txout(output))
@@ -1294,6 +1235,9 @@ class Wallet(BaseSaveableClass):
             # otherwise let the bdk wallet decide on the minimal coins to be spent, out of the utxos
             return UtxosForInputs(utxos=utxos_for_input.utxos, spend_all_utxos=False)
 
+    def is_my_address(self, address):
+        return address in self.get_addresses()
+
     def create_psbt(self, txinfos: TXInfos) -> TXInfos:
         tx_builder = bdk.TxBuilder()
         tx_builder = tx_builder.enable_rbf()
@@ -1342,7 +1286,6 @@ class Wallet(BaseSaveableClass):
         self.tips = [tip + 1 for tip in self.tips]
 
         inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
-        logger.debug(str(len(inputs)))
 
         logger.info(json.loads(builder_result.psbt.json_serialize()))
         logger.debug(
@@ -1359,36 +1302,38 @@ class Wallet(BaseSaveableClass):
                 [],
             )
         )
-        category = categories[0] if categories else None
+        txinfos.recipient_category = categories[0] if categories else None
         logger.debug(
-            f"Selecting category {category} out of {categories} for the output addresses"
+            f"Selecting category {txinfos.recipient_category} out of {categories} for the output addresses"
         )
 
+        txinfos.builder_result = builder_result
+        self.set_output_categories_and_labels(txinfos)
+        return txinfos
+
+    def set_output_categories_and_labels(self, txinfos: TXInfos):
         # the category is automatically copied from the input(s)
-        if category:
-            self.set_recipient_category_from_inputs(
-                builder_result.psbt.extract_tx().output(), category
-            )
+        self._set_recipient_category_from_inputs(
+            txinfos.builder_result.psbt.extract_tx().output(),
+            txinfos.recipient_category,
+        )
         # the label is not copied from the inputs
         for recipient in txinfos.recipients:
             # this does not include the change output
-            if recipient.label:
-                self.labels[recipient.address] = recipient.label
+            if recipient.label and self.is_my_address(recipient.address):
+                self.labels.set_addr_label(recipient.address, recipient.label)
         # add a label for the change output
-        for txout in builder_result.psbt.extract_tx().output():
+        for txout in txinfos.builder_result.psbt.extract_tx().output():
             address = self.get_address_of_txout(txout)
             if not self.is_change(address):
                 continue
             labels = [
                 recipient.label for recipient in txinfos.recipients if recipient.label
             ]
-            if address and labels:
-                self.labels[address] = ",".join(labels)
+            if address and labels and self.is_my_address(address):
+                self.labels.set_addr_label(address, ",".join(labels))
 
-        txinfos.builder_result = builder_result
-        return txinfos
-
-    def set_recipient_category_from_inputs(
+    def _set_recipient_category_from_inputs(
         self, outputs: List[bdk.TxOut], category: str
     ):
         "Will assign all outputs (also change) the category"
@@ -1406,4 +1351,5 @@ class Wallet(BaseSaveableClass):
         ]
 
         for recipient in recipients:
-            self.labels.set_addr_category(recipient.address, category)
+            if self.is_my_address(recipient.address):
+                self.labels.set_addr_category(recipient.address, category)

@@ -9,8 +9,6 @@ from ...wallet import Wallet, ProtoWallet
 from ...descriptors import (
     get_default_address_type,
     AddressType,
-    generate_bdk_descriptors,
-    generate_output_descriptors_from_keystores,
     get_address_types,
 )
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore

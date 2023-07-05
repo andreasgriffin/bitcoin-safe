@@ -32,7 +32,7 @@
 #### TODOs (a lot)
 
 - [ ] Add guide steps after the wallet setup
-  - [ ] Create recovery pdf with descriptor and further short instructions 
+  - [x] Create recovery pdf with descriptor and further short instructions 
   - [ ] Testing the backup
     - [ ] Send small amount of funds to the wallet
     - [ ] Wipe hardware wallets
@@ -52,7 +52,9 @@
 - [x] Address dialog & TX dialog
 - [x] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
 - [ ] Adding tests for rigorous UI testing
+- [ ] CPFP, RBF
 - [ ] Wallet settings  (location, password,...) needs a tab
+- [ ] multi language
 - [ ] add scan qr code in lots of places
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
@@ -80,6 +82,8 @@
 ![screenshot0](docs/screenshot-send.png)
 
 ![screenshot0](docs/screenshot-tx.png)
+
+![screenshot0](docs/screenshot-tx-confirmed.png)
 
 ## Installation
 

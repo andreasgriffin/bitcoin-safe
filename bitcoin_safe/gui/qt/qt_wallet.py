@@ -7,7 +7,7 @@ from bitcoin_safe.mempool import MempoolData
 
 logger = logging.getLogger(__name__)
 
-from bitcoin_safe.wallet import ProtoWallet, Wallet
+from bitcoin_safe.wallet import ProtoWallet, Wallet, wallet_basename
 from .util import read_QIcon
 from typing import List
 from PySide2.QtCore import *
@@ -34,7 +34,7 @@ from ...util import Satoshis, format_satoshis
 from ...signals import Signals, UpdateFilter
 from ...i18n import _
 from .ui_descriptor import WalletDescriptorUI
-from .password_question import PasswordQuestion, PasswordCreation
+from .dialogs import PasswordQuestion, PasswordCreation, WalletIdDialog, question_dialog
 from .category_list import CategoryEditor
 from ...tx import TXInfos
 from ...pythonbdk_types import Error
@@ -125,6 +125,12 @@ class QTProtoWallet(WalletTab):
         config: UserConfig,
         signals: Signals,
     ):
+        if wallet_id is None:
+            dialog = WalletIdDialog(config.wallet_dir)
+            if dialog.exec_() == QDialog.Accepted:
+                wallet_id = dialog.name_input.text()
+                print(f"Creating wallet: {wallet_id}")
+
         super().__init__(wallet_id=wallet_id)
 
         self.protowallet = protowallet
@@ -185,7 +191,7 @@ class QTWallet(WalletTab):
         self.is_synchronizing = False
         self.fx = FX()
         self.ui_password_question = PasswordQuestion()
-        self.file_path = None
+        self._file_path = None
 
         self.history_tab, self.history_list = None, None
         self.addresses_tab, self.address_list, self.address_list_tags = None, None, None
@@ -203,10 +209,18 @@ class QTWallet(WalletTab):
 
         self.create_wallet_tabs()
 
+    @property
+    def file_path(self):
+        return self._file_path if self._file_path else wallet_basename(self.wallet.id)
+
+    @file_path.setter
+    def file_path(self, value):
+        self._file_path = value
+
     def apply_setting_changes(self):
         self.wallet_descriptor_ui.set_protowallet_from_keystore_ui()
         self.wallet.create_wallet(
-            descriptor_str=self.wallet_descriptor_ui.protowallet.bdk_descriptors()
+            self.wallet_descriptor_ui.protowallet.bdk_descriptors()
         )  # this must be after set_protowallet_from_keystore_ui, but before create_wallet_tabs
 
         self.sync()
@@ -242,20 +256,29 @@ class QTWallet(WalletTab):
         return f"QTWallet({self.__dict__})"
 
     def save(self):
-        if self.file_path is None:
+        if not self._file_path:
             if not os.path.exists(self.config.wallet_dir):
                 os.makedirs(self.config.wallet_dir, exist_ok=True)
-            self.file_path, _ = QFileDialog.getSaveFileName(
-                self.parent(),
-                "Export labels",
-                f"{os.path.join(self.config.wallet_dir, self.wallet.basename())}.wallet",
-                "All Files (*);;Wallet Files (*.wallet)",
-            )
-            if not self.file_path:
-                logger.debug("No file selected")
-                return
 
-        # if it is the first time saving, then the user can ste a password
+            # not saving a wallet is dangerous. Therefore I ensure the user has ample
+            # opportunity to set a filename
+            while not self._file_path:
+                self._file_path, _ = QFileDialog.getSaveFileName(
+                    self.parent(),
+                    "Export labels",
+                    f"{os.path.join(self.config.wallet_dir, wallet_basename(self.wallet.id))}",
+                    "All Files (*);;Wallet Files (*.wallet)",
+                )
+                if not self._file_path and question_dialog(
+                    text=f"Are you SURE you want to delete the wallet {self.wallet.id}",
+                    title="Delete wallet",
+                    no_button_text="Select filename",
+                    yes_button_text="Delete wallet",
+                ):
+                    logger.debug("No file selected")
+                    return
+
+        # if it is the first time saving, then the user can set a password
         if not os.path.isfile(self.file_path):
             self.password = PasswordCreation().get_password()
 
@@ -272,7 +295,7 @@ class QTWallet(WalletTab):
         logger.debug("start refresh cashe")
         self.wallet.reset_cache()
 
-        def threaded():
+        def do():
             self.wallet.fill_commonly_used_caches()
 
         def on_finished():
@@ -289,7 +312,7 @@ class QTWallet(WalletTab):
                 self.create_wallet_tabs()
 
         self.thread_manager.start_in_background_thread(
-            threaded, on_finished=on_finished, name="Update wallet UI"
+            do, on_finished=on_finished, name="Update wallet UI"
         )
 
     def _get_sub_texts_for_uitx(self):
@@ -332,6 +355,7 @@ class QTWallet(WalletTab):
             self.mempool_data,
             self.wallet.categories,
             utxo_list,
+            self.config,
             self.signals,
             self._get_sub_texts_for_uitx,
             enable_opportunistic_merging_fee_rate=self.config.enable_opportunistic_merging_fee_rate,
@@ -380,6 +404,10 @@ class QTWallet(WalletTab):
         except Exception as e:
             Message(e.args[0], title="er").show_error()
             raise
+
+        # set labels in other wallets  (recipients can be another open wallet)
+        for wallet in self.signals.get_wallets().values():
+            wallet.set_output_categories_and_labels(txinfos)
 
         update_filter = UpdateFilter(
             addresses=[recipient.address for recipient in txinfos.recipients],
@@ -702,9 +730,8 @@ class QTWallet(WalletTab):
     #     )
     #     return tab, l
 
-    def sync(self, threaded=True):
+    def sync(self):
         self.signal_start_synchronization.emit()
-        logger.debug(f'Start {"threaded" if threaded else "non-threaded"} sync')
 
         def progress_function_threadsafe(progress: float, message: str):
             self.signal_settext_balance_label.emit(
@@ -713,7 +740,6 @@ class QTWallet(WalletTab):
 
         def do_sync():
             self.wallet.sync(progress_function_threadsafe=progress_function_threadsafe)
-            logger.debug("finished sync")
 
         def on_finished():
             logger.debug("start updating lists")
@@ -723,13 +749,9 @@ class QTWallet(WalletTab):
             logger.debug("finished updating lists")
 
         try:
-            if threaded:
-                future = self.thread_manager.start_in_background_thread(
-                    do_sync, on_finished=on_finished
-                )
-            else:
-                do_sync()
-                on_finished()
+            future = self.thread_manager.start_in_background_thread(
+                do_sync, on_finished=on_finished, name=self.__class__.__name__
+            )
 
         except:
             logger.error("Could not Sync wallet")

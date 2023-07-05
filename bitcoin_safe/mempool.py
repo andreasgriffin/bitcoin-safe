@@ -5,6 +5,9 @@ logger = logging.getLogger(__name__)
 import requests
 import numpy as np
 from PySide2.QtCore import QObject, Signal
+from .thread_manager import ThreadManager
+import datetime
+
 
 feeLevels = [
     1,
@@ -88,11 +91,53 @@ chartColors = [
 ]
 
 
-def fee_to_color(fee):
+mempoolFeeColors = [
+    "#557d00",
+    "#5d7d01",
+    "#637d02",
+    "#6d7d04",
+    "#757d05",
+    "#7d7d06",
+    "#867d08",
+    "#8c7d09",
+    "#957d0b",
+    "#9b7d0c",
+    "#a67d0e",
+    "#aa7d0f",
+    "#b27d10",
+    "#bb7d11",
+    "#bf7d12",
+    "#bf7815",
+    "#bf7319",
+    "#be6c1e",
+    "#be6820",
+    "#bd6125",
+    "#bd5c28",
+    "#bc552d",
+    "#bc4f30",
+    "#bc4a34",
+    "#bb4339",
+    "#bb3d3c",
+    "#bb373f",
+    "#ba3243",
+    "#b92b48",
+    "#b9254b",
+    "#b8214d",
+    "#b71d4f",
+    "#b61951",
+    "#b41453",
+    "#b30e55",
+    "#b10857",
+    "#b00259",
+    "#ae005b",
+]
+
+
+def fee_to_color(fee, colors=chartColors):
     indizes = np.where(np.array(feeLevels) <= fee)[0]
     if len(indizes) == 0:
         return "#000000"
-    return chartColors[indizes[-1]]
+    return colors[indizes[-1]]
 
 
 def fetch_mempool_histogram():
@@ -189,22 +234,39 @@ def bin_data(bin_edges, data):
 
 
 class MempoolData(QObject):
-    signal_current_data_updated = Signal()
+    signal_data_updated = Signal()
 
     def __init__(self) -> None:
         super().__init__()
 
+        self.thread_manager = ThreadManager()
         self.current_timestamp = 0
-        self.current_data = np.array([[]])
+        self.data = np.zeros((1, 2))
+        self.time_of_data = datetime.datetime.fromtimestamp(0)
 
     def set_data_from_file(self, datafile=None):
-        self.data = np.loadtxt(datafile, delimiter=",")
-        self.signal_current_data_updated.emit()
+        self.set_data(np.loadtxt(datafile, delimiter=","))
 
     def set_data(self, data):
         self.data = data
-        self.signal_current_data_updated.emit()
+        self.time_of_data = datetime.datetime.now()
+        self.signal_data_updated.emit()
 
-    def set_data_from_mempoolspace(self):
-        self.data = fetch_mempool_histogram()
-        self.signal_current_data_updated.emit()
+    def set_data_from_mempoolspace(self, force=False):
+        def do():
+            if datetime.datetime.now() - self.time_of_data < datetime.timedelta(
+                minutes=9
+            ):
+                logger.debug(
+                    f"Do not fetch data from mempoolspace because data is only {datetime.datetime.now()- self.time_of_data  } old."
+                )
+                return None
+            return fetch_mempool_histogram()
+
+        def on_finished(data):
+            if data is not None:
+                self.set_data(data)
+
+        return self.thread_manager.start_in_background_thread(
+            do, on_finished=on_finished, name=self.__class__.__name__
+        )

@@ -80,11 +80,11 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.WALLET_ID: _("Wallet"),
         Columns.OUTPOINT: _("Outpoint"),
         Columns.ADDRESS: _("Address"),
-        Columns.PARENTS: _("Parents"),
         Columns.CATEGORY: _("Category"),
         Columns.LABEL: _("Label"),
         Columns.AMOUNT: _("Amount"),
         Columns.SATOSHIS: _("SATOSHIS"),
+        Columns.PARENTS: _("Parents"),
     }
     filter_columns = [
         Columns.WALLET_ID,
@@ -96,14 +96,14 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.SATOSHIS,
     ]
     column_alignments = {
-        Columns.WALLET_ID: Qt.AlignCenter,
-        Columns.OUTPOINT: Qt.AlignLeft,
-        Columns.ADDRESS: Qt.AlignLeft,
-        Columns.CATEGORY: Qt.AlignCenter,
-        Columns.LABEL: Qt.AlignLeft,
-        Columns.AMOUNT: Qt.AlignRight,
-        Columns.SATOSHIS: Qt.AlignRight,
-        Columns.PARENTS: Qt.AlignCenter,
+        Columns.WALLET_ID: Qt.AlignHCenter | Qt.AlignVCenter,
+        Columns.OUTPOINT: Qt.AlignLeft | Qt.AlignVCenter,
+        Columns.ADDRESS: Qt.AlignLeft | Qt.AlignVCenter,
+        Columns.CATEGORY: Qt.AlignCenter | Qt.AlignVCenter,
+        Columns.LABEL: Qt.AlignLeft | Qt.AlignVCenter,
+        Columns.AMOUNT: Qt.AlignRight | Qt.AlignVCenter,
+        Columns.SATOSHIS: Qt.AlignRight | Qt.AlignVCenter,
+        Columns.PARENTS: Qt.AlignCenter | Qt.AlignVCenter,
     }
 
     stretch_column = Columns.LABEL

@@ -1,5 +1,7 @@
 import logging
 
+from bitcoin_safe.config import UserConfig
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
@@ -16,7 +18,7 @@ from .utxo_list import UTXOList
 from ...tx import TXInfos
 from ...signals import Signals
 from .barchart import MempoolBarChart
-from ...mempool import get_prio_fees, fee_to_color, fee_to_depth, fee_to_blocknumber
+from ...mempool import get_prio_fees, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
 from ...qr import create_qr
 
@@ -24,7 +26,7 @@ from ...keystore import KeyStore
 from .util import read_QIcon, open_website
 from .keystore_ui import SignerUI
 from ...signer import SignerWallet
-from ...util import psbt_to_hex, Satoshis, serialized_to_hex
+from ...util import psbt_to_hex, Satoshis, serialized_to_hex, block_explorer_URL
 from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData, fees_of_depths
 from ...pythonbdk_types import Recipient
@@ -239,6 +241,7 @@ class FeeGroup(QObject):
         allow_edit=True,
         is_viewer=False,
         confirmation_time=None,
+        url=None,
     ) -> None:
         super().__init__()
 
@@ -261,9 +264,9 @@ class FeeGroup(QObject):
         )
 
         if confirmation_time:
-            self.mempool = ConfirmedBlock(mempool_data)
+            self.mempool = ConfirmedBlock(mempool_data, url=url)
         elif is_viewer:
-            self.mempool = MempoolProjectedBlock(mempool_data)
+            self.mempool = MempoolProjectedBlock(mempool_data, url=url)
         else:
             self.mempool = MempoolButtons(mempool_data, button_count=3)
 
@@ -312,7 +315,6 @@ class FeeGroup(QObject):
         self.spin_fee_rate.editingFinished.connect(
             lambda: self.set_fee_rate(self.spin_fee_rate.value())
         )
-        # self.mempool.mempool_data.signal_current_data_updated.connect(self.update_spin_fee)
 
         self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
 
@@ -332,7 +334,7 @@ class FeeGroup(QObject):
     ):
         self.spin_fee_rate.setValue(fee_rate)
         self.mempool.set_fee_rate(
-            fee_rate=fee_rate, txid=txid, confirmation_time=confirmation_time
+            fee_rate=fee_rate, confirmation_time=confirmation_time
         )
         self.confirmation_time = confirmation_time
 
@@ -397,10 +399,13 @@ class FeeGroup(QObject):
 
 
 class UITX_Base(QObject):
-    def __init__(self, signals: Signals, mempool_data: MempoolData) -> None:
+    def __init__(
+        self, config: UserConfig, signals: Signals, mempool_data: MempoolData
+    ) -> None:
         super().__init__()
         self.signals = signals
         self.mempool_data = mempool_data
+        self.config = config
 
     def create_recipients(self, layout, parent=None, allow_edit=True):
         recipients = Recipients(self.signals, allow_edit=allow_edit)
@@ -417,13 +422,14 @@ class UIPSBT_Viewer(UITX_Base):
     def __init__(
         self,
         psbt: bdk.PartiallySignedTransaction,
+        config: UserConfig,
         signals: Signals,
         utxo_list: UTXOList,
         network: bdk.Network,
         mempool_data: MempoolData,
         fee_rate=None,
     ) -> None:
-        super().__init__(signals=signals, mempool_data=mempool_data)
+        super().__init__(config=config, signals=signals, mempool_data=mempool_data)
         self.psbt: bdk.PartiallySignedTransaction = psbt
         self.network = network
         self.fee_rate = fee_rate
@@ -464,6 +470,7 @@ class UIPSBT_Viewer(UITX_Base):
             self.upper_widget_layout,
             allow_edit=False,
             is_viewer=True,
+            url=block_explorer_URL(config, "tx", psbt.txid()) if psbt else None,
         )
 
         self.lower_widget = QWidget(self.main_widget)
@@ -551,10 +558,7 @@ class UIPSBT_Viewer(UITX_Base):
             self.signeruis.append(signerui)
 
     def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction):
-        has_all_signatures = True  # TODO: This needs to be actually checked
-        self.set_psbt(
-            psbt_with_signatures, fee_rate=None if has_all_signatures else self.fee_rate
-        )
+        self.set_psbt(psbt_with_signatures, fee_rate=self.fee_rate)
         self.button_broadcast_tx.setEnabled(True)
 
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_rate=None):
@@ -590,6 +594,7 @@ class UITX_Viewer(UITX_Base):
     def __init__(
         self,
         tx: bdk.Transaction,
+        config: UserConfig,
         signals: Signals,
         utxo_list: UTXOList,
         network: bdk.Network,
@@ -598,7 +603,7 @@ class UITX_Viewer(UITX_Base):
         fee=None,
         confirmation_time: bdk.BlockTime = None,
     ) -> None:
-        super().__init__(signals=signals, mempool_data=mempool_data)
+        super().__init__(config=config, signals=signals, mempool_data=mempool_data)
         self.tx: bdk.Transaction = tx
         self.blockchain = blockchain
         self.network = network
@@ -653,6 +658,7 @@ class UITX_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             confirmation_time=confirmation_time,
+            url=block_explorer_URL(config, "tx", tx.txid()) if tx else None,
         )
         self.fee_group.groupBox_Fee.setSizePolicy(
             QSizePolicy.Fixed, QSizePolicy.Expanding
@@ -736,11 +742,12 @@ class UITX_Creator(UITX_Base):
         mempool_data: MempoolData,
         categories: List[str],
         utxo_list: UTXOList,
+        config: UserConfig,
         signals: Signals,
         get_sub_texts,
         enable_opportunistic_merging_fee_rate=5,
     ) -> None:
-        super().__init__(signals=signals, mempool_data=mempool_data)
+        super().__init__(config=config, signals=signals, mempool_data=mempool_data)
         self.categories = categories
         self.utxo_list = utxo_list
         self.get_sub_texts = get_sub_texts
@@ -761,6 +768,9 @@ class UITX_Creator(UITX_Base):
 
         self.widget_right_top = QWidget(self.main_widget)
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)
+        self.widget_right_top_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
 
         self.recipients = self.create_recipients(self.widget_right_top_layout)
 

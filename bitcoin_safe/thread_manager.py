@@ -14,8 +14,8 @@ class WorkerSignals(QObject):
     Defines the signals available from a running worker thread.
     """
 
-    signal = Signal(str)
-    error = Signal(str)
+    finished = Signal(object)
+    error = Signal(object)
 
 
 class Worker(QRunnable):
@@ -27,12 +27,13 @@ class Worker(QRunnable):
 
     def run(self):
         try:
+            logger.debug(f"Start background job {self.name}")
             result = self.f()
         except Exception as e:
             self.signals.error.emit(repr(e))
             raise
-        logger.debug(f"Finished backgorund job {self.name}")
-        self.signals.signal.emit(result)
+        logger.debug(f"Finished background job {self.name}")
+        self.signals.finished.emit(result)
 
 
 class ThreadManager:
@@ -42,17 +43,22 @@ class ThreadManager:
 
     def _start_in_background_thread(self, my_function, on_finished=None, name="job"):
         worker = Worker(my_function, name=name)
-        worker.signals.signal.connect(on_finished)
+        worker.signals.finished.connect(on_finished)
         worker.signals.error.connect(lambda s: Message(s).show_error())
         future = self.threadpool.start(worker)
-        logger.debug(f"future {future} started.")
-
         return future
 
-    def start_in_background_thread(self, my_function, on_finished=None, name="job"):
-        QTimer.singleShot(
-            0,
-            lambda: self._start_in_background_thread(
-                my_function=my_function, on_finished=on_finished, name=name
-            ),
-        )
+    def start_in_background_thread(
+        self, my_function, on_finished=None, name="job", threaded=True
+    ):
+        if threaded:
+            QTimer.singleShot(
+                0,
+                lambda: self._start_in_background_thread(
+                    my_function=my_function, on_finished=on_finished, name=name
+                ),
+            )
+        else:
+            result = my_function()
+            logger.debug(f"Finished non-threaded task")
+            on_finished(result)

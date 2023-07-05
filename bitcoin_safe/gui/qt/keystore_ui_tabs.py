@@ -15,12 +15,6 @@ from .util import (
     read_QIcon,
     create_button,
 )
-from ...wallet import (
-    AddressTypes,
-    get_default_address_type,
-    Wallet,
-    generate_bdk_descriptors,
-)
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signal
 from typing import List

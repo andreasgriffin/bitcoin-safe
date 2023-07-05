@@ -23,7 +23,7 @@ import re
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.qt_wallet import QTWallet, QTProtoWallet
-from .gui.qt.password_question import PasswordQuestion
+from .gui.qt.dialogs import PasswordQuestion
 from .gui.qt.balance_dialog import (
     COLOR_FROZEN,
     COLOR_CONFIRMED,
@@ -97,7 +97,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
         self.signals.open_wallet.connect(self.open_wallet)
 
-        self.signals.show_transaction.connect(self.open_tx_in_tab)
+        self.signals.show_transaction.connect(self.open_tx_like_in_tab)
 
         self._init_tray()
 
@@ -240,6 +240,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         viewer = UITX_Viewer(
             tx,
+            self.config,
             self.signals,
             utxo_list,
             network=self.config.network_settings.network,
@@ -311,6 +312,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         viewer = UIPSBT_Viewer(
             psbt,
+            self.config,
             self.signals,
             utxo_list,
             network=self.config.network_settings.network,
@@ -460,17 +462,18 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def create_qtprotowallet(self, m_of_n) -> QTWallet:
         def create_wallet():
             self.tab_wallets.removeTab(self.tab_wallets.indexOf(qtprotowallet.tab))
-            wallet = Wallet.from_protowallet(qtprotowallet.protowallet, id, self.config)
+            wallet = Wallet.from_protowallet(
+                qtprotowallet.protowallet, qtprotowallet.wallet_id, self.config
+            )
             qt_wallet = self.add_qt_wallet(wallet)
             qt_wallet.sync()
 
-        id = self.new_wallet_id()
         m, n = m_of_n
         protowallet = ProtoWallet(
             threshold=m, signers=n, network=self.config.network_settings.network
         )
         qtprotowallet = QTProtoWallet(
-            id, config=self.config, signals=self.signals, protowallet=protowallet
+            None, config=self.config, signals=self.signals, protowallet=protowallet
         )
         qtprotowallet.signal_close_wallet.connect(
             lambda: self.close_tab(self.tab_wallets.indexOf(qtprotowallet.tab))
@@ -481,8 +484,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             self.tab_wallets,
             qtprotowallet.tab,
             read_QIcon("file.png"),
-            id,
-            id,
+            qtprotowallet.wallet_id,
+            qtprotowallet.wallet_id,
             focus=True,
         )
 
@@ -506,21 +509,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         return qt_wallet
 
     def import_descriptor(self):
-        descriptor = self.text_descriptor.toPlainText()
+        descriptor_str = self.text_descriptor.toPlainText()
         wallet = Wallet(id="import" + str(len(self.qt_wallets)), config=self.config)
-        wallet.create_descriptor_wallet(descriptor)
+        wallet.create_wallet_from_descriptor_str(descriptor_str)
 
         self.add_qt_wallet(wallet)
-
-    def import_seed(self):
-        seed = self.text_seed.toPlainText()
-        wallet = Wallet(id="import" + str(len(self.qt_wallets)), config=self.config)
-        wallet.create_seed_wallet(seed)
-        self.qt_wallets[wallet.id] = QTWallet(
-            wallet, self.tab_wallets, self.config, self.signals, self.mempool_data
-        )
-
-        self.signals.event_wallet_tab_added.emit()
 
     def get_qt_wallet(self, tab=None) -> QTWallet:
         wallet_tab = self.tab_wallets.currentWidget() if tab is None else tab
@@ -559,6 +552,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
     def close_tab(self, index):
         qt_wallet = self.get_qt_wallet(tab=self.tab_wallets.widget(index))
+        if qt_wallet:
+            qt_wallet.save()
         self.tab_wallets.removeTab(index)
         if qt_wallet:
             self.remove_qt_wallet(qt_wallet)
@@ -569,12 +564,13 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         logger.debug("Import wallet")
 
     def sync(self):
-        for qt_wallet in self.qt_wallets.values():
+        qt_wallet = self.get_qt_wallet()
+        if qt_wallet:
             qt_wallet.sync()
 
     def closeEvent(self, event):
         self.config.last_wallet_files[str(self.config.network_settings.network)] = [
-            os.path.join(self.config.wallet_dir, qt_wallet.wallet.basename())
+            os.path.join(self.config.wallet_dir, qt_wallet.file_path)
             for qt_wallet in self.qt_wallets.values()
         ]
         self.config.save()
