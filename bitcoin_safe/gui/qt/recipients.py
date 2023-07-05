@@ -39,11 +39,6 @@ class CloseButton(QtWidgets.QPushButton):
         )
         self.setText("X")
         self.setFixedSize(15, 15)  # adjust size as needed
-        self.clicked.connect(self.close_groupbox)
-
-    def close_groupbox(self):
-        if self.parent():
-            self.parent().signal_close.emit(self)
 
 
 class RecipientGroupBox(QtWidgets.QGroupBox):
@@ -55,7 +50,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.signals = signals
         self.allow_edit = allow_edit
 
-        self.close_button = CloseButton(self) if allow_edit else None
+        self.close_button = CloseButton(self)
+        self.close_button.setHidden(not allow_edit)
+        self.close_button.clicked.connect(lambda: self.signal_close.emit(self))
 
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(10, 20, 10, 10)  # Left, Top, Right, Bottom margins
@@ -95,7 +92,6 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         self.address_line_edit.textChanged.connect(self.format_address_field)
         self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
-        self.signal_close.connect(self.close)
 
     def on_send_max_button_click(self):
         # self.amount_spin_box.setValue(0)
@@ -232,9 +228,7 @@ class Recipients(QtWidgets.QWidget):
         recipient_box.amount = recipient.amount
         if recipient.label:
             recipient_box.label = recipient.label
-        recipient_box.signal_close.connect(
-            lambda: self.remove_recipient_widget(recipient)
-        )
+        recipient_box.signal_close.connect(self.remove_recipient_widget)
         self.recipient_list_content_layout.addWidget(recipient_box)
 
         recipient_box.send_max_button.clicked.connect(
@@ -243,10 +237,11 @@ class Recipients(QtWidgets.QWidget):
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 
-    def remove_recipient_widget(self, recipient):
-        recipient.setParent(None)
-        self.recipient_list_content_layout.removeWidget(recipient)
-        recipient.deleteLater()
+    def remove_recipient_widget(self, recipient_box):
+        recipient_box.close()
+        recipient_box.setParent(None)
+        self.recipient_list_content_layout.removeWidget(recipient_box)
+        recipient_box.deleteLater()
 
     @property
     def recipients(self) -> List[Recipient]:
