@@ -185,7 +185,7 @@ def keystores_to_descriptors(
 
 
 def combined_wallet_descriptor(
-    descriptors: Tuple[bdk.Descriptor, bdk.Descriptor]
+    descriptors: Tuple[bdk.Descriptor, bdk.Descriptor], only_public=False
 ) -> str:
     logger.warning(
         "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
@@ -193,23 +193,26 @@ def combined_wallet_descriptor(
     assert len(descriptors) == 2
 
     descriptors_without_checksum = [
-        d.as_string_private().split("#")[0] for d in descriptors
+        d.as_string().split("#")[0]
+        if only_public
+        else d.as_string_private().split("#")[0]
+        for d in descriptors
     ]
     assert all(
         [d.count(f"/{i}/*)") == 1 for i, d in enumerate(descriptors_without_checksum)]
     )
 
-    return descriptors_without_checksum[0].replace(f"/{0}/*)", f"/<0;1>/*)")
+    return descriptors_without_checksum[0].replace(f"/{0}/*", f"/<0;1>/*")
 
 
 def split_wallet_descriptor(descriptor_str: str):
     logger.warning(
         "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
     )
-    assert "/<0;1>/*)" in descriptor_str
+    assert "/<0;1>/*" in descriptor_str
 
-    return descriptor_str.replace("/<0;1>/*)", "/0/*)"), descriptor_str.replace(
-        "/<0;1>/*)", "/1/*)"
+    return descriptor_str.replace("/<0;1>/*", "/0/*"), descriptor_str.replace(
+        "/<0;1>/*", "/1/*"
     )
 
 
@@ -218,7 +221,7 @@ def descriptor_strings_to_descriptors(
 ) -> Tuple[bdk.Descriptor]:
     change_descriptor_str = None
     # check if the descriptor_str is a combined one:
-    if "/<0;1>/*)" in descriptor_str:
+    if "/<0;1>/*" in descriptor_str:
         descriptor_str, change_descriptor_str = split_wallet_descriptor(descriptor_str)
 
     return [
@@ -229,7 +232,7 @@ def descriptor_strings_to_descriptors(
     ]
 
 
-def descriptor_info(descriptor_str: str, network: bdk.Network):
+def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
     "gets the xpub (not xpriv) information"
 
     def extract_groups(string, pattern):
@@ -266,13 +269,16 @@ def descriptor_info(descriptor_str: str, network: bdk.Network):
     # these are now bdk single or multisig descriptors
     descriptors = descriptor_strings_to_descriptors(descriptor_str, network)
     # get the public descriptor string info
-    public_descriptor_str = descriptors[0].as_string()
+    public_descriptor_string_combined = combined_wallet_descriptor(
+        descriptors, only_public=True
+    )
 
     # First split the descriptor like:
     # "wpkh"
     # "[a42c6dd3/84'/1'/0']xpub/0/*"
     groups = [
-        g.rstrip(")") for g in extract_groups(public_descriptor_str, r"(.*)\((.*)\)")
+        g.rstrip(")")
+        for g in extract_groups(public_descriptor_string_combined, r"(.*)\((.*)\)")
     ]  # remove trailing )
     logger.debug(f"groups {groups}")
 
@@ -306,4 +312,5 @@ def descriptor_info(descriptor_str: str, network: bdk.Network):
         "signers": len(keystores),
         "keystores": keystores,
         "network": network,
+        "public_descriptor_string_combined": public_descriptor_string_combined,
     }

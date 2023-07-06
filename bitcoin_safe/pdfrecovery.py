@@ -8,11 +8,51 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
 from reportlab.pdfgen import canvas
+
+from bitcoin_safe.gui.qt.util import read_QIcon
 from .qr import create_qr
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from pathlib import Path
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from PySide2.QtGui import QIcon, QPixmap, QImage, QImageWriter
+from PySide2.QtCore import QByteArray, QBuffer
+from .gui.qt.util import qicon_to_pil
+
+
+def pilimage_to_reportlab(pilimage, width=200, height=200):
+    buffer = io.BytesIO()
+    pilimage.save(buffer, format="PNG")
+    buffer.seek(0)
+    return Image(buffer, width=width, height=height)
+
+
+def create_table(columns, col_widths):
+    # Validate input and create data for the table
+    max_rows = max([len(col) for col in columns])
+    data = []
+    for i in range(max_rows):
+        row = [col[i] if i < len(col) else "" for col in columns]
+        data.append(row)
+
+    # Create a Table with data and specify column widths
+    table = Table(data, colWidths=col_widths)
+
+    # Apply TableStyle to make the borders invisible
+    style = TableStyle(
+        [
+            ("BOX", (0, 0), (-1, -1), 0, colors.white),  # Outer border
+            ("INNERGRID", (0, 0), (-1, -1), 0, colors.white),  # Inner grid
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),  # Vertical alignment for all cells
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Vertical alignment for all cells
+            # ('VALIGN', (0, 0), (0, 0), 'TOP'),                  # Vertical alignment for first cell
+            # ('VALIGN', (1, 0), (1, 0), 'BOTTOM')                # Vertical alignment for second cell
+        ]
+    )
+
+    table.setStyle(style)
+
+    return table
 
 
 class BitcoinWalletRecoveryPDF:
@@ -33,23 +73,22 @@ class BitcoinWalletRecoveryPDF:
 
         # Small subtitle
         self.elements.append(
-            Paragraph(f"Created with Bitcoin Safe", self.style_paragraph)
-        )
-        self.elements.append(
             Paragraph(
-                f"https://github.com/andreasgriffin/bitcoin-safe", self.style_paragraph
+                f"Created with Bitcoin Safe: &nbsp;&nbsp;&nbsp; https://github.com/andreasgriffin/bitcoin-safe ",
+                self.style_paragraph,
             )
         )
+        self.elements.append(Paragraph(f"", self.style_paragraph))
 
-        # Wallet descriptor (QR code and the string)
-        qr_code_buffer = io.BytesIO()
-        qr_code_img = create_qr(wallet_descriptor_string)
-        qr_code_img.save(qr_code_buffer, format="PNG")
-        qr_code_buffer.seek(0)
-        qr_code_image = Image(qr_code_buffer, width=200, height=200)
-        self.elements.append(qr_code_image)
+        qr_image = pilimage_to_reportlab(
+            create_qr(wallet_descriptor_string), width=200, height=200
+        )
+        desc_str = Paragraph(
+            f"The wallet descriptor (QR Code) is necessary to recreate (and spend from) your wallet:<br/><br/>{wallet_descriptor_string}",
+            self.style_paragraph,
+        )
+        self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))
 
-        self.elements.append(Paragraph(wallet_descriptor_string, self.style_paragraph))
         self.elements.append(Spacer(1, 10))
 
         # Add a horizontal line as an element
@@ -65,22 +104,34 @@ class BitcoinWalletRecoveryPDF:
         text_paragraph.spaceBefore = -10  # Adjust the space before the text if needed
         self.elements.append(text_paragraph)
 
-        self.elements.append(Spacer(1, 10))
-        # Additional subtitle
-        self.elements.append(
-            Paragraph(
-                "Write the secret 24 words (Seed) onto this paper or onto steel.",
-                self.style_paragraph,
-            )
-        )
-        self.elements.append(
-            Paragraph(
-                "Put the secret 24 words (Seed) AND this QrCode in a secure location",
-                self.style_paragraph,
-            )
-        )
         self.elements.append(Spacer(1, 5))
+        # Additional subtitle
+        instructions1 = Paragraph(
+            "Write the secret 24 words (Seed) onto this paper or onto steel.",
+            self.style_paragraph,
+        )
 
+        instructions2 = Paragraph(
+            "Put the secret 24 words (Seed) and this QR Code in a secure location",
+            self.style_paragraph,
+        )
+
+        # No photography icon
+        icon = read_QIcon("no-typing-icon.svg")
+        icon2 = read_QIcon("no-photography-icon.svg")
+        reportlab_icon = pilimage_to_reportlab(qicon_to_pil(icon), width=50, height=50)
+        reportlab_icon2 = pilimage_to_reportlab(
+            qicon_to_pil(icon2), width=50, height=50
+        )
+
+        self.elements.append(
+            create_table(
+                [[reportlab_icon], [instructions1, instructions2], [reportlab_icon2]],
+                [60, 400, 60],
+            )
+        )
+
+        self.elements.append(Spacer(1, 5))
         for get_keystore_description in keystore_descriptions:
             description_text = Paragraph(get_keystore_description, self.style_paragraph)
             self.elements.append(description_text)
@@ -125,7 +176,7 @@ class BitcoinWalletRecoveryPDF:
         table.hAlign = "CENTER"
         self.elements.append(table)
 
-        self.elements.append(Spacer(1, 20))
+        self.elements.append(Spacer(1, 10))
 
         # Message to the loved ones
         message_field = Paragraph(

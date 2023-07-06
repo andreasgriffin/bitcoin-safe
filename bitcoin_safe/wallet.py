@@ -49,7 +49,7 @@ from .descriptors import (
     get_default_address_type,
     split_wallet_descriptor,
     combined_wallet_descriptor,
-    descriptor_info,
+    public_descriptor_info,
     keystores_to_descriptors,
     descriptor_strings_to_descriptors,
 )
@@ -204,7 +204,7 @@ class ProtoWallet:
                 type=KeyStoreTypes.watch_only,
             )
 
-        info = descriptor_info(string_descriptor, network)
+        info = public_descriptor_info(string_descriptor, network)
 
         info["keystores"] = [
             KeyStore(
@@ -216,6 +216,7 @@ class ProtoWallet:
             )
             for i, d in enumerate(info["keystores"])
         ]
+        del info["public_descriptor_string_combined"]
 
         return ProtoWallet(**info)
 
@@ -346,6 +347,11 @@ class Wallet(BaseSaveableClass):
             ).keystores
         )
         self.create_wallet_from_descriptor_str()
+
+    def public_descriptor_string_combined(self):
+        return public_descriptor_info(self.descriptor_str, self.network)[
+            "public_descriptor_string_combined"
+        ]
 
     def as_protowallet(self):
         # fill the protowallet with the xpub info
@@ -966,7 +972,13 @@ class Wallet(BaseSaveableClass):
         addresses, addresses_infos = self.get_addresses_and_address_infos()
 
         if address in addresses:
-            return str(addresses_infos[addresses.index(address)].index)
+            addresses_info = addresses_infos[addresses.index(address)]
+            public_descriptor_string_combined = self.public_descriptor_string_combined()
+            public_descriptor_string_combined = public_descriptor_string_combined.replace(
+                "<0;1>/*",
+                f"{0 if  addresses_info.keychain==bdk.KeychainKind.EXTERNAL else 1}/{addresses_info.index}",
+            )
+            return public_descriptor_string_combined
         return ""
 
     def get_redeem_script(self, address):

@@ -133,7 +133,6 @@ class Signals(QObject):
 
     notification = Signal(object)  # should be a Message instance
 
-    show_transaction = Signal(bdk.TransactionDetails)
     cpfp_dialog = Signal(bdk.TransactionDetails)
     dscancel_dialog = Signal()
     bump_fee_dialog = Signal()

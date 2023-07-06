@@ -97,7 +97,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
         self.signals.open_wallet.connect(self.open_wallet)
 
-        self.signals.show_transaction.connect(self.open_tx_like_in_tab)
+        self.signals.open_tx.connect(self.open_tx_like_in_tab)
 
         self._init_tray()
 
@@ -220,6 +220,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             logger.debug(f"Got a PartiallySignedTransaction")
             tx = txlike.transaction
             fee = txlike.fee
+            if fee is None and txlike.transaction.is_coin_base():
+                fee = 0
             confirmation_time = txlike.confirmation_time
         elif isinstance(txlike, bdk.Transaction):
             tx = txlike
@@ -247,6 +249,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             mempool_data=self.mempool_data,
             fee=fee,
             confirmation_time=confirmation_time,
+            blockchain=self.get_qt_wallet().wallet.blockchain
+            if self.get_qt_wallet()
+            else None,
         )
 
         add_tab_to_tabs(
@@ -528,7 +533,12 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         from .gui.qt import address_dialog
 
         d = address_dialog.AddressDialog(
-            self.fx, self.config, self.get_qt_wallet(), addr, parent=parent
+            self.fx,
+            self.config,
+            self.signals,
+            self.get_qt_wallet().wallet,
+            addr,
+            parent=parent,
         )
         d.exec_()
 

@@ -21,7 +21,7 @@ from .gui.qt.util import add_tab_to_tabs, read_QIcon
 import bdkpython as bdk
 from .storage import BaseSaveableClass, SaveAllClass
 import copy
-from .descriptors import AddressType, descriptor_info
+from .descriptors import AddressType, public_descriptor_info
 
 
 class KeyStoreType(SaveAllClass):

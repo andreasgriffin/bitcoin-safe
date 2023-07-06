@@ -108,6 +108,7 @@ from ...util import (
 from ...util import EventListener, event_listener, is_address
 from PySide2.QtSvg import QSvgWidget
 import bdkpython as bdk
+from PIL import Image as PilImage
 
 if platform.system() == "Windows":
     MONOSPACE_FONT = "Lucida Console"
@@ -1824,6 +1825,26 @@ def pil_image_to_qpix(im):
     return QPixmap.fromImage(
         pil_image_to_qimage(im)
     )  # Making a copy to let data persist after function returns
+
+
+def qicon_to_pil(qicon, size=200):
+    # Convert QIcon to QPixmap
+    pixmap = qicon.pixmap(size, size)  # specify the size you want
+
+    # Convert QPixmap to QImage
+    qimage = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+
+    # Convert QImage to raw bytes
+    buffer = qimage.constBits()
+    img_size = qimage.size()
+    width, height = img_size.width(), img_size.height()
+
+    # Convert raw bytes to a PIL image
+    pil_image = PilImage.frombuffer(
+        "RGBA", (width, height), buffer, "raw", "RGBA", 0, 1
+    )
+
+    return pil_image
 
 
 if __name__ == "__main__":

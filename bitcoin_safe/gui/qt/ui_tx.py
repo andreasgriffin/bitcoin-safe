@@ -242,12 +242,11 @@ class FeeGroup(QObject):
         is_viewer=False,
         confirmation_time=None,
         url=None,
+        fee_rate=None,
     ) -> None:
         super().__init__()
 
         self.allow_edit = allow_edit
-        self.confirmation_time: bdk.BlockTime = None
-        self.txid = None
 
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
@@ -264,9 +263,16 @@ class FeeGroup(QObject):
         )
 
         if confirmation_time:
-            self.mempool = ConfirmedBlock(mempool_data, url=url)
+            self.mempool = ConfirmedBlock(
+                mempool_data,
+                url=url,
+                confirmation_time=confirmation_time,
+                fee_rate=fee_rate,
+            )
         elif is_viewer:
-            self.mempool = MempoolProjectedBlock(mempool_data, url=url)
+            self.mempool = MempoolProjectedBlock(
+                mempool_data, url=url, fee_rate=fee_rate
+            )
         else:
             self.mempool = MempoolButtons(mempool_data, button_count=3)
 
@@ -306,9 +312,8 @@ class FeeGroup(QObject):
             )
 
         self.spin_fee_rate = QDoubleSpinBox()
-        if not allow_edit:
-            self.spin_fee_rate.setReadOnly(True)
-        self.spin_fee_rate.setRange(0.0, 1000)  # Set the acceptable range
+        self.spin_fee_rate.setReadOnly(not allow_edit)
+        self.spin_fee_rate.setRange(0, 1000)  # Set the acceptable range
         self.spin_fee_rate.setSingleStep(1)  # Set the step size
         self.spin_fee_rate.setDecimals(1)  # Set the number of decimal places
         self.spin_fee_rate.setMaximumWidth(55)
@@ -320,82 +325,54 @@ class FeeGroup(QObject):
 
         self.spin_label = QLabel()
         self.spin_label.setText("Sat/vB")
-        if not confirmation_time:
-            self.widget_around_spin_box_layout.addWidget(self.spin_label)
+        self.widget_around_spin_box_layout.addWidget(self.spin_label)
 
-        self.spin_label2 = QLabel()
-        if not confirmation_time:
-            groupBox_Fee_layout.addWidget(self.spin_label2, alignment=Qt.AlignHCenter)
+        self.label_block_number = QLabel()
+        groupBox_Fee_layout.addWidget(
+            self.label_block_number, alignment=Qt.AlignHCenter
+        )
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
     def set_fee_rate(
-        self, fee_rate, confirmation_time: bdk.BlockTime = None, txid=None
+        self, fee_rate, confirmation_time: bdk.BlockTime = None, chain_height=None
     ):
-        self.spin_fee_rate.setValue(fee_rate)
-        self.mempool.set_fee_rate(
-            fee_rate=fee_rate, confirmation_time=confirmation_time
-        )
-        self.confirmation_time = confirmation_time
 
-        # warning
-        warning = ""
+        self.spin_fee_rate.setHidden(fee_rate is None)
+        self.label_block_number.setHidden(fee_rate is None)
+        self.spin_label.setHidden(fee_rate is None)
+
+        self.spin_fee_rate.setValue(fee_rate if fee_rate else 0)
+        self.mempool.refresh(
+            fee_rate=fee_rate,
+            confirmation_time=confirmation_time,
+            chain_height=chain_height,
+        )
+        self.update_spin_fee_range()
 
         fees = fees_of_depths(self.mempool.mempool_data.data, [1e6])
         max_reasonable_fee_rate = (
             fees[0] * 2 if fees else max_reasonable_fee_rate_fallback
         )
 
-        self.high_fee_warning_label.setHidden(not (fee_rate > max_reasonable_fee_rate))
+        if fee_rate:
+            self.high_fee_warning_label.setHidden(
+                not (fee_rate > max_reasonable_fee_rate)
+            )
 
-        self.spin_label2.setText(
-            f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
-        )
+            self.label_block_number.setText(
+                f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
+            )
+        else:
+            self.high_fee_warning_label.setHidden(True)
+            self.label_block_number.setText(f"")
 
         self.signal_set_fee_rate.emit(fee_rate)
 
-    def update_spin_fee(self):
-        self.spin_fee_rate.setRange(
-            1, self.mempool.data[:, 0].max()
-        )  # Set the acceptable range
-
-
-# class BlockExplorerGroup(QObject):
-#     signal_clicked = Signal(float)
-
-#     def __init__(
-#         self, txid, layout
-#     ) -> None:
-#         super().__init__()
-
-
-#         # add the groupBox
-#         self.groupBox = QGroupBox()
-#         self.groupBox.setTitle("Block Explorer")
-#         self.groupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-#         self.groupBox.setAlignment(Qt.AlignTop)
-
-#         groupBox_Fee_layout = QVBoxLayout(self.groupBox)
-#         groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
-
-
-#         # add edit field with txid
-#         self.edit = QLineEdit(self.groupBox)
-#         self.edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-#         self.edit.setReadOnly(True)
-#         groupBox_Fee_layout.addWidget(self.edit)
-#         # add button
-#         self.button = QPushButton(self.groupBox)
-#         groupBox_Fee_layout.addWidget(self.button)
-
-
-#         self.set_txid(txid)
-#         layout.addWidget(self.groupBox, alignment=Qt.AlignHCenter)
-
-
-#     def set_txid(self, txid):
-#         self.edit.setText(txid)
-#         self.button.clicked.connect(lambda: open_website(f'https://mempool.space/tx/{txid}'))
+    def update_spin_fee_range(self):
+        "Set the acceptable range"
+        maximum = max(self.mempool.mempool_data.data[:, 0].max(), 1000)
+        self.spin_fee_rate.setRange(1, maximum)
 
 
 class UITX_Base(QObject):
@@ -471,6 +448,7 @@ class UIPSBT_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             url=block_explorer_URL(config, "tx", psbt.txid()) if psbt else None,
+            fee_rate=psbt.fee_rate(),
         )
 
         self.lower_widget = QWidget(self.main_widget)
@@ -571,7 +549,7 @@ class UIPSBT_Viewer(UITX_Base):
         fee_rate = (
             self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
         )
-        self.fee_group.set_fee_rate(fee_rate)
+        self.fee_group.set_fee_rate(fee_rate=fee_rate)
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
 
@@ -703,17 +681,22 @@ class UITX_Viewer(UITX_Base):
         self.signal_broadcast_tx.emit()
 
     def set_tx(
-        self, tx: bdk.Transaction, fee=None, confirmation_time: bdk.BlockTime = None
+        self,
+        tx: bdk.Transaction,
+        fee=None,
+        confirmation_time: bdk.BlockTime = None,
     ):
         self.tx: bdk.Transaction = tx
         self.export_widget.set_data(
             seralized=serialized_to_hex(tx.serialize()), txid=tx.txid()
         )
 
-        fee_rate = fee / self.tx.vsize() if fee is not None else 0
+        fee_rate = fee / self.tx.vsize() if fee is not None else None
 
         self.fee_group.set_fee_rate(
-            fee_rate=fee_rate, confirmation_time=confirmation_time
+            fee_rate=fee_rate,
+            confirmation_time=confirmation_time,
+            chain_height=self.blockchain.get_height() if self.blockchain else None,
         )
 
         outputs: List[bdk.TxOut] = self.tx.output()
@@ -727,10 +710,6 @@ class UITX_Viewer(UITX_Base):
             )
             for output in outputs
         ]
-
-        self.fee_group.set_fee_rate(
-            fee_rate=fee_rate, confirmation_time=confirmation_time, txid=tx.txid()
-        )
 
 
 class UITX_Creator(UITX_Base):

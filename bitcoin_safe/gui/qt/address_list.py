@@ -250,7 +250,9 @@ class AddressList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        addr = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
+        addr = self.get_role_data_for_current_item(
+            col=self.key_column, role=self.ROLE_KEY
+        )
         self.signals.show_address.emit(addr)
 
     def create_toolbar(self, config: UserConfig = None):
@@ -379,7 +381,9 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def update(self):
         if self.maybe_defer_update():
             return
-        current_key = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
+        current_key = self.get_role_data_for_current_item(
+            col=self.key_column, role=self.ROLE_KEY
+        )
         if self.show_change == AddressTypeFilter.RECEIVING:
             addr_list = self.wallet.get_receiving_addresses()
         elif self.show_change == AddressTypeFilter.CHANGE:
@@ -452,9 +456,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 )
             address_item[self.key_column].setData(address, self.ROLE_KEY)
             address_item[self.Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
-            address_path_str = self.wallet.get_address_path_str(address)
-            if address_path_str is not None:
-                address_item[self.Columns.TYPE].setToolTip(address_path_str)
             # add item
             count = self.std_model.rowCount()
             self.std_model.insertRow(count, address_item)

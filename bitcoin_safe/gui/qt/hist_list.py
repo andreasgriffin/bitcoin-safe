@@ -285,9 +285,11 @@ class HistList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        txid = self.get_role_data_for_current_item(col=0, role=self.ROLE_KEY)
+        txid = self.get_role_data_for_current_item(
+            col=self.key_column, role=self.ROLE_KEY
+        )
         wallet, tx_details = self._tx_dict[txid]
-        self.signals.show_transaction.emit(tx_details)
+        self.signals.open_tx.emit(tx_details)
 
     def create_toolbar(self, config=None):
         toolbar, menu = self.create_toolbar_with_menu("")
@@ -476,9 +478,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             if not item:
                 return
             txid = txids[0]
-            menu.addAction(
-                _("Details"), lambda: self.signals.show_transaction.emit(txid)
-            )
+            menu.addAction(_("Details"), lambda: self.signals.open_tx.emit(txid))
             addr_column_title = self.std_model.horizontalHeaderItem(
                 self.Columns.LABEL
             ).text()

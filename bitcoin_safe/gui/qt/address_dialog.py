@@ -26,12 +26,13 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-
+import bdkpython as bdk
 from typing import TYPE_CHECKING
 
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QHBoxLayout
 
-from bitcoin_safe.gui import qt
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
 from ...i18n import _
 
@@ -46,21 +47,24 @@ from .util import (
 )
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
-from ...util import format_satoshis
+from ...util import format_satoshis, serialized_to_hex
 from .qrcodewidget import QRLabel
 from .hist_list import HistList
 from ...wallet import Wallet
+from .util import ColorScheme
 
 
 class AddressDialog(WindowModalDialog):
-    def __init__(self, fx, config, qt_wallet, address: str, parent=None):
+    def __init__(
+        self, fx, config, signals: Signals, wallet: Wallet, address: str, parent=None
+    ):
         WindowModalDialog.__init__(self, parent, _("Address"))
         self.address = address
+        self.bdk_address = bdk.Address(address)
         self.fx = fx
         self.config = config
-        self.wallet: Wallet = qt_wallet.wallet
-        self.signals = qt_wallet.signals
-        self.qt_wallet = qt_wallet
+        self.wallet: Wallet = wallet
+        self.signals = signals
         self.saved = True
 
         self.setMinimumWidth(700)
@@ -75,46 +79,49 @@ class AddressDialog(WindowModalDialog):
         upper_left_widget = QWidget()
         upper_left_widget_layout = QVBoxLayout(upper_left_widget)
         upper_left_widget_layout.setContentsMargins(0, 0, 0, 0)
+        upper_left_widget_layout.setAlignment(Qt.AlignTop)
         upper_widget_layout.addWidget(upper_left_widget)
 
-        upper_left_widget_layout.addWidget(QLabel(_("Address") + ":"))
+        address_info_min = self.wallet.address_info_min(address)
+        address_title = f"{'Receiving' if address_info_min.keychain == bdk.KeychainKind.EXTERNAL else 'Change'} address of wallet \"{wallet.id}\"   (with index {address_info_min.index})"
+        upper_left_widget_layout.addWidget(QLabel(_(address_title) + ":"))
         self.addr_e = ShowCopyLineEdit(self.address)
+        # self.addr_e.setStyleSheet(f"background-color: {ColorScheme.GREEN.as_color(True).name()};")
         upper_left_widget_layout.addWidget(self.addr_e)
 
-        try:
-            pubkeys = self.wallet.get_public_keys(address)
-        except BaseException as e:
-            pubkeys = None
-        if pubkeys:
-            upper_left_widget_layout.addWidget(QLabel(_("Public keys") + ":"))
-            for pubkey in pubkeys:
-                pubkey_e = ShowQRLineEdit(pubkey, self.config, title=_("Public Key"))
-                upper_left_widget_layout.addWidget(pubkey_e)
+        # try:
+        #     script_pubkey = serialized_to_hex( self.bdk_address.script_pubkey().to_bytes())
+        # except BaseException as e:
+        #     script_pubkey = None
+        # if script_pubkey:
+        #     upper_left_widget_layout.addWidget(QLabel(_("Script Pubkey") + ":"))
+        #     pubkey_e = ButtonsLineEdit(script_pubkey)
+        #     upper_left_widget_layout.addWidget(pubkey_e)
 
-        redeem_script = self.wallet.get_redeem_script(address)
-        if redeem_script:
-            upper_left_widget_layout.addWidget(QLabel(_("Redeem Script") + ":"))
-            redeem_e = ShowQRTextEdit(text=redeem_script, config=self.config)
-            redeem_e.addCopyButton()
-            upper_left_widget_layout.addWidget(redeem_e)
+        # redeem_script = self.wallet.get_redeem_script(address)
+        # if redeem_script:
+        #     upper_left_widget_layout.addWidget(QLabel(_("Redeem Script") + ":"))
+        #     redeem_e = ShowQRTextEdit(text=redeem_script, config=self.config)
+        #     redeem_e.addCopyButton()
+        #     upper_left_widget_layout.addWidget(redeem_e)
 
-        witness_script = self.wallet.get_witness_script(address)
-        if witness_script:
-            upper_left_widget_layout.addWidget(QLabel(_("Witness Script") + ":"))
-            witness_e = ShowQRTextEdit(text=witness_script, config=self.config)
-            witness_e.addCopyButton()
-            upper_left_widget_layout.addWidget(witness_e)
+        # witness_script = self.wallet.get_witness_script(address)
+        # if witness_script:
+        #     upper_left_widget_layout.addWidget(QLabel(_("Witness Script") + ":"))
+        #     witness_e = ShowQRTextEdit(text=witness_script, config=self.config)
+        #     witness_e.addCopyButton()
+        #     upper_left_widget_layout.addWidget(witness_e)
 
-        address_path_str = self.wallet.get_address_path_str(address)
-        if address_path_str:
-            upper_left_widget_layout.addWidget(QLabel(_("Derivation path") + ":"))
-            der_path_e = ButtonsLineEdit(address_path_str)
-            der_path_e.addCopyButton()
-            der_path_e.setReadOnly(True)
-            upper_left_widget_layout.addWidget(der_path_e)
+        # address_path_str = self.wallet.get_address_path_str(address)
+        # if address_path_str:
+        #     upper_left_widget_layout.addWidget(QLabel(_("Derivation path") + ":"))
+        #     der_path_e = ButtonsLineEdit(address_path_str)
+        #     der_path_e.addCopyButton()
+        #     der_path_e.setReadOnly(True)
+        #     upper_left_widget_layout.addWidget(der_path_e)
 
         self.qr_code = QRLabel()
-        self.qr_code.set_data(address)
+        self.qr_code.set_data(self.bdk_address.to_qr_uri())
         self.qr_code.setMaximumWidth(100)
         self.qr_code.setMaximumHeight(100)
         upper_widget_layout.addWidget(self.qr_code)
