@@ -8,7 +8,7 @@ import bdkpython as bdk
 from typing import Sequence, Set, Tuple
 from .pythonbdk_types import Error
 from .gui.qt.util import Message
-import re
+import datetime
 from .tx import TXInfos
 from .util import (
     balance_dict,
@@ -82,7 +82,7 @@ class TxConfirmationStatus(enum.Enum):
 
 
 class TxStatus:
-    def __init__(self, tx: bdk.TransactionDetails, blockchain: bdk.Blockchain) -> None:
+    def __init__(self, tx: bdk.TransactionDetails, get_height) -> None:
         self.tx = tx
 
         # from .util import (
@@ -101,7 +101,7 @@ class TxStatus:
             self.confirmation_status = TxConfirmationStatus.CONFIRMED
 
         self.confirmations = (
-            blockchain.get_height() - tx.confirmation_time.height + 1
+            get_height() - tx.confirmation_time.height + 1
             if tx.confirmation_time
             else 0
         )
@@ -498,7 +498,7 @@ class Wallet(BaseSaveableClass):
         return len(self.keystores) > 1
 
     def get_tx_status(self, tx: bdk.TransactionDetails) -> TxStatus:
-        return TxStatus(tx, self.blockchain)
+        return TxStatus(tx, self.get_height)
 
     def init_blockchain(self):
         """
@@ -614,6 +614,7 @@ class Wallet(BaseSaveableClass):
         ]
         return addresses
 
+    @cache_method
     def get_tx(self, txid) -> bdk.TransactionDetails:
         txs = {tx.txid: tx for tx in self.get_list_transactions()}
         if txid in txs:
@@ -668,7 +669,7 @@ class Wallet(BaseSaveableClass):
     def fill_commonly_used_caches(self):
         self.get_addresses()
         self.get_list_transactions()
-        self.get_utxos()
+        self.list_unspent()
         self.get_received_send_maps()
 
     def list_input_addresses(self, transaction):
@@ -849,13 +850,17 @@ class Wallet(BaseSaveableClass):
             ).as_string()
 
     def utxo_of_outpoint(self, outpoint: bdk.OutPoint) -> bdk.LocalUtxo:
-        for utxo in self.get_utxos():
+        for utxo in self.list_unspent():
             if OutPoint.from_bdk(outpoint) == OutPoint.from_bdk(utxo.outpoint):
                 return utxo
 
     @cache_method
-    def get_utxos(self) -> List[bdk.LocalUtxo]:
+    def list_unspent(self) -> List[bdk.LocalUtxo]:
+        start = datetime.datetime.now()
         unspent = self.bdkwallet.list_unspent()
+        logger.debug(
+            f"call bdkwallet.list_unspent took: {datetime.datetime.now() -start}"
+        )
         return unspent
 
     @cache_method
@@ -867,7 +872,7 @@ class Wallet(BaseSaveableClass):
         def zero_balances():
             return [0, 0, 0]
 
-        utxos = self.get_utxos()
+        utxos = self.list_unspent()
         balances: Dict[str, Tuple[int, int, int]] = defaultdict(zero_balances)
 
         for i, utxo in enumerate(utxos):
@@ -891,7 +896,14 @@ class Wallet(BaseSaveableClass):
 
     @cache_method
     def get_list_transactions(self) -> List[bdk.TransactionDetails]:
-        return self.bdkwallet.list_transactions(True)
+        def key(txdetails: bdk.TransactionDetails):
+            return (
+                txdetails.confirmation_time.timestamp
+                if txdetails.confirmation_time
+                else datetime.datetime.now().timestamp()
+            )
+
+        return sorted(self.bdkwallet.list_transactions(True), key=key)
 
     @cache_method
     def get_outpoint_dict(
@@ -990,10 +1002,6 @@ class Wallet(BaseSaveableClass):
 
     def get_categories_for_txid(self, txid):
         tx = self.get_tx(txid)
-        l = [
-            [self.get_address_of_txout(output), output.value]
-            for output in tx.transaction.output()
-        ]
         l = clean_list(
             [
                 self.labels.get_category(self.get_address_of_txout(output))
@@ -1058,6 +1066,10 @@ class Wallet(BaseSaveableClass):
         tx = self.get_tx(utxo.outpoint.txid)
         return self.get_output_addresses(tx)[utxo.outpoint.vout]
 
+    @cache_method
+    def get_height(self):
+        return self.blockchain.get_height()
+
     def get_full_history(self, address_domain=None):
         transactions = []
         balance = 0
@@ -1088,10 +1100,8 @@ class Wallet(BaseSaveableClass):
             d = {
                 "txid": tx.txid,
                 "fee_sat": tx.fee,
-                "height": height
-                if height is not None
-                else self.blockchain.get_height() + 1,
-                "confirmations": self.blockchain.get_height() - height + 1
+                "height": height if height is not None else self.get_height() + 1,
+                "confirmations": self.get_height() - height + 1
                 if height is not None
                 else -1,
                 "timestamp": timestamp,
@@ -1116,7 +1126,7 @@ class Wallet(BaseSaveableClass):
     #     timestamp = tx_mined_info.timestamp
     #     if height == TX_HEIGHT_FUTURE:
     #         num_blocks_remainining = (
-    #             tx_mined_info.wanted_height - self.blockchain.get_height()
+    #             tx_mined_info.wanted_height - self.get_height()
     #         )
     #         num_blocks_remainining = max(0, num_blocks_remainining)
     #         return 2, f"in {num_blocks_remainining} blocks"
@@ -1221,7 +1231,7 @@ class Wallet(BaseSaveableClass):
         elif txinfos.categories:  # this will not be added if txinfos.utxo_strings
             utxos += [
                 utxo
-                for utxo in self.bdkwallet.list_unspent()
+                for utxo in self.list_unspent()
                 if self.labels.get_category(self.get_address_of_txout(utxo.txout))
                 in txinfos.categories
             ]
@@ -1283,7 +1293,7 @@ class Wallet(BaseSaveableClass):
             # exclude all other coins, to leave only selected_outpoints to choose from
             unspendable_outpoints = [
                 utxo.outpoint
-                for utxo in self.get_utxos()
+                for utxo in self.list_unspent()
                 if OutPoint.from_bdk(utxo.outpoint) not in selected_outpoints
             ]
             tx_builder = tx_builder.unspendable(unspendable_outpoints)

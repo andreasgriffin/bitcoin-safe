@@ -1,5 +1,7 @@
 import logging
 
+import mnemonic
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtWidgets import QTextEdit, QApplication
@@ -38,8 +40,9 @@ class DescriptorEdit(ButtonsTextEdit):
                 )
                 pdf_recovery.create_pdf(
                     title,
-                    combined_wallet_descriptor(wallet.descriptors),
+                    wallet.public_descriptor_string_combined(),
                     [keystore.description for keystore in wallet.keystores],
+                    seed=keystore.mnemonic.as_string() if keystore.mnemonic else None,
                 )
                 temp_file = os.path.join(Path.home(), f"{title}.pdf")
                 pdf_recovery.save_pdf(temp_file)

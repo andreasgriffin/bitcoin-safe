@@ -100,7 +100,7 @@ class LabelTimeEstimation(BaseBlockLabel):
         if blocknumber < 6:
             s = f"~in {(blocknumber)*10} min</span>"
         else:
-            s = f"~in {round(blocknumber/6)} hours"
+            s = f"~in {round((blocknumber)/6)} hours"
 
         self.setText(
             f"<span style='color: {'white' if block_type else 'black'}; font-size: 12px;'>{s}</span>"
@@ -266,6 +266,14 @@ class MempoolButtons(ObjectRequiringMempool):
         )
 
         for i, button in enumerate(self.button_group.buttons):
+            blocknumber = i + 1
+            button.label_title.set(
+                "Next Block" if blocknumber == 1 else f"{blocknumber}. Block",
+                block_type=BlockType.projected,
+            )
+            button.label_time_estimation.set(
+                blocknumber, block_type=BlockType.projected
+            )
             button.label_approximate_median_fee.set(
                 self.median_block_fee_borders[i], block_type=BlockType.projected
             )

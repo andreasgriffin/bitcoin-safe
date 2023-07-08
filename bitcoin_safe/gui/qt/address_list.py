@@ -32,6 +32,17 @@ from ...config import UserConfig, BlockchainType
 logger = logging.getLogger(__name__)
 
 
+from .util import (
+    MONOSPACE_FONT,
+    ColorScheme,
+    MessageBoxMixin,
+    webopen,
+    do_copy,
+    read_QIcon,
+    TX_ICONS,
+    sort_id_to_icon,
+)
+
 import bdkpython as bdk
 import enum
 from enum import IntEnum
@@ -115,13 +126,13 @@ class AddressList(MyTreeView, MessageBoxMixin):
     signal_tag_dropped = Signal(AddressDragInfo)
 
     class Columns(MyTreeView.BaseColumnsEnum):
+        NUM_TXS = enum.auto()
         TYPE = enum.auto()
         ADDRESS = enum.auto()
         CATEGORY = enum.auto()
         LABEL = enum.auto()
         COIN_BALANCE = enum.auto()
         FIAT_BALANCE = enum.auto()
-        NUM_TXS = enum.auto()
 
     filter_columns = [
         Columns.TYPE,
@@ -141,16 +152,19 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     stretch_column = Columns.LABEL
     key_column = 1
+    column_widths = {Columns.ADDRESS: 150}
 
     def __init__(self, fx, config, wallet: Wallet, signals: Signals):
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
+            column_widths=self.column_widths,
             editable_columns=[AddressList.Columns.LABEL],
         )
         self.fx = fx
         self.signals = signals
         self.wallet = wallet
+        self.setTextElideMode(Qt.ElideMiddle)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
@@ -421,44 +435,38 @@ class AddressList(MyTreeView, MessageBoxMixin):
             num_shown += 1
             labels = [""] * len(self.Columns)
             labels[self.Columns.ADDRESS] = address
-            address_item = [QStandardItem(e) for e in labels]
-            address_item[self.Columns.ADDRESS].setData(
-                address, self.ROLE_CLIPBOARD_DATA
-            )
+            item = [QStandardItem(e) for e in labels]
+            item[self.Columns.ADDRESS].setData(address, self.ROLE_CLIPBOARD_DATA)
             # align text and set fonts
-            # for i, item in enumerate(address_item):
+            # for i, item in enumerate(item):
             #     item.setTextAlignment(Qt.AlignVCenter)
             #     if i in (self.Columns.ADDRESS,):
             #         item.setFont(QFont(MONOSPACE_FONT))
-            self.set_editability(address_item)
+            self.set_editability(item)
             # setup column 0
             if self.wallet.is_change(address):
-                address_item[self.Columns.TYPE].setText(_("change"))
-                address_item[self.Columns.TYPE].setData(
-                    _("change"), self.ROLE_CLIPBOARD_DATA
-                )
-                address_item[self.Columns.TYPE].setBackground(
-                    ColorScheme.YELLOW.as_color(True)
-                )
+                item[self.Columns.TYPE].setText(_("change"))
+                item[self.Columns.TYPE].setData(_("change"), self.ROLE_CLIPBOARD_DATA)
+                item[self.Columns.TYPE].setBackground(ColorScheme.YELLOW.as_color(True))
                 address_path = self.wallet.get_address_index_tuple(
                     address, bdk.KeychainKind.INTERNAL
                 )
             else:
-                address_item[self.Columns.TYPE].setText(_("receiving"))
-                address_item[self.Columns.TYPE].setData(
+                item[self.Columns.TYPE].setText(_("receiving"))
+                item[self.Columns.TYPE].setData(
                     _("receiving"), self.ROLE_CLIPBOARD_DATA
                 )
-                address_item[self.Columns.TYPE].setBackground(
-                    ColorScheme.GREEN.as_color(True)
-                )
+                item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
                 address_path = self.wallet.get_address_index_tuple(
                     address, bdk.KeychainKind.EXTERNAL
                 )
-            address_item[self.key_column].setData(address, self.ROLE_KEY)
-            address_item[self.Columns.TYPE].setData(address_path, self.ROLE_SORT_ORDER)
+            item[self.key_column].setData(address, self.ROLE_KEY)
+            item[self.Columns.TYPE].setData(
+                (address_path[0], -address_path[1]), self.ROLE_SORT_ORDER
+            )
             # add item
             count = self.std_model.rowCount()
-            self.std_model.insertRow(count, address_item)
+            self.std_model.insertRow(count, item)
             self.refresh_row(address, count)
             address_idx = self.std_model.index(count, self.Columns.LABEL)
             if address == current_key:
@@ -479,7 +487,19 @@ class AddressList(MyTreeView, MessageBoxMixin):
         address = key
         label = self.wallet.get_label_for_address(address)
         category = self.wallet.labels.get_category(address)
-        num = self.wallet.get_address_history_len(address)
+
+        txs_involed = [
+            outputinfo.tx
+            for outputinfo in self.wallet.get_txs_involving_address(address)
+        ]
+        sort_id = (
+            min([self.wallet.get_tx_status(tx).sort_id for tx in txs_involed])
+            if txs_involed
+            else None
+        )
+        icon_path = sort_id_to_icon(sort_id) if txs_involed else None
+        num = len(txs_involed)
+
         c, u, x = self.wallet.get_addr_balance(address)
         balance = c + u + x
         balance_text = format_satoshis(balance, self.wallet.network)
@@ -490,25 +510,22 @@ class AddressList(MyTreeView, MessageBoxMixin):
             fiat_balance_str = fx.value_str(balance, rate)
         else:
             fiat_balance_str = ""
-        address_item = [self.std_model.item(row, col) for col in self.Columns]
-        address_item[self.Columns.LABEL].setText(label)
-        address_item[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
-        address_item[self.Columns.CATEGORY].setText(category)
-        address_item[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
-        address_item[self.Columns.CATEGORY].setBackground(
-            CategoryEditor.color(category)
-        )
-        address_item[self.Columns.COIN_BALANCE].setText(balance_text)
-        address_item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
-        address_item[self.Columns.COIN_BALANCE].setData(
-            balance, self.ROLE_CLIPBOARD_DATA
-        )
-        address_item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
-        address_item[self.Columns.FIAT_BALANCE].setData(
+        item = [self.std_model.item(row, col) for col in self.Columns]
+        item[self.Columns.LABEL].setText(label)
+        item[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.CATEGORY].setText(category)
+        item[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
+        item[self.Columns.COIN_BALANCE].setText(balance_text)
+        item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
+        item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
+        item[self.Columns.FIAT_BALANCE].setData(
             fiat_balance_str, self.ROLE_CLIPBOARD_DATA
         )
-        address_item[self.Columns.NUM_TXS].setText("%d" % num)
-        address_item[self.Columns.NUM_TXS].setData(num, self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.NUM_TXS].setText("%d" % num)
+        item[self.Columns.NUM_TXS].setData(num, self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.NUM_TXS].setIcon(read_QIcon(icon_path))
 
     def create_menu(self, position):
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)

@@ -40,6 +40,7 @@ from ...tx import TXInfos
 from ...pythonbdk_types import Error
 import bdkpython as bdk
 import os
+from .plot import WalletBalanceChart
 
 
 class StatusBarButton(QToolButton):
@@ -317,7 +318,7 @@ class QTWallet(WalletTab):
 
     def _get_sub_texts_for_uitx(self):
         d = {}
-        for utxo in self.wallet.get_utxos():
+        for utxo in self.wallet.list_unspent():
             address = self.wallet.get_utxo_address(utxo)
             category = self.wallet.labels.get_category(address)
             if category not in d:
@@ -337,7 +338,7 @@ class QTWallet(WalletTab):
 
     def _create_send_tab(self, tabs):
         def get_outpoints():
-            return [utxo.outpoint for utxo in self.wallet.get_utxos()]
+            return [utxo.outpoint for utxo in self.wallet.list_unspent()]
 
         utxo_list = UTXOList(
             self.config,
@@ -363,7 +364,7 @@ class QTWallet(WalletTab):
         add_tab_to_tabs(
             self.tabs,
             uitx_creator.main_widget,
-            read_QIcon("tab_send.png"),
+            read_QIcon("send.svg"),
             "Send",
             "send",
         )
@@ -434,14 +435,19 @@ class QTWallet(WalletTab):
         "Create tabs.  set_wallet be called first"
         assert bool(self.wallet)
 
-        self.history_tab, self.history_list = self._create_hist_tab(self.tabs)
         (
             self.addresses_tab,
             self.address_list,
             self.address_list_tags,
         ) = self._create_addresses_tab(self.tabs)
+
         self.send_tab, self.uitx_creator = self._create_send_tab(self.tabs)
         # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)
+
+        self.history_tab, self.history_list, self.balance_plot = self._create_hist_tab(
+            self.tabs
+        )
+
         (
             self.settings_tab,
             self.wallet_descriptor_ui,
@@ -588,7 +594,7 @@ class QTWallet(WalletTab):
         if self.is_synchronizing:
             network_text = _("Synchronizing...")
             icon = read_QIcon("status_waiting.png")
-        elif self.wallet.blockchain and self.wallet.blockchain.get_height():
+        elif self.wallet.blockchain and self.wallet.get_height():
             network_text = _("Connected")
             (
                 confirmed,
@@ -656,6 +662,9 @@ class QTWallet(WalletTab):
         return h
 
     def _create_hist_tab(self, tabs):
+        tab = QWidget()
+        tab_layout = QHBoxLayout(tab)
+
         l = HistList(
             fx=self.fx,
             config=self.config,
@@ -668,13 +677,17 @@ class QTWallet(WalletTab):
                 HistList.Columns.TXID,
             ],
         )
-        tab = self.create_list_tab(l)
+        list_widget = self.create_list_tab(l)
+        tab_layout.addWidget(list_widget)
+
+        plot = WalletBalanceChart(self.wallet, signals=self.signals)
+        tab_layout.addWidget(plot)
 
         add_tab_to_tabs(
-            tabs, tab, read_QIcon("tab_history.png"), "History", "history", position=0
+            tabs, tab, read_QIcon("history.svg"), "History", "history", position=2
         )
 
-        return tab, l
+        return tab, l, plot
 
     def _subtexts_for_categories(self):
         d = {}
@@ -704,7 +717,7 @@ class QTWallet(WalletTab):
         add_tab_to_tabs(
             tabs,
             tab,
-            read_QIcon("tab_addresses.png"),
+            read_QIcon("receive.svg"),
             "Receive",
             "receive",
             position=1,
@@ -714,7 +727,7 @@ class QTWallet(WalletTab):
     # def _create_utxo_tab(self, tabs):
     #     "deprecated"
     #     outpoins = [
-    #         utxo.outpoint   for utxo in self.wallet.get_utxos()
+    #         utxo.outpoint   for utxo in self.wallet.list_unspent()
     #     ]
 
     #     l = UTXOList(

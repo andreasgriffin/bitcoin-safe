@@ -170,8 +170,9 @@ def cache_method(func):
 
     def wrapper(self, *args, **kwargs):
         cache_key = f"{func.__name__}({args, kwargs})"
-        if self.cache.get(cache_key):
-            return self.cache.get(cache_key)
+        result = self.cache.get(cache_key)
+        if result:
+            return result
 
         result = func(self, *args, **kwargs)
         self.cache[cache_key] = result

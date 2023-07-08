@@ -66,7 +66,9 @@ class BitcoinWalletRecoveryPDF:
         )
         self.elements = []
 
-    def create_pdf(self, title, wallet_descriptor_string, keystore_descriptions):
+    def create_pdf(
+        self, title, wallet_descriptor_string, keystore_descriptions, seed=None
+    ):
         self.elements.append(
             Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading)
         )
@@ -139,14 +141,24 @@ class BitcoinWalletRecoveryPDF:
 
         # Table title
         table_title = "Secret seed words for a Hardware wallet: Never type into a computer. Never make a picture."
+        seed_placeholder = "___________________"
+
+        # split seed words if available
+        if seed:
+            seed_items = seed.split(" ")
+            seed_items = seed_items + [
+                seed_placeholder for i in range(24 - len(seed_items))
+            ]
+        else:
+            seed_items = [seed_placeholder for i in range(24)]
 
         # 24 words placeholder in three columns
         data = [[""] * 3 for _ in range(9)]  # 9 rows, including the title row
         data[0] = [table_title, "", ""]  # First row is the title
-        for i in range(1, 9):
-            data[i][0] = f"{i} ___________________"
-            data[i][1] = f"{i + 8} ___________________"
-            data[i][2] = f"{i + 16} ___________________"
+        for i in range(8):
+            data[i][0] = f"{i+1} {seed_items[i]}"
+            data[i][1] = f"{i + 8+1} {seed_items[i+8]}"
+            data[i][2] = f"{i + 16+1} {seed_items[i+16]}"
 
         table = Table(data)
 
@@ -169,6 +181,7 @@ class BitcoinWalletRecoveryPDF:
                     colors.whitesmoke,
                 ),  # Text color for the title
                 ("FONTNAME", (0, 0), (2, 0), "Helvetica-Bold"),  # Font for the title
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),  # Vertical alignment for all cells
             ]
         )
 

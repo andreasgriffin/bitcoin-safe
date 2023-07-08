@@ -106,6 +106,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.PARENTS: Qt.AlignCenter | Qt.AlignVCenter,
     }
 
+    column_widths = {Columns.ADDRESS: 50}
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
 
@@ -119,6 +120,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
+            column_widths=self.column_widths,
             editable_columns=[],
         )
         self.config = config
@@ -229,11 +231,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
 
         if hasattr(self, "num_coins_label"):
             self.num_coins_label.setText(_("{} transaction outpoints").format(len(idx)))
-
-        self.header().setSectionResizeMode(
-            self.Columns.OUTPOINT, QHeaderView.Interactive
-        )
-        self.header().resizeSection(self.Columns.OUTPOINT, 50)
 
         self.header().setSectionResizeMode(
             self.Columns.ADDRESS, QHeaderView.Interactive

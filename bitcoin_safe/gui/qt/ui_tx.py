@@ -320,6 +320,9 @@ class FeeGroup(QObject):
         self.spin_fee_rate.editingFinished.connect(
             lambda: self.set_fee_rate(self.spin_fee_rate.value())
         )
+        self.spin_fee_rate.valueChanged.connect(
+            lambda: self.set_fee_rate(self.spin_fee_rate.value())
+        )
 
         self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
 
@@ -889,8 +892,9 @@ class UITX_Creator(UITX_Base):
 
     def update_categories(self):
         self.category_list.clear()
+        sub_text = self.get_sub_texts()
         for category in self.categories:
-            self.category_list.add(category, sub_text=self.get_sub_texts())
+            self.category_list.add(category, sub_text=sub_text)
 
     def retranslateUi(self):
         self.main_widget.setWindowTitle(

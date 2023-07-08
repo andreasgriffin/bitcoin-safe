@@ -388,12 +388,14 @@ class MyTreeView(QTreeView):
         parent: Optional[QWidget] = None,
         config=None,
         stretch_column: Optional[int] = None,
+        column_widths: Optional[Dict[int, int]] = None,
         editable_columns: Optional[Sequence[int]] = None,
     ):
         parent = parent
         super().__init__(parent)
         self.config = config
         self.stretch_column = stretch_column
+        self.column_widths = column_widths if column_widths else {}
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
         self.setUniformRowHeights(True)
@@ -415,7 +417,6 @@ class MyTreeView(QTreeView):
         # So to speed the UI up considerably, set it to
         # only look at as many rows as currently visible.
         self.header().setResizeContentsPrecision(0)
-
         self._pending_update = False
         self._forced_update = False
 
@@ -513,9 +514,14 @@ class MyTreeView(QTreeView):
             sm = (
                 QHeaderView.Stretch
                 if col_idx == self.stretch_column
+                or col_idx in self.column_widths.keys()
                 else QHeaderView.ResizeToContents
             )
             self.header().setSectionResizeMode(col_idx, sm)
+
+        for col_idx, width in self.column_widths.items():
+            self.header().setSectionResizeMode(col_idx, QHeaderView.Interactive)
+            self.header().resizeSection(col_idx, width)
 
     def keyPressEvent(self, event):
         if self.itemDelegate().opened:
