@@ -380,7 +380,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         if update_filter.refresh_all:
             return self.update()
 
-        model = self.model()
+        model = self.std_model
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
             address = model.data(model.index(row, self.Columns.ADDRESS))

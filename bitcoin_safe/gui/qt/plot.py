@@ -1,13 +1,12 @@
 import sys
 import random
 import datetime
+from time import time
 from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PySide2.QtCharts import QtCharts
 from PySide2.QtCore import QDateTime, Qt, QTimer
+from PySide2.QtGui import QColor
 
-from ...signals import Signals
-
-from ...wallet import Wallet
 import numpy as np
 
 
@@ -25,13 +24,9 @@ class BalanceChart(QWidget):
 
         # Create DateTime axis for X
         self.datetime_axis = QtCharts.QDateTimeAxis()
-        self.datetime_axis.setFormat("d MMM yy")
-        self.datetime_axis.setTitleText("Date")
-        # self.datetime_axis.setTickCount(5)
 
         # Create Value axis for Y
         self.value_axis = QtCharts.QValueAxis()
-        self.value_axis.setTitleText("Balance (BTC)")
 
         self.chart.addAxis(self.datetime_axis, Qt.AlignBottom)
         self.chart.addAxis(self.value_axis, Qt.AlignLeft)
@@ -46,8 +41,12 @@ class BalanceChart(QWidget):
     def update_chart(self, balance_data, project_until_now=True):
         if len(balance_data) == 0:
             return
-
         balance_data = np.array(balance_data)
+
+        self.datetime_axis.setTitleText("Date")
+        self.datetime_axis.setTickCount(6)
+        self.value_axis.setTitleText("Balance (BTC)")
+        self.value_axis.setLabelFormat("%.2f")  # Set format to two decimal places
 
         # Clear previous series
         self.chart.removeAllSeries()
@@ -58,21 +57,28 @@ class BalanceChart(QWidget):
         min_timestamp = float("inf")
         max_timestamp = float("-inf")
 
+        step_data = balance_data.copy()
+
         # add the current time as last point, if the data is in the past
         if project_until_now and datetime.datetime.now().timestamp() > max(
-            balance_data[:, 0]
+            step_data[:, 0]
         ):
-            balance_data = np.vstack(
+            step_data = np.vstack(
                 [
-                    balance_data,
-                    (datetime.datetime.now().timestamp(), balance_data[-1][1]),
+                    step_data,
+                    (datetime.datetime.now().timestamp(), step_data[-1][1]),
                 ]
             )
 
+        if np.max(step_data[:, 0]) - np.min(step_data[:, 0]) < 24 * 60 * 60:
+            self.datetime_axis.setFormat("HH:mm")
+        else:
+            self.datetime_axis.setFormat("d MMM yy")
+
         # Create Line series
         series = QtCharts.QLineSeries()
-        for i, (timestamp, balance) in enumerate(balance_data[:-1]):
-            next_timestamp, _ = balance_data[i + 1]
+        for i, (timestamp, balance) in enumerate(step_data[:-1]):
+            next_timestamp, _ = step_data[i + 1]
             series.append(
                 QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
                 balance,
@@ -87,14 +93,34 @@ class BalanceChart(QWidget):
             min_timestamp = min(min_timestamp, timestamp)
 
         # Add the last data point
-        timestamp, balance = balance_data[-1]
+        timestamp, balance = step_data[-1]
         series.append(
             QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(), balance
         )
         max_balance = max(max_balance, balance)
-        min_balance = min(min_balance, balance)
+        min_balance = 0
         max_timestamp = max(max_timestamp, timestamp)
         min_timestamp = min(min_timestamp, timestamp)
+
+        self.datetime_axis.setRange(
+            QDateTime.fromSecsSinceEpoch(int(min_timestamp)),
+            QDateTime.fromSecsSinceEpoch(int(max_timestamp)),
+        )
+        self.value_axis.setRange(
+            0,
+            max_balance,
+        )
+
+        buffer_time = 60 * 60
+        self.datetime_axis.setMin(
+            QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time))
+        )
+        self.datetime_axis.setMax(
+            QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time))
+        )
+        self.value_axis.setMin(min_balance)
+        buffer_factor = 0.01
+        self.value_axis.setMax(max_balance * (1 + buffer_factor))
 
         # Adding series to the chart
         self.chart.addSeries(series)
@@ -103,15 +129,41 @@ class BalanceChart(QWidget):
         series.attachAxis(self.datetime_axis)
         series.attachAxis(self.value_axis)
 
-        # Update the axis ranges
-        self.datetime_axis.setRange(
-            QDateTime.fromSecsSinceEpoch(int(min_timestamp)).toMSecsSinceEpoch(),
-            QDateTime.fromSecsSinceEpoch(int(max_timestamp)).toMSecsSinceEpoch(),
-        )
-        self.value_axis.setRange(min_balance, max_balance)
         print(
             f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}"
         )
+
+        scatter_series = QtCharts.QScatterSeries()
+        for (timestamp, balance) in balance_data:
+            scatter_series.append(
+                QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
+                balance,
+            )
+
+        scatter_series = QtCharts.QScatterSeries()
+        for (timestamp, balance) in balance_data:
+            scatter_series.append(
+                QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
+                balance,
+            )
+
+        # Set marker shape and size
+        scatter_series.setMarkerShape(QtCharts.QScatterSeries.MarkerShapeCircle)
+        scatter_series.setMarkerSize(5)
+
+        # Set marker color
+        border_color = QColor("#209fdf")  # Blue
+        brush_color = QColor("#209fdf")  # Semi-transparent blue
+        scatter_series.setPen(border_color)
+        scatter_series.setBrush(brush_color)
+
+        self.chart.addSeries(scatter_series)
+        scatter_series.attachAxis(self.datetime_axis)
+        scatter_series.attachAxis(self.value_axis)
+
+
+from ...signals import Signals
+from ...wallet import Wallet
 
 
 class WalletBalanceChart(BalanceChart):
@@ -182,7 +234,7 @@ class TransactionSimulator(QMainWindow):
             int(
                 (
                     datetime.datetime.fromtimestamp(self.transactions[-1][0])
-                    + datetime.timedelta(days=1)
+                    + datetime.timedelta(days=5)
                 ).timestamp()
             ),
             random.uniform(-0.1, 0.1),

@@ -14,7 +14,9 @@ from .util import (
     balance_dict,
     Satoshis,
     timestamp_to_datetime,
+    replace_non_alphanumeric,
 )
+import re
 from .util import (
     TX_HEIGHT_FUTURE,
     TX_HEIGHT_INF,
@@ -310,7 +312,6 @@ class Wallet(BaseSaveableClass):
         keystores: List[KeyStore] = None,
         gap=20,
         gap_change=20,
-        categories=None,
         labels: Labels = None,
         network: bdk.Network = None,
         config: UserConfig = None,
@@ -336,7 +337,6 @@ class Wallet(BaseSaveableClass):
             0,
             0,
         ]  # this is needed because there is currently no way to get the real tip from bdkwallet
-        self.categories = categories if categories else []
         self.labels: Labels = labels if labels else Labels()
 
         self.keystores: List[KeyStore] = (
@@ -399,7 +399,6 @@ class Wallet(BaseSaveableClass):
             "network",
             "gap_change",
             "keystores",
-            "categories",
             "labels",
             "descriptor_str",
         ]
@@ -566,7 +565,7 @@ class Wallet(BaseSaveableClass):
         return self.blockchain
 
     def _get_uniquie_wallet_id(self):
-        return f"{self.id}-{hash_string(self.descriptor_str)}"
+        return f"{replace_non_alphanumeric(self.id)}-{hash_string(self.descriptor_str)}"
 
     def sync(self, progress_function_threadsafe=None):
         if self.blockchain is None:
@@ -1392,3 +1391,4 @@ class Wallet(BaseSaveableClass):
         for recipient in recipients:
             if self.is_my_address(recipient.address):
                 self.labels.set_addr_category(recipient.address, category)
+                self.labels.add_category(category)

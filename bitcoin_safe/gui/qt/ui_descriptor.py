@@ -364,6 +364,9 @@ class WalletDescriptorUI(QObject):
         # self.edit_descriptor.textChanged.connect(self.signal_descriptor_change_apply)
         self.spin_signers.valueChanged.connect(self.on_spin_signer_changed)
         self.spin_req.valueChanged.connect(self.on_spin_threshold_changed)
+        self.comboBox_address_type.currentIndexChanged.connect(
+            lambda x: self.on_wallet_ui_changes()
+        )
 
     def create_button_bar(self):
         box_button_bar = QWidget(self.tab)

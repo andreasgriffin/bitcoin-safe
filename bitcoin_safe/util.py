@@ -161,6 +161,10 @@ import bdkpython as bdk
 import hashlib
 
 
+def replace_non_alphanumeric(string):
+    return re.sub(r"\W+", "_", string)
+
+
 def hash_string(text):
     return hashlib.sha256(text.encode()).hexdigest()
 

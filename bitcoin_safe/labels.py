@@ -105,13 +105,20 @@ class Labels(BaseSaveableClass):
         item[Key.label.name] = value
         item[Key.type.name] = type.name
 
+        if value is None:
+            del item[Key.label.name]
+
     def set_category(self, type: Type, ref, value):
         item = self.data.setdefault(ref, {})
         item[Key.ref.name] = ref
         item[Key.category.name] = value
         item[Key.type.name] = type.name
 
-        if value not in self.categories:
+        if value is None:
+            del item[Key.category.name]
+            return
+
+        if value and value not in self.categories:
             self.categories.append(value)
 
     def set_tx_label(self, ref, value):

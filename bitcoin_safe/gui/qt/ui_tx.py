@@ -451,7 +451,7 @@ class UIPSBT_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             url=block_explorer_URL(config, "tx", psbt.txid()) if psbt else None,
-            fee_rate=psbt.fee_rate(),
+            fee_rate=psbt.fee_rate().as_sat_per_vb(),
         )
 
         self.lower_widget = QWidget(self.main_widget)

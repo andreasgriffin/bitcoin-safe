@@ -333,7 +333,7 @@ class QTWallet(WalletTab):
 
         return [
             f"{len(d.get(category, []))} Inputs: {Satoshis(sum_value(category), self.wallet.network).str_with_unit()}"
-            for category in self.wallet.categories
+            for category in self.wallet.labels.categories
         ]
 
     def _create_send_tab(self, tabs):
@@ -354,7 +354,7 @@ class QTWallet(WalletTab):
 
         uitx_creator = UITX_Creator(
             self.mempool_data,
-            self.wallet.categories,
+            self.wallet.labels.categories,
             utxo_list,
             self.config,
             self.signals,
@@ -665,6 +665,9 @@ class QTWallet(WalletTab):
         tab = QWidget()
         tab_layout = QHBoxLayout(tab)
 
+        splitter1 = QSplitter()  # horizontal splitter by default
+        tab_layout.addWidget(splitter1)
+
         l = HistList(
             fx=self.fx,
             config=self.config,
@@ -678,15 +681,16 @@ class QTWallet(WalletTab):
             ],
         )
         list_widget = self.create_list_tab(l)
-        tab_layout.addWidget(list_widget)
+        splitter1.addWidget(list_widget)
 
         plot = WalletBalanceChart(self.wallet, signals=self.signals)
-        tab_layout.addWidget(plot)
+        splitter1.addWidget(plot)
 
         add_tab_to_tabs(
             tabs, tab, read_QIcon("history.svg"), "History", "history", position=2
         )
 
+        splitter1.setSizes([1, 1])
         return tab, l, plot
 
     def _subtexts_for_categories(self):
@@ -700,14 +704,14 @@ class QTWallet(WalletTab):
 
         return [
             f"{len(d.get(category, []))} Addresses"
-            for category in self.wallet.categories
+            for category in self.wallet.labels.categories
         ]
 
     def _create_addresses_tab(self, tabs):
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
 
         tags = CategoryEditor(
-            self.wallet.categories,
+            self.wallet.labels.categories,
             self.signals,
             get_sub_texts=self._subtexts_for_categories,
         )

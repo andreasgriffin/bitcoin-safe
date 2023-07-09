@@ -97,8 +97,6 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
         self.signals.open_wallet.connect(self.open_wallet)
 
-        self.signals.open_tx.connect(self.open_tx_like_in_tab)
-
         self._init_tray()
 
         opened_qt_wallets = self.open_last_opened_wallets()
@@ -471,6 +469,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                 qtprotowallet.protowallet, qtprotowallet.wallet_id, self.config
             )
             qt_wallet = self.add_qt_wallet(wallet)
+            qt_wallet.save()
             qt_wallet.sync()
 
         m, n = m_of_n

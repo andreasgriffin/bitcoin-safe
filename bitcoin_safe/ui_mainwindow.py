@@ -39,6 +39,7 @@ class Ui_MainWindow(QMainWindow):
 
         #####
         self.tab_wallets = tabs = QTabWidget(self)
+        self.tab_wallets.setMovable(True)  # Enable tab reordering
         self.tab_wallets.setTabsClosable(True)
         tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # Connect signals to slots
