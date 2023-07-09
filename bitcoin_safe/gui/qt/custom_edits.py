@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from ...descriptors import combined_wallet_descriptor
 from .util import Message
+from ...descriptors import public_descriptor_info
 
 
 class DescriptorEdit(ButtonsTextEdit):
@@ -32,9 +33,12 @@ class DescriptorEdit(ButtonsTextEdit):
                 return
 
             wallet: Wallet = get_wallet()
+            info = public_descriptor_info(
+                wallet.public_descriptor_string_combined(), wallet.network
+            )
             for i, keystore in enumerate(wallet.keystores):
                 title = (
-                    f"Wallet {wallet.id} - Backup of Seed {i+1}"
+                    f"Backup of Seed {i+1} of a  ({info['threshold']} of {len(wallet.keystores)}) Multi-Sig Wallet: {wallet.id}"
                     if len(wallet.keystores) > 1
                     else f"{wallet.id }"
                 )

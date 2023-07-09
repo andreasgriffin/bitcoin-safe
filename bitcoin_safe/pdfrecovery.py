@@ -85,10 +85,16 @@ class BitcoinWalletRecoveryPDF:
         qr_image = pilimage_to_reportlab(
             create_qr(wallet_descriptor_string), width=200, height=200
         )
-        desc_str = Paragraph(
-            f"The wallet descriptor (QR Code) is necessary to recreate (and spend from) your wallet:<br/><br/>{wallet_descriptor_string}",
-            self.style_paragraph,
-        )
+        if len(keystore_descriptions) > 1:
+            desc_str = Paragraph(
+                f"The wallet descriptor (QR Code) is necessary to recreate (and spend from) your wallet:<br/><br/>{wallet_descriptor_string}",
+                self.style_paragraph,
+            )
+        else:
+            desc_str = Paragraph(
+                f"The wallet descriptor (QR Code) allows you to create a watch-only wallet, to see your balances, but not spent from it:<br/><br/>{wallet_descriptor_string}",
+                self.style_paragraph,
+            )
         self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))
 
         self.elements.append(Spacer(1, 10))
@@ -153,12 +159,9 @@ class BitcoinWalletRecoveryPDF:
             seed_items = [seed_placeholder for i in range(24)]
 
         # 24 words placeholder in three columns
-        data = [[""] * 3 for _ in range(9)]  # 9 rows, including the title row
-        data[0] = [table_title, "", ""]  # First row is the title
+        data = [[table_title, "", ""]]  # First row is the title
         for i in range(8):
-            data[i][0] = f"{i+1} {seed_items[i]}"
-            data[i][1] = f"{i + 8+1} {seed_items[i+8]}"
-            data[i][2] = f"{i + 16+1} {seed_items[i+16]}"
+            data.append([f"{i + j+1} {seed_items[i+j]}" for j in [0, 8, 16]])
 
         table = Table(data)
 

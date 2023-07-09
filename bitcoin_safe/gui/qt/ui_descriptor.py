@@ -79,8 +79,9 @@ class WalletDescriptorUI(QObject):
             signal.connect(self.ui_keystore_ui_change)
         for ui in self.keystore_uis:
             ui.keystore_ui_default.signal_seed_changed.connect(self.ui_seed_ui_change)
-        self.disable_fields()
         self.set_all_ui_from_protowallet()
+        # diasbeling fields MUST be done after the ui is filled
+        self.disable_fields()
 
         self.box_button_bar = self.create_button_bar()
 
@@ -338,7 +339,7 @@ class WalletDescriptorUI(QObject):
         # }
         # """)
         self.horizontalLayout_4 = QHBoxLayout(groupBox_wallet_descriptor)
-        self.edit_descriptor = DescriptorEdit(lambda: self.wallet)
+        self.edit_descriptor = DescriptorEdit(get_wallet=lambda: self.wallet)
         self.edit_descriptor.setToolTip(
             f'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
         )

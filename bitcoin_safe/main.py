@@ -450,8 +450,8 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         )
 
     def click_create_multisig_signature_wallet(self):
-        qtwallet = self.create_qtprotowallet((2, 3))
-        qtwallet.wallet_descriptor_ui.disable_fields()
+        qtprotowallet = self.create_qtprotowallet((2, 3))
+        qtprotowallet.wallet_descriptor_ui.disable_fields()
 
     def click_custom_signature(self):
         return self.create_qtprotowallet((3, 5))
