@@ -63,7 +63,7 @@
 
 #### UX
 
-![screenshot0](docs/gif-addresses.gif)
+![screenshot0](docs/categories.gif)
 
 ![screenshot0](docs/send-tx.gif)
 
