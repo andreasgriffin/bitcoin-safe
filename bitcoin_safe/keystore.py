@@ -46,11 +46,17 @@ class KeyStoreTypes:
     hwi = KeyStoreType(
         "hwi", "USB Hardware Wallet", "Connect \nUSB \nHardware Wallet", ["usb.svg"]
     )
-    psbt = KeyStoreType(
-        "psbp",
-        "SD or QR Code",
-        "Import signer details\nvia SD card or QR code",
-        ["qr-code.svg", "sd-card.svg"],
+    file = KeyStoreType(
+        "file",
+        "SD card",
+        "Import signer details\nvia SD card",
+        ["sd-card.svg"],
+    )
+    qr = KeyStoreType(
+        "qr",
+        "QR Code",
+        "Import signer details\nvia QR code",
+        ["qr-code.svg"],
     )
     watch_only = KeyStoreType(
         "watch_only",
@@ -70,33 +76,13 @@ class KeyStoreTypes:
     def list_types(cls, network: bdk.Network):
         return [
             v
-            for v in [cls.hwi, cls.psbt, cls.watch_only, cls.seed]
+            for v in [cls.hwi, cls.file, cls.qr, cls.watch_only, cls.seed]
             if network in v.networks
         ]
 
     @classmethod
     def list_names(cls, network: bdk.Network):
         return [v.name for v in cls.list_types(network)]
-
-
-# class SignallingProperty():
-#     value_changed = Signal()
-
-#     def __init__(self, initial_value=None, value_type=str):
-#         super().__init__()
-#         self._value = initial_value
-#         self._value_type = value_type
-
-#     @property
-#     def value(self):
-#         return self._value
-
-#     @value.setter
-#     def value(self, new_value):
-#         new_value = self._value_type(new_value)
-#         if self._value != new_value:
-#             self._value = new_value
-#             self.value_changed.emit()
 
 
 class KeyStore(BaseSaveableClass):
@@ -106,7 +92,6 @@ class KeyStore(BaseSaveableClass):
         fingerprint,
         derivation_path: str,
         label,
-        type: KeyStoreType,
         mnemonic: bdk.Mnemonic = None,
         description: str = "",
     ) -> None:
@@ -114,7 +99,6 @@ class KeyStore(BaseSaveableClass):
         self.fingerprint = fingerprint
         self.derivation_path = derivation_path
         self.label = label
-        self.type = type
         self.mnemonic = mnemonic
         self.description = description
 
@@ -165,9 +149,6 @@ class KeyStore(BaseSaveableClass):
 
         return KeyStore(**dct)
 
-    def set_type(self, type):
-        self.type = type
-
     def set_derivation_path(self, derivation_path):
         self.derivation_path = derivation_path
 
@@ -176,6 +157,5 @@ class KeyStore(BaseSaveableClass):
         self.fingerprint = other_keystore.fingerprint
         self.derivation_path = other_keystore.derivation_path
         self.label = other_keystore.label
-        self.type = other_keystore.type
         self.mnemonic = other_keystore.mnemonic
         self.description = other_keystore.description

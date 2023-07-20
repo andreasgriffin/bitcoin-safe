@@ -181,7 +181,6 @@ class ProtoWallet:
                     None,
                     initial_address_type.derivation_path(network),
                     label=self.signer_names(threshold, i),
-                    type=None,
                 )
                 for i in range(signers)
             ]
@@ -214,7 +213,6 @@ class ProtoWallet:
                 fingerprint=d["fingerprint"],
                 derivation_path=d["derivation_path"],
                 label=cls.signer_names(i=i, threshold=info["threshold"]),
-                type=get_default_keystore().type,
             )
             for i, d in enumerate(info["keystores"])
         ]
@@ -362,7 +360,6 @@ class Wallet(BaseSaveableClass):
         if self.keystores:
             # fill the fields, that the descrioptor doesn't contain
             for own_keystore, keystore in zip(self.keystores, protowallet.keystores):
-                keystore.type = own_keystore.type
                 keystore.mnemonic = own_keystore.mnemonic
                 keystore.description = own_keystore.description
                 keystore.label = own_keystore.label

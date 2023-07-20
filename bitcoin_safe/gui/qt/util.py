@@ -1,4 +1,5 @@
 import logging
+from bitcoin_qrreader import bitcoin_qr
 
 logger = logging.getLogger(__name__)
 
@@ -244,15 +245,17 @@ def add_centered_icons(
         AspectRatioSvgWidget(icon_path(path), *max_size)
         for max_size, path in zip(max_sizes, paths)
     ]
+
     add_centered(
         svg_widgets, parent, outer_layout, direction=direction, alignment=alignment
     )
+
     return svg_widgets
 
 
 def create_button(
     text, icon_paths, parent, outer_layout, max_sizes=None, button_max_height=200
-):
+) -> QPushButton:
     button = QPushButton(parent)
     if button_max_height:
         button.setMaximumHeight(button_max_height)
@@ -273,19 +276,38 @@ def create_button(
     label_icon = QLabel(button)
     label_icon.setWordWrap(True)
     label_icon.setText(text)
+    label_icon.setHidden(not bool(text))
     label_icon.setAlignment(Qt.AlignHCenter)
     layout = center_in_widget([label_icon], widget1, direction="h")
-    # layout.setContentsMargins(0, 0, 0, 0)
+    if not text:
+        layout.setContentsMargins(0, 0, 0, 0)
 
     if not isinstance(icon_paths, (list, tuple)):
         icon_paths = [icon_paths]
     layout = QHBoxLayout(widget2)
-    add_centered_icons(
-        icon_paths,
-        widget2,
-        layout,
-        max_sizes=max_sizes if max_sizes else [(60, 60)] * len(icon_paths),
-    )
+
+    # Calculate total width and height of all widgets in layout
+    total_width = 0
+    total_height = 0
+
+    if icon_paths:
+        max_sizes = max_sizes if max_sizes else [(60, 60)] * len(icon_paths)
+        total_width += sum(w for w, h in max_sizes)
+        total_height += max(h for w, h in max_sizes)
+        add_centered_icons(
+            icon_paths,
+            widget2,
+            layout,
+            max_sizes=max_sizes,
+        )
+
+    # Add layout margins
+    margins = layout.contentsMargins()
+    total_width += margins.left() + margins.right()
+    total_height += margins.top() + margins.bottom()
+
+    # Set minimum size of button
+    button.setMinimumSize(total_width, total_height)
     layout.setContentsMargins(0, 0, 0, 0)
     return button
 
@@ -944,7 +966,7 @@ class GenericInputHandler:
                 new_text = data
             setText(new_text)
 
-        from .qrreader import scan_qrcode
+        from bitcoin_qrreader import scan_qrcode
 
         scan_qrcode(parent=self, config=config, callback=cb)
 
@@ -957,7 +979,7 @@ class GenericInputHandler:
     ) -> None:
         if setText is None:
             setText = self.setText
-        from .qrreader import scan_qr_from_image
+        from bitcoin_qrreader import scan_qr_from_image
 
         scanned_qr = None
         for screen in QApplication.instance().screens():
@@ -1195,23 +1217,27 @@ class OverlayControlMixin(GenericInputHandler):
     def add_qr_input_from_camera_button(
         self,
         *,
-        config: "UserConfig",
-        allow_multi: bool = False,
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
+        custom_handle_input=None,
     ):
-        input_qr_from_camera = partial(
-            self.input_qr_from_camera,
-            config=config,
-            allow_multi=allow_multi,
-            show_error=show_error,
-            setText=setText,
-        )
-        self.addButton(
+        def input_qr_from_camera():
+            from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+
+            def result_callback(data: bitcoin_qr.Data):
+                if custom_handle_input:
+                    custom_handle_input(data, self)
+                else:
+                    self.setText(str(data.data_as_string()))
+
+            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback)
+            window.show()
+
+        button = self.addButton(
             get_iconname_camera(), input_qr_from_camera, _("Read QR code from camera")
         )
         # side-effect: we export these methods:
         self.on_qr_from_camera_input_btn = input_qr_from_camera
+
+        return button
 
     def add_file_input_button(
         self,
@@ -1307,6 +1333,22 @@ class ShowCopyLineEdit(ButtonsLineEdit):
         self.setReadOnly(True)
         # self.setFont(QFont(MONOSPACE_FONT))
         self.addCopyButton()
+
+
+class CameraInputLineEdit(ButtonsLineEdit):
+    """read-only line with qr and copy buttons"""
+
+    def __init__(self, text: str = "", custom_handle_input=None):
+        ButtonsLineEdit.__init__(self, text)
+
+        def default_handle_input(data: bitcoin_qr.Data, parent: QWidget):
+            parent.setText(str(data.data_as_string()))
+
+        self.camera_button = self.add_qr_input_from_camera_button(
+            custom_handle_input=custom_handle_input
+            if custom_handle_input
+            else default_handle_input
+        )
 
 
 class MnemonicLineEdit(ButtonsLineEdit):

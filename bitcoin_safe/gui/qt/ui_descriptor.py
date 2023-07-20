@@ -262,63 +262,58 @@ class WalletDescriptorUI(QObject):
 
     def create_wallet_type_and_descriptor(self):
         box_wallet_type_and_descriptor = QWidget(self.tab)
-        box_wallet_type_and_descriptor.setMaximumHeight(200)
-
+        box_wallet_type_and_descriptor.setMaximumHeight(170)
         h_wallet_type_and_descriptor = QHBoxLayout(box_wallet_type_and_descriptor)
+
+        # Removed the unnecessary parent widgets. Using QGroupBox directly as the container.
         box_wallet_type = QGroupBox(box_wallet_type_and_descriptor)
-        v_wallet_type = QVBoxLayout(box_wallet_type)
+
+        # Create a QFormLayout
+        form_wallet_type = QFormLayout(box_wallet_type)
 
         # box_signers_with_slider
-        box_signers_with_slider = QWidget(box_wallet_type)
-        h_signers_with_slider = QHBoxLayout(box_signers_with_slider)
-        label_signers = QLabel(box_signers_with_slider)
+        label_signers = QLabel()
         label_signers.setText(QCoreApplication.translate("tab", "Signers", None))
-        h_signers_with_slider.addWidget(label_signers)
-        self.spin_req = QSpinBox(box_signers_with_slider)
+
+        self.spin_req = QSpinBox()
         self.spin_req.setMinimum(1)
         self.spin_req.setMaximum(10)
-        h_signers_with_slider.addWidget(self.spin_req)
-        self.label_of = QLabel(box_signers_with_slider)
+
+        self.label_of = QLabel()
         self.label_of.setText(QCoreApplication.translate("tab", "of", None))
         self.label_of.setAlignment(Qt.AlignVCenter)
-        h_signers_with_slider.addWidget(self.label_of)
-        self.spin_signers = QSpinBox(box_signers_with_slider)
+
+        self.spin_signers = QSpinBox()
         self.spin_signers.setMinimum(1)
         self.spin_signers.setMaximum(10)
-        h_signers_with_slider.addWidget(self.spin_signers)
-        v_wallet_type.addWidget(box_signers_with_slider)
 
-        box_address_type = QWidget(box_wallet_type)
-        h_address_type = QHBoxLayout(box_address_type)
-        label_address_type = QLabel(box_address_type)
+        # Add widgets to the layout
+        form_wallet_type.addRow(label_signers, self.spin_req)
+        form_wallet_type.addRow(self.label_of, self.spin_signers)
 
-        h_address_type.addWidget(label_address_type)
+        # box_address_type
+        label_address_type = QLabel()
 
-        self.comboBox_address_type = QComboBox(box_address_type)
+        self.comboBox_address_type = QComboBox()
         address_types = get_address_types(self.protowallet.is_multisig())
-        addres_type_names = [a.name for a in address_types]
-        self.comboBox_address_type.addItems(addres_type_names)
-        h_address_type.addWidget(self.comboBox_address_type)
+        address_type_names = [a.name for a in address_types]
+        self.comboBox_address_type.addItems(address_type_names)
 
-        v_wallet_type.addWidget(box_address_type)
+        form_wallet_type.addRow(label_address_type, self.comboBox_address_type)
 
-        box_gap = QWidget(box_wallet_type)
-        h_gap = QHBoxLayout(box_gap)
-        label_gap = QLabel(box_gap)
+        # box_gap
+        label_gap = QLabel()
         label_gap.setWordWrap(True)
-        label_gap.setText("Pregenerate ")
-        self.spin_gap = QSpinBox(box_gap)
+        label_gap.setText("Scan Address Limit")
+
+        self.spin_gap = QSpinBox()
         self.spin_gap.setMinimum(20)
         self.spin_gap.setMaximum(int(1e6))
-        label_gap2 = QLabel(box_gap)
-        label_gap2.setText(" unused Addresses")
-        # self.label_gap2.setTextAlignment(Qt.AlignVCenter)
-        h_gap.addWidget(label_gap)
-        h_gap.addWidget(self.spin_gap)
-        h_gap.addWidget(label_gap2)
 
-        v_wallet_type.addWidget(box_gap)
+        # Add widgets to the layout
+        form_wallet_type.addRow(label_gap, self.spin_gap)
 
+        box_wallet_type.setLayout(form_wallet_type)
         h_wallet_type_and_descriptor.addWidget(box_wallet_type)
 
         # now the descriptor

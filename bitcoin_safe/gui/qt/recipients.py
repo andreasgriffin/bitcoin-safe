@@ -17,7 +17,8 @@ from .dialogs import question_dialog
 
 from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
-from .util import ShowCopyLineEdit
+from .util import ShowCopyLineEdit, CameraInputLineEdit
+from bitcoin_qrreader import bitcoin_qr
 
 
 def dialog_replace_with_new_receiving_address(address):
@@ -58,8 +59,20 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         layout.setContentsMargins(10, 20, 10, 10)  # Left, Top, Right, Bottom margins
 
         form_layout = QtWidgets.QFormLayout()
+
+        def on_handle_input(data: bitcoin_qr.Data, parent: QtWidgets.QWidget):
+            if data.data_type == bitcoin_qr.DataType.Bip21:
+                if data.data.get("address"):
+                    self.address_line_edit.setText(data.data.get("address"))
+                if data.data.get("amount"):
+                    self.amount_spin_box.setValue(data.data.get("amount"))
+                if data.data.get("label"):
+                    self.label_line_edit.setText(data.data.get("label"))
+
         self.address_line_edit = (
-            QtWidgets.QLineEdit() if allow_edit else ShowCopyLineEdit()
+            CameraInputLineEdit(custom_handle_input=on_handle_input)
+            if allow_edit
+            else ShowCopyLineEdit()
         )
         self.address_line_edit.setPlaceholderText("Enter address here")
         self.label_line_edit = QtWidgets.QLineEdit()

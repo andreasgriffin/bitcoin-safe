@@ -11,10 +11,10 @@ numpy==1.24.3
 Pillow==9.5.0
 Pillow==9.5.0
 PySide2==5.15.2.1
-PySide2==5.15.2.1
 PyYAML==6.0
 PyYAML==6.0
 qrcode==7.4.2
 Requests==2.31.0
 pre-commit
 fpdf2==2.7.4
+bitcoin_qrreader==0.1.2

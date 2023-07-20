@@ -25,7 +25,7 @@ from ...qr import create_qr
 from ...keystore import KeyStore
 from .util import read_QIcon, open_website
 from .keystore_ui import SignerUI
-from ...signer import SignerWallet
+from ...signer import AbstractSigner, SignerWallet, QRSigner
 from ...util import psbt_to_hex, Satoshis, serialized_to_hex, block_explorer_URL
 from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData, fees_of_depths
@@ -43,6 +43,9 @@ max_reasonable_fee_rate_fallback = 100
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
     button_bar = QWidget()
     button_bar_layout = QHBoxLayout(button_bar)
+    # button_bar_layout.setContentsMargins(
+    #         0, 0, 0, 0
+    #     )  # Left, Top, Right, Bottom margins
 
     buttons = []
     for button_text in button_texts:
@@ -142,13 +145,13 @@ class ExportData(QObject):
         self.tab_file_layout.setAlignment(Qt.AlignHCenter)
         self.button_file = QToolButton()
         self.button_file.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.button_file.setText(f"Export {self.title_for_serialized} file")
         self.button_file.setIcon(read_QIcon("download.png"))
         self.button_file.setIconSize(QSize(30, 30))  # 24x24 pixels
         self.button_file.clicked.connect(lambda: self.signal_export_to_file.emit())
         self.tab_file_layout.addWidget(self.button_file)
         self.tabs.addTab(self.tab_file, f"Export {self.title_for_serialized} file")
 
+        self.set_title_for_serialized(title_for_serialized)
         layout.addWidget(self.tabs)
 
     def export_qrcode(self):
@@ -170,10 +173,27 @@ class ExportData(QObject):
         elif self.tabs.indexOf(tab) != -1 and not visible:
             self.tabs.removeTab(self.tabs.indexOf(tab))
 
-    def set_data(self, txid=None, seralized=None, json_str=None):
+    def set_title_for_serialized(self, title_for_serialized):
+        self.title_for_serialized = title_for_serialized
+        self.button_file.setText(f"Export {self.title_for_serialized} file")
+
+        idx = self.tabs.indexOf(self.tab_seralized)
+        if idx != -1:
+            self.tabs.setTabText(idx, f"{self.title_for_serialized}")
+
+        idx = self.tabs.indexOf(self.tab_file)
+        if idx != -1:
+            self.tabs.setTabText(idx, f"Export {self.title_for_serialized} file")
+
+    def set_data(
+        self, txid=None, seralized=None, json_str=None, title_for_serialized=None
+    ):
         self.seralized = seralized
         self.json_str = json_str
         self.txid = txid
+
+        if title_for_serialized is not None:
+            self.set_title_for_serialized(title_for_serialized)
 
         self.set_tab_visibility(self.tab_json, bool(json_str), "JSON", index=2)
         self.set_tab_visibility(
@@ -394,28 +414,34 @@ class UITX_Base(QObject):
         return recipients
 
 
-class UIPSBT_Viewer(UITX_Base):
+class UITx_Viewer(UITX_Base):
     signal_edit_tx = Signal()
     signal_save_psbt = Signal()
     signal_broadcast_tx = Signal()
 
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
         config: UserConfig,
         signals: Signals,
         utxo_list: UTXOList,
         network: bdk.Network,
         mempool_data: MempoolData,
+        blockchain: bdk.Blockchain = None,
+        psbt: bdk.PartiallySignedTransaction = None,
+        tx: bdk.Transaction = None,
         fee_rate=None,
+        confirmation_time: bdk.BlockTime = None,
     ) -> None:
         super().__init__(config=config, signals=signals, mempool_data=mempool_data)
         self.psbt: bdk.PartiallySignedTransaction = psbt
+        self.tx: bdk.Transaction = tx
         self.network = network
         self.fee_rate = fee_rate
+        self.blockchain = blockchain
         self.utxo_list = utxo_list
+        self.confirmation_time = confirmation_time
 
-        self.signers: List[SignerWallet] = []
+        self.signers: Dict[str, List[AbstractSigner]] = {}
 
         self.main_widget = QWidget()
         self.main_widget_layout = QVBoxLayout(self.main_widget)
@@ -424,9 +450,16 @@ class UIPSBT_Viewer(UITX_Base):
         self.main_widget_layout.addWidget(self.upper_widget)
         self.upper_widget_layout = QHBoxLayout(self.upper_widget)
 
+        self.upper_left_widget = QWidget()
+        self.upper_left_widget_layout = QVBoxLayout(self.upper_left_widget)
+        self.upper_left_widget_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
+        self.upper_widget_layout.addWidget(self.upper_left_widget)
+
         # in out
         self.tabs_inputs_outputs = QTabWidget(self.main_widget)
-        self.upper_widget_layout.addWidget(self.tabs_inputs_outputs)
+        self.upper_left_widget_layout.addWidget(self.tabs_inputs_outputs)
 
         # inputs
         self.tab_inputs = QWidget(self.main_widget)
@@ -444,14 +477,44 @@ class UIPSBT_Viewer(UITX_Base):
             self.tab_outputs_layout, allow_edit=False
         )
 
+        # right side bar
+        self.right_sidebar = QWidget(self.main_widget)
+        self.right_sidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.upper_widget_layout.addWidget(self.right_sidebar)
+        self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
+        self.right_sidebar_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
+
+        # QSizePolicy.Fixed: The widget has a fixed size and cannot be resized.
+        # QSizePolicy.Minimum: The widget can be shrunk to its minimum size hint.
+        # QSizePolicy.Maximum: The widget can be expanded up to its maximum size hint.
+        # QSizePolicy.Preferred: The widget can be resized, but it prefers to be the size of its size hint.
+        # QSizePolicy.Expanding: The widget can be resized and prefers to expand to take up as much space as possible.
+        # QSizePolicy.MinimumExpanding: The widget can be resized and tries to be as small as possible but can expand if necessary.
+        # QSizePolicy.Ignored: The widget's size hint is ignored and it can be any size.
+
         # fee_rate
         self.fee_group = FeeGroup(
             self.mempool_data,
-            self.upper_widget_layout,
+            self.right_sidebar_layout,
             allow_edit=False,
             is_viewer=True,
-            url=block_explorer_URL(config, "tx", psbt.txid()) if psbt else None,
-            fee_rate=psbt.fee_rate().as_sat_per_vb(),
+            confirmation_time=confirmation_time,
+            url=block_explorer_URL(config, "tx", self.txid()) if tx else None,
+        )
+        self.fee_group.groupBox_Fee.setSizePolicy(
+            QSizePolicy.Fixed, QSizePolicy.Expanding
+        )
+
+        # # txid and block explorers
+        # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
+
+        # exports
+        self.export_widget = ExportData(
+            self.right_sidebar_layout,
+            allow_edit=False,
+            title_for_serialized="Transaction",
         )
 
         self.lower_widget = QWidget(self.main_widget)
@@ -460,14 +523,8 @@ class UIPSBT_Viewer(UITX_Base):
         self.lower_widget_layout = QHBoxLayout(self.lower_widget)
 
         # signers
-        self.tabs_signers = QTabWidget(self.main_widget)
-        self.lower_widget_layout.addWidget(self.tabs_signers)
-
-        #
-        self.add_all_signer_tabs()
-
-        # exports
-        self.export_widget = ExportData(self.lower_widget_layout, allow_edit=False)
+        self.tabs_signers = QTabWidget(self.upper_widget)
+        self.upper_left_widget_layout.addWidget(self.tabs_signers)
 
         # buttons
         (
@@ -484,16 +541,26 @@ class UIPSBT_Viewer(UITX_Base):
         )
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
-        self.set_psbt(psbt, fee_rate=fee_rate)
+
+        if self.psbt:
+            self.set_psbt(psbt, fee_rate=fee_rate)
+        elif self.tx:
+            self.set_tx(tx, fee_rate=fee_rate, confirmation_time=confirmation_time)
         self.utxo_list.update()
 
+    def txid(self):
+        if self.tx:
+            return self.tx.txid()
+        else:
+            return self.psbt.txid()
+
     def broadcast(self):
-        logger.debug(f"broadcasting {psbt_to_hex(self.psbt)}")
-        tx = self.psbt.extract_tx()
-        self.signers[0].wallet.blockchain.broadcast(tx)
+        logger.debug(f"broadcasting {psbt_to_hex(self.tx.serialize())}")
+        self.blockchain.broadcast(self.tx)
         self.signal_broadcast_tx.emit()
 
     def add_all_signer_tabs(self):
+        self.tabs_signers.setHidden(False)
         wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
 
         def get_wallet_of_outpoint(outpoint: bdk.OutPoint) -> Wallet:
@@ -518,34 +585,80 @@ class UIPSBT_Viewer(UITX_Base):
 
         logger.debug(f"wallet_for_inputs {[w.id for w in wallet_for_inputs]}")
 
-        signers: List[SignerWallet] = []
+        self.signers: Dict[str, List[AbstractSigner]] = {}
         for wallet in set(wallet_for_inputs):  # removes all duplicate wallets
-            for keystore in wallet.keystores:
-                # TODO: once the bdk ffi has Signers (also hardware signers), I cann add here the signers
-                # for now only mnemonic signers are supported
-                # signers.append(SignerKeyStore(....))
-                # signers.append(SignerHWI(....))
-                pass
-            signers.append(SignerWallet(wallet, self.network))
-        self.signers = list(set(signers))  # removes all duplicate keystores
+            l = self.signers.setdefault(wallet.id, [])
+            l.append(QRSigner(self.network, blockchain=wallet.blockchain))
 
-        logger.debug(f"signers {[k.label for k in signers]}")
+            # check if the wallet could sign. If not then dont add it
+            signer_wallet = SignerWallet(wallet, self.network)
+            if signer_wallet.can_sign():
+                l.append(SignerWallet(wallet, self.network))
+
         self.signeruis = []
-        for signer in self.signers:
-            signerui = SignerUI(signer, self.psbt, self.tabs_signers, self.network)
+        for wallet_id, signer_list in self.signers.items():
+            signerui = SignerUI(
+                signer_list, self.psbt, self.tabs_signers, self.network, wallet_id
+            )
             signerui.signal_signature_added.connect(
                 lambda psbt: self.signature_added(psbt)
             )
             self.signeruis.append(signerui)
 
+    def remove_signers(self):
+        self.tabs_signers.setHidden(True)
+        for i in reversed(list(range(self.tabs_signers.count()))):
+            self.tabs_signers.removeTab(i)
+
     def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction):
-        self.set_psbt(psbt_with_signatures, fee_rate=self.fee_rate)
+        if isinstance(psbt_with_signatures, bdk.Transaction):
+            self.set_tx(psbt_with_signatures, fee_rate=self.fee_rate)
+        else:
+            self.set_psbt(psbt_with_signatures, fee_rate=self.fee_rate)
+            # TODO: assume here after 1 signing it is ready to be broadcasted
+            self.tx = self.psbt.extract_tx()
         self.button_broadcast_tx.setEnabled(True)
+
+    def set_tx(
+        self,
+        tx: bdk.Transaction,
+        fee_rate=None,
+        confirmation_time: bdk.BlockTime = None,
+    ):
+        self.tx: bdk.Transaction = tx
+        self.remove_signers()
+        self.export_widget.set_data(
+            seralized=serialized_to_hex(tx.serialize()),
+            txid=tx.txid(),
+            title_for_serialized="Transaction",
+        )
+
+        self.fee_group.set_fee_rate(
+            fee_rate=fee_rate,
+            confirmation_time=confirmation_time,
+            chain_height=self.blockchain.get_height() if self.blockchain else None,
+        )
+
+        outputs: List[bdk.TxOut] = self.tx.output()
+
+        self.recipients.recipients = [
+            Recipient(
+                address=robust_address_str_from_script(
+                    output.script_pubkey, self.network
+                ),
+                amount=output.value,
+            )
+            for output in outputs
+        ]
 
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_rate=None):
         self.psbt: bdk.PartiallySignedTransaction = psbt
+
         self.export_widget.set_data(
-            txid=psbt.txid(), json_str=psbt.json_serialize(), seralized=psbt.serialize()
+            txid=psbt.txid(),
+            json_str=psbt.json_serialize(),
+            seralized=psbt.serialize(),
+            title_for_serialized="PSBT",
         )
 
         self.fee_group.non_final_fee_label.setHidden(not (fee_rate is None))
@@ -566,153 +679,7 @@ class UIPSBT_Viewer(UITX_Base):
             for output in outputs
         ]
 
-
-class UITX_Viewer(UITX_Base):
-    signal_edit_tx = Signal()
-    signal_save_psbt = Signal()
-    signal_broadcast_tx = Signal()
-
-    def __init__(
-        self,
-        tx: bdk.Transaction,
-        config: UserConfig,
-        signals: Signals,
-        utxo_list: UTXOList,
-        network: bdk.Network,
-        mempool_data: MempoolData,
-        blockchain: bdk.Blockchain = None,
-        fee=None,
-        confirmation_time: bdk.BlockTime = None,
-    ) -> None:
-        super().__init__(config=config, signals=signals, mempool_data=mempool_data)
-        self.tx: bdk.Transaction = tx
-        self.blockchain = blockchain
-        self.network = network
-        self.utxo_list = utxo_list
-        self.confirmation_time = confirmation_time
-
-        self.main_widget = QWidget()
-        self.main_widget_layout = QVBoxLayout(self.main_widget)
-
-        self.upper_widget = QWidget(self.main_widget)
-        self.main_widget_layout.addWidget(self.upper_widget)
-        self.upper_widget_layout = QHBoxLayout(self.upper_widget)
-
-        # in out
-        self.tabs_inputs_outputs = QTabWidget(self.main_widget)
-        self.upper_widget_layout.addWidget(self.tabs_inputs_outputs)
-
-        # inputs
-        self.tab_inputs = QWidget(self.main_widget)
-        self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
-        self.tab_inputs_layout.addWidget(utxo_list)
-        self.tabs_inputs_outputs.addTab(self.tab_inputs, "Inputs")
-
-        # outputs
-        self.tab_outputs = QWidget(self.main_widget)
-        self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
-        self.tabs_inputs_outputs.addTab(self.tab_outputs, "Outputs")
-        self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
-
-        self.recipients = self.create_recipients(
-            self.tab_outputs_layout, allow_edit=False
-        )
-
-        # right side bar
-        self.right_sidebar = QWidget(self.main_widget)
-        self.right_sidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        self.upper_widget_layout.addWidget(self.right_sidebar)
-        self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
-
-        # QSizePolicy.Fixed: The widget has a fixed size and cannot be resized.
-        # QSizePolicy.Minimum: The widget can be shrunk to its minimum size hint.
-        # QSizePolicy.Maximum: The widget can be expanded up to its maximum size hint.
-        # QSizePolicy.Preferred: The widget can be resized, but it prefers to be the size of its size hint.
-        # QSizePolicy.Expanding: The widget can be resized and prefers to expand to take up as much space as possible.
-        # QSizePolicy.MinimumExpanding: The widget can be resized and tries to be as small as possible but can expand if necessary.
-        # QSizePolicy.Ignored: The widget's size hint is ignored and it can be any size.
-
-        # fee_rate
-        self.fee_group = FeeGroup(
-            self.mempool_data,
-            self.right_sidebar_layout,
-            allow_edit=False,
-            is_viewer=True,
-            confirmation_time=confirmation_time,
-            url=block_explorer_URL(config, "tx", tx.txid()) if tx else None,
-        )
-        self.fee_group.groupBox_Fee.setSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Expanding
-        )
-
-        # # txid and block explorers
-        # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
-
-        # exports
-        self.export_widget = ExportData(
-            self.right_sidebar_layout,
-            allow_edit=False,
-            title_for_serialized="Transaction",
-        )
-
-        self.lower_widget = QWidget(self.main_widget)
-        self.lower_widget.setMaximumHeight(220)
-        self.main_widget_layout.addWidget(self.lower_widget)
-        self.lower_widget_layout = QHBoxLayout(self.lower_widget)
-
-        # buttons
-        (
-            self.button_edit_tx,
-            self.button_save_tx,
-            self.button_broadcast_tx,
-        ) = create_button_bar(
-            self.main_widget_layout,
-            button_texts=[
-                "Edit Transaction",
-                "Save Transaction",
-                "Broadcast Transaction",
-            ],
-        )
-        self.button_broadcast_tx.setEnabled(False)
-        self.button_broadcast_tx.clicked.connect(self.broadcast)
-        self.set_tx(tx, fee=fee, confirmation_time=confirmation_time)
-        self.utxo_list.update()
-
-    def broadcast(self):
-        logger.debug(f"broadcasting {psbt_to_hex(self.tx.serialize())}")
-        self.blockchain.broadcast(self.tx)
-        self.signal_broadcast_tx.emit()
-
-    def set_tx(
-        self,
-        tx: bdk.Transaction,
-        fee=None,
-        confirmation_time: bdk.BlockTime = None,
-    ):
-        self.tx: bdk.Transaction = tx
-        self.export_widget.set_data(
-            seralized=serialized_to_hex(tx.serialize()), txid=tx.txid()
-        )
-
-        fee_rate = fee / self.tx.vsize() if fee is not None else None
-
-        self.fee_group.set_fee_rate(
-            fee_rate=fee_rate,
-            confirmation_time=confirmation_time,
-            chain_height=self.blockchain.get_height() if self.blockchain else None,
-        )
-
-        outputs: List[bdk.TxOut] = self.tx.output()
-
-        self.recipients.recipients = [
-            Recipient(
-                address=robust_address_str_from_script(
-                    output.script_pubkey, self.network
-                ),
-                amount=output.value,
-            )
-            for output in outputs
-        ]
+        self.add_all_signer_tabs()
 
 
 class UITX_Creator(UITX_Base):
@@ -745,8 +712,10 @@ class UITX_Creator(UITX_Base):
         self.create_inputs_selector(self.main_widget_layout)
 
         self.widget_right_hand_side = QWidget(self.main_widget)
-
         self.widget_right_hand_side_layout = QVBoxLayout(self.widget_right_hand_side)
+        self.widget_right_hand_side_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
 
         self.widget_right_top = QWidget(self.main_widget)
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)

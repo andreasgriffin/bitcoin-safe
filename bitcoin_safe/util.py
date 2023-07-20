@@ -74,7 +74,6 @@ import aiorpcx
 import certifi
 import dns.resolver
 from PySide2.QtCore import QLocale
-import base64
 from .i18n import _
 
 TX_HEIGHT_FUTURE = -3
@@ -1022,63 +1021,6 @@ def block_explorer_URL(config: "UserConfig", kind: str, item: str) -> Optional[s
         explorer_url += "/"
     url_parts = [explorer_url, kind_str, item]
     return "".join(url_parts)
-
-
-def decode_serialized_string(input_string):
-    input_string = input_string.strip()
-
-    # Regular expression for a serialized transaction (hex string)
-    serialized_transaction_pattern = re.compile("^[a-fA-F0-9]*$")
-
-    # Regular expression for a Bitcoin address (starts with 1, 3 or bc1)
-    bitcoin_address_pattern = re.compile("^(1|3|bc1)[a-zA-Z0-9]*$")
-
-    # Check if the input string matches the pattern for a serialized transaction
-    if serialized_transaction_pattern.fullmatch(input_string):
-        # Check if it's a txid
-        if len(input_string) == 64:
-            return "txid"
-        # Check if it's a PSBT
-        elif input_string.lower().startswith("70736274ff"):
-            return bdk.PartiallySignedTransaction(bytes.fromhex(input_string))
-        # Check if it's a serialized transaction
-        elif len(input_string) > 40:
-            return bdk.Transaction(hex_to_serialized(input_string))
-
-    # Check if the input string matches the pattern for a Bitcoin address
-    elif bitcoin_address_pattern.fullmatch(input_string):
-        return bdk.Address(input_string)
-
-    # Check for base64 PSBT
-    elif input_string.startswith("cHNidP"):
-        try:
-            # Attempt to decode the base64 string
-            decoded = base64.b64decode(input_string)
-            # Check if decoded string starts with the magic bytes for PSBT
-            if decoded[:5] == b"psbt\xff":
-                return bdk.PartiallySignedTransaction(input_string)
-        except Exception:
-            pass
-
-    # Regular expression for a serialized transaction (hex string)
-    serialized_transaction_pattern = re.compile("^[a-fA-F0-9]*$")
-
-    # Regular expression for a Bitcoin address (starts with 1, 3 or bc1)
-    bitcoin_address_pattern = re.compile("^(1|3|bc1)[a-zA-Z0-9]*$")
-
-    # Check if the input string matches the pattern for a serialized transaction
-    if (
-        serialized_transaction_pattern.fullmatch(input_string)
-        and len(input_string) > 40
-    ):  # 40 is arbitrary, but a tx should be longer than this
-        return bdk.Transaction(serialized_to_hex(input_string))
-
-    # Check if the input string matches the pattern for a Bitcoin address
-    elif bitcoin_address_pattern.fullmatch(input_string):
-        return bdk.Address(input_string)
-
-    # If it matches neither pattern
-    return None
 
 
 # URL decode

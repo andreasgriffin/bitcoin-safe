@@ -27,7 +27,7 @@ from .address_list import AddressList
 from .utxo_list import UTXOList
 from .util import add_tab_to_tabs, Message
 from .taglist import AddressDragInfo
-from .ui_tx import UITX_Creator, UIPSBT_Viewer
+from .ui_tx import UITX_Creator, UITx_Viewer
 
 from ...thread_manager import ThreadManager
 from ...util import Satoshis, format_satoshis
@@ -159,12 +159,18 @@ class QTProtoWallet(WalletTab):
         )
 
         wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
-            self.signal_create_wallet.emit
+            self.on_apply_setting_changes
         )
         wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(
             self.signal_close_wallet.emit
         )
         return wallet_descriptor_ui.tab, wallet_descriptor_ui
+
+    def on_apply_setting_changes(self):
+
+        self.wallet_descriptor_ui.set_protowallet_from_keystore_ui()
+
+        self.signal_create_wallet.emit()
 
 
 class QTWallet(WalletTab):

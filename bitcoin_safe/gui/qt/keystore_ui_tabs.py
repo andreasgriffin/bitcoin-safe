@@ -1,6 +1,6 @@
 import logging
 
-from bitcoin_safe import descriptors, keystore
+from bitcoin_safe import descriptors, keystore, util
 
 logger = logging.getLogger(__name__)
 
@@ -16,85 +16,46 @@ from .util import (
     create_button,
 )
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from ...signals import Signal
 from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 from ...signer import AbstractSigner, SignerWallet
-from .util import MnemonicLineEdit
+from .util import MnemonicLineEdit, CameraInputLineEdit
+from bitcoin_qrreader import bitcoin_qr
 
 
 class KeyStoreUITypeChooser(QObject):
-    signal_click_watch_only = Signal()
-    signal_click_seed = Signal()
-
     def __init__(self, network) -> None:
         super().__init__()
         self.network = network
-        self.tab = self.create()
+        self.widget = self.create()
 
     def create(self):
         tab = QWidget()
-
+        tab.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         self.layout_keystore_buttons = QHBoxLayout(tab)
 
-        button = create_button(
-            KeyStoreTypes.hwi.description,
+        self.button_hwi = create_button(
+            "",  # KeyStoreTypes.hwi.description,
             (KeyStoreTypes.hwi.icon_filename),
             parent=tab,
             outer_layout=self.layout_keystore_buttons,
+            max_sizes=[(40, 40)],
         )
-        button = create_button(
-            KeyStoreTypes.psbt.description,
-            (KeyStoreTypes.psbt.icon_filename),
+        self.button_file = create_button(
+            "",  # KeyStoreTypes.file.description,
+            (KeyStoreTypes.file.icon_filename),
             parent=tab,
             outer_layout=self.layout_keystore_buttons,
+            max_sizes=[(40, 40)],
         )
-        self.button_xpub = create_button(
-            KeyStoreTypes.watch_only.description,
-            (KeyStoreTypes.watch_only.icon_filename),
+        self.button_qr = create_button(
+            "",  # KeyStoreTypes.qr.description,
+            (KeyStoreTypes.qr.icon_filename),
             parent=tab,
             outer_layout=self.layout_keystore_buttons,
+            max_sizes=[(40, 40)],
         )
-        self.button_xpub.clicked.connect(self.signal_click_watch_only)
-        if self.network in KeyStoreTypes.seed.networks:
-            self.button_seed = create_button(
-                KeyStoreTypes.seed.description,
-                (KeyStoreTypes.seed.icon_filename),
-                parent=tab,
-                outer_layout=self.layout_keystore_buttons,
-            )
-            self.button_seed.clicked.connect(self.signal_click_seed)
-
-        return tab
-
-
-class KeyStoreUISigner(QObject):
-    def __init__(self, signer: AbstractSigner, network) -> None:
-        super().__init__()
-        self.signer = signer
-
-        self.network = network
-        self.tab = self.create()
-
-    def create(self):
-        tab = QWidget()
-
-        self.layout_keystore_buttons = QHBoxLayout(tab)
-
-        # button = create_button(KeyStoreTypes.hwi.description, (KeyStoreTypes.hwi.icon_filename), parent=tab , outer_layout= self.layout_keystore_buttons)
-
-        if (
-            self.network in KeyStoreTypes.seed.networks
-            and type(self.signer) == SignerWallet
-        ):
-            self.button_seed = create_button(
-                KeyStoreTypes.seed.description,
-                (KeyStoreTypes.seed.icon_filename),
-                parent=tab,
-                outer_layout=self.layout_keystore_buttons,
-            )
-
         return tab
 
 
@@ -117,7 +78,6 @@ class KeyStoreUIDefault(QObject):
                 self.edit_label,
                 self.edit_xpub,
                 self.textEdit_description,
-                self.comboBox_keystore_type,
             ]
         )
 
@@ -126,10 +86,10 @@ class KeyStoreUIDefault(QObject):
         self.edit_seed.setHidden(not visible)
         self.label_seed.setHidden(not visible)
 
-        self.edit_xpub.setHidden(visible)
-        self.edit_fingerprint.setHidden(visible)
-        self.label_xpub.setHidden(visible)
-        self.label_fingerprint.setHidden(visible)
+        # self.edit_xpub.setHidden(visible)
+        # self.edit_fingerprint.setHidden(visible)
+        # self.label_xpub.setHidden(visible)
+        # self.label_fingerprint.setHidden(visible)
 
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())
@@ -142,26 +102,52 @@ class KeyStoreUIDefault(QObject):
         )
 
         self.horizontalLayout_6 = QHBoxLayout(tab)
-        self.box_left = QWidget(tab)
-        label_keystore_type = QLabel(self.box_left)
+        self.horizontalLayout_6.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
 
-        self.comboBox_keystore_type = QComboBox(self.box_left)
-        self.comboBox_keystore_type.addItems(KeyStoreTypes.list_names(self.network))
-        label_keystore_label = QLabel(self.box_left)
-        self.edit_label = QLineEdit(self.box_left)
-        self.label_fingerprint = QLabel(self.box_left)
-        self.edit_fingerprint = QLineEdit(self.box_left)
-        label_derivation_path = QLabel(self.box_left)
-        self.edit_derivation_path = QLineEdit(self.box_left)
-        self.label_xpub = QLabel(self.box_left)
-        self.edit_xpub = QLineEdit(self.box_left)
+        self.box_left = QWidget(tab)
+        self.box_left_layout = QVBoxLayout(self.box_left)
+        self.box_left_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Left, Top, Right, Bottom margins
+        self.box_form = QWidget(self.box_left)
+        self.box_left_layout.addWidget(self.box_form)
+
+        def on_handle_input(data: bitcoin_qr.Data, parent: QWidget):
+            if data.data_type == bitcoin_qr.DataType.KeyStoreInfo:
+                # {
+                #         "fingerprint": groups[0],
+                #         "derivation_path": "m/" + groups[1].replace("h", "'"),
+                #         "xpub": groups[2],
+                #         "further_derivation_path": groups[3],
+                #     }
+                if data.data.get("xpub"):
+                    self.edit_xpub.setText(data.data.get("xpub"))
+                if data.data.get("derivation_path"):
+                    self.edit_derivation_path.setText(data.data.get("derivation_path"))
+                if data.data.get("fingerprint"):
+                    self.edit_fingerprint.setText(data.data.get("fingerprint"))
+            elif isinstance(data.data, str):
+                parent.setText(data.data)
+            else:
+                Exception("Could not recognize the QR Code")
+
+        label_keystore_label = QLabel(self.box_form)
+        self.edit_label = QLineEdit(self.box_form)
+        self.label_fingerprint = QLabel(self.box_form)
+        self.edit_fingerprint = CameraInputLineEdit(custom_handle_input=on_handle_input)
+        label_derivation_path = QLabel(self.box_form)
+        self.edit_derivation_path = CameraInputLineEdit(
+            custom_handle_input=on_handle_input
+        )
+        self.label_xpub = QLabel(self.box_form)
+        self.edit_xpub = CameraInputLineEdit(custom_handle_input=on_handle_input)
         self.label_seed = QLabel()
         self.edit_seed = MnemonicLineEdit()
 
         # put them on the formLayout
-        self.formLayout = QFormLayout(self.box_left)
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, label_keystore_type)
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.comboBox_keystore_type)
+        self.formLayout = QFormLayout(self.box_form)
         self.formLayout.setWidget(1, QFormLayout.LabelRole, label_keystore_label)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.edit_label)
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_fingerprint)
@@ -172,7 +158,14 @@ class KeyStoreUIDefault(QObject):
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
         self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
         self.formLayout.setWidget(5, QFormLayout.FieldRole, self.edit_seed)
-        self.seed_visibility()
+        self.seed_visibility(self.network in KeyStoreTypes.seed.networks)
+
+        # add the buttons
+        self.button_chooser = KeyStoreUITypeChooser(self.network)
+        self.button_chooser.button_qr.clicked.connect(
+            lambda: self.edit_fingerprint.camera_button.click()
+        )
+        self.box_left_layout.addWidget(self.button_chooser.widget)
 
         self.horizontalLayout_6.addWidget(self.box_left)
 
@@ -191,7 +184,6 @@ class KeyStoreUIDefault(QObject):
 
         self.horizontalLayout_6.addWidget(self.widget_8)
 
-        label_keystore_type.setText(QCoreApplication.translate("tab", "Type", None))
         label_keystore_label.setText(QCoreApplication.translate("tab", "Label", None))
         self.label_fingerprint.setText(
             QCoreApplication.translate("tab", "Fingerprint", None)
@@ -232,17 +224,8 @@ class KeyStoreUIDefault(QObject):
         self.set_formatting()
         self.signal_fingerprint_changed.emit()
 
-    def set_comboBox_keystore_type(self, keystore_type: KeyStoreType):
-        keys = KeyStoreTypes.list_names(self.network)
-        if keystore_type:
-            self.comboBox_keystore_type.setCurrentIndex(keys.index(keystore_type.name))
-
-    def get_comboBox_keystore_type(self) -> KeyStoreType:
-        keystore_types = KeyStoreTypes.list_types(self.network)
-        return keystore_types[self.comboBox_keystore_type.currentIndex()]
-
     def get_ui_values_as_keystore(self) -> KeyStore:
-        seed_str = self.edit_seed.text()
+        seed_str = self.edit_seed.text().strip()
 
         if seed_str:
             mnemonic = bdk.Mnemonic.from_string(seed_str)
@@ -262,7 +245,6 @@ class KeyStoreUIDefault(QObject):
             fingerprint,
             self.edit_derivation_path.text(),
             self.edit_label.text(),
-            self.get_comboBox_keystore_type(),
             mnemonic,
             self.textEdit_description.toPlainText(),
         )
@@ -277,12 +259,9 @@ class KeyStoreUIDefault(QObject):
                 keystore.derivation_path if keystore.derivation_path else ""
             )
             self.edit_label.setText(keystore.label)
-            self.set_comboBox_keystore_type(keystore.type)
             self.textEdit_description.setPlainText(keystore.description)
 
             self.set_formatting()
 
-            if keystore.type:
-                self.seed_visibility(keystore.type.id == KeyStoreTypes.seed.id)
             if keystore.mnemonic:
                 self.edit_seed.setText(keystore.mnemonic.as_string())

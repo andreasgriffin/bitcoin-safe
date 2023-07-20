@@ -6,13 +6,20 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
-from .util import icon_path, center_in_widget, qresize, add_tab_to_tabs, read_QIcon
+from .util import (
+    icon_path,
+    center_in_widget,
+    qresize,
+    add_tab_to_tabs,
+    read_QIcon,
+    create_button,
+)
 
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, Signal
 from ...util import compare_dictionaries, psbt_to_hex
 from typing import List
-from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUISigner, KeyStoreUITypeChooser
+from .keystore_ui_tabs import KeyStoreUIDefault, KeyStoreUITypeChooser
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 from ...signer import AbstractSigner
@@ -34,40 +41,21 @@ class KeyStoreUI:
         self.tabs = tabs
 
         self.keystore_ui_default = KeyStoreUIDefault(tabs, network)
-        self.keystore_ui_type_chooser = KeyStoreUITypeChooser(network)
-
         self.block_change_signals = BlockChangesSignals(
             sub_instances=[self.keystore_ui_default.block_change_signals]
         )
 
-        self.stacked_widget = QStackedWidget()
-        self.stacked_widget.addWidget(self.keystore_ui_type_chooser.tab)
-        self.stacked_widget.addWidget(self.keystore_ui_default.tab)
-
         add_tab_to_tabs(
             self.tabs,
-            self.stacked_widget,
+            self.keystore_ui_default.tab,
             icon_for_label(keystore.label),
             keystore.label,
             keystore.label,
             focus=True,
         )
 
-        if keystore.type is None:
-            self.stacked_widget.setCurrentWidget(self.keystore_ui_type_chooser.tab)
-        else:
-            self.stacked_widget.setCurrentWidget(self.keystore_ui_default.tab)
-
-        self.set_ui_from_keystore(self.keystore)
-        self.keystore_ui_type_chooser.signal_click_watch_only.connect(
-            self.onclick_button_watch_only
-        )
-        self.keystore_ui_type_chooser.signal_click_seed.connect(
-            self.onclick_button_seed
-        )
-
     def remove_tab(self):
-        self.tabs.removeTab(self.tabs.indexOf(self.stacked_widget))
+        self.tabs.removeTab(self.tabs.indexOf(self.keystore_ui_default.tab))
 
     def set_keystore_from_ui_values(self, keystore: KeyStore):
         ui_keystore = self.keystore_ui_default.get_ui_values_as_keystore()
@@ -81,28 +69,12 @@ class KeyStoreUI:
         )
 
     def set_ui_from_keystore(self, keystore: KeyStore):
-        for tab in [self.keystore_ui_default.tab, self.keystore_ui_type_chooser.tab]:
-            index = self.tabs.indexOf(tab)
-            if index >= 0:
-                self.tabs.setTabText(index, keystore.label)
-                self.tabs.setTabIcon(index, icon_for_label(keystore.label))
+        index = self.tabs.indexOf(self.keystore_ui_default.tab)
+        if index >= 0:
+            self.tabs.setTabText(index, keystore.label)
+            self.tabs.setTabIcon(index, icon_for_label(keystore.label))
 
         self.keystore_ui_default.set_ui_from_keystore(keystore)
-
-    def switch_to_tab(self, tab):
-        self.stacked_widget.setCurrentWidget(tab)
-
-    def onclick_button_watch_only(self):
-        self.switch_to_tab(self.keystore_ui_default.tab)
-
-        self.keystore.set_type(KeyStoreTypes.watch_only)
-        self.set_ui_from_keystore(self.keystore)
-
-    def onclick_button_seed(self):
-        self.switch_to_tab(self.keystore_ui_default.tab)
-
-        self.keystore.set_type(KeyStoreTypes.seed)
-        self.set_ui_from_keystore(self.keystore)
 
 
 class SignerUI(QObject):
@@ -110,45 +82,47 @@ class SignerUI(QObject):
 
     def __init__(
         self,
-        signer: AbstractSigner,
+        signers: List[AbstractSigner],
         psbt: bdk.PartiallySignedTransaction,
         tabs: QTabWidget,
         network: bdk.Network,
+        wallet_id: str,
     ) -> None:
         super().__init__()
-        self.signer = signer
+        self.signers = signers
         self.psbt = psbt
         self.tabs = tabs
+        self.network = network
 
-        self.ui_signer = KeyStoreUISigner(signer, network)
-        self.ui_signer.button_seed.clicked.connect(
-            lambda: self.sign()
-        )  # with lambda function it works. But not without. No idea why
+        self.ui_signer_tab = self.create()
 
         add_tab_to_tabs(
             self.tabs,
-            self.ui_signer.tab,
-            icon_for_label(signer.label),
-            self.signer.label,
-            self.signer.label,
+            self.ui_signer_tab,
+            icon_for_label(wallet_id),
+            wallet_id,
+            wallet_id,
             focus=True,
         )
 
+    def create(self):
+        tab = QWidget()
+
+        self.layout_keystore_buttons = QHBoxLayout(tab)
+
+        for signer in self.signers:
+            button = create_button(
+                "Import signature with",  # signer.keystore_type.description,
+                (signer.keystore_type.icon_filename),
+                parent=tab,
+                outer_layout=self.layout_keystore_buttons,
+            )
+
+            # with lambda function it works. But not without. No idea why
+            button.clicked.connect(lambda: signer.sign(self.psbt))
+            signer.signal_signature_added.connect(self.signal_signature_added.emit)
+
+        return tab
+
     def remove_tab(self):
-        self.tabs.removeTab(self.tabs.indexOf(self.ui_signer.tab))
-
-    def sign(self):
-        # sign transaction - this method mutates transaction, so we copy it first
-        psbt2 = bdk.PartiallySignedTransaction(self.psbt.serialize())
-
-        logger.debug(f"psbt before signing: {psbt_to_hex(psbt2)}")
-
-        signing_was_successful: bool = self.signer.sign(psbt2, None)
-
-        if signing_was_successful:
-            logger.debug(f"psbt after signing: {psbt_to_hex(psbt2)}")
-            logger.debug(f"psbt after signing: fee  {psbt2.fee_rate().as_sat_per_vb()}")
-
-            self.signal_signature_added.emit(psbt2)
-        else:
-            logger.debug(f"signign failed")
+        self.tabs.removeTab(self.tabs.indexOf(self.ui_signer_tab))

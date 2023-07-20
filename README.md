@@ -46,7 +46,8 @@
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
-  - [ ] Hardware wallets: HWI USB, SD card, QR code reader
+  - [ ] Hardware wallets: HWI USB, SD card, 
+    - [x] QR code reader
 - [x] Address and TX labeling using categories
   - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
 - [x] Address dialog & TX dialog
@@ -55,7 +56,7 @@
 - [ ] CPFP, RBF
 - [ ] Wallet settings  (location, password,...) needs a tab
 - [ ] multi language
-- [ ] add scan qr code in lots of places
+- [x] add scan qr code in lots of places
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
 - [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (+ 2. layer of encryption)

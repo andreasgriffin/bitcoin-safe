@@ -39,13 +39,13 @@ from typing import Dict, List
 from .storage import Storage
 import json, os
 import bdkpython as bdk
-from .gui.qt.ui_tx import UITX_Creator, UIPSBT_Viewer, UITX_Viewer
+from .gui.qt.ui_tx import UITX_Creator, UITx_Viewer
 from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
 from .mempool import MempoolData
 from .pythonbdk_types import OutPoint
-from .util import call_call_functions, decode_serialized_string
+from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
@@ -153,24 +153,37 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def open_tx_like_in_tab(self, txlike):
         logger.debug(f"Trying to open tx with type {type(txlike)}")
 
+        if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
+            return self.open_tx_in_tab(txlike)
+
+        if isinstance(txlike, (bdk.PartiallySignedTransaction, TXInfos)):
+            return self.open_psbt_in_tab(txlike)
+
         if isinstance(txlike, str):
-            res = decode_serialized_string(txlike)
-            if not res:
-                raise Exception(f"{txlike} could not be decoded")
-            if res == "txid":
+            res = bitcoin_qr.Data.from_str(txlike, self.config.network_settings.network)
+            if res.data_type == bitcoin_qr.DataType.Txid:
                 txid = txlike
                 wallets: List[Wallet] = self.signals.get_wallets().values()
                 for wallet in wallets:
                     txlike = wallet.get_tx(txid)
                 if not txlike:
                     raise Exception(f"txid {txid} could not be found in wallets")
+            elif res.data_type == bitcoin_qr.DataType.PSBT:
+                return self.open_psbt_in_tab(txlike)
             else:
-                txlike = res
+                logger.warning(f"DataType {res.data_type.name} was not handled.")
 
-        if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
-            return self.open_tx_in_tab(txlike)
-        else:
-            return self.open_psbt_in_tab(txlike)
+    def load_tx_like_from_qr(self):
+        def result_callback(data: bitcoin_qr.Data):
+            if data.data_type in [
+                bitcoin_qr.DataType.PSBT,
+                bitcoin_qr.DataType.Tx,
+                bitcoin_qr.DataType.Txid,
+            ]:
+                self.open_tx_like_in_tab(data.data)
+
+        window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback)
+        window.show()
 
     def dialog_open_tx_from_str(self):
         def process_input():
@@ -238,18 +251,18 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             ],
         )
 
-        viewer = UITX_Viewer(
-            tx,
+        viewer = UITx_Viewer(
             self.config,
             self.signals,
             utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
-            fee=fee,
+            fee_rate=fee / tx.vsize() if fee is not None else None,
             confirmation_time=confirmation_time,
             blockchain=self.get_qt_wallet().wallet.blockchain
             if self.get_qt_wallet()
             else None,
+            tx=tx,
         )
 
         add_tab_to_tabs(
@@ -313,14 +326,14 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             ],
         )
 
-        viewer = UIPSBT_Viewer(
-            psbt,
+        viewer = UITx_Viewer(
             self.config,
             self.signals,
             utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
             fee_rate=fee_rate,
+            psbt=psbt,
         )
 
         add_tab_to_tabs(
