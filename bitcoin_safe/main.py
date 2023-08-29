@@ -19,7 +19,7 @@ from .ui_mainwindow import Ui_MainWindow
 from .wallet import BlockchainType, ProtoWallet, Wallet
 import sys
 import re
-
+import base64
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.qt_wallet import QTWallet, QTProtoWallet
@@ -46,6 +46,7 @@ from .gui.qt.network_settings import NetworkSettingsUI
 from .mempool import MempoolData
 from .pythonbdk_types import OutPoint
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+from .gui.qt.open_tx_dialog import TransactionDialog
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
@@ -64,7 +65,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         self.qtwallet_tab = None
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
-        self.signals.open_tx.connect(self.open_tx_like_in_tab)
+        self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
         self.signals.get_network.connect(lambda: self.config.network_settings.network)
 
         self.network_settings_ui = NetworkSettingsUI(self.config)
@@ -138,17 +139,20 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def open_tx_file(self, file_path=None):
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(
-                self, "Open Transaction/PSBT", "", "All Files (*);;Text Files (*.psbt)"
+                self,
+                "Open Transaction/PSBT",
+                "",
+                "All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
             )
             if not file_path:
                 logger.debug("No file selected")
                 return
 
         logger.debug(f"Selected file: {file_path}")
-        with open(file_path, "r") as file:
+        with open(file_path, "rb") as file:
             string_content = file.read()
 
-        self.signals.open_tx.emit(string_content)
+        self.signals.open_tx_like.emit(string_content)
 
     def open_tx_like_in_tab(self, txlike):
         logger.debug(f"Trying to open tx with type {type(txlike)}")
@@ -158,6 +162,16 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
 
         if isinstance(txlike, (bdk.PartiallySignedTransaction, TXInfos)):
             return self.open_psbt_in_tab(txlike)
+
+        # try to convert a bytes like object to a string
+        if isinstance(txlike, bytes):
+            if txlike[:5] == b"psbt\xff":
+                # convert a psbt in the default base64 encoding
+                txlike = base64.encodebytes(txlike).decode()
+                txlike = txlike.replace("\n", "").strip()
+            else:
+                # try to convert to str
+                txlike = str(txlike)
 
         if isinstance(txlike, str):
             res = bitcoin_qr.Data.from_str(txlike, self.config.network_settings.network)
@@ -169,7 +183,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
                 if not txlike:
                     raise Exception(f"txid {txid} could not be found in wallets")
             elif res.data_type == bitcoin_qr.DataType.PSBT:
-                return self.open_psbt_in_tab(txlike)
+                return self.open_psbt_in_tab(res.data)
+            elif res.data_type == bitcoin_qr.DataType.Tx:
+                return self.open_tx_in_tab(res.data)
             else:
                 logger.warning(f"DataType {res.data_type.name} was not handled.")
 
@@ -186,41 +202,11 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
         window.show()
 
     def dialog_open_tx_from_str(self):
-        def process_input():
-            dialog.close()
-            self.open_tx_like_in_tab(text_edit.toPlainText())
+        def process_input(s: str):
+            self.open_tx_like_in_tab(s)
 
-        # Create a QDialog
-        dialog = QDialog()
-        dialog.setWindowTitle("Open Transaction")
-        layout = QVBoxLayout()
-
-        # Create widgets
-        instruction_label = QLabel(
-            "Please paste your Bitcoin Transaction or PSBT in here:"
-        )
-        text_edit = QTextEdit()
-        text_edit.setPlaceholderText("Paste your Bitcoin Transaction or PSBT in here")
-        open_button = QPushButton("Open Transaction")
-        cancel_button = QPushButton("Cancel")
-
-        # Add widgets to layout
-        layout.addWidget(instruction_label)
-        layout.addWidget(text_edit)
-        layout.addWidget(open_button)
-        layout.addWidget(cancel_button)
-        dialog.setLayout(layout)
-
-        # Connect buttons
-        open_button.clicked.connect(process_input)
-        cancel_button.clicked.connect(dialog.close)
-
-        # Connect the returnPressed signal to the same slot as the "Open Transaction" button
-        shortcut = QShortcut(QKeySequence("Return"), dialog)
-        shortcut.activated.connect(process_input)
-
-        # Show dialog
-        dialog.exec_()
+        tx_dialog = TransactionDialog(on_open=process_input)
+        tx_dialog.show()
 
     def open_tx_in_tab(self, txlike):
         tx: bdk.Transaction = None

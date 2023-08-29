@@ -31,7 +31,7 @@ from PySide2.QtGui import (
 from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPushButton
 from jsonschema import draft201909_format_checker
 from .category_list import CategoryEditor
-
+from .open_tx_dialog import file_to_str
 from ...wallet import Wallet, TxConfirmationStatus
 
 from ...i18n import _
@@ -278,9 +278,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             for url in event.mimeData().urls():
                 # Convert URL to local file path
                 file_path = url.toLocalFile()
-                # Read and print contents of each file
-                with open(file_path, "r") as file:
-                    self.signals.open_tx.emit(file.read())
+                self.signals.open_tx_like.emit(file_to_str(file_path))
 
         event.ignore()
 
@@ -289,7 +287,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             col=self.key_column, role=self.ROLE_KEY
         )
         wallet, tx_details = self._tx_dict[txid]
-        self.signals.open_tx.emit(tx_details)
+        self.signals.open_tx_like.emit(tx_details)
 
     def create_toolbar(self, config=None):
         toolbar, menu = self.create_toolbar_with_menu("")
@@ -478,7 +476,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             if not item:
                 return
             txid = txids[0]
-            menu.addAction(_("Details"), lambda: self.signals.open_tx.emit(txid))
+            menu.addAction(_("Details"), lambda: self.signals.open_tx_like.emit(txid))
             addr_column_title = self.std_model.horizontalHeaderItem(
                 self.Columns.LABEL
             ).text()

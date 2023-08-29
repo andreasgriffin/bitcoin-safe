@@ -114,7 +114,7 @@ class Signals(QObject):
     I immediately break the rule however for Signal, which is a function call
     """
 
-    open_tx = Signal(object)
+    open_tx_like = Signal(object)
     utxos_updated = Signal()
     addresses_updated = Signal()
     labels_updated = Signal(UpdateFilter)

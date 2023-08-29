@@ -1339,7 +1339,23 @@ class CameraInputLineEdit(ButtonsLineEdit):
     """read-only line with qr and copy buttons"""
 
     def __init__(self, text: str = "", custom_handle_input=None):
-        ButtonsLineEdit.__init__(self, text)
+        super().__init__(text)
+
+        def default_handle_input(data: bitcoin_qr.Data, parent: QWidget):
+            parent.setText(str(data.data_as_string()))
+
+        self.camera_button = self.add_qr_input_from_camera_button(
+            custom_handle_input=custom_handle_input
+            if custom_handle_input
+            else default_handle_input
+        )
+
+
+class CameraInputTextEdit(ButtonsTextEdit):
+    """read-only line with qr and copy buttons"""
+
+    def __init__(self, text: str = "", custom_handle_input=None):
+        super().__init__(text)
 
         def default_handle_input(data: bitcoin_qr.Data, parent: QWidget):
             parent.setText(str(data.data_as_string()))

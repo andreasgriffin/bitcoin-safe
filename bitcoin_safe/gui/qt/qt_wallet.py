@@ -423,7 +423,7 @@ class QTWallet(WalletTab):
         self.signals.category_updated.emit(update_filter)
         self.signals.labels_updated.emit(update_filter)
 
-        self.signals.open_tx.emit(txinfos)
+        self.signals.open_tx_like.emit(txinfos)
 
     def set_wallet(self, wallet: Wallet):
         self.wallet = wallet
