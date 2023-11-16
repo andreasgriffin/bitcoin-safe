@@ -2,7 +2,7 @@ aiohttp==3.8.4
 aiohttp_socks==0.8.0
 aiorpcX==0.22.1
 appdirs==1.4.4
-bdkpython==0.28.3
+bdkpython==0.30.0
 certifi==2023.5.7
 cryptography==40.0.2
 dnspython==2.3.0
@@ -17,4 +17,4 @@ qrcode==7.4.2
 Requests==2.31.0
 pre-commit
 fpdf2==2.7.4
-bitcoin_qrreader==0.2.4
+bitcoin_qrreader==0.3.0

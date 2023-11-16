@@ -49,11 +49,8 @@ from threading import Lock
 from .descriptors import (
     AddressType,
     get_default_address_type,
-    split_wallet_descriptor,
-    combined_wallet_descriptor,
     public_descriptor_info,
-    keystores_to_descriptors,
-    descriptor_strings_to_descriptors,
+    MultipathDescriptor,
 )
 import json
 from .tx import TXInfos
@@ -196,15 +193,6 @@ class ProtoWallet:
     ):
         "creates a ProtoWallet from the xpub (not xpriv)"
 
-        def get_default_keystore():
-            return KeyStore(
-                None,
-                None,
-                None,
-                label="",
-                type=KeyStoreTypes.watch_only,
-            )
-
         info = public_descriptor_info(string_descriptor, network)
 
         info["keystores"] = [
@@ -239,37 +227,13 @@ class ProtoWallet:
     def set_gap(self, gap):
         self.gap = gap
 
-    def bdk_descriptors(self):
-        return self.generate_bdk_descriptors(
-            threshold=self.threshold,
+    def to_multipath_descriptor(self):
+        return MultipathDescriptor.from_keystores(
+            self.threshold,
             keystores=self.keystores,
             address_type=self.address_type,
+            network=self.network,
         )
-
-    def generate_bdk_descriptors(
-        self, threshold: int, keystores: List[KeyStore], address_type: AddressType
-    ):
-
-        # sanity checks
-        assert threshold <= len(keystores)
-        is_multisig = len(keystores) > 1
-        assert address_type.is_multisig == is_multisig
-
-        # always choos the bdk template if available
-        if address_type.bdk_descriptor:
-            # TODO: Currently only single sig implemented, since bdk only has single sig templates
-            descriptors = keystores[0].to_descriptors(self.address_type, self.network)
-        else:
-            logger.warning(
-                "Descrioptor creation via a non-bdk template. This is dangerous!"
-            )
-            descriptors = keystores_to_descriptors(
-                threshold,
-                keystores=keystores,
-                address_type=address_type,
-                network=self.network,
-            )
-        return descriptors
 
     def set_number_of_keystores(self, n):
 
@@ -344,12 +308,9 @@ class Wallet(BaseSaveableClass):
                 self.descriptor_str, network=self.network
             ).keystores
         )
-        self.create_wallet_from_descriptor_str()
-
-    def public_descriptor_string_combined(self):
-        return public_descriptor_info(self.descriptor_str, self.network)[
-            "public_descriptor_string_combined"
-        ]
+        self.create_wallet(
+            MultipathDescriptor.from_descriptor_str(descriptor_str, self.network)
+        )
 
     def as_protowallet(self):
         # fill the protowallet with the xpub info
@@ -368,7 +329,7 @@ class Wallet(BaseSaveableClass):
     @classmethod
     def from_protowallet(cls, protowallet: ProtoWallet, id: str, config: UserConfig):
 
-        descriptors = protowallet.bdk_descriptors()
+        multipath_descriptor = protowallet.to_multipath_descriptor()
         for keystore in protowallet.keystores:
             if keystore.derivation_path != protowallet.address_type.derivation_path(
                 config.network_settings.network
@@ -379,7 +340,7 @@ class Wallet(BaseSaveableClass):
 
         return Wallet(
             id,
-            combined_wallet_descriptor(descriptors),
+            multipath_descriptor.as_string_private(),
             keystores=[k.clone() for k in protowallet.keystores],
             gap=protowallet.gap,
             gap_change=protowallet.gap_change,
@@ -472,20 +433,12 @@ class Wallet(BaseSaveableClass):
     def set_wallet_id(self, id):
         self.id = id
 
-    def create_wallet_from_descriptor_str(self, descriptor_str=None):
-        if descriptor_str is None:
-            descriptor_str = self.descriptor_str
-        self.descriptors = descriptor_strings_to_descriptors(
-            descriptor_str, self.network
-        )
-        self.create_wallet(self.descriptors)
-
-    def create_wallet(self, descriptors):
-        self.descriptors = descriptors
+    def create_wallet(self, multipath_descriptor: MultipathDescriptor):
+        self.multipath_descriptor = multipath_descriptor
 
         self.bdkwallet = bdk.Wallet(
-            descriptor=self.descriptors[0],
-            change_descriptor=self.descriptors[1],
+            descriptor=self.multipath_descriptor.bdk_descriptors[0],
+            change_descriptor=self.multipath_descriptor.bdk_descriptors[1],
             network=self.config.network_settings.network,
             database_config=bdk.DatabaseConfig.MEMORY(),
         )
@@ -757,7 +710,7 @@ class Wallet(BaseSaveableClass):
     def get_bdk_address_infos(
         self, is_change=False, slice_start=None, slice_stop=None
     ) -> Sequence[bdk.AddressInfo]:
-        if (not is_change) and (not self.descriptors):
+        if (not is_change) and (not self.multipath_descriptor):
             return []
 
         if slice_start is None:

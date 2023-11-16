@@ -1,6 +1,7 @@
 import logging
 
 from bitcoin_safe import descriptors, keystore, util
+from bitcoin_safe.gui.qt.custom_edits import DescriptorEdit
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
 from ...signer import AbstractSigner, SignerWallet
-from .util import MnemonicLineEdit, CameraInputLineEdit
+from .util import MnemonicLineEdit, CameraInputLineEdit, CameraInputTextEdit
 from bitcoin_qrreader import bitcoin_qr
 
 
@@ -111,6 +112,7 @@ class KeyStoreUIDefault(QObject):
         self.box_left_layout.setContentsMargins(
             0, 0, 0, 0
         )  # Left, Top, Right, Bottom margins
+        self.box_left_layout.setSpacing(0)
         self.box_form = QWidget(self.box_left)
         self.box_left_layout.addWidget(self.box_form)
 
@@ -142,7 +144,9 @@ class KeyStoreUIDefault(QObject):
             custom_handle_input=on_handle_input
         )
         self.label_xpub = QLabel(self.box_form)
-        self.edit_xpub = CameraInputLineEdit(custom_handle_input=on_handle_input)
+        self.edit_xpub = CameraInputTextEdit(custom_handle_input=on_handle_input)
+        self.edit_xpub.setMinimumHeight(30)
+        self.edit_xpub.setMinimumWidth(400)
         self.label_seed = QLabel()
         self.edit_seed = MnemonicLineEdit()
 

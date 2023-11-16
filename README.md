@@ -13,9 +13,9 @@
   - **Easier** fee selection for non-technical users 
   - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
     * Opportunistic merging of small utxos when fees are low
-- **Fast**: Chain data with **Compact Block Filters** by default 
+- **Fast**: Chain data with **Compact Block Filters** by default  
   - Compact Block Filters are **fast** and **private**
-  - Compact Block Filters (bdk) are experimentally already available in python, see [here](https://github.com/bitcoindevkit/bdk-ffi/pull/379), and will be included in bdk 1.0
+  - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/pull/1055), and will be included in bdk 1.0. 
 - **Secure**: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is  reckless)
   - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
   - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
@@ -117,7 +117,7 @@
    ```
 
    * Network Settings
-     * Connect via Compact Block Filters (experimental):
+     * Connect via Compact Block Filters (experimental / not working for most recent bitcoin-safe versions, due to an [broken](https://github.com/bitcoindevkit/bdk-ffi/pull/379) ):
        * IP: 127.0.0.1
        * Port: 18444
 

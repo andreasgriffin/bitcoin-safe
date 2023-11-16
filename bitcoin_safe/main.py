@@ -1,8 +1,6 @@
 import logging
 
 from pyparsing import Optional
-
-from bitcoin_safe.descriptors import combined_wallet_descriptor
 from .tx import TXInfos
 from .logging import setup_logging
 
@@ -47,11 +45,14 @@ from .mempool import MempoolData
 from .pythonbdk_types import OutPoint
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from .gui.qt.open_tx_dialog import TransactionDialog
+from .descriptors import MultipathDescriptor
 
 
 class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def __init__(self):
         super().__init__()
+
+        self.setMinimumSize(800, 650)
 
         self.qt_wallets: Dict[QTWallet] = {}
         self.fx = None
@@ -368,7 +369,7 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
             wallet = Wallet.load(file_path, self.config, password)
         except Exception as e:
             error_type, error_value, error_traceback = sys.exc_info()
-            error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__}: {error_value}"
+            error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__}: {error_value}, {error_traceback}"
             self.show_error(error_message)
             return
 
@@ -514,7 +515,9 @@ class MainWindow(Ui_MainWindow, MessageBoxMixin):
     def import_descriptor(self):
         descriptor_str = self.text_descriptor.toPlainText()
         wallet = Wallet(id="import" + str(len(self.qt_wallets)), config=self.config)
-        wallet.create_wallet_from_descriptor_str(descriptor_str)
+        wallet.create_wallet(
+            MultipathDescriptor.from_descriptor_str(descriptor_str, wallet.network)
+        )
 
         self.add_qt_wallet(wallet)
 

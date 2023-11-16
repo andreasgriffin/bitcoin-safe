@@ -227,7 +227,7 @@ class QTWallet(WalletTab):
     def apply_setting_changes(self):
         self.wallet_descriptor_ui.set_protowallet_from_keystore_ui()
         self.wallet.create_wallet(
-            self.wallet_descriptor_ui.protowallet.bdk_descriptors()
+            self.wallet_descriptor_ui.protowallet.to_multipath_descriptor()
         )  # this must be after set_protowallet_from_keystore_ui, but before create_wallet_tabs
 
         self.sync()

@@ -12,7 +12,6 @@ from ...pdfrecovery import BitcoinWalletRecoveryPDF
 from ...wallet import Wallet
 import os
 from pathlib import Path
-from ...descriptors import combined_wallet_descriptor
 from .util import Message
 from ...descriptors import public_descriptor_info
 
@@ -34,7 +33,7 @@ class DescriptorEdit(ButtonsTextEdit):
 
             wallet: Wallet = get_wallet()
             info = public_descriptor_info(
-                wallet.public_descriptor_string_combined(), wallet.network
+                wallet.multipath_descriptor.as_string(), wallet.network
             )
             for i, keystore in enumerate(wallet.keystores):
                 title = (
@@ -44,7 +43,7 @@ class DescriptorEdit(ButtonsTextEdit):
                 )
                 pdf_recovery.create_pdf(
                     title,
-                    wallet.public_descriptor_string_combined(),
+                    wallet.multipath_descriptor.as_string(),
                     [keystore.description for keystore in wallet.keystores],
                     seed=keystore.mnemonic.as_string() if keystore.mnemonic else None,
                 )
@@ -52,7 +51,16 @@ class DescriptorEdit(ButtonsTextEdit):
                 pdf_recovery.save_pdf(temp_file)
                 pdf_recovery.open_pdf(temp_file)
 
+        from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+
+        def custom_handle_camera_input(data: bitcoin_qr.Data, parent):
+            self.setText(str(data.data_as_string()))
+            self.signal_pasted_text.emit(str(data.data_as_string()))
+
         self.addCopyButton()
+        self.add_qr_input_from_camera_button(
+            custom_handle_input=custom_handle_camera_input
+        )
         if get_wallet() is not None:
             self.addPdfButton(make_and_open_pdf)
 

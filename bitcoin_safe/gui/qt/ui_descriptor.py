@@ -17,7 +17,6 @@ from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import DescriptorEdit
-from ...descriptors import combined_wallet_descriptor
 
 
 class WalletDescriptorUI(QObject):
@@ -119,6 +118,8 @@ class WalletDescriptorUI(QObject):
             return
         self._edit_descriptor_cache = new_value
 
+        self.set_protowallet_from_descriptor_str(new_value)
+
         self.set_wallet_ui_from_protowallet()
         self.set_keystore_ui_from_protowallet()
         self.disable_fields()
@@ -128,6 +129,11 @@ class WalletDescriptorUI(QObject):
 
     def on_spin_signer_changed(self, new_value):
         self.on_wallet_ui_changes()
+
+    def set_protowallet_from_descriptor_str(self, descriptor_str):
+        self.protowallet = ProtoWallet.from_descriptor(
+            descriptor_str, self.protowallet.network
+        )
 
     def _set_keystore_tabs(self):
         # add keystore_ui if necessary
@@ -243,7 +249,7 @@ class WalletDescriptorUI(QObject):
 
         try:
             self.edit_descriptor.setText(
-                combined_wallet_descriptor(self.protowallet.bdk_descriptors())
+                self.protowallet.to_multipath_descriptor().as_string()
             )
         except:
             self.edit_descriptor.setText("Could not be derived from seed")

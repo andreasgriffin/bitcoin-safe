@@ -294,8 +294,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
         if (
             config
-            and DEVELOPMENT_PREFILLS
             and config.network_settings.server_type == BlockchainType.RPC
+            and config.network_settings.network != bdk.Network.BITCOIN
         ):
 
             def mine_to_selected_addresses():
@@ -463,6 +463,9 @@ class AddressList(MyTreeView, MessageBoxMixin):
             item[self.key_column].setData(address, self.ROLE_KEY)
             item[self.Columns.TYPE].setData(
                 (address_path[0], -address_path[1]), self.ROLE_SORT_ORDER
+            )
+            item[self.Columns.TYPE].setToolTip(
+                f"{address_path[1]}. {'change' if address_path[0] else 'receiving'} address"
             )
             # add item
             count = self.std_model.rowCount()

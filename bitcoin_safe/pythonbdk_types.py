@@ -160,7 +160,7 @@ class Error:
     Sled = bdk.BdkError.Sled
     Rusqlite = bdk.BdkError.Rusqlite
     Rpc = bdk.BdkError.Rpc
-    CompactFilters = bdk.BdkError.CompactFilters
+    # CompactFilters = bdk.BdkError.CompactFilters  # TODO renanable for cbf
 
 
 if __name__ == "__main__":

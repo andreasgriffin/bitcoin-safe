@@ -4,8 +4,8 @@ logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
 from typing import Dict, List, Tuple
-import html
 import re
+
 
 # https://bitcoin.design/guide/glossary/address/
 # https://learnmeabitcoin.com/technical/derivation-paths
@@ -149,62 +149,6 @@ def make_multisig_descriptor_string(
         return address_type.desc_template(descriptors_without_script[0])
 
 
-def keystores_to_descriptors(
-    threshold: int,
-    keystores: List["KeyStore"],
-    address_type: AddressType,
-    network: bdk.Network,
-) -> Tuple[bdk.Descriptor, bdk.Descriptor]:
-
-    bdk_template_available = bool(address_type.bdk_descriptor)
-
-    # [["wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/0/*)#arpc0qa2", "wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/1/*)#arpc0qa2"], ...]
-    if bdk_template_available:
-        all_descriptors = [k.to_descriptors(address_type, network) for k in keystores]
-    else:
-        # there are no bdk multisig descriptor templates yet, so I have to use a single sig template
-        # the script type will be removed anyway in make_multisig_descriptor_string
-        all_descriptors = [
-            k.to_descriptors(AddressTypes.p2wpkh, network) for k in keystores
-        ]
-
-    receive_descriptors = [d[0] for d in all_descriptors]
-    change_descriptors = [d[1] for d in all_descriptors]
-
-    receive_descriptor_str = make_multisig_descriptor_string(
-        address_type, threshold, receive_descriptors
-    )
-    change_descriptor_str = make_multisig_descriptor_string(
-        address_type, threshold, change_descriptors
-    )
-
-    # now we convert it back into a bdk descriptor
-    receive_descriptor = bdk.Descriptor(receive_descriptor_str, network=network)
-    change_descriptor = bdk.Descriptor(change_descriptor_str, network=network)
-    return receive_descriptor, change_descriptor
-
-
-def combined_wallet_descriptor(
-    descriptors: Tuple[bdk.Descriptor, bdk.Descriptor], only_public=False
-) -> str:
-    logger.warning(
-        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
-    )
-    assert len(descriptors) == 2
-
-    descriptors_without_checksum = [
-        d.as_string().split("#")[0]
-        if only_public
-        else d.as_string_private().split("#")[0]
-        for d in descriptors
-    ]
-    assert all(
-        [d.count(f"/{i}/*)") == 1 for i, d in enumerate(descriptors_without_checksum)]
-    )
-
-    return descriptors_without_checksum[0].replace(f"/{0}/*", f"/<0;1>/*")
-
-
 def split_wallet_descriptor(descriptor_str: str):
     logger.warning(
         "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
@@ -214,22 +158,6 @@ def split_wallet_descriptor(descriptor_str: str):
     return descriptor_str.replace("/<0;1>/*", "/0/*"), descriptor_str.replace(
         "/<0;1>/*", "/1/*"
     )
-
-
-def descriptor_strings_to_descriptors(
-    descriptor_str: str, network: bdk.Network
-) -> Tuple[bdk.Descriptor]:
-    change_descriptor_str = None
-    # check if the descriptor_str is a combined one:
-    if "/<0;1>/*" in descriptor_str:
-        descriptor_str, change_descriptor_str = split_wallet_descriptor(descriptor_str)
-
-    return [
-        bdk.Descriptor(descriptor_str, network=network),
-        bdk.Descriptor(change_descriptor_str, network=network)
-        if change_descriptor_str
-        else None,
-    ]
 
 
 def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
@@ -267,11 +195,11 @@ def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
 
     descriptor_str = descriptor_str.strip()
     # these are now bdk single or multisig descriptors
-    descriptors = descriptor_strings_to_descriptors(descriptor_str, network)
-    # get the public descriptor string info
-    public_descriptor_string_combined = combined_wallet_descriptor(
-        descriptors, only_public=True
+    multipath_descriptor = MultipathDescriptor.from_descriptor_str(
+        descriptor_str, network
     )
+    # get the public descriptor string info
+    public_descriptor_string_combined = multipath_descriptor.as_string()
 
     # First split the descriptor like:
     # "wpkh"
@@ -314,3 +242,126 @@ def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
         "network": network,
         "public_descriptor_string_combined": public_descriptor_string_combined,
     }
+
+
+class MultipathDescriptor:
+    "Will create main+change BDK descriptors, no matter if '/<0;1>/*' or '/0/*' or '/1/*' is specified"
+
+    def __init__(
+        self, bdk_descriptor: bdk.Descriptor, change_descriptor: bdk.Descriptor
+    ) -> None:
+        self.bdk_descriptors = [bdk_descriptor, change_descriptor]
+
+    @classmethod
+    def from_descriptor_str(
+        cls, descriptor_str: str, network: bdk.Network
+    ) -> "MultipathDescriptor":
+        def count_closing_brackets(s):
+            count = 0
+            for char in reversed(s):
+                if char == ")":
+                    count += 1
+                else:
+                    break
+            return count
+
+        # check if the descriptor_str is a combined one:
+        if "/<0;1>/*" in descriptor_str:
+            receive_descriptor_str, change_descriptor_str = split_wallet_descriptor(
+                descriptor_str
+            )
+        elif "/0/*" in descriptor_str or "/1/*" in descriptor_str:
+            receive_descriptor_str, change_descriptor_str = descriptor_str.replace(
+                "/1/*", "/0/*", 1
+            ), descriptor_str.replace("/0/*", "/1/*", 1)
+        else:
+            # sparrow qr code misses the change derivation path completely
+            # check if checksum
+            splitted = descriptor_str.split("#")
+            if len(splitted) == 2 and len(splitted[1]) == 8:
+                descriptor_str = splitted[0]
+
+            count_brackets = count_closing_brackets(descriptor_str)
+            receive_descriptor_str = (
+                descriptor_str[:-count_brackets]
+                + "/0/*"
+                + descriptor_str[-count_brackets:]
+            )
+            change_descriptor_str = (
+                descriptor_str[:-count_brackets]
+                + "/1/*"
+                + descriptor_str[-count_brackets:]
+            )
+
+        return MultipathDescriptor(
+            bdk.Descriptor(receive_descriptor_str, network=network),
+            bdk.Descriptor(change_descriptor_str, network=network),
+        )
+
+    def as_string(self) -> str:
+        return self._as_string(only_public=True)
+
+    def as_string_private(self) -> str:
+        return self._as_string(only_public=False)
+
+    def _as_string(self, only_public=False) -> str:
+        logger.warning(
+            "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
+        )
+        assert len(self.bdk_descriptors) == 2
+
+        descriptors_without_checksum = [
+            d.as_string().split("#")[0]
+            if only_public
+            else d.as_string_private().split("#")[0]
+            for d in self.bdk_descriptors
+        ]
+        assert all(
+            [
+                d.count(f"/{i}/*)") == 1
+                for i, d in enumerate(descriptors_without_checksum)
+            ]
+        )
+
+        # only take the 1 descriptor, and put the /<0;1>/ in there
+        return descriptors_without_checksum[0].replace(f"/{0}/*", f"/<0;1>/*")
+
+    @classmethod
+    def from_keystores(
+        cls,
+        threshold: int,
+        keystores: List["KeyStore"],
+        address_type: AddressType,
+        network: bdk.Network,
+    ) -> "MultipathDescriptor":
+
+        # sanity checks
+        assert threshold <= len(keystores)
+        is_multisig = len(keystores) > 1
+        assert address_type.is_multisig == is_multisig
+
+        # [["wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/0/*)#arpc0qa2", "wpkh([189cf85e/84'/1'/0']tpubDDkYCWGii5pUuqqqvh9vRqyChQ88aEGZ7z7xpwDzAQ87SpNrii9MumksW8WSqv2aYEBssKYF5KVeY9kmoreJrvQSB2dgCz11TXu81YhyaqP/1/*)#arpc0qa2"], ...]
+        if len(keystores) == 1:
+            return keystores[0].to_singlesig_multipath_descriptor(address_type, network)
+
+        # there are no bdk multisig descriptor templates yet, so I have to use a single sig template
+        # the script type will be removed anyway in make_multisig_descriptor_string
+        all_descriptors = [
+            k.to_singlesig_multipath_descriptor(AddressTypes.p2wpkh, network)
+            for k in keystores
+        ]
+
+        receive_descriptors = [d.bdk_descriptors[0] for d in all_descriptors]
+        change_descriptors = [d.bdk_descriptors[1] for d in all_descriptors]
+
+        receive_descriptor_str = make_multisig_descriptor_string(
+            address_type, threshold, receive_descriptors
+        )
+        change_descriptor_str = make_multisig_descriptor_string(
+            address_type, threshold, change_descriptors
+        )
+
+        return MultipathDescriptor(
+            bdk.Descriptor(receive_descriptor_str, network=network),
+            bdk.Descriptor(change_descriptor_str, network=network),
+        )

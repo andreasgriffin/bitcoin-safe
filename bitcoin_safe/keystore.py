@@ -21,7 +21,7 @@ from .gui.qt.util import add_tab_to_tabs, read_QIcon
 import bdkpython as bdk
 from .storage import BaseSaveableClass, SaveAllClass
 import copy
-from .descriptors import AddressType, public_descriptor_info
+from .descriptors import AddressType, MultipathDescriptor, public_descriptor_info
 
 
 class KeyStoreType(SaveAllClass):
@@ -102,7 +102,7 @@ class KeyStore(BaseSaveableClass):
         self.mnemonic = mnemonic
         self.description = description
 
-    def to_descriptors(self, address_type: AddressType, network):
+    def to_singlesig_multipath_descriptor(self, address_type: AddressType, network):
         "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
         descriptors = [
             address_type.bdk_descriptor(
@@ -122,7 +122,7 @@ class KeyStore(BaseSaveableClass):
                 bdk.KeychainKind.INTERNAL,
             ]
         ]
-        return descriptors
+        return MultipathDescriptor(*descriptors)
 
     def __repr__(self) -> str:
         return str(self.__dict__)
