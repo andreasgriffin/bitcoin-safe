@@ -13,8 +13,8 @@ Pillow==9.5.0
 PySide2==5.15.2.1
 PyYAML==6.0
 PyYAML==6.0
-qrcode==7.4.2
+segno==1.5.3
 Requests==2.31.0
 pre-commit
 fpdf2==2.7.4
-bitcoin_qrreader==0.3.0
+bitcoin_qrreader==0.4.0

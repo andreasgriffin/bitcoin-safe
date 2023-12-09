@@ -1,5 +1,9 @@
 import logging
 
+from bitcoin_safe.gui.qt import block_change_signals
+from bitcoin_safe.gui.qt.util import Message, create_button, icon_path
+from bitcoin_safe.pdfrecovery import make_and_open_pdf
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
@@ -35,12 +39,28 @@ class WalletDescriptorUI(QObject):
             self.wallet.as_protowallet() if self.wallet else protowallet
         )
 
+        self.no_edit_mode = bool(self.wallet) or (
+            (self.protowallet.threshold, len(self.protowallet.keystores))
+            in [(1, 1), (2, 3)]
+        )
+
         self.tab = QWidget()
         self.verticalLayout_2 = QVBoxLayout(self.tab)
 
         self.keystore_uis: List[KeyStoreUI] = []
 
         self.create_wallet_type_and_descriptor()
+        self.block_change_signals = BlockChangesSignals(
+            own_widgets=[
+                self.spin_gap,
+                self.spin_req,
+                self.spin_signers,
+                self.edit_descriptor,
+                self.comboBox_address_type,
+            ],
+        )
+
+        self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
         self.tabs_widget_signers = QTabWidget(self.tab)
         self.verticalLayout_2.addWidget(self.tabs_widget_signers)
 
@@ -55,29 +75,15 @@ class WalletDescriptorUI(QObject):
             )
             self.keystore_uis.append(keystore_ui)
 
-        self.block_change_signals = BlockChangesSignals(
-            own_widgets=[
-                self.spin_gap,
-                self.spin_req,
-                self.spin_signers,
-                self.edit_descriptor,
-            ],
-        )
-
         for signal in (
-            [ui.keystore_ui_default.signal_xpub_changed for ui in self.keystore_uis]
-            + [
-                ui.keystore_ui_default.signal_fingerprint_changed
-                for ui in self.keystore_uis
-            ]
-            + [
-                ui.keystore_ui_default.signal_derivation_path_changed
-                for ui in self.keystore_uis
-            ]
+            [ui.signal_xpub_changed for ui in self.keystore_uis]
+            + [ui.signal_fingerprint_changed for ui in self.keystore_uis]
+            + [ui.signal_derivation_path_changed for ui in self.keystore_uis]
         ):
             signal.connect(self.ui_keystore_ui_change)
         for ui in self.keystore_uis:
-            ui.keystore_ui_default.signal_seed_changed.connect(self.ui_seed_ui_change)
+            ui.signal_seed_changed.connect(self.ui_seed_ui_change)
+
         self.set_all_ui_from_protowallet()
         # diasbeling fields MUST be done after the ui is filled
         self.disable_fields()
@@ -86,6 +92,7 @@ class WalletDescriptorUI(QObject):
 
     def ui_seed_ui_change(self, *args):
         self.ui_keystore_ui_change()
+        self.set_keystore_ui_from_protowallet()
 
     def ui_keystore_ui_change(self, *args):
         self.set_protowallet_from_keystore_ui()
@@ -98,17 +105,13 @@ class WalletDescriptorUI(QObject):
         self.set_keystore_ui_from_protowallet()
         self.set_wallet_ui_from_protowallet()
 
-    def get_ui_values_as_keystores(self):
-        return [
-            keystore_ui.keystore_ui_default.get_ui_values_as_keystore()
-            for keystore_ui in self.keystore_uis
-        ]
-
     def on_descriptor_pasted(self, new_value):
         self.on_descriptor_change(new_value)
         self.set_ui_descriptor()
 
-    def on_descriptor_change(self, new_value):
+    def on_descriptor_change(self, new_value: str):
+        new_value = new_value.strip().replace("\n", "")
+
         # self.set_protowallet_from_keystore_ui(cloned_protowallet)
         if (
             hasattr(self, "_edit_descriptor_cache")
@@ -118,7 +121,11 @@ class WalletDescriptorUI(QObject):
             return
         self._edit_descriptor_cache = new_value
 
-        self.set_protowallet_from_descriptor_str(new_value)
+        try:
+            self.set_protowallet_from_descriptor_str(new_value)
+        except:
+            Message(f"Invalid descriptor {new_value}").show_error()
+            return
 
         self.set_wallet_ui_from_protowallet()
         self.set_keystore_ui_from_protowallet()
@@ -128,6 +135,8 @@ class WalletDescriptorUI(QObject):
         self.on_wallet_ui_changes()
 
     def on_spin_signer_changed(self, new_value):
+        self.repopulate_comboBox_address_type(new_value > 1)
+
         self.on_wallet_ui_changes()
 
     def set_protowallet_from_descriptor_str(self, descriptor_str):
@@ -157,9 +166,11 @@ class WalletDescriptorUI(QObject):
             keystore_ui.keystore.from_other_keystore(keystore)
 
     def set_keystore_ui_from_protowallet(self):
+        logger.debug(f"set_keystore_ui_from_protowallet")
         self._set_keystore_tabs()
         for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.set_ui_from_keystore(keystore)
+        assert len(self.protowallet.keystores) == len(self.keystore_uis)
 
     def set_wallet_ui_from_protowallet(self):
         with self.block_change_signals:
@@ -189,6 +200,7 @@ class WalletDescriptorUI(QObject):
                 )
 
             self.spin_gap.setValue(self.protowallet.gap)
+        assert len(self.protowallet.keystores) == len(self.keystore_uis)
 
     def set_all_ui_from_protowallet(self):
         """
@@ -205,17 +217,12 @@ class WalletDescriptorUI(QObject):
     def set_protowallet_from_keystore_ui(self):
         for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.set_keystore_from_ui_values(keystore)
-        self.protowallet.set_address_type(self.get_address_type_from_ui())
         self.protowallet.set_gap(self.get_gap_from_ui())
 
         m, n = self.get_m_of_n_from_ui()
-        self.protowallet.set_threshold(m)
-
-        assert len(self.protowallet.keystores) == len(self.keystore_uis)
-        # if len(wallet.keystores) != len(self.keystore_uis):
-        #         print(wallet.keystores, self.keystore_uis)
-
         self.protowallet.set_number_of_keystores(n)
+        self.protowallet.set_threshold(m)
+        self.protowallet.set_address_type(self.get_address_type_from_ui())
 
         for i, keystore in enumerate(self.protowallet.keystores):
             keystore.label = self.protowallet.signer_names(
@@ -249,12 +256,19 @@ class WalletDescriptorUI(QObject):
 
         try:
             self.edit_descriptor.setText(
-                self.protowallet.to_multipath_descriptor().as_string()
+                self.protowallet.to_multipath_descriptor().as_string_private()
             )
         except:
             self.edit_descriptor.setText("Could not be derived from seed")
 
     def disable_fields(self):
+        self.comboBox_address_type.setHidden(self.no_edit_mode)
+        self.label_address_type.setHidden(self.no_edit_mode)
+        self.spin_signers.setHidden(self.no_edit_mode)
+        self.spin_req.setHidden(self.no_edit_mode)
+        self.label_signers.setHidden(self.no_edit_mode)
+        self.label_of.setHidden(self.no_edit_mode)
+
         with self.block_change_signals:
             self.set_combo_box_address_type_default()
             self.spin_signers.setValue(len(self.protowallet.keystores))
@@ -265,6 +279,30 @@ class WalletDescriptorUI(QObject):
         else:
             self.label_of.setDisabled(True)
             self.spin_signers.setDisabled(True)
+
+    def repopulate_comboBox_address_type(self, is_multisig):
+        with self.block_change_signals:
+            # Fetch the new address types
+            address_types = get_address_types(is_multisig)
+            address_type_names = [a.name for a in address_types]
+
+            # Get the current items in the combo box
+            current_items = [
+                self.comboBox_address_type.itemText(i)
+                for i in range(self.comboBox_address_type.count())
+            ]
+
+            # Check if the new list is different from the current items
+            if address_type_names != current_items:
+
+                # Clear and update the combo box
+                self.comboBox_address_type.clear()
+                self.comboBox_address_type.addItems(address_type_names)
+                default_address_type = get_default_address_type(is_multisig).name
+                if default_address_type in address_type_names:
+                    self.comboBox_address_type.setCurrentIndex(
+                        address_type_names.index(default_address_type)
+                    )
 
     def create_wallet_type_and_descriptor(self):
         box_wallet_type_and_descriptor = QWidget(self.tab)
@@ -278,8 +316,8 @@ class WalletDescriptorUI(QObject):
         form_wallet_type = QFormLayout(box_wallet_type)
 
         # box_signers_with_slider
-        label_signers = QLabel()
-        label_signers.setText(QCoreApplication.translate("tab", "Signers", None))
+        self.label_signers = QLabel()
+        self.label_signers.setText(QCoreApplication.translate("tab", "Signers", None))
 
         self.spin_req = QSpinBox()
         self.spin_req.setMinimum(1)
@@ -294,18 +332,17 @@ class WalletDescriptorUI(QObject):
         self.spin_signers.setMaximum(10)
 
         # Add widgets to the layout
-        form_wallet_type.addRow(label_signers, self.spin_req)
+        form_wallet_type.addRow(self.label_signers, self.spin_req)
         form_wallet_type.addRow(self.label_of, self.spin_signers)
 
         # box_address_type
-        label_address_type = QLabel()
+        self.label_address_type = QLabel()
 
         self.comboBox_address_type = QComboBox()
-        address_types = get_address_types(self.protowallet.is_multisig())
-        address_type_names = [a.name for a in address_types]
-        self.comboBox_address_type.addItems(address_type_names)
-
-        form_wallet_type.addRow(label_address_type, self.comboBox_address_type)
+        self.comboBox_address_type.currentIndexChanged.connect(
+            self.on_wallet_ui_changes
+        )
+        form_wallet_type.addRow(self.label_address_type, self.comboBox_address_type)
 
         # box_gap
         label_gap = QLabel()
@@ -351,12 +388,23 @@ class WalletDescriptorUI(QObject):
 
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
 
+        if self.wallet:
+            button = create_button(
+                "Print the \ndescriptor",
+                icon_path("pdf-file.svg"),
+                box_wallet_type_and_descriptor,
+                self.horizontalLayout_4,
+                max_sizes=[(30, 50)],
+            )
+            button.setMaximumWidth(100)
+            button.clicked.connect(lambda: make_and_open_pdf(self.wallet))
+
         h_wallet_type_and_descriptor.addWidget(groupBox_wallet_descriptor)
 
         self.verticalLayout_2.addWidget(box_wallet_type_and_descriptor)
 
         box_wallet_type.setTitle(QCoreApplication.translate("tab", "Wallet Type", None))
-        label_address_type.setText(
+        self.label_address_type.setText(
             QCoreApplication.translate("tab", "Address Type", None)
         )
         groupBox_wallet_descriptor.setTitle(
@@ -366,28 +414,18 @@ class WalletDescriptorUI(QObject):
         # self.edit_descriptor.textChanged.connect(self.signal_descriptor_change_apply)
         self.spin_signers.valueChanged.connect(self.on_spin_signer_changed)
         self.spin_req.valueChanged.connect(self.on_spin_threshold_changed)
-        self.comboBox_address_type.currentIndexChanged.connect(
-            lambda x: self.on_wallet_ui_changes()
-        )
 
     def create_button_bar(self):
-        box_button_bar = QWidget(self.tab)
-        layout_buttonbar = QHBoxLayout(box_button_bar)
-        layout_buttonbar.setContentsMargins(0, 0, 0, 0)
 
-        self.button_cancel = QPushButton(box_button_bar)
-        self.button_cancel.setText("Cancel changes")
-        self.button_cancel.setMinimumSize(QSize(150, 0))
-        self.button_cancel.clicked.connect(
-            self.signal_qtwallet_cancel_setting_changes.emit
+        # Create buttons and layout
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Apply | QDialogButtonBox.Discard
         )
-        layout_buttonbar.addWidget(self.button_cancel)
-
-        self.button_apply = QPushButton(box_button_bar)
-        self.button_apply.setText("Apply changes")
-        self.button_apply.setMinimumSize(QSize(150, 0))
-        self.button_apply.clicked.connect(
+        self.button_box.button(QDialogButtonBox.Apply).clicked.connect(
             self.signal_qtwallet_apply_setting_changes.emit
         )
-        layout_buttonbar.addWidget(self.button_apply)
-        self.verticalLayout_2.addWidget(box_button_bar, 0, Qt.AlignRight)
+        self.button_box.button(QDialogButtonBox.Discard).clicked.connect(
+            self.signal_qtwallet_cancel_setting_changes.emit
+        )
+
+        self.verticalLayout_2.addWidget(self.button_box, 0, Qt.AlignRight)

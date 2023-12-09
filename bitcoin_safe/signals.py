@@ -148,3 +148,4 @@ class Signals(QObject):
     export_bip329_labels = Signal(str)  # str= wallet_id
     import_bip329_labels = Signal(str)  # str= wallet_id
     open_wallet = Signal(str)  # str= filepath
+    finished_open_wallet = Signal(str)  # str= wallet_id

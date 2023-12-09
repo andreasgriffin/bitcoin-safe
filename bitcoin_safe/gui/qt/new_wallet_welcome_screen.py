@@ -10,7 +10,6 @@ from bdkpython import Network
 from PySide2.QtSvg import QSvgWidget
 from .util import icon_path, resize, qresize, add_centered_icons
 from .ui_explainer0 import Ui_Form as Ui_Explainer0
-from .ui_explainer1 import Ui_Form as Ui_Explainer1
 from PySide2.QtCore import Signal
 from ...util import call_call_functions
 
@@ -28,8 +27,6 @@ class NewWalletWelcomeScreen(QObject):
         self.network = network
 
         self.create_ui()
-        self.create_ui_explainer0()
-        self.create_ui_explainer1()
 
         self.pushButton_multisig.clicked.connect(
             lambda: call_call_functions(
@@ -56,14 +53,6 @@ class NewWalletWelcomeScreen(QObject):
             "Create new wallet",
             focus=True,
         )
-
-    def create_ui_explainer0(self):
-        self.ui_explainer0 = Ui_Explainer0(self.main_tabs)
-        self.ui_explainer0.setupUi()
-
-    def create_ui_explainer1(self):
-        self.ui_explainer1 = Ui_Explainer1(self.main_tabs)
-        self.ui_explainer1.setupUi()
 
     def create_ui(self):
         self.tab = QWidget()

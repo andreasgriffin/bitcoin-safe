@@ -44,7 +44,7 @@ class KeyStoreType(SaveAllClass):
 
 class KeyStoreTypes:
     hwi = KeyStoreType(
-        "hwi", "USB Hardware Wallet", "Connect \nUSB \nHardware Wallet", ["usb.svg"]
+        "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", ["usb.svg"]
     )
     file = KeyStoreType(
         "file",
@@ -159,3 +159,18 @@ class KeyStore(BaseSaveableClass):
         self.label = other_keystore.label
         self.mnemonic = other_keystore.mnemonic
         self.description = other_keystore.description
+
+    def merge_with(self, other_keystore: "KeyStore"):
+        # fill in missing info in keystores
+        keys = ["xpub", "fingerprint", "derivation_path", "label", "description"]
+        for key in keys:
+            # if both are filled, they have to be identical
+            if getattr(self, key) and getattr(other_keystore, key):
+                assert getattr(self, key) == getattr(other_keystore, key)
+
+            # fill mine if other_keystore has it
+            if not getattr(self, key) and getattr(other_keystore, key):
+                setattr(self, key, getattr(other_keystore, key))
+
+        if not self.mnemonic and other_keystore.mnemonic:
+            self.mnemonic = other_keystore.mnemonic

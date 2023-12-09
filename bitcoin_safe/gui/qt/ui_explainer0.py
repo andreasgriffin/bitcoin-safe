@@ -34,28 +34,19 @@ class Ui_Form(QObject):
         Form.resize(821, 507)
         Form.setMinimumSize(QSize(821, 507))
         self.verticalLayout = QVBoxLayout(Form)
-        self.verticalLayout.setObjectName("verticalLayout")
         self.label = QLabel(Form)
-        self.label.setObjectName("label")
         self.label.setMaximumSize(QSize(16777215, 150))
 
         self.verticalLayout.addWidget(self.label)
 
         self.groupBox_2 = QGroupBox(Form)
-        self.groupBox_2.setObjectName("groupBox_2")
         self.horizontalLayout = QHBoxLayout(self.groupBox_2)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.groupBox_3 = QGroupBox(self.groupBox_2)
-        self.groupBox_3.setObjectName("groupBox_3")
-        sizePolicy = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.groupBox_3.sizePolicy().hasHeightForWidth())
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
         self.groupBox_3.setSizePolicy(sizePolicy)
         self.verticalLayout_2 = QVBoxLayout(self.groupBox_3)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label_2 = QLabel(self.groupBox_3)
-        self.label_2.setObjectName("label_2")
         self.label_2.setWordWrap(True)
 
         svg_widget = QSvgWidget(icon_path("coldcard-only.svg"))
@@ -73,18 +64,14 @@ class Ui_Form(QObject):
 
         self.verticalLayout_2.addItem(self.verticalSpacer)
 
-        self.pushButton_buybitbox = create_buy_bitbox_button()
-        self.verticalLayout_2.addWidget(self.pushButton_buybitbox)
+        self.pushButton_buybitbox = create_buy_bitbox_button(self.verticalLayout_2)
 
         self.label_3 = QLabel(self.groupBox_3)
-        self.label_3.setObjectName("label_3")
         self.label_3.setWordWrap(True)
 
         self.verticalLayout_2.addWidget(self.label_3)
 
-        self.pushButton_buycoldcard = create_buy_coldcard_button()
-
-        self.verticalLayout_2.addWidget(self.pushButton_buycoldcard)
+        self.pushButton_buycoldcard = create_buy_coldcard_button(self.verticalLayout_2)
 
         self.verticalSpacer_3 = QSpacerItem(
             20, 84, QSizePolicy.Minimum, QSizePolicy.Expanding
@@ -95,19 +82,14 @@ class Ui_Form(QObject):
         self.horizontalLayout.addWidget(self.groupBox_3)
 
         self.label_6 = QLabel(self.groupBox_2)
-        self.label_6.setObjectName("label_6")
         self.label_6.setMaximumSize(QSize(20, 16777215))
 
         self.horizontalLayout.addWidget(self.label_6)
 
         self.groupBox_4 = QGroupBox(self.groupBox_2)
-        self.groupBox_4.setObjectName("groupBox_4")
-        sizePolicy.setHeightForWidth(self.groupBox_4.sizePolicy().hasHeightForWidth())
         self.groupBox_4.setSizePolicy(sizePolicy)
         self.verticalLayout_3 = QVBoxLayout(self.groupBox_4)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.label_8 = QLabel(self.groupBox_4)
-        self.label_8.setObjectName("label_8")
         self.label_8.setWordWrap(True)
 
         svg_widget = QSvgWidget(icon_path("coldcard-dice.svg"))
@@ -126,7 +108,6 @@ class Ui_Form(QObject):
         self.verticalLayout_3.addItem(self.verticalSpacer_2)
 
         self.label_9 = QLabel(self.groupBox_4)
-        self.label_9.setObjectName("label_9")
         self.label_9.setWordWrap(True)
 
         self.verticalLayout_3.addWidget(self.label_9)
@@ -140,19 +121,14 @@ class Ui_Form(QObject):
         self.horizontalLayout.addWidget(self.groupBox_4)
 
         self.label_12 = QLabel(self.groupBox_2)
-        self.label_12.setObjectName("label_12")
         self.label_12.setMaximumSize(QSize(20, 16777215))
 
         self.horizontalLayout.addWidget(self.label_12)
 
         self.groupBox_5 = QGroupBox(self.groupBox_2)
-        self.groupBox_5.setObjectName("groupBox_5")
-        sizePolicy.setHeightForWidth(self.groupBox_5.sizePolicy().hasHeightForWidth())
         self.groupBox_5.setSizePolicy(sizePolicy)
         self.verticalLayout_4 = QVBoxLayout(self.groupBox_5)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.label_10 = QLabel(self.groupBox_5)
-        self.label_10.setObjectName("label_10")
         self.label_10.setWordWrap(True)
 
         svg_widget = QSvgWidget(icon_path("seed-plate.svg"))
@@ -171,7 +147,6 @@ class Ui_Form(QObject):
         self.verticalLayout_4.addItem(self.verticalSpacer_4)
 
         self.label_11 = QLabel(self.groupBox_5)
-        self.label_11.setObjectName("label_11")
         self.label_11.setWordWrap(True)
 
         self.verticalLayout_4.addWidget(self.label_11)
@@ -185,20 +160,16 @@ class Ui_Form(QObject):
         self.horizontalLayout.addWidget(self.groupBox_5)
 
         self.label_15 = QLabel(self.groupBox_2)
-        self.label_15.setObjectName("label_15")
         self.label_15.setMaximumSize(QSize(20, 16777215))
 
         self.horizontalLayout.addWidget(self.label_15)
 
         self.groupBox_6 = QGroupBox(self.groupBox_2)
-        self.groupBox_6.setObjectName("groupBox_6")
-        sizePolicy.setHeightForWidth(self.groupBox_6.sizePolicy().hasHeightForWidth())
         self.groupBox_6.setSizePolicy(sizePolicy)
         self.verticalLayout_5 = QVBoxLayout(self.groupBox_6)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
 
         self.pushButton_proceed = create_button(
-            "Create 'Bitcoin Safe' Wallet\nand import the \nhardware wallet\n as the signer",
+            "Create 'Bitcoin Safe' Wallet\nand import the \nhardware signer\n as the signer",
             ("usb.svg", "qr-code.svg", "sd-card.svg"),
             self.groupBox_6,
             self.verticalLayout_5,
@@ -215,7 +186,6 @@ class Ui_Form(QObject):
         self.verticalLayout_5.addItem(self.verticalSpacer_5)
 
         self.label_14 = QLabel(self.groupBox_6)
-        self.label_14.setObjectName("label_14")
         self.label_14.setWordWrap(True)
 
         self.verticalLayout_5.addWidget(self.label_14)
@@ -253,7 +223,7 @@ class Ui_Form(QObject):
         self.label.setText(
             QCoreApplication.translate(
                 "Form",
-                '<html><head/><body><h1 align="center" style=" margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:xx-large; font-weight:600;">Storing your bitcoin with</span></h1><h1 align="center" style=" margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:xx-large; font-weight:600;">1 hardware wallet</span></h1></body></html>',
+                '<html><head/><body><h1 align="center" style=" margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:xx-large; font-weight:600;">Storing your bitcoin with</span></h1><h1 align="center" style=" margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:xx-large; font-weight:600;">1 hardware signer</span></h1></body></html>',
                 None,
             )
         )
@@ -262,7 +232,7 @@ class Ui_Form(QObject):
         self.label_2.setText(
             QCoreApplication.translate(
                 "Form",
-                '<html><head/><body><p><span style=" font-size:12pt;">Buy 1 hardware wallet</span></p></body></html>',
+                '<html><head/><body><p><span style=" font-size:12pt;">Buy 1 hardware signer</span></p></body></html>',
                 None,
             )
         )
@@ -284,7 +254,7 @@ class Ui_Form(QObject):
         self.label_8.setText(
             QCoreApplication.translate(
                 "Form",
-                '<html><head/><body><p><span style=" font-size:12pt;">Generate 24 secret words on your hardware wallet</span></p></body></html>',
+                '<html><head/><body><p><span style=" font-size:12pt;">Generate 24 secret words on your hardware signer</span></p></body></html>',
                 None,
             )
         )

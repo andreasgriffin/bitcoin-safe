@@ -1,6 +1,12 @@
+from distutils.log import info
 import logging
 
-from bitcoin_safe.config import UserConfig
+from aiohttp import Fingerprint
+
+from bitcoin_safe.config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.descriptors import public_descriptor_info
+from bitcoin_safe.gui.qt.qr_components.image_widget import QRCodeWidgetSVG
+from bitcoin_safe.gui.qt.open_tx_dialog import UTXOAddDialog
 
 logger = logging.getLogger(__name__)
 
@@ -18,26 +24,33 @@ from .utxo_list import UTXOList
 from ...tx import TXInfos
 from ...signals import Signals
 from .barchart import MempoolBarChart
-from ...mempool import get_prio_fees, fee_to_depth, fee_to_blocknumber
+from ...mempool import TxPrio, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
-from ...qr import create_qr
-
+from .qr_components.qr import create_qr_svg
+from ...psbt_util import psbt_simple_json
 from ...keystore import KeyStore
-from .util import read_QIcon, open_website
-from .keystore_ui import SignerUI
-from ...signer import AbstractSigner, SignerWallet, QRSigner
-from ...util import psbt_to_hex, Satoshis, serialized_to_hex, block_explorer_URL
+from .util import SearchableTab, TxTab, read_QIcon, open_website, save_file_dialog
+from .keystore_ui import SignedUI, SignerUI
+from ...signer import AbstractSigner, FileSigner, SignerWallet, QRSigner
+from ...util import (
+    TaskThread,
+    psbt_to_hex,
+    Satoshis,
+    remove_duplicates_keep_order,
+    serialized_to_hex,
+    block_explorer_URL,
+)
 from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
 from ...mempool import MempoolData, fees_of_depths
-from ...pythonbdk_types import Recipient
+from ...pythonbdk_types import OutPoint, Recipient
 from PySide2.QtCore import Signal, QObject
-from .qrcodewidget import QRLabel
 from ...wallet import UtxosForInputs, Wallet
 import json
 from ...pythonbdk_types import robust_address_str_from_script
 from .util import ShowCopyLineEdit, ShowCopyTextEdit
-
-max_reasonable_fee_rate_fallback = 100
+from ...psbt_util import psbt_simple_json
+from .debug_widget import generate_debug_class
+from ...pythonbdk_types import OutPoint
 
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
@@ -86,8 +99,7 @@ class ExportData(QObject):
         self.tab_qr = QWidget()
         self.tab_qr_layout = QHBoxLayout(self.tab_qr)
         self.tab_qr_layout.setAlignment(Qt.AlignVCenter)
-        self.qr_label = QRLabel()
-        self.qr_label.setWordWrap(True)
+        self.qr_label = QRCodeWidgetSVG()
         self.tab_qr_layout.addWidget(self.qr_label)
         self.tabs.addTab(self.tab_qr, "QR")
 
@@ -165,7 +177,7 @@ class ExportData(QObject):
         if not filename.lower().endswith(".png"):
             filename += ".png"
 
-        self.qr_label.pil_image.save(filename)
+        self.qr_label.save_file(filename)
 
     def set_tab_visibility(self, tab, visible, title, index=0):
         if self.tabs.indexOf(tab) == -1 and visible:
@@ -204,51 +216,39 @@ class ExportData(QObject):
         if seralized:
             self.edit_seralized.setText(seralized)
 
-            img = create_qr(seralized)
-            if img:
-                self.qr_label.set_image(img)
-            else:
-                self.qr_label.setText("Data too large.\nNo QR Code could be generated")
+            self.lazy_load_qr(seralized)
 
         if json_str:
             json_text = json.dumps(json.loads(json_str), indent=4)
             self.edit_json.setText(json_text)
 
+    def lazy_load_qr(self, seralized):
+        def do():
+            return create_qr_svg(seralized)
+
+        def on_done(result):
+            pass
+
+        def on_error(packed_error_info):
+            pass
+
+        def on_success(result):
+            if result:
+                self.qr_label.set_image(result)
+
+        TaskThread(self).add_and_start(do, on_success, on_done, on_error)
+
     def export_to_file(self):
-        filename = self.save_file_dialog(
+        filename = save_file_dialog(
             name_filters=["PSBT Files (*.psbt)", "All Files (*.*)"],
             default_suffix="psbt",
+            default_filename=f"{self.txid}.psbt",
         )
         if not filename:
             return
 
         with open(filename, "w") as file:
             file.write(self.seralized)
-
-    def save_file_dialog(self, name_filters=None, default_suffix=None):
-        options = QFileDialog.Options()
-        # options |= QFileDialog.DontUseNativeDialog  # Use Qt-based dialog, not native platform dialog
-
-        file_dialog = QFileDialog()
-        file_dialog.setOptions(options)
-        file_dialog.setWindowTitle("Save File")
-        if default_suffix:
-            file_dialog.setDefaultSuffix(default_suffix)
-
-        # Set a default filename
-        if self.txid:
-            file_dialog.selectFile(f"{self.txid}.{default_suffix}")
-
-        file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-        file_dialog.setDefaultSuffix(self.title_for_serialized.lower())
-        if name_filters:
-            file_dialog.setNameFilters(name_filters)
-
-        if file_dialog.exec_() == QFileDialog.Accepted:
-            selected_file = file_dialog.selectedFiles()[0]
-            # Do something with the selected file path, e.g., save data to the file
-            logger.debug(f"Selected save file: {selected_file}")
-            return selected_file
 
 
 class FeeGroup(QObject):
@@ -263,10 +263,14 @@ class FeeGroup(QObject):
         confirmation_time=None,
         url=None,
         fee_rate=None,
+        config: UserConfig = None,
     ) -> None:
         super().__init__()
 
         self.allow_edit = allow_edit
+        self.config = config
+
+        fee_rate = fee_rate if fee_rate else (mempool_data.get_prio_fees()[TxPrio.low])
 
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
@@ -307,10 +311,9 @@ class FeeGroup(QObject):
             "<font color='red'><b>High feerate</b></font>"
         )
         self.high_fee_warning_label.setHidden(True)
-        if not confirmation_time:
-            groupBox_Fee_layout.addWidget(
-                self.high_fee_warning_label, alignment=Qt.AlignHCenter
-            )
+        groupBox_Fee_layout.addWidget(
+            self.high_fee_warning_label, alignment=Qt.AlignHCenter
+        )
 
         self.non_final_fee_label = QLabel()
         self.non_final_fee_label.setText(
@@ -326,17 +329,18 @@ class FeeGroup(QObject):
         self.widget_around_spin_box_layout.setContentsMargins(
             0, 0, 0, 0
         )  # Remove margins
-        if not confirmation_time:
-            groupBox_Fee_layout.addWidget(
-                self.widget_around_spin_box, alignment=Qt.AlignHCenter
-            )
+        groupBox_Fee_layout.addWidget(
+            self.widget_around_spin_box, alignment=Qt.AlignHCenter
+        )
 
         self.spin_fee_rate = QDoubleSpinBox()
         self.spin_fee_rate.setReadOnly(not allow_edit)
-        self.spin_fee_rate.setRange(0, 1000)  # Set the acceptable range
         self.spin_fee_rate.setSingleStep(1)  # Set the step size
         self.spin_fee_rate.setDecimals(1)  # Set the number of decimal places
         self.spin_fee_rate.setMaximumWidth(55)
+        if fee_rate:
+            self.spin_fee_rate.setValue(fee_rate)
+        self.update_spin_fee_range()
         self.spin_fee_rate.editingFinished.connect(
             lambda: self.set_fee_rate(self.spin_fee_rate.value())
         )
@@ -358,29 +362,29 @@ class FeeGroup(QObject):
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
     def set_fee_rate(
-        self, fee_rate, confirmation_time: bdk.BlockTime = None, chain_height=None
+        self,
+        fee_rate,
+        url: str = None,
+        confirmation_time: bdk.BlockTime = None,
+        chain_height=None,
+        warn_high_fee: bool = False,
     ):
 
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.label_block_number.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
-        self.spin_fee_rate.setValue(fee_rate if fee_rate else 0)
         self.mempool.refresh(
             fee_rate=fee_rate,
             confirmation_time=confirmation_time,
             chain_height=chain_height,
         )
-        self.update_spin_fee_range()
-
-        fees = fees_of_depths(self.mempool.mempool_data.data, [1e6])
-        max_reasonable_fee_rate = (
-            fees[0] * 2 if fees else max_reasonable_fee_rate_fallback
-        )
+        self._set_value(fee_rate if fee_rate else 0)
 
         if fee_rate:
-            self.high_fee_warning_label.setHidden(
-                not (fee_rate > max_reasonable_fee_rate)
+            self.high_fee_warning_label.setVisible(
+                fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
+                or warn_high_fee
             )
 
             self.label_block_number.setText(
@@ -390,12 +394,25 @@ class FeeGroup(QObject):
             self.high_fee_warning_label.setHidden(True)
             self.label_block_number.setText(f"")
 
+        if url:
+            self.mempool.set_url(url)
+
         self.signal_set_fee_rate.emit(fee_rate)
 
-    def update_spin_fee_range(self):
+    def _set_value(self, value):
+        self.update_spin_fee_range(value)
+        self.spin_fee_rate.setValue(value)
+
+    def update_spin_fee_range(self, value=0):
         "Set the acceptable range"
-        maximum = max(self.mempool.mempool_data.data[:, 0].max(), 1000)
-        self.spin_fee_rate.setRange(1, maximum)
+        fee_range = self.config.fee_ranges[self.config.network_settings.network].copy()
+        fee_range[1] = max(
+            fee_range[1],
+            value,
+            self.spin_fee_rate.value(),
+            max(self.mempool.mempool_data.block_fee_borders(1)),
+        )
+        self.spin_fee_rate.setRange(*fee_range)
 
 
 class UITX_Base(QObject):
@@ -443,7 +460,8 @@ class UITx_Viewer(UITX_Base):
 
         self.signers: Dict[str, List[AbstractSigner]] = {}
 
-        self.main_widget = QWidget()
+        self.main_widget = TxTab(psbt=psbt, tx=tx)
+        self.main_widget.searchable_list = utxo_list
         self.main_widget_layout = QVBoxLayout(self.main_widget)
 
         self.upper_widget = QWidget(self.main_widget)
@@ -501,7 +519,10 @@ class UITx_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             confirmation_time=confirmation_time,
-            url=block_explorer_URL(config, "tx", self.txid()) if tx else None,
+            url=block_explorer_URL(config.network_settings, "tx", self.txid())
+            if tx
+            else None,
+            config=self.config,
         )
         self.fee_group.groupBox_Fee.setSizePolicy(
             QSizePolicy.Fixed, QSizePolicy.Expanding
@@ -517,13 +538,10 @@ class UITx_Viewer(UITX_Base):
             title_for_serialized="Transaction",
         )
 
-        self.lower_widget = QWidget(self.main_widget)
-        self.lower_widget.setMaximumHeight(220)
-        self.main_widget_layout.addWidget(self.lower_widget)
-        self.lower_widget_layout = QHBoxLayout(self.lower_widget)
-
         # signers
-        self.tabs_signers = QTabWidget(self.upper_widget)
+        self.tabs_signers = QTabWidget(self.upper_left_widget)
+        self.tabs_signers.setFixedHeight(170)
+        self.tabs_signers.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         self.upper_left_widget_layout.addWidget(self.tabs_signers)
 
         # buttons
@@ -542,11 +560,19 @@ class UITx_Viewer(UITX_Base):
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
 
-        if self.psbt:
-            self.set_psbt(psbt, fee_rate=fee_rate)
-        elif self.tx:
-            self.set_tx(tx, fee_rate=fee_rate, confirmation_time=confirmation_time)
+        self.reload()
         self.utxo_list.update()
+        self.signals.finished_open_wallet.connect(self.reload)
+
+    def reload(self):
+        if self.psbt:
+            self.set_psbt(self.psbt, fee_rate=self.fee_rate)
+        elif self.tx:
+            self.set_tx(
+                self.tx,
+                fee_rate=self.fee_rate,
+                confirmation_time=self.confirmation_time,
+            )
 
     def txid(self):
         if self.tx:
@@ -555,54 +581,142 @@ class UITx_Viewer(UITX_Base):
             return self.psbt.txid()
 
     def broadcast(self):
-        logger.debug(f"broadcasting {psbt_to_hex(self.tx.serialize())}")
-        self.blockchain.broadcast(self.tx)
-        self.signal_broadcast_tx.emit()
+        logger.debug(f"broadcasting {self.tx.serialize()}")
+        if self.blockchain:
+            self.blockchain.broadcast(self.tx)
+            self.signal_broadcast_tx.emit()
+        else:
+            logger.error("No blockchain set")
 
     def add_all_signer_tabs(self):
-        self.tabs_signers.setHidden(False)
-        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
-
         def get_wallet_of_outpoint(outpoint: bdk.OutPoint) -> Wallet:
             for wallet in wallets_dict.values():
                 utxo = wallet.utxo_of_outpoint(outpoint)
                 if utxo:
                     return wallet
 
-        # collect all wallets
+        def get_signing_fingerprints_of_wallet(wallet):
+            # check which keys the wallet can sign
+            descriptor_contains_keys = public_descriptor_info(
+                wallet.descriptor_str, self.network
+            ).get("descriptor_contains_keys")
+
+            wallet_signing_fingerprints = set(
+                [
+                    keystore.fingerprint if contains_key else None
+                    for keystore, contains_key in zip(
+                        wallet.keystores, descriptor_contains_keys
+                    )
+                ]
+            ) - set([None])
+            return wallet_signing_fingerprints
+
+        def get_signing_wallets(fingerprint) -> Wallet:
+            result = []
+            for wallet in wallets_dict.values():
+                signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(
+                    wallet
+                )
+                if fingerprint in signing_fingerprints_of_wallet:
+                    result.append(wallet)
+            return result
+
+        def get_label(fingerprint) -> Wallet:
+            for simple_input in signer_infos_of_inputs:
+                if fingerprint in simple_input["fingerprints"]:
+                    if not simple_input.get("wallet"):
+                        continue
+                    for keystore in simple_input["wallet"].keystores:
+                        if keystore.fingerprint == fingerprint:
+                            return keystore.label
+            return f"Fingerprint {fingerprint}"
+
+        self.remove_signers()
+        self.tabs_signers.setHidden(False)
+        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
+
+        signer_infos_of_inputs = psbt_simple_json(self.psbt)["inputs"]
+
+        # collect all wallets that have input utxos
         inputs: List[bdk.TxIn] = self.psbt.extract_tx().input()
 
-        wallet_for_inputs: List[Wallet] = []
-        for this_input in inputs:
-            wallet_of_input = get_wallet_of_outpoint(this_input.previous_output)
-            if wallet_of_input:
-                wallet_for_inputs.append(wallet_of_input)
-
-        if None in wallet_for_inputs:
-            logger.warning(
-                f"Cannot sign for all the inputs {wallet_for_inputs.index(None)} with the currently opened wallets"
+        for this_input, simple_input in zip(inputs, signer_infos_of_inputs):
+            wallet = get_wallet_of_outpoint(this_input.previous_output)
+            simple_input["wallet"] = wallet
+            simple_input["fingerprints"] = (
+                [k.fingerprint for k in wallet.keystores]
+                if simple_input["wallet"]
+                else [d["fingerprint"] for pubkey, d in simple_input["summary"].items()]
             )
 
-        logger.debug(f"wallet_for_inputs {[w.id for w in wallet_for_inputs]}")
+        # set of all fingerprints of all inputs
+        fingerprints = remove_duplicates_keep_order(
+            sum(
+                [
+                    simple_input["fingerprints"]
+                    for simple_input in signer_infos_of_inputs
+                ],
+                [],
+            )
+        )
 
+        fingerprints_not_fully_signed = set(
+            sum(
+                [
+                    [
+                        d["fingerprint"]
+                        for d in inp["summary"].values()
+                        if not d["partial_sigs"] and not d["signature"]
+                    ]
+                    for inp in signer_infos_of_inputs
+                ],
+                [],
+            )
+        )
+        fingerprints_fully_signed = set(fingerprints) - set(
+            fingerprints_not_fully_signed
+        )
+
+        #
         self.signers: Dict[str, List[AbstractSigner]] = {}
-        for wallet in set(wallet_for_inputs):  # removes all duplicate wallets
-            l = self.signers.setdefault(wallet.id, [])
-            l.append(QRSigner(self.network, blockchain=wallet.blockchain))
+        for fingerprint in fingerprints:
+            l = self.signers.setdefault(
+                fingerprint, []
+            )  # sets self.signers[fingerprint] = []  if key doesn't exists
 
-            # check if the wallet could sign. If not then dont add it
-            signer_wallet = SignerWallet(wallet, self.network)
-            if signer_wallet.can_sign():
-                l.append(SignerWallet(wallet, self.network))
+            # check if any wallet has keys for this fingerprint
+            signing_wallets = get_signing_wallets(fingerprint)
+            if signing_wallets:
+                l.append(SignerWallet(signing_wallets[0], self.network))
+
+            # always offer the qr option
+            l.append(QRSigner("", self.network, blockchain=self.blockchain))
+
+            # always offer the file option
+            l.append(FileSigner("", self.network, blockchain=self.blockchain))
 
         self.signeruis = []
-        for wallet_id, signer_list in self.signers.items():
-            signerui = SignerUI(
-                signer_list, self.psbt, self.tabs_signers, self.network, wallet_id
-            )
-            signerui.signal_signature_added.connect(
-                lambda psbt: self.signature_added(psbt)
-            )
+        for fingerprint, signer_list in self.signers.items():
+            if fingerprint in fingerprints_fully_signed:
+                signerui = SignedUI(
+                    f"Transaction signed with the private key belonging to fingerprint {fingerprint}",
+                    self.psbt,
+                    self.tabs_signers,
+                    self.network,
+                    key_label=get_label(fingerprint),
+                )
+            else:
+                signerui = SignerUI(
+                    signer_list,
+                    self.psbt,
+                    self.tabs_signers,
+                    self.network,
+                    key_label=get_label(fingerprint),
+                    wallet_id=signer_list[0].label if signer_list else None,
+                )
+                signerui.signal_signature_added.connect(
+                    lambda psbt: self.signature_added(psbt)
+                )
             self.signeruis.append(signerui)
 
     def remove_signers(self):
@@ -611,8 +725,19 @@ class UITx_Viewer(UITX_Base):
             self.tabs_signers.removeTab(i)
 
     def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction):
+        tx = None
         if isinstance(psbt_with_signatures, bdk.Transaction):
-            self.set_tx(psbt_with_signatures, fee_rate=self.fee_rate)
+            tx = psbt_with_signatures
+        else:
+            all_inputs_fully_signed = [
+                inp.get("signature")
+                for inp in psbt_simple_json(psbt_with_signatures)["inputs"]
+            ]
+            if all(all_inputs_fully_signed):
+                tx = psbt_with_signatures.extract_tx()
+
+        if tx:
+            self.set_tx(tx, fee_rate=self.fee_rate)
         else:
             self.set_psbt(psbt_with_signatures, fee_rate=self.fee_rate)
             # TODO: assume here after 1 signing it is ready to be broadcasted
@@ -633,10 +758,14 @@ class UITx_Viewer(UITX_Base):
             title_for_serialized="Transaction",
         )
 
+        fee = tx.size() * fee_rate
         self.fee_group.set_fee_rate(
             fee_rate=fee_rate,
+            url=block_explorer_URL(self.config.network_settings, "tx", tx.txid()),
             confirmation_time=confirmation_time,
             chain_height=self.blockchain.get_height() if self.blockchain else None,
+            warn_high_fee=fee / sum([txout.value for txout in tx.output()])
+            > FEE_RATIO_HIGH_WARNING,
         )
 
         outputs: List[bdk.TxOut] = self.tx.output()
@@ -650,6 +779,10 @@ class UITx_Viewer(UITX_Base):
             )
             for output in outputs
         ]
+
+        self.button_edit_tx.setHidden(bool(confirmation_time))
+        self.button_save_tx.setHidden(bool(confirmation_time))
+        self.button_broadcast_tx.setHidden(bool(confirmation_time))
 
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_rate=None):
         self.psbt: bdk.PartiallySignedTransaction = psbt
@@ -665,7 +798,13 @@ class UITx_Viewer(UITX_Base):
         fee_rate = (
             self.psbt.fee_rate().as_sat_per_vb() if fee_rate is None else fee_rate
         )
-        self.fee_group.set_fee_rate(fee_rate=fee_rate)
+        self.fee_group.set_fee_rate(
+            fee_rate=fee_rate,
+            url=block_explorer_URL(self.config.network_settings, "tx", psbt.txid()),
+            warn_high_fee=psbt.fee_amount()
+            / sum([txout.value for txout in psbt.extract_tx().output()])
+            > FEE_RATIO_HIGH_WARNING,
+        )
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
 
@@ -684,10 +823,10 @@ class UITx_Viewer(UITX_Base):
 
 class UITX_Creator(UITX_Base):
     signal_create_tx = Signal(TXInfos)
-    signal_set_category_coin_selection = Signal(TXInfos)
 
     def __init__(
         self,
+        wallet: Wallet,
         mempool_data: MempoolData,
         categories: List[str],
         utxo_list: UTXOList,
@@ -697,6 +836,7 @@ class UITX_Creator(UITX_Base):
         enable_opportunistic_merging_fee_rate=5,
     ) -> None:
         super().__init__(config=config, signals=signals, mempool_data=mempool_data)
+        self.wallet = wallet
         self.categories = categories
         self.utxo_list = utxo_list
         self.get_sub_texts = get_sub_texts
@@ -704,9 +844,12 @@ class UITX_Creator(UITX_Base):
             enable_opportunistic_merging_fee_rate
         )
 
+        self.additional_outpoints = []
+        utxo_list.get_outpoints = self.get_outpoints
         utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
 
-        self.main_widget = QWidget()
+        self.main_widget = SearchableTab()
+        self.main_widget.searchable_list = utxo_list
         self.main_widget_layout = QHBoxLayout(self.main_widget)
 
         self.create_inputs_selector(self.main_widget_layout)
@@ -732,7 +875,9 @@ class UITX_Creator(UITX_Base):
         )
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout)
+        self.fee_group = FeeGroup(
+            mempool_data, self.widget_right_top_layout, config=self.config
+        )
         self.fee_group.groupBox_Fee.setSizePolicy(
             QSizePolicy.Fixed, QSizePolicy.Expanding
         )
@@ -756,6 +901,21 @@ class UITX_Creator(UITX_Base):
 
         self.tab_changed(0)
         self.tabs_inputs.currentChanged.connect(self.tab_changed)
+        self.mempool_data.signal_data_updated.connect(self.update_fee_rate_to_mempool)
+
+    def update_fee_rate_to_mempool(self):
+        "Do this only ONCE after the mempool data is fetched"
+        if self.fee_group.spin_fee_rate.value() == MIN_RELAY_FEE:
+            self.fee_group.set_fee_rate(self.mempool_data.get_prio_fees()[TxPrio.low])
+        self.mempool_data.signal_data_updated.disconnect(
+            self.update_fee_rate_to_mempool
+        )
+
+    def get_outpoints(self):
+        return [
+            OutPoint.from_bdk(utxo.outpoint)
+            for utxo in self.wallet.list_unspent_based_on_tx()
+        ] + self.additional_outpoints
 
     def sum_amount_selected_utxos(self) -> Satoshis:
         sum_values = 0
@@ -781,7 +941,7 @@ class UITX_Creator(UITX_Base):
         # tab categories
         self.verticalLayout_inputs = QVBoxLayout(self.tab_inputs_categories)
         self.label_select_input_categories = QLabel(
-            "Select a category that fits best to the recipient"
+            "Select a category that fits the recipient best"
         )
         self.label_select_input_categories.setWordWrap(True)
         self.checkBox_reduce_future_fees = QCheckBox(self.tab_inputs_categories)
@@ -789,8 +949,10 @@ class UITX_Creator(UITX_Base):
 
         # Taglist
         self.category_list = CategoryList(
-            self.categories, self.signals, self.get_sub_texts
+            self.categories, self.signals, self.get_sub_texts, immediate_release=False
         )
+        # select the first one with !=0 balance
+        category_utxo_dict = self.wallet.get_category_utxo_dict()
         self.verticalLayout_inputs.addWidget(self.label_select_input_categories)
         self.verticalLayout_inputs.addWidget(self.category_list)
 
@@ -799,14 +961,54 @@ class UITX_Creator(UITX_Base):
         # tab utxos
         self.tab_inputs_utxos = QWidget(self.main_widget)
         self.verticalLayout_inputs_utxos = QVBoxLayout(self.tab_inputs_utxos)
-        self.tabs_inputs.addTab(self.tab_inputs_utxos, "UTXOs")
+        self.tabs_inputs.addTab(self.tab_inputs_utxos, "Manual")
 
-        # utxo list
         self.uxto_selected_label = QLabel(self.main_widget)
         self.verticalLayout_inputs_utxos.addWidget(self.uxto_selected_label)
         self.verticalLayout_inputs_utxos.addWidget(self.utxo_list)
 
+        # utxo list
+        if hasattr(bdk.TxBuilder(), "add_foreign_utxo"):
+            self.button_add_utxo = QPushButton("Add foreign UTXOs")
+            self.button_add_utxo.clicked.connect(self.click_add_utxo)
+            self.verticalLayout_inputs_utxos.addWidget(self.button_add_utxo)
+
         layout.addWidget(self.tabs_inputs)
+
+        def sum_value(category):
+            utxos = category_utxo_dict.get(category)
+            if not utxos:
+                return 0
+            return sum([utxo.txout.value for utxo in utxos])
+
+        def get_idx_non_zero_category():
+            for i, category in enumerate(self.category_list.categories):
+                if sum_value(category) > 0:
+                    return i
+
+        idx_non_zero_category = get_idx_non_zero_category()
+        if idx_non_zero_category is not None:
+            self.category_list.item(idx_non_zero_category).setSelected(True)
+
+    def add_outpoints(self, outpoints: List[OutPoint]):
+        old_outpoints = self.get_outpoints()
+        for outpoint in outpoints:
+            if outpoint not in old_outpoints:
+                self.additional_outpoints.append(outpoint)
+
+    def click_add_utxo(self):
+        def process_input(s: str):
+            outpoints = [
+                OutPoint.from_str(row.strip()) for row in s.strip().split("\n")
+            ]
+            logger.debug(f"Adding outpoints {outpoints}")
+            self.add_outpoints(outpoints)
+            self.utxo_list.update()
+            self.utxo_list.select_rows(
+                outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY
+            )
+
+        UTXOAddDialog(on_open=process_input).show()
 
     def on_set_fee_rate(self, fee_rate):
         self.checkBox_reduce_future_fees.setChecked(
@@ -833,22 +1035,23 @@ class UITX_Creator(UITX_Base):
 
         if use_this_tab == self.tab_inputs_utxos:
             infos.utxo_strings = [
-                self.utxo_list.item_from_index(idx).text()
-                for idx in self.utxo_list.selected_in_column(
-                    self.utxo_list.Columns.OUTPOINT
-                )
+                str(outpoint) for outpoint in self.utxo_list.get_selected_outpoints()
             ]
 
+        # for the tab_inputs_categories consider only the utxos from this wallet
+        infos.fill_utxo_dict(
+            [self.wallet]
+            if use_this_tab == self.tab_inputs_categories
+            else self.signals.get_wallets().values()
+        )
         return infos
 
     def set_max_amount(self, spin_box: CustomDoubleSpinBox):
-        wallets: List[Wallet] = self.signals.get_wallets().values()
-
         txinfos = self.get_ui_tx_infos()
 
-        utxos = sum([wallet.get_all_input_utxos(txinfos) for wallet in wallets], [])
-
-        total_input_value = sum([utxo.txout.value for utxo in utxos])
+        total_input_value = sum(
+            [utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo]
+        )
 
         total_output_value = sum(
             [recipient.amount for recipient in txinfos.recipients]
@@ -858,12 +1061,6 @@ class UITX_Creator(UITX_Base):
 
         max_available_amount = total_input_value - total_output_value
         spin_box.setValue(spin_box.value() + max_available_amount)
-
-    def update_categories(self):
-        self.category_list.clear()
-        sub_text = self.get_sub_texts()
-        for category in self.categories:
-            self.category_list.add(category, sub_text=sub_text)
 
     def retranslateUi(self):
         self.main_widget.setWindowTitle(
@@ -889,7 +1086,29 @@ class UITX_Creator(UITX_Base):
             self.tabs_inputs.setMaximumWidth(80000)
             self.recipients.setMaximumWidth(500)
 
-            # take the coin selection from the category to the utxo tab
-            self.signal_set_category_coin_selection.emit(
+            # take the coin selection from the category to the utxo tab (but only if one is selected)
+            self.set_coin_selection_in_sent_tab(
                 self.get_ui_tx_infos(self.tab_inputs_categories)
             )
+
+    def set_coin_selection_in_sent_tab(self, txinfos: TXInfos):
+        utxos_for_input = self.wallet.create_coin_selection_dict(txinfos)
+
+        model = self.utxo_list.model()
+        # Get the selection model from the view
+        selection = self.utxo_list.selectionModel()
+
+        utxo_names = [self.wallet.get_utxo_name(utxo) for utxo in utxos_for_input.utxos]
+
+        # Select rows with an ID in id_list
+        for row in range(model.rowCount()):
+            index = model.index(row, self.utxo_list.Columns.OUTPOINT)
+            utxo_name = model.data(index)
+            if utxo_name in utxo_names:
+                selection.select(
+                    index, QItemSelectionModel.Select | QItemSelectionModel.Rows
+                )
+            else:
+                selection.select(
+                    index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows
+                )

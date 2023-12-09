@@ -1,13 +1,16 @@
+import enum
 import logging
+
+from bitcoin_safe.config import MIN_RELAY_FEE
 
 logger = logging.getLogger(__name__)
 
 import requests
 import numpy as np
 from PySide2.QtCore import QObject, Signal
-from .thread_manager import ThreadManager
 import datetime
-
+import bdkpython as bdk
+from .util import TaskThread
 
 feeLevels = [
     1,
@@ -140,11 +143,18 @@ def fee_to_color(fee, colors=chartColors):
     return colors[indizes[-1]]
 
 
-def fetch_mempool_histogram():
+def fetch_mempool_histogram(network: bdk.Network):
     logger.info("Fetching mempool data from mempool.space")
 
+    api_urls = {
+        bdk.Network.BITCOIN: "https://mempool.space/api/",
+        bdk.Network.TESTNET: "https://mempool.space/testnet/api/",
+        bdk.Network.SIGNET: "https://mempool.space/signet/api/",
+        bdk.Network.REGTEST: "https://mempool.space/api/",
+    }
+
     # Send GET request to an API endpoint
-    response = requests.get("https://mempool.space/api/mempool")
+    response = requests.get(f"{api_urls[network]}mempool")
 
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
@@ -203,11 +213,6 @@ def get_block_min_fees(data):
     return np.array(list(zip(blocks, blocks_to_min_fees(data, blocks))))
 
 
-def get_prio_fees(data):
-    blocks = [-0.5, 1, 2]
-    return np.array(blocks_to_min_fees(data, blocks))
-
-
 def fees_of_depths(data, depths):
     fee_borders_indizes = [
         index_of_sum_until_including(data[:, 1], depth) for depth in depths
@@ -233,16 +238,44 @@ def bin_data(bin_edges, data):
     return np.array(aggregated_data)
 
 
+class TxPrio(enum.Enum):
+    low = enum.auto()
+    medium = enum.auto()
+    high = enum.auto()
+
+
 class MempoolData(QObject):
     signal_data_updated = Signal()
 
-    def __init__(self) -> None:
+    def __init__(self, network: bdk.Network) -> None:
         super().__init__()
 
-        self.thread_manager = ThreadManager()
-        self.current_timestamp = 0
-        self.data = np.zeros((1, 2))
+        self.network = network
+        self.data = np.ones((1, 2)) * MIN_RELAY_FEE
         self.time_of_data = datetime.datetime.fromtimestamp(0)
+
+    def block_fee_borders(self, blocks):
+        depths = np.arange(blocks + 1) * 1e6
+        return fees_of_depths(self.data, depths)
+
+    def median_block_fees(self, blocks):
+        depths = np.arange(blocks + 1) * 1e6
+        return fees_of_depths(self.data, depths + 0.5e6)
+
+    def get_prio_fees(self):
+        blocks = [-0.5, 1, 2]
+        prios = [TxPrio.high, TxPrio.medium, TxPrio.low]
+        return {
+            prio: min(fee, self.max_reasonable_fee_rate())
+            for prio, fee in zip(prios, blocks_to_min_fees(self.data, blocks))
+        }
+
+    def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback=100):
+        if self.data is None:
+            return max_reasonable_fee_rate_fallback
+        # the tip of the fees is usally too high, so go at least 1MB deep
+        fees = fees_of_depths(self.data, [1e6])
+        return fees[0] * 2 if fees and fees[0] else max_reasonable_fee_rate_fallback
 
     def set_data_from_file(self, datafile=None):
         self.set_data(np.loadtxt(datafile, delimiter=","))
@@ -261,12 +294,10 @@ class MempoolData(QObject):
                     f"Do not fetch data from mempoolspace because data is only {datetime.datetime.now()- self.time_of_data  } old."
                 )
                 return None
-            return fetch_mempool_histogram()
+            return fetch_mempool_histogram(self.network)
 
-        def on_finished(data):
+        def on_done(data):
             if data is not None:
                 self.set_data(data)
 
-        return self.thread_manager.start_in_background_thread(
-            do, on_finished=on_finished, name=self.__class__.__name__
-        )
+        TaskThread(self).add_and_start(do, None, on_done, None)

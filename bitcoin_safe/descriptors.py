@@ -5,7 +5,10 @@ logger = logging.getLogger(__name__)
 import bdkpython as bdk
 from typing import Dict, List, Tuple
 import re
-
+from bitcoin_qrreader.multipath_descriptor import (
+    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+)
+from bitcoin_qrreader.multipath_descriptor import add_checksum_to_descriptor
 
 # https://bitcoin.design/guide/glossary/address/
 # https://learnmeabitcoin.com/technical/derivation-paths
@@ -81,7 +84,8 @@ class AddressTypes:
         False,
         derivation_path=lambda network: f"m/86h/{0 if network==bdk.Network.BITCOIN else 1}h/0h",
         desc_template=lambda x: f"tr({x})",
-        bdk_descriptor_secret=None,
+        bdk_descriptor=bdk.Descriptor.new_bip86_public,
+        bdk_descriptor_secret=bdk.Descriptor.new_bip86,
         info_url="https://github.com/bitcoin/bips/blob/master/bip-0386.mediawiki",
         description="Taproot (single sig) addresses ",
     )
@@ -141,23 +145,15 @@ def make_multisig_descriptor_string(
         descriptor_without_script(descriptor.as_string_private())
         for descriptor in descriptors
     ]
-    if len(descriptors) > 1:
-        return address_type.desc_template(
+
+    descriptor_without_checksum = (
+        address_type.desc_template(
             f"sortedmulti({threshold},{','.join(descriptors_without_script)})"
         )
-    else:
-        return address_type.desc_template(descriptors_without_script[0])
-
-
-def split_wallet_descriptor(descriptor_str: str):
-    logger.warning(
-        "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
+        if len(descriptors) > 1
+        else address_type.desc_template(descriptors_without_script[0])
     )
-    assert "/<0;1>/*" in descriptor_str
-
-    return descriptor_str.replace("/<0;1>/*", "/0/*"), descriptor_str.replace(
-        "/<0;1>/*", "/1/*"
-    )
+    return add_checksum_to_descriptor(descriptor_without_checksum)
 
 
 def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
@@ -193,6 +189,30 @@ def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
             "derivation_path": "m/" + derivation_path,
         }
 
+    def split_string(descriptor_string_combined):
+        # First split the descriptor like:
+        # "wpkh"
+        # "[a42c6dd3/84'/1'/0']xpub/0/*"
+        groups = [
+            g.rstrip(")")
+            for g in extract_groups(descriptor_string_combined, r"(.*)\((.*)\)")
+        ]  # remove trailing )
+
+        # do the keystore parts
+        is_multisig = "multi" in groups[0]
+        threshold = 1
+        if is_multisig:
+            threshold, *keystore_strings = groups[1].split(",")
+        else:
+            assert len(groups) == 2
+            keystore_strings = [groups[1]]
+        return {
+            "keystore_strings": keystore_strings,
+            "script_prefix": groups[0],
+            "is_multisig": is_multisig,
+            "threshold": threshold,
+        }
+
     descriptor_str = descriptor_str.strip()
     # these are now bdk single or multisig descriptors
     multipath_descriptor = MultipathDescriptor.from_descriptor_str(
@@ -201,131 +221,30 @@ def public_descriptor_info(descriptor_str: str, network: bdk.Network) -> Dict:
     # get the public descriptor string info
     public_descriptor_string_combined = multipath_descriptor.as_string()
 
-    # First split the descriptor like:
-    # "wpkh"
-    # "[a42c6dd3/84'/1'/0']xpub/0/*"
-    groups = [
-        g.rstrip(")")
-        for g in extract_groups(public_descriptor_string_combined, r"(.*)\((.*)\)")
-    ]  # remove trailing )
-    logger.debug(f"groups {groups}")
+    splitted_string = split_string(public_descriptor_string_combined)
+    keystores = [
+        extract_keystore(keystore_string)
+        for keystore_string in splitted_string["keystore_strings"]
+    ]
 
-    # do the keystore parts
-    is_multisig = "multi" in groups[0]
-    threshold = 1
-    if is_multisig:
-        threshold, *keystore_strings = groups[1].split(",")
-        keystores = [
-            extract_keystore(keystore_string) for keystore_string in keystore_strings
+    descriptor_contains_keys = [
+        s[1:].startswith("prv")
+        for s in split_string(multipath_descriptor.as_string_private())[
+            "keystore_strings"
         ]
-    else:
-        assert len(groups) == 2
-        keystores = [extract_keystore(groups[1])]
-
-    # address type
-    used_desc_template = f"{groups[0]}()" + (")" if "(" in groups[0] else "")
-    address_type = None
-    for temp_address_type in AddressTypes.__dict__.values():
-        if not isinstance(temp_address_type, AddressType):
-            continue
-        if (
-            temp_address_type.desc_template("sortedmulti()" if is_multisig else "")
-            == used_desc_template
-        ):
-            address_type = temp_address_type
-            break
+    ]
 
     return {
-        "threshold": int(threshold),
+        "threshold": int(splitted_string["threshold"]),
         "signers": len(keystores),
         "keystores": keystores,
         "network": network,
         "public_descriptor_string_combined": public_descriptor_string_combined,
+        "descriptor_contains_keys": descriptor_contains_keys,
     }
 
 
-class MultipathDescriptor:
-    "Will create main+change BDK descriptors, no matter if '/<0;1>/*' or '/0/*' or '/1/*' is specified"
-
-    def __init__(
-        self, bdk_descriptor: bdk.Descriptor, change_descriptor: bdk.Descriptor
-    ) -> None:
-        self.bdk_descriptors = [bdk_descriptor, change_descriptor]
-
-    @classmethod
-    def from_descriptor_str(
-        cls, descriptor_str: str, network: bdk.Network
-    ) -> "MultipathDescriptor":
-        def count_closing_brackets(s):
-            count = 0
-            for char in reversed(s):
-                if char == ")":
-                    count += 1
-                else:
-                    break
-            return count
-
-        # check if the descriptor_str is a combined one:
-        if "/<0;1>/*" in descriptor_str:
-            receive_descriptor_str, change_descriptor_str = split_wallet_descriptor(
-                descriptor_str
-            )
-        elif "/0/*" in descriptor_str or "/1/*" in descriptor_str:
-            receive_descriptor_str, change_descriptor_str = descriptor_str.replace(
-                "/1/*", "/0/*", 1
-            ), descriptor_str.replace("/0/*", "/1/*", 1)
-        else:
-            # sparrow qr code misses the change derivation path completely
-            # check if checksum
-            splitted = descriptor_str.split("#")
-            if len(splitted) == 2 and len(splitted[1]) == 8:
-                descriptor_str = splitted[0]
-
-            count_brackets = count_closing_brackets(descriptor_str)
-            receive_descriptor_str = (
-                descriptor_str[:-count_brackets]
-                + "/0/*"
-                + descriptor_str[-count_brackets:]
-            )
-            change_descriptor_str = (
-                descriptor_str[:-count_brackets]
-                + "/1/*"
-                + descriptor_str[-count_brackets:]
-            )
-
-        return MultipathDescriptor(
-            bdk.Descriptor(receive_descriptor_str, network=network),
-            bdk.Descriptor(change_descriptor_str, network=network),
-        )
-
-    def as_string(self) -> str:
-        return self._as_string(only_public=True)
-
-    def as_string_private(self) -> str:
-        return self._as_string(only_public=False)
-
-    def _as_string(self, only_public=False) -> str:
-        logger.warning(
-            "This function is unsafe and must be replaced by bdk/rust miniscript. See https://github.com/bitcoindevkit/bdk/issues/1021"
-        )
-        assert len(self.bdk_descriptors) == 2
-
-        descriptors_without_checksum = [
-            d.as_string().split("#")[0]
-            if only_public
-            else d.as_string_private().split("#")[0]
-            for d in self.bdk_descriptors
-        ]
-        assert all(
-            [
-                d.count(f"/{i}/*)") == 1
-                for i, d in enumerate(descriptors_without_checksum)
-            ]
-        )
-
-        # only take the 1 descriptor, and put the /<0;1>/ in there
-        return descriptors_without_checksum[0].replace(f"/{0}/*", f"/<0;1>/*")
-
+class MultipathDescriptor(BitcoinQRMultipathDescriptor):
     @classmethod
     def from_keystores(
         cls,

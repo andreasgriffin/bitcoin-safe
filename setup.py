@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="bitcoin_safe",
-    version="0.1.0",
+    version="0.2.0",
     author="Andreas Griffin",
     author_email="andreasgriffin@proton.me",
     description="A bitcoin wallet for the whole family.",

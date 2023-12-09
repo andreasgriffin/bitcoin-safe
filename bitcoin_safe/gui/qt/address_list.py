@@ -25,8 +25,6 @@
 
 import logging
 
-from matplotlib import category
-
 from ...config import UserConfig, BlockchainType
 
 logger = logging.getLogger(__name__)
@@ -36,18 +34,18 @@ from .util import (
     MONOSPACE_FONT,
     ColorScheme,
     MessageBoxMixin,
+    set_balance_label,
     webopen,
     do_copy,
     read_QIcon,
     TX_ICONS,
     sort_id_to_icon,
 )
-
+from PySide2.QtGui import QBrush, QColor, QFont
 import bdkpython as bdk
 import enum
 from enum import IntEnum
 from typing import TYPE_CHECKING
-
 from PySide2.QtCore import (
     Qt,
     QPersistentModelIndex,
@@ -60,6 +58,7 @@ from PySide2.QtGui import (
     QStandardItemModel,
     QStandardItem,
     QFont,
+    QFontMetrics,
     QMouseEvent,
     QDrag,
     QPixmap,
@@ -76,6 +75,7 @@ from ...wallet import Wallet
 from ...i18n import _
 from ...util import (
     InternalAddressCorruption,
+    Satoshis,
     block_explorer_URL,
     format_satoshis,
     DEVELOPMENT_PREFILLS,
@@ -271,7 +271,11 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
     def create_toolbar(self, config: UserConfig = None):
         toolbar, menu = self.create_toolbar_with_menu("")
-        self.num_addr_label = toolbar.itemAt(0).widget()
+        self.balance_label = toolbar.itemAt(0).widget()
+        font = QFont()
+        font.setPointSize(12)
+        self.balance_label.setFont(font)
+
         self.button_get_new_address = toolbar.itemAt(1).widget()
         menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
         menu.addAction(
@@ -283,14 +287,14 @@ class AddressList(MyTreeView, MessageBoxMixin):
             lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
         )
 
-        self.button_fresh_address = QPushButton("Copy fresh receive address")
-        self.button_fresh_address.clicked.connect(self.get_address)
-        toolbar.insertWidget(1, self.button_fresh_address)
-        self.button_new_address = QPushButton("+ Add receive address")
-        self.button_new_address.clicked.connect(
-            lambda: self.get_address(force_new=True)
-        )
-        toolbar.insertWidget(2, self.button_new_address)
+        # self.button_fresh_address = QPushButton("Copy fresh receive address")
+        # self.button_fresh_address.clicked.connect(self.get_address)
+        # toolbar.insertWidget(toolbar.count()-2, self.button_fresh_address)
+        # self.button_new_address = QPushButton("+ Add receive address")
+        # self.button_new_address.clicked.connect(
+        #     lambda: self.get_address(force_new=True)
+        # )
+        # toolbar.insertWidget(toolbar.count()-2, self.button_new_address)
 
         if (
             config
@@ -318,19 +322,26 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
             b = QPushButton("Generate to selected adddresses")
             b.clicked.connect(mine_to_selected_addresses)
-            toolbar.insertWidget(3, b)
+            toolbar.insertWidget(toolbar.count() - 2, b)
 
         hbox = self.create_toolbar_buttons()
-        toolbar.insertLayout(3, hbox)
+        toolbar.insertLayout(toolbar.count() - 1, hbox)
 
         return toolbar
 
-    def get_address(self, force_new=False):
-        address_info = self.wallet.get_address(force_new=force_new)
-        address = address_info.address.as_string()
+    def get_address(self, force_new=False, category=None) -> bdk.AddressInfo:
+        if force_new:
+            address_info = self.wallet.get_address(force_new=force_new)
+            address = address_info.address.as_string()
+            self.wallet.labels.set_addr_category(address, category)
+        else:
+            address_info = self.wallet.get_unused_category_address(category)
+            address = address_info.address.as_string()
+
         do_copy(address, title=f"Address {address}")
         self.signals.addresses_updated.emit()
-        self.select_rows(address, self.Columns.ADDRESS)
+        self.select_row(address, self.Columns.ADDRESS)
+        return address_info
 
     def should_show_fiat(self):
         return False
@@ -482,8 +493,9 @@ class AddressList(MyTreeView, MessageBoxMixin):
             self.hideColumn(self.Columns.FIAT_BALANCE)
         self.filter()
         self.proxy.setDynamicSortFilter(True)
-        # update counter
-        self.num_addr_label.setText(_("{} addresses").format(num_shown))
+
+        if self.balance_label:
+            set_balance_label(self.balance_label, [self.wallet])
 
     def refresh_row(self, key, row):
         assert row is not None
@@ -492,8 +504,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
         category = self.wallet.labels.get_category(address)
 
         txs_involed = [
-            outputinfo.tx
-            for outputinfo in self.wallet.get_txs_involving_address(address)
+            OutPointInfo.tx
+            for OutPointInfo in self.wallet.get_txs_involving_address(address)
         ]
         sort_id = (
             min([self.wallet.get_tx_status(tx).sort_id for tx in txs_involed])
@@ -520,15 +532,24 @@ class AddressList(MyTreeView, MessageBoxMixin):
         item[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
         item[self.Columns.COIN_BALANCE].setText(balance_text)
+        color = QColor(0, 0, 0) if balance else QColor(255 // 2, 255 // 2, 255 // 2)
+        item[self.Columns.COIN_BALANCE].setForeground(QBrush(color))
         item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
         item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
         item[self.Columns.FIAT_BALANCE].setData(
             fiat_balance_str, self.ROLE_CLIPBOARD_DATA
         )
-        item[self.Columns.NUM_TXS].setText("%d" % num)
+        # item[self.Columns.NUM_TXS].setText("%d" % num)
+        item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.NUM_TXS].setIcon(read_QIcon(icon_path))
+
+        # calculated_width = QFontMetrics(self.font()).horizontalAdvance(balance_text)
+        # current_width = self.header().sectionSize(self.Columns.ADDRESS)
+        # # Update the column width if the calculated width is larger
+        # if calculated_width > current_width:
+        #     self.header().resizeSection(self.Columns.ADDRESS, calculated_width)
 
     def create_menu(self, position):
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)
@@ -547,29 +568,35 @@ class AddressList(MyTreeView, MessageBoxMixin):
                 return
             addr = addrs[0]
             menu.addAction(_("Details"), lambda: self.signals.show_address.emit(addr))
+
+            addr_URL = block_explorer_URL(self.config.network_settings, "addr", addr)
+            if addr_URL:
+                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+
+            self.add_copy_menu(menu, idx)
+
             addr_column_title = self.std_model.horizontalHeaderItem(
                 self.Columns.LABEL
             ).text()
             addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
-            self.add_copy_menu(menu, idx)
             persistent = QPersistentModelIndex(addr_idx)
             menu.addAction(
                 _("Edit {}").format(addr_column_title),
                 lambda p=persistent: self.edit(QModelIndex(p)),
             )
-            # menu.addAction(_("Request payment"), lambda: self.main_window.receive_at(addr))
-            # if self.wallet.can_export():
-            #     menu.addAction(_("Private key"), lambda: self.signals.show_private_key(addr))
-            # if not is_multisig and not self.wallet.is_watching_only():
-            #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(addr))
-            #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(addr))
-            addr_URL = block_explorer_URL(self.config, "addr", addr)
-            if addr_URL:
-                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
+        menu.addSeparator()
         menu.addAction(
             _("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+        )
+        menu.addAction(
+            _("Export Labels"),
+            lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
+        )
+        menu.addAction(
+            _("Import Labels"),
+            lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)

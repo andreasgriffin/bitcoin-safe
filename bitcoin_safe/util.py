@@ -75,6 +75,57 @@ import certifi
 import dns.resolver
 from PySide2.QtCore import QLocale
 from .i18n import _
+from typing import (
+    NamedTuple,
+    Callable,
+    Optional,
+    TYPE_CHECKING,
+    Union,
+    List,
+    Dict,
+    Any,
+    Sequence,
+    Iterable,
+    Tuple,
+    Type,
+)
+
+from PySide2 import QtWidgets, QtCore
+from PySide2.QtGui import (
+    QFont,
+    QColor,
+    QCursor,
+    QPixmap,
+    QStandardItem,
+    QImage,
+    QPalette,
+    QIcon,
+    QFontMetrics,
+    QShowEvent,
+    QPainter,
+    QHelpEvent,
+    QMouseEvent,
+)
+from PySide2.QtCore import Signal, QRectF
+from PySide2.QtCore import (
+    Qt,
+    QPersistentModelIndex,
+    QModelIndex,
+    QCoreApplication,
+    QItemSelectionModel,
+    QThread,
+    QSortFilterProxyModel,
+    QSize,
+    QLocale,
+    QAbstractItemModel,
+    QEvent,
+    QRect,
+    QPoint,
+    QObject,
+    QTimer,
+    QSize,
+)
+import queue
 
 TX_HEIGHT_FUTURE = -3
 TX_HEIGHT_LOCAL = -2
@@ -352,6 +403,26 @@ class Satoshis:
 
     def str_with_unit(self):
         return format_satoshis(self.value, self.network, str_unit=True)
+
+    def __bool__(self):
+        return bool(self.value)
+
+    @classmethod
+    def sum(cls, l: Iterable["Satoshis"]) -> "Satoshis":
+        if not l:
+            return 0
+        if isinstance(l, Satoshis):
+            return l
+
+        summed = None
+        for v in l:
+            v = Satoshis.sum(v) if isinstance(v, (tuple, list)) else v
+            if summed is None:
+                summed = v
+            else:
+                summed += v
+
+        return summed
 
 
 # note: this is not a NamedTuple as then its json encoding cannot be customized
@@ -978,39 +1049,37 @@ signet_block_explorers = {
     ),
     "system default": ("blockchain:/", {"tx": "tx/", "addr": "address/"}),
 }
+regtest_block_explorers = {
+    "localhost:5000": ("http://localhost:5000/", {"tx": "tx/", "addr": "address/"}),
+}
 
 _block_explorer_default_api_loc = {"tx": "tx/", "addr": "address/"}
 
 
-def block_explorer_info(network: bdk.Network):
-    if network in [bdk.Network.TESTNET, bdk.Network.REGTEST]:
+def block_explorer_info(network: bdk.Network) -> Dict[str, Dict]:
+    if network in [
+        bdk.Network.TESTNET,
+    ]:
         return testnet_block_explorers
+    elif network in [bdk.Network.REGTEST]:
+        return regtest_block_explorers
     elif network == bdk.Network.SIGNET:
         return signet_block_explorers
     return mainnet_block_explorers
 
 
-def block_explorer_tuple(config: "UserConfig") -> Optional[Tuple[str, dict]]:
-    custom_be = config.get("block_explorer_custom")
-    if custom_be:
-        if isinstance(custom_be, str):
-            return custom_be, _block_explorer_default_api_loc
-        if isinstance(custom_be, (tuple, list)) and len(custom_be) == 2:
-            return tuple(custom_be)
-        logger.warning(
-            f"not using 'block_explorer_custom' from config. "
-            f"expected a str or a pair but got {custom_be!r}"
-        )
-        return None
-    else:
-        # using one of the hardcoded block explorers
-        return block_explorer_info(config.network_settings.network).get(
-            config.block_explorer
-        )
+def block_explorer_tuple(
+    network_settings: "NetworkConfig",
+) -> Optional[Tuple[str, dict]]:
+    return block_explorer_info(network_settings.network).get(
+        network_settings.block_explorer
+    )
 
 
-def block_explorer_URL(config: "UserConfig", kind: str, item: str) -> Optional[str]:
-    be_tuple = block_explorer_tuple(config)
+def block_explorer_URL(
+    network_settings: "NetworkConfig", kind: str, item: str
+) -> Optional[str]:
+    be_tuple = block_explorer_tuple(network_settings)
     if not be_tuple:
         return
     explorer_url, explorer_dict = be_tuple
@@ -1256,79 +1325,6 @@ def create_and_start_event_loop() -> Tuple[
     return loop, stopping_fut, loop_thread
 
 
-class OrderedDictWithIndex(OrderedDict):
-    """An OrderedDict that keeps track of the positions of keys.
-
-    Note: very inefficient to modify contents, except to add new items.
-    """
-
-    def __init__(self):
-        super().__init__()
-        self._key_to_pos = {}
-        self._pos_to_key = {}
-
-    def _recalc_index(self):
-        self._key_to_pos = {key: pos for (pos, key) in enumerate(self.keys())}
-        self._pos_to_key = {pos: key for (pos, key) in enumerate(self.keys())}
-
-    def pos_from_key(self, key):
-        return self._key_to_pos[key]
-
-    def value_from_pos(self, pos):
-        key = self._pos_to_key[pos]
-        return self[key]
-
-    def popitem(self, *args, **kwargs):
-        ret = super().popitem(*args, **kwargs)
-        self._recalc_index()
-        return ret
-
-    def move_to_end(self, *args, **kwargs):
-        ret = super().move_to_end(*args, **kwargs)
-        self._recalc_index()
-        return ret
-
-    def clear(self):
-        ret = super().clear()
-        self._recalc_index()
-        return ret
-
-    def pop(self, *args, **kwargs):
-        ret = super().pop(*args, **kwargs)
-        self._recalc_index()
-        return ret
-
-    def update(self, *args, **kwargs):
-        ret = super().update(*args, **kwargs)
-        self._recalc_index()
-        return ret
-
-    def __delitem__(self, *args, **kwargs):
-        ret = super().__delitem__(*args, **kwargs)
-        self._recalc_index()
-        return ret
-
-    def __setitem__(self, key, *args, **kwargs):
-        is_new_key = key not in self
-        ret = super().__setitem__(key, *args, **kwargs)
-        if is_new_key:
-            pos = len(self) - 1
-            self._key_to_pos[key] = pos
-            self._pos_to_key[pos] = key
-        return ret
-
-
-def multisig_type(wallet_type):
-    """If wallet_type is mofn multi-sig, return [m, n],
-    otherwise return None."""
-    if not wallet_type:
-        return None
-    match = re.match(r"(\d+)of(\d+)", wallet_type)
-    if match:
-        match = [int(x) for x in match.group(1, 2)]
-    return match
-
-
 def is_ip_address(x: Union[str, bytes]) -> bool:
     if isinstance(x, bytes):
         x = x.decode("utf-8")
@@ -1368,102 +1364,7 @@ def is_private_netaddress(host: str) -> bool:
     return False
 
 
-def list_enabled_bits(x: int) -> Sequence[int]:
-    """e.g. 77 (0b1001101) --> (0, 2, 3, 6)"""
-    binary = bin(x)[2:]
-    rev_bin = reversed(binary)
-    return tuple(i for i, b in enumerate(rev_bin) if b == "1")
-
-
-def resolve_dns_srv(host: str):
-    srv_records = dns.resolver.resolve(host, "SRV")
-    # priority: prefer lower
-    # weight: tie breaker; prefer higher
-    srv_records = sorted(srv_records, key=lambda x: (x.priority, -x.weight))
-
-    def dict_from_srv_record(srv):
-        return {
-            "host": str(srv.target),
-            "port": srv.port,
-        }
-
-    return [dict_from_srv_record(srv) for srv in srv_records]
-
-
-def randrange(bound: int) -> int:
-    """Return a random integer k such that 1 <= k < bound, uniformly
-    distributed across that range."""
-    # secrets.randbelow(bound) returns a random int: 0 <= r < bound,
-    # hence transformations:
-    return secrets.randbelow(bound - 1) + 1
-
-
-class CallbackManager:
-    # callbacks set by the GUI or any thread
-    # guarantee: the callbacks will always get triggered from the asyncio thread.
-
-    def __init__(self):
-        self.callback_lock = threading.Lock()
-        self.callbacks = defaultdict(list)  # note: needs self.callback_lock
-
-    def register_callback(self, func, events):
-        with self.callback_lock:
-            for event in events:
-                self.callbacks[event].append(func)
-
-    def unregister_callback(self, callback):
-        with self.callback_lock:
-            for callbacks in self.callbacks.values():
-                if callback in callbacks:
-                    callbacks.remove(callback)
-
-    def trigger_callback(self, event, *args):
-        """Trigger a callback with given arguments.
-        Can be called from any thread. The callback itself will get scheduled
-        on the event loop.
-        """
-        loop = get_asyncio_loop()
-        assert loop.is_running(), "event loop not running"
-        with self.callback_lock:
-            callbacks = self.callbacks[event][:]
-        for callback in callbacks:
-            # FIXME: if callback throws, we will lose the traceback
-            if asyncio.iscoroutinefunction(callback):
-                asyncio.run_coroutine_threadsafe(callback(*args), loop)
-            elif get_running_loop() == loop:
-                # run callback immediately, so that it is guaranteed
-                # to have been executed when this method returns
-                callback(*args)
-            else:
-                loop.call_soon_threadsafe(callback, *args)
-
-
-callback_mgr = CallbackManager()
-trigger_callback = callback_mgr.trigger_callback
-register_callback = callback_mgr.register_callback
-unregister_callback = callback_mgr.unregister_callback
 _event_listeners = defaultdict(set)  # type: Dict[str, Set[str]]
-
-
-class EventListener:
-    def _list_callbacks(self):
-        for c in self.__class__.__mro__:
-            classpath = f"{c.__module__}.{c.__name__}"
-            for method_name in _event_listeners[classpath]:
-                method = getattr(self, method_name)
-                assert callable(method)
-                assert method_name.startswith("on_event_")
-                yield method_name[len("on_event_") :], method
-
-    def register_callbacks(self):
-        for name, method in self._list_callbacks():
-            # logger.debug(f'registering callback {method}')
-            register_callback(method, [name])
-
-    def unregister_callbacks(self):
-        for name, method in self._list_callbacks():
-            # logger.debug(f'unregistering callback {method}')
-            unregister_callback(method)
 
 
 def event_listener(func):
@@ -1477,188 +1378,7 @@ def event_listener(func):
 _NetAddrType = TypeVar("_NetAddrType")
 
 
-class NetworkRetryManager(Generic[_NetAddrType]):
-    """Truncated Exponential Backoff for network connections."""
-
-    def __init__(
-        self,
-        *,
-        max_retry_delay_normal: float,
-        init_retry_delay_normal: float,
-        max_retry_delay_urgent: float = None,
-        init_retry_delay_urgent: float = None,
-    ):
-        self._last_tried_addr = (
-            {}
-        )  # type: Dict[_NetAddrType, Tuple[float, int]]  # (unix ts, num_attempts)
-
-        # note: these all use "seconds" as unit
-        if max_retry_delay_urgent is None:
-            max_retry_delay_urgent = max_retry_delay_normal
-        if init_retry_delay_urgent is None:
-            init_retry_delay_urgent = init_retry_delay_normal
-        self._max_retry_delay_normal = max_retry_delay_normal
-        self._init_retry_delay_normal = init_retry_delay_normal
-        self._max_retry_delay_urgent = max_retry_delay_urgent
-        self._init_retry_delay_urgent = init_retry_delay_urgent
-
-    def _trying_addr_now(self, addr: _NetAddrType) -> None:
-        last_time, num_attempts = self._last_tried_addr.get(addr, (0, 0))
-        # we add up to 1 second of noise to the time, so that clients are less likely
-        # to get synchronised and bombard the remote in connection waves:
-        cur_time = time.time() + random.random()
-        self._last_tried_addr[addr] = cur_time, num_attempts + 1
-
-    def _on_connection_successfully_established(self, addr: _NetAddrType) -> None:
-        self._last_tried_addr[addr] = time.time(), 0
-
-    def _can_retry_addr(
-        self, addr: _NetAddrType, *, now: float = None, urgent: bool = False
-    ) -> bool:
-        if now is None:
-            now = time.time()
-        last_time, num_attempts = self._last_tried_addr.get(addr, (0, 0))
-        if urgent:
-            max_delay = self._max_retry_delay_urgent
-            init_delay = self._init_retry_delay_urgent
-        else:
-            max_delay = self._max_retry_delay_normal
-            init_delay = self._init_retry_delay_normal
-        delay = self.__calc_delay(
-            multiplier=init_delay, max_delay=max_delay, num_attempts=num_attempts
-        )
-        next_time = last_time + delay
-        return next_time < now
-
-    @classmethod
-    def __calc_delay(
-        cls, *, multiplier: float, max_delay: float, num_attempts: int
-    ) -> float:
-        num_attempts = min(num_attempts, 100_000)
-        try:
-            res = multiplier * 2**num_attempts
-        except OverflowError:
-            return max_delay
-        return max(0, min(max_delay, res))
-
-    def _clear_addr_retry_times(self) -> None:
-        self._last_tried_addr.clear()
-
-
-class MySocksProxy(aiorpcx.SOCKSProxy):
-    async def open_connection(self, host=None, port=None, **kwargs):
-        loop = asyncio.get_running_loop()
-        reader = asyncio.StreamReader(loop=loop)
-        protocol = asyncio.StreamReaderProtocol(reader, loop=loop)
-        transport, _ = await self.create_connection(
-            lambda: protocol, host, port, **kwargs
-        )
-        writer = asyncio.StreamWriter(transport, protocol, reader, loop)
-        return reader, writer
-
-    @classmethod
-    def from_proxy_dict(cls, proxy: dict = None) -> Optional["MySocksProxy"]:
-        if not proxy:
-            return None
-        username, pw = proxy.get("user"), proxy.get("password")
-        if not username or not pw:
-            auth = None
-        else:
-            auth = aiorpcx.socks.SOCKSUserAuth(username, pw)
-        addr = aiorpcx.NetAddress(proxy["host"], proxy["port"])
-        if proxy["mode"] == "socks4":
-            ret = cls(addr, aiorpcx.socks.SOCKS4a, auth)
-        elif proxy["mode"] == "socks5":
-            ret = cls(addr, aiorpcx.socks.SOCKS5, auth)
-        else:
-            raise NotImplementedError  # http proxy not available with aiorpcx
-        return ret
-
-
-class JsonRPCClient:
-    def __init__(self, session: aiohttp.ClientSession, url: str):
-        self.session = session
-        self.url = url
-        self._id = 0
-
-    async def request(self, endpoint, *args):
-        self._id += 1
-        data = '{"jsonrpc": "2.0", "id":"%d", "method": "%s", "params": %s }' % (
-            self._id,
-            endpoint,
-            json.dumps(args),
-        )
-        async with self.session.post(self.url, data=data) as resp:
-            if resp.status == 200:
-                r = await resp.json()
-                result = r.get("result")
-                error = r.get("error")
-                if error:
-                    return "Error: " + str(error)
-                else:
-                    return result
-            else:
-                text = await resp.text()
-                return "Error: " + str(text)
-
-    def add_method(self, endpoint):
-        async def coro(*args):
-            return await self.request(endpoint, *args)
-
-        setattr(self, endpoint, coro)
-
-
 T = TypeVar("T")
-
-
-def random_shuffled_copy(x: Iterable[T]) -> List[T]:
-    """Returns a shuffled copy of the input."""
-    x_copy = list(x)  # copy
-    random.shuffle(x_copy)  # shuffle in-place
-    return x_copy
-
-
-def test_read_write_permissions(path) -> None:
-    # note: There might already be a file at 'path'.
-    #       Make sure we do NOT overwrite/corrupt that!
-    temp_path = "%s.tmptest.%s" % (path, os.getpid())
-    echo = "fs r/w test"
-    try:
-        # test READ permissions for actual path
-        if os.path.exists(path):
-            with open(path, "rb") as f:
-                f.read(1)  # read 1 byte
-        # test R/W sanity for "similar" path
-        with open(temp_path, "w", encoding="utf-8") as f:
-            f.write(echo)
-        with open(temp_path, "r", encoding="utf-8") as f:
-            echo2 = f.read()
-        os.remove(temp_path)
-    except Exception as e:
-        raise IOError(e) from e
-    if echo != echo2:
-        raise IOError("echo sanity-check failed")
-
-
-class nullcontext:
-    """Context manager that does no additional processing.
-    This is a ~backport of contextlib.nullcontext from Python 3.10
-    """
-
-    def __init__(self, enter_result=None):
-        self.enter_result = enter_result
-
-    def __enter__(self):
-        return self.enter_result
-
-    def __exit__(self, *excinfo):
-        pass
-
-    async def __aenter__(self):
-        return self.enter_result
-
-    async def __aexit__(self, *excinfo):
-        pass
 
 
 def get_running_loop() -> Optional[asyncio.AbstractEventLoop]:
@@ -1724,3 +1444,122 @@ def balance_dict(bdkbalance):
         "spendable": bdkbalance.spendable,
         "total": bdkbalance.total,
     }
+
+
+def remove_duplicates_keep_order(seq):
+    seen = set()
+    result = []
+    for item in seq:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
+class TaskThread(QThread):
+    """Thread that runs background tasks.  Callbacks are guaranteed
+    to happen in the context of its parent."""
+
+    class Task(NamedTuple):
+        task: Callable
+        cb_success: Optional[Callable]
+        cb_done: Optional[Callable]
+        cb_error: Optional[Callable]
+        cancel: Optional[Callable] = None
+
+    doneSig = Signal(object, object, object)
+
+    def __init__(self, parent, on_error=None):
+        QThread.__init__(self, parent)
+        self.on_error = on_error
+        self.tasks = queue.Queue()
+        self._cur_task = None  # type: Optional[TaskThread.Task]
+        self._stopping = False
+        self.doneSig.connect(self.on_done)
+        self.start()
+
+    def add(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
+        if self._stopping:
+            logger.warning(f"stopping or already stopped but tried to add new task.")
+            return
+        on_error = on_error or self.on_error
+        task_ = TaskThread.Task(task, on_success, on_done, on_error, cancel=cancel)
+        self.tasks.put(task_)
+
+    def add_and_start(
+        self, task, on_success=None, on_done=None, on_error=None, *, cancel=None
+    ):
+        self.add(
+            task,
+            on_success=on_success,
+            on_done=on_done,
+            on_error=on_error,
+            cancel=cancel,
+        )
+        self.start()
+
+    def run(self):
+        while True:
+            if self._stopping:
+                break
+            task = self.tasks.get()  # type: TaskThread.Task
+            self._cur_task = task
+            if not task or self._stopping:
+                break
+            try:
+                result = task.task()
+                self.doneSig.emit(result, task.cb_done, task.cb_success)
+            except BaseException:
+                self.doneSig.emit(sys.exc_info(), task.cb_done, task.cb_error)
+
+    def on_done(self, result, cb_done, cb_result):
+        # This runs in the parent's thread.
+        if cb_done:
+            cb_done(result)
+        if cb_result:
+            cb_result(result)
+
+    def stop(self):
+        self._stopping = True
+        # try to cancel currently running task now.
+        # if the task does not implement "cancel", we will have to wait until it finishes.
+        task = self._cur_task
+        if task and task.cancel:
+            task.cancel()
+        # cancel the remaining tasks in the queue
+        while True:
+            try:
+                task = self.tasks.get_nowait()
+            except queue.Empty:
+                break
+            if task and task.cancel:
+                task.cancel()
+        self.tasks.put(None)  # in case the thread is still waiting on the queue
+        self.exit()
+        self.wait()
+
+
+class NoThread:
+    "This is great for debugging purposes"
+
+    def __init__(self, *args):
+        pass
+
+    def add_and_start(
+        self,
+        task,
+        on_success=None,
+        on_done=None,
+        on_error=None,
+    ):
+        result = None
+        try:
+            if task:
+                result = task()
+            if on_success:
+                on_success(result)
+        except Exception as e:
+            if on_error:
+                on_error(sys.exc_info())
+        if on_done:
+            on_done(result)

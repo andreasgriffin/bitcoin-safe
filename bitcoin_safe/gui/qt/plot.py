@@ -2,11 +2,11 @@ import sys
 import random
 import datetime
 from time import time
-from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QFrame
 from PySide2.QtCharts import QtCharts
 from PySide2.QtCore import QDateTime, Qt, QTimer
 from PySide2.QtGui import QColor
-
+from PySide2.QtCore import Qt, QRectF, QMargins
 import numpy as np
 
 
@@ -22,6 +22,14 @@ class BalanceChart(QWidget):
         self.chart.setBackgroundBrush(Qt.white)
         self.chart.legend().hide()
 
+        # Reduce the overall chart margins
+        layout.setContentsMargins(
+            QMargins(0, 0, 0, 0)
+        )  # Smaller margins (left, top, right, bottom)
+        self.chart.setMargins(
+            QMargins(0, 0, 0, 0)
+        )  # Smaller margins (left, top, right, bottom)
+
         # Create DateTime axis for X
         self.datetime_axis = QtCharts.QDateTimeAxis()
 
@@ -30,10 +38,14 @@ class BalanceChart(QWidget):
 
         self.chart.addAxis(self.datetime_axis, Qt.AlignBottom)
         self.chart.addAxis(self.value_axis, Qt.AlignLeft)
+        self.chart.setBackgroundRoundness(0)
 
         # Add chart to chart view
         self.chart_view = QtCharts.QChartView(self.chart)
         layout.addWidget(self.chart_view)
+
+        self.chart_view.setFrameStyle(QFrame.NoFrame)
+        self.chart_view.setBackgroundBrush(self.chart.backgroundBrush())
 
         # Set layout
         self.setLayout(layout)

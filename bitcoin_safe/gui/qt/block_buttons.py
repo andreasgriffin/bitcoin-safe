@@ -14,7 +14,7 @@ from ...mempool import (
     fee_to_blocknumber,
     fees_of_depths,
 )
-from .util import QColorLerp, center_in_widget, open_website
+from .util import center_in_widget, open_website
 from PySide2.QtCore import Signal, QObject
 from typing import List, Dict
 from PySide2.QtWidgets import QSizePolicy, QScrollArea
@@ -23,6 +23,11 @@ from PySide2.QtCore import QObject, QEvent
 from PySide2.QtGui import QBrush, QColor, QPainter
 import enum
 from PyQt5.QtCore import QTimer
+import locale
+
+
+def format_block_number(block_number):
+    return locale.format_string("%d", block_number, grouping=True)
 
 
 class BlockType(enum.Enum):
@@ -96,11 +101,11 @@ class LabelFeeRange(BaseBlockLabel):
 
 
 class LabelTimeEstimation(BaseBlockLabel):
-    def set(self, blocknumber: int, block_type: BlockType):
-        if blocknumber < 6:
-            s = f"~in {(blocknumber)*10} min</span>"
+    def set(self, block_number: int, block_type: BlockType):
+        if block_number < 6:
+            s = f"~in {(block_number)*10} min</span>"
         else:
-            s = f"~in {round((blocknumber)/6)} hours"
+            s = f"~in {round((block_number)/6)} hours"
 
         self.setText(
             f"<span style='color: {'white' if block_type else 'black'}; font-size: 12px;'>{s}</span>"
@@ -259,20 +264,23 @@ class MempoolButtons(ObjectRequiringMempool):
         if self.mempool_data is None:
             return
 
-        depths = np.arange(len(self.button_group.buttons) + 1) * 1e6
-        block_fee_borders = fees_of_depths(self.mempool_data.data, depths)
-        self.median_block_fee_borders = fees_of_depths(
-            self.mempool_data.data, depths + 0.5e6
+        block_fee_borders = self.mempool_data.block_fee_borders(
+            len(self.button_group.buttons)
+        )
+        self.median_block_fee_borders = self.mempool_data.median_block_fees(
+            len(self.button_group.buttons)
         )
 
         for i, button in enumerate(self.button_group.buttons):
-            blocknumber = i + 1
+            block_number = i + 1
             button.label_title.set(
-                "Next Block" if blocknumber == 1 else f"{blocknumber}. Block",
+                "Next Block"
+                if block_number == 1
+                else f"{format_block_number(block_number)}. Block",
                 block_type=BlockType.projected,
             )
             button.label_time_estimation.set(
-                blocknumber, block_type=BlockType.projected
+                block_number, block_type=BlockType.projected
             )
             button.label_approximate_median_fee.set(
                 self.median_block_fee_borders[i], block_type=BlockType.projected
@@ -296,6 +304,7 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
     ) -> None:
         super().__init__(mempool_data=mempool_data, parent=parent)
 
+        self.median_block_fee_borders = None
         self.url = url
         self.fee_rate = fee_rate
 
@@ -303,6 +312,9 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
         self.refresh()
 
         self.button_group.signal_button_click.connect(self._on_button_click)
+
+    def set_url(self, url: str):
+        self.url = url
 
     def set_unknown_fee_rate(self):
         for button in self.button_group.buttons:
@@ -328,7 +340,9 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
         )
 
         for i, button in enumerate(self.button_group.buttons):
-            button.label_title.set(f"~{block_number}. Block", BlockType.projected)
+            button.label_title.set(
+                f"~{format_block_number( block_number)}. Block", BlockType.projected
+            )
             button.label_approximate_median_fee.set(
                 self.median_block_fee_borders[i], block_type=BlockType.projected
             )
@@ -340,7 +354,8 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
 
     def _on_button_click(self, i: int):
         open_website(self.url)
-        self.signal_click.emit(self.median_block_fee_borders[i])
+        if self.median_block_fee_borders:
+            self.signal_click.emit(self.median_block_fee_borders[i])
 
 
 class ConfirmedBlock(ObjectRequiringMempool):
@@ -365,6 +380,9 @@ class ConfirmedBlock(ObjectRequiringMempool):
         # self.mempool_data.signal_data_updated.connect(self.refresh)
         self.button_group.signal_button_click.connect(self._on_button_click)
 
+    def set_url(self, url: str):
+        self.url = url
+
     def refresh(
         self, fee_rate=None, confirmation_time=None, chain_height=None, **kwargs
     ):
@@ -377,7 +395,8 @@ class ConfirmedBlock(ObjectRequiringMempool):
 
         for i, button in enumerate(self.button_group.buttons):
             button.label_title.set(
-                f"Block {self.confirmation_time.height}", BlockType.confirmed
+                f"Block {format_block_number( self.confirmation_time.height)}",
+                BlockType.confirmed,
             )
             if chain_height is None:
                 button.label_number_confirmations.setText("")
@@ -396,7 +415,7 @@ class ConfirmedBlock(ObjectRequiringMempool):
                 button.set_background_gradient(
                     self.fee_rate, self.fee_rate, BlockType.confirmed
                 )
-                button.label_exact_median_fee.set(fee_rate, BlockType.confirmed)
+                button.label_exact_median_fee.set(self.fee_rate, BlockType.confirmed)
             else:
                 button.set_background_gradient(0, 1, BlockType.confirmed)
                 button.label_exact_median_fee.setText("")

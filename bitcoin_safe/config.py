@@ -6,31 +6,10 @@ import appdirs, os, json
 from .storage import BaseSaveableClass, Storage
 import bdkpython as bdk
 from .pythonbdk_types import *
+from .util import block_explorer_info
 from typing import Dict, List
 
-# satoshi per kbyte
-FEERATE_MAX_DYNAMIC = 1500000
-FEERATE_WARNING_HIGH_FEE = 600000
-FEERATE_FALLBACK_STATIC_FEE = 150000
-FEERATE_DEFAULT_RELAY = 1000
-FEERATE_MAX_RELAY = 50000
-FEERATE_STATIC_VALUES = [
-    1000,
-    2000,
-    5000,
-    10000,
-    20000,
-    30000,
-    50000,
-    70000,
-    100000,
-    150000,
-    200000,
-    300000,
-]
-FEERATE_REGTEST_HARDCODED = 180000  # for eclair compat
-
-
+MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = (
     0.05  # warn user if fee/amount for on-chain tx is higher than this
 )
@@ -49,6 +28,14 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
         d = {
             bdk.Network.BITCOIN: 50001,
             bdk.Network.REGTEST: 60401,
+            bdk.Network.TESTNET: 51001,
+            bdk.Network.SIGNET: 51001,
+        }
+        return d[network]
+    elif server_type == BlockchainType.Esplora:
+        d = {
+            bdk.Network.BITCOIN: 60002,
+            bdk.Network.REGTEST: 3000,
             bdk.Network.TESTNET: 51001,
             bdk.Network.SIGNET: 51001,
         }
@@ -72,12 +59,19 @@ class NetworkConfig(BaseSaveableClass):
         self.compactblockfilters_port = get_default_port(
             self.network, BlockchainType.CompactBlockFilter
         )
-        self.electrum_ip = "127.0.0.1"
-        self.electrum_port = get_default_port(self.network, BlockchainType.Electrum)
+        self.electrum_url = "127.0.0.1:51001"
         self.rpc_ip = "127.0.0.1"
         self.rpc_port = get_default_port(self.network, BlockchainType.RPC)
         self.rpc_username = "bitcoin"
         self.rpc_password = ""
+
+        self.esplora_url = "http://127.0.0.1:3000"
+
+        self.block_explorer = (
+            "mempool.space"
+            if "mempool.space" in block_explorer_info(self.network)
+            else list(block_explorer_info(self.network).keys())[0]
+        )
 
     def serialize(self):
         d = super().serialize()
@@ -103,9 +97,19 @@ class UserConfig(BaseSaveableClass):
     config_dir = appdirs.user_config_dir(app_name)
     config_file = os.path.join(appdirs.user_config_dir(app_name), app_name + ".conf")
 
+    fee_ranges = {
+        bdk.Network.BITCOIN: [1, 1000],
+        bdk.Network.REGTEST: [0, 1000],
+        bdk.Network.SIGNET: [0, 1000],
+        bdk.Network.TESTNET: [0, 1000],
+    }
+
     def __init__(self):
         self.network_settings = NetworkConfig()
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
+        self.opened_txlike: Dict[
+            str, List[str]
+        ] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.block_explorer: str = "mempool.space"

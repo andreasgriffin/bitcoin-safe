@@ -13,10 +13,10 @@
   - **Easier** fee selection for non-technical users 
   - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
     * Opportunistic merging of small utxos when fees are low
-- **Fast**: Chain data with **Compact Block Filters** by default  
+- **Fast**: Chain data with **Compact Block Filters** by default   
   - Compact Block Filters are **fast** and **private**
-  - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/pull/1055), and will be included in bdk 1.0. 
-- **Secure**: No seed generation or storage (on mainnet). A hardware wallet/signing device will be needed (storing seeds on a computer is  reckless)
+  - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/pull/1055), and will be included in bdk 1.0.  For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
+- **Secure**: No seed generation or storage (on mainnet). A hardware signer/signing device will be needed (storing seeds on a computer is  reckless)
   - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
   - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
 
@@ -24,7 +24,8 @@
 #### Design principles
 
 * KISS
-* If a new user needs a tutorial video, it is too difficult
+  * If a new user needs a tutorial video, it is too difficult
+
 * Only present safe options to the user (on mainnet) (warnings are typically ignored by everyone)
 * Add options only if they are needed
   * Example: 1 unified amount formatting (credit to Seed Signer) is sufficient:  0.12 345 678 BTC     (no mBTC , Sats, needed)
@@ -32,21 +33,23 @@
 #### TODOs (a lot)
 
 - [ ] Add guide steps after the wallet setup
-  - [x] Create recovery pdf with descriptor and further short instructions 
-  - [ ] Testing the backup
-    - [ ] Send small amount of funds to the wallet
-    - [ ] Wipe hardware wallets
-    - [ ] Read xpubs from Hardware wallets again
-      - [ ] verify they have not changed
-    - [ ] Create tx and sign with Dev 1 and Dev 2  send to own address
-    - [ ] Create tx and sign with Dev 1 and Dev 3 and sent to own address
+  - [x] Create recovery pdf with descriptor and further short instructions   
+  - [ ] Wallet setup guide for wallet consistency
+    - Goal: Backup seed phrases are correct
+      - [ ] Send small amount of funds to the wallet
+      - [ ] Wipe hardware signers
+      - [ ] Read xpubs from hardware signers again (verify they have not changed)
+    - Goal: Singing device 1, 2, and 3 create valid signatures 
+      - [ ] Create tx and sign with Dev 1 and Dev 2  send to own address
+      - [ ] Create tx and sign with Dev 1 and Dev 3 and sent to own address
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
 - [x] CTRL + C  and CSV export across all tables
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
-  - [ ] Hardware wallets: HWI USB, SD card, 
+  - [ ] hardware signers: HWI USB, 
+    - [x] SD card
     - [x] QR code reader
 - [x] Address and TX labeling using categories
   - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
@@ -96,41 +99,9 @@
    pip install --requirement requirements.txt 
    ```
    
- * Installation of bdk with compact filters
-
-   ```shell
-   git clone https://github.com/andreasgriffin/bdk-ffi.git
-   cd bdk-ffi/bdk-python
-   git checkout cbf
-   pip install --requirement requirements.txt
-   rm -R dist && bash ./generate.sh  && python setup.py bdist_wheel --verbose &&  pip install ./dist/bdkpython-*.whl --force-reinstall
-   python -m unittest --verbose tests/test_bdk.py
-   ```
-   
- * Run a bitcoin regtest node with compact block filters enabled. The simplest is to use this [docker](https://github.com/BitcoinDevelopersAcademy/bit-container#2-create-regtest-aliases-to-start-stop-view-logs-and-send-cli-commands-to-container) container. You can create the alias:
-
-   ```sh
-   alias rt-start='echo -e "rpcuser=bitcoin\nrpcpassword=bitcoin" > /tmp/bitcoin.conf &&  sudo docker run -d -v /tmp/bitcoin.conf:/root/.bitcoin/bitcoin.conf --rm -p 127.0.0.1:18443-18444:18443-18444/tcp -p 127.0.0.1:60401:60401/tcp --name electrs bitcoindevkit/electrs   '
-   alias rt-stop='sudo docker kill electrs'
-   alias rt-logs='sudo docker container logs electrs'
-   alias rt-cli='sudo docker exec -it electrs /root/bitcoin-cli -regtest   $@'
-   ```
-
-   * Network Settings
-     * Connect via Compact Block Filters (experimental / not working for most recent bitcoin-safe versions, due to an [broken](https://github.com/bitcoindevkit/bdk-ffi/pull/379) ):
-       * IP: 127.0.0.1
-       * Port: 18444
-
-     * Connect via RPC (reliable, but slow):
-       * IP: 127.0.0.1
-       * Port: 18443
-       * Username: bitcoin
-       * Password: bitcoin
-
  * Run Bitcoin Safe
 
    ```sh
-   cd bitcoin-safe
    python -m bitcoin_safe
    ```
 

@@ -8,9 +8,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
 from reportlab.pdfgen import canvas
+from bitcoin_safe.descriptors import public_descriptor_info
 
 from bitcoin_safe.gui.qt.util import read_QIcon
-from .qr import create_qr
+from .gui.qt.qr_components.qr import create_qr
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from pathlib import Path
@@ -67,7 +68,12 @@ class BitcoinWalletRecoveryPDF:
         self.elements = []
 
     def create_pdf(
-        self, title, wallet_descriptor_string, keystore_descriptions, seed=None
+        self,
+        title,
+        wallet_descriptor_string,
+        keystore_descriptions,
+        threshold,
+        seed=None,
     ):
         self.elements.append(
             Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading)
@@ -87,12 +93,12 @@ class BitcoinWalletRecoveryPDF:
         )
         if len(keystore_descriptions) > 1:
             desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) is necessary to recreate (and spend from) your wallet:<br/><br/>{wallet_descriptor_string}",
+                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",
                 self.style_paragraph,
             )
         else:
             desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) allows you to create a watch-only wallet, to see your balances, but not spent from it:<br/><br/>{wallet_descriptor_string}",
+                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed) below.",
                 self.style_paragraph,
             )
         self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))
@@ -146,7 +152,7 @@ class BitcoinWalletRecoveryPDF:
             self.elements.append(Spacer(1, 10))
 
         # Table title
-        table_title = "Secret seed words for a Hardware wallet: Never type into a computer. Never make a picture."
+        table_title = "Secret seed words for a hardware signer: Never type into a computer. Never make a picture."
         seed_placeholder = "___________________"
 
         # split seed words if available
@@ -210,6 +216,30 @@ class BitcoinWalletRecoveryPDF:
             webbrowser.open_new_tab(file_uri)
         else:
             print("File not found!")
+
+
+def make_and_open_pdf(wallet: "Wallet"):
+    info = public_descriptor_info(
+        wallet.multipath_descriptor.as_string(), wallet.network
+    )
+    pdf_recovery = BitcoinWalletRecoveryPDF()
+
+    for i, keystore in enumerate(wallet.keystores):
+        title = (
+            f"Backup of Seed {i+1} of a  ({info['threshold']} of {len(wallet.keystores)}) Multi-Sig Wallet: {wallet.id}"
+            if len(wallet.keystores) > 1
+            else f"{wallet.id }"
+        )
+        pdf_recovery.create_pdf(
+            title,
+            wallet.multipath_descriptor.as_string(),
+            [keystore.description for keystore in wallet.keystores],
+            threshold=info["threshold"],
+            seed=keystore.mnemonic.as_string() if keystore.mnemonic else None,
+        )
+        temp_file = os.path.join(Path.home(), f"{title}.pdf")
+        pdf_recovery.save_pdf(temp_file)
+        pdf_recovery.open_pdf(temp_file)
 
 
 # # Example Usage

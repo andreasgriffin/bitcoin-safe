@@ -14,7 +14,7 @@ from .spinbox import CustomDoubleSpinBox
 from ...wallet import Wallet
 from ...util import unit_str
 from .dialogs import question_dialog
-
+from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
 from .util import ShowCopyLineEdit, CameraInputLineEdit
@@ -48,6 +48,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
     def __init__(self, signals: Signals, allow_edit=True):
         super().__init__()
+
         self.signals = signals
         self.allow_edit = allow_edit
 
@@ -106,6 +107,21 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.address_line_edit.textChanged.connect(self.format_address_field)
         self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
 
+        self.setStyleSheet(
+            """
+            QGroupBox {
+                border: 1px solid rgba(128, 128, 128, 0.7); /* Border styling */
+            }
+
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px; /* Horizontal position of the title */
+                top: 3px; /* Move the title a few pixels down */
+                background-color: transparent; /* Make the title background transparent */
+            }            
+        """
+        )
+
     def on_send_max_button_click(self):
         # self.amount_spin_box.setValue(0)
         self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
@@ -159,6 +175,8 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
             if self.address in wallet.get_addresses():
                 wallet_id = wallet.id
                 label = wallet.get_label_for_address(self.address)
+                if label:
+                    break
 
         if wallet_id:
             self.label_line_edit.setPlaceholderText(label)
@@ -217,11 +235,22 @@ class Recipients(QtWidgets.QWidget):
         self.recipient_list = QtWidgets.QScrollArea()
         self.recipient_list.setWidgetResizable(True)
         self.recipient_list.setToolTip("Recipients")
+        self.recipient_list.setObjectName("recipient_list")
+        self.recipient_list.setStyleSheet(
+            "#recipient_list { background: transparent; border: none; }"
+        )
 
         self.recipient_list_content = QtWidgets.QWidget()
         self.recipient_list_content_layout = QtWidgets.QVBoxLayout(
             self.recipient_list_content
         )
+        self.recipient_list_content.setObjectName("recipient_list_content")
+        self.recipient_list_content.setStyleSheet(
+            "#recipient_list_content { background: transparent; border: none; }"
+        )
+        self.recipient_list_content_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Set all margins to zero
         self.recipient_list_content_layout.setAlignment(QtCore.Qt.AlignTop)
         self.recipient_list.setWidget(self.recipient_list_content)
 
@@ -231,7 +260,8 @@ class Recipients(QtWidgets.QWidget):
         self.add_recipient_button.setStyleSheet("background-color: green")
         self.add_recipient_button.clicked.connect(lambda: self.add_recipient())
         if allow_edit:
-            self.main_layout.addWidget(self.add_recipient_button)
+            self.recipient_list_content_layout.addWidget(self.add_recipient_button)
+            # self.main_layout.addWidget(self.add_recipient_button)
 
     def add_recipient(self, recipient: Recipient = None):
         if recipient is None:
@@ -242,7 +272,9 @@ class Recipients(QtWidgets.QWidget):
         if recipient.label:
             recipient_box.label = recipient.label
         recipient_box.signal_close.connect(self.remove_recipient_widget)
-        self.recipient_list_content_layout.addWidget(recipient_box)
+        self.recipient_list_content_layout.insertWidget(
+            self.recipient_list_content_layout.count() - 1, recipient_box
+        )
 
         recipient_box.send_max_button.clicked.connect(
             lambda: self.signal_clicked_send_max_button.emit(recipient_box)
@@ -261,6 +293,8 @@ class Recipients(QtWidgets.QWidget):
         l = []
         for i in range(self.recipient_list_content_layout.count()):
             layout_item = self.recipient_list_content_layout.itemAt(i)
+            if not isinstance(layout_item.wid, RecipientGroupBox):
+                continue
             recipient_box: RecipientGroupBox = layout_item.wid
             l.append(
                 Recipient(
@@ -278,6 +312,8 @@ class Recipients(QtWidgets.QWidget):
         for i in reversed(range(self.recipient_list_content_layout.count())):
             layout_item = self.recipient_list_content_layout.itemAt(i)
             recipient_box: RecipientGroupBox = layout_item.wid
+            if not isinstance(layout_item.wid, RecipientGroupBox):
+                continue
             self.remove_recipient_widget(recipient_box)
 
         for i, recipient in enumerate(recipient_list):

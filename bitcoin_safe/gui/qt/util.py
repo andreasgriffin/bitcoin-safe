@@ -1,13 +1,14 @@
 import logging
 from bitcoin_qrreader import bitcoin_qr
 
+from bitcoin_safe.gui.qt.qr_components.image_widget import QRCodeWidgetSVG
+
 logger = logging.getLogger(__name__)
 
 import os.path
 import time
 import sys
 import platform
-import queue
 import traceback
 import os
 import webbrowser
@@ -27,6 +28,7 @@ from typing import (
     Tuple,
     Type,
 )
+from PySide2.QtGui import QPainter, QPen
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtGui import (
@@ -98,15 +100,23 @@ from PySide2.QtWidgets import (
     QSizePolicy,
     QTabWidget,
 )
+from PySide2.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QMessageBox,
+    QDialogButtonBox,
+)
+
+
 from PySide2.QtCore import QUrl
 from PySide2.QtGui import QDesktopServices
 from ...i18n import _, languages
-from ...util import (
-    FileImportFailed,
-    FileExportFailed,
-    resource_path,
-)
-from ...util import EventListener, event_listener, is_address
+from ...util import Satoshis, resource_path, TaskThread, serialized_to_hex
+from ...util import is_address
 from PySide2.QtSvg import QSvgWidget
 import bdkpython as bdk
 from PIL import Image as PilImage
@@ -144,6 +154,36 @@ TX_ICONS = [
 ]
 
 
+class WalletTab(QWidget):
+    pass
+
+
+class SearchableTab(QWidget):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+
+        self.searchable_list: "MyTreeView" = None
+
+
+class TxTab(SearchableTab):
+    def __init__(
+        self,
+        parent=None,
+        psbt: bdk.PartiallySignedTransaction = None,
+        tx: bdk.Transaction = None,
+    ) -> None:
+        super().__init__(parent)
+
+        self.psbt: bdk.PartiallySignedTransaction = psbt
+        self.tx: bdk.Transaction = tx
+
+    def serialize(self):
+        if self.tx:
+            return serialized_to_hex(self.tx.serialize())
+        elif self.psbt:
+            return self.psbt.serialize()
+
+
 def sort_id_to_icon(sort_id):
     if sort_id < 0:
         return "offline_tx.png"
@@ -153,24 +193,23 @@ def sort_id_to_icon(sort_id):
     return TX_ICONS[sort_id]
 
 
-def create_buy_coldcard_button():
-    button = QPushButton()
-    button.setObjectName("button")
+def create_buy_coldcard_button(layout):
+    button = create_button(
+        "Buy a Coldcard\n5% off", icon_path("coldcard-only.svg"), None, layout
+    )
     button.clicked.connect(
         lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
     )
-    button.setText("Buy a Coldcard\n5% off")
     return button
 
 
-def create_buy_bitbox_button():
-    button = QPushButton()
-    button.setObjectName("button")
+def create_buy_bitbox_button(layout):
+    button = create_button(
+        "Buy a Bitbox02\nBitcoin Only Edition", icon_path("usb-stick.svg"), None, layout
+    )
     button.clicked.connect(
         lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
     )
-
-    button.setText("Buy a Bitbox02")
     return button
 
 
@@ -246,7 +285,7 @@ def add_centered_icons(
         for max_size, path in zip(max_sizes, paths)
     ]
 
-    add_centered(
+    inner_layout = add_centered(
         svg_widgets, parent, outer_layout, direction=direction, alignment=alignment
     )
 
@@ -276,6 +315,7 @@ def create_button(
     label_icon = QLabel(button)
     label_icon.setWordWrap(True)
     label_icon.setText(text)
+    label_icon.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
     label_icon.setHidden(not bool(text))
     label_icon.setAlignment(Qt.AlignHCenter)
     layout = center_in_widget([label_icon], widget1, direction="h")
@@ -327,28 +367,6 @@ def add_tab_to_tabs(
         tabs.insertTab(position, tab, icon, description.replace("&", "").capitalize())
         if focus:
             tabs.setCurrentIndex(position)
-
-
-def format_fiat_and_units(amount_sat, fx) -> str:
-    """Returns string of FX fiat amount, in desired units.
-    E.g. 500_000 -> '191.42 EUR'
-    """
-    return fx.format_amount_and_units(amount_sat) if fx else ""
-
-
-class EnterButton(QPushButton):
-    def __init__(self, text, func):
-        QPushButton.__init__(self, text)
-        self.func = func
-        self.clicked.connect(func)
-        self._orig_text = text
-
-    def keyPressEvent(self, e):
-        if e.key() in [Qt.Key_Return, Qt.Key_Enter]:
-            self.func()
-
-    def restore_original_text(self):
-        self.setText(self._orig_text)
 
 
 class ThreadedButton(QPushButton):
@@ -571,6 +589,28 @@ class Message:
         )
 
 
+def exception_message(e: Exception):
+    error_type, error_value, error_traceback = sys.exc_info()
+    error_message = (
+        f"Error: {error_type.__name__}: {error_value}\n\n\n {error_traceback}"
+    )
+    logger.error(error_message)
+    Message(error_message).show_error()
+
+
+def custom_exception_handler(exc_type, exc_value, exc_traceback):
+    """
+    Custom exception handler to catch unhandled exceptions and display an error message box.
+    """
+    # Format the traceback
+    formatted_traceback = "".join(
+        traceback.format_exception(exc_type, exc_value, exc_traceback)
+    )
+    error_message = f"{exc_type.__name__}: {exc_value}\n\n{formatted_traceback}"
+    logger.exception(error_message)
+    QMessageBox.critical(None, "Error", error_message)
+
+
 class MessageBoxMixin(object):
     def top_level_window_recurse(self, window=None, test_func=None):
         window = window or self
@@ -769,6 +809,35 @@ def line_dialog(parent, title, label, ok_label, default=None):
     l.addLayout(Buttons(CancelButton(dialog), OkButton(dialog, ok_label)))
     if dialog.exec_():
         return txt.text()
+
+
+def create_button_box(callback_ok, callback_cancel, ok_text=None, cancel_text=None):
+    # Create the QDialogButtonBox instance
+    button_box = QDialogButtonBox()
+
+    # Add an 'Ok' button
+    if ok_text is None:
+        button_box.addButton(QDialogButtonBox.Ok)
+    else:
+        custom_yes_button = QPushButton(ok_text)
+        button_box.addButton(custom_yes_button, QDialogButtonBox.AcceptRole)
+        custom_yes_button.clicked.connect(callback_ok)
+
+    # Add a 'Cancel' button
+    if cancel_text is None:
+        button_box.addButton(QDialogButtonBox.Cancel)
+    else:
+        custom_cancel_button = QPushButton(cancel_text)
+        button_box.addButton(custom_cancel_button, QDialogButtonBox.RejectRole)
+        custom_cancel_button.clicked.connect(callback_cancel)
+
+    # Connect the QDialogButtonBox's accepted and rejected signals if default buttons are used
+    if ok_text is None:
+        button_box.accepted.connect(callback_ok)
+    if cancel_text is None:
+        button_box.rejected.connect(callback_cancel)
+
+    return button_box
 
 
 def text_dialog(
@@ -1043,6 +1112,84 @@ class GenericInputHandler:
         setText(app.clipboard().text())
 
 
+class QRDialog(WindowModalDialog):
+    def __init__(
+        self,
+        *,
+        data,
+        parent=None,
+        title="",
+        show_text=False,
+        help_text=None,
+        show_copy_text_btn=False,
+        config: "UserConfig",
+    ):
+        WindowModalDialog.__init__(self, parent, title)
+        self.config = config
+
+        vbox = QVBoxLayout()
+
+        qrw = QRCodeWidgetSVG(data, manual_size=True)
+        qrw.setMinimumSize(250, 250)
+        vbox.addWidget(qrw, 1)
+
+        help_text = data if show_text else help_text
+        if help_text:
+            text_label = WWLabel()
+            text_label.setText(help_text)
+            vbox.addWidget(text_label)
+        hbox = QHBoxLayout()
+        hbox.addStretch(1)
+
+        def print_qr():
+            filename = getSaveFileName(
+                parent=self,
+                title=_("Select where to save file"),
+                filename="qrcode.png",
+                config=self.config,
+            )
+            if not filename:
+                return
+            p = qrw.grab()
+            p.save(filename, "png")
+            self.show_message(_("QR code saved to file") + " " + filename)
+
+        def copy_image_to_clipboard():
+            p = qrw.grab()
+            QApplication.clipboard().setPixmap(p)
+            self.show_message(_("QR code copied to clipboard"))
+
+        def copy_text_to_clipboard():
+            QApplication.clipboard().setText(data)
+            self.show_message(_("Text copied to clipboard"))
+
+        b = QPushButton(_("Copy Image"))
+        hbox.addWidget(b)
+        b.clicked.connect(copy_image_to_clipboard)
+
+        if show_copy_text_btn:
+            b = QPushButton(_("Copy Text"))
+            hbox.addWidget(b)
+            b.clicked.connect(copy_text_to_clipboard)
+
+        b = QPushButton(_("Save"))
+        hbox.addWidget(b)
+        b.clicked.connect(print_qr)
+
+        b = QPushButton(_("Close"))
+        hbox.addWidget(b)
+        b.clicked.connect(self.accept)
+        b.setDefault(True)
+
+        vbox.addLayout(hbox)
+        self.setLayout(vbox)
+
+        # note: the word-wrap on the text_label is causing layout sizing issues.
+        #       see https://stackoverflow.com/a/25661985 and https://bugreports.qt.io/browse/QTBUG-37673
+        #       workaround:
+        self.setMinimumSize(self.sizeHint())
+
+
 class OverlayControlMixin(GenericInputHandler):
     STYLE_SHEET_COMMON = """
     QPushButton { border-width: 1px; padding: 0px; margin: 0px; }
@@ -1154,7 +1301,7 @@ class OverlayControlMixin(GenericInputHandler):
             title = _("QR code")
 
         def qr_show():
-            from .qrcodewidget import QRDialog
+            from .QRCodeWidgetSVG import QRDialog
 
             try:
                 s = str(self.text())
@@ -1395,77 +1542,6 @@ class PasswordLineEdit(QLineEdit):
         super().clear()
 
 
-class TaskThread(QThread):
-    """Thread that runs background tasks.  Callbacks are guaranteed
-    to happen in the context of its parent."""
-
-    class Task(NamedTuple):
-        task: Callable
-        cb_success: Optional[Callable]
-        cb_done: Optional[Callable]
-        cb_error: Optional[Callable]
-        cancel: Optional[Callable] = None
-
-    doneSig = Signal(object, object, object)
-
-    def __init__(self, parent, on_error=None):
-        QThread.__init__(self, parent)
-        self.on_error = on_error
-        self.tasks = queue.Queue()
-        self._cur_task = None  # type: Optional[TaskThread.Task]
-        self._stopping = False
-        self.doneSig.connect(self.on_done)
-        self.start()
-
-    def add(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
-        if self._stopping:
-            logger.warning(f"stopping or already stopped but tried to add new task.")
-            return
-        on_error = on_error or self.on_error
-        task_ = TaskThread.Task(task, on_success, on_done, on_error, cancel=cancel)
-        self.tasks.put(task_)
-
-    def run(self):
-        while True:
-            if self._stopping:
-                break
-            task = self.tasks.get()  # type: TaskThread.Task
-            self._cur_task = task
-            if not task or self._stopping:
-                break
-            try:
-                result = task.task()
-                self.doneSig.emit(result, task.cb_done, task.cb_success)
-            except BaseException:
-                self.doneSig.emit(sys.exc_info(), task.cb_done, task.cb_error)
-
-    def on_done(self, result, cb_done, cb_result):
-        # This runs in the parent's thread.
-        if cb_done:
-            cb_done()
-        if cb_result:
-            cb_result(result)
-
-    def stop(self):
-        self._stopping = True
-        # try to cancel currently running task now.
-        # if the task does not implement "cancel", we will have to wait until it finishes.
-        task = self._cur_task
-        if task and task.cancel:
-            task.cancel()
-        # cancel the remaining tasks in the queue
-        while True:
-            try:
-                task = self.tasks.get_nowait()
-            except queue.Empty:
-                break
-            if task and task.cancel:
-                task.cancel()
-        self.tasks.put(None)  # in case the thread is still waiting on the queue
-        self.exit()
-        self.wait()
-
-
 class ColorSchemeItem:
     def __init__(self, fg_color, bg_color):
         self.colors = (fg_color, bg_color)
@@ -1502,81 +1578,6 @@ class ColorScheme:
     def update_from_widget(widget, force_dark=False):
         ColorScheme.dark_scheme = bool(
             force_dark or ColorScheme.has_dark_background(widget)
-        )
-
-
-class AcceptFileDragDrop:
-    def __init__(self, file_type=""):
-        assert isinstance(self, QWidget)
-        self.setAcceptDrops(True)
-        self.file_type = file_type
-
-    def validateEvent(self, event):
-        if not event.mimeData().hasUrls():
-            event.ignore()
-            return False
-        for url in event.mimeData().urls():
-            if not url.toLocalFile().endswith(self.file_type):
-                event.ignore()
-                return False
-        event.accept()
-        return True
-
-    def dragEnterEvent(self, event):
-        self.validateEvent(event)
-
-    def dragMoveEvent(self, event):
-        if self.validateEvent(event):
-            event.setDropAction(Qt.CopyAction)
-
-    def dropEvent(self, event):
-        if self.validateEvent(event):
-            for url in event.mimeData().urls():
-                self.onFileAdded(url.toLocalFile())
-
-    def onFileAdded(self, fn):
-        raise NotImplementedError()
-
-
-def import_meta_gui(electrum_window: "ElectrumWindow", title, importer, on_success):
-    filter_ = "JSON (*.json);;All files (*)"
-    filename = getOpenFileName(
-        parent=electrum_window,
-        title=_("Open {} file").format(title),
-        filter=filter_,
-        config=electrum_window.config,
-    )
-    if not filename:
-        return
-    try:
-        importer(filename)
-    except FileImportFailed as e:
-        electrum_window.show_critical(str(e))
-    else:
-        electrum_window.show_message(
-            _("Your {} were successfully imported").format(title)
-        )
-        on_success()
-
-
-def export_meta_gui(electrum_window: "ElectrumWindow", title, exporter):
-    filter_ = "JSON (*.json);;All files (*)"
-    filename = getSaveFileName(
-        parent=electrum_window,
-        title=_("Select file to save your {}").format(title),
-        filename="electrum_{}.json".format(title),
-        filter=filter_,
-        config=electrum_window.config,
-    )
-    if not filename:
-        return
-    try:
-        exporter(filename)
-    except FileExportFailed as e:
-        electrum_window.show_critical(str(e))
-    else:
-        electrum_window.show_message(
-            _("Your {0} were exported to '{1}'").format(title, str(filename))
         )
 
 
@@ -1633,33 +1634,6 @@ def read_QIcon(icon_basename: str) -> QIcon:
     return QIcon(icon_path(icon_basename))
 
 
-class IconLabel(QWidget):
-    HorizontalSpacing = 2
-
-    def __init__(self, *, text="", final_stretch=True):
-        super(QWidget, self).__init__()
-        size = max(16, font_height())
-        self.icon_size = QSize(size, size)
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
-        self.icon = QLabel()
-        self.label = QLabel(text)
-        self.label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        layout.addWidget(self.label)
-        layout.addSpacing(self.HorizontalSpacing)
-        layout.addWidget(self.icon)
-        if final_stretch:
-            layout.addStretch()
-
-    def setText(self, text):
-        self.label.setText(text)
-
-    def setIcon(self, icon):
-        self.icon.setPixmap(icon.pixmap(self.icon_size))
-        self.icon.repaint()  # macOS hack for #6269
-
-
 def get_default_language():
     name = QLocale.system().name()
     return name if name in languages else "en_UK"
@@ -1686,168 +1660,6 @@ def webopen(url: str):
             os._exit(0)
     else:
         webbrowser.open(url)
-
-
-class FixedAspectRatioLayout(QLayout):
-    def __init__(self, parent: QWidget = None, aspect_ratio: float = 1.0):
-        super().__init__(parent)
-        self.aspect_ratio = aspect_ratio
-        self.items: List[QLayoutItem] = []
-
-    def set_aspect_ratio(self, aspect_ratio: float = 1.0):
-        self.aspect_ratio = aspect_ratio
-        self.update()
-
-    def addItem(self, item: QLayoutItem):
-        self.items.append(item)
-
-    def count(self) -> int:
-        return len(self.items)
-
-    def itemAt(self, index: int) -> QLayoutItem:
-        if index >= len(self.items):
-            return None
-        return self.items[index]
-
-    def takeAt(self, index: int) -> QLayoutItem:
-        if index >= len(self.items):
-            return None
-        return self.items.pop(index)
-
-    def _get_contents_margins_size(self) -> QSize:
-        margins = self.contentsMargins()
-        return QSize(margins.left() + margins.right(), margins.top() + margins.bottom())
-
-    def setGeometry(self, rect: QRect):
-        super().setGeometry(rect)
-        if not self.items:
-            return
-
-        contents = self.contentsRect()
-        if contents.height() > 0:
-            c_aratio = contents.width() / contents.height()
-        else:
-            c_aratio = 1
-        s_aratio = self.aspect_ratio
-        item_rect = QRect(
-            QPoint(0, 0),
-            QSize(
-                contents.width()
-                if c_aratio < s_aratio
-                else int(contents.height() * s_aratio),
-                contents.height()
-                if c_aratio > s_aratio
-                else int(contents.width() / s_aratio),
-            ),
-        )
-
-        content_margins = self.contentsMargins()
-        free_space = contents.size() - item_rect.size()
-
-        for item in self.items:
-            if free_space.width() > 0 and not item.alignment() & Qt.AlignLeft:
-                if item.alignment() & Qt.AlignRight:
-                    item_rect.moveRight(contents.width() + content_margins.right())
-                else:
-                    item_rect.moveLeft(
-                        content_margins.left() + (free_space.width() // 2)
-                    )
-            else:
-                item_rect.moveLeft(content_margins.left())
-
-            if free_space.height() > 0 and not item.alignment() & Qt.AlignTop:
-                if item.alignment() & Qt.AlignBottom:
-                    item_rect.moveBottom(contents.height() + content_margins.bottom())
-                else:
-                    item_rect.moveTop(
-                        content_margins.top() + (free_space.height() // 2)
-                    )
-            else:
-                item_rect.moveTop(content_margins.top())
-
-            item.widget().setGeometry(item_rect)
-
-    def sizeHint(self) -> QSize:
-        result = QSize()
-        for item in self.items:
-            result = result.expandedTo(item.sizeHint())
-        return self._get_contents_margins_size() + result
-
-    def minimumSize(self) -> QSize:
-        result = QSize()
-        for item in self.items:
-            result = result.expandedTo(item.minimumSize())
-        return self._get_contents_margins_size() + result
-
-    def expandingDirections(self) -> Qt.Orientations:
-        return Qt.Horizontal | Qt.Vertical
-
-
-def QColorLerp(a: QColor, b: QColor, t: float):
-    """
-    Blends two QColors. t=0 returns a. t=1 returns b. t=0.5 returns evenly mixed.
-    """
-    t = max(min(t, 1.0), 0.0)
-    i_t = 1.0 - t
-    return QColor(
-        int((a.red() * i_t) + (b.red() * t)),
-        int((a.green() * i_t) + (b.green() * t)),
-        int((a.blue() * i_t) + (b.blue() * t)),
-        int((a.alpha() * i_t) + (b.alpha() * t)),
-    )
-
-
-class ImageGraphicsEffect(QObject):
-    """
-    Applies a QGraphicsEffect to a QImage
-    """
-
-    def __init__(self, parent: QObject, effect: QGraphicsEffect):
-        super().__init__(parent)
-        assert effect, "effect must be set"
-        self.effect = effect
-        self.graphics_scene = QGraphicsScene()
-        self.graphics_item = QGraphicsPixmapItem()
-        self.graphics_item.setGraphicsEffect(effect)
-        self.graphics_scene.addItem(self.graphics_item)
-
-    def apply(self, image: QImage):
-        assert image, "image must be set"
-        result = QImage(image.size(), QImage.Format_ARGB32)
-        result.fill(Qt.transparent)
-        painter = QPainter(result)
-        self.graphics_item.setPixmap(QPixmap.fromImage(image))
-        self.graphics_scene.render(painter)
-        self.graphics_item.setPixmap(QPixmap())
-        return result
-
-
-class QtEventListener(EventListener):
-
-    qt_callback_signal = QtCore.Signal(tuple)
-
-    def register_callbacks(self):
-        self.qt_callback_signal.connect(self.on_qt_callback_signal)
-        EventListener.register_callbacks(self)
-
-    def unregister_callbacks(self):
-        self.qt_callback_signal.disconnect()
-        EventListener.unregister_callbacks(self)
-
-    def on_qt_callback_signal(self, args):
-        func = args[0]
-        return func(self, *args[1:])
-
-
-# decorator for members of the QtEventListener class
-def qt_event_listener(func):
-    func = event_listener(func)
-
-    @wraps(func)
-    def decorator(self, *args):
-        self.qt_callback_signal.emit((func,) + args)
-
-    return decorator
 
 
 def clipboard_contains_address():
@@ -1903,6 +1715,51 @@ def qicon_to_pil(qicon, size=200):
     )
 
     return pil_image
+
+
+def set_balance_label(label: QLabel, wallets):
+    for wallet in wallets:
+        wallet_values = [wallet.get_balances_for_piechart()]
+
+    confirmed = [v[0] for v in wallet_values]
+    unconfirmed = [v[1] for v in wallet_values]
+    unmatured = [v[2] for v in wallet_values]
+    label.setText(_("Balance") + f": {Satoshis.sum(wallet_values).str_with_unit()} ")
+    details = [
+        f"{title}: {Satoshis.sum(values).str_with_unit()}"
+        for title, values in [
+            ("Confirmed", confirmed),
+            ("Unconfirmed", unconfirmed),
+            ("Unmatured", unmatured),
+        ]
+        if Satoshis.sum(values)
+    ]
+    label.setToolTip(",  ".join(details))
+
+
+def save_file_dialog(name_filters=None, default_suffix=None, default_filename=None):
+    options = QFileDialog.Options()
+    # options |= QFileDialog.DontUseNativeDialog  # Use Qt-based dialog, not native platform dialog
+
+    file_dialog = QFileDialog()
+    file_dialog.setOptions(options)
+    file_dialog.setWindowTitle("Save File")
+    if default_suffix:
+        file_dialog.setDefaultSuffix(default_suffix)
+
+    # Set a default filename
+    if default_filename:
+        file_dialog.selectFile(default_filename)
+
+    file_dialog.setAcceptMode(QFileDialog.AcceptSave)
+    if name_filters:
+        file_dialog.setNameFilters(name_filters)
+
+    if file_dialog.exec_() == QFileDialog.Accepted:
+        selected_file = file_dialog.selectedFiles()[0]
+        # Do something with the selected file path, e.g., save data to the file
+        logger.debug(f"Selected save file: {selected_file}")
+        return selected_file
 
 
 if __name__ == "__main__":

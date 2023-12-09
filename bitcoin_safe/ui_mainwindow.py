@@ -80,6 +80,14 @@ class Ui_MainWindow(QMainWindow):
         )
         self.menu_wallet.addSeparator()
 
+        # export wallet
+        self.menu_wallet_export = self.menu_wallet.addMenu(_("&Export"))
+        self.menu_wallet_export.addAction(
+            _("Export for Coldcard"), self.export_wallet_for_coldcard
+        )
+
+        self.menu_wallet.addSeparator()
+
         self.menu_wallet.addAction(_("Sync"), self.sync).setShortcut(QKeySequence("F5"))
 
         # menu transaction
@@ -100,6 +108,10 @@ class Ui_MainWindow(QMainWindow):
         self.menu_transaction.addAction(
             "Network Settings", self.open_network_settings
         ).setShortcut(QKeySequence("Ctrl+I"))
+
+        self.menu_transaction.addAction(
+            "Show/Hide Tutorial", self.toggle_tutorial
+        ).setShortcut(QKeySequence("Ctrl+T"))
 
         # other shortcuts
         self.shortcut_close_tab = QShortcut(QKeySequence("Ctrl+W"), self)

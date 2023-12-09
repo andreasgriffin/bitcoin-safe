@@ -25,6 +25,9 @@
 
 import logging
 
+from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt.balance_dialog import BalanceToolButton
+
 logger = logging.getLogger(__name__)
 
 import enum
@@ -195,7 +198,10 @@ def create_toolbar_with_menu(config, title, export_as_csv=None):
     toolbar_button.setPopupMode(QToolButton.InstantPopup)
     toolbar_button.setFocusPolicy(Qt.NoFocus)
     toolbar = QHBoxLayout()
-    toolbar.addWidget(QLabel(title))
+
+    balance_label = QLabel()
+
+    toolbar.addWidget(balance_label)
     toolbar.addStretch()
     toolbar.addWidget(toolbar_button)
     return toolbar, menu
@@ -386,7 +392,7 @@ class MyTreeView(QTreeView):
         self,
         *,
         parent: Optional[QWidget] = None,
-        config=None,
+        config: UserConfig = None,
         stretch_column: Optional[int] = None,
         column_widths: Optional[Dict[int, int]] = None,
         editable_columns: Optional[Sequence[int]] = None,
@@ -456,6 +462,14 @@ class MyTreeView(QTreeView):
         items = self.selectionModel().selectedIndexes()
         return list(x for x in items if x.column() == column)
 
+    def current_row_in_column(self, column: int):
+        idx = self.selectionModel().currentIndex()
+        if idx.isValid():
+            # Retrieve data for a specific role from the current index
+            # Replace 'YourSpecificRole' with the role you are interested in
+            # For example, QtCore.Qt.DisplayRole for the display text
+            return idx.sibling(idx.row(), column)
+
     def get_role_data_for_current_item(self, *, col, role) -> Any:
         idx = self.selectionModel().currentIndex()
         idx = idx.sibling(idx.row(), col)
@@ -486,14 +500,17 @@ class MyTreeView(QTreeView):
                 QModelIndex(set_current), QItemSelectionModel.SelectCurrent
             )
 
-    def select_rows(self, content, column, role=Qt.DisplayRole):
+    def select_row(self, content, column, role=Qt.DisplayRole):
+        return self.select_rows([content], column, role)
+
+    def select_rows(self, content_list, column, role=Qt.DisplayRole):
         last_selected_index = None
         model = self.model()
         selection_model = self.selectionModel()
         for row in range(model.rowCount()):
             index = model.index(row, column)
             this_content = model.data(index, role)
-            if this_content == content:
+            if this_content in content_list:
                 # Select the item
                 selection_model.select(
                     index, QItemSelectionModel.Select | QItemSelectionModel.Rows
@@ -546,16 +563,16 @@ class MyTreeView(QTreeView):
 
     def copyKeyRoleToClipboard(self, row_numbers):
         def get_data(row, col):
-            model = self.original_model()
+            model = self.model()
             index = model.index(row, self.key_column)
 
             if hasattr(model, "data"):
-                key = model.data(index, self.key_role)
+                key = model.data(index, self.ROLE_KEY)
                 return key
             else:
                 item = self.item_from_index(index)
                 if item:
-                    key = item.data(self.key_role)
+                    key = item.data(self.ROLE_KEY)
                     return key
 
         row_numbers = sorted(row_numbers)
@@ -563,7 +580,7 @@ class MyTreeView(QTreeView):
         stream = io.StringIO()
         for row in row_numbers:
             stream.write(
-                get_data(row, self.key_role) + "\n"
+                str(get_data(row, self.ROLE_KEY)) + "\n"
             )  # append newline character after each row
         do_copy(
             stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text"
@@ -571,9 +588,7 @@ class MyTreeView(QTreeView):
 
     def get_rows_as_csv(self, row_numbers):
         def get_data(row, col):
-            model = (
-                self.original_model()
-            )  # assuming this is a QAbstractItemModel or subclass
+            model = self.model()  # assuming this is a QAbstractItemModel or subclass
             index = model.index(row, col)
 
             if hasattr(model, "data"):
@@ -799,7 +814,7 @@ class MyTreeView(QTreeView):
     def find_row_by_key(self, key) -> Optional[int]:
         for row in range(0, self.std_model.rowCount()):
             item = self.std_model.item(row, self.key_column)
-            if item.data(self.key_role) == key:
+            if item.data(self.ROLE_KEY) == key:
                 return row
 
     def refresh_all(self):
@@ -807,7 +822,7 @@ class MyTreeView(QTreeView):
             return
         for row in range(0, self.std_model.rowCount()):
             item = self.std_model.item(row, self.key_column)
-            key = item.data(self.key_role)
+            key = item.data(self.ROLE_KEY)
             self.refresh_row(key, row)
 
     def refresh_row(self, key: str, row: int) -> None:

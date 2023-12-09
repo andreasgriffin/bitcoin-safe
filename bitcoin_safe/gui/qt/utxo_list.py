@@ -25,6 +25,8 @@
 
 import logging
 
+from bitcoin_safe.config import UserConfig
+
 from ...pythonbdk_types import OutPoint
 
 logger = logging.getLogger(__name__)
@@ -44,21 +46,37 @@ from PySide2.QtWidgets import (
     QApplication,
     QHeaderView,
 )
+from PySide2.QtCore import (
+    Qt,
+    QPersistentModelIndex,
+    QModelIndex,
+    QCoreApplication,
+    QItemSelectionModel,
+    QThread,
+    QSortFilterProxyModel,
+    QSize,
+    QLocale,
+    QAbstractItemModel,
+    QEvent,
+    QRect,
+    QPoint,
+    QObject,
+)
 from .category_list import CategoryEditor
 
 from ...wallet import TxStatus, Wallet
 
 from ...i18n import _
-from ...util import is_address, Satoshis, format_satoshis
+from ...util import block_explorer_URL, is_address, Satoshis, format_satoshis
 
 from .util import (
     ColorScheme,
     MONOSPACE_FONT,
-    EnterButton,
     MessageBoxMixin,
     read_QIcon,
     TX_ICONS,
     sort_id_to_icon,
+    webopen,
 )
 from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
 import bdkpython as bdk
@@ -106,16 +124,17 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.PARENTS: Qt.AlignCenter | Qt.AlignVCenter,
     }
 
-    column_widths = {Columns.ADDRESS: 50}
+    column_widths = {Columns.ADDRESS: 100}
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
 
     def __init__(
         self,
-        config,
+        config: UserConfig,
         signals: Signals,
         get_outpoints,
         hidden_columns=None,
+        txout_dict=None,
     ):
         super().__init__(
             config=config,
@@ -127,15 +146,17 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.get_outpoints = get_outpoints
+        self.txout_dict = txout_dict if txout_dict else {}
         self._tx_dict: Dict[bdk.TransactionDetails] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[OutPoint, Wallet] = {}  # outpoint --> wallet
 
+        self.setTextElideMode(Qt.ElideMiddle)
         self.std_model = MyStandardItemModel(self, drag_key="outpoints")
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
 
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QAbstractItemView.MultiSelection)
         self.setSortingEnabled(True)
 
         self.update()
@@ -154,6 +175,37 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         toolbar, menu = self.create_toolbar_with_menu("")
         self.num_coins_label = toolbar.itemAt(0).widget()
         return toolbar
+
+    def create_menu(self, position: QPoint) -> None:
+        selected = self.selected_in_column(self.Columns.OUTPOINT)
+        if not selected:
+            selected = [self.current_row_in_column(self.Columns.OUTPOINT)]
+        menu = QMenu()
+
+        multi_select = len(selected) > 1
+        outpoints: List[OutPoint] = [
+            self.model().data(item, role=self.ROLE_KEY) for item in selected
+        ]
+        menu = QMenu()
+        if not multi_select:
+            idx = self.indexAt(position)
+            if not idx.isValid():
+                return
+            item = self.item_from_index(idx)
+            if not item:
+                return
+            addr_URL = block_explorer_URL(
+                self.config.network_settings, "tx", outpoints[0].txid
+            )
+            if addr_URL:
+                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+
+        menu.addAction(
+            _("Copy as csv"),
+            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+        )
+        # run_hook('receive_menu', menu, addrs, self.wallet)
+        menu.exec_(self.viewport().mapToGlobal(position))
 
     def update(self):
         if self.maybe_defer_update():
@@ -175,7 +227,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             self._tx_dict.update(tx_dict)
             self._wallet_dict.update(dict.fromkeys(tx_dict.keys(), wallet))
 
-        self.model().clear()
+        self.std_model.clear()
         self.update_headers(self.__class__.headers)
         set_idx = None
         for outpoint in self.get_outpoints():
@@ -184,6 +236,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             txdetails = self._tx_dict.get(outpoint, None)
 
             txout = txdetails.transaction.output()[outpoint.vout] if txdetails else None
+            # try to get txout from the supplied txout_dict, if it couldn't be found in any wallet
+            if (not txout) and outpoint in self.txout_dict:
+                txout = self.txout_dict[outpoint]
 
             labels = [""] * len(self.Columns)
             labels[self.Columns.OUTPOINT] = str(outpoint)
@@ -195,7 +250,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
                 else "unknown"
             )
             labels[self.Columns.AMOUNT] = (
-                format_satoshis(txout.value, wallet.network) if txout else "unknown"
+                format_satoshis(txout.value, self.config.network_settings.network)
+                if txout
+                else "unknown"
             )
             labels[self.Columns.SATOSHIS] = str(txout.value) if txout else "unknown"
             items = [QStandardItem(x) for x in labels]
@@ -235,7 +292,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.header().setSectionResizeMode(
             self.Columns.ADDRESS, QHeaderView.Interactive
         )
-        self.header().resizeSection(self.Columns.ADDRESS, 50)
 
         # show/hide self.Columns
         self.filter()
@@ -265,9 +321,9 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             wallet.id if wallet else "unknown", self.ROLE_CLIPBOARD_DATA
         )
         txid = outpoint.txid
-        parents = wallet.get_tx_parents(txid) if wallet else []
-        items[self.Columns.PARENTS].setText("%6s" % len(parents))
-        items[self.Columns.PARENTS].setData(len(parents), self.ROLE_CLIPBOARD_DATA)
+        # parents = wallet.get_tx_parents(txid) if wallet else []
+        # items[self.Columns.PARENTS].setText("%6s" % len(parents))
+        # items[self.Columns.PARENTS].setData(len(parents), self.ROLE_CLIPBOARD_DATA)
 
         address = (
             bdk.Address.from_script(
@@ -301,11 +357,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             return []
         items = self.selected_in_column(self.Columns.OUTPOINT)
         return [x.data(self.ROLE_KEY) for x in items]
-
-    def pay_to_clipboard_address(self, coins):
-        addr = QApplication.clipboard().text()
-        outputs = [bdk.LocalUtxo.from_address_and_value(addr, "!")]
-        self.main_window.send_tab.pay_onchain_dialog(outputs)
 
     def on_double_click(self, idx):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)

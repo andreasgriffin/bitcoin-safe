@@ -1,5 +1,7 @@
 import logging
 
+from numpy import spacing
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtWidgets import *
@@ -79,9 +81,11 @@ class CustomDelegate(QStyledItemDelegate):
         color = QColor(index.data(Qt.UserRole + 1))
         painter.save()
 
+        rect = option.rect
+
         # Draw as a button
         button_style = QStyleOptionButton()
-        button_style.rect = option.rect
+        button_style.rect = rect
         button_style.palette.setColor(QPalette.Button, color)
         button_style.state = QStyle.State_Enabled
 
@@ -93,13 +97,11 @@ class CustomDelegate(QStyledItemDelegate):
 
         QApplication.style().drawControl(QStyle.CE_PushButton, button_style, painter)
 
-        rect = option.rect
-
         # Draw the text and subtext
         text = index.data()
         subtext = index.data(Qt.UserRole + 2)
 
-        height_split = 4 / 6 if subtext else 1
+        height_split = 3.5 / 6 if subtext else 1
         rectText = QRect(
             rect.left(), rect.top(), rect.width(), rect.height() * height_split
         )
@@ -126,11 +128,11 @@ class CustomDelegate(QStyledItemDelegate):
 
         painter.restore()
 
-    def sizeHint(self, option, index):
-        # Increase the height by 5 to compensate for the reduced rectangle height in paint()
-        size = super().sizeHint(option, index)
-        size.setHeight(size.height() + 15)
-        return size
+    # def sizeHint(self, option, index):
+    #     # Increase the height by 5 to compensate for the reduced rectangle height in paint()
+    #     size = super().sizeHint(option, index)
+    #     size.setHeight(size.height() + 15)
+    #     return size
 
     def createEditor(self, parent, option, index):
         self.currentlyEditingIndex = index
@@ -210,15 +212,17 @@ class DeleteButton(QPushButton):
 
 class CustomListWidget(QListWidget):
     signal_tag_added = Signal(str)
-    signal_tag_selected = Signal(str)
+    signal_tag_clicked = Signal(str)
     signal_tag_deleted = Signal(str)
     signal_tag_renamed = Signal(object, object)
     signal_addresses_dropped = Signal(AddressDragInfo)
     signal_start_drag = Signal(object)
     signal_stop_drag = Signal(object)
 
-    def __init__(self, parent=None, enable_drag=True):
-        super(CustomListWidget, self).__init__(parent)
+    def __init__(self, parent=None, enable_drag=True, immediate_release=True):
+        super().__init__(parent)
+
+        self.immediate_release = immediate_release
 
         delegate = CustomDelegate(self)
         delegate.signal_tag_renamed.connect(self.signal_tag_renamed)
@@ -232,7 +236,6 @@ class CustomListWidget(QListWidget):
         self.setDefaultDropAction(Qt.MoveAction)
         self.setDragEnabled(enable_drag)  # this must be after the other drag toggles
 
-        self.itemClicked.connect(self.on_item_clicked)
         self.itemChanged.connect(self.on_item_changed)  # new
 
         self.setMouseTracking(True)
@@ -246,7 +249,7 @@ class CustomListWidget(QListWidget):
             }
             QListWidget::item {
                 border-radius: 5px;
-                margin: 3px;
+                margin: 15px;
             }
             QListWidget::item:selected {
                 background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #cccccc, stop:1 #b3b3b3);
@@ -263,7 +266,7 @@ class CustomListWidget(QListWidget):
         return item
 
     def on_item_clicked(self, item):
-        self.signal_tag_selected.emit(item.text())
+        self.signal_tag_clicked.emit(item.text())
         # print( [item.text() for item in self.selectedItems()])
 
     def on_item_changed(self, item):  # new
@@ -290,17 +293,40 @@ class CustomListWidget(QListWidget):
             item.setSelected(selected)
 
     def mousePressEvent(self, event):
+        item = self.itemAt(event.pos())
+        if item is None:
+            # Click is on empty space, do nothing
+            return
+        else:
+            if event.button() == Qt.LeftButton:
+                self._drag_start_position = event.pos()
+                if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+                    if item.isSelected():
+                        self.setAllSelection(False)
+                        return
+
+            super().mousePressEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self._drag_start_position = event.pos()
+            pass
 
-            # unselect all items if a normal click
-            if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
-                item = self.itemAt(event.pos())
-                if item is not None and item.isSelected():
-                    self.setAllSelection(False)
-                    return
+        super().mouseDoubleClickEvent(event)
 
-        super().mousePressEvent(event)
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            # Perform actions that should happen after the mouse button is released
+            # This could be updating the state of the widget, triggering signals, etc.
+
+            item = self.itemAt(event.pos())
+            if item is not None and item.isSelected():
+                self.on_item_clicked(item)
+                if self.immediate_release:
+                    if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+                        self.setAllSelection(False)
+                        return
+
+        super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
         if not (event.buttons() & Qt.LeftButton):
@@ -384,14 +410,23 @@ class CustomListWidget(QListWidget):
             yield item.text()
 
     def recreate(self, tags, sub_texts=None):
-        # delete all items
+        # Store the texts of selected items
+        selected_texts = [item.text() for item in self.selectedItems()]
+
+        # Delete all items
         for i in reversed(range(self.count())):
             self.takeItem(i)
 
-        # add all back
-        sub_texts = sub_texts if sub_texts else [None for i in range(len(tags))]
+        # Add all items back
+        sub_texts = sub_texts if sub_texts else [None] * len(tags)
         for sub_text, tag in zip(sub_texts, tags):
-            self.add(tag, sub_text=sub_text)
+            self.add(tag, sub_text=sub_text)  # Assuming `self.add` correctly adds items
+
+        # Re-select items based on stored texts
+        for i in range(self.count()):
+            item = self.item(i)
+            if item.text() in selected_texts:
+                item.setSelected(True)
 
 
 class TagEditor(QWidget):

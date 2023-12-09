@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 from collections import defaultdict
 import bdkpython as bdk
 from typing import Sequence, Set, Tuple
-from .pythonbdk_types import Error
 from .gui.qt.util import Message
 
 from .tx import TXInfos
@@ -144,6 +143,14 @@ class Labels(BaseSaveableClass):
 
     def set_tx_category(self, ref, value):
         return self.set_category(Type.tx, ref, value)
+
+    def get_default_category(self):
+        return self.categories[0] if self.categories else None
+
+    def set_addr_category_default(self, ref):
+        if not self.categories:
+            return
+        return self.set_category(Type.addr, ref, self.get_default_category())
 
     def serialize(self):
         d = super().serialize()

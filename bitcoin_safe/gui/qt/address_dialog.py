@@ -24,6 +24,8 @@
 # SOFTWARE.
 import logging
 
+from bitcoin_safe.gui.qt.qr_components.image_widget import QRCodeWidgetSVG
+
 
 logger = logging.getLogger(__name__)
 import bdkpython as bdk
@@ -48,7 +50,6 @@ from .util import (
 from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
 from ...util import format_satoshis, serialized_to_hex
-from .qrcodewidget import QRLabel
 from .hist_list import HistList
 from ...wallet import Wallet
 from .util import ColorScheme
@@ -112,18 +113,17 @@ class AddressDialog(WindowModalDialog):
         #     witness_e.addCopyButton()
         #     upper_left_widget_layout.addWidget(witness_e)
 
-        # address_path_str = self.wallet.get_address_path_str(address)
-        # if address_path_str:
-        #     upper_left_widget_layout.addWidget(QLabel(_("Derivation path") + ":"))
-        #     der_path_e = ButtonsLineEdit(address_path_str)
-        #     der_path_e.addCopyButton()
-        #     der_path_e.setReadOnly(True)
-        #     upper_left_widget_layout.addWidget(der_path_e)
+        address_path_str = self.wallet.get_address_path_str(address)
+        if address_path_str:
+            upper_left_widget_layout.addWidget(QLabel(_("Derivation path") + ":"))
+            der_path_e = ButtonsLineEdit(address_path_str)
+            der_path_e.addCopyButton()
+            der_path_e.setReadOnly(True)
+            upper_left_widget_layout.addWidget(der_path_e)
 
-        self.qr_code = QRLabel()
+        self.qr_code = QRCodeWidgetSVG()
         self.qr_code.set_data(self.bdk_address.to_qr_uri())
-        self.qr_code.setMaximumWidth(100)
-        self.qr_code.setMaximumHeight(100)
+        self.qr_code.setMinimumWidth(100)
         upper_widget_layout.addWidget(self.qr_code)
 
         self.hist_list = HistList(
@@ -132,15 +132,15 @@ class AddressDialog(WindowModalDialog):
             self.signals,
             self.wallet.id,
             hidden_columns=[
-                HistList.Columns.WALLET_ID,
                 HistList.Columns.BALANCE,
                 HistList.Columns.SATOSHIS,
-                HistList.Columns.TXID,
+                HistList.Columns.AMOUNT,
             ],
             txid_domain=[
-                output_info.outpoint.txid
+                output_info.tx.txid
                 for output_info in self.wallet.get_txs_involving_address(address)
             ],
+            column_widths={HistList.Columns.TXID: 100},
         )
         vbox.addWidget(self.hist_list)
 

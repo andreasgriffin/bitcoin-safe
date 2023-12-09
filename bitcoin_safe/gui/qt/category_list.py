@@ -18,8 +18,9 @@ class CategoryList(CustomListWidget):
         get_sub_texts=None,
         parent=None,
         tag_name="category",
+        immediate_release=True,
     ):
-        super().__init__(parent, enable_drag=False)
+        super().__init__(parent, enable_drag=False, immediate_release=immediate_release)
 
         self.categories = categories
         self.get_sub_texts = get_sub_texts
@@ -54,6 +55,7 @@ class CategoryEditor(TagEditor):
         self.get_sub_texts = get_sub_texts
         self.signals = signals
         self.signals.category_updated.connect(self.refresh)
+        self.signals.import_bip329_labels.connect(self.refresh)
 
         self.list_widget.signal_tag_deleted.connect(self.on_delete)
         self.list_widget.signal_tag_added.connect(self.on_added)

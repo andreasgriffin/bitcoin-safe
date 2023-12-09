@@ -1,5 +1,12 @@
 import logging
-from os import stat
+
+
+from bitcoin_safe.gui.qt.balance_dialog import (
+    COLOR_CONFIRMED,
+    COLOR_UNCONFIRMED,
+    COLOR_UNMATURED,
+)
+from bitcoin_safe.pythonbdk_types import TxOut
 
 logger = logging.getLogger(__name__)
 
@@ -7,7 +14,7 @@ import datetime
 import bdkpython as bdk
 import enum
 from enum import IntEnum
-from typing import TYPE_CHECKING, List, Dict, Tuple
+from typing import TYPE_CHECKING, List, Dict, Optional, Tuple
 
 from PySide2.QtCore import (
     Qt,
@@ -37,6 +44,7 @@ from ...wallet import Wallet, TxConfirmationStatus
 from ...i18n import _
 from ...util import (
     InternalAddressCorruption,
+    Satoshis,
     block_explorer_URL,
     format_satoshis,
     serialized_to_hex,
@@ -48,6 +56,7 @@ from .util import (
     MONOSPACE_FONT,
     ColorScheme,
     MessageBoxMixin,
+    set_balance_label,
     webopen,
     do_copy,
     read_QIcon,
@@ -98,6 +107,7 @@ class HistList(MyTreeView, MessageBoxMixin):
     signal_tag_dropped = Signal(AddressDragInfo)
 
     class Columns(MyTreeView.BaseColumnsEnum):
+        TXID = enum.auto()
         WALLET_ID = enum.auto()
         STATUS = enum.auto()
         CATEGORIES = enum.auto()
@@ -105,7 +115,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         AMOUNT = enum.auto()
         SATOSHIS = enum.auto()
         BALANCE = enum.auto()
-        TXID = enum.auto()
 
     filter_columns = [
         Columns.WALLET_ID,
@@ -146,11 +155,13 @@ class HistList(MyTreeView, MessageBoxMixin):
         wallet_id=None,
         hidden_columns=None,
         txid_domain=None,
+        column_widths: Optional[Dict[int, int]] = None,
     ):
         super().__init__(
             config=config,
             stretch_column=HistList.Columns.LABEL,
             editable_columns=[HistList.Columns.LABEL],
+            column_widths=column_widths,
         )
         self.fx = fx
         self.txid_domain = txid_domain
@@ -170,7 +181,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         #     addr_type
         # ) in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
         #     self.change_button.addItem(addr_type.ui_text())
-        self.num_label = None
+        self.balance_label = None
         # self.used_button = QComboBox(self)
         # self.used_button.currentIndexChanged.connect(self.toggle_used)
         # for (
@@ -291,7 +302,12 @@ class HistList(MyTreeView, MessageBoxMixin):
 
     def create_toolbar(self, config=None):
         toolbar, menu = self.create_toolbar_with_menu("")
-        self.num_label = toolbar.itemAt(0).widget()
+        self.balance_label = toolbar.itemAt(0).widget()
+
+        font = QFont()
+        font.setPointSize(12)
+        self.balance_label.setFont(font)
+
         self.button_get_new_address = toolbar.itemAt(1).widget()
         # menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
 
@@ -340,7 +356,11 @@ class HistList(MyTreeView, MessageBoxMixin):
             return
 
         self._tx_dict = {}
-        wallets: List[Wallet] = self.signals.get_wallets().values()
+        wallets: List[Wallet] = [
+            wallet
+            for wallet in self.signals.get_wallets().values()
+            if self.wallet_id and wallet.id == self.wallet_id
+        ]
 
         current_key = self.get_role_data_for_current_item(
             col=self.key_column, role=self.ROLE_KEY
@@ -355,8 +375,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         num_shown = 0
         set_idx = None
         for wallet in wallets:
-            if self.wallet_id and wallet.id != self.wallet_id:
-                continue
             tx_list = wallet.get_list_transactions()
             for tx in tx_list:
                 # WALLET_ID = enum.auto()
@@ -417,9 +435,10 @@ class HistList(MyTreeView, MessageBoxMixin):
         # show/hide self.Columns
         self.filter()
         self.proxy.setDynamicSortFilter(True)
-        # update counter
-        if self.num_label:
-            self.num_label.setText(_("{} transactions").format(num_shown))
+
+        if self.balance_label:
+            set_balance_label(self.balance_label, wallets)
+
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
@@ -493,7 +512,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             # if not is_multisig and not self.wallet.is_watching_only():
             #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
             #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
-            addr_URL = block_explorer_URL(self.config, "tx", txid)
+            addr_URL = block_explorer_URL(self.config.network_settings, "tx", txid)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
@@ -531,7 +550,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             UpdateFilter(
                 txids=[txid],
                 addresses=[
-                    wallet.get_address_of_txout(txout)
+                    wallet.get_address_of_txout(TxOut.from_bdk(txout))
                     for txout in tx.transaction.output()
                 ],
             )

@@ -1,6 +1,8 @@
 import logging
 import os
 
+from bitcoin_safe.gui.qt.util import create_button_box
+
 logger = logging.getLogger(__name__)
 from PySide2.QtWidgets import (
     QDialog,
@@ -16,7 +18,7 @@ from PySide2.QtWidgets import (
     QStyle,
 )
 from PySide2.QtGui import QIcon, QFont
-from ...wallet import wallet_basename
+from ...wallet import filename_clean
 from PySide2.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -196,14 +198,7 @@ class WalletIdDialog(QDialog):
         layout.addWidget(self.name_input)
 
         # Add buttons
-        self.button_box = QDialogButtonBox(
-            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-        )
-        self.button_box.accepted.connect(self.check_wallet_existence)
-        self.button_box.rejected.connect(self.reject)
-
-        # Add button_box to layout
-        layout.addWidget(self.button_box)
+        layout.addWidget(create_button_box(self.check_wallet_existence, self.reject))
 
         # Set the layout
         self.setLayout(layout)
@@ -211,7 +206,7 @@ class WalletIdDialog(QDialog):
     def check_wallet_existence(self):
         chosen_wallet_id = self.name_input.text()
 
-        wallet_file = os.path.join(self.wallet_dir, wallet_basename(chosen_wallet_id))
+        wallet_file = os.path.join(self.wallet_dir, filename_clean(chosen_wallet_id))
         if os.path.exists(wallet_file):
             QMessageBox.warning(
                 self, "Error", "A wallet with the same name already exists."

@@ -27,6 +27,8 @@ class OutPoint(bdk.OutPoint):
 
     @classmethod
     def from_bdk(cls, bdk_outpoint: bdk.OutPoint):
+        if isinstance(bdk_outpoint, OutPoint):
+            return bdk_outpoint
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
 
     @classmethod
@@ -37,6 +39,28 @@ class OutPoint(bdk.OutPoint):
     def __eq__(self, other):
         if isinstance(other, OutPoint):
             return (self.txid, self.vout) == (other.txid, other.vout)
+        return False
+
+
+class TxOut(bdk.TxOut):
+    def __key__(self):
+        return tuple(v for k, v in sorted(self.__dict__.items()))
+
+    def __hash__(self):
+        return hash(self.__key__())
+
+    @classmethod
+    def from_bdk(cls, tx_out: bdk.TxOut):
+        if isinstance(tx_out, TxOut):
+            return tx_out
+        return TxOut(tx_out.value, tx_out.script_pubkey)
+
+    def __eq__(self, other):
+        if isinstance(other, TxOut):
+            return (self.value, self.script_pubkey) == (
+                other.value,
+                other.script_pubkey,
+            )
         return False
 
 
@@ -67,6 +91,7 @@ class AddressInfoMin(SaveAllClass):
 class BlockchainType(enum.Enum):
     CompactBlockFilter = enum.auto()
     Electrum = enum.auto()
+    Esplora = enum.auto()
     RPC = enum.auto()
 
     @classmethod
@@ -75,6 +100,8 @@ class BlockchainType(enum.Enum):
             return cls.CompactBlockFilter
         elif t == "Electrum Server":
             return cls.Electrum
+        elif t == "Esplora Server":
+            return cls.Esplora
         elif t == "RPC":
             return cls.RPC
 
@@ -84,6 +111,8 @@ class BlockchainType(enum.Enum):
             return "Compact Block Filters"
         elif t == cls.Electrum:
             return "Electrum Server"
+        elif t == cls.Esplora:
+            return "Esplora Server"
         elif t == cls.RPC:
             return "RPC"
 
@@ -113,54 +142,6 @@ def robust_address_str_from_script(script_pubkey, network):
     except:
 
         return serialized_to_hex(script_pubkey.to_bytes())
-
-
-class Error:
-    BdkError = bdk.BdkError
-
-    InvalidU32Bytes = bdk.BdkError.InvalidU32Bytes
-    Generic = bdk.BdkError.Generic
-    MissingCachedScripts = bdk.BdkError.MissingCachedScripts
-    ScriptDoesntHaveAddressForm = bdk.BdkError.ScriptDoesntHaveAddressForm
-    NoRecipients = bdk.BdkError.NoRecipients
-    NoUtxosSelected = bdk.BdkError.NoUtxosSelected
-    OutputBelowDustLimit = bdk.BdkError.OutputBelowDustLimit
-    InsufficientFunds = bdk.BdkError.InsufficientFunds
-    BnBTotalTriesExceeded = bdk.BdkError.BnBTotalTriesExceeded
-    BnBNoExactMatch = bdk.BdkError.BnBNoExactMatch
-    UnknownUtxo = bdk.BdkError.UnknownUtxo
-    TransactionNotFound = bdk.BdkError.TransactionNotFound
-    TransactionConfirmed = bdk.BdkError.TransactionConfirmed
-    IrreplaceableTransaction = bdk.BdkError.IrreplaceableTransaction
-    FeeRateTooLow = bdk.BdkError.FeeRateTooLow
-    FeeTooLow = bdk.BdkError.FeeTooLow
-    FeeRateUnavailable = bdk.BdkError.FeeRateUnavailable
-    MissingKeyOrigin = bdk.BdkError.MissingKeyOrigin
-    Key = bdk.BdkError.Key
-    ChecksumMismatch = bdk.BdkError.ChecksumMismatch
-    SpendingPolicyRequired = bdk.BdkError.SpendingPolicyRequired
-    InvalidPolicyPathError = bdk.BdkError.InvalidPolicyPathError
-    Signer = bdk.BdkError.Signer
-    InvalidNetwork = bdk.BdkError.InvalidNetwork
-    InvalidProgressValue = bdk.BdkError.InvalidProgressValue
-    ProgressUpdateError = bdk.BdkError.ProgressUpdateError
-    InvalidOutpoint = bdk.BdkError.InvalidOutpoint
-    Descriptor = bdk.BdkError.Descriptor
-    Encode = bdk.BdkError.Encode
-    Miniscript = bdk.BdkError.Miniscript
-    MiniscriptPsbt = bdk.BdkError.MiniscriptPsbt
-    Bip32 = bdk.BdkError.Bip32
-    Secp256k1 = bdk.BdkError.Secp256k1
-    Json = bdk.BdkError.Json
-    Hex = bdk.BdkError.Hex
-    Psbt = bdk.BdkError.Psbt
-    PsbtParse = bdk.BdkError.PsbtParse
-    Electrum = bdk.BdkError.Electrum
-    Esplora = bdk.BdkError.Esplora
-    Sled = bdk.BdkError.Sled
-    Rusqlite = bdk.BdkError.Rusqlite
-    Rpc = bdk.BdkError.Rpc
-    # CompactFilters = bdk.BdkError.CompactFilters  # TODO renanable for cbf
 
 
 if __name__ == "__main__":

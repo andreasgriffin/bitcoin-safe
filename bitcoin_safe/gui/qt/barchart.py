@@ -31,6 +31,7 @@ from ...mempool import (
 )
 from PySide2.QtCore import Signal, QObject
 from PySide2.QtGui import QCursor
+import bdkpython as bdk
 
 
 class BarSegment(QGraphicsRectItem):
@@ -131,9 +132,10 @@ class MempoolBarChart(QObject):
     signal_data_updated = Signal()
     signal_click = Signal(float)
 
-    def __init__(self) -> None:
+    def __init__(self, network: bdk.Network) -> None:
         super().__init__()
         self.data = None
+        self.network = network
         self.plotting_histogram = None
 
         self.scene = QGraphicsScene()
@@ -164,7 +166,7 @@ class MempoolBarChart(QObject):
         self.signal_data_updated()
 
     def set_data_from_mempoolspace(self):
-        self.raw_data = fetch_mempool_histogram()
+        self.raw_data = fetch_mempool_histogram(network=self.network)
         self.signal_data_updated()
 
     def _cutoff_data(self, data):
