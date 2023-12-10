@@ -69,6 +69,9 @@
 
 ![screenshot0](docs/receive.gif)
 
+##### Tutorial for wallet setup
+
+![screenshot0](docs/tutorial.png)
 
 
 ## Installation

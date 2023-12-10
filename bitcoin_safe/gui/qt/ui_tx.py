@@ -276,6 +276,7 @@ class FeeGroup(QObject):
         self.groupBox_Fee = QGroupBox()
         self.groupBox_Fee.setTitle("Fee")
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.groupBox_Fee.setFixedWidth(300)
         self.groupBox_Fee.setAlignment(Qt.AlignTop)
         groupBox_Fee_layout = QVBoxLayout(self.groupBox_Fee)
         groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
