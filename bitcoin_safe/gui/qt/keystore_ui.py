@@ -411,7 +411,7 @@ class SignerUI(QObject):
 
         for signer in self.signers:
             button = create_button(
-                f"Sign with {signer.label}",
+                signer.label,
                 (signer.keystore_type.icon_filename),
                 parent=tab,
                 outer_layout=self.layout_keystore_buttons,

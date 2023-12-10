@@ -690,10 +690,18 @@ class UITx_Viewer(UITX_Base):
                 l.append(SignerWallet(signing_wallets[0], self.network))
 
             # always offer the qr option
-            l.append(QRSigner("", self.network, blockchain=self.blockchain))
+            l.append(
+                QRSigner(
+                    "Read signed PSBT QR", self.network, blockchain=self.blockchain
+                )
+            )
 
             # always offer the file option
-            l.append(FileSigner("", self.network, blockchain=self.blockchain))
+            l.append(
+                FileSigner(
+                    "Open signed PSBT file", self.network, blockchain=self.blockchain
+                )
+            )
 
         self.signeruis = []
         for fingerprint, signer_list in self.signers.items():

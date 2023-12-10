@@ -91,7 +91,7 @@ class SignerWallet(AbstractSigner):
 
     @property
     def label(self):
-        return f"Wallet {self.wallet.id}"
+        return f"Sign with wallet {self.wallet.id}"
 
 
 class QRSigner(AbstractSigner):
@@ -137,7 +137,7 @@ class QRSigner(AbstractSigner):
 
     @property
     def label(self):
-        return f"QR Signer {self._label}"
+        return f"{self._label}"
 
 
 class FileSigner(QRSigner):
@@ -156,4 +156,4 @@ class FileSigner(QRSigner):
 
     @property
     def label(self):
-        return f"QR Signer {self._label}"
+        return f"{self._label}"
