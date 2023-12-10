@@ -221,17 +221,14 @@ class ObjectRequiringMempool(QObject):
     def __init__(self, mempool_data: MempoolData, parent=None) -> None:
         super().__init__(parent=parent)
 
-        self.count_signal_data_updated = 0
         self.mempool_data = mempool_data
 
-        def refresh_if_visible():
+        def refresh():
             # make sure that the inital data from mempoolspace refreshes the button, even if it is not visible.
-            if self.count_signal_data_updated == 0 or self.button_group.isVisible():
-                if "button_group" in dir(self):
-                    self.refresh()
-            self.count_signal_data_updated += 1
+            if "button_group" in dir(self):
+                self.refresh()
 
-        self.mempool_data.signal_data_updated.connect(refresh_if_visible)
+        self.mempool_data.signal_data_updated.connect(refresh)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.mempool_data.set_data_from_mempoolspace)

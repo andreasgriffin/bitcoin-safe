@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Tuple
 import bdkpython as bdk
 import json
 
@@ -129,3 +129,60 @@ def get_sent_and_change_outputs(
             else:
                 sent_tx_outs[i] = txout
     return sent_tx_outs, change_tx_outs
+
+
+def calculate_sent_change_amounts(
+    psbt: bdk.PartiallySignedTransaction,
+) -> Tuple[List[int], List[int]]:
+    sent_tx_outs, change_tx_outs = get_sent_and_change_outputs(psbt)
+    sent_values = [txout.value for txout in sent_tx_outs.values()]
+    change_values = [txout.value for txout in change_tx_outs.values()]
+
+    return sent_values, change_values
+
+
+def estimate_segwit_tx_size(num_inputs, num_outputs, n=1, m=1, include_signatures=True):
+    """
+    Estimate the size of a SegWit transaction in bytes, including support for m-of-n multisignature inputs.
+
+    Args:
+    num_inputs (int): Number of inputs in the transaction.
+    num_outputs (int): Number of outputs in the transaction.
+    n (int): Total number of signatures in a multisignature input.
+    m (int): Required number of signatures in a multisignature input.
+    include_signatures (bool): Whether to include the size of signatures in the estimate.
+
+    Returns:
+    int: Estimated transaction size in bytes.
+    """
+    # Constants for size calculations
+    base_tx_size = 10  # base transaction size
+    base_input_size = 32  # base size per input without signatures
+    signature_size = 72  # approximate size of a single signature
+    pubkey_size = 33  # size of a compressed public key
+
+    # Size of the scriptSig part of a multisig input
+    script_sig_size = (
+        1 + (m * signature_size) + (n * pubkey_size) + 3
+    )  # 3 bytes for m, n and OP_CHECKMULTISIG
+
+    # Total size per input
+    input_size = base_input_size + (script_sig_size if include_signatures else 0)
+
+    # Size per output
+    output_size = 34  # size per output
+
+    # Witness data adds about 0.25 weight units per byte, or 1/4 the size in vbytes
+    # For multisig, witness data is just the signatures
+    witness_data_size = num_inputs * (m * signature_size if include_signatures else 0)
+    witness_size = witness_data_size // 4
+
+    # Calculate total transaction size
+    total_size = (
+        base_tx_size
+        + (num_inputs * input_size)
+        + (num_outputs * output_size)
+        + witness_size
+    )
+
+    return total_size

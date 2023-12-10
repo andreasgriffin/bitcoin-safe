@@ -27,7 +27,12 @@ from .barchart import MempoolBarChart
 from ...mempool import TxPrio, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
 from .qr_components.qr import create_qr_svg
-from ...psbt_util import get_sent_and_change_outputs, psbt_simple_json
+from ...psbt_util import (
+    calculate_sent_change_amounts,
+    estimate_segwit_tx_size,
+    get_sent_and_change_outputs,
+    psbt_simple_json,
+)
 from ...keystore import KeyStore
 from .util import SearchableTab, TxTab, read_QIcon, open_website, save_file_dialog
 from .keystore_ui import SignedUI, SignerUI
@@ -53,55 +58,7 @@ from .debug_widget import generate_debug_class
 from ...pythonbdk_types import OutPoint
 
 
-def get_estimate_fee(
-    fee_rate,
-    num_inputs,
-    num_outputs,
-):
-    def estimate_segwit_tx_size(num_inputs, num_outputs):
-        # Fixed sizes in bytes
-        tx_version_size = 4
-        marker_and_flag_size = 2  # Marker and Flag bytes for SegWit
-        input_count_size = 1  # Assuming less than 253 inputs
-        output_count_size = 1  # Assuming less than 253 outputs
-        locktime_size = 4
-        txid_size = 32
-        output_index_size = 4
-        sequence_size = 4
-
-        # Estimated sizes in bytes
-        script_pub_key_size = 34  # Typical size for P2PKH output
-        p2wpkh_script_sig_size = 0  # P2WPKH ScriptSig is empty
-
-        # P2WPKH witness size: 1 byte for the number of witness elements,
-        # 73 bytes for the signature, and 34 bytes for the public key
-        witness_size_per_input = 1 + 73 + 34
-
-        # Calculate base transaction size (without witness data)
-        base_input_size = (
-            txid_size + output_index_size + 1 + p2wpkh_script_sig_size + sequence_size
-        )
-        base_output_size = 8 + 1 + script_pub_key_size
-
-        base_tx_size = (
-            tx_version_size
-            + marker_and_flag_size
-            + input_count_size
-            + (base_input_size * num_inputs)
-            + output_count_size
-            + (base_output_size * num_outputs)
-            + locktime_size
-        )
-
-        # Total transaction size includes witness data
-        total_tx_size = base_tx_size + (witness_size_per_input * num_inputs)
-
-        # Calculate the weight and convert to virtual size (vsize)
-        weight = base_tx_size * 3 + total_tx_size
-        vsize = (weight + 3) // 4  # Equivalent to math.ceil(weight / 4)
-
-        return vsize
-
+def get_estimate_fee(fee_rate, num_inputs, num_outputs):
     estimated_size = estimate_segwit_tx_size(max(1, num_inputs), num_outputs + 1)
     return fee_rate * estimated_size
 
@@ -377,8 +334,7 @@ class FeeGroup(QObject):
             self.high_fee_warning_label, alignment=Qt.AlignHCenter
         )
 
-        self.non_final_fee_label = QLabel()
-        self.non_final_fee_label.setText(
+        self.non_final_fee_label = QLabel(
             "<font color='black'><b>Non-final feerate</b></font>"
         )
         self.non_final_fee_label.setHidden(True)
@@ -423,6 +379,10 @@ class FeeGroup(QObject):
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
+        self.mempool.mempool_data.signal_data_updated.connect(
+            self.update_fee_rate_warning
+        )
+
     def set_fee_to_send_ratio(self, fee, sent_amount, network: bdk.Network):
         too_high = fee / sent_amount > FEE_RATIO_HIGH_WARNING
         self.high_fee_warning_label.setVisible(too_high)
@@ -434,6 +394,18 @@ class FeeGroup(QObject):
                 f"The estimated transaction fee is:\n{Satoshis(fee,network).str_with_unit()}, which is {round(fee/sent_amount*100)}% of\nthe sending value {Satoshis(sent_amount, self.config.network_settings.network).str_with_unit()}"
             )
 
+    def update_fee_rate_warning(self):
+        fee_rate = self.spin_fee_rate.value()
+        too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
+        self.high_fee_rate_warning_label.setVisible(too_high)
+        if too_high:
+            self.high_fee_rate_warning_label.setText(
+                f"<font color='red'><b>High fee rate!</b></font>"
+            )
+            self.high_fee_rate_warning_label.setToolTip(
+                f"The high prio mempool fee rate is {self.mempool.mempool_data.max_reasonable_fee_rate():.1f} Sat/vB"
+            )
+
     def set_fee_rate(
         self,
         fee_rate,
@@ -441,7 +413,6 @@ class FeeGroup(QObject):
         confirmation_time: bdk.BlockTime = None,
         chain_height=None,
     ):
-
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.label_block_number.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
@@ -462,15 +433,7 @@ class FeeGroup(QObject):
         if url:
             self.mempool.set_url(url)
 
-        too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
-        self.high_fee_rate_warning_label.setVisible(too_high)
-        if too_high:
-            self.high_fee_rate_warning_label.setText(
-                f"<font color='red'><b>High fee rate!</b></font>"
-            )
-            self.high_fee_rate_warning_label.setToolTip(
-                f"The high prio mempool fee rate is {self.mempool.mempool_data.max_reasonable_fee_rate():.1f} Sat/vB"
-            )
+        self.update_fee_rate_warning()
 
         self.signal_set_fee_rate.emit(fee_rate)
 
@@ -630,6 +593,7 @@ class UITx_Viewer(UITX_Base):
                 "Broadcast Transaction",
             ],
         )
+        self.button_save_tx.setVisible(False)
         self.button_broadcast_tx.setEnabled(False)
         self.button_broadcast_tx.clicked.connect(self.broadcast)
 
@@ -818,9 +782,19 @@ class UITx_Viewer(UITX_Base):
                 tx = psbt_with_signatures.extract_tx()
 
         if tx:
-            self.set_tx(tx, fee_rate=self.fee_rate)
+            sent_values, change_values = calculate_sent_change_amounts(
+                psbt_with_signatures
+            )
+            self.set_tx(
+                tx,
+                fee_rate=psbt_with_signatures.fee_rate().as_sat_per_vb(),
+                sent_amount=sum(sent_values),
+            )
         else:
-            self.set_psbt(psbt_with_signatures, fee_rate=self.fee_rate)
+            self.set_psbt(
+                psbt_with_signatures,
+                fee_rate=psbt_with_signatures.fee_rate().as_sat_per_vb(),
+            )
             # TODO: assume here after 1 signing it is ready to be broadcasted
             self.tx = self.psbt.extract_tx()
         self.button_broadcast_tx.setEnabled(True)
@@ -830,6 +804,7 @@ class UITx_Viewer(UITX_Base):
         tx: bdk.Transaction,
         fee_rate=None,
         confirmation_time: bdk.BlockTime = None,
+        sent_amount: int = None,
     ):
         self.tx: bdk.Transaction = tx
         self.remove_signers()
@@ -839,20 +814,29 @@ class UITx_Viewer(UITX_Base):
             title_for_serialized="Transaction",
         )
 
-        # calcualte the fee warning. However since in a tx I don't know what is a change address,
-        # it is not possible to give  fee warning fr the sent (vs. change) amount
-        fee = tx.size() * fee_rate
-        self.fee_group.set_fee_rate(
-            fee_rate=fee_rate,
-            url=block_explorer_URL(self.config.network_settings, "tx", tx.txid()),
-            confirmation_time=confirmation_time,
-            chain_height=self.blockchain.get_height() if self.blockchain else None,
-        )
-        self.fee_group.set_fee_to_send_ratio(
-            fee,
-            sum([txout.value for txout in tx.output()]),
-            self.config.network_settings.network,
-        )
+        if fee_rate is not None:
+            self.fee_rate = fee_rate
+            fee = tx.size() * fee_rate
+            self.fee_group.set_fee_rate(
+                fee_rate=fee_rate,
+                url=block_explorer_URL(self.config.network_settings, "tx", tx.txid()),
+                confirmation_time=confirmation_time,
+                chain_height=self.blockchain.get_height() if self.blockchain else None,
+            )
+            # calcualte the fee warning. However since in a tx I don't know what is a change address,
+            # it is not possible to give  fee warning fr the sent (vs. change) amount
+            sent_amount = (
+                sent_amount
+                if sent_amount
+                else sum([txout.value for txout in tx.output()])
+            )
+            self.fee_group.set_fee_to_send_ratio(
+                fee,
+                sent_amount,
+                self.config.network_settings.network,
+            )
+
+        self.fee_group.non_final_fee_label.setHidden(True)
 
         outputs: List[bdk.TxOut] = self.tx.output()
 
@@ -892,8 +876,7 @@ class UITx_Viewer(UITX_Base):
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
 
         # set fee warning
-        sent_tx_outs, change_tx_outs = get_sent_and_change_outputs(psbt)
-        sent_values = [txout.value for txout in sent_tx_outs.values()]
+        sent_values, change_values = calculate_sent_change_amounts(psbt)
         if fee_rate is not None and sum(sent_values):
             self.fee_group.set_fee_to_send_ratio(
                 get_estimate_fee(
