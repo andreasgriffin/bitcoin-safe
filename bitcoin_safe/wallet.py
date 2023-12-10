@@ -586,10 +586,13 @@ class Wallet(BaseSaveableClass):
         )
         address = address_info.address.as_string()
         index = address_info.index
+        advanced_tip = index > self._tips[int(is_change)]
+        # update tip
         self._tips[int(is_change)] = index
 
-        if self.labels.get_category(address) or self.labels.get_label(address):
-            return self.get_address(force_new=True, is_change=is_change)
+        #
+        # if self.labels.get_category(address) or self.labels.get_label(address):
+        #     return self.get_address(force_new=True, is_change=is_change)
 
         logger.info(f"New address: {address} at index {index}")
         return address_info

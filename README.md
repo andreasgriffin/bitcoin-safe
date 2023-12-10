@@ -67,27 +67,9 @@
 
 #### UX
 
-![screenshot0](docs/categories.gif)
+![screenshot0](docs/receive.gif)
 
-![screenshot0](docs/send-tx.gif)
 
-#### Screenshots
-
-![screenshot0](docs/screenshot0.png)
-
-![screenshot0](docs/screenshot-single.png)
-
-![screenshot0](docs/screenshot-multi.png)
-
-![screenshot0](docs/screenshot-details.png)
-
-![screenshot0](docs/screenshot-addresses.png)
-
-![screenshot0](docs/screenshot-send.png)
-
-![screenshot0](docs/screenshot-tx.png)
-
-![screenshot0](docs/screenshot-tx-confirmed.png)
 
 ## Installation
 

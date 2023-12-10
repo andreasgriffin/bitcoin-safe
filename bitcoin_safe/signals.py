@@ -115,8 +115,8 @@ class Signals(QObject):
     """
 
     open_tx_like = Signal(object)
-    utxos_updated = Signal()
-    addresses_updated = Signal()
+    utxos_updated = Signal(UpdateFilter)
+    addresses_updated = Signal(UpdateFilter)
     labels_updated = Signal(UpdateFilter)
     category_updated = Signal(UpdateFilter)
     completions_updated = Signal()

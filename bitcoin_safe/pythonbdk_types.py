@@ -44,10 +44,13 @@ class OutPoint(bdk.OutPoint):
 
 class TxOut(bdk.TxOut):
     def __key__(self):
-        return tuple(v for k, v in sorted(self.__dict__.items()))
+        return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
 
     def __hash__(self):
         return hash(self.__key__())
+
+    def __str__(self):
+        return str(self.__key__())
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut):
@@ -57,9 +60,9 @@ class TxOut(bdk.TxOut):
 
     def __eq__(self, other):
         if isinstance(other, TxOut):
-            return (self.value, self.script_pubkey) == (
+            return (self.value, serialized_to_hex(self.script_pubkey.to_bytes())) == (
                 other.value,
-                other.script_pubkey,
+                serialized_to_hex(other.script_pubkey.to_bytes()),
             )
         return False
 

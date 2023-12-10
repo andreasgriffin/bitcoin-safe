@@ -26,7 +26,7 @@ class CategoryList(CustomListWidget):
         self.get_sub_texts = get_sub_texts
         self.signals = signals
         self.signals.category_updated.connect(self.refresh)
-
+        self.signals.utxos_updated.connect(self.refresh)
         self.refresh(UpdateFilter(refresh_all=True))
 
     def refresh(self, update_filter: UpdateFilter):

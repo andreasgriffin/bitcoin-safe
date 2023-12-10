@@ -80,7 +80,7 @@ from .util import (
 )
 from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
 import bdkpython as bdk
-from ...signals import Signals
+from ...signals import Signals, UpdateFilter
 
 
 class UTXOList(MyTreeView, MessageBoxMixin):
@@ -207,7 +207,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         # run_hook('receive_menu', menu, addrs, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))
 
-    def update(self):
+    def update(self, update_filter: UpdateFilter = None):
         if self.maybe_defer_update():
             return
 

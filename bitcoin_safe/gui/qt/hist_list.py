@@ -201,7 +201,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         self.setModel(self.proxy)
         self.update()
         self.sortByColumn(HistList.Columns.STATUS, Qt.AscendingOrder)
-        self.signals.addresses_updated.connect(self.update)
+        self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 

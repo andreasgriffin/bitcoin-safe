@@ -189,7 +189,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.setModel(self.proxy)
         self.update()
         self.sortByColumn(AddressList.Columns.TYPE, Qt.AscendingOrder)
-        self.signals.addresses_updated.connect(self.update)
+        self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 
@@ -339,7 +339,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             address = address_info.address.as_string()
 
         do_copy(address, title=f"Address {address}")
-        self.signals.addresses_updated.emit()
+        self.signals.addresses_updated.emit(UpdateFilter(addresses=[address]))
         self.select_row(address, self.Columns.ADDRESS)
         return address_info
 

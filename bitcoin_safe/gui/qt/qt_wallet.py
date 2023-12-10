@@ -336,7 +336,7 @@ class QTWallet(WalletTab):
                 # self.address_list.update()
                 # self.address_list_tags.update()
                 self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
-                self.signals.utxos_updated.emit()
+                self.signals.utxos_updated.emit(UpdateFilter(refresh_all=True))
                 # self.history_list.update()
             else:
                 self.create_wallet_tabs()
@@ -713,6 +713,8 @@ class QTWallet(WalletTab):
 
     def update_quick_receive(self):
         self.quick_receive.clear_boxes()
+        address_info: bdk.AddressInfo = None
+        old_tips = self.wallet.tips
 
         for category in self.wallet.labels.categories:
             address_info = self.wallet.get_unused_category_address(category)
@@ -739,6 +741,8 @@ class QTWallet(WalletTab):
                     class_text_edit=ShowCopyTextEdit,
                 )
             )
+        if old_tips != self.wallet.tips:
+            self.signals.addresses_updated.emit(UpdateFilter(refresh_all=True))
 
     def _subtexts_for_categories(self):
         return ["Click for new address" for category in self.wallet.labels.categories]
