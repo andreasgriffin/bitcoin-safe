@@ -2,6 +2,8 @@ from asyncio.log import logger
 from PySide2.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QApplication
 from PySide2.QtCore import Qt
 import numpy as np
+
+from bitcoin_safe.invisible_scroll_area import InvisibleScrollArea
 from ...mempool import (
     MempoolData,
     fee_to_color,
@@ -22,7 +24,7 @@ import bdkpython as bdk
 from PySide2.QtCore import QObject, QEvent
 from PySide2.QtGui import QBrush, QColor, QPainter
 import enum
-from PyQt5.QtCore import QTimer
+from PySide2.QtCore import QTimer
 import locale
 
 
@@ -184,14 +186,12 @@ class BlockButton(QPushButton):
             )
 
 
-class VerticalButtonGroup(QScrollArea):
+class VerticalButtonGroup(InvisibleScrollArea):
     signal_button_click = Signal(int)
 
     def __init__(self, button_count=3, parent=None, size=100):
         super().__init__(parent)
-        content_widget = QWidget()
-        self.setWidget(content_widget)
-        layout = QVBoxLayout(content_widget)
+        layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setMinimumWidth(size + 50)
         if button_count > 1:

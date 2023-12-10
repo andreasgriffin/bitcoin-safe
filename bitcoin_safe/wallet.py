@@ -1180,9 +1180,30 @@ class Wallet(BaseSaveableClass):
             self._blockchain_height = self.blockchain.get_height()
         return self._blockchain_height
 
+    def minimalistic_coin_select(self, utxos, total_sent_value) -> UtxosForInputs:
+        # coin selection
+        utxos = list(utxos).copy()
+        sorted_utxos = sorted(utxos, key=lambda utxo: utxo.txout.value, reverse=True)
+
+        selected_utxos = []
+        selected_value = 0
+        for utxo in sorted_utxos:
+            selected_value += utxo.txout.value
+            selected_utxos.append(utxo)
+            if selected_value >= total_sent_value:
+                break
+        logger.debug(
+            f"Selected {len(selected_utxos)} outpoints with {Satoshis(selected_value, self.network).str_with_unit()}"
+        )
+
+        return UtxosForInputs(
+            utxos=selected_utxos,
+            spend_all_utxos=True,
+        )
+
     def coin_select(
         self, utxos, total_sent_value, opportunistic_merge_utxos
-    ) -> Dict[str, UtxosForInputs]:
+    ) -> UtxosForInputs:
         def utxo_value(utxo: bdk.LocalUtxo):
             return utxo.txout.value
 

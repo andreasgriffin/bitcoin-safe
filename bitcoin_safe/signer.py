@@ -147,7 +147,7 @@ class FileSigner(QRSigner):
         self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
     ):
         tx_dialog = TransactionDialog(
-            title="Open signed PSBT",
+            title="Import signed PSBT",
             on_open=lambda s: self.scan_result_callback(
                 psbt, bitcoin_qr.Data.from_str(s, network=self.network)
             ),

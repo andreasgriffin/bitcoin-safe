@@ -1,3 +1,4 @@
+from typing import Dict
 import bdkpython as bdk
 import json
 
@@ -106,3 +107,25 @@ def get_txouts_from_inputs(psbt: bdk.PartiallySignedTransaction):
                 script_pubkey=script_pubkey, value=json_prev_out[prev_out.vout]["value"]
             )
     return tx_outs
+
+
+def get_sent_and_change_outputs(
+    psbt: bdk.PartiallySignedTransaction,
+) -> Dict[int, bdk.TxOut]:
+    sent_tx_outs = {}
+    change_tx_outs = {}
+    psbt_json = json.loads(psbt.json_serialize())
+    for i, (txout, json_txout) in enumerate(
+        zip(psbt.extract_tx().output(), psbt_json["outputs"])
+    ):
+        derivation_tuple = json_txout["bip32_derivation"]
+        if not derivation_tuple:
+            sent_tx_outs[i] = txout
+        else:
+            derivation_path = derivation_tuple[0][1][1]
+            *first_part, change_index, address_index = derivation_path.split("/")
+            if change_index == "1":
+                change_tx_outs[i] = txout
+            else:
+                sent_tx_outs[i] = txout
+    return sent_tx_outs, change_tx_outs

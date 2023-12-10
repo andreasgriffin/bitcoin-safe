@@ -27,7 +27,7 @@ from .barchart import MempoolBarChart
 from ...mempool import TxPrio, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
 from .qr_components.qr import create_qr_svg
-from ...psbt_util import psbt_simple_json
+from ...psbt_util import get_sent_and_change_outputs, psbt_simple_json
 from ...keystore import KeyStore
 from .util import SearchableTab, TxTab, read_QIcon, open_website, save_file_dialog
 from .keystore_ui import SignedUI, SignerUI
@@ -51,6 +51,59 @@ from .util import ShowCopyLineEdit, ShowCopyTextEdit
 from ...psbt_util import psbt_simple_json
 from .debug_widget import generate_debug_class
 from ...pythonbdk_types import OutPoint
+
+
+def get_estimate_fee(
+    fee_rate,
+    num_inputs,
+    num_outputs,
+):
+    def estimate_segwit_tx_size(num_inputs, num_outputs):
+        # Fixed sizes in bytes
+        tx_version_size = 4
+        marker_and_flag_size = 2  # Marker and Flag bytes for SegWit
+        input_count_size = 1  # Assuming less than 253 inputs
+        output_count_size = 1  # Assuming less than 253 outputs
+        locktime_size = 4
+        txid_size = 32
+        output_index_size = 4
+        sequence_size = 4
+
+        # Estimated sizes in bytes
+        script_pub_key_size = 34  # Typical size for P2PKH output
+        p2wpkh_script_sig_size = 0  # P2WPKH ScriptSig is empty
+
+        # P2WPKH witness size: 1 byte for the number of witness elements,
+        # 73 bytes for the signature, and 34 bytes for the public key
+        witness_size_per_input = 1 + 73 + 34
+
+        # Calculate base transaction size (without witness data)
+        base_input_size = (
+            txid_size + output_index_size + 1 + p2wpkh_script_sig_size + sequence_size
+        )
+        base_output_size = 8 + 1 + script_pub_key_size
+
+        base_tx_size = (
+            tx_version_size
+            + marker_and_flag_size
+            + input_count_size
+            + (base_input_size * num_inputs)
+            + output_count_size
+            + (base_output_size * num_outputs)
+            + locktime_size
+        )
+
+        # Total transaction size includes witness data
+        total_tx_size = base_tx_size + (witness_size_per_input * num_inputs)
+
+        # Calculate the weight and convert to virtual size (vsize)
+        weight = base_tx_size * 3 + total_tx_size
+        vsize = (weight + 3) // 4  # Equivalent to math.ceil(weight / 4)
+
+        return vsize
+
+    estimated_size = estimate_segwit_tx_size(max(1, num_inputs), num_outputs + 1)
+    return fee_rate * estimated_size
 
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
@@ -91,7 +144,7 @@ class ExportData(QObject):
         self.json_str = None
         self.txid = None
         self.tabs = QTabWidget()
-        self.tabs.setMaximumWidth(300)
+        self.tabs.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.tabs.setMaximumHeight(200)
         self.signal_export_to_file.connect(self.export_to_file)
 
@@ -275,8 +328,9 @@ class FeeGroup(QObject):
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
         self.groupBox_Fee.setTitle("Fee")
-        self.groupBox_Fee.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.groupBox_Fee.setFixedWidth(300)
+        self.groupBox_Fee.setSizePolicy(
+            QSizePolicy.MinimumExpanding, QSizePolicy.Expanding
+        )
         self.groupBox_Fee.setAlignment(Qt.AlignTop)
         groupBox_Fee_layout = QVBoxLayout(self.groupBox_Fee)
         groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
@@ -307,8 +361,15 @@ class FeeGroup(QObject):
             self.mempool.button_group, alignment=Qt.AlignHCenter
         )
 
-        self.high_fee_warning_label = QLabel()
-        self.high_fee_warning_label.setText(
+        self.high_fee_rate_warning_label = QLabel(
+            "<font color='red'><b>High feerate</b></font>"
+        )
+        self.high_fee_rate_warning_label.setHidden(True)
+        groupBox_Fee_layout.addWidget(
+            self.high_fee_rate_warning_label, alignment=Qt.AlignHCenter
+        )
+
+        self.high_fee_warning_label = QLabel(
             "<font color='red'><b>High feerate</b></font>"
         )
         self.high_fee_warning_label.setHidden(True)
@@ -362,13 +423,23 @@ class FeeGroup(QObject):
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
+    def set_fee_to_send_ratio(self, fee, sent_amount, network: bdk.Network):
+        too_high = fee / sent_amount > FEE_RATIO_HIGH_WARNING
+        self.high_fee_warning_label.setVisible(too_high)
+        if too_high:
+            self.high_fee_warning_label.setText(
+                f"<font color='red'><b>High fee ratio: {round(fee/sent_amount*100)}%</b></font>"
+            )
+            self.high_fee_warning_label.setToolTip(
+                f"The estimated transaction fee is:\n{Satoshis(fee,network).str_with_unit()}, which is {round(fee/sent_amount*100)}% of\nthe sending value {Satoshis(sent_amount, self.config.network_settings.network).str_with_unit()}"
+            )
+
     def set_fee_rate(
         self,
         fee_rate,
         url: str = None,
         confirmation_time: bdk.BlockTime = None,
         chain_height=None,
-        warn_high_fee: bool = False,
     ):
 
         self.spin_fee_rate.setHidden(fee_rate is None)
@@ -382,21 +453,24 @@ class FeeGroup(QObject):
         )
         self._set_value(fee_rate if fee_rate else 0)
 
-        if fee_rate:
-            self.high_fee_warning_label.setVisible(
-                fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
-                or warn_high_fee
-            )
-
+        self.label_block_number.setVisible(not bool(confirmation_time))
+        if fee_rate is not None:
             self.label_block_number.setText(
                 f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
             )
-        else:
-            self.high_fee_warning_label.setHidden(True)
-            self.label_block_number.setText(f"")
 
         if url:
             self.mempool.set_url(url)
+
+        too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
+        self.high_fee_rate_warning_label.setVisible(too_high)
+        if too_high:
+            self.high_fee_rate_warning_label.setText(
+                f"<font color='red'><b>High fee rate!</b></font>"
+            )
+            self.high_fee_rate_warning_label.setToolTip(
+                f"The high prio mempool fee rate is {self.mempool.mempool_data.max_reasonable_fee_rate():.1f} Sat/vB"
+            )
 
         self.signal_set_fee_rate.emit(fee_rate)
 
@@ -425,7 +499,7 @@ class UITX_Base(QObject):
         self.mempool_data = mempool_data
         self.config = config
 
-    def create_recipients(self, layout, parent=None, allow_edit=True):
+    def create_recipients(self, layout, parent=None, allow_edit=True) -> Recipients:
         recipients = Recipients(self.signals, allow_edit=allow_edit)
         layout.addWidget(recipients)
         recipients.setMinimumWidth(250)
@@ -498,6 +572,7 @@ class UITx_Viewer(UITX_Base):
 
         # right side bar
         self.right_sidebar = QWidget(self.main_widget)
+        self.right_sidebar.setFixedWidth(300)
         self.right_sidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.upper_widget_layout.addWidget(self.right_sidebar)
         self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
@@ -525,9 +600,6 @@ class UITx_Viewer(UITX_Base):
             else None,
             config=self.config,
         )
-        self.fee_group.groupBox_Fee.setSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Expanding
-        )
 
         # # txid and block explorers
         # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
@@ -541,7 +613,7 @@ class UITx_Viewer(UITX_Base):
 
         # signers
         self.tabs_signers = QTabWidget(self.upper_left_widget)
-        self.tabs_signers.setFixedHeight(170)
+        self.tabs_signers.setFixedHeight(self.export_widget.tabs.height())
         self.tabs_signers.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         self.upper_left_widget_layout.addWidget(self.tabs_signers)
 
@@ -700,7 +772,7 @@ class UITx_Viewer(UITX_Base):
             # always offer the file option
             l.append(
                 FileSigner(
-                    "Open signed PSBT file", self.network, blockchain=self.blockchain
+                    "Import signed PSBT file", self.network, blockchain=self.blockchain
                 )
             )
 
@@ -767,14 +839,19 @@ class UITx_Viewer(UITX_Base):
             title_for_serialized="Transaction",
         )
 
+        # calcualte the fee warning. However since in a tx I don't know what is a change address,
+        # it is not possible to give  fee warning fr the sent (vs. change) amount
         fee = tx.size() * fee_rate
         self.fee_group.set_fee_rate(
             fee_rate=fee_rate,
             url=block_explorer_URL(self.config.network_settings, "tx", tx.txid()),
             confirmation_time=confirmation_time,
             chain_height=self.blockchain.get_height() if self.blockchain else None,
-            warn_high_fee=fee / sum([txout.value for txout in tx.output()])
-            > FEE_RATIO_HIGH_WARNING,
+        )
+        self.fee_group.set_fee_to_send_ratio(
+            fee,
+            sum([txout.value for txout in tx.output()]),
+            self.config.network_settings.network,
         )
 
         outputs: List[bdk.TxOut] = self.tx.output()
@@ -810,12 +887,21 @@ class UITx_Viewer(UITX_Base):
         self.fee_group.set_fee_rate(
             fee_rate=fee_rate,
             url=block_explorer_URL(self.config.network_settings, "tx", psbt.txid()),
-            warn_high_fee=psbt.fee_amount()
-            / sum([txout.value for txout in psbt.extract_tx().output()])
-            > FEE_RATIO_HIGH_WARNING,
         )
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
+
+        # set fee warning
+        sent_tx_outs, change_tx_outs = get_sent_and_change_outputs(psbt)
+        sent_values = [txout.value for txout in sent_tx_outs.values()]
+        if fee_rate is not None and sum(sent_values):
+            self.fee_group.set_fee_to_send_ratio(
+                get_estimate_fee(
+                    fee_rate, len(psbt.extract_tx().input()), len(sent_values)
+                ),
+                sum(sent_values),
+                self.network,
+            )
 
         self.recipients.recipients = [
             Recipient(
@@ -875,7 +961,9 @@ class UITX_Creator(UITX_Base):
             0, 0, 0, 0
         )  # Left, Top, Right, Bottom margins
 
-        self.recipients = self.create_recipients(self.widget_right_top_layout)
+        self.recipients: Recipients = self.create_recipients(
+            self.widget_right_top_layout
+        )
 
         self.recipients.signal_clicked_send_max_button.connect(
             lambda recipient_group_box: self.set_max_amount(
@@ -886,9 +974,6 @@ class UITX_Creator(UITX_Base):
 
         self.fee_group = FeeGroup(
             mempool_data, self.widget_right_top_layout, config=self.config
-        )
-        self.fee_group.groupBox_Fee.setSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Expanding
         )
         self.fee_group.signal_set_fee_rate.connect(self.on_set_fee_rate)
 
@@ -1024,7 +1109,20 @@ class UITX_Creator(UITX_Base):
             fee_rate <= self.enable_opportunistic_merging_fee_rate
         )
 
-    def get_ui_tx_infos(self, use_this_tab=None):
+        sent_values = [r.amount for r in self.recipients.recipients]
+        if fee_rate is not None and sum(sent_values):
+            minimalistic_utxos_for_inputs = self.wallet.minimalistic_coin_select(
+                self.get_ui_tx_infos().utxo_dict.values(), sum(sent_values)
+            )
+            self.fee_group.set_fee_to_send_ratio(
+                get_estimate_fee(
+                    fee_rate, len(minimalistic_utxos_for_inputs.utxos), len(sent_values)
+                ),
+                sum(sent_values),
+                self.config.network_settings.network,
+            )
+
+    def get_ui_tx_infos(self, use_this_tab=None) -> TXInfos:
         infos = TXInfos()
         infos.opportunistic_merge_utxos = self.checkBox_reduce_future_fees.isChecked()
 

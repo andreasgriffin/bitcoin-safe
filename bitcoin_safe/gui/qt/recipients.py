@@ -1,4 +1,5 @@
 import logging
+from bitcoin_safe.invisible_scroll_area import InvisibleScrollArea
 
 from bitcoin_safe.pythonbdk_types import Recipient
 from bitcoin_safe.util import Satoshis
@@ -232,27 +233,17 @@ class Recipients(QtWidgets.QWidget):
         self.main_layout.setAlignment(QtCore.Qt.AlignTop)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.recipient_list = QtWidgets.QScrollArea()
+        self.recipient_list = InvisibleScrollArea()
         self.recipient_list.setWidgetResizable(True)
         self.recipient_list.setToolTip("Recipients")
-        self.recipient_list.setObjectName("recipient_list")
-        self.recipient_list.setStyleSheet(
-            "#recipient_list { background: transparent; border: none; }"
+        self.recipient_list_content_layout = QtWidgets.QVBoxLayout(
+            self.recipient_list.content_widget
         )
 
-        self.recipient_list_content = QtWidgets.QWidget()
-        self.recipient_list_content_layout = QtWidgets.QVBoxLayout(
-            self.recipient_list_content
-        )
-        self.recipient_list_content.setObjectName("recipient_list_content")
-        self.recipient_list_content.setStyleSheet(
-            "#recipient_list_content { background: transparent; border: none; }"
-        )
         self.recipient_list_content_layout.setContentsMargins(
             0, 0, 0, 0
         )  # Set all margins to zero
         self.recipient_list_content_layout.setAlignment(QtCore.Qt.AlignTop)
-        self.recipient_list.setWidget(self.recipient_list_content)
 
         self.main_layout.addWidget(self.recipient_list)
 
