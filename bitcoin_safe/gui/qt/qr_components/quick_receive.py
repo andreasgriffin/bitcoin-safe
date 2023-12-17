@@ -58,7 +58,7 @@ class ReceiveGroup(QGroupBox):
         self.qr_code = QRCodeWidgetSVG()
         self.qr_code.setMinimumHeight(30)
         self.qr_code.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.qr_code.set_data(qr_uri)
+        self.qr_code.set_data_list([qr_uri])
         v_layout.addWidget(self.qr_code)
 
         self.text_edit = class_text_edit(address)

@@ -1,21 +1,8 @@
-from curses import KEY_A1
 import logging
-from unicodedata import category
 
 logger = logging.getLogger(__name__)
 
-from collections import defaultdict
-import bdkpython as bdk
-from typing import Sequence, Set, Tuple
-from .gui.qt.util import Message
 
-from .tx import TXInfos
-from .util import (
-    T,
-    balance_dict,
-    Satoshis,
-    timestamp_to_datetime,
-)
 from .util import (
     TX_HEIGHT_FUTURE,
     TX_HEIGHT_INF,
@@ -23,8 +10,6 @@ from .util import (
     TX_HEIGHT_UNCONF_PARENT,
     TX_HEIGHT_UNCONFIRMED,
     TX_STATUS,
-    THOUSANDS_SEP,
-    cache_method,
 )
 from .i18n import _
 from typing import (
@@ -44,13 +29,9 @@ from .keystore import KeyStore, KeyStoreType, KeyStoreTypes
 import bdkpython as bdk
 from .pythonbdk_types import *
 from .storage import Storage, ClassSerializer, BaseSaveableClass
-from threading import Lock
 
 import json
-from .tx import TXInfos
 from .util import clean_list, Satoshis
-from .config import UserConfig
-import numpy as np
 import copy
 
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
@@ -96,7 +77,10 @@ class Labels(BaseSaveableClass):
 
     def get_category(self, ref, default_value=None):
         item = self.data.get(ref, {})
-        return item.get(Key.category.name, default_value)
+        return item.get(
+            Key.category.name,
+            default_value if default_value else self.get_default_category(),
+        )
 
     def set_label(self, type: Type, ref, value):
         item = self.data.setdefault(ref, {})

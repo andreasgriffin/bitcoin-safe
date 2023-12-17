@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    width="141.44202"
-   height="209.53117"
-   viewBox="0 0 141.44202 209.53116"
+   height="290"
+   viewBox="0 0 141.44202 289.99998"
    fill="none"
    version="1.1"
    id="svg6"
@@ -27,23 +27,23 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="1.8974032"
-     inkscape:cx="100.92741"
-     inkscape:cy="39.527707"
+     inkscape:zoom="0.4743508"
+     inkscape:cx="-266.68027"
+     inkscape:cy="223.46331"
      inkscape:window-width="1402"
      inkscape:window-height="849"
-     inkscape:window-x="-46"
-     inkscape:window-y="177"
+     inkscape:window-x="0"
+     inkscape:window-y="158"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg6" />
   <path
-     d="M 0,62.299351 H 88.339263 V 165.36154 c 0,24.3944 -19.775235,44.16963 -44.169632,44.16963 v 0 C 19.775235,209.53117 0,189.75594 0,165.36154 Z"
+     d="m 0,104.29935 h 88.339263 v 103.06219 c 0,24.3944 -19.775235,44.16963 -44.169632,44.16963 v 0 C 19.775235,251.53117 0,231.75594 0,207.36154 Z"
      fill="#000000"
      id="path2"
      style="stroke-width:9.81547" />
   <rect
      x="19.630951"
-     y="27.945194"
+     y="69.94519"
      width="49.07737"
      height="39.261894"
      stroke="#000000"
@@ -53,11 +53,11 @@
      style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.14111;stroke-opacity:1;paint-order:markers stroke fill"
      id="path2322"
      cx="90.36602"
-     cy="51.075989"
+     cy="93.075989"
      r="51.075989" />
   <g
      id="g2478"
-     transform="matrix(2.4726764,0,0,2.4726764,-349.32782,-208.03563)"
+     transform="matrix(2.4726764,0,0,2.4726764,-349.32782,-166.03563)"
      style="fill:#000000;fill-opacity:1">
     <path
        class="st0"

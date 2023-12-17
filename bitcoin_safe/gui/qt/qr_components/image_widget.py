@@ -1,7 +1,6 @@
 from PySide2.QtWidgets import QWidget
 from PySide2.QtGui import QPainter, QImage
 from PySide2.QtSvg import QSvgRenderer
-from PySide2.QtCore import Qt
 from PySide2.QtCore import Qt, QRectF
 import io
 from PySide2.QtWidgets import QWidget, QApplication
@@ -9,13 +8,13 @@ from PySide2.QtGui import QPainter, QImage
 from PySide2.QtCore import Qt
 from PIL import Image
 import sys
-from PySide2.QtCore import QSize
+from PySide2.QtCore import QSize, QTimer
 from .qr import create_qr, create_qr_svg
 from PySide2.QtCore import Qt, QByteArray
 import logging
-from typing import Callable, List, Dict
-from PySide2.QtGui import QPainter, QColor
 from PySide2.QtGui import QPainter, QColor, QPixmap
+from PySide2.QtWidgets import QSizePolicy, QScrollArea
+
 
 logger = logging.getLogger(__name__)
 
@@ -106,16 +105,65 @@ class EnlargedImage(QRCodeWidget):
 
 
 class QRCodeWidgetSVG(QWidget):
-    def __init__(self, clickable=True, parent=None):
+    def __init__(self, always_animate=False, clickable=True, parent=None):
         super().__init__(parent)
-        self.svg_renderer = QSvgRenderer()
+        self.svg_renderers = []
+        self.current_index = 0
         self.enlarged_image = None
         self.clickable = clickable
+        self.always_animate = always_animate
+        self.is_hovered = False
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
         if clickable:
             self.setCursor(Qt.PointingHandCursor)
 
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.next_svg)
+
+    def set_data_list(self, data_list):
+        self.svg_renderers = [
+            QSvgRenderer(QByteArray(create_qr_svg(data).encode("utf-8")))
+            for data in data_list
+        ]
+        self.current_index = 0
+        self.manage_animation()
+
+    def set_always_animate(self, always_animate):
+        self.always_animate = always_animate
+        self.manage_animation()
+
+    def set_images(self, image_list):
+        self.svg_renderers = [
+            QSvgRenderer(QByteArray(image.encode("utf-8"))) for image in image_list
+        ]
+        self.current_index = 0
+        self.manage_animation()
+
+    def manage_animation(self):
+        should_animate = len(self.svg_renderers) > 1 and (
+            self.always_animate
+            or self.is_hovered
+            or (self.enlarged_image and self.enlarged_image.isVisible())
+        )
+        if should_animate:
+            self.timer.start(1000)  # Change SVG every 1 second
+        else:
+            self.timer.stop()
+
+    def next_svg(self):
+        if not self.svg_renderers:
+            return
+
+        self.current_index = (self.current_index + 1) % len(self.svg_renderers)
+        self.update()
+        if self.enlarged_image and self.enlarged_image.isVisible():
+            self.enlarged_image.update_image(self.svg_renderers[self.current_index])
+        else:
+            self.manage_animation()
+
     def paintEvent(self, event):
-        if not self.svg_renderer:
+        if not self.svg_renderers:
             return
 
         painter = QPainter(self)
@@ -123,60 +171,72 @@ class QRCodeWidgetSVG(QWidget):
 
         widget_width, widget_height = self.width(), self.height()
         side = min(widget_width, widget_height)
-
-        # Adjust x, y, width, and height to reduce border
         x = (widget_width - side) // 2
         y = (widget_height - side) // 2
-        width = side
-        height = side
 
-        # Render the SVG within the adjusted area
-        self.svg_renderer.render(painter, QRectF(x, y, width, height))
+        self.svg_renderers[self.current_index].render(painter, QRectF(x, y, side, side))
 
-    def set_data(self, data: str):
-        self.set_image(create_qr_svg(data))
+    def enterEvent(self, event):
+        self.is_hovered = True
+        self.manage_animation()
 
-    def set_image(self, svg_data):
-        self.set_svg_data(svg_data)
-
-    def set_svg_data(self, svg_data):
-        self.svg_renderer.load(QByteArray(svg_data.encode("utf-8")))
-        self.enlarged_image = EnlargedSVG(self.svg_renderer)
-        self.update()
+    def leaveEvent(self, event):
+        self.is_hovered = False
+        self.manage_animation()
 
     def enlarge_image(self):
-        if not self.enlarged_image:
+        if not self.svg_renderers:
             return
 
-        if self.enlarged_image.isVisible():
-            self.enlarged_image.close()
-        else:
-            self.enlarged_image.show()
+        if not self.enlarged_image:
+            self.is_hovered = False
+            self.enlarged_image = EnlargedSVG(self.svg_renderers[self.current_index])
+
+        self.enlarged_image.show()
+        self.enlarged_image.update_image(self.svg_renderers[self.current_index])
+        self.manage_animation()
 
     def mousePressEvent(self, event):
         if self.clickable:
             self.enlarge_image()
 
-    def save_file(self, filename, format="PNG", antialias=False):
+    def save_file(self, base_filename, format="PNG", antialias=False):
         """
-        Save the rendered SVG to a file with dynamically calculated size.
+        Save all QR codes to files. If format is 'GIF', combines them into an animated GIF.
 
-        :param filename: Path of the file where the image will be saved.
-        :param format: The format in which to save the image (e.g., 'PNG', 'JPG').
+        :param base_filename: Base path and filename without extension.
+        :param format: The format in which to save the image (e.g., 'PNG', 'GIF').
         :param antialias: Boolean to indicate if anti-aliasing should be used.
         """
-        if not self.svg_renderer.isValid():
-            return False
-
-        # Get viewBox size of the SVG
-        viewBox = self.svg_renderer.viewBoxF()
-
-        # Check if viewBox is valid, otherwise use default size
-        if viewBox.isValid():
-            size = QSize(viewBox.width() * 10, viewBox.height() * 10)
+        if format.upper() == "GIF":
+            images = []
+            for renderer in self.svg_renderers:
+                if not renderer.isValid():
+                    continue
+                images.append(self.renderer_to_pil(renderer, antialias))
+            images[0].save(
+                f"{base_filename}.gif",
+                save_all=True,
+                append_images=images[1:],
+                loop=0,
+                duration=1000,
+            )
         else:
-            size = self.size()  # Fallback to widget size or some default value
+            for i, renderer in enumerate(self.svg_renderers):
+                if not renderer.isValid():
+                    continue
+                image = self.renderer_to_pil(renderer, antialias)
+                image.save(f"{base_filename}_{i}.{format.lower()}")
 
+    def renderer_to_pil(self, renderer, antialias):
+        """
+        Convert a QR code renderer to a PIL Image.
+
+        :param renderer: The QR code renderer.
+        :param antialias: Boolean to indicate if anti-aliasing should be used.
+        :return: PIL Image object.
+        """
+        size = self.size()
         pixmap = QPixmap(size)
         pixmap.fill(Qt.white)
         painter = QPainter(pixmap)
@@ -184,25 +244,7 @@ class QRCodeWidgetSVG(QWidget):
         if antialias:
             painter.setRenderHint(QPainter.Antialiasing)
 
-        self.svg_renderer.render(painter)
-        painter.end()
-
-        return pixmap.save(filename, format.upper())
-
-    def as_pil_image(self):
-        """
-        Convert the rendered SVG to a PIL Image.
-
-        :return: PIL Image object.
-        """
-        if not self.svg_renderer.isValid():
-            return None
-
-        pixmap = QPixmap(self.size())
-        pixmap.fill(Qt.white)  # Fill with white background or any desired color
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing)
-        self.svg_renderer.render(painter)
+        renderer.render(painter, QRectF(0, 0, size.width(), size.height()))
         painter.end()
 
         # Convert QPixmap to QImage
@@ -212,14 +254,25 @@ class QRCodeWidgetSVG(QWidget):
         buffer = io.BytesIO()
         qimage.save(buffer, "PNG")
         buffer.seek(0)
-        pil_image = Image.open(buffer)
+        return Image.open(buffer)
 
-        return pil_image
+    def as_pil_images(self):
+        """
+        Convert all the QR codes to PIL Images.
+
+        :return: List of PIL Image objects.
+        """
+        return [
+            self.renderer_to_pil(renderer, antialias=True)
+            for renderer in self.svg_renderers
+            if renderer.isValid()
+        ]
 
 
-class EnlargedSVG(QRCodeWidgetSVG):
-    def __init__(self, svg_renderer):
-        super().__init__()
+class EnlargedSVG(QWidget):
+    def __init__(self, svg_renderer, parent=None):
+        super().__init__(parent)
+        self.svg_renderer = svg_renderer
 
         self.setWindowFlags(Qt.FramelessWindowHint)
         screen_resolution = QApplication.desktop().screenGeometry()
@@ -234,8 +287,23 @@ class EnlargedSVG(QRCodeWidgetSVG):
             height,
         )
 
-        self.svg_renderer = svg_renderer
+    def update_image(self, new_renderer):
+        self.svg_renderer = new_renderer
         self.update()
+
+    def paintEvent(self, event):
+        if not self.svg_renderer:
+            return
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        widget_width, widget_height = self.width(), self.height()
+        side = min(widget_width, widget_height)
+        x = (widget_width - side) // 2
+        y = (widget_height - side) // 2
+
+        self.svg_renderer.render(painter, QRectF(x, y, side, side))
 
     def mousePressEvent(self, event):
         self.close()
@@ -246,16 +314,15 @@ class EnlargedSVG(QRCodeWidgetSVG):
 
 
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    widget = QRCodeWidgetSVG()
+    data_list = ["data1", "data2", "data3"]
+    widget.set_data_list(data_list)
+    widget.show()
 
-    def main():
-        app = QApplication(sys.argv)
+    # To convert the current QR code to PIL Image:
+    pil_image = widget.as_pil_image()
+    if pil_image:
+        pil_image.show()  # or save using pil_image.save('filename.png')
 
-        # Load your PIL image here
-        pil_image = Image.open("1.png")
-
-        image_widget = QRCodeWidgetSVG(pil_image)
-        image_widget.show()
-
-        sys.exit(app.exec_())
-
-    main()
+    sys.exit(app.exec_())

@@ -1,7 +1,9 @@
+from typing import List
 import bdkpython as bdk
 import enum
 from .util import serialized_to_hex
 from .storage import SaveAllClass
+import numpy as np
 
 
 class Recipient:
@@ -10,6 +12,13 @@ class Recipient:
         self.amount = amount
         self.label = label
         self.checked_max_amount = checked_max_amount
+
+    def __hash__(self):
+        "Necessary for the caching"
+        return hash(self.__dict__)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.__dict__})"
 
     def clone(self):
         return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
@@ -20,10 +29,19 @@ class OutPoint(bdk.OutPoint):
         return tuple(v for k, v in sorted(self.__dict__.items()))
 
     def __hash__(self):
+        "Necessary for the caching"
         return hash(self.__key__())
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.txid}:{self.vout}"
+
+    def __repr__(self) -> str:
+        return str(f"{self.__class__.__name__}({self.txid},{self.vout})")
+
+    def __eq__(self, other):
+        if isinstance(other, OutPoint):
+            return (self.txid, self.vout) == (other.txid, other.vout)
+        return False
 
     @classmethod
     def from_bdk(cls, bdk_outpoint: bdk.OutPoint):
@@ -36,21 +54,20 @@ class OutPoint(bdk.OutPoint):
         txid, vout = outpoint_str.split(":")
         return OutPoint(txid, int(vout))
 
-    def __eq__(self, other):
-        if isinstance(other, OutPoint):
-            return (self.txid, self.vout) == (other.txid, other.vout)
-        return False
-
 
 class TxOut(bdk.TxOut):
     def __key__(self):
         return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
 
     def __hash__(self):
+        "Necessary for the caching"
         return hash(self.__key__())
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.__key__())
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.__key__()})"
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut):
@@ -67,6 +84,50 @@ class TxOut(bdk.TxOut):
         return False
 
 
+class PythonUtxo:
+    def __init__(self, outpoint: OutPoint, txout: TxOut) -> None:
+        self.outpoint = outpoint
+        self.txout = txout
+
+
+class UtxosForInputs:
+    def __init__(
+        self, utxos, included_opportunistic_merging_utxos=None, spend_all_utxos=False
+    ) -> None:
+        if included_opportunistic_merging_utxos is None:
+            included_opportunistic_merging_utxos = []
+
+        self.utxos = utxos
+        self.included_opportunistic_merging_utxos = included_opportunistic_merging_utxos
+        self.spend_all_utxos = spend_all_utxos
+
+
+class PartialTxInfo:
+    "Gives a partial info of the tx, usually restricted to 1 address"
+
+    def __init__(self, tx: bdk.TransactionDetails, received=None, send=None) -> None:
+        self.received: List[PythonUtxo] = received if received else []
+        self.send: List[PythonUtxo] = send if send else []
+        self.tx = tx
+        self.txid = tx.txid
+
+
+def unique_txs(txs: List[bdk.TransactionDetails]) -> List[bdk.TransactionDetails]:
+    tx_ids = []
+    res = []
+    for tx in txs:
+        if tx.txid not in tx_ids:
+            tx_ids.append(tx.txid)
+            res.append(tx)
+    return res
+
+
+def unique_txs_from_partialtxinfos(
+    partialtxinfos: List[PartialTxInfo],
+) -> List[bdk.TransactionDetails]:
+    return unique_txs([partialtxinfo.tx for partialtxinfo in partialtxinfos])
+
+
 class AddressInfoMin(SaveAllClass):
     def __init__(self, address, index, keychain):
         self.address = address
@@ -74,12 +135,13 @@ class AddressInfoMin(SaveAllClass):
         self.keychain = keychain
 
     def __repr__(self) -> str:
-        return str(self.__dict__)
+        return f"{self.__class__.__name__}({self.__dict__})"
 
     def __key__(self):
         return tuple(v for k, v in sorted(self.__dict__.items()))
 
     def __hash__(self):
+        "Necessary for the caching"
         return hash(self.__key__())
 
     @classmethod
@@ -139,12 +201,14 @@ class CBFServerType(enum.Enum):
             return "Manual"
 
 
-def robust_address_str_from_script(script_pubkey, network):
+def robust_address_str_from_script(
+    script_pubkey: bdk.Script, network, on_error_return_hex=False
+):
     try:
         return bdk.Address.from_script(script_pubkey, network).as_string()
     except:
-
-        return serialized_to_hex(script_pubkey.to_bytes())
+        if on_error_return_hex:
+            return serialized_to_hex(script_pubkey.to_bytes())
 
 
 if __name__ == "__main__":

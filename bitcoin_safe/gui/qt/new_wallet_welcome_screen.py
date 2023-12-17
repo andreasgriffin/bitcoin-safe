@@ -9,7 +9,6 @@ from .util import read_QIcon, add_tab_to_tabs
 from bdkpython import Network
 from PySide2.QtSvg import QSvgWidget
 from .util import icon_path, resize, qresize, add_centered_icons
-from .ui_explainer0 import Ui_Form as Ui_Explainer0
 from PySide2.QtCore import Signal
 from ...util import call_call_functions
 

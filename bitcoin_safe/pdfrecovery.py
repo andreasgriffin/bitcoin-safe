@@ -19,6 +19,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from PySide2.QtGui import QIcon, QPixmap, QImage, QImageWriter
 from PySide2.QtCore import QByteArray, QBuffer
 from .gui.qt.util import qicon_to_pil
+from reportlab.platypus import SimpleDocTemplate, PageBreak
 
 
 def pilimage_to_reportlab(pilimage, width=200, height=200):
@@ -66,6 +67,11 @@ class BitcoinWalletRecoveryPDF:
             "centered_heading", parent=styles["Heading1"], alignment=TA_CENTER
         )
         self.elements = []
+
+    def add_page_break(self):
+        self.elements.append(
+            PageBreak()
+        )  # Add a page break between documents if needed
 
     def create_pdf(
         self,
@@ -201,9 +207,7 @@ class BitcoinWalletRecoveryPDF:
         self.elements.append(Spacer(1, 10))
 
         # Message to the loved ones
-        message_field = Paragraph(
-            "Message to the loved ones in case of death:", self.style_paragraph
-        )
+        message_field = Paragraph("Instructions for the heirs:", self.style_paragraph)
         self.elements.append(message_field)
 
     def save_pdf(self, filename):
@@ -226,7 +230,7 @@ def make_and_open_pdf(wallet: "Wallet"):
 
     for i, keystore in enumerate(wallet.keystores):
         title = (
-            f"Backup of Seed {i+1} of a  ({info['threshold']} of {len(wallet.keystores)}) Multi-Sig Wallet: {wallet.id}"
+            f"Descriptor and {i+1}. seed backup of a  ({info['threshold']} of {len(wallet.keystores)}) Multi-Sig Wallet: \"{wallet.id}\""
             if len(wallet.keystores) > 1
             else f"{wallet.id }"
         )
@@ -237,9 +241,12 @@ def make_and_open_pdf(wallet: "Wallet"):
             threshold=info["threshold"],
             seed=keystore.mnemonic.as_string() if keystore.mnemonic else None,
         )
-        temp_file = os.path.join(Path.home(), f"{title}.pdf")
-        pdf_recovery.save_pdf(temp_file)
-        pdf_recovery.open_pdf(temp_file)
+        pdf_recovery.add_page_break()
+    temp_file = os.path.join(
+        Path.home(), f"Descriptor and seed backup of {wallet.id}.pdf"
+    )
+    pdf_recovery.save_pdf(temp_file)
+    pdf_recovery.open_pdf(temp_file)
 
 
 # # Example Usage

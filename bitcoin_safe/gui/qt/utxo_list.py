@@ -67,7 +67,7 @@ from .category_list import CategoryEditor
 from ...wallet import TxStatus, Wallet
 
 from ...i18n import _
-from ...util import block_explorer_URL, is_address, Satoshis, format_satoshis
+from ...util import block_explorer_URL, is_address, Satoshis
 
 from .util import (
     ColorScheme,
@@ -250,7 +250,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
                 else "unknown"
             )
             labels[self.Columns.AMOUNT] = (
-                format_satoshis(txout.value, self.config.network_settings.network)
+                str(Satoshis(txout.value, self.config.network_settings.network))
                 if txout
                 else "unknown"
             )
@@ -352,7 +352,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             )
             items[self.Columns.ADDRESS].setBackground(color)
 
-    def get_selected_outpoints(self) -> List[str]:
+    def get_selected_outpoints(self) -> List[OutPoint]:
         if not self.model():
             return []
         items = self.selected_in_column(self.Columns.OUTPOINT)

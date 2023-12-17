@@ -39,14 +39,13 @@ from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPush
 from jsonschema import draft201909_format_checker
 from .category_list import CategoryEditor
 from .open_tx_dialog import file_to_str
-from ...wallet import Wallet, TxConfirmationStatus
+from ...wallet import Wallet, TxConfirmationStatus, unique_txs
 
 from ...i18n import _
 from ...util import (
     InternalAddressCorruption,
     Satoshis,
     block_explorer_URL,
-    format_satoshis,
     serialized_to_hex,
 )
 import json
@@ -113,7 +112,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         CATEGORIES = enum.auto()
         LABEL = enum.auto()
         AMOUNT = enum.auto()
-        SATOSHIS = enum.auto()
         BALANCE = enum.auto()
 
     filter_columns = [
@@ -122,7 +120,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORIES,
         Columns.LABEL,
         Columns.AMOUNT,
-        Columns.SATOSHIS,
         Columns.TXID,
     ]
 
@@ -132,7 +129,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORIES: _("Category"),
         Columns.LABEL: _("Label"),
         Columns.AMOUNT: _("Amount"),
-        Columns.SATOSHIS: _("SATOSHIS"),
         Columns.BALANCE: _("Balance"),
         Columns.TXID: _("Txid"),
     }
@@ -143,7 +139,6 @@ class HistList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORIES: Qt.AlignCenter,
         Columns.LABEL: Qt.AlignVCenter,
         Columns.AMOUNT: Qt.AlignRight,
-        Columns.SATOSHIS: Qt.AlignRight,
         Columns.BALANCE: Qt.AlignRight,
     }
 
@@ -154,8 +149,8 @@ class HistList(MyTreeView, MessageBoxMixin):
         signals: Signals,
         wallet_id=None,
         hidden_columns=None,
-        txid_domain=None,
         column_widths: Optional[Dict[int, int]] = None,
+        address_domain: List[str] = None,
     ):
         super().__init__(
             config=config,
@@ -164,7 +159,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             column_widths=column_widths,
         )
         self.fx = fx
-        self.txid_domain = txid_domain
+        self.address_domain = address_domain
         self.hidden_columns = hidden_columns if hidden_columns else []
         self._tx_dict: Dict[
             str, Tuple[Wallet, bdk.TransactionDetails]
@@ -341,15 +336,20 @@ class HistList(MyTreeView, MessageBoxMixin):
         if update_filter.refresh_all:
             return self.update()
 
+        logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
+
+        log_info = []
         model = self.std_model
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
             txid = model.data(model.index(row, self.Columns.TXID))
             if txid in update_filter.txids or set(
                 model.data(model.index(row, self.Columns.CATEGORIES))
-            ) - set(update_filter.categories):
-                logger.debug(f"Updating row {row}: {txid}")
+            ).intersection(set(update_filter.categories)):
+                log_info.append((row, txid))
                 self.refresh_row(txid, row)
+
+        logger.debug(f"Updated  {log_info}")
 
     def update(self):
         if self.maybe_defer_update():
@@ -374,29 +374,61 @@ class HistList(MyTreeView, MessageBoxMixin):
 
         num_shown = 0
         set_idx = None
+        balance = 0
         for wallet in wallets:
-            tx_list = wallet.get_list_transactions()
-            for tx in tx_list:
+
+            txid_domain = None
+            if self.address_domain:
+                txid_domain = set()
+                for address in self.address_domain:
+                    partialtxinfos = wallet.get_partialtxinfos(address)
+                    txid_domain = txid_domain.union(
+                        [partialtxinfo.txid for partialtxinfo in partialtxinfos]
+                    )
+
+            # always take get_list_transactions as a start because it is correctly sorted
+            for tx in wallet.get_list_transactions():
+                if txid_domain is not None:
+                    if tx.txid not in txid_domain:
+                        continue
+
                 # WALLET_ID = enum.auto()
                 # AMOUNT = enum.auto()
-                # SATOSHIS = enum.auto()
                 # BALANCE = enum.auto()
                 # TXID = enum.auto()
                 self._tx_dict[tx.txid] = [wallet, tx]
 
-                if self.txid_domain is not None and tx.txid not in self.txid_domain:
-                    continue
+                # calculate the amount
+                if self.address_domain:
+                    partialtxinfos = wallet.get_dict_address_partialtxinfos().get(
+                        address, []
+                    )
+                    amount = 0
+                    for partialtxinfo in partialtxinfos:
+                        if partialtxinfo.txid != tx.txid:
+                            continue
+                        amount += sum(
+                            [
+                                python_utxo.txout.value
+                                for python_utxo in partialtxinfo.received
+                            ]
+                        ) - sum(
+                            [
+                                python_utxo.txout.value
+                                for python_utxo in partialtxinfo.send
+                            ]
+                        )
+                else:
+                    amount = tx.received - tx.sent
 
-                amount = tx.received - tx.sent
+                balance += amount
                 status = wallet.get_tx_status(tx)
 
                 labels = [""] * len(self.Columns)
                 labels[self.Columns.WALLET_ID] = wallet.id
-                labels[self.Columns.AMOUNT] = format_satoshis(
-                    amount, wallet.network, is_diff=True
-                )
-                labels[self.Columns.SATOSHIS] = str(amount)
-                labels[self.Columns.BALANCE] = str(0)  # TODO
+                labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).diff()
+
+                labels[self.Columns.BALANCE] = str(Satoshis(balance, wallet.network))
                 labels[self.Columns.TXID] = tx.txid
                 items = [QStandardItem(e) for e in labels]
 
@@ -409,8 +441,7 @@ class HistList(MyTreeView, MessageBoxMixin):
                     items[self.Columns.AMOUNT].setData(
                         QBrush(QColor("red")), Qt.ForegroundRole
                     )
-                items[self.Columns.SATOSHIS].setData(amount, self.ROLE_CLIPBOARD_DATA)
-                items[self.Columns.BALANCE].setData(0, self.ROLE_CLIPBOARD_DATA)  # TODO
+                items[self.Columns.BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
                 # align text and set fonts
@@ -500,7 +531,7 @@ class HistList(MyTreeView, MessageBoxMixin):
                 self.Columns.LABEL
             ).text()
             addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
-            self.add_copy_menu(menu, idx)
+            self.add_copy_menu(menu, idx, force_columns=[self.Columns.TXID])
             persistent = QPersistentModelIndex(addr_idx)
             menu.addAction(
                 _("Edit {}").format(addr_column_title),

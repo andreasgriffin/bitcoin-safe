@@ -225,9 +225,10 @@ class WalletDescriptorUI(QObject):
         self.protowallet.set_address_type(self.get_address_type_from_ui())
 
         for i, keystore in enumerate(self.protowallet.keystores):
-            keystore.label = self.protowallet.signer_names(
-                self.protowallet.threshold, i
-            )
+            if not keystore.label:
+                keystore.label = self.protowallet.signer_names(
+                    self.protowallet.threshold, i
+                )
 
     def set_combo_box_address_type_default(self):
         address_types = get_address_types(self.protowallet.is_multisig())
@@ -253,13 +254,12 @@ class WalletDescriptorUI(QObject):
 
     def set_ui_descriptor(self):
         # check if the descriptor actually CAN be calculated to a reasonable degree
-
         try:
             self.edit_descriptor.setText(
                 self.protowallet.to_multipath_descriptor().as_string_private()
             )
         except:
-            self.edit_descriptor.setText("Could not be derived from seed")
+            self.edit_descriptor.setText("")
 
     def disable_fields(self):
         self.comboBox_address_type.setHidden(self.no_edit_mode)
@@ -306,7 +306,7 @@ class WalletDescriptorUI(QObject):
 
     def create_wallet_type_and_descriptor(self):
         box_wallet_type_and_descriptor = QWidget(self.tab)
-        box_wallet_type_and_descriptor.setMaximumHeight(170)
+        box_wallet_type_and_descriptor.setMaximumHeight(130)
         h_wallet_type_and_descriptor = QHBoxLayout(box_wallet_type_and_descriptor)
 
         # Removed the unnecessary parent widgets. Using QGroupBox directly as the container.
@@ -378,6 +378,10 @@ class WalletDescriptorUI(QObject):
         # """)
         self.horizontalLayout_4 = QHBoxLayout(groupBox_wallet_descriptor)
         self.edit_descriptor = DescriptorEdit(get_wallet=lambda: self.wallet)
+        self.edit_descriptor.setPlaceholderText(
+            "Paste or scan your descriptor, if you restore a wallet."
+        )
+
         self.edit_descriptor.setToolTip(
             f'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
         )
@@ -388,16 +392,16 @@ class WalletDescriptorUI(QObject):
 
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
 
-        if self.wallet:
-            button = create_button(
-                "Print the \ndescriptor",
-                icon_path("pdf-file.svg"),
-                box_wallet_type_and_descriptor,
-                self.horizontalLayout_4,
-                max_sizes=[(30, 50)],
-            )
-            button.setMaximumWidth(100)
-            button.clicked.connect(lambda: make_and_open_pdf(self.wallet))
+        # if self.wallet:
+        #     button = create_button(
+        #         "Print the \ndescriptor",
+        #         icon_path("pdf-file.svg"),
+        #         box_wallet_type_and_descriptor,
+        #         self.horizontalLayout_4,
+        #         max_sizes=[(30, 50)],
+        #     )
+        #     button.setMaximumWidth(100)
+        #     button.clicked.connect(lambda: make_and_open_pdf(self.wallet))
 
         h_wallet_type_and_descriptor.addWidget(groupBox_wallet_descriptor)
 

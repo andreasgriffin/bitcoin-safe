@@ -38,7 +38,7 @@ def m_of_n(psbt_input):
     return d
 
 
-def psbt_simple_json(psbt: bdk.PartiallySignedTransaction):
+def get_psbt_simple_json(psbt: bdk.PartiallySignedTransaction):
     psbt_json = json.loads(psbt.json_serialize())
     inputs = []
 
@@ -141,48 +141,112 @@ def calculate_sent_change_amounts(
     return sent_values, change_values
 
 
-def estimate_segwit_tx_size(num_inputs, num_outputs, n=1, m=1, include_signatures=True):
+def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True):
     """
-    Estimate the size of a SegWit transaction in bytes, including support for m-of-n multisignature inputs.
+    Estimate the weight of a SegWit transaction in weight units, including support for multiple inputs with
+    varying m-of-n multisignature configurations.
 
     Args:
-    num_inputs (int): Number of inputs in the transaction.
+    input_mn_tuples (list of tuples): A list where each tuple represents an input with (m, n) configuration.
     num_outputs (int): Number of outputs in the transaction.
-    n (int): Total number of signatures in a multisignature input.
-    m (int): Required number of signatures in a multisignature input.
     include_signatures (bool): Whether to include the size of signatures in the estimate.
 
     Returns:
-    int: Estimated transaction size in bytes.
+    int: Estimated transaction weight in weight units.
     """
-    # Constants for size calculations
-    base_tx_size = 10  # base transaction size
-    base_input_size = 32  # base size per input without signatures
-    signature_size = 72  # approximate size of a single signature
-    pubkey_size = 33  # size of a compressed public key
+    # Transaction overheads
+    version_size = 4
+    segwit_marker_and_flag_size = 2
+    locktime_size = 4
 
-    # Size of the scriptSig part of a multisig input
-    script_sig_size = (
-        1 + (m * signature_size) + (n * pubkey_size) + 3
-    )  # 3 bytes for m, n and OP_CHECKMULTISIG
+    # Input components
+    outpoint_size = 36  # txid (32 bytes) + vout index (4 bytes)
+    script_length_size = 1  # Size of the script length field
+    sequence_size = 4  # Size of the sequence field
+    base_input_size = outpoint_size + sequence_size  # Excluding scriptSig and witness
 
-    # Total size per input
-    input_size = base_input_size + (script_sig_size if include_signatures else 0)
-
-    # Size per output
-    output_size = 34  # size per output
-
-    # Witness data adds about 0.25 weight units per byte, or 1/4 the size in vbytes
-    # For multisig, witness data is just the signatures
-    witness_data_size = num_inputs * (m * signature_size if include_signatures else 0)
-    witness_size = witness_data_size // 4
-
-    # Calculate total transaction size
-    total_size = (
-        base_tx_size
-        + (num_inputs * input_size)
-        + (num_outputs * output_size)
-        + witness_size
+    # Output components
+    output_value_size = 8  # Size of the value field
+    output_script_length_size = 1  # Size of the script length field
+    p2wpkh_script_size = 22  # P2WPKH script size
+    base_output_size = (
+        output_value_size + output_script_length_size + p2wpkh_script_size
     )
 
-    return total_size
+    # Witness components
+    witness_stack_items_size = 1  # Size byte for the number of witness stack items
+    average_signature_size = 72  # Approximate size of a signature
+    average_pubkey_size = 33  # Size of a compressed public key
+
+    # Calculate total witness data size
+    total_witness_data_size = 0
+    for m, n in input_mn_tuples:
+        witness_data_size_per_input = (
+            witness_stack_items_size
+            + (m * (1 + average_signature_size))
+            + (n * (1 + average_pubkey_size))
+        )
+        total_witness_data_size += (
+            witness_data_size_per_input if include_signatures else 0
+        )
+
+    # Calculate base transaction size (excluding witness data)
+    num_inputs = len(input_mn_tuples)
+    base_tx_size_without_witness = (
+        version_size
+        + segwit_marker_and_flag_size
+        + locktime_size
+        + num_inputs * (base_input_size + script_length_size)
+        + num_outputs * base_output_size
+    )
+
+    # Calculate transaction weight
+    # Non-witness data is weighted as 4 units per byte, witness data as 1 unit per byte
+    tx_weight = (base_tx_size_without_witness * 4) + total_witness_data_size
+
+    return tx_weight
+
+
+class FeeInfo:
+    def __init__(self, fee_amount, tx_size, is_estimated=False) -> None:
+        self.fee_amount = fee_amount
+        self.tx_size = tx_size
+        self.is_estimated = is_estimated
+
+    def fee_rate(self):
+        return self.fee_amount / self.tx_size
+
+
+def estimate_segwit_fee_rate_from_psbt(psbt: bdk.PartiallySignedTransaction) -> FeeInfo:
+    """
+    Estimate the fee rate of a SegWit transaction from a serialized PSBT JSON.
+
+    Args:
+    psbt_json_str (str): The serialized PSBT JSON string.
+
+    Returns:
+    float: Estimated fee rate in satoshis per byte.
+    """
+
+    # Get the simplified JSON representation of the PSBT
+    psbt_json = get_psbt_simple_json(psbt)
+
+    input_mn_tuples = [(inp["m"], inp["n"]) for inp in psbt_json["inputs"]]
+
+    # Estimate the size of the transaction
+    # This part requires the transaction size estimation logic, which might need information about inputs and outputs
+    # For simplicity, let's assume you have a function estimate_tx_size(psbt_data) that can estimate the size
+    tx_size = estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())) / 4
+
+    return FeeInfo(psbt.fee_amount(), tx_size, is_estimated=True)
+
+
+def get_likely_origin_wallet(input_outpoints: List[OutPoint], wallets) -> "Wallet":
+
+    for wallet in wallets:
+        wallet_outpoints: List[OutPoint] = [
+            OutPoint.from_bdk(utxo.outpoint) for utxo in wallet.list_unspent()
+        ]
+        for outpoint in input_outpoints:
+            if outpoint in wallet_outpoints:
+                return wallet

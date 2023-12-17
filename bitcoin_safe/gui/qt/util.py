@@ -48,6 +48,7 @@ from PySide2.QtGui import (
 )
 from PySide2.QtCore import Signal, QRectF
 from PySide2.QtCore import (
+    SignalInstance,
     Qt,
     QPersistentModelIndex,
     QModelIndex,
@@ -115,7 +116,13 @@ from PySide2.QtWidgets import (
 from PySide2.QtCore import QUrl
 from PySide2.QtGui import QDesktopServices
 from ...i18n import _, languages
-from ...util import Satoshis, resource_path, TaskThread, serialized_to_hex
+from ...util import (
+    Satoshis,
+    register_cache,
+    resource_path,
+    TaskThread,
+    serialized_to_hex,
+)
 from ...util import is_address
 from PySide2.QtSvg import QSvgWidget
 import bdkpython as bdk
@@ -191,26 +198,6 @@ def sort_id_to_icon(sort_id):
         sort_id = len(TX_ICONS) - 1
 
     return TX_ICONS[sort_id]
-
-
-def create_buy_coldcard_button(layout):
-    button = create_button(
-        "Buy a Coldcard\n5% off", icon_path("coldcard-only.svg"), None, layout
-    )
-    button.clicked.connect(
-        lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
-    )
-    return button
-
-
-def create_buy_bitbox_button(layout):
-    button = create_button(
-        "Buy a Bitbox02\nBitcoin Only Edition", icon_path("usb-stick.svg"), None, layout
-    )
-    button.clicked.connect(
-        lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
-    )
-    return button
 
 
 def open_website(url):
@@ -290,6 +277,20 @@ def add_centered_icons(
     )
 
     return svg_widgets
+
+
+def add_to_buttonbox(buttonBox, text, icon_name, on_clicked=None):
+    # Create a custom QPushButton with an icon
+    button = QPushButton(text)
+    button.setIcon(QIcon(icon_path(icon_name)))
+
+    # Add the button to the QDialogButtonBox
+    buttonBox.addButton(button, QDialogButtonBox.ActionRole)
+
+    # Optionally connect the button's clicked signal
+    if on_clicked:
+        button.clicked.connect(on_clicked)
+    return button
 
 
 def create_button(
@@ -573,7 +574,7 @@ class Message:
         *,
         buttons=QMessageBox.Ok,
         defaultButton=QMessageBox.NoButton,
-        rich_text=False,
+        rich_text=True,
         checkbox=None,
     ):
         # parent = parent or self.top_level_window()
@@ -809,6 +810,23 @@ def line_dialog(parent, title, label, ok_label, default=None):
     l.addLayout(Buttons(CancelButton(dialog), OkButton(dialog, ok_label)))
     if dialog.exec_():
         return txt.text()
+
+
+def one_time_signal_connection(signal: SignalInstance, f: Callable):
+    def f_wrapper(*args, **kwargs):
+        signal.disconnect(f_wrapper)
+        return f(*args, **kwargs)
+
+    signal.connect(f_wrapper)
+
+
+def robust_disconnect(slot: SignalInstance, f):
+    if not slot or not f:
+        return
+    try:
+        slot.disconnect(f)
+    except:
+        pass
 
 
 def create_button_box(callback_ok, callback_cancel, ok_text=None, cancel_text=None):
@@ -1546,6 +1564,7 @@ class ColorSchemeItem:
     def __init__(self, fg_color, bg_color):
         self.colors = (fg_color, bg_color)
 
+    @register_cache(always_keep=True)
     def _get_color(self, background):
         return self.colors[(int(background) + int(ColorScheme.dark_scheme)) % 2]
 
@@ -1668,7 +1687,7 @@ def clipboard_contains_address():
 
 
 def do_copy(text: str, *, title: str = None) -> None:
-    QApplication.clipboard().setText(text)
+    QApplication.clipboard().setText(str(text))
     message = (
         _("Text copied to Clipboard")
         if title is None

@@ -23,6 +23,12 @@ class UpdateFilter:
         self.txids = txids if txids else set()
         self.refresh_all = refresh_all
 
+    def __key__(self):
+        return tuple(self.__dict__.items())
+
+    def __str__(self) -> str:
+        return str(self.__key__())
+
 
 class SignalFunction:
     def __init__(self, slot_name=None):
@@ -149,3 +155,5 @@ class Signals(QObject):
     import_bip329_labels = Signal(str)  # str= wallet_id
     open_wallet = Signal(str)  # str= filepath
     finished_open_wallet = Signal(str)  # str= wallet_id
+
+    signal_broadcast_tx = Signal(bdk.Transaction)

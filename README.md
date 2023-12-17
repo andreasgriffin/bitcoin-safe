@@ -32,16 +32,16 @@
 
 #### TODOs (a lot)
 
-- [ ] Add guide steps after the wallet setup
+- [x] Add guide steps after the wallet setup
   - [x] Create recovery pdf with descriptor and further short instructions   
-  - [ ] Wallet setup guide for wallet consistency
+  - [x] Wallet setup guide for wallet consistency
     - Goal: Backup seed phrases are correct
-      - [ ] Send small amount of funds to the wallet
-      - [ ] Wipe hardware signers
-      - [ ] Read xpubs from hardware signers again (verify they have not changed)
+      - [x] Send small amount of funds to the wallet
+      - [x] Wipe hardware signers
+      - [x] Read xpubs from hardware signers again (verify they have not changed)
     - Goal: Singing device 1, 2, and 3 create valid signatures 
-      - [ ] Create tx and sign with Dev 1 and Dev 2  send to own address
-      - [ ] Create tx and sign with Dev 1 and Dev 3 and sent to own address
+      - [x] Create tx and sign with Dev 1 and Dev 2  send to own address
+      - [x] Create tx and sign with Dev 1 and Dev 3 and sent to own address
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
 - [x] CTRL + C  and CSV export across all tables

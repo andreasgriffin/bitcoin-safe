@@ -54,19 +54,20 @@ network = bdk.Network.REGTEST
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="Bitcoin Wallet Operations")
 parser.add_argument("-s", "--seed", help="Mnemonic seed phrase", type=str, default="")
+parser.add_argument("-d", "--descriptor", help="Descriptor", type=str, default="")
 parser.add_argument("-m", "--mine", type=int, default=101)
 parser.add_argument("-tx", "--transactions", type=int, default=20)
+parser.add_argument("--always_new_addresses", action="store_true")
 args = parser.parse_args()
 
 # Use provided mnemonic or generate a new one
-mnemonic = (
-    bdk.Mnemonic.from_string(args.seed)
-    if args.seed
-    else bdk.Mnemonic(bdk.WordCount.WORDS12)
-)
-print(f"Mnemonic: {mnemonic.as_string()}")
+mnemonic = bdk.Mnemonic.from_string(args.seed) if args.seed else None
+if mnemonic:
+    print(f"Mnemonic: {mnemonic.as_string()}")
 db_config = bdk.DatabaseConfig.MEMORY()
 
+
+gap = 20
 
 rpc_ip = "127.0.0.1:18443"
 rpc_username = "admin1"
@@ -82,35 +83,48 @@ blockchain_config = bdk.BlockchainConfig.RPC(
     )
 )
 blockchain_config = bdk.BlockchainConfig.ESPLORA(
-    bdk.EsploraConfig("http://127.0.0.1:3000", None, 1, 20, 10)
+    bdk.EsploraConfig("http://127.0.0.1:3000", None, 1, gap * 2, 20)
 )
 
 
 blockchain = bdk.Blockchain(blockchain_config)
 
 # Create Wallet
-descriptor = bdk.Descriptor.new_bip84(
-    secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-    keychain=bdk.KeychainKind.EXTERNAL,
-    network=network,
-)
-change_descriptor = bdk.Descriptor.new_bip84(
-    secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-    keychain=bdk.KeychainKind.INTERNAL,
-    network=network,
-)
-wallet = bdk.Wallet(
-    descriptor=descriptor,
-    change_descriptor=change_descriptor,
-    network=network,
-    database_config=db_config,
-)
+if mnemonic:
+    descriptor = bdk.Descriptor.new_bip84(
+        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+        keychain=bdk.KeychainKind.EXTERNAL,
+        network=network,
+    )
+    change_descriptor = bdk.Descriptor.new_bip84(
+        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+        keychain=bdk.KeychainKind.INTERNAL,
+        network=network,
+    )
+    wallet = bdk.Wallet(
+        descriptor=descriptor,
+        change_descriptor=change_descriptor,
+        network=network,
+        database_config=db_config,
+    )
+if descriptor:
+    descriptor = bdk.Descriptor(args.descriptor, network)
+    wallet = bdk.Wallet(
+        descriptor=descriptor,
+        change_descriptor=None,
+        network=network,
+        database_config=db_config,
+    )
 
 
 def mine_coins(wallet, blocks=101):
     """Mine some blocks to generate coins for the wallet"""
-    print(f"Mining {blocks} blocks")
-    address = wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
+    address = wallet.get_address(
+        bdk.AddressIndex.NEW()
+        if args.always_new_addresses
+        else bdk.AddressIndex.LAST_UNUSED()
+    ).address.as_string()
+    print(f"Mining {blocks} blocks to {address}")
     response = send_rpc_command(
         *rpc_ip.split(":"),
         rpc_username,
@@ -126,8 +140,13 @@ def extend_tip(n):
 
 
 def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10):
-    tip = wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).index
-    address_indices = [np.random.choice(np.arange(tip)) for _ in range(n)]
+    if args.always_new_addresses:
+        address_indices = [
+            wallet.get_address(bdk.AddressIndex.NEW()).index for _ in range(n)
+        ]
+    else:
+        tip = wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).index
+        address_indices = [np.random.choice(np.arange(tip)) for _ in range(n)]
 
     address_infos = []
     for i in address_indices:
@@ -195,8 +214,10 @@ def main():
     progress.update = update
     wallet.sync(blockchain, progress)
 
+    print(wallet.get_balance())
+
     #  create transactions
-    extend_tip(20)
+    extend_tip(gap // 5)
     create_complex_transactions(wallet, blockchain, args.transactions)
 
 

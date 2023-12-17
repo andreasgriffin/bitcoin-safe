@@ -1,5 +1,8 @@
-from distutils.util import change_root
 import logging, os
+from time import time
+
+from tomlkit import boolean
+
 
 logger = logging.getLogger(__name__)
 
@@ -8,23 +11,14 @@ import bdkpython as bdk
 from typing import Sequence, Set, Tuple
 from .gui.qt.util import Message
 import datetime
-from .tx import TXInfos
+from .tx import TxBuilderInfos, TxUiInfos
 from .util import (
     balance_dict,
     Satoshis,
+    clear_cache,
+    register_cache,
     timestamp_to_datetime,
     replace_non_alphanumeric,
-)
-import re
-from .util import (
-    TX_HEIGHT_FUTURE,
-    TX_HEIGHT_INF,
-    TX_HEIGHT_LOCAL,
-    TX_HEIGHT_UNCONF_PARENT,
-    TX_HEIGHT_UNCONFIRMED,
-    TX_STATUS,
-    THOUSANDS_SEP,
-    cache_method,
 )
 from .i18n import _
 from typing import (
@@ -52,7 +46,6 @@ from .descriptors import (
     MultipathDescriptor,
 )
 import json
-from .tx import TXInfos
 from .util import clean_list, Satoshis
 from .config import UserConfig
 import numpy as np
@@ -89,9 +82,6 @@ class TxStatus:
         #     TX_HEIGHT_LOCAL,
         #     TX_HEIGHT_UNCONF_PARENT,
         #     TX_HEIGHT_UNCONFIRMED,
-        #     TX_STATUS,
-        #     THOUSANDS_SEP,
-        #     cache_method,
         # )
 
         self.confirmation_status = TxConfirmationStatus.UNCONFIRMED
@@ -106,27 +96,6 @@ class TxStatus:
         self.sort_id = (
             self.confirmations if self.confirmations else self.confirmation_status.value
         )
-
-
-class UtxosForInputs:
-    def __init__(
-        self, utxos, included_opportunistic_merging_utxos=None, spend_all_utxos=False
-    ) -> None:
-        if included_opportunistic_merging_utxos is None:
-            included_opportunistic_merging_utxos = []
-
-        self.utxos = utxos
-        self.included_opportunistic_merging_utxos = included_opportunistic_merging_utxos
-        self.spend_all_utxos = spend_all_utxos
-
-
-class OutPointInfo:
-    def __init__(
-        self, prev_outpoint: OutPoint, outpoint: OutPoint, tx: bdk.TransactionDetails
-    ) -> None:
-        self.prev_outpoint = prev_outpoint
-        self.outpoint = outpoint
-        self.tx = tx
 
 
 def locked(func):
@@ -258,6 +227,57 @@ class ProtoWallet:
         return len(self.keystores) > 1
 
 
+class DeltaCacheEntry:
+    def __init__(self) -> None:
+        self.old = None
+        self.appended = None
+        self.removed = None
+        self.new = None
+
+
+class DeltaCacheListTransactions(DeltaCacheEntry):
+    def __init__(self) -> None:
+        super().__init__()
+        self.old: List[bdk.TransactionDetails] = []
+        self.appended: List[bdk.TransactionDetails] = []
+        self.removed: List[bdk.TransactionDetails] = []
+        self.new: List[bdk.TransactionDetails] = []
+
+
+class DeltaWallet:
+    "saves bdk function results and next time it calls, it returns also the delta"
+
+    def __init__(self, bdkwallet: bdk.Wallet) -> None:
+        self.bdkwallet = bdkwallet
+        self._delta_cache: Dict[str, DeltaCacheEntry] = {}
+
+    def list_transactions(
+        self, access_marker, include_raw=True
+    ) -> DeltaCacheListTransactions:
+        "access_marker is a unique key, that the history can be stored relative to this"
+        key = "list_transactions" + str(access_marker)
+        entry = self._delta_cache[key] = self._delta_cache.get(
+            key, DeltaCacheListTransactions()
+        )
+        entry.old = entry.new
+
+        start_time = time()
+        entry.new = self.bdkwallet.list_transactions(include_raw=include_raw)
+        logger.debug(
+            f"self.bdkwallet.list_transactions {len(entry.new)} results in { time()-start_time}s"
+        )
+
+        old_ids = [tx.txid for tx in entry.old]
+        new_ids = [tx.txid for tx in entry.new]
+        appended_ids = set(new_ids) - set(old_ids)
+        removed_ids = set(old_ids) - set(new_ids)
+
+        entry.appended = [tx for tx in entry.new if tx.txid in appended_ids]
+        entry.removed = [tx for tx in entry.old if tx.txid in removed_ids]
+
+        return entry
+
+
 class Wallet(BaseSaveableClass):
     """
     If any bitcoin logic (ontop of bdk) has to be done, then here is the place
@@ -285,6 +305,7 @@ class Wallet(BaseSaveableClass):
         super().__init__()
 
         self.bdkwallet = None
+        self.delta_wallet = None
         self.id = id
         self.network = network if network else config.network_settings.network
         # prevent loading a wallet into different networks
@@ -295,7 +316,6 @@ class Wallet(BaseSaveableClass):
         self.gap_change = gap_change
         self.descriptor_str: str = descriptor_str
         self.config = config
-        self.cache = {}
         self.write_lock = Lock()
         self.labels: Labels = labels if labels else Labels()
         # refresh dependent values
@@ -323,6 +343,16 @@ class Wallet(BaseSaveableClass):
             MultipathDescriptor.from_descriptor_str(descriptor_str, self.network)
         )
         self.blockchain = None
+        self.long_caches: Dict[str, Dict] = {}
+
+    def clear_cache(self, include_always_keep=False):
+        clear_cache(include_always_keep=include_always_keep)
+
+    def get_mn_tuple(self):
+        info = public_descriptor_info(
+            self.multipath_descriptor.as_string(), self.network
+        )
+        return info["threshold"], info["signers"]
 
     def as_protowallet(self):
         # fill the protowallet with the xpub info
@@ -422,9 +452,6 @@ class Wallet(BaseSaveableClass):
 
         return Wallet(**dct)
 
-    def clear_cache(self):
-        self.cache = {}
-
     def set_gap(self, gap):
         self.gap = gap
 
@@ -446,6 +473,8 @@ class Wallet(BaseSaveableClass):
             #     bdk.SqliteDbConfiguration(self._db_file())
             # ),
         )
+
+        self.delta_wallet = DeltaWallet(self.bdkwallet)
 
     def is_multisig(self):
         return len(self.keystores) > 1
@@ -533,83 +562,99 @@ class Wallet(BaseSaveableClass):
         progress.update = progress_function_threadsafe
 
         try:
+            start_time = time()
             self.bdkwallet.sync(self.blockchain, progress)
+            logger.debug(f"{self.id} self.bdkwallet.sync in { time()-start_time}s")
             logger.info(
                 f"Wallet balance is: { balance_dict(self.bdkwallet.get_balance()) }"
             )
         except Exception as e:
-            logger.debug(f"error syncing wallet {self.id}")
+            logger.debug(f"{self.id} error syncing wallet {self.id}")
             raise e
 
-    def get_unused_category_address(self, category, is_change=False) -> bdk.AddressInfo:
-        def reverse_search_unused(tip_index):
-            for i in reversed(range(tip_index)):
-                address_info = self.bdkwallet.get_address(bdk.AddressIndex.PEEK(i))
-                address_str = address_info.address.as_string()
-                if self.labels.get_category(address_str) == category and (
-                    not self.address_is_used(address_str)
-                ):
-                    return address_info
-
-        if category is None:
-            category = self.labels.get_default_category()
-
+    def reverse_search_unused_address(
+        self, category=None, is_change=False
+    ) -> bdk.AddressInfo:
         bdk_get_address = (
             self.bdkwallet.get_internal_address
             if is_change
             else self.bdkwallet.get_address
         )
-        # print new receive address
+
         tip_address_info: bdk.AddressInfo = bdk_get_address(
             bdk.AddressIndex.LAST_UNUSED()
         )
-        search_result = reverse_search_unused(tip_address_info.index)
-        if search_result:
-            return search_result
-        else:
-            tip_address_info = self.get_address(force_new=True, is_change=is_change)
-            self.labels.set_addr_category(
-                tip_address_info.address.as_string(), category
-            )
-            return tip_address_info
+
+        # the following searches the unused tip if there were no gap limit
+        earliest_address_info = None
+        for i in reversed(range(tip_address_info.index + 1)):
+            address_info = self.bdkwallet.get_address(bdk.AddressIndex.PEEK(i))
+            address_str = address_info.address.as_string()
+
+            if self.address_is_used(address_str) or self.labels.get_label(address_str):
+                break
+            else:
+                if category and self.labels.get_category(address_str) == category:
+                    earliest_address_info = address_info
+                if not category:
+                    earliest_address_info = address_info
+
+        return earliest_address_info
+
+    def get_unused_category_address(self, category, is_change=False) -> bdk.AddressInfo:
+        if category is None:
+            category = self.labels.get_default_category()
+
+        address_info = self.reverse_search_unused_address(
+            category=category, is_change=is_change
+        )
+        if address_info:
+            return address_info
+
+        address_info = self.get_address(force_new=True, is_change=is_change)
+        self.labels.set_addr_category(address_info.address.as_string(), category)
+        return address_info
 
     def get_address(self, force_new=False, is_change=False) -> bdk.AddressInfo:
+        "Gives an unused address reverse searched from the tip"
+
+        def get_force_new_address():
+            address_info = bdk_get_address(bdk.AddressIndex.NEW())
+            index = address_info.index
+            self._tips[int(is_change)] = index
+
+            logger.info(f"advanced_tip to {self._tips}  , is_change={is_change}")
+            return address_info
+
         bdk_get_address = (
             self.bdkwallet.get_internal_address
             if is_change
             else self.bdkwallet.get_address
         )
 
-        # print new receive address
-        address_info = bdk_get_address(
-            bdk.AddressIndex.NEW() if force_new else bdk.AddressIndex.LAST_UNUSED()
-        )
-        address = address_info.address.as_string()
-        index = address_info.index
-        advanced_tip = index > self._tips[int(is_change)]
-        # update tip
-        self._tips[int(is_change)] = index
+        if force_new:
+            return get_force_new_address()
 
-        #
-        # if self.labels.get_category(address) or self.labels.get_label(address):
-        #     return self.get_address(force_new=True, is_change=is_change)
+        # try finding an unused one
+        address_info = self.reverse_search_unused_address(is_change=is_change)
+        if address_info:
+            return address_info
 
-        logger.info(f"New address: {address} at index {index}")
-        return address_info
+        # create a new address
+        return get_force_new_address()
 
-    def get_output_addresses(self, transaction) -> List[bdk.Address]:
+    def get_output_addresses(self, transaction: bdk.Transaction) -> List[str]:
         # print(f'Getting output addresses for txid {transaction.txid}')
-        addresses = [
+        return [
             self.get_address_of_txout(TxOut.from_bdk(output))
-            for output in transaction.transaction.output()
+            for output in transaction.output()
         ]
-        return addresses
 
-    @cache_method
+    @register_cache()
     def get_txs(self) -> Dict[str, bdk.TransactionDetails]:
         return {tx.txid: tx for tx in self.get_list_transactions()}
 
-    @cache_method
+    @register_cache()
     def get_tx(self, txid) -> bdk.TransactionDetails:
         return self.get_txs().get(txid)
 
@@ -630,8 +675,8 @@ class Wallet(BaseSaveableClass):
             _txid = txin.previous_output.txid
             parents.append(_txid)
             # detect address reuse
-            addr = self.get_txin_address(txin)
-            received, sent = self.get_received_and_send_involving_address(addr)
+            # addr = self.get_txin_address(txin)
+            # received, sent = self.get_received_and_send_involving_address(addr)
             # if len(sent) > 1:
             #     my_txid, my_height, my_pos = sent[txin.prevout.to_str()]
             #     assert my_txid == txid
@@ -670,16 +715,19 @@ class Wallet(BaseSaveableClass):
                 self.clear_cache()
             self.get_addresses()
             self.get_list_transactions()
-            self.list_unspent_based_on_tx()
-            self.get_received_send_maps()
-            new_addresses_were_watched = any(self.extend_tips_by_gap())
+            # self.get_dict_address_partialtxinfos()
+
+            advanced_tips = self.extend_tips_by_gap()
+            logger.debug(f"{self.id} tips were advanced by {advanced_tips}")
+            new_addresses_were_watched = any(advanced_tips)
             i += 1
             if i > 100:
                 break
+        self.list_unspent()
 
-    def list_input_addresses(self, transaction):
+    def list_input_bdk_addresses(self, transaction: bdk.Transaction) -> List[str]:
         addresses = []
-        for tx_in in transaction.transaction.input():
+        for tx_in in transaction.input():
             previous_output = tx_in.previous_output
             tx = self.get_tx(previous_output.txid)
             if tx:
@@ -687,30 +735,35 @@ class Wallet(BaseSaveableClass):
 
                 add = bdk.Address.from_script(
                     output_for_input.script_pubkey, self.config.network_settings.network
-                )
+                ).as_string()
             else:
                 add = None
 
             addresses.append(add)
         return addresses
 
-    def list_tx_addresses(self, transaction):
-        in_addresses = self.list_input_addresses(transaction)
-        out_addresses = self.get_output_addresses(transaction)
-        logger.debug(
-            f"{transaction.txid}: {[(a.as_string() if a else None) for a in in_addresses]} --> {[(a.as_string() if a else None) for a in out_addresses]}"
-        )
-        return {"in": in_addresses, "out": out_addresses}
+    def list_tx_addresses(self, transaction: bdk.Transaction) -> Dict[str, List[str]]:
+        return {
+            "in": self.list_input_bdk_addresses(transaction),
+            "out": self.get_output_addresses(transaction),
+        }
+
+    def transaction_involves_wallet(self, transaction: bdk.Transaction):
+        addresses = self.get_addresses()
+        for tx_addresses in self.list_tx_addresses(transaction).values():
+            if set(addresses).intersection(set([a for a in tx_addresses if a])):
+                return True
+
+        return False
 
     def used_address_tip(self, is_change):
         def reverse_search_used(tip_index):
             for i in reversed(range(tip_index)):
-                address_info: bdk.AddressInfo = self.bdkwallet.get_address(
-                    bdk.AddressIndex.PEEK(i)
-                )
-                address_str = address_info.address.as_string()
-                if self.address_is_used(address_str):
-                    return address_info.index
+                addresses = self._get_bdk_addresses(is_change=is_change)
+                if len(addresses) - 1 < i:
+                    continue
+                if self.address_is_used(addresses[i]):
+                    return i
             return 0
 
         bdk_get_address = (
@@ -760,11 +813,11 @@ class Wallet(BaseSaveableClass):
                 else self.bdkwallet.get_address
             )
 
-            logger.debug(f"indexing {number} new addresses")
+            logger.debug(f"{self.id} indexing {number} new addresses")
 
             def add_new_address() -> bdk.AddressInfo:
                 address_info: bdk.AddressInfo = bdk_get_address(bdk.AddressIndex.NEW())
-                logger.debug(f"Added address with index {address_info.index}")
+                logger.debug(f"{self.id} Added address with index {address_info.index}")
                 return address_info
 
             new_address_infos = [add_new_address() for i in range(number)]
@@ -772,14 +825,7 @@ class Wallet(BaseSaveableClass):
             for address_info in new_address_infos:
                 self.labels.set_addr_category_default(address_info.address.as_string())
 
-        # refresh address cache
-        for key in list(self.cache.keys()):
-            if (
-                key.startswith("get_receiving_addresses")
-                or key.startswith("get_change_addresses")
-                or key.startswith("get_bdk_address_infos")
-            ):
-                del self.cache[key]
+        self.clear_cache()
 
     def extend_tips_by_gap(self) -> Tuple[int, int]:
         "Returns [number of added addresses, number of added change addresses]"
@@ -800,63 +846,54 @@ class Wallet(BaseSaveableClass):
     def tips(self):
         return [self._get_tip(b) for b in [False, True]]
 
-    @cache_method
-    def get_bdk_address_infos(
-        self, is_change=False, slice_start=None, slice_stop=None
-    ) -> Sequence[bdk.AddressInfo]:
-        if (not is_change) and (not self.multipath_descriptor):
-            return []
-
-        if slice_start is None:
-            slice_start = 0
-        if slice_stop is None:
-            slice_stop = self.gap_change if is_change else self.gap
-
-        if is_change:
-            slice_stop = max(slice_stop, self.tips[1])
-            self.tip = (self.tips[0], slice_stop)
-        else:
-            slice_stop = max(slice_stop, self.tips[0])
-            self.tip = (slice_stop, self.tips[1])
-
+    @register_cache(always_keep=True)
+    def _get_bdk_address_infos(
+        self,
+        index,
+        is_change=False,
+    ) -> bdk.AddressInfo:
         bdk_get_address = (
             self.bdkwallet.get_internal_address
             if is_change
             else self.bdkwallet.get_address
         )
-        result = [
-            bdk_get_address(bdk.AddressIndex.PEEK(i))
-            for i in range(slice_start, slice_stop + 1)
-        ]
-        return result
+        return bdk_get_address(bdk.AddressIndex.PEEK(index))
 
+    @register_cache(always_keep=True)
+    def _get_bdk_address(
+        self,
+        index,
+        is_change=False,
+    ) -> str:
+        return self._get_bdk_address_infos(
+            index, is_change=is_change
+        ).address.as_string()
+
+    @register_cache()
+    def _get_bdk_addresses(
+        self,
+        is_change=False,
+    ) -> Sequence[str]:
+        if (not is_change) and (not self.multipath_descriptor):
+            return []
+        return [
+            self._get_bdk_address(i, is_change=is_change)
+            for i in range(0, self.tips[int(is_change)] + 1)
+        ]
+
+    def get_receiving_addresses(self) -> Sequence[str]:
+        return self._get_bdk_addresses(is_change=False)
+
+    def get_change_addresses(self) -> Sequence[str]:
+        return self._get_bdk_addresses(is_change=True)
+
+    @register_cache()
     def get_addresses(self) -> Sequence[str]:
         # note: overridden so that the history can be cleared.
         # addresses are ordered based on derivation
         out = self.get_receiving_addresses().copy()
-        out += self.get_change_addresses()
+        out += self.get_change_addresses().copy()
         return out
-
-    @cache_method
-    def get_receiving_addresses(
-        self, slice_start=None, slice_stop=None
-    ) -> Sequence[str]:
-        return [
-            address_info.address.as_string()
-            for address_info in self.get_bdk_address_infos(
-                is_change=False, slice_start=slice_start, slice_stop=slice_stop
-            )
-        ]
-
-    @cache_method
-    def get_change_addresses(self, slice_start=None, slice_stop=None) -> Sequence[str]:
-        addresses = [
-            address_info.address.as_string()
-            for address_info in self.get_bdk_address_infos(
-                is_change=True, slice_start=slice_start, slice_stop=slice_stop
-            )
-        ]
-        return addresses
 
     def is_change(self, address):
         return address in self.get_change_addresses()
@@ -884,7 +921,7 @@ class Wallet(BaseSaveableClass):
         if index_tuple is not None:
             return AddressInfoMin(address, index_tuple[1], keychain)
 
-    @cache_method
+    @register_cache(always_keep=True)
     def get_address_of_txout(self, txout: TxOut) -> str:
         if txout.value == 0:
             return None
@@ -894,64 +931,21 @@ class Wallet(BaseSaveableClass):
             ).as_string()
 
     def utxo_of_outpoint(self, outpoint: bdk.OutPoint) -> bdk.LocalUtxo:
-        for utxo in self.list_unspent_based_on_tx():
+        for utxo in self.list_unspent():
             if OutPoint.from_bdk(outpoint) == OutPoint.from_bdk(utxo.outpoint):
                 return utxo
 
-    @cache_method
-    def list_unspent(self) -> List[bdk.LocalUtxo]:
-        raise NotImplementedError("This method is not included unconfirmed utxos")
-        start = datetime.datetime.now()
-        unspent = self.bdkwallet.list_unspent()
+    @register_cache()
+    def list_unspent(self, include_spent=False) -> List[bdk.LocalUtxo]:
+        start_time = time()
+        result = self.bdkwallet.list_unspent()
         logger.debug(
-            f"call bdkwallet.list_unspent took: {datetime.datetime.now() -start}"
+            f"self.bdkwallet.list_unspent {len(result)} results in { time()-start_time}s"
         )
-        return unspent
 
-    @cache_method
-    def list_unspent_based_on_tx(self, include_spent=False) -> List[bdk.LocalUtxo]:
-        spent_outpoints: List[OutPoint] = []
-        utxos: List[bdk.LocalUtxo] = []
-        txs = self.get_list_transactions()
+        return result
 
-        # build a dict of all spent outpoints
-        for tx_details in txs:
-            tx: bdk.Transaction = tx_details.transaction
-            inputs: List[bdk.TxIn] = tx.input()
-            for txin in inputs:
-                prev_out = OutPoint.from_bdk(txin.previous_output)
-                spent_outpoints.append(prev_out)
-
-        for tx_details in txs:
-            tx: bdk.Transaction = tx_details.transaction
-            outputs: List[bdk.TxOut] = tx.output()
-            for vout, txout in enumerate(outputs):
-                outpoint = bdk.OutPoint(tx_details.txid, vout)
-
-                address: bdk.AddressInfo = robust_address_str_from_script(
-                    txout.script_pubkey, self.network
-                )
-
-                keychain_kind = None
-                if address in self.get_receiving_addresses():
-                    keychain_kind = bdk.KeychainKind.EXTERNAL
-                if address in self.get_change_addresses():
-                    keychain_kind = bdk.KeychainKind.INTERNAL
-
-                # only add a utxo if the output address belongs to me
-                if not keychain_kind:
-                    continue
-
-                is_spent = OutPoint.from_bdk(outpoint) in spent_outpoints
-
-                if not include_spent and is_spent:
-                    continue
-
-                utxo = bdk.LocalUtxo(outpoint, txout, keychain_kind, is_spent)
-                utxos.append(utxo)
-        return utxos
-
-    @cache_method
+    @register_cache()
     def get_address_balances(self) -> Dict[AddressInfoMin, Tuple[int, int, int]]:
         """Return the balance of a set of addresses:
         confirmed and matured, unconfirmed, unmatured
@@ -960,11 +954,11 @@ class Wallet(BaseSaveableClass):
         def zero_balances():
             return [0, 0, 0]
 
-        def is_unconfirmed(txid):
+        def is_confirmed(txid):
             tx_details = self.get_tx(txid)
             return tx_details.confirmation_time
 
-        utxos = self.list_unspent_based_on_tx()
+        utxos = self.list_unspent()
 
         balances: Dict[str, Tuple[int, int, int]] = defaultdict(zero_balances)
         for i, utxo in enumerate(utxos):
@@ -975,22 +969,27 @@ class Wallet(BaseSaveableClass):
             if address is None:
                 continue
 
-            if is_unconfirmed(tx.txid):
-                balances[address][1] += txout.value
-            else:
+            if is_confirmed(tx.txid):
                 balances[address][0] += txout.value
+            else:
+                balances[address][1] += txout.value
             balances[address][2] += 0
 
         return balances
 
+    @register_cache()
     def get_addr_balance(self, address):
         """Return the balance of a set of addresses:
         confirmed and matured, unconfirmed, unmatured
         """
         return self.get_address_balances()[address]
 
-    @cache_method
+    @register_cache()
     def get_list_transactions(self) -> List[bdk.TransactionDetails]:
+        return self.get_delta_list_transactions(access_marker=None).new
+
+    @register_cache()
+    def get_delta_list_transactions(self, access_marker) -> DeltaCacheListTransactions:
         def key(txdetails: bdk.TransactionDetails):
             return (
                 txdetails.confirmation_time.timestamp
@@ -998,9 +997,12 @@ class Wallet(BaseSaveableClass):
                 else datetime.datetime.now().timestamp()
             )
 
-        return sorted(self.bdkwallet.list_transactions(True), key=key)
+        entry = self.delta_wallet.list_transactions(
+            access_marker=access_marker, include_raw=True
+        )
+        entry.new = sorted(entry.new, key=key)
+        return entry
 
-    @cache_method
     def get_outpoint_dict(
         self, txs: List[bdk.TransactionDetails], must_be_mine=True
     ) -> Dict[OutPoint, bdk.TransactionDetails]:
@@ -1014,88 +1016,130 @@ class Wallet(BaseSaveableClass):
                     d[outpoint] = txdetails
         return d
 
-    @cache_method
-    def get_received_send_maps(
-        self,
-    ) -> Tuple[Dict[str, List[OutPointInfo]], Dict[str, List[OutPointInfo]]]:
+    @register_cache()
+    def get_dict_address_partialtxinfos(self) -> Dict[str, List[PartialTxInfo]]:
         """
-        Createa a map of adddress : OutPointInfo
+        Createa a map of adddress : to [PartialTxInfo]
 
         Returns:
-            Tuple[Dict[str, List[OutPointInfo]], Dict[str, List[OutPointInfo]]]: _description_
+            ({address})
         """
-        hash_outpoint_to_address: Dict[int, str] = {}  # hash(out_point): address
-        received: Dict[str, List[OutPointInfo]] = {}  #  address: OutPointInfo
-        send: Dict[str, List[OutPointInfo]] = {}  #  address: OutPointInfo
 
-        txs = self.get_list_transactions()
-        # build the received dict
-        for tx in txs:
+        result_key = "get_dict_address_partialtxinfos"
+        for key in [result_key, "outpoint_to_address", "outpoint_to_utxo"]:
+            if key not in self.long_caches:
+                self.long_caches[key] = {}
+
+        def sub_append(
+            tx: bdk.TransactionDetails,
+            python_utxo: PythonUtxo,
+            is_received: bool,
+            partialtxinfos: List[PartialTxInfo],
+        ):
+            txids = [partial_info.txid for partial_info in partialtxinfos]
+            if tx.txid in txids:
+                partial_info = partialtxinfos[txids.index(tx.txid)]
+            else:
+                partial_info = PartialTxInfo(tx=tx)
+                partialtxinfos.append(partial_info)
+
+            l = partial_info.received if is_received else partial_info.send
+            l.append(python_utxo)
+
+        def calc_recieved(
+            tx: bdk.TransactionDetails,
+            dict_partialtxinfos: Dict[str, List[PartialTxInfo]],
+        ):
             for vout, txout in enumerate(tx.transaction.output()):
                 address = self.get_address_of_txout(TxOut.from_bdk(txout))
                 out_point = OutPoint(tx.txid, vout)
                 if address is None:
                     continue
-                if address not in received:
-                    received[address] = []
-                received[address].append(
-                    OutPointInfo(prev_outpoint=None, outpoint=out_point, tx=tx)
+                if address not in dict_partialtxinfos:
+                    dict_partialtxinfos[address] = []
+                python_utxo = PythonUtxo(out_point, txout)
+                sub_append(
+                    tx,
+                    python_utxo,
+                    is_received=True,
+                    partialtxinfos=dict_partialtxinfos[address],
                 )
-                hash_outpoint_to_address[hash(out_point)] = address
+                self.long_caches["outpoint_to_address"][str(out_point)] = address
+                self.long_caches["outpoint_to_utxo"][str(out_point)] = python_utxo
 
-        # check if any input tx is in transactions_involving_address
-        for tx in txs:
+        def calc_send(
+            tx: bdk.TransactionDetails,
+            dict_partialtxinfos: Dict[str, List[PartialTxInfo]],
+        ):
+            # outpoint_to_address from the outside function is used
             for input in tx.transaction.input():
                 prev_outpoint = OutPoint.from_bdk(input.previous_output)
-                if hash(prev_outpoint) in hash_outpoint_to_address:
-                    address = hash_outpoint_to_address[hash(prev_outpoint)]
-                    if address not in send:
-                        send[address] = []
-                    send[address].append(
-                        OutPointInfo(prev_outpoint=prev_outpoint, outpoint=None, tx=tx)
+                # here all received outpoints must be in self.long_caches["outpoint_to_address"] already
+                if str(prev_outpoint) in self.long_caches["outpoint_to_address"]:
+                    address = self.long_caches["outpoint_to_address"][
+                        str(prev_outpoint)
+                    ]
+                    if address not in dict_partialtxinfos:
+                        dict_partialtxinfos[address] = []
+                    sub_append(
+                        tx,
+                        self.long_caches["outpoint_to_utxo"][str(prev_outpoint)],
+                        is_received=False,
+                        partialtxinfos=dict_partialtxinfos[address],
                     )
 
-        return received, send
+        start_time = time()
+        delta_txs = self.get_delta_list_transactions(access_marker=result_key)
 
-    def get_received_and_send_involving_address(
-        self, address
-    ) -> Tuple[List[OutPointInfo], List[OutPointInfo]]:
-        received, send = self.get_received_send_maps()
-        return received.get(address, []).copy(), send.get(address, []).copy()
+        # if transactions were removed (reorg or other), then recalculate everything
+        if delta_txs.removed or not self.long_caches.get(result_key):
+            txs = delta_txs.new
+        else:
+            txs = delta_txs.appended
 
-    def get_txs_involving_address(self, address) -> List[OutPointInfo]:
-        received, send = self.get_received_and_send_involving_address(address)
-        return received.copy() + send.copy()
+        self.long_caches[result_key] = self.long_caches.get(result_key, [])
 
+        for tx in txs:
+            calc_recieved(tx, self.long_caches[result_key])
+
+        for tx in txs:
+            calc_send(tx, self.long_caches[result_key])
+
+        logger.debug(
+            f"get_dict_address_partialtxinfos  with {len(txs)} txs in {time()-  start_time}"
+        )
+        return self.long_caches[result_key]
+
+    @register_cache()
+    def get_partialtxinfos(self, address: str) -> List[PartialTxInfo]:
+        return self.get_dict_address_partialtxinfos().get(address, [])
+
+    @register_cache()
     def address_is_used(self, address):
         """
         Check if any tx had this address as an output
         """
-        return bool(self.get_txs_involving_address(address))
-
-    @cache_method
-    def get_addresses_and_address_infos(
-        self, is_change=False
-    ) -> Tuple[List[str], List[bdk.AddressInfo]]:
-        addresses_infos = self.get_bdk_address_infos(is_change=is_change)
-        addresses = [
-            address_info.address.as_string() for address_info in addresses_infos
-        ]
-        return addresses, addresses_infos
+        return bool(self.get_partialtxinfos(address))
 
     def get_address_path_str(self, address) -> str:
-        addresses, addresses_infos = self.get_addresses_and_address_infos(
-            is_change=self.is_change(address)
-        )
+        index = None
+        is_change = None
+        if address in self.get_receiving_addresses():
+            index = self.get_receiving_addresses().index(address)
+            is_change = False
+        if address in self.get_change_addresses():
+            index = self.get_change_addresses().index(address)
+            is_change = True
 
-        if address in addresses:
-            addresses_info = addresses_infos[addresses.index(address)]
-            public_descriptor_string_combined = self.multipath_descriptor.as_string().replace(
-                "<0;1>/*",
-                f"{0 if  addresses_info.keychain==bdk.KeychainKind.EXTERNAL else 1}/{addresses_info.index}",
-            )
-            return public_descriptor_string_combined
-        return ""
+        if not index:
+            return ""
+
+        addresses_info = self._get_bdk_address_infos(index, is_change=is_change)
+        public_descriptor_string_combined = self.multipath_descriptor.as_string().replace(
+            "<0;1>/*",
+            f"{0 if  addresses_info.keychain==bdk.KeychainKind.EXTERNAL else 1}/{addresses_info.index}",
+        )
+        return public_descriptor_string_combined
 
     def get_redeem_script(self, address):
         # TODO:
@@ -1106,13 +1150,15 @@ class Wallet(BaseSaveableClass):
 
     def get_categories_for_txid(self, txid):
         tx = self.get_tx(txid)
-        l = clean_list(
-            [
-                self.labels.get_category(
-                    self.get_address_of_txout(TxOut.from_bdk(output))
-                )
-                for output in tx.transaction.output()
-            ]
+        l = np.unique(
+            clean_list(
+                [
+                    self.labels.get_category(
+                        self.get_address_of_txout(TxOut.from_bdk(output))
+                    )
+                    for output in tx.transaction.output()
+                ]
+            )
         )
         return l
 
@@ -1120,7 +1166,7 @@ class Wallet(BaseSaveableClass):
         label = self.labels.get_label(address, "")
 
         if not label and autofill_from_txs:
-            txs = self.get_txs_involving_address(address)
+            txs = self.get_partialtxinfos(address)
 
             tx_labels = clean_list(
                 [
@@ -1171,9 +1217,9 @@ class Wallet(BaseSaveableClass):
 
     def get_utxo_address(self, utxo):
         tx = self.get_tx(utxo.outpoint.txid)
-        return self.get_output_addresses(tx)[utxo.outpoint.vout]
+        return self.get_output_addresses(tx.transaction)[utxo.outpoint.vout]
 
-    @cache_method
+    @register_cache()
     def get_height(self):
         if self.blockchain:
             # update the cached height
@@ -1257,13 +1303,12 @@ class Wallet(BaseSaveableClass):
             spend_all_utxos=True,
         )
 
-    def create_coin_selection_dict(self, txinfos: TXInfos) -> UtxosForInputs:
-        if not txinfos.utxo_strings and not txinfos.categories:
-            logger.warning("No inputs provided for coin selection")
-
+    def handle_opportunistic_merge_utxos(self, txinfos: TxUiInfos) -> UtxosForInputs:
+        "This does the initial coin selection if opportunistic_merge_utxos"
         utxos_for_input = UtxosForInputs(
-            txinfos.utxo_dict.values(), spend_all_utxos=not bool(txinfos.categories)
+            txinfos.utxo_dict.values(), spend_all_utxos=txinfos.spend_all_utxos
         )
+
         if not utxos_for_input.utxos:
             logger.warning("No utxos or categories for coin selection")
             return utxos_for_input
@@ -1288,17 +1333,23 @@ class Wallet(BaseSaveableClass):
     def is_my_address(self, address):
         return address in self.get_addresses()
 
-    def create_psbt(self, txinfos: TXInfos) -> TXInfos:
+    def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
+        builder_infos = TxBuilderInfos()
+        builder_infos.recipients = txinfos.recipients.copy()
+
         tx_builder = bdk.TxBuilder()
         tx_builder = tx_builder.enable_rbf()
         tx_builder = tx_builder.fee_rate(txinfos.fee_rate)
 
-        txinfos.utxos_for_input = self.create_coin_selection_dict(txinfos)
+        builder_infos.utxos_for_input: UtxosForInputs = (
+            self.handle_opportunistic_merge_utxos(txinfos)
+        )
         selected_outpoints = [
-            OutPoint.from_bdk(utxo.outpoint) for utxo in txinfos.utxos_for_input.utxos
+            OutPoint.from_bdk(utxo.outpoint)
+            for utxo in builder_infos.utxos_for_input.utxos
         ]
 
-        if txinfos.utxos_for_input.spend_all_utxos:
+        if builder_infos.utxos_for_input.spend_all_utxos:
             # spend_all_utxos requires using add_utxo
             tx_builder = tx_builder.manually_selected_only()
             # add coins that MUST be spend
@@ -1313,13 +1364,15 @@ class Wallet(BaseSaveableClass):
             # exclude all other coins, to leave only selected_outpoints to choose from
             unspendable_outpoints = [
                 utxo.outpoint
-                for utxo in self.list_unspent_based_on_tx()
+                for utxo in self.list_unspent()
                 if OutPoint.from_bdk(utxo.outpoint) not in selected_outpoints
             ]
             tx_builder = tx_builder.unspendable(unspendable_outpoints)
 
         for recipient in txinfos.recipients:
             if recipient.checked_max_amount:
+                if len(txinfos.recipients) == 1:
+                    tx_builder = tx_builder.drain_wallet()
                 tx_builder = tx_builder.drain_to(
                     bdk.Address(recipient.address).script_pubkey()
                 )
@@ -1328,13 +1381,11 @@ class Wallet(BaseSaveableClass):
                     bdk.Address(recipient.address).script_pubkey(), recipient.amount
                 )
 
-        try:
-            builder_result: bdk.TxBuilderResult = tx_builder.finish(self.bdkwallet)
-        except bdk.BdkError.NoRecipients as e:
-            Message(e.args[0], title="er").show_error()
-            raise
+        start_time = time()
+        builder_result: bdk.TxBuilderResult = tx_builder.finish(self.bdkwallet)
+        logger.debug(f"{self.id} tx_builder.finish  in { time()-start_time}s")
 
-        inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
+        # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
 
         logger.info(json.loads(builder_result.psbt.json_serialize()))
         logger.debug(
@@ -1346,14 +1397,14 @@ class Wallet(BaseSaveableClass):
             sum(
                 [
                     list(self.get_categories_for_txid(utxo.outpoint.txid))
-                    for utxo in txinfos.utxos_for_input.utxos
+                    for utxo in builder_infos.utxos_for_input.utxos
                 ],
                 [],
             )
         )
-        txinfos.recipient_category = categories[0] if categories else None
+        builder_infos.recipient_category = categories[0] if categories else None
         logger.debug(
-            f"Selecting category {txinfos.recipient_category} out of {categories} for the output addresses"
+            f"Selecting category {builder_infos.recipient_category} out of {categories} for the output addresses"
         )
 
         labels = [
@@ -1364,28 +1415,26 @@ class Wallet(BaseSaveableClass):
                 builder_result.transaction_details.txid, ",".join(labels)
             )
 
-        txinfos.builder_result = builder_result
-        self.set_output_categories_and_labels(txinfos)
-        return txinfos
+        builder_infos.builder_result = builder_result
+        self.set_output_categories_and_labels(builder_infos)
+        return builder_infos
 
-    def set_output_categories_and_labels(self, txinfos: TXInfos):
+    def set_output_categories_and_labels(self, infos: TxBuilderInfos):
         # set category for all outputs
         self._set_category_for_all_recipients(
-            txinfos.builder_result.psbt.extract_tx().output(),
-            txinfos.recipient_category,
+            infos.builder_result.psbt.extract_tx().output(),
+            infos.recipient_category,
         )
 
         # set label for the recipient output
-        for recipient in txinfos.recipients:
+        for recipient in infos.recipients:
             # this does not include the change output
             if recipient.label and self.is_my_address(recipient.address):
                 self.labels.set_addr_label(recipient.address, recipient.label)
 
         # add a label for the change output
-        labels = [
-            recipient.label for recipient in txinfos.recipients if recipient.label
-        ]
-        for txout in txinfos.builder_result.psbt.extract_tx().output():
+        labels = [recipient.label for recipient in infos.recipients if recipient.label]
+        for txout in infos.builder_result.psbt.extract_tx().output():
             address = self.get_address_of_txout(TxOut.from_bdk(txout))
             if not self.is_change(address):
                 continue
@@ -1412,12 +1461,38 @@ class Wallet(BaseSaveableClass):
                 self.labels.set_addr_category(recipient.address, category)
                 self.labels.add_category(category)
 
-    def get_category_utxo_dict(self):
+    def get_category_utxo_dict(self) -> Dict[str, List[bdk.LocalUtxo]]:
         d = {}
-        for utxo in self.list_unspent_based_on_tx():
+        for utxo in self.list_unspent():
             address = self.get_utxo_address(utxo)
             category = self.labels.get_category(address)
             if category not in d:
                 d[category] = []
             d[category].append(utxo)
         return d
+
+    def _get_conflicting_input_utxos(
+        self, input_outpoints: List[OutPoint]
+    ) -> List[bdk.LocalUtxo]:
+        conflicting_input_utxos = []
+
+        wallet_utxos = self.list_unspent(include_spent=True)
+        wallet_outpoints: List[OutPoint] = [
+            OutPoint.from_bdk(utxo.outpoint) for utxo in wallet_utxos
+        ]
+
+        for outpoint in input_outpoints:
+            if outpoint in wallet_outpoints:
+                utxo = wallet_utxos[wallet_outpoints.index(outpoint)]
+                if utxo.is_spent:
+                    conflicting_input_utxos.append(utxo)
+        return conflicting_input_utxos
+
+    def get_conflicting_tx_inputs(self, tx: bdk.Transaction):
+        if tx.txid in self.get_txs():
+            return []
+
+        conflicting_input_utxos = self._get_conflicting_input_utxos(
+            [OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
+        )
+        return conflicting_input_utxos

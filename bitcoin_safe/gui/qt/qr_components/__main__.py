@@ -22,15 +22,15 @@ if __name__ == "__main__":
     # Example usage
     color = generate_random_hex_color()
     custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color, color)
+        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
     )
     color = generate_random_hex_color()
     custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color, color)
+        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
     )
     color = generate_random_hex_color()
     custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color, color)
+        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
     )
 
     custom_widget.show()

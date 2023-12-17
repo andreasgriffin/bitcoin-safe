@@ -44,31 +44,31 @@ class KeyStoreType(SaveAllClass):
 
 class KeyStoreTypes:
     hwi = KeyStoreType(
-        "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", ["usb.svg"]
+        "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg"
     )
     file = KeyStoreType(
         "file",
         "SD card",
         "Import signer details\nvia SD card",
-        ["sd-card.svg"],
+        "sd-card.svg",
     )
     qr = KeyStoreType(
         "qr",
         "QR Code",
         "Import signer details\nvia QR code",
-        ["qr-code.svg"],
+        "camera.svg",
     )
     watch_only = KeyStoreType(
         "watch_only",
         "Watch-Only",
         "xPub / Public Key\nInformation",
-        ["key-hole-icon.svg"],
+        "key-hole-icon.svg",
     )
     seed = KeyStoreType(
         "seed",
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
-        ["seed-plate.svg"],
+        "seed-plate.svg",
         networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.SIGNET],
     )  # add networks here to make the seed option visible
 

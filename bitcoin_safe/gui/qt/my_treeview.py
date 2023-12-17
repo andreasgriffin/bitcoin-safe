@@ -503,10 +503,14 @@ class MyTreeView(QTreeView):
     def select_row(self, content, column, role=Qt.DisplayRole):
         return self.select_rows([content], column, role)
 
-    def select_rows(self, content_list, column, role=Qt.DisplayRole):
+    def select_rows(
+        self, content_list, column, role=Qt.DisplayRole, clear_previous_selection=True
+    ):
         last_selected_index = None
         model = self.model()
         selection_model = self.selectionModel()
+        if clear_previous_selection:
+            selection_model.clear()  # Clear previous selection
         for row in range(model.rowCount()):
             index = model.index(row, column)
             this_content = model.data(index, role)
@@ -772,10 +776,12 @@ class MyTreeView(QTreeView):
     def toggle_toolbar(self, config=None):
         self.show_toolbar(not self.toolbar_shown, config)
 
-    def add_copy_menu(self, menu: QMenu, idx) -> QMenu:
+    def add_copy_menu(self, menu: QMenu, idx, force_columns=None) -> QMenu:
         cc = menu.addMenu(_("Copy"))
         for column in self.Columns:
-            if self.isColumnHidden(column):
+            if self.isColumnHidden(column) and (
+                force_columns is None or column not in force_columns
+            ):
                 continue
             column_title = self.original_model().horizontalHeaderItem(column).text()
             if not column_title:

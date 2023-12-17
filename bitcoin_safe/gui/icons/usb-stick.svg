@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    width="88.339264"
-   height="186.4937"
-   viewBox="0 0 88.339264 186.49369"
+   height="290"
+   viewBox="0 0 88.339264 289.99999"
    fill="none"
    version="1.1"
    id="svg6"
@@ -27,9 +27,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="2.6833334"
-     inkscape:cx="90.372669"
-     inkscape:cy="54.409937"
+     inkscape:zoom="0.67083335"
+     inkscape:cx="-21.614906"
+     inkscape:cy="74.53416"
      inkscape:window-width="1920"
      inkscape:window-height="1007"
      inkscape:window-x="0"
@@ -37,13 +37,13 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="svg6" />
   <path
-     d="M 0,39.261892 H 88.339263 V 142.32407 c 0,24.3944 -19.775235,44.16963 -44.169632,44.16963 v 0 C 19.775235,186.4937 0,166.71847 0,142.32407 Z"
+     d="m 0,99.26189 h 88.339263 v 103.06218 c 0,24.3944 -19.775235,44.16963 -44.169632,44.16963 v 0 C 19.775235,246.4937 0,226.71847 0,202.32407 Z"
      fill="#000000"
      id="path2"
      style="stroke-width:9.81547" />
   <rect
      x="19.630947"
-     y="4.9077349"
+     y="64.90773"
      width="49.07737"
      height="39.261894"
      stroke="#000000"

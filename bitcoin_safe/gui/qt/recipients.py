@@ -11,7 +11,7 @@ import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from .util import ColorScheme
 from ...signals import Signals, SignalFunction
-from .spinbox import CustomDoubleSpinBox
+from .spinbox import BTCSpinBox
 from ...wallet import Wallet
 from ...util import unit_str
 from .dialogs import question_dialog
@@ -45,7 +45,7 @@ class CloseButton(QtWidgets.QPushButton):
 
 class RecipientGroupBox(QtWidgets.QGroupBox):
     signal_close = QtCore.Signal(QtWidgets.QGroupBox)
-    signal_set_max_amount = QtCore.Signal(CustomDoubleSpinBox)
+    signal_set_max_amount = QtCore.Signal(BTCSpinBox)
 
     def __init__(self, signals: Signals, allow_edit=True):
         super().__init__()
@@ -81,7 +81,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.label_line_edit.setPlaceholderText("Enter label here")
 
         self.amount_layout = QtWidgets.QHBoxLayout()
-        self.amount_spin_box = CustomDoubleSpinBox(self.signals.get_network())
+        self.amount_spin_box = BTCSpinBox(self.signals.get_network())
         self.label_unit = QtWidgets.QLabel(unit_str(self.signals.get_network()))
         self.send_max_button = QtWidgets.QPushButton("Send max")
         self.send_max_button.setCheckable(True)
@@ -201,7 +201,6 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
             if self.allow_edit and wallet_of_address.address_is_used(self.address):
                 if dialog_replace_with_new_receiving_address(self.address):
                     # find an address that is not used yet
-
                     address_info = wallet_of_address.get_address()
                     self.address = address_info.address.as_string()
 
@@ -218,6 +217,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
             self.setTitle("")
 
         self.address_line_edit.setPalette(palette)
+        self.address_line_edit.update()
 
 
 class Recipients(QtWidgets.QWidget):
@@ -260,12 +260,23 @@ class Recipients(QtWidgets.QWidget):
         recipient_box = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
+        if recipient.checked_max_amount:
+            recipient_box.send_max_button.click()
         if recipient.label:
             recipient_box.label = recipient.label
         recipient_box.signal_close.connect(self.remove_recipient_widget)
-        self.recipient_list_content_layout.insertWidget(
-            self.recipient_list_content_layout.count() - 1, recipient_box
-        )
+
+        # insert before the button position
+        def insert_before_button(new_widget):
+            index = self.recipient_list_content_layout.indexOf(
+                self.add_recipient_button
+            )
+            if index >= 0:
+                self.recipient_list_content_layout.insertWidget(index, new_widget)
+            else:
+                self.recipient_list_content_layout.addWidget(new_widget)
+
+        insert_before_button(recipient_box)
 
         recipient_box.send_max_button.clicked.connect(
             lambda: self.signal_clicked_send_max_button.emit(recipient_box)

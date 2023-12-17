@@ -46,33 +46,16 @@ from typing import (
 from datetime import datetime
 import decimal
 from decimal import Decimal
-import traceback
-import urllib
 import threading
-import hmac
 import stat
-import locale
 import asyncio
 import urllib.request, urllib.parse, urllib.error
 import builtins
 import json
 import time
 from typing import NamedTuple, Optional
-import ssl
 import ipaddress
 from ipaddress import IPv4Address, IPv6Address
-import random
-import secrets
-import functools
-from abc import abstractmethod, ABC
-import socket
-import enum
-
-import aiohttp
-from aiohttp_socks import ProxyConnector, ProxyType
-import aiorpcx
-import certifi
-import dns.resolver
 from PySide2.QtCore import QLocale
 from .i18n import _
 from typing import (
@@ -90,22 +73,7 @@ from typing import (
     Type,
 )
 
-from PySide2 import QtWidgets, QtCore
-from PySide2.QtGui import (
-    QFont,
-    QColor,
-    QCursor,
-    QPixmap,
-    QStandardItem,
-    QImage,
-    QPalette,
-    QIcon,
-    QFontMetrics,
-    QShowEvent,
-    QPainter,
-    QHelpEvent,
-    QMouseEvent,
-)
+
 from PySide2.QtCore import Signal, QRectF
 from PySide2.QtCore import (
     Qt,
@@ -126,6 +94,9 @@ from PySide2.QtCore import (
     QSize,
 )
 import queue
+
+locale = QLocale()  # This initializes a QLocale object with the user's default locale
+
 
 TX_HEIGHT_FUTURE = -3
 TX_HEIGHT_LOCAL = -2
@@ -193,20 +164,6 @@ def all_subclasses(cls) -> Set:
     return res
 
 
-ca_path = certifi.where()
-
-
-base_units = {"BTC": 8, "mBTC": 5, "bits": 2, "sat": 0}
-base_units_inverse = inv_dict(base_units)
-base_units_list = ["BTC", "mBTC", "bits", "sat"]  # list(dict) does not guarantee order
-
-DECIMAL_POINT_DEFAULT = 5  # mBTC
-
-
-class UnknownBaseUnit(Exception):
-    pass
-
-
 import bdkpython as bdk
 import hashlib
 
@@ -219,20 +176,46 @@ def hash_string(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def cache_method(func):
-    "Only use this method with arguments that can be represented as a string"
+def is_iterable(obj):
+    return hasattr(obj, "__iter__") or hasattr(obj, "__getitem__")
 
-    def wrapper(self, *args, **kwargs):
-        cache_key = f"{func.__name__}({args, kwargs})"
-        result = self.cache.get(cache_key)
-        if result:
-            return result
 
-        result = func(self, *args, **kwargs)
-        self.cache[cache_key] = result
-        return result
+from functools import lru_cache
+
+
+cached_always_keep_functions = []
+cached_functions = []
+
+
+def register_cache(always_keep=False):
+    def wrapper(func):
+        # Decorate the function with lru_cache
+        cached_func = lru_cache(maxsize=None)(func)
+
+        # Logging
+        logger.debug(f"register_cache always_keep {always_keep}")
+
+        # Store the decorated function
+        if always_keep:
+            cached_always_keep_functions.append(cached_func)
+        else:
+            cached_functions.append(cached_func)
+
+        return cached_func
 
     return wrapper
+
+
+# Function to clear all caches
+def clear_cache(include_always_keep=False):
+    logger.debug(
+        f"clear_cache include_always_keep {include_always_keep}  of {len(cached_functions), len(cached_always_keep_functions)} functions"
+    )
+    for func in cached_functions:
+        func.cache_clear()
+    if include_always_keep:
+        for func in cached_always_keep_functions:
+            func.cache_clear()
 
 
 def clean_dict(d):
@@ -249,22 +232,6 @@ def is_address(address) -> bool:
         return bool(bdkaddress)
     except:
         return False
-
-
-def decimal_point_to_base_unit_name(dp: int) -> str:
-    # e.g. 8 -> "BTC"
-    try:
-        return base_units_inverse[dp]
-    except KeyError:
-        raise UnknownBaseUnit(dp) from None
-
-
-def base_unit_name_to_decimal_point(unit_name: str) -> int:
-    # e.g. "BTC" -> 8
-    try:
-        return base_units[unit_name]
-    except KeyError:
-        raise UnknownBaseUnit(unit_name) from None
 
 
 def parse_max_spend(amt: Any) -> Optional[int]:
@@ -368,28 +335,152 @@ class UserCancelled(Exception):
     pass
 
 
-def to_decimal(x: Union[str, float, int, Decimal]) -> Decimal:
-    # helper function mainly for float->Decimal conversion, i.e.:
-    #   >>> Decimal(41754.681)
-    #   Decimal('41754.680999999996856786310672760009765625')
-    #   >>> Decimal("41754.681")
-    #   Decimal('41754.681')
-    if isinstance(x, Decimal):
-        return x
-    return Decimal(str(x))
+# Helper function to lighten a color
+def lighten_color(hex_color, factor):
+    r = int(hex_color[1:3], 16)
+    g = int(hex_color[3:5], 16)
+    b = int(hex_color[5:7], 16)
+    r = int(r + (255 - r) * factor)
+    g = int(g + (255 - g) * factor)
+    b = int(b + (255 - b) * factor)
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
+def hex_to_ansi(hex_color):
+    """Convert hex color to closest ANSI color."""
+    # Mapping of ANSI color codes to RGB values
+    ansi_colors = {
+        30: (0, 0, 0),  # Black
+        31: (128, 0, 0),  # Red
+        32: (0, 128, 0),  # Green
+        33: (128, 128, 0),  # Yellow
+        34: (0, 0, 128),  # Blue
+        35: (128, 0, 128),  # Magenta
+        36: (0, 128, 128),  # Cyan
+        37: (192, 192, 192),  # Light gray
+        90: (128, 128, 128),  # Dark gray
+        91: (255, 0, 0),  # Light red
+        92: (0, 255, 0),  # Light green
+        93: (255, 255, 0),  # Light yellow
+        94: (0, 0, 255),  # Light blue
+        95: (255, 0, 255),  # Light magenta
+        96: (0, 255, 255),  # Light cyan
+        97: (255, 255, 255),  # White
+    }
+
+    # Convert hex to RGB
+    r, g, b = int(hex_color[1:3], 16), int(hex_color[3:5], 16), int(hex_color[5:7], 16)
+
+    # Find the closest ANSI color
+    closest_ansi = min(
+        ansi_colors,
+        key=lambda k: (r - ansi_colors[k][0]) ** 2
+        + (g - ansi_colors[k][1]) ** 2
+        + (b - ansi_colors[k][2]) ** 2,
+    )
+    return closest_ansi
+
+
+# New function to apply color formatting to a string
+def color_format_str(s, hex_color="#000000", color_formatting="rich"):
+    if hex_color == "#000000":
+        return s
+    if color_formatting == "html":
+        return f'<span style="color:{hex_color}">{s}</span>'
+    if color_formatting == "rich":
+        return f'<font color="{hex_color}">{s}</font>'
+    if color_formatting == "bash":
+        ansi_code = hex_to_ansi(hex_color)
+        return f"\033[{ansi_code}m{s}\033[0m"
+
+    return s
+
+
+# Main formatting function
+@register_cache(always_keep=True)
+def format_number(
+    number,
+    color_formatting=None,
+    include_decimal_spaces=True,
+    base_color="#000000",
+    indicate_balance_change=False,
+    unicode_space_character=None,
+):
+    number = int(number)
+    # Split into integer and decimal parts
+    integer_part, decimal_part = f"{number/1e8:.8f}".split(".")
+
+    # Format the integer part with commas or OS native separators
+    abs_integer_part_formatted = locale.toString(abs(int(integer_part)))
+
+    # Split the decimal part into groups
+    decimal_groups = [decimal_part[:2], decimal_part[2:5], decimal_part[5:]]
+
+    # Determine color for negative numbers if indicated
+    overall_color = (
+        "#ff0000"
+        if indicate_balance_change and number < 0 and base_color == "#000000"
+        else base_color
+    )
+
+    # Apply color formatting to decimal groups
+    if color_formatting:
+        lighter_color = lighten_color(overall_color, 0.3)
+        lightest_color = lighten_color(overall_color, 0.5)
+
+        for i in range(len(decimal_groups)):
+            if i == len(decimal_groups) - 1:
+                color = lightest_color
+            elif i == len(decimal_groups) - 2:
+                color = lighter_color
+            else:
+                color = overall_color
+
+            decimal_groups[i] = color_format_str(
+                decimal_groups[i], color, color_formatting
+            )
+
+    # No color formatting applied if color_formatting is None
+    space_character = "\u00A0" if unicode_space_character else " "
+    decimal_part_formatted = (
+        space_character.join(decimal_groups)
+        if include_decimal_spaces
+        else "".join(decimal_groups)
+    )
+
+    integer_part_formatted = abs_integer_part_formatted
+    if number < 0:
+        integer_part_formatted = f"-{abs_integer_part_formatted}"
+    if indicate_balance_change and number >= 0:
+        integer_part_formatted = f"+{abs_integer_part_formatted}"
+
+    # Combine integer and decimal parts with separator
+    int_part = color_format_str(integer_part_formatted, overall_color, color_formatting)
+
+    formatted_number = f"{int_part}{color_format_str(locale.decimalPoint(), overall_color, color_formatting)}{decimal_part_formatted}"
+
+    return formatted_number
 
 
 class Satoshis:
     def __init__(self, value, network: bdk.Network):
         self.network = network
-        self.value = int(value)
+        self.value = value if isinstance(value, int) else self._to_int(value)
+
+    def _to_int(self, s: str):
+        if isinstance(s, float):
+            return int(s)
+
+        f = float(str(s).replace(str(self.network), "").strip().replace(" ", "")) * 1e8
+        return int(f)
 
     def __repr__(self):
         return f"Satoshis({self.value})"
 
     def __str__(self):
-        # note: precision is truncated to satoshis here
-        return format_satoshis(self.value, self.network)
+        return format_number(
+            self.value, color_formatting=None, include_decimal_spaces=True
+        )
 
     def __eq__(self, other):
         return (self.value == other.value) and (self.network == other.network)
@@ -401,8 +492,19 @@ class Satoshis:
         assert self.network == other.network
         return Satoshis(self.value + other.value, self.network)
 
-    def str_with_unit(self):
-        return format_satoshis(self.value, self.network, str_unit=True)
+    def str_with_unit(self, color_formatting="rich"):
+        return f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True, unicode_space_character=True )} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
+
+    def diff(self, color_formatting=None, unit=False):
+
+        return (
+            f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True,   indicate_balance_change=True)}"
+            + (
+                f" {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
+                if unit
+                else ""
+            )
+        )
 
     def __bool__(self):
         return bool(self.value)
@@ -487,168 +589,8 @@ def print_msg(*args):
     sys.stdout.flush()
 
 
-def json_encode(obj):
-    try:
-        s = json.dumps(obj, sort_keys=True, indent=4, cls=MyEncoder)
-    except TypeError:
-        s = repr(obj)
-    return s
-
-
-def json_decode(x):
-    try:
-        return json.loads(x, parse_float=Decimal)
-    except:
-        return x
-
-
-def json_normalize(x):
-    # note: The return value of commands, when going through the JSON-RPC interface,
-    #       is json-encoded. The encoder used there cannot handle some types, e.g. electrum.util.Satoshis.
-    # note: We should not simply do "json_encode(x)" here, as then later x would get doubly json-encoded.
-    # see #5868
-    return json_decode(json_encode(x))
-
-
-# taken from Django Source Code
-def constant_time_compare(val1, val2):
-    """Return True if the two strings are equal, False otherwise."""
-    return hmac.compare_digest(to_bytes(val1, "utf8"), to_bytes(val2, "utf8"))
-
-
-# decorator that prints execution time
-_profiler_logger = logger.getChild("profiler")
-
-
-def profiler(func):
-    def do_profile(args, kw_args):
-        name = func.__qualname__
-        t0 = time.time()
-        o = func(*args, **kw_args)
-        t = time.time() - t0
-        _profiler_logger.debug(f"{name} {t:,.4f} sec")
-        return o
-
-    return lambda *args, **kw_args: do_profile(args, kw_args)
-
-
-def android_ext_dir():
-    from android.storage import primary_external_storage_path
-
-    return primary_external_storage_path()
-
-
-def android_backup_dir():
-    pkgname = get_android_package_name()
-    d = os.path.join(android_ext_dir(), pkgname)
-    if not os.path.exists(d):
-        os.mkdir(d)
-    return d
-
-
-def android_data_dir():
-    import jnius
-
-    PythonActivity = jnius.autoclass("org.kivy.android.PythonActivity")
-    return PythonActivity.mActivity.getFilesDir().getPath() + "/data"
-
-
-def ensure_sparse_file(filename):
-    # On modern Linux, no need to do anything.
-    # On Windows, need to explicitly mark file.
-    if os.name == "nt":
-        try:
-            os.system('fsutil sparse setflag "{}" 1'.format(filename))
-        except Exception as e:
-            logger.info(f"error marking file {filename} as sparse: {e}")
-
-
-def get_headers_dir(config):
-    return config.path
-
-
-def assert_datadir_available(config_path):
-    path = config_path
-    if os.path.exists(path):
-        return
-    else:
-        raise FileNotFoundError(
-            "Electrum datadir does not exist. Was it deleted while running?"
-            + "\n"
-            + "Should be at {}".format(path)
-        )
-
-
-def assert_file_in_datadir_available(path, config_path):
-    if os.path.exists(path):
-        return
-    else:
-        assert_datadir_available(config_path)
-        raise FileNotFoundError(
-            "Cannot find file but datadir is there."
-            + "\n"
-            + "Should be at {}".format(path)
-        )
-
-
 def standardize_path(path):
     return os.path.normcase(os.path.realpath(os.path.abspath(os.path.expanduser(path))))
-
-
-def get_new_wallet_name(wallet_folder: str) -> str:
-    """Returns a file basename for a new wallet to be used.
-    Can raise OSError.
-    """
-    i = 1
-    while True:
-        filename = "wallet_%d" % i
-        if filename in os.listdir(wallet_folder):
-            i += 1
-        else:
-            break
-    return filename
-
-
-def is_android_debug_apk() -> bool:
-    is_android = "ANDROID_DATA" in os.environ
-    if not is_android:
-        return False
-    from jnius import autoclass
-
-    pkgname = get_android_package_name()
-    build_config = autoclass(f"{pkgname}.BuildConfig")
-    return bool(build_config.DEBUG)
-
-
-def get_android_package_name() -> str:
-    is_android = "ANDROID_DATA" in os.environ
-    assert is_android
-    from jnius import autoclass
-    from android.config import ACTIVITY_CLASS_NAME
-
-    activity = autoclass(ACTIVITY_CLASS_NAME).mActivity
-    pkgname = str(activity.getPackageName())
-    return pkgname
-
-
-def assert_bytes(*args):
-    """
-    porting helper, assert args type
-    """
-    try:
-        for x in args:
-            assert isinstance(x, (bytes, bytearray))
-    except:
-        print("assert bytes failed", list(map(type, args)))
-        raise
-
-
-def assert_str(*args):
-    """
-    porting helper, assert args type
-    """
-    for x in args:
-        assert isinstance(x, str)
 
 
 def to_string(x, enc) -> str:
@@ -674,32 +616,6 @@ def to_bytes(something, encoding="utf8") -> bytes:
         raise TypeError("Not a string or bytes like object")
 
 
-bfh = bytes.fromhex
-
-
-def xor_bytes(a: bytes, b: bytes) -> bytes:
-    size = min(len(a), len(b))
-    return (int.from_bytes(a[:size], "big") ^ int.from_bytes(b[:size], "big")).to_bytes(
-        size, "big"
-    )
-
-
-def user_dir():
-    if "ELECTRUMDIR" in os.environ:
-        return os.environ["ELECTRUMDIR"]
-    elif "ANDROID_DATA" in os.environ:
-        return android_data_dir()
-    elif os.name == "posix":
-        return os.path.join(os.environ["HOME"], ".electrum")
-    elif "APPDATA" in os.environ:
-        return os.path.join(os.environ["APPDATA"], "Electrum")
-    elif "LOCALAPPDATA" in os.environ:
-        return os.path.join(os.environ["LOCALAPPDATA"], "Electrum")
-    else:
-        # raise Exception("No home directory found in environment variables.")
-        return
-
-
 def resource_path(*parts):
     return os.path.join(pkg_dir, *parts)
 
@@ -708,143 +624,8 @@ def resource_path(*parts):
 pkg_dir = os.path.split(os.path.realpath(__file__))[0]
 
 
-def is_valid_email(s):
-    regexp = r"[^@]+@[^@]+\.[^@]+"
-    return re.match(regexp, s) is not None
-
-
-def is_hash256_str(text: Any) -> bool:
-    if not isinstance(text, str):
-        return False
-    if len(text) != 64:
-        return False
-    return is_hex_str(text)
-
-
-def is_hex_str(text: Any) -> bool:
-    if not isinstance(text, str):
-        return False
-    try:
-        b = bytes.fromhex(text)
-    except:
-        return False
-    # forbid whitespaces in text:
-    if len(text) != 2 * len(b):
-        return False
-    return True
-
-
-def is_integer(val: Any) -> bool:
-    return isinstance(val, int)
-
-
-def is_non_negative_integer(val: Any) -> bool:
-    if is_integer(val):
-        return val >= 0
-    return False
-
-
-def is_int_or_float(val: Any) -> bool:
-    return isinstance(val, (int, float))
-
-
-def is_non_negative_int_or_float(val: Any) -> bool:
-    if is_int_or_float(val):
-        return val >= 0
-    return False
-
-
-def chunks(items, size: int):
-    """Break up items, an iterable, into chunks of length size."""
-    if size < 1:
-        raise ValueError(f"size must be positive, not {repr(size)}")
-    for i in range(0, len(items), size):
-        yield items[i : i + size]
-
-
-# Check that Decimal precision is sufficient.
-# We need at the very least ~20, as we deal with msat amounts, and
-# log10(21_000_000 * 10**8 * 1000) ~= 18.3
-# decimal.DefaultContext.prec == 28 by default, but it is mutable.
-# We enforce that we have at least that available.
-assert (
-    decimal.getcontext().prec >= 28
-), f"PyDecimal precision too low: {decimal.getcontext().prec}"
-
-# DECIMAL_POINT = locale.localeconv()['decimal_point']  # type: str
-DECIMAL_POINT = "."
-THOUSANDS_SEP = " "
-assert len(DECIMAL_POINT) == 1, f"DECIMAL_POINT has unexpected len. {DECIMAL_POINT!r}"
-assert len(THOUSANDS_SEP) == 1, f"THOUSANDS_SEP has unexpected len. {THOUSANDS_SEP!r}"
-
-
 def unit_str(network: bdk.Network):
     return "BTC" if network is None or network == bdk.Network.BITCOIN else "tBTC"
-
-
-def format_satoshis(
-    x: Union[int, float, Decimal, str, Satoshis, None],  # amount in satoshis
-    network: bdk.Network,
-    is_diff: bool = False,  # if True, enforce a leading sign (+/-)
-    add_thousands_sep: bool = True,  # if True, add whitespaces, for better readability of the numbers
-    add_satohis_whitesapces: bool = True,
-    str_unit=None,
-) -> str:
-    decimal_point = 8
-
-    locale = QLocale.system()
-    decimal_separator = locale.decimalPoint()
-
-    if x is None:
-        return "unknown"
-    if parse_max_spend(x):
-        return f"max({x})"
-    assert isinstance(x, (int, float, Decimal, Satoshis)), f"{x!r} should be a number"
-    # lose redundant precision
-    x = Decimal(x)
-
-    # format string
-    decimal_format = "." + str(decimal_point) if decimal_point > 0 else ""
-    if is_diff:
-        decimal_format = "+" + decimal_format
-    # initial result
-    scale_factor = pow(10, decimal_point)
-    result = ("{:" + decimal_format + "f}").format(x / scale_factor)
-
-    # add extra decimal places (zeros)
-    integer_part, fract_part = result.split(".")
-
-    # add whitespaces as thousands' separator for better readability of numbers
-    if add_thousands_sep:
-        sign = integer_part[0] if integer_part[0] in ("+", "-") else ""
-        if sign == "-":
-            integer_part = integer_part[1:]
-        integer_part = "{:,}".format(int(integer_part)).replace(",", THOUSANDS_SEP)
-        integer_part = sign + integer_part
-
-    if add_satohis_whitesapces:
-        fract_part = THOUSANDS_SEP.join(
-            [fract_part[0:2], fract_part[2:5], fract_part[5:]]
-        )
-
-    result = integer_part + DECIMAL_POINT + fract_part
-
-    def strip(v):
-        return (
-            str(v)
-            .strip()
-            .replace(" ", "")
-            .replace(THOUSANDS_SEP, "")
-            .replace(DECIMAL_POINT, "")
-            .replace(",", "")
-        )
-
-    # sanity check that the number wasn't changed
-    assert int(strip(result)) == int(strip(x))
-
-    if str_unit:
-        result += f" {unit_str(network)}"
-    return result
 
 
 FEERATE_PRECISION = 1  # num fractional decimal places for sat/byte fee rates

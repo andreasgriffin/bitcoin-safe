@@ -13,6 +13,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtSvg import QSvgWidget
 from .util import (
     Message,
+    add_to_buttonbox,
     icon_path,
     center_in_widget,
     qresize,
@@ -173,6 +174,8 @@ class KeyStoreUI(QObject):
 
         label_keystore_label = QLabel(self.box_form)
         self.edit_label = QLineEdit(self.box_form)
+        label_keystore_label.setHidden(True)
+        self.edit_label.setHidden(True)
         self.label_fingerprint = QLabel(self.box_form)
         self.edit_fingerprint = CameraInputLineEdit(
             custom_handle_input=self._on_handle_input
@@ -407,15 +410,9 @@ class SignerUI(QObject):
     def create(self):
         tab = QWidget()
 
-        self.layout_keystore_buttons = QHBoxLayout(tab)
+        self.layout_keystore_buttons = QVBoxLayout(tab)
 
         for signer in self.signers:
-            button = create_button(
-                signer.label,
-                (signer.keystore_type.icon_filename),
-                parent=tab,
-                outer_layout=self.layout_keystore_buttons,
-            )
 
             def callback_generator(signer):
                 def f():
@@ -423,7 +420,13 @@ class SignerUI(QObject):
 
                 return f
 
+            button = QPushButton(signer.label)
+            button.setMinimumHeight(30)
+            button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             button.clicked.connect(callback_generator(signer))
+            self.layout_keystore_buttons.addWidget(button)
+
+            # forward the signal_signature_added from each signer to self.signal_signature_added
             signer.signal_signature_added.connect(self.signal_signature_added.emit)
 
         return tab

@@ -1,5 +1,6 @@
 import logging
 from bitcoin_safe.gui.qt.open_tx_dialog import TransactionDialog
+from bitcoin_safe.signals import Signals
 
 logger = logging.getLogger(__name__)
 
@@ -98,10 +99,15 @@ class QRSigner(AbstractSigner):
     keystore_type = KeyStoreTypes.qr
 
     def __init__(
-        self, label: str, network: bdk.Network, blockchain: bdk.Blockchain
+        self,
+        label: str,
+        network: bdk.Network,
+        blockchain: bdk.Blockchain,
+        dummy_wallet: Wallet,
     ) -> None:
         super().__init__(network=network, blockchain=blockchain)
         self._label = label
+        self.dummy_wallet = dummy_wallet
 
     def scan_result_callback(
         self, original_psbt: bdk.PartiallySignedTransaction, data: bitcoin_qr.Data
@@ -112,8 +118,10 @@ class QRSigner(AbstractSigner):
             logger.debug(str(scanned_psbt.serialize()))
             psbt2 = original_psbt.combine(scanned_psbt)
             if psbt2.serialize() != original_psbt.serialize():
-                self.signal_signature_added.emit(psbt2)
+                # finalize the psbt (some hardware wallets like specter diy dont do that)
+                self.dummy_wallet.bdkwallet.sign(psbt2, None)
                 logger.debug(f"psbt updated {psbt2.serialize()}")
+                self.signal_signature_added.emit(psbt2)
             else:
                 logger.debug(f"psbt unchanged {psbt2.serialize()}")
         elif data.data_type == bitcoin_qr.DataType.Tx:

@@ -25,11 +25,13 @@ from PySide2.QtCore import QObject, QEvent
 from PySide2.QtGui import QBrush, QColor, QPainter
 import enum
 from PySide2.QtCore import QTimer
-import locale
+from PySide2.QtCore import QLocale
+
+locale = QLocale()  # This initializes a QLocale object with the user's default locale
 
 
 def format_block_number(block_number):
-    return locale.format_string("%d", block_number, grouping=True)
+    return locale.toString(int(block_number))
 
 
 class BlockType(enum.Enum):

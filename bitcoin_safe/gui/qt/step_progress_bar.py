@@ -42,6 +42,7 @@ class StepProgressBar(QWidget):
         parent=None,
         mark_current_step_as_completed=False,
         clickable=True,
+        use_checkmark_icon=True,
     ):
         super().__init__(parent)
         self.steps = steps
@@ -53,10 +54,9 @@ class StepProgressBar(QWidget):
         self.padding = 0
         self.label_distance = 5
         self.max_label_height = 0  # Initialize max label height
+        self.use_checkmark_icon = use_checkmark_icon
 
-        self.step_labels = [
-            "Step " + str(i) for i in range(1, steps + 1)
-        ]  # Default labels
+        self.step_labels = [f"Step {i+1}" for i in range(steps)]  # Default labels
         normalized_icon_path = os.path.normpath(
             os.path.join(os.path.dirname(__file__), "../icons/checkmark.png")
         )
@@ -84,7 +84,7 @@ class StepProgressBar(QWidget):
         self.recalculate_max_height()
         super().resizeEvent(event)
 
-    def set_step_labels(self, labels):
+    def set_labels(self, labels):
 
         self.step_labels = labels + [
             f"Step {i+1}" for i in range(len(labels), self.steps)
@@ -108,7 +108,7 @@ class StepProgressBar(QWidget):
         radius = self.radius  # Assuming you have a circle radius for each step
         circle_y = radius + self.tube_width  # Position circles near the top
 
-        for i in range(1, self.steps + 1):
+        for i in range(self.steps):
             # Define the rectangle area for each step
             if self._ellipse_rect(i).contains(event.pos()):
                 self.signal_step_clicked.emit(i)  # Emit the clicked step number
@@ -141,7 +141,7 @@ class StepProgressBar(QWidget):
         text_option.setWrapMode(QTextOption.WordWrap)
         text_option.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 
-        for i in range(1, self.steps + 1):
+        for i in range(self.steps):
             rect = self._ellipse_rect(i)
             center_point = rect.center()
 
@@ -150,7 +150,7 @@ class StepProgressBar(QWidget):
             )
 
             # Draw connecting line
-            if i < self.steps:
+            if i < self.steps - 1:
                 next_color = (
                     completed_color if i < self.current_step else inactive_color
                 )
@@ -182,8 +182,9 @@ class StepProgressBar(QWidget):
             painter.drawEllipse(rect)
 
             # Draw checkmark icon or step number
-            if is_past_step or (
-                i == self.current_step and self.mark_current_step_as_completed
+            if self.use_checkmark_icon and (
+                is_past_step
+                or (i == self.current_step and self.mark_current_step_as_completed)
             ):
                 icon_size = self.checkmark_pixmap.size()
                 painter.drawPixmap(
@@ -191,18 +192,18 @@ class StepProgressBar(QWidget):
                     center_point.y() - icon_size.height() / 2,
                     self.checkmark_pixmap,
                 )
-            elif i >= self.current_step:
+            else:
                 painter.setPen(QPen(bubble_color))
                 painter.drawText(
                     rect,
                     Qt.AlignCenter,
-                    str(i),
+                    str(i + 1),
                 )
 
             # Draw step text below circles
             painter.setPen(QPen(text_color))
             painter.setFont(QFont("Arial", 10))
-            painter.drawText(self._label_rect(i), self.step_labels[i - 1], text_option)
+            painter.drawText(self._label_rect(i), self.step_labels[i], text_option)
 
         painter.end()
 
@@ -213,7 +214,7 @@ class StepProgressBar(QWidget):
         circle_y = self.radius + self.tube_width  # Position circles near the top
         step_width = self._step_width()
         return QRectF(
-            step_width * (i) - step_width / 2,
+            step_width * (i + 1) - step_width / 2,
             circle_y + self.radius + self.padding + self.label_distance,
             step_width,
             self.max_label_height,
@@ -223,7 +224,7 @@ class StepProgressBar(QWidget):
         circle_y = self.radius + self.tube_width  # Position circles near the top
         step_width = self._step_width()
         return QRectF(
-            step_width * i - self.radius,
+            step_width * (i + 1) - self.radius,
             circle_y - self.radius,
             2 * self.radius,
             2 * self.radius,
@@ -250,7 +251,7 @@ class StepProgressBar(QWidget):
 
     def mouseMoveEvent(self, event):
         in_circle = None
-        for i in range(1, self.steps + 1):
+        for i in range(self.steps):
             if self._ellipse_rect(i).contains(event.pos()):
                 in_circle = i
                 break
@@ -260,9 +261,7 @@ class StepProgressBar(QWidget):
             self.restore_cursor()
         else:
             self.set_cursor()
-            QToolTip.showText(
-                event.globalPos(), self.step_tooltips[in_circle - 1], self
-            )
+            QToolTip.showText(event.globalPos(), self.step_tooltips[in_circle], self)
 
         super().mouseMoveEvent(event)
 
@@ -314,7 +313,7 @@ class HorizontalIndicator(QWidget):
 
         # Draw the triangle indicator pointing up
         step_width = self.width() / (self.steps + 1)
-        triangle_center = QPoint(int(step_width * self.current_step), line_y)
+        triangle_center = QPoint(int(step_width * (self.current_step + 1)), line_y)
         triangle = QPolygon(
             [
                 triangle_center - QPoint(self.triangle_size, 0),
@@ -332,11 +331,20 @@ class HorizontalIndicator(QWidget):
 
 class StepProgressContainer(QWidget):
     def __init__(
-        self, steps, current_step=1, hide_on_click=True, clickable=True, parent=None
+        self,
+        steps,
+        current_step=1,
+        hide_on_click=True,
+        clickable=True,
+        use_checkmark_icon=True,
+        parent=None,
     ):
         super().__init__(parent)
         self.step_bar = StepProgressBar(
-            steps, current_step=current_step, clickable=clickable
+            steps,
+            current_step=current_step,
+            clickable=clickable,
+            use_checkmark_icon=use_checkmark_icon,
         )
         self.horizontal_indicator = HorizontalIndicator(steps, current_step)
         self.stacked_widget = QStackedWidget()
@@ -369,7 +377,7 @@ class StepProgressContainer(QWidget):
             return
 
         currently_visible_step = (
-            self.stacked_widget.currentIndex() + 1
+            self.stacked_widget.currentIndex()
             if self.stacked_widget.isVisible()
             else None
         )
@@ -386,7 +394,7 @@ class StepProgressContainer(QWidget):
         self.set_clicked_step(step)
 
     def set_clicked_step(self, step):
-        self.stacked_widget.setCurrentIndex(step - 1)
+        self.stacked_widget.setCurrentIndex(step)
         self.horizontal_indicator.set_current_step(step)
 
     def set_stacked_widget_visible(self, is_visible):
@@ -396,7 +404,7 @@ class StepProgressContainer(QWidget):
     def set_current_step(self, step):
         self.step_bar.set_current_step(step)
         self.horizontal_indicator.set_current_step(step)
-        self.stacked_widget.setCurrentIndex(step - 1)
+        self.stacked_widget.setCurrentIndex(step)
 
     def set_custom_widget(self, step, widget):
         """
@@ -409,12 +417,12 @@ class StepProgressContainer(QWidget):
         curreent_idx = self.stacked_widget.currentIndex()
 
         # Remove the old widget if there is one
-        old_widget = self.stacked_widget.widget(step - 1)
+        old_widget = self.stacked_widget.widget(step)
         if old_widget is not None:
             self.stacked_widget.removeWidget(old_widget)
 
         # Add the new custom widget for the step
-        self.stacked_widget.insertWidget(step - 1, widget)
+        self.stacked_widget.insertWidget(step, widget)
 
         self.stacked_widget.setCurrentIndex(curreent_idx)
 
@@ -425,7 +433,7 @@ class DemoApp(QWidget):
 
         # Create the StepProgressContainer with the desired steps
         self.step_progress_container = StepProgressContainer(steps=8, current_step=1)
-        self.step_progress_container.step_bar.set_step_labels(
+        self.step_progress_container.step_bar.set_labels(
             ["Create Account\n from hardware signers", "Login", "Payment", "Confirm"]
         )
         self.step_progress_container.step_bar.set_step_tooltips(
@@ -436,7 +444,7 @@ class DemoApp(QWidget):
                 "<b>Confirm your submission.</b>",
             ]
         )
-        for i in range(1, 5):
+        for i in range(5):
             self.step_progress_container.set_custom_widget(i, QTextEdit(f"{i}"))
 
         self.init_ui()
@@ -482,7 +490,7 @@ class DemoApp(QWidget):
             )
 
     def prev_step(self):
-        if self.step_progress_container.step_bar.current_step > 1:
+        if self.step_progress_container.step_bar.current_step > 0:
             self.step_progress_container.set_current_step(
                 self.step_progress_container.step_bar.current_step - 1
             )

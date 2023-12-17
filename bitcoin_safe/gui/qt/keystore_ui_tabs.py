@@ -9,6 +9,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from .util import (
+    add_to_buttonbox,
     icon_path,
     center_in_widget,
     qresize,
@@ -36,25 +37,20 @@ class KeyStoreUITypeChooser(QObject):
         tab.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         self.layout_keystore_buttons = QHBoxLayout(tab)
 
-        self.button_hwi = create_button(
-            "",  # KeyStoreTypes.hwi.description,
-            (KeyStoreTypes.hwi.icon_filename),
-            parent=tab,
-            outer_layout=self.layout_keystore_buttons,
-            max_sizes=[(40, 40)],
+        # Create the QDialogButtonBox
+        self.buttonBox = QDialogButtonBox(tab)
+
+        # Create custom buttons
+        self.button_hwi = add_to_buttonbox(
+            self.buttonBox, "Connect USB", KeyStoreTypes.hwi.icon_filename
         )
-        self.button_file = create_button(
-            "",  # KeyStoreTypes.file.description,
-            (KeyStoreTypes.file.icon_filename),
-            parent=tab,
-            outer_layout=self.layout_keystore_buttons,
-            max_sizes=[(40, 40)],
+        self.button_file = add_to_buttonbox(
+            self.buttonBox, "Import file", KeyStoreTypes.file.icon_filename
         )
-        self.button_qr = create_button(
-            "",  # KeyStoreTypes.qr.description,
-            (KeyStoreTypes.qr.icon_filename),
-            parent=tab,
-            outer_layout=self.layout_keystore_buttons,
-            max_sizes=[(40, 40)],
+        self.button_qr = add_to_buttonbox(
+            self.buttonBox, "Scan", KeyStoreTypes.qr.icon_filename
         )
+
+        self.layout_keystore_buttons.addWidget(self.buttonBox)
+
         return tab

@@ -4,8 +4,13 @@ from pyparsing import Optional
 
 from bitcoin_safe.util import Satoshis
 
-from .psbt_util import get_txouts_from_inputs
-from .tx import TXInfos
+from .psbt_util import (
+    FeeInfo,
+    estimate_segwit_fee_rate_from_psbt,
+    get_likely_origin_wallet,
+    get_txouts_from_inputs,
+)
+from .tx import TxBuilderInfos, TxUiInfos
 from .logging import setup_logging
 
 setup_logging()
@@ -53,7 +58,7 @@ from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
 from .mempool import MempoolData
-from .pythonbdk_types import OutPoint
+from .pythonbdk_types import OutPoint, robust_address_str_from_script
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from .gui.qt.open_tx_dialog import TransactionDialog
 from .descriptors import MultipathDescriptor
@@ -115,6 +120,7 @@ class MainWindow(Ui_MainWindow):
         self.signals.export_bip329_labels.connect(self.export_bip329_labels)
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
         self.signals.open_wallet.connect(self.open_wallet)
+        self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
 
         self._init_tray()
 
@@ -123,6 +129,18 @@ class MainWindow(Ui_MainWindow):
             self.welcome_screen.add_new_wallet_welcome_tab()
 
         self.open_last_opened_tx()
+
+    def on_signal_broadcast_tx(self, transaction: bdk.Transaction):
+        last_qt_wallet_involved: QTWallet = None
+        for qt_wallet in self.qt_wallets.values():
+            if qt_wallet.wallet.transaction_involves_wallet(transaction):
+                qt_wallet.sync()
+                last_qt_wallet_involved = qt_wallet
+
+        self.tab_wallets.setCurrentWidget(last_qt_wallet_involved.tab)
+        last_qt_wallet_involved.tabs.setCurrentWidget(
+            last_qt_wallet_involved.history_tab
+        )
 
     def _init_tray(self):
         self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), None)
@@ -205,8 +223,51 @@ class MainWindow(Ui_MainWindow):
         if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
             return self.open_tx_in_tab(txlike)
 
-        if isinstance(txlike, (bdk.PartiallySignedTransaction, TXInfos)):
+        if isinstance(txlike, (bdk.PartiallySignedTransaction, TxBuilderInfos)):
             return self.open_psbt_in_tab(txlike)
+
+        if isinstance(txlike, TxUiInfos):
+
+            def get_change_address(addresses, wallet: Wallet):
+                for address in addresses:
+                    if wallet.is_change(address):
+                        return address
+
+            outpoints = [
+                OutPoint.from_bdk(utxo.outpoint) for utxo in txlike.utxo_dict.values()
+            ]
+
+            # trying to identitfy the wallet , where i should fill the send tab
+            wallet = None
+            if txlike.main_wallet_id and self.qt_wallets.get(txlike.main_wallet_id):
+                wallet = self.qt_wallets.get(txlike.main_wallet_id).wallet
+
+            if not wallet:
+                wallet = get_likely_origin_wallet(
+                    outpoints, wallets=self.signals.get_wallets().values()
+                )
+
+            if not wallet:
+                Message(
+                    f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
+                ).show_message()
+                wallet = self.get_qt_wallet().wallet
+
+            qt_wallet: QTWallet = self.qt_wallets.get(wallet.id)
+            self.tab_wallets.setCurrentWidget(qt_wallet.tab)
+            qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
+
+            # remove change output if possible
+            change_address = get_change_address(
+                [recipient.address for recipient in txlike.recipients], wallet
+            )
+            if change_address:
+                for i in range(len(txlike.recipients)):
+                    if txlike.recipients[i].address == change_address:
+                        txlike.recipients.pop(i)
+                        break
+
+            return qt_wallet.uitx_creator.set_ui(txlike)
 
         # try to convert a bytes like object to a string
         if isinstance(txlike, bytes):
@@ -294,7 +355,9 @@ class MainWindow(Ui_MainWindow):
             utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
-            fee_rate=fee / tx.vsize() if fee is not None else None,
+            fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False)
+            if fee is not None
+            else None,
             confirmation_time=confirmation_time,
             blockchain=self.get_blockchain_of_any_wallet(),
             tx=tx,
@@ -313,32 +376,29 @@ class MainWindow(Ui_MainWindow):
 
     def open_psbt_in_tab(self, tx):
         psbt: bdk.PartiallySignedTransaction = None
-        fee_rate = None
+        fee_info: FeeInfo = None
 
         logger.debug(f"tx is of type {type(tx)}")
 
         # converting to TxBuilderResult
-        if isinstance(tx, TXInfos):
-            fee_rate = tx.fee_rate
-
-            if not tx.builder_result:
-                logger.info("trying to tx.finish(wallet)")
-                tx = self.get_qt_wallet().wallet.create_psbt(tx)
-
+        if isinstance(tx, TxBuilderInfos):
             tx = tx.builder_result  # then it is processed in the next if stament
-            logger.debug(f"Converted TXInfos --> {type(tx)}")
+            logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
 
         if isinstance(tx, bdk.TxBuilderResult):
             psbt = tx.psbt
+            fee_info = estimate_segwit_fee_rate_from_psbt(psbt)
             logger.debug(f"Converted TxBuilderResult --> {type(psbt)}")
 
         if isinstance(tx, bdk.PartiallySignedTransaction):
             logger.debug(f"Got a PartiallySignedTransaction")
             psbt = tx
+            fee_info = estimate_segwit_fee_rate_from_psbt(psbt)
 
         if isinstance(tx, str):
             psbt = bdk.PartiallySignedTransaction(tx)
             logger.debug(f"Converted str to {type(tx)}")
+            fee_info = estimate_segwit_fee_rate_from_psbt(psbt)
 
         if isinstance(tx, bdk.TransactionDetails):
             print("is bdk.TransactionDetails")
@@ -368,7 +428,7 @@ class MainWindow(Ui_MainWindow):
             utxo_list,
             network=self.config.network_settings.network,
             mempool_data=self.mempool_data,
-            fee_rate=fee_rate,
+            fee_info=fee_info,
             blockchain=self.get_blockchain_of_any_wallet(),
             psbt=psbt,
         )
@@ -512,7 +572,6 @@ class MainWindow(Ui_MainWindow):
 
     def create_qtprotowallet(self, m_of_n) -> QTProtoWallet:
         def create_wallet():
-            self.tab_wallets.removeTab(self.tab_wallets.indexOf(qtprotowallet.tab))
             wallet = Wallet.from_protowallet(
                 qtprotowallet.protowallet,
                 qtprotowallet.wallet_id,
@@ -523,6 +582,7 @@ class MainWindow(Ui_MainWindow):
             for address in wallet.get_addresses():
                 wallet.labels.set_addr_category(address, "Friends")
 
+            self.tab_wallets.removeTab(self.tab_wallets.indexOf(qtprotowallet.tab))
             qt_wallet = self.add_qt_wallet(wallet)
             qt_wallet.address_list_tags.add("Friends")
             qt_wallet.address_list_tags.add("KYC-Exchange")

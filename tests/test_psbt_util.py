@@ -17,7 +17,7 @@ def test_psbts():
         "cHNidP8BAH0BAAAAAaQmHDnvyNh3SMhYOptNUIbCEqkDyPUodsbshbyX6CS0BAAAAAD9////ApbwSgAAAAAAFgAU2JjsSJmtNJqrSKlL6MUpcFB6ng7oAwAAAAAAACIAIB1iOCPFCuTyz/g7QF3ZUSPErbPzyEYdZLDA+oipZP6+KMEmAAABAP3JAgIAAAABGju6Rif4mlNuTLV/JJ8FQXSUgrCxyBJqlomo3JzHVQoDAAAAAP3///8VtRExAAAAAAAWABSUfKgf8Gx4DtgCPlIV6SsF+I8FIZ5+QAAAAAAAFgAU7G63L/EV40CsWrmOVQAOV65hBUvMCVgAAAAAABepFMGNsv6av40/TGJOBGcbAjdCre5Gh+vLVQAAAAAAFgAUtwEGAFOlSqg/RCd8YV68tofpCAp+9EoAAAAAABYAFFOV8HAr7QNkAxVeo9K3poeglnA+poFaAAAAAAAWABSdWbWW0ehRFZbmTDHeo4g0P5ir+5S1SQAAAAAAGXapFDSAYPDISc0pYwcDv4jwuVIGhivgiKxfMlsAAAAAABYAFEIk7/vegOj1pmzNuNZAT11h7WuBV15PAAAAAAAXqRQ78S6GgebV361WMM6M/QRcPT1yj4dZZVsAAAAAABYAFKhkrTqxWd91WXwYtGORcNKuFl6QRJtZAAAAAAAWABS5WAprwfREeKtY0GSWEWUH/1fToNp0OQAAAAAAFgAUwy6wUb6UAvQ1qSTOMqZYzQoW0eEm0RazCAAAABYAFA/anu1dQBUKkO9aT8fFgtqOMpdRIRpXAAAAAAAZdqkU8pU2T3qf52tAfiNHPGx3rbJs/lCIrFK6LwAAAAAAFgAUA/DGv8DpP5AFAuCXfnkkxhnqP5GZDDoAAAAAABYAFCWRr8XphrCCO12RgcBKBDeGPDKGUkBQAAAAAAAWABQ74FXbsmiaoQKI20bzjnQwADs4LZiAPQAAAAAAFgAUMPAzgfc+NEQL+pJORoRmTqOLYi8Ccj8AAAAAABl2qRSzACucy7pGjjmIKQcya8TrDbBsj4isjIZSAAAAAAAWABS4SLqL0rXvVQUFqtTwd4b+3SHJQds4TgAAAAAAFgAUb4/333FxheUn7aTLWs8VCpZiLBgMviYAAQEffvRKAAAAAAAWABRTlfBwK+0DZAMVXqPSt6aHoJZwPiIGA4jB53vBV2PnTemvac24lRGSIc3BRfE3+eKvQzuTVdyuGL1fmV1UAACAAQAAgAAAAIAAAAAAFQAAAAEHAAEIawJHMEQCIES4GSlpjaAzwcOwQcfwXrKUSatQ1EJGqPUfokLrpPOmAiBiQ4hOQWCs3RCYiSJFBrke9cDfOv3MWwfbLpBJTwiFIQEhA4jB53vBV2PnTemvac24lRGSIc3BRfE3+eKvQzuTVdyuACICAkhCjgk5sNSHM7qWEB5GBE1wOgzX8TgsX8WvQ29TKmwmGL1fmV1UAACAAQAAgAAAAIABAAAAFwAAAAAA"
     )
 
-    assert psbt_simple_json(psbt_0_1of1) == {
+    assert get_psbt_simple_json(psbt_0_1of1) == {
         "inputs": [
             {
                 "bip32_derivation": [
@@ -41,7 +41,7 @@ def test_psbts():
         ]
     }
 
-    assert psbt_simple_json(psbt_1_1of1) == {
+    assert get_psbt_simple_json(psbt_1_1of1) == {
         "inputs": [
             {
                 "bip32_derivation": [
@@ -66,7 +66,7 @@ def test_psbts():
         ]
     }
 
-    assert psbt_simple_json(psbt_0_2of3) == {
+    assert get_psbt_simple_json(psbt_0_2of3) == {
         "inputs": [
             {
                 "bip32_derivation": [
@@ -108,7 +108,7 @@ def test_psbts():
         ]
     }
 
-    assert psbt_simple_json(psbt_1_2of3) == {
+    assert get_psbt_simple_json(psbt_1_2of3) == {
         "inputs": [
             {
                 "bip32_derivation": [

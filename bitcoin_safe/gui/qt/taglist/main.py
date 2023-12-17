@@ -2,6 +2,8 @@ import logging
 
 from numpy import spacing
 
+from bitcoin_safe.util import register_cache
+
 logger = logging.getLogger(__name__)
 
 from PySide2.QtWidgets import *
@@ -26,13 +28,14 @@ class AddressDragInfo:
 
 
 def hash_string(text):
-    return hashlib.sha256(text.encode()).hexdigest()
+    return hashlib.sha256(str(text).encode()).hexdigest()
 
 
 def rescale(value, old_min, old_max, new_min, new_max):
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
 
 
+@register_cache(always_keep=True)
 def hash_color(text):
     hash_value = int(hash_string(text), 16) & 0xFFFFFF
     r = (hash_value & 0xFF0000) >> 16
@@ -79,7 +82,6 @@ class CustomDelegate(QStyledItemDelegate):
 
     def paint(self, painter: QPainter, option, index):
         color = QColor(index.data(Qt.UserRole + 1))
-        painter.save()
 
         rect = option.rect
 
@@ -97,13 +99,39 @@ class CustomDelegate(QStyledItemDelegate):
 
         QApplication.style().drawControl(QStyle.CE_PushButton, button_style, painter)
 
+        def draw_html_text(
+            painter, text, rect, pos=None, align=Qt.AlignCenter, scale=1
+        ):
+            if not text:
+                return
+
+            doc = QTextDocument()
+            doc.setHtml(text)
+            doc.setTextWidth(rect.width())
+            option = QTextOption()
+            option.setAlignment(align)
+            doc.setDefaultTextOption(option)
+
+            # Adjust the font size with the specified scale within the QTextDocument
+            font = doc.defaultFont()
+            font.setPointSize(font.pointSize() * scale)
+            doc.setDefaultFont(font)
+
+            painter.save()  # Save the painter state
+            painter.translate(pos if pos else rect.topLeft())
+            doc.drawContents(painter)
+            painter.restore()  # Restore the painter state
+
         # Draw the text and subtext
         text = index.data()
         subtext = index.data(Qt.UserRole + 2)
 
-        height_split = 3.5 / 6 if subtext else 1
+        height_split = 3.5 / 6
         rectText = QRect(
-            rect.left(), rect.top(), rect.width(), rect.height() * height_split
+            rect.left(),
+            rect.top(),
+            rect.width(),
+            rect.height() * (height_split * 2 / 3 if subtext else 1),
         )
         rectSubtext = QRect(
             rect.left(),
@@ -113,20 +141,15 @@ class CustomDelegate(QStyledItemDelegate):
         )
 
         if index != self.currentlyEditingIndex:
-            if subtext:
-                painter.drawText(rectText, Qt.AlignBottom | Qt.AlignHCenter, text)
-                # Set a smaller font size for the subtext
-                font = painter.font()
-                font.setPointSize(
-                    font.pointSize() * 0.8
-                )  # Adjust this value to get the desired font size
-                painter.setFont(font)
-                painter.drawText(rectSubtext, Qt.AlignTop | Qt.AlignHCenter, subtext)
-                painter.setFont(QFont())  # Reset to the default font
-            else:
-                painter.drawText(rectText, Qt.AlignCenter, text)
 
-        painter.restore()
+            # Draw HTML-formatted text
+            draw_html_text(
+                painter,
+                text,
+                rectText,
+                pos=rectText.topLeft() + QPoint(0, rectText.height() // 2),
+            )
+            draw_html_text(painter, subtext, rectSubtext, scale=0.8)
 
     # def sizeHint(self, option, index):
     #     # Increase the height by 5 to compensate for the reduced rectangle height in paint()
