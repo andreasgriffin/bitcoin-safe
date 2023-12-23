@@ -13,10 +13,10 @@ handlers:
     level: DEBUG
     formatter: simple
     filename: .bitcoin_safe.log
-    maxBytes: 10485760  # 10 MB (adjust the size as needed)
-    backupCount: 0     # Number of backup files to keep
+    maxBytes: 10000000
+    backupCount: 3
 loggers:
   root:
     level: DEBUG
     handlers: [console, file]
-    propagate: no
+    propagate: yes

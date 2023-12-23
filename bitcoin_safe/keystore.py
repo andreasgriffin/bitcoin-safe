@@ -1,11 +1,13 @@
 import logging
+from typing import Dict
 
 logger = logging.getLogger(__name__)
 
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
+from bitcoin_usb.address_types import AddressType, AddressTypes
+from packaging import version
 
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
@@ -21,7 +23,9 @@ from .gui.qt.util import add_tab_to_tabs, read_QIcon
 import bdkpython as bdk
 from .storage import BaseSaveableClass, SaveAllClass
 import copy
-from .descriptors import AddressType, MultipathDescriptor, public_descriptor_info
+from .descriptors import AddressType, MultipathDescriptor
+from bitcoin_usb.device import SimplePubKeyProvider
+from bitcoin_usb.address_types import ConstDerivationPaths
 
 
 class KeyStoreType(SaveAllClass):
@@ -68,7 +72,7 @@ class KeyStoreTypes:
         "seed",
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
-        "seed-plate.svg",
+        "logo.svg",
         networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.SIGNET],
     )  # add networks here to make the seed option visible
 
@@ -85,22 +89,32 @@ class KeyStoreTypes:
         return [v.name for v in cls.list_types(network)]
 
 
-class KeyStore(BaseSaveableClass):
+class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
+    VERSION = "0.0.1"
+
     def __init__(
         self,
         xpub,
         fingerprint,
-        derivation_path: str,
+        key_origin: str,
         label,
-        mnemonic: bdk.Mnemonic = None,
+        mnemonic: str = None,
         description: str = "",
+        derivation_path: str = ConstDerivationPaths.receive,
     ) -> None:
-        self.xpub = xpub
-        self.fingerprint = fingerprint
-        self.derivation_path = derivation_path
+        super().__init__(
+            xpub=xpub,
+            fingerprint=fingerprint,
+            key_origin=key_origin,
+            derivation_path=derivation_path,
+        )
+
         self.label = label
-        self.mnemonic = mnemonic
+        self.mnemonic: str = mnemonic
         self.description = description
+
+    def clone(self) -> "KeyStore":
+        return KeyStore(**self.__dict__)
 
     def to_singlesig_multipath_descriptor(self, address_type: AddressType, network):
         "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
@@ -113,7 +127,9 @@ class KeyStore(BaseSaveableClass):
             )
             if not self.mnemonic
             else address_type.bdk_descriptor_secret(
-                bdk.DescriptorSecretKey(network, self.mnemonic, ""),
+                bdk.DescriptorSecretKey(
+                    network, bdk.Mnemonic.from_str(self.mnemonic), ""
+                ),
                 keychainkind,
                 network,
             )
@@ -125,16 +141,13 @@ class KeyStore(BaseSaveableClass):
         return MultipathDescriptor(*descriptors)
 
     def __repr__(self) -> str:
-        return str(self.__dict__)
+        return f"{self.__class__.__name__}({self.__dict__})"
 
     def serialize(self):
         d = super().serialize()
 
         # you must copy it, so you not't change any calues
         full_dict = self.__dict__.copy()
-        full_dict["mnemonic"] = (
-            self.mnemonic.as_string() if self.mnemonic else self.mnemonic
-        )
         # the deepcopy must be done AFTER there is no bdk type in there any more
         d.update(copy.deepcopy(full_dict))
         return d
@@ -143,26 +156,32 @@ class KeyStore(BaseSaveableClass):
     def deserialize(cls, dct, class_kwargs=None):
         super().deserialize(dct, class_kwargs=class_kwargs)
 
-        dct["mnemonic"] = (
-            bdk.Mnemonic.from_string(dct["mnemonic"]) if dct["mnemonic"] else None
-        )
-
         return KeyStore(**dct)
 
-    def set_derivation_path(self, derivation_path):
-        self.derivation_path = derivation_path
+    @classmethod
+    def deserialize_migration(cls, dct: Dict):
+        "this class should be oveerwritten in child classes"
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+            if "derivation_path" in dct:
+                dct["key_origin"] = dct["derivation_path"]
+                del dct["derivation_path"]
+
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
+        return dct
 
     def from_other_keystore(self, other_keystore):
         self.xpub = other_keystore.xpub
         self.fingerprint = other_keystore.fingerprint
-        self.derivation_path = other_keystore.derivation_path
+        self.key_origin = other_keystore.key_origin
         self.label = other_keystore.label
         self.mnemonic = other_keystore.mnemonic
         self.description = other_keystore.description
 
     def merge_with(self, other_keystore: "KeyStore"):
         # fill in missing info in keystores
-        keys = ["xpub", "fingerprint", "derivation_path", "label", "description"]
+        keys = ["xpub", "fingerprint", "key_origin", "label", "description"]
         for key in keys:
             # if both are filled, they have to be identical
             if getattr(self, key) and getattr(other_keystore, key):

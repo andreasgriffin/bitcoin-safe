@@ -1,17 +1,14 @@
 import enum
 import logging
-from time import sleep
-from bitcoin_safe.gui.qt import step_progress_bar
-from bitcoin_safe.gui.qt.qr_components.quick_receive import ReceiveGroup
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
+from .qr_components.quick_receive import ReceiveGroup
+from .spinning_button import SpinningButton
 
-from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
-from bitcoin_safe.gui.qt.taglist.main import hash_color
-from bitcoin_safe.pdfrecovery import make_and_open_pdf
-from bitcoin_safe.pythonbdk_types import OutPoint, Recipient
-from bitcoin_safe.signals import Signals
-from bitcoin_safe.tx import TxUiInfos
-from bitcoin_safe.wallet import ProtoWallet, UtxosForInputs, Wallet
+from .step_progress_bar import StepProgressContainer
+from .taglist.main import hash_color
+from ...pdfrecovery import make_and_open_pdf
+from ...pythonbdk_types import OutPoint, Recipient
+from ...tx import TxUiInfos
+from ...wallet import ProtoWallet, UtxosForInputs, Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -311,7 +308,10 @@ class WalletSteps(StepProgressContainer):
         def on_step(step):
             if step == TutorialSteps.import_xpub.value:
                 self.wallet_tabs.setVisible(True)
-                self.qt_wallet.tabs.setCurrentWidget(self.qt_wallet.settings_tab)
+                if self.qt_wallet:
+                    self.qt_wallet.tabs.setCurrentWidget(
+                        self.qt_wallet.wallet_descriptor_tab
+                    )
 
         self.signal_on_set_step.connect(on_step)
 
@@ -508,11 +508,17 @@ class WalletSteps(StepProgressContainer):
         return outer_widget
 
     def tx_text(self, test_number):
-        m, n = self.qt_wallet.wallet.get_mn_tuple()
-        wallet: Wallet = self.qt_wallet.wallet
-        current_keystores = [
-            wallet.keystores[j] for j in range(test_number, test_number + m)
-        ]
+        m, n = (
+            self.qt_wallet.wallet.get_mn_tuple()
+            if self.qt_wallet
+            else self.protowallet.get_mn_tuple()
+        )
+        keystores = (
+            self.qt_wallet.wallet.keystores
+            if self.qt_wallet
+            else self.protowallet.keystores
+        )
+        current_keystores = [keystores[j] for j in range(test_number, test_number + m)]
 
         if self.num_keystores() == 1:
             return f"""Send Test"""
@@ -556,10 +562,18 @@ class WalletSteps(StepProgressContainer):
             inner_widget_layout.addWidget(label2)
             label2.setWordWrap(True)
         elif self.num_keystores() == 3:
-            m, n = self.qt_wallet.wallet.get_mn_tuple()
-            wallet: Wallet = self.qt_wallet.wallet
+            m, n = (
+                self.qt_wallet.wallet.get_mn_tuple()
+                if self.qt_wallet
+                else self.protowallet.get_mn_tuple()
+            )
+            keystores = (
+                self.qt_wallet.wallet.keystores
+                if self.qt_wallet
+                else self.protowallet.keystores
+            )
             current_keystores = [
-                wallet.keystores[j] for j in range(test_number, test_number + m)
+                keystores[j] for j in range(test_number, test_number + m)
             ]
 
             label = QLabel(self.tx_text(test_number))
@@ -579,8 +593,17 @@ class WalletSteps(StepProgressContainer):
             buttons = []
             m, n = self.qt_wallet.wallet.get_mn_tuple()
             for i in range(n - m + 1):
-                wallet: Wallet = self.qt_wallet.wallet
-                current_keystores = [wallet.keystores[j] for j in range(i, i + m)]
+                m, n = (
+                    self.qt_wallet.wallet.get_mn_tuple()
+                    if self.qt_wallet
+                    else self.protowallet.get_mn_tuple()
+                )
+                keystores = (
+                    self.qt_wallet.wallet.keystores
+                    if self.qt_wallet
+                    else self.protowallet.keystores
+                )
+                current_keystores = [keystores[j] for j in range(i, i + m)]
                 button_tx1 = QPushButton(
                     f"""Send Test {i+1}: Send a test amount  to a receive address and sign with   {' and '.join([f'"{k.label}"' for k in current_keystores])}"""
                 )
@@ -645,7 +668,7 @@ class WalletSteps(StepProgressContainer):
         if not self.wallet:
             return
 
-        utxos = self.wallet.list_unspent()
+        utxos = self.wallet.bdkwallet.list_unspent()
         if not utxos:
             Message(
                 f'The wallet is not funded. Please go to step {1+self.step_bar.step_labels.index("Receive Test")} and fund the wallet.'

@@ -1,9 +1,7 @@
 import logging
 
-from bitcoin_safe.gui.qt.open_tx_dialog import DescriptorDialog, UTXOAddDialog
+from .open_tx_dialog import DescriptorDialog
 
-from ...descriptors import public_descriptor_info
-from .debug_widget import generate_debug_class
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +22,8 @@ from .util import (
 
 from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, Signal
-from ...util import compare_dictionaries, psbt_to_hex
-from typing import List
+from ...util import compare_dictionaries, tx_of_psbt_to_hex
+from typing import Callable, List
 from .keystore_ui_tabs import KeyStoreUITypeChooser
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
@@ -46,9 +44,11 @@ from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from typing import List
 from .block_change_signals import BlockChangesSignals
 import bdkpython as bdk
-from ...signer import AbstractSigner, SignerWallet
+from ...signer import AbstractSigner
 from .util import MnemonicLineEdit, CameraInputLineEdit, CameraInputTextEdit
 from bitcoin_qrreader import bitcoin_qr
+from bitcoin_usb.address_types import DescriptorInfo, AddressType
+from bitcoin_usb.software_signer import SoftwareSigner
 
 
 def icon_for_label(label):
@@ -63,21 +63,26 @@ class KeyStoreUI(QObject):
     signal_xpub_changed = Signal()
     signal_seed_changed = Signal()
     signal_fingerprint_changed = Signal()
-    signal_derivation_path_changed = Signal()
+    signal_key_origin_changed = Signal()
 
     def __init__(
-        self, keystore: KeyStore, tabs: QTabWidget, network: bdk.Network
+        self,
+        keystore: KeyStore,
+        tabs: QTabWidget,
+        network: bdk.Network,
+        get_address_type: Callable,
     ) -> None:
         super().__init__()
 
         self.tabs = tabs
         self.keystore = keystore
         self.network = network
+        self.get_address_type = get_address_type
 
         self.tab = self.create()
         self.block_change_signals = BlockChangesSignals(
             [
-                self.edit_derivation_path,
+                self.edit_key_origin,
                 self.edit_fingerprint,
                 self.edit_label,
                 self.edit_xpub,
@@ -105,9 +110,6 @@ class KeyStoreUI(QObject):
             keystore = self.keystore
         keystore.from_other_keystore(ui_keystore)
 
-    def changed_ui_values(self) -> KeyStore:
-        return compare_dictionaries(self.keystore, self.get_ui_values_as_keystore())
-
     def seed_visibility(self, visible=False):
 
         self.edit_seed.setHidden(not visible)
@@ -121,18 +123,35 @@ class KeyStoreUI(QObject):
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())
 
+    def format_key_origin(self):
+        address_type: AddressType = self.get_address_type()
+        expected = address_type.key_origin(self.network)
+        if expected != self.edit_key_origin.text():
+            self.edit_key_origin.setStyleSheet("QLineEdit { background-color: red; }")
+            self.edit_key_origin.setToolTip(
+                f"Standart for the selected address type {address_type.name} is {expected}.  Please correct if you are not sure."
+            )
+        else:
+            self.edit_key_origin.setStyleSheet("")  # Resetting to default style
+            self.edit_key_origin.setToolTip(f"")
+        self.edit_key_origin.setPlaceholderText(expected)
+
+    def on_key_origin_change(self, text):
+        self.format_key_origin()
+        self.signal_key_origin_changed.emit()
+
     def _on_handle_input(self, data: bitcoin_qr.Data, parent: QWidget = None):
         if data.data_type == bitcoin_qr.DataType.KeyStoreInfo:
             # {
             #         "fingerprint": groups[0],
-            #         "derivation_path": "m/" + groups[1].replace("h", "'"),
+            #         "key_origin": "m/" + groups[1].replace("h", "'"),
             #         "xpub": groups[2],
             #         "further_derivation_path": groups[3],
             #     }
             if data.data.get("xpub"):
                 self.edit_xpub.setText(data.data.get("xpub"))
-            if data.data.get("derivation_path"):
-                self.edit_derivation_path.setText(data.data.get("derivation_path"))
+            if data.data.get("key_origin"):
+                self.edit_key_origin.setText(data.data.get("key_origin"))
             if data.data.get("fingerprint"):
                 self.edit_fingerprint.setText(data.data.get("fingerprint"))
         elif data.data_type == bitcoin_qr.DataType.Xpub:
@@ -181,7 +200,7 @@ class KeyStoreUI(QObject):
             custom_handle_input=self._on_handle_input
         )
         label_derivation_path = QLabel(self.box_form)
-        self.edit_derivation_path = CameraInputLineEdit(
+        self.edit_key_origin = CameraInputLineEdit(
             custom_handle_input=self._on_handle_input
         )
         self.label_xpub = QLabel(self.box_form)
@@ -198,7 +217,7 @@ class KeyStoreUI(QObject):
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_fingerprint)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.edit_fingerprint)
         self.formLayout.setWidget(3, QFormLayout.LabelRole, label_derivation_path)
-        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_derivation_path)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_key_origin)
         self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_xpub)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
         self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
@@ -216,7 +235,7 @@ class KeyStoreUI(QObject):
             self._on_handle_input(res)
 
         self.button_chooser.button_file.clicked.connect(
-            lambda: DescriptorDialog(on_open=process_input).show()
+            lambda: DescriptorDialog(self.network, on_open=process_input).show()
         )
         self.box_left_layout.addWidget(self.button_chooser.widget)
 
@@ -254,9 +273,7 @@ class KeyStoreUI(QObject):
         self.edit_xpub.textChanged.connect(self.signal_xpub_changed)
         self.edit_seed.textChanged.connect(self.signal_seed_changed)
         self.edit_fingerprint.textChanged.connect(self.on_edit_fingerprint)
-        self.edit_derivation_path.textChanged.connect(
-            self.signal_derivation_path_changed
-        )
+        self.edit_key_origin.textChanged.connect(self.on_key_origin_change)
         self.edit_label.textChanged.connect(self.on_label_change)
         return tab
 
@@ -280,18 +297,10 @@ class KeyStoreUI(QObject):
         seed_str = self.edit_seed.text().strip()
 
         if seed_str:
-            mnemonic = bdk.Mnemonic.from_string(seed_str)
-
-            descriptor = bdk.Descriptor.new_bip84(
-                secret_key=bdk.DescriptorSecretKey(self.network, mnemonic, ""),
-                keychain=bdk.KeychainKind.EXTERNAL,
-                network=self.network,
-            )
-            descriptor_info = public_descriptor_info(
-                descriptor.as_string_private(), self.network
-            )
-            fingerprint = descriptor_info["keystores"][0]["fingerprint"]
-            xpub = descriptor_info["keystores"][0]["xpub"]
+            mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
+            software_signer = SoftwareSigner(mnemonic, self.network)
+            xpub = software_signer.get_xpubs().get(self.get_address_type())
+            fingerprint = software_signer.get_fingerprint()
         else:
             mnemonic = None
             fingerprint = (
@@ -302,12 +311,12 @@ class KeyStoreUI(QObject):
             xpub = self.edit_xpub.text()
 
         return KeyStore(
-            xpub,
-            fingerprint,
-            self.edit_derivation_path.text(),
-            self.edit_label.text(),
-            mnemonic,
-            self.textEdit_description.toPlainText(),
+            xpub=xpub,
+            fingerprint=fingerprint,
+            key_origin=self.edit_key_origin.text(),
+            label=self.edit_label.text(),
+            mnemonic=mnemonic if mnemonic else None,
+            description=self.textEdit_description.toPlainText(),
         )
 
     def set_ui_from_keystore(self, keystore: KeyStore):
@@ -321,8 +330,8 @@ class KeyStoreUI(QObject):
             self.edit_fingerprint.setText(
                 keystore.fingerprint if keystore.fingerprint else ""
             )
-            self.edit_derivation_path.setText(
-                keystore.derivation_path if keystore.derivation_path else ""
+            self.edit_key_origin.setText(
+                keystore.key_origin if keystore.key_origin else ""
             )
             self.edit_label.setText(keystore.label)
             self.textEdit_description.setPlainText(keystore.description)
@@ -330,7 +339,7 @@ class KeyStoreUI(QObject):
             self.set_formatting()
 
             if keystore.mnemonic:
-                self.edit_seed.setText(keystore.mnemonic.as_string())
+                self.edit_seed.setText(keystore.mnemonic)
 
 
 class SignedUI(QObject):

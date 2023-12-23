@@ -114,7 +114,7 @@ TX_STATUS = [
 ]
 
 
-DEVELOPMENT_PREFILLS = True
+DEVELOPMENT_PREFILLS = False
 
 import bdkpython as bdk
 
@@ -127,7 +127,7 @@ def hex_to_serialized(hex_string):
     return bytes.fromhex(hex_string)
 
 
-def psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
+def tx_of_psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
     return serialized_to_hex(psbt.extract_tx().serialize())
 
 
@@ -180,7 +180,7 @@ def is_iterable(obj):
     return hasattr(obj, "__iter__") or hasattr(obj, "__getitem__")
 
 
-from functools import lru_cache
+from functools import lru_cache, wraps
 
 
 cached_always_keep_functions = []
@@ -207,15 +207,56 @@ def register_cache(always_keep=False):
 
 
 # Function to clear all caches
-def clear_cache(include_always_keep=False):
+def clear_cache(clear_always_keep=False):
     logger.debug(
-        f"clear_cache include_always_keep {include_always_keep}  of {len(cached_functions), len(cached_always_keep_functions)} functions"
+        f"clear_cache clear_always_keep {clear_always_keep}  of {len(cached_functions), len(cached_always_keep_functions)} functions"
     )
     for func in cached_functions:
         func.cache_clear()
-    if include_always_keep:
+    if clear_always_keep:
         for func in cached_always_keep_functions:
             func.cache_clear()
+
+
+class CacheManager:
+    def __init__(self) -> None:
+        self._instance_cache = {}
+        self._cached_instance_methods = []
+        self._cached_instance_methods_always_keep = []
+
+    def clear_instance_cache(self, clear_always_keep=False):
+        for cached_method in self._cached_instance_methods:
+            cached_method.cache_clear()
+        if clear_always_keep:
+            for cached_method in self._cached_instance_methods_always_keep:
+                cached_method.cache_clear()
+
+    def clear_method(self, method):
+        for f, wrapped in self._instance_cache.items():
+            if f.__name__ == method.__name__:
+                wrapped.cache_clear()
+
+
+# Custom instance cache decorator
+def instance_lru_cache(always_keep=False):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            if func not in self._instance_cache:
+                self._instance_cache[func] = lru_cache(maxsize=None)(func.__get__(self))
+
+                if always_keep:
+                    self._cached_instance_methods_always_keep.append(
+                        self._instance_cache[func]
+                    )
+                else:
+                    self._cached_instance_methods.append(self._instance_cache[func])
+
+            return self._instance_cache[func](*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 def clean_dict(d):
@@ -1238,8 +1279,7 @@ def remove_duplicates_keep_order(seq):
 
 
 class TaskThread(QThread):
-    """Thread that runs background tasks.  Callbacks are guaranteed
-    to happen in the context of its parent."""
+    """Thread for running a single background task. Automatically stops after task completion."""
 
     class Task(NamedTuple):
         task: Callable
@@ -1251,72 +1291,41 @@ class TaskThread(QThread):
     doneSig = Signal(object, object, object)
 
     def __init__(self, parent, on_error=None):
-        QThread.__init__(self, parent)
+        super().__init__(parent)
         self.on_error = on_error
-        self.tasks = queue.Queue()
-        self._cur_task = None  # type: Optional[TaskThread.Task]
-        self._stopping = False
+        self.task = None
         self.doneSig.connect(self.on_done)
-        self.start()
-
-    def add(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
-        if self._stopping:
-            logger.warning(f"stopping or already stopped but tried to add new task.")
-            return
-        on_error = on_error or self.on_error
-        task_ = TaskThread.Task(task, on_success, on_done, on_error, cancel=cancel)
-        self.tasks.put(task_)
 
     def add_and_start(
         self, task, on_success=None, on_done=None, on_error=None, *, cancel=None
     ):
-        self.add(
-            task,
-            on_success=on_success,
-            on_done=on_done,
-            on_error=on_error,
-            cancel=cancel,
-        )
+        self.task = TaskThread.Task(task, on_success, on_done, on_error, cancel)
         self.start()
 
     def run(self):
-        while True:
-            if self._stopping:
-                break
-            task = self.tasks.get()  # type: TaskThread.Task
-            self._cur_task = task
-            if not task or self._stopping:
-                break
-            try:
-                result = task.task()
-                self.doneSig.emit(result, task.cb_done, task.cb_success)
-            except BaseException:
-                self.doneSig.emit(sys.exc_info(), task.cb_done, task.cb_error)
+        if not self.task:
+            return
+
+        try:
+            result = self.task.task()
+            self.doneSig.emit(result, self.task.cb_done, self.task.cb_success)
+        except Exception as e:
+            self.doneSig.emit(sys.exc_info(), self.task.cb_done, self.task.cb_error)
+        finally:
+            self.stop()
 
     def on_done(self, result, cb_done, cb_result):
-        # This runs in the parent's thread.
         if cb_done:
             cb_done(result)
         if cb_result:
             cb_result(result)
+        self.quit()
 
     def stop(self):
-        self._stopping = True
-        # try to cancel currently running task now.
-        # if the task does not implement "cancel", we will have to wait until it finishes.
-        task = self._cur_task
-        if task and task.cancel:
-            task.cancel()
-        # cancel the remaining tasks in the queue
-        while True:
-            try:
-                task = self.tasks.get_nowait()
-            except queue.Empty:
-                break
-            if task and task.cancel:
-                task.cancel()
-        self.tasks.put(None)  # in case the thread is still waiting on the queue
-        self.exit()
+        if self.task and self.task.cancel:
+            self.task.cancel()
+
+    def __del__(self):
         self.wait()
 
 

@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import cProfile
 from pstats import Stats
 import sys
@@ -8,9 +12,7 @@ from PySide2.QtWidgets import *
 
 from .main import MainWindow
 from .gui.qt.util import custom_exception_handler
-import logging
-
-logger = logging.getLogger(__name__)
+from . import *
 
 
 def main():

@@ -7,11 +7,11 @@ from PySide2.QtWidgets import (
     QWidget,
     QLabel,
 )
-from PySide2.QtGui import QPainter, QIcon, QPixmap, QFontMetrics
+from PySide2.QtGui import QPainter, QFontMetrics
 from PySide2.QtCore import QTimer, QSize, Qt, QRectF, QPointF
 from PySide2.QtSvg import QSvgRenderer
 
-from bitcoin_safe.gui.qt.util import icon_path
+from .util import icon_path
 
 
 class SpinningButton(QPushButton):

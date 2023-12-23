@@ -13,7 +13,7 @@ class TxUiInfos:
     "A wrapper around tx_builder to collect even more infos"
 
     def __init__(self) -> None:
-        self.utxo_dict = {}  # {outpoint_string:utxo}
+        self.utxo_dict = {}  # {outpoint_string:utxo} It is Ok if outpoint_string:None
         self.fee_rate = None
         self.opportunistic_merge_utxos = True
         self.spend_all_utxos = False
@@ -34,28 +34,31 @@ class TxUiInfos:
     def fill_utxo_dict_from_outpoints(
         self, outpoints: List[OutPoint], wallets: List["Wallet"]
     ):
-        def get_utxo(outpoint):
+        def get_utxo_and_wallet(outpoint):
             for wallet in wallets:
                 utxo = wallet.utxo_of_outpoint(outpoint)
                 if utxo:
-                    return utxo
+                    return utxo, wallet
             logger.warning(
                 f"{self.__class__.__name__}: utxo for {outpoint} could not be found"
             )
+            return None, None
 
         for outpoint in outpoints:
-            utxo = get_utxo(outpoint)
-            if utxo:
-                self.utxo_dict[str(outpoint)] = utxo
+            utxo, wallet = get_utxo_and_wallet(outpoint)
+            self.main_wallet_id = wallet
+            self.utxo_dict[str(outpoint)] = utxo if utxo else None
 
     def fill_utxo_dict_from_categories(
         self, categories: List[str], wallets: List["Wallet"]
     ):
         for wallet in wallets:
-            for utxo in wallet.list_unspent():
+            for utxo in wallet.bdkwallet.list_unspent():
                 if (
                     wallet.labels.get_category(
-                        wallet.get_address_of_txout(TxOut.from_bdk(utxo.txout))
+                        wallet.bdkwallet.get_address_of_txout(
+                            TxOut.from_bdk(utxo.txout)
+                        )
                     )
                     in categories
                 ):

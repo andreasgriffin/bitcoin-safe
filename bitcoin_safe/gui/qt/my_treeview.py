@@ -23,24 +23,20 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 import logging
 
-from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.balance_dialog import BalanceToolButton
+from bitcoin_safe.gui.qt.open_tx_dialog import file_to_str
+
+from ...config import UserConfig
 
 logger = logging.getLogger(__name__)
 
+from bitcoin_qrreader.bitcoin_qr import Data
 import enum
 import os.path
-import time
-import sys
-import platform
-import queue
-import traceback
 import os
-import webbrowser
 from decimal import Decimal
-from functools import partial, lru_cache, wraps
 from typing import (
     NamedTuple,
     Callable,
@@ -209,16 +205,19 @@ def create_toolbar_with_menu(config, title, export_as_csv=None):
 
 class MyStandardItemModel(QStandardItemModel):
     def __init__(
-        self, parent, drag_key="addresses", get_file_data=None, file_extension="dat"
+        self,
+        parent,
+        drag_key="item",
+        drag_keys_to_file_paths=None,
     ):
         super().__init__(parent)
+        self.mytreeview: MyTreeView = parent
         self.drag_key = drag_key
-        self.get_file_data = get_file_data
-        self.file_extension = file_extension
+        self.drag_keys_to_file_paths: Callable = drag_keys_to_file_paths
 
     def flags(self, index):
         if (
-            index.column() == self.parent().key_column
+            index.column() == self.mytreeview.key_column
         ):  # only enable dragging for column 1
             return super().flags(index) | Qt.ItemIsDragEnabled
         else:
@@ -229,7 +228,7 @@ class MyStandardItemModel(QStandardItemModel):
         keys = set()
         for index in indexes:
             if index.isValid():
-                key = self.item(index.row(), self.parent().key_column).data(
+                key = self.item(index.row(), self.mytreeview.key_column).data(
                     role=MyTreeView.ROLE_KEY
                 )
                 keys.add(key)
@@ -248,31 +247,19 @@ class MyStandardItemModel(QStandardItemModel):
 
         # set the key data for files
 
-        # List to store the file URLs
-        if self.get_file_data:
-            file_urls = []
+        drag_keys_to_file_paths = (
+            self.drag_keys_to_file_paths
+            if self.drag_keys_to_file_paths
+            else self.mytreeview.csv_drag_keys_to_file_paths
+        )
 
-            # Iterate through indexes to fetch serialized data using drag keys
-            for key in keys:
-                # Fetch the serialized data using the drag_key
-                data_item = self.get_file_data(key)
-                if not data_item:
-                    continue
+        file_urls = []
+        for file_path in drag_keys_to_file_paths(keys):
+            # Add the file URL to the list
+            file_urls.append(QUrl.fromLocalFile(file_path))
 
-                # Create a temporary file
-                file_handle, file_path = tempfile.mkstemp(
-                    suffix=f"_{key}.{self.file_extension}", prefix=""
-                )
-
-                # Write the serialized data to the file
-                with os.fdopen(file_handle, "w") as file:
-                    file.write(data_item)
-
-                # Add the file URL to the list
-                file_urls.append(QUrl.fromLocalFile(file_path))
-
-            # Set the URLs of the files in the mime data
-            mime_data.setUrls(file_urls)
+        # Set the URLs of the files in the mime data
+        mime_data.setUrls(file_urls)
 
         return mime_data
 
@@ -399,6 +386,7 @@ class MyTreeView(QTreeView):
     ):
         parent = parent
         super().__init__(parent)
+        self.std_model: MyStandardItemModel = None
         self.config = config
         self.stretch_column = stretch_column
         self.column_widths = column_widths if column_widths else {}
@@ -433,15 +421,50 @@ class MyTreeView(QTreeView):
         font = QFont("Arial", 10)
         self.setFont(font)
 
-        self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.viewport().setAcceptDrops(True)
         self.setDropIndicatorShown(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDefaultDropAction(Qt.MoveAction)
+        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setDefaultDropAction(Qt.CopyAction)
+        self.setDragEnabled(True)  # this must be after the other drag toggles
+
+    def startDrag(self, action):
+        indexes = self.selectedIndexes()
+        if indexes:
+            drag = QDrag(self)
+            mime_data = self.model().mimeData(indexes)
+            drag.setMimeData(mime_data)
+
+            total_height = sum(self.visualRect(index).height() for index in indexes)
+            max_width = max(self.visualRect(index).width() for index in indexes)
+
+            pixmap = QPixmap(max_width, total_height)
+            pixmap.fill(Qt.transparent)
+
+            painter = QPainter(pixmap)
+            current_height = 0
+            for index in indexes:
+                if index.column() != self.key_column:
+                    continue
+                rect = self.visualRect(index)
+                temp_pixmap = QPixmap(rect.size())
+                self.viewport().render(temp_pixmap, QPoint(), QRegion(rect))
+                painter.drawPixmap(0, current_height, temp_pixmap)
+                current_height += rect.height()
+            painter.end()
+
+            cursor_pos = self.mapFromGlobal(QCursor.pos())
+            visual_rect = self.visualRect(indexes[0]).bottomLeft()
+            hotspot_pos = cursor_pos - visual_rect
+            # the y offset is always off, so just set it completely to 0
+            hotspot_pos.setY(0)
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(hotspot_pos)
+
+            drag.exec_(action)
 
     def create_menu(self, position: QPoint) -> None:
-        selected = self.selected_in_column(self.Columns.ADDRESS)
+        selected = self.selected_in_column(self.key_column)
         if not selected:
             return
         menu = QMenu()
@@ -590,7 +613,7 @@ class MyTreeView(QTreeView):
             stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text"
         )
 
-    def get_rows_as_csv(self, row_numbers):
+    def get_rows_as_list(self, row_numbers):
         def get_data(row, col):
             model = self.model()  # assuming this is a QAbstractItemModel or subclass
             index = model.index(row, col)
@@ -620,7 +643,7 @@ class MyTreeView(QTreeView):
         return table
 
     def copyRowsToClipboardAsCSV(self, row_numbers):
-        table = self.get_rows_as_csv(row_numbers)
+        table = self.get_rows_as_list(row_numbers)
 
         stream = io.StringIO()
         writer = csv.writer(stream)
@@ -745,6 +768,19 @@ class MyTreeView(QTreeView):
         self.toolbar_buttons = buttons
         return hbox
 
+    def as_csv_string(self, row_numbers=None):
+        table = self.get_rows_as_list(
+            row_numbers=row_numbers
+            if row_numbers is not None
+            else list(range(self.model().rowCount()))
+        )
+
+        stream = io.StringIO()
+        writer = csv.writer(stream)
+        writer.writerows(table)
+
+        return stream.getvalue()
+
     def export_as_csv(self, file_path=None):
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
@@ -753,11 +789,34 @@ class MyTreeView(QTreeView):
             if not file_path:
                 logger.debug("No file selected")
                 return
-        table = self.get_rows_as_csv(row_numbers=list(range(self.model().rowCount())))
-        with open(file_path, "w") as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerows(table)
-        logger.info(f"Table with {len(table)} rows saved to {file_path}")
+
+        self.csv_drag_keys_to_file_paths(file_path=file_path)
+
+    def csv_drag_keys_to_file_paths(self, drag_keys=None, file_path=None):
+        row_numbers = [] if drag_keys else None
+        if drag_keys:
+            for row_number in range(0, self.std_model.rowCount()):
+                item = self.std_model.item(row_number, self.key_column)
+                if item.data(self.ROLE_KEY) in drag_keys:
+                    row_numbers.append(row_number)
+
+        # Fetch the serialized data using the drag_keys
+        csv_string = self.as_csv_string(row_numbers=row_numbers)
+
+        if file_path:
+            file_descriptor = os.open(file_path, os.O_CREAT | os.O_WRONLY)
+        else:
+            # Create a temporary file
+            file_descriptor, file_path = tempfile.mkstemp(
+                suffix=f".csv",
+                prefix=f"{self.std_model.drag_key} ",
+            )
+
+        with os.fdopen(file_descriptor, "w") as file:
+            file.write(csv_string)
+
+        logger.info(f"CSV Table saved to {file_path}")
+        return [file_path]
 
     def create_toolbar_with_menu(self, title):
         return create_toolbar_with_menu(
@@ -845,6 +904,28 @@ class MyTreeView(QTreeView):
             self.std_model.takeRow(row)
         self.hide_if_empty()
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            # Iterate through the list of dropped file URLs
+            for url in event.mimeData().urls():
+                # Convert URL to local file path
+                file_path = url.toLocalFile()
+
+                if file_path.endswith(".wallet"):
+                    event.accept()
+                    return
+
+                if file_path.endswith(".tx") or file_path.endswith(".psbt"):
+                    event.accept()
+
+                    return
+
+        if not event.isAccepted():
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        return self.dragEnterEvent(event)
+
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             # Iterate through the list of dropped file URLs
@@ -856,6 +937,15 @@ class MyTreeView(QTreeView):
                     logger.debug(file_path)
                     event.accept()
                     self.signals.open_wallet.emit(file_path)
-                    return
 
-        event.ignore()
+                if file_path.endswith(".tx") or file_path.endswith(".psbt"):
+                    logger.debug(file_path)
+                    event.accept()
+
+                    data = Data.from_str(
+                        file_to_str(file_path), self.config.network_settings.network
+                    )
+                    self.signals.open_tx_like.emit(data.data)
+
+        if not event.isAccepted():
+            event.ignore()

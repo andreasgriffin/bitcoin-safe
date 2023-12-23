@@ -1,8 +1,9 @@
 import logging
+from .logging import setup_logging
 
-from pyparsing import Optional
+setup_logging()
+logger = logging.getLogger(__name__)
 
-from bitcoin_safe.util import Satoshis
 
 from .psbt_util import (
     FeeInfo,
@@ -11,10 +12,6 @@ from .psbt_util import (
     get_txouts_from_inputs,
 )
 from .tx import TxBuilderInfos, TxUiInfos
-from .logging import setup_logging
-
-setup_logging()
-logger = logging.getLogger(__name__)
 
 
 from PySide2.QtCore import *
@@ -30,7 +27,7 @@ import base64
 from .i18n import _
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.qt_wallet import QTWallet, QTProtoWallet
-from .gui.qt.dialogs import PasswordQuestion
+from .gui.qt.dialogs import PasswordQuestion, WalletIdDialog
 from .gui.qt.balance_dialog import (
     COLOR_FROZEN,
     COLOR_CONFIRMED,
@@ -79,7 +76,7 @@ class MainWindow(Ui_MainWindow):
             self.mempool_data.set_data_from_mempoolspace()
 
         self.signals = Signals()
-        self.qtwallet_tab = None
+        self.last_qtwallet = None
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
@@ -141,6 +138,11 @@ class MainWindow(Ui_MainWindow):
         last_qt_wallet_involved.tabs.setCurrentWidget(
             last_qt_wallet_involved.history_tab
         )
+
+    def on_tab_changed(self, index):
+        qt_wallet = self.get_qt_wallet(self.tab_wallets.widget(index))
+        if qt_wallet:
+            self.last_qtwallet = qt_wallet
 
     def _init_tray(self):
         self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), None)
@@ -212,9 +214,7 @@ class MainWindow(Ui_MainWindow):
 
     def fetch_txdetails(self, txid) -> Tuple[Wallet, bdk.TransactionDetails]:
         for qt_wallet in self.qt_wallets.values():
-            txdetails = qt_wallet.wallet.get_tx(txid)
-            if txdetails:
-                return qt_wallet.wallet, txdetails
+            return qt_wallet.wallet.get_tx(txid)
 
     def open_tx_like_in_tab(self, txlike):
         logger.debug(f"Trying to open tx with type {type(txlike)}")
@@ -234,7 +234,7 @@ class MainWindow(Ui_MainWindow):
                         return address
 
             outpoints = [
-                OutPoint.from_bdk(utxo.outpoint) for utxo in txlike.utxo_dict.values()
+                OutPoint.from_str(outpoint) for outpoint in txlike.utxo_dict.keys()
             ]
 
             # trying to identitfy the wallet , where i should fill the send tab
@@ -248,10 +248,16 @@ class MainWindow(Ui_MainWindow):
                 )
 
             if not wallet:
-                Message(
+                logger.debug(
                     f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
+                )
+                qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
+                wallet = qt_wallet.wallet if qt_wallet else None
+            if not wallet:
+                Message(
+                    f"No wallet open. Please open the sender wallet to edit this thransaction."
                 ).show_message()
-                wallet = self.get_qt_wallet().wallet
+                return
 
             qt_wallet: QTWallet = self.qt_wallets.get(wallet.id)
             self.tab_wallets.setCurrentWidget(qt_wallet.tab)
@@ -282,7 +288,7 @@ class MainWindow(Ui_MainWindow):
         if isinstance(txlike, str):
             res = bitcoin_qr.Data.from_str(txlike, self.config.network_settings.network)
             if res.data_type == bitcoin_qr.DataType.Txid:
-                wallet, txdetails = self.fetch_txdetails(res.data)
+                txdetails = self.fetch_txdetails(res.data)
                 if txdetails:
                     return self.open_tx_in_tab(txdetails)
                 if not txlike:
@@ -310,18 +316,19 @@ class MainWindow(Ui_MainWindow):
         def process_input(s: str):
             self.open_tx_like_in_tab(s)
 
-        tx_dialog = TransactionDialog(on_open=process_input)
+        tx_dialog = TransactionDialog(
+            network=self.config.network_settings.network, on_open=process_input
+        )
         tx_dialog.show()
 
     def open_tx_in_tab(self, txlike):
         tx: bdk.Transaction = None
         fee = None
         confirmation_time = None
-        wallet = None
 
         if isinstance(txlike, bdk.Transaction):
             # try to get all details from wallets
-            wallet, tx_details = self.fetch_txdetails(txlike.txid())
+            tx_details = self.fetch_txdetails(txlike.txid())
             if tx_details:
                 txlike = tx_details
 
@@ -345,8 +352,8 @@ class MainWindow(Ui_MainWindow):
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
-                UTXOList.Columns.SATOSHIS,
             ],
+            keep_outpoint_order=True,
         )
 
         viewer = UITx_Viewer(
@@ -366,9 +373,9 @@ class MainWindow(Ui_MainWindow):
         add_tab_to_tabs(
             self.tab_wallets,
             viewer.main_widget,
-            read_QIcon("offline_tx.png"),
+            read_QIcon("send.svg"),
             f"Transaction {tx.txid()[:4]}...{tx.txid()[-4:]}",
-            "tx",
+            f"Transaction {tx.txid()[:4]}...{tx.txid()[-4:]}",
             focus=True,
         )
 
@@ -417,9 +424,9 @@ class MainWindow(Ui_MainWindow):
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
-                UTXOList.Columns.SATOSHIS,
             ],
             txout_dict=get_txouts_from_inputs(psbt=psbt),
+            keep_outpoint_order=True,
         )
 
         viewer = UITx_Viewer(
@@ -433,12 +440,13 @@ class MainWindow(Ui_MainWindow):
             psbt=psbt,
         )
 
+        txid = psbt.extract_tx().txid()
         add_tab_to_tabs(
             self.tab_wallets,
             viewer.main_widget,
-            read_QIcon("offline_tx.png"),
-            "Transaction",
-            "tx",
+            read_QIcon("qr-code.svg"),
+            f"PSBT {txid[:4]}...{txid[-4:]}",
+            f"PSBT {txid[:4]}...{txid[-4:]}",
             focus=True,
         )
 
@@ -593,8 +601,17 @@ class MainWindow(Ui_MainWindow):
         protowallet = ProtoWallet(
             threshold=m, signers=n, network=self.config.network_settings.network
         )
+
+        # ask for wallet name
+        dialog = WalletIdDialog(self.config.wallet_dir)
+        if dialog.exec_() == QDialog.Accepted:
+            wallet_id = dialog.name_input.text()
+            print(f"Creating wallet: {wallet_id}")
+        else:
+            return
+
         qtprotowallet = QTProtoWallet(
-            None, config=self.config, signals=self.signals, protowallet=protowallet
+            wallet_id, config=self.config, signals=self.signals, protowallet=protowallet
         )
         qtprotowallet.signal_close_wallet.connect(
             lambda: self.close_tab(self.tab_wallets.indexOf(qtprotowallet.tab))
@@ -637,7 +654,8 @@ class MainWindow(Ui_MainWindow):
             focus=True,
         )
         self.signals.event_wallet_tab_added.emit()
-
+        # this is a
+        self.last_qtwallet = qt_wallet
         return qt_wallet
 
     def toggle_tutorial(self):
@@ -650,11 +668,13 @@ class MainWindow(Ui_MainWindow):
             not qt_wallet.step_progress_container.isVisible()
         )
 
-    def get_qt_wallet(self, tab=None) -> QTWallet:
+    def get_qt_wallet(self, tab=None, if_none_serve_last_active=False) -> QTWallet:
         wallet_tab = self.tab_wallets.currentWidget() if tab is None else tab
         for qt_wallet in self.qt_wallets.values():
             if wallet_tab == qt_wallet.tab:
                 return qt_wallet
+        if if_none_serve_last_active:
+            return self.last_qtwallet
 
     def get_blockchain_of_any_wallet(self) -> bdk.Blockchain:
         for qt_wallet in self.qt_wallets.values():

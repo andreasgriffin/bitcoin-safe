@@ -24,17 +24,18 @@
 # SOFTWARE.
 
 import logging
+import os
+import tempfile
 
-from bitcoin_safe.config import UserConfig
+from ...config import UserConfig
 
-from ...pythonbdk_types import OutPoint
+from ...pythonbdk_types import FullTxDetail, OutPoint, PythonUtxo
 
 logger = logging.getLogger(__name__)
 
 
 from typing import Optional, List, Dict, Tuple, Sequence, Set, TYPE_CHECKING
 import enum
-import copy
 
 from PySide2.QtCore import Qt, QPersistentModelIndex
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
@@ -91,7 +92,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         CATEGORY = enum.auto()
         LABEL = enum.auto()
         AMOUNT = enum.auto()
-        SATOSHIS = enum.auto()
         PARENTS = enum.auto()
 
     headers = {
@@ -101,7 +101,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORY: _("Category"),
         Columns.LABEL: _("Label"),
         Columns.AMOUNT: _("Amount"),
-        Columns.SATOSHIS: _("SATOSHIS"),
         Columns.PARENTS: _("Parents"),
     }
     filter_columns = [
@@ -111,7 +110,6 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORY,
         Columns.LABEL,
         Columns.AMOUNT,
-        Columns.SATOSHIS,
     ]
     column_alignments = {
         Columns.WALLET_ID: Qt.AlignHCenter | Qt.AlignVCenter,
@@ -120,11 +118,10 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         Columns.CATEGORY: Qt.AlignCenter | Qt.AlignVCenter,
         Columns.LABEL: Qt.AlignLeft | Qt.AlignVCenter,
         Columns.AMOUNT: Qt.AlignRight | Qt.AlignVCenter,
-        Columns.SATOSHIS: Qt.AlignRight | Qt.AlignVCenter,
         Columns.PARENTS: Qt.AlignCenter | Qt.AlignVCenter,
     }
 
-    column_widths = {Columns.ADDRESS: 100}
+    column_widths = {Columns.ADDRESS: 100, Columns.AMOUNT: 100}
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
 
@@ -134,8 +131,19 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         signals: Signals,
         get_outpoints,
         hidden_columns=None,
-        txout_dict=None,
+        txout_dict: Dict[str, bdk.TxOut] = None,
+        keep_outpoint_order=False,
     ):
+        """_summary_
+
+        Args:
+            config (UserConfig): _description_
+            signals (Signals): _description_
+            get_outpoints (_type_): _description_
+            hidden_columns (_type_, optional): _description_. Defaults to None.
+            txout_dict (Dict[str, bdk.TxOut], optional): Can be used to augment the list with infos, if the utxo is not from the own wallet. Defaults to None.
+            keep_outpoint_order (bool, optional): _description_. Defaults to False.
+        """
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
@@ -143,6 +151,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             editable_columns=[],
         )
         self.config = config
+        self.keep_outpoint_order = keep_outpoint_order
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.get_outpoints = get_outpoints
@@ -156,7 +165,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
 
-        self.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setSortingEnabled(True)
 
         self.update()
@@ -184,7 +193,8 @@ class UTXOList(MyTreeView, MessageBoxMixin):
 
         multi_select = len(selected) > 1
         outpoints: List[OutPoint] = [
-            self.model().data(item, role=self.ROLE_KEY) for item in selected
+            OutPoint.from_str(self.model().data(item, role=self.ROLE_KEY))
+            for item in selected
         ]
         menu = QMenu()
         if not multi_select:
@@ -194,6 +204,13 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             item = self.item_from_index(idx)
             if not item:
                 return
+
+            if str(outpoints[0]) in self._wallet_dict:
+                menu.addAction(
+                    _("Open transaction"),
+                    lambda: self.signals.open_tx_like.emit(outpoints[0].txid),
+                )
+
             addr_URL = block_explorer_URL(
                 self.config.network_settings, "tx", outpoints[0].txid
             )
@@ -218,47 +235,49 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
 
         # build dicts to look up the outpoints later (fast)
-        self._tx_dict = {}  # outpoint --> txdetails
-        self._wallet_dict = {}  # outpoint --> wallet
+        self._wallet_dict: Dict[str, Wallet] = {}  # outpoint_str:Wallet
+        self._tx_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
         for wallet in wallets_dict.values():
-            tx_dict = wallet.get_outpoint_dict(
-                wallet.get_list_transactions(), must_be_mine=True
-            )
-            self._tx_dict.update(tx_dict)
-            self._wallet_dict.update(dict.fromkeys(tx_dict.keys(), wallet))
+            for fulltxdetail in wallet.get_dict_fulltxdetail().values():
+                self._tx_dict.update(fulltxdetail.outputs)
+                self._wallet_dict.update(
+                    {
+                        outpoint_str: wallet
+                        for outpoint_str, _ in fulltxdetail.outputs.items()
+                    }
+                )
 
         self.std_model.clear()
         self.update_headers(self.__class__.headers)
         set_idx = None
         for outpoint in self.get_outpoints():
             outpoint = OutPoint.from_bdk(outpoint)
-            wallet: Wallet = self._wallet_dict.get(outpoint, None)
-            txdetails = self._tx_dict.get(outpoint, None)
+            pythonutxo = self._tx_dict.get(str(outpoint))
 
-            txout = txdetails.transaction.output()[outpoint.vout] if txdetails else None
-            # try to get txout from the supplied txout_dict, if it couldn't be found in any wallet
-            if (not txout) and outpoint in self.txout_dict:
-                txout = self.txout_dict[outpoint]
+            if not pythonutxo:
+                pythonutxo = PythonUtxo("Unknown", str(outpoint), None)
+                if self.txout_dict:
+                    pythonutxo.txout = self.txout_dict.get(str(outpoint))
+                    pythonutxo.address = bdk.Address.from_script(
+                        pythonutxo.txout.script_pubkey, wallet.network
+                    ).as_string()
 
             labels = [""] * len(self.Columns)
             labels[self.Columns.OUTPOINT] = str(outpoint)
-            labels[self.Columns.ADDRESS] = (
-                bdk.Address.from_script(
-                    txout.script_pubkey, self.config.network_settings.network
-                ).as_string()
-                if txout
-                else "unknown"
-            )
+            labels[self.Columns.ADDRESS] = pythonutxo.address
             labels[self.Columns.AMOUNT] = (
-                str(Satoshis(txout.value, self.config.network_settings.network))
-                if txout
+                str(
+                    Satoshis(
+                        pythonutxo.txout.value, self.config.network_settings.network
+                    )
+                )
+                if pythonutxo.txout
                 else "unknown"
             )
-            labels[self.Columns.SATOSHIS] = str(txout.value) if txout else "unknown"
             items = [QStandardItem(x) for x in labels]
             self.set_editability(items)
             items[self.Columns.OUTPOINT].setText(str(outpoint))
-            items[self.Columns.OUTPOINT].setData(outpoint, self.ROLE_KEY)
+            items[self.Columns.OUTPOINT].setData(str(outpoint), self.ROLE_KEY)
             items[self.Columns.OUTPOINT].setData(
                 str(outpoint), self.ROLE_CLIPBOARD_DATA
             )
@@ -271,7 +290,8 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             items[self.Columns.ADDRESS].setToolTip(labels[self.Columns.ADDRESS])
             items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.AMOUNT].setData(
-                txout.value if txout else "unknown", self.ROLE_CLIPBOARD_DATA
+                pythonutxo.txout.value if pythonutxo.txout else "unknown",
+                self.ROLE_CLIPBOARD_DATA,
             )
             items[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
@@ -303,15 +323,22 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         assert row is not None
 
         outpoint = OutPoint.from_bdk(key)
-        txdetails: bdk.TransactionDetails = self._tx_dict.get(outpoint, None)
-        wallet: Wallet = self._wallet_dict.get(outpoint, None)
-        txout = txdetails.transaction.output()[outpoint.vout] if txdetails else None
+        pythonutxo = self._tx_dict.get(str(outpoint))
+        wallet: Wallet = self._wallet_dict.get(str(outpoint), None)
+        txdetails = (
+            wallet.get_dict_fulltxdetail().get(pythonutxo.outpoint.txid).tx
+            if wallet
+            else None
+        )
 
         items = [self.std_model.item(row, col) for col in self.Columns]
 
-        sort_id = wallet.get_tx_status(txdetails).sort_id if txdetails else -1
-        items[self.Columns.ADDRESS].setData(sort_id, self.ROLE_SORT_ORDER)
+        if self.keep_outpoint_order:
+            sort_id = row
+        else:
+            sort_id = wallet.get_tx_status(txdetails).sort_id if txdetails else -1
 
+        items[self.Columns.ADDRESS].setData(sort_id, self.ROLE_SORT_ORDER)
         items[self.Columns.ADDRESS].setIcon(
             read_QIcon(sort_id_to_icon(sort_id) if txdetails else None)
         )
@@ -321,17 +348,8 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             wallet.id if wallet else "unknown", self.ROLE_CLIPBOARD_DATA
         )
         txid = outpoint.txid
-        # parents = wallet.get_tx_parents(txid) if wallet else []
-        # items[self.Columns.PARENTS].setText("%6s" % len(parents))
-        # items[self.Columns.PARENTS].setData(len(parents), self.ROLE_CLIPBOARD_DATA)
 
-        address = (
-            bdk.Address.from_script(
-                txout.script_pubkey, self.config.network_settings.network
-            ).as_string()
-            if txout
-            else "unknown"
-        )
+        address = pythonutxo.address if pythonutxo else "Unknown"
         category = wallet.labels.get_category(address) if wallet else ""
 
         items[self.Columns.CATEGORY].setText(category)
@@ -344,7 +362,11 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             col.setBackground(color)
 
         items[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
-        if txout and wallet.bdkwallet.is_mine(txout.script_pubkey):
+        if (
+            pythonutxo
+            and pythonutxo.txout
+            and wallet.bdkwallet.is_mine(pythonutxo.txout.script_pubkey)
+        ):
             color = (
                 ColorScheme.YELLOW.as_color(background=True)
                 if wallet.is_change(address)
@@ -356,7 +378,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
         if not self.model():
             return []
         items = self.selected_in_column(self.Columns.OUTPOINT)
-        return [x.data(self.ROLE_KEY) for x in items]
+        return [OutPoint.from_str(x.data(self.ROLE_KEY)) for x in items]
 
     def on_double_click(self, idx):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)

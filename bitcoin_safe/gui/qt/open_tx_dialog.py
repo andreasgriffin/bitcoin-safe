@@ -56,10 +56,13 @@ def file_to_str(file_path):
 class DragAndDropTextEdit(CameraInputTextEdit):
     signal_drop_file = Signal(str)
 
-    def __init__(self, parent=None, callback_enter=None, callback_esc=None):
+    def __init__(
+        self, network: bdk.Network, parent=None, callback_enter=None, callback_esc=None
+    ):
         super().__init__(parent)
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
+        self.network = network
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
@@ -79,14 +82,20 @@ class DragAndDropTextEdit(CameraInputTextEdit):
     def dropEvent(self, event):
         file_path = event.mimeData().urls()[0].toLocalFile()
         s = bitcoin_qr.Data.from_str(
-            file_to_str(file_path), bdk.Network.REGTEST
+            file_to_str(file_path), self.network
         ).data_as_string()
         self.setText(s)
         self.signal_drop_file.emit(s)
 
 
 class TransactionDialog(QDialog):
-    def __init__(self, title="Open Transaction or PSBT", on_open=None, parent=None):
+    def __init__(
+        self,
+        network: bdk.Network,
+        title="Open Transaction or PSBT",
+        on_open=None,
+        parent=None,
+    ):
         super().__init__(parent)
         self.on_open = on_open
 
@@ -97,7 +106,7 @@ class TransactionDialog(QDialog):
             "Please paste your Bitcoin Transaction or PSBT in here, or drop a file:"
         )
         self.text_edit = DragAndDropTextEdit(
-            callback_enter=self.process_input, callback_esc=self.close
+            network=network, callback_enter=self.process_input, callback_esc=self.close
         )
         self.text_edit.setPlaceholderText(
             "Paste your Bitcoin Transaction or PSBT in here or drop a file"
@@ -157,8 +166,8 @@ class TransactionDialog(QDialog):
 
 
 class UTXOAddDialog(TransactionDialog):
-    def __init__(self, on_open=None, parent=None):
-        super().__init__(on_open=on_open, parent=parent)
+    def __init__(self, network: bdk.Network, on_open=None, parent=None):
+        super().__init__(network, on_open=on_open, parent=parent)
 
         self.setWindowTitle("Add Inputs")
 
@@ -170,8 +179,8 @@ class UTXOAddDialog(TransactionDialog):
 
 
 class DescriptorDialog(TransactionDialog):
-    def __init__(self, on_open=None, parent=None):
-        super().__init__(on_open=on_open, parent=parent)
+    def __init__(self, network: bdk.Network, on_open=None, parent=None):
+        super().__init__(network, on_open=on_open, parent=parent)
 
         self.setWindowTitle("Import Public Key (xPub)")
 
@@ -186,7 +195,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    dialog = TransactionDialog(on_open=print)
+    dialog = TransactionDialog(network=bdk.Network.REGTEST, on_open=print)
     dialog.show()
 
     sys.exit(app.exec_())

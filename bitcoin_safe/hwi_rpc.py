@@ -18,6 +18,44 @@ from usb1 import USBError
 logger = logging.getLogger(__name__)
 
 
+class JSONRPC:
+    """
+    Base JSON-RPC class. Add methods to self.exposed_rpc
+    to make it available with jsonrpc() call.
+    """
+
+    def __init__(self):
+        self.exposed_rpc = {}
+
+    def jsonrpc(self, request):
+        """Processes json-rpc request"""
+        # if it is a list (not bundled) run one by one
+        if isinstance(request, list):
+            return [self.jsonrpc(req) for req in request]
+        response = {"jsonrpc": "2.0", "id": request["id"] if "id" in request else None}
+        if "method" not in request:
+            response["error"] = {
+                "code": -32600,
+                "message": "Invalid Request. Request must specify a 'method'.",
+            }
+            return response
+        if request["method"] not in self.exposed_rpc:
+            response["error"] = {"code": -32601, "message": "Method not found."}
+            return response
+        method = self.exposed_rpc[request["method"]]
+        try:
+            if "params" not in request:
+                response["result"] = method()
+            elif isinstance(request["params"], list):
+                response["result"] = method(*request["params"])  # list -> *args
+            else:
+                response["result"] = method(**request["params"])  # dict -> **kwargs
+        except Exception as e:
+            logger.exception(e)
+            response["error"] = {"code": -32000, "message": f"Internal error: {e}."}
+        return response
+
+
 # use this lock for all hwi operations
 hwilock = threading.Lock()
 
@@ -70,7 +108,6 @@ class HWIBridge(JSONRPC):
         logger.info("Initializing HWI...")  # to explain user why it takes so long
         self.enumerate()
 
-    @locked(hwilock)
     def enumerate(self, passphrase="", chain=""):
         """
         Returns a list of all connected devices (dicts).
@@ -150,7 +187,6 @@ class HWIBridge(JSONRPC):
         if len(res) > 0:
             return res[0]
 
-    @locked(hwilock)
     def toggle_passphrase(self, device_type=None, path=None, passphrase="", chain=""):
         if device_type == "keepkey" or device_type == "trezor":
             with self._get_client(
@@ -163,7 +199,6 @@ class HWIBridge(JSONRPC):
                 % device_type
             )
 
-    @locked(hwilock)
     def prompt_pin(self, device_type=None, path=None, passphrase="", chain=""):
         if device_type == "keepkey" or device_type == "trezor":
             # The device will randomize its pin entry matrix on the device
@@ -182,7 +217,6 @@ class HWIBridge(JSONRPC):
                 % device_type
             )
 
-    @locked(hwilock)
     def send_pin(self, pin="", device_type=None, path=None, passphrase="", chain=""):
         if device_type == "keepkey" or device_type == "trezor":
             if pin == "":
@@ -198,7 +232,6 @@ class HWIBridge(JSONRPC):
                 % device_type
             )
 
-    @locked(hwilock)
     def extract_xpubs(
         self,
         account=0,
@@ -218,7 +251,6 @@ class HWIBridge(JSONRPC):
             xpubs = self._extract_xpubs_from_client(client, account)
         return xpubs
 
-    @locked(hwilock)
     def extract_xpub(
         self,
         derivation=None,
@@ -264,7 +296,6 @@ class HWIBridge(JSONRPC):
                 )
                 logger.exception(e)
 
-    @locked(hwilock)
     def display_address(
         self,
         descriptor="",
@@ -296,7 +327,6 @@ class HWIBridge(JSONRPC):
             else:
                 raise Exception("Failed to validate address on device: Unknown Error")
 
-    @locked(hwilock)
     def sign_tx(
         self,
         psbt="",
@@ -327,11 +357,10 @@ class HWIBridge(JSONRPC):
             else:
                 raise Exception("Failed to sign transaction with device: Unknown Error")
 
-    @locked(hwilock)
     def sign_message(
         self,
         message="",
-        derivation_path="m",
+        key_origin="m",
         device_type=None,
         path=None,
         fingerprint=None,
@@ -347,7 +376,7 @@ class HWIBridge(JSONRPC):
             passphrase=passphrase,
             chain=chain,
         ) as client:
-            status = hwi_commands.signmessage(client, message, derivation_path)
+            status = hwi_commands.signmessage(client, message, key_origin)
             if "error" in status:
                 raise Exception(status["error"])
             elif "signature" in status:
@@ -355,7 +384,6 @@ class HWIBridge(JSONRPC):
             else:
                 raise Exception("Failed to sign message with device: Unknown Error")
 
-    @locked(hwilock)
     def extract_master_blinding_key(
         self,
         device_type=None,

@@ -91,7 +91,9 @@ def get_psbt_simple_json(psbt: bdk.PartiallySignedTransaction):
     return {"inputs": inputs}
 
 
-def get_txouts_from_inputs(psbt: bdk.PartiallySignedTransaction):
+def get_txouts_from_inputs(
+    psbt: bdk.PartiallySignedTransaction,
+) -> Dict[str, bdk.TxOut]:
     tx_outs = {}
     psbt_json = json.loads(psbt.json_serialize())
     for inp, json_inp in zip(psbt.extract_tx().input(), psbt_json["inputs"]):
@@ -103,7 +105,7 @@ def get_txouts_from_inputs(psbt: bdk.PartiallySignedTransaction):
             script_pubkey = bdk.Script(
                 bytes.fromhex(json_prev_out[prev_out.vout]["script_pubkey"])
             )
-            tx_outs[prev_out] = bdk.TxOut(
+            tx_outs[str(prev_out)] = bdk.TxOut(
                 script_pubkey=script_pubkey, value=json_prev_out[prev_out.vout]["value"]
             )
     return tx_outs
@@ -122,8 +124,8 @@ def get_sent_and_change_outputs(
         if not derivation_tuple:
             sent_tx_outs[i] = txout
         else:
-            derivation_path = derivation_tuple[0][1][1]
-            *first_part, change_index, address_index = derivation_path.split("/")
+            key_origin = derivation_tuple[0][1][1]
+            *first_part, change_index, address_index = key_origin.split("/")
             if change_index == "1":
                 change_tx_outs[i] = txout
             else:
@@ -245,7 +247,7 @@ def get_likely_origin_wallet(input_outpoints: List[OutPoint], wallets) -> "Walle
 
     for wallet in wallets:
         wallet_outpoints: List[OutPoint] = [
-            OutPoint.from_bdk(utxo.outpoint) for utxo in wallet.list_unspent()
+            OutPoint.from_bdk(utxo.outpoint) for utxo in wallet.bdkwallet.list_unspent()
         ]
         for outpoint in input_outpoints:
             if outpoint in wallet_outpoints:

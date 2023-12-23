@@ -1,7 +1,7 @@
 import logging
 import os
 
-from bitcoin_safe.gui.qt.util import create_button_box
+from .util import create_button_box
 
 logger = logging.getLogger(__name__)
 from PySide2.QtWidgets import (

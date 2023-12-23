@@ -1,8 +1,8 @@
-from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
-from bitcoin_safe.gui.qt.taglist.main import hash_color
-from bitcoin_safe.gui.qt.util import ShowCopyTextEdit
-from bitcoin_safe.signals import Signals, UpdateFilter
-from bitcoin_safe.wallet import Wallet
+from .qr_components.quick_receive import QuickReceive, ReceiveGroup
+from .taglist.main import hash_color
+from .util import ShowCopyTextEdit
+from ...signals import Signals, UpdateFilter
+from ...wallet import Wallet
 import bdkpython as bdk
 import logging
 

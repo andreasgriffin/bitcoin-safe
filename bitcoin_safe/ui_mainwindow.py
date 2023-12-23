@@ -91,9 +91,9 @@ class Ui_MainWindow(QMainWindow):
         self.menu_wallet.addAction(_("Sync"), self.sync).setShortcut(QKeySequence("F5"))
 
         # menu transaction
-        self.menu_transaction = self.menubar.addMenu(_("&Transaction"))
+        self.menu_transaction = self.menubar.addMenu(_("&Import"))
         self.menu_load_transaction = self.menu_transaction.addMenu(
-            _("&Load Transaction")
+            _("&Transaction and PSBT")
         )
         self.menu_load_transaction.addAction("From file", self.open_tx_file)
         self.menu_load_transaction.addAction(

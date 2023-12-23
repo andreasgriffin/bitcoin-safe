@@ -1,8 +1,7 @@
 import logging
 
-from bitcoin_safe.gui.qt import block_change_signals
-from bitcoin_safe.gui.qt.util import Message, create_button, icon_path
-from bitcoin_safe.pdfrecovery import make_and_open_pdf
+from bitcoin_safe.gui.qt.util import Message
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,6 @@ from ...descriptors import (
     AddressType,
     get_address_types,
 )
-from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
 from ...signals import Signals, Signal
 from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
@@ -72,13 +70,14 @@ class WalletDescriptorUI(QObject):
                 keystore,
                 self.tabs_widget_signers,
                 self.protowallet.network,
+                get_address_type=self.get_address_type_from_ui,
             )
             self.keystore_uis.append(keystore_ui)
 
         for signal in (
             [ui.signal_xpub_changed for ui in self.keystore_uis]
             + [ui.signal_fingerprint_changed for ui in self.keystore_uis]
-            + [ui.signal_derivation_path_changed for ui in self.keystore_uis]
+            + [ui.signal_key_origin_changed for ui in self.keystore_uis]
         ):
             signal.connect(self.ui_keystore_ui_change)
         for ui in self.keystore_uis:
@@ -91,23 +90,35 @@ class WalletDescriptorUI(QObject):
         self.box_button_bar = self.create_button_bar()
 
     def ui_seed_ui_change(self, *args):
-        self.ui_keystore_ui_change()
-        self.set_keystore_ui_from_protowallet()
+        try:
+            self.ui_keystore_ui_change()
+            self.set_keystore_ui_from_protowallet()
+        except:
+            logger.warning("ui_seed_ui_change: Invalid input")
 
     def ui_keystore_ui_change(self, *args):
-        self.set_protowallet_from_keystore_ui()
-        self.set_ui_descriptor()
+        try:
+            self.set_protowallet_from_keystore_ui()
+            self.set_ui_descriptor()
+        except:
+            logger.warning("ui_keystore_ui_change: Invalid input")
 
     def on_wallet_ui_changes(self):
-        self.set_protowallet_from_keystore_ui()
+        try:
+            self.set_protowallet_from_keystore_ui()
 
-        self.set_ui_descriptor()
-        self.set_keystore_ui_from_protowallet()
-        self.set_wallet_ui_from_protowallet()
+            self.set_ui_descriptor()
+            self.set_keystore_ui_from_protowallet()
+            self.set_wallet_ui_from_protowallet()
+        except:
+            logger.warning("on_wallet_ui_changes: Invalid input")
 
     def on_descriptor_pasted(self, new_value):
-        self.on_descriptor_change(new_value)
-        self.set_ui_descriptor()
+        try:
+            self.on_descriptor_change(new_value)
+            self.set_ui_descriptor()
+        except:
+            logger.warning("on_descriptor_pasted: Invalid input")
 
     def on_descriptor_change(self, new_value: str):
         new_value = new_value.strip().replace("\n", "")
@@ -153,6 +164,7 @@ class WalletDescriptorUI(QObject):
                         self.protowallet.keystores[i],
                         self.tabs_widget_signers,
                         self.protowallet.network,
+                        get_address_type=self.get_address_type_from_ui,
                     )
                 )
         # remove keystore_ui if necessary
@@ -215,6 +227,7 @@ class WalletDescriptorUI(QObject):
             self.set_ui_descriptor()
 
     def set_protowallet_from_keystore_ui(self):
+
         for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
             keystore_ui.set_keystore_from_ui_values(keystore)
         self.protowallet.set_gap(self.get_gap_from_ui())

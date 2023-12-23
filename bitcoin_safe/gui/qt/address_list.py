@@ -23,9 +23,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import csv
+from datetime import datetime
+import io
 import logging
+import os
+import tempfile
 
-from bitcoin_safe.pythonbdk_types import unique_txs_from_partialtxinfos
 
 from ...config import UserConfig, BlockchainType
 
@@ -48,7 +52,7 @@ import bdkpython as bdk
 import enum
 from enum import IntEnum
 import numpy as np
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from PySide2.QtCore import (
     Qt,
     QPersistentModelIndex,
@@ -57,6 +61,8 @@ from PySide2.QtCore import (
     QPoint,
     Signal,
 )
+from PySide2.QtCore import QMimeData, QUrl
+
 from PySide2.QtGui import (
     QStandardItemModel,
     QStandardItem,
@@ -73,8 +79,8 @@ from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPush
 from jsonschema import draft201909_format_checker
 from .category_list import CategoryEditor
 
-from ...wallet import Wallet, unique_txs
-
+from ...wallet import Wallet
+from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from ...i18n import _
 from ...util import (
     InternalAddressCorruption,
@@ -153,7 +159,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
     }
 
     stretch_column = Columns.LABEL
-    key_column = 1
+    key_column = Columns.ADDRESS
     column_widths = {Columns.ADDRESS: 150, Columns.COIN_BALANCE: 100}
 
     def __init__(self, fx, config, wallet: Wallet, signals: Signals):
@@ -195,49 +201,26 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 
-    def startDrag(self, action):
-        indexes = self.selectedIndexes()
-        if indexes:
-            drag = QDrag(self)
-            mime_data = self.model().mimeData(indexes)
-            drag.setMimeData(mime_data)
-
-            total_height = sum(self.visualRect(index).height() for index in indexes)
-            max_width = max(self.visualRect(index).width() for index in indexes)
-
-            pixmap = QPixmap(max_width, total_height)
-            pixmap.fill(Qt.transparent)
-
-            painter = QPainter(pixmap)
-            current_height = 0
-            for index in indexes:
-                if index.column() != self.Columns.ADDRESS:
-                    continue
-                rect = self.visualRect(index)
-                temp_pixmap = QPixmap(rect.size())
-                self.viewport().render(temp_pixmap, QPoint(), QRegion(rect))
-                painter.drawPixmap(0, current_height, temp_pixmap)
-                current_height += rect.height()
-            painter.end()
-
-            cursor_pos = self.mapFromGlobal(QCursor.pos())
-            visual_rect = self.visualRect(indexes[0]).bottomLeft()
-            hotspot_pos = cursor_pos - visual_rect
-            # the y offset is always off, so just set it completely to 0
-            hotspot_pos.setY(0)
-            drag.setPixmap(pixmap)
-            drag.setHotSpot(hotspot_pos)
-
-            drag.exec_(action)
-
     def dragEnterEvent(self, event):
+        # handle dropped files
+        super().dragEnterEvent(event)
+        if event.isAccepted():
+            return
+
         if event.mimeData().hasFormat("application/json"):
-            logger.debug("accept drag enter")
+            data_bytes = event.mimeData().data("application/json")
+            json_string = bytes(data_bytes).decode()
+            logger.debug(f"dragEnterEvent: {json_string}")
+
             event.acceptProposedAction()
         else:
             event.ignore()
 
+    def dragMoveEvent(self, event):
+        return self.dragEnterEvent(event)
+
     def dropEvent(self, event):
+        # handle dropped files
         super().dropEvent(event)
         if event.isAccepted():
             return
@@ -419,7 +402,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             for address in set(self.wallet.get_addresses()).intersection(
                 remaining_addresses
             ):
-                log_info.append((row, address))
+                log_info.append((address,))
                 self.append_address(address)
                 remaining_addresses = remaining_addresses - set([address])
 
@@ -529,8 +512,13 @@ class AddressList(MyTreeView, MessageBoxMixin):
         label = self.wallet.get_label_for_address(address)
         category = self.wallet.labels.get_category(address)
 
-        partialtxinfos = self.wallet.get_dict_address_partialtxinfos().get(address, [])
-        txs_involed = unique_txs_from_partialtxinfos(partialtxinfos)
+        txids = self.wallet.get_address_to_txids(address)
+        fulltxdetails = [
+            self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids
+        ]
+        txs_involed = [
+            fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail
+        ]
 
         sort_id = (
             min([self.wallet.get_tx_status(tx).sort_id for tx in txs_involed])
@@ -598,23 +586,25 @@ class AddressList(MyTreeView, MessageBoxMixin):
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
+            menu.addSeparator()
+
             self.add_copy_menu(menu, idx)
 
-            addr_column_title = self.std_model.horizontalHeaderItem(
-                self.Columns.LABEL
-            ).text()
-            addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
-            persistent = QPersistentModelIndex(addr_idx)
-            menu.addAction(
-                _("Edit {}").format(addr_column_title),
-                lambda p=persistent: self.edit(QModelIndex(p)),
-            )
+            # addr_column_title = self.std_model.horizontalHeaderItem(
+            #     self.Columns.LABEL
+            # ).text()
+            # addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
+            # persistent = QPersistentModelIndex(addr_idx)
+            # menu.addAction(
+            #     _("Edit {}").format(addr_column_title),
+            #     lambda p=persistent: self.edit(QModelIndex(p)),
+            # )
 
-        menu.addSeparator()
         menu.addAction(
             _("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
+        menu.addSeparator()
         menu.addAction(
             _("Export Labels"),
             lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
@@ -648,6 +638,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.signals.labels_updated.emit(
             UpdateFilter(
                 addresses=[edit_key],
-                txids=[tx.tx.txid for tx in self.wallet.get_partialtxinfos(edit_key)],
+                txids=self.wallet.get_address_to_txids(edit_key),
             )
         )

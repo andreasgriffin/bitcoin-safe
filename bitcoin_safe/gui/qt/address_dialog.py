@@ -25,8 +25,8 @@
 import logging
 from re import A
 
-from bitcoin_safe.gui.qt.qr_components.image_widget import QRCodeWidgetSVG
-from bitcoin_safe.util import Satoshis, serialized_to_hex
+from .qr_components.image_widget import QRCodeWidgetSVG
+from .util import Satoshis, serialized_to_hex
 
 
 logger = logging.getLogger(__name__)
@@ -50,18 +50,18 @@ from .util import (
     CloseButton,
     ShowCopyLineEdit,
 )
-from .qrtextedit import ShowQRTextEdit
 from ...signals import Signals
 from .hist_list import HistList
 from ...wallet import Wallet
 from .util import ColorScheme
 
 
-class AddressDialog(WindowModalDialog):
+class AddressDialog(QDialog):
     def __init__(
         self, fx, config, signals: Signals, wallet: Wallet, address: str, parent=None
     ):
-        WindowModalDialog.__init__(self, parent, _("Address"))
+        super().__init__()
+        self.setWindowTitle("Address")
         self.address = address
         self.bdk_address = bdk.Address(address)
         self.fx = fx

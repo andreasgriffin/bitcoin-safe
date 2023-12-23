@@ -2,7 +2,7 @@ import logging
 
 from numpy import spacing
 
-from bitcoin_safe.util import register_cache
+from ....util import register_cache
 
 logger = logging.getLogger(__name__)
 
@@ -256,7 +256,7 @@ class CustomListWidget(QListWidget):
         self.viewport().setAcceptDrops(True)
         self.setDropIndicatorShown(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDefaultDropAction(Qt.MoveAction)
+        self.setDefaultDropAction(Qt.CopyAction)
         self.setDragEnabled(enable_drag)  # this must be after the other drag toggles
 
         self.itemChanged.connect(self.on_item_changed)  # new
@@ -363,6 +363,8 @@ class CustomListWidget(QListWidget):
 
     def startDrag(self, action):
         item = self.currentItem()
+        if not item:
+            return
         rect = self.visualItemRect(item)
 
         drag = QDrag(self)

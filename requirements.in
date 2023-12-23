@@ -17,4 +17,5 @@ segno==1.5.3
 Requests==2.31.0
 pre-commit
 fpdf2==2.7.4
-bitcoin_qrreader==0.4.0
+bitcoin_qrreader==0.5.3
+bitcoin_usb==0.1.0

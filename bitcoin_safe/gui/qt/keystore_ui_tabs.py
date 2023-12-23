@@ -1,7 +1,5 @@
 import logging
 
-from bitcoin_safe import descriptors, keystore, util
-from bitcoin_safe.gui.qt.custom_edits import DescriptorEdit
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +15,7 @@ from .util import (
     read_QIcon,
     create_button,
 )
-from ...keystore import KeyStoreTypes, KeyStoreType, KeyStore
-from typing import List
-from .block_change_signals import BlockChangesSignals
-import bdkpython as bdk
-from ...signer import AbstractSigner, SignerWallet
-from .util import MnemonicLineEdit, CameraInputLineEdit, CameraInputTextEdit
-from bitcoin_qrreader import bitcoin_qr
+from ...keystore import KeyStoreTypes
 
 
 class KeyStoreUITypeChooser(QObject):

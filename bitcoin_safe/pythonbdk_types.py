@@ -1,9 +1,11 @@
-from typing import List
+import logging
+from typing import Dict, List
 import bdkpython as bdk
 import enum
 from .util import serialized_to_hex
 from .storage import SaveAllClass
-import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class Recipient:
@@ -47,10 +49,14 @@ class OutPoint(bdk.OutPoint):
     def from_bdk(cls, bdk_outpoint: bdk.OutPoint):
         if isinstance(bdk_outpoint, OutPoint):
             return bdk_outpoint
+        if isinstance(bdk_outpoint, str):
+            return cls.from_str(bdk_outpoint)
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
 
     @classmethod
     def from_str(cls, outpoint_str: str):
+        if isinstance(outpoint_str, OutPoint):
+            return outpoint_str
         txid, vout = outpoint_str.split(":")
         return OutPoint(txid, int(vout))
 
@@ -85,9 +91,11 @@ class TxOut(bdk.TxOut):
 
 
 class PythonUtxo:
-    def __init__(self, outpoint: OutPoint, txout: TxOut) -> None:
+    def __init__(self, address: str, outpoint: OutPoint, txout: TxOut) -> None:
         self.outpoint = outpoint
         self.txout = txout
+        self.address = address
+        self.is_spent_by_txid: str = None
 
 
 class UtxosForInputs:
@@ -102,30 +110,56 @@ class UtxosForInputs:
         self.spend_all_utxos = spend_all_utxos
 
 
-class PartialTxInfo:
-    "Gives a partial info of the tx, usually restricted to 1 address"
+class FullTxDetail:
+    """
+    for all outputs and inputs, where it has a full PythonUtxo .
+    """
 
     def __init__(self, tx: bdk.TransactionDetails, received=None, send=None) -> None:
-        self.received: List[PythonUtxo] = received if received else []
-        self.send: List[PythonUtxo] = send if send else []
+        self.outputs: Dict[str, PythonUtxo] = (
+            received if received else {}
+        )  # outpoint_str: PythonUtxo
+        self.inputs: Dict[str, PythonUtxo] = (
+            send if send else {}
+        )  # outpoint_str: PythonUtxo
         self.tx = tx
         self.txid = tx.txid
 
+    @classmethod
+    def fill_received(
+        cls, tx: bdk.TransactionDetails, bdkwallet: "BdkWallet"
+    ) -> "FullTxDetail":
+        res = FullTxDetail(tx)
+        txid = tx.txid
+        for vout, txout in enumerate(tx.transaction.output()):
+            address = bdkwallet.get_address_of_txout(TxOut.from_bdk(txout))
+            out_point = OutPoint(txid, vout)
+            if address is None:
+                continue
+            python_utxo = PythonUtxo(address, out_point, txout)
+            python_utxo.is_spent_by_txid = False
+            res.outputs[str(out_point)] = python_utxo
+        return res
 
-def unique_txs(txs: List[bdk.TransactionDetails]) -> List[bdk.TransactionDetails]:
-    tx_ids = []
-    res = []
-    for tx in txs:
-        if tx.txid not in tx_ids:
-            tx_ids.append(tx.txid)
-            res.append(tx)
-    return res
+    def fill_inputs(
+        self,
+        lookup_dict_fulltxdetail: Dict[str, "FullTxDetail"],
+    ):
+        for input in self.tx.transaction.input():
+            prev_outpoint = OutPoint.from_bdk(input.previous_output)
+            prev_outpoint_str = str(prev_outpoint)
 
-
-def unique_txs_from_partialtxinfos(
-    partialtxinfos: List[PartialTxInfo],
-) -> List[bdk.TransactionDetails]:
-    return unique_txs([partialtxinfo.tx for partialtxinfo in partialtxinfos])
+            # check if I have the prev_outpoint fulltxdetail
+            if prev_outpoint.txid not in lookup_dict_fulltxdetail:
+                self.inputs[prev_outpoint_str] = None
+                continue
+            fulltxdetail = lookup_dict_fulltxdetail[prev_outpoint.txid]
+            if prev_outpoint_str not in fulltxdetail.outputs:
+                self.inputs[prev_outpoint_str] = None
+                continue
+            python_utxo = fulltxdetail.outputs[prev_outpoint_str]
+            python_utxo.is_spent_by_txid = self.tx.txid
+            self.inputs[prev_outpoint_str] = python_utxo
 
 
 class AddressInfoMin(SaveAllClass):

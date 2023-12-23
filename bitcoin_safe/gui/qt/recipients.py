@@ -1,8 +1,7 @@
 import logging
-from bitcoin_safe.invisible_scroll_area import InvisibleScrollArea
+from ...invisible_scroll_area import InvisibleScrollArea
 
-from bitcoin_safe.pythonbdk_types import Recipient
-from bitcoin_safe.util import Satoshis
+from ...pythonbdk_types import Recipient
 
 logger = logging.getLogger(__name__)
 
@@ -10,13 +9,11 @@ from typing import List, Dict
 import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from .util import ColorScheme
-from ...signals import Signals, SignalFunction
+from ...signals import Signals
 from .spinbox import BTCSpinBox
 from ...wallet import Wallet
 from ...util import unit_str
 from .dialogs import question_dialog
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QMessageBox, QApplication
 import sys
 from .util import ShowCopyLineEdit, CameraInputLineEdit
 from bitcoin_qrreader import bitcoin_qr
@@ -107,6 +104,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         self.address_line_edit.textChanged.connect(self.format_address_field)
         self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
+        self.address_line_edit.textChanged.connect(self.check_if_used)
 
         self.setStyleSheet(
             """
@@ -186,38 +184,41 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         else:
             self.label_line_edit.setPlaceholderText("Enter label for recipient address")
 
+    def get_wallet_of_address(self, address) -> Wallet:
+        for wallet in self.signals.get_wallets().values():
+            if wallet.is_my_address(address):
+                return wallet
+
+    def check_if_used(self, *args):
+        wallet_of_address = self.get_wallet_of_address(self.address)
+        if (
+            self.allow_edit
+            and wallet_of_address
+            and wallet_of_address.address_is_used(self.address)
+        ):
+            if dialog_replace_with_new_receiving_address(self.address):
+                # find an address that is not used yet
+                self.address = wallet_of_address.get_address().address.as_string()
+
     def format_address_field(self, *args):
-        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
-
-        def get_wallet_of_address(address) -> Wallet:
-            for wallet in wallets_dict.values():
-                if address in wallet.get_addresses():
-                    return wallet
-
         palette = QtGui.QPalette()
 
-        wallet_of_address = get_wallet_of_address(self.address)
-        if wallet_of_address:
-            if self.allow_edit and wallet_of_address.address_is_used(self.address):
-                if dialog_replace_with_new_receiving_address(self.address):
-                    # find an address that is not used yet
-                    address_info = wallet_of_address.get_address()
-                    self.address = address_info.address.as_string()
+        wallet_of_address = self.get_wallet_of_address(self.address)
+        if wallet_of_address and wallet_of_address.is_my_address(self.address):
+            self.setTitle(f'Recipient is wallet "{wallet_of_address.id}"')
 
             if wallet_of_address.is_change(self.address):
                 background_color = ColorScheme.YELLOW.as_color(background=True)
                 palette.setColor(QtGui.QPalette.Base, background_color)
-                self.setTitle(f'Recipient is wallet "{wallet_of_address.id}"')
             else:
                 background_color = ColorScheme.GREEN.as_color(background=True)
                 palette.setColor(QtGui.QPalette.Base, background_color)
-                self.setTitle(f'Recipient is wallet "{wallet_of_address.id}"')
         else:
             palette = self.address_line_edit.style().standardPalette()
             self.setTitle("")
 
         self.address_line_edit.setPalette(palette)
-        self.address_line_edit.update()
+        self.update()
 
 
 class Recipients(QtWidgets.QWidget):
@@ -255,6 +256,7 @@ class Recipients(QtWidgets.QWidget):
             # self.main_layout.addWidget(self.add_recipient_button)
 
     def add_recipient(self, recipient: Recipient = None):
+
         if recipient is None:
             recipient = Recipient("", 0)
         recipient_box = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)

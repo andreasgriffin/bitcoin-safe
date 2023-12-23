@@ -1,12 +1,7 @@
 import logging
+import os
+import tempfile
 
-
-from bitcoin_safe.gui.qt.balance_dialog import (
-    COLOR_CONFIRMED,
-    COLOR_UNCONFIRMED,
-    COLOR_UNMATURED,
-)
-from bitcoin_safe.pythonbdk_types import TxOut
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +31,10 @@ from PySide2.QtGui import (
     QPainter,
 )
 from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPushButton
-from jsonschema import draft201909_format_checker
 from .category_list import CategoryEditor
 from .open_tx_dialog import file_to_str
-from ...wallet import Wallet, TxConfirmationStatus, unique_txs
+from ...wallet import Wallet, TxConfirmationStatus
+from PySide2.QtCore import QMimeData, QUrl
 
 from ...i18n import _
 from ...util import (
@@ -49,7 +44,8 @@ from ...util import (
     serialized_to_hex,
 )
 import json
-
+from PySide2.QtWidgets import QFileDialog
+from bitcoin_qrreader.bitcoin_qr import Data, DataType
 
 from .util import (
     MONOSPACE_FONT,
@@ -188,8 +184,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         self.std_model = MyStandardItemModel(
             self,
             drag_key="txids",
-            get_file_data=self.get_file_data,
-            file_extension="tx",
+            drag_keys_to_file_paths=self.drag_keys_to_file_paths,
         )
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
@@ -205,42 +200,34 @@ class HistList(MyTreeView, MessageBoxMixin):
         for wallet in wallets:
             txdetails = wallet.get_tx(txid)
         if txdetails:
-            return serialized_to_hex(txdetails.transaction.serialize())
+            return Data(txdetails.transaction, DataType.Tx)
 
-    def startDrag(self, action):
-        indexes = self.selectedIndexes()
-        if indexes:
-            drag = QDrag(self)
-            mime_data = self.model().mimeData(indexes)
-            drag.setMimeData(mime_data)
+    def drag_keys_to_file_paths(self, drag_keys, save_directory=None):
+        file_urls = []
 
-            total_height = sum(self.visualRect(index).height() for index in indexes)
-            max_width = max(self.visualRect(index).width() for index in indexes)
+        # Iterate through indexes to fetch serialized data using drag keys
+        for key in drag_keys:
+            # Fetch the serialized data using the drag_key
+            data = self.get_file_data(key)
+            if not data:
+                continue
 
-            pixmap = QPixmap(max_width, total_height)
-            pixmap.fill(Qt.transparent)
+            if save_directory:
+                file_path = os.path.join(save_directory, f"{key}.tx")
+                file_descriptor = os.open(file_path, os.O_CREAT | os.O_WRONLY)
+            else:
+                # Create a temporary file
+                file_descriptor, file_path = tempfile.mkstemp(
+                    suffix=f".tx",
+                    prefix=f"{key} ",
+                )
 
-            painter = QPainter(pixmap)
-            current_height = 0
-            for index in indexes:
-                if index.column() != self.key_column:
-                    continue
-                rect = self.visualRect(index)
-                temp_pixmap = QPixmap(rect.size())
-                self.viewport().render(temp_pixmap, QPoint(), QRegion(rect))
-                painter.drawPixmap(0, current_height, temp_pixmap)
-                current_height += rect.height()
-            painter.end()
+            data.write_to_filedescriptor(file_descriptor)
 
-            cursor_pos = self.mapFromGlobal(QCursor.pos())
-            visual_rect = self.visualRect(indexes[0]).bottomLeft()
-            hotspot_pos = cursor_pos - visual_rect
-            # the y offset is always off, so just set it completely to 0
-            hotspot_pos.setY(0)
-            drag.setPixmap(pixmap)
-            drag.setHotSpot(hotspot_pos)
+            # Add the file URL to the list
+            file_urls.append(file_path)
 
-            drag.exec_(action)
+        return file_urls
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasFormat("application/json"):
@@ -253,7 +240,11 @@ class HistList(MyTreeView, MessageBoxMixin):
         else:
             event.ignore()
 
+    def dragMoveEvent(self, event):
+        return self.dragEnterEvent(event)
+
     def dropEvent(self, event):
+        # handle dropped files
         super().dropEvent(event)
         if event.isAccepted():
             return
@@ -381,13 +372,12 @@ class HistList(MyTreeView, MessageBoxMixin):
             if self.address_domain:
                 txid_domain = set()
                 for address in self.address_domain:
-                    partialtxinfos = wallet.get_partialtxinfos(address)
                     txid_domain = txid_domain.union(
-                        [partialtxinfo.txid for partialtxinfo in partialtxinfos]
+                        wallet.get_address_to_txids(address)
                     )
 
-            # always take get_list_transactions as a start because it is correctly sorted
-            for tx in wallet.get_list_transactions():
+            # always take sorted_delta_list_transactions().new as a start because it is correctly sorted
+            for tx in wallet.sorted_delta_list_transactions():
                 if txid_domain is not None:
                     if tx.txid not in txid_domain:
                         continue
@@ -400,24 +390,22 @@ class HistList(MyTreeView, MessageBoxMixin):
 
                 # calculate the amount
                 if self.address_domain:
-                    partialtxinfos = wallet.get_dict_address_partialtxinfos().get(
-                        address, []
+                    fulltxdetail = wallet.get_dict_fulltxdetail().get(tx.txid)
+                    amount = sum(
+                        [
+                            python_utxo.txout.value
+                            for python_utxo in fulltxdetail.outputs.values()
+                            if python_utxo
+                            and python_utxo.address in self.address_domain
+                        ]
+                    ) - sum(
+                        [
+                            python_utxo.txout.value
+                            for python_utxo in fulltxdetail.inputs.values()
+                            if python_utxo
+                            and python_utxo.address in self.address_domain
+                        ]
                     )
-                    amount = 0
-                    for partialtxinfo in partialtxinfos:
-                        if partialtxinfo.txid != tx.txid:
-                            continue
-                        amount += sum(
-                            [
-                                python_utxo.txout.value
-                                for python_utxo in partialtxinfo.received
-                            ]
-                        ) - sum(
-                            [
-                                python_utxo.txout.value
-                                for python_utxo in partialtxinfo.send
-                            ]
-                        )
                 else:
                     amount = tx.received - tx.sent
 
@@ -527,42 +515,56 @@ class HistList(MyTreeView, MessageBoxMixin):
                 return
             txid = txids[0]
             menu.addAction(_("Details"), lambda: self.signals.open_tx_like.emit(txid))
-            addr_column_title = self.std_model.horizontalHeaderItem(
-                self.Columns.LABEL
-            ).text()
-            addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
+
+            addr_URL = block_explorer_URL(self.config.network_settings, "tx", txid)
+            if addr_URL:
+                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+            menu.addSeparator()
+
+            # addr_column_title = self.std_model.horizontalHeaderItem(
+            #     self.Columns.LABEL
+            # ).text()
+            # addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
             self.add_copy_menu(menu, idx, force_columns=[self.Columns.TXID])
-            persistent = QPersistentModelIndex(addr_idx)
-            menu.addAction(
-                _("Edit {}").format(addr_column_title),
-                lambda p=persistent: self.edit(QModelIndex(p)),
-            )
+            # persistent = QPersistentModelIndex(addr_idx)
+            # menu.addAction(
+            #     _("Edit {}").format(addr_column_title),
+            #     lambda p=persistent: self.edit(QModelIndex(p)),
+            # )
             # menu.addAction(_("Request payment"), lambda: self.main_window.receive_at(txid))
             # if self.wallet.can_export():
             #     menu.addAction(_("Private key"), lambda: self.signals.show_private_key(txid))
             # if not is_multisig and not self.wallet.is_watching_only():
             #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
             #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
-            addr_URL = block_explorer_URL(self.config.network_settings, "tx", txid)
-            if addr_URL:
-                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
         menu.addAction(
             _("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
+        menu.addAction(
+            _("Export binary transactions"),
+            lambda: self.export_raw_transactions(selected),
+        )
+
         # run_hook('receive_menu', menu, txids, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))
 
-    # def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
-    #     if bdk.Address(text):
-    #         try:
-    #             self.wallet.check_address_for_corruption(text)
-    #         except InternalAddressCorruption as e:
-    #             self.show_error(str(e))
-    #             raise
-    #     super().place_text_on_clipboard(text, title=title)
+    def export_raw_transactions(self, selected_items: List[QStandardItem], folder=None):
+        if not folder:
+            folder = QFileDialog.getExistingDirectory(None, "Select Folder")
+            if not folder:
+                logger.debug("No file selected")
+                return
+
+        keys = [item.data(self.ROLE_KEY) for item in selected_items]
+
+        file_paths = self.drag_keys_to_file_paths(keys, save_directory=folder)
+
+        logger.info(
+            f"Saved {len(file_paths)} {self.std_model.drag_key} saved to {folder}"
+        )
 
     def get_edit_key_from_coordinate(self, row, col):
         if col != self.Columns.LABEL:
@@ -581,8 +583,11 @@ class HistList(MyTreeView, MessageBoxMixin):
             UpdateFilter(
                 txids=[txid],
                 addresses=[
-                    wallet.get_address_of_txout(TxOut.from_bdk(txout))
-                    for txout in tx.transaction.output()
+                    pythonutxo.address
+                    for pythonutxo in wallet.get_dict_fulltxdetail()
+                    .get(txid)
+                    .outputs.values()
+                    if pythonutxo
                 ],
             )
         )

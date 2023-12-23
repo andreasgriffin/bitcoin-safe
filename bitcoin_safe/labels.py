@@ -63,6 +63,8 @@ class Labels(BaseSaveableClass):
         self.data: Dict[str, Dict] = data if data else {}
         self.categories: List[str] = categories if categories else []
 
+        self.separator = ";;"
+
     def add_category(self, value):
         if value not in self.categories:
             self.categories.append(value)
@@ -155,21 +157,15 @@ class Labels(BaseSaveableClass):
         if Key.category.name in new_item:
             new_item[
                 Key.label.name
-            ] = f'category={new_item.get(Key.category.name,"")};{new_item.get(Key.label.name,"")}'
+            ] = f'{new_item.get(Key.category.name,"")}{self.separator}{new_item.get(Key.label.name,"")}'
         return new_item
 
     def _bip329_to_item(self, item):
         new_item = item.copy()
-        if (
-            new_item[Key.label.name].startswith("category=")
-            and ";" in new_item[Key.label.name]
-        ):
+        if self.separator in new_item[Key.label.name]:
             new_item[Key.category.name], new_item[Key.label.name] = new_item[
                 Key.label.name
-            ].split(";", 1)
-            new_item[Key.category.name] = new_item[Key.category.name].replace(
-                "category=", ""
-            )
+            ].split(self.separator, 1)
         return new_item
 
     def get_bip329_json_str(self):

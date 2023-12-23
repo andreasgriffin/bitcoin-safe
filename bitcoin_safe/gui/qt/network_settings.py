@@ -11,9 +11,8 @@ from PySide2.QtWidgets import (
     QFormLayout,
     QLineEdit,
 )
-from PySide2.QtWidgets import QHBoxLayout, QPushButton
 
-from bitcoin_safe.util import block_explorer_info
+from ...util import block_explorer_info
 from ...config import UserConfig
 from PySide2.QtCore import Signal
 from ...pythonbdk_types import *

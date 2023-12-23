@@ -1,27 +1,19 @@
 import enum
 import logging
-from unittest import signals
 
 from matplotlib import category
-from matplotlib.pyplot import cla
-from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.debug_widget import generate_debug_class
-from bitcoin_safe.gui.qt.mytabwidget import ExtendedTabWidget
-from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
-from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
-from bitcoin_safe.gui.qt.taglist.main import hash_color
-from bitcoin_safe.gui.qt.tutorial import WalletSteps
-from bitcoin_safe.mempool import MempoolData
+from ...config import UserConfig
+from .mytabwidget import ExtendedTabWidget
+from .tutorial import WalletSteps
+from ...mempool import MempoolData
 from .bitcoin_quick_receive import BitcoinQuickReceive
 
 logger = logging.getLogger(__name__)
 
-from bitcoin_safe.wallet import ProtoWallet, Wallet, filename_clean, unique_txs
+from ...wallet import ProtoWallet, Wallet, filename_clean
 from .util import (
-    ShowCopyTextEdit,
     SearchableTab,
     custom_exception_handler,
-    exception_message,
     read_QIcon,
 )
 from typing import List
@@ -142,11 +134,6 @@ class QTProtoWallet(WalletTab):
         config: UserConfig,
         signals: Signals,
     ):
-        if wallet_id is None:
-            dialog = WalletIdDialog(config.wallet_dir)
-            if dialog.exec_() == QDialog.Accepted:
-                wallet_id = dialog.name_input.text()
-                print(f"Creating wallet: {wallet_id}")
 
         super().__init__(wallet_id=wallet_id)
 
@@ -254,7 +241,7 @@ class QTWallet(WalletTab):
         self.wallet = Wallet.from_protowallet(
             self.wallet_descriptor_ui.protowallet, self.wallet.id, self.config
         )
-        self.wallet.clear_cache(include_always_keep=True)
+        self.wallet.clear_cache(clear_always_keep=True)
         self.sync()
 
     def create_and_add_settings_tab(self):
@@ -369,7 +356,6 @@ class QTWallet(WalletTab):
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
                 UTXOList.Columns.WALLET_ID,
-                UTXOList.Columns.SATOSHIS,
             ],
         )
 
@@ -403,12 +389,16 @@ class QTWallet(WalletTab):
             wallet.set_output_categories_and_labels(builder_infos)
 
         update_filter = UpdateFilter(
-            addresses=[recipient.address for recipient in builder_infos.recipients],
+            addresses=[
+                bdk.Address.from_script(
+                    output.script_pubkey, self.wallet.network
+                ).as_string()
+                for output in builder_infos.builder_result.psbt.extract_tx().output()
+            ],
         )
-        self.wallet.clear_cache()
+        self.signals.addresses_updated.emit(update_filter)
         self.signals.category_updated.emit(update_filter)
         self.signals.labels_updated.emit(update_filter)
-
         self.signals.open_tx_like.emit(builder_infos)
 
     def set_wallet(self, wallet: Wallet):
@@ -419,7 +409,7 @@ class QTWallet(WalletTab):
         #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)
 
         self.connect_signal(
-            self.signals.addresses_updated, lambda x: self.wallet.clear_cache()
+            self.signals.addresses_updated, self.wallet.on_addresses_updated
         )
 
         self.connect_signal(
@@ -444,7 +434,7 @@ class QTWallet(WalletTab):
         # self.utxo_tab, self.utxo_list = self._create_utxo_tab(self.tabs)
 
         (
-            self.settings_tab,
+            self.wallet_descriptor_tab,
             self.wallet_descriptor_ui,
         ) = self.create_and_add_settings_tab()
 
@@ -497,17 +487,15 @@ class QTWallet(WalletTab):
             for category in address_drag_info.tags:
                 self.wallet.labels.set_addr_category(address, category)
 
-        unique_txids = set()
+        txids = set()
         for address in address_drag_info.addresses:
-            unique_txids = unique_txids.union(
-                [info.txid for info in self.wallet.get_partialtxinfos(address)]
-            )
+            txids = txids.union(self.wallet.get_address_to_txids(address))
 
         self.signals.category_updated.emit(
             UpdateFilter(
                 addresses=address_drag_info.addresses,
                 categories=address_drag_info.tags,
-                txids=unique_txids,
+                txids=txids,
             )
         )
 
@@ -773,6 +761,7 @@ class QTWallet(WalletTab):
 
         def on_done(result):
             logger.debug("start updating lists")
+            # self.wallet.clear_cache()
             self.refresh_caches_and_ui_lists()
             # self.update_tabs()
             logger.debug("finished updating lists")

@@ -58,7 +58,7 @@ class SignalFunction:
         responses = {}
         if not self.slots:
             logger.debug(
-                f"SignalFunction {self.slot_name}.emit() was called, but no listeners {self.slots} are listening."
+                f"SignalFunction {self.slot_name if self.slot_name else ''}.emit() was called, but no listeners {self.slots} are listening."
             )
 
         delete_slots = []
@@ -74,7 +74,6 @@ class SignalFunction:
                 )
                 name += f"{slot.__name__}{args, kwargs}"
                 name += f" with key={key}" if key else ""
-                logger.debug(f"SignalFunction {self.slot_name}.emit() --> {name}")
                 try:
                     responses[key] = slot(*args, **kwargs)
                 except:
@@ -83,6 +82,9 @@ class SignalFunction:
                     )
                     delete_slots.append(slot)
                     continue
+            logger.debug(
+                f"SignalFunction {self.slot_name if self.slot_name else ''}.emit() --> Got {len(responses)} responses"
+            )
 
         for slot in delete_slots:
             self.disconnect(slot)
@@ -145,10 +147,10 @@ class Signals(QObject):
     show_onchain_invoice = Signal()
     save_transaction_into_wallet = Signal(object)
 
-    tx_from_text = SignalFunction()
+    tx_from_text = SignalFunction(slot_name="tx_from_text")
 
-    get_wallets = SignalFunction()
-    get_network = SignalFunction()
+    get_wallets = SignalFunction(slot_name="get_wallets")
+    get_network = SignalFunction(slot_name="get_network")
 
     show_network_settings = Signal()
     export_bip329_labels = Signal(str)  # str= wallet_id

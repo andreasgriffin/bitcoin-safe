@@ -1,9 +1,8 @@
 import logging
 
-from bitcoin_safe.config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
-from bitcoin_safe.descriptors import public_descriptor_info
-from bitcoin_safe.gui.qt.qr_components.image_widget import QRCodeWidgetSVG
-from bitcoin_safe.gui.qt.open_tx_dialog import UTXOAddDialog
+from ...config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
+from .qr_components.image_widget import QRCodeWidgetSVG
+from .open_tx_dialog import UTXOAddDialog
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 
 logger = logging.getLogger(__name__)
@@ -14,14 +13,13 @@ from PySide2.QtWidgets import *
 
 from .category_list import CategoryList
 from .recipients import Recipients, BTCSpinBox
-from .slider import CustomSlider
 from ...signals import Signal
 import bdkpython as bdk
 from typing import List, Dict
+import os
 from .utxo_list import UTXOList
 from ...tx import TxUiInfos
 from ...signals import Signals
-from .barchart import MempoolBarChart
 from ...mempool import TxPrio, fee_to_depth, fee_to_blocknumber
 from PySide2.QtGui import QPixmap, QImage
 from .qr_components.qr import create_qr_svg
@@ -30,8 +28,6 @@ from ...psbt_util import (
     calculate_sent_change_amounts,
     estimate_segwit_fee_rate_from_psbt,
     estimate_tx_weight,
-    get_likely_origin_wallet,
-    get_sent_and_change_outputs,
     get_psbt_simple_json,
 )
 from ...keystore import KeyStore
@@ -49,15 +45,13 @@ from ...signer import AbstractSigner, FileSigner, SignerWallet, QRSigner
 from ...util import (
     NoThread,
     TaskThread,
-    hex_to_serialized,
-    psbt_to_hex,
     Satoshis,
     remove_duplicates_keep_order,
     serialized_to_hex,
     block_explorer_URL,
 )
 from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
-from ...mempool import MempoolData, fees_of_depths
+from ...mempool import MempoolData
 from ...pythonbdk_types import OutPoint, Recipient, TxOut
 from PySide2.QtCore import Signal, QObject
 from ...wallet import UtxosForInputs, Wallet
@@ -65,7 +59,6 @@ import json
 from ...pythonbdk_types import robust_address_str_from_script
 from .util import ShowCopyLineEdit, ShowCopyTextEdit
 from ...psbt_util import get_psbt_simple_json
-from .debug_widget import generate_debug_class
 from ...pythonbdk_types import OutPoint
 
 
@@ -262,16 +255,27 @@ class ExportData(QObject):
         TaskThread(self).add_and_start(do, on_success, on_done, on_error)
 
     def export_to_file(self):
+        default_suffix = "txt"
+        if self.data.data_type == DataType.Tx:
+            default_suffix = "tx"
+        if self.data.data_type == DataType.PSBT:
+            default_suffix = "psbt"
+
         filename = save_file_dialog(
-            name_filters=["PSBT Files (*.psbt)", "All Files (*.*)"],
-            default_suffix="psbt",
-            default_filename=f"{self.txid}.psbt",
+            name_filters=[
+                f"{default_suffix.upper()} Files (*.{default_suffix})",
+                "All Files (*.*)",
+            ],
+            default_suffix=default_suffix,
+            default_filename=f"{self.txid}.{default_suffix}",
         )
         if not filename:
             return
 
-        with open(filename, "w") as file:
-            file.write(self.serialized)
+        # create a file descriptor
+        fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+
+        self.data.write_to_filedescriptor(fd)
 
 
 class FeeGroup(QObject):
@@ -600,12 +604,13 @@ class UITx_Viewer(UITX_Base):
         self.buttonBox = QDialogButtonBox()
 
         # Create custom buttons
+        # if i do  on_clicked=  self.edit    it doesnt reliably trigger the signal. Why???
         self.button_edit_tx = add_to_buttonbox(
-            self.buttonBox, "Edit", "pen.svg", on_clicked=self.edit
+            self.buttonBox, "Edit", "pen.svg", on_clicked=lambda: self.edit()
         )
         self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "sd-card.svg")
         self.button_broadcast_tx = add_to_buttonbox(
-            self.buttonBox, "Send", "send.svg", on_clicked=self.broadcast
+            self.buttonBox, "Send", "send.svg", on_clicked=lambda: self.broadcast()
         )
         self.button_broadcast_tx.setToolTip(
             "Sending a transaction after all necessary signatures are collected."
@@ -615,14 +620,13 @@ class UITx_Viewer(UITX_Base):
         ##################
 
         self.button_save_tx.setVisible(False)
-        self.button_broadcast_tx.setEnabled(False)
+        self.button_broadcast_tx.setEnabled(not confirmation_time)
 
         self.reload()
         self.utxo_list.update()
         self.signals.finished_open_wallet.connect(self.reload)
 
     def edit(self):
-
         tx = self.tx if self.tx else self.psbt.extract_tx()
         outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in tx.input()]
 
@@ -671,7 +675,7 @@ class UITx_Viewer(UITX_Base):
             return self.psbt.txid()
 
     def broadcast(self):
-        logger.debug(f"broadcasting {self.tx.serialize()}")
+        logger.debug(f"broadcasting {serialized_to_hex( self.tx.serialize())}")
         if self.blockchain:
             self.blockchain.broadcast(self.tx)
             self.signals.signal_broadcast_tx.emit(self.tx)
@@ -735,16 +739,11 @@ class UITx_Viewer(UITX_Base):
     def add_all_signer_tabs(self):
         def get_signing_fingerprints_of_wallet(wallet):
             # check which keys the wallet can sign
-            descriptor_contains_keys = public_descriptor_info(
-                wallet.descriptor_str, self.network
-            ).get("descriptor_contains_keys")
 
             wallet_signing_fingerprints = set(
                 [
-                    keystore.fingerprint if contains_key else None
-                    for keystore, contains_key in zip(
-                        wallet.keystores, descriptor_contains_keys
-                    )
+                    keystore.fingerprint if keystore.mnemonic else None
+                    for keystore in wallet.keystores
                 ]
             ) - set([None])
             return wallet_signing_fingerprints
@@ -927,10 +926,10 @@ class UITx_Viewer(UITX_Base):
                 fee_is_exact=True,
             )
 
-        self.fee_group.approximate_fee_label.setVisible(fee_info.is_estimated)
-        self.fee_group.approximate_fee_label.setToolTip(
-            f'<html><body>The {"approximate " if fee_info.is_estimated else "" }fee is {Satoshis( fee_info.fee_amount, self.network).str_with_unit()}</body></html>'
-        )
+            self.fee_group.approximate_fee_label.setVisible(fee_info.is_estimated)
+            self.fee_group.approximate_fee_label.setToolTip(
+                f'<html><body>The {"approximate " if fee_info.is_estimated else "" }fee is {Satoshis( fee_info.fee_amount, self.network).str_with_unit()}</body></html>'
+            )
 
         outputs: List[bdk.TxOut] = self.tx.output()
 
@@ -1097,21 +1096,24 @@ class UITX_Creator(UITX_Base):
 
     def get_outpoints(self):
         return [
-            OutPoint.from_bdk(utxo.outpoint) for utxo in self.wallet.list_unspent()
+            OutPoint.from_bdk(utxo.outpoint)
+            for utxo in self.wallet.bdkwallet.list_unspent()
         ] + self.additional_outpoints
 
-    def sum_amount_selected_utxos(self) -> Satoshis:
+    def sum_amount_selected_utxos(self) -> int:
         sum_values = 0
         for index in self.utxo_list.selectionModel().selectedRows():
             # Assuming that the column of interest is column 1
-            value = index.sibling(index.row(), self.utxo_list.Columns.SATOSHIS).data()
-            if value is not None and value.isdigit():
-                sum_values += float(value)
-        return Satoshis(sum_values, self.signals.get_network())
+
+            value = index.sibling(index.row(), self.utxo_list.Columns.AMOUNT).data(
+                role=self.utxo_list.ROLE_CLIPBOARD_DATA
+            )
+            sum_values += value
+        return sum_values
 
     def update_labels(self):
         self.uxto_selected_label.setText(
-            f"Currently {self.sum_amount_selected_utxos().str_with_unit()} selected"
+            f"Currently {Satoshis(self.sum_amount_selected_utxos(), self.signals.get_network()).str_with_unit()} selected"
         )
 
     def create_inputs_selector(self, layout):
@@ -1191,7 +1193,9 @@ class UITX_Creator(UITX_Base):
                 outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY
             )
 
-        UTXOAddDialog(on_open=process_input).show()
+        UTXOAddDialog(
+            self.config.network_settings.network, on_open=process_input
+        ).show()
 
     def on_set_fee_rate(self, fee_rate):
         self.checkBox_reduce_future_fees.setChecked(
@@ -1226,9 +1230,9 @@ class UITX_Creator(UITX_Base):
         for recipient in self.recipients.recipients:
             infos.add_recipient(recipient)
 
-        logger.debug(
-            f"set psbt builder fee_rate {self.fee_group.spin_fee_rate.value()}"
-        )
+        # logger.debug(
+        #     f"set psbt builder fee_rate {self.fee_group.spin_fee_rate.value()}"
+        # )
         infos.set_fee_rate(self.fee_group.spin_fee_rate.value())
 
         if not use_this_tab:

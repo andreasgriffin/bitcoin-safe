@@ -7,19 +7,15 @@ import webbrowser
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
-from reportlab.pdfgen import canvas
-from bitcoin_safe.descriptors import public_descriptor_info
 
-from bitcoin_safe.gui.qt.util import read_QIcon
+from .gui.qt.util import read_QIcon
 from .gui.qt.qr_components.qr import create_qr
-from reportlab.lib.utils import ImageReader
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from pathlib import Path
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from PySide2.QtGui import QIcon, QPixmap, QImage, QImageWriter
-from PySide2.QtCore import QByteArray, QBuffer
 from .gui.qt.util import qicon_to_pil
 from reportlab.platypus import SimpleDocTemplate, PageBreak
+from bitcoin_usb.address_types import DescriptorInfo
 
 
 def pilimage_to_reportlab(pilimage, width=200, height=200):
@@ -223,14 +219,12 @@ class BitcoinWalletRecoveryPDF:
 
 
 def make_and_open_pdf(wallet: "Wallet"):
-    info = public_descriptor_info(
-        wallet.multipath_descriptor.as_string(), wallet.network
-    )
+    info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
     pdf_recovery = BitcoinWalletRecoveryPDF()
 
     for i, keystore in enumerate(wallet.keystores):
         title = (
-            f"Descriptor and {i+1}. seed backup of a  ({info['threshold']} of {len(wallet.keystores)}) Multi-Sig Wallet: \"{wallet.id}\""
+            f'Descriptor and {i+1}. seed backup of a  ({info.threshold} of {len(wallet.keystores)}) Multi-Sig Wallet: "{wallet.id}"'
             if len(wallet.keystores) > 1
             else f"{wallet.id }"
         )
@@ -238,8 +232,8 @@ def make_and_open_pdf(wallet: "Wallet"):
             title,
             wallet.multipath_descriptor.as_string(),
             [keystore.description for keystore in wallet.keystores],
-            threshold=info["threshold"],
-            seed=keystore.mnemonic.as_string() if keystore.mnemonic else None,
+            threshold=info.threshold,
+            seed=keystore.mnemonic,
         )
         pdf_recovery.add_page_break()
     temp_file = os.path.join(

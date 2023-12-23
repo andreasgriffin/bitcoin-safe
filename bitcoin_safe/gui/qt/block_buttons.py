@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QApplic
 from PySide2.QtCore import Qt
 import numpy as np
 
-from bitcoin_safe.invisible_scroll_area import InvisibleScrollArea
+from ...invisible_scroll_area import InvisibleScrollArea
 from ...mempool import (
     MempoolData,
     fee_to_color,

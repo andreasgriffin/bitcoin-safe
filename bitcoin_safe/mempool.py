@@ -1,7 +1,9 @@
 import enum
 import logging
 
-from bitcoin_safe.config import MIN_RELAY_FEE
+from bitcoin_safe.gui.qt.util import custom_exception_handler
+
+from .config import MIN_RELAY_FEE
 
 logger = logging.getLogger(__name__)
 
@@ -296,8 +298,14 @@ class MempoolData(QObject):
                 return None
             return fetch_mempool_histogram(self.network)
 
-        def on_done(data):
+        def on_success(data):
             if data is not None:
                 self.set_data(data)
 
-        TaskThread(self).add_and_start(do, None, on_done, None)
+        def on_error(packed_error_info):
+            custom_exception_handler(*packed_error_info)
+
+        def on_done(data):
+            pass
+
+        TaskThread(self).add_and_start(do, on_success, on_done, on_error)

@@ -13,7 +13,6 @@ from ...wallet import Wallet
 import os
 from pathlib import Path
 from .util import Message
-from ...descriptors import public_descriptor_info
 
 
 class DescriptorEdit(ButtonsTextEdit):

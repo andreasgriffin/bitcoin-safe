@@ -333,7 +333,7 @@ class StepProgressContainer(QWidget):
     def __init__(
         self,
         steps,
-        current_step=1,
+        current_step=0,
         hide_on_click=True,
         clickable=True,
         use_checkmark_icon=True,
