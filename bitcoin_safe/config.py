@@ -6,13 +6,22 @@ import appdirs, os, json
 from .storage import BaseSaveableClass, Storage
 import bdkpython as bdk
 from .pythonbdk_types import *
-from .util import block_explorer_info
 from typing import Dict, List
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = (
     0.05  # warn user if fee/amount for on-chain tx is higher than this
 )
+
+
+def get_default_mempool_url(network: bdk.Network):
+    d = {
+        bdk.Network.BITCOIN: "https://mempool.space/api/",
+        bdk.Network.REGTEST: "http://127.0.0.1:5000/",
+        bdk.Network.TESTNET: "https://mempool.space/testnet/api/",
+        bdk.Network.SIGNET: "https://mempool.space/signet/api/",
+    }
+    return d[network]
 
 
 def get_default_port(network: bdk.Network, server_type: BlockchainType):
@@ -67,11 +76,7 @@ class NetworkConfig(BaseSaveableClass):
 
         self.esplora_url = "http://127.0.0.1:3000"
 
-        self.block_explorer = (
-            "mempool.space"
-            if "mempool.space" in block_explorer_info(self.network)
-            else list(block_explorer_info(self.network).keys())[0]
-        )
+        self.mempool_url = get_default_mempool_url(self.network)
 
     def serialize(self):
         d = super().serialize()
@@ -105,19 +110,18 @@ class UserConfig(BaseSaveableClass):
     }
 
     def __init__(self):
-        self.network_settings = NetworkConfig()
+        self.network_config = NetworkConfig()
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[
             str, List[str]
         ] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
-        self.block_explorer: str = "mempool.space"
         self.enable_opportunistic_merging_fee_rate = 5
 
     @property
     def wallet_dir(self):
-        return os.path.join(self.config_dir, self.network_settings.network.name)
+        return os.path.join(self.config_dir, self.network_config.network.name)
 
     def get(self, key, default=None):
         "For legacy reasons"

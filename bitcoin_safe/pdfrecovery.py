@@ -59,6 +59,10 @@ class BitcoinWalletRecoveryPDF:
         self.style_paragraph = ParagraphStyle(
             name="Centered", parent=styles["BodyText"], alignment=TA_CENTER
         )
+        self.style_paragraph_left = ParagraphStyle(
+            name="LEFT",
+            parent=styles["BodyText"],
+        )
         self.style_heading = ParagraphStyle(
             "centered_heading", parent=styles["Heading1"], alignment=TA_CENTER
         )
@@ -69,68 +73,27 @@ class BitcoinWalletRecoveryPDF:
             PageBreak()
         )  # Add a page break between documents if needed
 
-    def create_pdf(
-        self,
-        title,
-        wallet_descriptor_string,
-        keystore_descriptions,
-        threshold,
-        seed=None,
-    ):
-        self.elements.append(
-            Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading)
-        )
-
-        # Small subtitle
-        self.elements.append(
-            Paragraph(
-                f"Created with Bitcoin Safe: &nbsp;&nbsp;&nbsp; https://github.com/andreasgriffin/bitcoin-safe ",
-                self.style_paragraph,
-            )
-        )
-        self.elements.append(Paragraph(f"", self.style_paragraph))
-
-        qr_image = pilimage_to_reportlab(
-            create_qr(wallet_descriptor_string), width=200, height=200
-        )
-        if len(keystore_descriptions) > 1:
-            desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",
-                self.style_paragraph,
-            )
-        else:
-            desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed) below.",
-                self.style_paragraph,
-            )
-        self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))
-
-        self.elements.append(Spacer(1, 10))
-
-        # Add a horizontal line as an element
-        line = Paragraph(
-            "________________________________________________________________________________",
-            self.style_paragraph,
-        )
-        line.keepWithNext = True  # Ensure line and text stay together on the same page
-        self.elements.append(line)
-        # Add text at the line as an element
-        text = "Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!"
-        text_paragraph = Paragraph(text, style=getSampleStyleSheet()["Normal"])
-        text_paragraph.spaceBefore = -10  # Adjust the space before the text if needed
-        self.elements.append(text_paragraph)
-
+    def _seed_part(self, seed, keystore_description, num_signers):
         self.elements.append(Spacer(1, 5))
         # Additional subtitle
-        instructions1 = Paragraph(
-            "Write the secret 24 words (Seed) onto this paper or onto steel.",
-            self.style_paragraph,
-        )
-
-        instructions2 = Paragraph(
-            "Put the secret 24 words (Seed) and this QR Code in a secure location",
-            self.style_paragraph,
-        )
+        if num_signers == 1:
+            instructions1 = Paragraph(
+                f"""1. Write the secret 24 words (Mnemonic Seed) in this table<br/>
+                2. Fold this  paper at the line below <br/>
+                3. Put this paper in a secure location, where only you have access<br/>
+                4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
+                """,
+                self.style_paragraph_left,
+            )
+        else:
+            instructions1 = Paragraph(
+                f"""1. Write the secret 24 words (Mnemonic Seed) in this table<br/>
+                2. Fold this  paper at the line below <br/>
+                3. Put each paper in a different secure location, where only you have access<br/>
+                4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
+                """,
+                self.style_paragraph_left,
+            )
 
         # No photography icon
         icon = read_QIcon("no-typing-icon.svg")
@@ -142,16 +105,12 @@ class BitcoinWalletRecoveryPDF:
 
         self.elements.append(
             create_table(
-                [[reportlab_icon], [instructions1, instructions2], [reportlab_icon2]],
+                [[reportlab_icon], [instructions1], [reportlab_icon2]],
                 [60, 400, 60],
             )
         )
 
         self.elements.append(Spacer(1, 5))
-        for get_keystore_description in keystore_descriptions:
-            description_text = Paragraph(get_keystore_description, self.style_paragraph)
-            self.elements.append(description_text)
-            self.elements.append(Spacer(1, 10))
 
         # Table title
         table_title = "Secret seed words for a hardware signer: Never type into a computer. Never make a picture."
@@ -200,11 +159,78 @@ class BitcoinWalletRecoveryPDF:
         table.hAlign = "CENTER"
         self.elements.append(table)
 
+        description_text = Paragraph(
+            f"{keystore_description}<br/><br/>Instructions for the heirs:",
+            self.style_paragraph_left,
+        )
+
+        self.elements.append(
+            create_table(
+                [[reportlab_icon2], [description_text], [reportlab_icon]],
+                [60, 400, 60],
+            )
+        )
+
+    def _descriptor_part(
+        self,
+        wallet_descriptor_string,
+        threshold,
+    ):
+        qr_image = pilimage_to_reportlab(
+            create_qr(wallet_descriptor_string), width=200, height=200
+        )
+        if threshold > 1:
+            desc_str = Paragraph(
+                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",
+                self.style_paragraph,
+            )
+        else:
+            desc_str = Paragraph(
+                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed) below.",
+                self.style_paragraph,
+            )
+        self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))
+
+    def create_pdf(
+        self,
+        title,
+        wallet_descriptor_string,
+        keystore_description,
+        threshold,
+        seed=None,
+        num_signers=1,
+    ):
+        self.elements.append(
+            Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading)
+        )
+
+        # Small subtitle
+        self.elements.append(
+            Paragraph(
+                f"Created with Bitcoin Safe: &nbsp;&nbsp;&nbsp; https://github.com/andreasgriffin/bitcoin-safe ",
+                self.style_paragraph,
+            )
+        )
+        self.elements.append(Paragraph(f"", self.style_paragraph))
+
+        self._seed_part(seed, keystore_description, num_signers)
+
         self.elements.append(Spacer(1, 10))
 
-        # Message to the loved ones
-        message_field = Paragraph("Instructions for the heirs:", self.style_paragraph)
-        self.elements.append(message_field)
+        # Add a horizontal line as an element
+        line = Paragraph(
+            "________________________________________________________________________________",
+            self.style_paragraph,
+        )
+        line.keepWithNext = True  # Ensure line and text stay together on the same page
+        self.elements.append(line)
+        # Add text at the line as an element
+        text = "Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please fold here!"
+        text_paragraph = Paragraph(text, style=getSampleStyleSheet()["Normal"])
+        text_paragraph.spaceBefore = -10  # Adjust the space before the text if needed
+        self.elements.append(text_paragraph)
+
+        self._descriptor_part(wallet_descriptor_string, threshold)
 
     def save_pdf(self, filename):
         document = SimpleDocTemplate(filename, pagesize=letter)
@@ -231,9 +257,12 @@ def make_and_open_pdf(wallet: "Wallet"):
         pdf_recovery.create_pdf(
             title,
             wallet.multipath_descriptor.as_string(),
-            [keystore.description for keystore in wallet.keystores],
+            f"Description of hardware signer {i+1}: {wallet.keystores[i].description}"
+            if wallet.keystores[i].description
+            else "",
             threshold=info.threshold,
             seed=keystore.mnemonic,
+            num_signers=len(wallet.keystores),
         )
         pdf_recovery.add_page_break()
     temp_file = os.path.join(

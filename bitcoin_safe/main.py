@@ -37,7 +37,6 @@ from .gui.qt.balance_dialog import (
     COLOR_UNMATURED,
 )
 from .gui.qt.util import (
-    TxTab,
     add_tab_to_tabs,
     read_QIcon,
     MessageBoxMixin,
@@ -50,7 +49,7 @@ from typing import Dict, List, Tuple
 from .storage import Storage
 import json, os
 import bdkpython as bdk
-from .gui.qt.ui_tx import UITX_Creator, UITx_Viewer
+from .gui.qt.ui_tx import UITX_Creator, UITx_Viewer, UITx_ViewerTab
 from .gui.qt.utxo_list import UTXOList
 from .config import UserConfig
 from .gui.qt.network_settings import NetworkSettingsUI
@@ -69,7 +68,7 @@ class MainWindow(Ui_MainWindow):
 
         self.qt_wallets: Dict[QTWallet] = {}
         self.fx = None
-        self.mempool_data = MempoolData(network=self.config.network_settings.network)
+        self.mempool_data = MempoolData(config=self.config)
         if os.path.isfile("data.csv"):
             self.mempool_data.set_data_from_file("data.csv")
         else:
@@ -80,7 +79,7 @@ class MainWindow(Ui_MainWindow):
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
-        self.signals.get_network.connect(lambda: self.config.network_settings.network)
+        self.signals.get_network.connect(lambda: self.config.network_config.network)
 
         self.network_settings_ui = NetworkSettingsUI(self.config)
         self.signals.show_network_settings.connect(self.open_network_settings)
@@ -88,6 +87,8 @@ class MainWindow(Ui_MainWindow):
         def callback_post_save():
             self.network_settings_ui.set_config_from_ui()
             self.save_config()
+            self.network_settings_ui.close()
+            self.mempool_data.set_data_from_mempoolspace(force=True)
 
         def do_new_network_settings():
             if self.network_settings_ui.does_it_need_restart():
@@ -100,7 +101,7 @@ class MainWindow(Ui_MainWindow):
         )
 
         self.welcome_screen = NewWalletWelcomeScreen(
-            self.tab_wallets, network=self.config.network_settings.network
+            self.tab_wallets, network=self.config.network_config.network
         )
         self.welcome_screen.signal_onclick_single_signature.connect(
             self.click_create_single_signature_wallet
@@ -286,7 +287,7 @@ class MainWindow(Ui_MainWindow):
                 txlike = str(txlike)
 
         if isinstance(txlike, str):
-            res = bitcoin_qr.Data.from_str(txlike, self.config.network_settings.network)
+            res = bitcoin_qr.Data.from_str(txlike, self.config.network_config.network)
             if res.data_type == bitcoin_qr.DataType.Txid:
                 txdetails = self.fetch_txdetails(res.data)
                 if txdetails:
@@ -317,7 +318,7 @@ class MainWindow(Ui_MainWindow):
             self.open_tx_like_in_tab(s)
 
         tx_dialog = TransactionDialog(
-            network=self.config.network_settings.network, on_open=process_input
+            network=self.config.network_config.network, on_open=process_input
         )
         tx_dialog.show()
 
@@ -360,7 +361,7 @@ class MainWindow(Ui_MainWindow):
             self.config,
             self.signals,
             utxo_list,
-            network=self.config.network_settings.network,
+            network=self.config.network_config.network,
             mempool_data=self.mempool_data,
             fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False)
             if fee is not None
@@ -433,7 +434,7 @@ class MainWindow(Ui_MainWindow):
             self.config,
             self.signals,
             utxo_list,
-            network=self.config.network_settings.network,
+            network=self.config.network_config.network,
             mempool_data=self.mempool_data,
             fee_info=fee_info,
             blockchain=self.get_blockchain_of_any_wallet(),
@@ -455,7 +456,7 @@ class MainWindow(Ui_MainWindow):
     def open_last_opened_wallets(self):
         opened_wallets = []
         for file_path in self.config.last_wallet_files.get(
-            str(self.config.network_settings.network), []
+            str(self.config.network_config.network), []
         ):
             qt_wallet = self.open_wallet(file_path=file_path)
             if qt_wallet:
@@ -464,7 +465,7 @@ class MainWindow(Ui_MainWindow):
 
     def open_last_opened_tx(self):
         for serialized in self.config.opened_txlike.get(
-            str(self.config.network_settings.network), []
+            str(self.config.network_config.network), []
         ):
             self.open_tx_like_in_tab(serialized)
 
@@ -556,10 +557,10 @@ class MainWindow(Ui_MainWindow):
         for index in range(self.tab_wallets.count()):
             # Get the widget for the current tab
             tab = self.tab_wallets.widget(index)
-            if isinstance(tab, TxTab):
+            if isinstance(tab, UITx_ViewerTab):
                 l.append(tab.serialize())
 
-        self.config.opened_txlike[str(self.config.network_settings.network)] = l
+        self.config.opened_txlike[str(self.config.network_config.network)] = l
 
     def click_create_single_signature_wallet(self):
         qtwallet = self.create_qtprotowallet((1, 1))
@@ -567,7 +568,8 @@ class MainWindow(Ui_MainWindow):
 
     def click_create_multisig_signature_wallet(self):
         qtprotowallet = self.create_qtprotowallet((2, 3))
-        qtprotowallet.wallet_descriptor_ui.disable_fields()
+        if qtprotowallet:
+            qtprotowallet.wallet_descriptor_ui.disable_fields()
 
     def click_custom_signature(self):
         return self.create_qtprotowallet((3, 5))
@@ -599,7 +601,7 @@ class MainWindow(Ui_MainWindow):
 
         m, n = m_of_n
         protowallet = ProtoWallet(
-            threshold=m, signers=n, network=self.config.network_settings.network
+            threshold=m, signers=n, network=self.config.network_config.network
         )
 
         # ask for wallet name
@@ -664,9 +666,9 @@ class MainWindow(Ui_MainWindow):
             return
         if not qt_wallet.tabs.isVisible():
             return
-        qt_wallet.step_progress_container.setVisible(
-            not qt_wallet.step_progress_container.isVisible()
-        )
+        show_tutorial = not qt_wallet.step_progress_container.isVisible()
+        qt_wallet.step_progress_container.setVisible(show_tutorial)
+        qt_wallet.tabs.setVisible(not show_tutorial)
 
     def get_qt_wallet(self, tab=None, if_none_serve_last_active=False) -> QTWallet:
         wallet_tab = self.tab_wallets.currentWidget() if tab is None else tab
@@ -730,7 +732,7 @@ class MainWindow(Ui_MainWindow):
             qt_wallet.sync()
 
     def closeEvent(self, event):
-        self.config.last_wallet_files[str(self.config.network_settings.network)] = [
+        self.config.last_wallet_files[str(self.config.network_config.network)] = [
             os.path.join(self.config.wallet_dir, qt_wallet.file_path)
             for qt_wallet in self.qt_wallets.values()
         ]

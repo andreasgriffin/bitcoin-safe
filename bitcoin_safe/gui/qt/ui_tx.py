@@ -15,12 +15,12 @@ from .category_list import CategoryList
 from .recipients import Recipients, BTCSpinBox
 from ...signals import Signal
 import bdkpython as bdk
-from typing import List, Dict
+from typing import Callable, List, Dict
 import os
 from .utxo_list import UTXOList
 from ...tx import TxUiInfos
 from ...signals import Signals
-from ...mempool import TxPrio, fee_to_depth, fee_to_blocknumber
+from ...mempool import TxPrio
 from PySide2.QtGui import QPixmap, QImage
 from .qr_components.qr import create_qr_svg
 from ...psbt_util import (
@@ -34,14 +34,13 @@ from ...keystore import KeyStore
 from .util import (
     Message,
     SearchableTab,
-    TxTab,
     add_to_buttonbox,
     read_QIcon,
     open_website,
     save_file_dialog,
 )
 from .keystore_ui import SignedUI, SignerUI
-from ...signer import AbstractSigner, FileSigner, SignerWallet, QRSigner
+from ...signer import AbstractSigner, FileSigner, SignerWallet, QRSigner, USBSigner
 from ...util import (
     NoThread,
     TaskThread,
@@ -317,14 +316,13 @@ class FeeGroup(QObject):
 
         if confirmation_time:
             self.mempool = ConfirmedBlock(
-                mempool_data,
                 url=url,
                 confirmation_time=confirmation_time,
                 fee_rate=fee_rate,
             )
         elif is_viewer:
             self.mempool = MempoolProjectedBlock(
-                mempool_data, url=url, fee_rate=fee_rate
+                mempool_data, config=self.config, fee_rate=fee_rate
             )
         else:
             self.mempool = MempoolButtons(mempool_data, button_count=3)
@@ -410,7 +408,7 @@ class FeeGroup(QObject):
                 f"<font color='red'><b>High fee ratio: {round(fee/sent_amount*100)}%</b></font>"
             )
             self.high_fee_warning_label.setToolTip(
-                f"""<html><body>The {'' if fee_is_exact else  'estimated'} transaction fee is:\n{Satoshis(fee,network).str_with_unit()}, which is {round(fee/sent_amount*100)}% of\nthe sending value {Satoshis(sent_amount, self.config.network_settings.network).str_with_unit()}</body></html>"""
+                f"""<html><body>The {'' if fee_is_exact else  'estimated'} transaction fee is:\n{Satoshis(fee,network).str_with_unit()}, which is {round(fee/sent_amount*100)}% of\nthe sending value {Satoshis(sent_amount, self.config.network_config.network).str_with_unit()}</body></html>"""
             )
 
     def update_fee_rate_warning(self):
@@ -446,7 +444,7 @@ class FeeGroup(QObject):
         self.label_block_number.setVisible(not bool(confirmation_time))
         if fee_rate is not None:
             self.label_block_number.setText(
-                f"in ~{fee_to_blocknumber(self.mempool.mempool_data.data, fee_rate)}. Block"
+                f"in ~{self.mempool.mempool_data.fee_rate_to_projected_block_index(fee_rate) }. Block"
             )
 
         if url:
@@ -462,12 +460,12 @@ class FeeGroup(QObject):
 
     def update_spin_fee_range(self, value=0):
         "Set the acceptable range"
-        fee_range = self.config.fee_ranges[self.config.network_settings.network].copy()
+        fee_range = self.config.fee_ranges[self.config.network_config.network].copy()
         fee_range[1] = max(
             fee_range[1],
             value,
             self.spin_fee_rate.value(),
-            max(self.mempool.mempool_data.block_fee_borders(1)),
+            max(self.mempool.mempool_data.fee_min_max(0)),
         )
         self.spin_fee_rate.setRange(*fee_range)
 
@@ -486,6 +484,15 @@ class UITX_Base(QObject):
         layout.addWidget(recipients)
         recipients.setMinimumWidth(250)
         return recipients
+
+
+class UITx_ViewerTab(SearchableTab):
+    def __init__(
+        self,
+        serialize,
+    ) -> None:
+        super().__init__()
+        self.serialize: Callable = serialize
 
 
 class UITx_Viewer(UITX_Base):
@@ -517,7 +524,7 @@ class UITx_Viewer(UITX_Base):
         self.signers: Dict[str, List[AbstractSigner]] = {}
 
         ##################
-        self.main_widget = TxTab(psbt=psbt, tx=tx)
+        self.main_widget = UITx_ViewerTab(serialize=lambda: self.serialize())
         self.main_widget.searchable_list = utxo_list
         self.main_widget_layout = QVBoxLayout(self.main_widget)
 
@@ -570,7 +577,7 @@ class UITx_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             confirmation_time=confirmation_time,
-            url=block_explorer_URL(config.network_settings, "tx", self.txid())
+            url=block_explorer_URL(config.network_config, "tx", self.txid())
             if tx
             else None,
             config=self.config,
@@ -625,6 +632,12 @@ class UITx_Viewer(UITX_Base):
         self.reload()
         self.utxo_list.update()
         self.signals.finished_open_wallet.connect(self.reload)
+
+    def serialize(self):
+        if self.tx:
+            return serialized_to_hex(self.tx.serialize())
+        elif self.psbt:
+            return self.psbt.serialize()
 
     def edit(self):
         tx = self.tx if self.tx else self.psbt.extract_tx()
@@ -809,6 +822,15 @@ class UITx_Viewer(UITX_Base):
                     dummy_wallet=list(wallets_dict.values())[0],
                 )
             )
+            # always offer the usb option
+            l.append(
+                USBSigner(
+                    "USB Signing",
+                    self.network,
+                    blockchain=self.blockchain,
+                    dummy_wallet=list(wallets_dict.values())[0],
+                )
+            )
 
         self.signeruis = []
         for fingerprint, signer_list in self.signers.items():
@@ -871,11 +893,9 @@ class UITx_Viewer(UITX_Base):
                     psbt_with_signatures.extract_tx().weight() / 4,
                 ),
             )
-            # TODO: assume here after 1 signing it is ready to be broadcasted
-            self.tx = self.psbt.extract_tx()
         self.button_broadcast_tx.setEnabled(True)
 
-    def check_if_valid_tx(self, tx: bdk.Transaction):
+    def check_conflicting_inputs(self, tx: bdk.Transaction):
         for wallet in self.signals.get_wallets().values():
             conflicting_input_utxos = wallet.get_conflicting_tx_inputs(tx)
             if conflicting_input_utxos:
@@ -895,7 +915,7 @@ class UITx_Viewer(UITX_Base):
 
         # if i have a transaction that is not confirmed, then check if the utxos exist
         if not confirmation_time:
-            self.check_if_valid_tx(tx)
+            self.check_conflicting_inputs(tx)
 
         self.remove_signers()
         self.export_widget.set_data(
@@ -908,7 +928,7 @@ class UITx_Viewer(UITX_Base):
             self.fee_info = fee_info
             self.fee_group.set_fee_rate(
                 fee_rate=self.fee_info.fee_rate(),
-                url=block_explorer_URL(self.config.network_settings, "tx", tx.txid()),
+                url=block_explorer_URL(self.config.network_config, "tx", tx.txid()),
                 confirmation_time=confirmation_time,
                 chain_height=self.blockchain.get_height() if self.blockchain else None,
             )
@@ -922,7 +942,7 @@ class UITx_Viewer(UITX_Base):
             self.fee_group.set_fee_to_send_ratio(
                 fee_info.fee_amount,
                 sent_amount,
-                self.config.network_settings.network,
+                self.config.network_config.network,
                 fee_is_exact=True,
             )
 
@@ -957,7 +977,7 @@ class UITx_Viewer(UITX_Base):
         """
         self.psbt: bdk.PartiallySignedTransaction = psbt
 
-        self.check_if_valid_tx(psbt.extract_tx())
+        self.check_conflicting_inputs(psbt.extract_tx())
 
         self.export_widget.set_data(
             txid=psbt.txid(),
@@ -978,7 +998,6 @@ class UITx_Viewer(UITX_Base):
 
         self.fee_group.set_fee_rate(
             fee_rate=fee_info.fee_rate(),
-            url=block_explorer_URL(self.config.network_settings, "tx", psbt.txid()),
         )
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
@@ -1193,9 +1212,7 @@ class UITX_Creator(UITX_Base):
                 outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY
             )
 
-        UTXOAddDialog(
-            self.config.network_settings.network, on_open=process_input
-        ).show()
+        UTXOAddDialog(self.config.network_config.network, on_open=process_input).show()
 
     def on_set_fee_rate(self, fee_rate):
         self.checkBox_reduce_future_fees.setChecked(
@@ -1220,7 +1237,7 @@ class UITX_Creator(UITX_Base):
             self.fee_group.set_fee_to_send_ratio(
                 fee,
                 sum(sent_values),
-                self.config.network_settings.network,
+                self.config.network_config.network,
             )
 
     def get_ui_tx_infos(self, use_this_tab=None) -> TxUiInfos:
@@ -1325,10 +1342,9 @@ class UITX_Creator(UITX_Base):
     def set_ui(self, txinfos: TxUiInfos):
         self.recipients.recipients = txinfos.recipients
 
-        outpoints = [OutPoint.from_str(s) for s in txinfos.utxo_dict.keys()]
         self.tabs_inputs.setCurrentWidget(self.tab_inputs_utxos)
         self.utxo_list.select_rows(
-            outpoints,
+            txinfos.utxo_dict.keys(),
             self.utxo_list.key_column,
             self.utxo_list.ROLE_KEY,
         )

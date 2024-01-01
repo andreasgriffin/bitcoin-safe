@@ -154,13 +154,13 @@ bip-utils==2.8.0 \
     --hash=sha256:7e5cc6ed0b5f083f54b4cddbe977ab3ae9b35ae9032d037e98a493059a66e7f8 \
     --hash=sha256:81800be2aff44e82fabf424ebbb3d654bb5e104b9126135182986bf4face9a52
     # via bitcoin-usb
-bitcoin-qrreader==0.5.3 \
-    --hash=sha256:934cce428a84f243630432d44aa485210c7baf65034c594cae84ed6dc2d1b27d \
-    --hash=sha256:f9ca121a6fb22a5cb08482dde9ed686fbe1b7c81c20203f8269b0a4871267b6f
+bitcoin-qrreader==0.5.4 \
+    --hash=sha256:b2b18fa0c8f2a26396d589c86408a1328cb52351221d176cd428965bff7b8974 \
+    --hash=sha256:faefe29b94c8ed77c55d67eda0a98ee68e67d95acf2cadaf8b478cfda066367d
     # via -r requirements.in
-bitcoin-usb==0.1.0 \
-    --hash=sha256:0a1e51fdd33ba2d6bfc19dcb0519f3ab288bc5bb0ad9b0167925e52a43a8f24a \
-    --hash=sha256:2697c2737e898aecb2995789f09ea932e665877fea036374fe95c50480a97be3
+bitcoin-usb==0.1.1 \
+    --hash=sha256:c26a1c5ec4abc3cfaef73bf767e32758b6c04412fd5a27f3a3cdefa8da282c80 \
+    --hash=sha256:ca0478094072c63c983bad2f634c8a332816d24d279c74cd3706294b0a5ea472
     # via -r requirements.in
 cbor2==5.5.1 \
     --hash=sha256:1206180f66a9ad23e692cf457610c877f186ad303a1264b6c5335015b7bee83e \
@@ -1054,6 +1054,7 @@ shiboken2==5.15.2.1 \
     --hash=sha256:f890f5611ab8f48b88cfecb716da2ac55aef99e2923198cefcf781842888ea65 \
     --hash=sha256:ffd3d0ec3d508e592d7ee3885d27fee1f279a49989f734eb130f46d9501273a9
     # via
+    #   bitcoin-qrreader
     #   bitcoin-usb
     #   pyside2
 six==1.16.0 \

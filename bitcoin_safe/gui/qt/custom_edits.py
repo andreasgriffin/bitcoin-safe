@@ -44,6 +44,11 @@ class DescriptorEdit(ButtonsTextEdit):
         if get_wallet() is not None:
             self.addPdfButton(do_pdf)
 
+    def sizeHint(self):
+        size = super().sizeHint()
+        size.setHeight(80)
+        return size
+
     def keyPressEvent(self, e):
         # If it's a regular key press
         if e.type() == QEvent.KeyPress and not e.modifiers() & (

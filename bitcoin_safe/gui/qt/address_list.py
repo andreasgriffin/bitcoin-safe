@@ -283,8 +283,8 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
         if (
             config
-            and config.network_settings.server_type == BlockchainType.RPC
-            and config.network_settings.network != bdk.Network.BITCOIN
+            and config.network_config.server_type == BlockchainType.RPC
+            and config.network_config.network != bdk.Network.BITCOIN
         ):
 
             def mine_to_selected_addresses():
@@ -295,10 +295,10 @@ class AddressList(MyTreeView, MessageBoxMixin):
 
                 for address in addresses:
                     response = send_rpc_command(
-                        config.network_settings.rpc_ip,
-                        config.network_settings.rpc_port,
-                        config.network_settings.rpc_username,
-                        config.network_settings.rpc_password,
+                        config.network_config.rpc_ip,
+                        config.network_config.rpc_port,
+                        config.network_config.rpc_username,
+                        config.network_config.rpc_password,
                         "generatetoaddress",
                         params=[1, address],
                     )
@@ -582,7 +582,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             addr = addrs[0]
             menu.addAction(_("Details"), lambda: self.signals.show_address.emit(addr))
 
-            addr_URL = block_explorer_URL(self.config.network_settings, "addr", addr)
+            addr_URL = block_explorer_URL(self.config.network_config, "addr", addr)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 

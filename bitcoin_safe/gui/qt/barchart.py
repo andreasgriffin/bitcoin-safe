@@ -22,12 +22,9 @@ from PySide2.QtGui import QPen
 from PySide2.QtCore import Qt
 import numpy as np
 from ...mempool import (
-    get_block_min_fees,
     chartColors,
-    bin_data,
     feeLevels,
-    fetch_mempool_histogram,
-    index_of_sum_until_including,
+    fetch_mempool_blocks,
 )
 from PySide2.QtCore import Signal, QObject
 from PySide2.QtGui import QCursor
@@ -126,76 +123,3 @@ class SingleBarChart(QGraphicsView):
             hover_text=f"Current transaction fee = {round(fee,1)} Sat/vB",
             color=color,
         )
-
-
-class MempoolBarChart(QObject):
-    signal_data_updated = Signal()
-    signal_click = Signal(float)
-
-    def __init__(self, network: bdk.Network) -> None:
-        super().__init__()
-        self.data = None
-        self.network = network
-        self.plotting_histogram = None
-
-        self.scene = QGraphicsScene()
-        self.chart = SingleBarChart(self.scene)
-        self.chart.signal_click.connect(self._on_bar_chart_click)
-        self.chart.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.chart.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.chart.setRenderHint(QPainter.Antialiasing)
-
-        self.signal_data_updated.connect(self._calculate_plotting_histogram)
-
-    def _on_bar_chart_click(self, y):
-        index = index_of_sum_until_including(self.data[:, 1], y)
-        fee = self.data[index, 0]
-        self.signal_click(fee)
-
-    def _calculate_plotting_histogram(self):
-        self.data = self._cutoff_data(self.raw_data)
-        self.plotting_histogram = bin_data(feeLevels, data=self.data)
-        self.update_mempool_chart()
-
-    def set_data_from_file(self, datafile=None):
-        self.raw_data = np.loadtxt(datafile, delimiter=",")
-        self.signal_data_updated()
-
-    def set_data(self, data):
-        self.raw_data = data
-        self.signal_data_updated()
-
-    def set_data_from_mempoolspace(self):
-        self.raw_data = fetch_mempool_histogram(network=self.network)
-        self.signal_data_updated()
-
-    def _cutoff_data(self, data):
-        # cutoff all below low prio
-        cutoff_filter = data[:, 0] > min(get_block_min_fees(data)[:, 1])
-        data = data[cutoff_filter]
-        return data
-
-    def update_mempool_chart(self):
-        self.scene.clear()
-
-        for color, (lower_fee, vbytes) in reversed(
-            list(zip(chartColors, self.plotting_histogram))
-        ):
-            if vbytes == 0:
-                continue
-            self.chart.add_segment(lower_fee, vbytes, color=color)
-
-        # draw lines
-        for block, fee in get_block_min_fees(self.data):
-            y_block = block + 1
-            self.chart.add_horizontal_line(
-                y_block * 1e6,
-                fee,
-                f"Limit of {round(block+1)}-th predicted block ({round(fee,1)} Sat/vB)",
-            )
-
-        self.scene.setSceneRect(
-            0, 0, 1, self.chart.total_height
-        )  # set height of the scene based on total bar heights
-
-        return self.chart

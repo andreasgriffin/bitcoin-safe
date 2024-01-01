@@ -3,18 +3,14 @@ from PySide2.QtWidgets import QPushButton, QLabel, QVBoxLayout, QWidget, QApplic
 from PySide2.QtCore import Qt
 import numpy as np
 
+from bitcoin_safe.config import NetworkConfig, UserConfig
+from bitcoin_safe.util import block_explorer_URL_of_projected_block
+
 from ...invisible_scroll_area import InvisibleScrollArea
 from ...mempool import (
     MempoolData,
     fee_to_color,
-    get_block_min_fees,
-    chartColors,
-    bin_data,
-    feeLevels,
-    index_of_sum_until_including,
     mempoolFeeColors,
-    fee_to_blocknumber,
-    fees_of_depths,
 )
 from .util import center_in_widget, open_website
 from PySide2.QtCore import Signal, QObject
@@ -225,19 +221,11 @@ class ObjectRequiringMempool(QObject):
 
         self.mempool_data = mempool_data
 
-        def refresh():
-            # make sure that the inital data from mempoolspace refreshes the button, even if it is not visible.
-            if "button_group" in dir(self):
-                self.refresh()
-
-        self.mempool_data.signal_data_updated.connect(refresh)
+        self.mempool_data.signal_data_updated.connect(lambda: self.refresh())
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.mempool_data.set_data_from_mempoolspace)
         self.timer.start(10 * 60 * 1000)  # 10 minutes in milliseconds
-
-    def refresh(self, **kwargs):
-        raise NotImplementedError()
 
     def set_mempool_block_unknown_fee_rate(
         self, i, confirmation_time: bdk.BlockTime = None
@@ -263,13 +251,6 @@ class MempoolButtons(ObjectRequiringMempool):
         if self.mempool_data is None:
             return
 
-        block_fee_borders = self.mempool_data.block_fee_borders(
-            len(self.button_group.buttons)
-        )
-        self.median_block_fee_borders = self.mempool_data.median_block_fees(
-            len(self.button_group.buttons)
-        )
-
         for i, button in enumerate(self.button_group.buttons):
             block_number = i + 1
             button.label_title.set(
@@ -282,16 +263,16 @@ class MempoolButtons(ObjectRequiringMempool):
                 block_number, block_type=BlockType.projected
             )
             button.label_approximate_median_fee.set(
-                self.median_block_fee_borders[i], block_type=BlockType.projected
+                self.mempool_data.median_block_fee(i), block_type=BlockType.projected
             )
-            button.label_fee_range.set(block_fee_borders[i + 1], block_fee_borders[i])
+            button.label_fee_range.set(*self.mempool_data.fee_min_max(i))
             button.set_background_gradient(
-                block_fee_borders[i + 1], block_fee_borders[i], BlockType.projected
+                *self.mempool_data.fee_min_max(i), BlockType.projected
             )
 
     def _on_button_click(self, i: int):
-        print(i, self.median_block_fee_borders[i])
-        self.signal_click.emit(self.median_block_fee_borders[i])
+        logger.debug(f"Clicked button {i}: {self.mempool_data.median_block_fee(i)}")
+        self.signal_click.emit(self.mempool_data.median_block_fee(i))
 
 
 class MempoolProjectedBlock(ObjectRequiringMempool):
@@ -299,21 +280,22 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
     signal_click = Signal(float)
 
     def __init__(
-        self, mempool_data: MempoolData, url: str = None, fee_rate=1, parent=None
+        self,
+        mempool_data: MempoolData,
+        config: UserConfig = None,
+        fee_rate=1,
+        parent=None,
     ) -> None:
         super().__init__(mempool_data=mempool_data, parent=parent)
 
         self.median_block_fee_borders = None
-        self.url = url
+        self.config = config
         self.fee_rate = fee_rate
 
         self.button_group = VerticalButtonGroup(size=100, button_count=1, parent=parent)
         self.refresh()
 
         self.button_group.signal_button_click.connect(self._on_button_click)
-
-    def set_url(self, url: str):
-        self.url = url
 
     def set_unknown_fee_rate(self):
         for button in self.button_group.buttons:
@@ -331,52 +313,49 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
             self.set_unknown_fee_rate()
             return
 
-        block_number = fee_to_blocknumber(self.mempool_data.data, self.fee_rate)
-        depths = np.array([block_number - 1, block_number]) * 1e6
-        block_fee_borders = fees_of_depths(self.mempool_data.data, depths)
-        self.median_block_fee_borders = fees_of_depths(
-            self.mempool_data.data, depths + 0.5e6
-        )
+        block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
 
         for i, button in enumerate(self.button_group.buttons):
             button.label_title.set(
-                f"~{format_block_number( block_number)}. Block", BlockType.projected
+                f"~{format_block_number( block_index+1)}. Block", BlockType.projected
             )
             button.label_approximate_median_fee.set(
-                self.median_block_fee_borders[i], block_type=BlockType.projected
+                self.mempool_data.median_block_fee(i), block_type=BlockType.projected
             )
-            button.label_fee_range.set(block_fee_borders[i + 1], block_fee_borders[i])
-            button.label_time_estimation.set(block_number, BlockType.projected)
+            button.label_fee_range.set(*self.mempool_data.fee_min_max(i))
+            button.label_time_estimation.set(block_index + 1, BlockType.projected)
             button.set_background_gradient(
-                block_fee_borders[i + 1], block_fee_borders[i], BlockType.projected
+                *self.mempool_data.fee_min_max(i), BlockType.projected
             )
 
-    def _on_button_click(self, i: int):
-        open_website(self.url)
+    def _on_button_click(self, block_index: int):
+        open_website(
+            block_explorer_URL_of_projected_block(
+                self.config.network_config, block_index
+            )
+        )
         if self.median_block_fee_borders:
-            self.signal_click.emit(self.median_block_fee_borders[i])
+            self.signal_click.emit(self.median_block_fee_borders[block_index])
 
 
-class ConfirmedBlock(ObjectRequiringMempool):
+class ConfirmedBlock(QObject):
     "Showing a confirmed block"
     signal_click = Signal(str)  # txid
 
     def __init__(
         self,
-        mempool_data,
         url: str = None,
         confirmation_time: bdk.BlockTime = None,
         fee_rate=None,
         parent=None,
     ) -> None:
-        super().__init__(mempool_data=mempool_data, parent=parent)
+        super().__init__(parent=parent)
 
         self.button_group = VerticalButtonGroup(button_count=1, parent=parent, size=120)
         self.fee_rate = fee_rate
         self.confirmation_time = confirmation_time
         self.url = url
 
-        # self.mempool_data.signal_data_updated.connect(self.refresh)
         self.button_group.signal_button_click.connect(self._on_button_click)
 
     def set_url(self, url: str):

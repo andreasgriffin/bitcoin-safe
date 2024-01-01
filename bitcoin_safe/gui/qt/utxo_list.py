@@ -212,7 +212,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
                 )
 
             addr_URL = block_explorer_URL(
-                self.config.network_settings, "tx", outpoints[0].txid
+                self.config.network_config, "tx", outpoints[0].txid
             )
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
@@ -267,9 +267,7 @@ class UTXOList(MyTreeView, MessageBoxMixin):
             labels[self.Columns.ADDRESS] = pythonutxo.address
             labels[self.Columns.AMOUNT] = (
                 str(
-                    Satoshis(
-                        pythonutxo.txout.value, self.config.network_settings.network
-                    )
+                    Satoshis(pythonutxo.txout.value, self.config.network_config.network)
                 )
                 if pythonutxo.txout
                 else "unknown"

@@ -3,7 +3,7 @@ import logging
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 
-from .config import MIN_RELAY_FEE
+from .config import MIN_RELAY_FEE, NetworkConfig, UserConfig
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ import numpy as np
 from PySide2.QtCore import QObject, Signal
 import datetime
 import bdkpython as bdk
-from .util import TaskThread
+from .util import NoThread, TaskThread
 
 feeLevels = [
     1,
@@ -145,99 +145,31 @@ def fee_to_color(fee, colors=chartColors):
     return colors[indizes[-1]]
 
 
-def fetch_mempool_histogram(network: bdk.Network):
-    logger.info("Fetching mempool data from mempool.space")
+def fetch_json_from_url(url):
+    logger.info(f"Fetching {url}")
 
-    api_urls = {
-        bdk.Network.BITCOIN: "https://mempool.space/api/",
-        bdk.Network.TESTNET: "https://mempool.space/testnet/api/",
-        bdk.Network.SIGNET: "https://mempool.space/signet/api/",
-        bdk.Network.REGTEST: "https://mempool.space/api/",
-    }
-
-    # Send GET request to an API endpoint
-    response = requests.get(f"{api_urls[network]}mempool")
-
-    # Check if the request was successful (status code 200)
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
-
-        # Display the JSON response
-        return np.array(data["fee_histogram"])
-    else:
-        # If the request was unsuccessful, print the status code
-        logger.error("Request failed with status code:", response.status_code)
+    try:
+        response = requests.get(url)
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+            return data
+        else:
+            # If the request was unsuccessful, print the status code
+            logger.error(f"Request failed with status code: {response.status_code}")
+            return None
+    except:
+        logger.error(f"Fetching {url} failed")
+        return None
 
 
-def index_of_sum_until_including(array, limit):
-    s = 0
-    for i, entry in enumerate(array):
-        s += entry
-        if s >= limit:
-            return i
-    return len(array) - 1
+def fetch_mempool_blocks(mempool_url: str):
+    return fetch_json_from_url(f"{mempool_url}v1/fees/mempool-blocks")
 
 
-def get_min_feerates_of_blocktemplates(data, i):
-    block_sive_invbytes = 4e6 / 4  #  4e6 is the max WU of a block
-    idx = index_of_sum_until_including(data[:, 1], block_sive_invbytes * (i + 1))
-    return data[idx, 0]
-
-
-def get_cutoff_fee_rate(data, last_block_template=10):
-    return get_min_feerates_of_blocktemplates(data, last_block_template)
-
-
-def fee_to_depth(data, fee):
-    indizes = np.where(data[:, 0] >= fee)
-    if len(indizes) == 0:
-        return 0
-    return data[indizes, 1].sum()
-
-
-def fee_to_blocknumber(data, fee):
-    depth = fee_to_depth(data, fee)
-    return max(int(np.ceil(depth / 1e6)), 1)
-
-
-def blocks_to_min_fees(data, blocks):
-    block_sive_invbytes = 4e6 / 4  #  4e6 is the max WU of a block
-    fees = []
-    for i in blocks:
-        idx = index_of_sum_until_including(data[:, 1], block_sive_invbytes * (i + 1))
-        fees.append(data[idx, 0])
-    return fees
-
-
-def get_block_min_fees(data):
-    blocks = [0, 1, 2]
-    return np.array(list(zip(blocks, blocks_to_min_fees(data, blocks))))
-
-
-def fees_of_depths(data, depths):
-    fee_borders_indizes = [
-        index_of_sum_until_including(data[:, 1], depth) for depth in depths
-    ]
-    return [data[i, 0] for i in fee_borders_indizes]
-
-
-def bin_data(bin_edges, data):
-    "assumes the data has the structure [[x, y], ...]"
-    # Extract x-values from data
-    x_values = data[:, 0]
-
-    # Aggregate the y-values based on the binned x-values
-    aggregated_data = []
-    for i in range(len(bin_edges) - 1):
-        x_bin_indices = np.where(
-            (x_values >= bin_edges[i]) & (x_values < bin_edges[i + 1])
-        )[0]
-        y_bin_values = data[x_bin_indices, 1]
-        aggregated_data.append([bin_edges[i], y_bin_values.sum()])
-
-    # Convert aggregated_data to NumPy array
-    return np.array(aggregated_data)
+def fetch_mempool_recommended(mempool_url: str):
+    return fetch_json_from_url(f"{mempool_url}v1/fees/recommended")
 
 
 class TxPrio(enum.Enum):
@@ -249,58 +181,88 @@ class TxPrio(enum.Enum):
 class MempoolData(QObject):
     signal_data_updated = Signal()
 
-    def __init__(self, network: bdk.Network) -> None:
+    def __init__(self, config: UserConfig) -> None:
         super().__init__()
 
-        self.network = network
-        self.data = np.ones((1, 2)) * MIN_RELAY_FEE
+        self.config = config
+        self.mempool_blocks = [
+            {
+                "blockSize": 1,
+                "blockVSize": 1,
+                "nTx": 1,
+                "totalFees": MIN_RELAY_FEE,
+                "medianFee": MIN_RELAY_FEE,
+                "feeRange": [MIN_RELAY_FEE, MIN_RELAY_FEE],
+            }
+        ]
+        self.recommended = {
+            "fastestFee": MIN_RELAY_FEE,
+            "halfHourFee": MIN_RELAY_FEE,
+            "hourFee": MIN_RELAY_FEE,
+            "economyFee": MIN_RELAY_FEE,
+            "minimumFee": MIN_RELAY_FEE,
+        }
         self.time_of_data = datetime.datetime.fromtimestamp(0)
 
-    def block_fee_borders(self, blocks):
-        depths = np.arange(blocks + 1) * 1e6
-        return fees_of_depths(self.data, depths)
+    def fee_min_max(self, block_index):
+        block_index = min(block_index, len(self.mempool_blocks) - 1)
+        fees = self.mempool_blocks[block_index]["feeRange"]
+        return min(fees), max(fees)
 
-    def median_block_fees(self, blocks):
-        depths = np.arange(blocks + 1) * 1e6
-        return fees_of_depths(self.data, depths + 0.5e6)
+    def median_block_fee(self, block_index):
+        block_index = min(block_index, len(self.mempool_blocks) - 1)
+        return self.mempool_blocks[block_index]["medianFee"]
 
     def get_prio_fees(self):
-        blocks = [-0.5, 1, 2]
-        prios = [TxPrio.high, TxPrio.medium, TxPrio.low]
         return {
-            prio: min(fee, self.max_reasonable_fee_rate())
-            for prio, fee in zip(prios, blocks_to_min_fees(self.data, blocks))
+            prio: self.recommended[key]
+            for prio, key in zip(
+                [TxPrio.high, TxPrio.medium, TxPrio.low],
+                ["fastestFee", "halfHourFee", "hourFee"],
+            )
         }
 
     def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback=100):
-        if self.data is None:
+        "Average fee of the 0 projected block"
+        if self.mempool_blocks is None:
             return max_reasonable_fee_rate_fallback
-        # the tip of the fees is usally too high, so go at least 1MB deep
-        fees = fees_of_depths(self.data, [1e6])
-        return fees[0] * 2 if fees and fees[0] else max_reasonable_fee_rate_fallback
+        return sum(self.fee_min_max(0)) / 2
 
     def set_data_from_file(self, datafile=None):
         self.set_data(np.loadtxt(datafile, delimiter=","))
 
-    def set_data(self, data):
-        self.data = data
+    def set_data(self, mempool_blocks, recommended):
+        self.mempool_blocks = mempool_blocks
+        self.recommended = recommended
         self.time_of_data = datetime.datetime.now()
         self.signal_data_updated.emit()
 
     def set_data_from_mempoolspace(self, force=False):
         def do():
-            if datetime.datetime.now() - self.time_of_data < datetime.timedelta(
-                minutes=9
+            if (
+                not force
+                and datetime.datetime.now() - self.time_of_data
+                < datetime.timedelta(minutes=9)
             ):
                 logger.debug(
                     f"Do not fetch data from mempoolspace because data is only {datetime.datetime.now()- self.time_of_data  } old."
                 )
                 return None
-            return fetch_mempool_histogram(self.network)
+            mempool_blocks = fetch_mempool_blocks(
+                self.config.network_config.mempool_url
+            )
+            recommended = fetch_mempool_recommended(
+                self.config.network_config.mempool_url
+            )
+            return mempool_blocks, recommended
 
         def on_success(data):
             if data is not None:
-                self.set_data(data)
+                if not all(data):
+                    # some is None
+                    return
+                mempool_blocks, recommended = data
+                self.set_data(mempool_blocks, recommended)
 
         def on_error(packed_error_info):
             custom_exception_handler(*packed_error_info)
@@ -309,3 +271,11 @@ class MempoolData(QObject):
             pass
 
         TaskThread(self).add_and_start(do, on_success, on_done, on_error)
+
+    def fee_rate_to_projected_block_index(self, fee):
+        available_blocks = len(self.mempool_blocks)
+        for i in range(available_blocks):
+            v_min, v_max = self.fee_min_max(i)
+            if fee > v_min:
+                return i
+        return available_blocks

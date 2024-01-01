@@ -8,11 +8,9 @@ import re
 from bitcoin_qrreader.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
-from bitcoin_qrreader.multipath_descriptor import add_checksum_to_descriptor
 from bitcoin_usb.address_types import (
     AddressType,
     AddressTypes,
-    get_address_types,
     SimplePubKeyProvider,
     ConstDerivationPaths,
     DescriptorInfo,

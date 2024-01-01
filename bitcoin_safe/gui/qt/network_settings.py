@@ -12,8 +12,7 @@ from PySide2.QtWidgets import (
     QLineEdit,
 )
 
-from ...util import block_explorer_info
-from ...config import UserConfig
+from ...config import UserConfig, get_default_mempool_url
 from PySide2.QtCore import Signal
 from ...pythonbdk_types import *
 from ...config import NetworkConfig, get_default_port
@@ -143,10 +142,8 @@ class NetworkSettingsUI(QWidget):
 
         self.groupbox_blockexplorer = QGroupBox("Block Explorer URL")
         self.groupbox_blockexplorer_layout = QVBoxLayout(self.groupbox_blockexplorer)
-        self.blockchain_explorer_combobox = QComboBox(self)
-        for name, d in block_explorer_info(config.network_settings.network).items():
-            self.blockchain_explorer_combobox.addItem(name)
-        self.groupbox_blockexplorer_layout.addWidget(self.blockchain_explorer_combobox)
+        self.edit_mempool_url = QLineEdit(self)
+        self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self.layout.addWidget(self.groupbox_blockexplorer)
 
         # Create buttons and layout
@@ -168,7 +165,7 @@ class NetworkSettingsUI(QWidget):
         )
 
         # set the ui before the signals for update_button_text
-        self.set_ui(self.config.network_settings)
+        self.set_ui(self.config.network_config)
 
         # for the update of the button
         for combobox in [
@@ -245,21 +242,18 @@ class NetworkSettingsUI(QWidget):
             str(get_default_port(self.network, BlockchainType.RPC))
         )
 
-        # set the block explorers
-        while self.blockchain_explorer_combobox.count():
-            self.blockchain_explorer_combobox.removeItem(0)
-        for name, d in block_explorer_info(new_network).items():
-            self.blockchain_explorer_combobox.addItem(name)
+        self.edit_mempool_url.setPlaceholderText(get_default_mempool_url(self.network))
 
     def on_apply_click(self):
         self.signal_new_network_settings.emit()
 
     def on_cancel_click(self):
-        self.set_ui(self.config.network_settings)
+        self.set_ui(self.config.network_config)
         self.close()
 
     def set_config_from_ui(self):
-        self.config.network_settings = self.get_network_settings_from_ui()
+        network_config = self.get_network_settings_from_ui()
+        self.config.network_config = network_config
 
     def network_str_to_bdk(self, network_str):
         for network in bdk.Network:
@@ -311,7 +305,7 @@ class NetworkSettingsUI(QWidget):
                     f"does_it_need_restart: {name} not present in {self.__class__.__name__}"
                 )
                 continue
-            if getattr(self.config.network_settings, name) != getattr(
+            if getattr(self.config.network_config, name) != getattr(
                 ui_network_config, name
             ):
                 changed_names.append(name)
@@ -344,12 +338,14 @@ class NetworkSettingsUI(QWidget):
     # Properties for all user entries
 
     @property
-    def block_explorer(self):
-        return self.blockchain_explorer_combobox.currentText()
+    def mempool_url(self):
+        url = self.edit_mempool_url.text()
+        url = url if url.endswith("/") else f"{url}/"
+        return url
 
-    @block_explorer.setter
-    def block_explorer(self, value: str):
-        self.blockchain_explorer_combobox.setCurrentText(value)
+    @mempool_url.setter
+    def mempool_url(self, value: str):
+        self.edit_mempool_url.setText(value)
 
     @property
     def network(self):

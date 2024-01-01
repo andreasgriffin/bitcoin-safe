@@ -12,13 +12,13 @@ from ...wallet import Wallet, ProtoWallet
 from ...descriptors import (
     get_default_address_type,
     AddressType,
-    get_address_types,
 )
 from ...signals import Signals, Signal
 from .keystore_ui import KeyStoreUI
 from typing import List, Tuple
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import DescriptorEdit
+from bitcoin_usb.address_types import get_address_types
 
 
 class WalletDescriptorUI(QObject):
@@ -73,6 +73,7 @@ class WalletDescriptorUI(QObject):
                 get_address_type=self.get_address_type_from_ui,
             )
             self.keystore_uis.append(keystore_ui)
+        self.tabs_widget_signers.setCurrentIndex(0)
 
         for signal in (
             [ui.signal_xpub_changed for ui in self.keystore_uis]
@@ -319,7 +320,6 @@ class WalletDescriptorUI(QObject):
 
     def create_wallet_type_and_descriptor(self):
         box_wallet_type_and_descriptor = QWidget(self.tab)
-        box_wallet_type_and_descriptor.setMaximumHeight(130)
         h_wallet_type_and_descriptor = QHBoxLayout(box_wallet_type_and_descriptor)
 
         # Removed the unnecessary parent widgets. Using QGroupBox directly as the container.
@@ -374,6 +374,9 @@ class WalletDescriptorUI(QObject):
 
         # now the descriptor
         groupBox_wallet_descriptor = QGroupBox(box_wallet_type_and_descriptor)
+        groupBox_wallet_descriptor.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Minimum
+        )
         # below is an example how to highlight the box
         # groupBox_wallet_descriptor.setStyleSheet("""
         # QGroupBox {
@@ -391,6 +394,7 @@ class WalletDescriptorUI(QObject):
         # """)
         self.horizontalLayout_4 = QHBoxLayout(groupBox_wallet_descriptor)
         self.edit_descriptor = DescriptorEdit(get_wallet=lambda: self.wallet)
+        self.edit_descriptor.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.edit_descriptor.setPlaceholderText(
             "Paste or scan your descriptor, if you restore a wallet."
         )

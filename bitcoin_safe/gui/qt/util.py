@@ -172,25 +172,6 @@ class SearchableTab(QWidget):
         self.searchable_list: "MyTreeView" = None
 
 
-class TxTab(SearchableTab):
-    def __init__(
-        self,
-        parent=None,
-        psbt: bdk.PartiallySignedTransaction = None,
-        tx: bdk.Transaction = None,
-    ) -> None:
-        super().__init__(parent)
-
-        self.psbt: bdk.PartiallySignedTransaction = psbt
-        self.tx: bdk.Transaction = tx
-
-    def serialize(self):
-        if self.tx:
-            return serialized_to_hex(self.tx.serialize())
-        elif self.psbt:
-            return self.psbt.serialize()
-
-
 def sort_id_to_icon(sort_id):
     if sort_id < 0:
         return "offline_tx.png"

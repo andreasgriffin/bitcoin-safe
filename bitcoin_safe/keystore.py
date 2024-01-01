@@ -172,24 +172,14 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         return dct
 
     def from_other_keystore(self, other_keystore):
-        self.xpub = other_keystore.xpub
-        self.fingerprint = other_keystore.fingerprint
-        self.key_origin = other_keystore.key_origin
-        self.label = other_keystore.label
-        self.mnemonic = other_keystore.mnemonic
-        self.description = other_keystore.description
+        for k, v in other_keystore.__dict__.items():
+            setattr(self, k, v)
 
-    def merge_with(self, other_keystore: "KeyStore"):
+    def is_identical_to(self, spk_provider: SimplePubKeyProvider):
         # fill in missing info in keystores
-        keys = ["xpub", "fingerprint", "key_origin", "label", "description"]
-        for key in keys:
-            # if both are filled, they have to be identical
-            if getattr(self, key) and getattr(other_keystore, key):
-                assert getattr(self, key) == getattr(other_keystore, key)
 
-            # fill mine if other_keystore has it
-            if not getattr(self, key) and getattr(other_keystore, key):
-                setattr(self, key, getattr(other_keystore, key))
-
-        if not self.mnemonic and other_keystore.mnemonic:
-            self.mnemonic = other_keystore.mnemonic
+        return (
+            self.fingerprint == spk_provider.fingerprint
+            and self.xpub == spk_provider.xpub
+            and self.key_origin == spk_provider.key_origin
+        )

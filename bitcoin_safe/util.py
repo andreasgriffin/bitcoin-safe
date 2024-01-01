@@ -771,140 +771,13 @@ def age(
             return _("in over {} years").format(round(distance_in_minutes / 525600))
 
 
-mainnet_block_explorers = {
-    "Bitupper Explorer": (
-        "https://bitupper.com/en/explorer/bitcoin/",
-        {"tx": "transactions/", "addr": "addresses/"},
-    ),
-    "Bitflyer.jp": (
-        "https://chainflyer.bitflyer.jp/",
-        {"tx": "Transaction/", "addr": "Address/"},
-    ),
-    "Blockchain.info": (
-        "https://blockchain.com/btc/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "blockchainbdgpzk.onion": (
-        "https://blockchainbdgpzk.onion/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "Blockstream.info": (
-        "https://blockstream.info/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "Bitaps.com": ("https://btc.bitaps.com/", {"tx": "", "addr": ""}),
-    "BTC.com": ("https://btc.com/", {"tx": "", "addr": ""}),
-    "Chain.so": ("https://www.chain.so/", {"tx": "tx/BTC/", "addr": "address/BTC/"}),
-    "Insight.is": ("https://insight.bitpay.com/", {"tx": "tx/", "addr": "address/"}),
-    "TradeBlock.com": (
-        "https://tradeblock.com/blockchain/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "BlockCypher.com": (
-        "https://live.blockcypher.com/btc/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "Blockchair.com": (
-        "https://blockchair.com/bitcoin/",
-        {"tx": "transaction/", "addr": "address/"},
-    ),
-    "blockonomics.co": (
-        "https://www.blockonomics.co/",
-        {"tx": "api/tx?txid=", "addr": "#/search?q="},
-    ),
-    "mempool.space": ("https://mempool.space/", {"tx": "tx/", "addr": "address/"}),
-    "mempool.emzy.de": ("https://mempool.emzy.de/", {"tx": "tx/", "addr": "address/"}),
-    "OXT.me": ("https://oxt.me/", {"tx": "transaction/", "addr": "address/"}),
-    "smartbit.com.au": (
-        "https://www.smartbit.com.au/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "mynode.local": ("http://mynode.local:3002/", {"tx": "tx/", "addr": "address/"}),
-    "system default": ("blockchain:/", {"tx": "tx/", "addr": "address/"}),
-}
-
-testnet_block_explorers = {
-    "Bitaps.com": ("https://tbtc.bitaps.com/", {"tx": "", "addr": ""}),
-    "BlockCypher.com": (
-        "https://live.blockcypher.com/btc-testnet/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "Blockchain.info": (
-        "https://www.blockchain.com/btc-testnet/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "Blockstream.info": (
-        "https://blockstream.info/testnet/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "mempool.space": (
-        "https://mempool.space/testnet/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "smartbit.com.au": (
-        "https://testnet.smartbit.com.au/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "system default": (
-        "blockchain://000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-}
-
-signet_block_explorers = {
-    "bc-2.jp": ("https://explorer.bc-2.jp/", {"tx": "tx/", "addr": "address/"}),
-    "mempool.space": (
-        "https://mempool.space/signet/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "bitcoinexplorer.org": (
-        "https://signet.bitcoinexplorer.org/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "wakiyamap.dev": (
-        "https://signet-explorer.wakiyamap.dev/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "ex.signet.bublina.eu.org": (
-        "https://ex.signet.bublina.eu.org/",
-        {"tx": "tx/", "addr": "address/"},
-    ),
-    "system default": ("blockchain:/", {"tx": "tx/", "addr": "address/"}),
-}
-regtest_block_explorers = {
-    "localhost:5000": ("http://localhost:5000/", {"tx": "tx/", "addr": "address/"}),
-}
-
-_block_explorer_default_api_loc = {"tx": "tx/", "addr": "address/"}
-
-
-def block_explorer_info(network: bdk.Network) -> Dict[str, Dict]:
-    if network in [
-        bdk.Network.TESTNET,
-    ]:
-        return testnet_block_explorers
-    elif network in [bdk.Network.REGTEST]:
-        return regtest_block_explorers
-    elif network == bdk.Network.SIGNET:
-        return signet_block_explorers
-    return mainnet_block_explorers
-
-
-def block_explorer_tuple(
-    network_settings: "NetworkConfig",
-) -> Optional[Tuple[str, dict]]:
-    return block_explorer_info(network_settings.network).get(
-        network_settings.block_explorer
-    )
-
-
 def block_explorer_URL(
-    network_settings: "NetworkConfig", kind: str, item: str
+    network_config: "NetworkConfig", kind: str, item: str
 ) -> Optional[str]:
-    be_tuple = block_explorer_tuple(network_settings)
-    if not be_tuple:
-        return
-    explorer_url, explorer_dict = be_tuple
+    explorer_url, explorer_dict = network_config.mempool_url, {
+        "tx": "tx/",
+        "addr": "address/",
+    }
     kind_str = explorer_dict.get(kind)
     if kind_str is None:
         return
@@ -912,6 +785,15 @@ def block_explorer_URL(
         explorer_url += "/"
     url_parts = [explorer_url, kind_str, item]
     return "".join(url_parts)
+
+
+def block_explorer_URL_of_projected_block(
+    network_config: "NetworkConfig", block_index: int
+) -> Optional[str]:
+    explorer_url = network_config.mempool_url
+    if explorer_url[-1] != "/":
+        explorer_url += "/"
+    return f"{explorer_url}mempool-block/{block_index}"
 
 
 # URL decode
@@ -1325,8 +1207,8 @@ class TaskThread(QThread):
         if self.task and self.task.cancel:
             self.task.cancel()
 
-    def __del__(self):
-        self.wait()
+    # def __del__(self):
+    #         self.wait()
 
 
 class NoThread:

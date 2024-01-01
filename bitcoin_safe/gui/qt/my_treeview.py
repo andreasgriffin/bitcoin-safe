@@ -943,7 +943,7 @@ class MyTreeView(QTreeView):
                     event.accept()
 
                     data = Data.from_str(
-                        file_to_str(file_path), self.config.network_settings.network
+                        file_to_str(file_path), self.config.network_config.network
                     )
                     self.signals.open_tx_like.emit(data.data)
 

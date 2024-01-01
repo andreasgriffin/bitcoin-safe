@@ -372,11 +372,11 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         self.bdkwallet: BdkWallet = None
         self.id = id
-        self.network = network if network else config.network_settings.network
+        self.network = network if network else config.network_config.network
         # prevent loading a wallet into different networks
         assert (
-            self.network == config.network_settings.network
-        ), f"Cannot load a wallet for {self.network}, when the network {config.network_settings.network} is configured"
+            self.network == config.network_config.network
+        ), f"Cannot load a wallet for {self.network}, when the network {config.network_config.network} is configured"
         self.gap = gap
         self.gap_change = gap_change
         self.descriptor_str: str = descriptor_str
@@ -395,14 +395,21 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.refresh_wallet = False
         # end refresh dependent values
 
-        descriptor_keystores = ProtoWallet.from_descriptor(
-            self.descriptor_str, network=self.network
-        ).keystores
-        self.keystores: List[KeyStore] = (
-            keystores if keystores is not None else descriptor_keystores
-        )
-        for keystore, descriptor_keystore in zip(self.keystores, descriptor_keystores):
-            keystore.merge_with(descriptor_keystore)
+        descriptor_info = DescriptorInfo.from_str(self.descriptor_str)
+        self.keystores: List[KeyStore] = keystores
+        if not self.keystores:
+            self.keystores = [KeyStore(**descriptor_info.spk_providers.__dict__)]
+        # the descriptor_info should have everything
+        # except the mnemonic, label, ....
+        # we check that both sources are really identical
+        for keystore, spk_provider in zip(
+            sorted(self.keystores, key=lambda k: k.fingerprint),
+            sorted(descriptor_info.spk_providers, key=lambda k: k.fingerprint),
+        ):
+            if not keystore.is_identical_to(spk_provider):
+                raise Exception(
+                    f"Keystores {keystore} is not identical to {spk_provider}"
+                )
 
         self.create_wallet(
             MultipathDescriptor.from_descriptor_str(descriptor_str, self.network)
@@ -457,7 +464,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         multipath_descriptor = protowallet.to_multipath_descriptor()
         for keystore in protowallet.keystores:
             if keystore.key_origin != protowallet.address_type.key_origin(
-                config.network_settings.network
+                config.network_config.network
             ):
                 logger.warning(
                     f"Warning: The derivation path of {keystore} is not the default"
@@ -551,7 +558,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.bdkwallet = BdkWallet(
             descriptor=self.multipath_descriptor.bdk_descriptors[0],
             change_descriptor=self.multipath_descriptor.bdk_descriptors[1],
-            network=self.config.network_settings.network,
+            network=self.config.network_config.network,
             database_config=bdk.DatabaseConfig.MEMORY(),
             # database_config=bdk.DatabaseConfig.SQLITE(
             #     bdk.SqliteDbConfiguration(self._db_file())
@@ -565,20 +572,20 @@ class Wallet(BaseSaveableClass, CacheManager):
         return TxStatus(tx, self.get_height)
 
     def init_blockchain(self):
-        if self.config.network_settings.network == bdk.Network.BITCOIN:
+        if self.config.network_config.network == bdk.Network.BITCOIN:
             start_height = 0  # segwit block 481824
-        elif self.config.network_settings.network in [
+        elif self.config.network_config.network in [
             bdk.Network.REGTEST,
             bdk.Network.SIGNET,
         ]:
             start_height = 0
-        elif self.config.network_settings.network == bdk.Network.TESTNET:
+        elif self.config.network_config.network == bdk.Network.TESTNET:
             start_height = 2000000
 
-        if self.config.network_settings.server_type == BlockchainType.Electrum:
+        if self.config.network_config.server_type == BlockchainType.Electrum:
             blockchain_config = bdk.BlockchainConfig.ELECTRUM(
                 bdk.ElectrumConfig(
-                    self.config.network_settings.electrum_url,
+                    self.config.network_config.electrum_url,
                     None,
                     2,
                     10,
@@ -586,10 +593,10 @@ class Wallet(BaseSaveableClass, CacheManager):
                     False,
                 )
             )
-        elif self.config.network_settings.server_type == BlockchainType.Esplora:
+        elif self.config.network_config.server_type == BlockchainType.Esplora:
             blockchain_config = bdk.BlockchainConfig.ESPLORA(
                 bdk.EsploraConfig(
-                    self.config.network_settings.esplora_url,
+                    self.config.network_config.esplora_url,
                     None,
                     1,
                     max(self.gap, self.gap_change),
@@ -597,30 +604,31 @@ class Wallet(BaseSaveableClass, CacheManager):
                 )
             )
         elif (
-            self.config.network_settings.server_type
-            == BlockchainType.CompactBlockFilter
+            self.config.network_config.server_type == BlockchainType.CompactBlockFilter
         ):
-            folder = f"./compact-filters-{self.id}-{self.config.network_settings.network.name}"
+            folder = (
+                f"./compact-filters-{self.id}-{self.config.network_config.network.name}"
+            )
             blockchain_config = bdk.BlockchainConfig.COMPACT_FILTERS(
                 bdk.CompactFiltersConfig(
                     [
-                        f"{self.config.network_settings.compactblockfilters_ip}:{self.config.network_settings.compactblockfilters_port}"
+                        f"{self.config.network_config.compactblockfilters_ip}:{self.config.network_config.compactblockfilters_port}"
                     ]
                     * 5,
-                    self.config.network_settings.network,
+                    self.config.network_config.network,
                     folder,
                     start_height,
                 )
             )
-        elif self.config.network_settings.server_type == BlockchainType.RPC:
+        elif self.config.network_config.server_type == BlockchainType.RPC:
             blockchain_config = bdk.BlockchainConfig.RPC(
                 bdk.RpcConfig(
-                    f"{self.config.network_settings.rpc_ip}:{self.config.network_settings.rpc_port}",
+                    f"{self.config.network_config.rpc_ip}:{self.config.network_config.rpc_port}",
                     bdk.Auth.USER_PASS(
-                        self.config.network_settings.rpc_username,
-                        self.config.network_settings.rpc_password,
+                        self.config.network_config.rpc_username,
+                        self.config.network_config.rpc_password,
                     ),
-                    self.config.network_settings.network,
+                    self.config.network_config.network,
                     self._get_uniquie_wallet_id(),
                     bdk.RpcSyncParams(0, 0, False, 10),
                 )
@@ -729,7 +737,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         if tx:
             output_for_input = tx.transaction.output()[previous_output.vout]
             return bdk.Address.from_script(
-                output_for_input.script_pubkey, self.config.network_settings.network
+                output_for_input.script_pubkey, self.config.network_config.network
             )
         else:
             return None
@@ -771,7 +779,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                 output_for_input = tx.transaction.output()[previous_output.vout]
 
                 add = bdk.Address.from_script(
-                    output_for_input.script_pubkey, self.config.network_settings.network
+                    output_for_input.script_pubkey, self.config.network_config.network
                 ).as_string()
             else:
                 add = None

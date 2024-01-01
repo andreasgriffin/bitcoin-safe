@@ -32,7 +32,7 @@ from .util import (
 from PySide2.QtCore import Signal
 from ...util import Satoshis, TaskThread, call_call_functions
 import numpy as np
-
+from bitcoin_usb.address_types import DescriptorInfo
 from .util import Message
 
 
@@ -123,7 +123,7 @@ class WalletSteps(StepProgressContainer):
             self.create_reset_signer(),
             self.create_send_test(),
         ]
-        if self.num_keystores() == 3:
+        if self.num_keystores() == 3 and self.get_threshold() == 2:
             self.widgets.append(self.create_send_test(test_number=1))
 
         for i, widget in enumerate(self.widgets):
@@ -200,10 +200,12 @@ class WalletSteps(StepProgressContainer):
 
     def go_to_next_step(self):
         if self.step_bar.current_step + 1 >= self.step_bar.steps:
-            self.setHidden(True)
-            if self.qt_wallet:
-                for i in range(self.qt_wallet.tabs.count()):
-                    self.qt_wallet.tabs.widget(i).setHidden(False)
+            self.setVisible(False)
+            # if self.qt_wallet:
+            #     for i in range(self.qt_wallet.tabs.count()):
+            #         self.qt_wallet.tabs.widget(i).setVisible(True)
+            #         self.qt_wallet.tabs.widget(i).update()
+            self.qt_wallet.tabs.setVisible(True)
 
             Message(
                 f'Your wallet is now setup. \nPut the {self.num_keystores()} Seed-backup{"s" if  self.num_keystores()> 1 else ""} in {self.num_keystores()} different secure places. ',
@@ -507,18 +509,38 @@ class WalletSteps(StepProgressContainer):
 
         return outer_widget
 
-    def tx_text(self, test_number):
+    def get_mn_tuple(self):
         m, n = (
             self.qt_wallet.wallet.get_mn_tuple()
             if self.qt_wallet
             else self.protowallet.get_mn_tuple()
         )
+        return m, n
+
+    def get_threshold(self):
+        return (
+            DescriptorInfo.from_str(
+                self.qt_wallet.wallet.multipath_descriptor.as_string()
+            ).threshold
+            if self.qt_wallet
+            else self.protowallet.threshold
+        )
+
+    def get_testing_keystores(self, test_number):
+        m, n = self.get_mn_tuple()
         keystores = (
             self.qt_wallet.wallet.keystores
             if self.qt_wallet
             else self.protowallet.keystores
         )
-        current_keystores = [keystores[j] for j in range(test_number, test_number + m)]
+        return [
+            keystores[j]
+            for j in range(test_number, test_number + m)
+            if test_number + m <= len(keystores)
+        ]
+
+    def tx_text(self, test_number):
+        current_keystores = self.get_testing_keystores(test_number)
 
         if self.num_keystores() == 1:
             return f"""Send Test"""
@@ -561,21 +583,7 @@ class WalletSteps(StepProgressContainer):
             )
             inner_widget_layout.addWidget(label2)
             label2.setWordWrap(True)
-        elif self.num_keystores() == 3:
-            m, n = (
-                self.qt_wallet.wallet.get_mn_tuple()
-                if self.qt_wallet
-                else self.protowallet.get_mn_tuple()
-            )
-            keystores = (
-                self.qt_wallet.wallet.keystores
-                if self.qt_wallet
-                else self.protowallet.keystores
-            )
-            current_keystores = [
-                keystores[j] for j in range(test_number, test_number + m)
-            ]
-
+        elif self.num_keystores() == 3 and self.get_threshold() == 2:
             label = QLabel(self.tx_text(test_number))
             label.setWordWrap(True)
             inner_widget_layout.addWidget(label)
@@ -591,19 +599,14 @@ class WalletSteps(StepProgressContainer):
             inner_widget_layout.addWidget(label)
 
             buttons = []
-            m, n = self.qt_wallet.wallet.get_mn_tuple()
+
+            m, n = (
+                self.qt_wallet.wallet.get_mn_tuple()
+                if self.qt_wallet
+                else self.protowallet.get_mn_tuple()
+            )
             for i in range(n - m + 1):
-                m, n = (
-                    self.qt_wallet.wallet.get_mn_tuple()
-                    if self.qt_wallet
-                    else self.protowallet.get_mn_tuple()
-                )
-                keystores = (
-                    self.qt_wallet.wallet.keystores
-                    if self.qt_wallet
-                    else self.protowallet.keystores
-                )
-                current_keystores = [keystores[j] for j in range(i, i + m)]
+                current_keystores = self.get_testing_keystores(i)
                 button_tx1 = QPushButton(
                     f"""Send Test {i+1}: Send a test amount  to a receive address and sign with   {' and '.join([f'"{k.label}"' for k in current_keystores])}"""
                 )

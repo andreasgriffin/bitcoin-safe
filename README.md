@@ -33,35 +33,37 @@
 #### TODOs (a lot)
 
 - [x] Add guide steps after the wallet setup
-  - [x] Create recovery pdf with descriptor and further short instructions   
-  - [x] Wallet setup guide for wallet consistency
-    - Goal: Backup seed phrases are correct
-      - [x] Send small amount of funds to the wallet
-      - [x] Wipe hardware signers
-      - [x] Read xpubs from hardware signers again (verify they have not changed)
-    - Goal: Singing device 1, 2, and 3 create valid signatures 
-      - [x] Create tx and sign with Dev 1 and Dev 2  send to own address
-      - [x] Create tx and sign with Dev 1 and Dev 3 and sent to own address
+
 - [x] Network UI configuration 
   - [x] Setting of custom CBF node ip and port
+  
 - [x] CTRL + C  and CSV export across all tables
+
 - [x] Send
   - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
   - [x] Opportunistic consolidation within coin categories, when fees are low
-  - [ ] hardware signers: HWI USB, 
-    - [x] SD card
-    - [x] QR code reader
-- [x] Address and TX labeling using categories
+  - [x] hardware signers: HWI USB, QR, SD
+  - [x] Address and TX labeling using categories
+  
   - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
+  
 - [x] Address dialog & TX dialog
+
 - [x] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
+
 - [ ] Adding tests for rigorous UI testing
+
 - [ ] CPFP, RBF
+
 - [ ] Wallet settings  (location, password,...) needs a tab
+
 - [ ] multi language
+
 - [x] add scan qr code in lots of places
+
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
+  
 - [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (+ 2. layer of encryption)
 
 

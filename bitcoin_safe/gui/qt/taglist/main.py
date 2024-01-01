@@ -352,6 +352,8 @@ class CustomListWidget(QListWidget):
         super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
+        if self._drag_start_position is None:
+            self._drag_start_position = event.pos()
         if not (event.buttons() & Qt.LeftButton):
             return
         if (

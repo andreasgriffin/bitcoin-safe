@@ -49,6 +49,7 @@ from .util import MnemonicLineEdit, CameraInputLineEdit, CameraInputTextEdit
 from bitcoin_qrreader import bitcoin_qr
 from bitcoin_usb.address_types import DescriptorInfo, AddressType
 from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_usb.gui import USBGui
 
 
 def icon_for_label(label):
@@ -124,6 +125,12 @@ class KeyStoreUI(QObject):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())
 
     def format_key_origin(self):
+        standardized = self.edit_key_origin.text().replace("'", "h")
+        if standardized != self.edit_key_origin.text():
+            # setText will call format_key_origin again
+            self.edit_key_origin.setText(standardized)
+            return
+
         address_type: AddressType = self.get_address_type()
         expected = address_type.key_origin(self.network)
         if expected != self.edit_key_origin.text():
@@ -131,9 +138,15 @@ class KeyStoreUI(QObject):
             self.edit_key_origin.setToolTip(
                 f"Standart for the selected address type {address_type.name} is {expected}.  Please correct if you are not sure."
             )
+            self.edit_xpub.setStyleSheet("QTextEdit { background-color: red; }")
+            self.edit_xpub.setToolTip(
+                f"The xPub origin {self.edit_key_origin.text()} and the xPub belong together. Please choose the correct xPub origin pair."
+            )
         else:
             self.edit_key_origin.setStyleSheet("")  # Resetting to default style
+            self.edit_xpub.setStyleSheet("")
             self.edit_key_origin.setToolTip(f"")
+            self.edit_xpub.setToolTip(f"")
         self.edit_key_origin.setPlaceholderText(expected)
 
     def on_key_origin_change(self, text):
@@ -199,7 +212,7 @@ class KeyStoreUI(QObject):
         self.edit_fingerprint = CameraInputLineEdit(
             custom_handle_input=self._on_handle_input
         )
-        label_derivation_path = QLabel(self.box_form)
+        label_key_origin = QLabel(self.box_form)
         self.edit_key_origin = CameraInputLineEdit(
             custom_handle_input=self._on_handle_input
         )
@@ -216,7 +229,7 @@ class KeyStoreUI(QObject):
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.edit_label)
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_fingerprint)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.edit_fingerprint)
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, label_derivation_path)
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, label_key_origin)
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_key_origin)
         self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_xpub)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
@@ -229,6 +242,7 @@ class KeyStoreUI(QObject):
         self.button_chooser.button_qr.clicked.connect(
             lambda: self.edit_fingerprint.camera_button.click()
         )
+        self.button_chooser.button_hwi.clicked.connect(lambda: self.on_hwi_click())
 
         def process_input(s: str):
             res = bitcoin_qr.Data.from_str(s, self.network)
@@ -260,9 +274,7 @@ class KeyStoreUI(QObject):
         self.label_fingerprint.setText(
             QCoreApplication.translate("tab", "Fingerprint", None)
         )
-        label_derivation_path.setText(
-            QCoreApplication.translate("tab", "Derivation Path", None)
-        )
+        label_key_origin.setText(QCoreApplication.translate("tab", "xPub Origin", None))
         self.label_xpub.setText(QCoreApplication.translate("tab", "xPub", None))
         self.label_seed.setText(QCoreApplication.translate("tab", "Seed", None))
         self.label_4.setText(QCoreApplication.translate("tab", "Description", None))
@@ -276,6 +288,15 @@ class KeyStoreUI(QObject):
         self.edit_key_origin.textChanged.connect(self.on_key_origin_change)
         self.edit_label.textChanged.connect(self.on_label_change)
         return tab
+
+    def on_hwi_click(self):
+        address_type = self.get_address_type()
+        usb = USBGui(self.network)
+        key_origin = address_type.key_origin(self.network)
+        fingerprint, xpub = usb.get_fingerprint_and_xpub(key_origin=key_origin)
+        self.edit_xpub.setText(xpub)
+        self.edit_fingerprint.setText(fingerprint)
+        self.edit_key_origin.setText(key_origin)
 
     def set_formatting(self):
         # disable this for now.

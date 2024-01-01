@@ -516,7 +516,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             txid = txids[0]
             menu.addAction(_("Details"), lambda: self.signals.open_tx_like.emit(txid))
 
-            addr_URL = block_explorer_URL(self.config.network_settings, "tx", txid)
+            addr_URL = block_explorer_URL(self.config.network_config, "tx", txid)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
             menu.addSeparator()

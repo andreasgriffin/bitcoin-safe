@@ -31,7 +31,7 @@ class Ui_MainWindow(QMainWindow):
         # sizePolicy.setVerticalStretch(0)
         # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         # MainWindow.setSizePolicy(sizePolicy)
-        self.set_title(self.config.network_settings.network)
+        self.set_title(self.config.network_config.network)
         MainWindow.setWindowIcon(read_QIcon("logo.svg"))
         w, h = 900, 600
         MainWindow.resize(w, h)
