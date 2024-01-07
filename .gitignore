@@ -1,6 +1,7 @@
 compact-filters-*
 *.psbt
 *.json
+*.csv
 *.tx
 *.jsonl
 .directory
@@ -68,6 +69,7 @@ cover/
 
 # Django stuff:
 *.log
+*.log.*
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -179,5 +181,3 @@ testing.ipynb
 testing.ipynb
 test-seed
 .bitcoin_safe.config
-bitcoin_safe/gui/qt/data.csv
-data.csv
