@@ -1,18 +1,20 @@
 import enum
 import logging
+from math import ceil
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 
-from .config import MIN_RELAY_FEE, NetworkConfig, UserConfig
+from .config import MIN_RELAY_FEE, UserConfig
 
 logger = logging.getLogger(__name__)
 
-import requests
-import numpy as np
-from PySide2.QtCore import QObject, Signal
 import datetime
-import bdkpython as bdk
-from .util import NoThread, TaskThread
+
+import numpy as np
+import requests
+from PySide2.QtCore import QObject, Signal
+
+from .util import TaskThread
 
 feeLevels = [
     1,
@@ -164,14 +166,6 @@ def fetch_json_from_url(url):
         return None
 
 
-def fetch_mempool_blocks(mempool_url: str):
-    return fetch_json_from_url(f"{mempool_url}v1/fees/mempool-blocks")
-
-
-def fetch_mempool_recommended(mempool_url: str):
-    return fetch_json_from_url(f"{mempool_url}v1/fees/recommended")
-
-
 class TxPrio(enum.Enum):
     low = enum.auto()
     medium = enum.auto()
@@ -185,16 +179,7 @@ class MempoolData(QObject):
         super().__init__()
 
         self.config = config
-        self.mempool_blocks = [
-            {
-                "blockSize": 1,
-                "blockVSize": 1,
-                "nTx": 1,
-                "totalFees": MIN_RELAY_FEE,
-                "medianFee": MIN_RELAY_FEE,
-                "feeRange": [MIN_RELAY_FEE, MIN_RELAY_FEE],
-            }
-        ]
+        self.mempool_blocks = self._empty_mempool_blocks()
         self.recommended = {
             "fastestFee": MIN_RELAY_FEE,
             "halfHourFee": MIN_RELAY_FEE,
@@ -203,6 +188,24 @@ class MempoolData(QObject):
             "minimumFee": MIN_RELAY_FEE,
         }
         self.time_of_data = datetime.datetime.fromtimestamp(0)
+        self.mempool_dict = {
+            "count": 0,
+            "vsize": 0,
+            "total_fee": 0,
+            "fee_histogram": [],
+        }
+
+    def _empty_mempool_blocks(self):
+        return [
+            {
+                "blockSize": 1,
+                "blockVSize": 1,
+                "nTx": 0,
+                "totalFees": MIN_RELAY_FEE,
+                "medianFee": MIN_RELAY_FEE,
+                "feeRange": [MIN_RELAY_FEE, MIN_RELAY_FEE],
+            }
+        ]
 
     def fee_min_max(self, block_index):
         block_index = min(block_index, len(self.mempool_blocks) - 1)
@@ -213,6 +216,10 @@ class MempoolData(QObject):
         block_index = min(block_index, len(self.mempool_blocks) - 1)
         return self.mempool_blocks[block_index]["medianFee"]
 
+    def num_mempool_blocks(self):
+        vBytes_per_block = 1e6
+        return ceil(self.mempool_dict["vsize"] / vBytes_per_block)
+
     def get_prio_fees(self):
         return {
             prio: self.recommended[key]
@@ -221,6 +228,9 @@ class MempoolData(QObject):
                 ["fastestFee", "halfHourFee", "hourFee"],
             )
         }
+
+    def get_min_relay_fee(self):
+        return self.recommended["minimumFee"]
 
     def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback=100):
         "Average fee of the 0 projected block"
@@ -231,38 +241,35 @@ class MempoolData(QObject):
     def set_data_from_file(self, datafile=None):
         self.set_data(np.loadtxt(datafile, delimiter=","))
 
-    def set_data(self, mempool_blocks, recommended):
-        self.mempool_blocks = mempool_blocks
+    def set_data(self, mempool_blocks, recommended, mempool_dict):
+        self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
         self.recommended = recommended
+        self.mempool_dict = mempool_dict
         self.time_of_data = datetime.datetime.now()
         self.signal_data_updated.emit()
 
     def set_data_from_mempoolspace(self, force=False):
         def do():
-            if (
-                not force
-                and datetime.datetime.now() - self.time_of_data
-                < datetime.timedelta(minutes=9)
-            ):
+            if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
                 logger.debug(
-                    f"Do not fetch data from mempoolspace because data is only {datetime.datetime.now()- self.time_of_data  } old."
+                    f"Do not fetch data from {self.config.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
                 )
                 return None
-            mempool_blocks = fetch_mempool_blocks(
-                self.config.network_config.mempool_url
+            mempool_blocks = fetch_json_from_url(
+                f"{self.config.network_config.mempool_url}api/v1/fees/mempool-blocks"
             )
-            recommended = fetch_mempool_recommended(
-                self.config.network_config.mempool_url
+            recommended = fetch_json_from_url(
+                f"{self.config.network_config.mempool_url}api/v1/fees/recommended"
             )
-            return mempool_blocks, recommended
+            mempool_dict = fetch_json_from_url(f"{self.config.network_config.mempool_url}api/mempool")
+            return mempool_blocks, recommended, mempool_dict
 
         def on_success(data):
             if data is not None:
-                if not all(data):
-                    # some is None
-                    return
-                mempool_blocks, recommended = data
-                self.set_data(mempool_blocks, recommended)
+                for a in data:
+                    if a is None:
+                        return
+                self.set_data(*data)
 
         def on_error(packed_error_info):
             custom_exception_handler(*packed_error_info)
@@ -272,10 +279,14 @@ class MempoolData(QObject):
 
         TaskThread(self).add_and_start(do, on_success, on_done, on_error)
 
+    def fetch_block_tip_height(self):
+        response = fetch_json_from_url(f"{self.config.network_config.mempool_url}api/blocks/tip/height")
+        return response if response else 0
+
     def fee_rate_to_projected_block_index(self, fee):
         available_blocks = len(self.mempool_blocks)
         for i in range(available_blocks):
             v_min, v_max = self.fee_min_max(i)
-            if fee > v_min:
+            if fee >= v_min:
                 return i
         return available_blocks

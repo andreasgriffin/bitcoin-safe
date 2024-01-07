@@ -24,21 +24,19 @@
 # SOFTWARE.
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
-import os
 import json
-
+import os
 
 
 def read_json(filename, default):
     path = os.path.join(os.path.dirname(__file__), filename)
     try:
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             r = json.loads(f.read())
     except:
         r = default
     return r
-
-

@@ -23,81 +23,50 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import csv
-from datetime import datetime
-import io
 import logging
-import os
-import tempfile
 
-
-from ...config import UserConfig, BlockchainType
+from ...config import BlockchainType, UserConfig
 
 logger = logging.getLogger(__name__)
 
 
-from .util import (
-    MONOSPACE_FONT,
-    ColorScheme,
-    MessageBoxMixin,
-    set_balance_label,
-    webopen,
-    do_copy,
-    read_QIcon,
-    TX_ICONS,
-    sort_id_to_icon,
-)
-from PySide2.QtGui import QBrush, QColor, QFont
-import bdkpython as bdk
 import enum
+import json
 from enum import IntEnum
-import numpy as np
-from typing import TYPE_CHECKING, List
+
+import bdkpython as bdk
 from PySide2.QtCore import (
-    Qt,
     QPersistentModelIndex,
-    QModelIndex,
-    QMimeData,
-    QPoint,
+    Qt,
     Signal,
 )
-from PySide2.QtCore import QMimeData, QUrl
-
 from PySide2.QtGui import (
-    QStandardItemModel,
-    QStandardItem,
+    QBrush,
+    QColor,
     QFont,
-    QFontMetrics,
-    QMouseEvent,
-    QDrag,
-    QPixmap,
-    QCursor,
-    QRegion,
-    QPainter,
+    QStandardItem,
 )
-from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPushButton
-from jsonschema import draft201909_format_checker
-from .category_list import CategoryEditor
+from PySide2.QtWidgets import QAbstractItemView, QComboBox, QMenu, QPushButton
 
-from ...wallet import Wallet
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from ...i18n import _
+from ...rpc import send_rpc_command
+from ...signals import Signals, UpdateFilter
 from ...util import (
-    InternalAddressCorruption,
     Satoshis,
     block_explorer_URL,
-    DEVELOPMENT_PREFILLS,
 )
-import json
-from ...rpc import send_rpc_command
-
-from .util import MONOSPACE_FONT, ColorScheme, MessageBoxMixin, webopen, do_copy
-from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
+from ...wallet import TxStatus, Wallet
+from .category_list import CategoryEditor
+from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
 from .taglist import AddressDragInfo
-from .html_delegate import HTMLDelegate
-from ...signals import UpdateFilter
-
-from ...signals import Signals
+from .util import (
+    ColorScheme,
+    do_copy,
+    read_QIcon,
+    set_balance_label,
+    sort_id_to_icon,
+    webopen,
+)
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -130,7 +99,7 @@ class AddressTypeFilter(IntEnum):
         }[self]
 
 
-class AddressList(MyTreeView, MessageBoxMixin):
+class AddressList(MyTreeView):
     signal_tag_dropped = Signal(AddressDragInfo)
 
     class Columns(MyTreeView.BaseColumnsEnum):
@@ -179,17 +148,11 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.change_button = QComboBox(self)
         self.change_button.currentIndexChanged.connect(self.toggle_change)
-        for (
-            addr_type
-        ) in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
+        for addr_type in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
             self.change_button.addItem(addr_type.ui_text())
         self.used_button = QComboBox(self)
         self.used_button.currentIndexChanged.connect(self.toggle_used)
-        for (
-            addr_usage_state
-        ) in (
-            AddressUsageStateFilter.__members__.values()
-        ):  # type: AddressUsageStateFilter
+        for addr_usage_state in AddressUsageStateFilter.__members__.values():  # type: AddressUsageStateFilter
             self.used_button.addItem(addr_usage_state.ui_text())
         self.std_model = MyStandardItemModel(self, drag_key="addresses")
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
@@ -249,9 +212,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        addr = self.get_role_data_for_current_item(
-            col=self.key_column, role=self.ROLE_KEY
-        )
+        addr = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         self.signals.show_address.emit(addr)
 
     def create_toolbar(self, config: UserConfig = None):
@@ -319,7 +280,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             address_info = self.wallet.get_address(force_new=force_new)
             address = address_info.address.as_string()
             self.wallet.labels.set_addr_category(address, category)
-            self.signals.addresses_updated.emit(UpdateFilter(addresses=[address]))
+            self.signals.addresses_updated.emit(UpdateFilter(addresses=set([address])))
         else:
             address_info = self.wallet.get_unused_category_address(category)
             address = address_info.address.as_string()
@@ -327,14 +288,6 @@ class AddressList(MyTreeView, MessageBoxMixin):
         do_copy(address, title=f"Address {address}")
         self.select_row(address, self.Columns.ADDRESS)
         return address_info
-
-    def should_show_fiat(self):
-        return False
-        return (
-            self.main_window.fx
-            and self.main_window.fx.is_enabled()
-            and self.config.get("fiat_address", False)
-        )
 
     def get_toolbar_buttons(self):
         return self.change_button, self.used_button
@@ -345,17 +298,13 @@ class AddressList(MyTreeView, MessageBoxMixin):
         self.update()
 
     def refresh_headers(self):
-        if self.should_show_fiat():
-            ccy = self.fx.get_currency()
-        else:
-            ccy = _("Fiat")
         headers = {
             self.Columns.TYPE: _("Type"),
             self.Columns.ADDRESS: _("Address"),
             self.Columns.CATEGORY: _("Category"),
             self.Columns.LABEL: _("Label"),
             self.Columns.COIN_BALANCE: _("Balance"),
-            self.Columns.FIAT_BALANCE: ccy + " " + _("Balance"),
+            self.Columns.FIAT_BALANCE: _("Fiat Balance"),
             self.Columns.NUM_TXS: _("Tx"),
         }
         self.update_headers(headers)
@@ -389,8 +338,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             address = model.data(model.index(row, self.Columns.ADDRESS))
             if (
                 address in update_filter.addresses
-                or model.data(model.index(row, self.Columns.CATEGORY))
-                in update_filter.categories
+                or model.data(model.index(row, self.Columns.CATEGORY)) in update_filter.categories
             ):
                 log_info.append((row, address))
                 self.refresh_row(address, row)
@@ -399,50 +347,37 @@ class AddressList(MyTreeView, MessageBoxMixin):
         # sometimes additional addresses are updated,
         # i can add them here without recreating the whole model
         if remaining_addresses:
-            for address in set(self.wallet.get_addresses()).intersection(
-                remaining_addresses
-            ):
-                log_info.append((address,))
+            for address in set(self.wallet.get_addresses()).intersection(remaining_addresses):
+                log_info.append((0, address))
                 self.append_address(address)
                 remaining_addresses = remaining_addresses - set([address])
 
-        logger.debug(
-            f"Updated addresses  {log_info}.  remaining_addresses = {remaining_addresses}"
-        )
+        logger.debug(f"Updated addresses  {log_info}.  remaining_addresses = {remaining_addresses}")
 
     def update(self):
         if self.maybe_defer_update():
             return
         logger.debug(f"{self.__class__.__name__} update")
-        current_selected_key = self.get_role_data_for_current_item(
-            col=self.key_column, role=self.ROLE_KEY
-        )
+        current_selected_key = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         if self.show_change == AddressTypeFilter.RECEIVING:
             addr_list = self.wallet.get_receiving_addresses()
         elif self.show_change == AddressTypeFilter.CHANGE:
             addr_list = self.wallet.get_change_addresses()
         else:
             addr_list = self.wallet.get_addresses()
-        self.proxy.setDynamicSortFilter(
-            False
-        )  # temp. disable re-sorting after every change
+        self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
         self.std_model.clear()
         self.refresh_headers()
         set_address = None
         for address in addr_list:
             self.append_address(address)
-            address_idx = self.std_model.index(
-                self.std_model.rowCount() - 1, self.Columns.LABEL
-            )
+            address_idx = self.std_model.index(self.std_model.rowCount() - 1, self.Columns.LABEL)
             if address == current_selected_key:
                 set_address = QPersistentModelIndex(address_idx)
 
         self.set_current_idx(set_address)
         # show/hide self.Columns
-        if self.should_show_fiat():
-            self.showColumn(self.Columns.FIAT_BALANCE)
-        else:
-            self.hideColumn(self.Columns.FIAT_BALANCE)
+        self.hideColumn(self.Columns.FIAT_BALANCE)
         self.filter()
         self.proxy.setDynamicSortFilter(True)
 
@@ -450,24 +385,15 @@ class AddressList(MyTreeView, MessageBoxMixin):
             set_balance_label(self.balance_label, [self.wallet])
 
     def append_address(self, address):
-        c, u, x = self.wallet.get_addr_balance(address)
-        balance = c + u + x
+        balance = self.wallet.get_addr_balance(address).total
         is_used_and_empty = self.wallet.address_is_used(address) and balance == 0
-        if self.show_used == AddressUsageStateFilter.UNUSED and (
-            balance or is_used_and_empty
-        ):
+        if self.show_used == AddressUsageStateFilter.UNUSED and (balance or is_used_and_empty):
             return
         if self.show_used == AddressUsageStateFilter.FUNDED and balance == 0:
             return
-        if (
-            self.show_used == AddressUsageStateFilter.USED_AND_EMPTY
-            and not is_used_and_empty
-        ):
+        if self.show_used == AddressUsageStateFilter.USED_AND_EMPTY and not is_used_and_empty:
             return
-        if (
-            self.show_used == AddressUsageStateFilter.FUNDED_OR_UNUSED
-            and is_used_and_empty
-        ):
+        if self.show_used == AddressUsageStateFilter.FUNDED_OR_UNUSED and is_used_and_empty:
             return
         labels = [""] * len(self.Columns)
         labels[self.Columns.ADDRESS] = address
@@ -484,20 +410,14 @@ class AddressList(MyTreeView, MessageBoxMixin):
             item[self.Columns.TYPE].setText(_("change"))
             item[self.Columns.TYPE].setData(_("change"), self.ROLE_CLIPBOARD_DATA)
             item[self.Columns.TYPE].setBackground(ColorScheme.YELLOW.as_color(True))
-            address_path = self.wallet.get_address_index_tuple(
-                address, bdk.KeychainKind.INTERNAL
-            )
+            address_path = self.wallet.get_address_index_tuple(address, bdk.KeychainKind.INTERNAL)
         else:
             item[self.Columns.TYPE].setText(_("receiving"))
             item[self.Columns.TYPE].setData(_("receiving"), self.ROLE_CLIPBOARD_DATA)
             item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
-            address_path = self.wallet.get_address_index_tuple(
-                address, bdk.KeychainKind.EXTERNAL
-            )
+            address_path = self.wallet.get_address_index_tuple(address, bdk.KeychainKind.EXTERNAL)
         item[self.key_column].setData(address, self.ROLE_KEY)
-        item[self.Columns.TYPE].setData(
-            (address_path[0], -address_path[1]), self.ROLE_SORT_ORDER
-        )
+        item[self.Columns.TYPE].setData((address_path[0], -address_path[1]), self.ROLE_SORT_ORDER)
         item[self.Columns.TYPE].setToolTip(
             f"{address_path[1]}. {'change' if address_path[0] else 'receiving'} address"
         )
@@ -513,31 +433,23 @@ class AddressList(MyTreeView, MessageBoxMixin):
         category = self.wallet.labels.get_category(address)
 
         txids = self.wallet.get_address_to_txids(address)
-        fulltxdetails = [
-            self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids
-        ]
-        txs_involed = [
-            fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail
-        ]
+        fulltxdetails = [self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids]
+        txs_involed = [fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail]
 
         sort_id = (
-            min([self.wallet.get_tx_status(tx).sort_id for tx in txs_involed])
+            min([TxStatus.from_wallet(tx.txid, self.wallet).sort_id() for tx in txs_involed])
             if txs_involed
             else None
         )
         icon_path = sort_id_to_icon(sort_id) if txs_involed else None
         num = len(txs_involed)
 
-        c, u, x = self.wallet.get_addr_balance(address)
-        balance = c + u + x
+        balance = self.wallet.get_addr_balance(address).total
         balance_text = str(Satoshis(balance, self.wallet.network))
         # create item
-        fx = self.fx
-        if self.should_show_fiat():
-            rate = fx.exchange_rate()
-            fiat_balance_str = fx.value_str(balance, rate)
-        else:
-            fiat_balance_str = ""
+        self.fx
+
+        fiat_balance_str = ""
         item = [self.std_model.item(row, col) for col in self.Columns]
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
@@ -550,9 +462,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
         item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_SORT_ORDER)
         item[self.Columns.COIN_BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
-        item[self.Columns.FIAT_BALANCE].setData(
-            fiat_balance_str, self.ROLE_CLIPBOARD_DATA
-        )
+        item[self.Columns.FIAT_BALANCE].setData(fiat_balance_str, self.ROLE_CLIPBOARD_DATA)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, self.ROLE_CLIPBOARD_DATA)
@@ -582,7 +492,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
             addr = addrs[0]
             menu.addAction(_("Details"), lambda: self.signals.show_address.emit(addr))
 
-            addr_URL = block_explorer_URL(self.config.network_config, "addr", addr)
+            addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "addr", addr)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
@@ -629,9 +539,7 @@ class AddressList(MyTreeView, MessageBoxMixin):
     def get_edit_key_from_coordinate(self, row, col):
         if col != self.Columns.LABEL:
             return None
-        return self.get_role_data_from_coordinate(
-            row, self.key_column, role=self.ROLE_KEY
-        )
+        return self.get_role_data_from_coordinate(row, self.key_column, role=self.ROLE_KEY)
 
     def on_edited(self, idx, edit_key, *, text):
         self.wallet.labels.set_addr_label(edit_key, text)

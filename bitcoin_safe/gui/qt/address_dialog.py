@@ -23,43 +23,40 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-from re import A
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+
+from bitcoin_safe.util import serialized_to_hex
 
 from .qr_components.image_widget import QRCodeWidgetSVG
-from .util import Satoshis, serialized_to_hex
-
+from .util import Satoshis
 
 logger = logging.getLogger(__name__)
+
 import bdkpython as bdk
-from typing import TYPE_CHECKING
-
-
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide2.QtWidgets import (
+    QWidget,
+    QHBoxLayout,
+    QSizePolicy,
+    QVBoxLayout,
+    QTabWidget,
+    QTextEdit,
+    QLabel,
+    QDialog,
+)
+from PySide2.QtGui import Qt, QFont
 
 from ...i18n import _
-
+from ...signals import Signals
+from ...wallet import Wallet
+from .hist_list import HistList
 from .util import (
-    ButtonsTextEdit,
-    WindowModalDialog,
-    ButtonsLineEdit,
-    ShowQRLineEdit,
-    ColorScheme,
     Buttons,
     CloseButton,
-    ShowCopyLineEdit,
 )
-from ...signals import Signals
-from .hist_list import HistList
-from ...wallet import Wallet
-from .util import ColorScheme
 
 
 class AddressDialog(QDialog):
-    def __init__(
-        self, fx, config, signals: Signals, wallet: Wallet, address: str, parent=None
-    ):
+    def __init__(self, fx, config, signals: Signals, wallet: Wallet, address: str, parent=None):
         super().__init__()
         self.setWindowTitle("Address")
         self.address = address
@@ -94,30 +91,32 @@ class AddressDialog(QDialog):
         tabs.addTab(tab2, "Advanced")
 
         address_info_min = self.wallet.address_info_min(address)
-        address_title = f"{'Receiving' if address_info_min.keychain == bdk.KeychainKind.EXTERNAL else 'Change'} address of wallet \"{wallet.id}\"   (with index {address_info_min.index})"
-        tab1_layout.addWidget(QLabel(_(address_title) + ":"))
-        self.addr_e = ShowCopyLineEdit(self.address)
+        if address_info_min:
+            address_title = f"{'Receiving' if address_info_min.keychain == bdk.KeychainKind.EXTERNAL else 'Change'} address of wallet \"{wallet.id}\"   (with index {address_info_min.index})"
+            tab1_layout.addWidget(QLabel(_(address_title) + ":"))
+        self.addr_e = ButtonEdit(self.address)
+        self.addr_e.setReadOnly(True)
+        self.addr_e.add_copy_button()
         # self.addr_e.setStyleSheet(f"background-color: {ColorScheme.GREEN.as_color(True).name()};")
         tab1_layout.addWidget(self.addr_e)
 
         try:
-            script_pubkey = serialized_to_hex(
-                self.bdk_address.script_pubkey().to_bytes()
-            )
-        except BaseException as e:
+            script_pubkey = serialized_to_hex(self.bdk_address.script_pubkey().to_bytes())
+        except BaseException:
             script_pubkey = None
         if script_pubkey:
             tab2_layout.addWidget(QLabel(_("Script Pubkey") + ":"))
-            pubkey_e = ButtonsLineEdit(script_pubkey)
-            pubkey_e.addCopyButton()
+            pubkey_e = ButtonEdit(script_pubkey)
+            pubkey_e.add_copy_button()
+            pubkey_e.setReadOnly(True)
             tab2_layout.addWidget(pubkey_e)
 
         address_path_str = self.wallet.get_address_path_str(address)
         if address_path_str:
             tab2_layout.addWidget(QLabel(_("Address descriptor") + ":"))
-            der_path_e = ButtonsTextEdit(address_path_str)
+            der_path_e = ButtonEdit(address_path_str, edit_class=QTextEdit)
+            der_path_e.add_copy_button()
             der_path_e.setFixedHeight(50)
-            der_path_e.addCopyButton()
             der_path_e.setReadOnly(True)
             tab2_layout.addWidget(der_path_e)
 
@@ -127,7 +126,7 @@ class AddressDialog(QDialog):
         upper_widget_layout.addWidget(self.qr_code)
 
         self.balance_label = QLabel(
-            f"Balance: {Satoshis( sum( self.wallet.get_addr_balance(self.address)), self.wallet.network).str_with_unit()}"
+            f"Balance: {Satoshis(   self.wallet.get_addr_balance(self.address).total, self.wallet.network).str_with_unit()}"
         )
         font = QFont()
         font.setPointSize(12)

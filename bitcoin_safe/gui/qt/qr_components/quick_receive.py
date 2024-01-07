@@ -1,20 +1,21 @@
-import sys
 from typing import List
-from PySide2.QtWidgets import (
-    QApplication,
-    QLabel,
-    QTextEdit,
-    QGroupBox,
-    QVBoxLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QWidget,
-)
-from PySide2.QtCore import Qt
-from .image_widget import QRCodeWidgetSVG
 
-from PySide2.QtWidgets import QSizePolicy, QScrollArea
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QFont
+from PySide2.QtWidgets import (
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QScrollArea,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+    QTextEdit,
+)
+
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+
+from .image_widget import QRCodeWidgetSVG
 
 
 class ReceiveGroup(QGroupBox):
@@ -25,7 +26,6 @@ class ReceiveGroup(QGroupBox):
         address: str,
         qr_uri: str,
         width=170,
-        class_text_edit=QTextEdit,
     ):
         super().__init__(category)
 
@@ -61,8 +61,10 @@ class ReceiveGroup(QGroupBox):
         self.qr_code.set_data_list([qr_uri])
         v_layout.addWidget(self.qr_code)
 
-        self.text_edit = class_text_edit(address)
-        self.text_edit.setStyleSheet(
+        self.text_edit = ButtonEdit(address, edit_class=QTextEdit)
+        self.text_edit.setReadOnly(True)
+        self.text_edit.add_copy_button()
+        self.text_edit.input_field.setStyleSheet(
             f"""
             background-color: {hex_color};
             """

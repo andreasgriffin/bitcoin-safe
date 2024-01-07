@@ -1,63 +1,51 @@
 import logging
+
 from .logging import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
 
+import base64
+import os
+import sys
+from typing import Dict, Optional, Tuple
+
+import bdkpython as bdk
+from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import QAction, QDialog, QFileDialog, QMenu, QSystemTrayIcon
+
+from .gui.qt.dialogs import PasswordQuestion, WalletIdDialog, question_dialog
+from .gui.qt.network_settings import NetworkSettingsUI
+from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
+from .gui.qt.open_tx_dialog import TransactionDialog
+from .gui.qt.qt_wallet import QTProtoWallet, QTWallet
+from .gui.qt.ui_tx import UITx_Viewer, UITx_ViewerTab
+from .gui.qt.util import (
+    Message,
+    add_tab_to_tabs,
+    read_QIcon,
+    save_file_dialog,
+)
+from .gui.qt.utxo_list import UTXOList
+from .mempool import MempoolData
 from .psbt_util import (
     FeeInfo,
     estimate_segwit_fee_rate_from_psbt,
-    get_likely_origin_wallet,
     get_txouts_from_inputs,
 )
-from .tx import TxBuilderInfos, TxUiInfos
-
-
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-
-from .ui_mainwindow import Ui_MainWindow
-from .wallet import BlockchainType, ProtoWallet, Wallet
-import sys
-import re
-import base64
-from .i18n import _
-from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
-from .gui.qt.qt_wallet import QTWallet, QTProtoWallet
-from .gui.qt.dialogs import PasswordQuestion, WalletIdDialog
-from .gui.qt.balance_dialog import (
-    COLOR_FROZEN,
-    COLOR_CONFIRMED,
-    COLOR_FROZEN_LIGHTNING,
-    COLOR_LIGHTNING,
-    COLOR_UNCONFIRMED,
-    COLOR_UNMATURED,
-)
-from .gui.qt.util import (
-    add_tab_to_tabs,
-    read_QIcon,
-    MessageBoxMixin,
-    Message,
-    save_file_dialog,
-)
+from .pythonbdk_types import OutPoint
 from .signals import Signals, UpdateFilter
-from bdkpython import Network
-from typing import Dict, List, Tuple
 from .storage import Storage
-import json, os
-import bdkpython as bdk
-from .gui.qt.ui_tx import UITX_Creator, UITx_Viewer, UITx_ViewerTab
-from .gui.qt.utxo_list import UTXOList
-from .config import UserConfig
-from .gui.qt.network_settings import NetworkSettingsUI
-from .mempool import MempoolData
-from .pythonbdk_types import OutPoint, robust_address_str_from_script
-from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
-from .gui.qt.open_tx_dialog import TransactionDialog
-from .descriptors import MultipathDescriptor
+from .tx import TxBuilderInfos, TxUiInfos
+from .ui_mainwindow import Ui_MainWindow
+from .wallet import (
+    ProtoWallet,
+    ToolsTxUiInfo,
+    Wallet,
+)
 
 
 class MainWindow(Ui_MainWindow):
@@ -96,22 +84,16 @@ class MainWindow(Ui_MainWindow):
             else:
                 callback_post_save()
 
-        self.network_settings_ui.signal_new_network_settings.connect(
-            do_new_network_settings
-        )
+        self.network_settings_ui.signal_new_network_settings.connect(do_new_network_settings)
 
         self.welcome_screen = NewWalletWelcomeScreen(
             self.tab_wallets, network=self.config.network_config.network
         )
-        self.welcome_screen.signal_onclick_single_signature.connect(
-            self.click_create_single_signature_wallet
-        )
+        self.welcome_screen.signal_onclick_single_signature.connect(self.click_create_single_signature_wallet)
         self.welcome_screen.signal_onclick_multisig_signature.connect(
             self.click_create_multisig_signature_wallet
         )
-        self.welcome_screen.signal_onclick_custom_signature.connect(
-            self.click_custom_signature
-        )
+        self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
         self.signals.chain_data_changed.connect(self.sync)
@@ -129,16 +111,15 @@ class MainWindow(Ui_MainWindow):
         self.open_last_opened_tx()
 
     def on_signal_broadcast_tx(self, transaction: bdk.Transaction):
-        last_qt_wallet_involved: QTWallet = None
+        last_qt_wallet_involved: Optional[QTWallet] = None
         for qt_wallet in self.qt_wallets.values():
             if qt_wallet.wallet.transaction_involves_wallet(transaction):
                 qt_wallet.sync()
                 last_qt_wallet_involved = qt_wallet
 
-        self.tab_wallets.setCurrentWidget(last_qt_wallet_involved.tab)
-        last_qt_wallet_involved.tabs.setCurrentWidget(
-            last_qt_wallet_involved.history_tab
-        )
+        if last_qt_wallet_involved:
+            self.tab_wallets.setCurrentWidget(last_qt_wallet_involved.tab)
+            last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
 
     def on_tab_changed(self, index):
         qt_wallet = self.get_qt_wallet(self.tab_wallets.widget(index))
@@ -163,9 +144,7 @@ class MainWindow(Ui_MainWindow):
         title = message.title if message.title else "Bitcoin Safe"
         if message.icon:
             if message.msecs:
-                return self.tray.showMessage(
-                    title, message.msg, message.icon, message.msecs
-                )
+                return self.tray.showMessage(title, message.msg, message.icon, message.msecs)
             return self.tray.showMessage(title, message.msg, message.icon)
         return self.tray.showMessage(title, message.msg)
 
@@ -213,9 +192,12 @@ class MainWindow(Ui_MainWindow):
 
         self.signals.open_tx_like.emit(string_content)
 
-    def fetch_txdetails(self, txid) -> Tuple[Wallet, bdk.TransactionDetails]:
+    def fetch_txdetails(self, txid) -> Optional[Tuple[Wallet, bdk.TransactionDetails]]:
         for qt_wallet in self.qt_wallets.values():
-            return qt_wallet.wallet.get_tx(txid)
+            tx_details = qt_wallet.wallet.get_tx(txid)
+            if tx_details:
+                return tx_details
+        return None
 
     def open_tx_like_in_tab(self, txlike):
         logger.debug(f"Trying to open tx with type {type(txlike)}")
@@ -228,25 +210,7 @@ class MainWindow(Ui_MainWindow):
             return self.open_psbt_in_tab(txlike)
 
         if isinstance(txlike, TxUiInfos):
-
-            def get_change_address(addresses, wallet: Wallet):
-                for address in addresses:
-                    if wallet.is_change(address):
-                        return address
-
-            outpoints = [
-                OutPoint.from_str(outpoint) for outpoint in txlike.utxo_dict.keys()
-            ]
-
-            # trying to identitfy the wallet , where i should fill the send tab
-            wallet = None
-            if txlike.main_wallet_id and self.qt_wallets.get(txlike.main_wallet_id):
-                wallet = self.qt_wallets.get(txlike.main_wallet_id).wallet
-
-            if not wallet:
-                wallet = get_likely_origin_wallet(
-                    outpoints, wallets=self.signals.get_wallets().values()
-                )
+            wallet = ToolsTxUiInfo.get_likely_source_wallet(txlike, self.signals)
 
             if not wallet:
                 logger.debug(
@@ -261,19 +225,13 @@ class MainWindow(Ui_MainWindow):
                 return
 
             qt_wallet: QTWallet = self.qt_wallets.get(wallet.id)
+            if not qt_wallet:
+                Message(" Please open the sender wallet to edit this thransaction.")
+                return
             self.tab_wallets.setCurrentWidget(qt_wallet.tab)
             qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
 
-            # remove change output if possible
-            change_address = get_change_address(
-                [recipient.address for recipient in txlike.recipients], wallet
-            )
-            if change_address:
-                for i in range(len(txlike.recipients)):
-                    if txlike.recipients[i].address == change_address:
-                        txlike.recipients.pop(i)
-                        break
-
+            ToolsTxUiInfo.pop_change_recipient(txlike, wallet)
             return qt_wallet.uitx_creator.set_ui(txlike)
 
         # try to convert a bytes like object to a string
@@ -317,9 +275,7 @@ class MainWindow(Ui_MainWindow):
         def process_input(s: str):
             self.open_tx_like_in_tab(s)
 
-        tx_dialog = TransactionDialog(
-            network=self.config.network_config.network, on_open=process_input
-        )
+        tx_dialog = TransactionDialog(network=self.config.network_config.network, on_open=process_input)
         tx_dialog.show()
 
     def open_tx_in_tab(self, txlike):
@@ -363,9 +319,7 @@ class MainWindow(Ui_MainWindow):
             utxo_list,
             network=self.config.network_config.network,
             mempool_data=self.mempool_data,
-            fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False)
-            if fee is not None
-            else None,
+            fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False) if fee is not None else None,
             confirmation_time=confirmation_time,
             blockchain=self.get_blockchain_of_any_wallet(),
             tx=tx,
@@ -413,10 +367,7 @@ class MainWindow(Ui_MainWindow):
             raise Exception("cannot handle TransactionDetails")
 
         def get_outpoints():
-            return [
-                OutPoint.from_bdk(input.previous_output)
-                for input in psbt.extract_tx().input()
-            ]
+            return [OutPoint.from_bdk(input.previous_output) for input in psbt.extract_tx().input()]
 
         utxo_list = UTXOList(
             self.config,
@@ -455,18 +406,14 @@ class MainWindow(Ui_MainWindow):
 
     def open_last_opened_wallets(self):
         opened_wallets = []
-        for file_path in self.config.last_wallet_files.get(
-            str(self.config.network_config.network), []
-        ):
+        for file_path in self.config.last_wallet_files.get(str(self.config.network_config.network), []):
             qt_wallet = self.open_wallet(file_path=file_path)
             if qt_wallet:
                 opened_wallets.append(qt_wallet)
         return opened_wallets
 
     def open_last_opened_tx(self):
-        for serialized in self.config.opened_txlike.get(
-            str(self.config.network_config.network), []
-        ):
+        for serialized in self.config.opened_txlike.get(str(self.config.network_config.network), []):
             self.open_tx_like_in_tab(serialized)
 
     def open_wallet(self, file_path=None):
@@ -491,7 +438,7 @@ class MainWindow(Ui_MainWindow):
             password = self.ui_password_question.ask_for_password()
         try:
             wallet: Wallet = Wallet.load(file_path, self.config, password)
-        except Exception as e:
+        except Exception:
             error_type, error_value, error_traceback = sys.exc_info()
             error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__}: {error_value}, {error_traceback}"
             self.show_error(error_message)
@@ -541,7 +488,7 @@ class MainWindow(Ui_MainWindow):
         with open(file_path, "r") as file:
             lines = file.readlines()
 
-        data = qt_wallet.wallet.labels.set_data_from_bip329_json_str(lines)
+        qt_wallet.wallet.labels.set_data_from_bip329_json_str(lines)
         self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
 
     def save_current_wallet(self):
@@ -580,7 +527,7 @@ class MainWindow(Ui_MainWindow):
     def new_wallet_id(self) -> str:
         return "new" + str(len(self.qt_wallets))
 
-    def create_qtprotowallet(self, m_of_n) -> QTProtoWallet:
+    def create_qtprotowallet(self, m_of_n) -> Optional[QTProtoWallet]:
         def create_wallet():
             wallet = Wallet.from_protowallet(
                 qtprotowallet.protowallet,
@@ -600,9 +547,7 @@ class MainWindow(Ui_MainWindow):
             qt_wallet.sync()
 
         m, n = m_of_n
-        protowallet = ProtoWallet(
-            threshold=m, signers=n, network=self.config.network_config.network
-        )
+        protowallet = ProtoWallet(threshold=m, signers=n, network=self.config.network_config.network)
 
         # ask for wallet name
         dialog = WalletIdDialog(self.config.wallet_dir)
@@ -610,7 +555,7 @@ class MainWindow(Ui_MainWindow):
             wallet_id = dialog.name_input.text()
             print(f"Creating wallet: {wallet_id}")
         else:
-            return
+            return None
 
         qtprotowallet = QTProtoWallet(
             wallet_id, config=self.config, signals=self.signals, protowallet=protowallet
@@ -670,13 +615,14 @@ class MainWindow(Ui_MainWindow):
         qt_wallet.step_progress_container.setVisible(show_tutorial)
         qt_wallet.tabs.setVisible(not show_tutorial)
 
-    def get_qt_wallet(self, tab=None, if_none_serve_last_active=False) -> QTWallet:
+    def get_qt_wallet(self, tab=None, if_none_serve_last_active=False) -> Optional[QTWallet]:
         wallet_tab = self.tab_wallets.currentWidget() if tab is None else tab
         for qt_wallet in self.qt_wallets.values():
             if wallet_tab == qt_wallet.tab:
                 return qt_wallet
         if if_none_serve_last_active:
             return self.last_qtwallet
+        return None
 
     def get_blockchain_of_any_wallet(self) -> bdk.Blockchain:
         for qt_wallet in self.qt_wallets.values():
@@ -689,11 +635,15 @@ class MainWindow(Ui_MainWindow):
     def show_address(self, addr: str, parent=None):
         from .gui.qt import address_dialog
 
+        qt_wallet = self.get_qt_wallet()
+        if not qt_wallet:
+            return
+
         d = address_dialog.AddressDialog(
             self.fx,
             self.config,
             self.signals,
-            self.get_qt_wallet().wallet,
+            qt_wallet.wallet,
             addr,
             parent=parent,
         )
@@ -720,7 +670,12 @@ class MainWindow(Ui_MainWindow):
     def close_tab(self, index):
         qt_wallet = self.get_qt_wallet(tab=self.tab_wallets.widget(index))
         if qt_wallet:
+            if not question_dialog(f"Close wallet {qt_wallet.wallet.id}?", "Close wallet"):
+                return
+            logger.debug(f"Closing wallet {qt_wallet.wallet.id}")
             qt_wallet.save()
+        else:
+            logger.debug(f"Closing tab {self.tab_wallets.tabText(index)}")
         self.tab_wallets.removeTab(index)
         if qt_wallet:
             self.remove_qt_wallet(qt_wallet)
@@ -752,9 +707,7 @@ class MainWindow(Ui_MainWindow):
             if callback_post_save:
                 callback_post_save()
             QCoreApplication.quit()  # equivalent to QCoreApplication.exit(0)
-            status = QProcess.startDetached(
-                sys.executable, ["-m", "bitcoin_safe"] + sys.argv[1:]
-            )
+            status = QProcess.startDetached(sys.executable, ["-m", "bitcoin_safe"] + sys.argv[1:])
             if not status:
                 sys.exit(-1)
         else:

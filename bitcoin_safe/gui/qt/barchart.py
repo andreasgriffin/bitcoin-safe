@@ -2,33 +2,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from PySide2.QtCore import QPointF, Qt, Signal
+from PySide2.QtGui import QBrush, QColor, QCursor, QPen
 from PySide2.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QVBoxLayout,
-    QWidget,
-    QGraphicsView,
-    QGraphicsScene,
+    QGraphicsItem,
+    QGraphicsLineItem,
     QGraphicsRectItem,
+    QGraphicsView,
     QToolTip,
 )
-from PySide2.QtCore import Qt, QRectF
-from PySide2.QtGui import QBrush, QColor, QPainter
-from PySide2.QtCore import QPointF
-from PySide2.QtCore import Qt, QRectF
-from PySide2.QtGui import QColor, QBrush, QFont
-from PySide2.QtWidgets import QGraphicsLineItem, QGraphicsItem
-from PySide2.QtGui import QPen
-from PySide2.QtCore import Qt
-import numpy as np
-from ...mempool import (
-    chartColors,
-    feeLevels,
-    fetch_mempool_blocks,
-)
-from PySide2.QtCore import Signal, QObject
-from PySide2.QtGui import QCursor
-import bdkpython as bdk
 
 
 class BarSegment(QGraphicsRectItem):
@@ -47,9 +29,7 @@ class BarSegment(QGraphicsRectItem):
         # self.text_item.setPos(self.x + 5 - self.text_item.boundingRect().width() / 2, self.y + self.height - self.text_item.boundingRect().height())
 
     def hoverEnterEvent(self, event):
-        QToolTip.showText(
-            event.screenPos(), f"{self.fee} Sat/vB: {round(self.height/1e6,2)} MvB"
-        )
+        QToolTip.showText(event.screenPos(), f"{self.fee} Sat/vB: {round(self.height/1e6,2)} MvB")
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):

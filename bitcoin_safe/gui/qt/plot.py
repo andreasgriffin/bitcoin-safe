@@ -1,13 +1,12 @@
-import sys
-import random
 import datetime
-from time import time
-from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QFrame
-from PySide2.QtCharts import QtCharts
-from PySide2.QtCore import QDateTime, Qt, QTimer
-from PySide2.QtGui import QColor
-from PySide2.QtCore import Qt, QRectF, QMargins
+import random
+import sys
+
 import numpy as np
+from PySide2.QtCharts import QtCharts
+from PySide2.QtCore import QDateTime, QMargins, Qt, QTimer
+from PySide2.QtGui import QColor
+from PySide2.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
 
 
 class BalanceChart(QWidget):
@@ -23,12 +22,8 @@ class BalanceChart(QWidget):
         self.chart.legend().hide()
 
         # Reduce the overall chart margins
-        layout.setContentsMargins(
-            QMargins(0, 0, 0, 0)
-        )  # Smaller margins (left, top, right, bottom)
-        self.chart.setMargins(
-            QMargins(0, 0, 0, 0)
-        )  # Smaller margins (left, top, right, bottom)
+        layout.setContentsMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
+        self.chart.setMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
 
         # Create DateTime axis for X
         self.datetime_axis = QtCharts.QDateTimeAxis()
@@ -72,9 +67,7 @@ class BalanceChart(QWidget):
         step_data = balance_data.copy()
 
         # add the current time as last point, if the data is in the past
-        if project_until_now and datetime.datetime.now().timestamp() > max(
-            step_data[:, 0]
-        ):
+        if project_until_now and datetime.datetime.now().timestamp() > max(step_data[:, 0]):
             step_data = np.vstack(
                 [
                     step_data,
@@ -106,9 +99,7 @@ class BalanceChart(QWidget):
 
         # Add the last data point
         timestamp, balance = step_data[-1]
-        series.append(
-            QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(), balance
-        )
+        series.append(QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(), balance)
         max_balance = max(max_balance, balance)
         min_balance = 0
         max_timestamp = max(max_timestamp, timestamp)
@@ -124,12 +115,8 @@ class BalanceChart(QWidget):
         )
 
         buffer_time = 60 * 60
-        self.datetime_axis.setMin(
-            QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time))
-        )
-        self.datetime_axis.setMax(
-            QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time))
-        )
+        self.datetime_axis.setMin(QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)))
+        self.datetime_axis.setMax(QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)))
         self.value_axis.setMin(min_balance)
         buffer_factor = 0.01
         self.value_axis.setMax(max_balance * (1 + buffer_factor))
@@ -141,9 +128,7 @@ class BalanceChart(QWidget):
         series.attachAxis(self.datetime_axis)
         series.attachAxis(self.value_axis)
 
-        print(
-            f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}"
-        )
+        print(f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}")
 
         scatter_series = QtCharts.QScatterSeries()
         for (timestamp, balance) in balance_data:
@@ -245,8 +230,7 @@ class TransactionSimulator(QMainWindow):
         new_transaction = (
             int(
                 (
-                    datetime.datetime.fromtimestamp(self.transactions[-1][0])
-                    + datetime.timedelta(days=5)
+                    datetime.datetime.fromtimestamp(self.transactions[-1][0]) + datetime.timedelta(days=5)
                 ).timestamp()
             ),
             random.uniform(-0.1, 0.1),

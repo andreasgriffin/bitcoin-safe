@@ -1,132 +1,66 @@
 import logging
-from bitcoin_qrreader import bitcoin_qr
 
-from .qr_components.image_widget import QRCodeWidgetSVG
 
 logger = logging.getLogger(__name__)
 
-import os.path
-import time
-import sys
-import platform
-import traceback
 import os
+import os.path
+import platform
+import sys
+import traceback
 import webbrowser
-from decimal import Decimal
-from functools import partial, lru_cache, wraps
+from functools import lru_cache
 from typing import (
-    NamedTuple,
-    Callable,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    List,
-    Dict,
     Any,
-    Sequence,
-    Iterable,
-    Tuple,
-    Type,
+    Callable,
 )
-from PySide2.QtGui import QPainter, QPen
 
-from PySide2 import QtWidgets, QtCore
+from PIL import Image as PilImage
+from PySide2.QtCore import (
+    QCoreApplication,
+    QLocale,
+    QSize,
+    Qt,
+    QTimer,
+    QUrl,
+    SignalInstance,
+)
 from PySide2.QtGui import (
-    QFont,
     QColor,
     QCursor,
-    QPixmap,
-    QStandardItem,
+    QDesktopServices,
+    QFontMetrics,
+    QIcon,
     QImage,
     QPalette,
-    QIcon,
-    QFontMetrics,
-    QShowEvent,
-    QPainter,
-    QHelpEvent,
-    QMouseEvent,
+    QPixmap,
 )
-from PySide2.QtCore import Signal, QRectF
-from PySide2.QtCore import (
-    SignalInstance,
-    Qt,
-    QPersistentModelIndex,
-    QModelIndex,
-    QCoreApplication,
-    QItemSelectionModel,
-    QThread,
-    QSortFilterProxyModel,
-    QSize,
-    QLocale,
-    QAbstractItemModel,
-    QEvent,
-    QRect,
-    QPoint,
-    QObject,
-    QTimer,
-    QSize,
-)
+from PySide2.QtSvg import QSvgWidget
 from PySide2.QtWidgets import (
-    QPushButton,
-    QLabel,
-    QMessageBox,
-    QHBoxLayout,
-    QAbstractItemView,
-    QVBoxLayout,
-    QLineEdit,
-    QTextEdit,
-    QStyle,
-    QDialog,
-    QGroupBox,
-    QButtonGroup,
-    QRadioButton,
-    QFileDialog,
-    QWidget,
-    QToolButton,
-    QTreeView,
-    QPlainTextEdit,
-    QHeaderView,
     QApplication,
-    QToolTip,
-    QTreeWidget,
-    QStyledItemDelegate,
-    QMenu,
-    QStyleOptionViewItem,
-    QLayout,
-    QLayoutItem,
-    QAbstractButton,
-    QGraphicsEffect,
-    QGraphicsScene,
-    QGraphicsPixmapItem,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
     QSizePolicy,
     QTabWidget,
-)
-from PySide2.QtWidgets import (
-    QDialog,
+    QToolTip,
     QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QMessageBox,
-    QDialogButtonBox,
+    QWidget,
 )
 
-
-from PySide2.QtCore import QUrl
-from PySide2.QtGui import QDesktopServices
 from ...i18n import _, languages
 from ...util import (
     Satoshis,
+    TaskThread,
+    is_address,
     register_cache,
     resource_path,
-    TaskThread,
-    serialized_to_hex,
 )
-from ...util import is_address
-from PySide2.QtSvg import QSvgWidget
-import bdkpython as bdk
-from PIL import Image as PilImage
 
 if platform.system() == "Windows":
     MONOSPACE_FONT = "Lucida Console"
@@ -134,9 +68,6 @@ elif platform.system() == "Darwin":
     MONOSPACE_FONT = "Monaco"
 else:
     MONOSPACE_FONT = "monospace"
-
-
-dialogs = []
 
 
 # filter tx files in QFileDialog:
@@ -151,13 +82,13 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 
 
 TX_ICONS = [
-    "unconfirmed.png",
+    "unconfirmed.svg",
     "clock1.png",
     "clock2.png",
     "clock3.png",
     "clock4.png",
     "clock5.png",
-    "confirmed.png",
+    "confirmed.svg",
 ]
 
 
@@ -165,14 +96,7 @@ class WalletTab(QWidget):
     pass
 
 
-class SearchableTab(QWidget):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-
-        self.searchable_list: "MyTreeView" = None
-
-
-def sort_id_to_icon(sort_id):
+def sort_id_to_icon(sort_id) -> str:
     if sort_id < 0:
         return "offline_tx.png"
     if sort_id > len(TX_ICONS) - 1:
@@ -211,14 +135,10 @@ def center_in_widget(widgets, parent, direction="h", alignment=Qt.AlignCenter):
     return outer_layout
 
 
-def add_centered(
-    widgets, parent, outer_layout, direction="h", alignment=Qt.AlignCenter
-):
+def add_centered(widgets, parent, outer_layout, direction="h", alignment=Qt.AlignCenter):
     widget1 = QWidget(parent)
     outer_layout.addWidget(widget1)
-    inner_layout = center_in_widget(
-        widgets, widget1, direction=direction, alignment=alignment
-    )
+    inner_layout = center_in_widget(widgets, widget1, direction=direction, alignment=alignment)
     inner_layout.setContentsMargins(1, 0, 1, 0)  # left, top, right, bottom
     return inner_layout
 
@@ -239,9 +159,7 @@ class AspectRatioSvgWidget(QSvgWidget):
         return qsize
 
 
-def add_centered_icons(
-    paths, parent, outer_layout, direction="h", alignment=Qt.AlignCenter, max_sizes=None
-):
+def add_centered_icons(paths, parent, outer_layout, direction="h", alignment=Qt.AlignCenter, max_sizes=None):
     max_sizes = max_sizes if max_sizes else [(60, 80) for path in paths]
     if isinstance(max_sizes[0], (float, int)):
         max_sizes = [max_sizes]
@@ -249,13 +167,10 @@ def add_centered_icons(
         max_sizes = max_sizes * len(paths)
 
     svg_widgets = [
-        AspectRatioSvgWidget(icon_path(path), *max_size)
-        for max_size, path in zip(max_sizes, paths)
+        AspectRatioSvgWidget(icon_path(path), *max_size) for max_size, path in zip(max_sizes, paths)
     ]
 
-    inner_layout = add_centered(
-        svg_widgets, parent, outer_layout, direction=direction, alignment=alignment
-    )
+    inner_layout = add_centered(svg_widgets, parent, outer_layout, direction=direction, alignment=alignment)
 
     return svg_widgets
 
@@ -334,9 +249,7 @@ def create_button(
     return button
 
 
-def add_tab_to_tabs(
-    tabs: QTabWidget, tab, icon, description, name, position=None, focus=False
-):
+def add_tab_to_tabs(tabs: QTabWidget, tab, icon, description, name, position=None, focus=False):
     tab.tab_icon = icon
     tab.tab_description = description
     tab.tab_name = name
@@ -369,83 +282,6 @@ class ThreadedButton(QPushButton):
         self.thread.stop()
 
 
-class WWLabel(QLabel):
-    def __init__(self, text="", parent=None):
-        QLabel.__init__(self, text, parent)
-        self.setWordWrap(True)
-        self.setTextInteractionFlags(Qt.TextSelectableByMouse)
-
-
-class AmountLabel(QLabel):
-    def __init__(self, *args, **kwargs):
-        QLabel.__init__(self, *args, **kwargs)
-        self.setFont(QFont(MONOSPACE_FONT))
-        self.setTextInteractionFlags(Qt.TextSelectableByMouse)
-
-
-class HelpMixin:
-    def __init__(self, help_text: str, *, help_title: str = None):
-        assert isinstance(self, QWidget), "HelpMixin must be a QWidget instance!"
-        self.help_text = help_text
-        self._help_title = help_title or _("Help")
-        if isinstance(self, QLabel):
-            self.setTextInteractionFlags(
-                (self.textInteractionFlags() | Qt.TextSelectableByMouse)
-                & ~Qt.TextSelectableByKeyboard
-            )
-
-    def show_help(self):
-        custom_message_box(
-            icon=QMessageBox.Information,
-            parent=self,
-            title=self._help_title,
-            text=self.help_text,
-            rich_text=True,
-        )
-
-
-class HelpLabel(HelpMixin, QLabel):
-    def __init__(self, text: str, help_text: str):
-        QLabel.__init__(self, text)
-        HelpMixin.__init__(self, help_text)
-        self.app = QCoreApplication.instance()
-        self.font = self.font()
-
-    def mouseReleaseEvent(self, x):
-        self.show_help()
-
-    def enterEvent(self, event):
-        self.font.setUnderline(True)
-        self.setFont(self.font)
-        self.app.setOverrideCursor(QCursor(Qt.PointingHandCursor))
-        return QLabel.enterEvent(self, event)
-
-    def leaveEvent(self, event):
-        self.font.setUnderline(False)
-        self.setFont(self.font)
-        self.app.setOverrideCursor(QCursor(Qt.ArrowCursor))
-        return QLabel.leaveEvent(self, event)
-
-
-class HelpButton(HelpMixin, QToolButton):
-    def __init__(self, text: str):
-        QToolButton.__init__(self)
-        HelpMixin.__init__(self, text)
-        self.setText("?")
-        self.setFocusPolicy(Qt.NoFocus)
-        self.setFixedWidth(round(2.2 * char_width_in_lineedit()))
-        self.clicked.connect(self.show_help)
-
-
-class InfoButton(HelpMixin, QPushButton):
-    def __init__(self, text: str):
-        QPushButton.__init__(self, "Info")
-        HelpMixin.__init__(self, text, help_title=_("Info"))
-        self.setFocusPolicy(Qt.NoFocus)
-        self.setFixedWidth(6 * char_width_in_lineedit())
-        self.clicked.connect(self.show_help)
-
-
 class Buttons(QHBoxLayout):
     def __init__(self, *buttons):
         QHBoxLayout.__init__(self)
@@ -463,37 +299,8 @@ class CloseButton(QPushButton):
         self.setDefault(True)
 
 
-class CopyButton(QPushButton):
-    def __init__(self, text_getter, app):
-        QPushButton.__init__(self, _("Copy"))
-        self.clicked.connect(lambda: app.clipboard().setText(text_getter()))
-
-
-class CopyCloseButton(QPushButton):
-    def __init__(self, text_getter, app, dialog):
-        QPushButton.__init__(self, _("Copy and Close"))
-        self.clicked.connect(lambda: app.clipboard().setText(text_getter()))
-        self.clicked.connect(dialog.close)
-        self.setDefault(True)
-
-
-class OkButton(QPushButton):
-    def __init__(self, dialog, label=None):
-        QPushButton.__init__(self, label or _("OK"))
-        self.clicked.connect(dialog.accept)
-        self.setDefault(True)
-
-
-class CancelButton(QPushButton):
-    def __init__(self, dialog, label=None):
-        QPushButton.__init__(self, label or _("Cancel"))
-        self.clicked.connect(dialog.reject)
-
-
 class Message:
-    def __init__(
-        self, msg, parent=None, title=None, icon=None, msecs=None, **kwargs
-    ) -> None:
+    def __init__(self, msg, parent=None, title=None, icon=None, msecs=None, **kwargs) -> None:
 
         self.msg = msg
         self.parent = parent
@@ -571,107 +378,15 @@ class Message:
         )
 
 
-def exception_message(e: Exception):
-    error_type, error_value, error_traceback = sys.exc_info()
-    error_message = (
-        f"Error: {error_type.__name__}: {error_value}\n\n\n {error_traceback}"
-    )
-    logger.error(error_message)
-    Message(error_message).show_error()
-
-
 def custom_exception_handler(exc_type, exc_value, exc_traceback):
     """
     Custom exception handler to catch unhandled exceptions and display an error message box.
     """
     # Format the traceback
-    formatted_traceback = "".join(
-        traceback.format_exception(exc_type, exc_value, exc_traceback)
-    )
+    formatted_traceback = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
     error_message = f"{exc_type.__name__}: {exc_value}\n\n{formatted_traceback}"
     logger.exception(error_message)
     QMessageBox.critical(None, "Error", error_message)
-
-
-class MessageBoxMixin(object):
-    def top_level_window_recurse(self, window=None, test_func=None):
-        window = window or self
-        classes = (WindowModalDialog, QMessageBox)
-        if test_func is None:
-            test_func = lambda x: True
-        for n, child in enumerate(window.children()):
-            # Test for visibility as old closed dialogs may not be GC-ed.
-            # Only accept children that confirm to test_func.
-            if isinstance(child, classes) and child.isVisible() and test_func(child):
-                return self.top_level_window_recurse(child, test_func=test_func)
-        return window
-
-    def top_level_window(self, test_func=None):
-        return self.top_level_window_recurse(test_func)
-
-    def question(self, msg, parent=None, title=None, icon=None, **kwargs) -> bool:
-        if isinstance(msg, dict):
-            return self.question(**msg)
-        Yes, No = QMessageBox.Yes, QMessageBox.No
-        return Yes == self.msg_box(
-            icon=icon or QMessageBox.Question,
-            parent=parent,
-            title=title or "",
-            text=msg,
-            buttons=Yes | No,
-            defaultButton=No,
-            **kwargs,
-        )
-
-    def show_warning(self, msg, parent=None, title=None, **kwargs):
-        if isinstance(msg, dict):
-            return self.show_warning(**msg)
-        return self.msg_box(
-            QMessageBox.Warning, parent, title or _("Warning"), msg, **kwargs
-        )
-
-    def show_error(self, msg, parent=None, **kwargs):
-        if isinstance(msg, dict):
-            return self.show_error(**msg)
-        return self.msg_box(QMessageBox.Warning, parent, _("Error"), msg, **kwargs)
-
-    def show_critical(self, msg, parent=None, title=None, **kwargs):
-        if isinstance(msg, dict):
-            return self.show_critical(**msg)
-        return self.msg_box(
-            QMessageBox.Critical, parent, title or _("Critical Error"), msg, **kwargs
-        )
-
-    def show_message(self, msg, parent=None, title=None, **kwargs):
-        if isinstance(msg, dict):
-            return self.show_message(**msg)
-        return self.msg_box(
-            QMessageBox.Information, parent, title or _("Information"), msg, **kwargs
-        )
-
-    def msg_box(
-        self,
-        icon,
-        parent,
-        title,
-        text,
-        *,
-        buttons=QMessageBox.Ok,
-        defaultButton=QMessageBox.NoButton,
-        rich_text=False,
-        checkbox=None,
-    ):
-        parent = parent or self.top_level_window()
-        return custom_message_box(
-            icon=icon,
-            parent=parent,
-            title=title,
-            text=text,
-            buttons=buttons,
-            defaultButton=defaultButton,
-            rich_text=rich_text,
-            checkbox=checkbox,
-        )
 
 
 def custom_message_box(
@@ -707,7 +422,7 @@ def custom_message_box(
     return d.exec_()
 
 
-class WindowModalDialog(QDialog, MessageBoxMixin):
+class WindowModalDialog(QDialog):
     """Handy wrapper; window modal dialogs are better for our multi-window
     daemon model as other wallet windows can still be accessed."""
 
@@ -722,12 +437,8 @@ class WaitingDialog(WindowModalDialog):
     """Shows a please wait dialog whilst running a task.  It is not
     necessary to maintain a reference to this dialog."""
 
-    def __init__(
-        self, parent: QWidget, message: str, task, on_success=None, on_error=None
-    ):
+    def __init__(self, parent: QWidget, message: str, task, on_success=None, on_error=None):
         assert parent
-        if isinstance(parent, MessageBoxMixin):
-            parent = parent.top_level_window()
         WindowModalDialog.__init__(self, parent, _("Please wait"))
         self.message_label = QLabel(message)
         vbox = QVBoxLayout(self)
@@ -758,8 +469,6 @@ class BlockingWaitingDialog(WindowModalDialog):
 
     def __init__(self, parent: QWidget, message: str, task: Callable[[], Any]):
         assert parent
-        if isinstance(parent, MessageBoxMixin):
-            parent = parent.top_level_window()
         WindowModalDialog.__init__(self, parent, _("Please wait"))
         self.message_label = QLabel(message)
         vbox = QVBoxLayout(self)
@@ -776,21 +485,6 @@ class BlockingWaitingDialog(WindowModalDialog):
         finally:
             # close popup
             self.accept()
-
-
-def line_dialog(parent, title, label, ok_label, default=None):
-    dialog = WindowModalDialog(parent, title)
-    dialog.setMinimumWidth(500)
-    l = QVBoxLayout()
-    dialog.setLayout(l)
-    l.addWidget(QLabel(label))
-    txt = QLineEdit()
-    if default:
-        txt.setText(default)
-    l.addWidget(txt)
-    l.addLayout(Buttons(CancelButton(dialog), OkButton(dialog, ok_label)))
-    if dialog.exec_():
-        return txt.text()
 
 
 def one_time_signal_connection(signal: SignalInstance, f: Callable):
@@ -864,538 +558,6 @@ def editor_contextMenuEvent(self, p, e):
     m.exec_(e.globalPos())
 
 
-class GenericInputHandler:
-    def input_qr_from_camera(
-        self,
-        *,
-        config: "UserConfig",
-        allow_multi: bool = False,
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
-    ) -> None:
-        if setText is None:
-            setText = self.setText
-
-        def cb(success: bool, error: str, data):
-            if not success:
-                if error:
-                    show_error(error)
-                return
-            if not data:
-                data = ""
-            if allow_multi:
-                new_text = self.text() + data + "\n"
-            else:
-                new_text = data
-            setText(new_text)
-
-        from bitcoin_qrreader import scan_qrcode
-
-        scan_qrcode(parent=self, config=config, callback=cb)
-
-    def input_qr_from_screenshot(
-        self,
-        *,
-        allow_multi: bool = False,
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
-    ) -> None:
-        if setText is None:
-            setText = self.setText
-        from bitcoin_qrreader import scan_qr_from_image
-
-        scanned_qr = None
-        for screen in QApplication.instance().screens():
-            try:
-                scan_result = scan_qr_from_image(screen.grabWindow(0).toImage())
-            except MissingQrDetectionLib as e:
-                show_error(_("Unable to scan image.") + "\n" + repr(e))
-                return
-            if len(scan_result) > 0:
-                if (scanned_qr is not None) or len(scan_result) > 1:
-                    show_error(_("More than one QR code was found on the screen."))
-                    return
-                scanned_qr = scan_result
-        if scanned_qr is None:
-            show_error(_("No QR code was found on the screen."))
-            return
-        data = scanned_qr[0].data
-        if allow_multi:
-            new_text = self.text() + data + "\n"
-        else:
-            new_text = data
-        setText(new_text)
-
-    def input_file(
-        self,
-        *,
-        config: "UserConfig",
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
-    ) -> None:
-        if setText is None:
-            setText = self.setText
-        fileName = getOpenFileName(
-            parent=None,
-            title="select file",
-            config=config,
-        )
-        if not fileName:
-            return
-        try:
-            try:
-                with open(fileName, "r") as f:
-                    data = f.read()
-            except UnicodeError as e:
-                with open(fileName, "rb") as f:
-                    data = f.read()
-                data = data.hex()
-        except BaseException as e:
-            show_error(_("Error opening file") + ":\n" + repr(e))
-        else:
-            setText(data)
-
-    def input_paste_from_clipboard(
-        self,
-        *,
-        setText: Callable[[str], None] = None,
-    ) -> None:
-        if setText is None:
-            setText = self.setText
-        app = QApplication.instance()
-        setText(app.clipboard().text())
-
-
-class QRDialog(WindowModalDialog):
-    def __init__(
-        self,
-        *,
-        data,
-        parent=None,
-        title="",
-        show_text=False,
-        help_text=None,
-        show_copy_text_btn=False,
-        config: "UserConfig",
-    ):
-        WindowModalDialog.__init__(self, parent, title)
-        self.config = config
-
-        vbox = QVBoxLayout()
-
-        qrw = QRCodeWidgetSVG(data, manual_size=True)
-        qrw.setMinimumSize(250, 250)
-        vbox.addWidget(qrw, 1)
-
-        help_text = data if show_text else help_text
-        if help_text:
-            text_label = WWLabel()
-            text_label.setText(help_text)
-            vbox.addWidget(text_label)
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)
-
-        def print_qr():
-            filename = getSaveFileName(
-                parent=self,
-                title=_("Select where to save file"),
-                filename="qrcode.png",
-                config=self.config,
-            )
-            if not filename:
-                return
-            p = qrw.grab()
-            p.save(filename, "png")
-            self.show_message(_("QR code saved to file") + " " + filename)
-
-        def copy_image_to_clipboard():
-            p = qrw.grab()
-            QApplication.clipboard().setPixmap(p)
-            self.show_message(_("QR code copied to clipboard"))
-
-        def copy_text_to_clipboard():
-            QApplication.clipboard().setText(data)
-            self.show_message(_("Text copied to clipboard"))
-
-        b = QPushButton(_("Copy Image"))
-        hbox.addWidget(b)
-        b.clicked.connect(copy_image_to_clipboard)
-
-        if show_copy_text_btn:
-            b = QPushButton(_("Copy Text"))
-            hbox.addWidget(b)
-            b.clicked.connect(copy_text_to_clipboard)
-
-        b = QPushButton(_("Save"))
-        hbox.addWidget(b)
-        b.clicked.connect(print_qr)
-
-        b = QPushButton(_("Close"))
-        hbox.addWidget(b)
-        b.clicked.connect(self.accept)
-        b.setDefault(True)
-
-        vbox.addLayout(hbox)
-        self.setLayout(vbox)
-
-        # note: the word-wrap on the text_label is causing layout sizing issues.
-        #       see https://stackoverflow.com/a/25661985 and https://bugreports.qt.io/browse/QTBUG-37673
-        #       workaround:
-        self.setMinimumSize(self.sizeHint())
-
-
-class OverlayControlMixin(GenericInputHandler):
-    STYLE_SHEET_COMMON = """
-    QPushButton { border-width: 1px; padding: 0px; margin: 0px; }
-    """
-
-    STYLE_SHEET_LIGHT = """
-    QPushButton { border: 1px solid transparent; }
-    QPushButton:hover { border: 1px solid #3daee9; }
-    """
-
-    def __init__(self, middle: bool = False):
-        GenericInputHandler.__init__(self)
-        assert isinstance(self, QWidget)
-        assert isinstance(self, OverlayControlMixin)  # only here for type-hints in IDE
-        self.middle = middle
-        self.overlay_widget = QWidget(self)
-        style_sheet = self.STYLE_SHEET_COMMON
-        if not ColorScheme.dark_scheme:
-            style_sheet = style_sheet + self.STYLE_SHEET_LIGHT
-        self.overlay_widget.setStyleSheet(style_sheet)
-        self.overlay_layout = QHBoxLayout(self.overlay_widget)
-        self.overlay_layout.setContentsMargins(0, 0, 0, 0)
-        self.overlay_layout.setSpacing(1)
-        self._updateOverlayPos()
-        self.buttons = []
-
-    def resizeEvent(self, e):
-        super().resizeEvent(e)
-        self._updateOverlayPos()
-
-    def _updateOverlayPos(self):
-        frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
-        overlay_size = self.overlay_widget.sizeHint()
-        x = self.rect().right() - frame_width - overlay_size.width()
-
-        y = self.rect().bottom() - overlay_size.height()
-        middle = self.middle
-        if hasattr(self, "document"):
-            # Keep the buttons centered if we have less than 2 lines in the editor
-            line_spacing = QFontMetrics(self.document().defaultFont()).lineSpacing()
-            if self.rect().height() < (line_spacing * 2):
-                middle = True
-        y = (y / 2) + frame_width if middle else y - frame_width
-
-        # Adjusting for scrollbar if visible
-        if hasattr(self, "verticalScrollBar") and self.verticalScrollBar().isVisible():
-            scrollbar_width = self.style().pixelMetric(QStyle.PM_ScrollBarExtent)
-            x -= scrollbar_width
-
-        self.overlay_widget.move(int(x), int(y))
-
-    def addWidget(self, widget: QWidget):
-        # The old code positioned the items the other way around, so we just insert at position 0 instead
-        self.overlay_layout.insertWidget(0, widget)
-
-    def addButton(self, icon_name: str, on_click, tooltip: str) -> QPushButton:
-        button = QPushButton(self.overlay_widget)
-        button.setToolTip(tooltip)
-        button.setIcon(read_QIcon(icon_name))
-        button.setCursor(QCursor(Qt.PointingHandCursor))
-        button.clicked.connect(on_click)
-        self.addWidget(button)
-        self.buttons.append(button)
-        return button
-
-    def addRandomMnemonicButton(self):
-        def on_click():
-            self.setText(bdk.Mnemonic(bdk.WordCount.WORDS12).as_string())
-
-        self.addButton("dice.svg", on_click, _("Create random mnemonic"))
-
-    def addResetButton(self, get_reset_text):
-        def on_click():
-            self.setText(get_reset_text())
-
-        button = self.addButton("reset-update.svg", on_click, _("Reset"))
-        button.setStyleSheet("background-color: white;")
-
-    def addPdfButton(self, open_pdf):
-        def on_click():
-            open_pdf()
-
-        button = self.addButton("pdf-file.svg", on_click, _("Create PDF"))
-        button.setStyleSheet("background-color: white;")
-
-    def addCopyButton(self):
-        def on_copy():
-            app = QApplication.instance()
-            app.clipboard().setText(self.text())
-            QToolTip.showText(QCursor.pos(), _("Text copied to clipboard"), self)
-
-        self.addButton("copy.png", on_copy, _("Copy to clipboard"))
-
-    def addPasteButton(
-        self,
-        *,
-        setText: Callable[[str], None] = None,
-    ):
-        input_paste_from_clipboard = partial(
-            self.input_paste_from_clipboard,
-            setText=setText,
-        )
-        self.addButton(
-            "copy.png", input_paste_from_clipboard, _("Paste from clipboard")
-        )
-
-    def add_qr_show_button(self, *, config: "UserConfig", title: Optional[str] = None):
-        if title is None:
-            title = _("QR code")
-
-        def qr_show():
-            from .QRCodeWidgetSVG import QRDialog
-
-            try:
-                s = str(self.text())
-            except:
-                s = self.text()
-            if not s:
-                return
-            QRDialog(
-                data=s,
-                parent=self,
-                title=title,
-                config=config,
-            ).exec_()
-
-        self.addButton(get_iconname_qrcode(), qr_show, _("Show as QR code"))
-        # side-effect: we export this method:
-        self.on_qr_show_btn = qr_show
-
-    def add_qr_input_combined_button(
-        self,
-        *,
-        config: "UserConfig",
-        allow_multi: bool = False,
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
-    ):
-        input_qr_from_camera = partial(
-            self.input_qr_from_camera,
-            config=config,
-            allow_multi=allow_multi,
-            show_error=show_error,
-            setText=setText,
-        )
-        input_qr_from_screenshot = partial(
-            self.input_qr_from_screenshot,
-            allow_multi=allow_multi,
-            show_error=show_error,
-            setText=setText,
-        )
-        self.add_menu_button(
-            icon=get_iconname_camera(),
-            tooltip=_("Read QR code"),
-            options=[
-                (
-                    get_iconname_camera(),
-                    _("Read QR code from camera"),
-                    input_qr_from_camera,
-                ),
-                (
-                    "picture_in_picture.png",
-                    _("Read QR code from screen"),
-                    input_qr_from_screenshot,
-                ),
-            ],
-        )
-        # side-effect: we export these methods:
-        self.on_qr_from_camera_input_btn = input_qr_from_camera
-        self.on_qr_from_screenshot_input_btn = input_qr_from_screenshot
-
-    def add_qr_input_from_camera_button(
-        self,
-        *,
-        custom_handle_input=None,
-    ):
-        def input_qr_from_camera():
-            from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
-
-            def result_callback(data: bitcoin_qr.Data):
-                if custom_handle_input:
-                    custom_handle_input(data, self)
-                else:
-                    self.setText(str(data.data_as_string()))
-
-            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback)
-            window.show()
-
-        button = self.addButton(
-            get_iconname_camera(), input_qr_from_camera, _("Read QR code from camera")
-        )
-        # side-effect: we export these methods:
-        self.on_qr_from_camera_input_btn = input_qr_from_camera
-
-        return button
-
-    def add_file_input_button(
-        self,
-        *,
-        config: "UserConfig",
-        show_error: Callable[[str], None],
-        setText: Callable[[str], None] = None,
-    ) -> None:
-        input_file = partial(
-            self.input_file,
-            config=config,
-            show_error=show_error,
-            setText=setText,
-        )
-        self.addButton("file.png", input_file, _("Read file"))
-
-    def add_menu_button(
-        self,
-        *,
-        options: Sequence[
-            Tuple[Optional[str], str, Callable[[], None]]
-        ],  # list of (icon, text, cb)
-        icon: Optional[str] = None,
-        tooltip: Optional[str] = None,
-    ):
-        if icon is None:
-            icon = (
-                "menu_vertical_white.png"
-                if ColorScheme.dark_scheme
-                else "menu_vertical.png"
-            )
-        if tooltip is None:
-            tooltip = _("Other options")
-        btn = self.addButton(icon, lambda: None, tooltip)
-        menu = QMenu()
-        for opt_icon, opt_text, opt_cb in options:
-            if opt_icon is None:
-                menu.addAction(opt_text, opt_cb)
-            else:
-                menu.addAction(read_QIcon(opt_icon), opt_text, opt_cb)
-        btn.setMenu(menu)
-
-
-class ButtonsTextEdit(OverlayControlMixin, QTextEdit):
-    def __init__(self, text=None):
-        QTextEdit.__init__(self, text)
-        OverlayControlMixin.__init__(self, middle=False)
-
-    def text(self):
-        return self.toPlainText()
-
-
-class ShowCopyTextEdit(ButtonsTextEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, text: str = ""):
-        super().__init__(text)
-        self.setReadOnly(True)
-        # self.setFont(QFont(MONOSPACE_FONT))
-        self.addCopyButton()
-
-
-class ButtonsLineEdit(OverlayControlMixin, QLineEdit):
-    def __init__(self, text=None):
-        QLineEdit.__init__(self, text)
-        OverlayControlMixin.__init__(self, middle=True)
-
-
-class ShowQRLineEdit(ButtonsLineEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, text: str, config, title=None):
-        ButtonsLineEdit.__init__(self, text)
-        self.setReadOnly(True)
-        # self.setFont(QFont(MONOSPACE_FONT))
-        self.add_qr_show_button(config=config, title=title)
-        self.addCopyButton()
-
-
-class ResetLineEdit(ButtonsLineEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, get_reset_text):
-        ButtonsLineEdit.__init__(self)
-        self.addResetButton(get_reset_text)
-
-
-class ShowCopyLineEdit(ButtonsLineEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, text: str = ""):
-        ButtonsLineEdit.__init__(self, text)
-        self.setReadOnly(True)
-        # self.setFont(QFont(MONOSPACE_FONT))
-        self.addCopyButton()
-
-
-class CameraInputLineEdit(ButtonsLineEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, text: str = "", custom_handle_input=None):
-        super().__init__(text)
-
-        def default_handle_input(data: bitcoin_qr.Data, parent: QWidget):
-            parent.setText(str(data.data_as_string()))
-
-        self.camera_button = self.add_qr_input_from_camera_button(
-            custom_handle_input=custom_handle_input
-            if custom_handle_input
-            else default_handle_input
-        )
-
-
-class CameraInputTextEdit(ButtonsTextEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self, text: str = "", custom_handle_input=None):
-        super().__init__(text)
-
-        def default_handle_input(data: bitcoin_qr.Data, parent: QWidget):
-            parent.setText(str(data.data_as_string()))
-
-        self.camera_button = self.add_qr_input_from_camera_button(
-            custom_handle_input=custom_handle_input
-            if custom_handle_input
-            else default_handle_input
-        )
-
-
-class MnemonicLineEdit(ButtonsLineEdit):
-    """read-only line with qr and copy buttons"""
-
-    def __init__(self):
-        ButtonsLineEdit.__init__(self)
-        self.addRandomMnemonicButton()
-
-
-class ButtonsTextEdit(OverlayControlMixin, QTextEdit):
-    def __init__(self, text=None):
-        QTextEdit.__init__(self, text)
-        OverlayControlMixin.__init__(self)
-        self.setText = self.setPlainText
-        self.text = self.toPlainText
-
-
-class PasswordLineEdit(QLineEdit):
-    def __init__(self, *args, **kwargs):
-        QLineEdit.__init__(self, *args, **kwargs)
-        self.setEchoMode(QLineEdit.Password)
-
-    def clear(self):
-        # Try to actually overwrite the memory.
-        # This is really just a best-effort thing...
-        self.setText(len(self.text()) * " ")
-        super().clear()
-
-
 class ColorSchemeItem:
     def __init__(self, fg_color, bg_color):
         self.colors = (fg_color, bg_color)
@@ -1431,51 +593,7 @@ class ColorScheme:
 
     @staticmethod
     def update_from_widget(widget, force_dark=False):
-        ColorScheme.dark_scheme = bool(
-            force_dark or ColorScheme.has_dark_background(widget)
-        )
-
-
-def getOpenFileName(*, parent, title, filter="", config: "UserConfig") -> Optional[str]:
-    """Custom wrapper for getOpenFileName that remembers the path selected by the user."""
-    directory = config.get("io_dir", os.path.expanduser("~"))
-    fileName, __ = QFileDialog.getOpenFileName(parent, title, directory, filter)
-    if fileName and directory != os.path.dirname(fileName):
-        config.set_key("io_dir", os.path.dirname(fileName), True)
-    return fileName
-
-
-def getSaveFileName(
-    *,
-    parent,
-    title,
-    filename,
-    filter="",
-    default_extension: str = None,
-    default_filter: str = None,
-    config: "UserConfig",
-) -> Optional[str]:
-    """Custom wrapper for getSaveFileName that remembers the path selected by the user."""
-    directory = config.get("io_dir", os.path.expanduser("~"))
-    path = os.path.join(directory, filename)
-
-    file_dialog = QFileDialog(parent, title, path, filter)
-    file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-    if default_extension:
-        # note: on MacOS, the selected filter's first extension seems to have priority over this...
-        file_dialog.setDefaultSuffix(default_extension)
-    if default_filter:
-        assert (
-            default_filter in filter
-        ), f"default_filter={default_filter!r} does not appear in filter={filter!r}"
-        file_dialog.selectNameFilter(default_filter)
-    if file_dialog.exec() != QDialog.Accepted:
-        return None
-
-    selected_path = file_dialog.selectedFiles()[0]
-    if selected_path and directory != os.path.dirname(selected_path):
-        config.set_key("io_dir", os.path.dirname(selected_path), True)
-    return selected_path
+        ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
 
 
 def icon_path(icon_basename: str):
@@ -1524,11 +642,7 @@ def clipboard_contains_address():
 
 def do_copy(text: str, *, title: str = None) -> None:
     QApplication.clipboard().setText(str(text))
-    message = (
-        _("Text copied to Clipboard")
-        if title is None
-        else _("{} copied to Clipboard").format(title)
-    )
+    message = _("Text copied to Clipboard") if title is None else _("{} copied to Clipboard").format(title)
     show_tooltip_after_delay(message)
 
 
@@ -1565,9 +679,7 @@ def qicon_to_pil(qicon, size=200):
     width, height = img_size.width(), img_size.height()
 
     # Convert raw bytes to a PIL image
-    pil_image = PilImage.frombuffer(
-        "RGBA", (width, height), buffer, "raw", "RGBA", 0, 1
-    )
+    pil_image = PilImage.frombuffer("RGBA", (width, height), buffer, "raw", "RGBA", 0, 1)
 
     return pil_image
 
@@ -1615,15 +727,3 @@ def save_file_dialog(name_filters=None, default_suffix=None, default_filename=No
         # Do something with the selected file path, e.g., save data to the file
         logger.debug(f"Selected save file: {selected_file}")
         return selected_file
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    t = WaitingDialog(
-        None,
-        "testing ...",
-        lambda: [time.sleep(1)],
-        lambda x: QMessageBox.information(None, "done", "done"),
-    )
-    t.start()
-    app.exec_()

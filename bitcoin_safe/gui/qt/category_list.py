@@ -2,12 +2,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from .taglist import TagEditor, CustomListWidget
 from typing import List
-from PySide2.QtCore import Signal
+
+from PySide2.QtGui import QColor
+
 from ...signals import Signals, UpdateFilter
-from .taglist import hash_color, AddressDragInfo
-from PySide2.QtGui import QBrush, QColor, QPainterPath, QMouseEvent
+from .taglist import CustomListWidget, TagEditor, hash_color
 
 
 class CategoryList(CustomListWidget):

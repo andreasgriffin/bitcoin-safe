@@ -1,6 +1,7 @@
-from PySide2 import QtWidgets, QtGui
-from ...util import Satoshis
 import bdkpython as bdk
+from PySide2 import QtGui, QtWidgets
+
+from ...util import Satoshis
 
 
 class BTCSpinBox(QtWidgets.QDoubleSpinBox):

@@ -1,29 +1,21 @@
-from typing import List
+import logging
+
+import bdkpython as bdk
+from bitcoin_qrreader import bitcoin_qr
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QHBoxLayout,
     QApplication,
-    QTextEdit,
-    QShortcut,
+    QDialog,
     QDialogButtonBox,
     QFileDialog,
-)
-from PySide2.QtGui import QKeySequence
-from PySide2.QtCore import Qt, Signal
-from bitcoin_qrreader import bitcoin_qr
-import bdkpython as bdk
-from .util import CameraInputTextEdit
-from PySide2.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
+    QLabel,
+    QShortcut,
     QVBoxLayout,
-    QApplication,
-    QPushButton,
 )
-import logging
+
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+
 
 logger = logging.getLogger(__name__)
 
@@ -53,16 +45,15 @@ def file_to_str(file_path):
             return f.read()
 
 
-class DragAndDropTextEdit(CameraInputTextEdit):
+class DragAndDropTextEdit(ButtonEdit):
     signal_drop_file = Signal(str)
 
-    def __init__(
-        self, network: bdk.Network, parent=None, callback_enter=None, callback_esc=None
-    ):
+    def __init__(self, network: bdk.Network, parent=None, callback_enter=None, callback_esc=None):
         super().__init__(parent)
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
         self.network = network
+        self.add_qr_input_from_camera_button()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
@@ -81,9 +72,7 @@ class DragAndDropTextEdit(CameraInputTextEdit):
 
     def dropEvent(self, event):
         file_path = event.mimeData().urls()[0].toLocalFile()
-        s = bitcoin_qr.Data.from_str(
-            file_to_str(file_path), self.network
-        ).data_as_string()
+        s = bitcoin_qr.Data.from_str(file_to_str(file_path), self.network).data_as_string()
         self.setText(s)
         self.signal_drop_file.emit(s)
 
@@ -108,9 +97,7 @@ class TransactionDialog(QDialog):
         self.text_edit = DragAndDropTextEdit(
             network=network, callback_enter=self.process_input, callback_esc=self.close
         )
-        self.text_edit.setPlaceholderText(
-            "Paste your Bitcoin Transaction or PSBT in here or drop a file"
-        )
+        self.text_edit.setPlaceholderText("Paste your Bitcoin Transaction or PSBT in here or drop a file")
 
         layout.addWidget(self.instruction_label)
         layout.addWidget(self.text_edit)
@@ -127,9 +114,7 @@ class TransactionDialog(QDialog):
         layout.addWidget(self.buttonBox)
 
         # connect signals
-        self.button_ok.clicked.connect(
-            lambda: self.process_input(self.text_edit.toPlainText())
-        )
+        self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.toPlainText()))
         self.text_edit.signal_drop_file.connect(self.process_input)
         self.cancel_button.clicked.connect(self.close)
         self.button_file.clicked.connect(self.on_open_file_clicked)
@@ -172,9 +157,7 @@ class UTXOAddDialog(TransactionDialog):
         self.setWindowTitle("Add Inputs")
 
         self.button_ok.setText("Load UTXOs")
-        self.instruction_label.setText(
-            "Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint"
-        )
+        self.instruction_label.setText("Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint")
         self.text_edit.setPlaceholderText("Please paste UTXO here")
 
 
@@ -191,6 +174,7 @@ class DescriptorDialog(TransactionDialog):
 
 if __name__ == "__main__":
     import sys
+
     from PySide2.QtWidgets import QApplication
 
     app = QApplication(sys.argv)

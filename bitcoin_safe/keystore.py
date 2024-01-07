@@ -1,31 +1,17 @@
 import logging
-from typing import Dict
+from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from bitcoin_usb.address_types import AddressType, AddressTypes
+import copy
+
+import bdkpython as bdk
+from bitcoin_usb.address_types import AddressType, ConstDerivationPaths
+from bitcoin_usb.device import SimplePubKeyProvider
 from packaging import version
 
-from .i18n import _
-from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
-from .gui.qt.balance_dialog import (
-    COLOR_FROZEN,
-    COLOR_CONFIRMED,
-    COLOR_FROZEN_LIGHTNING,
-    COLOR_LIGHTNING,
-    COLOR_UNCONFIRMED,
-    COLOR_UNMATURED,
-)
-from .gui.qt.util import add_tab_to_tabs, read_QIcon
-import bdkpython as bdk
-from .storage import BaseSaveableClass, SaveAllClass
-import copy
 from .descriptors import AddressType, MultipathDescriptor
-from bitcoin_usb.device import SimplePubKeyProvider
-from bitcoin_usb.address_types import ConstDerivationPaths
+from .storage import BaseSaveableClass, SaveAllClass
 
 
 class KeyStoreType(SaveAllClass):
@@ -47,9 +33,7 @@ class KeyStoreType(SaveAllClass):
 
 
 class KeyStoreTypes:
-    hwi = KeyStoreType(
-        "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg"
-    )
+    hwi = KeyStoreType("hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg")
     file = KeyStoreType(
         "file",
         "SD card",
@@ -78,11 +62,7 @@ class KeyStoreTypes:
 
     @classmethod
     def list_types(cls, network: bdk.Network):
-        return [
-            v
-            for v in [cls.hwi, cls.file, cls.qr, cls.watch_only, cls.seed]
-            if network in v.networks
-        ]
+        return [v for v in [cls.hwi, cls.file, cls.qr, cls.watch_only, cls.seed] if network in v.networks]
 
     @classmethod
     def list_names(cls, network: bdk.Network):
@@ -98,7 +78,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         fingerprint,
         key_origin: str,
         label,
-        mnemonic: str = None,
+        mnemonic: Optional[str] = None,
         description: str = "",
         derivation_path: str = ConstDerivationPaths.receive,
     ) -> None:
@@ -110,10 +90,10 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         )
 
         self.label = label
-        self.mnemonic: str = mnemonic
+        self.mnemonic = mnemonic
         self.description = description
 
-    def clone(self) -> "KeyStore":
+    def clone(self, class_kwargs=None) -> "KeyStore":
         return KeyStore(**self.__dict__)
 
     def to_singlesig_multipath_descriptor(self, address_type: AddressType, network):
@@ -127,9 +107,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             )
             if not self.mnemonic
             else address_type.bdk_descriptor_secret(
-                bdk.DescriptorSecretKey(
-                    network, bdk.Mnemonic.from_str(self.mnemonic), ""
-                ),
+                bdk.DescriptorSecretKey(network, bdk.Mnemonic.from_str(self.mnemonic), ""),
                 keychainkind,
                 network,
             )

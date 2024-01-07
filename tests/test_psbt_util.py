@@ -1,5 +1,6 @@
-from bitcoin_safe.psbt_util import *
 import bdkpython as bdk
+
+from bitcoin_safe.psbt_util import *
 
 
 def test_psbts():
@@ -28,9 +29,7 @@ def test_psbts():
                 ],
                 "m": 1,
                 "n": 1,
-                "public_keys": [
-                    "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"
-                ],
+                "public_keys": ["0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"],
                 "summary": {
                     "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": {
                         "partial_sigs": False,
@@ -52,9 +51,7 @@ def test_psbts():
                 ],
                 "m": 1,
                 "n": 1,
-                "public_keys": [
-                    "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"
-                ],
+                "public_keys": ["0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"],
                 "signature": "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f088521010388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
                 "summary": {
                     "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": {

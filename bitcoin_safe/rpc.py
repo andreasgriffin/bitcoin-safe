@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 
 def send_rpc_command(ip, port, username, password, method, params=None):
@@ -33,9 +34,7 @@ def send_rpc_command(ip, port, username, password, method, params=None):
     )
 
     # Send the request and get the response
-    response = requests.post(
-        url, headers=headers, data=payload, auth=(username, password)
-    )
+    response = requests.post(url, headers=headers, data=payload, auth=(username, password))
 
     # Return the response
     return response.json()

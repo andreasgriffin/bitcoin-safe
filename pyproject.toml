@@ -1,0 +1,8 @@
+[tool.black]
+line-length = 110
+
+[tool.mypy]
+no_implicit_optional = false
+ignore_missing_imports = true
+show_error_codes = true 
+disable_error_code = "annotation-unchecked, import-untyped"

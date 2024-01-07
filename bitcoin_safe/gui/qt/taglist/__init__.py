@@ -1,1 +1,1 @@
-from .main import TagEditor, hash_color, AddressDragInfo, CustomListWidget
+from .main import AddressDragInfo, CustomListWidget, TagEditor, hash_color

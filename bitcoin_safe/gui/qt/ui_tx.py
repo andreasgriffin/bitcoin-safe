@@ -1,28 +1,42 @@
 import logging
 
-from ...config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
-from .qr_components.image_widget import QRCodeWidgetSVG
-from .open_tx_dialog import UTXOAddDialog
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.my_treeview import SearchableTab
+
+from bitcoin_safe.gui.qt.nLockTimePicker import nLocktimePicker
+
+from ...config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
+from .open_tx_dialog import UTXOAddDialog
+from .qr_components.image_widget import QRCodeWidgetSVG
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-from .category_list import CategoryList
-from .recipients import Recipients, BTCSpinBox
-from ...signals import Signal
-import bdkpython as bdk
-from typing import Callable, List, Dict
+import json
 import os
-from .utxo_list import UTXOList
-from ...tx import TxUiInfos
-from ...signals import Signals
-from ...mempool import TxPrio
-from PySide2.QtGui import QPixmap, QImage
-from .qr_components.qr import create_qr_svg
+from typing import Callable, Dict, List, Optional
+
+import bdkpython as bdk
+from PySide2.QtCore import QObject, Signal, QItemSelectionModel, QCoreApplication
+from PySide2.QtWidgets import (
+    QPushButton,
+    QWidget,
+    QGroupBox,
+    QHBoxLayout,
+    QSizePolicy,
+    QVBoxLayout,
+    QTabWidget,
+    QDoubleSpinBox,
+    QFormLayout,
+    QLabel,
+    QDialogButtonBox,
+    QSplitter,
+    QCheckBox,
+)
+from PySide2.QtGui import Qt
+
+
+from ...mempool import MempoolData, TxPrio
 from ...psbt_util import (
     FeeInfo,
     calculate_sent_change_amounts,
@@ -30,35 +44,34 @@ from ...psbt_util import (
     estimate_tx_weight,
     get_psbt_simple_json,
 )
-from ...keystore import KeyStore
-from .util import (
-    Message,
-    SearchableTab,
-    add_to_buttonbox,
-    read_QIcon,
-    open_website,
-    save_file_dialog,
+from ...pythonbdk_types import (
+    OutPoint,
+    Recipient,
+    robust_address_str_from_script,
 )
-from .keystore_ui import SignedUI, SignerUI
-from ...signer import AbstractSigner, FileSigner, SignerWallet, QRSigner, USBSigner
+from ...signals import Signal, Signals
+from ...signer import AbstractSigner, FileSigner, QRSigner, SignerWallet, USBSigner
+from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
 from ...util import (
-    NoThread,
-    TaskThread,
     Satoshis,
+    TaskThread,
+    block_explorer_URL,
     remove_duplicates_keep_order,
     serialized_to_hex,
-    block_explorer_URL,
 )
+from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .block_buttons import ConfirmedBlock, MempoolButtons, MempoolProjectedBlock
-from ...mempool import MempoolData
-from ...pythonbdk_types import OutPoint, Recipient, TxOut
-from PySide2.QtCore import Signal, QObject
-from ...wallet import UtxosForInputs, Wallet
-import json
-from ...pythonbdk_types import robust_address_str_from_script
-from .util import ShowCopyLineEdit, ShowCopyTextEdit
-from ...psbt_util import get_psbt_simple_json
-from ...pythonbdk_types import OutPoint
+from .category_list import CategoryList
+from .keystore_ui import SignedUI, SignerUI
+from .qr_components.qr import create_qr_svg
+from .recipients import BTCSpinBox, Recipients
+from .util import (
+    Message,
+    add_to_buttonbox,
+    read_QIcon,
+    save_file_dialog,
+)
+from .utxo_list import UTXOList
 
 
 def create_button_bar(layout, button_texts) -> List[QPushButton]:
@@ -137,10 +150,14 @@ class ExportData(QObject):
         # psbt
         self.tab_serialized = QWidget()
         self.form_layout = QFormLayout(self.tab_serialized)
-        self.txid_edit = ShowCopyLineEdit()
+        self.txid_edit = ButtonEdit()
+        self.txid_edit.setReadOnly(True)
+        self.txid_edit.add_copy_button()
+
         self.txid_edit.buttons[0].setStyleSheet("background-color: white;")
         self.form_layout.addRow("TxId", self.txid_edit)
-        self.edit_serialized = ShowCopyTextEdit()
+        self.edit_serialized = ButtonEdit()
+        self.edit_serialized.add_copy_button()
         self.edit_serialized.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
             self.edit_serialized.setReadOnly(True)
@@ -152,14 +169,13 @@ class ExportData(QObject):
         self.button_file.clicked.connect(lambda: self.signal_export_to_file.emit())
         self.form_layout.addRow("Export", self.button_file)
 
-        self.set_tab_visibility(
-            self.tab_serialized, True, self.title_for_serialized, index=1
-        )
+        self.set_tab_visibility(self.tab_serialized, True, self.title_for_serialized, index=1)
 
         # json
         self.tab_json = QWidget()
         self.tab_json_layout = QVBoxLayout(self.tab_json)
-        self.edit_json = ShowCopyTextEdit()
+        self.edit_json = ButtonEdit()
+        self.edit_json.add_copy_button()
         self.edit_json.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
             self.edit_json.setReadOnly(True)
@@ -183,9 +199,7 @@ class ExportData(QObject):
         layout.addWidget(self.tabs)
 
     def export_qrcode(self):
-        filename = save_file_dialog(
-            name_filters=["Image (*.png)", "All Files (*.*)"], default_suffix="png"
-        )
+        filename = save_file_dialog(name_filters=["Image (*.png)", "All Files (*.*)"], default_suffix="png")
         if not filename:
             return
 
@@ -210,9 +224,7 @@ class ExportData(QObject):
         if idx != -1:
             self.tabs.setTabText(idx, f"{self.title_for_serialized}")
 
-    def set_data(
-        self, txid=None, data: Data = None, json_str=None, title_for_serialized=None
-    ):
+    def set_data(self, txid=None, data: Data = None, json_str=None, title_for_serialized=None):
         self.data = data
         self.json_str = json_str
         self.txid = txid
@@ -221,9 +233,7 @@ class ExportData(QObject):
             self.set_title_for_serialized(title_for_serialized)
 
         self.set_tab_visibility(self.tab_json, bool(json_str), "JSON", index=2)
-        self.set_tab_visibility(
-            self.tab_serialized, bool(data), self.title_for_serialized, index=2
-        )
+        self.set_tab_visibility(self.tab_serialized, bool(data), self.title_for_serialized, index=2)
         if txid:
             self.txid_edit.setText(txid)
         if data:
@@ -284,12 +294,12 @@ class FeeGroup(QObject):
         self,
         mempool_data: MempoolData,
         layout,
+        config: UserConfig,
         allow_edit=True,
         is_viewer=False,
         confirmation_time=None,
         url=None,
         fee_rate=None,
-        config: UserConfig = None,
     ) -> None:
         super().__init__()
 
@@ -301,9 +311,7 @@ class FeeGroup(QObject):
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
         self.groupBox_Fee.setTitle("Fee")
-        self.groupBox_Fee.setSizePolicy(
-            QSizePolicy.MinimumExpanding, QSizePolicy.Expanding
-        )
+        self.groupBox_Fee.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
         self.groupBox_Fee.setAlignment(Qt.AlignTop)
         groupBox_Fee_layout = QVBoxLayout(self.groupBox_Fee)
         groupBox_Fee_layout.setAlignment(Qt.AlignHCenter)
@@ -316,55 +324,43 @@ class FeeGroup(QObject):
 
         if confirmation_time:
             self.mempool = ConfirmedBlock(
+                mempool_data=mempool_data,
                 url=url,
                 confirmation_time=confirmation_time,
                 fee_rate=fee_rate,
             )
         elif is_viewer:
-            self.mempool = MempoolProjectedBlock(
-                mempool_data, config=self.config, fee_rate=fee_rate
-            )
+            self.mempool = MempoolProjectedBlock(mempool_data, config=self.config, fee_rate=fee_rate)
         else:
-            self.mempool = MempoolButtons(mempool_data, button_count=3)
+            self.mempool = MempoolButtons(mempool_data, max_button_count=3)
 
         if allow_edit:
             self.mempool.signal_click.connect(self.set_fee_rate)
-        groupBox_Fee_layout.addWidget(
-            self.mempool.button_group, alignment=Qt.AlignHCenter
-        )
+        groupBox_Fee_layout.addWidget(self.mempool.button_group, alignment=Qt.AlignHCenter)
 
-        self.high_fee_rate_warning_label = QLabel(
-            "<font color='red'><b>High feerate</b></font>"
-        )
+        self.high_fee_rate_warning_label = QLabel("<font color='red'><b>High feerate</b></font>")
         self.high_fee_rate_warning_label.setHidden(True)
-        groupBox_Fee_layout.addWidget(
-            self.high_fee_rate_warning_label, alignment=Qt.AlignHCenter
-        )
+        groupBox_Fee_layout.addWidget(self.high_fee_rate_warning_label, alignment=Qt.AlignHCenter)
 
-        self.high_fee_warning_label = QLabel(
-            "<font color='red'><b>High feerate</b></font>"
-        )
+        self.high_fee_warning_label = QLabel("<font color='red'><b>High feerate</b></font>")
         self.high_fee_warning_label.setHidden(True)
-        groupBox_Fee_layout.addWidget(
-            self.high_fee_warning_label, alignment=Qt.AlignHCenter
-        )
+        groupBox_Fee_layout.addWidget(self.high_fee_warning_label, alignment=Qt.AlignHCenter)
 
-        self.approximate_fee_label = QLabel(
-            "<font color='black'><b>Approximate fee rate</b></font>"
-        )
+        self.approximate_fee_label = QLabel("<font color='black'><b>Approximate fee rate</b></font>")
         self.approximate_fee_label.setHidden(True)
-        groupBox_Fee_layout.addWidget(
-            self.approximate_fee_label, alignment=Qt.AlignHCenter
+        groupBox_Fee_layout.addWidget(self.approximate_fee_label, alignment=Qt.AlignHCenter)
+
+        self.rbf_fee_label = QLabel(
+            "<font color='black'><b>... is the minimum to replace the existing transactions.</b></font>"
         )
+        self.rbf_fee_label.setWordWrap(True)
+        self.rbf_fee_label.setHidden(True)
+        groupBox_Fee_layout.addWidget(self.rbf_fee_label, alignment=Qt.AlignHCenter)
 
         self.widget_around_spin_box = QWidget()
         self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
-        self.widget_around_spin_box_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Remove margins
-        groupBox_Fee_layout.addWidget(
-            self.widget_around_spin_box, alignment=Qt.AlignHCenter
-        )
+        self.widget_around_spin_box_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+        groupBox_Fee_layout.addWidget(self.widget_around_spin_box, alignment=Qt.AlignHCenter)
 
         self.spin_fee_rate = QDoubleSpinBox()
         self.spin_fee_rate.setReadOnly(not allow_edit)
@@ -374,12 +370,8 @@ class FeeGroup(QObject):
         if fee_rate:
             self.spin_fee_rate.setValue(fee_rate)
         self.update_spin_fee_range()
-        self.spin_fee_rate.editingFinished.connect(
-            lambda: self.set_fee_rate(self.spin_fee_rate.value())
-        )
-        self.spin_fee_rate.valueChanged.connect(
-            lambda: self.set_fee_rate(self.spin_fee_rate.value())
-        )
+        self.spin_fee_rate.editingFinished.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
+        self.spin_fee_rate.valueChanged.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
 
         self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
 
@@ -388,19 +380,21 @@ class FeeGroup(QObject):
         self.widget_around_spin_box_layout.addWidget(self.spin_label)
 
         self.label_block_number = QLabel()
-        groupBox_Fee_layout.addWidget(
-            self.label_block_number, alignment=Qt.AlignHCenter
-        )
+        self.label_block_number.setVisible(False)
+        groupBox_Fee_layout.addWidget(self.label_block_number, alignment=Qt.AlignHCenter)
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignHCenter)
 
-        self.mempool.mempool_data.signal_data_updated.connect(
-            self.update_fee_rate_warning
-        )
+        self.mempool.mempool_data.signal_data_updated.connect(self.update_fee_rate_warning)
 
-    def set_fee_to_send_ratio(
-        self, fee, sent_amount, network: bdk.Network, fee_is_exact=False
-    ):
+    def set_rbf_label(self, min_fee_rate):
+        self.rbf_fee_label.setVisible(bool(min_fee_rate))
+        if min_fee_rate:
+            self.rbf_fee_label.setText(
+                f"""<font color='black'>{round(min_fee_rate,1)} Sat/vB is the minimum for <a href="https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki">RBF</a></font>"""
+            )
+
+    def set_fee_to_send_ratio(self, fee, sent_amount, network: bdk.Network, fee_is_exact=False):
         too_high = fee / sent_amount > FEE_RATIO_HIGH_WARNING
         self.high_fee_warning_label.setVisible(too_high)
         if too_high:
@@ -416,9 +410,7 @@ class FeeGroup(QObject):
         too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
         self.high_fee_rate_warning_label.setVisible(too_high)
         if too_high:
-            self.high_fee_rate_warning_label.setText(
-                f"<font color='red'><b>High fee rate!</b></font>"
-            )
+            self.high_fee_rate_warning_label.setText(f"<font color='red'><b>High fee rate!</b></font>")
             self.high_fee_rate_warning_label.setToolTip(
                 f"The high prio mempool fee rate is {self.mempool.mempool_data.max_reasonable_fee_rate():.1f} Sat/vB"
             )
@@ -441,11 +433,11 @@ class FeeGroup(QObject):
         )
         self._set_value(fee_rate if fee_rate else 0)
 
-        self.label_block_number.setVisible(not bool(confirmation_time))
-        if fee_rate is not None:
-            self.label_block_number.setText(
-                f"in ~{self.mempool.mempool_data.fee_rate_to_projected_block_index(fee_rate) }. Block"
-            )
+        # self.label_block_number.setVisible(not bool(confirmation_time))
+        # if fee_rate is not None:
+        #     self.label_block_number.setText(
+        #         f"in ~{self.mempool.mempool_data.fee_rate_to_projected_block_index(fee_rate) +1}. Block"
+        #     )
 
         if url:
             self.mempool.set_url(url)
@@ -471,9 +463,7 @@ class FeeGroup(QObject):
 
 
 class UITX_Base(QObject):
-    def __init__(
-        self, config: UserConfig, signals: Signals, mempool_data: MempoolData
-    ) -> None:
+    def __init__(self, config: UserConfig, signals: Signals, mempool_data: MempoolData) -> None:
         super().__init__()
         self.signals = signals
         self.mempool_data = mempool_data
@@ -548,9 +538,7 @@ class UITx_Viewer(UITX_Base):
         self.tabs_inputs_outputs.addTab(self.tab_outputs, "Outputs")
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
 
-        self.recipients = self.create_recipients(
-            self.tab_outputs_layout, allow_edit=False
-        )
+        self.recipients = self.create_recipients(self.tab_outputs_layout, allow_edit=False)
 
         # right side bar
         self.right_sidebar = QWidget()
@@ -558,9 +546,7 @@ class UITx_Viewer(UITX_Base):
         self.right_sidebar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.upper_widget_layout.addWidget(self.right_sidebar)
         self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
-        self.right_sidebar_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Left, Top, Right, Bottom margins
+        self.right_sidebar_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # QSizePolicy.Fixed: The widget has a fixed size and cannot be resized.
         # QSizePolicy.Minimum: The widget can be shrunk to its minimum size hint.
@@ -577,9 +563,7 @@ class UITx_Viewer(UITX_Base):
             allow_edit=False,
             is_viewer=True,
             confirmation_time=confirmation_time,
-            url=block_explorer_URL(config.network_config, "tx", self.txid())
-            if tx
-            else None,
+            url=block_explorer_URL(config.network_config.mempool_url, "tx", self.txid()) if tx else None,
             config=self.config,
         )
 
@@ -615,6 +599,13 @@ class UITx_Viewer(UITX_Base):
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox, "Edit", "pen.svg", on_clicked=lambda: self.edit()
         )
+        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
+        self.button_rbf = add_to_buttonbox(
+            self.buttonBox,
+            "Edit with increased fee (RBF)",
+            "pen.svg",
+            on_clicked=lambda: self.edit(),
+        )
         self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "sd-card.svg")
         self.button_broadcast_tx = add_to_buttonbox(
             self.buttonBox, "Send", "send.svg", on_clicked=lambda: self.broadcast()
@@ -627,7 +618,7 @@ class UITx_Viewer(UITX_Base):
         ##################
 
         self.button_save_tx.setVisible(False)
-        self.button_broadcast_tx.setEnabled(not confirmation_time)
+        self.button_broadcast_tx.setEnabled(bool(self.tx))
 
         self.reload()
         self.utxo_list.update()
@@ -641,33 +632,8 @@ class UITx_Viewer(UITX_Base):
 
     def edit(self):
         tx = self.tx if self.tx else self.psbt.extract_tx()
-        outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in tx.input()]
 
-        txinfos = TxUiInfos()
-        # inputs
-        txinfos.fill_utxo_dict_from_outpoints(
-            outpoints, wallets=self.signals.get_wallets().values()
-        )
-        txinfos.spend_all_utxos = True
-        # outputs
-        checked_max_amount = (
-            len(tx.output()) == 1
-        )  # if there is only 1 recipient, there is no change address
-        for txout in tx.output():
-            out_address = robust_address_str_from_script(
-                txout.script_pubkey, self.network
-            )
-            if out_address is None:
-                Message(f"No addres of {txout} could be calculated").show_message()
-                continue
-
-            txinfos.recipients.append(
-                Recipient(
-                    out_address, txout.value, checked_max_amount=checked_max_amount
-                )
-            )
-        # fee rate
-        txinfos.fee_rate = self.fee_group.spin_fee_rate.value()
+        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, get_wallets(self.signals))
 
         self.signals.open_tx_like.emit(txinfos)
 
@@ -696,13 +662,12 @@ class UITx_Viewer(UITX_Base):
             logger.error("No blockchain set")
 
     def get_fingerprints_signed_unsigned(self):
-        def get_wallet_of_outpoint(outpoint: bdk.OutPoint) -> Wallet:
-            for wallet in wallets_dict.values():
-                utxo = wallet.utxo_of_outpoint(outpoint)
-                if utxo:
+        def get_wallet_of_outpoint(outpoint: bdk.OutPoint) -> Optional[Wallet]:
+            for wallet in get_wallets(self.signals):
+                python_utxo = wallet.utxo_of_outpoint(outpoint)
+                if python_utxo:
                     return wallet
-
-        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
+            return None
 
         simple_json = get_psbt_simple_json(self.psbt)["inputs"]
 
@@ -739,9 +704,7 @@ class UITx_Viewer(UITX_Base):
                 [],
             )
         )
-        fingerprints_fully_signed = set(sorted_fingerprints) - set(
-            fingerprints_not_fully_signed
-        )
+        fingerprints_fully_signed = set(sorted_fingerprints) - set(fingerprints_not_fully_signed)
         return (
             simple_json,
             sorted_fingerprints,
@@ -754,24 +717,19 @@ class UITx_Viewer(UITX_Base):
             # check which keys the wallet can sign
 
             wallet_signing_fingerprints = set(
-                [
-                    keystore.fingerprint if keystore.mnemonic else None
-                    for keystore in wallet.keystores
-                ]
+                [keystore.fingerprint if keystore.mnemonic else None for keystore in wallet.keystores]
             ) - set([None])
             return wallet_signing_fingerprints
 
-        def get_signing_wallets(fingerprint) -> Wallet:
+        def get_signing_wallets(fingerprint) -> List[Wallet]:
             result = []
-            for wallet in wallets_dict.values():
-                signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(
-                    wallet
-                )
+            for wallet in wallets:
+                signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(wallet)
                 if fingerprint in signing_fingerprints_of_wallet:
                     result.append(wallet)
             return result
 
-        def get_label(fingerprint) -> Wallet:
+        def get_label(fingerprint) -> str:
             for simple_input in simple_json:
                 if fingerprint in simple_input["fingerprints"]:
                     if not simple_input.get("wallet"):
@@ -783,7 +741,7 @@ class UITx_Viewer(UITX_Base):
 
         self.remove_signers()
         self.tabs_signers.setHidden(False)
-        wallets_dict: Dict[str, Wallet] = self.signals.get_wallets()
+        wallets = get_wallets(self.signals)
         (
             simple_json,
             sorted_fingerprints,
@@ -809,7 +767,7 @@ class UITx_Viewer(UITX_Base):
                     "Read Signature",
                     self.network,
                     blockchain=self.blockchain,
-                    dummy_wallet=list(wallets_dict.values())[0],
+                    dummy_wallet=wallets[0],
                 )
             )
 
@@ -819,7 +777,7 @@ class UITx_Viewer(UITX_Base):
                     "Import Signature",
                     self.network,
                     blockchain=self.blockchain,
-                    dummy_wallet=list(wallets_dict.values())[0],
+                    dummy_wallet=wallets[0],
                 )
             )
             # always offer the usb option
@@ -828,7 +786,7 @@ class UITx_Viewer(UITX_Base):
                     "USB Signing",
                     self.network,
                     blockchain=self.blockchain,
-                    dummy_wallet=list(wallets_dict.values())[0],
+                    dummy_wallet=wallets[0],
                 )
             )
 
@@ -851,9 +809,7 @@ class UITx_Viewer(UITX_Base):
                     key_label=get_label(fingerprint),
                     wallet_id=signer_list[0].label if signer_list else None,
                 )
-                signerui.signal_signature_added.connect(
-                    lambda psbt: self.signature_added(psbt)
-                )
+                signerui.signal_signature_added.connect(lambda psbt: self.signature_added(psbt))
             self.signeruis.append(signerui)
 
     def remove_signers(self):
@@ -867,16 +823,13 @@ class UITx_Viewer(UITX_Base):
             tx = psbt_with_signatures
         else:
             all_inputs_fully_signed = [
-                inp.get("signature")
-                for inp in get_psbt_simple_json(psbt_with_signatures)["inputs"]
+                inp.get("signature") for inp in get_psbt_simple_json(psbt_with_signatures)["inputs"]
             ]
             if all(all_inputs_fully_signed):
                 tx = psbt_with_signatures.extract_tx()
 
         if tx:
-            sent_values, change_values = calculate_sent_change_amounts(
-                psbt_with_signatures
-            )
+            sent_values, change_values = calculate_sent_change_amounts(psbt_with_signatures)
             self.set_tx(
                 tx,
                 fee_info=FeeInfo(
@@ -893,16 +846,14 @@ class UITx_Viewer(UITX_Base):
                     psbt_with_signatures.extract_tx().weight() / 4,
                 ),
             )
-        self.button_broadcast_tx.setEnabled(True)
 
-    def check_conflicting_inputs(self, tx: bdk.Transaction):
-        for wallet in self.signals.get_wallets().values():
-            conflicting_input_utxos = wallet.get_conflicting_tx_inputs(tx)
-            if conflicting_input_utxos:
-                Message(
-                    f"The following tx inputs are already spent {[OutPoint.from_bdk( utxo.outpoint) for utxo in conflicting_input_utxos]}, which makes this tx invalid."
-                ).show_message()
-                break
+    def is_in_mempool(self, txid: str):
+        # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here
+        wallets = get_wallets(self.signals)
+        for wallet in wallets:
+            if wallet.is_in_mempool(txid):
+                return True
+        return False
 
     def set_tx(
         self,
@@ -911,11 +862,8 @@ class UITx_Viewer(UITX_Base):
         confirmation_time: bdk.BlockTime = None,
         sent_amount: int = None,
     ):
-        self.tx: bdk.Transaction = tx
-
-        # if i have a transaction that is not confirmed, then check if the utxos exist
-        if not confirmation_time:
-            self.check_conflicting_inputs(tx)
+        self.tx = tx
+        self.fee_info = fee_info
 
         self.remove_signers()
         self.export_widget.set_data(
@@ -925,20 +873,15 @@ class UITx_Viewer(UITX_Base):
         )
 
         if fee_info is not None:
-            self.fee_info = fee_info
             self.fee_group.set_fee_rate(
-                fee_rate=self.fee_info.fee_rate(),
-                url=block_explorer_URL(self.config.network_config, "tx", tx.txid()),
+                fee_rate=fee_info.fee_rate(),
+                url=block_explorer_URL(self.config.network_config.mempool_url, "tx", tx.txid()),
                 confirmation_time=confirmation_time,
                 chain_height=self.blockchain.get_height() if self.blockchain else None,
             )
             # calcualte the fee warning. However since in a tx I don't know what is a change address,
             # it is not possible to give  fee warning for the sent (vs. change) amount
-            sent_amount = (
-                sent_amount
-                if sent_amount
-                else sum([txout.value for txout in tx.output()])
-            )
+            sent_amount = sent_amount if sent_amount else sum([txout.value for txout in tx.output()])
             self.fee_group.set_fee_to_send_ratio(
                 fee_info.fee_amount,
                 sent_amount,
@@ -955,17 +898,29 @@ class UITx_Viewer(UITX_Base):
 
         self.recipients.recipients = [
             Recipient(
-                address=robust_address_str_from_script(
-                    output.script_pubkey, self.network
-                ),
+                address=robust_address_str_from_script(output.script_pubkey, self.network),
                 amount=output.value,
             )
             for output in outputs
         ]
+        self.set_button_visibility(confirmation_time)
 
-        self.button_edit_tx.setHidden(bool(confirmation_time))
+    def set_button_visibility(self, confirmation_time: bdk.BlockTime = None):
+        tx = self.tx if self.tx else self.psbt.extract_tx()
+        tx_status = TxStatus(
+            tx,
+            confirmation_time,
+            self.mempool_data.fetch_block_tip_height,
+            self.is_in_mempool(tx.txid()),
+        )
+
+        self.button_broadcast_tx.setEnabled(bool(tx_status.can_do_initial_broadcast() and self.tx))
+        self.button_broadcast_tx.setVisible(True)
+        # if is_unconfirmed then it makes sense to also edit it before
         self.button_save_tx.setHidden(True)
-        self.button_broadcast_tx.setHidden(bool(confirmation_time))
+
+        self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
+        self.button_rbf.setVisible(tx_status.can_rbf())
 
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_info: FeeInfo = None):
         """_summary_
@@ -975,9 +930,8 @@ class UITx_Viewer(UITX_Base):
             fee_rate (_type_, optional): This is the exact fee_rate chosen in txbuilder. If not given it has
                                         to be estimated with estimate_segwit_tx_size_from_psbt.
         """
-        self.psbt: bdk.PartiallySignedTransaction = psbt
-
-        self.check_conflicting_inputs(psbt.extract_tx())
+        self.psbt = psbt
+        self.fee_info = fee_info
 
         self.export_widget.set_data(
             txid=psbt.txid(),
@@ -1013,15 +967,14 @@ class UITx_Viewer(UITX_Base):
 
         self.recipients.recipients = [
             Recipient(
-                address=bdk.Address.from_script(
-                    output.script_pubkey, self.network
-                ).as_string(),
+                address=bdk.Address.from_script(output.script_pubkey, self.network).as_string(),
                 amount=output.value,
             )
             for output in outputs
         ]
 
         self.add_all_signer_tabs()
+        self.set_button_visibility(None)
 
 
 class UITX_Creator(UITX_Base):
@@ -1043,59 +996,52 @@ class UITX_Creator(UITX_Base):
         self.categories = categories
         self.utxo_list = utxo_list
         self.get_sub_texts = get_sub_texts
-        self.enable_opportunistic_merging_fee_rate = (
-            enable_opportunistic_merging_fee_rate
-        )
+        self.enable_opportunistic_merging_fee_rate = enable_opportunistic_merging_fee_rate
 
-        self.additional_outpoints = []
+        self.additional_outpoints: List[OutPoint] = []
         utxo_list.get_outpoints = self.get_outpoints
         utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
 
         self.main_widget = SearchableTab()
         self.main_widget.searchable_list = utxo_list
-        self.main_widget_layout = QHBoxLayout(self.main_widget)
+        self.main_widget.setLayout(QVBoxLayout())
+
+        self.outer_widget_sub = QWidget()
+        self.outer_widget_sub.setLayout(QHBoxLayout())
+        self.outer_widget_sub.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.main_widget.layout().addWidget(self.outer_widget_sub)
 
         self.splitter = QSplitter()
-        self.main_widget_layout.addWidget(self.splitter)
+        self.outer_widget_sub.layout().addWidget(self.splitter)
         self.create_inputs_selector(self.splitter)
 
         self.widget_right_hand_side = QWidget()
         self.widget_right_hand_side_layout = QVBoxLayout(self.widget_right_hand_side)
-        self.widget_right_hand_side_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Left, Top, Right, Bottom margins
+        self.widget_right_hand_side_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         self.widget_right_top = QWidget(self.main_widget)
         self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)
-        self.widget_right_top_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Left, Top, Right, Bottom margins
+        self.widget_right_top_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        self.recipients: Recipients = self.create_recipients(
-            self.widget_right_top_layout
-        )
+        self.recipients: Recipients = self.create_recipients(self.widget_right_top_layout)
 
         self.recipients.signal_clicked_send_max_button.connect(
-            lambda recipient_group_box: self.set_max_amount(
-                recipient_group_box.amount_spin_box
-            )
+            lambda recipient_group_box: self.set_max_amount(recipient_group_box.amount_spin_box)
         )
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(
-            mempool_data, self.widget_right_top_layout, config=self.config
-        )
+        self.fee_group = FeeGroup(mempool_data, self.widget_right_top_layout, config=self.config)
         self.fee_group.signal_set_fee_rate.connect(self.on_set_fee_rate)
 
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
-        (self.button_create_tx,) = create_button_bar(
-            self.widget_right_hand_side_layout,
-            button_texts=["Next Step: Sign Transaction with hardware signers"],
-        )
-        self.button_create_tx.clicked.connect(
-            lambda: self.signal_create_tx.emit(self.get_ui_tx_infos())
-        )
+        self.buttonBox = QDialogButtonBox()
+        self.button_ok = self.buttonBox.addButton(QDialogButtonBox.Ok)
+        self.button_ok.setDefault(True)
+        self.button_clear = self.buttonBox.addButton(QDialogButtonBox.Reset)
+        self.main_widget.layout().addWidget(self.buttonBox)
+        self.button_ok.clicked.connect(lambda: self.create_tx())
+        self.button_clear.clicked.connect(lambda: self.clear_ui())
 
         self.splitter.addWidget(self.widget_right_hand_side)
 
@@ -1105,18 +1051,28 @@ class UITX_Creator(UITX_Base):
         self.tabs_inputs.currentChanged.connect(self.tab_changed)
         self.mempool_data.signal_data_updated.connect(self.update_fee_rate_to_mempool)
 
+    def reset_fee_rate(self):
+        self.fee_group.set_fee_rate(self.mempool_data.get_prio_fees()[TxPrio.low])
+
+    def clear_ui(self):
+        self.additional_outpoints.clear()
+        self.set_ui(TxUiInfos())
+        self.tabs_inputs.setCurrentIndex(0)
+        self.reset_fee_rate()
+        self.utxo_list.update()
+
+    def create_tx(self):
+        self.signal_create_tx.emit(self.get_ui_tx_infos())
+
     def update_fee_rate_to_mempool(self):
         "Do this only ONCE after the mempool data is fetched"
         if self.fee_group.spin_fee_rate.value() == MIN_RELAY_FEE:
-            self.fee_group.set_fee_rate(self.mempool_data.get_prio_fees()[TxPrio.low])
-        self.mempool_data.signal_data_updated.disconnect(
-            self.update_fee_rate_to_mempool
-        )
+            self.reset_fee_rate()
+        self.mempool_data.signal_data_updated.disconnect(self.update_fee_rate_to_mempool)
 
-    def get_outpoints(self):
+    def get_outpoints(self) -> List[OutPoint]:
         return [
-            OutPoint.from_bdk(utxo.outpoint)
-            for utxo in self.wallet.bdkwallet.list_unspent()
+            utxo.outpoint for utxo in self.wallet.get_all_txos() if not utxo.is_spent_by_txid
         ] + self.additional_outpoints
 
     def sum_amount_selected_utxos(self) -> int:
@@ -1131,22 +1087,24 @@ class UITX_Creator(UITX_Base):
         return sum_values
 
     def update_labels(self):
-        self.uxto_selected_label.setText(
-            f"Currently {Satoshis(self.sum_amount_selected_utxos(), self.signals.get_network()).str_with_unit()} selected"
-        )
+        try:
+            amount = self.sum_amount_selected_utxos()
+            self.uxto_selected_label.setText(
+                f"Currently {Satoshis(amount, self.signals.get_network()).str_with_unit()} selected"
+            )
+        except:
+            self.uxto_selected_label.setText(f"Unknown amount selected")
 
     def create_inputs_selector(self, layout):
 
         self.tabs_inputs = QTabWidget(self.main_widget)
         self.tabs_inputs.setMinimumWidth(200)
         self.tab_inputs_categories = QWidget(self.main_widget)
-        self.tabs_inputs.addTab(self.tab_inputs_categories, "Input Category")
+        self.tabs_inputs.addTab(self.tab_inputs_categories, "Send Category")
 
         # tab categories
         self.verticalLayout_inputs = QVBoxLayout(self.tab_inputs_categories)
-        self.label_select_input_categories = QLabel(
-            "Select a category that fits the recipient best"
-        )
+        self.label_select_input_categories = QLabel("Select a category that fits the recipient best")
         self.label_select_input_categories.setWordWrap(True)
         self.checkBox_reduce_future_fees = QCheckBox(self.tab_inputs_categories)
         self.checkBox_reduce_future_fees.setChecked(True)
@@ -1165,7 +1123,7 @@ class UITX_Creator(UITX_Base):
         # tab utxos
         self.tab_inputs_utxos = QWidget(self.main_widget)
         self.verticalLayout_inputs_utxos = QVBoxLayout(self.tab_inputs_utxos)
-        self.tabs_inputs.addTab(self.tab_inputs_utxos, "Manual")
+        self.tabs_inputs.addTab(self.tab_inputs_utxos, "Advanced")
 
         self.uxto_selected_label = QLabel(self.main_widget)
         self.verticalLayout_inputs_utxos.addWidget(self.uxto_selected_label)
@@ -1176,6 +1134,12 @@ class UITX_Creator(UITX_Base):
             self.button_add_utxo = QPushButton("Add foreign UTXOs")
             self.button_add_utxo.clicked.connect(self.click_add_utxo)
             self.verticalLayout_inputs_utxos.addWidget(self.button_add_utxo)
+
+        # nLocktime
+        self.nlocktime_picker = nLocktimePicker()
+        # TODO actiavte this as soon as https://docs.rs/bdk/latest/bdk/wallet/tx_builder/struct.TxBuilder.html#method.nlocktime is exposed in ffi
+        self.nlocktime_picker.setHidden(True)
+        self.verticalLayout_inputs_utxos.addWidget(self.nlocktime_picker)
 
         layout.addWidget(self.tabs_inputs)
 
@@ -1202,22 +1166,16 @@ class UITX_Creator(UITX_Base):
 
     def click_add_utxo(self):
         def process_input(s: str):
-            outpoints = [
-                OutPoint.from_str(row.strip()) for row in s.strip().split("\n")
-            ]
+            outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
             logger.debug(f"Adding outpoints {outpoints}")
             self.add_outpoints(outpoints)
             self.utxo_list.update()
-            self.utxo_list.select_rows(
-                outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY
-            )
+            self.utxo_list.select_rows(outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY)
 
         UTXOAddDialog(self.config.network_config.network, on_open=process_input).show()
 
     def on_set_fee_rate(self, fee_rate):
-        self.checkBox_reduce_future_fees.setChecked(
-            fee_rate <= self.enable_opportunistic_merging_fee_rate
-        )
+        self.checkBox_reduce_future_fees.setChecked(fee_rate <= self.enable_opportunistic_merging_fee_rate)
 
         sent_values = [r.amount for r in self.recipients.recipients]
         if fee_rate is not None and sum(sent_values):
@@ -1255,20 +1213,14 @@ class UITX_Creator(UITX_Base):
         if not use_this_tab:
             use_this_tab = self.tabs_inputs.currentWidget()
 
-        wallets = (
-            [self.wallet]
-            if use_this_tab == self.tab_inputs_categories
-            else self.signals.get_wallets().values()
-        )
+        wallets = [self.wallet] if use_this_tab == self.tab_inputs_categories else get_wallets(self.signals)
 
         if use_this_tab == self.tab_inputs_categories:
-            infos.fill_utxo_dict_from_categories(
-                self.category_list.get_selected(), wallets
-            )
+            ToolsTxUiInfo.fill_utxo_dict_from_categories(infos, self.category_list.get_selected(), wallets)
 
         if use_this_tab == self.tab_inputs_utxos:
-            infos.fill_utxo_dict_from_outpoints(
-                self.utxo_list.get_selected_outpoints(), wallets
+            ToolsTxUiInfo.fill_utxo_dict_from_outpoints(
+                infos, self.utxo_list.get_selected_outpoints(), wallets
             )
             infos.spend_all_utxos = True
 
@@ -1277,9 +1229,7 @@ class UITX_Creator(UITX_Base):
     def set_max_amount(self, spin_box: BTCSpinBox):
         txinfos = self.get_ui_tx_infos()
 
-        total_input_value = sum(
-            [utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo]
-        )
+        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
 
         total_output_value = sum(
             [recipient.amount for recipient in txinfos.recipients]
@@ -1302,7 +1252,6 @@ class UITX_Creator(UITX_Base):
             )
         )
 
-    @Slot(int)
     def tab_changed(self, index):
         # Slot called when the current tab changes
         # print(f"Tab changed to index {index}")
@@ -1313,9 +1262,7 @@ class UITX_Creator(UITX_Base):
             self.splitter.setSizes([400, 600])
 
             # take the coin selection from the category to the utxo tab (but only if one is selected)
-            self.set_coin_selection_in_sent_tab(
-                self.get_ui_tx_infos(self.tab_inputs_categories)
-            )
+            self.set_coin_selection_in_sent_tab(self.get_ui_tx_infos(self.tab_inputs_categories))
 
     def set_coin_selection_in_sent_tab(self, txinfos: TxUiInfos):
         utxos_for_input = self.wallet.handle_opportunistic_merge_utxos(txinfos)
@@ -1331,23 +1278,78 @@ class UITX_Creator(UITX_Base):
             index = model.index(row, self.utxo_list.Columns.OUTPOINT)
             utxo_name = model.data(index)
             if utxo_name in utxo_names:
-                selection.select(
-                    index, QItemSelectionModel.Select | QItemSelectionModel.Rows
-                )
+                selection.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
             else:
-                selection.select(
-                    index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows
-                )
+                selection.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
 
     def set_ui(self, txinfos: TxUiInfos):
         self.recipients.recipients = txinfos.recipients
+        if not self.recipients.recipients:
+            self.recipients.add_recipient()
 
+        ##################
+        # detect and handle rbf
+        conflicting_python_utxos = self.wallet.get_conflicting_python_utxos(
+            [OutPoint.from_str(s) for s in txinfos.utxo_dict.keys()]
+        )
+
+        conflicting_txids = [
+            conflicting_python_utxo.is_spent_by_txid for conflicting_python_utxo in conflicting_python_utxos
+        ]
+        confirmation_times = [
+            self.wallet.get_tx(conflicting_txid).confirmation_time for conflicting_txid in conflicting_txids
+        ]
+
+        conflicting_confirmed = set(
+            [
+                conflicting_python_utxo
+                for conflicting_python_utxo, confirmation_time in zip(
+                    conflicting_python_utxos, confirmation_times
+                )
+                if confirmation_time
+            ]
+        )
+        conflicted_unconfirmed = set(conflicting_python_utxos) - conflicting_confirmed
+        if conflicting_confirmed:
+            Message(
+                f"The inputs {[utxo.outpoint for utxo in conflicting_confirmed]} conflict with these confirmed txids {[utxo.is_spent_by_txid for utxo in conflicting_confirmed]}"
+            )
+        if conflicted_unconfirmed:
+            # RBF is going on
+            # these involved txs i can do rbf
+
+            txs_to_be_replaced = []
+            for utxo in conflicted_unconfirmed:
+                if utxo.is_spent_by_txid:
+                    txs_to_be_replaced += [
+                        fulltx.tx
+                        for fulltx in self.wallet.get_fulltxdetail_and_dependents(utxo.is_spent_by_txid)
+                    ]
+
+            fee_amount = sum([tx_details.fee for tx_details in txs_to_be_replaced])
+
+            builder_infos = self.wallet.create_psbt(txinfos)
+            fee_info = estimate_segwit_fee_rate_from_psbt(builder_infos.builder_result.psbt)
+
+            txinfos.fee_rate = calc_minimum_rbf_fee_info(
+                fee_amount, fee_info.tx_size, self.mempool_data
+            ).fee_rate()
+
+            self.fee_group.set_rbf_label(txinfos.fee_rate)
+
+            for python_utxo in txinfos.utxo_dict.values():
+                if python_utxo.outpoint not in self.get_outpoints():
+                    self.additional_outpoints.append(python_utxo.outpoint)
+        else:
+            self.fee_group.set_rbf_label(None)
+
+        if txinfos.fee_rate:
+            self.fee_group.set_fee_rate(txinfos.fee_rate)
+
+        self.utxo_list.update()
         self.tabs_inputs.setCurrentWidget(self.tab_inputs_utxos)
         self.utxo_list.select_rows(
             txinfos.utxo_dict.keys(),
             self.utxo_list.key_column,
             self.utxo_list.ROLE_KEY,
         )
-
-        if txinfos.fee_rate:
-            self.fee_group.set_fee_rate(txinfos.fee_rate)

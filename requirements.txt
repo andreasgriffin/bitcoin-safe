@@ -158,9 +158,9 @@ bitcoin-qrreader==0.5.4 \
     --hash=sha256:b2b18fa0c8f2a26396d589c86408a1328cb52351221d176cd428965bff7b8974 \
     --hash=sha256:faefe29b94c8ed77c55d67eda0a98ee68e67d95acf2cadaf8b478cfda066367d
     # via -r requirements.in
-bitcoin-usb==0.1.1 \
-    --hash=sha256:c26a1c5ec4abc3cfaef73bf767e32758b6c04412fd5a27f3a3cdefa8da282c80 \
-    --hash=sha256:ca0478094072c63c983bad2f634c8a332816d24d279c74cd3706294b0a5ea472
+bitcoin-usb==0.1.2 \
+    --hash=sha256:b313c416d200dd0c8b6554509a024ead9040df9656dd7be7619f1b753b342c6c \
+    --hash=sha256:b8f34b78ebafc1d9734640af85bd641b15742d0b12a9a7f407804c6eb02610da
     # via -r requirements.in
 cbor2==5.5.1 \
     --hash=sha256:1206180f66a9ad23e692cf457610c877f186ad303a1264b6c5335015b7bee83e \

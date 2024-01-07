@@ -4,31 +4,38 @@ import os
 from .util import create_button_box
 
 logger = logging.getLogger(__name__)
+from PySide2.QtGui import QFont, QIcon
 from PySide2.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QApplication,
-    QCheckBox,
-    QMessageBox,
-    QMessageBox,
     QAction,
-    QStyle,
-)
-from PySide2.QtGui import QIcon, QFont
-from ...wallet import filename_clean
-from PySide2.QtWidgets import (
+    QApplication,
     QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
     QLabel,
     QLineEdit,
-    QPushButton,
     QMessageBox,
-    QDialogButtonBox,
+    QPushButton,
+    QVBoxLayout,
 )
+
+from ...wallet import filename_clean
+
+
+def question_dialog(text="", title="", buttons=QMessageBox.Cancel | QMessageBox.Yes):
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle(title)
+    msg_box.setText(text)
+    msg_box.setIcon(QMessageBox.Question)
+
+    # Set the QDialogButtonBox as the standard button in the message box
+    msg_box.setStandardButtons(buttons)
+
+    # Execute the message box
+    ret = msg_box.exec_()
+
+    # Check which button was clicked
+    if ret == QMessageBox.Yes:
+        return True
+    elif ret == QMessageBox.No:
+        return False
 
 
 class PasswordQuestion(QDialog):
@@ -57,8 +64,8 @@ class PasswordQuestion(QDialog):
             return None
 
 
-from PySide2.QtGui import QIcon, QPixmap, QPainter, QFont
 from PySide2.QtCore import Qt
+from PySide2.QtGui import QFont, QIcon, QPainter, QPixmap
 
 
 def create_icon_from_unicode(unicode_char, font_name="Arial", size=18):
@@ -96,18 +103,12 @@ class PasswordCreation(QDialog):
         self.icon_hide = create_icon_from_unicode("🙈", size=18)
 
         # Show password action for the first input
-        self.show_password_action1 = QAction(
-            create_icon_from_unicode("👁", size=18), "Show Password"
-        )
+        self.show_password_action1 = QAction(create_icon_from_unicode("👁", size=18), "Show Password")
         self.show_password_action1.setFont(
             QFont("Arial", 12)
         )  # Set the font to Arial to ensure Unicode support
-        self.show_password_action1.triggered.connect(
-            lambda: self.toggle_password_visibility()
-        )
-        self.password_input1.addAction(
-            self.show_password_action1, QLineEdit.TrailingPosition
-        )
+        self.show_password_action1.triggered.connect(lambda: self.toggle_password_visibility())
+        self.password_input1.addAction(self.show_password_action1, QLineEdit.TrailingPosition)
 
         # Second password input
         self.label2 = QLabel("Re-enter your password:")
@@ -136,28 +137,18 @@ class PasswordCreation(QDialog):
     def toggle_password_visibility(self):
         new_visibility = self.password_input1.echoMode() == QLineEdit.Password
 
-        self._set_password_visibility(
-            self.password_input1, self.show_password_action1, new_visibility
-        )
-        self._set_password_visibility(
-            self.password_input2, self.show_password_action1, new_visibility
-        )
+        self._set_password_visibility(self.password_input1, self.show_password_action1, new_visibility)
+        self._set_password_visibility(self.password_input2, self.show_password_action1, new_visibility)
 
-    def _set_password_visibility(
-        self, password_input, show_password_action, visibility
-    ):
+    def _set_password_visibility(self, password_input, show_password_action, visibility):
         if visibility:
             password_input.setEchoMode(QLineEdit.Normal)
             show_password_action.setIcon(self.icon_hide)
-            show_password_action.setToolTip(
-                "Hide Password"
-            )  # Set tooltip to "Hide Password"
+            show_password_action.setToolTip("Hide Password")  # Set tooltip to "Hide Password"
         else:
             password_input.setEchoMode(QLineEdit.Password)
             show_password_action.setIcon(self.icon_show)
-            show_password_action.setToolTip(
-                "Show Password"
-            )  # Set tooltip to "Show Password"
+            show_password_action.setToolTip("Show Password")  # Set tooltip to "Show Password"
 
     def verify_password(self):
         # Check if passwords are identical
@@ -208,30 +199,14 @@ class WalletIdDialog(QDialog):
 
         wallet_file = os.path.join(self.wallet_dir, filename_clean(chosen_wallet_id))
         if os.path.exists(wallet_file):
-            QMessageBox.warning(
-                self, "Error", "A wallet with the same name already exists."
-            )
+            QMessageBox.warning(self, "Error", "A wallet with the same name already exists.")
         else:
             self.accept()  # Accept the dialog if wallet does not exist
 
 
-def question_dialog(text="", title="", no_button_text="No", yes_button_text="Yes"):
-    msg_box = QMessageBox()
-    msg_box.setWindowTitle(title)
-    msg_box.setText(text)
-    msg_box.setIcon(QMessageBox.Question)
-    keep_button = msg_box.addButton(no_button_text, QMessageBox.NoRole)
-    ok_button = msg_box.addButton(yes_button_text, QMessageBox.YesRole)
-    msg_box.exec_()
-
-    if msg_box.clickedButton() == ok_button:
-        return True
-    elif msg_box.clickedButton() == keep_button:
-        return False
-
-
 if __name__ == "__main__":
     import sys
+
     from PySide2.QtWidgets import QApplication
 
     app = QApplication(sys.argv)

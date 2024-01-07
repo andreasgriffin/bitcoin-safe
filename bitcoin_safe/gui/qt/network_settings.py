@@ -1,43 +1,28 @@
 import logging
+from typing import Tuple
+
+from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
 
 logger = logging.getLogger(__name__)
 
+from PySide2.QtCore import Qt, Signal
 from PySide2.QtWidgets import (
-    QApplication,
-    QWidget,
-    QVBoxLayout,
     QComboBox,
-    QStackedWidget,
+    QDialogButtonBox,
     QFormLayout,
-    QLineEdit,
+    QGroupBox,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
 )
 
-from ...config import UserConfig, get_default_mempool_url
-from PySide2.QtCore import Signal
+from ...config import (
+    NetworkConfig,
+    UserConfig,
+    get_default_mempool_url,
+    get_default_port,
+)
 from ...pythonbdk_types import *
-from ...config import NetworkConfig, get_default_port
-from PySide2.QtCore import Qt
-from .util import ResetLineEdit
-from PySide2.QtWidgets import (
-    QApplication,
-    QLabel,
-    QTextEdit,
-    QGroupBox,
-    QVBoxLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QWidget,
-)
-from PySide2.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QMessageBox,
-    QDialogButtonBox,
-)
 
 
 class NetworkSettingsUI(QWidget):
@@ -45,7 +30,7 @@ class NetworkSettingsUI(QWidget):
 
     def __init__(self, config: UserConfig, parent=None):
         super().__init__(parent)
-
+        self.setWindowTitle("Network Settings")
         self.config = config
         self.layout = QVBoxLayout(self)
 
@@ -59,16 +44,10 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_connection_layout = QVBoxLayout(self.groupbox_connection)
 
         self.server_type_comboBox = QComboBox(self)
-        self.server_type_comboBox.addItem(
-            BlockchainType.to_text(BlockchainType.CompactBlockFilter)
-        )
+        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.CompactBlockFilter))
         self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.RPC))
-        self.server_type_comboBox.addItem(
-            BlockchainType.to_text(BlockchainType.Electrum)
-        )
-        self.server_type_comboBox.addItem(
-            BlockchainType.to_text(BlockchainType.Esplora)
-        )
+        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Electrum))
+        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Esplora))
 
         self.groupbox_connection_layout.addWidget(self.server_type_comboBox)
 
@@ -86,28 +65,20 @@ class NetworkSettingsUI(QWidget):
 
         self.compactBlockFiltersLayout.addRow("Mode:", self.cbf_server_typeComboBox)
 
-        self.compactblockfilters_ip_address_edit = QLineEdit()
+        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(network=self.network)
         self.compactblockfilters_ip_address_edit.setEnabled(False)
-        self.compactBlockFiltersLayout.addRow(
-            "IP Address:", self.compactblockfilters_ip_address_edit
-        )
+        self.compactBlockFiltersLayout.addRow("IP Address:", self.compactblockfilters_ip_address_edit)
 
-        self.compactblockfilters_port_edit = ResetLineEdit(
-            lambda: str(
-                get_default_port(self.network, BlockchainType.CompactBlockFilter)
-            )
-        )
+        self.compactblockfilters_port_edit = QCompleterLineEdit(network=self.network)
         self.compactblockfilters_port_edit.setEnabled(False)
-        self.compactBlockFiltersLayout.addRow(
-            "Port:", self.compactblockfilters_port_edit
-        )
+        self.compactBlockFiltersLayout.addRow("Port:", self.compactblockfilters_port_edit)
 
         self.stackedWidget.addWidget(self.compactBlockFiltersTab)
 
         # Electrum Server
         self.electrumServerTab = QWidget()
         self.electrumServerLayout = QFormLayout(self.electrumServerTab)
-        self.electrum_url_edit = QLineEdit(self.electrumServerTab)
+        self.electrum_url_edit = QCompleterLineEdit(network=self.network)
 
         self.electrumServerLayout.addRow("URL:", self.electrum_url_edit)
 
@@ -116,7 +87,7 @@ class NetworkSettingsUI(QWidget):
         # Esplora Server
         self.esploraServerTab = QWidget()
         self.esploraServerLayout = QFormLayout(self.esploraServerTab)
-        self.esplora_url_edit = QLineEdit(self.esploraServerTab)
+        self.esplora_url_edit = QCompleterLineEdit(network=self.network)
 
         self.esploraServerLayout.addRow("URL:", self.esplora_url_edit)
 
@@ -126,12 +97,10 @@ class NetworkSettingsUI(QWidget):
         self.rpcTab = QWidget()
         self.rpcTabLayout = QFormLayout(self.rpcTab)
 
-        self.rpc_ip_address_edit = QLineEdit(self.rpcTab)
-        self.rpc_port_edit = ResetLineEdit(
-            lambda: str(get_default_port(self.network, BlockchainType.RPC))
-        )
-        self.rpc_username_edit = QLineEdit(self.rpcTab)
-        self.rpc_password_edit = QLineEdit(self.rpcTab)
+        self.rpc_ip_address_edit = QCompleterLineEdit(network=self.network)
+        self.rpc_port_edit = QCompleterLineEdit(network=self.network)
+        self.rpc_username_edit = QCompleterLineEdit(network=self.network)
+        self.rpc_password_edit = QCompleterLineEdit(network=self.network)
 
         self.rpcTabLayout.addRow("IP Address:", self.rpc_ip_address_edit)
         self.rpcTabLayout.addRow("Port:", self.rpc_port_edit)
@@ -142,14 +111,12 @@ class NetworkSettingsUI(QWidget):
 
         self.groupbox_blockexplorer = QGroupBox("Block Explorer URL")
         self.groupbox_blockexplorer_layout = QVBoxLayout(self.groupbox_blockexplorer)
-        self.edit_mempool_url = QLineEdit(self)
+        self.edit_mempool_url = QCompleterLineEdit(network=self.network)
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self.layout.addWidget(self.groupbox_blockexplorer)
 
         # Create buttons and layout
-        self.button_box = QDialogButtonBox(
-            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-        )
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.button_box.accepted.connect(self.on_apply_click)
         self.button_box.rejected.connect(self.on_cancel_click)
 
@@ -157,12 +124,8 @@ class NetworkSettingsUI(QWidget):
 
         # Signals and Slots
         self.network_combobox.currentIndexChanged.connect(self.on_network_change)
-        self.server_type_comboBox.currentIndexChanged.connect(
-            self.set_server_type_comboBox
-        )
-        self.cbf_server_typeComboBox.currentIndexChanged.connect(
-            self.enableIPPortLineEdit
-        )
+        self.server_type_comboBox.currentIndexChanged.connect(self.set_server_type_comboBox)
+        self.cbf_server_typeComboBox.currentIndexChanged.connect(self.enableIPPortLineEdit)
 
         # set the ui before the signals for update_button_text
         self.set_ui(self.config.network_config)
@@ -197,54 +160,60 @@ class NetworkSettingsUI(QWidget):
             BlockchainType.CompactBlockFilter
         ):
             self.stackedWidget.setCurrentWidget(self.compactBlockFiltersTab)
-        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
-            BlockchainType.Electrum
-        ):
+        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(BlockchainType.Electrum):
             self.stackedWidget.setCurrentWidget(self.electrumServerTab)
-        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
-            BlockchainType.Esplora
-        ):
+        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(BlockchainType.Esplora):
             self.stackedWidget.setCurrentWidget(self.esploraServerTab)
-        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
-            BlockchainType.RPC
-        ):
+        elif self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(BlockchainType.RPC):
             self.stackedWidget.setCurrentWidget(self.rpcTab)
 
     def on_network_change(self, new_index: int):
         new_network = self.network_str_to_bdk(self.network_combobox.itemText(new_index))
 
-        if (
-            self.compactblockfilters_port_edit.text().strip()
-            == self.compactblockfilters_port_edit.placeholderText()
-        ):
-            self.compactblockfilters_port_edit.setText(
-                str(get_default_port(self.network, BlockchainType.CompactBlockFilter))
-            )
+        self._reset_line_edit_completers_and_placeholders(new_network)
 
-        if self.rpc_port_edit.text().strip() == self.rpc_port_edit.placeholderText():
-            self.rpc_port_edit.setText(
-                str(get_default_port(self.network, BlockchainType.RPC))
-            )
+    def _reset_line_edit_completers_and_placeholders(self, network: bdk.Network):
+        self.compactblockfilters_ip_address_edit.set_network(network)
+        self.electrum_url_edit.set_network(network)
+        self.esplora_url_edit.set_network(network)
+        self.rpc_ip_address_edit.set_network(network)
+        self.rpc_username_edit.set_network(network)
+        self.rpc_password_edit.set_network(network)
+        self.edit_mempool_url.set_network(network)
 
-        if new_network == bdk.Network.TESTNET:
-            self.electrum_url_edit.setPlaceholderText(
+        edits_list: List[Tuple[QCompleterLineEdit, str]] = [
+            (
+                self.compactblockfilters_port_edit,
+                get_default_port(network, BlockchainType.CompactBlockFilter),
+            ),
+            (self.rpc_port_edit, get_default_port(network, BlockchainType.RPC)),
+            (
+                self.electrum_url_edit,
                 "ssl://electrum.blockstream.info:60002"
-            )
-        else:
-            self.electrum_url_edit.setPlaceholderText(
-                f"127.0.0.1:{get_default_port(self.network, BlockchainType.Electrum)}"
-            )
+                if network == bdk.Network.TESTNET
+                else f"127.0.0.1:{get_default_port(network, BlockchainType.Electrum)}",
+            ),
+            (self.edit_mempool_url, get_default_mempool_url(network)),
+        ]
 
-        self.compactblockfilters_port_edit.setPlaceholderText(
-            str(get_default_port(self.network, BlockchainType.CompactBlockFilter))
-        )
-        self.rpc_port_edit.setPlaceholderText(
-            str(get_default_port(self.network, BlockchainType.RPC))
-        )
+        for edit, default in edits_list:
+            default = str(default)
+            if edit.text().strip() == edit.placeholderText():
+                edit.setText(default)
+            edit.setPlaceholderText(default)
+            edit.add_to_memory(default)
 
-        self.edit_mempool_url.setPlaceholderText(get_default_mempool_url(self.network))
+    def _add_current_to_memory(self):
+        self.compactblockfilters_ip_address_edit.add_current_to_memory()
+        self.electrum_url_edit.add_current_to_memory()
+        self.esplora_url_edit.add_current_to_memory()
+        self.rpc_ip_address_edit.add_current_to_memory()
+        self.rpc_username_edit.add_current_to_memory()
+        self.rpc_password_edit.add_current_to_memory()
+        self.edit_mempool_url.add_current_to_memory()
 
     def on_apply_click(self):
+        self._add_current_to_memory()
         self.signal_new_network_settings.emit()
 
     def on_cancel_click(self):
@@ -274,9 +243,7 @@ class NetworkSettingsUI(QWidget):
             if name.startswith("_"):
                 continue
             if not hasattr(self, name):
-                logger.error(
-                    f"get_network_settings_from_ui: {name} not present in {self.__class__.__name__}"
-                )
+                logger.error(f"get_network_settings_from_ui: {name} not present in {self.__class__.__name__}")
                 continue
             setattr(network_config, name, getattr(self, name))
 
@@ -292,6 +259,7 @@ class NetworkSettingsUI(QWidget):
                 logger.error(f"set_ui: {name} not present in {self.__class__.__name__}")
                 continue
             setattr(self, name, getattr(network_config, name))
+        self._add_current_to_memory()
 
     def does_it_need_restart(self):
         "Compares current Ui and the config setting, if it needs a restarts"
@@ -301,13 +269,9 @@ class NetworkSettingsUI(QWidget):
             if name.startswith("_"):
                 continue
             if not hasattr(self, name):
-                logger.error(
-                    f"does_it_need_restart: {name} not present in {self.__class__.__name__}"
-                )
+                logger.error(f"does_it_need_restart: {name} not present in {self.__class__.__name__}")
                 continue
-            if getattr(self.config.network_config, name) != getattr(
-                ui_network_config, name
-            ):
+            if getattr(self.config.network_config, name) != getattr(ui_network_config, name):
                 changed_names.append(name)
 
         for restart_name in [
@@ -341,6 +305,7 @@ class NetworkSettingsUI(QWidget):
     def mempool_url(self):
         url = self.edit_mempool_url.text()
         url = url if url.endswith("/") else f"{url}/"
+        url = url.replace("api/", "") if url.endswith("api/") else url
         return url
 
     @mempool_url.setter
@@ -369,9 +334,7 @@ class NetworkSettingsUI(QWidget):
 
     @cbf_server_type.setter
     def cbf_server_type(self, cbf_server_type: CBFServerType):
-        index = self.cbf_server_typeComboBox.findText(
-            CBFServerType.to_text(cbf_server_type)
-        )
+        index = self.cbf_server_typeComboBox.findText(CBFServerType.to_text(cbf_server_type))
         if index != -1:
             self.cbf_server_typeComboBox.setCurrentIndex(index)
             self.enableIPPortLineEdit(index)
@@ -442,12 +405,3 @@ class NetworkSettingsUI(QWidget):
     @rpc_password.setter
     def rpc_password(self, password):
         self.rpc_password_edit.setText(password if password else "")
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QApplication(sys.argv)
-    window = NetworkSettingsUI()
-    window.show()
-    sys.exit(app.exec_())

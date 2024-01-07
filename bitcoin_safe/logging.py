@@ -3,10 +3,13 @@
 # file LICENCE or http://www.opensource.org/licenses/mit-license.php
 import logging
 import logging.config
+import os
+import platform
+import shlex
+import subprocess
+import sys
 
-
-import os, platform, yaml, sys, subprocess, shlex
-from typing import Optional
+import yaml
 
 
 def setup_logging():
@@ -19,15 +22,11 @@ def setup_logging():
 
     # Set the function to handle uncaught exceptions
     def handle_uncaught_exception(exc_type, exc_value, exc_traceback):
-        logger.critical(
-            "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
-        )
+        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = handle_uncaught_exception
 
-    logger.info(
-        f"========================= Starting Bitcoin Safe ========================"
-    )
+    logger.info(f"========================= Starting Bitcoin Safe ========================")
     logger.info(f"Version: {get_git_version()}")
     logger.info(f"Python version: {sys.version}. On platform: {describe_os_version()}")
     # logger.info(f"Logging to file: {str(logger.handlers[-1].filename)}")
@@ -43,20 +42,15 @@ def describe_os_version() -> str:
 
         bv = jnius.autoclass("android.os.Build$VERSION")
         b = jnius.autoclass("android.os.Build")
-        return "Android {} on {} {} ({})".format(
-            bv.RELEASE, b.BRAND, b.DEVICE, b.DISPLAY
-        )
+        return "Android {} on {} {} ({})".format(bv.RELEASE, b.BRAND, b.DEVICE, b.DISPLAY)
     else:
         return platform.platform()
 
 
-def get_git_version() -> Optional[str]:
+def get_git_version() -> str:
     dir = os.path.dirname(os.path.realpath(__file__))
     try:
-        version = subprocess.check_output(
-            shlex.split("git describe --exact-match --tags HEAD"), cwd=dir
-        )
+        version = subprocess.check_output(shlex.split("git describe --exact-match --tags HEAD"), cwd=dir)
     except Exception:
         version = subprocess.check_output(shlex.split("git rev-parse HEAD"), cwd=dir)
-    version = str(version, "utf8").strip()
-    return version
+    return str(version, "utf8").strip()

@@ -2,18 +2,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from typing import List
+
 import bdkpython as bdk
-from typing import Dict, List, Tuple
-import re
 from bitcoin_qrreader.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
 from bitcoin_usb.address_types import (
     AddressType,
     AddressTypes,
-    SimplePubKeyProvider,
     ConstDerivationPaths,
     DescriptorInfo,
+    SimplePubKeyProvider,
 )
 
 

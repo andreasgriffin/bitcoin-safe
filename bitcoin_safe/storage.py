@@ -1,23 +1,25 @@
-from copy import copy
 import logging
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
 
+import copy
+import enum
+import json
+import os
+
 # from https://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password
 import secrets
-from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
+from base64 import urlsafe_b64decode as b64d
+from base64 import urlsafe_b64encode as b64e
 
-from cryptography.fernet import Fernet, InvalidToken
+import bdkpython as bdk
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import json
-from typing import Dict
-import enum, os
-import bdkpython as bdk
 from packaging import version
-import copy
 
 
 class Encrypt:
@@ -32,9 +34,7 @@ class Encrypt:
         )
         return b64e(kdf.derive(password))
 
-    def password_encrypt(
-        self, message: bytes, password: str, iterations: int = 100_000
-    ) -> bytes:
+    def password_encrypt(self, message: bytes, password: str, iterations: int = 100_000) -> bytes:
         salt = secrets.token_bytes(16)
         key = self._derive_key(password.encode(), salt, iterations)
         return b64e(
@@ -61,11 +61,7 @@ class Storage:
         self.encrypt = Encrypt()
 
     def save(self, message, filename, password=None):
-        token = (
-            self.encrypt.password_encrypt(message.encode(), password)
-            if password
-            else message.encode()
-        )
+        token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
 
         with open(filename, "wb") as f:
             f.write(token)
@@ -100,9 +96,7 @@ class ClassSerializer:
             if cls_string and cls_string in globals:
                 obj_cls = globals[cls_string]
                 if hasattr(obj_cls, "deserialize"):  # is there KeyStore.deserialize ?
-                    if class_kwargs.get(
-                        cls_string
-                    ):  #  apply additional arguments to the class deserialize
+                    if class_kwargs.get(cls_string):  #  apply additional arguments to the class deserialize
                         dct.update(class_kwargs.get(cls_string))
                     return obj_cls.deserialize(
                         dct, class_kwargs=class_kwargs
@@ -132,7 +126,7 @@ class ClassSerializer:
 
 
 class BaseSaveableClass:
-    global_variables = None
+    global_variables: Dict[str, Any] = {}
     VERSION = "0.0.0"
 
     def serialize(self):
@@ -181,7 +175,7 @@ class BaseSaveableClass:
         )
 
     @classmethod
-    def load(cls, filename, password=None, class_kwargs=None):
+    def _load(cls, filename: str, password: str = None, class_kwargs=None):
         "class_kwargs example:  class_kwargs= {'Wallet':{'config':config}}"
         class_kwargs = class_kwargs if class_kwargs else {}
         storage = Storage()
@@ -189,9 +183,7 @@ class BaseSaveableClass:
         json_string = storage.load(filename, password=password)
         return json.loads(
             json_string,
-            object_hook=ClassSerializer.general_deserializer(
-                cls.global_variables, class_kwargs
-            ),
+            object_hook=ClassSerializer.general_deserializer(cls.global_variables, class_kwargs),
         )
 
 

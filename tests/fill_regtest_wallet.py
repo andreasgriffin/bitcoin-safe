@@ -1,11 +1,11 @@
-from typing import List
-import bdkpython as bdk
-from random import randbytes, randint, choice
-from numpy import block
-import requests
-import json
 import argparse
+import json
+from random import randint
+from typing import List
+
+import bdkpython as bdk
 import numpy as np
+import requests
 
 
 def send_rpc_command(ip, port, username, password, method, params=None):
@@ -39,9 +39,7 @@ def send_rpc_command(ip, port, username, password, method, params=None):
     )
 
     # Send the request and get the response
-    response = requests.post(
-        url, headers=headers, data=payload, auth=(username, password)
-    )
+    response = requests.post(url, headers=headers, data=payload, auth=(username, password))
 
     # Return the response
     return response.json()
@@ -120,9 +118,7 @@ if descriptor:
 def mine_coins(wallet, blocks=101):
     """Mine some blocks to generate coins for the wallet"""
     address = wallet.get_address(
-        bdk.AddressIndex.NEW()
-        if args.always_new_addresses
-        else bdk.AddressIndex.LAST_UNUSED()
+        bdk.AddressIndex.NEW() if args.always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
     ).address.as_string()
     print(f"Mining {blocks} blocks to {address}")
     response = send_rpc_command(
@@ -141,9 +137,7 @@ def extend_tip(n):
 
 def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10):
     if args.always_new_addresses:
-        address_indices = [
-            wallet.get_address(bdk.AddressIndex.NEW()).index for _ in range(n)
-        ]
+        address_indices = [wallet.get_address(bdk.AddressIndex.NEW()).index for _ in range(n)]
     else:
         tip = wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).index
         address_indices = [np.random.choice(np.arange(tip)) for _ in range(n)]
@@ -163,19 +157,17 @@ def create_complex_transactions(wallet: bdk.Wallet, blockchain, n=300):
             # Build the transaction
             tx_builder = bdk.TxBuilder().fee_rate(1.0).enable_rbf()
 
-            recieve_address_infos: List[
-                bdk.AddressInfo
-            ] = generate_random_own_addresses_info(wallet, randint(1, 10))
+            recieve_address_infos: List[bdk.AddressInfo] = generate_random_own_addresses_info(
+                wallet, randint(1, 10)
+            )
             for recieve_address_info in recieve_address_infos:
                 amount = randint(10000, 1000000)  # Random amount
-                tx_builder = tx_builder.add_recipient(
-                    recieve_address_info.address.script_pubkey(), amount
-                )
+                tx_builder = tx_builder.add_recipient(recieve_address_info.address.script_pubkey(), amount)
 
             # Finish and sign transaction
             tx_final = tx_builder.finish(wallet)
             psbt2 = bdk.PartiallySignedTransaction(tx_final.psbt.serialize())
-            result = wallet.sign(psbt2, None)
+            wallet.sign(psbt2, None)
             final_tx = psbt2.extract_tx()
 
             # Broadcast the transaction
@@ -188,7 +180,7 @@ def create_complex_transactions(wallet: bdk.Wallet, blockchain, n=300):
                 mine_coins(wallet, blocks=1)
 
             wallet.sync(blockchain, None)
-        except Exception as e:
+        except Exception:
             # print(e)
             pass
 

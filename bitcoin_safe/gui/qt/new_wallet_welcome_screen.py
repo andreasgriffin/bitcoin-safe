@@ -2,15 +2,29 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from .util import read_QIcon, add_tab_to_tabs
 from bdkpython import Network
+from PySide2.QtCore import QObject, Signal, QCoreApplication
+from PySide2.QtWidgets import (
+    QPushButton,
+    QWidget,
+    QGroupBox,
+    QHBoxLayout,
+    QSizePolicy,
+    QVBoxLayout,
+    QLabel,
+)
+from PySide2.QtGui import Qt
+
 from PySide2.QtSvg import QSvgWidget
-from .util import icon_path, resize, qresize, add_centered_icons
-from PySide2.QtCore import Signal
+
 from ...util import call_call_functions
+from .util import (
+    add_centered_icons,
+    add_tab_to_tabs,
+    icon_path,
+    qresize,
+    read_QIcon,
+)
 
 
 class NewWalletWelcomeScreen(QObject):
@@ -28,19 +42,13 @@ class NewWalletWelcomeScreen(QObject):
         self.create_ui()
 
         self.pushButton_multisig.clicked.connect(
-            lambda: call_call_functions(
-                [self.remove_tab, self.signal_onclick_multisig_signature.emit]
-            )
+            lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature.emit])
         )
         self.pushButton_singlesig.clicked.connect(
-            lambda: call_call_functions(
-                [self.remove_tab, self.signal_onclick_single_signature.emit]
-            )
+            lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature.emit])
         )
         self.pushButton_custom_wallet.clicked.connect(
-            lambda: call_call_functions(
-                [self.remove_tab, self.signal_onclick_custom_signature.emit]
-            )
+            lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature.emit])
         )
 
     def add_new_wallet_welcome_tab(self):
@@ -76,9 +84,7 @@ class NewWalletWelcomeScreen(QObject):
         self.horizontalLayout_4.addWidget(self.svg_widget)
 
         # set size of groupbox according to svg
-        self.groupBox_1signingdevice.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Fixed
-        )
+        self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.verticalLayout.addWidget(self.groupBox_1signingdevice)
 
@@ -115,9 +121,7 @@ class NewWalletWelcomeScreen(QObject):
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
         # set size of groupbox according to svg
-        self.groupBox_3signingdevices.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Fixed
-        )
+        self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.pushButton_multisig = QPushButton(self.groupBox_multisig)
 
@@ -158,12 +162,8 @@ class NewWalletWelcomeScreen(QObject):
                 None,
             )
         )
-        self.groupBox_1signingdevice.setTitle(
-            QCoreApplication.translate("Form", "1 signing devices", None)
-        )
-        self.pushButton_singlesig.setText(
-            QCoreApplication.translate("Form", "Choose Single Signature", None)
-        )
+        self.groupBox_1signingdevice.setTitle(QCoreApplication.translate("Form", "1 signing devices", None))
+        self.pushButton_singlesig.setText(QCoreApplication.translate("Form", "Choose Single Signature", None))
         # self.groupBox_multisig.setTitle(QCoreApplication.translate("Form", u"2 of 3 Multi-Signature Wallet", None))
         self.label_multisig.setAlignment(Qt.AlignTop)
         self.label_multisig.setText(
@@ -184,12 +184,8 @@ class NewWalletWelcomeScreen(QObject):
                 None,
             )
         )
-        self.groupBox_3signingdevices.setTitle(
-            QCoreApplication.translate("Form", "3 signing devices", None)
-        )
-        self.pushButton_multisig.setText(
-            QCoreApplication.translate("Form", "Choose Multi-Signature", None)
-        )
+        self.groupBox_3signingdevices.setTitle(QCoreApplication.translate("Form", "3 signing devices", None))
+        self.pushButton_multisig.setText(QCoreApplication.translate("Form", "Choose Multi-Signature", None))
         # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
         self.label_custom.setAlignment(Qt.AlignTop)
         self.label_custom.setText(

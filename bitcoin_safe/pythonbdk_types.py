@@ -1,15 +1,17 @@
-import logging
-from typing import Dict, List
-import bdkpython as bdk
 import enum
-from .util import serialized_to_hex
+import logging
+from typing import Callable, Dict, List, Optional
+
+import bdkpython as bdk
+
 from .storage import SaveAllClass
+from .util import serialized_to_hex
 
 logger = logging.getLogger(__name__)
 
 
 class Recipient:
-    def __init__(self, address, amount, label=None, checked_max_amount=False) -> None:
+    def __init__(self, address: str, amount: int, label: str = None, checked_max_amount=False) -> None:
         self.address = address
         self.amount = amount
         self.label = label
@@ -95,12 +97,15 @@ class PythonUtxo:
         self.outpoint = outpoint
         self.txout = txout
         self.address = address
-        self.is_spent_by_txid: str = None
+        self.is_spent_by_txid: Optional[str] = None
 
 
 class UtxosForInputs:
     def __init__(
-        self, utxos, included_opportunistic_merging_utxos=None, spend_all_utxos=False
+        self,
+        utxos: List[PythonUtxo],
+        included_opportunistic_merging_utxos=None,
+        spend_all_utxos=False,
     ) -> None:
         if included_opportunistic_merging_utxos is None:
             included_opportunistic_merging_utxos = []
@@ -116,28 +121,24 @@ class FullTxDetail:
     """
 
     def __init__(self, tx: bdk.TransactionDetails, received=None, send=None) -> None:
-        self.outputs: Dict[str, PythonUtxo] = (
-            received if received else {}
-        )  # outpoint_str: PythonUtxo
-        self.inputs: Dict[str, PythonUtxo] = (
-            send if send else {}
-        )  # outpoint_str: PythonUtxo
+        self.outputs: Dict[str, PythonUtxo] = received if received else {}  # outpoint_str: PythonUtxo
+        self.inputs: Dict[str, Optional[PythonUtxo]] = send if send else {}  # outpoint_str: PythonUtxo
         self.tx = tx
         self.txid = tx.txid
 
     @classmethod
     def fill_received(
-        cls, tx: bdk.TransactionDetails, bdkwallet: "BdkWallet"
+        cls, tx: bdk.TransactionDetails, get_address_of_txout: Callable[[TxOut], str]
     ) -> "FullTxDetail":
         res = FullTxDetail(tx)
         txid = tx.txid
         for vout, txout in enumerate(tx.transaction.output()):
-            address = bdkwallet.get_address_of_txout(TxOut.from_bdk(txout))
+            address = get_address_of_txout(TxOut.from_bdk(txout))
             out_point = OutPoint(txid, vout)
             if address is None:
                 continue
             python_utxo = PythonUtxo(address, out_point, txout)
-            python_utxo.is_spent_by_txid = False
+            python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
         return res
 
@@ -235,9 +236,20 @@ class CBFServerType(enum.Enum):
             return "Manual"
 
 
-def robust_address_str_from_script(
-    script_pubkey: bdk.Script, network, on_error_return_hex=False
-):
+class Balance:
+    def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0, spendable=0):
+        self.immature = immature
+        self.trusted_pending = trusted_pending
+        self.untrusted_pending = untrusted_pending
+        self.confirmed = confirmed
+        self.spendable = spendable
+
+    @property
+    def total(self):
+        return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed + self.spendable
+
+
+def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=False):
     try:
         return bdk.Address.from_script(script_pubkey, network).as_string()
     except:

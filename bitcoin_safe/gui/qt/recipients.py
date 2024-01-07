@@ -1,30 +1,34 @@
 import logging
-from ...invisible_scroll_area import InvisibleScrollArea
 
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+
+
+from ...invisible_scroll_area import InvisibleScrollArea
 from ...pythonbdk_types import Recipient
 
 logger = logging.getLogger(__name__)
 
-from typing import List, Dict
-import sys
-from PySide2 import QtWidgets, QtCore, QtGui
-from .util import ColorScheme
-from ...signals import Signals
-from .spinbox import BTCSpinBox
-from ...wallet import Wallet
-from ...util import unit_str
-from .dialogs import question_dialog
-import sys
-from .util import ShowCopyLineEdit, CameraInputLineEdit
+from typing import List, Optional
+
 from bitcoin_qrreader import bitcoin_qr
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtWidgets import (
+    QMessageBox,
+)
+
+from ...signals import Signals
+from ...util import unit_str
+from ...wallet import Wallet, get_wallets
+from .dialogs import question_dialog
+from .spinbox import BTCSpinBox
+from .util import ColorScheme
 
 
 def dialog_replace_with_new_receiving_address(address):
     return question_dialog(
         text=f"Address {address} was used already. Would you like to get a fresh receiving address?",
         title="Address Already Used",
-        no_button_text="Keep address",
-        yes_button_text="OK",
+        buttons=QMessageBox.No | QMessageBox.Yes,
     )
 
 
@@ -68,11 +72,13 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
                 if data.data.get("label"):
                     self.label_line_edit.setText(data.data.get("label"))
 
-        self.address_line_edit = (
-            CameraInputLineEdit(custom_handle_input=on_handle_input)
-            if allow_edit
-            else ShowCopyLineEdit()
-        )
+        self.address_line_edit = ButtonEdit()
+        if allow_edit:
+            self.address_line_edit.add_qr_input_from_camera_button(custom_handle_input=on_handle_input)
+        else:
+            self.address_line_edit.add_copy_button()
+            self.address_line_edit.setReadOnly(True)
+
         self.address_line_edit.setPlaceholderText("Enter address here")
         self.label_line_edit = QtWidgets.QLineEdit()
         self.label_line_edit.setPlaceholderText("Enter label here")
@@ -102,9 +108,9 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         self.setFixedHeight(120)  # Set fixed height as required
 
-        self.address_line_edit.textChanged.connect(self.format_address_field)
-        self.address_line_edit.textChanged.connect(self.set_label_placeholder_text)
-        self.address_line_edit.textChanged.connect(self.check_if_used)
+        self.address_line_edit.input_field.textChanged.connect(self.format_address_field)
+        self.address_line_edit.input_field.textChanged.connect(self.set_label_placeholder_text)
+        self.address_line_edit.input_field.textChanged.connect(self.check_if_used)
 
         self.setStyleSheet(
             """
@@ -166,7 +172,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.send_max_button.setEnabled(state)
 
     def set_label_placeholder_text(self):
-        wallets: List[Wallet] = self.signals.get_wallets().values()
+        wallets = get_wallets(self.signals)
 
         wallet_id = None
         label = ""
@@ -184,18 +190,15 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         else:
             self.label_line_edit.setPlaceholderText("Enter label for recipient address")
 
-    def get_wallet_of_address(self, address) -> Wallet:
-        for wallet in self.signals.get_wallets().values():
+    def get_wallet_of_address(self, address) -> Optional[Wallet]:
+        for wallet in get_wallets(self.signals):
             if wallet.is_my_address(address):
                 return wallet
+        return None
 
     def check_if_used(self, *args):
         wallet_of_address = self.get_wallet_of_address(self.address)
-        if (
-            self.allow_edit
-            and wallet_of_address
-            and wallet_of_address.address_is_used(self.address)
-        ):
+        if self.allow_edit and wallet_of_address and wallet_of_address.address_is_used(self.address):
             if dialog_replace_with_new_receiving_address(self.address):
                 # find an address that is not used yet
                 self.address = wallet_of_address.get_address().address.as_string()
@@ -214,10 +217,10 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
                 background_color = ColorScheme.GREEN.as_color(background=True)
                 palette.setColor(QtGui.QPalette.Base, background_color)
         else:
-            palette = self.address_line_edit.style().standardPalette()
+            palette = self.address_line_edit.input_field.style().standardPalette()
             self.setTitle("")
 
-        self.address_line_edit.setPalette(palette)
+        self.address_line_edit.input_field.setPalette(palette)
         self.update()
 
 
@@ -237,13 +240,9 @@ class Recipients(QtWidgets.QWidget):
         self.recipient_list = InvisibleScrollArea()
         self.recipient_list.setWidgetResizable(True)
         self.recipient_list.setToolTip("Recipients")
-        self.recipient_list_content_layout = QtWidgets.QVBoxLayout(
-            self.recipient_list.content_widget
-        )
+        self.recipient_list_content_layout = QtWidgets.QVBoxLayout(self.recipient_list.content_widget)
 
-        self.recipient_list_content_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Set all margins to zero
+        self.recipient_list_content_layout.setContentsMargins(0, 0, 0, 0)  # Set all margins to zero
         self.recipient_list_content_layout.setAlignment(QtCore.Qt.AlignTop)
 
         self.main_layout.addWidget(self.recipient_list)
@@ -270,9 +269,7 @@ class Recipients(QtWidgets.QWidget):
 
         # insert before the button position
         def insert_before_button(new_widget):
-            index = self.recipient_list_content_layout.indexOf(
-                self.add_recipient_button
-            )
+            index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
             if index >= 0:
                 self.recipient_list_content_layout.insertWidget(index, new_widget)
             else:
@@ -311,7 +308,7 @@ class Recipients(QtWidgets.QWidget):
         return l
 
     @recipients.setter
-    def recipients(self, recipient_list: List[Dict[str, object]]):
+    def recipients(self, recipient_list: List[Recipient]):
         # remove all old ones
         for i in reversed(range(self.recipient_list_content_layout.count())):
             layout_item = self.recipient_list_content_layout.itemAt(i)
@@ -322,12 +319,3 @@ class Recipients(QtWidgets.QWidget):
 
         for i, recipient in enumerate(recipient_list):
             self.add_recipient(recipient)
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-
-    widget = Recipients()
-    widget.show()
-
-    sys.exit(app.exec_())

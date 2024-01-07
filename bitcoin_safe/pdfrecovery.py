@@ -1,21 +1,26 @@
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet
-import os, io
+import io
+import os
 import webbrowser
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
-
-from .gui.qt.util import read_QIcon
-from .gui.qt.qr_components.qr import create_qr
-from reportlab.platypus import SimpleDocTemplate, Paragraph
 from pathlib import Path
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from .gui.qt.util import qicon_to_pil
-from reportlab.platypus import SimpleDocTemplate, PageBreak
+
 from bitcoin_usb.address_types import DescriptorInfo
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.platypus import (
+    Image,
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
+from .gui.qt.qr_components.qr import create_qr
+from .gui.qt.util import qicon_to_pil, read_QIcon
+from .wallet import Wallet
 
 
 def pilimage_to_reportlab(pilimage, width=200, height=200):
@@ -56,9 +61,7 @@ def create_table(columns, col_widths):
 class BitcoinWalletRecoveryPDF:
     def __init__(self):
         styles = getSampleStyleSheet()
-        self.style_paragraph = ParagraphStyle(
-            name="Centered", parent=styles["BodyText"], alignment=TA_CENTER
-        )
+        self.style_paragraph = ParagraphStyle(name="Centered", parent=styles["BodyText"], alignment=TA_CENTER)
         self.style_paragraph_left = ParagraphStyle(
             name="LEFT",
             parent=styles["BodyText"],
@@ -69,9 +72,7 @@ class BitcoinWalletRecoveryPDF:
         self.elements = []
 
     def add_page_break(self):
-        self.elements.append(
-            PageBreak()
-        )  # Add a page break between documents if needed
+        self.elements.append(PageBreak())  # Add a page break between documents if needed
 
     def _seed_part(self, seed, keystore_description, num_signers):
         self.elements.append(Spacer(1, 5))
@@ -99,9 +100,7 @@ class BitcoinWalletRecoveryPDF:
         icon = read_QIcon("no-typing-icon.svg")
         icon2 = read_QIcon("no-photography-icon.svg")
         reportlab_icon = pilimage_to_reportlab(qicon_to_pil(icon), width=50, height=50)
-        reportlab_icon2 = pilimage_to_reportlab(
-            qicon_to_pil(icon2), width=50, height=50
-        )
+        reportlab_icon2 = pilimage_to_reportlab(qicon_to_pil(icon2), width=50, height=50)
 
         self.elements.append(
             create_table(
@@ -113,15 +112,15 @@ class BitcoinWalletRecoveryPDF:
         self.elements.append(Spacer(1, 5))
 
         # Table title
-        table_title = "Secret seed words for a hardware signer: Never type into a computer. Never make a picture."
+        table_title = (
+            "Secret seed words for a hardware signer: Never type into a computer. Never make a picture."
+        )
         seed_placeholder = "___________________"
 
         # split seed words if available
         if seed:
             seed_items = seed.split(" ")
-            seed_items = seed_items + [
-                seed_placeholder for i in range(24 - len(seed_items))
-            ]
+            seed_items = seed_items + [seed_placeholder for i in range(24 - len(seed_items))]
         else:
             seed_items = [seed_placeholder for i in range(24)]
 
@@ -176,9 +175,7 @@ class BitcoinWalletRecoveryPDF:
         wallet_descriptor_string,
         threshold,
     ):
-        qr_image = pilimage_to_reportlab(
-            create_qr(wallet_descriptor_string), width=200, height=200
-        )
+        qr_image = pilimage_to_reportlab(create_qr(wallet_descriptor_string), width=200, height=200)
         if threshold > 1:
             desc_str = Paragraph(
                 f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",
@@ -200,9 +197,7 @@ class BitcoinWalletRecoveryPDF:
         seed=None,
         num_signers=1,
     ):
-        self.elements.append(
-            Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading)
-        )
+        self.elements.append(Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading))
 
         # Small subtitle
         self.elements.append(
@@ -244,7 +239,7 @@ class BitcoinWalletRecoveryPDF:
             print("File not found!")
 
 
-def make_and_open_pdf(wallet: "Wallet"):
+def make_and_open_pdf(wallet: Wallet):
     info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
     pdf_recovery = BitcoinWalletRecoveryPDF()
 
@@ -265,9 +260,7 @@ def make_and_open_pdf(wallet: "Wallet"):
             num_signers=len(wallet.keystores),
         )
         pdf_recovery.add_page_break()
-    temp_file = os.path.join(
-        Path.home(), f"Descriptor and seed backup of {wallet.id}.pdf"
-    )
+    temp_file = os.path.join(Path.home(), f"Descriptor and seed backup of {wallet.id}.pdf")
     pdf_recovery.save_pdf(temp_file)
     pdf_recovery.open_pdf(temp_file)
 

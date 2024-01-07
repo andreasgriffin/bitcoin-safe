@@ -2,24 +2,25 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import appdirs, os, json
-from .storage import BaseSaveableClass, Storage
-import bdkpython as bdk
-from .pythonbdk_types import *
+import os
 from typing import Dict, List
 
+import appdirs
+import bdkpython as bdk
+
+from .pythonbdk_types import *
+from .storage import BaseSaveableClass
+
 MIN_RELAY_FEE = 1
-FEE_RATIO_HIGH_WARNING = (
-    0.05  # warn user if fee/amount for on-chain tx is higher than this
-)
+FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 
 
 def get_default_mempool_url(network: bdk.Network):
     d = {
-        bdk.Network.BITCOIN: "https://mempool.space/api/",
-        bdk.Network.REGTEST: "http://127.0.0.1:5000/",
-        bdk.Network.TESTNET: "https://mempool.space/testnet/api/",
-        bdk.Network.SIGNET: "https://mempool.space/signet/api/",
+        bdk.Network.BITCOIN: "https://mempool.space/",
+        bdk.Network.REGTEST: "http://localhost:8080/",  # you can use https://github.com/ngutech21/nigiri-mempool/
+        bdk.Network.TESTNET: "https://mempool.space/testnet/",
+        bdk.Network.SIGNET: "https://mempool.space/signet/",
     }
     return d[network]
 
@@ -65,9 +66,7 @@ class NetworkConfig(BaseSaveableClass):
         self.server_type = BlockchainType.CompactBlockFilter
         self.cbf_server_type = "Automatic"
         self.compactblockfilters_ip = "127.0.0.1"
-        self.compactblockfilters_port = get_default_port(
-            self.network, BlockchainType.CompactBlockFilter
-        )
+        self.compactblockfilters_port = get_default_port(self.network, BlockchainType.CompactBlockFilter)
         self.electrum_url = "127.0.0.1:51001"
         self.rpc_ip = "127.0.0.1"
         self.rpc_port = get_default_port(self.network, BlockchainType.RPC)
@@ -112,9 +111,7 @@ class UserConfig(BaseSaveableClass):
     def __init__(self):
         self.network_config = NetworkConfig()
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
-        self.opened_txlike: Dict[
-            str, List[str]
-        ] = {}  # network:[serializedtx, serialized psbt]
+        self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.enable_opportunistic_merging_fee_rate = 5
@@ -148,7 +145,7 @@ class UserConfig(BaseSaveableClass):
     @classmethod
     def load(cls, password=None):
         if os.path.isfile(cls.config_file):
-            return super().load(cls.config_file, password=password)
+            return super()._load(cls.config_file, password=password)
         else:
             return UserConfig()
 

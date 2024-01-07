@@ -1,15 +1,16 @@
 import sys
-from PySide2.QtWidgets import (
-    QApplication,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QToolButton,
-    QLabel,
-    QSizePolicy,
-)
+
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QCursor
+from PySide2.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QSizePolicy,
+    QToolButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class CustomHeader(QWidget):
@@ -62,14 +63,10 @@ class ExpandableWidget(QWidget):
         self.header.layout.addWidget(self.toggleButton)
 
         # Expandable widget
-        self.expandableWidget = (
-            QWidget()
-        )  # Use a QWidget to allow adding custom content
+        self.expandableWidget = QWidget()  # Use a QWidget to allow adding custom content
         self.expandableWidget.setLayout(QVBoxLayout())  # Set the layout for the content
         self.expandableWidget.setVisible(False)
-        self.expandableWidget.setStyleSheet(
-            "background: white; padding: 15px; border: 1px solid grey;"
-        )
+        self.expandableWidget.setStyleSheet("background: white; padding: 15px; border: 1px solid grey;")
         self.layout.addWidget(self.expandableWidget)
 
         self.layout.setSpacing(0)

@@ -1,6 +1,7 @@
-from typing import Dict, List, Tuple
-import bdkpython as bdk
 import json
+from typing import Dict, List, Tuple
+
+import bdkpython as bdk
 
 from .pythonbdk_types import OutPoint
 
@@ -102,9 +103,7 @@ def get_txouts_from_inputs(
         # fetch this outpoint from the json
         json_prev_out = json_inp.get("non_witness_utxo", {}).get("output", {})
         if json_prev_out:
-            script_pubkey = bdk.Script(
-                bytes.fromhex(json_prev_out[prev_out.vout]["script_pubkey"])
-            )
+            script_pubkey = bdk.Script(bytes.fromhex(json_prev_out[prev_out.vout]["script_pubkey"]))
             tx_outs[str(prev_out)] = bdk.TxOut(
                 script_pubkey=script_pubkey, value=json_prev_out[prev_out.vout]["value"]
             )
@@ -113,13 +112,11 @@ def get_txouts_from_inputs(
 
 def get_sent_and_change_outputs(
     psbt: bdk.PartiallySignedTransaction,
-) -> Dict[int, bdk.TxOut]:
+) -> Tuple[Dict[int, bdk.TxOut], Dict[int, bdk.TxOut]]:
     sent_tx_outs = {}
     change_tx_outs = {}
     psbt_json = json.loads(psbt.json_serialize())
-    for i, (txout, json_txout) in enumerate(
-        zip(psbt.extract_tx().output(), psbt_json["outputs"])
-    ):
+    for i, (txout, json_txout) in enumerate(zip(psbt.extract_tx().output(), psbt_json["outputs"])):
         derivation_tuple = json_txout["bip32_derivation"]
         if not derivation_tuple:
             sent_tx_outs[i] = txout
@@ -171,9 +168,7 @@ def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True):
     output_value_size = 8  # Size of the value field
     output_script_length_size = 1  # Size of the script length field
     p2wpkh_script_size = 22  # P2WPKH script size
-    base_output_size = (
-        output_value_size + output_script_length_size + p2wpkh_script_size
-    )
+    base_output_size = output_value_size + output_script_length_size + p2wpkh_script_size
 
     # Witness components
     witness_stack_items_size = 1  # Size byte for the number of witness stack items
@@ -184,13 +179,9 @@ def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True):
     total_witness_data_size = 0
     for m, n in input_mn_tuples:
         witness_data_size_per_input = (
-            witness_stack_items_size
-            + (m * (1 + average_signature_size))
-            + (n * (1 + average_pubkey_size))
+            witness_stack_items_size + (m * (1 + average_signature_size)) + (n * (1 + average_pubkey_size))
         )
-        total_witness_data_size += (
-            witness_data_size_per_input if include_signatures else 0
-        )
+        total_witness_data_size += witness_data_size_per_input if include_signatures else 0
 
     # Calculate base transaction size (excluding witness data)
     num_inputs = len(input_mn_tuples)
@@ -218,6 +209,10 @@ class FeeInfo:
     def fee_rate(self):
         return self.fee_amount / self.tx_size
 
+    @classmethod
+    def from_txdetails(cls, tx_details: bdk.TransactionDetails):
+        return FeeInfo(tx_details.fee, tx_details.transaction.vsize(), is_estimated=False)
+
 
 def estimate_segwit_fee_rate_from_psbt(psbt: bdk.PartiallySignedTransaction) -> FeeInfo:
     """
@@ -241,14 +236,3 @@ def estimate_segwit_fee_rate_from_psbt(psbt: bdk.PartiallySignedTransaction) -> 
     tx_size = estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())) / 4
 
     return FeeInfo(psbt.fee_amount(), tx_size, is_estimated=True)
-
-
-def get_likely_origin_wallet(input_outpoints: List[OutPoint], wallets) -> "Wallet":
-
-    for wallet in wallets:
-        wallet_outpoints: List[OutPoint] = [
-            OutPoint.from_bdk(utxo.outpoint) for utxo in wallet.bdkwallet.list_unspent()
-        ]
-        for outpoint in input_outpoints:
-            if outpoint in wallet_outpoints:
-                return wallet

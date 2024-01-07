@@ -3,16 +3,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 import cProfile
-from pstats import Stats
 import sys
+from pstats import Stats
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide2.QtWidgets import (
+    QApplication,
+)
 
-from .main import MainWindow
+
 from .gui.qt.util import custom_exception_handler
-from . import *
+from .main import MainWindow
 
 
 def main():

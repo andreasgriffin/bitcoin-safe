@@ -1,10 +1,10 @@
-from .qr_components.quick_receive import QuickReceive, ReceiveGroup
-from .taglist.main import hash_color
-from .util import ShowCopyTextEdit
+import logging
+
+
 from ...signals import Signals, UpdateFilter
 from ...wallet import Wallet
-import bdkpython as bdk
-import logging
+from .qr_components.quick_receive import QuickReceive, ReceiveGroup
+from .taglist.main import hash_color
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,6 @@ class BitcoinQuickReceive(QuickReceive):
 
     def update(self):
         self.clear_boxes()
-        address_info: bdk.AddressInfo = None
         old_tips = self.wallet.tips
 
         for category in self.wallet.labels.categories:
@@ -42,7 +41,6 @@ class BitcoinQuickReceive(QuickReceive):
                     hash_color(category).name(),
                     address_info.address.as_string(),
                     address_info.address.to_qr_uri(),
-                    class_text_edit=ShowCopyTextEdit,
                 )
             )
 
@@ -55,7 +53,6 @@ class BitcoinQuickReceive(QuickReceive):
                     hash_color("None").name(),
                     address_info.address.as_string(),
                     address_info.address.to_qr_uri(),
-                    class_text_edit=ShowCopyTextEdit,
                 )
             )
         if old_tips != self.wallet.tips:

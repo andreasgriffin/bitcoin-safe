@@ -23,77 +23,33 @@
 
 import logging
 
+
 logger = logging.getLogger(__name__)
 
-import os, sys, re, json
-from collections import defaultdict, OrderedDict
-from typing import (
-    NamedTuple,
-    Union,
-    TYPE_CHECKING,
-    Tuple,
-    Optional,
-    Callable,
-    Any,
-    Sequence,
-    Dict,
-    Generic,
-    TypeVar,
-    List,
-    Iterable,
-    Set,
-)
-from datetime import datetime
-import decimal
-from decimal import Decimal
-import threading
-import stat
-import asyncio
-import urllib.request, urllib.parse, urllib.error
 import builtins
-import json
-import time
-from typing import NamedTuple, Optional
 import ipaddress
-from ipaddress import IPv4Address, IPv6Address
-from PySide2.QtCore import QLocale
-from .i18n import _
+import os
+import re
+import sys
+from datetime import datetime
 from typing import (
-    NamedTuple,
-    Callable,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    List,
-    Dict,
     Any,
-    Sequence,
-    Iterable,
-    Tuple,
-    Type,
+    Callable,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Union,
 )
 
-
-from PySide2.QtCore import Signal, QRectF
 from PySide2.QtCore import (
-    Qt,
-    QPersistentModelIndex,
-    QModelIndex,
-    QCoreApplication,
-    QItemSelectionModel,
-    QThread,
-    QSortFilterProxyModel,
-    QSize,
     QLocale,
-    QAbstractItemModel,
-    QEvent,
-    QRect,
-    QPoint,
-    QObject,
-    QTimer,
-    QSize,
+    QThread,
+    Signal,
 )
-import queue
+
+from .i18n import _
 
 locale = QLocale()  # This initializes a QLocale object with the user's default locale
 
@@ -164,8 +120,9 @@ def all_subclasses(cls) -> Set:
     return res
 
 
-import bdkpython as bdk
 import hashlib
+
+import bdkpython as bdk
 
 
 def replace_non_alphanumeric(string):
@@ -181,7 +138,6 @@ def is_iterable(obj):
 
 
 from functools import lru_cache, wraps
-
 
 cached_always_keep_functions = []
 cached_functions = []
@@ -220,9 +176,9 @@ def clear_cache(clear_always_keep=False):
 
 class CacheManager:
     def __init__(self) -> None:
-        self._instance_cache = {}
-        self._cached_instance_methods = []
-        self._cached_instance_methods_always_keep = []
+        self._instance_cache: Dict[Callable, Any] = {}
+        self._cached_instance_methods: List[Any] = []
+        self._cached_instance_methods_always_keep: List[Any] = []
 
     def clear_instance_cache(self, clear_always_keep=False):
         for cached_method in self._cached_instance_methods:
@@ -246,9 +202,7 @@ def instance_lru_cache(always_keep=False):
                 self._instance_cache[func] = lru_cache(maxsize=None)(func.__get__(self))
 
                 if always_keep:
-                    self._cached_instance_methods_always_keep.append(
-                        self._instance_cache[func]
-                    )
+                    self._cached_instance_methods_always_keep.append(self._instance_cache[func])
                 else:
                     self._cached_instance_methods.append(self._instance_cache[func])
 
@@ -273,33 +227,6 @@ def is_address(address) -> bool:
         return bool(bdkaddress)
     except:
         return False
-
-
-def parse_max_spend(amt: Any) -> Optional[int]:
-    """Checks if given amount is "spend-max"-like.
-    Returns None or the positive integer weight for "max". Never raises.
-
-    When creating invoices and on-chain txs, the user can specify to send "max".
-    This is done by setting the amount to '!'. Splitting max between multiple
-    tx outputs is also possible, and custom weights (positive ints) can also be used.
-    For example, to send 40% of all coins to address1, and 60% to address2:
-    ```
-    address1, 2!
-    address2, 3!
-    ```
-    """
-    if not (isinstance(amt, str) and amt and amt[-1] == "!"):
-        return None
-    if amt == "!":
-        return 1
-    x = amt[:-1]
-    try:
-        x = int(x)
-    except ValueError:
-        return None
-    if x > 0:
-        return x
-    return None
 
 
 class NotEnoughFunds(Exception):
@@ -372,8 +299,6 @@ class InvoiceError(UserFacingException):
 # However unlike other exceptions the user won't be informed.
 class UserCancelled(Exception):
     """An exception that is suppressed from the user"""
-
-    pass
 
 
 # Helper function to lighten a color
@@ -459,9 +384,7 @@ def format_number(
 
     # Determine color for negative numbers if indicated
     overall_color = (
-        "#ff0000"
-        if indicate_balance_change and number < 0 and base_color == "#000000"
-        else base_color
+        "#ff0000" if indicate_balance_change and number < 0 and base_color == "#000000" else base_color
     )
 
     # Apply color formatting to decimal groups
@@ -477,16 +400,12 @@ def format_number(
             else:
                 color = overall_color
 
-            decimal_groups[i] = color_format_str(
-                decimal_groups[i], color, color_formatting
-            )
+            decimal_groups[i] = color_format_str(decimal_groups[i], color, color_formatting)
 
     # No color formatting applied if color_formatting is None
     space_character = "\u00A0" if unicode_space_character else " "
     decimal_part_formatted = (
-        space_character.join(decimal_groups)
-        if include_decimal_spaces
-        else "".join(decimal_groups)
+        space_character.join(decimal_groups) if include_decimal_spaces else "".join(decimal_groups)
     )
 
     integer_part_formatted = abs_integer_part_formatted
@@ -519,9 +438,7 @@ class Satoshis:
         return f"Satoshis({self.value})"
 
     def __str__(self):
-        return format_number(
-            self.value, color_formatting=None, include_decimal_spaces=True
-        )
+        return format_number(self.value, color_formatting=None, include_decimal_spaces=True)
 
     def __eq__(self, other):
         return (self.value == other.value) and (self.network == other.network)
@@ -551,70 +468,21 @@ class Satoshis:
         return bool(self.value)
 
     @classmethod
-    def sum(cls, l: Iterable["Satoshis"]) -> "Satoshis":
+    def sum(cls, l: List[Union[List, "Satoshis"]]) -> "Satoshis":
+        def calc_satoshi(v):
+            # allow recursive summing
+            return Satoshis.sum(v) if isinstance(v, (tuple, list)) else v
+
         if not l:
-            return 0
+            raise ValueError("Cannot sum an empty list")
         if isinstance(l, Satoshis):
             return l
 
-        summed = None
-        for v in l:
-            v = Satoshis.sum(v) if isinstance(v, (tuple, list)) else v
-            if summed is None:
-                summed = v
-            else:
-                summed += v
+        summed = calc_satoshi(l[0])
+        for v in l[1:]:
+            summed += calc_satoshi(v)
 
         return summed
-
-
-# note: this is not a NamedTuple as then its json encoding cannot be customized
-class Fiat(object):
-    __slots__ = ("value", "ccy")
-
-    def __new__(cls, value: Optional[Decimal], ccy: str):
-        self = super(Fiat, cls).__new__(cls)
-        self.ccy = ccy
-        if not isinstance(value, (Decimal, type(None))):
-            raise TypeError(f"value should be Decimal or None, not {type(value)}")
-        self.value = value
-        return self
-
-    def __repr__(self):
-        return "Fiat(%s)" % self.__str__()
-
-    def __str__(self):
-        if self.value is None or self.value.is_nan():
-            return _("No Data")
-        else:
-            return "{:.2f}".format(self.value)
-
-    def to_ui_string(self):
-        if self.value is None or self.value.is_nan():
-            return _("No Data")
-        else:
-            return "{:.2f}".format(self.value) + " " + self.ccy
-
-    def __eq__(self, other):
-        if not isinstance(other, Fiat):
-            return False
-        if self.ccy != other.ccy:
-            return False
-        if (
-            isinstance(self.value, Decimal)
-            and isinstance(other.value, Decimal)
-            and self.value.is_nan()
-            and other.value.is_nan()
-        ):
-            return True
-        return self.value == other.value
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    def __add__(self, other):
-        assert self.ccy == other.ccy
-        return Fiat(self.value + other.value, self.ccy)
 
 
 def print_stderr(*args):
@@ -634,29 +502,6 @@ def standardize_path(path):
     return os.path.normcase(os.path.realpath(os.path.abspath(os.path.expanduser(path))))
 
 
-def to_string(x, enc) -> str:
-    if isinstance(x, (bytes, bytearray)):
-        return x.decode(enc)
-    if isinstance(x, str):
-        return x
-    else:
-        raise TypeError("Not a string or bytes like object")
-
-
-def to_bytes(something, encoding="utf8") -> bytes:
-    """
-    cast string to bytes() like object, but for python2 support it's bytearray copy
-    """
-    if isinstance(something, bytes):
-        return something
-    if isinstance(something, str):
-        return something.encode(encoding)
-    elif isinstance(something, bytearray):
-        return bytes(something)
-    else:
-        raise TypeError("Not a string or bytes like object")
-
-
 def resource_path(*parts):
     return os.path.join(pkg_dir, *parts)
 
@@ -667,28 +512,6 @@ pkg_dir = os.path.split(os.path.realpath(__file__))[0]
 
 def unit_str(network: bdk.Network):
     return "BTC" if network is None or network == bdk.Network.BITCOIN else "tBTC"
-
-
-FEERATE_PRECISION = 1  # num fractional decimal places for sat/byte fee rates
-_feerate_quanta = Decimal(10) ** (-FEERATE_PRECISION)
-
-
-def quantize_feerate(fee) -> Union[None, Decimal, int]:
-    """Strip sat/byte fee rate of excess precision."""
-    if fee is None:
-        return None
-    return Decimal(fee).quantize(_feerate_quanta, rounding=decimal.ROUND_HALF_DOWN)
-
-
-def timestamp_to_datetime(timestamp: Union[int, float, None]) -> Optional[datetime]:
-    if timestamp is None:
-        return None
-    return datetime.fromtimestamp(timestamp)
-
-
-def format_time(timestamp: Union[int, float, None]) -> str:
-    date = timestamp_to_datetime(timestamp)
-    return date.isoformat(" ", timespec="minutes") if date else _("Unknown")
 
 
 def age(
@@ -702,15 +525,14 @@ def age(
     if from_date is None:
         return _("Unknown")
 
-    from_date = datetime.fromtimestamp(from_date)
+    from_date_clean = datetime.fromtimestamp(from_date)
+
     if since_date is None:
         since_date = datetime.now(target_tz)
 
-    distance_in_time = from_date - since_date
-    is_in_past = from_date < since_date
-    distance_in_seconds = int(
-        round(abs(distance_in_time.days * 86400 + distance_in_time.seconds))
-    )
+    distance_in_time = from_date_clean - since_date
+    is_in_past = from_date_clean < since_date
+    distance_in_seconds = int(round(abs(distance_in_time.days * 86400 + distance_in_time.seconds)))
     distance_in_minutes = int(round(distance_in_seconds / 60))
 
     if distance_in_minutes == 0:
@@ -771,28 +593,25 @@ def age(
             return _("in over {} years").format(round(distance_in_minutes / 525600))
 
 
-def block_explorer_URL(
-    network_config: "NetworkConfig", kind: str, item: str
-) -> Optional[str]:
-    explorer_url, explorer_dict = network_config.mempool_url, {
+def block_explorer_URL(mempool_url: str, kind: str, item: str) -> Optional[str]:
+    explorer_url, explorer_dict = mempool_url, {
         "tx": "tx/",
         "addr": "address/",
     }
     kind_str = explorer_dict.get(kind)
     if kind_str is None:
-        return
+        return None
     if explorer_url[-1] != "/":
         explorer_url += "/"
     url_parts = [explorer_url, kind_str, item]
     return "".join(url_parts)
 
 
-def block_explorer_URL_of_projected_block(
-    network_config: "NetworkConfig", block_index: int
-) -> Optional[str]:
-    explorer_url = network_config.mempool_url
+def block_explorer_URL_of_projected_block(mempool_url: str, block_index: int) -> Optional[str]:
+    explorer_url = mempool_url
     if explorer_url[-1] != "/":
         explorer_url += "/"
+    explorer_url = explorer_url.replace("/api", "")
     return f"{explorer_url}mempool-block/{block_index}"
 
 
@@ -827,206 +646,8 @@ builtin_raw_input = builtins.input
 builtins.input = raw_input
 
 
-def parse_json(message):
-    # TODO: check \r\n pattern
-    n = message.find(b"\n")
-    if n == -1:
-        return None, message
-    try:
-        j = json.loads(message[0:n].decode("utf8"))
-    except:
-        j = None
-    return j, message[n + 1 :]
-
-
-def setup_thread_excepthook():
-    """
-    Workaround for `sys.excepthook` thread bug from:
-    http://bugs.python.org/issue1230540
-
-    Call once from the main thread before creating any threads.
-    """
-
-    init_original = threading.Thread.__init__
-
-    def init(self, *args, **kwargs):
-
-        init_original(self, *args, **kwargs)
-        run_original = self.run
-
-        def run_with_except_hook(*args2, **kwargs2):
-            try:
-                run_original(*args2, **kwargs2)
-            except Exception:
-                sys.excepthook(*sys.exc_info())
-
-        self.run = run_with_except_hook
-
-    threading.Thread.__init__ = init
-
-
-def send_exception_to_crash_reporter(e: BaseException):
-    from .base_crash_reporter import send_exception_to_crash_reporter
-
-    send_exception_to_crash_reporter(e)
-
-
 def versiontuple(v):
     return tuple(map(int, (v.split("."))))
-
-
-def read_json_file(path):
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.loads(f.read())
-    # backwards compatibility for JSONDecodeError
-    except ValueError:
-        logger.exception("")
-        raise FileImportFailed(_("Invalid JSON code."))
-    except BaseException as e:
-        logger.exception("")
-        raise FileImportFailed(e)
-    return data
-
-
-def write_json_file(path, data):
-    try:
-        with open(path, "w+", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, sort_keys=True, cls=MyEncoder)
-    except (IOError, os.error) as e:
-        logger.exception("")
-        raise FileExportFailed(e)
-
-
-def os_chmod(path, mode):
-    """os.chmod aware of tmpfs"""
-    try:
-        os.chmod(path, mode)
-    except OSError as e:
-        xdg_runtime_dir = os.environ.get("XDG_RUNTIME_DIR", None)
-        if xdg_runtime_dir and is_subpath(path, xdg_runtime_dir):
-            logger.info(f"Tried to chmod in tmpfs. Skipping... {e!r}")
-        else:
-            raise
-
-
-def make_dir(path, allow_symlink=True):
-    """Make directory if it does not yet exist."""
-    if not os.path.exists(path):
-        if not allow_symlink and os.path.islink(path):
-            raise Exception("Dangling link: " + path)
-        os.mkdir(path)
-        os_chmod(path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-
-
-def is_subpath(long_path: str, short_path: str) -> bool:
-    """Returns whether long_path is a sub-path of short_path."""
-    try:
-        common = os.path.commonpath([long_path, short_path])
-    except ValueError:
-        return False
-    short_path = standardize_path(short_path)
-    common = standardize_path(common)
-    return short_path == common
-
-
-class TxMinedInfo(NamedTuple):
-    height: int  # height of block that mined tx
-    conf: Optional[
-        int
-    ] = None  # number of confirmations, SPV verified. >=0, or None (None means unknown)
-    timestamp: Optional[int] = None  # timestamp of block that mined tx
-    txpos: Optional[int] = None  # position of tx in serialized block
-    header_hash: Optional[str] = None  # hash of block that mined tx
-    wanted_height: Optional[int] = None  # in case of timelock, min abs block height
-
-    def short_id(self) -> Optional[str]:
-        if self.txpos is not None and self.txpos >= 0:
-            assert self.height > 0
-            return f"{self.height}x{self.txpos}"
-        return None
-
-
-AS_LIB_USER_I_WANT_TO_MANAGE_MY_OWN_ASYNCIO_LOOP = False  # used by unit tests
-
-_asyncio_event_loop = None  # type: Optional[asyncio.AbstractEventLoop]
-
-
-def get_asyncio_loop() -> asyncio.AbstractEventLoop:
-    """Returns the global asyncio event loop we use."""
-    if loop := _asyncio_event_loop:
-        return loop
-    if AS_LIB_USER_I_WANT_TO_MANAGE_MY_OWN_ASYNCIO_LOOP:
-        if loop := get_running_loop():
-            return loop
-    raise Exception("event loop not created yet")
-
-
-def create_and_start_event_loop() -> Tuple[
-    asyncio.AbstractEventLoop, asyncio.Future, threading.Thread
-]:
-    global _asyncio_event_loop
-    if _asyncio_event_loop is not None:
-        raise Exception("there is already a running event loop")
-
-    # asyncio.get_event_loop() became deprecated in python3.10. (see https://github.com/python/cpython/issues/83710)
-    # We set a custom event loop policy purely to be compatible with code that
-    # relies on asyncio.get_event_loop().
-    # - in python 3.8-3.9, asyncio.Event.__init__, asyncio.Lock.__init__,
-    #   and similar, calls get_event_loop. see https://github.com/python/cpython/pull/23420
-    class MyEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
-        def get_event_loop(self):
-            # In case electrum is being used as a library, there might be other
-            # event loops in use besides ours. To minimise interfering with those,
-            # if there is a loop running in the current thread, return that:
-            running_loop = get_running_loop()
-            if running_loop is not None:
-                return running_loop
-            # Otherwise, return our global loop:
-            return get_asyncio_loop()
-
-    asyncio.set_event_loop_policy(MyEventLoopPolicy())
-
-    loop = asyncio.new_event_loop()
-    _asyncio_event_loop = loop
-
-    def on_exception(loop, context):
-        """Suppress spurious messages it appears we cannot control."""
-        SUPPRESS_MESSAGE_REGEX = re.compile(
-            "SSL handshake|Fatal read error on|" "SSL error in data received"
-        )
-        message = context.get("message")
-        if message and SUPPRESS_MESSAGE_REGEX.match(message):
-            return
-        loop.default_exception_handler(context)
-
-    def run_event_loop():
-        try:
-            loop.run_until_complete(stopping_fut)
-        finally:
-            # clean-up
-            global _asyncio_event_loop
-            _asyncio_event_loop = None
-
-    loop.set_exception_handler(on_exception)
-    # loop.set_debug(True)
-    stopping_fut = loop.create_future()
-    loop_thread = threading.Thread(
-        target=run_event_loop,
-        name="EventLoop",
-    )
-    loop_thread.start()
-    # Wait until the loop actually starts.
-    # On a slow PC, or with a debugger attached, this can take a few dozens of ms,
-    # and if we returned without a running loop, weird things can happen...
-    t0 = time.monotonic()
-    while not loop.is_running():
-        time.sleep(0.01)
-        if time.monotonic() - t0 > 5:
-            raise Exception(
-                "been waiting for 5 seconds but asyncio loop would not start!"
-            )
-    return loop, stopping_fut, loop_thread
 
 
 def is_ip_address(x: Union[str, bytes]) -> bool:
@@ -1037,83 +658,6 @@ def is_ip_address(x: Union[str, bytes]) -> bool:
         return True
     except ValueError:
         return False
-
-
-def is_localhost(host: str) -> bool:
-    if str(host) in (
-        "localhost",
-        "localhost.",
-    ):
-        return True
-    if host[0] == "[" and host[-1] == "]":  # IPv6
-        host = host[1:-1]
-    try:
-        ip_addr = ipaddress.ip_address(host)  # type: Union[IPv4Address, IPv6Address]
-        return ip_addr.is_loopback
-    except ValueError:
-        pass  # not an IP
-    return False
-
-
-def is_private_netaddress(host: str) -> bool:
-    if is_localhost(host):
-        return True
-    if host[0] == "[" and host[-1] == "]":  # IPv6
-        host = host[1:-1]
-    try:
-        ip_addr = ipaddress.ip_address(host)  # type: Union[IPv4Address, IPv6Address]
-        return ip_addr.is_private
-    except ValueError:
-        pass  # not an IP
-    return False
-
-
-_event_listeners = defaultdict(set)  # type: Dict[str, Set[str]]
-
-
-def event_listener(func):
-    classname, method_name = func.__qualname__.split(".")
-    assert method_name.startswith("on_event_")
-    classpath = f"{func.__module__}.{classname}"
-    _event_listeners[classpath].add(method_name)
-    return func
-
-
-_NetAddrType = TypeVar("_NetAddrType")
-
-
-T = TypeVar("T")
-
-
-def get_running_loop() -> Optional[asyncio.AbstractEventLoop]:
-    """Returns the asyncio event loop that is *running in this thread*, if any."""
-    try:
-        return asyncio.get_running_loop()
-    except RuntimeError:
-        return None
-
-
-def error_text_str_to_safe_str(err: str) -> str:
-    """Converts an untrusted error string to a sane printable ascii str.
-    Never raises.
-    """
-    return error_text_bytes_to_safe_str(err.encode("ascii", errors="backslashreplace"))
-
-
-def error_text_bytes_to_safe_str(err: bytes) -> str:
-    """Converts an untrusted error bytes text to a sane printable ascii str.
-    Never raises.
-
-    Note that naive ascii conversion would be insufficient. Fun stuff:
-    >>> b = b"my_long_prefix_blabla" + 21 * b"\x08" + b"malicious_stuff"
-    >>> s = b.decode("ascii")
-    >>> print(s)
-    malicious_stuffblabla
-    """
-    # convert to ascii, to get rid of unicode stuff
-    ascii_text = err.decode("ascii", errors="backslashreplace")
-    # do repr to handle ascii special chars (especially when printing/logging the str)
-    return repr(ascii_text)
 
 
 class CannotBumpFee(Exception):
@@ -1137,17 +681,6 @@ class InternalAddressCorruption(Exception):
             "Wallet file corruption detected. "
             "Please restore your wallet from seed, and compare the addresses in both files"
         )
-
-
-def balance_dict(bdkbalance):
-    return {
-        "immature": bdkbalance.immature,
-        "trusted_pending": bdkbalance.trusted_pending,
-        "untrusted_pending": bdkbalance.untrusted_pending,
-        "confirmed": bdkbalance.confirmed,
-        "spendable": bdkbalance.spendable,
-        "total": bdkbalance.total,
-    }
 
 
 def remove_duplicates_keep_order(seq):
@@ -1178,9 +711,7 @@ class TaskThread(QThread):
         self.task = None
         self.doneSig.connect(self.on_done)
 
-    def add_and_start(
-        self, task, on_success=None, on_done=None, on_error=None, *, cancel=None
-    ):
+    def add_and_start(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
         self.task = TaskThread.Task(task, on_success, on_done, on_error, cancel)
         self.start()
 
@@ -1191,7 +722,7 @@ class TaskThread(QThread):
         try:
             result = self.task.task()
             self.doneSig.emit(result, self.task.cb_done, self.task.cb_success)
-        except Exception as e:
+        except Exception:
             self.doneSig.emit(sys.exc_info(), self.task.cb_done, self.task.cb_error)
         finally:
             self.stop()
@@ -1230,7 +761,7 @@ class NoThread:
                 result = task()
             if on_success:
                 on_success(result)
-        except Exception as e:
+        except Exception:
             if on_error:
                 on_error(sys.exc_info())
         if on_done:

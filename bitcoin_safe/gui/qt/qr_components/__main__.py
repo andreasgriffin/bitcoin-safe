@@ -1,9 +1,10 @@
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from .quick_receive import ReceiveGroup, QuickReceive
-
 import random
+
+from PySide2.QtWidgets import (
+    QApplication,
+)
+
+from .quick_receive import QuickReceive, ReceiveGroup
 
 
 def generate_random_hex_color():
@@ -21,17 +22,11 @@ if __name__ == "__main__":
 
     # Example usage
     color = generate_random_hex_color()
-    custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
-    )
+    custom_widget.add_box(ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10))
     color = generate_random_hex_color()
-    custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
-    )
+    custom_widget.add_box(ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10))
     color = generate_random_hex_color()
-    custom_widget.add_box(
-        ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10)
-    )
+    custom_widget.add_box(ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10))
 
     custom_widget.show()
     sys.exit(app.exec_())

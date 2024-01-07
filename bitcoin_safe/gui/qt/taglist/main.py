@@ -1,17 +1,58 @@
 import logging
 
-from numpy import spacing
 
 from ....util import register_cache
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-import json
 import hashlib
-from typing import List
+import json
+from typing import Generator, List, Optional
+
+from PySide2.QtCore import Signal, QPoint, QModelIndex, QRect, QMimeData
+from PySide2.QtWidgets import (
+    QPushButton,
+    QApplication,
+    QWidget,
+    QStyledItemDelegate,
+    QListWidgetItem,
+    QStyle,
+    QStyleOptionButton,
+    QListWidget,
+    QVBoxLayout,
+    QAbstractItemView,
+    QLineEdit,
+)
+from PySide2.QtGui import (
+    Qt,
+    QCursor,
+    QDrag,
+    QPainter,
+    QColor,
+    QPalette,
+    QTextDocument,
+    QTextOption,
+)
+
+# common qt imports
+# ==============================
+# from PySide2.QtCore import QObject, Signal, QItemSelectionModel, QCoreApplication, QPoint, QModelIndex, QRect, QMimeData, QSize
+# from PySide2.QtWidgets import (
+#     QPushButton,QApplication,QToolButton,
+#     QWidget,QStyledItemDelegate,QListWidgetItem,
+#     QGroupBox,QStyle,QFileDialog,
+#     QHBoxLayout,QStyleOptionButton,QSpinBox, QComboBox,
+#     QSizePolicy,QListWidget,
+#     QVBoxLayout,QMenuBar,
+#     QTabWidget,QAbstractItemView,
+#     QDoubleSpinBox,QTextEdit,QScrollArea,
+#     QFormLayout,
+#     QLabel,
+#     QDialogButtonBox,QDialog,
+#     QSplitter,QLineEdit,QMainWindow,QShortcut,
+#     QCheckBox,
+# )
+# from PySide2.QtGui import Qt, QIcon, QKeySequence,QCursor, QDrag, QPainter, QColor, QPalette, QTextDocument, QTextOption
 
 
 def clean_tag(tag) -> str:
@@ -99,9 +140,7 @@ class CustomDelegate(QStyledItemDelegate):
 
         QApplication.style().drawControl(QStyle.CE_PushButton, button_style, painter)
 
-        def draw_html_text(
-            painter, text, rect, pos=None, align=Qt.AlignCenter, scale=1
-        ):
+        def draw_html_text(painter, text, rect, pos=None, align=Qt.AlignCenter, scale=1):
             if not text:
                 return
 
@@ -306,7 +345,7 @@ class CustomListWidget(QListWidget):
 
     def rename_selected(self, new_text):
         for item in self.selectedItems():
-            old_text = item.text()
+            item.text()
             item.setText(new_text)
             item.setBackground()
 
@@ -356,9 +395,7 @@ class CustomListWidget(QListWidget):
             self._drag_start_position = event.pos()
         if not (event.buttons() & Qt.LeftButton):
             return
-        if (
-            event.pos() - self._drag_start_position
-        ).manhattanLength() < QApplication.startDragDistance():
+        if (event.pos() - self._drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
         if self.dragEnabled():
             self.startDrag(Qt.MoveAction)
@@ -378,7 +415,7 @@ class CustomListWidget(QListWidget):
         drag.setHotSpot(cursor_pos - rect.topLeft())
         self.signal_start_drag.emit(action)
 
-        result = drag.exec_(action)
+        drag.exec_(action)
 
         self.signal_stop_drag.emit(action)
 
@@ -428,11 +465,11 @@ class CustomListWidget(QListWidget):
                 self.signal_tag_deleted.emit(item_text)
                 break
 
-    def get_items(self) -> CustomListWidgetItem:
+    def get_items(self) -> Generator[CustomListWidgetItem, None, None]:
         for i in range(self.count()):
             yield self.item(i)
 
-    def get_item_texts(self) -> str:
+    def get_item_texts(self) -> Generator[str, None, None]:
         for item in self.get_items():
             yield item.text()
 
@@ -532,9 +569,10 @@ class TagEditor(QWidget):
         self.input_field.show()
         self.delete_button.hide()
 
-    def add(self, new_tag, sub_text=None) -> CustomListWidgetItem:
+    def add(self, new_tag, sub_text=None) -> Optional[CustomListWidgetItem]:
         if not self.tag_exists(new_tag):
             return self.list_widget.add(new_tag, sub_text=sub_text)
+        return None
 
     def add_new_tag_from_input_field(self):
         new_tag = clean_tag(self.input_field.text())

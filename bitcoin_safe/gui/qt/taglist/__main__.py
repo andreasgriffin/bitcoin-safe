@@ -1,7 +1,10 @@
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from .main import TagEditor, CustomListWidget
+from PySide2.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+)
+
+from .main import TagEditor
 
 if __name__ == "__main__":
     import sys

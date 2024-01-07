@@ -18,4 +18,4 @@ Requests==2.31.0
 pre-commit
 fpdf2==2.7.4
 bitcoin_qrreader==0.5.4
-bitcoin_usb==0.1.1
+bitcoin_usb==0.1.2

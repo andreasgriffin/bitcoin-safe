@@ -1,13 +1,11 @@
 import logging
-from typing import Callable, List, Dict
 
 logger = logging.getLogger(__name__)
-from PySide2.QtCore import Signal, QObject
-
-from typing import List, Dict, Set
-import bdkpython as bdk
-
 import threading
+from typing import Set
+
+import bdkpython as bdk
+from PySide2.QtCore import QObject, Signal
 
 
 class UpdateFilter:
@@ -31,16 +29,14 @@ class UpdateFilter:
 
 
 class SignalFunction:
-    def __init__(self, slot_name=None):
-        self.slot_name = slot_name
+    def __init__(self, name=None):
+        self.name = name
         self.slots = {}
         self.lock = threading.Lock()
 
     def connect(self, slot, slot_name=None):
         with self.lock:
-            key = (
-                slot_name if slot_name and (slot_name not in self.slots) else str(slot)
-            )
+            key = slot_name if slot_name and (slot_name not in self.slots) else str(slot)
             self.slots[key] = slot
 
     def disconnect(self, slot):
@@ -58,7 +54,7 @@ class SignalFunction:
         responses = {}
         if not self.slots:
             logger.debug(
-                f"SignalFunction {self.slot_name if self.slot_name else ''}.emit() was called, but no listeners {self.slots} are listening."
+                f"SignalFunction {self.name if self.name else ''}.emit() was called, but no listeners {self.slots} are listening."
             )
 
         delete_slots = []
@@ -77,13 +73,11 @@ class SignalFunction:
                 try:
                     responses[key] = slot(*args, **kwargs)
                 except:
-                    logger.warning(
-                        f"{slot} with key {key} could not be called. The slot will be deleted."
-                    )
+                    logger.warning(f"{slot} with key {key} could not be called. The slot will be deleted.")
                     delete_slots.append(slot)
                     continue
             logger.debug(
-                f"SignalFunction {self.slot_name if self.slot_name else ''}.emit() --> Got {len(responses)} responses"
+                f"SignalFunction {self.name if self.name else ''}.emit() --> Got {len(responses)} responses"
             )
 
         for slot in delete_slots:
@@ -147,10 +141,8 @@ class Signals(QObject):
     show_onchain_invoice = Signal()
     save_transaction_into_wallet = Signal(object)
 
-    tx_from_text = SignalFunction(slot_name="tx_from_text")
-
-    get_wallets = SignalFunction(slot_name="get_wallets")
-    get_network = SignalFunction(slot_name="get_network")
+    get_wallets = SignalFunction(name="get_wallets")
+    get_network = SignalFunction(name="get_network")
 
     show_network_settings = Signal()
     export_bip329_labels = Signal(str)  # str= wallet_id

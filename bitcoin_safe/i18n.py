@@ -28,11 +28,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+import gettext
 import os
 from typing import Optional
-
-import gettext
-
 
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale")
 
@@ -67,9 +65,7 @@ def set_language(x: Optional[str]) -> None:
     logger.info(f"setting language to {x!r}")
     global language
     if x:
-        language = gettext.translation(
-            "electrum", LOCALE_DIR, fallback=True, languages=[x]
-        )
+        language = gettext.translation("electrum", LOCALE_DIR, fallback=True, languages=[x])
 
 
 languages = {

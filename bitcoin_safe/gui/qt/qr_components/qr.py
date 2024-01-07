@@ -1,6 +1,7 @@
-import segno
 import logging
 from io import BytesIO
+
+import segno
 from PIL import Image
 
 logger = logging.getLogger(__name__)
@@ -18,17 +19,13 @@ def create_qr(data: str, scale=10, color="black", background="white"):
     """
     qr = segno.make(data)
     buffer = BytesIO()
-    qr.save(
-        buffer, kind="png", scale=scale, dark=color, light=background
-    )  # Save QR code to buffer
+    qr.save(buffer, kind="png", scale=scale, dark=color, light=background)  # Save QR code to buffer
     buffer.seek(0)  # Reset buffer's position to the beginning
     img = Image.open(buffer)  # Open the image using PIL
     return img
 
 
-def create_qr_svg(
-    content: str, scale=1, color="black", background="white", encoding=None
-):
+def create_qr_svg(content: str, scale=1, color="black", background="white", encoding=None):
     """
     Generate a QR Code from the provided data and return it as an SVG string.
 

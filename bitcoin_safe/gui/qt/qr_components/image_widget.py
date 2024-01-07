@@ -1,20 +1,14 @@
-from PySide2.QtWidgets import QWidget
-from PySide2.QtGui import QPainter, QImage
-from PySide2.QtSvg import QSvgRenderer
-from PySide2.QtCore import Qt, QRectF
 import io
-from PySide2.QtWidgets import QWidget, QApplication
-from PySide2.QtGui import QPainter, QImage
-from PySide2.QtCore import Qt
-from PIL import Image
-import sys
-from PySide2.QtCore import QSize, QTimer
-from .qr import create_qr, create_qr_svg
-from PySide2.QtCore import Qt, QByteArray
 import logging
-from PySide2.QtGui import QPainter, QColor, QPixmap
-from PySide2.QtWidgets import QSizePolicy, QScrollArea
+import sys
 
+from PIL import Image
+from PySide2.QtCore import QByteArray, QRectF, Qt, QTimer
+from PySide2.QtGui import QImage, QPainter, QPixmap
+from PySide2.QtSvg import QSvgRenderer
+from PySide2.QtWidgets import QApplication, QSizePolicy, QWidget
+
+from .qr import create_qr, create_qr_svg
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +42,7 @@ class QRCodeWidget(QWidget):
         y = (widget_height - side) // 2
 
         # Scale the image to fit within the square
-        scaled_img = self.qt_image.scaled(
-            side, side, Qt.KeepAspectRatio, Qt.SmoothTransformation
-        )
+        scaled_img = self.qt_image.scaled(side, side, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
         # Draw the image centered
         painter.drawImage(x, y, scaled_img)
@@ -84,9 +76,7 @@ class EnlargedImage(QRCodeWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         screen_resolution = QApplication.desktop().screenGeometry()
         screen_fraction = 3 / 4
-        width = height = (
-            min(screen_resolution.width(), screen_resolution.height()) * screen_fraction
-        )
+        width = height = min(screen_resolution.width(), screen_resolution.height()) * screen_fraction
         self.setGeometry(
             (screen_resolution.width() - width) / 2,
             (screen_resolution.height() - height) / 2,
@@ -123,8 +113,7 @@ class QRCodeWidgetSVG(QWidget):
 
     def set_data_list(self, data_list):
         self.svg_renderers = [
-            QSvgRenderer(QByteArray(create_qr_svg(data).encode("utf-8")))
-            for data in data_list
+            QSvgRenderer(QByteArray(create_qr_svg(data).encode("utf-8"))) for data in data_list
         ]
         self.current_index = 0
         self.manage_animation()
@@ -134,9 +123,7 @@ class QRCodeWidgetSVG(QWidget):
         self.manage_animation()
 
     def set_images(self, image_list):
-        self.svg_renderers = [
-            QSvgRenderer(QByteArray(image.encode("utf-8"))) for image in image_list
-        ]
+        self.svg_renderers = [QSvgRenderer(QByteArray(image.encode("utf-8"))) for image in image_list]
         self.current_index = 0
         self.manage_animation()
 
@@ -277,9 +264,7 @@ class EnlargedSVG(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         screen_resolution = QApplication.desktop().screenGeometry()
         screen_fraction = 3 / 4
-        width = height = (
-            min(screen_resolution.width(), screen_resolution.height()) * screen_fraction
-        )
+        width = height = min(screen_resolution.width(), screen_resolution.height()) * screen_fraction
         self.setGeometry(
             (screen_resolution.width() - width) / 2,
             (screen_resolution.height() - height) / 2,

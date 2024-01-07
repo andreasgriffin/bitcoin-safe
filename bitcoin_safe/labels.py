@@ -3,36 +3,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-from .util import (
-    TX_HEIGHT_FUTURE,
-    TX_HEIGHT_INF,
-    TX_HEIGHT_LOCAL,
-    TX_HEIGHT_UNCONF_PARENT,
-    TX_HEIGHT_UNCONFIRMED,
-    TX_STATUS,
-)
-from .i18n import _
-from typing import (
-    TYPE_CHECKING,
-    List,
-    Optional,
-    Tuple,
-    Union,
-    NamedTuple,
-    Sequence,
-    Dict,
-    Any,
-    Set,
-    Iterable,
-)
-from .keystore import KeyStore, KeyStoreType, KeyStoreTypes
-import bdkpython as bdk
-from .pythonbdk_types import *
-from .storage import Storage, ClassSerializer, BaseSaveableClass
-
-import json
-from .util import clean_list, Satoshis
 import copy
+import json
+from typing import (
+    Dict,
+    List,
+)
+
+
+from .pythonbdk_types import *
+from .storage import BaseSaveableClass
 
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
 
@@ -163,16 +143,13 @@ class Labels(BaseSaveableClass):
     def _bip329_to_item(self, item):
         new_item = item.copy()
         if self.separator in new_item[Key.label.name]:
-            new_item[Key.category.name], new_item[Key.label.name] = new_item[
-                Key.label.name
-            ].split(self.separator, 1)
+            new_item[Key.category.name], new_item[Key.label.name] = new_item[Key.label.name].split(
+                self.separator, 1
+            )
         return new_item
 
     def get_bip329_json_str(self):
-        result = [
-            json.dumps(self._convert_item_to_bip329(item))
-            for item in self.data.values()
-        ]
+        result = [json.dumps(self._convert_item_to_bip329(item)) for item in self.data.values()]
         return "\n".join(result)
 
     def parse_from_bip329_json_str(self, lines):
@@ -193,10 +170,7 @@ class Labels(BaseSaveableClass):
     def rename_category(self, old_category, new_category):
         affected_keys = []
         for key, item in list(self.data.items()):
-            if (
-                item.get(Key.category.name)
-                and item.get(Key.category.name) == old_category
-            ):
+            if item.get(Key.category.name) and item.get(Key.category.name) == old_category:
                 item[Key.category.name] = new_category
                 affected_keys.append(key)
 

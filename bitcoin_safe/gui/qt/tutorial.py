@@ -1,58 +1,54 @@
 import enum
 import logging
+
+from ...pdfrecovery import make_and_open_pdf
+from ...pythonbdk_types import Recipient
+from ...tx import TxUiInfos
+from ...wallet import ProtoWallet, Wallet
 from .qr_components.quick_receive import ReceiveGroup
 from .spinning_button import SpinningButton
-
 from .step_progress_bar import StepProgressContainer
 from .taglist.main import hash_color
-from ...pdfrecovery import make_and_open_pdf
-from ...pythonbdk_types import OutPoint, Recipient
-from ...tx import TxUiInfos
-from ...wallet import ProtoWallet, UtxosForInputs, Wallet
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2.QtSvg import QSvgWidget
+import numpy as np
+from bitcoin_usb.address_types import DescriptorInfo
+from PySide2.QtCore import Signal, QCoreApplication, QSize
+from PySide2.QtWidgets import (
+    QPushButton,
+    QWidget,
+    QHBoxLayout,
+    QVBoxLayout,
+    QTabWidget,
+    QLabel,
+    QDialogButtonBox,
+)
+from PySide2.QtGui import QIcon
+
+
+from ...util import Satoshis
 from .util import (
-    ShowCopyTextEdit,
+    Message,
     add_centered,
     add_centered_icons,
-    center_in_widget,
     create_button,
     create_button_box,
-    custom_exception_handler,
     icon_path,
     one_time_signal_connection,
     open_website,
-    robust_disconnect,
 )
-from PySide2.QtCore import Signal
-from ...util import Satoshis, TaskThread, call_call_functions
-import numpy as np
-from bitcoin_usb.address_types import DescriptorInfo
-from .util import Message
 
 
 def create_buy_coldcard_button(layout):
-    button = create_button(
-        "Buy a Coldcard\n5% off", icon_path("coldcard-only.svg"), None, layout
-    )
-    button.clicked.connect(
-        lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
-    )
+    button = create_button("Buy a Coldcard\n5% off", icon_path("coldcard-only.svg"), None, layout)
+    button.clicked.connect(lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410"))
     return button
 
 
 def create_buy_bitbox_button(layout):
-    button = create_button(
-        "Buy a Bitbox02\nBitcoin Only Edition", icon_path("usb-stick.svg"), None, layout
-    )
-    button.clicked.connect(
-        lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
-    )
+    button = create_button("Buy a Bitbox02\nBitcoin Only Edition", icon_path("usb-stick.svg"), None, layout)
+    button.clicked.connect(lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm"))
     return button
 
 
@@ -76,7 +72,7 @@ class WalletSteps(StepProgressContainer):
         wallet: Wallet = None,
         max_test_fund=1_000_000,
         wallet_tabs: QTabWidget = None,
-        qt_wallet: "QTWallet" = None,
+        qt_wallet=None,
         signal_create_wallet=None,
     ) -> None:
         self.wallet = wallet
@@ -130,9 +126,7 @@ class WalletSteps(StepProgressContainer):
             self.set_custom_widget(i, widget)
 
         if signal_create_wallet:
-            signal_create_wallet.connect(
-                lambda: self.change_step(TutorialSteps.backup_seed.value)
-            )
+            signal_create_wallet.connect(lambda: self.change_step(TutorialSteps.backup_seed.value))
 
         if self.wallet:
             if self.wallet.tutorial_step is None:
@@ -311,9 +305,7 @@ class WalletSteps(StepProgressContainer):
             if step == TutorialSteps.import_xpub.value:
                 self.wallet_tabs.setVisible(True)
                 if self.qt_wallet:
-                    self.qt_wallet.tabs.setCurrentWidget(
-                        self.qt_wallet.wallet_descriptor_tab
-                    )
+                    self.qt_wallet.tabs.setCurrentWidget(self.qt_wallet.wallet_descriptor_tab)
 
         self.signal_on_set_step.connect(on_step)
 
@@ -394,7 +386,6 @@ class WalletSteps(StepProgressContainer):
                 hash_color(category).name(),
                 address_info.address.as_string(),
                 address_info.address.to_qr_uri(),
-                class_text_edit=ShowCopyTextEdit,
             )
             quick_receive.setMaximumHeight(300)
             layout.addWidget(quick_receive)
@@ -435,9 +426,7 @@ class WalletSteps(StepProgressContainer):
             check_button.setHidden(bool(balance))
             next_button.setHidden(not bool(balance))
             if balance:
-                Message(
-                    f"Received {Satoshis(balance, self.wallet.network).str_with_unit()}"
-                ).show_message()
+                Message(f"Received {Satoshis(balance, self.wallet.network).str_with_unit()}").show_message()
 
         def start_sync():
             if not self.qt_wallet:
@@ -446,9 +435,7 @@ class WalletSteps(StepProgressContainer):
 
             self.qt_wallet.sync()
             check_button.set_enable_signal(self.qt_wallet.signals.utxos_updated)
-            one_time_signal_connection(
-                self.qt_wallet.signals.utxos_updated, on_utxo_update
-            )
+            one_time_signal_connection(self.qt_wallet.signals.utxos_updated, on_utxo_update)
 
         def on_step(step):
             if step == TutorialSteps.receive.value:
@@ -469,9 +456,7 @@ class WalletSteps(StepProgressContainer):
         layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         width = 300
-        svg_widgets = add_centered_icons(
-            ["reset-signer.svg"], widget, layout, max_sizes=[(width, 120)]
-        )
+        svg_widgets = add_centered_icons(["reset-signer.svg"], widget, layout, max_sizes=[(width, 120)])
         layout.itemAt(0).widget().setMaximumWidth(width)
 
         label = QLabel(
@@ -487,9 +472,7 @@ class WalletSteps(StepProgressContainer):
         outer_layout.addWidget(widget)
 
         button_box = QDialogButtonBox()
-        custom_yes_button = QPushButton(
-            f"Yes, I reset the {self.num_keystores()} hardware signer"
-        )
+        custom_yes_button = QPushButton(f"Yes, I reset the {self.num_keystores()} hardware signer")
         custom_yes_button.clicked.connect(self.go_to_next_step)
         button_box.addButton(custom_yes_button, QDialogButtonBox.AcceptRole)
         custom_cancel_button = QPushButton("Go to Previous Step")
@@ -510,33 +493,21 @@ class WalletSteps(StepProgressContainer):
         return outer_widget
 
     def get_mn_tuple(self):
-        m, n = (
-            self.qt_wallet.wallet.get_mn_tuple()
-            if self.qt_wallet
-            else self.protowallet.get_mn_tuple()
-        )
+        m, n = self.qt_wallet.wallet.get_mn_tuple() if self.qt_wallet else self.protowallet.get_mn_tuple()
         return m, n
 
     def get_threshold(self):
         return (
-            DescriptorInfo.from_str(
-                self.qt_wallet.wallet.multipath_descriptor.as_string()
-            ).threshold
+            DescriptorInfo.from_str(self.qt_wallet.wallet.multipath_descriptor.as_string()).threshold
             if self.qt_wallet
             else self.protowallet.threshold
         )
 
     def get_testing_keystores(self, test_number):
         m, n = self.get_mn_tuple()
-        keystores = (
-            self.qt_wallet.wallet.keystores
-            if self.qt_wallet
-            else self.protowallet.keystores
-        )
+        keystores = self.qt_wallet.wallet.keystores if self.qt_wallet else self.protowallet.keystores
         return [
-            keystores[j]
-            for j in range(test_number, test_number + m)
-            if test_number + m <= len(keystores)
+            keystores[j] for j in range(test_number, test_number + m) if test_number + m <= len(keystores)
         ]
 
     def tx_text(self, test_number):
@@ -600,11 +571,7 @@ class WalletSteps(StepProgressContainer):
 
             buttons = []
 
-            m, n = (
-                self.qt_wallet.wallet.get_mn_tuple()
-                if self.qt_wallet
-                else self.protowallet.get_mn_tuple()
-            )
+            m, n = self.qt_wallet.wallet.get_mn_tuple() if self.qt_wallet else self.protowallet.get_mn_tuple()
             for i in range(n - m + 1):
                 current_keystores = self.get_testing_keystores(i)
                 button_tx1 = QPushButton(
@@ -659,9 +626,7 @@ class WalletSteps(StepProgressContainer):
                 self.send_a_tx(self.tx_text(test_number))
 
                 # once the tx is broadcasted, then start listening to the sync status update
-                one_time_signal_connection(
-                    self.qt_wallet.signals.utxos_updated, on_utxo_update
-                )
+                one_time_signal_connection(self.qt_wallet.signals.utxos_updated, on_utxo_update)
 
         self.signal_on_set_step.connect(on_step)
 

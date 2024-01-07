@@ -1,33 +1,33 @@
 import os
 import sys
+
+from PySide2.QtCore import QPoint, QRect, QRectF, QSize, Qt, Signal
+from PySide2.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QFontMetrics,
+    QPainter,
+    QPen,
+    QPixmap,
+    QPolygon,
+    QTextOption,
+)
 from PySide2.QtWidgets import (
     QApplication,
-    QWidget,
     QPushButton,
-    QVBoxLayout,
-    QToolTip,
+    QSizePolicy,
+    QStackedWidget,
     QTextEdit,
+    QToolTip,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide2.QtCore import Qt, QRectF
-from PySide2.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QFont
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
-from PySide2.QtCore import QPoint, Qt, QSize
-from PySide2.QtGui import QPainter, QBrush, QPen, QColor
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
-from PySide2.QtGui import QPainter, QBrush, QPen, QColor, QPolygon
-from PySide2.QtCore import Signal, Qt, QRectF, QRect
-from PySide2.QtWidgets import QSizePolicy, QScrollArea
-from PySide2.QtGui import QFontMetrics, QTransform
-from PySide2.QtGui import QCursor
-from PySide2.QtGui import QPainter, QTextOption
-from PySide2.QtGui import QStaticText, QTextOption
 
 
 def height_of_str(text, widget, max_width):
     font_metrics = QFontMetrics(widget.font())
-    rect = font_metrics.boundingRect(
-        QRect(0, 0, max_width * 0.95, 1000), Qt.TextWordWrap, text
-    )
+    rect = font_metrics.boundingRect(QRect(0, 0, max_width * 0.95, 1000), Qt.TextWordWrap, text)
     return rect.height() * 1.2
 
 
@@ -75,9 +75,7 @@ class StepProgressBar(QWidget):
         max_width = self.width() / (self.steps + 1)
         self.max_label_height = 0
         for label in self.step_labels:
-            self.max_label_height = max(
-                self.max_label_height, height_of_str(label, self, max_width)
-            )
+            self.max_label_height = max(self.max_label_height, height_of_str(label, self, max_width))
         self.updateGeometry()  # Notify the layout system that the widget's size hint has changed
 
     def resizeEvent(self, event):
@@ -86,25 +84,20 @@ class StepProgressBar(QWidget):
 
     def set_labels(self, labels):
 
-        self.step_labels = labels + [
-            f"Step {i+1}" for i in range(len(labels), self.steps)
-        ]
+        self.step_labels = labels + [f"Step {i+1}" for i in range(len(labels), self.steps)]
 
         self.recalculate_max_height()
         self.update()
 
     def sizeHint(self):
         total_height = (
-            self.radius * 2
-            + max(self.max_label_height, 20)
-            + self.label_distance
-            + self.padding * 2
+            self.radius * 2 + max(self.max_label_height, 20) + self.label_distance + self.padding * 2
         )
         return QSize(self.width(), total_height)
 
     def mousePressEvent(self, event):
         # Calculate which step was clicked and emit the signal_step_clicked signal
-        step_width = self.width() / (self.steps + 1)
+        self.width() / (self.steps + 1)
         radius = self.radius  # Assuming you have a circle radius for each step
         circle_y = radius + self.tube_width  # Position circles near the top
 
@@ -127,10 +120,10 @@ class StepProgressBar(QWidget):
         text_color = QColor("#505050")
         bubble_color = QColor("#FFFFFF")
 
-        active_pen = QPen(current_color, self.tube_width)
+        QPen(current_color, self.tube_width)
         completed_pen = QPen(completed_color, self.tube_width)
         inactive_pen = QPen(inactive_color, self.tube_width)
-        active_brush = QBrush(current_color)
+        QBrush(current_color)
         completed_brush = QBrush(completed_color)
         inactive_brush = QBrush(inactive_color)
 
@@ -151,9 +144,7 @@ class StepProgressBar(QWidget):
 
             # Draw connecting line
             if i < self.steps - 1:
-                next_color = (
-                    completed_color if i < self.current_step else inactive_color
-                )
+                next_color = completed_color if i < self.current_step else inactive_color
                 painter.setPen(QPen(next_color, self.tube_width))
                 painter.drawLine(
                     center_point.x() + self.radius,
@@ -167,11 +158,7 @@ class StepProgressBar(QWidget):
                 painter.setPen(completed_pen)
                 painter.setBrush(completed_brush)
             elif i == self.current_step:
-                color = (
-                    completed_color
-                    if self.mark_current_step_as_completed
-                    else current_color
-                )
+                color = completed_color if self.mark_current_step_as_completed else current_color
                 painter.setPen(QPen(color, self.tube_width))
                 painter.setBrush(QBrush(color))
             else:
@@ -183,8 +170,7 @@ class StepProgressBar(QWidget):
 
             # Draw checkmark icon or step number
             if self.use_checkmark_icon and (
-                is_past_step
-                or (i == self.current_step and self.mark_current_step_as_completed)
+                is_past_step or (i == self.current_step and self.mark_current_step_as_completed)
             ):
                 icon_size = self.checkmark_pixmap.size()
                 painter.drawPixmap(
@@ -238,14 +224,10 @@ class StepProgressBar(QWidget):
         self.step_tooltips = tooltips + ["" for i in range(len(tooltips), self.steps)]
 
     def enterEvent(self, event):
-        self.setMouseTracking(
-            True
-        )  # Enable mouse tracking to receive mouse move events
+        self.setMouseTracking(True)  # Enable mouse tracking to receive mouse move events
 
     def leaveEvent(self, event):
-        self.setMouseTracking(
-            False
-        )  # Disable mouse tracking when the mouse leaves the widget
+        self.setMouseTracking(False)  # Disable mouse tracking when the mouse leaves the widget
         QToolTip.hideText()  # Hide tooltip when the cursor is not above a step
         self.restore_cursor()
 
@@ -359,9 +341,7 @@ class StepProgressContainer(QWidget):
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.step_bar)
         self.layout.addWidget(self.horizontal_indicator)
-        self.layout.setSpacing(
-            0
-        )  # This sets the spacing between items in the layout to zero
+        self.layout.setSpacing(0)  # This sets the spacing between items in the layout to zero
         self.layout.addSpacing(5)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
@@ -377,9 +357,7 @@ class StepProgressContainer(QWidget):
             return
 
         currently_visible_step = (
-            self.stacked_widget.currentIndex()
-            if self.stacked_widget.isVisible()
-            else None
+            self.stacked_widget.currentIndex() if self.stacked_widget.isVisible() else None
         )
 
         if currently_visible_step is None:
@@ -459,9 +437,7 @@ class DemoApp(QWidget):
         prev_button = QPushButton("Previous Step")
         prev_button.clicked.connect(self.prev_step)
 
-        layout.addWidget(
-            self.step_progress_container
-        )  # Add the step progress container instead of step_bar
+        layout.addWidget(self.step_progress_container)  # Add the step progress container instead of step_bar
         layout.addWidget(prev_button)
         layout.addWidget(next_button)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -473,18 +449,11 @@ class DemoApp(QWidget):
         self.setLayout(layout)
 
     def toggle_step_completion(self):
-        current_value = (
-            self.step_progress_container.step_bar.mark_current_step_as_completed
-        )
-        self.step_progress_container.step_bar.set_mark_current_step_as_completed(
-            not current_value
-        )
+        current_value = self.step_progress_container.step_bar.mark_current_step_as_completed
+        self.step_progress_container.step_bar.set_mark_current_step_as_completed(not current_value)
 
     def next_step(self):
-        if (
-            self.step_progress_container.step_bar.current_step
-            < self.step_progress_container.step_bar.steps
-        ):
+        if self.step_progress_container.step_bar.current_step < self.step_progress_container.step_bar.steps:
             self.step_progress_container.set_current_step(
                 self.step_progress_container.step_bar.current_step + 1
             )

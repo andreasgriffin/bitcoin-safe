@@ -1,13 +1,12 @@
 from PySide2.QtWidgets import (
     QApplication,
-    QTabWidget,
-    QWidget,
-    QVBoxLayout,
     QLabel,
-    QTextEdit,
     QLineEdit,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide2.QtCore import Qt
 
 
 class ExtendedTabWidget(QTabWidget):
@@ -35,23 +34,15 @@ class ExtendedTabWidget(QTabWidget):
         tabBarRect = self.tabBar().geometry()
         availableWidth = self.width()
 
-        line_width = (
-            availableWidth // 2
-            if availableWidth < 2 * self.target_width
-            else self.target_width
-        )
+        line_width = availableWidth // 2 if availableWidth < 2 * self.target_width else self.target_width
 
         self.tabBar().setMaximumWidth(availableWidth - line_width - 3)
 
         # Update QLineEdit geometry
         lineEditX = self.width() - line_width - 2
         if self.top_right_widget:
-            self.top_right_widget.setGeometry(
-                lineEditX, tabBarRect.y(), line_width, tabBarRect.height() - 5
-            )
-            self.top_right_widget.setFixedWidth(
-                line_width
-            )  # Ensure fixed width is maintained
+            self.top_right_widget.setGeometry(lineEditX, tabBarRect.y(), line_width, tabBarRect.height() - 5)
+            self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
     def onResizeEvent(self, event):
         self.updateLineEditPosition()
@@ -64,7 +55,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     edit = QLineEdit(f"Ciiiiii")
-    tabWidget = ExtendedTabWidget(top_right_widget=edit)
+    tabWidget = ExtendedTabWidget()
 
     # Add tabs with larger widgets
     for i in range(3):

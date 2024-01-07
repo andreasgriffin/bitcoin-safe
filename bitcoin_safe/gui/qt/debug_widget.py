@@ -1,16 +1,16 @@
-from PySide2.QtWidgets import (
-    QWidget,
-    QApplication,
-    QVBoxLayout,
-    QPushButton,
-    QSizePolicy,
-)
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QPainter, QColor, QFont
 import random
+
 from PySide2.QtCore import *
+from PySide2.QtCore import Qt
 from PySide2.QtGui import *
+from PySide2.QtGui import QColor, QFont, QPainter
 from PySide2.QtWidgets import *
+from PySide2.QtWidgets import (
+    QApplication,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class DebugWidget(QWidget):
@@ -53,9 +53,7 @@ class DebugWidget(QWidget):
     def drawDebugInfo(self, widget):
         widget_hash = hash(widget)
         random.seed(widget_hash)
-        color = QColor(
-            random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-        )
+        color = QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
         painter = QPainter(widget)
         painter.setPen(color)

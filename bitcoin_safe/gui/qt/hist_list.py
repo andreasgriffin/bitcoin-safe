@@ -1,68 +1,62 @@
 import logging
 import os
 import tempfile
+from bitcoin_safe.psbt_util import FeeInfo
 
+from bitcoin_safe.pythonbdk_types import Recipient
 
 logger = logging.getLogger(__name__)
 
 import datetime
-import bdkpython as bdk
 import enum
+import json
 from enum import IntEnum
-from typing import TYPE_CHECKING, List, Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
+import bdkpython as bdk
+from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from PySide2.QtCore import (
-    Qt,
     QPersistentModelIndex,
-    QModelIndex,
-    QMimeData,
-    QPoint,
+    Qt,
     Signal,
 )
 from PySide2.QtGui import (
-    QStandardItemModel,
-    QStandardItem,
+    QBrush,
+    QColor,
     QFont,
-    QMouseEvent,
-    QDrag,
-    QPixmap,
-    QCursor,
-    QRegion,
-    QPainter,
+    QStandardItem,
 )
-from PySide2.QtWidgets import QAbstractItemView, QComboBox, QLabel, QMenu, QPushButton
-from .category_list import CategoryEditor
-from .open_tx_dialog import file_to_str
-from ...wallet import Wallet, TxConfirmationStatus
-from PySide2.QtCore import QMimeData, QUrl
+from PySide2.QtWidgets import (
+    QAbstractItemView,
+    QFileDialog,
+    QMenu,
+)
 
 from ...i18n import _
+from ...signals import UpdateFilter
 from ...util import (
-    InternalAddressCorruption,
     Satoshis,
     block_explorer_URL,
-    serialized_to_hex,
 )
-import json
-from PySide2.QtWidgets import QFileDialog
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
-
-from .util import (
-    MONOSPACE_FONT,
-    ColorScheme,
-    MessageBoxMixin,
-    set_balance_label,
-    webopen,
-    do_copy,
-    read_QIcon,
-    TX_ICONS,
-    sort_id_to_icon,
+from ...wallet import (
+    ToolsTxUiInfo,
+    TxConfirmationStatus,
+    TxStatus,
+    Wallet,
+    get_wallet,
+    get_wallets,
 )
-from .my_treeview import MyTreeView, MySortModel, MyStandardItemModel
+from .category_list import CategoryEditor
+from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
+from .open_tx_dialog import file_to_str
 from .taglist import AddressDragInfo
-from .html_delegate import HTMLDelegate
-from ...signals import UpdateFilter
-from PySide2.QtGui import QStandardItem, QBrush, QColor
+from .util import (
+    Message,
+    read_QIcon,
+    set_balance_label,
+    sort_id_to_icon,
+    webopen,
+)
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -98,7 +92,7 @@ class AddressTypeFilter(IntEnum):
 from ...signals import Signals
 
 
-class HistList(MyTreeView, MessageBoxMixin):
+class HistList(MyTreeView):
     signal_tag_dropped = Signal(AddressDragInfo)
 
     class Columns(MyTreeView.BaseColumnsEnum):
@@ -157,9 +151,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         self.fx = fx
         self.address_domain = address_domain
         self.hidden_columns = hidden_columns if hidden_columns else []
-        self._tx_dict: Dict[
-            str, Tuple[Wallet, bdk.TransactionDetails]
-        ] = {}  # txid -> wallet, tx
+        self._tx_dict: Dict[str, Tuple[Wallet, bdk.TransactionDetails]] = {}  # txid -> wallet, tx
         self.signals = signals
         self.wallet_id = wallet_id
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -196,8 +188,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         self.signals.category_updated.connect(self.update_with_filter)
 
     def get_file_data(self, txid):
-        wallets: List[Wallet] = self.signals.get_wallets().values()
-        for wallet in wallets:
+        for wallet in get_wallets(self.signals):
             txdetails = wallet.get_tx(txid)
         if txdetails:
             return Data(txdetails.transaction, DataType.Tx)
@@ -280,9 +271,7 @@ class HistList(MyTreeView, MessageBoxMixin):
         event.ignore()
 
     def on_double_click(self, idx):
-        txid = self.get_role_data_for_current_item(
-            col=self.key_column, role=self.ROLE_KEY
-        )
+        txid = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         wallet, tx_details = self._tx_dict[txid]
         self.signals.open_tx_like.emit(tx_details)
 
@@ -347,19 +336,13 @@ class HistList(MyTreeView, MessageBoxMixin):
             return
 
         self._tx_dict = {}
-        wallets: List[Wallet] = [
-            wallet
-            for wallet in self.signals.get_wallets().values()
-            if self.wallet_id and wallet.id == self.wallet_id
+        wallets = [
+            wallet for wallet in get_wallets(self.signals) if self.wallet_id and wallet.id == self.wallet_id
         ]
 
-        current_key = self.get_role_data_for_current_item(
-            col=self.key_column, role=self.ROLE_KEY
-        )
+        current_key = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
 
-        self.proxy.setDynamicSortFilter(
-            False
-        )  # temp. disable re-sorting after every change
+        self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
         self.std_model.clear()
         self.update_headers(self.headers)
 
@@ -372,12 +355,10 @@ class HistList(MyTreeView, MessageBoxMixin):
             if self.address_domain:
                 txid_domain = set()
                 for address in self.address_domain:
-                    txid_domain = txid_domain.union(
-                        wallet.get_address_to_txids(address)
-                    )
+                    txid_domain = txid_domain.union(wallet.get_address_to_txids(address))
 
             # always take sorted_delta_list_transactions().new as a start because it is correctly sorted
-            for tx in wallet.sorted_delta_list_transactions():
+            for i, tx in enumerate(wallet.sorted_delta_list_transactions()):
                 if txid_domain is not None:
                     if tx.txid not in txid_domain:
                         continue
@@ -395,22 +376,19 @@ class HistList(MyTreeView, MessageBoxMixin):
                         [
                             python_utxo.txout.value
                             for python_utxo in fulltxdetail.outputs.values()
-                            if python_utxo
-                            and python_utxo.address in self.address_domain
+                            if python_utxo and python_utxo.address in self.address_domain
                         ]
                     ) - sum(
                         [
                             python_utxo.txout.value
                             for python_utxo in fulltxdetail.inputs.values()
-                            if python_utxo
-                            and python_utxo.address in self.address_domain
+                            if python_utxo and python_utxo.address in self.address_domain
                         ]
                     )
                 else:
                     amount = tx.received - tx.sent
 
                 balance += amount
-                status = wallet.get_tx_status(tx)
 
                 labels = [""] * len(self.Columns)
                 labels[self.Columns.WALLET_ID] = wallet.id
@@ -420,15 +398,11 @@ class HistList(MyTreeView, MessageBoxMixin):
                 labels[self.Columns.TXID] = tx.txid
                 items = [QStandardItem(e) for e in labels]
 
-                items[self.Columns.STATUS].setData(status.sort_id, self.ROLE_SORT_ORDER)
-                items[self.Columns.WALLET_ID].setData(
-                    wallet.id, self.ROLE_CLIPBOARD_DATA
-                )
+                items[self.Columns.STATUS].setData(i, self.ROLE_SORT_ORDER)
+                items[self.Columns.WALLET_ID].setData(wallet.id, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
                 if amount < 0:
-                    items[self.Columns.AMOUNT].setData(
-                        QBrush(QColor("red")), Qt.ForegroundRole
-                    )
+                    items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ForegroundRole)
                 items[self.Columns.BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
@@ -471,26 +445,20 @@ class HistList(MyTreeView, MessageBoxMixin):
         label = wallet.get_label_for_txid(tx.txid)
         categories = wallet.get_categories_for_txid(tx.txid)
         category = categories[0] if categories else ""
-        status = wallet.get_tx_status(tx)
+        status = TxStatus.from_wallet(tx.txid, wallet)
         status_text = (
-            datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime(
-                "%Y-%m-%d %H:%M"
-            )
-            if status.confirmations
+            datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime("%Y-%m-%d %H:%M")
+            if status.confirmations()
             else (TxConfirmationStatus.to_str(status.confirmation_status))
         )
 
         item = [self.std_model.item(row, col) for col in self.Columns]
         item[self.Columns.STATUS].setText(status_text)
-        item[self.Columns.STATUS].setData(
-            status.confirmations, self.ROLE_CLIPBOARD_DATA
-        )
-        item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id)))
+        item[self.Columns.STATUS].setData(status.confirmations(), self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
 
         item[self.Columns.STATUS].setToolTip(
-            f"{status.confirmations} Confirmations"
-            if status.confirmations
-            else status_text
+            f"{status.confirmations()} Confirmations" if status.confirmations() else status_text
         )
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
@@ -516,7 +484,7 @@ class HistList(MyTreeView, MessageBoxMixin):
             txid = txids[0]
             menu.addAction(_("Details"), lambda: self.signals.open_tx_like.emit(txid))
 
-            addr_URL = block_explorer_URL(self.config.network_config, "tx", txid)
+            addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", txid)
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
             menu.addSeparator()
@@ -548,8 +516,62 @@ class HistList(MyTreeView, MessageBoxMixin):
             lambda: self.export_raw_transactions(selected),
         )
 
+        if not multi_select:
+            idx = self.indexAt(position)
+            if not idx.isValid():
+                return
+            item = self.item_from_index(idx)
+            if not item:
+                return
+            txid = txids[0]
+
+            wallet, tx_details = self._tx_dict[txid]
+            tx_status = TxStatus.from_wallet(txid, wallet)
+            if tx_status and tx_status.can_rbf():
+                menu.addSeparator()
+                menu.addAction(_("Edit with higher fee (RBF)"), lambda: self.edit_tx(tx_details))
+
+                menu.addAction(_("Cancel transaction (RBF)"), lambda: self.cancel_tx(tx_details))
+
         # run_hook('receive_menu', menu, txids, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))
+
+    def edit_tx(self, tx_details: bdk.TransactionDetails):
+        txinfos = ToolsTxUiInfo.from_tx(
+            tx_details.transaction,
+            FeeInfo.from_txdetails(tx_details),
+            self.config.network_config.network,
+            get_wallets(self.signals),
+        )
+
+        self.signals.open_tx_like.emit(txinfos)
+
+    def cancel_tx(self, tx_details: bdk.TransactionDetails):
+        txinfos = ToolsTxUiInfo.from_tx(
+            tx_details.transaction,
+            FeeInfo.from_txdetails(tx_details),
+            self.config.network_config.network,
+            get_wallets(self.signals),
+        )
+
+        wallet = get_wallet(self.wallet_id, self.signals)
+        if not wallet:
+            Message(f"Cannot fetch wallet '{self.wallet_id}'. Please open the wallet first.").show_error()
+            return
+
+        assert txinfos.spend_all_utxos, "Eeror in input selection for the cancel transaction"
+        # it is ok to set amount=0, because  checked_max_amount=True
+        amount = 0
+        txinfos.recipients = [
+            Recipient(
+                wallet.get_address().address.as_string(),
+                amount=amount,
+                label=f"Cancel transaction {tx_details.txid}",
+                checked_max_amount=True,
+            )
+        ]
+
+        self.signals.open_tx_like.emit(txinfos)
 
     def export_raw_transactions(self, selected_items: List[QStandardItem], folder=None):
         if not folder:
@@ -562,16 +584,12 @@ class HistList(MyTreeView, MessageBoxMixin):
 
         file_paths = self.drag_keys_to_file_paths(keys, save_directory=folder)
 
-        logger.info(
-            f"Saved {len(file_paths)} {self.std_model.drag_key} saved to {folder}"
-        )
+        logger.info(f"Saved {len(file_paths)} {self.std_model.drag_key} saved to {folder}")
 
     def get_edit_key_from_coordinate(self, row, col):
         if col != self.Columns.LABEL:
             return None
-        return self.get_role_data_from_coordinate(
-            row, self.key_column, role=self.ROLE_KEY
-        )
+        return self.get_role_data_from_coordinate(row, self.key_column, role=self.ROLE_KEY)
 
     def on_edited(self, idx, edit_key, *, text):
         txid = edit_key
@@ -584,9 +602,7 @@ class HistList(MyTreeView, MessageBoxMixin):
                 txids=[txid],
                 addresses=[
                     pythonutxo.address
-                    for pythonutxo in wallet.get_dict_fulltxdetail()
-                    .get(txid)
-                    .outputs.values()
+                    for pythonutxo in wallet.get_dict_fulltxdetail().get(txid).outputs.values()
                     if pythonutxo
                 ],
             )

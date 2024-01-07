@@ -1,11 +1,21 @@
 import logging
+
 logger = logging.getLogger(__name__)
 
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel
-from PySide2.QtCore import Qt, QRectF
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QApplication, QLabel, QSlider, QVBoxLayout, QWidget
+
 
 class CustomSlider(QWidget):
-    def __init__(self, min_val=0, max_val=100, tick_interval=10, unit="BTC", label_text='', parent=None):
+    def __init__(
+        self,
+        min_val=0,
+        max_val=100,
+        tick_interval=10,
+        unit="BTC",
+        label_text="",
+        parent=None,
+    ):
         super(CustomSlider, self).__init__(parent)
         self._unit = unit
         self._color_ranges = []
@@ -20,7 +30,7 @@ class CustomSlider(QWidget):
 
         self.label = QLabel(parent)
 
-        self.layout = QVBoxLayout(parent)        
+        self.layout = QVBoxLayout(parent)
         self.layout.setAlignment(Qt.AlignVCenter)
         self.layout.addWidget(self.slider)
         self.layout.addWidget(self.label)
@@ -33,7 +43,7 @@ class CustomSlider(QWidget):
         return self.slider.value()
 
     @value.setter
-    def unit(self, value):
+    def value(self, value):
         self.slider.setValue(value)
 
     @property
@@ -84,7 +94,7 @@ class CustomSlider(QWidget):
     def tick_interval(self, value):
         self.slider.setTickInterval(value)
 
-    def update_label(self, value):        
+    def update_label(self, value):
         for range in self.color_ranges:
             if range[0] <= value <= range[1]:
                 self.label.setText(f"{self.label_text}<font color='{range[2]}'>{value}</font> {self.unit}")
@@ -95,18 +105,17 @@ class CustomSlider(QWidget):
         self._color_ranges.append((min_val, max_val, color))
 
 
-
-
 def main():
     app = QApplication([])
 
-    widget = CustomSlider(min_val=0, max_val=70, tick_interval=10, unit="BTC", label_text='Amount: ')
+    widget = CustomSlider(min_val=0, max_val=70, tick_interval=10, unit="BTC", label_text="Amount: ")
     widget.add_color_range(20, 30, "#FFFFFF")
     widget.add_color_range(30, 35, "#FF00FF")
     widget.add_color_range(40, 60, "#FFFF11")
     widget.show()
 
     app.exec_()
+
 
 if __name__ == "__main__":
     main()

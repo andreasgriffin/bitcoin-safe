@@ -1,15 +1,15 @@
 import sys
+
+from PySide2.QtCore import QRectF, QSize, QTimer
+from PySide2.QtGui import QPainter
+from PySide2.QtSvg import QSvgRenderer
 from PySide2.QtWidgets import (
     QApplication,
-    QPushButton,
     QMainWindow,
+    QPushButton,
     QVBoxLayout,
     QWidget,
-    QLabel,
 )
-from PySide2.QtGui import QPainter, QFontMetrics
-from PySide2.QtCore import QTimer, QSize, Qt, QRectF, QPointF
-from PySide2.QtSvg import QSvgRenderer
 
 from .util import icon_path
 
@@ -100,9 +100,7 @@ class SpinningButton(QPushButton):
         default_size_hint = super().sizeHint()
 
         # Add icon width and padding to the width
-        total_width = (
-            default_size_hint.width() + self._icon_size.width() + 2 * self.padding
-        )
+        total_width = default_size_hint.width() + self._icon_size.width() + 2 * self.padding
 
         # Ensure the height is enough for the text and the icon
         total_height = max(default_size_hint.height(), self._icon_size.height())

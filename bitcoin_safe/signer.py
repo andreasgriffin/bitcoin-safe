@@ -1,34 +1,21 @@
 import logging
+
 from .gui.qt.open_tx_dialog import TransactionDialog
-from .signals import Signals
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-
-from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
-from .gui.qt.balance_dialog import (
-    COLOR_FROZEN,
-    COLOR_CONFIRMED,
-    COLOR_FROZEN_LIGHTNING,
-    COLOR_LIGHTNING,
-    COLOR_UNCONFIRMED,
-    COLOR_UNMATURED,
-)
-from .gui.qt.util import (
-    Message,
-)
-from .keystore import KeyStore, KeyStoreTypes
 import bdkpython as bdk
-from .wallet import Wallet
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
-from .util import tx_of_psbt_to_hex
-from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.gui import USBGui
+from bitcoin_usb.software_signer import SoftwareSigner
+
+from PySide2.QtCore import QObject, Signal
+
+
+from .keystore import KeyStoreTypes
+from .util import tx_of_psbt_to_hex
+from .wallet import Wallet
 
 
 class AbstractSigner(QObject):
@@ -40,9 +27,7 @@ class AbstractSigner(QObject):
         self.network = network
         self.blockchain = blockchain
 
-    def sign(
-        self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
-    ):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
         pass
 
     @property
@@ -54,6 +39,13 @@ class AbstractSigner(QObject):
 
     def can_sign(self):
         return False
+
+    def txids_match(
+        self,
+        psbt1: bdk.PartiallySignedTransaction,
+        psbt2: bdk.PartiallySignedTransaction,
+    ):
+        return psbt1.txid() == psbt2.txid()
 
 
 class SignerWallet(AbstractSigner):
@@ -71,12 +63,15 @@ class SignerWallet(AbstractSigner):
     def can_sign(self):
         return bool(self.software_signers)
 
-    def sign(
-        self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
-    ):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+        original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         for software_signer in self.software_signers:
             psbt = software_signer.sign_psbt(psbt)
+
+        assert self.txids_match(
+            original_psbt, psbt
+        ), "The txid of the signed psbt doesnt match the original txid"
 
         logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)}")
 
@@ -109,14 +104,20 @@ class QRSigner(AbstractSigner):
         self._label = label
         self.dummy_wallet = dummy_wallet
 
-    def scan_result_callback(
-        self, original_psbt: bdk.PartiallySignedTransaction, data: bitcoin_qr.Data
-    ):
+    def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: bitcoin_qr.Data):
         logger.debug(str(data.data))
         if data.data_type == bitcoin_qr.DataType.PSBT:
             scanned_psbt: bdk.PartiallySignedTransaction = data.data
+            assert self.txids_match(
+                scanned_psbt, original_psbt
+            ), "The txid of the signed psbt doesnt match the original txid"
+
             logger.debug(str(scanned_psbt.serialize()))
             psbt2 = original_psbt.combine(scanned_psbt)
+            assert self.txids_match(
+                psbt2, original_psbt
+            ), "The txid of the signed psbt doesnt match the original txid"
+
             if psbt2.serialize() != original_psbt.serialize():
                 # finalize the psbt (some hardware wallets like specter diy dont do that)
                 self.dummy_wallet.bdkwallet.sign(psbt2, None)
@@ -126,17 +127,13 @@ class QRSigner(AbstractSigner):
                 logger.debug(f"psbt unchanged {psbt2.serialize()}")
         elif data.data_type == bitcoin_qr.DataType.Tx:
             scanned_tx: bdk.Transaction = data.data
-            if scanned_tx.txid() == original_psbt.txid():
-                self.signal_signature_added.emit(scanned_tx)
-            else:
-                Message(
-                    "Scanned a transaction unrelated to the current PSBT"
-                ).show_error()
-                return
+            assert (
+                scanned_tx.txid() == original_psbt.txid()
+            ), "The txid of the signed psbt doesnt match the original txid"
 
-    def sign(
-        self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
-    ):
+            self.signal_signature_added.emit(scanned_tx)
+
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
 
         window = bitcoin_qr_gui.BitcoinVideoWidget(
             result_callback=lambda data: self.scan_result_callback(psbt, data)
@@ -151,9 +148,7 @@ class QRSigner(AbstractSigner):
 class FileSigner(QRSigner):
     keystore_type = KeyStoreTypes.file
 
-    def sign(
-        self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
-    ):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
         tx_dialog = TransactionDialog(
             network=self.network,
             title="Import signed PSBT",
@@ -181,9 +176,7 @@ class USBSigner(QRSigner):
         super().__init__(label, network, blockchain, dummy_wallet)
         self.usb = USBGui(self.network)
 
-    def sign(
-        self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None
-    ):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
         signed_psbt = self.usb.sign(psbt)
         if signed_psbt:
             self.scan_result_callback(psbt, Data(signed_psbt, DataType.PSBT))
