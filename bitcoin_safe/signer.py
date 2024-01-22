@@ -1,6 +1,6 @@
 import logging
 
-from .gui.qt.open_tx_dialog import TransactionDialog
+from .gui.qt.dialog_import import ImportDialog
 
 logger = logging.getLogger(__name__)
 
@@ -9,9 +9,7 @@ from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from bitcoin_usb.gui import USBGui
 from bitcoin_usb.software_signer import SoftwareSigner
-
 from PySide2.QtCore import QObject, Signal
-
 
 from .keystore import KeyStoreTypes
 from .util import tx_of_psbt_to_hex
@@ -31,21 +29,21 @@ class AbstractSigner(QObject):
         pass
 
     @property
-    def label(self):
-        pass
+    def label(self) -> str:
+        return ""
 
     def get_singing_options(self):
         pass
 
-    def can_sign(self):
+    def can_sign(self) -> bool:
         return False
 
     def txids_match(
         self,
         psbt1: bdk.PartiallySignedTransaction,
         psbt2: bdk.PartiallySignedTransaction,
-    ):
-        return psbt1.txid() == psbt2.txid()
+    ) -> bool:
+        return bool(psbt1.txid() == psbt2.txid())
 
 
 class SignerWallet(AbstractSigner):
@@ -60,7 +58,7 @@ class SignerWallet(AbstractSigner):
             if keystore.mnemonic
         ]
 
-    def can_sign(self):
+    def can_sign(self) -> bool:
         return bool(self.software_signers)
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
@@ -149,9 +147,9 @@ class FileSigner(QRSigner):
     keystore_type = KeyStoreTypes.file
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
-        tx_dialog = TransactionDialog(
+        tx_dialog = ImportDialog(
             network=self.network,
-            title="Import signed PSBT",
+            window_title="Import signed PSBT",
             on_open=lambda s: self.scan_result_callback(
                 psbt, bitcoin_qr.Data.from_str(s, network=self.network)
             ),
@@ -182,5 +180,5 @@ class USBSigner(QRSigner):
             self.scan_result_callback(psbt, Data(signed_psbt, DataType.PSBT))
 
     @property
-    def label(self):
+    def label(self) -> str:
         return f"{self._label}"

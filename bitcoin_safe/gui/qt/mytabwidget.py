@@ -41,7 +41,10 @@ class ExtendedTabWidget(QTabWidget):
         # Update QLineEdit geometry
         lineEditX = self.width() - line_width - 2
         if self.top_right_widget:
-            self.top_right_widget.setGeometry(lineEditX, tabBarRect.y(), line_width, tabBarRect.height() - 5)
+            v_margin = (tabBarRect.height() - self.top_right_widget.height()) // 2
+            self.top_right_widget.setGeometry(
+                lineEditX, tabBarRect.y(), line_width, tabBarRect.height() - v_margin
+            )
             self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
     def onResizeEvent(self, event):

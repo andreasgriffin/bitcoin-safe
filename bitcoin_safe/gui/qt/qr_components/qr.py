@@ -8,13 +8,14 @@ logger = logging.getLogger(__name__)
 
 
 def create_qr(data: str, scale=10, color="black", background="white"):
-    """
-    Generate a QR Code from the provided data and return it as an SVG string.
+    """Generate a QR Code from the provided data and return it as an SVG
+    string.
 
     :param data: The data to encode in the QR Code.
     :param scale: The scaling factor for the QR Code.
     :param color: Color of the QR code.
-    :param background: Background color of the QR code (None for transparent).
+    :param background: Background color of the QR code (None for
+        transparent).
     :return: QR Code as SVG string.
     """
     qr = segno.make(data)
@@ -26,8 +27,8 @@ def create_qr(data: str, scale=10, color="black", background="white"):
 
 
 def create_qr_svg(content: str, scale=1, color="black", background="white", encoding=None):
-    """
-    Generate a QR Code from the provided data and return it as an SVG string.
+    """Generate a QR Code from the provided data and return it as an SVG
+    string.
 
     :param content [str, int, bytes ]: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be

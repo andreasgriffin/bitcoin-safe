@@ -38,7 +38,7 @@ class StepProgressBar(QWidget):
     def __init__(
         self,
         steps,
-        current_step=1,
+        current_step=0,
         parent=None,
         mark_current_step_as_completed=False,
         clickable=True,
@@ -338,16 +338,15 @@ class StepProgressContainer(QWidget):
             custom_widget = QWidget()
             self.stacked_widget.addWidget(custom_widget)
 
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.step_bar)
-        self.layout.addWidget(self.horizontal_indicator)
-        self.layout.setSpacing(0)  # This sets the spacing between items in the layout to zero
-        self.layout.addSpacing(5)
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(QVBoxLayout())
+        self.layout().addWidget(self.step_bar)
+        self.layout().addWidget(self.horizontal_indicator)
+        self.layout().setSpacing(0)  # This sets the spacing between items in the layout to zero
+        self.layout().addSpacing(5)
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout.addWidget(self.stacked_widget)
+        self.layout().addWidget(self.stacked_widget)
 
-        self.setLayout(self.layout)
         self.set_current_step(current_step)
 
         self.step_bar.signal_step_clicked.connect(self.on_click)
@@ -385,8 +384,7 @@ class StepProgressContainer(QWidget):
         self.stacked_widget.setCurrentIndex(step)
 
     def set_custom_widget(self, step, widget):
-        """
-        Sets the custom widget for the specified step.
+        """Sets the custom widget for the specified step.
 
         Parameters:
         step (int): The step number to set the custom widget for.
@@ -437,14 +435,16 @@ class DemoApp(QWidget):
         prev_button = QPushButton("Previous Step")
         prev_button.clicked.connect(self.prev_step)
 
-        layout.addWidget(self.step_progress_container)  # Add the step progress container instead of step_bar
-        layout.addWidget(prev_button)
-        layout.addWidget(next_button)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout().addWidget(
+            self.step_progress_container
+        )  # Add the step progress container instead of step_bar
+        layout().addWidget(prev_button)
+        layout().addWidget(next_button)
+        layout().setContentsMargins(0, 0, 0, 0)
 
         self.toggle_completion_button = QPushButton("Toggle Step Completion")
         self.toggle_completion_button.clicked.connect(self.toggle_step_completion)
-        layout.addWidget(self.toggle_completion_button)
+        layout().addWidget(self.toggle_completion_button)
 
         self.setLayout(layout)
 

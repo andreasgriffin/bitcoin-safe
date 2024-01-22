@@ -23,8 +23,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.util import serialized_to_hex
 
 from .qr_components.image_widget import QRCodeWidgetSVG
@@ -33,26 +33,23 @@ from .util import Satoshis
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
+from PySide2.QtGui import QFont, Qt
 from PySide2.QtWidgets import (
-    QWidget,
+    QDialog,
     QHBoxLayout,
+    QLabel,
     QSizePolicy,
-    QVBoxLayout,
     QTabWidget,
     QTextEdit,
-    QLabel,
-    QDialog,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide2.QtGui import Qt, QFont
 
 from ...i18n import _
 from ...signals import Signals
 from ...wallet import Wallet
 from .hist_list import HistList
-from .util import (
-    Buttons,
-    CloseButton,
-)
+from .util import Buttons, CloseButton
 
 
 class AddressDialog(QDialog):
@@ -114,7 +111,7 @@ class AddressDialog(QDialog):
         address_path_str = self.wallet.get_address_path_str(address)
         if address_path_str:
             tab2_layout.addWidget(QLabel(_("Address descriptor") + ":"))
-            der_path_e = ButtonEdit(address_path_str, edit_class=QTextEdit)
+            der_path_e = ButtonEdit(address_path_str, input_field=QTextEdit())
             der_path_e.add_copy_button()
             der_path_e.setFixedHeight(50)
             der_path_e.setReadOnly(True)

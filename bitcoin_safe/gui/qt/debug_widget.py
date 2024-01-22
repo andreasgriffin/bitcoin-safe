@@ -1,13 +1,11 @@
 import random
 
-from PySide2.QtCore import *
 from PySide2.QtCore import Qt
-from PySide2.QtGui import *
-from PySide2.QtGui import QColor, QFont, QPainter
-from PySide2.QtWidgets import *
+from PySide2.QtGui import QColor, QFont, QPainter, Qt
 from PySide2.QtWidgets import (
     QApplication,
     QPushButton,
+    QStyleOption,
     QVBoxLayout,
     QWidget,
 )
@@ -21,11 +19,12 @@ class DebugWidget(QWidget):
     def _cleaned_size_policy(self, policy):
         return str(policy).split(".")[-1]
 
-    def _collect_debug_info(self, widget, level=0):
+    def _collect_debug_info(self, widget: QWidget, level=0):
         indent = "    " * level
         sizePolicy = widget.sizePolicy()
         sizePolicyText = f"{indent}SP: H-{self._cleaned_size_policy(sizePolicy.horizontalPolicy())}, V-{self._cleaned_size_policy(sizePolicy.verticalPolicy())}"
-        sizeText = f"{indent}Size: Min {widget.minimumWidth()}x{widget.minimumHeight()}, Max {widget.maximumWidth()}x{widget.maximumHeight()}"
+        # sizeText = f"{indent}Size: Min {widget.minimumWidth()}x{widget.minimumHeight()}, Max {widget.maximumWidth()}x{widget.maximumHeight()}"
+        sizeText = f"{indent}sizeHint: {widget.sizeHint()}"
         classNameText = f"{indent}Class: {widget.__class__.__name__}"
 
         # Margins (for QLayout if exists)

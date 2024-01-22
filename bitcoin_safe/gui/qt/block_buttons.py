@@ -5,12 +5,7 @@ from typing import List
 import bdkpython as bdk
 from PySide2.QtCore import QLocale, QObject, Qt, QTimer, Signal
 from PySide2.QtGui import QColor
-from PySide2.QtWidgets import (
-    QApplication,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-)
+from PySide2.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.util import block_explorer_URL_of_projected_block
@@ -242,7 +237,7 @@ class MempoolButtons(ObjectRequiringMempool):
 
         for i, button in enumerate(self.button_group.buttons):
             block_number = i + 1
-            button.setVisible(i < self.mempool_data.num_mempool_blocks())
+            button.setVisible(i < max(1, self.mempool_data.num_mempool_blocks()))
             button.label_title.set(
                 "Next Block" if block_number == 1 else f"{format_block_number(block_number)}. Block",
                 block_type=BlockType.projected,

@@ -1,8 +1,6 @@
 import random
 
-from PySide2.QtWidgets import (
-    QApplication,
-)
+from PySide2.QtWidgets import QApplication
 
 from .quick_receive import QuickReceive, ReceiveGroup
 

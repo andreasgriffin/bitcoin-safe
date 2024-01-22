@@ -1,6 +1,5 @@
 import logging
 
-
 from ...signals import Signals, UpdateFilter
 from ...wallet import Wallet
 from .qr_components.quick_receive import QuickReceive, ReceiveGroup

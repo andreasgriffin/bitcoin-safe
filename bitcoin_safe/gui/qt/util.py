@@ -1,5 +1,5 @@
+import enum
 import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -10,10 +10,7 @@ import sys
 import traceback
 import webbrowser
 from functools import lru_cache
-from typing import (
-    Any,
-    Callable,
-)
+from typing import Any, Callable
 
 from PIL import Image as PilImage
 from PySide2.QtCore import (
@@ -54,13 +51,7 @@ from PySide2.QtWidgets import (
 )
 
 from ...i18n import _, languages
-from ...util import (
-    Satoshis,
-    TaskThread,
-    is_address,
-    register_cache,
-    resource_path,
-)
+from ...util import Satoshis, TaskThread, is_address, register_cache, resource_path
 
 if platform.system() == "Windows":
     MONOSPACE_FONT = "Lucida Console"
@@ -68,6 +59,8 @@ elif platform.system() == "Darwin":
     MONOSPACE_FONT = "Monaco"
 else:
     MONOSPACE_FONT = "monospace"
+
+QWIDGETSIZE_MAX = 16777215
 
 
 # filter tx files in QFileDialog:
@@ -92,7 +85,7 @@ TX_ICONS = [
 ]
 
 
-class WalletTab(QWidget):
+class QtWalletBase(QWidget):
     pass
 
 
@@ -299,52 +292,56 @@ class CloseButton(QPushButton):
         self.setDefault(True)
 
 
+class MessageType(enum.Enum):
+    Info = enum.auto()
+    Warning = enum.auto()
+    Error = enum.auto()
+    Critical = enum.auto()
+
+
 class Message:
-    def __init__(self, msg, parent=None, title=None, icon=None, msecs=None, **kwargs) -> None:
+    def __init__(
+        self,
+        msg,
+        parent=None,
+        title=None,
+        icon=None,
+        msecs=None,
+        type: MessageType = MessageType.Info,
+        no_show=False,
+        **kwargs,
+    ) -> None:
 
         self.msg = msg
         self.parent = parent
         self.title = title
         self.icon = icon
         self.msecs = msecs
+        self.type = type
         self.kwargs = kwargs
 
-    def show_warning(self):
+        if not no_show:
+            self.show()
+
+    def show(self):
         logger.warning(str(self.__dict__))
-        return self.msg_box(
-            self.icon if self.icon else QMessageBox.Warning,
-            self.parent,
-            self.title or _("Warning"),
-            self.msg,
-            **self.kwargs,
-        )
 
-    def show_error(self):
-        logger.error(str(self.__dict__))
-        return self.msg_box(
-            self.icon if self.icon else QMessageBox.Warning,
-            self.parent,
-            _("Error"),
-            self.msg,
-            **self.kwargs,
-        )
+        icon = QMessageBox.Information
+        title = "Information"
+        if self.type in [MessageType.Warning]:
+            icon = QMessageBox.Warning
+            title = "Warning"
+        if self.type in [MessageType.Error]:
+            icon = QMessageBox.Warning
+            title = "Error"
+        if self.type in [MessageType.Critical]:
+            icon = QMessageBox.Critical
+            title = "Critical Error"
 
-    def show_critical(self):
-        logger.critical(str(self.__dict__), exc_info=True)
         return self.msg_box(
-            self.icon if self.icon else QMessageBox.Critical,
+            self.icon or icon,
             self.parent,
-            self.title or _("Critical Error"),
-            self.msg,
-            **self.kwargs,
-        )
-
-    def show_message(self):
-        logger.info(str(self.__dict__))
-        return self.msg_box(
-            self.icon if self.icon else QMessageBox.Information,
-            self.parent,
-            self.title or _("Information"),
+            self.title or title,
             self.msg,
             **self.kwargs,
         )
@@ -379,9 +376,8 @@ class Message:
 
 
 def custom_exception_handler(exc_type, exc_value, exc_traceback):
-    """
-    Custom exception handler to catch unhandled exceptions and display an error message box.
-    """
+    """Custom exception handler to catch unhandled exceptions and display an
+    error message box."""
     # Format the traceback
     formatted_traceback = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
     error_message = f"{exc_type.__name__}: {exc_value}\n\n{formatted_traceback}"
@@ -434,8 +430,10 @@ class WindowModalDialog(QDialog):
 
 
 class WaitingDialog(WindowModalDialog):
-    """Shows a please wait dialog whilst running a task.  It is not
-    necessary to maintain a reference to this dialog."""
+    """Shows a please wait dialog whilst running a task.
+
+    It is not necessary to maintain a reference to this dialog.
+    """
 
     def __init__(self, parent: QWidget, message: str, task, on_success=None, on_error=None):
         assert parent
@@ -462,9 +460,10 @@ class WaitingDialog(WindowModalDialog):
 
 class BlockingWaitingDialog(WindowModalDialog):
     """Shows a waiting dialog whilst running a task.
-    Should be called from the GUI thread. The GUI thread will be blocked while
-    the task is running; the point of the dialog is to provide feedback
-    to the user regarding what is going on.
+
+    Should be called from the GUI thread. The GUI thread will be blocked
+    while the task is running; the point of the dialog is to provide
+    feedback to the user regarding what is going on.
     """
 
     def __init__(self, parent: QWidget, message: str, task: Callable[[], Any]):

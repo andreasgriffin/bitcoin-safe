@@ -22,7 +22,7 @@ from ...config import (
     get_default_mempool_url,
     get_default_port,
 )
-from ...pythonbdk_types import *
+from ...pythonbdk_types import BlockchainType, CBFServerType, List, bdk
 
 
 class NetworkSettingsUI(QWidget):

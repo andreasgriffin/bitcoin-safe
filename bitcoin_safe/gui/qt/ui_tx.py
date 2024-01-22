@@ -1,13 +1,13 @@
 import logging
 
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
+
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab
-
 from bitcoin_safe.gui.qt.nLockTimePicker import nLocktimePicker
 
 from ...config import FEE_RATIO_HIGH_WARNING, MIN_RELAY_FEE, UserConfig
-from .open_tx_dialog import UTXOAddDialog
+from .dialog_import import ImportDialog
 from .qr_components.image_widget import QRCodeWidgetSVG
 
 logger = logging.getLogger(__name__)
@@ -17,24 +17,24 @@ import os
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
-from PySide2.QtCore import QObject, Signal, QItemSelectionModel, QCoreApplication
+from PySide2.QtCore import QCoreApplication, QItemSelectionModel, QObject, Signal
+from PySide2.QtGui import Qt
 from PySide2.QtWidgets import (
-    QPushButton,
-    QWidget,
-    QGroupBox,
-    QHBoxLayout,
-    QSizePolicy,
-    QVBoxLayout,
-    QTabWidget,
+    QCheckBox,
+    QDialogButtonBox,
     QDoubleSpinBox,
     QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
     QLabel,
-    QDialogButtonBox,
+    QPushButton,
+    QSizePolicy,
     QSplitter,
-    QCheckBox,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide2.QtGui import Qt
-
 
 from ...mempool import MempoolData, TxPrio
 from ...psbt_util import (
@@ -44,11 +44,7 @@ from ...psbt_util import (
     estimate_tx_weight,
     get_psbt_simple_json,
 )
-from ...pythonbdk_types import (
-    OutPoint,
-    Recipient,
-    robust_address_str_from_script,
-)
+from ...pythonbdk_types import OutPoint, Recipient, robust_address_str_from_script
 from ...signals import Signal, Signals
 from ...signer import AbstractSigner, FileSigner, QRSigner, SignerWallet, USBSigner
 from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
@@ -65,12 +61,7 @@ from .category_list import CategoryList
 from .keystore_ui import SignedUI, SignerUI
 from .qr_components.qr import create_qr_svg
 from .recipients import BTCSpinBox, Recipients
-from .util import (
-    Message,
-    add_to_buttonbox,
-    read_QIcon,
-    save_file_dialog,
-)
+from .util import Message, MessageType, add_to_buttonbox, read_QIcon, save_file_dialog
 from .utxo_list import UTXOList
 
 
@@ -156,7 +147,7 @@ class ExportData(QObject):
 
         self.txid_edit.buttons[0].setStyleSheet("background-color: white;")
         self.form_layout.addRow("TxId", self.txid_edit)
-        self.edit_serialized = ButtonEdit()
+        self.edit_serialized = ButtonEdit(input_field=QTextEdit())
         self.edit_serialized.add_copy_button()
         self.edit_serialized.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
@@ -174,7 +165,7 @@ class ExportData(QObject):
         # json
         self.tab_json = QWidget()
         self.tab_json_layout = QVBoxLayout(self.tab_json)
-        self.edit_json = ButtonEdit()
+        self.edit_json = ButtonEdit(input_field=QTextEdit())
         self.edit_json.add_copy_button()
         self.edit_json.buttons[0].setStyleSheet("background-color: white;")
         if not allow_edit:
@@ -255,7 +246,7 @@ class ExportData(QObject):
             pass
 
         def on_error(packed_error_info):
-            Message(packed_error_info).show_error()
+            Message(packed_error_info, type=MessageType.Error)
 
         def on_success(result):
             if result:
@@ -493,6 +484,7 @@ class UITx_Viewer(UITX_Base):
         self,
         config: UserConfig,
         signals: Signals,
+        widget_utxo_with_toolbar: SearchableTab,
         utxo_list: UTXOList,
         network: bdk.Network,
         mempool_data: MempoolData,
@@ -529,7 +521,7 @@ class UITx_Viewer(UITX_Base):
         # inputs
         self.tab_inputs = QWidget()
         self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
-        self.tab_inputs_layout.addWidget(utxo_list)
+        self.tab_inputs_layout.addWidget(widget_utxo_with_toolbar)
         self.tabs_inputs_outputs.addTab(self.tab_inputs, "Inputs")
 
         # outputs
@@ -679,7 +671,7 @@ class UITx_Viewer(UITX_Base):
             simple_input["wallet"] = wallet
             simple_input["fingerprints"] = (
                 [k.fingerprint for k in wallet.keystores]
-                if simple_input["wallet"]
+                if wallet
                 else [d["fingerprint"] for pubkey, d in simple_input["summary"].items()]
             )
 
@@ -713,7 +705,7 @@ class UITx_Viewer(UITX_Base):
         )
 
     def add_all_signer_tabs(self):
-        def get_signing_fingerprints_of_wallet(wallet):
+        def get_signing_fingerprints_of_wallet(wallet: Wallet):
             # check which keys the wallet can sign
 
             wallet_signing_fingerprints = set(
@@ -721,7 +713,7 @@ class UITx_Viewer(UITX_Base):
             ) - set([None])
             return wallet_signing_fingerprints
 
-        def get_signing_wallets(fingerprint) -> List[Wallet]:
+        def get_signing_wallets(fingerprint: str) -> List[Wallet]:
             result = []
             for wallet in wallets:
                 signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(wallet)
@@ -729,14 +721,14 @@ class UITx_Viewer(UITX_Base):
                     result.append(wallet)
             return result
 
-        def get_label(fingerprint) -> str:
+        def get_label(fingerprint: str) -> str:
             for simple_input in simple_json:
                 if fingerprint in simple_input["fingerprints"]:
                     if not simple_input.get("wallet"):
                         continue
                     for keystore in simple_input["wallet"].keystores:
                         if keystore.fingerprint == fingerprint:
-                            return keystore.label
+                            return str(keystore.label)
             return f"Fingerprint {fingerprint}"
 
         self.remove_signers()
@@ -749,8 +741,6 @@ class UITx_Viewer(UITX_Base):
             fingerprints_not_fully_signed,
         ) = self.get_fingerprints_signed_unsigned()
 
-        #
-        self.signers: Dict[str, List[AbstractSigner]] = {}
         for fingerprint in sorted_fingerprints:
             l = self.signers.setdefault(
                 fingerprint, []
@@ -985,6 +975,7 @@ class UITX_Creator(UITX_Base):
         wallet: Wallet,
         mempool_data: MempoolData,
         categories: List[str],
+        widget_utxo_with_toolbar: SearchableTab,
         utxo_list: UTXOList,
         config: UserConfig,
         signals: Signals,
@@ -995,12 +986,12 @@ class UITX_Creator(UITX_Base):
         self.wallet = wallet
         self.categories = categories
         self.utxo_list = utxo_list
+        self.widget_utxo_with_toolbar = widget_utxo_with_toolbar
         self.get_sub_texts = get_sub_texts
         self.enable_opportunistic_merging_fee_rate = enable_opportunistic_merging_fee_rate
 
         self.additional_outpoints: List[OutPoint] = []
         utxo_list.get_outpoints = self.get_outpoints
-        utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
 
         self.main_widget = SearchableTab()
         self.main_widget.searchable_list = utxo_list
@@ -1075,26 +1066,6 @@ class UITX_Creator(UITX_Base):
             utxo.outpoint for utxo in self.wallet.get_all_txos() if not utxo.is_spent_by_txid
         ] + self.additional_outpoints
 
-    def sum_amount_selected_utxos(self) -> int:
-        sum_values = 0
-        for index in self.utxo_list.selectionModel().selectedRows():
-            # Assuming that the column of interest is column 1
-
-            value = index.sibling(index.row(), self.utxo_list.Columns.AMOUNT).data(
-                role=self.utxo_list.ROLE_CLIPBOARD_DATA
-            )
-            sum_values += value
-        return sum_values
-
-    def update_labels(self):
-        try:
-            amount = self.sum_amount_selected_utxos()
-            self.uxto_selected_label.setText(
-                f"Currently {Satoshis(amount, self.signals.get_network()).str_with_unit()} selected"
-            )
-        except:
-            self.uxto_selected_label.setText(f"Unknown amount selected")
-
     def create_inputs_selector(self, layout):
 
         self.tabs_inputs = QTabWidget(self.main_widget)
@@ -1125,9 +1096,7 @@ class UITX_Creator(UITX_Base):
         self.verticalLayout_inputs_utxos = QVBoxLayout(self.tab_inputs_utxos)
         self.tabs_inputs.addTab(self.tab_inputs_utxos, "Advanced")
 
-        self.uxto_selected_label = QLabel(self.main_widget)
-        self.verticalLayout_inputs_utxos.addWidget(self.uxto_selected_label)
-        self.verticalLayout_inputs_utxos.addWidget(self.utxo_list)
+        self.verticalLayout_inputs_utxos.addWidget(self.widget_utxo_with_toolbar)
 
         # utxo list
         if hasattr(bdk.TxBuilder(), "add_foreign_utxo"):
@@ -1172,13 +1141,20 @@ class UITX_Creator(UITX_Base):
             self.utxo_list.update()
             self.utxo_list.select_rows(outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY)
 
-        UTXOAddDialog(self.config.network_config.network, on_open=process_input).show()
+        ImportDialog(
+            self.config.network_config.network,
+            on_open=process_input,
+            window_title="Add Inputs",
+            text_button_ok="Load UTXOs",
+            text_instruction_label="Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint",
+            text_placeholder="Please paste UTXO here",
+        ).show()
 
     def on_set_fee_rate(self, fee_rate):
         self.checkBox_reduce_future_fees.setChecked(fee_rate <= self.enable_opportunistic_merging_fee_rate)
 
         sent_values = [r.amount for r in self.recipients.recipients]
-        if fee_rate is not None and sum(sent_values):
+        if (fee_rate is not None) and bool(sum(sent_values)):
             minimalistic_utxos_for_inputs = self.wallet.minimalistic_coin_select(
                 self.get_ui_tx_infos().utxo_dict.values(), sum(sent_values)
             )

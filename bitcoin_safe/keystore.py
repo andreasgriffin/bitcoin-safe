@@ -6,16 +6,20 @@ logger = logging.getLogger(__name__)
 import copy
 
 import bdkpython as bdk
-from bitcoin_usb.address_types import AddressType, ConstDerivationPaths
-from bitcoin_usb.device import SimplePubKeyProvider
+from bitcoin_usb.address_types import (
+    AddressType,
+    AddressTypes,
+    ConstDerivationPaths,
+    SimplePubKeyProvider,
+)
 from packaging import version
 
-from .descriptors import AddressType, MultipathDescriptor
+from .descriptors import MultipathDescriptor
 from .storage import BaseSaveableClass, SaveAllClass
 
 
 class KeyStoreType(SaveAllClass):
-    def __init__(self, id, name, description, icon_filename, networks="all") -> None:
+    def __init__(self, id: str, name: str, description: str, icon_filename: str, networks="all") -> None:
         self.id = id
         self.name = name
         self.description = description
@@ -70,14 +74,15 @@ class KeyStoreTypes:
 
 
 class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
 
     def __init__(
         self,
-        xpub,
-        fingerprint,
+        xpub: str,
+        fingerprint: str,
         key_origin: str,
-        label,
+        label: str,
+        network: bdk.Network,
         mnemonic: Optional[str] = None,
         description: str = "",
         derivation_path: str = ConstDerivationPaths.receive,
@@ -89,14 +94,39 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             derivation_path=derivation_path,
         )
 
+        self.network = network
+        assert self.is_xpub_valid(xpub=xpub, network=self.network)
+
         self.label = label
         self.mnemonic = mnemonic
         self.description = description
 
+    @classmethod
+    def is_seed_valid(cls, mnemonic: str):
+        try:
+            bdk.Mnemonic.from_string(mnemonic)
+            return True
+        except:
+            return False
+
+    @classmethod
+    def is_xpub_valid(cls, xpub: str, network):
+        try:
+            AddressTypes.p2pkh.bdk_descriptor(
+                bdk.DescriptorPublicKey.from_string(xpub),
+                "0" * 8,
+                bdk.KeychainKind.EXTERNAL,
+                network,
+            )
+
+            return True
+        except:
+            return False
+
     def clone(self, class_kwargs=None) -> "KeyStore":
         return KeyStore(**self.__dict__)
 
-    def to_singlesig_multipath_descriptor(self, address_type: AddressType, network):
+    def to_singlesig_multipath_descriptor(self, address_type: AddressType, network: bdk.Network):
         "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
         descriptors = [
             address_type.bdk_descriptor(
@@ -144,12 +174,16 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
                 dct["key_origin"] = dct["derivation_path"]
                 del dct["derivation_path"]
 
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+            if "derivation_path" in dct:
+                dct["network"] = bdk.Network.REGTEST
+
         # now the version is newest, so it can be deleted from the dict
         if "VERSION" in dct:
             del dct["VERSION"]
         return dct
 
-    def from_other_keystore(self, other_keystore):
+    def from_other_keystore(self, other_keystore: "KeyStore"):
         for k, v in other_keystore.__dict__.items():
             setattr(self, k, v)
 

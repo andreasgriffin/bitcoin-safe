@@ -17,7 +17,6 @@ def setup_logging():
         config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 
-    global logger
     logger = logging.getLogger(__name__)
 
     # Set the function to handle uncaught exceptions

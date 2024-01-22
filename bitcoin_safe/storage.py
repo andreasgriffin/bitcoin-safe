@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ from packaging import version
 
 class Encrypt:
     def _derive_key(self, password: bytes, salt: bytes, iterations: int) -> bytes:
-        """Derive a secret key from a given password and salt"""
+        """Derive a secret key from a given password and salt."""
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA512(),
             length=32,
@@ -60,14 +60,14 @@ class Storage:
     def __init__(self) -> None:
         self.encrypt = Encrypt()
 
-    def save(self, message, filename, password=None):
+    def save(self, message: str, filename: str, password: Optional[str] = None):
         token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
 
         with open(filename, "wb") as f:
             f.write(token)
 
     @classmethod
-    def has_password(cls, filename) -> bool:
+    def has_password(cls, filename: str) -> bool:
         with open(filename, "rb") as f:
             token = f.read()
 
@@ -76,7 +76,7 @@ class Storage:
 
         return True
 
-    def load(self, filename, password=None) -> str:
+    def load(self, filename: str, password: Optional[str] = None) -> str:
         with open(filename, "rb") as f:
             token = f.read()
 
@@ -101,12 +101,11 @@ class ClassSerializer:
                     return obj_cls.deserialize(
                         dct, class_kwargs=class_kwargs
                     )  # do: KeyStore.deserialize(**dct)
-            if dct.get("__enum__"):
+            elif dct.get("__enum__"):
                 obj_cls = globals.get(dct["name"])
-                if not obj_cls:
-                    obj_cls = getattr(
-                        bdk, dct["name"]
-                    )  # if the class name is not imported directly, then try bdk
+                if not obj_cls and hasattr(bdk, dct["name"]):
+                    # if the class name is not imported directly, then try bdk
+                    obj_cls = getattr(bdk, dct["name"])
                 if obj_cls:
                     return getattr(obj_cls, dct["value"])
             # For normal cases, json.loads will handle default JSON data types
@@ -154,28 +153,35 @@ class BaseSaveableClass:
     def clone(self, class_kwargs=None):
         return self.deserialize(self.serialize(), class_kwargs=class_kwargs)
 
-    def save(self, filename, password=None):
+    def save(self, filename: str, password: Optional[str] = None):
 
         directory = os.path.dirname(filename)
         # Create the directories
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-        human_readable = not bool(password)
+        not bool(password)
         storage = Storage()
         storage.save(
-            json.dumps(
-                self,
-                default=ClassSerializer.general_serializer,
-                indent=4 if human_readable else None,
-                sort_keys=bool(human_readable),
-            ),
+            self.dumps(password=password),
             filename,
             password=password,
         )
 
+    def dump_dict(self, password: Optional[str] = None):
+        return json.loads(self.dumps(password=password))
+
+    def dumps(self, password: Optional[str] = None):
+        human_readable = not bool(password)
+        return json.dumps(
+            self,
+            default=ClassSerializer.general_serializer,
+            indent=4 if human_readable else None,
+            sort_keys=bool(human_readable),
+        )
+
     @classmethod
-    def _load(cls, filename: str, password: str = None, class_kwargs=None):
+    def _load(cls, filename: str, password: Optional[str] = None, class_kwargs=None):
         "class_kwargs example:  class_kwargs= {'Wallet':{'config':config}}"
         class_kwargs = class_kwargs if class_kwargs else {}
         storage = Storage()

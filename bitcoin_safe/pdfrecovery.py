@@ -2,8 +2,10 @@ import io
 import os
 import webbrowser
 from pathlib import Path
+from typing import List, Optional
 
 from bitcoin_usb.address_types import DescriptorInfo
+from PIL import Image as PilImage
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import letter
@@ -23,14 +25,14 @@ from .gui.qt.util import qicon_to_pil, read_QIcon
 from .wallet import Wallet
 
 
-def pilimage_to_reportlab(pilimage, width=200, height=200):
+def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200):
     buffer = io.BytesIO()
     pilimage.save(buffer, format="PNG")
     buffer.seek(0)
     return Image(buffer, width=width, height=height)
 
 
-def create_table(columns, col_widths):
+def create_table(columns: List, col_widths: List[int]):
     # Validate input and create data for the table
     max_rows = max([len(col) for col in columns])
     data = []
@@ -74,7 +76,7 @@ class BitcoinWalletRecoveryPDF:
     def add_page_break(self):
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _seed_part(self, seed, keystore_description, num_signers):
+    def _seed_part(self, seed: Optional[str], keystore_description: str, num_signers: int):
         self.elements.append(Spacer(1, 5))
         # Additional subtitle
         if num_signers == 1:
@@ -172,8 +174,8 @@ class BitcoinWalletRecoveryPDF:
 
     def _descriptor_part(
         self,
-        wallet_descriptor_string,
-        threshold,
+        wallet_descriptor_string: str,
+        threshold: int,
     ):
         qr_image = pilimage_to_reportlab(create_qr(wallet_descriptor_string), width=200, height=200)
         if threshold > 1:
@@ -190,12 +192,12 @@ class BitcoinWalletRecoveryPDF:
 
     def create_pdf(
         self,
-        title,
-        wallet_descriptor_string,
-        keystore_description,
-        threshold,
-        seed=None,
-        num_signers=1,
+        title: str,
+        wallet_descriptor_string: str,
+        keystore_description: str,
+        threshold: int,
+        seed: Optional[str] = None,
+        num_signers: int = 1,
     ):
         self.elements.append(Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading))
 

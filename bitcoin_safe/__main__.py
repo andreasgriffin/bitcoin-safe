@@ -6,10 +6,7 @@ import cProfile
 import sys
 from pstats import Stats
 
-from PySide2.QtWidgets import (
-    QApplication,
-)
-
+from PySide2.QtWidgets import QApplication
 
 from .gui.qt.util import custom_exception_handler
 from .main import MainWindow

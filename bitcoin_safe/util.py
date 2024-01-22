@@ -23,7 +23,6 @@
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 import builtins
@@ -36,18 +35,18 @@ from typing import (
     Any,
     Callable,
     Dict,
+    Iterable,
     List,
     NamedTuple,
     Optional,
     Set,
+    SupportsBytes,
+    SupportsIndex,
+    Tuple,
     Union,
 )
 
-from PySide2.QtCore import (
-    QLocale,
-    QThread,
-    Signal,
-)
+from PySide2.QtCore import QLocale, QThread, Signal
 
 from .i18n import _
 
@@ -75,11 +74,11 @@ DEVELOPMENT_PREFILLS = False
 import bdkpython as bdk
 
 
-def serialized_to_hex(serialized):
+def serialized_to_hex(serialized: Iterable[SupportsIndex] | SupportsIndex | SupportsBytes):
     return bytes(serialized).hex()
 
 
-def hex_to_serialized(hex_string):
+def hex_to_serialized(hex_string: str):
     return bytes.fromhex(hex_string)
 
 
@@ -108,7 +107,7 @@ def compare_dictionaries(dict1, dict2):
     return result
 
 
-def inv_dict(d):
+def inv_dict(d: Dict):
     return {v: k for k, v in d.items()}
 
 
@@ -125,11 +124,11 @@ import hashlib
 import bdkpython as bdk
 
 
-def replace_non_alphanumeric(string):
+def replace_non_alphanumeric(string: str):
     return re.sub(r"\W+", "_", string)
 
 
-def hash_string(text):
+def hash_string(text: str):
     return hashlib.sha256(text.encode()).hexdigest()
 
 
@@ -213,15 +212,15 @@ def instance_lru_cache(always_keep=False):
     return decorator
 
 
-def clean_dict(d):
+def clean_dict(d: Dict):
     return {k: v for k, v in d.items() if v}
 
 
-def clean_list(l):
+def clean_list(l: List):
     return [v for v in l if v]
 
 
-def is_address(address) -> bool:
+def is_address(address: str) -> bool:
     try:
         bdkaddress = bdk.Address(address)
         return bool(bdkaddress)
@@ -298,11 +297,11 @@ class InvoiceError(UserFacingException):
 # Throw this exception to unwind the stack like when an error occurs.
 # However unlike other exceptions the user won't be informed.
 class UserCancelled(Exception):
-    """An exception that is suppressed from the user"""
+    """An exception that is suppressed from the user."""
 
 
 # Helper function to lighten a color
-def lighten_color(hex_color, factor):
+def lighten_color(hex_color: str, factor: float):
     r = int(hex_color[1:3], 16)
     g = int(hex_color[3:5], 16)
     b = int(hex_color[5:7], 16)
@@ -366,7 +365,7 @@ def color_format_str(s, hex_color="#000000", color_formatting="rich"):
 @register_cache(always_keep=True)
 def format_number(
     number,
-    color_formatting=None,
+    color_formatting: Optional[str] = None,
     include_decimal_spaces=True,
     base_color="#000000",
     indicate_balance_change=False,
@@ -423,7 +422,7 @@ def format_number(
 
 
 class Satoshis:
-    def __init__(self, value, network: bdk.Network):
+    def __init__(self, value: Union[str, int], network: bdk.Network):
         self.network = network
         self.value = value if isinstance(value, int) else self._to_int(value)
 
@@ -446,14 +445,14 @@ class Satoshis:
     def __ne__(self, other):
         return not (self == other)
 
-    def __add__(self, other):
+    def __add__(self, other: "Satoshis"):
         assert self.network == other.network
         return Satoshis(self.value + other.value, self.network)
 
     def str_with_unit(self, color_formatting="rich"):
         return f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True, unicode_space_character=True )} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
 
-    def diff(self, color_formatting=None, unit=False):
+    def diff(self, color_formatting: str = None, unit=False):
 
         return (
             f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True,   indicate_balance_change=True)}"
@@ -468,10 +467,10 @@ class Satoshis:
         return bool(self.value)
 
     @classmethod
-    def sum(cls, l: List[Union[List, "Satoshis"]]) -> "Satoshis":
-        def calc_satoshi(v):
+    def sum(cls, l: Union[List, Tuple, "Satoshis"]) -> "Satoshis":
+        def calc_satoshi(v: Union[List, Tuple, "Satoshis"]) -> Satoshis:
             # allow recursive summing
-            return Satoshis.sum(v) if isinstance(v, (tuple, list)) else v
+            return Satoshis.sum(v) if isinstance(v, (list, tuple)) else v
 
         if not l:
             raise ValueError("Cannot sum an empty list")
@@ -483,23 +482,6 @@ class Satoshis:
             summed += calc_satoshi(v)
 
         return summed
-
-
-def print_stderr(*args):
-    args = [str(item) for item in args]
-    sys.stderr.write(" ".join(args) + "\n")
-    sys.stderr.flush()
-
-
-def print_msg(*args):
-    # Stringify args
-    args = [str(item) for item in args]
-    sys.stdout.write(" ".join(args) + "\n")
-    sys.stdout.flush()
-
-
-def standardize_path(path):
-    return os.path.normcase(os.path.realpath(os.path.abspath(os.path.expanduser(path))))
 
 
 def resource_path(*parts):
@@ -521,7 +503,8 @@ def age(
     target_tz=None,
     include_seconds: bool = False,
 ) -> str:
-    """Takes a timestamp and returns a string with the approximation of the age"""
+    """Takes a timestamp and returns a string with the approximation of the
+    age."""
     if from_date is None:
         return _("Unknown")
 
@@ -694,7 +677,10 @@ def remove_duplicates_keep_order(seq):
 
 
 class TaskThread(QThread):
-    """Thread for running a single background task. Automatically stops after task completion."""
+    """Thread for running a single background task.
+
+    Automatically stops after task completion.
+    """
 
     class Task(NamedTuple):
         task: Callable

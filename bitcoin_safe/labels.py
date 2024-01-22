@@ -5,11 +5,7 @@ logger = logging.getLogger(__name__)
 
 import copy
 import json
-from typing import (
-    Dict,
-    List,
-)
-
+from typing import Dict, List
 
 from .pythonbdk_types import *
 from .storage import BaseSaveableClass
@@ -36,16 +32,18 @@ class Type(enum.Enum):
 
 
 class Labels(BaseSaveableClass):
-    def __init__(self, data=None, categories=None) -> None:
+    def __init__(
+        self, data: Dict[str, Dict[str, str]] = None, categories: Optional[List[str]] = None
+    ) -> None:
         super().__init__()
 
         # "bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c":{ "type": "addr", "ref": "bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c", "label": "Address" }
-        self.data: Dict[str, Dict] = data if data else {}
+        self.data: Dict[str, Dict[str, str]] = data if data else {}
         self.categories: List[str] = categories if categories else []
 
         self.separator = ";;"
 
-    def add_category(self, value):
+    def add_category(self, value: str):
         if value not in self.categories:
             self.categories.append(value)
 
@@ -53,7 +51,7 @@ class Labels(BaseSaveableClass):
         if ref in self.data:
             del self.data[ref]
 
-    def get_label(self, ref, default_value=None):
+    def get_label(self, ref, default_value: str = None) -> Optional[str]:
         item = self.data.get(ref, {})
         return item.get(Key.label.name, default_value)
 
@@ -152,11 +150,11 @@ class Labels(BaseSaveableClass):
         result = [json.dumps(self._convert_item_to_bip329(item)) for item in self.data.values()]
         return "\n".join(result)
 
-    def parse_from_bip329_json_str(self, lines):
+    def parse_from_bip329_json_str(self, lines: List[str]):
         values = [self._bip329_to_item(json.loads(line)) for line in lines]
         return {value[Key.ref.name]: value for value in values}
 
-    def set_data_from_bip329_json_str(self, lines, fill_categories=True):
+    def set_data_from_bip329_json_str(self, lines: List[str], fill_categories=True):
         self.data = self.parse_from_bip329_json_str(lines)
         if fill_categories:
             for item in self.data.values():
@@ -167,7 +165,7 @@ class Labels(BaseSaveableClass):
                     self.categories.append(category)
         return self.data
 
-    def rename_category(self, old_category, new_category):
+    def rename_category(self, old_category: str, new_category: str):
         affected_keys = []
         for key, item in list(self.data.items()):
             if item.get(Key.category.name) and item.get(Key.category.name) == old_category:
@@ -180,7 +178,7 @@ class Labels(BaseSaveableClass):
             self.categories.insert(idx, new_category)
         return affected_keys
 
-    def delete_category(self, category) -> List[str]:
+    def delete_category(self, category: str) -> List[str]:
         affected_keys = []
         for key, item in list(self.data.items()):
             if item.get(Key.category.name) and item.get(Key.category.name) == category:

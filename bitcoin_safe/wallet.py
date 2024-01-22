@@ -12,15 +12,7 @@ logger = logging.getLogger(__name__)
 import json
 from collections import defaultdict
 from threading import Lock
-from typing import (
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Sequence,
-    Set,
-    Tuple,
-)
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 import numpy as np
@@ -69,7 +61,7 @@ class TxStatus:
         confirmation_time: bdk.BlockTime,
         get_height: Callable,
         is_in_mempool: bool,
-        confirmation_status=None,
+        confirmation_status: Optional[TxConfirmationStatus] = None,
     ) -> None:
         self.tx = tx
         self.get_height = get_height
@@ -103,23 +95,23 @@ class TxStatus:
             wallet.is_in_mempool(txid),
         )
 
-    def sort_id(self):
+    def sort_id(self) -> int:
         return self.confirmations() if self.confirmations() else self.confirmation_status.value
 
-    def confirmations(self):
+    def confirmations(self) -> int:
         return self.get_height() - self.confirmation_time.height + 1 if self.confirmation_time else 0
 
-    def is_unconfirmed(self):
+    def is_unconfirmed(self) -> bool:
         return self.confirmation_status != TxConfirmationStatus.CONFIRMED
 
-    def can_do_initial_broadcast(self):
+    def can_do_initial_broadcast(self) -> bool:
         return self.confirmation_status == TxConfirmationStatus.LOCAL
 
-    def can_rbf(self):
+    def can_rbf(self) -> bool:
         return self.is_unconfirmed() and self.confirmation_status != TxConfirmationStatus.LOCAL
 
-    def can_cpfp(self):
-        raise self.confirmation_status == TxConfirmationStatus.UNCONF_PARENT
+    def can_cpfp(self) -> bool:
+        return self.confirmation_status == TxConfirmationStatus.UNCONF_PARENT
 
 
 def locked(func):
@@ -130,7 +122,7 @@ def locked(func):
     return wrapper
 
 
-def filename_clean(id, file_extension=".wallet"):
+def filename_clean(id: str, file_extension: str = ".wallet"):
     import os
     import string
 
@@ -143,14 +135,13 @@ def filename_clean(id, file_extension=".wallet"):
 
 
 # a wallet  during setup phase, with partial information
-class ProtoWallet:
+class ProtoWallet(BaseSaveableClass):
     def __init__(
         self,
         threshold: int,
         network: bdk.Network,
-        signers: int = 1,
-        keystores: List[KeyStore] = None,
-        address_type: AddressType = None,
+        keystores: List[Optional[KeyStore]],
+        address_type: Optional[AddressType] = None,
         gap=20,
         gap_change=5,
     ):
@@ -162,24 +153,14 @@ class ProtoWallet:
         self.gap = gap
         self.gap_change = gap_change
 
-        initial_address_type = address_type if address_type else get_default_address_type(signers > 1)
-        self.keystores: List[KeyStore] = (
-            keystores
-            if keystores is not None
-            else [
-                KeyStore(
-                    None,
-                    None,
-                    initial_address_type.key_origin(network),
-                    label=self.signer_names(threshold, i),
-                )
-                for i in range(signers)
-            ]
+        initial_address_type: AddressType = (
+            address_type if address_type else get_default_address_type(len(keystores) > 1)
         )
+        self.keystores: List[Optional[KeyStore]] = keystores
 
         self.set_address_type(initial_address_type)
 
-    def get_mn_tuple(self):
+    def get_mn_tuple(self) -> Tuple[int, int]:
         return self.threshold, len(self.keystores)
 
     @classmethod
@@ -191,17 +172,17 @@ class ProtoWallet:
         "creates a ProtoWallet from the xpub (not xpriv)"
 
         info = DescriptorInfo.from_str(string_descriptor)
-        keystores = [
+        keystores: List[Optional[KeyStore]] = [
             KeyStore(
                 **spk_provider.__dict__,
                 label=cls.signer_names(i=i, threshold=info.threshold),
+                network=network,
             )
             for i, spk_provider in enumerate(info.spk_providers)
         ]
         return ProtoWallet(
             threshold=info.threshold,
             network=network,
-            signers=len(info.spk_providers),
             keystores=keystores,
             address_type=info.address_type,
         )
@@ -217,10 +198,15 @@ class ProtoWallet:
         else:
             return f"Recovery Signer {i}"
 
-    def set_gap(self, gap):
+    def signer_name(self, i: int):
+        return self.signer_names(self.threshold, i)
+
+    def set_gap(self, gap: int):
         self.gap = gap
 
-    def to_multipath_descriptor(self):
+    def to_multipath_descriptor(self) -> Optional[MultipathDescriptor]:
+        if not all(self.keystores):
+            return None
         return MultipathDescriptor.from_keystores(
             self.threshold,
             spk_providers=self.keystores,
@@ -228,23 +214,16 @@ class ProtoWallet:
             network=self.network,
         )
 
-    def set_number_of_keystores(self, n):
+    def set_number_of_keystores(self, n: int):
 
         if n > len(self.keystores):
             for i in range(len(self.keystores), n):
-                self.keystores.append(
-                    KeyStore(
-                        None,
-                        None,
-                        self.address_type.key_origin(self.network),
-                        label=self.signer_names(self.threshold, i),
-                    )
-                )
+                self.keystores.append(None)
         elif n < len(self.keystores):
             for i in range(n, len(self.keystores)):
                 self.keystores.pop()  # removes the last item
 
-    def set_threshold(self, threshold):
+    def set_threshold(self, threshold: int):
         self.threshold = threshold
 
     def is_multisig(self):
@@ -261,23 +240,29 @@ class DeltaCacheListTransactions:
 
 
 class BdkWallet(bdk.Wallet, CacheManager):
-    """
-    This is a caching wrapper around bdk.Wallet.
-    It should not provide any logic.
-    Only wrapping existing methods and minimal new methods useful for caching
+    """This is a caching wrapper around bdk.Wallet. It should not provide any
+    logic. Only wrapping existing methods and minimal new methods useful for
+    caching.
 
-    The exception is list_delta_transactions, which provides also deltas to a previous state, and is in a wider sense also caching.
+    The exception is list_delta_transactions, which provides also deltas
+    to a previous state, and is in a wider sense also caching.
     """
 
-    def __init__(self, descriptor, change_descriptor, network, database_config):
-        super().__init__(descriptor, change_descriptor, network, database_config)
+    def __init__(
+        self,
+        descriptor: bdk.Descriptor,
+        change_descriptor: bdk.Descriptor,
+        network: bdk.Network,
+        database_config: bdk.DatabaseConfig,
+    ):
+        bdk.Wallet.__init__(self, descriptor, change_descriptor, network, database_config)
         CacheManager.__init__(self)
         self._delta_cache: Dict[str, DeltaCacheListTransactions] = {}
 
     @instance_lru_cache(always_keep=True)
     def peek_addressinfo(
         self,
-        index,
+        index: int,
         is_change=False,
     ) -> bdk.AddressInfo:
         bdk_get_address = self.get_internal_address if is_change else self.get_address
@@ -286,7 +271,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
     @instance_lru_cache(always_keep=True)
     def peek_address(
         self,
-        index,
+        index: int,
         is_change=False,
     ) -> str:
         return self.peek_addressinfo(index, is_change=is_change).address.as_string()
@@ -294,7 +279,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
     @instance_lru_cache()
     def list_unspent(self) -> List[bdk.LocalUtxo]:
         start_time = time()
-        result = super().list_unspent()
+        result: List[bdk.LocalUtxo] = super().list_unspent()
         logger.debug(f"self.bdkwallet.list_unspent {len(result)} results in { time()-start_time}s")
 
         return result
@@ -302,16 +287,17 @@ class BdkWallet(bdk.Wallet, CacheManager):
     @instance_lru_cache()
     def list_transactions(self, include_raw=True) -> List[bdk.TransactionDetails]:
         start_time = time()
-        res = super().list_transactions(include_raw=include_raw)
+        res: List[bdk.TransactionDetails] = super().list_transactions(include_raw=include_raw)
         logger.debug(f"list_transactions {len(res)} results in { time()-start_time}s")
         return res
 
-    def list_delta_transactions(self, access_marker, include_raw=True) -> DeltaCacheListTransactions:
-        """
-        access_marker is a unique key, that the history can be stored relative to this
+    def list_delta_transactions(self, access_marker: str, include_raw=True) -> DeltaCacheListTransactions:
+        """access_marker is a unique key, that the history can be stored
+        relative to this.
 
-        to call however only the minimal amount of times the underlying function, list_transactions is cached.
-        When list_transactions is reset, the delta depends on the access_marker
+        to call however only the minimal amount of times the underlying
+        function, list_transactions is cached. When list_transactions is
+        reset, the delta depends on the access_marker
         """
 
         key = "list_delta_transactions" + str(access_marker)
@@ -335,7 +321,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
         return entry
 
     @instance_lru_cache(always_keep=True)
-    def network(self):
+    def network(self) -> bdk.Network:
         return super().network()
 
     @instance_lru_cache(always_keep=True)
@@ -347,9 +333,8 @@ class BdkWallet(bdk.Wallet, CacheManager):
 
 
 class Wallet(BaseSaveableClass, CacheManager):
-    """
-    If any bitcoin logic (ontop of bdk) has to be done, then here is the place
-    """
+    """If any bitcoin logic (ontop of bdk) has to be done, then here is the
+    place."""
 
     VERSION = "0.1.1"
     global_variables = globals()
@@ -364,8 +349,8 @@ class Wallet(BaseSaveableClass, CacheManager):
         gap=20,
         gap_change=20,
         labels: Labels = None,
-        _blockchain_height=None,
-        _tips=None,
+        _blockchain_height: int = None,
+        _tips: List[int] = None,
         refresh_wallet=False,
         tutorial_step=None,
         **kwargs,
@@ -398,7 +383,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         descriptor_info = DescriptorInfo.from_str(self.descriptor_str)
         self.keystores = keystores
         if not self.keystores:
-            self.keystores = [KeyStore(**descriptor_info.spk_providers.__dict__)]
+            self.keystores = [KeyStore(**descriptor_info.spk_providers.__dict__, network=self.network)]
         # the descriptor_info should have everything
         # except the mnemonic, label, ....
         # we check that both sources are really identical
@@ -424,7 +409,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     def _get_addresses(
         self,
         is_change=False,
-    ) -> Sequence[str]:
+    ) -> List[str]:
         if (not is_change) and (not self.multipath_descriptor):
             return []
         return [
@@ -432,11 +417,11 @@ class Wallet(BaseSaveableClass, CacheManager):
             for i in range(0, self.tips[int(is_change)] + 1)
         ]
 
-    def get_mn_tuple(self):
+    def get_mn_tuple(self) -> Tuple[int, int]:
         info = DescriptorInfo.from_str(self.multipath_descriptor.as_string())
         return info.threshold, len(info.spk_providers)
 
-    def as_protowallet(self):
+    def as_protowallet(self) -> ProtoWallet:
         # fill the protowallet with the xpub info
         protowallet = ProtoWallet.from_descriptor(self.descriptor_str, network=self.network)
         # fill all fields that the public info doesn't contain
@@ -449,17 +434,29 @@ class Wallet(BaseSaveableClass, CacheManager):
         return protowallet
 
     @classmethod
-    def from_protowallet(cls, protowallet: ProtoWallet, id: str, config: UserConfig, tutorial_step=None):
+    def from_protowallet(
+        cls, protowallet: ProtoWallet, id: str, config: UserConfig, tutorial_step=None
+    ) -> "Wallet":
 
-        multipath_descriptor = protowallet.to_multipath_descriptor()
+        keystores = []
         for keystore in protowallet.keystores:
+            # dissallow None
+            assert keystore is not None, "Cannot create wallet with None"
+
             if keystore.key_origin != protowallet.address_type.key_origin(config.network_config.network):
                 logger.warning(f"Warning: The derivation path of {keystore} is not the default")
+
+            keystores.append(keystore.clone())
+
+        multipath_descriptor = protowallet.to_multipath_descriptor()
+        assert (
+            multipath_descriptor is not None
+        ), "Cannot create wallet, because no descriptor could be generated"
 
         return Wallet(
             id,
             multipath_descriptor.as_string_private(),
-            keystores=[k.clone() for k in protowallet.keystores],
+            keystores=keystores,
             gap=protowallet.gap,
             gap_change=protowallet.gap_change,
             network=protowallet.network,
@@ -467,7 +464,26 @@ class Wallet(BaseSaveableClass, CacheManager):
             tutorial_step=tutorial_step,
         )
 
-    def serialize(self):
+    def is_essentially_equal(self, other_wallet: "Wallet") -> bool:
+        "Compares the relevant entries like keystores"
+        this = self.dump_dict()
+        other = other_wallet.dump_dict()
+
+        keys = [
+            "id",
+            "gap",
+            "network",
+            "gap_change",
+            "keystores",
+            "labels",
+            "descriptor_str",
+        ]
+        for k in keys:
+            if this[k] != other[k]:
+                return False
+        return True
+
+    def serialize(self) -> Dict[str, Any]:
         d = super().serialize()
 
         keys = [
@@ -497,7 +513,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
 
     @classmethod
-    def deserialize_migration(cls, dct: Dict):
+    def deserialize_migration(cls, dct: Dict) -> Dict[str, Any]:
         "this class should be oveerwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
             if "labels" in dct:
@@ -517,7 +533,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return dct
 
     @classmethod
-    def deserialize(cls, dct, class_kwargs=None):
+    def deserialize(cls, dct, class_kwargs=None) -> "Wallet":
         super().deserialize(dct, class_kwargs=class_kwargs)
         config: UserConfig = class_kwargs[cls.__name__]["config"]  # passed via class_kwargs
 
@@ -527,13 +543,13 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return Wallet(**dct)
 
-    def set_gap(self, gap):
+    def set_gap(self, gap: int):
         self.gap = gap
 
-    def set_wallet_id(self, id):
+    def set_wallet_id(self, id: str):
         self.id = id
 
-    def _db_file(self):
+    def _db_file(self) -> str:
         return f"{os.path.join(self.config.wallet_dir, filename_clean(self.id, file_extension='.db'))}"
 
     def create_wallet(self, multipath_descriptor: MultipathDescriptor):
@@ -552,7 +568,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     def is_multisig(self):
         return len(self.keystores) > 1
 
-    def init_blockchain(self):
+    def init_blockchain(self) -> bdk.Blockchain:
         if self.config.network_config.network == bdk.Network.BITCOIN:
             start_height = 0  # segwit block 481824
         elif self.config.network_config.network in [
@@ -637,7 +653,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             logger.debug(f"{self.id} error syncing wallet {self.id}")
             raise e
 
-    def reverse_search_unused_address(self, category=None, is_change=False) -> bdk.AddressInfo:
+    def reverse_search_unused_address(
+        self, category: Optional[str] = None, is_change=False
+    ) -> bdk.AddressInfo:
 
         earliest_address_info = None
         for index, address_str in reversed(list(enumerate(self._get_addresses(is_change=is_change)))):
@@ -649,7 +667,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     earliest_address_info = self.bdkwallet.peek_addressinfo(index, is_change=is_change)
         return earliest_address_info
 
-    def get_unused_category_address(self, category, is_change=False) -> bdk.AddressInfo:
+    def get_unused_category_address(self, category: Optional[str], is_change=False) -> bdk.AddressInfo:
         if category is None:
             category = self.labels.get_default_category()
 
@@ -691,7 +709,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.bdkwallet.get_address_of_txout(TxOut.from_bdk(output)) for output in transaction.output()
         ]
 
-    def get_txin_address(self, txin):
+    def get_txin_address(self, txin: bdk.TxIn):
         previous_output = txin.previous_output
         tx = self.get_tx(previous_output.txid)
         if tx:
@@ -726,7 +744,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return {tx.txid: tx for tx in self.sorted_delta_list_transactions()}
 
     @instance_lru_cache()
-    def get_tx(self, txid) -> bdk.TransactionDetails:
+    def get_tx(self, txid: str) -> bdk.TransactionDetails:
         return self.get_txs().get(txid)
 
     def list_input_bdk_addresses(self, transaction: bdk.Transaction) -> List[str]:
@@ -760,7 +778,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return False
 
-    def used_address_tip(self, is_change):
+    def used_address_tip(self, is_change: bool):
         def reverse_search_used(tip_index):
             for i in reversed(range(tip_index)):
                 addresses = self._get_addresses(is_change=is_change)
@@ -773,14 +791,14 @@ class Wallet(BaseSaveableClass, CacheManager):
         bdk_get_address = self.bdkwallet.get_internal_address if is_change else self.bdkwallet.get_address
         return reverse_search_used(bdk_get_address(bdk.AddressIndex.LAST_UNUSED()).index)
 
-    def _get_bdk_tip(self, is_change) -> int:
+    def _get_bdk_tip(self, is_change: bool) -> int:
         if not self.bdkwallet:
             return self._tips[int(is_change)]
 
         bdk_get_address = self.bdkwallet.get_internal_address if is_change else self.bdkwallet.get_address
         return bdk_get_address(bdk.AddressIndex.LAST_UNUSED()).index
 
-    def _get_tip(self, is_change) -> int:
+    def _get_tip(self, is_change: bool) -> int:
         if not self.bdkwallet:
             return self._tips[int(is_change)]
 
@@ -793,7 +811,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return self._tips[int(is_change)]
 
-    def _extend_tip(self, is_change, number):
+    def _extend_tip(self, is_change: bool, number: int):
         assert number >= 0, "Cannot reduce the watched addresses"
         if number == 0:
             return
@@ -833,7 +851,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return (change_tip[0], change_tip[1])
 
     @property
-    def tips(self):
+    def tips(self) -> List[int]:
         return [self._get_tip(b) for b in [False, True]]
 
     def get_receiving_addresses(self) -> List[str]:
@@ -850,7 +868,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         out += self.get_change_addresses().copy()
         return out
 
-    def is_change(self, address):
+    def is_change(self, address: str):
         return address in self.get_change_addresses()
 
     def get_address_index_tuple(self, address: str, keychain: bdk.KeychainKind) -> Optional[Tuple[int, int]]:
@@ -883,18 +901,18 @@ class Wallet(BaseSaveableClass, CacheManager):
         return None
 
     @instance_lru_cache()
-    def get_address_balances(self) -> Dict[str, Balance]:
+    def get_address_balances(self) -> defaultdict[str, Balance]:
         """Return the balance of a set of addresses:
         confirmed and matured, unconfirmed, unmatured
         """
 
-        def is_confirmed(txid):
+        def is_confirmed(txid: str):
             tx_details = self.get_tx(txid)
             return tx_details.confirmation_time
 
         utxos = self.bdkwallet.list_unspent()
 
-        balances: Dict[str, Balance] = defaultdict(Balance)
+        balances: defaultdict[str, Balance] = defaultdict(Balance)
         for i, utxo in enumerate(utxos):
             tx = self.get_tx(utxo.outpoint.txid)
             txout: bdk.TxOut = tx.transaction.output()[utxo.outpoint.vout]
@@ -911,13 +929,13 @@ class Wallet(BaseSaveableClass, CacheManager):
         return balances
 
     @instance_lru_cache()
-    def get_addr_balance(self, address) -> Balance:
+    def get_addr_balance(self, address: str) -> Balance:
         """Return the balance of a set of addresses:
         confirmed and matured, unconfirmed, unmatured
         """
         return self.get_address_balances()[address]
 
-    def get_address_to_txids(self, address) -> Set[str]:
+    def get_address_to_txids(self, address: str) -> Set[str]:
         # this also fills self.cache_address_to_txids
         self.get_dict_fulltxdetail()
         return self.cache_address_to_txids.get(address, set())
@@ -988,13 +1006,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         return txos
 
     @instance_lru_cache()
-    def address_is_used(self, address):
-        """
-        Check if any tx had this address as an output
-        """
+    def address_is_used(self, address: str) -> bool:
+        """Check if any tx had this address as an output."""
         return bool(self.get_address_to_txids(address))
 
-    def get_address_path_str(self, address) -> str:
+    def get_address_path_str(self, address: str) -> str:
         index = None
         is_change = None
         if address in self.get_receiving_addresses():
@@ -1008,20 +1024,13 @@ class Wallet(BaseSaveableClass, CacheManager):
             return ""
 
         addresses_info = self.bdkwallet.peek_addressinfo(index, is_change=is_change)
-        public_descriptor_string_combined = self.multipath_descriptor.as_string().replace(
+        public_descriptor_string_combined: str = self.multipath_descriptor.as_string().replace(
             "<0;1>/*",
             f"{0 if  addresses_info.keychain==bdk.KeychainKind.EXTERNAL else 1}/{addresses_info.index}",
         )
         return public_descriptor_string_combined
 
-    def get_redeem_script(self, address):
-        # TODO:
-        return None
-
-    def get_witness_script(self, address):
-        return None
-
-    def get_categories_for_txid(self, txid):
+    def get_categories_for_txid(self, txid: str) -> List[str]:
         fulltxdetail = self.get_dict_fulltxdetail().get(txid)
         if not fulltxdetail:
             return []
@@ -1037,8 +1046,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
         return list(l)
 
-    def get_label_for_address(self, address, autofill_from_txs=True):
-        label = self.labels.get_label(address, "")
+    def get_label_for_address(self, address: str, autofill_from_txs=True) -> str:
+        maybe_label = self.labels.get_label(address, "")
+        label = maybe_label if maybe_label else ""
 
         if not label and autofill_from_txs:
             txids = self.get_address_to_txids(address)
@@ -1050,8 +1060,9 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return label
 
-    def get_label_for_txid(self, txid, autofill_from_addresses=True):
-        label = self.labels.get_label(txid, "")
+    def get_label_for_txid(self, txid: str, autofill_from_addresses=True) -> str:
+        maybe_label = self.labels.get_label(txid, "")
+        label = maybe_label if maybe_label else ""
 
         if not label and autofill_from_addresses:
             fulltxdetail = self.get_dict_fulltxdetail().get(txid)
@@ -1085,22 +1096,22 @@ class Wallet(BaseSaveableClass, CacheManager):
             Satoshis(balance.immature, self.network),
         ]
 
-    def get_utxo_name(self, utxo):
+    def get_utxo_name(self, utxo: PythonUtxo) -> str:
         tx = self.get_tx(utxo.outpoint.txid)
         return f"{tx.txid}:{utxo.outpoint.vout}"
 
-    def get_utxo_address(self, utxo):
+    def get_utxo_address(self, utxo: PythonUtxo) -> str:
         tx = self.get_tx(utxo.outpoint.txid)
         return self.get_output_addresses(tx.transaction)[utxo.outpoint.vout]
 
     @instance_lru_cache()
-    def get_height(self):
+    def get_height(self) -> int:
         if self.blockchain:
             # update the cached height
             self._blockchain_height = self.blockchain.get_height()
         return self._blockchain_height
 
-    def minimalistic_coin_select(self, utxos, total_sent_value) -> UtxosForInputs:
+    def minimalistic_coin_select(self, utxos: Iterable[PythonUtxo], total_sent_value: int) -> UtxosForInputs:
         # coin selection
         utxos = list(utxos).copy()
         sorted_utxos = sorted(utxos, key=lambda utxo: utxo.txout.value, reverse=True)
@@ -1122,7 +1133,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
 
     def coin_select(
-        self, utxos: List[PythonUtxo], total_sent_value, opportunistic_merge_utxos
+        self, utxos: List[PythonUtxo], total_sent_value: int, opportunistic_merge_utxos: bool
     ) -> UtxosForInputs:
         def utxo_value(utxo: PythonUtxo):
             return utxo.txout.value
@@ -1200,7 +1211,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             # otherwise let the bdk wallet decide on the minimal coins to be spent, out of the utxos
             return UtxosForInputs(utxos=utxos_for_input.utxos, spend_all_utxos=False)
 
-    def is_my_address(self, address) -> bool:
+    def is_my_address(self, address: str) -> bool:
         return address in self.get_addresses()
 
     def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
@@ -1274,10 +1285,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         return builder_infos
 
     def on_addresses_updated(self, update_filter: UpdateFilter, forward_look=20):
-        """
-        Checks if the tip reaches the addresses and updated the tips if necessary
-        (This is especially relevant if a psbt creates a new change address)
-        """
+        """Checks if the tip reaches the addresses and updated the tips if
+        necessary (This is especially relevant if a psbt creates a new change
+        address)"""
         self.clear_method(self._get_addresses)
 
     def set_output_categories_and_labels(self, infos: TxBuilderInfos):
@@ -1433,6 +1443,8 @@ def get_wallet(wallet_id: str, signals: Signals) -> Optional[Wallet]:
 
 def get_wallet_of_outpoints(outpoints: List[OutPoint], signals: Signals) -> Optional[Wallet]:
     wallets = get_wallets(signals)
+    if not wallets:
+        return None
 
     number_intersections = []
     for wallet in wallets:
@@ -1443,6 +1455,7 @@ def get_wallet_of_outpoints(outpoints: List[OutPoint], signals: Signals) -> Opti
     if not any(number_intersections):
         # no intersections at all
         return None
+
     i = np.argmax(number_intersections)
     return wallets[i]
 
@@ -1514,7 +1527,7 @@ class ToolsTxUiInfo:
     @staticmethod
     def from_tx(
         tx: bdk.Transaction,
-        fee_info: FeeInfo,
+        fee_info: Optional[FeeInfo],
         network: bdk.Network,
         wallets: List[Wallet],
     ) -> TxUiInfos:

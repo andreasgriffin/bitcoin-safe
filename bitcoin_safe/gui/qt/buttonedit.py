@@ -1,19 +1,26 @@
+import logging
 from typing import Callable, List, Optional, Union
+
+from bdkpython import bdk
+from PySide2.QtCore import QSize, Qt
+from PySide2.QtGui import QCursor, QIcon
 from PySide2.QtWidgets import (
-    QWidget,
+    QApplication,
+    QFileDialog,
+    QGridLayout,
+    QHBoxLayout,
     QLineEdit,
     QPushButton,
-    QHBoxLayout,
-    QApplication,
     QSizePolicy,
+    QStyle,
     QTextEdit,
     QToolTip,
-    QGridLayout,
+    QWidget,
 )
-from PySide2.QtGui import QIcon, QCursor
-from PySide2.QtCore import Qt, QSize
+
 from .util import icon_path
-from bdkpython import bdk
+
+logger = logging.getLogger(__name__)
 
 
 class SquareButton(QPushButton):
@@ -106,26 +113,20 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    def __init__(
-        self, *args, button_vertical_align: Optional[Qt] = None, parent=None, edit_class=QLineEdit, **kwargs
-    ):
+    def __init__(self, button_vertical_align: Optional[Qt] = None, parent=None, input_field=None):
         super().__init__(parent=parent)
         self.callback_is_valid: Optional[Callable[[], bool]] = None
         self.buttons: List[QPushButton] = []  # Store button references
+        self.input_field: Union[QTextEdit, QLineEdit] = input_field if input_field else QLineEdit(self)
         self.button_container = ButtonsField(
             vertical_align=button_vertical_align
             if button_vertical_align
-            else (Qt.AlignVCenter if edit_class == QLineEdit else Qt.AlignBottom)
+            else (Qt.AlignVCenter if isinstance(self.input_field, QLineEdit) else Qt.AlignBottom)
         )  # Container for buttons to allow dynamic layout changes
 
         self.main_layout = QHBoxLayout(
             self
         )  # Horizontal layout to place the input field and buttons side by side
-        self.input_field: Union[QTextEdit, QLineEdit] = edit_class(
-            *args,
-            **kwargs,
-            parent=self,
-        )  # Default input field
         self.input_field.textChanged.connect(self.format)
 
         # Add the input field and buttons layout to the main layout
@@ -136,7 +137,7 @@ class ButtonEdit(QWidget):
         self.main_layout.setSpacing(0)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
-    def add_button(self, button_path: str, button_callback: Callable, tooltip: str = ""):
+    def add_button(self, button_path: Optional[str], button_callback: Callable, tooltip: str = ""):
         button = SquareButton(QIcon(button_path), parent=self)  # Create the button with the icon
         if tooltip:
             button.setToolTip(tooltip)
@@ -209,11 +210,13 @@ class ButtonEdit(QWidget):
 
     def add_pdf_buttton(self, on_click: Callable):
         button = self.add_button(icon_path("pdf-file.svg"), on_click, tooltip="Create PDF")
-        button.setStyleSheet("background-color: white;")
 
-    def add_random_mnemonic_button(self):
+    def add_random_mnemonic_button(self, callback_seed=None):
         def on_click():
-            self.setText(bdk.Mnemonic(bdk.WordCount.WORDS12).as_string())
+            seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
+            self.setText(seed)
+            if callback_seed:
+                callback_seed(seed)
 
         self.add_button(icon_path("dice.svg"), on_click, tooltip="Create random mnemonic")
 
@@ -221,8 +224,29 @@ class ButtonEdit(QWidget):
         def on_click():
             self.setText(get_reset_text())
 
-        button = self.add_button("reset-update.svg", on_click, _("Reset"))
-        button.setStyleSheet("background-color: white;")
+        self.add_button("reset-update.svg", on_click, "Reset")
+        # button.setStyleSheet("background-color: white;")
+
+    def add_open_file_button(
+        self, callback_open_filepath, filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)"
+    ):
+        def on_click():
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Transaction/PSBT",
+                "",
+                filter,
+            )
+            if not file_path:
+                logger.debug("No file selected")
+                return
+
+            logger.debug(f"Selected file: {file_path}")
+            callback_open_filepath(file_path)
+
+        button = self.add_button(None, on_click, "Open file")
+        icon = self.style().standardIcon(QStyle.SP_DirOpenIcon)
+        button.setIcon(icon)
 
     def format_as_error(self, value: bool):
         if value:

@@ -35,26 +35,20 @@ import json
 from enum import IntEnum
 
 import bdkpython as bdk
-from PySide2.QtCore import (
-    QPersistentModelIndex,
-    Qt,
-    Signal,
+from PySide2.QtCore import QModelIndex, QPersistentModelIndex, Qt, Signal
+from PySide2.QtGui import QBrush, QColor, QFont, QStandardItem
+from PySide2.QtWidgets import (
+    QAbstractItemView,
+    QComboBox,
+    QHBoxLayout,
+    QMenu,
+    QPushButton,
 )
-from PySide2.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QStandardItem,
-)
-from PySide2.QtWidgets import QAbstractItemView, QComboBox, QMenu, QPushButton
 
 from ...i18n import _
 from ...rpc import send_rpc_command
 from ...signals import Signals, UpdateFilter
-from ...util import (
-    Satoshis,
-    block_explorer_URL,
-)
+from ...util import Satoshis, block_explorer_URL
 from ...wallet import TxStatus, Wallet
 from .category_list import CategoryEditor
 from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
@@ -211,18 +205,16 @@ class AddressList(MyTreeView):
 
         event.ignore()
 
-    def on_double_click(self, idx):
+    def on_double_click(self, idx: QModelIndex):
         addr = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         self.signals.show_address.emit(addr)
 
     def create_toolbar(self, config: UserConfig = None):
-        toolbar, menu = self.create_toolbar_with_menu("")
-        self.balance_label = toolbar.itemAt(0).widget()
+        toolbar, menu, self.balance_label, search_edit = self._create_toolbar_with_menu("")
         font = QFont()
         font.setPointSize(12)
         self.balance_label.setFont(font)
 
-        self.button_get_new_address = toolbar.itemAt(1).widget()
         menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
         menu.addAction(
             _("Export Labels"),
@@ -252,7 +244,8 @@ class AddressList(MyTreeView):
                 selected = self.selected_in_column(self.Columns.ADDRESS)
                 if not selected:
                     return
-                addresses = [self.item_from_index(item).text() for item in selected]
+                selected_items = [self.item_from_index(item) for item in selected]
+                addresses = [item.text() for item in selected_items if item]
 
                 for address in addresses:
                     response = send_rpc_command(
@@ -289,12 +282,19 @@ class AddressList(MyTreeView):
         self.select_row(address, self.Columns.ADDRESS)
         return address_info
 
-    def get_toolbar_buttons(self):
-        return self.change_button, self.used_button
+    def create_toolbar_buttons(self):
+        def get_toolbar_buttons():
+            return self.change_button, self.used_button
+
+        hbox = QHBoxLayout()
+        buttons = get_toolbar_buttons()
+        for b in buttons:
+            b.setVisible(False)
+            hbox.addWidget(b)
+        self.toolbar_buttons = buttons
+        return hbox
 
     def on_hide_toolbar(self):
-        self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
-        self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.update()
 
     def refresh_headers(self):
@@ -417,10 +417,11 @@ class AddressList(MyTreeView):
             item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
             address_path = self.wallet.get_address_index_tuple(address, bdk.KeychainKind.EXTERNAL)
         item[self.key_column].setData(address, self.ROLE_KEY)
-        item[self.Columns.TYPE].setData((address_path[0], -address_path[1]), self.ROLE_SORT_ORDER)
-        item[self.Columns.TYPE].setToolTip(
-            f"{address_path[1]}. {'change' if address_path[0] else 'receiving'} address"
-        )
+        if address_path:
+            item[self.Columns.TYPE].setData((address_path[0], -address_path[1]), self.ROLE_SORT_ORDER)
+            item[self.Columns.TYPE].setToolTip(
+                f"{address_path[1]}. {'change' if address_path[0] else 'receiving'} address"
+            )
         # add item
         count = self.std_model.rowCount()
         self.std_model.insertRow(count, item)
@@ -480,7 +481,8 @@ class AddressList(MyTreeView):
         if not selected:
             return
         multi_select = len(selected) > 1
-        addrs = [self.item_from_index(item).text() for item in selected]
+        selected_items = [self.item_from_index(item) for item in selected]
+        addrs = [item.text() for item in selected_items if item]
         menu = QMenu()
         if not multi_select:
             idx = self.indexAt(position)

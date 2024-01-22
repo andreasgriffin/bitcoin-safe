@@ -1,6 +1,7 @@
 import enum
 import logging
 from math import ceil
+from typing import Any, Dict, List, Tuple
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 
@@ -147,11 +148,11 @@ def fee_to_color(fee, colors=chartColors):
     return colors[indizes[-1]]
 
 
-def fetch_json_from_url(url):
+def fetch_json_from_url(url: str):
     logger.info(f"Fetching {url}")
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
             # Parse the JSON response
@@ -180,7 +181,7 @@ class MempoolData(QObject):
 
         self.config = config
         self.mempool_blocks = self._empty_mempool_blocks()
-        self.recommended = {
+        self.recommended: Dict[str, int] = {
             "fastestFee": MIN_RELAY_FEE,
             "halfHourFee": MIN_RELAY_FEE,
             "hourFee": MIN_RELAY_FEE,
@@ -188,14 +189,14 @@ class MempoolData(QObject):
             "minimumFee": MIN_RELAY_FEE,
         }
         self.time_of_data = datetime.datetime.fromtimestamp(0)
-        self.mempool_dict = {
+        self.mempool_dict: Dict[str, Any] = {
             "count": 0,
             "vsize": 0,
             "total_fee": 0,
             "fee_histogram": [],
         }
 
-    def _empty_mempool_blocks(self):
+    def _empty_mempool_blocks(self) -> List[Dict[str, Any]]:
         return [
             {
                 "blockSize": 1,
@@ -207,20 +208,20 @@ class MempoolData(QObject):
             }
         ]
 
-    def fee_min_max(self, block_index):
+    def fee_min_max(self, block_index: int) -> Tuple[int, float]:
         block_index = min(block_index, len(self.mempool_blocks) - 1)
         fees = self.mempool_blocks[block_index]["feeRange"]
         return min(fees), max(fees)
 
-    def median_block_fee(self, block_index):
+    def median_block_fee(self, block_index: int) -> float:
         block_index = min(block_index, len(self.mempool_blocks) - 1)
         return self.mempool_blocks[block_index]["medianFee"]
 
-    def num_mempool_blocks(self):
+    def num_mempool_blocks(self) -> int:
         vBytes_per_block = 1e6
         return ceil(self.mempool_dict["vsize"] / vBytes_per_block)
 
-    def get_prio_fees(self):
+    def get_prio_fees(self) -> Dict[TxPrio, float]:
         return {
             prio: self.recommended[key]
             for prio, key in zip(
@@ -229,19 +230,18 @@ class MempoolData(QObject):
             )
         }
 
-    def get_min_relay_fee(self):
+    def get_min_relay_fee(self) -> float:
         return self.recommended["minimumFee"]
 
-    def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback=100):
+    def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback: int = 100) -> float:
         "Average fee of the 0 projected block"
         if self.mempool_blocks is None:
             return max_reasonable_fee_rate_fallback
         return sum(self.fee_min_max(0)) / 2
 
-    def set_data_from_file(self, datafile=None):
-        self.set_data(np.loadtxt(datafile, delimiter=","))
-
-    def set_data(self, mempool_blocks, recommended, mempool_dict):
+    def set_data(
+        self, mempool_blocks: List[Dict[str, Any]], recommended: Dict[str, int], mempool_dict: Dict[str, Any]
+    ):
         self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
         self.recommended = recommended
         self.mempool_dict = mempool_dict
@@ -279,11 +279,11 @@ class MempoolData(QObject):
 
         TaskThread(self).add_and_start(do, on_success, on_done, on_error)
 
-    def fetch_block_tip_height(self):
+    def fetch_block_tip_height(self) -> int:
         response = fetch_json_from_url(f"{self.config.network_config.mempool_url}api/blocks/tip/height")
         return response if response else 0
 
-    def fee_rate_to_projected_block_index(self, fee):
+    def fee_rate_to_projected_block_index(self, fee) -> int:
         available_blocks = len(self.mempool_blocks)
         for i in range(available_blocks):
             v_min, v_max = self.fee_min_max(i)

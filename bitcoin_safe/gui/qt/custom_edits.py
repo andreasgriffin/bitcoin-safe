@@ -1,33 +1,36 @@
 import logging
+from typing import Callable, Dict, List, Optional
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-
+from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
+import bdkpython as bdk
+from bitcoin_qrreader.bitcoin_qr import MultipathDescriptor
 from PySide2.QtCore import QEvent, Qt, Signal
-from PySide2.QtCore import Signal
-from PySide2.QtWidgets import (
-    QTextEdit,
-    QLineEdit,
-)
 from PySide2.QtGui import Qt
+from PySide2.QtWidgets import QLineEdit, QTextEdit
 
 from ...pdfrecovery import make_and_open_pdf
-from .util import Message
+from .util import Message, MessageType
 
 
 class DescriptorEdit(ButtonEdit):
     signal_key_press = Signal(str)
     signal_pasted_text = Signal(str)
 
-    def __init__(self, get_wallet=None):
-        super().__init__(edit_class=QTextEdit)
+    def __init__(self, network: bdk.Network, get_wallet: Optional[Callable[[], Wallet]] = None):
+        super().__init__(input_field=QTextEdit(), button_vertical_align=Qt.AlignBottom)
+        self.network = network
 
         def do_pdf():
             if not get_wallet:
-                Message("Wallet setup not finished. Please finish before creating a Backup pdf.").show_error()
+                Message(
+                    "Wallet setup not finished. Please finish before creating a Backup pdf.",
+                    type=MessageType.Error,
+                )
                 return
 
             make_and_open_pdf(get_wallet())
@@ -40,8 +43,18 @@ class DescriptorEdit(ButtonEdit):
 
         self.add_copy_button()
         self.add_qr_input_from_camera_button(custom_handle_input=custom_handle_camera_input)
-        if get_wallet() is not None:
+        if get_wallet is not None:
             self.add_pdf_buttton(do_pdf)
+        self.set_validator(self._check_if_valid)
+
+    def _check_if_valid(self):
+        if not self.text():
+            return True
+        try:
+            MultipathDescriptor.from_descriptor_str(self.text(), self.network)
+            return True
+        except:
+            return False
 
     def sizeHint(self):
         size = super().sizeHint()
@@ -66,9 +79,11 @@ from PySide2.QtWidgets import QCompleter, QLineEdit
 
 
 class QCompleterLineEdit(QLineEdit):
-    def __init__(self, network, parent=None):
+    def __init__(self, network: bdk.Network, parent=None):
         super(QCompleterLineEdit, self).__init__(parent)
-        self._suggestions = {}  # Dictionary to store suggestions for each network
+        self._suggestions: Dict[
+            bdk.Network, List[str]
+        ] = {}  # Dictionary to store suggestions for each network
         self.network = network  # Set the initial network
         self._suggestions[self.network] = []
         self._completer = QCompleter(self._suggestions[self.network], self)
@@ -101,7 +116,8 @@ class QCompleterLineEdit(QLineEdit):
             self._update_completer()
 
     def _update_completer(self):
-        """Updates the completer with the current network's suggestions list."""
+        """Updates the completer with the current network's suggestions
+        list."""
         if self.network:
             self._completer.model().setStringList(self._suggestions[self.network])
 

@@ -1,11 +1,7 @@
 import logging
-from typing import List, Union
-from PySide2.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QGridLayout,
-    QVBoxLayout,
-)
+from typing import List, Set
+
+from PySide2.QtWidgets import QTabWidget, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -14,23 +10,36 @@ class BlockChangesSignals:
     def __init__(self, widgets: List[QWidget]) -> None:
         self.widgets: List[QWidget] = widgets
 
-    def _collect_widgets_in_layout(self, layout: Union[QHBoxLayout, QVBoxLayout, QGridLayout]):
+    def _collect_sub_widget(self, widget: QWidget):
         """Recursively collect all widgets in a given layout."""
         widgets = []
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            if item.widget():
-                widgets.append(item.widget())
-                # Check if the widget has a layout with more widgets
-                if item.widget().layout():
-                    widgets.extend(self._collect_widgets_in_layout(item.widget().layout()))
+        if isinstance(widget, QTabWidget):
+            widgets.extend(self._collect_widgets_in_tab(widget))
+        elif hasattr(widget, "layout") and widget.layout():
+            layout = widget.layout()
+            for i in range(layout.count()):
+                item = layout.itemAt(i)
+                if item.widget():
+                    widgets.append(item.widget())
+                    widgets += self._collect_sub_widget(item.widget())
         return widgets
 
-    def all_widgets(self) -> List[QWidget]:
+    def _collect_widgets_in_tab(self, tab_widget: QTabWidget):
+        """Recursively collect all widgets in a QTabWidget."""
+        widgets = []
+        for index in range(tab_widget.count()):
+            tab_page = tab_widget.widget(index)
+            if tab_page.layout():
+                widgets += self._collect_sub_widget(tab_page)
+        return widgets
+
+    def all_widgets(self) -> Set[QWidget]:
         l = []
         for widget in self.widgets:
-            l += self._collect_widgets_in_layout(widget.layout())
-        return l
+            l += self._collect_sub_widget(widget)
+            if isinstance(widget, QTabWidget):
+                l += self._collect_widgets_in_tab(widget)
+        return set(l)
 
     def __enter__(self):
         for widget in self.all_widgets():

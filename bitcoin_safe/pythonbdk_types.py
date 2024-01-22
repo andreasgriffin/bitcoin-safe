@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class Recipient:
-    def __init__(self, address: str, amount: int, label: str = None, checked_max_amount=False) -> None:
+    def __init__(
+        self, address: str, amount: int, label: Optional[str] = None, checked_max_amount=False
+    ) -> None:
         self.address = address
         self.amount = amount
         self.label = label
@@ -116,9 +118,7 @@ class UtxosForInputs:
 
 
 class FullTxDetail:
-    """
-    for all outputs and inputs, where it has a full PythonUtxo .
-    """
+    """For all outputs and inputs, where it has a full PythonUtxo ."""
 
     def __init__(self, tx: bdk.TransactionDetails, received=None, send=None) -> None:
         self.outputs: Dict[str, PythonUtxo] = received if received else {}  # outpoint_str: PythonUtxo
@@ -164,7 +164,7 @@ class FullTxDetail:
 
 
 class AddressInfoMin(SaveAllClass):
-    def __init__(self, address, index, keychain):
+    def __init__(self, address: str, index: int, keychain: bdk.KeychainKind):
         self.address = address
         self.index = index
         self.keychain = keychain
@@ -195,7 +195,7 @@ class BlockchainType(enum.Enum):
     RPC = enum.auto()
 
     @classmethod
-    def from_text(cls, t):
+    def from_text(cls, t) -> "BlockchainType":
         if t == "Compact Block Filters":
             return cls.CompactBlockFilter
         elif t == "Electrum Server":
@@ -204,6 +204,8 @@ class BlockchainType(enum.Enum):
             return cls.Esplora
         elif t == "RPC":
             return cls.RPC
+
+        raise ValueError(f"{t} is not a valid BlockchainType")
 
     @classmethod
     def to_text(cls, t):

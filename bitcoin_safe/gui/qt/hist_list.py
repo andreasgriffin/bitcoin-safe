@@ -1,8 +1,8 @@
 import logging
 import os
 import tempfile
-from bitcoin_safe.psbt_util import FeeInfo
 
+from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient
 
 logger = logging.getLogger(__name__)
@@ -11,33 +11,17 @@ import datetime
 import enum
 import json
 from enum import IntEnum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
-from PySide2.QtCore import (
-    QPersistentModelIndex,
-    Qt,
-    Signal,
-)
-from PySide2.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QStandardItem,
-)
-from PySide2.QtWidgets import (
-    QAbstractItemView,
-    QFileDialog,
-    QMenu,
-)
+from PySide2.QtCore import QModelIndex, QPersistentModelIndex, Qt, Signal
+from PySide2.QtGui import QBrush, QColor, QFont, QStandardItem
+from PySide2.QtWidgets import QAbstractItemView, QFileDialog, QMenu
 
 from ...i18n import _
 from ...signals import UpdateFilter
-from ...util import (
-    Satoshis,
-    block_explorer_URL,
-)
+from ...util import Satoshis, block_explorer_URL
 from ...wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -47,11 +31,12 @@ from ...wallet import (
     get_wallets,
 )
 from .category_list import CategoryEditor
+from .dialog_import import file_to_str
 from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
-from .open_tx_dialog import file_to_str
 from .taglist import AddressDragInfo
 from .util import (
     Message,
+    MessageType,
     read_QIcon,
     set_balance_label,
     sort_id_to_icon,
@@ -94,6 +79,9 @@ from ...signals import Signals
 
 class HistList(MyTreeView):
     signal_tag_dropped = Signal(AddressDragInfo)
+
+    show_change: AddressTypeFilter
+    show_used: AddressUsageStateFilter
 
     class Columns(MyTreeView.BaseColumnsEnum):
         TXID = enum.auto()
@@ -193,7 +181,9 @@ class HistList(MyTreeView):
         if txdetails:
             return Data(txdetails.transaction, DataType.Tx)
 
-    def drag_keys_to_file_paths(self, drag_keys, save_directory=None):
+    def drag_keys_to_file_paths(
+        self, drag_keys: Iterable[str], save_directory: Optional[str] = None
+    ) -> List[str]:
         file_urls = []
 
         # Iterate through indexes to fetch serialized data using drag keys
@@ -270,30 +260,22 @@ class HistList(MyTreeView):
 
         event.ignore()
 
-    def on_double_click(self, idx):
+    def on_double_click(self, idx: QModelIndex):
         txid = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         wallet, tx_details = self._tx_dict[txid]
         self.signals.open_tx_like.emit(tx_details)
 
     def create_toolbar(self, config=None):
-        toolbar, menu = self.create_toolbar_with_menu("")
-        self.balance_label = toolbar.itemAt(0).widget()
+        toolbar, menu, self.balance_label, self.search_edit = self._create_toolbar_with_menu("")
 
         font = QFont()
         font.setPointSize(12)
-        self.balance_label.setFont(font)
+        if self.balance_label:
+            self.balance_label.setFont(font)
 
-        self.button_get_new_address = toolbar.itemAt(1).widget()
         # menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
 
-        hbox = self.create_toolbar_buttons()
-        toolbar.insertLayout(3, hbox)
-
         return toolbar
-
-    def get_toolbar_buttons(self):
-        return []
-        return self.change_button, self.used_button
 
     def on_hide_toolbar(self):
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
@@ -351,7 +333,7 @@ class HistList(MyTreeView):
         balance = 0
         for wallet in wallets:
 
-            txid_domain = None
+            txid_domain: Optional[Set[str]] = None
             if self.address_domain:
                 txid_domain = set()
                 for address in self.address_domain:
@@ -367,11 +349,12 @@ class HistList(MyTreeView):
                 # AMOUNT = enum.auto()
                 # BALANCE = enum.auto()
                 # TXID = enum.auto()
-                self._tx_dict[tx.txid] = [wallet, tx]
+                self._tx_dict[tx.txid] = (wallet, tx)
 
                 # calculate the amount
                 if self.address_domain:
                     fulltxdetail = wallet.get_dict_fulltxdetail().get(tx.txid)
+                    assert fulltxdetail, f"Could not find the transaction for {tx.txid}"
                     amount = sum(
                         [
                             python_utxo.txout.value
@@ -472,7 +455,8 @@ class HistList(MyTreeView):
         if not selected:
             return
         multi_select = len(selected) > 1
-        txids = [self.item_from_index(item).text() for item in selected]
+        selected_items = [self.item_from_index(item) for item in selected]
+        txids = [item.text() for item in selected_items if item]
         menu = QMenu()
         if not multi_select:
             idx = self.indexAt(position)
@@ -556,7 +540,10 @@ class HistList(MyTreeView):
 
         wallet = get_wallet(self.wallet_id, self.signals)
         if not wallet:
-            Message(f"Cannot fetch wallet '{self.wallet_id}'. Please open the wallet first.").show_error()
+            Message(
+                f"Cannot fetch wallet '{self.wallet_id}'. Please open the wallet first.",
+                type=MessageType.Error,
+            )
             return
 
         assert txinfos.spend_all_utxos, "Eeror in input selection for the cancel transaction"
@@ -597,13 +584,12 @@ class HistList(MyTreeView):
 
         wallet.labels.set_tx_label(edit_key, text)
 
+        fulltxdetails = wallet.get_dict_fulltxdetail().get(txid)
         self.signals.labels_updated.emit(
             UpdateFilter(
                 txids=[txid],
-                addresses=[
-                    pythonutxo.address
-                    for pythonutxo in wallet.get_dict_fulltxdetail().get(txid).outputs.values()
-                    if pythonutxo
-                ],
+                addresses=[pythonutxo.address for pythonutxo in fulltxdetails.outputs.values() if pythonutxo]
+                if fulltxdetails
+                else [],
             )
         )

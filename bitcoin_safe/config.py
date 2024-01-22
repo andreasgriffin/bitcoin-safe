@@ -8,7 +8,7 @@ from typing import Dict, List
 import appdirs
 import bdkpython as bdk
 
-from .pythonbdk_types import *
+from .pythonbdk_types import BlockchainType, CBFServerType
 from .storage import BaseSaveableClass
 
 MIN_RELAY_FEE = 1
@@ -64,13 +64,13 @@ class NetworkConfig(BaseSaveableClass):
     def __init__(self):
         self.network = bdk.Network.REGTEST
         self.server_type = BlockchainType.CompactBlockFilter
-        self.cbf_server_type = "Automatic"
+        self.cbf_server_type = CBFServerType.Automatic
         self.compactblockfilters_ip = "127.0.0.1"
         self.compactblockfilters_port = get_default_port(self.network, BlockchainType.CompactBlockFilter)
         self.electrum_url = "127.0.0.1:51001"
         self.rpc_ip = "127.0.0.1"
         self.rpc_port = get_default_port(self.network, BlockchainType.RPC)
-        self.rpc_username = "bitcoin"
+        self.rpc_username = ""
         self.rpc_password = ""
 
         self.esplora_url = "http://127.0.0.1:3000"

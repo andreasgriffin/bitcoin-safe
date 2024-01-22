@@ -3,28 +3,21 @@ import logging
 logger = logging.getLogger(__name__)
 
 from bdkpython import Network
-from PySide2.QtCore import QObject, Signal, QCoreApplication
+from PySide2.QtCore import QCoreApplication, QObject, Signal
+from PySide2.QtGui import Qt
+from PySide2.QtSvg import QSvgWidget
 from PySide2.QtWidgets import (
-    QPushButton,
-    QWidget,
     QGroupBox,
     QHBoxLayout,
+    QLabel,
+    QPushButton,
     QSizePolicy,
     QVBoxLayout,
-    QLabel,
+    QWidget,
 )
-from PySide2.QtGui import Qt
-
-from PySide2.QtSvg import QSvgWidget
 
 from ...util import call_call_functions
-from .util import (
-    add_centered_icons,
-    add_tab_to_tabs,
-    icon_path,
-    qresize,
-    read_QIcon,
-)
+from .util import add_centered_icons, add_tab_to_tabs, icon_path, qresize, read_QIcon
 
 
 class NewWalletWelcomeScreen(QObject):

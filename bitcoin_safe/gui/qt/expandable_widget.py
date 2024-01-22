@@ -17,7 +17,8 @@ class CustomHeader(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
-        self.layout.setContentsMargins(2, 2, 2, 2)
+        current_margins = self.layout().contentsMargins()
+        self.layout().setContentsMargins(current_margins.top(), 0, 0, 0)  # Left, Top, Right, Bottom margins
         self.layout.setSpacing(2)  # Reduce horizontal spacing
 
         # Set the policy to expanding to use all available space

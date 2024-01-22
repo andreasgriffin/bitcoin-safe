@@ -47,6 +47,7 @@ class CategoryEditor(TagEditor):
         get_sub_texts=None,
         parent=None,
         tag_name="category",
+        prevent_empty_categories=True,
     ):
         sub_texts = get_sub_texts() if get_sub_texts else None
         super().__init__(parent, categories, tag_name=tag_name, sub_texts=sub_texts)
@@ -54,6 +55,7 @@ class CategoryEditor(TagEditor):
         self.categories = categories
         self.get_sub_texts = get_sub_texts
         self.signals = signals
+        self.prevent_empty_categories = prevent_empty_categories
         self.signals.category_updated.connect(self.refresh)
         self.signals.import_bip329_labels.connect(self.refresh)
 
@@ -73,6 +75,10 @@ class CategoryEditor(TagEditor):
         idx = self.categories.index(category)
         self.categories.pop(idx)
         self.signals.category_updated.emit(UpdateFilter(categories=[category]))
+
+        if not self.categories and self.prevent_empty_categories:
+            self.list_widget.add("Default")
+            self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
 
     def refresh(self, update_filter: UpdateFilter):
         self.list_widget.recreate(self.categories, sub_texts=self.get_sub_texts())

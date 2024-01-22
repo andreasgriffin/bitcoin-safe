@@ -1,11 +1,6 @@
 from PySide2.QtCore import QPoint, QSize
-from PySide2.QtGui import (
-    QHelpEvent,
-    QTextDocument,
-)
-from PySide2.QtWidgets import (
-    QStyle,
-)
+from PySide2.QtGui import QHelpEvent, QTextDocument
+from PySide2.QtWidgets import QStyle
 
 
 class HTMLDelegate:

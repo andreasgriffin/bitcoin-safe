@@ -1,12 +1,14 @@
 import json
-from typing import Dict, List, Tuple
+from math import ceil
+from typing import Any, Dict, List, Tuple
 
 import bdkpython as bdk
+from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from .pythonbdk_types import OutPoint
 
 
-def parse_witness_script(script_hex):
+def parse_witness_script(script_hex: str):
     # The first byte represents the threshold (m), encoded as OP_(m + 80)
     m = int(script_hex[:2], 16) - 80
 
@@ -29,7 +31,7 @@ def parse_witness_script(script_hex):
     return m, n, public_keys
 
 
-def m_of_n(psbt_input):
+def m_of_n(psbt_input: Dict) -> Dict[str, Any]:
     witness_script = psbt_input.get("witness_script")
     d = {"m": 1, "n": 1, "public_keys": []}
     if witness_script:
@@ -39,19 +41,19 @@ def m_of_n(psbt_input):
     return d
 
 
-def get_psbt_simple_json(psbt: bdk.PartiallySignedTransaction):
+def get_psbt_simple_json(psbt: bdk.PartiallySignedTransaction) -> Dict[str, Any]:
     psbt_json = json.loads(psbt.json_serialize())
     inputs = []
 
     # Iterate through the inputs in the PSBT
     for input in psbt_json.get("inputs", []):
         # Check for signatures in partial_sigs
-        d = {"bip32_derivation": input.get("bip32_derivation", [])}
+        d = {}
 
         d.update(m_of_n(input))
 
         if not d["public_keys"]:
-            d["public_keys"] = [l[0] for l in d.get("bip32_derivation", [])]
+            d["public_keys"] = [l[0] for l in input.get("bip32_derivation", [])]
 
         if not d["public_keys"]:
             d["public_keys"] = [None for i in range(d["n"])]
@@ -68,21 +70,21 @@ def get_psbt_simple_json(psbt: bdk.PartiallySignedTransaction):
             d["signature"] = "".join(d["signature"])
 
         def get_fingerprint_of_pubkey(pubkey):
-            for l in d.get("bip32_derivation", []):
+            for l in input.get("bip32_derivation", []):
                 if l[0] == pubkey:
-                    return l[1][0]
+                    return SimplePubKeyProvider.format_fingerprint(l[1][0])
 
-        def get_derivation_of_pubkey(pubkey):
-            for l in d.get("bip32_derivation", []):
+        def get_key_origin(pubkey):
+            for l in input.get("bip32_derivation", []):
                 if l[0] == pubkey:
-                    return l[1][1]
+                    return SimplePubKeyProvider.format_key_origin(l[1][1])
 
         d["summary"] = {
             public_key: {
                 "partial_sigs": bool(d.get("partial_sigs", {}).get(public_key)),
                 "signature": bool(d.get("signature", {})),
                 "fingerprint": get_fingerprint_of_pubkey(public_key),
-                "derivation": get_derivation_of_pubkey(public_key),
+                "key_origin": get_key_origin(public_key),
             }
             for public_key in d["public_keys"]
         }
@@ -121,8 +123,8 @@ def get_sent_and_change_outputs(
         if not derivation_tuple:
             sent_tx_outs[i] = txout
         else:
-            key_origin = derivation_tuple[0][1][1]
-            *first_part, change_index, address_index = key_origin.split("/")
+            derivation_path = derivation_tuple[0][1][1]
+            *first_part, change_index, address_index = derivation_path.split("/")
             if change_index == "1":
                 change_tx_outs[i] = txout
             else:
@@ -140,10 +142,10 @@ def calculate_sent_change_amounts(
     return sent_values, change_values
 
 
-def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True):
-    """
-    Estimate the weight of a SegWit transaction in weight units, including support for multiple inputs with
-    varying m-of-n multisignature configurations.
+def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True) -> int:
+    """Estimate the weight of a SegWit transaction in weight units, including
+    support for multiple inputs with varying m-of-n multisignature
+    configurations.
 
     Args:
     input_mn_tuples (list of tuples): A list where each tuple represents an input with (m, n) configuration.
@@ -195,28 +197,28 @@ def estimate_tx_weight(input_mn_tuples, num_outputs, include_signatures=True):
 
     # Calculate transaction weight
     # Non-witness data is weighted as 4 units per byte, witness data as 1 unit per byte
-    tx_weight = (base_tx_size_without_witness * 4) + total_witness_data_size
+    tx_weight: int = (base_tx_size_without_witness * 4) + total_witness_data_size
 
     return tx_weight
 
 
 class FeeInfo:
-    def __init__(self, fee_amount, tx_size, is_estimated=False) -> None:
+    def __init__(self, fee_amount: int, tx_size: int, is_estimated=False) -> None:
         self.fee_amount = fee_amount
         self.tx_size = tx_size
         self.is_estimated = is_estimated
 
-    def fee_rate(self):
+    def fee_rate(self) -> float:
         return self.fee_amount / self.tx_size
 
     @classmethod
-    def from_txdetails(cls, tx_details: bdk.TransactionDetails):
+    def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo":
         return FeeInfo(tx_details.fee, tx_details.transaction.vsize(), is_estimated=False)
 
 
 def estimate_segwit_fee_rate_from_psbt(psbt: bdk.PartiallySignedTransaction) -> FeeInfo:
-    """
-    Estimate the fee rate of a SegWit transaction from a serialized PSBT JSON.
+    """Estimate the fee rate of a SegWit transaction from a serialized PSBT
+    JSON.
 
     Args:
     psbt_json_str (str): The serialized PSBT JSON string.
@@ -233,6 +235,6 @@ def estimate_segwit_fee_rate_from_psbt(psbt: bdk.PartiallySignedTransaction) -> 
     # Estimate the size of the transaction
     # This part requires the transaction size estimation logic, which might need information about inputs and outputs
     # For simplicity, let's assume you have a function estimate_tx_size(psbt_data) that can estimate the size
-    tx_size = estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())) / 4
+    tx_size = ceil(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())) / 4)
 
     return FeeInfo(psbt.fee_amount(), tx_size, is_estimated=True)

@@ -72,7 +72,8 @@
    ```sh
    git clone https://github.com/andreasgriffin/bitcoin-safe.git
    cd bitcoin-safe
-   pip install --requirement requirements.txt 
+   pip install poetry
+   poetry install
    ```
    
  * Run Bitcoin Safe
@@ -85,12 +86,10 @@
 
 ### Development
 
-* Change requirements:
+* Install  requirements:
 
 ```shell
-pipreqs  --savepath requirements.in  --force .
-pip-compile --generate-hashes --resolver=backtracking   requirements.in
-pip install --requirement requirements.txt 
+poetry install
 ```
 
 * Automatic commit formatting
@@ -100,3 +99,12 @@ pip install pre-commit
 pre-commit install
 ```
 
+* Run the precommit manually for debugging
+
+```shell
+pre-commit run --all-files
+```
+
+* 
+
+* 

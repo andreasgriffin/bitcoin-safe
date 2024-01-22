@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import List
+from typing import Sequence
 
 import bdkpython as bdk
 from bitcoin_qrreader.multipath_descriptor import (
@@ -26,7 +26,7 @@ class MultipathDescriptor(BitcoinQRMultipathDescriptor):
     def from_keystores(
         cls,
         threshold: int,
-        spk_providers: List[SimplePubKeyProvider],
+        spk_providers: Sequence[SimplePubKeyProvider],
         address_type: AddressType,
         network: bdk.Network,
     ) -> "MultipathDescriptor":

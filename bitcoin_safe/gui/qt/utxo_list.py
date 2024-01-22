@@ -33,19 +33,17 @@ logger = logging.getLogger(__name__)
 
 import enum
 from typing import Dict, List, Optional, Tuple
-from PySide2.QtCore import QPersistentModelIndex, QPoint, QSortFilterProxyModel, Qt
+
 import bdkpython as bdk
 from PySide2.QtCore import (
+    QModelIndex,
     QPersistentModelIndex,
     QPoint,
+    QSortFilterProxyModel,
     Qt,
 )
 from PySide2.QtGui import QFont, QStandardItem
-from PySide2.QtWidgets import (
-    QAbstractItemView,
-    QHeaderView,
-    QMenu,
-)
+from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu
 
 from ...i18n import _
 from ...signals import Signals, UpdateFilter
@@ -53,13 +51,7 @@ from ...util import Satoshis, block_explorer_URL
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
-from .util import (
-    MONOSPACE_FONT,
-    ColorScheme,
-    read_QIcon,
-    sort_id_to_icon,
-    webopen,
-)
+from .util import MONOSPACE_FONT, ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
 
 def icon_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime, sort_id: int) -> str:
@@ -169,6 +161,7 @@ class UTXOList(MyTreeView):
         self.sortByColumn(self.Columns.ADDRESS, Qt.AscendingOrder)
 
         signals.utxos_updated.connect(self.update)
+        self.selectionModel().selectionChanged.connect(self.update_labels)
 
         # self.setDragEnabled(True)
         # self.setAcceptDrops(True)
@@ -177,9 +170,17 @@ class UTXOList(MyTreeView):
         # self.setDragDropMode(QAbstractItemView.InternalMove)
         # self.setDefaultDropAction(Qt.MoveAction)
 
+    def update_labels(self):
+        try:
+            amount = sum(self.get_selected_values())
+            self.uxto_selected_label.setText(
+                f"{Satoshis(amount, self.signals.get_network()).str_with_unit()} selected"
+            )
+        except:
+            self.uxto_selected_label.setText(f"")
+
     def create_toolbar(self, config):
-        toolbar, menu = self.create_toolbar_with_menu("")
-        self.num_coins_label = toolbar.itemAt(0).widget()
+        toolbar, menu, self.uxto_selected_label, search_edit = self._create_toolbar_with_menu("")
         return toolbar
 
     def create_menu(self, position: QPoint) -> None:
@@ -211,10 +212,16 @@ class UTXOList(MyTreeView):
             if addr_URL:
                 menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
 
+            menu.addAction(
+                _("Copy txid:out"),
+                lambda: self.copyKeyRoleToClipboard([idx.row()]),
+            )
+
         menu.addAction(
             _("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
+
         # run_hook('receive_menu', menu, addrs, self.wallet)
         menu.exec_(self.viewport().mapToGlobal(position))
 
@@ -278,7 +285,9 @@ class UTXOList(MyTreeView):
             items[self.Columns.ADDRESS].setData(labels[self.Columns.ADDRESS], self.ROLE_CLIPBOARD_DATA)
             items[self.Columns.ADDRESS].setToolTip(labels[self.Columns.ADDRESS])
             items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
-            items[self.Columns.AMOUNT].setData(str_format(satoshis), self.ROLE_CLIPBOARD_DATA)
+            items[self.Columns.AMOUNT].setData(
+                satoshis.value if satoshis else str_format(satoshis), self.ROLE_CLIPBOARD_DATA
+            )
             items[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
 
@@ -291,9 +300,6 @@ class UTXOList(MyTreeView):
                 set_idx = QPersistentModelIndex(idx)
         if set_idx:
             self.set_current_idx(set_idx)
-
-        if hasattr(self, "num_coins_label"):
-            self.num_coins_label.setText(_("{} transaction outpoints").format(len(idx)))
 
         self.header().setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.Interactive)
 
@@ -345,7 +351,13 @@ class UTXOList(MyTreeView):
             col.setBackground(color)
 
         items[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
-        if python_utxo and python_utxo.txout and wallet and wallet.is_my_address(python_utxo.address):
+        if (
+            python_utxo
+            and python_utxo.txout
+            and wallet
+            and address
+            and wallet.is_my_address(python_utxo.address)
+        ):
             color = (
                 ColorScheme.YELLOW.as_color(background=True)
                 if wallet.is_change(address)
@@ -359,6 +371,12 @@ class UTXOList(MyTreeView):
         items = self.selected_in_column(self.Columns.OUTPOINT)
         return [OutPoint.from_str(x.data(self.ROLE_KEY)) for x in items]
 
-    def on_double_click(self, idx):
+    def get_selected_values(self) -> List[OutPoint]:
+        if not self.model():
+            return []
+        items = self.selected_in_column(self.Columns.AMOUNT)
+        return [x.data(self.ROLE_CLIPBOARD_DATA) for x in items]
+
+    def on_double_click(self, idx: QModelIndex):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)
         self.signals.show_utxo.emit(outpoint)

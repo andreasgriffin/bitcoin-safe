@@ -3,16 +3,11 @@ import logging
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 
-from .pythonbdk_types import (
-    OutPoint,
-    PythonUtxo,
-    Recipient,
-    UtxosForInputs,
-)
+from .pythonbdk_types import OutPoint, PythonUtxo, Recipient, UtxosForInputs
 
 logger = logging.getLogger(__name__)
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import bdkpython as bdk
 
@@ -30,13 +25,13 @@ def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_size: int, mempool_data: M
 
 
     """
-    new_absolute_fee = 0
+    new_absolute_fee: float = 0
 
     # 3.
     new_absolute_fee += fee_amount
     # 4.
     new_absolute_fee += new_tx_size * mempool_data.get_min_relay_fee()
-    return FeeInfo(new_absolute_fee, new_tx_size)
+    return FeeInfo(int(new_absolute_fee), new_tx_size)
 
 
 class TxUiInfos:
@@ -44,17 +39,17 @@ class TxUiInfos:
 
     def __init__(self) -> None:
         self.utxo_dict: Dict[str, PythonUtxo] = {}  # {outpoint_string:utxo} It is Ok if outpoint_string:None
-        self.fee_rate = None
+        self.fee_rate: Optional[float] = None
         self.opportunistic_merge_utxos = True
         self.spend_all_utxos = False
-        self.main_wallet_id = None
+        self.main_wallet_id: Optional[str] = None
 
         self.recipients: List[Recipient] = []
 
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
 
-    def set_fee_rate(self, feerate):
+    def set_fee_rate(self, feerate: float):
         self.fee_rate = feerate
 
     def fill_utxo_dict_from_utxos(self, utxos: List[PythonUtxo]):
@@ -70,7 +65,7 @@ class TxBuilderInfos:
         recipients: List[Recipient],
         utxos_for_input: UtxosForInputs,
         builder_result: bdk.TxBuilderResult,
-        recipient_category=None,
+        recipient_category: Optional[str] = None,
     ):
         self.fee_rate = None
 

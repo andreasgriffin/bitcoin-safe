@@ -8,9 +8,9 @@ from PySide2.QtWidgets import (
     QLabel,
     QScrollArea,
     QSizePolicy,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
-    QTextEdit,
 )
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
@@ -61,7 +61,7 @@ class ReceiveGroup(QGroupBox):
         self.qr_code.set_data_list([qr_uri])
         v_layout.addWidget(self.qr_code)
 
-        self.text_edit = ButtonEdit(address, edit_class=QTextEdit)
+        self.text_edit = ButtonEdit(input_field=QTextEdit(address))
         self.text_edit.setReadOnly(True)
         self.text_edit.add_copy_button()
         self.text_edit.input_field.setStyleSheet(

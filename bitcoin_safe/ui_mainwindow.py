@@ -1,20 +1,20 @@
 import logging
 
+from bitcoin_safe.gui.qt.mytabwidget import ExtendedTabWidget
+
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
+from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import (
-    QWidget,
+    QMainWindow,
+    QMenuBar,
+    QScrollArea,
+    QShortcut,
     QSizePolicy,
     QVBoxLayout,
-    QMenuBar,
-    QTabWidget,
-    QScrollArea,
-    QMainWindow,
-    QShortcut,
+    QWidget,
 )
-from PySide2.QtGui import QKeySequence
-
 
 from .config import UserConfig
 from .gui.qt.util import read_QIcon
@@ -46,7 +46,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setMinimumSize(w, h)
 
         #####
-        self.tab_wallets = tabs = QTabWidget(self)
+        self.tab_wallets = tabs = ExtendedTabWidget(self)
         self.tab_wallets.setMovable(True)  # Enable tab reordering
         self.tab_wallets.setTabsClosable(True)
         tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

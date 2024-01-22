@@ -177,7 +177,7 @@ class WalletBalanceChart(BalanceChart):
         # Calculate balance
         balance = 0
         balance_data = []
-        for transaction_details in self.wallet.sorted_delta_list_transactions():
+        for transaction_details in reversed(self.wallet.sorted_delta_list_transactions()):
             balance += transaction_details.received - transaction_details.sent
             time = (
                 transaction_details.confirmation_time.timestamp
@@ -216,7 +216,7 @@ class TransactionSimulator(QMainWindow):
 
     def update_chart(self):
         # Calculate balance
-        balance = 0
+        balance: float = 0
         balance_data = []
         for timestamp, amount in self.transactions:
             balance += amount

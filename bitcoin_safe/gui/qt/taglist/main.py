@@ -1,6 +1,5 @@
 import logging
 
-
 from ....util import register_cache
 
 logger = logging.getLogger(__name__)
@@ -9,29 +8,29 @@ import hashlib
 import json
 from typing import Generator, List, Optional
 
-from PySide2.QtCore import Signal, QPoint, QModelIndex, QRect, QMimeData
-from PySide2.QtWidgets import (
-    QPushButton,
-    QApplication,
-    QWidget,
-    QStyledItemDelegate,
-    QListWidgetItem,
-    QStyle,
-    QStyleOptionButton,
-    QListWidget,
-    QVBoxLayout,
-    QAbstractItemView,
-    QLineEdit,
-)
+from PySide2.QtCore import QMimeData, QModelIndex, QPoint, QRect, Signal
 from PySide2.QtGui import (
-    Qt,
+    QColor,
     QCursor,
     QDrag,
     QPainter,
-    QColor,
     QPalette,
+    Qt,
     QTextDocument,
     QTextOption,
+)
+from PySide2.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QPushButton,
+    QStyle,
+    QStyledItemDelegate,
+    QStyleOptionButton,
+    QVBoxLayout,
+    QWidget,
 )
 
 # common qt imports
@@ -55,12 +54,12 @@ from PySide2.QtGui import (
 # from PySide2.QtGui import Qt, QIcon, QKeySequence,QCursor, QDrag, QPainter, QColor, QPalette, QTextDocument, QTextOption
 
 
-def clean_tag(tag) -> str:
+def clean_tag(tag: str) -> str:
     return tag.strip().capitalize()
 
 
 class AddressDragInfo:
-    def __init__(self, tags, addresses) -> None:
+    def __init__(self, tags: List[Optional[str]], addresses: List[str]) -> None:
         self.tags = tags
         self.addresses = addresses
 
@@ -68,11 +67,11 @@ class AddressDragInfo:
         return f"AddressDragInfo({self.tags}, {self.addresses})"
 
 
-def hash_string(text):
+def hash_string(text: str):
     return hashlib.sha256(str(text).encode()).hexdigest()
 
 
-def rescale(value, old_min, old_max, new_min, new_max):
+def rescale(value: float, old_min: float, old_max: float, new_min: float, new_max: float):
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
 
 
@@ -91,7 +90,7 @@ def hash_color(text):
 
 
 class CustomListWidgetItem(QListWidgetItem):
-    def __init__(self, item_text, sub_text=None, parent=None):
+    def __init__(self, item_text: str, sub_text: str = None, parent=None):
         super(CustomListWidgetItem, self).__init__(parent)
         self.setText(item_text)
         self.subtext = sub_text
@@ -140,7 +139,9 @@ class CustomDelegate(QStyledItemDelegate):
 
         QApplication.style().drawControl(QStyle.CE_PushButton, button_style, painter)
 
-        def draw_html_text(painter, text, rect, pos=None, align=Qt.AlignCenter, scale=1):
+        def draw_html_text(
+            painter, text: str, rect: QRect, pos: QPoint = None, align=Qt.AlignCenter, scale=1
+        ):
             if not text:
                 return
 

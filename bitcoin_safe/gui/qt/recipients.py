@@ -2,7 +2,6 @@ import logging
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 
-
 from ...invisible_scroll_area import InvisibleScrollArea
 from ...pythonbdk_types import Recipient
 
@@ -10,11 +9,10 @@ logger = logging.getLogger(__name__)
 
 from typing import List, Optional
 
+import bdkpython as bdk
 from bitcoin_qrreader import bitcoin_qr
 from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import (
-    QMessageBox,
-)
+from PySide2.QtWidgets import QMessageBox
 
 from ...signals import Signals
 from ...util import unit_str
@@ -59,7 +57,14 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.close_button.clicked.connect(lambda: self.signal_close.emit(self))
 
         layout = QtWidgets.QHBoxLayout(self)
-        layout.setContentsMargins(10, 20, 10, 10)  # Left, Top, Right, Bottom margins
+        current_margins = self.layout().contentsMargins()
+
+        layout.setContentsMargins(
+            current_margins.left(),
+            current_margins.top() * 2,
+            current_margins.right(),
+            current_margins.bottom(),
+        )  # Left, Top, Right, Bottom margins
 
         form_layout = QtWidgets.QFormLayout()
 
@@ -80,6 +85,19 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
             self.address_line_edit.setReadOnly(True)
 
         self.address_line_edit.setPlaceholderText("Enter address here")
+
+        def is_valid():
+            if not self.address_line_edit.text():
+                # if it is empty, show no error
+                return True
+            try:
+                bdk_address = bdk.Address(self.address_line_edit.text().strip())
+                assert bdk_address.network() == self.signals.get_network.emit()
+                return True
+            except:
+                return False
+
+        self.address_line_edit.set_validator(is_valid)
         self.label_line_edit = QtWidgets.QLineEdit()
         self.label_line_edit.setPlaceholderText("Enter label here")
 

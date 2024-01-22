@@ -1,8 +1,4 @@
-from PySide2.QtWidgets import (
-    QApplication,
-    QWidget,
-    QVBoxLayout,
-)
+from PySide2.QtWidgets import QApplication, QVBoxLayout, QWidget
 
 from .main import TagEditor
 

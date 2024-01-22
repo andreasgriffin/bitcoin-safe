@@ -1,28 +1,28 @@
 import logging
+from typing import Callable, Optional
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import (
     QApplication,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
     QLabel,
     QShortcut,
+    QTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-
 
 logger = logging.getLogger(__name__)
 
 
 def is_binary(file_path):
-    """
-    Check if a file is binary or text.
+    """Check if a file is binary or text.
+
     Returns True if binary, False if text.
     """
     try:
@@ -45,15 +45,18 @@ def file_to_str(file_path):
             return f.read()
 
 
-class DragAndDropTextEdit(ButtonEdit):
-    signal_drop_file = Signal(str)
-
-    def __init__(self, network: bdk.Network, parent=None, callback_enter=None, callback_esc=None):
+class DragAndDropTextEdit(QTextEdit):
+    def __init__(
+        self,
+        parent=None,
+        callback_enter=None,
+        callback_esc=None,
+        process_filepath: Optional[Callable[[str], None]] = None,
+    ):
         super().__init__(parent)
+        self.process_filepath = process_filepath
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
-        self.network = network
-        self.add_qr_input_from_camera_button()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
@@ -72,33 +75,69 @@ class DragAndDropTextEdit(ButtonEdit):
 
     def dropEvent(self, event):
         file_path = event.mimeData().urls()[0].toLocalFile()
-        s = bitcoin_qr.Data.from_str(file_to_str(file_path), self.network).data_as_string()
+        if self.process_filepath:
+            self.process_filepath(file_path)
+
+
+class DragAndDropButtonEdit(ButtonEdit):
+    signal_drop_file = Signal(str)
+
+    def __init__(
+        self,
+        network: bdk.Network,
+        parent=None,
+        callback_enter=None,
+        callback_esc=None,
+        file_filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
+    ):
+        super().__init__(
+            parent,
+            input_field=DragAndDropTextEdit(
+                parent=parent,
+                callback_enter=callback_enter,
+                callback_esc=callback_esc,
+                process_filepath=self.process_filepath,
+            ),
+        )
+        self.network = network
+
+        self.add_qr_input_from_camera_button()
+        self.add_open_file_button(self.process_filepath, filter=file_filter)
+
+    def process_filepath(self, file_path: str):
+        s = file_to_str(file_path)
         self.setText(s)
         self.signal_drop_file.emit(s)
 
 
-class TransactionDialog(QDialog):
+class ImportDialog(QDialog):
     def __init__(
         self,
         network: bdk.Network,
-        title="Open Transaction or PSBT",
+        window_title="Open Transaction or PSBT",
         on_open=None,
         parent=None,
+        text_button_ok="OK",
+        text_instruction_label="Please paste your Bitcoin Transaction or PSBT in here, or drop a file",
+        instruction_widget: Optional[QWidget] = None,
+        text_placeholder="Paste your Bitcoin Transaction or PSBT in here or drop a file",
     ):
         super().__init__(parent)
         self.on_open = on_open
 
-        self.setWindowTitle(title)
+        self.setWindowTitle(window_title)
         layout = QVBoxLayout()
 
-        self.instruction_label = QLabel(
-            "Please paste your Bitcoin Transaction or PSBT in here, or drop a file:"
+        self.instruction_label = QLabel(text_instruction_label)
+        self.text_edit = DragAndDropButtonEdit(
+            network=network,
+            callback_enter=self.process_input,
+            callback_esc=self.close,
         )
-        self.text_edit = DragAndDropTextEdit(
-            network=network, callback_enter=self.process_input, callback_esc=self.close
-        )
-        self.text_edit.setPlaceholderText("Paste your Bitcoin Transaction or PSBT in here or drop a file")
+        self.text_edit.setPlaceholderText(text_placeholder)
 
+        if instruction_widget:
+            layout.addWidget(instruction_widget)
         layout.addWidget(self.instruction_label)
         layout.addWidget(self.text_edit)
 
@@ -107,17 +146,17 @@ class TransactionDialog(QDialog):
         # buttons
         self.buttonBox = QDialogButtonBox(self)
         self.cancel_button = self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.button_file = self.buttonBox.addButton(QDialogButtonBox.Open)
+        # self.button_file = self.buttonBox.addButton(QDialogButtonBox.Open)
         self.button_ok = self.buttonBox.addButton(QDialogButtonBox.Ok)
         self.button_ok.setDefault(True)
+        self.button_ok.setText(text_button_ok)
 
         layout.addWidget(self.buttonBox)
 
         # connect signals
-        self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.toPlainText()))
+        self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.text()))
         self.text_edit.signal_drop_file.connect(self.process_input)
         self.cancel_button.clicked.connect(self.close)
-        self.button_file.clicked.connect(self.on_open_file_clicked)
 
         shortcut = QShortcut(QKeySequence("Return"), self)
         shortcut.activated.connect(self.process_input)
@@ -132,45 +171,6 @@ class TransactionDialog(QDialog):
         if self.on_open:
             self.on_open(s)
 
-    def on_open_file_clicked(self, file_path=None):
-        if not file_path:
-            file_path, _ = QFileDialog.getOpenFileName(
-                self,
-                "Open Transaction/PSBT",
-                "",
-                "All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
-            )
-            if not file_path:
-                logger.debug("No file selected")
-                return
-
-        logger.debug(f"Selected file: {file_path}")
-        with open(file_path, "rb") as file:
-            string_content = file.read()
-            self.process_input(string_content)
-
-
-class UTXOAddDialog(TransactionDialog):
-    def __init__(self, network: bdk.Network, on_open=None, parent=None):
-        super().__init__(network, on_open=on_open, parent=parent)
-
-        self.setWindowTitle("Add Inputs")
-
-        self.button_ok.setText("Load UTXOs")
-        self.instruction_label.setText("Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint")
-        self.text_edit.setPlaceholderText("Please paste UTXO here")
-
-
-class DescriptorDialog(TransactionDialog):
-    def __init__(self, network: bdk.Network, on_open=None, parent=None):
-        super().__init__(network, on_open=on_open, parent=parent)
-
-        self.setWindowTitle("Import Public Key (xPub)")
-
-        self.button_ok.setText("Load")
-        self.instruction_label.setText("Please paste xPub here")
-        self.text_edit.setPlaceholderText("Please paste xPub here")
-
 
 if __name__ == "__main__":
     import sys
@@ -179,7 +179,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    dialog = TransactionDialog(network=bdk.Network.REGTEST, on_open=print)
+    dialog = ImportDialog(network=bdk.Network.REGTEST, on_open=print)
     dialog.show()
 
     sys.exit(app.exec_())

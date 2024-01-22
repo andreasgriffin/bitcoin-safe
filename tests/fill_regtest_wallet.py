@@ -1,5 +1,6 @@
 import argparse
 import json
+import time
 from random import randint
 from typing import List
 
@@ -9,8 +10,7 @@ import requests
 
 
 def send_rpc_command(ip, port, username, password, method, params=None):
-    """
-    Sends an RPC command to a Bitcoin node.
+    """Sends an RPC command to a Bitcoin node.
 
     :param ip: IP address of the Bitcoin node.
     :param port: RPC port of the Bitcoin node.
@@ -39,7 +39,7 @@ def send_rpc_command(ip, port, username, password, method, params=None):
     )
 
     # Send the request and get the response
-    response = requests.post(url, headers=headers, data=payload, auth=(username, password))
+    response = requests.post(url, headers=headers, data=payload, auth=(username, password), timeout=20)
 
     # Return the response
     return response.json()
@@ -116,13 +116,15 @@ if descriptor:
 
 
 def mine_coins(wallet, blocks=101):
-    """Mine some blocks to generate coins for the wallet"""
+    """Mine some blocks to generate coins for the wallet."""
     address = wallet.get_address(
         bdk.AddressIndex.NEW() if args.always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
     ).address.as_string()
     print(f"Mining {blocks} blocks to {address}")
+    ip, port = rpc_ip.split(":")
     response = send_rpc_command(
-        *rpc_ip.split(":"),
+        ip,
+        port,
         rpc_username,
         rpc_password,
         "generatetoaddress",
@@ -188,9 +190,6 @@ def create_complex_transactions(wallet: bdk.Wallet, blockchain, n=300):
 # Synchronize the wallet
 def update(progress: float, message: str):
     print(progress, message)
-
-
-import time
 
 
 def main():

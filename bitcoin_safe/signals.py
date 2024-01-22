@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 import threading
-from typing import Set
+from typing import Callable, Dict, List, Optional, Set, Union
 
 import bdkpython as bdk
 from PySide2.QtCore import QObject, Signal
@@ -11,14 +11,14 @@ from PySide2.QtCore import QObject, Signal
 class UpdateFilter:
     def __init__(
         self,
-        addresses: Set[str] = None,
-        categories: Set[str] = None,
-        txids: Set[str] = None,
+        addresses: Union[Set[str], List[str]] = None,
+        categories: Union[Set[str], List[Optional[str]]] = None,
+        txids: Union[Set[str], List[str]] = None,
         refresh_all=False,
     ) -> None:
         self.addresses = set(addresses) if addresses else set()
         self.categories = set(categories) if categories else set()
-        self.txids = txids if txids else set()
+        self.txids = set(txids) if txids else set()
         self.refresh_all = refresh_all
 
     def __key__(self):
@@ -29,12 +29,12 @@ class UpdateFilter:
 
 
 class SignalFunction:
-    def __init__(self, name=None):
+    def __init__(self, name: Optional[str] = None):
         self.name = name
-        self.slots = {}
+        self.slots: Dict[str, Callable] = {}
         self.lock = threading.Lock()
 
-    def connect(self, slot, slot_name=None):
+    def connect(self, slot: Callable, slot_name=None):
         with self.lock:
             key = slot_name if slot_name and (slot_name not in self.slots) else str(slot)
             self.slots[key] = slot
@@ -63,11 +63,7 @@ class SignalFunction:
                 if allow_list and key not in allow_list:
                     continue
 
-                name = (
-                    f"{slot.__self__.__class__.__name__}."
-                    if str(slot.__class__) == "<class 'method'>"
-                    else ""
-                )
+                name = f"{slot.__self__.__class__.__name__}." if hasattr(slot, "__self__") else ""
                 name += f"{slot.__name__}{args, kwargs}"
                 name += f" with key={key}" if key else ""
                 try:
@@ -87,9 +83,9 @@ class SignalFunction:
 
 
 class SingularSignalFunction(SignalFunction):
-    def connect(self, slot):
+    def connect(self, slot: Callable, slot_name=None):
         if not self.slots:
-            super().connect(slot)
+            super().connect(slot, slot_name=slot_name)
         else:
             raise Exception("Not allowed to add a second listener to this signal.")
 
@@ -99,8 +95,8 @@ class SingularSignalFunction(SignalFunction):
 
 
 class Signals(QObject):
-    """
-    The idea here is to define events that might need to trigger updates of the UI or other events  (careful of circular loops)
+    """The idea here is to define events that might need to trigger updates of
+    the UI or other events  (careful of circular loops)
 
     State what happended, NOT the intention:
 
@@ -142,7 +138,7 @@ class Signals(QObject):
     save_transaction_into_wallet = Signal(object)
 
     get_wallets = SignalFunction(name="get_wallets")
-    get_network = SignalFunction(name="get_network")
+    get_network = SingularSignalFunction(name="get_network")
 
     show_network_settings = Signal()
     export_bip329_labels = Signal(str)  # str= wallet_id

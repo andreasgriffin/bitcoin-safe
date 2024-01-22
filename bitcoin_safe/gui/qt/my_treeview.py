@@ -25,7 +25,7 @@
 
 import logging
 
-from bitcoin_safe.gui.qt.open_tx_dialog import file_to_str
+from bitcoin_safe.gui.qt.dialog_import import file_to_str
 
 from ...config import UserConfig
 
@@ -39,17 +39,7 @@ import os
 import os.path
 import tempfile
 from decimal import Decimal
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Type,
-    Union,
-)
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from bitcoin_qrreader.bitcoin_qr import Data
 from PySide2 import QtCore
@@ -89,8 +79,10 @@ from PySide2.QtWidgets import (
     QMenu,
     QStyledItemDelegate,
     QStyleOptionViewItem,
+    QTabWidget,
     QToolButton,
     QTreeView,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -125,27 +117,6 @@ class MyMenu(QMenu):
             callback()
 
 
-def create_toolbar_with_menu(config, title, export_as_csv=None):
-    menu = MyMenu(config)
-    if export_as_csv:
-        menu.addAction(_("Export as CSV"), export_as_csv)
-
-    toolbar_button = QToolButton()
-    toolbar_button.clicked.connect(lambda: menu.exec_(QCursor.pos()))
-    toolbar_button.setIcon(read_QIcon("preferences.png"))
-    toolbar_button.setMenu(menu)
-    toolbar_button.setPopupMode(QToolButton.InstantPopup)
-    toolbar_button.setFocusPolicy(Qt.NoFocus)
-    toolbar = QHBoxLayout()
-
-    balance_label = QLabel()
-
-    toolbar.addWidget(balance_label)
-    toolbar.addStretch()
-    toolbar.addWidget(toolbar_button)
-    return toolbar, menu
-
-
 class MyStandardItemModel(QStandardItemModel):
     def __init__(
         self,
@@ -156,15 +127,24 @@ class MyStandardItemModel(QStandardItemModel):
         super().__init__(parent)
         self.mytreeview: MyTreeView = parent
         self.drag_key = drag_key
-        self.drag_keys_to_file_paths: Callable = drag_keys_to_file_paths
+        self.drag_keys_to_file_paths = self.csv_drag_keys_to_file_paths
+        if drag_keys_to_file_paths:
+            self.drag_keys_to_file_paths = drag_keys_to_file_paths
 
-    def flags(self, index):
+    def csv_drag_keys_to_file_paths(
+        self, drag_keys: Iterable[str], save_directory: Optional[str] = None
+    ) -> List[str]:
+        """Writes the selected rows in a csv file (the directory is )"""
+        file_path = os.path.join(save_directory, f"export.csv") if save_directory else None
+        return [self.mytreeview.csv_drag_keys_to_file_path(drag_keys=drag_keys, file_path=file_path)]
+
+    def flags(self, index: QtCore.QModelIndex):
         if index.column() == self.mytreeview.key_column:  # only enable dragging for column 1
             return super().flags(index) | Qt.ItemIsDragEnabled
         else:
             return super().flags(index)
 
-    def mimeData(self, indexes):
+    def mimeData(self, indexes: List[QtCore.QModelIndex]) -> QMimeData:
         mime_data = QMimeData()
         keys = set()
         for index in indexes:
@@ -175,25 +155,16 @@ class MyStandardItemModel(QStandardItemModel):
         # set the key data for internal drags
         d = {
             "type": f"drag_{self.drag_key}",
-            self.drag_key: [],
+            self.drag_key: list(keys),
         }
-
-        for key in keys:
-            d[self.drag_key].append(key)
 
         json_string = json.dumps(d).encode()
         mime_data.setData("application/json", json_string)
 
         # set the key data for files
 
-        drag_keys_to_file_paths = (
-            self.drag_keys_to_file_paths
-            if self.drag_keys_to_file_paths
-            else self.mytreeview.csv_drag_keys_to_file_paths
-        )
-
         file_urls = []
-        for file_path in drag_keys_to_file_paths(keys):
+        for file_path in self.drag_keys_to_file_paths(keys):
             # Add the file URL to the list
             file_urls.append(QUrl.fromLocalFile(file_path))
 
@@ -350,7 +321,7 @@ class MyTreeView(QTreeView):
         self._forced_update = False
 
         self._default_bg_brush = QStandardItem().background()
-        self.proxy: Optional[QSortFilterProxyModel] = None  # history, and address tabs use a proxy
+        self.proxy = QSortFilterProxyModel()
 
         # Here's where we set the font globally for the view
         font = QFont("Arial", 10)
@@ -476,7 +447,10 @@ class MyTreeView(QTreeView):
             # Scroll to the last selected index
             self.scrollTo(last_selected_index)
 
-    def update_headers(self, headers: Union[List[str], Dict[int, str], Iterable[str]]):
+    def update_headers(
+        self,
+        headers: Union[Dict[Any, str], Iterable[str]],
+    ):
         # headers is either a list of column names, or a dict: (col_idx->col_name)
         if not isinstance(headers, dict):  # convert to dict
             headers = dict(enumerate(headers))
@@ -586,7 +560,7 @@ class MyTreeView(QTreeView):
         else:
             self.on_double_click(idx)
 
-    def on_double_click(self, idx):
+    def on_double_click(self, idx: QModelIndex):
         pass
 
     def on_activated(self, idx):
@@ -607,9 +581,9 @@ class MyTreeView(QTreeView):
         raise NotImplementedError()
 
     def should_hide(self, row):
-        """
-        row_num is for self.model(). So if there is a proxy, it is the row number
-        in that!
+        """row_num is for self.model().
+
+        So if there is a proxy, it is the row number in that!
         """
         return False
 
@@ -636,14 +610,13 @@ class MyTreeView(QTreeView):
         filter_data = self.get_role_data_from_coordinate(row, col, role=self.ROLE_FILTER_DATA)
         if filter_data:
             return filter_data
-        txt = self.get_text_from_coordinate(row, col)
+        txt: str = self.get_text_from_coordinate(row, col)
         txt = txt.lower()
         return txt
 
     def hide_row(self, row_num) -> bool:
-        """
-        row_num is for self.model(). So if there is a proxy, it is the row number
-        in that!
+        """row_num is for self.model(). So if there is a proxy, it is the row
+        number in that!
 
         It returns:  is_now_hidden
         """
@@ -682,18 +655,9 @@ class MyTreeView(QTreeView):
     def create_toolbar(self, config):
         return
 
-    def create_toolbar_buttons(self):
-        hbox = QHBoxLayout()
-        buttons = self.get_toolbar_buttons()
-        for b in buttons:
-            b.setVisible(False)
-            hbox.addWidget(b)
-        self.toolbar_buttons = buttons
-        return hbox
-
-    def as_csv_string(self, row_numbers=None):
+    def as_csv_string(self, row_numbers: Optional[List[int]] = None, export_all=False):
         table = self.get_rows_as_list(
-            row_numbers=row_numbers if row_numbers is not None else list(range(self.model().rowCount()))
+            row_numbers=list(range(self.model().rowCount())) if export_all else row_numbers
         )
 
         stream = io.StringIO()
@@ -711,18 +675,20 @@ class MyTreeView(QTreeView):
                 logger.debug("No file selected")
                 return
 
-        self.csv_drag_keys_to_file_paths(file_path=file_path)
+        self.csv_drag_keys_to_file_path(file_path=file_path)
 
-    def csv_drag_keys_to_file_paths(self, drag_keys=None, file_path=None):
-        row_numbers = [] if drag_keys else None
-        if drag_keys:
+    def csv_drag_keys_to_file_path(
+        self, drag_keys: Optional[Iterable[str]] = None, file_path: str = None, export_all=False
+    ) -> str:
+        row_numbers: List[int] = []
+        if drag_keys and not export_all:
             for row_number in range(0, self.std_model.rowCount()):
                 item = self.std_model.item(row_number, self.key_column)
                 if item.data(self.ROLE_KEY) in drag_keys:
                     row_numbers.append(row_number)
 
         # Fetch the serialized data using the drag_keys
-        csv_string = self.as_csv_string(row_numbers=row_numbers)
+        csv_string = self.as_csv_string(row_numbers=row_numbers, export_all=export_all)
 
         if file_path:
             file_descriptor = os.open(file_path, os.O_CREAT | os.O_WRONLY)
@@ -737,10 +703,32 @@ class MyTreeView(QTreeView):
             file.write(csv_string)
 
         logger.info(f"CSV Table saved to {file_path}")
-        return [file_path]
+        return file_path
 
-    def create_toolbar_with_menu(self, title):
-        return create_toolbar_with_menu(self.config, title, export_as_csv=self.export_as_csv)
+    def _create_toolbar_with_menu(self, title):
+        menu = MyMenu(self.config)
+        menu.addAction(_("Export as CSV"), self.export_as_csv)
+
+        toolbar_button = QToolButton()
+        toolbar_button.clicked.connect(lambda: menu.exec_(QCursor.pos()))
+        toolbar_button.setIcon(read_QIcon("preferences.png"))
+        toolbar_button.setMenu(menu)
+        toolbar_button.setPopupMode(QToolButton.InstantPopup)
+        toolbar_button.setFocusPolicy(Qt.NoFocus)
+        toolbar = QHBoxLayout()
+
+        balance_label = QLabel()
+
+        search_edit = QLineEdit()
+        search_edit.setPlaceholderText("Type to filter")
+        search_edit.setClearButtonEnabled(True)
+        search_edit.textChanged.connect(self.filter)
+
+        toolbar.addWidget(balance_label)
+        toolbar.addStretch()
+        toolbar.addWidget(search_edit)
+        toolbar.addWidget(toolbar_button)
+        return toolbar, menu, balance_label, search_edit
 
     def show_toolbar(self, state, config=None):
         if state == self.toolbar_shown:
@@ -872,3 +860,17 @@ class SearchableTab(QWidget):
         super().__init__(parent)
 
         self.searchable_list: MyTreeView
+
+
+def _create_list_with_toolbar(l: MyTreeView, tabs: QTabWidget, config: UserConfig) -> SearchableTab:
+    # create a horizontal widget and layout
+    w = SearchableTab(tabs)
+    w.searchable_list = l
+    w.setLayout(QVBoxLayout())
+    w.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+    toolbar = l.create_toolbar(config)
+    if toolbar:
+        w.layout().addLayout(toolbar)
+
+    w.layout().addWidget(l)
+    return w

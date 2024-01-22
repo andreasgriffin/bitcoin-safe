@@ -3,9 +3,8 @@ import json
 import requests
 
 
-def send_rpc_command(ip, port, username, password, method, params=None):
-    """
-    Sends an RPC command to a Bitcoin node.
+def send_rpc_command(ip: str, port: str, username: str, password: str, method: str, params=None):
+    """Sends an RPC command to a Bitcoin node.
 
     :param ip: IP address of the Bitcoin node.
     :param port: RPC port of the Bitcoin node.
@@ -34,7 +33,7 @@ def send_rpc_command(ip, port, username, password, method, params=None):
     )
 
     # Send the request and get the response
-    response = requests.post(url, headers=headers, data=payload, auth=(username, password))
+    response = requests.post(url, headers=headers, data=payload, auth=(username, password), timeout=20)
 
     # Return the response
     return response.json()

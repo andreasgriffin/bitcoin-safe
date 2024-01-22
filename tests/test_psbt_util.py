@@ -1,6 +1,6 @@
 import bdkpython as bdk
 
-from bitcoin_safe.psbt_util import *
+from bitcoin_safe.psbt_util import get_psbt_simple_json
 
 
 def test_psbts():
@@ -21,12 +21,6 @@ def test_psbts():
     assert get_psbt_simple_json(psbt_0_1of1) == {
         "inputs": [
             {
-                "bip32_derivation": [
-                    [
-                        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
-                        ["bd5f995d", "m/84'/1'/0'/0/21"],
-                    ]
-                ],
                 "m": 1,
                 "n": 1,
                 "public_keys": ["0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"],
@@ -34,6 +28,8 @@ def test_psbts():
                     "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "bd5f995d".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     }
                 },
             }
@@ -43,12 +39,6 @@ def test_psbts():
     assert get_psbt_simple_json(psbt_1_1of1) == {
         "inputs": [
             {
-                "bip32_derivation": [
-                    [
-                        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
-                        ["bd5f995d", "m/84'/1'/0'/0/21"],
-                    ]
-                ],
                 "m": 1,
                 "n": 1,
                 "public_keys": ["0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae"],
@@ -57,6 +47,8 @@ def test_psbts():
                     "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": {
                         "partial_sigs": False,
                         "signature": True,
+                        "fingerprint": "bd5f995d".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     }
                 },
             }
@@ -66,20 +58,6 @@ def test_psbts():
     assert get_psbt_simple_json(psbt_0_2of3) == {
         "inputs": [
             {
-                "bip32_derivation": [
-                    [
-                        "0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6",
-                        ["b1078dc5", "m/84'/1'/0'/0/21"],
-                    ],
-                    [
-                        "030ee452e66895a94ccadd19c5d1a7513807d4e6314d79c178cd9e533de6dc4543",
-                        ["d1b9af7c", "m/84'/1'/0'/0/21"],
-                    ],
-                    [
-                        "03153539b780ac667a6c63dc6ff29683df0b3eedc98f9c3332bf660cd237d6d6b4",
-                        ["817b8dfe", "m/84'/1'/0'/0/21"],
-                    ],
-                ],
                 "m": 2,
                 "n": 3,
                 "public_keys": [
@@ -91,14 +69,20 @@ def test_psbts():
                     "0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "b1078dc5".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                     "030ee452e66895a94ccadd19c5d1a7513807d4e6314d79c178cd9e533de6dc4543": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "d1b9af7c".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                     "03153539b780ac667a6c63dc6ff29683df0b3eedc98f9c3332bf660cd237d6d6b4": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "817b8dfe".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                 },
             }
@@ -108,20 +92,6 @@ def test_psbts():
     assert get_psbt_simple_json(psbt_1_2of3) == {
         "inputs": [
             {
-                "bip32_derivation": [
-                    [
-                        "0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6",
-                        ["b1078dc5", "m/84'/1'/0'/0/21"],
-                    ],
-                    [
-                        "030ee452e66895a94ccadd19c5d1a7513807d4e6314d79c178cd9e533de6dc4543",
-                        ["d1b9af7c", "m/84'/1'/0'/0/21"],
-                    ],
-                    [
-                        "03153539b780ac667a6c63dc6ff29683df0b3eedc98f9c3332bf660cd237d6d6b4",
-                        ["817b8dfe", "m/84'/1'/0'/0/21"],
-                    ],
-                ],
                 "m": 2,
                 "n": 3,
                 "public_keys": [
@@ -139,14 +109,20 @@ def test_psbts():
                     "0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": {
                         "partial_sigs": True,
                         "signature": False,
+                        "fingerprint": "b1078dc5".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                     "030ee452e66895a94ccadd19c5d1a7513807d4e6314d79c178cd9e533de6dc4543": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "d1b9af7c".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                     "03153539b780ac667a6c63dc6ff29683df0b3eedc98f9c3332bf660cd237d6d6b4": {
                         "partial_sigs": False,
                         "signature": False,
+                        "fingerprint": "817b8dfe".upper(),
+                        "key_origin": "m/84h/1h/0h/0/21",
                     },
                 },
             }
