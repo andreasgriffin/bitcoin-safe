@@ -46,6 +46,8 @@ class TxUiInfos:
 
         self.recipients: List[Recipient] = []
 
+        # self.exclude_fingerprints_from_signing :List[str]=[]
+
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
 

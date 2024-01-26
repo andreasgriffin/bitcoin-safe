@@ -995,15 +995,22 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return self.cache_dict_fulltxdetail
 
-    def get_all_txos(self, include_not_mine=False) -> List[PythonUtxo]:
+    def _get_all_txos_dict(self, include_not_mine=False) -> Dict[str, PythonUtxo]:
         dict_fulltxdetail = self.get_dict_fulltxdetail()
 
-        txos = []
+        txos: Dict[str, PythonUtxo] = {}
         for fulltxdetail in dict_fulltxdetail.values():
             for python_utxo in fulltxdetail.outputs.values():
                 if include_not_mine or self.is_my_address(python_utxo.address):
-                    txos.append(python_utxo)
+                    if str(python_utxo.outpoint) in txos:
+                        logger.error(
+                            f"{str(python_utxo.outpoint)} already present in txos, meaning dict_fulltxdetail has outpoints occuring multiple times"
+                        )
+                    txos[str(python_utxo.outpoint)] = python_utxo
         return txos
+
+    def get_all_txos(self, include_not_mine=False) -> List[PythonUtxo]:
+        return list(self._get_all_txos_dict(include_not_mine=include_not_mine).values())
 
     @instance_lru_cache()
     def address_is_used(self, address: str) -> bool:
@@ -1108,7 +1115,10 @@ class Wallet(BaseSaveableClass, CacheManager):
     def get_height(self) -> int:
         if self.blockchain:
             # update the cached height
-            self._blockchain_height = self.blockchain.get_height()
+            try:
+                self._blockchain_height = self.blockchain.get_height()
+            except:
+                logger.error(f"Could not fetch self.blockchain.get_height()")
         return self._blockchain_height
 
     def minimalistic_coin_select(self, utxos: Iterable[PythonUtxo], total_sent_value: int) -> UtxosForInputs:
@@ -1329,14 +1339,9 @@ class Wallet(BaseSaveableClass, CacheManager):
                 self.labels.set_addr_category(recipient.address, category)
                 self.labels.add_category(category)
 
-    def get_category_utxo_dict(self) -> Dict[str, List[PythonUtxo]]:
-        d: Dict[str, List[PythonUtxo]] = {}
-        for python_txos in self.get_all_txos():
-            category = self.labels.get_category(python_txos.address)
-            if category not in d:
-                d[category] = []
-            d[category].append(python_txos)
-        return d
+    def get_python_utxo(self, outpoint_str: str) -> Optional[PythonUtxo]:
+        all_txos_dict = self._get_all_txos_dict()
+        return all_txos_dict.get(outpoint_str)
 
     def get_conflicting_python_utxos(self, input_outpoints: List[OutPoint]) -> List[PythonUtxo]:
         conflicting_python_utxos = []

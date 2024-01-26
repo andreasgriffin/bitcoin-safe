@@ -44,7 +44,13 @@ from ...psbt_util import (
     estimate_tx_weight,
     get_psbt_simple_json,
 )
-from ...pythonbdk_types import OutPoint, Recipient, robust_address_str_from_script
+from ...pythonbdk_types import (
+    OutPoint,
+    PythonUtxo,
+    Recipient,
+    python_utxo_balance,
+    robust_address_str_from_script,
+)
 from ...signals import Signal, Signals
 from ...signer import AbstractSigner, FileSigner, QRSigner, SignerWallet, USBSigner
 from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
@@ -979,7 +985,6 @@ class UITX_Creator(UITX_Base):
         utxo_list: UTXOList,
         config: UserConfig,
         signals: Signals,
-        get_sub_texts,
         enable_opportunistic_merging_fee_rate=5,
     ) -> None:
         super().__init__(config=config, signals=signals, mempool_data=mempool_data)
@@ -987,7 +992,6 @@ class UITX_Creator(UITX_Base):
         self.categories = categories
         self.utxo_list = utxo_list
         self.widget_utxo_with_toolbar = widget_utxo_with_toolbar
-        self.get_sub_texts = get_sub_texts
         self.enable_opportunistic_merging_fee_rate = enable_opportunistic_merging_fee_rate
 
         self.additional_outpoints: List[OutPoint] = []
@@ -1066,6 +1070,27 @@ class UITX_Creator(UITX_Base):
             utxo.outpoint for utxo in self.wallet.get_all_txos() if not utxo.is_spent_by_txid
         ] + self.additional_outpoints
 
+    def _get_category_python_utxo_dict(self) -> Dict[str, List[PythonUtxo]]:
+        category_python_utxo_dict: Dict[str, List[PythonUtxo]] = {}
+        for outpoint in self.get_outpoints():
+            python_utxo = self.wallet.get_python_utxo(str(outpoint))
+            if not python_utxo:
+                continue
+
+            category = self.wallet.labels.get_category(python_utxo.address)
+            if category not in category_python_utxo_dict:
+                category_python_utxo_dict[category] = []
+            category_python_utxo_dict[category].append(python_utxo)
+        return category_python_utxo_dict
+
+    def _get_sub_texts_for_uitx(self):
+        category_python_utxo_dict = self._get_category_python_utxo_dict()
+
+        return [
+            f"{len(category_python_utxo_dict.get(category, []))} Inputs: {Satoshis(python_utxo_balance(category_python_utxo_dict.get(category, [])), self.wallet.network).str_with_unit()}"
+            for category in self.wallet.labels.categories
+        ]
+
     def create_inputs_selector(self, layout):
 
         self.tabs_inputs = QTabWidget(self.main_widget)
@@ -1082,10 +1107,8 @@ class UITX_Creator(UITX_Base):
 
         # Taglist
         self.category_list = CategoryList(
-            self.categories, self.signals, self.get_sub_texts, immediate_release=False
+            self.categories, self.signals, self._get_sub_texts_for_uitx, immediate_release=False
         )
-        # select the first one with !=0 balance
-        category_utxo_dict = self.wallet.get_category_utxo_dict()
         self.verticalLayout_inputs.addWidget(self.label_select_input_categories)
         self.verticalLayout_inputs.addWidget(self.category_list)
 
@@ -1112,15 +1135,13 @@ class UITX_Creator(UITX_Base):
 
         layout.addWidget(self.tabs_inputs)
 
-        def sum_value(category):
-            utxos = category_utxo_dict.get(category)
-            if not utxos:
-                return 0
-            return sum([utxo.txout.value for utxo in utxos])
+        # select the first one with !=0 balance
+        # TODO:  this doesnt work however, because the wallet sync happens after this creation
+        category_utxo_dict = self._get_category_python_utxo_dict()
 
         def get_idx_non_zero_category():
             for i, category in enumerate(self.category_list.categories):
-                if sum_value(category) > 0:
+                if python_utxo_balance(category_utxo_dict.get(category, [])) > 0:
                     return i
 
         idx_non_zero_category = get_idx_non_zero_category()

@@ -17,7 +17,6 @@ from PySide2.QtWidgets import (
     QApplication,
     QPushButton,
     QSizePolicy,
-    QStackedWidget,
     QTextEdit,
     QToolTip,
     QVBoxLayout,
@@ -270,6 +269,8 @@ class HorizontalIndicator(QWidget):
             self.triangle_height + self.pen_width
         )  # Set minimum height to ensure there's enough space for the line and triangle
 
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
     def set_current_step(self, step: int):
         self.current_step = step
         self.update()  # Repaint the widget with the new step indicator
@@ -311,6 +312,71 @@ class HorizontalIndicator(QWidget):
         painter.drawPolygon(triangle)
 
 
+class AutoResizingStackedWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._layout = QVBoxLayout(self)
+        self.setLayout(self._layout)  # Explicitly setting the layout
+        self.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.widgets = []
+        self._currentIndex = -1
+
+    def addWidget(self, widget):
+        self.insertWidget(len(self.widgets), widget)
+
+    def insertWidget(self, index, widget):
+        if index < 0 or index > len(self.widgets):
+            raise IndexError("Index out of bounds")
+        widget.setVisible(False)
+        self.widgets.insert(index, widget)
+        self._layout.insertWidget(index, widget)
+        if len(self.widgets) == 1:
+            self.setCurrentIndex(0)
+
+    def setCurrentIndex(self, index):
+        if 0 <= index < len(self.widgets):
+            if self._currentIndex != -1:
+                self.widgets[self._currentIndex].setVisible(False)
+            self.widgets[index].setVisible(True)
+            self._currentIndex = index
+            self.adjustSizeToCurrentWidget()
+
+    def currentIndex(self):
+        return self._currentIndex
+
+    def adjustSizeToCurrentWidget(self):
+        if self._currentIndex != -1:
+            currentWidget = self.widgets[self._currentIndex]
+            if currentWidget.sizeHint().height() != -1 and currentWidget.sizeHint().width() != -1:
+                self.setMinimumSize(currentWidget.sizeHint())
+            self.setMaximumSize(currentWidget.maximumSize())
+
+    def count(self):
+        return len(self.widgets)
+
+    def removeWidget(self, widget):
+        if widget in self.widgets:
+            widget.setVisible(False)
+            self.widgets.remove(widget)
+            self._layout.removeWidget(widget)
+            widget.setParent(None)  # This is important to fully remove the widget
+            if self._currentIndex >= len(self.widgets):
+                self.setCurrentIndex(len(self.widgets) - 1)
+
+    def widget(self, index):
+        if 0 <= index < len(self.widgets):
+            return self.widgets[index]
+        return None
+
+    def currentWidget(self):
+        if self._currentIndex != -1:
+            return self.widgets[self._currentIndex]
+        return None
+
+    def indexOf(self, widget):
+        return self.widgets.index(widget) if widget in self.widgets else -1
+
+
 class StepProgressContainer(QWidget):
     def __init__(
         self,
@@ -329,7 +395,7 @@ class StepProgressContainer(QWidget):
             use_checkmark_icon=use_checkmark_icon,
         )
         self.horizontal_indicator = HorizontalIndicator(steps, current_step)
-        self.stacked_widget = QStackedWidget()
+        self.stacked_widget = AutoResizingStackedWidget()
         self.hide_on_click = hide_on_click
         self.clickable = clickable
 
@@ -426,7 +492,7 @@ class DemoApp(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        layout = QVBoxLayout()
+        self.setLayout(QVBoxLayout())
 
         # Buttons to navigate through steps
         next_button = QPushButton("Next Step")
@@ -435,18 +501,16 @@ class DemoApp(QWidget):
         prev_button = QPushButton("Previous Step")
         prev_button.clicked.connect(self.prev_step)
 
-        layout().addWidget(
+        self.layout().addWidget(
             self.step_progress_container
         )  # Add the step progress container instead of step_bar
-        layout().addWidget(prev_button)
-        layout().addWidget(next_button)
-        layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().addWidget(prev_button)
+        self.layout().addWidget(next_button)
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.toggle_completion_button = QPushButton("Toggle Step Completion")
         self.toggle_completion_button.clicked.connect(self.toggle_step_completion)
-        layout().addWidget(self.toggle_completion_button)
-
-        self.setLayout(layout)
+        self.layout().addWidget(self.toggle_completion_button)
 
     def toggle_step_completion(self):
         current_value = self.step_progress_container.step_bar.mark_current_step_as_completed

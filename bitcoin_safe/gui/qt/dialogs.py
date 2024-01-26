@@ -36,17 +36,20 @@ def question_dialog(text="", title="", buttons=QMessageBox.Cancel | QMessageBox.
         return True
     elif ret == QMessageBox.No:
         return False
+    elif ret == QMessageBox.Cancel:
+        return False
+    return False
 
 
 class PasswordQuestion(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, label_text="Please enter your password:"):
         super(PasswordQuestion, self).__init__(parent)
 
         self.setWindowTitle("Password Input")
 
         self.layout = QVBoxLayout(self)
 
-        self.label = QLabel("Please enter your password:")
+        self.label = QLabel(label_text)
         self.layout.addWidget(self.label)
 
         self.password_input = QLineEdit(self)
@@ -84,15 +87,15 @@ def create_icon_from_unicode(unicode_char, font_name="Arial", size=18):
 
 
 class PasswordCreation(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, window_title="Create Password", label_text="Enter your password:"):
         super(PasswordCreation, self).__init__(parent)
 
-        self.setWindowTitle("Create Password")
+        self.setWindowTitle(window_title)
 
         self.layout = QVBoxLayout(self)
 
         # First password input
-        self.label1 = QLabel("Enter your password:")
+        self.label1 = QLabel(label_text)
         self.layout.addWidget(self.label1)
 
         self.password_input1 = QLineEdit(self)
@@ -174,16 +177,16 @@ class PasswordCreation(QDialog):
 
 
 class WalletIdDialog(QDialog):
-    def __init__(self, wallet_dir, parent=None):
+    def __init__(self, wallet_dir, parent=None, window_title="Choose wallet name", label_text="Wallet name:"):
         super().__init__(parent)
         self.wallet_dir = wallet_dir
-        self.setWindowTitle("Create Wallet")
+        self.setWindowTitle(window_title)
 
         # Create layout
         layout = QVBoxLayout()
 
         # Add name label and input field
-        self.name_label = QLabel("Wallet Name:")
+        self.name_label = QLabel(label_text)
         self.name_input = QLineEdit()
         layout.addWidget(self.name_label)
         layout.addWidget(self.name_input)

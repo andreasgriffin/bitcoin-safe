@@ -12,7 +12,7 @@ from PySide2.QtGui import Qt
 from PySide2.QtWidgets import (
     QComboBox,
     QDialogButtonBox,
-    QFormLayout,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -164,20 +164,29 @@ class WalletDescriptorUI(QObject):
                 self.keystore_uis.pop()
 
         # now make a second pass and connect point the keystore_ui.keystore correctly
-        for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):
+        for i, (keystore, keystore_ui) in enumerate(zip(self.protowallet.keystores, self.keystore_uis)):
             if keystore_ui.keystore and keystore:
                 keystore_ui.keystore.from_other_keystore(keystore)
             elif keystore:
                 keystore_ui.keystore = keystore.clone()
+            elif keystore_ui:
+                # keystore is None
+                # so don't I cant set aynthing here except the ui label
+                keystore_ui.label = self.protowallet.signer_name(i)
             else:
                 # keystore is None
-                # so don't I cant set aynthing here
+                # so don't I cant set aynthing here except the ui label
                 pass
 
             # set the tab title
             index = keystore_ui.tabs.indexOf(keystore_ui.tab)
             self.tabs_widget_signers.setTabText(index, keystore_ui.label)
             self.tabs_widget_signers.setTabIcon(index, icon_for_label(keystore_ui.label))
+
+        self.spin_req.setMinimum(1)
+        self.spin_req.setMaximum(self.spin_signers.value())
+        self.spin_signers.setMinimum(self.spin_req.value())
+        self.spin_signers.setMaximum(10)
 
     def set_keystore_ui_from_protowallet(self):
         logger.debug(f"set_keystore_ui_from_protowallet")
@@ -350,34 +359,37 @@ class WalletDescriptorUI(QObject):
         box_wallet_type = QGroupBox()
 
         # Create a QFormLayout
-        form_wallet_type = QFormLayout(box_wallet_type)
+        form_wallet_type = QGridLayout(box_wallet_type)
 
         # box_signers_with_slider
         self.label_signers = QLabel()
-        self.label_signers.setText(QCoreApplication.translate("tab", "Signers", None))
+        self.label_signers.setText("Required Signers")
 
         self.spin_req = QSpinBox()
         self.spin_req.setMinimum(1)
         self.spin_req.setMaximum(10)
 
         self.label_of = QLabel()
-        self.label_of.setText(QCoreApplication.translate("tab", "of", None))
-        self.label_of.setAlignment(Qt.AlignVCenter)
+        self.label_of.setText("of")
+        self.label_of.setAlignment(Qt.AlignCenter)
 
         self.spin_signers = QSpinBox()
         self.spin_signers.setMinimum(1)
         self.spin_signers.setMaximum(10)
 
         # Add widgets to the layout
-        form_wallet_type.addRow(self.label_signers, self.spin_req)
-        form_wallet_type.addRow(self.label_of, self.spin_signers)
+        form_wallet_type.addWidget(self.label_signers, 0, 0)
+        form_wallet_type.addWidget(self.spin_req, 0, 1)
+        form_wallet_type.addWidget(self.label_of, 0, 2)
+        form_wallet_type.addWidget(self.spin_signers, 0, 3)
 
         # box_address_type
         self.label_address_type = QLabel()
 
         self.comboBox_address_type = QComboBox()
         self.comboBox_address_type.currentIndexChanged.connect(self.on_wallet_ui_changes)
-        form_wallet_type.addRow(self.label_address_type, self.comboBox_address_type)
+        form_wallet_type.addWidget(self.label_address_type, 2, 0)
+        form_wallet_type.addWidget(self.comboBox_address_type, 2, 1, 1, 3)
 
         # box_gap
         label_gap = QLabel()
@@ -389,7 +401,8 @@ class WalletDescriptorUI(QObject):
         self.spin_gap.setMaximum(int(1e6))
 
         # Add widgets to the layout
-        form_wallet_type.addRow(label_gap, self.spin_gap)
+        form_wallet_type.addWidget(label_gap, 3, 0)
+        form_wallet_type.addWidget(self.spin_gap, 3, 1, 1, 3)
 
         box_wallet_type.setLayout(form_wallet_type)
         box_wallet_type_and_descriptor.layout().addWidget(box_wallet_type)

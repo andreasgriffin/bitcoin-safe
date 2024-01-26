@@ -82,6 +82,13 @@ class KeyStoreUI(QObject):
     def label(self):
         return self.keystore.label if self.keystore else self._label
 
+    @label.setter
+    def label(self, value):
+        if self.keystore:
+            self.keystore.label = value
+        else:
+            self._label = value
+
     def remove_tab(self):
         self.tabs.removeTab(self.tabs.indexOf(self.tab))
 
@@ -324,7 +331,7 @@ class KeyStoreUI(QObject):
         self.label_xpub.setText("xPub")
         self.label_seed.setText("Seed")
         self.textEdit_description.setPlaceholderText(
-            "Useful information about signer",
+            "Name of signing device: ......\nLocation of signing device: .....",
         )
 
         self.edit_key_origin.input_field.textChanged.connect(self.format_all_fields)

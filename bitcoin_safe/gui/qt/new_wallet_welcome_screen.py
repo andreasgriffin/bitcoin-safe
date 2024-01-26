@@ -35,13 +35,13 @@ class NewWalletWelcomeScreen(QObject):
         self.create_ui()
 
         self.pushButton_multisig.clicked.connect(
-            lambda: call_call_functions([self.remove_tab, self.signal_onclick_multisig_signature.emit])
+            lambda: call_call_functions([self.signal_onclick_multisig_signature.emit, self.remove_tab])
         )
         self.pushButton_singlesig.clicked.connect(
-            lambda: call_call_functions([self.remove_tab, self.signal_onclick_single_signature.emit])
+            lambda: call_call_functions([self.signal_onclick_single_signature.emit, self.remove_tab])
         )
         self.pushButton_custom_wallet.clicked.connect(
-            lambda: call_call_functions([self.remove_tab, self.signal_onclick_custom_signature.emit])
+            lambda: call_call_functions([self.signal_onclick_custom_signature.emit, self.remove_tab])
         )
 
     def add_new_wallet_welcome_tab(self):
@@ -194,5 +194,5 @@ class NewWalletWelcomeScreen(QObject):
 
     def remove_tab(self):
         index = self.main_tabs.indexOf(self.tab)
-        if index >= 0:
+        if index >= 0 and self.main_tabs.count() > 1:
             self.main_tabs.removeTab(index)

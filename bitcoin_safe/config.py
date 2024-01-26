@@ -15,7 +15,7 @@ MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 
 
-def get_default_mempool_url(network: bdk.Network):
+def get_default_mempool_url(network: bdk.Network) -> str:
     d = {
         bdk.Network.BITCOIN: "https://mempool.space/",
         bdk.Network.REGTEST: "http://localhost:8080/",  # you can use https://github.com/ngutech21/nigiri-mempool/
@@ -25,7 +25,7 @@ def get_default_mempool_url(network: bdk.Network):
     return d[network]
 
 
-def get_default_port(network: bdk.Network, server_type: BlockchainType):
+def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
     if server_type == BlockchainType.CompactBlockFilter:
         d = {
             bdk.Network.BITCOIN: 8333,
@@ -37,7 +37,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
     elif server_type == BlockchainType.Electrum:
         d = {
             bdk.Network.BITCOIN: 50001,
-            bdk.Network.REGTEST: 60401,
+            bdk.Network.REGTEST: 50000,  # nigiri default
             bdk.Network.TESTNET: 51001,
             bdk.Network.SIGNET: 51001,
         }
@@ -45,7 +45,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
     elif server_type == BlockchainType.Esplora:
         d = {
             bdk.Network.BITCOIN: 60002,
-            bdk.Network.REGTEST: 3000,
+            bdk.Network.REGTEST: 3000,  # nigiri default
             bdk.Network.TESTNET: 51001,
             bdk.Network.SIGNET: 51001,
         }
@@ -58,24 +58,25 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType):
             bdk.Network.SIGNET: 38332,
         }
         return d[network]
+    return 0
 
 
 class NetworkConfig(BaseSaveableClass):
     def __init__(self):
-        self.network = bdk.Network.REGTEST
-        self.server_type = BlockchainType.CompactBlockFilter
-        self.cbf_server_type = CBFServerType.Automatic
-        self.compactblockfilters_ip = "127.0.0.1"
-        self.compactblockfilters_port = get_default_port(self.network, BlockchainType.CompactBlockFilter)
-        self.electrum_url = "127.0.0.1:51001"
-        self.rpc_ip = "127.0.0.1"
-        self.rpc_port = get_default_port(self.network, BlockchainType.RPC)
-        self.rpc_username = ""
-        self.rpc_password = ""
+        self.network: bdk.Network = bdk.Network.REGTEST
+        self.server_type: BlockchainType = BlockchainType.Electrum
+        self.cbf_server_type: CBFServerType = CBFServerType.Automatic
+        self.compactblockfilters_ip: str = "127.0.0.1"
+        self.compactblockfilters_port: int = get_default_port(self.network, BlockchainType.CompactBlockFilter)
+        self.electrum_url: str = "127.0.0.1:51001"
+        self.rpc_ip: str = "127.0.0.1"
+        self.rpc_port: int = get_default_port(self.network, BlockchainType.RPC)
+        self.rpc_username: str = ""
+        self.rpc_password: str = ""
 
-        self.esplora_url = "http://127.0.0.1:3000"
+        self.esplora_url: str = "http://127.0.0.1:3000"
 
-        self.mempool_url = get_default_mempool_url(self.network)
+        self.mempool_url: str = get_default_mempool_url(self.network)
 
     def serialize(self):
         d = super().serialize()

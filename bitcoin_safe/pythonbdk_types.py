@@ -102,6 +102,10 @@ class PythonUtxo:
         self.is_spent_by_txid: Optional[str] = None
 
 
+def python_utxo_balance(python_utxos: List[PythonUtxo]):
+    return sum([python_utxo.txout.value for python_utxo in python_utxos])
+
+
 class UtxosForInputs:
     def __init__(
         self,
@@ -217,6 +221,10 @@ class BlockchainType(enum.Enum):
             return "Esplora Server"
         elif t == cls.RPC:
             return "RPC"
+
+    @classmethod
+    def active_types(cls) -> List["BlockchainType"]:
+        return [cls.Electrum, cls.Esplora, cls.RPC]
 
 
 class CBFServerType(enum.Enum):

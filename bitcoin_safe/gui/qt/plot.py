@@ -8,10 +8,16 @@ from PySide2.QtCore import QDateTime, QMargins, Qt, QTimer
 from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
 
+from bitcoin_safe.util import unit_str
+
+from ...signals import Signals
+from ...wallet import Wallet
+
 
 class BalanceChart(QWidget):
-    def __init__(self):
+    def __init__(self, y_axis_text="Balance"):
         super().__init__()
+        self.y_axis_text = y_axis_text
 
         # Layout
         layout = QVBoxLayout()
@@ -48,11 +54,11 @@ class BalanceChart(QWidget):
     def update_chart(self, balance_data, project_until_now=True):
         if len(balance_data) == 0:
             return
-        balance_data = np.array(balance_data)
+        balance_data = np.array(balance_data).copy()
 
         self.datetime_axis.setTitleText("Date")
         self.datetime_axis.setTickCount(6)
-        self.value_axis.setTitleText("Balance (BTC)")
+        self.value_axis.setTitleText(self.y_axis_text)
         self.value_axis.setLabelFormat("%.2f")  # Set format to two decimal places
 
         # Clear previous series
@@ -63,27 +69,38 @@ class BalanceChart(QWidget):
         max_balance = 0
         min_timestamp = float("inf")
         max_timestamp = float("-inf")
+        for timestamp, balance in balance_data:
+            max_balance = max(max_balance, balance)
+            min_balance = min(min_balance, balance)
+            max_timestamp = max(max_timestamp, timestamp)
+            min_timestamp = min(min_timestamp, timestamp)
 
-        step_data = balance_data.copy()
+        #  add the 0 balance as first data point
+        balance_data = np.vstack(
+            [
+                (min_timestamp, min_balance),
+                balance_data,
+            ]
+        )
 
         # add the current time as last point, if the data is in the past
-        if project_until_now and datetime.datetime.now().timestamp() > max(step_data[:, 0]):
-            step_data = np.vstack(
+        if project_until_now and datetime.datetime.now().timestamp() > max(balance_data[:, 0]):
+            balance_data = np.vstack(
                 [
-                    step_data,
-                    (datetime.datetime.now().timestamp(), step_data[-1][1]),
+                    balance_data,
+                    (datetime.datetime.now().timestamp(), balance_data[-1][1]),
                 ]
             )
 
-        if np.max(step_data[:, 0]) - np.min(step_data[:, 0]) < 24 * 60 * 60:
+        if np.max(balance_data[:, 0]) - np.min(balance_data[:, 0]) < 24 * 60 * 60:
             self.datetime_axis.setFormat("HH:mm")
         else:
             self.datetime_axis.setFormat("d MMM yy")
 
         # Create Line series
         series = QtCharts.QLineSeries()
-        for i, (timestamp, balance) in enumerate(step_data[:-1]):
-            next_timestamp, _ = step_data[i + 1]
+        for i, (timestamp, balance) in enumerate(balance_data[:-1]):
+            next_timestamp, _ = balance_data[i + 1]
             series.append(
                 QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
                 balance,
@@ -92,18 +109,10 @@ class BalanceChart(QWidget):
                 QDateTime.fromSecsSinceEpoch(int(next_timestamp)).toMSecsSinceEpoch(),
                 balance,
             )
-            max_balance = max(max_balance, balance)
-            min_balance = min(min_balance, balance)
-            max_timestamp = max(max_timestamp, timestamp)
-            min_timestamp = min(min_timestamp, timestamp)
 
         # Add the last data point
-        timestamp, balance = step_data[-1]
+        timestamp, balance = balance_data[-1]
         series.append(QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(), balance)
-        max_balance = max(max_balance, balance)
-        min_balance = 0
-        max_timestamp = max(max_timestamp, timestamp)
-        min_timestamp = min(min_timestamp, timestamp)
 
         self.datetime_axis.setRange(
             QDateTime.fromSecsSinceEpoch(int(min_timestamp)),
@@ -159,13 +168,9 @@ class BalanceChart(QWidget):
         scatter_series.attachAxis(self.value_axis)
 
 
-from ...signals import Signals
-from ...wallet import Wallet
-
-
 class WalletBalanceChart(BalanceChart):
     def __init__(self, wallet: Wallet, signals: Signals):
-        super().__init__()
+        super().__init__(y_axis_text=f"Balance ({unit_str(wallet.network)})")
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
         self.signals = signals

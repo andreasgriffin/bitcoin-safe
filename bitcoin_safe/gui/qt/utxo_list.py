@@ -42,7 +42,7 @@ from PySide2.QtCore import (
     QSortFilterProxyModel,
     Qt,
 )
-from PySide2.QtGui import QFont, QStandardItem
+from PySide2.QtGui import QStandardItem
 from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu
 
 from ...i18n import _
@@ -51,7 +51,7 @@ from ...util import Satoshis, block_explorer_URL
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
-from .util import MONOSPACE_FONT, ColorScheme, read_QIcon, sort_id_to_icon, webopen
+from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
 
 def icon_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime, sort_id: int) -> str:
@@ -281,15 +281,15 @@ class UTXOList(MyTreeView):
             items[self.Columns.OUTPOINT].setToolTip(str(outpoint))
 
             items[self.Columns.ADDRESS].setData(i, self.ROLE_SORT_ORDER)
-            items[self.Columns.ADDRESS].setFont(QFont(MONOSPACE_FONT))
+            # items[self.Columns.ADDRESS].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.ADDRESS].setData(labels[self.Columns.ADDRESS], self.ROLE_CLIPBOARD_DATA)
             items[self.Columns.ADDRESS].setToolTip(labels[self.Columns.ADDRESS])
-            items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
+            # items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.AMOUNT].setData(
                 satoshis.value if satoshis else str_format(satoshis), self.ROLE_CLIPBOARD_DATA
             )
-            items[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
-            items[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
+            # items[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
+            # items[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
 
             # add item
             count = self.std_model.rowCount()

@@ -44,10 +44,8 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_connection_layout = QVBoxLayout(self.groupbox_connection)
 
         self.server_type_comboBox = QComboBox(self)
-        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.CompactBlockFilter))
-        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.RPC))
-        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Electrum))
-        self.server_type_comboBox.addItem(BlockchainType.to_text(BlockchainType.Esplora))
+        for blockchain_type in BlockchainType.active_types():
+            self.server_type_comboBox.addItem(BlockchainType.to_text(blockchain_type))
 
         self.groupbox_connection_layout.addWidget(self.server_type_comboBox)
 
@@ -184,9 +182,9 @@ class NetworkSettingsUI(QWidget):
         edits_list: List[Tuple[QCompleterLineEdit, str]] = [
             (
                 self.compactblockfilters_port_edit,
-                get_default_port(network, BlockchainType.CompactBlockFilter),
+                str(get_default_port(network, BlockchainType.CompactBlockFilter)),
             ),
-            (self.rpc_port_edit, get_default_port(network, BlockchainType.RPC)),
+            (self.rpc_port_edit, str(get_default_port(network, BlockchainType.RPC))),
             (
                 self.electrum_url_edit,
                 "ssl://electrum.blockstream.info:60002"
@@ -259,6 +257,8 @@ class NetworkSettingsUI(QWidget):
                 logger.error(f"set_ui: {name} not present in {self.__class__.__name__}")
                 continue
             setattr(self, name, getattr(network_config, name))
+
+        self.set_server_type_comboBox(self.server_type_comboBox.currentIndex())
         self._add_current_to_memory()
 
     def does_it_need_restart(self):
@@ -288,6 +288,9 @@ class NetworkSettingsUI(QWidget):
             "esplora_url",
         ]:
             if restart_name in changed_names:
+                logger.debug(
+                    f"If needs restart because {restart_name} config changed from {getattr(self.config.network_config, restart_name)} --> {getattr(ui_network_config, restart_name)} "
+                )
                 return True
         return False
 
@@ -349,7 +352,7 @@ class NetworkSettingsUI(QWidget):
 
     @property
     def compactblockfilters_port(self):
-        return self.compactblockfilters_port_edit.text()
+        return int(self.compactblockfilters_port_edit.text())
 
     @compactblockfilters_port.setter
     def compactblockfilters_port(self, port):
@@ -384,7 +387,7 @@ class NetworkSettingsUI(QWidget):
 
     @property
     def rpc_port(self):
-        return self.rpc_port_edit.text()
+        return int(self.rpc_port_edit.text())
 
     @rpc_port.setter
     def rpc_port(self, port):

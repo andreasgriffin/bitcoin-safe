@@ -185,7 +185,7 @@ class BitcoinWalletRecoveryPDF:
             )
         else:
             desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed) below.",
+                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed).",
                 self.style_paragraph,
             )
         self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))

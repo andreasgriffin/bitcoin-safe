@@ -250,7 +250,7 @@ class AddressList(MyTreeView):
                 for address in addresses:
                     response = send_rpc_command(
                         config.network_config.rpc_ip,
-                        config.network_config.rpc_port,
+                        str(config.network_config.rpc_port),
                         config.network_config.rpc_username,
                         config.network_config.rpc_password,
                         "generatetoaddress",

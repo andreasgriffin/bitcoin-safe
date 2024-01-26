@@ -1,14 +1,9 @@
 import logging
 
-from bitcoin_safe.gui.qt.my_treeview import _create_list_with_toolbar
-from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
-from bitcoin_safe.gui.qt.tutorial import WalletSteps
-
 from .logging import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
-
 
 import base64
 import os
@@ -18,24 +13,38 @@ from typing import Dict, Optional, Tuple
 import bdkpython as bdk
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from PySide2.QtCore import QCoreApplication, QProcess
-from PySide2.QtGui import QCloseEvent
+from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
 from PySide2.QtWidgets import (
     QAction,
     QDialog,
     QFileDialog,
+    QMainWindow,
     QMenu,
+    QMenuBar,
+    QScrollArea,
+    QShortcut,
+    QSizePolicy,
     QSystemTrayIcon,
     QTabWidget,
+    QVBoxLayout,
+    QWidget,
 )
 
+from bitcoin_safe.gui.qt.my_treeview import _create_list_with_toolbar
+from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
+from bitcoin_safe.gui.qt.tutorial import WalletSteps
+
+from .config import UserConfig
 from .gui.qt.dialog_import import ImportDialog
 from .gui.qt.dialogs import PasswordQuestion, WalletIdDialog, question_dialog
+from .gui.qt.mytabwidget import ExtendedTabWidget
 from .gui.qt.network_settings import NetworkSettingsUI
 from .gui.qt.new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from .gui.qt.ui_tx import UITx_Viewer, UITx_ViewerTab
-from .gui.qt.util import Message, add_tab_to_tabs, read_QIcon
+from .gui.qt.util import Message, MessageType, add_tab_to_tabs, read_QIcon
 from .gui.qt.utxo_list import UTXOList
+from .i18n import _
 from .mempool import MempoolData
 from .psbt_util import (
     FeeInfo,
@@ -46,13 +55,14 @@ from .pythonbdk_types import OutPoint
 from .signals import Signals, UpdateFilter
 from .storage import Storage
 from .tx import TxBuilderInfos, TxUiInfos
-from .ui_mainwindow import Ui_MainWindow
-from .wallet import ProtoWallet, ToolsTxUiInfo, Wallet
+from .wallet import ProtoWallet, ToolsTxUiInfo, Wallet, filename_clean
 
 
-class MainWindow(Ui_MainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.config = UserConfig.load()
+        self.setupUi(self)
 
         self.setMinimumSize(600, 450)
 
@@ -114,6 +124,144 @@ class MainWindow(Ui_MainWindow):
             self.welcome_screen.add_new_wallet_welcome_tab()
 
         self.open_last_opened_tx()
+
+    def set_title(self, network: bdk.Network):
+        title = "Bitcoin Safe"
+        if network != bdk.Network.BITCOIN:
+            title += f" - {network.name}"
+        self.setWindowTitle(title)
+
+    def setupUi(self, MainWindow: QWidget):
+        # sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        # sizePolicy.setHorizontalStretch(0)
+        # sizePolicy.setVerticalStretch(0)
+        # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        # MainWindow.setSizePolicy(sizePolicy)
+        self.set_title(self.config.network_config.network)
+        MainWindow.setWindowIcon(read_QIcon("logo.svg"))
+        w, h = 900, 600
+        MainWindow.resize(w, h)
+        MainWindow.setMinimumSize(w, h)
+
+        #####
+        self.tab_wallets = tabs = ExtendedTabWidget(self)
+        self.tab_wallets.setMovable(True)  # Enable tab reordering
+        self.tab_wallets.setTabsClosable(True)
+        tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # Connect signals to slots
+        tabs.tabCloseRequested.connect(self.close_tab)
+
+        # central_widget
+        central_widget = QScrollArea()
+        vbox = QVBoxLayout(central_widget)
+        vbox.addWidget(tabs)
+        self.setCentralWidget(central_widget)
+
+        self.setMinimumWidth(640)
+        self.setMinimumHeight(400)
+        if self.config.is_maximized:
+            self.showMaximized()
+
+        # self.setWindowIcon(read_QIcon("electrum.png"))
+        self.init_menubar()
+        ####
+
+    def init_menubar(self):
+        # menu
+        self.menubar = QMenuBar()
+        # menu wallet
+        self.menu_wallet = self.menubar.addMenu(_("&Wallet"))
+
+        self.menu_wallet.addAction(_("New Wallet"), self.new_wallet).setShortcut(QKeySequence("Ctrl+N"))
+        self.menu_wallet.addAction("Open wallet", self.open_wallet).setShortcut(QKeySequence("Ctrl+O"))
+        self.menu_wallet.addAction("Save Current wallet", self.save_current_wallet).setShortcut(
+            QKeySequence("Ctrl+S")
+        )
+        self.menu_wallet.addSeparator()
+
+        # export wallet
+        self.menu_wallet_export = self.menu_wallet.addMenu(_("&Change"))
+        self.menu_wallet_export.addAction(_("Change wallet name"), self.change_wallet_id)
+        self.menu_wallet_export.addAction(_("Change password"), self.change_wallet_password)
+
+        # export wallet
+        self.menu_wallet_export = self.menu_wallet.addMenu(_("&Export"))
+        self.menu_wallet_export.addAction(_("Export for Coldcard"), self.export_wallet_for_coldcard)
+
+        self.menu_wallet.addSeparator()
+
+        self.menu_wallet.addAction(_("Refresh"), self.sync).setShortcut(QKeySequence("F5"))
+
+        # menu transaction
+        self.menu_transaction = self.menubar.addMenu(_("&Import"))
+        self.menu_load_transaction = self.menu_transaction.addMenu(_("&Transaction and PSBT"))
+        self.menu_load_transaction.addAction("From file", self.open_tx_file)
+        self.menu_load_transaction.addAction("From text", self.dialog_open_tx_from_str).setShortcut(
+            QKeySequence("Ctrl+L")
+        )
+        self.menu_load_transaction.addAction("From QR Code", self.load_tx_like_from_qr).setShortcut(
+            QKeySequence("Ctrl+R")
+        )
+
+        # menu settings
+        self.menu_transaction = self.menubar.addMenu(_("&Settings"))
+        self.menu_transaction.addAction("Network Settings", self.open_network_settings).setShortcut(
+            QKeySequence("Ctrl+I")
+        )
+
+        self.menu_transaction.addAction("Show/Hide Tutorial", self.toggle_tutorial).setShortcut(
+            QKeySequence("Ctrl+T")
+        )
+
+        # other shortcuts
+        self.shortcut_close_tab = QShortcut(QKeySequence("Ctrl+W"), self)
+        self.shortcut_close_tab.activated.connect(lambda: self.close_tab(self.tab_wallets.currentIndex()))
+
+        # assigne menu bar
+        self.setMenuBar(self.menubar)
+
+    def change_wallet_id(self):
+        qt_wallet = self.get_qt_wallet()
+        if not qt_wallet:
+            Message("Please select the wallet")
+            return
+
+        # ask for wallet name
+        dialog = WalletIdDialog(self.config.wallet_dir)
+        if dialog.exec_() == QDialog.Accepted:
+            new_wallet_id = dialog.name_input.text()
+            logger.info(f"new wallet name: {new_wallet_id}")
+        else:
+            return None
+
+        old_id = qt_wallet.wallet.id
+
+        # in the wallet
+        qt_wallet.wallet.id = new_wallet_id
+        # change dict key
+        self.qt_wallets[new_wallet_id] = qt_wallet
+        del self.qt_wallets[old_id]
+
+        # tab text
+        self.tab_wallets.setTabText(self.tab_wallets.indexOf(qt_wallet.tab), new_wallet_id)
+
+        # save under new filename
+        old_filepath = qt_wallet.file_path
+        directory, old_filename = os.path.split(old_filepath)
+
+        new_file_path = os.path.join(directory, filename_clean(new_wallet_id))
+
+        qt_wallet.move_wallet_file(new_file_path)
+        qt_wallet.save()
+        logger.info(f"Saved {old_filepath} under new name {qt_wallet.file_path}")
+
+    def change_wallet_password(self):
+        qt_wallet = self.get_qt_wallet()
+        if not qt_wallet:
+            Message("Please select the wallet")
+            return
+
+        qt_wallet.change_password()
 
     def on_signal_broadcast_tx(self, transaction: bdk.Transaction):
         last_qt_wallet_involved: Optional[QTWallet] = None
@@ -432,15 +580,16 @@ class MainWindow(Ui_MainWindow):
             return
         password = None
         if Storage().has_password(file_path):
-            self.ui_password_question = PasswordQuestion()
-            password = self.ui_password_question.ask_for_password()
+            direcory, filename = os.path.split(file_path)
+            ui_password_question = PasswordQuestion(label_text=f"Please enter the password for {filename}:")
+            password = ui_password_question.ask_for_password()
         try:
             wallet: Wallet = Wallet.load(file_path, self.config, password)
         except Exception:
             error_type, error_value, error_traceback = sys.exc_info()
             error_message = f"Error. Wallet could not be loaded. Error: {error_type.__name__ if error_type else ''}: {error_value}, {error_traceback}"
-            self.show_error(error_message)
-            raise
+            Message(error_message, type=MessageType.Error)
+            return
 
         qt_wallet = self.add_qt_wallet(wallet)
         qt_wallet.password = password
@@ -556,7 +705,7 @@ class MainWindow(Ui_MainWindow):
         dialog = WalletIdDialog(self.config.wallet_dir)
         if dialog.exec_() == QDialog.Accepted:
             wallet_id = dialog.name_input.text()
-            print(f"Creating wallet: {wallet_id}")
+            logger.info(f"new wallet name: {wallet_id}")
         else:
             return None
 
@@ -589,7 +738,7 @@ class MainWindow(Ui_MainWindow):
         return qtprotowallet
 
     def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
-        def set_tab_widget_icon(tab, icon):
+        def set_tab_widget_icon(tab: QWidget, icon: QIcon):
             idx = self.tab_wallets.indexOf(tab)
             if idx != -1:
                 self.tab_wallets.setTabIcon(idx, icon)
@@ -615,6 +764,8 @@ class MainWindow(Ui_MainWindow):
             qt_wallet=qt_wallet,
         )
         qt_wallet.outer_layout.insertWidget(0, qt_wallet.wallet_steps)
+        # save after every step
+        qt_wallet.wallet_steps.signal_on_set_step.connect(lambda: qt_wallet.save())
 
         # add to tabs
         self.qt_wallets[wallet.id] = qt_wallet
@@ -657,11 +808,6 @@ class MainWindow(Ui_MainWindow):
             if qt_wallet.wallet.blockchain:
                 return qt_wallet.wallet.blockchain
 
-    def toggle_search(self):
-        qt_wallet = self.get_qt_wallet()
-        if qt_wallet:
-            qt_wallet.toggle_search()
-
     def show_address(self, addr: str, parent=None):
         from .gui.qt import address_dialog
 
@@ -694,6 +840,7 @@ class MainWindow(Ui_MainWindow):
                 self.tab_wallets.removeTab(i)
 
         qt_wallet.disconnect_signals()
+        qt_wallet.stop_sync_timer()
         del self.qt_wallets[qt_wallet.wallet.id]
         self.event_wallet_tab_closed()
 

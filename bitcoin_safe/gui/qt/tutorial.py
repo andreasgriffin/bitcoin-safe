@@ -1,5 +1,6 @@
 import enum
 import logging
+from math import ceil
 from typing import List
 
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet, QtWalletBase
@@ -29,7 +30,6 @@ from PySide2.QtWidgets import (
 
 from ...util import Satoshis
 from .util import (
-    QWIDGETSIZE_MAX,
     Message,
     MessageType,
     add_centered,
@@ -87,20 +87,14 @@ class WalletSteps(StepProgressContainer):
             "Receive Test",
             "Reset hardware signer",
         ]
-        if self.show_2_send_tests():
-            labels += [
-                "Send test 1",
-                "Send test 2",
-            ]
-        elif self.num_keystores() == 1:
-            labels += ["Send test"]
-        else:
-            labels += ["Send tests"]
-
-        super().__init__(steps=len(labels))
+        for i in range(self.get_number_of_send_tests()):
+            labels.append(f"Send test {i+1}" if self.get_number_of_send_tests() > 1 else f"Send test")
 
         self.wallet_tabs = wallet_tabs
         self.max_test_fund = max_test_fund
+
+        super().__init__(steps=len(labels))
+
         self.step_bar.set_labels(labels)
         # self.step_bar.set_step_tooltips(
         #     [
@@ -118,10 +112,9 @@ class WalletSteps(StepProgressContainer):
             self.create_backup_seed(),
             self.create_receive_test(),
             self.create_reset_signer(),
-            self.create_send_test(),
         ]
-        if self.show_2_send_tests():
-            self.widgets.append(self.create_send_test(test_number=1))
+        for i in range(self.get_number_of_send_tests()):
+            self.widgets.append(self.create_send_test(test_number=i))
 
         # set_custom_widget  from StepProgressContainer
         for i, widget in enumerate(self.widgets):
@@ -136,26 +129,46 @@ class WalletSteps(StepProgressContainer):
             signal_create_wallet.connect(next_step_on_apply_changes)
 
         if self.qt_wallet:
-            if self.qt_wallet.wallet.tutorial_step is None:
-                self.setVisible(False)
-            else:
-                self.set_current_step(self.qt_wallet.wallet.tutorial_step)
+            step = (
+                self.count() - 1
+                if self.qt_wallet.wallet.tutorial_step is None
+                else self.qt_wallet.wallet.tutorial_step
+            )
+            self.set_current_step(step)
+
+        def on_signal_step_clicked():
+            if self.stacked_widget.isVisible():
+                self.action_for_step(self.current_step())
+
+        self.step_bar.signal_step_clicked.connect(on_signal_step_clicked)
+
+    def count(self):
+        return self.step_bar.steps
+
+    def current_step(self):
+        return self.step_bar.current_step
 
     def set_current_step(self, step):
         super().set_current_step(step)
         self.set_visibilities()
 
     def set_visibilities(self):
-        if self.isVisible():
-            if self.step_bar.current_step == TutorialSteps.generate.value:
-                self.wallet_tabs.setVisible(False)
-            elif self.step_bar.current_step == TutorialSteps.backup_seed.value:
-                self.wallet_tabs.setVisible(False)
-            elif self.step_bar.current_step == TutorialSteps.receive.value:
-                self.wallet_tabs.setVisible(False)
+        is_visible = (self.qt_wallet.wallet.tutorial_step != None) if self.qt_wallet else True
+        self.setVisible(is_visible)
 
-    def show_2_send_tests(self) -> bool:
-        return self.num_keystores() == 3 and self.qtwalletbase.get_mn_tuple()[0] == 2
+        if self.wallet_tabs:
+            if is_visible:
+                hide_wallet = self.step_bar.current_step in [
+                    TutorialSteps.buy.value,
+                    TutorialSteps.generate.value,
+                    TutorialSteps.backup_seed.value,
+                    TutorialSteps.receive.value,
+                    TutorialSteps.reset.value,
+                ]
+                self.wallet_tabs.setVisible(not hide_wallet)
+
+            else:
+                self.wallet_tabs.setVisible(True)
 
     def num_keystores(self):
         return self.qtwalletbase.get_mn_tuple()[1]
@@ -204,8 +217,10 @@ class WalletSteps(StepProgressContainer):
         return outer_widget
 
     def change_step(self, step):
-        self.stacked_widget.setMaximumHeight(QWIDGETSIZE_MAX)
         self.set_current_step(step)
+        self.action_for_step(step)
+
+    def action_for_step(self, step):
         self.signal_on_set_step.emit(step)
 
     def go_to_previous_step(self):
@@ -300,7 +315,7 @@ class WalletSteps(StepProgressContainer):
         label = QLabel(
             '<html><head/><body><p><span style=" font-size:12pt;">Import the signer information (xPubs)\nto create the wallet descriptor.<br><br>Then you can receive Bitcoin, send Bitcoin, and watch your balances :-)</span></p></body></html>'
         )
-        label.setWordWrap(True)
+        # label.setWordWrap(True)
         layout.addWidget(label)
 
         outer_layout.addWidget(widget)
@@ -316,9 +331,6 @@ class WalletSteps(StepProgressContainer):
 
         def on_step(step):
             if step == TutorialSteps.import_xpub.value:
-                self.stacked_widget.setMaximumHeight(80)
-                self.wallet_tabs.setVisible(True)
-
                 self.wallet_tabs.setCurrentWidget(self.qtwalletbase.wallet_descriptor_tab)
 
         self.signal_on_set_step.connect(on_step)
@@ -501,27 +513,59 @@ class WalletSteps(StepProgressContainer):
 
         return outer_widget
 
-    def get_keystore_labels_for_test_tx(self, test_number) -> List[str]:
+    def get_number_of_send_tests(self) -> int:
+        m, n = self.qtwalletbase.get_mn_tuple()
+
+        number = ceil(n / m)
+
+        return number
+
+    def get_send_test_labels(self) -> List[str]:
         m, n = self.qtwalletbase.get_mn_tuple()
         keystore_labels = self.qtwalletbase.get_keystore_labels()
-        return [
-            keystore_labels[j]
-            for j in range(test_number, test_number + m)
-            if test_number + m <= len(keystore_labels)
-        ]
 
-    def tx_text(self, test_number):
-        keystore_labels_for_test_tx = self.get_keystore_labels_for_test_tx(test_number)
+        send_test_labels = []
+        for i_send_tests in range(self.get_number_of_send_tests()):
 
+            start_signer = m * i_send_tests
+            end_signer = min(m * i_send_tests + m, n)
+
+            missing_signers = m - (end_signer - start_signer)
+            start_signer -= missing_signers
+
+            labels = [keystore_labels[j] for j in range(start_signer, end_signer)]
+            send_test_labels.append(" and ".join([f'"{label}"' for label in labels]))
+
+        return send_test_labels
+
+    def tx_text(self, test_number) -> str:
         if self.num_keystores() == 1:
             return f"""Send Test"""
         else:
-            return f"""Send Test {test_number+1}: Sign with {' and '.join([f'"{label}"' for label in keystore_labels_for_test_tx])}""".replace(
-                "    ", ""
-            )
+
+            return f"""Sign with {self.get_send_test_labels()[test_number]}"""
 
     def create_send_test(self, test_number=0):
+        def create_register_button():
+            button_register_quorum = QPushButton(
+                f"""Export file to register the multisig on the hardware signer"""
+            )
+            # button_style = """
+            # QPushButton {
+            #     padding: 20px 10px; /* Adjust the padding values as needed */
+            # }
+            # """
+            # button_register_quorum.setStyleSheet(button_style)
+
+            def export_wallet_for_coldcard():
+                if self.qt_wallet:
+                    self.qt_wallet.export_wallet_for_coldcard()
+
+            button_register_quorum.clicked.connect(export_wallet_for_coldcard)
+            return button_register_quorum
+
         outer_widget = QWidget()
+        outer_widget.setMinimumHeight(50)
         outer_layout = QVBoxLayout(outer_widget)
         outer_layout.setContentsMargins(5, 0, 5, 5)  # Left, Top, Right, Bottom margins
 
@@ -546,83 +590,40 @@ class WalletSteps(StepProgressContainer):
             label.setWordWrap(True)
             inner_widget_layout.addWidget(label)
 
-            label2 = QLabel(
-                f"""<html><head/><body><p><span style=" font-size:12pt;">If the transaction confirmed, then the hardware signer and wallet are correctly set up and ready to use for larger amounts. Place the printed seed+descriptor backup in a secure place, where only you have access.</span></p></body></html>                    
-                    """.replace(
-                    "    ", ""
-                )
-            )
-            inner_widget_layout.addWidget(label2)
-            label2.setWordWrap(True)
-        elif self.show_2_send_tests():
-            label = QLabel(self.tx_text(test_number))
-            label.setWordWrap(True)
-            inner_widget_layout.addWidget(label)
+            # label2 = QLabel(
+            #     f"""<html><head/><body><p><span style=" font-size:12pt;">If the transaction confirmed, then the hardware signer and wallet are correctly set up and ready to use for larger amounts. Place the printed seed+descriptor backup in a secure place, where only you have access.</span></p></body></html>
+            #         """.replace(
+            #         "    ", ""
+            #     )
+            # )
+            # inner_widget_layout.addWidget(label2)
+            # label2.setWordWrap(True)
         else:
+
             label = QLabel(
-                f"""<html><head/><body><p><span style=" font-size:12pt;">Complete <font color='red'>all</font> steps to ensure all hardware signers work!
-                    </span></p></body></html>                    
-                    """.replace(
+                f"""<html><head/><body><p><span style=" font-size:12pt;">{self.tx_text(test_number)}</span></p></body></html>""".replace(
                     "    ", ""
                 )
             )
             label.setWordWrap(True)
             inner_widget_layout.addWidget(label)
-
-            m, n = self.qtwalletbase.get_mn_tuple()
-
-            buttons = []
+            buttons: List[QPushButton] = []
 
             # register wallet button
-            if n > 1:
-                button_register_quorum = QPushButton(f"""Register the multisig on the hardware wallet""")
-                button_style = """
-                QPushButton {
-                    padding: 10px 20px; /* Adjust the padding values as needed */
-                }
-                """
-                button_register_quorum.setStyleSheet(button_style)
+            buttons.insert(0, create_register_button())
 
-                def export_wallet_for_coldcard():
-                    if self.qt_wallet:
-                        self.qt_wallet.export_wallet_for_coldcard()
-
-                button_register_quorum.clicked.connect(export_wallet_for_coldcard)
-                buttons.append(button_register_quorum)
-
-            # send test buttons
-
-            for i in range(n - m + 1):
-                keystore_labels_for_test_tx = self.get_keystore_labels_for_test_tx(i)
-                button_tx1 = QPushButton(
-                    f"""Send Test {i+1}: Send a test amount  to a receive address and sign with   {' and '.join([f'"{label}"' for label in keystore_labels_for_test_tx])}"""
-                )
-                button_style = """
-                QPushButton {
-                    padding: 10px 20px; /* Adjust the padding values as needed */
-                }
-                """
-                button_tx1.setStyleSheet(button_style)
-
-                def function_generator(label):
-                    def f():
-                        self.send_a_tx(label)
-
-                    return f
-
-                button_tx1.clicked.connect(function_generator(self.tx_text(i)))
-                buttons.append(button_tx1)
+            # buttons.append( create_send_test_button())
 
             add_centered(buttons, inner_widget, inner_widget_layout, direction="v")
 
-            label2 = QLabel(
-                f"""<html><head/><body><p><span style=" font-size:12pt;">If all transactions confirmed, then the hardware signers and wallet are correctly set up and ready to use for larger amounts. Place each printed seed+descriptor backup in a different secure place, where only you have access.</span></p></body></html>                    
-                    """.replace(
-                    "    ", ""
-                )
-            )
-            inner_widget_layout.addWidget(label2)
-            label2.setWordWrap(True)
+            # label2 = QLabel(
+            #     f"""<html><head/><body><p><span style=" font-size:12pt;">If all transactions confirmed, then the hardware signers and wallet are correctly set up and ready to use for larger amounts. Place each printed seed+descriptor backup in a different secure place, where only you have access.</span></p></body></html>
+            #         """.replace(
+            #         "    ", ""
+            #     )
+            # )
+            # inner_widget_layout.addWidget(label2)
+            # label2.setWordWrap(True)
 
         layout.addWidget(inner_widget)
         outer_layout.addWidget(widget)

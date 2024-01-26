@@ -183,7 +183,7 @@ def add_to_buttonbox(buttonBox, text, icon_name, on_clicked=None):
 
 
 def create_button(
-    text, icon_paths, parent, outer_layout, max_sizes=None, button_max_height=200
+    text, icon_paths, parent, outer_layout, max_sizes=None, button_max_height=200, word_wrap=True
 ) -> QPushButton:
     button = QPushButton(parent)
     if button_max_height:
@@ -199,11 +199,11 @@ def create_button(
     widget1 = QWidget(button)
     widget2 = QWidget(button)
     layout = center_in_widget([widget1, widget2], button, direction="v")
-    # outer_layout.setContentsMargins(10, 20, 20, 10)  # Left, Top, Right, Bottom margins
+    # outer_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
     # layout.setContentsMargins(0, 0, 0, 0)
 
-    label_icon = QLabel(button)
-    label_icon.setWordWrap(True)
+    label_icon = QLabel()
+    label_icon.setWordWrap(word_wrap)
     label_icon.setText(text)
     label_icon.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
     label_icon.setHidden(not bool(text))
@@ -232,12 +232,12 @@ def create_button(
         )
 
     # Add layout margins
-    margins = layout.contentsMargins()
-    total_width += margins.left() + margins.right()
-    total_height += margins.top() + margins.bottom()
+    # margins = layout.contentsMargins()
+    # total_width += margins.left() + margins.right()
+    # total_height += margins.top() + margins.bottom()
 
-    # Set minimum size of button
-    button.setMinimumSize(total_width, total_height)
+    # # Set minimum size of button
+    # button.setMinimumSize(total_width, total_height)
     layout.setContentsMargins(0, 0, 0, 0)
     return button
 

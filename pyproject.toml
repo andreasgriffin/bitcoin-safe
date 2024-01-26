@@ -10,7 +10,7 @@ show_error_codes = true
 
 [tool.poetry]
 name = "bitcoin-safe"
-version = "0.3.0"
+version = "0.4.0"
 description = "Long-term Bitcoin savings made Easy"
 authors = ["andreasgriffin <andreasgriffin@proton.me>"]
 license = "GPL-3.0"
@@ -19,7 +19,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
 bitcoin-usb = "0.1.5"
-bitcoin-qrreader = "0.6.1"
+bitcoin-qrreader = "0.6.2"
 fpdf2 = "2.7.4"
 requests = "2.31.0"
 segno = "1.5.3"
@@ -32,6 +32,8 @@ cryptography = "40.0.2"
 hwi = "2.3.1"
 appdirs = "1.4.4"
 reportlab = "4.0.8"
+nostr-sdk = "^0.8.0"
+cbor2 = "^5.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.0"

@@ -113,11 +113,13 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    def __init__(self, button_vertical_align: Optional[Qt] = None, parent=None, input_field=None):
+    def __init__(self, text="", button_vertical_align: Optional[Qt] = None, parent=None, input_field=None):
         super().__init__(parent=parent)
         self.callback_is_valid: Optional[Callable[[], bool]] = None
         self.buttons: List[QPushButton] = []  # Store button references
         self.input_field: Union[QTextEdit, QLineEdit] = input_field if input_field else QLineEdit(self)
+        if text:
+            self.input_field.setText(text)
         self.button_container = ButtonsField(
             vertical_align=button_vertical_align
             if button_vertical_align

@@ -41,44 +41,54 @@
   - [x] Opportunistic consolidation within coin categories, when fees are low
   - [x] hardware signers: HWI USB, QR, SD
   - [x] Address and TX labeling using categories
-  
-  - [ ] Label p2p Synchronization via nostr direct encrypted messages (+2. layer of encryption)
 - [x] Address dialog & TX dialog
 - [x] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
-- [ ] Adding tests for rigorous UI testing
-- [ ] CPFP
 - [x] RBF
-- [ ] Wallet settings  (location, password,...) needs a tab
+- [ ] CPFP
 - [ ] multi language
-- [x] add scan qr code in lots of places
+- [ ] Adding tests for rigorous UI testing
 - [ ] Include listening to p2p traffic for new tx announcements
   - [ ] Include desktop notifications (via tray icon)
-- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages (+ 2. layer of encryption)
+- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages  
+  - [x] proof of concept working
+
+- [ ] Label p2p Synchronization via nostr direct encrypted messages  
 
 
 #### UX
 
-![screenshot0](docs/receive.gif)
+##### Sending
+![screenshot0](docs/send.gif)
 
-##### Tutorial for wallet setup
+##### Setup wallet
+![screenshot1](docs/singlesig-setup.gif)
 
-![screenshot0](docs/tutorial.png)
 
 
 ## Installation
 
- * Install Bitcoin Safe dependencies
+ * Install dependencies and setup poetry
 
    ```sh
+   sudo apt install libsecp256k1-0
    git clone https://github.com/andreasgriffin/bitcoin-safe.git
    cd bitcoin-safe
-   pip install poetry
+   ```
+
+ * Setup poetry and install dependencies 
+
+   ```sh
+   curl -sSL https://install.python-poetry.org | python3 -  # see https://python-poetry.org/docs/master/#installing-with-the-official-installer
+   poetry config virtualenvs.in-project true
    poetry install
    ```
    
- * Run Bitcoin Safe
+
+
+ * Run  
 
    ```sh
+   poetry shell
    python -m bitcoin_safe
    ```
 
@@ -90,6 +100,7 @@
 
 ```shell
 poetry install
+poetry shell
 ```
 
 * Automatic commit formatting
@@ -106,5 +117,61 @@ pre-commit run --all-files
 ```
 
 * 
+* 
+
+
+
+#### Regtest docker environement with electrs and mempool
+
+* install docker
+
+```shell
+# see https://docs.docker.com/engine/install/ubuntu/
+```
+
+* setting up a regtest environment in docker + mempool instance
+
+```shell
+curl https://getnigiri.vulpem.com | sudo bash # see https://nigiri.vulpem.com/#install
+sudo nigiri start
+xdg-open http://localhost:5000/
+```
+
+* This creates
+  * esplora localhost:3000
+    electrs localhost:50000 
+  * and a gui block explorer at http://localhost:5000
+* Setup mempool instance
+
+```shell
+sudo apt install docker-compose
+git clone https://github.com/ngutech21/nigiri-mempool.git
+
+pushd nigiri-mempool
+sudo docker-compose up -d
+sleep 10
+# this is needed because the database needs time to start up 
+sudo docker-compose up -d
+popd
+xdg-open http://localhost:8080/
+
+# if the mempool is endlessly loading, then get the debug output with
+sudo docker-compose logs -f mempool-api
+```
+
+* this opens a mempool at http://localhost:8080/
+
+  
+
+#### Control the Regtest environment
+
+* get coins to an address
+
+```shell
+nigiri rpc generatetoaddress 1 bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c # mine blocks
+
+# or use the internal faucet
+nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0.01
+```
 
 * 
