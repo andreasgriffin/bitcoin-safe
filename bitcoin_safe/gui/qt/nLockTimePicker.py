@@ -3,10 +3,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 import sys
-from datetime import timezone
+from datetime import datetime, timezone
 
-from PySide2.QtCore import QDateTime, Qt
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QDateTime, Qt
+from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
     QDateTimeEdit,
@@ -33,7 +33,7 @@ class DateTimePicker(QWidget):
         layout.addWidget(self.dateTimeEdit)
         self.setLayout(layout)
 
-    def print_time(self, qDateTime):
+    def print_time(self):
         # Convert QDateTime to Python datetime object
         local_datetime = self.get_datetime()
 
@@ -42,7 +42,7 @@ class DateTimePicker(QWidget):
         utc_datetime = local_datetime.astimezone(timezone.utc)
         print("UTC Time:", utc_datetime)
 
-    def get_datetime(self):
+    def get_datetime(self) -> datetime:
         return self.dateTimeEdit.dateTime().toPython()
 
 
@@ -67,9 +67,9 @@ class CheckBoxGroupBox(QWidget):
         self.setLayout(layout)
         self.toggleGroupBox(self.checkbox.checkState())
 
-    def toggleGroupBox(self, state):
+    def toggleGroupBox(self, state: Qt.CheckState):
         # Enable or disable the group box based on the checkbox state
-        self.groupBox.setEnabled(state == Qt.Checked)
+        self.groupBox.setEnabled(state == Qt.CheckState.Checked)
 
 
 class nLocktimePicker(CheckBoxGroupBox):
@@ -81,6 +81,8 @@ class nLocktimePicker(CheckBoxGroupBox):
         label = QLabel(
             'Set the minimum time (<a href="https://learn.saylor.org/mod/book/view.php?id=36369&chapterid=19000">Median-Time-Past</a>) the transaction can be included in a block. See: <a href="https://learn.saylor.org/mod/book/view.php?id=36369&chapterid=18994">nLocktime</a>'
         )
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setOpenExternalLinks(True)  # Enable opening links
         label.setWordWrap(True)
         self.groupBox.layout().addWidget(label)
 
@@ -92,4 +94,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = nLocktimePicker()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

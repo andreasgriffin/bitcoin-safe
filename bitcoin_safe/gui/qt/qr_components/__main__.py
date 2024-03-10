@@ -1,6 +1,6 @@
 import random
 
-from PySide2.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 from .quick_receive import QuickReceive, ReceiveGroup
 
@@ -27,4 +27,4 @@ if __name__ == "__main__":
     custom_widget.add_box(ReceiveGroup(color, generate_random_hex_color(), color * 10, color * 10))
 
     custom_widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

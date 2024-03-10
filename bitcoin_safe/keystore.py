@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ from .descriptors import MultipathDescriptor
 from .storage import BaseSaveableClass, SaveAllClass
 
 
-class KeyStoreType(SaveAllClass):
+class KeyStoreImporterType(SaveAllClass):
     def __init__(self, id: str, name: str, description: str, icon_filename: str, networks="all") -> None:
         self.id = id
         self.name = name
@@ -35,28 +35,44 @@ class KeyStoreType(SaveAllClass):
             else networks
         )
 
+    @classmethod
+    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+            pass
 
-class KeyStoreTypes:
-    hwi = KeyStoreType("hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg")
-    file = KeyStoreType(
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
+        return dct
+
+
+class KeyStoreImporterTypes:
+    hwi = KeyStoreImporterType("hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg")
+    file = KeyStoreImporterType(
         "file",
         "SD card",
         "Import signer details\nvia SD card",
         "sd-card.svg",
     )
-    qr = KeyStoreType(
+    clipboard = KeyStoreImporterType(
+        "clipboard",
+        "Clipboard",
+        "Import signer details\nfrom text",
+        "clip.svg",
+    )
+    qr = KeyStoreImporterType(
         "qr",
         "QR Code",
         "Import signer details\nvia QR code",
         "camera.svg",
     )
-    watch_only = KeyStoreType(
+    watch_only = KeyStoreImporterType(
         "watch_only",
         "Watch-Only",
         "xPub / Public Key\nInformation",
         "key-hole-icon.svg",
     )
-    seed = KeyStoreType(
+    seed = KeyStoreImporterType(
         "seed",
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
@@ -75,6 +91,9 @@ class KeyStoreTypes:
 
 class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     VERSION = "0.0.2"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
 
     def __init__(
         self,
@@ -110,7 +129,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             return False
 
     @classmethod
-    def is_xpub_valid(cls, xpub: str, network):
+    def is_xpub_valid(cls, xpub: str, network: bdk.Network):
         try:
             AddressTypes.p2pkh.bdk_descriptor(
                 bdk.DescriptorPublicKey.from_string(xpub),
@@ -151,8 +170,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def serialize(self):
-        d = super().serialize()
+    def dump(self):
+        d = super().dump()
 
         # you must copy it, so you not't change any calues
         full_dict = self.__dict__.copy()
@@ -161,14 +180,14 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         return d
 
     @classmethod
-    def deserialize(cls, dct, class_kwargs=None):
-        super().deserialize(dct, class_kwargs=class_kwargs)
+    def from_dump(cls, dct: Dict, class_kwargs=None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return KeyStore(**dct)
 
     @classmethod
-    def deserialize_migration(cls, dct: Dict):
-        "this class should be oveerwritten in child classes"
+    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             if "derivation_path" in dct:
                 dct["key_origin"] = dct["derivation_path"]

@@ -1,7 +1,7 @@
 import logging
 from typing import List, Set
 
-from PySide2.QtWidgets import QTabWidget, QWidget
+from PyQt6.QtWidgets import QTabWidget, QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -14,12 +14,13 @@ class BlockChangesSignals:
         """Recursively collect all widgets in a given layout."""
         widgets = []
         if isinstance(widget, QTabWidget):
-            widgets.extend(self._collect_widgets_in_tab(widget))
+            widgets += self._collect_widgets_in_tab(widget)
         elif hasattr(widget, "layout") and widget.layout():
             layout = widget.layout()
             for i in range(layout.count()):
                 item = layout.itemAt(i)
-                if item.widget():
+                # in pyqt6, it turns out that bool(QComboBox) == False, but True for other widgets
+                if isinstance(item.widget(), QWidget):
                     widgets.append(item.widget())
                     widgets += self._collect_sub_widget(item.widget())
         return widgets

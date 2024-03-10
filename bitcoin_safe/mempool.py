@@ -4,8 +4,9 @@ from math import ceil
 from typing import Any, Dict, List, Tuple
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
+from bitcoin_safe.network_config import NetworkConfig
 
-from .config import MIN_RELAY_FEE, UserConfig
+from .config import MIN_RELAY_FEE
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,7 @@ import datetime
 
 import numpy as np
 import requests
-from PySide2.QtCore import QObject, Signal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from .util import TaskThread
 
@@ -149,7 +150,7 @@ def fee_to_color(fee, colors=chartColors):
 
 
 def fetch_json_from_url(url: str):
-    logger.info(f"Fetching {url}")
+    logger.debug(f"fetch_json_from_url requests.get({url}, timeout=10)")
 
     try:
         response = requests.get(url, timeout=10)
@@ -163,8 +164,21 @@ def fetch_json_from_url(url: str):
             logger.error(f"Request failed with status code: {response.status_code}")
             return None
     except:
-        logger.error(f"Fetching {url} failed")
+        logger.error(f"fetch_json_from_url {url} failed")
         return None
+
+
+def threaded_fetch(url: str, on_success, parent):
+    def do():
+        return fetch_json_from_url(url)
+
+    def on_error(packed_error_info):
+        custom_exception_handler(*packed_error_info)
+
+    def on_done(data):
+        pass
+
+    TaskThread(parent).add_and_start(do, on_success, on_done, on_error)
 
 
 class TxPrio(enum.Enum):
@@ -174,12 +188,12 @@ class TxPrio(enum.Enum):
 
 
 class MempoolData(QObject):
-    signal_data_updated = Signal()
+    signal_data_updated = pyqtSignal()
 
-    def __init__(self, config: UserConfig) -> None:
+    def __init__(self, network_config: NetworkConfig) -> None:
         super().__init__()
 
-        self.config = config
+        self.network_config = network_config
         self.mempool_blocks = self._empty_mempool_blocks()
         self.recommended: Dict[str, int] = {
             "fastestFee": MIN_RELAY_FEE,
@@ -239,48 +253,37 @@ class MempoolData(QObject):
             return max_reasonable_fee_rate_fallback
         return sum(self.fee_min_max(0)) / 2
 
-    def set_data(
-        self, mempool_blocks: List[Dict[str, Any]], recommended: Dict[str, int], mempool_dict: Dict[str, Any]
-    ):
-        self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
-        self.recommended = recommended
-        self.mempool_dict = mempool_dict
-        self.time_of_data = datetime.datetime.now()
-        self.signal_data_updated.emit()
-
     def set_data_from_mempoolspace(self, force=False):
-        def do():
-            if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
-                logger.debug(
-                    f"Do not fetch data from {self.config.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
-                )
-                return None
-            mempool_blocks = fetch_json_from_url(
-                f"{self.config.network_config.mempool_url}api/v1/fees/mempool-blocks"
+        if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
+            logger.debug(
+                f"Do not fetch data from {self.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
             )
-            recommended = fetch_json_from_url(
-                f"{self.config.network_config.mempool_url}api/v1/fees/recommended"
-            )
-            mempool_dict = fetch_json_from_url(f"{self.config.network_config.mempool_url}api/mempool")
-            return mempool_blocks, recommended, mempool_dict
+            return None
 
-        def on_success(data):
-            if data is not None:
-                for a in data:
-                    if a is None:
-                        return
-                self.set_data(*data)
+        self.time_of_data = datetime.datetime.now()
 
-        def on_error(packed_error_info):
-            custom_exception_handler(*packed_error_info)
+        def on_mempool_blocks(mempool_blocks):
+            if mempool_blocks:
+                self.mempool_blocks = mempool_blocks
 
-        def on_done(data):
-            pass
+        threaded_fetch(
+            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks", on_mempool_blocks, self
+        )
 
-        TaskThread(self).add_and_start(do, on_success, on_done, on_error)
+        def on_recommended(recommended):
+            if recommended:
+                self.recommended = recommended
+
+        threaded_fetch(f"{self.network_config.mempool_url}api/v1/fees/recommended", on_recommended, self)
+
+        def on_mempool_dict(mempool_dict):
+            if mempool_dict:
+                self.mempool_dict = mempool_dict
+
+        threaded_fetch(f"{self.network_config.mempool_url}api/mempool", on_mempool_dict, self)
 
     def fetch_block_tip_height(self) -> int:
-        response = fetch_json_from_url(f"{self.config.network_config.mempool_url}api/blocks/tip/height")
+        response = fetch_json_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height")
         return response if response else 0
 
     def fee_rate_to_projected_block_index(self, fee) -> int:

@@ -9,20 +9,32 @@ logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import MultipathDescriptor
-from PySide2.QtCore import QEvent, Qt, Signal
-from PySide2.QtGui import Qt
-from PySide2.QtWidgets import QLineEdit, QTextEdit
+from PyQt6.QtCore import QEvent, Qt, pyqtSignal
+from PyQt6.QtGui import QFocusEvent, QKeyEvent
+from PyQt6.QtWidgets import QLineEdit, QTextEdit
 
 from ...pdfrecovery import make_and_open_pdf
 from .util import Message, MessageType
 
 
+class MyTextEdit(QTextEdit):
+    def __init__(self, preferred_height=50):
+        super().__init__()
+        self.preferred_height = preferred_height
+
+    def sizeHint(self):
+        size = super().sizeHint()
+        size.setHeight(self.preferred_height)
+        return size
+
+
 class DescriptorEdit(ButtonEdit):
-    signal_key_press = Signal(str)
-    signal_pasted_text = Signal(str)
+    signal_change = pyqtSignal(str)
 
     def __init__(self, network: bdk.Network, get_wallet: Optional[Callable[[], Wallet]] = None):
-        super().__init__(input_field=QTextEdit(), button_vertical_align=Qt.AlignBottom)
+        super().__init__(
+            input_field=MyTextEdit(preferred_height=50), button_vertical_align=Qt.AlignmentFlag.AlignBottom
+        )
         self.network = network
 
         def do_pdf():
@@ -39,7 +51,7 @@ class DescriptorEdit(ButtonEdit):
 
         def custom_handle_camera_input(data: bitcoin_qr.Data, parent):
             self.setText(str(data.data_as_string()))
-            self.signal_pasted_text.emit(str(data.data_as_string()))
+            self.signal_change.emit(str(data.data_as_string()))
 
         self.add_copy_button()
         self.add_qr_input_from_camera_button(custom_handle_input=custom_handle_camera_input)
@@ -56,73 +68,69 @@ class DescriptorEdit(ButtonEdit):
         except:
             return False
 
-    def sizeHint(self):
-        size = super().sizeHint()
-        size.setHeight(80)
-        return size
-
-    def keyPressEvent(self, e):
+    def keyReleaseEvent(self, e: QKeyEvent):
+        # print(e.type(), e.modifiers(),  [key for key in Qt.Key if  key.value == e.key() ] , e.matches(QKeySequence.StandardKey.Paste) )
         # If it's a regular key press
-        if e.type() == QEvent.KeyPress and not e.modifiers() & (Qt.ControlModifier | Qt.AltModifier):
-            self.signal_key_press.emit(e.text())
-        # If it's a shortcut (like Ctrl+V), let the parent handle it
+        if e.type() == QEvent.Type.KeyRelease:
+            self.signal_change.emit(self.text())
+        # If it's another type of shortcut, let the parent handle it
         else:
-            super().keyPressEvent(e)
-
-    def insertFromMimeData(self, source):
-        self.input_field.insertFromMimeData(source)
-        self.signal_pasted_text.emit(source.text())
+            super().keyReleaseEvent(e)
 
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QCompleter, QLineEdit
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QCompleter, QLineEdit
 
 
 class QCompleterLineEdit(QLineEdit):
-    def __init__(self, network: bdk.Network, parent=None):
-        super(QCompleterLineEdit, self).__init__(parent)
-        self._suggestions: Dict[
-            bdk.Network, List[str]
-        ] = {}  # Dictionary to store suggestions for each network
+    signal_focus_out = pyqtSignal()
+
+    def __init__(self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] = None, parent=None):
+        super().__init__(parent)
+        # Dictionary to store suggestions for each network
+        self.suggestions = suggestions if suggestions else {network: [] for network in bdk.Network}
         self.network = network  # Set the initial network
-        self._suggestions[self.network] = []
-        self._completer = QCompleter(self._suggestions[self.network], self)
+        self._completer = QCompleter(self.suggestions[self.network], self)
         self.setCompleter(self._completer)
 
     def set_network(self, network):
         """Set the network and update the completer."""
         self.network = network
-        if network not in self._suggestions:
-            self._suggestions[network] = []
+        if network not in self.suggestions:
+            self.suggestions[network] = []
         self._update_completer()
 
     def reset_memory(self):
         """Clears the memory for the current network."""
         if self.network:
-            self._suggestions[self.network].clear()
+            self.suggestions[self.network].clear()
             self._update_completer()
 
     def add_current_to_memory(self):
         """Adds the current text to the memory of the current network."""
         current_text = self.text()
-        if self.network and current_text and current_text not in self._suggestions[self.network]:
-            self._suggestions[self.network].append(current_text)
+        if self.network and current_text and current_text not in self.suggestions[self.network]:
+            self.suggestions[self.network].append(current_text)
             self._update_completer()
 
     def add_to_memory(self, text):
         """Adds a specific string to the memory of the current network."""
-        if self.network and text and text not in self._suggestions[self.network]:
-            self._suggestions[self.network].append(text)
+        if self.network and text and text not in self.suggestions[self.network]:
+            self.suggestions[self.network].append(text)
             self._update_completer()
 
     def _update_completer(self):
         """Updates the completer with the current network's suggestions
         list."""
         if self.network:
-            self._completer.model().setStringList(self._suggestions[self.network])
+            self._completer.model().setStringList(self.suggestions[self.network])
 
-    def keyPressEvent(self, event):
-        if self.network and event.key() in (Qt.Key_Up, Qt.Key_Down):
+    def keyPressEvent(self, event: QKeyEvent):
+        if self.network and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
             if not self._completer.popup().isVisible():
                 self._completer.complete()
         super(QCompleterLineEdit, self).keyPressEvent(event)
+
+    def focusOutEvent(self, event: QFocusEvent):
+        super().focusOutEvent(event)
+        self.signal_focus_out.emit()

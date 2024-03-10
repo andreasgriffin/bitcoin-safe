@@ -15,12 +15,20 @@ from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
-from PySide2.QtCore import QModelIndex, QPersistentModelIndex, Qt, Signal
-from PySide2.QtGui import QBrush, QColor, QFont, QStandardItem
-from PySide2.QtWidgets import QAbstractItemView, QFileDialog, QMenu
+from PyQt6.QtCore import QModelIndex, QPersistentModelIndex, QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QDragEnterEvent,
+    QDragMoveEvent,
+    QDropEvent,
+    QFont,
+    QStandardItem,
+)
+from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QMenu
 
 from ...i18n import _
-from ...signals import UpdateFilter
+from ...signals import Signals, UpdateFilter
 from ...util import Satoshis, block_explorer_URL
 from ...wallet import (
     ToolsTxUiInfo,
@@ -34,14 +42,7 @@ from .category_list import CategoryEditor
 from .dialog_import import file_to_str
 from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
 from .taglist import AddressDragInfo
-from .util import (
-    Message,
-    MessageType,
-    read_QIcon,
-    set_balance_label,
-    sort_id_to_icon,
-    webopen,
-)
+from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -74,11 +75,8 @@ class AddressTypeFilter(IntEnum):
         }[self]
 
 
-from ...signals import Signals
-
-
 class HistList(MyTreeView):
-    signal_tag_dropped = Signal(AddressDragInfo)
+    signal_tag_dropped = pyqtSignal(AddressDragInfo)
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -112,12 +110,12 @@ class HistList(MyTreeView):
     }
 
     column_alignments = {
-        Columns.WALLET_ID: Qt.AlignCenter,
-        Columns.STATUS: Qt.AlignCenter,
-        Columns.CATEGORIES: Qt.AlignCenter,
-        Columns.LABEL: Qt.AlignVCenter,
-        Columns.AMOUNT: Qt.AlignRight,
-        Columns.BALANCE: Qt.AlignRight,
+        Columns.WALLET_ID: Qt.AlignmentFlag.AlignCenter,
+        Columns.STATUS: Qt.AlignmentFlag.AlignCenter,
+        Columns.CATEGORIES: Qt.AlignmentFlag.AlignCenter,
+        Columns.LABEL: Qt.AlignmentFlag.AlignVCenter,
+        Columns.AMOUNT: Qt.AlignmentFlag.AlignRight,
+        Columns.BALANCE: Qt.AlignmentFlag.AlignRight,
     }
 
     def __init__(
@@ -142,7 +140,7 @@ class HistList(MyTreeView):
         self._tx_dict: Dict[str, Tuple[Wallet, bdk.TransactionDetails]] = {}  # txid -> wallet, tx
         self.signals = signals
         self.wallet_id = wallet_id
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
@@ -170,12 +168,11 @@ class HistList(MyTreeView):
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
         self.update()
-        self.sortByColumn(HistList.Columns.STATUS, Qt.AscendingOrder)
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
 
-    def get_file_data(self, txid):
+    def get_file_data(self, txid: str):
         for wallet in get_wallets(self.signals):
             txdetails = wallet.get_tx(txid)
         if txdetails:
@@ -210,7 +207,7 @@ class HistList(MyTreeView):
 
         return file_urls
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasFormat("application/json"):
             logger.debug("accept drag enter")
             event.acceptProposedAction()
@@ -221,16 +218,16 @@ class HistList(MyTreeView):
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event: QDragMoveEvent):
         return self.dragEnterEvent(event)
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent):
         # handle dropped files
         super().dropEvent(event)
         if event.isAccepted():
             return
 
-        index = self.indexAt(event.pos())
+        index = self.indexAt(event.position().toPoint())
         if not index.isValid():
             # Handle the case where the drop is not on a valid index
             return
@@ -385,13 +382,13 @@ class HistList(MyTreeView):
                 items[self.Columns.WALLET_ID].setData(wallet.id, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
                 if amount < 0:
-                    items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ForegroundRole)
+                    items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ItemDataRole.ForegroundRole)
                 items[self.Columns.BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
                 # align text and set fonts
                 # for i, item in enumerate(items):
-                #     item.setTextAlignment(Qt.AlignVCenter)
+                #     item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
                 #     if i in (self.Columns.TXID,):
                 #         item.setFont(QFont(MONOSPACE_FONT))
 
@@ -413,12 +410,24 @@ class HistList(MyTreeView):
         self.proxy.setDynamicSortFilter(True)
 
         if self.balance_label:
-            set_balance_label(self.balance_label, wallets)
+            balances = [wallet.get_balance() for wallet in wallets]
+            if not balances:
+                self.balance_label.setText("")
+                self.balance_label.setToolTip(None)
+            else:
+                summed_balance = balances[0]
+                for balance in balances[1:]:
+                    summed_balance += balance
+                self.balance_label.setText(summed_balance.format_short(wallets[0].network))
+                self.balance_label.setToolTip(summed_balance.format_long(wallets[0].network))
 
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-    def refresh_row(self, key, row):
+        # manually sort, after the data is filled
+        self.sortByColumn(HistList.Columns.STATUS, Qt.SortOrder.DescendingOrder)
+
+    def refresh_row(self, key: str, row: int):
         assert row is not None
         wallet, tx = self._tx_dict[key]
         # STATUS = enum.auto()
@@ -437,7 +446,12 @@ class HistList(MyTreeView):
 
         item = [self.std_model.item(row, col) for col in self.Columns]
         item[self.Columns.STATUS].setText(status_text)
-        item[self.Columns.STATUS].setData(status.confirmations(), self.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.STATUS].setData(
+            tx.confirmation_time.height
+            if status.confirmations()
+            else (TxConfirmationStatus.to_str(status.confirmation_status)),
+            self.ROLE_CLIPBOARD_DATA,
+        )
         item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
 
         item[self.Columns.STATUS].setToolTip(
@@ -449,7 +463,7 @@ class HistList(MyTreeView):
         item[self.Columns.CATEGORIES].setData(categories, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORIES].setBackground(CategoryEditor.color(category))
 
-    def create_menu(self, position):
+    def create_menu(self, position: QPoint):
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.TXID)
         if not selected:
@@ -518,13 +532,13 @@ class HistList(MyTreeView):
                 menu.addAction(_("Cancel transaction (RBF)"), lambda: self.cancel_tx(tx_details))
 
         # run_hook('receive_menu', menu, txids, self.wallet)
-        menu.exec_(self.viewport().mapToGlobal(position))
+        menu.exec(self.viewport().mapToGlobal(position))
 
     def edit_tx(self, tx_details: bdk.TransactionDetails):
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
-            self.config.network_config.network,
+            self.config.network,
             get_wallets(self.signals),
         )
 
@@ -534,7 +548,7 @@ class HistList(MyTreeView):
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
-            self.config.network_config.network,
+            self.config.network,
             get_wallets(self.signals),
         )
 
@@ -560,7 +574,7 @@ class HistList(MyTreeView):
 
         self.signals.open_tx_like.emit(txinfos)
 
-    def export_raw_transactions(self, selected_items: List[QStandardItem], folder=None):
+    def export_raw_transactions(self, selected_items: List[QStandardItem], folder: str = None):
         if not folder:
             folder = QFileDialog.getExistingDirectory(None, "Select Folder")
             if not folder:
@@ -573,16 +587,16 @@ class HistList(MyTreeView):
 
         logger.info(f"Saved {len(file_paths)} {self.std_model.drag_key} saved to {folder}")
 
-    def get_edit_key_from_coordinate(self, row, col):
+    def get_edit_key_from_coordinate(self, row: int, col: int):
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=self.ROLE_KEY)
 
-    def on_edited(self, idx, edit_key, *, text):
+    def on_edited(self, idx: QModelIndex, edit_key: str, *, text: str):
         txid = edit_key
         wallet, tx = self._tx_dict[txid]
 
-        wallet.labels.set_tx_label(edit_key, text)
+        wallet.labels.set_tx_label(edit_key, text, timestamp="now")
 
         fulltxdetails = wallet.get_dict_fulltxdetail().get(txid)
         self.signals.labels_updated.emit(

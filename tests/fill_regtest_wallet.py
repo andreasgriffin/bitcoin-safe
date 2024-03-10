@@ -2,14 +2,14 @@ import argparse
 import json
 import time
 from random import randint
-from typing import List
+from typing import List, Union
 
 import bdkpython as bdk
 import numpy as np
 import requests
 
 
-def send_rpc_command(ip, port, username, password, method, params=None):
+def send_rpc_command(ip: str, port: Union[str, int], username: str, password: str, method: str, params=None):
     """Sends an RPC command to a Bitcoin node.
 
     :param ip: IP address of the Bitcoin node.

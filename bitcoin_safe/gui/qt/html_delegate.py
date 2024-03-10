@@ -1,23 +1,30 @@
-from PySide2.QtCore import QPoint, QSize
-from PySide2.QtGui import QHelpEvent, QTextDocument
-from PySide2.QtWidgets import QStyle
+import logging
+
+logger = logging.getLogger(__name__)
+
+from PyQt6.QtCore import QModelIndex, QPoint, QSize
+from PyQt6.QtGui import QHelpEvent, QPainter, QTextDocument
+from PyQt6.QtWidgets import QStyle, QStyleOptionViewItem
 
 
 class HTMLDelegate:
     def __init__(self) -> None:
         pass
 
-    def paint(self, painter, option, index):
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+        logger.debug("HTMLDelegate.paint")
         text = index.model().data(index)
 
         painter.save()
 
-        option.widget.style().drawControl(QStyle.CE_ItemViewItem, option, painter, option.widget)
+        option.widget.style().drawControl(
+            QStyle.ControlElement.CE_ItemViewItem, option, painter, option.widget
+        )
 
         x_shift = 0
         y_shift = -3
 
-        painter.translate(option.rect.topLeft() + QPoint(x_shift, y_shift))
+        painter.translate(option.rect.topLeft() + QPoint(int(x_shift), int(y_shift)))
 
         doc = QTextDocument()
         doc.setHtml(text)
@@ -39,7 +46,7 @@ class HTMLDelegate:
 
         painter.restore()
 
-    def sizeHint(self, option, index):
+    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex):
         text = index.model().data(index)
 
         doc = QTextDocument()
@@ -49,5 +56,5 @@ class HTMLDelegate:
         return QSize(doc.idealWidth(), doc.size().height() - 10)
 
     def show_tooltip(self, evt: QHelpEvent) -> bool:
-        # QToolTip.showText(evt.globalPos(), ', '.join(self.categories))
+        # QToolTip.showText(evt.globalPosition(), ', '.join(self.categories))
         return True

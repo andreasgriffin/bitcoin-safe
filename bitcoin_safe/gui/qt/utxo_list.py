@@ -35,15 +35,15 @@ import enum
 from typing import Dict, List, Optional, Tuple
 
 import bdkpython as bdk
-from PySide2.QtCore import (
+from PyQt6.QtCore import (
     QModelIndex,
     QPersistentModelIndex,
     QPoint,
     QSortFilterProxyModel,
     Qt,
 )
-from PySide2.QtGui import QStandardItem
-from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu
+from PyQt6.QtGui import QStandardItem
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QMenu
 
 from ...i18n import _
 from ...signals import Signals, UpdateFilter
@@ -100,14 +100,14 @@ class UTXOList(MyTreeView):
         Columns.AMOUNT,
     ]
     column_alignments = {
-        Columns.STATUS: Qt.AlignHCenter | Qt.AlignVCenter,
-        Columns.WALLET_ID: Qt.AlignHCenter | Qt.AlignVCenter,
-        Columns.OUTPOINT: Qt.AlignLeft | Qt.AlignVCenter,
-        Columns.ADDRESS: Qt.AlignLeft | Qt.AlignVCenter,
-        Columns.CATEGORY: Qt.AlignCenter | Qt.AlignVCenter,
-        Columns.LABEL: Qt.AlignLeft | Qt.AlignVCenter,
-        Columns.AMOUNT: Qt.AlignRight | Qt.AlignVCenter,
-        Columns.PARENTS: Qt.AlignCenter | Qt.AlignVCenter,
+        Columns.STATUS: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
+        Columns.WALLET_ID: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
+        Columns.OUTPOINT: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+        Columns.ADDRESS: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+        Columns.CATEGORY: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
+        Columns.LABEL: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+        Columns.AMOUNT: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
     }
 
     column_widths = {Columns.STATUS: 15, Columns.ADDRESS: 100, Columns.AMOUNT: 100}
@@ -148,17 +148,16 @@ class UTXOList(MyTreeView):
         self._pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[str, Wallet] = {}  # outpoint --> wallet
 
-        self.setTextElideMode(Qt.ElideMiddle)
+        self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self.std_model = MyStandardItemModel(self, drag_key="outpoints")
         self.proxy: QSortFilterProxyModel = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
 
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.setSortingEnabled(True)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
 
         self.update()
-        self.sortByColumn(self.Columns.ADDRESS, Qt.AscendingOrder)
 
         signals.utxos_updated.connect(self.update)
         self.selectionModel().selectionChanged.connect(self.update_labels)
@@ -223,7 +222,7 @@ class UTXOList(MyTreeView):
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
-        menu.exec_(self.viewport().mapToGlobal(position))
+        menu.exec(self.viewport().mapToGlobal(position))
 
     def get_wallet_address_satoshis(
         self, outpoint: OutPoint
@@ -233,15 +232,13 @@ class UTXOList(MyTreeView):
         address = None
         satoshis = None
         if python_utxo:
-            satoshis = Satoshis(python_utxo.txout.value, self.config.network_config.network)
+            satoshis = Satoshis(python_utxo.txout.value, self.config.network)
             address = python_utxo.address
         else:
             txout = self.txout_dict.get(str(outpoint))
             if txout:
-                satoshis = Satoshis(txout.value, self.config.network_config.network)
-                address = bdk.Address.from_script(
-                    txout.script_pubkey, self.config.network_config.network
-                ).as_string()
+                satoshis = Satoshis(txout.value, self.config.network)
+                address = bdk.Address.from_script(txout.script_pubkey, self.config.network).as_string()
         return wallet, python_utxo, address, satoshis
 
     def update(self, update_filter: UpdateFilter = None):
@@ -263,7 +260,7 @@ class UTXOList(MyTreeView):
             self._wallet_dict.update({str(python_txo.outpoint): wallet_ for python_txo in txos})
 
         self.std_model.clear()
-        self.update_headers(self.__class__.headers.values())
+        self.update_headers(self.__class__.headers)
         set_idx = None
         for i, outpoint in enumerate(self.get_outpoints()):
             outpoint = OutPoint.from_bdk(outpoint)
@@ -301,7 +298,7 @@ class UTXOList(MyTreeView):
         if set_idx:
             self.set_current_idx(set_idx)
 
-        self.header().setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.Interactive)
+        self.header().setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.ResizeMode.Interactive)
 
         # show/hide self.Columns
         self.filter()
@@ -309,7 +306,10 @@ class UTXOList(MyTreeView):
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-    def refresh_row(self, key: bdk.OutPoint, row):
+        # manually sort, after the data is filled
+        self.sortByColumn(self.Columns.ADDRESS, Qt.SortOrder.AscendingOrder)
+
+    def refresh_row(self, key: bdk.OutPoint, row: int):
         assert row is not None
 
         outpoint = OutPoint.from_bdk(key)
@@ -339,7 +339,7 @@ class UTXOList(MyTreeView):
         items[self.Columns.WALLET_ID].setData(wallet_id, self.ROLE_CLIPBOARD_DATA)
         txid = outpoint.txid
 
-        category = wallet.labels.get_category(address) if wallet else ""
+        category = wallet.labels.get_category(address) if wallet and address else ""
 
         items[self.Columns.CATEGORY].setText(category)
         items[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)

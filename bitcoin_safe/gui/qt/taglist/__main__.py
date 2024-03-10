@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QApplication, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget
 
-from .main import TagEditor
+from .main import CustomListWidget, TagEditor
 
 if __name__ == "__main__":
     import sys
@@ -13,10 +13,18 @@ if __name__ == "__main__":
     widget = TagEditor()
     # widget = CustomListWidget(enable_drag=False)
     widget.add("jgud", sub_text="876349 Sats")
-    widget.add("jgu3d")
-    widget.add("jg235ud")
-    widget.add("jgu346d")
+    widget.add("jgu3d", sub_text="876349 Sats")
+    widget.add("jg235ud", sub_text="876349 Sats")
+    widget.add("jgu346d", sub_text="876349 Sats")
 
     main_layout.addWidget(widget)
+
+    l = CustomListWidget(main)
+    l.add("jgud", sub_text="876349 Sats")
+    l.add("jgu3d", sub_text="876349 Sats")
+    l.add("jg235ud", sub_text="876349 Sats")
+    l.add("jgu346d", sub_text="876349 Sats")
+    main_layout.addWidget(l)
+
     main.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

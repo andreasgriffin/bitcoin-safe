@@ -229,11 +229,11 @@ class BitcoinWalletRecoveryPDF:
 
         self._descriptor_part(wallet_descriptor_string, threshold)
 
-    def save_pdf(self, filename):
+    def save_pdf(self, filename: str):
         document = SimpleDocTemplate(filename, pagesize=letter)
         document.build(self.elements)
 
-    def open_pdf(self, filename):
+    def open_pdf(self, filename: str):
         if os.path.exists(filename):
             file_uri = Path(filename).absolute().as_uri()
             webbrowser.open_new_tab(file_uri)

@@ -3,15 +3,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 from bdkpython import Network
-from PySide2.QtCore import QCoreApplication, QObject, Signal
-from PySide2.QtGui import Qt
-from PySide2.QtSvg import QSvgWidget
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QCoreApplication, QObject, Qt, pyqtSignal
+from PyQt6.QtSvgWidgets import QSvgWidget
+from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QSizePolicy,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -21,11 +21,11 @@ from .util import add_centered_icons, add_tab_to_tabs, icon_path, qresize, read_
 
 
 class NewWalletWelcomeScreen(QObject):
-    signal_onclick_multisig_signature = Signal()
-    signal_onclick_single_signature = Signal()
-    signal_onclick_custom_signature = Signal()
+    signal_onclick_multisig_signature = pyqtSignal()
+    signal_onclick_single_signature = pyqtSignal()
+    signal_onclick_custom_signature = pyqtSignal()
 
-    def __init__(self, main_tabs, network: Network) -> None:
+    def __init__(self, main_tabs: QTabWidget, network: Network) -> None:
         super().__init__()
         self.main_tabs = main_tabs
 
@@ -77,7 +77,7 @@ class NewWalletWelcomeScreen(QObject):
         self.horizontalLayout_4.addWidget(self.svg_widget)
 
         # set size of groupbox according to svg
-        self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         self.verticalLayout.addWidget(self.groupBox_1signingdevice)
 
@@ -108,13 +108,12 @@ class NewWalletWelcomeScreen(QObject):
         add_centered_icons(
             ["coldcard-only.svg"] * 2 + ["usb-stick.svg"],
             self.groupBox_3signingdevices,
-            self.horizontalLayout_3,
             max_sizes=[(60, 80), (60, 80), (60, 50)],
         )
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
         # set size of groupbox according to svg
-        self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         self.pushButton_multisig = QPushButton(self.groupBox_multisig)
 
@@ -137,60 +136,53 @@ class NewWalletWelcomeScreen(QObject):
         self.horizontalLayout_2.addWidget(self.groupBox_3)
 
         # self.groupBox_singlesig.setTitle(QCoreApplication.translate("Form", u"Single Signature Wallet", None))
-        self.label_singlesig.setAlignment(Qt.AlignTop)
+        self.label_singlesig.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.label_singlesig.setText(
-            QCoreApplication.translate(
-                "Form",
-                """<h1>Single Signature Wallet</h1>
-<p>For large funds (but not life savings)</p>
-<p>Pros:</p>
+            """<h1>Single Signature Wallet</h1>
+<ul>
+<li>Best for medium-sized funds</li>
+</ul>             
+<p><b>Pros:</b></p>
 <ul>
 <li>1 seed (24 secret words) is all you need to access your funds</li>
 <li>1 secure location to store the seed backup (on paper or steel) is needed</li>
 </ul>
-<p>Cons:</p>
+<p><b>Cons:</b></p>
 <ul>
 <li>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</li>
 </ul>""",
-                None,
-            )
         )
         self.groupBox_1signingdevice.setTitle(QCoreApplication.translate("Form", "1 signing devices", None))
         self.pushButton_singlesig.setText(QCoreApplication.translate("Form", "Choose Single Signature", None))
         # self.groupBox_multisig.setTitle(QCoreApplication.translate("Form", u"2 of 3 Multi-Signature Wallet", None))
-        self.label_multisig.setAlignment(Qt.AlignTop)
+        self.label_multisig.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.label_multisig.setText(
-            QCoreApplication.translate(
-                "Form",
-                """<h1>2 of 3 Multi-Signature Wallet</h1>
-<p>For life savings</p>
-<p>Pros:</p>
+            """<h1>2 of 3 Multi-Signature Wallet</h1>
 <ul>
-<li>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor</li>
+<li>Best for large funds</li>
+</ul>             
+<p><b>Pros:</b></p>
+<ul>
+<li>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</li>
 </ul>
-<p>Cons:</p>
+<p><b>Cons:</b></p>
 <ul>
-<li>3 secure locations (each with 1 seed backup on steel + wallet descriptor are needed)</li>
-<li>Backing up the wallet descriptor is necessary to recreate wallet</li>
+<li>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</li>
+<li>The wallet descriptor (QR-code) is necessary to recover the wallet</li>
 </ul>
 """,
-                None,
-            )
         )
         self.groupBox_3signingdevices.setTitle(QCoreApplication.translate("Form", "3 signing devices", None))
         self.pushButton_multisig.setText(QCoreApplication.translate("Form", "Choose Multi-Signature", None))
         # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
-        self.label_custom.setAlignment(Qt.AlignTop)
+        self.label_custom.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.label_custom.setText(
-            QCoreApplication.translate(
-                "Form",
-                "<html><head/><body><h1>Custom Wallet</h1><p>Pros:</p><p>Customize the wallet to your needs</p><p>Cons:</p><p>Less support material online in case of recovery</p></body></html>",
-                None,
-            )
+            """<html><head/><body><h1>Custom or restore existing Wallet</h1>
+                <p><b>Pros:</b></p><p>Customize the wallet to your needs</p>
+                <p><b>Cons:</b></p><p>Less support material online in case of recovery</p>
+                </body></html>"""
         )
-        self.pushButton_custom_wallet.setText(
-            QCoreApplication.translate("Form", "Create custom wallet", None)
-        )
+        self.pushButton_custom_wallet.setText("Create custom wallet")
 
     def remove_tab(self):
         index = self.main_tabs.indexOf(self.tab)

@@ -3,10 +3,17 @@ import random
 import sys
 
 import numpy as np
-from PySide2.QtCharts import QtCharts
-from PySide2.QtCore import QDateTime, QMargins, Qt, QTimer
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtCharts import (
+    QChart,
+    QChartView,
+    QDateTimeAxis,
+    QLineSeries,
+    QScatterSeries,
+    QValueAxis,
+)
+from PyQt6.QtCore import QDateTime, QMargins, Qt, QTimer
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
 
 from bitcoin_safe.util import unit_str
 
@@ -23,8 +30,8 @@ class BalanceChart(QWidget):
         layout = QVBoxLayout()
 
         # Create chart
-        self.chart = QtCharts.QChart()
-        self.chart.setBackgroundBrush(Qt.white)
+        self.chart = QChart()
+        self.chart.setBackgroundBrush(Qt.GlobalColor.white)
         self.chart.legend().hide()
 
         # Reduce the overall chart margins
@@ -32,20 +39,20 @@ class BalanceChart(QWidget):
         self.chart.setMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
 
         # Create DateTime axis for X
-        self.datetime_axis = QtCharts.QDateTimeAxis()
+        self.datetime_axis = QDateTimeAxis()
 
         # Create Value axis for Y
-        self.value_axis = QtCharts.QValueAxis()
+        self.value_axis = QValueAxis()
 
-        self.chart.addAxis(self.datetime_axis, Qt.AlignBottom)
-        self.chart.addAxis(self.value_axis, Qt.AlignLeft)
+        self.chart.addAxis(self.datetime_axis, Qt.AlignmentFlag.AlignBottom)
+        self.chart.addAxis(self.value_axis, Qt.AlignmentFlag.AlignLeft)
         self.chart.setBackgroundRoundness(0)
 
         # Add chart to chart view
-        self.chart_view = QtCharts.QChartView(self.chart)
+        self.chart_view = QChartView(self.chart)
         layout.addWidget(self.chart_view)
 
-        self.chart_view.setFrameStyle(QFrame.NoFrame)
+        self.chart_view.setFrameStyle(QFrame.Shape.NoFrame)
         self.chart_view.setBackgroundBrush(self.chart.backgroundBrush())
 
         # Set layout
@@ -98,7 +105,7 @@ class BalanceChart(QWidget):
             self.datetime_axis.setFormat("d MMM yy")
 
         # Create Line series
-        series = QtCharts.QLineSeries()
+        series = QLineSeries()
         for i, (timestamp, balance) in enumerate(balance_data[:-1]):
             next_timestamp, _ = balance_data[i + 1]
             series.append(
@@ -139,14 +146,14 @@ class BalanceChart(QWidget):
 
         print(f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}")
 
-        scatter_series = QtCharts.QScatterSeries()
+        scatter_series = QScatterSeries()
         for (timestamp, balance) in balance_data:
             scatter_series.append(
                 QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
                 balance,
             )
 
-        scatter_series = QtCharts.QScatterSeries()
+        scatter_series = QScatterSeries()
         for (timestamp, balance) in balance_data:
             scatter_series.append(
                 QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
@@ -154,7 +161,7 @@ class BalanceChart(QWidget):
             )
 
         # Set marker shape and size
-        scatter_series.setMarkerShape(QtCharts.QScatterSeries.MarkerShapeCircle)
+        scatter_series.setMarkerShape(QScatterSeries.MarkerShape.MarkerShapeCircle)
         scatter_series.setMarkerSize(5)
 
         # Set marker color
@@ -182,7 +189,7 @@ class WalletBalanceChart(BalanceChart):
         # Calculate balance
         balance = 0
         balance_data = []
-        for transaction_details in reversed(self.wallet.sorted_delta_list_transactions()):
+        for transaction_details in self.wallet.sorted_delta_list_transactions():
             balance += transaction_details.received - transaction_details.sent
             time = (
                 transaction_details.confirmation_time.timestamp
@@ -250,4 +257,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = TransactionSimulator()
     main.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

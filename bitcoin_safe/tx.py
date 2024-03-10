@@ -2,12 +2,13 @@ import logging
 
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.util import serialized_to_hex
 
 from .pythonbdk_types import OutPoint, PythonUtxo, Recipient, UtxosForInputs
 
 logger = logging.getLogger(__name__)
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import bdkpython as bdk
 
@@ -69,7 +70,7 @@ class TxBuilderInfos:
         builder_result: bdk.TxBuilderResult,
         recipient_category: Optional[str] = None,
     ):
-        self.fee_rate = None
+        self.fee_rate: Optional[float] = None
 
         self.recipients = recipients
 
@@ -80,5 +81,48 @@ class TxBuilderInfos:
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
 
-    def set_fee_rate(self, feerate):
+    def set_fee_rate(self, feerate: float):
         self.fee_rate = feerate
+
+
+def transaction_to_dict(tx: bdk.Transaction) -> Dict[str, Any]:
+    # Serialize inputs
+    inputs = []
+    for inp in tx.input():
+        inputs.append(
+            {
+                "previous_output": {"txid": inp.previous_output.txid, "vout": inp.previous_output.vout},
+                "script_sig": serialized_to_hex(inp.script_sig.to_bytes()),
+                "sequence": inp.sequence,
+                "witness": [serialized_to_hex(witness) for witness in inp.witness],
+            }
+        )
+
+    # Serialize outputs
+    outputs = []
+    for out in tx.output():
+        outputs.append(
+            {
+                "value": out.value,
+                "script_pubkey": serialized_to_hex(out.script_pubkey.to_bytes()),
+            }
+        )
+
+    # Construct the transaction dictionary
+    tx_dict = {
+        "txid": tx.txid(),
+        "weight": tx.weight(),
+        "size": tx.size(),
+        "vsize": tx.vsize(),
+        "serialize": serialized_to_hex(tx.serialize()),
+        "is_coin_base": tx.is_coin_base(),
+        "is_explicitly_rbf": tx.is_explicitly_rbf(),
+        "is_lock_time_enabled": tx.is_lock_time_enabled(),
+        "version": tx.version(),
+        "lock_time": tx.lock_time(),
+        "input": inputs,
+        "output": outputs,
+    }
+
+    # Convert the dictionary to a JSON string
+    return tx_dict

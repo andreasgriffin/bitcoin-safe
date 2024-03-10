@@ -1,8 +1,8 @@
 import random
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QColor, QFont, QPainter, Qt
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QFont, QPainter, QPaintEvent
+from PyQt6.QtWidgets import (
     QApplication,
     QPushButton,
     QStyleOption,
@@ -12,7 +12,7 @@ from PySide2.QtWidgets import (
 
 
 class DebugWidget(QWidget):
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent):
         super().paintEvent(event)
         self.drawDebugInfo(self)
 
@@ -49,7 +49,7 @@ class DebugWidget(QWidget):
 
         return tooltipText
 
-    def drawDebugInfo(self, widget):
+    def drawDebugInfo(self, widget: QWidget):
         widget_hash = hash(widget)
         random.seed(widget_hash)
         color = QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -66,14 +66,14 @@ class DebugWidget(QWidget):
         painter.setFont(font)
         painter.drawText(
             widget.rect().adjusted(5, 5, -5, -5),
-            Qt.AlignCenter | Qt.AlignLeft,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignLeft,
             widget.__class__.__name__,
         )
 
 
 def generate_debug_class(BaseClass) -> QWidget:
     class DebugClass(BaseClass):
-        def paintEvent(self, event):
+        def paintEvent(self, event: QPaintEvent):
             super().paintEvent(event)
             DebugWidget().drawDebugInfo(self)
 
@@ -91,4 +91,4 @@ if __name__ == "__main__":
     layout.addWidget(DebugButton("Button 2"))
 
     main_widget.show()
-    app.exec_()
+    app.exec()

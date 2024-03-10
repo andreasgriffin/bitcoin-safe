@@ -1,21 +1,15 @@
 import sys
 
-from PySide2.QtCore import QRectF, QSize, QTimer
-from PySide2.QtGui import QPainter
-from PySide2.QtSvg import QSvgRenderer
-from PySide2.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtCore import QRectF, QSize, QTimer, pyqtSignal
+from PyQt6.QtGui import QPainter, QPaintEvent
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from .util import icon_path
 
 
 class SpinningButton(QPushButton):
-    def __init__(self, text, enable_signal=None, svg_path=None, parent=None):
+    def __init__(self, text: str, enable_signal=None, svg_path=None, parent=None):
         super().__init__(text, parent)
         if svg_path is None:
             svg_path = icon_path("loader-icon.svg")
@@ -38,7 +32,7 @@ class SpinningButton(QPushButton):
         self.stop_spin()
         self.setEnabled(True)
 
-    def set_enable_signal(self, enable_signal):
+    def set_enable_signal(self, enable_signal: pyqtSignal):
         if enable_signal:
             enable_signal.connect(self.enable_button)
 
@@ -51,7 +45,7 @@ class SpinningButton(QPushButton):
     def stop_spin(self):
         self.timer.stop()
 
-    def setIconSize(self, size):
+    def setIconSize(self, size: QSize):
         if isinstance(size, QSize):
             self._icon_size = size
         else:
@@ -65,12 +59,12 @@ class SpinningButton(QPushButton):
         self.rotation_angle = (self.rotation_angle + 10) % 360
         self.update()  # Trigger repaint
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         super().paintEvent(event)
 
         if self.timer.isActive():
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
             # Calculate the SVG's drawing rectangle
             icon_size = self.iconSize()
@@ -130,4 +124,4 @@ if __name__ == "__main__":
     window.show()
 
     # Run the application's event loop
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -1,11 +1,12 @@
 import enum
 import logging
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
+from packaging import version
 
 from .storage import SaveAllClass
-from .util import serialized_to_hex
+from .util import Satoshis, serialized_to_hex
 
 logger = logging.getLogger(__name__)
 
@@ -173,6 +174,16 @@ class AddressInfoMin(SaveAllClass):
         self.index = index
         self.keychain = keychain
 
+    @classmethod
+    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+            pass
+
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
+        return dct
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
@@ -190,6 +201,19 @@ class AddressInfoMin(SaveAllClass):
             bdk_address_info.index,
             bdk_address_info.keychain,
         )
+
+    def is_change(self):
+        return self.keychain == bdk.KeychainKind.INTERNAL
+
+    def address_path(self) -> Tuple[int, int]:
+        return (bool(self.is_change()), self.index)
+
+    @staticmethod
+    def is_change_to_keychain(is_change: bool) -> bdk.KeychainKind:
+        if is_change:
+            return bdk.KeychainKind.INTERNAL
+        else:
+            return bdk.KeychainKind.EXTERNAL
 
 
 class BlockchainType(enum.Enum):
@@ -233,17 +257,7 @@ class CBFServerType(enum.Enum):
 
     @classmethod
     def from_text(cls, t):
-        if t == "Automatic":
-            return cls.Automatic
-        elif t == "Manual":
-            return cls.Manual
-
-    @classmethod
-    def to_text(cls, t):
-        if t == cls.Automatic:
-            return "Automatic"
-        elif t == cls.Manual:
-            return "Manual"
+        return CBFServerType._member_map_[t]
 
 
 class Balance:
@@ -256,7 +270,29 @@ class Balance:
 
     @property
     def total(self):
-        return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed + self.spendable
+        return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed
+
+    def __add__(self, other: "Balance") -> "Balance":
+        summed = {key: self.__dict__[key] + other.__dict__[key] for key in self.__dict__.keys()}
+        return Balance(**summed)
+
+    def format_long(self, network: bdk.Network) -> str:
+
+        details = [
+            f"{title}: {Satoshis (value, network=network).str_with_unit()}"
+            for title, value in [
+                ("Confirmed", self.confirmed),
+                ("Unconfirmed", self.untrusted_pending + self.trusted_pending),
+                ("Unmatured", self.immature),
+            ]
+        ]
+        long = "\n".join(details)
+        return long
+
+    def format_short(self, network: bdk.Network) -> str:
+
+        short = f"Balance: {Satoshis(value=self.total, network= network).str_with_unit()} "
+        return short
 
 
 def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=False):

@@ -6,20 +6,25 @@ logger = logging.getLogger(__name__)
 
 import hashlib
 import json
-from typing import Generator, List, Optional
+from typing import Dict, Generator, List, Optional, Tuple
 
-from PySide2.QtCore import QMimeData, QModelIndex, QPoint, QRect, Signal
-from PySide2.QtGui import (
+from PyQt6.QtCore import QMimeData, QModelIndex, QRect, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import (
     QColor,
     QCursor,
     QDrag,
+    QDragEnterEvent,
+    QDragLeaveEvent,
+    QDropEvent,
+    QFont,
+    QImage,
+    QMouseEvent,
     QPainter,
     QPalette,
-    Qt,
     QTextDocument,
     QTextOption,
 )
-from PySide2.QtWidgets import (
+from PyQt6.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QLineEdit,
@@ -29,29 +34,10 @@ from PySide2.QtWidgets import (
     QStyle,
     QStyledItemDelegate,
     QStyleOptionButton,
+    QStyleOptionViewItem,
     QVBoxLayout,
     QWidget,
 )
-
-# common qt imports
-# ==============================
-# from PySide2.QtCore import QObject, Signal, QItemSelectionModel, QCoreApplication, QPoint, QModelIndex, QRect, QMimeData, QSize
-# from PySide2.QtWidgets import (
-#     QPushButton,QApplication,QToolButton,
-#     QWidget,QStyledItemDelegate,QListWidgetItem,
-#     QGroupBox,QStyle,QFileDialog,
-#     QHBoxLayout,QStyleOptionButton,QSpinBox, QComboBox,
-#     QSizePolicy,QListWidget,
-#     QVBoxLayout,QMenuBar,
-#     QTabWidget,QAbstractItemView,
-#     QDoubleSpinBox,QTextEdit,QScrollArea,
-#     QFormLayout,
-#     QLabel,
-#     QDialogButtonBox,QDialog,
-#     QSplitter,QLineEdit,QMainWindow,QShortcut,
-#     QCheckBox,
-# )
-# from PySide2.QtGui import Qt, QIcon, QKeySequence,QCursor, QDrag, QPainter, QColor, QPalette, QTextDocument, QTextOption
 
 
 def clean_tag(tag: str) -> str:
@@ -95,8 +81,8 @@ class CustomListWidgetItem(QListWidgetItem):
         self.setText(item_text)
         self.subtext = sub_text
         self.color = self.hash_color()
-        self.setData(Qt.UserRole + 1, self.color)
-        self.setData(Qt.UserRole + 2, self.subtext)  # UserRole for subtext
+        self.setData(Qt.ItemDataRole.UserRole + 1, self.color)
+        self.setData(Qt.ItemDataRole.UserRole + 2, self.subtext)  # UserRole for subtext
 
     def hash_color(self):
         return hash_color(self.text())
@@ -114,93 +100,149 @@ class CustomListWidgetItem(QListWidgetItem):
 
 
 class CustomDelegate(QStyledItemDelegate):
-    signal_tag_renamed = Signal(object, object)
+    signal_tag_renamed = pyqtSignal(object, object)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.currentlyEditingIndex = QModelIndex()
+        self.imageCache: Dict[
+            Tuple[QModelIndex, QStyle.StateFlag, str, str], QImage
+        ] = {}  # Cache for storing pre-rendered images
 
-    def paint(self, painter: QPainter, option, index):
-        color = QColor(index.data(Qt.UserRole + 1))
+    def renderHtmlToImage(self, index: QModelIndex, option: QStyleOptionViewItem, text: str, subtext: str):
+        """
+        Renders the item appearance to an image, including button-like background and HTML text.
+        """
+        rectSize = QSize(option.rect.width(), option.rect.height())
 
-        rect = option.rect
+        # Create an off-screen image for rendering
+        image = QImage(rectSize, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)  # Fill with transparency for proper rendering
+        painter = QPainter(image)
 
-        # Draw as a button
-        button_style = QStyleOptionButton()
-        button_style.rect = rect
-        button_style.palette.setColor(QPalette.Button, color)
-        button_style.state = QStyle.State_Enabled
+        # Mock-up style option for button rendering
+        buttion_option = QStyleOptionButton()
+        buttion_option.rect = QRect(0, 0, rectSize.width(), rectSize.height())
+        buttion_option.state = QStyle.StateFlag.State_Enabled
 
-        if option.state & QStyle.State_Selected:
-            # button_style.palette.setColor(QPalette.Button, color.darker(200))
-            button_style.state |= QStyle.State_Sunken
+        if option.state & QStyle.StateFlag.State_Selected:
+            buttion_option.state |= QStyle.StateFlag.State_Sunken
         else:
-            button_style.state |= QStyle.State_Raised
+            buttion_option.state |= QStyle.StateFlag.State_Raised
 
-        QApplication.style().drawControl(QStyle.CE_PushButton, button_style, painter)
+        color = QColor(index.data(Qt.ItemDataRole.UserRole + 1))  # Assuming color is stored in UserRole + 1
+        buttion_option.palette.setColor(QPalette.ColorRole.Button, color)
 
-        def draw_html_text(
-            painter, text: str, rect: QRect, pos: QPoint = None, align=Qt.AlignCenter, scale=1
-        ):
-            if not text:
-                return
+        # Draw button-like background
+        QApplication.style().drawControl(QStyle.ControlElement.CE_PushButton, buttion_option, painter)
 
+        # Render HTML text
+        self.draw_html_text(painter, text, subtext, buttion_option.rect, scale=1)
+
+        painter.end()
+        return image
+
+    def draw_html_text(self, painter: QPainter, text: str, subtext: str, rect: QRect, scale: float):
+        # Base font size adjustments (these are scale factors, adjust as needed)
+        baseFontSize = 1.0  # Adjust this factor to scale the default font size for main text
+        subtextFontSize = 0.8  # Adjust this factor for subtext
+
+        # Get the default system font
+        defaultFont = QApplication.font()
+
+        # Calculate text and subtext positions more accurately
+        textPadding = 4  # Adjust padding as needed
+        subtextPadding = 2  # Adjust subtext padding
+
+        # Height allocation (tweak these ratios as needed)
+        textHeightRatio = 0.6  # Allocate 60% of the rect height to the main text
+        subtextHeightRatio = 0.4  # Remaining 40% for the subtext
+
+        # Main text area
+        rectText = QRect(
+            rect.left() + textPadding,
+            rect.top() + textPadding,
+            rect.width() - 2 * textPadding,
+            int(rect.height() * textHeightRatio) - textPadding,
+        )
+
+        # Subtext area
+        rectSubtext = QRect(
+            rect.left() + subtextPadding,
+            rect.top() + int(rect.height() * textHeightRatio),
+            rect.width() - 2 * subtextPadding,
+            int(rect.height() * subtextHeightRatio) - subtextPadding,
+        )
+
+        # Draw main text
+        if text:
             doc = QTextDocument()
             doc.setHtml(text)
-            doc.setTextWidth(rect.width())
-            option = QTextOption()
-            option.setAlignment(align)
-            doc.setDefaultTextOption(option)
-
-            # Adjust the font size with the specified scale within the QTextDocument
-            font = doc.defaultFont()
-            font.setPointSize(font.pointSize() * scale)
+            font = QFont(defaultFont)  # Use the default system font
+            font.setPointSizeF(defaultFont.pointSizeF() * baseFontSize)  # Apply scaling factor
             doc.setDefaultFont(font)
-
-            painter.save()  # Save the painter state
-            painter.translate(pos if pos else rect.topLeft())
+            textOption = QTextOption()
+            textOption.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center text horizontally
+            doc.setDefaultTextOption(textOption)
+            painter.save()
+            painter.translate(rectText.topLeft())
+            doc.setTextWidth(rectText.width())
+            # Optional: Adjust for vertical centering
+            yOffset = (rectText.height() - doc.size().height()) / 2
+            painter.translate(0, max(yOffset, 0))
             doc.drawContents(painter)
-            painter.restore()  # Restore the painter state
+            painter.restore()
 
-        # Draw the text and subtext
-        text = index.data()
-        subtext = index.data(Qt.UserRole + 2)
+        # Draw subtext
+        if subtext:
+            doc = QTextDocument()
+            doc.setHtml(subtext)
+            font = QFont(defaultFont)  # Use the default system font for subtext
+            font.setPointSizeF(defaultFont.pointSizeF() * subtextFontSize)  # Apply scaling factor for subtext
+            doc.setDefaultFont(font)
+            textOption = QTextOption()
+            textOption.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center text horizontally
+            doc.setDefaultTextOption(textOption)
+            painter.save()
+            painter.translate(rectSubtext.topLeft())
+            doc.setTextWidth(rectSubtext.width())
+            # Optional: Adjust for vertical centering
+            yOffset = (rectSubtext.height() - doc.size().height()) / 2
+            painter.translate(0, max(yOffset, 0))
+            painter.scale(scale, scale)  # Apply scaling if needed
+            doc.drawContents(painter)
+            painter.restore()
 
-        height_split = 3.5 / 6
-        rectText = QRect(
-            rect.left(),
-            rect.top(),
-            rect.width(),
-            rect.height() * (height_split * 2 / 3 if subtext else 1),
-        )
-        rectSubtext = QRect(
-            rect.left(),
-            rect.top() + rect.height() * height_split,
-            rect.width(),
-            rect.height() * (1 - height_split),
-        )
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+        # Check if the editor is open for this index
+        if self.currentlyEditingIndex.isValid() and self.currentlyEditingIndex == index:
+            text = ""  # Set text to empty if editor is open
+            subtext = ""
+        else:
+            text = index.data(Qt.ItemDataRole.DisplayRole)
+            subtext = index.data(Qt.ItemDataRole.UserRole + 2)  # Assuming subtext is stored in UserRole + 2
 
-        if index != self.currentlyEditingIndex:
+        key = (index, option.state, text, subtext)
+        # Ensure there's an image rendered for this index
+        if key not in self.imageCache:
+            # Render and cache the item appearance
+            self.imageCache[key] = self.renderHtmlToImage(index, option, text, subtext)
 
-            # Draw HTML-formatted text
-            draw_html_text(
-                painter,
-                text,
-                rectText,
-                pos=rectText.topLeft() + QPoint(0, rectText.height() // 2),
-            )
-            draw_html_text(painter, subtext, rectSubtext, scale=0.8)
+        # Draw the cached image
+        image = self.imageCache[key]
+        if image:
+            painter.drawImage(option.rect.topLeft(), image)
 
-    # def sizeHint(self, option, index):
-    #     # Increase the height by 5 to compensate for the reduced rectangle height in paint()
-    #     size = super().sizeHint(option, index)
-    #     size.setHeight(size.height() + 15)
-    #     return size
+    def clearCache(self):
+        """
+        Clears the cached images. Call this method if you need to refresh the items.
+        """
+        self.imageCache.clear()
 
-    def createEditor(self, parent, option, index):
+    def createEditor(self, parent, option: QStyleOptionViewItem, index: QModelIndex):
         self.currentlyEditingIndex = index
         editor = QLineEdit(parent)
-        editor.setAlignment(Qt.AlignCenter)
+        editor.setAlignment(Qt.AlignmentFlag.AlignCenter)
         editor.setStyleSheet(
             """
             background: transparent;
@@ -209,29 +251,29 @@ class CustomDelegate(QStyledItemDelegate):
         )
         return editor
 
-    def setEditorData(self, editor, index):
-        value = index.model().data(index, Qt.EditRole)
+    def setEditorData(self, editor: QLineEdit, index: QModelIndex):
+        value = index.model().data(index, Qt.ItemDataRole.EditRole)
         editor.setText(value)
 
-    def setModelData(self, editor, model, index):
-        old_value = index.model().data(index, Qt.EditRole)
+    def setModelData(self, editor: QLineEdit, model, index: QModelIndex):
+        old_value = index.model().data(index, Qt.ItemDataRole.EditRole)
         new_value = clean_tag(editor.text())
 
-        model.setData(index, editor.text(), Qt.EditRole)
+        model.setData(index, editor.text(), Qt.ItemDataRole.EditRole)
         self.currentlyEditingIndex = QModelIndex()
 
         self.signal_tag_renamed.emit(old_value, new_value)
 
 
 class DeleteButton(QPushButton):
-    signal_delete_item = Signal(str)
-    signal_addresses_dropped = Signal(AddressDragInfo)
+    signal_delete_item = pyqtSignal(str)
+    signal_addresses_dropped = pyqtSignal(AddressDragInfo)
 
     def __init__(self, *args, **kwargs):
         super(DeleteButton, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasFormat("application/json"):
             data_bytes = event.mimeData().data("application/json")
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -244,11 +286,11 @@ class DeleteButton(QPushButton):
 
         event.ignore()
 
-    def dragLeaveEvent(self, event):
+    def dragLeaveEvent(self, event: QDragLeaveEvent):
         "this is just to hide/undide the button"
         logger.debug("Drag has left the delete button")
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent):
         super().dropEvent(event)
         if event.isAccepted():
             return
@@ -274,13 +316,13 @@ class DeleteButton(QPushButton):
 
 
 class CustomListWidget(QListWidget):
-    signal_tag_added = Signal(str)
-    signal_tag_clicked = Signal(str)
-    signal_tag_deleted = Signal(str)
-    signal_tag_renamed = Signal(object, object)
-    signal_addresses_dropped = Signal(AddressDragInfo)
-    signal_start_drag = Signal(object)
-    signal_stop_drag = Signal(object)
+    signal_tag_added = pyqtSignal(str)
+    signal_tag_clicked = pyqtSignal(str)
+    signal_tag_deleted = pyqtSignal(str)
+    signal_tag_renamed = pyqtSignal(object, object)
+    signal_addresses_dropped = pyqtSignal(AddressDragInfo)
+    signal_start_drag = pyqtSignal(object)
+    signal_stop_drag = pyqtSignal(object)
 
     def __init__(self, parent=None, enable_drag=True, immediate_release=True):
         super().__init__(parent)
@@ -290,13 +332,14 @@ class CustomListWidget(QListWidget):
         delegate = CustomDelegate(self)
         delegate.signal_tag_renamed.connect(self.signal_tag_renamed)
         self.setItemDelegate(delegate)
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.setSelectionBehavior(QListWidget.SelectionBehavior.SelectItems)
 
         self.setAcceptDrops(True)
         self.viewport().setAcceptDrops(True)
         self.setDropIndicatorShown(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDefaultDropAction(Qt.CopyAction)
+        self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+        self.setDefaultDropAction(Qt.DropAction.CopyAction)
         self.setDragEnabled(enable_drag)  # this must be after the other drag toggles
 
         self.itemChanged.connect(self.on_item_changed)  # new
@@ -321,21 +364,21 @@ class CustomListWidget(QListWidget):
             """
         )
 
-    def add(self, item_text, sub_text=None) -> CustomListWidgetItem:
+    def add(self, item_text: str, sub_text=None) -> CustomListWidgetItem:
         item = CustomListWidgetItem(item_text, sub_text=sub_text)
-        item.setFlags(item.flags() | Qt.ItemIsEditable)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
         self.addItem(item)
         self.signal_tag_added.emit(item_text)
         return item
 
-    def on_item_clicked(self, item):
+    def on_item_clicked(self, item: CustomListWidgetItem):
         self.signal_tag_clicked.emit(item.text())
         # print( [item.text() for item in self.selectedItems()])
 
-    def on_item_changed(self, item):  # new
+    def on_item_changed(self, item: CustomListWidgetItem):  # new
 
         item.color = item.hash_color()
-        item.setData(Qt.UserRole + 1, item.color)
+        item.setData(Qt.ItemDataRole.UserRole + 1, item.color)
 
         # Here you can handle the renaming event
         # For now, we will just print the new item text
@@ -344,7 +387,7 @@ class CustomListWidget(QListWidget):
     def get_selected(self) -> List[str]:
         return [item.text() for item in self.selectedItems()]
 
-    def rename_selected(self, new_text):
+    def rename_selected(self, new_text: str):
         for item in self.selectedItems():
             item.text()
             item.setText(new_text)
@@ -355,29 +398,29 @@ class CustomListWidget(QListWidget):
             item = self.item(i)
             item.setSelected(selected)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent):
         item = self.itemAt(event.pos())
         if item is None:
             # Click is on empty space, do nothing
             return
         else:
-            if event.button() == Qt.LeftButton:
+            if event.button() == Qt.MouseButton.LeftButton:
                 self._drag_start_position = event.pos()
-                if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+                if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
                     if item.isSelected():
                         self.setAllSelection(False)
                         return
 
             super().mousePressEvent(event)
 
-    def mouseDoubleClickEvent(self, event):
-        if event.button() == Qt.LeftButton:
+    def mouseDoubleClickEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
             pass
 
         super().mouseDoubleClickEvent(event)
 
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
             # Perform actions that should happen after the mouse button is released
             # This could be updating the state of the widget, triggering signals, etc.
 
@@ -385,23 +428,23 @@ class CustomListWidget(QListWidget):
             if item is not None and item.isSelected():
                 self.on_item_clicked(item)
                 if self.immediate_release:
-                    if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+                    if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
                         self.setAllSelection(False)
                         return
 
         super().mouseReleaseEvent(event)
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: QMouseEvent):
         if self._drag_start_position is None:
             self._drag_start_position = event.pos()
-        if not (event.buttons() & Qt.LeftButton):
+        if not (event.buttons() & Qt.MouseButton.LeftButton):
             return
         if (event.pos() - self._drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
         if self.dragEnabled():
-            self.startDrag(Qt.MoveAction)
+            self.startDrag(Qt.DropAction.MoveAction)
 
-    def startDrag(self, action):
+    def startDrag(self, action: Qt.DropAction):
         item = self.currentItem()
         if not item:
             return
@@ -416,11 +459,11 @@ class CustomListWidget(QListWidget):
         drag.setHotSpot(cursor_pos - rect.topLeft())
         self.signal_start_drag.emit(action)
 
-        drag.exec_(action)
+        drag.exec(action)
 
         self.signal_stop_drag.emit(action)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
@@ -435,7 +478,7 @@ class CustomListWidget(QListWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent):
         logger.debug("drop")
         super().dropEvent(event)
         if event.isAccepted():
@@ -458,7 +501,7 @@ class CustomListWidget(QListWidget):
 
         event.ignore()
 
-    def delete_item(self, item_text):
+    def delete_item(self, item_text: str):
         for i in range(self.count()):
             item = self.item(i)
             if item.text() == item_text:
@@ -474,7 +517,7 @@ class CustomListWidget(QListWidget):
         for item in self.get_items():
             yield item.text()
 
-    def recreate(self, tags, sub_texts=None):
+    def recreate(self, tags: List[str], sub_texts: List[Optional[str]] = None):
         # Store the texts of selected items
         selected_texts = [item.text() for item in self.selectedItems()]
 
@@ -495,7 +538,9 @@ class CustomListWidget(QListWidget):
 
 
 class TagEditor(QWidget):
-    def __init__(self, parent=None, tags=None, sub_texts=None, tag_name="tag"):
+    def __init__(
+        self, parent=None, tags: List[str] = None, sub_texts: List[Optional[str]] = None, tag_name="tag"
+    ):
         super(TagEditor, self).__init__(parent)
         self.tag_name = tag_name
         self.default_placeholder_text = f"Add new {self.tag_name}"
@@ -525,7 +570,7 @@ class TagEditor(QWidget):
         if tags:
             self.list_widget.recreate(tags, sub_texts=sub_texts)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
@@ -543,7 +588,7 @@ class TagEditor(QWidget):
         else:
             event.ignore()
 
-    def dragLeaveEvent(self, event):
+    def dragLeaveEvent(self, event: QDragLeaveEvent):
         "this is just to hide/undide the button"
         if not self.rect().contains(self.mapFromGlobal(QCursor.pos())):
             logger.debug("Drag operation left the TagEditor")
@@ -551,7 +596,7 @@ class TagEditor(QWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent):
         super().dropEvent(event)
         if event.isAccepted():
             return
@@ -570,7 +615,7 @@ class TagEditor(QWidget):
         self.input_field.show()
         self.delete_button.hide()
 
-    def add(self, new_tag, sub_text=None) -> Optional[CustomListWidgetItem]:
+    def add(self, new_tag: str, sub_text: str = None) -> Optional[CustomListWidgetItem]:
         if not self.tag_exists(new_tag):
             return self.list_widget.add(new_tag, sub_text=sub_text)
         return None
@@ -584,7 +629,7 @@ class TagEditor(QWidget):
             self.input_field.setPlaceholderText(f"This {self.tag_name} exists already.")
         self.input_field.clear()
 
-    def tag_exists(self, tag):
+    def tag_exists(self, tag: str):
         for i in range(self.list_widget.count()):
             if self.list_widget.item(i).text() == tag:
                 return True

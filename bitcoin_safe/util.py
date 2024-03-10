@@ -21,22 +21,25 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 import logging
 
 logger = logging.getLogger(__name__)
 
 import builtins
-import ipaddress
+import logging
 import os
 import re
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import (
     Any,
     Callable,
     Dict,
     Iterable,
     List,
+    Literal,
     NamedTuple,
     Optional,
     Set,
@@ -46,7 +49,7 @@ from typing import (
     Union,
 )
 
-from PySide2.QtCore import QLocale, QThread, Signal
+from PyQt6.QtCore import QLocale, QObject, QThread, pyqtSignal, pyqtSlot
 
 from .i18n import _
 
@@ -74,6 +77,14 @@ DEVELOPMENT_PREFILLS = False
 import bdkpython as bdk
 
 
+def path_to_rel_home_path(path: str) -> str:
+    return str(Path(path).relative_to(Path.home()))
+
+
+def rel_home_path_to_abs_path(rel_home_path: str) -> str:
+    return str(Path.home() / rel_home_path)
+
+
 def serialized_to_hex(serialized: Iterable[SupportsIndex] | SupportsIndex | SupportsBytes):
     return bytes(serialized).hex()
 
@@ -86,12 +97,12 @@ def tx_of_psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
     return serialized_to_hex(psbt.extract_tx().serialize())
 
 
-def call_call_functions(functions):
+def call_call_functions(functions: List[Callable]):
     for f in functions:
         f()
 
 
-def compare_dictionaries(dict1, dict2):
+def compare_dictionaries(dict1: Dict, dict2: Dict):
     # Get unique keys from both dictionaries
     unique_keys = set(dict1.keys()) ^ set(dict2.keys())
 
@@ -220,12 +231,16 @@ def clean_list(l: List):
     return [v for v in l if v]
 
 
-def is_address(address: str) -> bool:
-    try:
-        bdkaddress = bdk.Address(address)
-        return bool(bdkaddress)
-    except:
-        return False
+def list_of_dict_to_jsonlines(list_of_dict: list[Dict]):
+    return "\n".join([json.dumps(d) for d in list_of_dict])
+
+
+def clean_lines(lines: List[str]) -> List[str]:
+    return [line.strip() for line in lines if line.strip()]
+
+
+def jsonlines_to_list_of_dict(jsonlines: str) -> list[Dict]:
+    return [json.loads(line) for line in clean_lines(jsonlines.splitlines())]
 
 
 class NotEnoughFunds(Exception):
@@ -311,7 +326,7 @@ def lighten_color(hex_color: str, factor: float):
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
-def hex_to_ansi(hex_color):
+def hex_to_ansi(hex_color: str):
     """Convert hex color to closest ANSI color."""
     # Mapping of ANSI color codes to RGB values
     ansi_colors = {
@@ -347,7 +362,9 @@ def hex_to_ansi(hex_color):
 
 
 # New function to apply color formatting to a string
-def color_format_str(s, hex_color="#000000", color_formatting="rich"):
+def color_format_str(
+    s, hex_color="#000000", color_formatting: Optional[Literal["html", "rich", "bash"]] = "rich"
+):
     if hex_color == "#000000":
         return s
     if color_formatting == "html":
@@ -361,11 +378,15 @@ def color_format_str(s, hex_color="#000000", color_formatting="rich"):
     return s
 
 
+def format_dollar(value: float) -> str:
+    return f"${round(value, 2)}"
+
+
 # Main formatting function
 @register_cache(always_keep=True)
 def format_number(
     number,
-    color_formatting: Optional[str] = None,
+    color_formatting: Optional[Literal["html", "rich", "bash"]] = None,
     include_decimal_spaces=True,
     base_color="#000000",
     indicate_balance_change=False,
@@ -430,8 +451,8 @@ class Satoshis:
         if isinstance(s, float):
             return int(s)
 
-        f = float(str(s).replace(str(self.network), "").strip().replace(" ", "")) * 1e8
-        return int(f)
+        f = locale.toDouble(str(s).replace(unit_str(self.network), "").strip().replace(" ", ""))[0] * 1e8
+        return int(round(f))
 
     def __repr__(self):
         return f"Satoshis({self.value})"
@@ -449,10 +470,10 @@ class Satoshis:
         assert self.network == other.network
         return Satoshis(self.value + other.value, self.network)
 
-    def str_with_unit(self, color_formatting="rich"):
+    def str_with_unit(self, color_formatting: Literal["html", "rich", "bash"] = "rich"):
         return f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True, unicode_space_character=True )} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
 
-    def diff(self, color_formatting: str = None, unit=False):
+    def diff(self, color_formatting: Optional[Literal["html", "rich", "bash"]] = None, unit=False):
 
         return (
             f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True,   indicate_balance_change=True)}"
@@ -492,8 +513,17 @@ def resource_path(*parts):
 pkg_dir = os.path.split(os.path.realpath(__file__))[0]
 
 
-def unit_str(network: bdk.Network):
+def unit_str(network: bdk.Network) -> str:
     return "BTC" if network is None or network == bdk.Network.BITCOIN else "tBTC"
+
+
+def unit_fee_str(network: bdk.Network) -> str:
+    "Sat/vB"
+    return f"{unit_str(network=network)}/vB"
+
+
+def format_fee_rate(fee_rate: float, network: bdk.Network) -> str:
+    return f"{round(fee_rate,1 )} {unit_fee_str(network)}"
 
 
 def age(
@@ -633,16 +663,6 @@ def versiontuple(v):
     return tuple(map(int, (v.split("."))))
 
 
-def is_ip_address(x: Union[str, bytes]) -> bool:
-    if isinstance(x, bytes):
-        x = x.decode("utf-8")
-    try:
-        ipaddress.ip_address(x)
-        return True
-    except ValueError:
-        return False
-
-
 class CannotBumpFee(Exception):
     def __str__(self):
         return _("Cannot bump fee") + ":\n\n" + Exception.__str__(self)
@@ -676,56 +696,118 @@ def remove_duplicates_keep_order(seq):
     return result
 
 
-class TaskThread(QThread):
-    """Thread for running a single background task.
+import logging
+import sys
+from typing import Any, Callable, NamedTuple, Tuple
 
-    Automatically stops after task completion.
-    """
+from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 
-    class Task(NamedTuple):
-        task: Callable
-        cb_success: Optional[Callable]
-        cb_done: Optional[Callable]
-        cb_error: Optional[Callable]
-        cancel: Optional[Callable] = None
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-    doneSig = Signal(object, object, object)
 
-    def __init__(self, parent, on_error=None):
-        super().__init__(parent)
-        self.on_error = on_error
-        self.task = None
-        self.doneSig.connect(self.on_done)
+class Task(NamedTuple):
+    """Structure for task details."""
 
-    def add_and_start(self, task, on_success=None, on_done=None, on_error=None, *, cancel=None):
-        self.task = TaskThread.Task(task, on_success, on_done, on_error, cancel)
-        self.start()
+    do: Callable[..., Any]
+    cb_success: Callable[[Any], None]
+    cb_done: Callable[[Any], None]
+    cb_error: Callable[[Tuple[Any, ...]], None]
+    cancel: Optional[Callable[[], None]] = None
 
-    def run(self):
+
+class Worker(QObject):
+    """Worker object to perform tasks in a separate thread."""
+
+    finished: pyqtSignal = pyqtSignal(object, object, object)  # Result, cb_done, cb_success/error
+    error: pyqtSignal = pyqtSignal(object)
+
+    def __init__(self, task: Task) -> None:
+        super().__init__()
+        self.task: Task = task
+
+    @pyqtSlot()
+    def run_task(self) -> None:
+        """Executes the provided task and emits signals based on the outcome."""
         if not self.task:
+            logger.debug("No task to run.")
             return
 
         try:
-            result = self.task.task()
-            self.doneSig.emit(result, self.task.cb_done, self.task.cb_success)
+            logger.debug(f"Task started: {self.task.do}")
+            result: Any = self.task.do()
+            logger.debug(f"Task finished: {self.task.do}")
+            self.finished.emit(result, self.task.cb_done, self.task.cb_success)
         except Exception:
-            self.doneSig.emit(sys.exc_info(), self.task.cb_done, self.task.cb_error)
+            logger.exception(f"Task raised an exception: {self.task.do}")
+            self.error.emit((sys.exc_info(), self.task.cb_error))
         finally:
-            self.stop()
+            if callable(self.task.cancel):
+                logger.debug(f"Task cancellation callback called: {self.task.do}")
+                self.task.cancel()
 
-    def on_done(self, result, cb_done, cb_result):
-        if cb_done:
-            cb_done(result)
-        if cb_result:
-            cb_result(result)
+
+import threading
+
+
+class TaskThread(QThread):
+    """Manages execution of tasks in separate threads."""
+
+    def __init__(self, parent: QObject) -> None:
+        super().__init__(parent)
+        self.worker: Optional[
+            Worker
+        ] = None  # Type hint adjusted because it will be immediately initialized in add_and_start
+        # logger.debug("TaskThread initialized.")
+        self.finished.connect(self.cleanup)  # Connect to the cleanup slot
+
+    def run(self):
+        """Set the thread name and start the thread."""
+        # Set the name for the current thread
+        threading.current_thread().name = f"{self.worker.task.do if self.worker else self}"
+        super().run()  # Call the original run method to start the thread
+
+    def add_and_start(
+        self,
+        do: Callable[..., Any],
+        on_success: Callable[[Any], None],
+        on_done: Callable[[Any], None],
+        on_error: Callable[[Tuple[Any, ...]], None],
+        cancel: Optional[Callable[[], None]] = None,
+    ) -> None:
+        logger.debug(f"Starting new thread {do}.")
+        task: Task = Task(do, on_success, on_done, on_error, cancel)
+        self.worker = Worker(task)
+        self.worker.moveToThread(self)
+        self.worker.finished.connect(self.on_done)
+        self.worker.error.connect(lambda error_info: on_error(error_info))
+        self.started.connect(self.worker.run_task)
+        self.start()
+
+    @pyqtSlot(object, object, object)
+    def on_done(self, result: Any, cb_done: Callable[[Any], None], cb_result: Callable[[Any], None]) -> None:
+        """Handle task completion."""
+        logger.debug(f"Thread done: {self.worker.task.do if self.worker else self}.")
+        cb_done(result)
+        cb_result(result)
         self.quit()
 
-    def stop(self):
-        if self.task and self.task.cancel:
-            self.task.cancel()
+    def stop(self) -> None:
+        """Stops the thread and any associated task cancellation if defined."""
+        logger.debug("Stopping TaskThread and associated worker.")
+        if self.worker and self.worker.task.cancel:
+            logger.debug(f"Stopping {self.worker.task.do}.")
+            self.worker.task.cancel()
+        self.quit()
 
-    # def __del__(self):
-    #         self.wait()
+    def cleanup(self):
+        """Cleanup slot called when the thread finishes."""
+        if self.worker:
+            # Perform necessary cleanup, e.g., disconnecting signals
+            logger.debug(f"cleanup of thread {self.worker.task.do}.")
+            self.worker.deleteLater()  # Schedule the worker for deletion
+        self.wait()  # Wait for the thread to fully finish
 
 
 class NoThread:
@@ -752,3 +834,17 @@ class NoThread:
                 on_error(sys.exc_info())
         if on_done:
             on_done(result)
+
+
+def calculate_ema(data, alpha=0.1):
+    """
+    Calculate Exponential Moving Average (EMA) for a list of numbers.
+
+    :param data: List of numbers.
+    :param alpha: Smoothing factor within (0, 1), where higher value gives more weight to recent data.
+    :return: EMA value.
+    """
+    ema = data[0]
+    for i in range(1, len(data)):
+        ema = alpha * data[i] + (1 - alpha) * ema
+    return ema

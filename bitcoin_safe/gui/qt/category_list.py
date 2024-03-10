@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 from typing import List
 
-from PySide2.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 from ...signals import Signals, UpdateFilter
 from .taglist import CustomListWidget, TagEditor, hash_color

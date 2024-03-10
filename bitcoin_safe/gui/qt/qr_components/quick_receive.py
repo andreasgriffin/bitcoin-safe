@@ -1,8 +1,8 @@
 from typing import List
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QFont
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QMargins, Qt
+from PyQt6.QtGui import QFont, QResizeEvent, QWheelEvent
+from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -57,7 +57,7 @@ class ReceiveGroup(QGroupBox):
         # QR Code
         self.qr_code = QRCodeWidgetSVG()
         self.qr_code.setMinimumHeight(30)
-        self.qr_code.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.qr_code.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.qr_code.set_data_list([qr_uri])
         v_layout.addWidget(self.qr_code)
 
@@ -76,10 +76,10 @@ class ReceiveGroup(QGroupBox):
 class NoVerticalScrollArea(QScrollArea):
     def __init__(self):
         super().__init__()
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.horizontalScrollBar().valueChanged.connect(self.recenterVerticalScroll)
 
-    def wheelEvent(self, event):
+    def wheelEvent(self, event: QWheelEvent) -> None:
         # Override to do nothing, preventing vertical scrolling
         pass
 
@@ -90,7 +90,7 @@ class NoVerticalScrollArea(QScrollArea):
             self.verticalScrollBar().setValue(max_scroll // 2)
 
     # Override resizeEvent to handle window resizing
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self.recenterVerticalScroll()
 
@@ -100,8 +100,8 @@ class QuickReceive(QWidget):
         super().__init__()
 
         self.setSizePolicy(
-            QSizePolicy.Preferred,  # Horizontal size policy
-            QSizePolicy.Fixed,  # Vertical size policy
+            QSizePolicy.Policy.Preferred,  # Horizontal size policy
+            QSizePolicy.Policy.Fixed,  # Vertical size policy
         )
 
         # Horizontal Layout for Scroll Area content
@@ -114,7 +114,7 @@ class QuickReceive(QWidget):
         # Scroll Area
         self.scroll_area = NoVerticalScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.scroll_area.setWidget(self.content_widget)
 
         # Main Layout
@@ -129,12 +129,15 @@ class QuickReceive(QWidget):
         # Group Box Management
         self.group_boxes: List[ReceiveGroup] = []
 
-    def resizeEvent(self, event):
+    def _qmargins_to_tuple(self, margins: QMargins) -> tuple[int, int, int, int]:
+        return margins.left(), margins.top(), margins.right(), margins.bottom()
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
         for group_box in self.group_boxes:
             group_box.setFixedHeight(
                 self.height()
                 - sum(self.h_layout.getContentsMargins())
-                - sum(self.scroll_area.getContentsMargins())
+                - sum(self._qmargins_to_tuple(self.scroll_area.contentsMargins()))
                 - self.scroll_area.horizontalScrollBar().height()
             )
 

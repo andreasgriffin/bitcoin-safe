@@ -1,4 +1,6 @@
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QEvent
+from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
     QLineEdit,
@@ -26,7 +28,7 @@ class ExtendedTabWidget(QTabWidget):
             self.top_right_widget.setParent(self)
             self.top_right_widget.setFixedWidth(self.target_width)
 
-    def showEvent(self, event):
+    def showEvent(self, event: QEvent):
         self.updateLineEditPosition()
         super(ExtendedTabWidget, self).showEvent(event)
 
@@ -47,7 +49,7 @@ class ExtendedTabWidget(QTabWidget):
             )
             self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
-    def onResizeEvent(self, event):
+    def onResizeEvent(self, event: QResizeEvent):
         self.updateLineEditPosition()
         super().resizeEvent(event)
 
@@ -72,4 +74,4 @@ if __name__ == "__main__":
         tabWidget.addTab(widget, f"Tab {i+1}")
 
     tabWidget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -2,9 +2,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import QPointF, Qt, Signal
-from PySide2.QtGui import QBrush, QColor, QCursor, QPen
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QPointF, Qt, pyqtSignal
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QCursor,
+    QHoverEvent,
+    QMouseEvent,
+    QPen,
+    QResizeEvent,
+)
+from PyQt6.QtWidgets import (
     QGraphicsItem,
     QGraphicsLineItem,
     QGraphicsRectItem,
@@ -21,18 +29,20 @@ class BarSegment(QGraphicsRectItem):
         self.color = color
         super().__init__(self.x, self.y, 1, self.height, parent)
         self.setBrush(QBrush(QColor(color)))
-        self.setPen(Qt.NoPen)
+        self.setPen(Qt.PenStyle.NoPen)
         self.fee = fee
         self.setAcceptHoverEvents(True)
         # self.text_item = QGraphicsTextItem(f"{self.fee} vByte/Sat: {self.height} vMB", parent=self)
         # self.text_item.setFont(QFont("Arial", 0.04)) # Adjust font size to fit the bar
         # self.text_item.setPos(self.x + 5 - self.text_item.boundingRect().width() / 2, self.y + self.height - self.text_item.boundingRect().height())
 
-    def hoverEnterEvent(self, event):
-        QToolTip.showText(event.screenPos(), f"{self.fee} Sat/vB: {round(self.height/1e6,2)} MvB")
+    def hoverEnterEvent(self, event: QHoverEvent):
+        QToolTip.showText(
+            event.scenePosition().toPoint(), f"{self.fee} Sat/vB: {round(self.height/1e6,2)} MvB"
+        )
         super().hoverEnterEvent(event)
 
-    def hoverLeaveEvent(self, event):
+    def hoverLeaveEvent(self, event: QHoverEvent):
         QToolTip.hideText()
         super().hoverLeaveEvent(event)
 
@@ -46,17 +56,17 @@ class Line(QGraphicsLineItem):
 
         self.setAcceptHoverEvents(True)  # Ensures the item can respond to hover events
 
-    def hoverEnterEvent(self, event):
-        QToolTip.showText(event.screenPos(), self.hover_text)
+    def hoverEnterEvent(self, event: QHoverEvent):
+        QToolTip.showText(event.scenePosition().toPoint(), self.hover_text)
         super().hoverEnterEvent(event)
 
-    def hoverLeaveEvent(self, event):
+    def hoverLeaveEvent(self, event: QHoverEvent):
         QToolTip.hideText()
         super().hoverLeaveEvent(event)
 
 
 class SingleBarChart(QGraphicsView):
-    signal_click = Signal(float)
+    signal_click = pyqtSignal(float)
 
     def __init__(self, scene, parent=None):
         super().__init__(scene, parent)
@@ -64,13 +74,13 @@ class SingleBarChart(QGraphicsView):
         self.current_fee = None
 
         # Set the cursor to a hand cursor
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-    def resizeEvent(self, event):
-        self.fitInView(self.sceneRect(), Qt.IgnoreAspectRatio)
+    def resizeEvent(self, event: QResizeEvent):
+        self.fitInView(self.sceneRect(), Qt.AspectRatioMode.IgnoreAspectRatio)
         super().resizeEvent(event)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent):
         # Convert the mouse event's position to the scene coordinates
         scene_point: QPointF = self.mapToScene(event.pos())
         # print(f"Clicked at y={scene_point.y()}")

@@ -1,22 +1,28 @@
 version: 1
 formatters:
-  simple:
-    format: "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+  relative_path_formatter:
+    (): bitcoin_safe.logging_handlers.RelativePathFormatter
+    format: "%(asctime)s - %(levelname)s - [%(threadName)s] - %(name)s - %(message)s"
 handlers:
   console:
     class: logging.StreamHandler
     level: DEBUG
-    formatter: simple
+    formatter: relative_path_formatter
     stream: ext://sys.stdout
   file:
     class: logging.handlers.RotatingFileHandler
     level: DEBUG
-    formatter: simple
+    formatter: relative_path_formatter
     filename: .bitcoin_safe.log
-    maxBytes: 10000000
+    maxBytes: 1000000
     backupCount: 3
+  customHandler:
+    class: bitcoin_safe.logging_handlers.MailHandler   
+    level: CRITICAL  # CRITICAL is higher that EXCEPTION/ERROR, but it  must_include_exc_info
+    formatter: relative_path_formatter    
+    must_include_exc_info: true    
 loggers:
   root:
     level: DEBUG
-    handlers: [console, file]
+    handlers: [console, file,customHandler]
     propagate: yes

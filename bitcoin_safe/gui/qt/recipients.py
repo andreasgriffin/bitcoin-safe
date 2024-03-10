@@ -2,8 +2,8 @@ import logging
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 
-from ...invisible_scroll_area import InvisibleScrollArea
 from ...pythonbdk_types import Recipient
+from .invisible_scroll_area import InvisibleScrollArea
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +11,9 @@ from typing import List, Optional
 
 import bdkpython as bdk
 from bitcoin_qrreader import bitcoin_qr
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import QMessageBox
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtWidgets import QMessageBox, QWidget
 
 from ...signals import Signals
 from ...util import unit_str
@@ -22,11 +23,11 @@ from .spinbox import BTCSpinBox
 from .util import ColorScheme
 
 
-def dialog_replace_with_new_receiving_address(address):
+def dialog_replace_with_new_receiving_address(address: str):
     return question_dialog(
         text=f"Address {address} was used already. Would you like to get a fresh receiving address?",
         title="Address Already Used",
-        buttons=QMessageBox.No | QMessageBox.Yes,
+        buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
     )
 
 
@@ -43,10 +44,10 @@ class CloseButton(QtWidgets.QPushButton):
 
 
 class RecipientGroupBox(QtWidgets.QGroupBox):
-    signal_close = QtCore.Signal(QtWidgets.QGroupBox)
-    signal_set_max_amount = QtCore.Signal(BTCSpinBox)
+    signal_close = QtCore.pyqtSignal(QtWidgets.QGroupBox)
+    signal_set_max_amount = QtCore.pyqtSignal(BTCSpinBox)
 
-    def __init__(self, signals: Signals, allow_edit=True):
+    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True):
         super().__init__()
 
         self.signals = signals
@@ -61,7 +62,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
         layout.setContentsMargins(
             current_margins.left(),
-            current_margins.top() * 2,
+            int(current_margins.top() * 2),
             current_margins.right(),
             current_margins.bottom(),
         )  # Left, Top, Right, Bottom margins
@@ -91,8 +92,12 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
                 # if it is empty, show no error
                 return True
             try:
-                bdk_address = bdk.Address(self.address_line_edit.text().strip())
-                assert bdk_address.network() == self.signals.get_network.emit()
+                bdk_address = bdk.Address(self.address_line_edit.text().strip(), network=network)
+                if self.signals.get_network.emit() == bdk.Network.SIGNET:
+                    # bdk treats signet AND testnet as testnet
+                    assert bdk_address.network() in [bdk.Network.SIGNET, bdk.Network.TESTNET]
+                else:
+                    assert bdk_address.network() == self.signals.get_network.emit()
                 return True
             except:
                 return False
@@ -150,40 +155,40 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
         self.signal_set_max_amount.emit(self.amount_spin_box)
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent):
         if self.close_button:
             self.close_button.move(self.width() - self.close_button.width(), 0)
 
     @property
-    def address(self):
+    def address(self) -> str:
         return self.address_line_edit.text().strip()
 
     @address.setter
-    def address(self, value):
+    def address(self, value: str):
         self.address_line_edit.setText(value)
 
     @property
-    def label(self):
+    def label(self) -> str:
         return self.label_line_edit.text().strip()
 
     @label.setter
-    def label(self, value):
+    def label(self, value: str):
         self.label_line_edit.setText(value)
 
     @property
-    def amount(self):
+    def amount(self) -> int:
         return self.amount_spin_box.value()
 
     @amount.setter
-    def amount(self, value):
+    def amount(self, value: int):
         self.amount_spin_box.setValue(value)
 
     @property
-    def enabled(self):
+    def enabled(self) -> bool:
         return not self.address_line_edit.isReadOnly()
 
     @enabled.setter
-    def enabled(self, state):
+    def enabled(self, state: bool):
         self.address_line_edit.setReadOnly(not state)
         self.label_line_edit.setReadOnly(not state)
         self.amount_spin_box.setReadOnly(not state)
@@ -208,7 +213,7 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
         else:
             self.label_line_edit.setPlaceholderText("Enter label for recipient address")
 
-    def get_wallet_of_address(self, address) -> Optional[Wallet]:
+    def get_wallet_of_address(self, address: str) -> Optional[Wallet]:
         for wallet in get_wallets(self.signals):
             if wallet.is_my_address(address):
                 return wallet
@@ -230,10 +235,10 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
             if wallet_of_address.is_change(self.address):
                 background_color = ColorScheme.YELLOW.as_color(background=True)
-                palette.setColor(QtGui.QPalette.Base, background_color)
+                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
             else:
                 background_color = ColorScheme.GREEN.as_color(background=True)
-                palette.setColor(QtGui.QPalette.Base, background_color)
+                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
         else:
             palette = self.address_line_edit.input_field.style().standardPalette()
             self.setTitle("")
@@ -243,16 +248,17 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
 
 class Recipients(QtWidgets.QWidget):
-    signal_added_recipient = QtCore.Signal(RecipientGroupBox)
-    signal_clicked_send_max_button = QtCore.Signal(RecipientGroupBox)
+    signal_added_recipient = QtCore.pyqtSignal(RecipientGroupBox)
+    signal_clicked_send_max_button = QtCore.pyqtSignal(RecipientGroupBox)
 
-    def __init__(self, signals: Signals, allow_edit=True):
+    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True):
         super().__init__()
         self.signals = signals
         self.allow_edit = allow_edit
+        self.network = network
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.main_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.recipient_list = InvisibleScrollArea()
@@ -261,7 +267,7 @@ class Recipients(QtWidgets.QWidget):
         self.recipient_list_content_layout = QtWidgets.QVBoxLayout(self.recipient_list.content_widget)
 
         self.recipient_list_content_layout.setContentsMargins(0, 0, 0, 0)  # Set all margins to zero
-        self.recipient_list_content_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.recipient_list_content_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         self.main_layout.addWidget(self.recipient_list)
 
@@ -276,7 +282,7 @@ class Recipients(QtWidgets.QWidget):
 
         if recipient is None:
             recipient = Recipient("", 0)
-        recipient_box = RecipientGroupBox(self.signals, allow_edit=self.allow_edit)
+        recipient_box = RecipientGroupBox(self.signals, network=self.network, allow_edit=self.allow_edit)
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
         if recipient.checked_max_amount:
@@ -286,7 +292,7 @@ class Recipients(QtWidgets.QWidget):
         recipient_box.signal_close.connect(self.remove_recipient_widget)
 
         # insert before the button position
-        def insert_before_button(new_widget):
+        def insert_before_button(new_widget: QWidget):
             index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
             if index >= 0:
                 self.recipient_list_content_layout.insertWidget(index, new_widget)
@@ -301,7 +307,7 @@ class Recipients(QtWidgets.QWidget):
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 
-    def remove_recipient_widget(self, recipient_box):
+    def remove_recipient_widget(self, recipient_box: RecipientGroupBox):
         recipient_box.close()
         recipient_box.setParent(None)
         self.recipient_list_content_layout.removeWidget(recipient_box)
@@ -312,9 +318,9 @@ class Recipients(QtWidgets.QWidget):
         l = []
         for i in range(self.recipient_list_content_layout.count()):
             layout_item = self.recipient_list_content_layout.itemAt(i)
-            if not isinstance(layout_item.wid, RecipientGroupBox):
+            if not isinstance(layout_item.widget(), RecipientGroupBox):
                 continue
-            recipient_box: RecipientGroupBox = layout_item.wid
+            recipient_box: RecipientGroupBox = layout_item.widget()
             l.append(
                 Recipient(
                     recipient_box.address,
@@ -330,8 +336,8 @@ class Recipients(QtWidgets.QWidget):
         # remove all old ones
         for i in reversed(range(self.recipient_list_content_layout.count())):
             layout_item = self.recipient_list_content_layout.itemAt(i)
-            recipient_box: RecipientGroupBox = layout_item.wid
-            if not isinstance(layout_item.wid, RecipientGroupBox):
+            recipient_box: RecipientGroupBox = layout_item.widget()
+            if not isinstance(layout_item.widget(), RecipientGroupBox):
                 continue
             self.remove_recipient_widget(recipient_box)
 

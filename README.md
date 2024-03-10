@@ -60,8 +60,8 @@
 ##### Sending
 ![screenshot0](docs/send.gif)
 
-##### Setup wallet
-![screenshot1](docs/singlesig-setup.gif)
+##### Setup a multisig wallet
+![screenshot1](docs/multisig-setup.gif)
 
 
 
@@ -70,7 +70,7 @@
  * Install dependencies and setup poetry
 
    ```sh
-   sudo apt install libsecp256k1-0
+   sudo apt install libsecp256k1-1
    git clone https://github.com/andreasgriffin/bitcoin-safe.git
    cd bitcoin-safe
    ```
@@ -78,7 +78,7 @@
  * Setup poetry and install dependencies 
 
    ```sh
-   curl -sSL https://install.python-poetry.org | python3 -  # see https://python-poetry.org/docs/master/#installing-with-the-official-installer
+   pip install poetry
    poetry config virtualenvs.in-project true
    poetry install
    ```

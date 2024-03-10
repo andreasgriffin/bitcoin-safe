@@ -1,17 +1,20 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import enum
-from asyncio.log import logger
 from typing import List
 
 import bdkpython as bdk
-from PySide2.QtCore import QLocale, QObject, Qt, QTimer, Signal
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout
+from PyQt6.QtCore import QLocale, QObject, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.util import block_explorer_URL_of_projected_block
 
-from ...invisible_scroll_area import InvisibleScrollArea
 from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
+from .invisible_scroll_area import InvisibleScrollArea
 from .util import center_in_widget, open_website
 
 locale = QLocale()  # This initializes a QLocale object with the user's default locale
@@ -31,9 +34,9 @@ class BaseBlockLabel(QLabel):
     def __init__(self, text: str = "", parent=None) -> None:
         super().__init__(text, parent)
 
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setWordWrap(True)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setHidden(not text)
 
     def setText(self, arg__1: str) -> None:
@@ -174,12 +177,12 @@ class BlockButton(QPushButton):
 
 
 class VerticalButtonGroup(InvisibleScrollArea):
-    signal_button_click = Signal(int)
+    signal_button_click = pyqtSignal(int)
 
     def __init__(self, button_count=3, parent=None, size=100):
         super().__init__(parent)
         layout = QVBoxLayout(self.content_widget)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setMinimumWidth(size + 50)
         if button_count > 1:
             self.setMinimumHeight(size + 20)
@@ -201,7 +204,7 @@ class VerticalButtonGroup(InvisibleScrollArea):
 
             self.buttons.append(button)
             layout.addWidget(button)
-            layout.setAlignment(button, Qt.AlignCenter)
+            layout.setAlignment(button, Qt.AlignmentFlag.AlignCenter)
 
 
 class ObjectRequiringMempool(QObject):
@@ -220,7 +223,7 @@ class ObjectRequiringMempool(QObject):
 
 class MempoolButtons(ObjectRequiringMempool):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
-    signal_click = Signal(float)
+    signal_click = pyqtSignal(float)
 
     def __init__(self, mempool_data: MempoolData, max_button_count=3, parent=None) -> None:
         super().__init__(mempool_data=mempool_data, parent=parent)
@@ -256,7 +259,7 @@ class MempoolButtons(ObjectRequiringMempool):
 
 class MempoolProjectedBlock(ObjectRequiringMempool):
     "The Button showing the block in which the fee_rate fits"
-    signal_click = Signal(float)
+    signal_click = pyqtSignal(float)
 
     def __init__(
         self,
@@ -315,14 +318,15 @@ class MempoolProjectedBlock(ObjectRequiringMempool):
             if self.url
             else block_explorer_URL_of_projected_block(self.config.network_config.mempool_url, block_index)
         )
-        open_website(url)
+        if url:
+            open_website(url)
         if self.median_block_fee_borders:
             self.signal_click.emit(self.median_block_fee_borders[block_index])
 
 
 class ConfirmedBlock(QObject):
     "Showing a confirmed block"
-    signal_click = Signal(str)  # txid
+    signal_click = pyqtSignal(float)  # txid
 
     def __init__(
         self,
@@ -375,18 +379,19 @@ class ConfirmedBlock(QObject):
                 button.label_exact_median_fee.setText("")
 
     def _on_button_click(self, i: int):
-        open_website(self.url)
+        if self.url:
+            open_website(self.url)
         self.signal_click.emit(self.fee_rate)
 
 
 if __name__ == "__main__":
     import sys
 
-    from PySide2.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
 
     widget = VerticalButtonGroup(3)
     widget.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

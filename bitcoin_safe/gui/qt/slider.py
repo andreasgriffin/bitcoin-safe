@@ -2,8 +2,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QApplication, QLabel, QSlider, QVBoxLayout, QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QLabel, QSlider, QVBoxLayout, QWidget
 
 
 class CustomSlider(QWidget):
@@ -21,7 +21,7 @@ class CustomSlider(QWidget):
         self._color_ranges = []
         self._label_text = label_text
 
-        self.slider = QSlider(Qt.Horizontal)
+        self.slider = QSlider(Qt.Orientation.Horizontal)
         self.slider.setMinimum(min_val)
         self.slider.setMaximum(max_val)
         self.slider.setTickInterval(tick_interval)
@@ -31,7 +31,7 @@ class CustomSlider(QWidget):
         self.label = QLabel(parent)
 
         self.layout = QVBoxLayout(parent)
-        self.layout.setAlignment(Qt.AlignVCenter)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.layout.addWidget(self.slider)
         self.layout.addWidget(self.label)
         self.setLayout(self.layout)
@@ -114,7 +114,7 @@ def main():
     widget.add_color_range(40, 60, "#FFFF11")
     widget.show()
 
-    app.exec_()
+    app.exec()
 
 
 if __name__ == "__main__":

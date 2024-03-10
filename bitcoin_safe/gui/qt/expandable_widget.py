@@ -1,8 +1,8 @@
 import sys
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QCursor
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QCursor
+from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QLabel,
@@ -16,13 +16,13 @@ from PySide2.QtWidgets import (
 class CustomHeader(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.layout = QHBoxLayout(self)
+        self.setLayout(QHBoxLayout())
         current_margins = self.layout().contentsMargins()
         self.layout().setContentsMargins(current_margins.top(), 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self.layout.setSpacing(2)  # Reduce horizontal spacing
+        self.layout().setSpacing(2)  # Reduce horizontal spacing
 
         # Set the policy to expanding to use all available space
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # Optional border setup
         self.setStyleSheet(
@@ -34,15 +34,15 @@ class ExpandableWidget(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.layout = QVBoxLayout(self)
+        self.setLayout(QVBoxLayout())
 
         # Always visible widget
         self.header = CustomHeader(self)
-        self.layout.addWidget(self.header)
+        self.layout().addWidget(self.header)
 
         # Button for expanding/collapsing
         self.toggleButton = QToolButton(self)
-        self.toggleButton.setArrowType(Qt.LeftArrow)  # Initially, the arrow points left
+        self.toggleButton.setArrowType(Qt.ArrowType.LeftArrow)  # Initially, the arrow points left
         self.toggleButton.setStyleSheet(
             """
             QToolButton { 
@@ -55,43 +55,43 @@ class ExpandableWidget(QWidget):
             }
         """
         )
-        self.toggleButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.toggleButton.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.toggleButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.toggleButton.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         self.toggleButton.setFixedWidth(25)
         self.toggleButton.clicked.connect(self.toggle)
 
         # Position the button on the right within the header
-        self.header.layout.addWidget(self.toggleButton)
+        self.header.layout().addWidget(self.toggleButton)
 
         # Expandable widget
         self.expandableWidget = QWidget()  # Use a QWidget to allow adding custom content
         self.expandableWidget.setLayout(QVBoxLayout())  # Set the layout for the content
         self.expandableWidget.setVisible(False)
         self.expandableWidget.setStyleSheet("background: white; padding: 15px; border: 1px solid grey;")
-        self.layout.addWidget(self.expandableWidget)
+        self.layout().addWidget(self.expandableWidget)
 
-        self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout().setSpacing(0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
     def toggle(self):
         is_visible = self.expandableWidget.isVisible()
         self.expandableWidget.setVisible(not is_visible)
         # Change the arrow direction based on visibility
-        arrow_type = Qt.LeftArrow if is_visible else Qt.DownArrow
+        arrow_type = Qt.ArrowType.LeftArrow if is_visible else Qt.ArrowType.DownArrow
         self.toggleButton.setArrowType(arrow_type)
 
-    def add_header_widget(self, widget):
+    def add_header_widget(self, widget: QWidget):
         """Add custom widget to the header."""
         # Clear any existing widgets in the layout, except the toggle button
-        while self.header.layout.count() > 1:  # Leave the toggle button
-            child = self.header.layout.takeAt(0)
+        while self.header.layout().count() > 1:  # Leave the toggle button
+            child = self.header.layout().takeAt(0)
             if child.widget() is not self.toggleButton:
                 child.widget().deleteLater()
 
         # Add the new widget before the toggle button
-        self.header.layout.insertWidget(0, widget, 1)
+        self.header.layout().insertWidget(0, widget, 1)
 
-    def add_content_widget(self, widget):
+    def add_content_widget(self, widget: QWidget):
         """Add custom widget to the content area."""
         # Clear any existing widgets in the layout (optional)
         while self.expandableWidget.layout().count():
@@ -114,4 +114,4 @@ if __name__ == "__main__":
     window.add_content_widget(content_label)
 
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

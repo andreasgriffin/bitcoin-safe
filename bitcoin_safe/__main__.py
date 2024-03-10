@@ -1,24 +1,31 @@
-import logging
+from .logging_setup import setup_logging
 
-logger = logging.getLogger(__name__)
+setup_logging()
 
+
+import argparse
 import cProfile
 import sys
 from pstats import Stats
 
-from PySide2.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
+from .gui.qt.main import MainWindow
 from .gui.qt.util import custom_exception_handler
-from .main import MainWindow
 
 
 def main():
 
+    parser = argparse.ArgumentParser(description="Bitcoin Safe")
+    parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
+
+    args = parser.parse_args()
+
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = MainWindow(**vars(args))
     window.show()
-    app.exec_()
+    app.exec()
 
 
 if __name__ == "__main__":

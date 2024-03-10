@@ -2,14 +2,13 @@ import logging
 from typing import Callable, Optional
 
 import bdkpython as bdk
-from PySide2.QtCore import Qt, Signal
-from PySide2.QtGui import QKeySequence
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QKeySequence, QShortcut
+from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
     QDialogButtonBox,
     QLabel,
-    QShortcut,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -58,29 +57,29 @@ class DragAndDropTextEdit(QTextEdit):
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
             if self.callback_enter:
                 self.callback_enter(self.toPlainText())
-        elif event.key() == Qt.Key_Escape:
+        elif event.key() == Qt.Key.Key_Escape:
             if self.callback_esc:
                 self.callback_esc()
         super().keyPressEvent(event)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent):
         file_path = event.mimeData().urls()[0].toLocalFile()
         if self.process_filepath:
             self.process_filepath(file_path)
 
 
 class DragAndDropButtonEdit(ButtonEdit):
-    signal_drop_file = Signal(str)
+    signal_drop_file = pyqtSignal(str)
 
     def __init__(
         self,
@@ -102,7 +101,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         self.network = network
 
         self.add_qr_input_from_camera_button()
-        self.add_open_file_button(self.process_filepath, filter=file_filter)
+        self.button_open_file = self.add_open_file_button(self.process_filepath, filter=file_filter)
 
     def process_filepath(self, file_path: str):
         s = file_to_str(file_path)
@@ -145,9 +144,9 @@ class ImportDialog(QDialog):
 
         # buttons
         self.buttonBox = QDialogButtonBox(self)
-        self.cancel_button = self.buttonBox.addButton(QDialogButtonBox.Cancel)
+        self.cancel_button = self.buttonBox.addButton(QDialogButtonBox.StandardButton.Cancel)
         # self.button_file = self.buttonBox.addButton(QDialogButtonBox.Open)
-        self.button_ok = self.buttonBox.addButton(QDialogButtonBox.Ok)
+        self.button_ok = self.buttonBox.addButton(QDialogButtonBox.StandardButton.Ok)
         self.button_ok.setDefault(True)
         self.button_ok.setText(text_button_ok)
 
@@ -161,25 +160,26 @@ class ImportDialog(QDialog):
         shortcut = QShortcut(QKeySequence("Return"), self)
         shortcut.activated.connect(self.process_input)
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Escape:
             self.close()
 
     def process_input(self, s: str):
-        self.close()
-
         if self.on_open:
             self.on_open(s)
+
+        # close lets the entire application crash
+        self.deleteLater()
 
 
 if __name__ == "__main__":
     import sys
 
-    from PySide2.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
 
     dialog = ImportDialog(network=bdk.Network.REGTEST, on_open=print)
     dialog.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

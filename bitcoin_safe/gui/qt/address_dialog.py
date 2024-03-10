@@ -24,18 +24,18 @@
 # SOFTWARE.
 import logging
 
+from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.util import serialized_to_hex
+from bitcoin_safe.util import Satoshis, serialized_to_hex
 
 from .qr_components.image_widget import QRCodeWidgetSVG
-from .util import Satoshis
 
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
-from PySide2.QtGui import QFont, Qt
-from PySide2.QtWidgets import (
-    QDialog,
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -52,12 +52,12 @@ from .hist_list import HistList
 from .util import Buttons, CloseButton
 
 
-class AddressDialog(QDialog):
-    def __init__(self, fx, config, signals: Signals, wallet: Wallet, address: str, parent=None):
-        super().__init__()
+class AddressDialog(QWidget):
+    def __init__(self, fx, config: UserConfig, signals: Signals, wallet: Wallet, address: str, parent=None):
+        super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Address")
         self.address = address
-        self.bdk_address = bdk.Address(address)
+        self.bdk_address = bdk.Address(address, network=wallet.network)
         self.fx = fx
         self.config = config
         self.wallet: Wallet = wallet
@@ -69,7 +69,7 @@ class AddressDialog(QDialog):
         self.setLayout(vbox)
 
         upper_widget = QWidget()
-        upper_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        upper_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         upper_widget_layout = QHBoxLayout(upper_widget)
         upper_widget_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -80,14 +80,14 @@ class AddressDialog(QDialog):
 
         tab1 = QWidget()
         tab1_layout = QVBoxLayout(tab1)
-        tab1_layout.setAlignment(Qt.AlignTop)
+        tab1_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         tabs.addTab(tab1, "Details")
         tab2 = QWidget()
         tab2_layout = QVBoxLayout(tab2)
-        tab2_layout.setAlignment(Qt.AlignTop)
+        tab2_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         tabs.addTab(tab2, "Advanced")
 
-        address_info_min = self.wallet.address_info_min(address)
+        address_info_min = self.wallet.get_address_info_min(address)
         if address_info_min:
             address_title = f"{'Receiving' if address_info_min.keychain == bdk.KeychainKind.EXTERNAL else 'Change'} address of wallet \"{wallet.id}\"   (with index {address_info_min.index})"
             tab1_layout.addWidget(QLabel(_(address_title) + ":"))
@@ -145,10 +145,3 @@ class AddressDialog(QDialog):
         vbox.addWidget(self.hist_list)
 
         vbox.addLayout(Buttons(CloseButton(self)))
-
-    def show_qr(self):
-        text = self.address
-        try:
-            self.window.show_qrcode(text, "Address", parent=self)
-        except Exception as e:
-            self.show_message(repr(e))

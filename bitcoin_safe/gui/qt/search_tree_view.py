@@ -1,9 +1,19 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import sys
 from typing import Callable, List, Optional
 
-from PySide2.QtCore import QEvent, QPoint, Qt
-from PySide2.QtGui import QStandardItem, QStandardItemModel, QTextDocument
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QEvent, QModelIndex, QObject, QPoint, Qt
+from PyQt6.QtGui import (
+    QKeyEvent,
+    QPainter,
+    QStandardItem,
+    QStandardItemModel,
+    QTextDocument,
+)
+from PyQt6.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QFrame,
@@ -12,6 +22,7 @@ from PySide2.QtWidgets import (
     QPushButton,
     QStyle,
     QStyledItemDelegate,
+    QStyleOptionViewItem,
     QTabWidget,
     QTreeView,
     QVBoxLayout,
@@ -20,16 +31,19 @@ from PySide2.QtWidgets import (
 
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.ui_tx import UITX_Creator
+from bitcoin_safe.gui.qt.ui_tx import UITx_Creator
 
 
 class HTMLDelegate(QStyledItemDelegate):
-    def paint(self, painter, option, index):
-        text = index.model().data(index, Qt.DisplayRole)
-        option.state & QStyle.State_Selected
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+        logger.debug("HTMLDelegate.paint")
+        text = index.model().data(index, Qt.ItemDataRole.DisplayRole)
+        option.state & QStyle.StateFlag.State_Selected
 
         # Use QStyle to draw the item. This respects the native theme.
-        self.parent().style().drawPrimitive(QStyle.PE_PanelItemViewItem, option, painter, self.parent())
+        self.parent().style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_PanelItemViewItem, option, painter, self.parent()
+        )
 
         painter.save()
 
@@ -96,15 +110,17 @@ class CustomTreeView(QTreeView):
         self.on_click = on_click
         self.setModel(QStandardItemModel())
 
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)  # Vertical scrollbar
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)  # Horizontal scrollbar
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)  # Vertical scrollbar
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)  # Horizontal scrollbar
 
         self.setHeaderHidden(True)
 
         # Set the selection behavior to select full rows
 
-        self.setSelectionMode(QAbstractItemView.SingleSelection)  # Allow selecting, but not editing
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)  # Disable editing
+        self.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )  # Allow selecting, but not editing
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)  # Disable editing
 
         # Make the last column stretch to fill the view
         # self.header().setStretchLastSection(True)
@@ -112,6 +128,9 @@ class CustomTreeView(QTreeView):
 
         # Connect the clicked signal to the callback function
         self.clicked.connect(self.handle_item_clicked)
+
+    def model(self) -> QStandardItemModel:
+        return super().model()
 
     def set_data(self, data: ResultItem):
         self.model().clear()  # Clear existing items
@@ -133,7 +152,7 @@ class CustomTreeView(QTreeView):
             # Recursively process the value
             self._populate_model(child, model_parent=model_parent)
 
-    def handle_item_clicked(self, index):
+    def handle_item_clicked(self, index: QModelIndex):
         if self.on_click and index.isValid():
             # Retrieve the item from the model
             item = self.model().itemFromIndex(index)
@@ -144,7 +163,7 @@ class CustomTreeView(QTreeView):
 
 class CustomPopup(QFrame):
     def __init__(self, parent=None):
-        super(CustomPopup, self).__init__(parent, Qt.Tool | Qt.FramelessWindowHint)
+        super(CustomPopup, self).__init__(parent, Qt.WindowType.Tool | Qt.WindowType.FramelessWindowHint)
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(0, 1, 0, 0)  # Left, Top, Right, Bottom margins
 
@@ -153,9 +172,9 @@ class CustomPopup(QFrame):
         self.hide()  # Start hidden
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent):
         # Check if the pressed key is 'Esc'
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.hide()
 
@@ -202,7 +221,7 @@ class SearchTreeView(QWidget):
         # Install event filter on the main window
         self.window().installEventFilter(self)
 
-    def on_search(self, text):
+    def on_search(self, text: str):
         search_results = self.do_search(text)
         self.tree_view.set_data(search_results)
         self.tree_view.update()  # Update the view to redraw with highlights
@@ -221,20 +240,20 @@ class SearchTreeView(QWidget):
 
         # Calculate the global position for the popup
         global_pos = self.search_field.mapToGlobal(
-            QPoint(self.search_field.width() - self.popup.width(), self.search_field.height())
+            QPoint(int(self.search_field.width() - self.popup.width()), int(self.search_field.height()))
         )
         self.popup.move(global_pos)
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent):
         # Check if the pressed key is 'Esc'
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.popup.hide()
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if obj in [self, self.window()]:
-            if event.type() == QEvent.Move or event.type() == QEvent.Resize:
+            if event.type() == QEvent.Type.Move or event.type() == QEvent.Type.Resize:
                 self.position_popup()
         return super().eventFilter(obj, event)
 
@@ -269,7 +288,7 @@ class SearchWallets(SearchTreeView):
             tabs: QTabWidget = result_item.obj.parent().parent()
             if isinstance(tabs, QTabWidget):
                 tabs.setCurrentWidget(result_item.obj)
-        elif isinstance(result_item.obj, UITX_Creator):
+        elif isinstance(result_item.obj, UITx_Creator):
             tabs = result_item.obj.main_widget.parent().parent()
             if isinstance(tabs, QTabWidget):
                 tabs.setCurrentWidget(result_item.obj.main_widget)
@@ -372,4 +391,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

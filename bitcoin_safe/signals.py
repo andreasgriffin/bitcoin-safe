@@ -5,7 +5,7 @@ import threading
 from typing import Callable, Dict, List, Optional, Set, Union
 
 import bdkpython as bdk
-from PySide2.QtCore import QObject, Signal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class UpdateFilter:
@@ -26,6 +26,9 @@ class UpdateFilter:
 
     def __str__(self) -> str:
         return str(self.__key__())
+
+    def __hash__(self) -> int:
+        return hash(str(self))
 
 
 class SignalFunction:
@@ -109,41 +112,42 @@ class Signals(QObject):
             need_utxo_list_update
 
 
-    I immediately break the rule however for Signal, which is a function call
+    I immediately break the rule however for pyqtSignal, which is a function call
     """
 
-    open_tx_like = Signal(object)
-    utxos_updated = Signal(UpdateFilter)
-    addresses_updated = Signal(UpdateFilter)
-    labels_updated = Signal(UpdateFilter)
-    category_updated = Signal(UpdateFilter)
-    completions_updated = Signal()
-    event_wallet_tab_closed = Signal()
-    event_wallet_tab_added = Signal()
+    open_tx_like = pyqtSignal(object)
+    utxos_updated = pyqtSignal(UpdateFilter)
+    addresses_updated = pyqtSignal(UpdateFilter)
+    labels_updated = pyqtSignal(UpdateFilter)
+    category_updated = pyqtSignal(UpdateFilter)
+    completions_updated = pyqtSignal()
+    event_wallet_tab_closed = pyqtSignal()
+    event_wallet_tab_added = pyqtSignal()
 
-    update_all_in_qt_wallet = Signal()
+    update_all_in_qt_wallet = pyqtSignal()
 
-    show_utxo = Signal(object)
-    show_address = Signal(str)
-    show_private_key = Signal(str)
+    show_utxo = pyqtSignal(object)
+    show_address = pyqtSignal(str)
+    show_private_key = pyqtSignal(str)
 
-    chain_data_changed = Signal(str)  # the string is the reason
+    chain_data_changed = pyqtSignal(str)  # the string is the reason
 
-    notification = Signal(object)  # should be a Message instance
+    notification = pyqtSignal(object)  # should be a Message instance
 
-    cpfp_dialog = Signal(bdk.TransactionDetails)
-    dscancel_dialog = Signal()
-    bump_fee_dialog = Signal()
-    show_onchain_invoice = Signal()
-    save_transaction_into_wallet = Signal(object)
+    cpfp_dialog = pyqtSignal(bdk.TransactionDetails)
+    dscancel_dialog = pyqtSignal()
+    bump_fee_dialog = pyqtSignal()
+    show_onchain_invoice = pyqtSignal()
+    save_transaction_into_wallet = pyqtSignal(object)
 
     get_wallets = SignalFunction(name="get_wallets")
+    get_qt_wallets = SignalFunction(name="get_qt_wallets")
     get_network = SingularSignalFunction(name="get_network")
 
-    show_network_settings = Signal()
-    export_bip329_labels = Signal(str)  # str= wallet_id
-    import_bip329_labels = Signal(str)  # str= wallet_id
-    open_wallet = Signal(str)  # str= filepath
-    finished_open_wallet = Signal(str)  # str= wallet_id
+    show_network_settings = pyqtSignal()
+    export_bip329_labels = pyqtSignal(str)  # str= wallet_id
+    import_bip329_labels = pyqtSignal(str)  # str= wallet_id
+    open_wallet = pyqtSignal(str)  # str= filepath
+    finished_open_wallet = pyqtSignal(str)  # str= wallet_id
 
-    signal_broadcast_tx = Signal(bdk.Transaction)
+    signal_broadcast_tx = pyqtSignal(bdk.Transaction)

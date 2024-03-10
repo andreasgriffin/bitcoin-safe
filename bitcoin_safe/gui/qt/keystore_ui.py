@@ -1,9 +1,11 @@
 import logging
 from typing import Optional
 
+from bitcoin_usb.address_types import SimplePubKeyProvider
+
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
-from bitcoin_safe.gui.qt.qr_components.image_widget import EnlargableImageWidget
+from bitcoin_safe.gui.qt.custom_edits import MyTextEdit, QCompleterLineEdit
+from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
 
 from .dialog_import import ImportDialog
 
@@ -16,12 +18,11 @@ from bitcoin_qrreader import bitcoin_qr
 from bitcoin_usb.address_types import AddressType
 from bitcoin_usb.gui import USBGui
 from bitcoin_usb.software_signer import SoftwareSigner
-from PySide2.QtCore import QObject, Signal
-from PySide2.QtGui import QIcon, Qt
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QFormLayout,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -32,9 +33,9 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from ...keystore import KeyStore, KeyStoreTypes
-from ...signals import Signal
-from ...signer import AbstractSigner
+from ...keystore import KeyStore, KeyStoreImporterTypes
+from ...signals import pyqtSignal
+from ...signer import AbstractSignatureImporter
 from .block_change_signals import BlockChangesSignals
 from .util import (
     Message,
@@ -46,7 +47,7 @@ from .util import (
 )
 
 
-def icon_for_label(label):
+def icon_for_label(label: str):
     return read_QIcon("key-gray.png") if label.startswith("Recovery") else read_QIcon("key.png")
 
 
@@ -83,7 +84,7 @@ class KeyStoreUI(QObject):
         return self.keystore.label if self.keystore else self._label
 
     @label.setter
-    def label(self, value):
+    def label(self, value: str):
         if self.keystore:
             self.keystore.label = value
         else:
@@ -105,34 +106,40 @@ class KeyStoreUI(QObject):
     def on_label_change(self):
         self.tabs.setTabText(self.tabs.indexOf(self.tab), self.edit_label.text())
 
+    @property
+    def key_origin(self) -> str:
+        try:
+            standardized = SimplePubKeyProvider.format_key_origin(self.edit_key_origin.text().strip())
+        except:
+            return ""
+
+        return standardized
+
+    @key_origin.setter
+    def key_origin(self, value: str):
+        self.edit_key_origin.setText(value if value else "")
+
     def format_all_fields(self):
         self.edit_fingerprint.format()
 
-        standardized = self.edit_key_origin.text().replace("'", "h")
-        if standardized != self.edit_key_origin.text():
-            # setText will call format_key_origin again
-            self.edit_key_origin.setText(standardized)
-            return
-
-        address_type: AddressType = self.get_address_type()
-        expected = address_type.key_origin(self.network)
-        if expected != self.edit_key_origin.text():
+        expected_key_origin = self.get_expected_key_origin()
+        if expected_key_origin != self.key_origin:
             self.edit_key_origin.format_as_error(True)
             self.edit_key_origin.setToolTip(
-                f"Standart for the selected address type {address_type.name} is {expected}.  Please correct if you are not sure."
+                f"Standart for the selected address type {self.get_address_type().name} is {expected_key_origin}.  Please correct if you are not sure."
             )
             self.edit_xpub.format_as_error(True)
             self.edit_xpub.setToolTip(
-                f"The xPub origin {self.edit_key_origin.text()} and the xPub belong together. Please choose the correct xPub origin pair."
+                f"The xPub origin {self.key_origin} and the xPub belong together. Please choose the correct xPub origin pair."
             )
         else:
             self.edit_xpub.format()
             self.edit_xpub.setToolTip("")
             self.edit_key_origin.format()
             self.edit_key_origin.setToolTip(f"")
-        self.edit_key_origin.setPlaceholderText(expected)
+        self.edit_key_origin.setPlaceholderText(expected_key_origin)
         self.edit_key_origin.input_field.reset_memory()
-        self.edit_key_origin.input_field.add_to_memory(expected)
+        self.edit_key_origin.input_field.add_to_memory(expected_key_origin)
 
     def successful_import_signer_info(self):
         this_index = self.tabs.indexOf(self.tab)
@@ -143,13 +150,15 @@ class KeyStoreUI(QObject):
         if this_index + 1 < self.tabs.count():
             self.tabs.setCurrentIndex(this_index + 1)
 
+    def get_expected_key_origin(self) -> str:
+        return self.get_address_type().key_origin(self.network)
+
     def set_using_signer_info(self, signer_info: bitcoin_qr.SignerInfo):
         def check_key_origin(signer_info: bitcoin_qr.SignerInfo):
-            address_type = self.get_address_type()
-            expected = address_type.key_origin(self.network)
-            if signer_info.key_origin != expected:
+            expected_key_origin = self.get_expected_key_origin()
+            if signer_info.key_origin != expected_key_origin:
                 Message(
-                    f"The xPub Origin {signer_info.key_origin} is not the expected {expected} for {address_type.name}",
+                    f"The xPub Origin {signer_info.key_origin} is not the expected {expected_key_origin} for {self.get_address_type().name}",
                     type=MessageType.Error,
                 )
                 return False
@@ -158,7 +167,7 @@ class KeyStoreUI(QObject):
         if not check_key_origin(signer_info):
             return
         self.edit_xpub.setText(signer_info.xpub)
-        self.edit_key_origin.setText(signer_info.key_origin)
+        self.key_origin = signer_info.key_origin
         self.edit_fingerprint.setText(signer_info.fingerprint)
         self.successful_import_signer_info()
 
@@ -167,7 +176,7 @@ class KeyStoreUI(QObject):
         if data.data_type == bitcoin_qr.DataType.SignerInfo:
             self.set_using_signer_info(data.data)
         elif data.data_type == bitcoin_qr.DataType.SignerInfos:
-            expected_key_origin = self.get_address_type().key_origin(self.network)
+            expected_key_origin = self.get_expected_key_origin()
             # pick the right signer data
             for signer_info in data.data:
                 if signer_info.key_origin == expected_key_origin:
@@ -192,6 +201,20 @@ class KeyStoreUI(QObject):
             Message(f"{data.data_type} cannot be used here.", type=MessageType.Error)
         else:
             Exception("Could not recognize the QR Code")
+
+    def xpub_validator(self):
+        xpub = self.edit_xpub.text()
+        # automatically convert slip132
+        if bitcoin_qr.is_slip132(xpub):
+            Message(
+                "The xpub is in SLIP132 format. Converting to standard format.", title="Converting format"
+            )
+            try:
+                self.edit_xpub.setText(bitcoin_qr.convert_slip132_to_bip32(xpub))
+            except:
+                return False
+
+        return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
 
     def create(self):
         tab = QWidget()
@@ -230,14 +253,12 @@ class KeyStoreUI(QObject):
         self.edit_key_origin = ButtonEdit(input_field=QCompleterLineEdit(self.network))
         self.edit_key_origin.add_qr_input_from_camera_button(custom_handle_input=self._on_handle_input)
         self.label_xpub = QLabel()
-        self.edit_xpub = ButtonEdit(input_field=QTextEdit())
+        self.edit_xpub = ButtonEdit(input_field=MyTextEdit(preferred_height=50))
         self.edit_xpub.add_qr_input_from_camera_button(custom_handle_input=self._on_handle_input)
         self.edit_xpub.setMinimumHeight(30)
         self.edit_xpub.setMinimumWidth(400)
 
-        self.edit_xpub.set_validator(
-            lambda: KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
-        )
+        self.edit_xpub.set_validator(self.xpub_validator)
         self.label_seed = QLabel()
         self.edit_seed = ButtonEdit()
 
@@ -245,7 +266,7 @@ class KeyStoreUI(QObject):
             keystore = self.get_ui_values_as_keystore()
             self.edit_fingerprint.setText(keystore.fingerprint)
             self.edit_xpub.setText(keystore.xpub)
-            self.edit_key_origin.setText(keystore.key_origin)
+            self.key_origin = keystore.key_origin
 
         self.edit_seed.add_random_mnemonic_button(callback_seed=callback_seed)
 
@@ -258,39 +279,35 @@ class KeyStoreUI(QObject):
 
         # put them on the formLayout
         self.formLayout = QFormLayout(self.tab_manual)
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, label_keystore_label)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.edit_label)
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_fingerprint)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.edit_fingerprint)
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, label_key_origin)
-        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.edit_key_origin)
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_xpub)
-        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.edit_xpub)
-        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_seed)
-        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.edit_seed)
-        self.seed_visibility(self.network in KeyStoreTypes.seed.networks)
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, label_keystore_label)
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.edit_label)
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.LabelRole, self.label_fingerprint)
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.edit_fingerprint)
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, label_key_origin)
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.edit_key_origin)
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.LabelRole, self.label_xpub)
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.FieldRole, self.edit_xpub)
+        self.formLayout.setWidget(5, QFormLayout.ItemRole.LabelRole, self.label_seed)
+        self.formLayout.setWidget(5, QFormLayout.ItemRole.FieldRole, self.edit_seed)
+        self.seed_visibility(self.network in KeyStoreImporterTypes.seed.networks)
 
         # add the buttons
         self.buttonBox = QDialogButtonBox()
 
         # Create custom buttons
-        self.button_hwi = add_to_buttonbox(self.buttonBox, "Connect USB", KeyStoreTypes.hwi.icon_filename)
         self.button_file = add_to_buttonbox(
-            self.buttonBox, "Import file or text", KeyStoreTypes.file.icon_filename
+            self.buttonBox, "Import file or text", KeyStoreImporterTypes.file.icon_filename
         )
-        self.button_qr = add_to_buttonbox(self.buttonBox, "Scan", KeyStoreTypes.qr.icon_filename)
+        self.button_qr = add_to_buttonbox(self.buttonBox, "Scan", KeyStoreImporterTypes.qr.icon_filename)
+        self.button_hwi = add_to_buttonbox(
+            self.buttonBox, "Connect USB", KeyStoreImporterTypes.hwi.icon_filename
+        )
         self.button_qr.clicked.connect(lambda: self.edit_xpub.buttons[0].click())
         self.button_hwi.clicked.connect(lambda: self.on_hwi_click())
 
         def process_input(s: str):
             res = bitcoin_qr.Data.from_str(s, self.network)
             self._on_handle_input(res)
-
-        coldcard_groupbox = QGroupBox("Coldcard wallet export")
-        coldcard_groupbox.setLayout(QVBoxLayout())
-        image_widget = EnlargableImageWidget()
-        image_widget.load_from_file(icon_path("coldcard-wallet-export.png"))
-        coldcard_groupbox.layout().addWidget(image_widget)
 
         self.button_file.clicked.connect(
             lambda: ImportDialog(
@@ -299,28 +316,29 @@ class KeyStoreUI(QObject):
                 window_title="Import fingerprint and xpub",
                 text_button_ok="OK",
                 text_instruction_label="Please paste the exported file (like coldcard-export.json or sparrow-export.json):",
-                instruction_widget=coldcard_groupbox,
+                instruction_widget=ScreenshotsExportXpub(),
                 text_placeholder="Please paste the exported file (like coldcard-export.json or sparrow-export.json)",
-            ).show()
+            ).exec()
         )
 
-        self.tab_import.layout().setAlignment(image_widget, Qt.AlignCenter)
+        screenshot = ScreenshotsExportXpub()
+        self.tab_import.layout().setAlignment(screenshot, Qt.AlignmentFlag.AlignCenter)
 
-        # self.tab_import.layout().addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.tab_import.layout().setAlignment(Qt.AlignCenter)
+        # self.tab_import.layout().addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
+        self.tab_import.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.tab_import.layout().addWidget(self.buttonBox)
-        self.tab_import.layout().setAlignment(self.buttonBox, Qt.AlignCenter)
-        # self.tab_import.layout().addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.tab_import.layout().setAlignment(self.buttonBox, Qt.AlignmentFlag.AlignCenter)
+        # self.tab_import.layout().addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
 
         self.right_widget = QWidget()
         self.right_widget.setLayout(QVBoxLayout())
-        # self.right_widget.layout().setContentsMargins(2,2,2,2)
+        # self.right_widget.layout().setContentsMargins(0,0,0,0)
 
         self.label_description = QLabel("Description")
 
         self.right_widget.layout().addWidget(self.label_description)
 
-        self.textEdit_description = QTextEdit()
+        self.textEdit_description = MyTextEdit(preferred_height=60)
         self.right_widget.layout().addWidget(self.textEdit_description)
 
         tab.layout().addWidget(self.right_widget)
@@ -364,7 +382,7 @@ class KeyStoreUI(QObject):
             mnemonic = None
             fingerprint = self.edit_fingerprint.text()
             xpub = self.edit_xpub.text()
-            key_origin = self.edit_key_origin.text()
+            key_origin = self.key_origin
 
             # try to validate
             # if this works, then these are valid values
@@ -386,42 +404,25 @@ class KeyStoreUI(QObject):
             logger.debug(f"{self.__class__.__name__} set_ui_from_keystore")
             self.edit_xpub.setText(keystore.xpub if keystore.xpub else "")
             self.edit_fingerprint.setText(keystore.fingerprint if keystore.fingerprint else "")
-            self.edit_key_origin.setText(keystore.key_origin if keystore.key_origin else "")
+            self.key_origin = keystore.key_origin
             self.edit_label.setText(self.label)
             self.textEdit_description.setPlainText(keystore.description)
             self.edit_seed.setText(keystore.mnemonic if keystore.mnemonic else "")
 
 
-class SignedUI(QObject):
+class SignedUI(QWidget):
     def __init__(
         self,
         text: str,
         psbt: bdk.PartiallySignedTransaction,
-        tabs: QTabWidget,
         network: bdk.Network,
-        key_label: str,
     ) -> None:
         super().__init__()
         self.text = text
         self.psbt = psbt
-        self.tabs = tabs
         self.network = network
-        self.key_label = key_label
 
-        self.ui_signer_tab = self.create()
-
-        add_tab_to_tabs(
-            self.tabs,
-            self.ui_signer_tab,
-            read_QIcon("confirmed.png"),
-            key_label,
-            f"Signed with {key_label}",
-            focus=True,
-        )
-
-    def create(self):
-        tab = QWidget()
-        self.layout_keystore_buttons = QHBoxLayout(tab)
+        self.layout_keystore_buttons = QHBoxLayout(self)
 
         self.edit_signature = QTextEdit()
         self.edit_signature.setMinimumHeight(30)
@@ -429,51 +430,27 @@ class SignedUI(QObject):
         self.edit_signature.setText(str(self.text))
         self.layout_keystore_buttons.addWidget(self.edit_signature)
 
-        return tab
 
-    def remove_tab(self):
-        self.tabs.removeTab(self.tabs.indexOf(self.ui_signer_tab))
-
-
-class SignerUI(QObject):
-    signal_signature_added = Signal(bdk.PartiallySignedTransaction)
+class SignerUI(QWidget):
+    signal_signature_added = pyqtSignal(bdk.PartiallySignedTransaction)
+    signal_tx_received = pyqtSignal(bdk.Transaction)
 
     def __init__(
         self,
-        signers: List[AbstractSigner],
+        signature_importers: List[AbstractSignatureImporter],
         psbt: bdk.PartiallySignedTransaction,
-        tabs: QTabWidget,
         network: bdk.Network,
-        key_label: str,
-        wallet_id: Optional[str],
     ) -> None:
         super().__init__()
-        self.signers = signers
+        self.signature_importers = signature_importers
         self.psbt = psbt
-        self.tabs = tabs
         self.network = network
-        self.key_label = key_label
-        self.wallet_id = wallet_id
 
-        self.ui_signer_tab = self.create()
+        self.layout_keystore_buttons = QVBoxLayout(self)
 
-        add_tab_to_tabs(
-            self.tabs,
-            self.ui_signer_tab,
-            icon_for_label(key_label),
-            key_label,
-            f"{key_label} contained in wallet {wallet_id}" if wallet_id else f"Unknown wallet",
-            focus=True,
-        )
+        for signer in self.signature_importers:
 
-    def create(self):
-        tab = QWidget()
-
-        self.layout_keystore_buttons = QVBoxLayout(tab)
-
-        for signer in self.signers:
-
-            def callback_generator(signer):
+            def callback_generator(signer: AbstractSignatureImporter):
                 def f():
                     signer.sign(self.psbt)
 
@@ -487,8 +464,40 @@ class SignerUI(QObject):
 
             # forward the signal_signature_added from each signer to self.signal_signature_added
             signer.signal_signature_added.connect(self.signal_signature_added.emit)
+            signer.signal_final_tx_received.connect(self.signal_tx_received.emit)
 
-        return tab
 
-    def remove_tab(self):
-        self.tabs.removeTab(self.tabs.indexOf(self.ui_signer_tab))
+class SignerUIHorizontal(QWidget):
+    signal_signature_added = pyqtSignal(bdk.PartiallySignedTransaction)
+    signal_tx_received = pyqtSignal(bdk.Transaction)
+
+    def __init__(
+        self,
+        signature_importers: List[AbstractSignatureImporter],
+        psbt: bdk.PartiallySignedTransaction,
+        network: bdk.Network,
+    ) -> None:
+        super().__init__()
+        self.signature_importers = signature_importers
+        self.psbt = psbt
+        self.network = network
+
+        self.layout_keystore_buttons = QVBoxLayout(self)
+
+        for signer in self.signature_importers:
+
+            def callback_generator(signer: AbstractSignatureImporter):
+                def f():
+                    signer.sign(self.psbt)
+
+                return f
+
+            button = QPushButton(signer.label)
+            button.setMinimumHeight(30)
+            button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
+            button.clicked.connect(callback_generator(signer))
+            self.layout_keystore_buttons.addWidget(button)
+
+            # forward the signal_signature_added from each signer to self.signal_signature_added
+            signer.signal_signature_added.connect(self.signal_signature_added.emit)
+            signer.signal_final_tx_received.connect(self.signal_tx_received.emit)

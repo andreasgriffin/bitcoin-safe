@@ -2,9 +2,9 @@ import logging
 from typing import Callable, List, Optional, Union
 
 from bdkpython import bdk
-from PySide2.QtCore import QSize, Qt
-from PySide2.QtGui import QCursor, QIcon
-from PySide2.QtWidgets import (
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QIcon, QResizeEvent
+from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
     QGridLayout,
@@ -14,11 +14,10 @@ from PySide2.QtWidgets import (
     QSizePolicy,
     QStyle,
     QTextEdit,
-    QToolTip,
     QWidget,
 )
 
-from .util import icon_path
+from .util import do_copy, icon_path
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ class SquareButton(QPushButton):
 
 
 class ButtonsField(QWidget):
-    def __init__(self, vertical_align: Qt = Qt.AlignBottom, parent=None):
+    def __init__(self, vertical_align: Qt = Qt.AlignmentFlag.AlignBottom, parent=None):
         super().__init__(parent)
         self.grid_layout = QGridLayout(self)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
@@ -57,7 +56,7 @@ class ButtonsField(QWidget):
         # If there are no buttons, fall back to the default minimum size hint
         return super().minimumSizeHint()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
         self.rearrange_buttons()
 
@@ -99,16 +98,16 @@ class ButtonsField(QWidget):
 
             # # If buttons are vertically stacked, align them to the bottom, otherwise center them
             if vertical_stack:
-                self.grid_layout.setAlignment(button, Qt.AlignBottom)
+                self.grid_layout.setAlignment(button, Qt.AlignmentFlag.AlignBottom)
             else:
-                self.grid_layout.setAlignment(button, Qt.AlignVCenter)
+                self.grid_layout.setAlignment(button, Qt.AlignmentFlag.AlignVCenter)
 
-        if self.vertical_align in [Qt.AlignVCenter, Qt.AlignCenter]:
+        if self.vertical_align in [Qt.AlignmentFlag.AlignVCenter, Qt.AlignmentFlag.AlignCenter]:
             self.grid_layout.setRowStretch(0, 1)
             self.grid_layout.setRowStretch(num_rows + 1, 1)
-        if self.vertical_align == Qt.AlignBottom:
+        if self.vertical_align == Qt.AlignmentFlag.AlignBottom:
             self.grid_layout.setRowStretch(0, 1)
-        if self.vertical_align == Qt.AlignTop:
+        if self.vertical_align == Qt.AlignmentFlag.AlignTop:
             self.grid_layout.setRowStretch(num_rows + 1, 1)
 
 
@@ -123,7 +122,11 @@ class ButtonEdit(QWidget):
         self.button_container = ButtonsField(
             vertical_align=button_vertical_align
             if button_vertical_align
-            else (Qt.AlignVCenter if isinstance(self.input_field, QLineEdit) else Qt.AlignBottom)
+            else (
+                Qt.AlignmentFlag.AlignVCenter
+                if isinstance(self.input_field, QLineEdit)
+                else Qt.AlignmentFlag.AlignBottom
+            )
         )  # Container for buttons to allow dynamic layout changes
 
         self.main_layout = QHBoxLayout(
@@ -144,20 +147,20 @@ class ButtonEdit(QWidget):
         if tooltip:
             button.setToolTip(tooltip)
         button.clicked.connect(button_callback)  # Connect the button's clicked signal to the callback
-        button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)  # Make button expand vertically
+        button.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding
+        )  # Make button expand vertically
         self.buttons.append(button)
         self.button_container.layout().addWidget(button)
         return button
 
     def add_copy_button(self):
         def on_copy():
-            app = QApplication.instance()
-            app.clipboard().setText(self.text())
-            QToolTip.showText(QCursor.pos(), "Text copied to clipboard", self)
+            do_copy(self.text())
 
         self.add_button(icon_path("copy.png"), on_copy, tooltip="Copy to clipboard")
 
-    def set_input_field(self, input_widget):
+    def set_input_field(self, input_widget: QWidget):
         # Remove the current input field from the layout and delete it
         self.main_layout.removeWidget(self.input_field)
         self.input_field.deleteLater()
@@ -231,7 +234,7 @@ class ButtonEdit(QWidget):
 
     def add_open_file_button(
         self, callback_open_filepath, filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)"
-    ):
+    ) -> QPushButton:
         def on_click():
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
@@ -247,8 +250,9 @@ class ButtonEdit(QWidget):
             callback_open_filepath(file_path)
 
         button = self.add_button(None, on_click, "Open file")
-        icon = self.style().standardIcon(QStyle.SP_DirOpenIcon)
+        icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
         button.setIcon(icon)
+        return button
 
     def format_as_error(self, value: bool):
         if value:
@@ -275,10 +279,10 @@ if __name__ == "__main__":
         print("Button clicked!")
 
     app = QApplication(sys.argv)
-    window = ButtonEdit(button_vertical_align=Qt.AlignVCenter)
+    window = ButtonEdit(button_vertical_align=Qt.AlignmentFlag.AlignVCenter)
     # window.add_button("../icons/copy.png", example_callback)  # Add buttons as needed
     window.add_copy_button()
     # Replace QLineEdit with QTextEdit or any other widget if required
     # window.set_input_field(QTextEdit())
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
