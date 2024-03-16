@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 self.nostr_sync = NostrSync.from_dump(d, network=bdk.Network.REGTEST)
             else:
 
-                protcol_secret_str = "1123431122311151111111131311"
+                protcol_secret_str = "112343112231115111111111311311"
                 keys = Keys(
                     sk=SecretKey.from_hex(hashlib.sha256(protcol_secret_str.encode("utf-8")).hexdigest())
                 )

@@ -152,7 +152,8 @@ class RecipientGroupBox(QtWidgets.QGroupBox):
 
     def on_send_max_button_click(self):
         # self.amount_spin_box.setValue(0)
-        self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
+        # self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
+        self.amount_spin_box.set_max(self.send_max_button.isChecked())
         self.signal_set_max_amount.emit(self.amount_spin_box)
 
     def resizeEvent(self, event: QResizeEvent):

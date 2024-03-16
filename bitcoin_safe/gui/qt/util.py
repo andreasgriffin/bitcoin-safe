@@ -7,7 +7,7 @@ import sys
 import traceback
 import webbrowser
 from functools import lru_cache
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -37,6 +37,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSizePolicy,
+    QSystemTrayIcon,
     QTabWidget,
     QToolTip,
     QVBoxLayout,
@@ -322,9 +323,17 @@ class Message:
         if not no_show:
             self.show()
 
-    def show(self):
-        logger.warning(str(self.__dict__))
+    @staticmethod
+    def icon_to_q_system_tray_icon(icon: Optional[QMessageBox.Icon]) -> QSystemTrayIcon.MessageIcon:
+        if icon == QMessageBox.Icon.Information:
+            return QSystemTrayIcon.MessageIcon.Information
+        if icon == QMessageBox.Icon.Warning:
+            return QSystemTrayIcon.MessageIcon.Warning
+        if icon == QMessageBox.Icon.Critical:
+            return QSystemTrayIcon.MessageIcon.Critical
+        return QSystemTrayIcon.MessageIcon.NoIcon
 
+    def get_icon_and_title(self) -> Tuple[QMessageBox.Icon, str]:
         icon = QMessageBox.Icon.Information
         title = "Information"
         if self.type in [MessageType.Warning]:
@@ -337,10 +346,19 @@ class Message:
             icon = QMessageBox.Icon.Critical
             title = "Critical Error"
 
+        icon = self.icon or icon
+        title = self.title or title
+        return icon, title
+
+    def show(self):
+        logger.warning(str(self.__dict__))
+
+        icon, title = self.get_icon_and_title()
+
         return self.msg_box(
-            self.icon or icon,
+            icon,
             self.parent,
-            self.title or title,
+            title,
             self.msg,
             **self.kwargs,
         )

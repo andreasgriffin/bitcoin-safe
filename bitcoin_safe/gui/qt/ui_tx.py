@@ -1,6 +1,7 @@
 import logging
 
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
@@ -152,11 +153,10 @@ class UITx_Viewer(UITx_Base):
 
         # right side bar
         self.right_sidebar = QWidget()
-        self.right_sidebar.setFixedWidth(300)
-        self.right_sidebar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         self.upper_widget_layout.addWidget(self.right_sidebar)
-        self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
-        self.right_sidebar_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.right_sidebar.setLayout(QVBoxLayout())
+        self.right_sidebar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        self.right_sidebar.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # QSizePolicy.Policy.Fixed: The widget has a fixed size and cannot be resized.
         # QSizePolicy.Policy.Minimum: The widget can be shrunk to its minimum size hint.
@@ -170,7 +170,7 @@ class UITx_Viewer(UITx_Base):
         self.fee_group = FeeGroup(
             self.mempool_data,
             fx,
-            self.right_sidebar_layout,
+            self.right_sidebar.layout(),
             self.config,
             vsize=fee_info.vsize if fee_info else None,
             allow_edit=False,
@@ -189,7 +189,7 @@ class UITx_Viewer(UITx_Base):
         self.tx_singning_steps: Optional[TxSigningSteps] = None
 
         # # txid and block explorers
-        # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
+        # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar.layout())
         self.export_widget_container = QWidget()
         self.export_widget_container.setLayout(QVBoxLayout())
         self.export_widget_container.layout().setContentsMargins(
@@ -197,9 +197,6 @@ class UITx_Viewer(UITx_Base):
         )  # Left, Top, Right, Bottom margins
         self.export_widget_container.setMaximumHeight(220)
         self.main_widget.layout().addWidget(self.export_widget_container)
-
-        # set sizes
-        self.fee_group.groupBox_Fee.setFixedWidth(300)
 
         # buttons
 
@@ -282,6 +279,20 @@ class UITx_Viewer(UITx_Base):
 
     def reload(self):
         if self.data.data_type == DataType.PSBT:
+
+            # check if the tx can be finalized and then open the final tx:
+            finalized_tx = PSBTFinalizer.finalize(self.data.data)
+            if finalized_tx:
+                assert (
+                    finalized_tx.txid() == self.data.data.txid()
+                ), "bitcoin_tx libary error. The txid should not be changed during finalizing"
+                self.set_tx(
+                    finalized_tx,
+                    fee_info=self.fee_info,
+                    confirmation_time=self.confirmation_time,
+                )
+                return
+
             self.set_psbt(self.data.data, fee_info=self.fee_info)
         elif self.data.data_type == DataType.Tx:
             self.set_tx(
@@ -377,11 +388,6 @@ class UITx_Viewer(UITx_Base):
         simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
 
         wallets: List[Wallet] = get_wallets(self.signals)
-        dummy_wallet = wallets[0] if wallets else None
-
-        if not dummy_wallet:
-            Message("Please open any wallet first to be able to finalize this transaction.")
-            return signature_importers
 
         # {bool_signed: [fingerprint0, .....]}
         shown_fingerprints: Dict[bool, List[str]] = {True: [], False: []}
@@ -413,7 +419,6 @@ class UITx_Viewer(UITx_Base):
                     SignatureImporterQR(
                         self.network,
                         blockchain=self.blockchain,
-                        dummy_wallet=dummy_wallet,
                         signature_available=has_signature,
                         key_label=pubkey.label,
                     )
@@ -424,7 +429,6 @@ class UITx_Viewer(UITx_Base):
                     SignatureImporterFile(
                         self.network,
                         blockchain=self.blockchain,
-                        dummy_wallet=dummy_wallet,
                         signature_available=has_signature,
                         key_label=pubkey.label,
                     )
@@ -434,7 +438,6 @@ class UITx_Viewer(UITx_Base):
                     SignatureImporterUSB(
                         self.network,
                         blockchain=self.blockchain,
-                        dummy_wallet=dummy_wallet,
                         signature_available=has_signature,
                         key_label=pubkey.label,
                     )
@@ -488,11 +491,6 @@ class UITx_Viewer(UITx_Base):
         wallet_inputs = self.get_wallet_inputs(simple_psbt)
 
         wallets: List[Wallet] = get_wallets(self.signals)
-        dummy_wallet = wallets[0] if wallets else None
-
-        if not dummy_wallet:
-            Message("Please open any wallet first to be able to finalize this transaction.")
-            return signature_importers
 
         pub_keys_without_signature = sum(
             [input.get_pub_keys_without_signature() for inputs in wallet_inputs.values() for input in inputs],
@@ -514,7 +512,6 @@ class UITx_Viewer(UITx_Base):
                         SignatureImporterFile(
                             self.network,
                             blockchain=self.blockchain,
-                            dummy_wallet=dummy_wallet,
                             signature_available=True,
                             key_label=pubkeys_with_signature[i].fingerprint,
                         )
@@ -545,7 +542,6 @@ class UITx_Viewer(UITx_Base):
                             cls(
                                 self.network,
                                 blockchain=self.blockchain,
-                                dummy_wallet=dummy_wallet,
                                 signature_available=False,
                                 key_label=wallet_id,
                                 pub_keys_without_signature=pub_keys_without_signature,
@@ -555,6 +551,7 @@ class UITx_Viewer(UITx_Base):
         for importers in signature_importers.values():
             for importer in importers:
                 importer.signal_signature_added.connect(self.signature_added)
+                importer.signal_final_tx_received.connect(self.tx_received)
         return signature_importers
 
     def update_tx_progress(self) -> Optional[TxSigningSteps]:

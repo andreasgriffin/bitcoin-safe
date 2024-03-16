@@ -1,0 +1,216 @@
+{
+    "VERSION": "0.1.1",
+    "__class__": "Wallet",
+    "_blockchain_height": 104,
+    "_tips": [
+        23,
+        5
+    ],
+    "descriptor_str": "wpkh([3d88d0cf/84'/1'/0']tpubDDL6FVTLnVubpDES32PKTMrC7fDt5BqMSPSiHHpyX8549SpTXCN8GVdWcDvFchUGWXY6jVcqQ7hgoLpB5NoeqdZeKWJXrYrmFQoDR5BGVwt/<0;1>/*)#8yhq4hs6",
+    "gap": 20,
+    "gap_change": 5,
+    "id": "Coldcard",
+    "keystores": [
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "3D88D0CF",
+            "key_origin": "m/84h/1h/0h",
+            "label": "Signer 1",
+            "mnemonic": null,
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDDL6FVTLnVubpDES32PKTMrC7fDt5BqMSPSiHHpyX8549SpTXCN8GVdWcDvFchUGWXY6jVcqQ7hgoLpB5NoeqdZeKWJXrYrmFQoDR5BGVwt"
+        }
+    ],
+    "labels": {
+        "VERSION": "0.0.0",
+        "__class__": "Labels",
+        "categories": [
+            "Friends",
+            "KYC-Exchange"
+        ],
+        "data": {
+            "614866d0ac1a596e157f559799f9b8e6514e1a4becc22b2d58627f9bd917d619": {
+                "label": "Send Test",
+                "ref": "614866d0ac1a596e157f559799f9b8e6514e1a4becc22b2d58627f9bd917d619",
+                "type": "tx"
+            },
+            "bcrt1q0m38jms4prhr5sfg5ef6u7pjlwqvrevcykpkq0": {
+                "category": "Friends",
+                "ref": "bcrt1q0m38jms4prhr5sfg5ef6u7pjlwqvrevcykpkq0",
+                "type": "addr"
+            },
+            "bcrt1q0s2ew34dhvz9kpae7hg375she8dgu00x3x80zn": {
+                "category": "Friends",
+                "ref": "bcrt1q0s2ew34dhvz9kpae7hg375she8dgu00x3x80zn",
+                "type": "addr"
+            },
+            "bcrt1q2ks20fxeuxwkcd4kuftrp87r8a0a0zrc3z38uh": {
+                "category": "Friends",
+                "ref": "bcrt1q2ks20fxeuxwkcd4kuftrp87r8a0a0zrc3z38uh",
+                "type": "addr"
+            },
+            "bcrt1q3amwv2sacfznlffmrtfjc36rr0hpt33z4fn0hh": {
+                "category": "Friends",
+                "ref": "bcrt1q3amwv2sacfznlffmrtfjc36rr0hpt33z4fn0hh",
+                "type": "addr"
+            },
+            "bcrt1q3grcq0q8p2neka0jpvq8ns08fvzkppscm78kd4": {
+                "category": "KYC-Exchange",
+                "ref": "bcrt1q3grcq0q8p2neka0jpvq8ns08fvzkppscm78kd4",
+                "type": "addr"
+            },
+            "bcrt1q7htfyve9mtte2dase5c44e5zlm8ujuxq98m3v0": {
+                "category": "Friends",
+                "ref": "bcrt1q7htfyve9mtte2dase5c44e5zlm8ujuxq98m3v0",
+                "type": "addr"
+            },
+            "bcrt1q7qqrsmupafupvs5s23uxkd403wwv5v4k7ajuyg": {
+                "category": "Friends",
+                "ref": "bcrt1q7qqrsmupafupvs5s23uxkd403wwv5v4k7ajuyg",
+                "type": "addr"
+            },
+            "bcrt1q82frtyz7fawa0g6hm7xrklmfu30nv3jgncztay": {
+                "category": "Friends",
+                "ref": "bcrt1q82frtyz7fawa0g6hm7xrklmfu30nv3jgncztay",
+                "type": "addr"
+            },
+            "bcrt1q88jrwegusxv7x2rhtxm693649wpj0jecxmww23": {
+                "category": "Friends",
+                "ref": "bcrt1q88jrwegusxv7x2rhtxm693649wpj0jecxmww23",
+                "type": "addr"
+            },
+            "bcrt1q9ghrcdlluaylqjldgkh8gqh4sf6fm5fhnwlwv7": {
+                "category": "Friends",
+                "ref": "bcrt1q9ghrcdlluaylqjldgkh8gqh4sf6fm5fhnwlwv7",
+                "type": "addr"
+            },
+            "bcrt1qc37vn86krfg5rm7f5twnesp30h255yxudu8exa": {
+                "category": "Friends",
+                "ref": "bcrt1qc37vn86krfg5rm7f5twnesp30h255yxudu8exa",
+                "type": "addr"
+            },
+            "bcrt1qcadd9ezaxy3px45tdesjeyzd3vvda0v44mep6q": {
+                "category": "Friends",
+                "ref": "bcrt1qcadd9ezaxy3px45tdesjeyzd3vvda0v44mep6q",
+                "type": "addr"
+            },
+            "bcrt1qdqdsp4lkhmzyaf83458s0a2xgvykafe4vt0sjw": {
+                "category": "Friends",
+                "ref": "bcrt1qdqdsp4lkhmzyaf83458s0a2xgvykafe4vt0sjw",
+                "type": "addr"
+            },
+            "bcrt1qenpnqq2grpatawvwce46tf7xn9x9l6s9wagzz3": {
+                "category": "Friends",
+                "ref": "bcrt1qenpnqq2grpatawvwce46tf7xn9x9l6s9wagzz3",
+                "type": "addr"
+            },
+            "bcrt1qfllksgryym687w234udj0pkuda8r8eqp249y2w": {
+                "category": "Friends",
+                "label": "to same wallet",
+                "ref": "bcrt1qfllksgryym687w234udj0pkuda8r8eqp249y2w",
+                "type": "addr"
+            },
+            "bcrt1qfp27qjepep8n56rnf73eueeg5zt0ma5x662mv3": {
+                "category": "Friends",
+                "ref": "bcrt1qfp27qjepep8n56rnf73eueeg5zt0ma5x662mv3",
+                "type": "addr"
+            },
+            "bcrt1qftgg3jytd5ljtsrr95wqcjztejc4petgfa2yt3": {
+                "category": "Friends",
+                "label": "Send Test",
+                "ref": "bcrt1qftgg3jytd5ljtsrr95wqcjztejc4petgfa2yt3",
+                "type": "addr"
+            },
+            "bcrt1qk2w2skn8y5lkd87k5qqwfdmqfmn8fgs0c0flhj": {
+                "category": "Friends",
+                "label": "to same wallet",
+                "ref": "bcrt1qk2w2skn8y5lkd87k5qqwfdmqfmn8fgs0c0flhj",
+                "type": "addr"
+            },
+            "bcrt1qp9ks0v9wy8vk36p37r2c0q3axzxsrlm7qe9fm8": {
+                "category": "Friends",
+                "ref": "bcrt1qp9ks0v9wy8vk36p37r2c0q3axzxsrlm7qe9fm8",
+                "type": "addr"
+            },
+            "bcrt1qpx4cvlt58as6dznuxuk3cwq2g2u0sglrkgacy9": {
+                "category": "Friends",
+                "ref": "bcrt1qpx4cvlt58as6dznuxuk3cwq2g2u0sglrkgacy9",
+                "type": "addr"
+            },
+            "bcrt1qqsuxt3c56yznks8zqkrcc9n57p9cxfvyxh7lm0": {
+                "category": "Friends",
+                "ref": "bcrt1qqsuxt3c56yznks8zqkrcc9n57p9cxfvyxh7lm0",
+                "type": "addr"
+            },
+            "bcrt1qs4086lk8f03xranzm3qer7nsvynj6tvum0tfeg": {
+                "category": "Friends",
+                "ref": "bcrt1qs4086lk8f03xranzm3qer7nsvynj6tvum0tfeg",
+                "type": "addr"
+            },
+            "bcrt1qt790uc2zj6q2cy8rt3wdw4pm4nvaqyfruh8wd6": {
+                "category": "Friends",
+                "ref": "bcrt1qt790uc2zj6q2cy8rt3wdw4pm4nvaqyfruh8wd6",
+                "type": "addr"
+            },
+            "bcrt1qtfsvu0jxevkm3agq83njge2lcanktw462sx3t0": {
+                "category": "Friends",
+                "ref": "bcrt1qtfsvu0jxevkm3agq83njge2lcanktw462sx3t0",
+                "type": "addr"
+            },
+            "bcrt1qv0kf5ds4vl8qean3025379f9rgrxweyfzyvj3c": {
+                "category": "Friends",
+                "ref": "bcrt1qv0kf5ds4vl8qean3025379f9rgrxweyfzyvj3c",
+                "type": "addr"
+            },
+            "bcrt1qv5dzp2sczjryr5258w4m787mgh6027g89x0ylj": {
+                "category": "Friends",
+                "ref": "bcrt1qv5dzp2sczjryr5258w4m787mgh6027g89x0ylj",
+                "type": "addr"
+            },
+            "bcrt1qvqmeqkvrjj5ev66a8acz3g2p9s6x8w9lf82367": {
+                "category": "Friends",
+                "ref": "bcrt1qvqmeqkvrjj5ev66a8acz3g2p9s6x8w9lf82367",
+                "type": "addr"
+            },
+            "bcrt1qx485k9500sfgv6nrf8algtfkmhuy0hgumywyzv": {
+                "category": "Friends",
+                "ref": "bcrt1qx485k9500sfgv6nrf8algtfkmhuy0hgumywyzv",
+                "type": "addr"
+            },
+            "bcrt1qxyg8wa820f6t6akjn6f47055h55y7cpa94x6gs": {
+                "category": "Friends",
+                "ref": "bcrt1qxyg8wa820f6t6akjn6f47055h55y7cpa94x6gs",
+                "type": "addr"
+            },
+            "bcrt1qyjw6f0glw7qcp00cztx6qt23fe0gdzs2u0wx42": {
+                "category": "Friends",
+                "ref": "bcrt1qyjw6f0glw7qcp00cztx6qt23fe0gdzs2u0wx42",
+                "type": "addr"
+            },
+            "bf3d9bb527077702bebcdc0734000e85014422385000d5163b31e4d73400e406": {
+                "label": "to same wallet",
+                "ref": "bf3d9bb527077702bebcdc0734000e85014422385000d5163b31e4d73400e406",
+                "type": "tx"
+            },
+            "c0748c00dffca1255e460b8a9554644cbbe045eb74d3e860178264ef36a149f5": {
+                "label": "Received from other wallet",
+                "ref": "c0748c00dffca1255e460b8a9554644cbbe045eb74d3e860178264ef36a149f5",
+                "type": "tx"
+            }
+        }
+    },
+    "network": {
+        "__enum__": true,
+        "name": "Network",
+        "value": "REGTEST"
+    },
+    "refresh_wallet": false,
+    "tutorial_step": null
+}

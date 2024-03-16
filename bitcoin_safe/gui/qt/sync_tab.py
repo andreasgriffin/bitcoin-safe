@@ -88,12 +88,21 @@ class SyncTab:
         if dm.event and self.startup_time > datetime.fromtimestamp(dm.event.created_at().as_secs()):
             # dm was created before startup
             return
-        if dm.event and dm.data and dm.data.data_type in [DataType.PSBT, DataType.Tx]:
-            Message(
-                f"Opening {dm.data.data_type.name} from {short_key(dm.event.author().to_bech32())}",
-                no_show=True,
-            ).emit_with(self.signals.notification)
-            self.signals.open_tx_like.emit(dm.data.data)
+        if dm.event:
+            if self.nostr_sync.is_me(dm.event.author()):
+                # do nothing if i sent it
+                return
+            if dm.data and dm.data.data_type in [DataType.PSBT, DataType.Tx]:
+                Message(
+                    f"Opening {dm.data.data_type.name} from {short_key(dm.event.author().to_bech32())}",
+                    no_show=True,
+                ).emit_with(self.signals.notification)
+                self.signals.open_tx_like.emit(dm.data.data)
+            elif not dm.data:
+                Message(
+                    f"Received message '{dm.description}' from {short_key(dm.event.author().to_bech32())}",
+                    no_show=True,
+                ).emit_with(self.signals.notification)
 
     def enabled(self):
         return self.main_widget.checkbox.isChecked()

@@ -303,7 +303,7 @@ class MainWindow(QMainWindow):
             self.last_qtwallet = qt_wallet
 
     def _init_tray(self):
-        self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), None)
+        self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), self)
         self.tray.setToolTip("Bitcoin Safe")
 
         menu = QMenu(self)
@@ -317,12 +317,13 @@ class MainWindow(QMainWindow):
         self.tray.show()
 
     def show_message_as_tray_notification(self, message: Message):
-        title = message.title if message.title else "Bitcoin Safe"
-        if message.icon:
-            if message.msecs:
-                return self.tray.showMessage(title, message.msg, message.icon, message.msecs)
-            return self.tray.showMessage(title, message.msg, message.icon)
-        return self.tray.showMessage(title, message.msg)
+        icon, _ = message.get_icon_and_title()
+        title = message.title or "Bitcoin Safe"
+        if message.msecs:
+            return self.tray.showMessage(
+                title, message.msg, Message.icon_to_q_system_tray_icon(icon), message.msecs
+            )
+        return self.tray.showMessage(title, message.msg, Message.icon_to_q_system_tray_icon(icon))
 
     def onTrayIconActivated(self, reason: QSystemTrayIcon.ActivationReason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
@@ -924,8 +925,7 @@ class MainWindow(QMainWindow):
             if self.tab_wallets.widget(i) == qt_wallet.tab:
                 self.tab_wallets.removeTab(i)
 
-        qt_wallet.disconnect_signals()
-        qt_wallet.stop_sync_timer()
+        qt_wallet.close()
         del self.qt_wallets[qt_wallet.wallet.id]
         self.event_wallet_tab_closed()
 

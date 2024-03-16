@@ -6,8 +6,10 @@ import os
 from bitcoin_qrreader.bitcoin_qr import Data
 from PyQt6.QtCore import QModelIndex, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
+    QAction,
     QBrush,
     QColor,
+    QContextMenuEvent,
     QIcon,
     QResizeEvent,
     QStandardItem,
@@ -20,6 +22,8 @@ from PyQt6.QtWidgets import (
     QLayout,
     QLineEdit,
     QListView,
+    QMainWindow,
+    QMenu,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -27,6 +31,8 @@ from PyQt6.QtWidgets import (
 
 
 class MultiLineListView(QWidget):
+    signal_clear = pyqtSignal()
+
     ROLE_SORT = 1001
     itemClicked = pyqtSignal(QStandardItemModel)
 
@@ -45,6 +51,24 @@ class MultiLineListView(QWidget):
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.listView)
         self.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
+        menu = QMenu(self)
+
+        # Add actions to the menu
+        action1 = QAction("Delete all messages", self)
+        menu.addAction(action1)
+
+        # Connect actions to slots (functions)
+        action1.triggered.connect(self.on_delete_all_messages)
+
+        # Pop up the menu at the current mouse position.
+        menu.exec(event.globalPos())
+
+    def on_delete_all_messages(self):
+        self.clearItems()
+        self.update()
+        self.signal_clear.emit()
 
     def addItem(self, text: str, icon=None, timestamp=int) -> QStandardItem:
         """Add an item with the specified text and an optional icon to the list."""

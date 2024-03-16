@@ -3,7 +3,7 @@ import logging
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import Message, MessageType
 
-from ...config import FEE_RATIO_HIGH_WARNING, UserConfig
+from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +193,11 @@ class FeeGroup(QObject):
 
     def update_fee_rate_warning(self):
         fee_rate = self.spin_fee_rate.value()
+
         too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
+        if fee_rate <= NO_FEE_WARNING_BELOW:
+            too_high = False
+
         self.high_fee_rate_warning_label.setVisible(too_high)
         if too_high:
             self.high_fee_rate_warning_label.setText(f"<font color='red'><b>High fee rate!</b></font>")

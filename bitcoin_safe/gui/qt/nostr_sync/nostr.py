@@ -469,6 +469,8 @@ class ProtocolDM(BaseDM):
 class ChatLabel(enum.Enum):
     GroupChat = enum.auto()
     SingleRecipient = enum.auto()
+    DistrustMeRequest = enum.auto()
+    DeleteMeRequest = enum.auto()
 
     @classmethod
     def from_value(cls, value: int):
@@ -607,7 +609,9 @@ class DmConnection(QObject):
 
         self.keys: Keys = keys
         self.client: Client = None
+        # self.queue stores received events and is also used for self.dump
         self.queue: deque[BaseDM] = deque(maxlen=10000)
+        # self.events is used for replaying events from dump
         self.events: list[Event] = events if events else []
         self.current_filter_dict: dict[str, Filter] = {}
         self.timer = QTimer()
@@ -844,19 +848,20 @@ class GroupChat(QObject):
         super().__init__()
         self.members: List[PublicKey] = members if members else []
         self.start_time = start_time
-
-        def from_serialized(base64_encoded_data: str) -> BitcoinDM:
-            return BitcoinDM.from_serialized(base64_encoded_data, network=network)
+        self.network = network
 
         self.dm_connection = (
             DmConnection.from_dump(
                 d=dm_connection_dump,
                 signal_dm=self.signal_dm,
-                from_serialized=from_serialized,
+                from_serialized=self.from_serialized,
             )
             if dm_connection_dump
-            else DmConnection(self.signal_dm, from_serialized=from_serialized, keys=keys)
+            else DmConnection(self.signal_dm, from_serialized=self.from_serialized, keys=keys)
         )
+
+    def from_serialized(self, base64_encoded_data: str) -> BitcoinDM:
+        return BitcoinDM.from_serialized(base64_encoded_data, network=self.network)
 
     def add_member(self, new_member: PublicKey):
         if new_member.to_bech32() not in [k.to_bech32() for k in self.members]:
@@ -871,16 +876,20 @@ class GroupChat(QObject):
             self.dm_connection.unsubscribe([remove_member])
             logger.debug(f"Removed {remove_member.to_bech32()}")
 
-    def send(self, dm: BitcoinDM):
-        for public_key in self.members:
+    def send(self, dm: BitcoinDM, send_also_to_me=True):
+        recipients = self.members_including_me() if send_also_to_me else self.members
+        for public_key in recipients:
             self.dm_connection.send(dm, public_key)
             logger.debug(f"Send to {public_key.to_bech32()}")
 
         if not self.members:
             logger.debug(f"Sending not done, since self.members is empty")
 
+    def members_including_me(self):
+        return self.members + [self.dm_connection.keys.public_key()]
+
     def subscribe(self):
-        self.dm_connection.subscribe(self.members, start_time=self.start_time)
+        self.dm_connection.subscribe(self.members_including_me(), start_time=self.start_time)
 
     def dump(self):
         forbidden_data_types = [DataType.LabelsBip329]
@@ -897,6 +906,20 @@ class GroupChat(QObject):
 
         d["members"] = [PublicKey.from_bech32(pk) for pk in d["members"]]
         return GroupChat(**d, network=network)
+
+    def renew_own_key(self):
+        keys = Keys.generate()
+        # send new key to memebers
+        for member in self.members:
+            self.dm_connection.send(
+                BitcoinDM(event=None, label=ChatLabel.DeleteMeRequest, description=""), member
+            )
+            # self.dm_connection.send(ProtocolDM(event=None, public_key_bech32=keys.public_key().to_bech32(),please_trust_public_key_bech32=True), member)
+            # logger.debug(f"Send my new public key {keys.public_key().to_bech32()} to {member.to_bech32()}")
+
+        self.dm_connection.client.disconnect()
+        self.dm_connection = DmConnection(self.signal_dm, from_serialized=self.from_serialized, keys=keys)
+        self.subscribe()
 
 
 if __name__ == "__main__":

@@ -208,7 +208,7 @@ class WalletSteps(StepProgressContainer):
         }
         if n > 1:
             self.tab_infos[TutorialStep.register] = {
-                "label": "Register multisig on signer",
+                "label": "Register multisig on signers",
                 "create_tab": self.create_register_multisig_on_signers,
             }
         for i, tutoral_step in enumerate(self.get_send_tests_steps()):
@@ -462,7 +462,7 @@ class WalletSteps(StepProgressContainer):
                 get_editable_protowallet=self.qtwalletbase.get_editable_protowallet,
                 get_address_type=lambda: self.qtwalletbase.get_editable_protowallet().address_type,
             )
-
+            self.keystore_uis.setCurrentIndex(0)
             widget.layout().addWidget(self.keystore_uis)
 
             def create_wallet():
@@ -999,7 +999,7 @@ class WalletSteps(StepProgressContainer):
              <ul>
   <li>Place each seed backup and hardware signer in a secure location, such:</li>
    <ul>
-   {''.join([f"<li>Seed backup {i} and hardware signer {i} should be in location {i}  </li>" for i in  range(self.num_keystores())]) if self.num_keystores()>1 else ""}
+   {''.join([f"<li>Seed backup {i+1} and hardware signer {i+1} should be in location {i+1}  </li>" for i in  range(self.num_keystores())]) if self.num_keystores()>1 else ""}
    </ul>   
    <li>Choose the secure places carefully, considering that you need to go to {self.qtwalletbase.get_mn_tuple()[0]} of the {self.num_keystores()}, to spend from your multisig-wallet.</li>
 </ul> 

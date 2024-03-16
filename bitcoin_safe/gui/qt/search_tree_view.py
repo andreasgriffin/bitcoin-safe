@@ -324,6 +324,17 @@ class SearchWallets(SearchTreeView):
                     # connect also the higher parents, so the results appear at all
                     wallet_addresses.set_parent(wallet_item)
                     wallet_item.set_parent(root)
+                label = qt_wallet.wallet.get_label_for_address(address, autofill_from_txs=False)
+                if label and (search_text.lower() in label.lower()):
+                    ResultItem(
+                        format_result_text(label),
+                        parent=wallet_addresses,
+                        obj=qt_wallet.address_list,
+                        obj_key=address,
+                    )
+                    # connect also the higher parents, so the results appear at all
+                    wallet_addresses.set_parent(wallet_item)
+                    wallet_item.set_parent(root)
 
             wallet_tx_ids = ResultItem(
                 f"<span style='font-weight:bold;'>Transaction Ids</span>", obj=qt_wallet.history_tab
@@ -332,6 +343,17 @@ class SearchWallets(SearchTreeView):
                 if search_text in txid:
                     ResultItem(
                         format_result_text(txid),
+                        parent=wallet_tx_ids,
+                        obj=qt_wallet.history_list,
+                        obj_key=txid,
+                    )
+                    # connect also the higher parents, so the results appear at all
+                    wallet_tx_ids.set_parent(wallet_item)
+                    wallet_item.set_parent(root)
+                label = qt_wallet.wallet.get_label_for_txid(txid, autofill_from_addresses=False)
+                if label and (search_text.lower() in label.lower()):
+                    ResultItem(
+                        format_result_text(label),
                         parent=wallet_tx_ids,
                         obj=qt_wallet.history_list,
                         obj_key=txid,

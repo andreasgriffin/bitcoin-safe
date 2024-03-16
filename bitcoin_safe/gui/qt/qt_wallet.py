@@ -235,6 +235,11 @@ class QTWallet(QtWalletBase):
     def stop_sync_timer(self):
         self.timer.stop()
 
+    def close(self):
+        self.disconnect_signals()
+        self.sync_tab.nostr_sync.unsubscribe()
+        self.stop_sync_timer()
+
     def _start_sync_retry_timer(self, delay_retry_sync=20):
         if self.timer.isActive():
             return

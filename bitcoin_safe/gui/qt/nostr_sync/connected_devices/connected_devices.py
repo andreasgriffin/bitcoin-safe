@@ -1,5 +1,9 @@
 import logging
 
+from coincurve import PublicKey
+
+from bitcoin_safe.gui.qt.util import read_QIcon
+
 logger = logging.getLogger(__name__)
 
 from typing import Callable, List, Optional
@@ -16,14 +20,16 @@ def short_key(pub_key_bech32: str):
 
 import uuid
 
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QPushButton,
     QScrollArea,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -102,13 +108,12 @@ class UnTrustedDevice(BaseDevice):
         self.button_add_trusted.setText(f"Accept trust request from {short_key(self.pub_key_bech32)}")
 
         self.timer.timeout.connect(self.reset_button)
-        minutes = 10
-        self.timer.start(minutes * 60 * 1000)  # 10 minutes in milliseconds
+        seconds = 60
+        self.timer.start(seconds * 1000)  # convert to milliseconds
 
     def reset_button(self):
         # Reset the button's style to default and text to "Click me"
         self.button_add_trusted.setStyleSheet("")
-        self.button_add_trusted.setText("Click me")
         # Stop the timer to avoid it running indefinitely
         self.timer.stop()
 
@@ -159,7 +164,7 @@ class TrustedDevice(BaseDevice):
             """
                      <ul>
                         <li>Syncing Address labels</li>
-                        <li>Can share PSBTs</li>
+                        <li>Can share Transactions</li>
                     </ul>      
                     """
         )
@@ -247,8 +252,9 @@ class TrustedDeviceList(DeviceList):
 class ConnectedDevices(QtWidgets.QWidget):
     signal_trust_device = QtCore.pyqtSignal(UnTrustedDevice)
     signal_untrust_device = QtCore.pyqtSignal(TrustedDevice)
+    signal_renew_keys = QtCore.pyqtSignal()
 
-    def __init__(self, title: str = "", individual_chats_visible=True) -> None:
+    def __init__(self, individual_chats_visible=True) -> None:
         super().__init__()
         self.individual_chats_visible = individual_chats_visible
 
@@ -258,9 +264,24 @@ class ConnectedDevices(QtWidgets.QWidget):
         self.layout().addWidget(left_side)
         left_side.setLayout(QVBoxLayout())
 
-        if title:
-            title_label = QLabel(f"<b>{title}</b>")
-            left_side.layout().addWidget(title_label)
+        header = QWidget()
+        header.setLayout(QHBoxLayout())
+        header.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        left_side.layout().addWidget(header)
+
+        self.title_label = QLabel()
+        header.layout().addWidget(self.title_label)
+
+        toolbar_button = QToolButton()
+        toolbar_button.setIcon(read_QIcon("preferences.png"))
+        header.layout().addWidget(toolbar_button)
+
+        menu = QMenu(self)
+        action = menu.addAction(f"Reset identity for this device")
+        action.triggered.connect(self.signal_renew_keys.emit)
+        toolbar_button.setMenu(menu)
+        toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         group_trusted = QGroupBox("Trusted")
         left_side.layout().addWidget(group_trusted)
@@ -279,6 +300,9 @@ class ConnectedDevices(QtWidgets.QWidget):
         self.groupchat_gui = ChatGui()
 
         self.layout().addWidget(self.groupchat_gui)
+
+    def set_title(self, my_key: PublicKey):
+        self.title_label.setText(f"My id: {short_key(my_key.to_bech32())}")
 
     def add_trusted_device(self, device: TrustedDevice):
         if self.trusted_devices.device_already_present(device.pub_key_bech32):
@@ -309,6 +333,7 @@ class ConnectedDevices(QtWidgets.QWidget):
         callback_on_message_send: Callable = None,
         callback_share_filepath: Callable = None,
         callback_attachement_clicked: Callable = None,
+        callback_clear_chat: Callable = None,
     ) -> TrustedDevice:
         self.untrusted_devices.remove_device(untrusted_device)
 
@@ -329,6 +354,8 @@ class ConnectedDevices(QtWidgets.QWidget):
             trusted_device.chat_gui.chat_list_display.signal_attachement_clicked.connect(
                 callback_attachement_clicked
             )
+        if callback_clear_chat:
+            trusted_device.chat_gui.chat_list_display.signal_clear.connect(callback_clear_chat)
 
         return trusted_device
 

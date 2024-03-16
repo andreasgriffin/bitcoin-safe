@@ -13,6 +13,7 @@ import bdkpython as bdk
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from bitcoin_usb.gui import USBGui
+from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 from bitcoin_usb.software_signer import SoftwareSigner
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -123,7 +124,6 @@ class SignatureImporterQR(AbstractSignatureImporter):
         self,
         network: bdk.Network,
         blockchain: bdk.Blockchain,
-        dummy_wallet: Wallet,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -137,7 +137,6 @@ class SignatureImporterQR(AbstractSignatureImporter):
             pub_keys_without_signature=pub_keys_without_signature,
         )
         self._label = label
-        self.dummy_wallet = dummy_wallet
 
     def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: bitcoin_qr.Data):
         logger.debug(str(data.data))
@@ -153,13 +152,22 @@ class SignatureImporterQR(AbstractSignatureImporter):
                 psbt2, original_psbt
             ), "The txid of the signed psbt doesnt match the original txid"
 
-            if psbt2.serialize() != original_psbt.serialize():
-                # finalize the psbt (some hardware wallets like specter diy dont do that)
-                self.dummy_wallet.bdkwallet.sign(psbt2, None)
-                logger.debug(f"psbt updated {psbt2.serialize()}")
-                self.signal_signature_added.emit(psbt2)
-            else:
+            if psbt2.serialize() == original_psbt.serialize():
                 logger.debug(f"psbt unchanged {psbt2.serialize()}")
+                return
+
+            # check if the tx can be finalized:
+            finalized_tx = PSBTFinalizer.finalize(psbt2)
+            if finalized_tx:
+                assert (
+                    finalized_tx.txid() == original_psbt.txid()
+                ), "bitcoin_tx libary error. The txid should not be changed during finalizing"
+                self.signal_final_tx_received.emit(finalized_tx)
+                return
+
+            logger.debug(f"psbt updated {psbt2.serialize()}")
+            self.signal_signature_added.emit(psbt2)
+
         elif data.data_type == bitcoin_qr.DataType.Tx:
             scanned_tx: bdk.Transaction = data.data
             if scanned_tx.txid() != original_psbt.txid():
@@ -193,7 +201,6 @@ class SignatureImporterFile(SignatureImporterQR):
         self,
         network: bdk.Network,
         blockchain: bdk.Blockchain,
-        dummy_wallet: Wallet,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -202,7 +209,6 @@ class SignatureImporterFile(SignatureImporterQR):
         super().__init__(
             network=network,
             blockchain=blockchain,
-            dummy_wallet=dummy_wallet,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
@@ -232,7 +238,6 @@ class SignatureImporterClipboard(SignatureImporterFile):
         self,
         network: bdk.Network,
         blockchain: bdk.Blockchain,
-        dummy_wallet: Wallet,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -241,7 +246,6 @@ class SignatureImporterClipboard(SignatureImporterFile):
         super().__init__(
             network=network,
             blockchain=blockchain,
-            dummy_wallet=dummy_wallet,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
@@ -270,7 +274,6 @@ class SignatureImporterUSB(SignatureImporterQR):
         self,
         network: bdk.Network,
         blockchain: bdk.Blockchain,
-        dummy_wallet: Wallet,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -279,7 +282,6 @@ class SignatureImporterUSB(SignatureImporterQR):
         super().__init__(
             network=network,
             blockchain=blockchain,
-            dummy_wallet=dummy_wallet,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,

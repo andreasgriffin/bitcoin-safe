@@ -17,6 +17,7 @@ from .util import path_to_rel_home_path, rel_home_path_to_abs_path
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
+NO_FEE_WARNING_BELOW = 10  # sat/vB
 
 
 class UserConfig(BaseSaveableClass):

@@ -325,7 +325,10 @@ class SimpleInput:
         if not self.non_witness_utxo:
             return {}
         prev_out = OutPoint.from_bdk(self.txin.previous_output)
-        non_witness_utxo_prev_out = TxOut(**self.non_witness_utxo.get("output", [])[prev_out.vout])
+        output = self.non_witness_utxo.get("output", [])[prev_out.vout]
+        non_witness_utxo_prev_out = TxOut(
+            value=output["value"], script_pubkey=bdk.Script(bytes.fromhex(output["script_pubkey"]))
+        )
         return {str(prev_out): non_witness_utxo_prev_out}
 
 

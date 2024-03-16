@@ -1616,6 +1616,8 @@ class ToolsTxUiInfo:
     def fill_utxo_dict_from_categories(txuiinfos: TxUiInfos, categories: List[str], wallets: List[Wallet]):
         for wallet in wallets:
             for utxo in wallet.get_all_txos():
+                if utxo.is_spent_by_txid:
+                    continue
                 if (
                     wallet.labels.get_category(
                         wallet.bdkwallet.get_address_of_txout(TxOut.from_bdk(utxo.txout))

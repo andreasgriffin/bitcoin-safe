@@ -251,7 +251,13 @@ class MempoolData(QObject):
         "Average fee of the 0 projected block"
         if self.mempool_blocks is None:
             return max_reasonable_fee_rate_fallback
-        return sum(self.fee_min_max(0)) / 2
+
+        average_fee_rate = sum(self.fee_min_max(0)) / 2
+
+        # allow for up to 20% more then the average_fee_rate
+        slack = 0.2
+
+        return average_fee_rate * (1 + slack)
 
     def set_data_from_mempoolspace(self, force=False):
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):

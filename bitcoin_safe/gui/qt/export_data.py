@@ -201,12 +201,16 @@ class ExportDataSimple(HorizontalImportExportGroups):
         button.setIcon(QIcon(read_QIcon("cloud-sync.svg")))
         button.setText(title)
 
-        def factory(wallet_id: str, sync_tab: SyncTab, receiver_public_key: PublicKey = None):
-            def f(receiver_public_key=receiver_public_key, wallet_id=wallet_id, sync_tab=sync_tab):
-                if not receiver_public_key:
-                    self.on_nostr_share_in_group(wallet_id, sync_tab)
+        def factory(wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str = None):
+            def f(
+                wallet_id=wallet_id, sync_tab=sync_tab, receiver_public_key_bech32=receiver_public_key_bech32
+            ):
+                if receiver_public_key_bech32:
+                    self.on_nostr_share_with_member(
+                        PublicKey.from_bech32(receiver_public_key_bech32), wallet_id, sync_tab
+                    )
                 else:
-                    self.on_nostr_share_with_member(receiver_public_key, wallet_id, sync_tab)
+                    self.on_nostr_share_in_group(wallet_id, sync_tab)
 
             return f
 
@@ -219,7 +223,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
             menu_single_device = menu.addMenu(f"Share with single device")
             for member in sync_tab.nostr_sync.group_chat.members:
                 action = menu_single_device.addAction(f"{short_key(member.to_bech32())}")
-                action.triggered.connect(factory(wallet_id, sync_tab, member))
+                action.triggered.connect(factory(wallet_id, sync_tab, member.to_bech32()))
             menu.addSeparator()
 
         button.setMenu(menu)
@@ -233,7 +237,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
             Message(f"Please enable syncing in the wallet {wallet_id} first")
             return
         sync_tab.nostr_sync.group_chat.dm_connection.send(
-            BitcoinDM(label=ChatLabel.GroupChat, data=self.data, event=None, description=""),
+            BitcoinDM(label=ChatLabel.SingleRecipient, data=self.data, event=None, description=""),
             receiver_public_key,
         )
 
@@ -243,7 +247,8 @@ class ExportDataSimple(HorizontalImportExportGroups):
             return
 
         sync_tab.nostr_sync.group_chat.send(
-            BitcoinDM(label=ChatLabel.GroupChat, data=self.data, event=None, description="")
+            BitcoinDM(label=ChatLabel.GroupChat, data=self.data, event=None, description=""),
+            send_also_to_me=False,
         )
 
     def export_qrcode(self):

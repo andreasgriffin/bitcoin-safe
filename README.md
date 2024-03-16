@@ -4,95 +4,96 @@
 
 ## Currently ALPHA -- Use only on regtest / testnet / signet
 
-#### Goals
+#### Features
 
-- **Easy** Bitcoin wallet for long-term cold storage
-  - **Best practices** built into the wallet setup 
-  - **Easier** address labels by using categories (e.g.  "KYC", "Non-KYC", "Work",  "Friends", ...) 
-    - Automatic coin selection within categories
-  - **Easier** fee selection for non-technical users 
-  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
-    * Opportunistic merging of small utxos when fees are low
-- **Fast**: Chain data with **Compact Block Filters** by default   
-  - Compact Block Filters are **fast** and **private**
-  - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/pull/1055), and will be included in bdk 1.0.  For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
-- **Secure**: No seed generation or storage (on mainnet). A hardware signer/signing device will be needed (storing seeds on a computer is  reckless)
-  - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI  by Sparrow
-  - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
+- Single and 2-of-3 Multisig wallet **guide**
 
+- Search across all wallets
 
-#### Design principles
+- RBF and Cancel unconfirmed transactions
 
-* KISS
-  * If a new user needs a tutorial video, it is too difficult
+- Category labeling of addresses 
 
-* Only present safe options to the user (on mainnet) (warnings are typically ignored by everyone)
-* Add options only if they are needed
-  * Example: 1 unified amount formatting (credit to Seed Signer) is sufficient:  0.12 345 678 BTC     (no mBTC , Sats, needed)
+- Label synchronization between trusted devices   (via nostr)
 
-#### TODOs (a lot)
+- Wallet chat and sharing of PSBTs   (via nostr)
 
-- [x] Add guide steps after the wallet setup
-- [x] Network UI configuration 
-  - [x] Setting of custom CBF node ip and port
-- [x] CTRL + C  and CSV export across all tables
-- [x] Send
-  - [x] Coin selection (categories+ manual), singing (with seed on regtest), and broadcasting 
-  - [x] Opportunistic consolidation within coin categories, when fees are low
-  - [x] hardware signers: HWI USB, QR, SD
-  - [x] Address and TX labeling using categories
-- [x] Address dialog & TX dialog
-- [x] [BIP329](https://github.com/bitcoin/bips/blob/1d15f3e0f486ea142b5fdef856ab5a4bbb166e01/bip-0329.mediawiki#L4)
-- [x] RBF
-- [ ] CPFP
-- [ ] multi language
-- [ ] Adding tests for rigorous UI testing
-- [ ] Include listening to p2p traffic for new tx announcements
-  - [ ] Include desktop notifications (via tray icon)
-- [ ] PSBT exchange for Multisig signing over Nostr encrypted messages  
-  - [x] proof of concept working
-
-- [ ] Label p2p Synchronization via nostr direct encrypted messages  
-
-
-#### UX
+#### Preview
 
 ##### Sending
+
 ![screenshot0](docs/send.gif)
 
 ##### Setup a multisig wallet
+
 ![screenshot1](docs/multisig-setup.gif)
 
+##### PSBT sharing with trusted devices
 
+![psbt-share.gif](docs/psbt-share.gif)
+
+##### Label Synchronization with trusted devices
+
+![label-sync.gif](docs/label-sync.gif)
+
+
+
+#### Goals (for the 1.0 Release)
+
+- **Easy** Bitcoin wallet for long-term cold storage
+  - **Best practices** built into the wallet setup
+  - **Easier** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
+    - Automatic coin selection within categories
+  - **Easier** fee selection for non-technical users
+  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
+    - Opportunistic merging of small utxos when fees are low
+- **Fast**: Chain data with **Compact Block Filters** by default
+  - Compact Block Filters are **fast** and **private**
+  - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/issues/679), and will be included in bdk 1.1. For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
+- **Secure**: No seed generation or storage (on mainnet). A hardware signer/signing device will be needed (storing seeds on a computer is reckless)
+  - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI by Sparrow
+  - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
+
+#### Design principles
+
+- KISS: If a new user needs a tutorial video, it is too difficult
+
+- Only present safe options to the user (on mainnet) (warnings are typically ignored by everyone)
+
+- Choose sane defaults and add config options only if they are needed
+
+#### TODOs (getting less)
+
+- [ ] CPFP show combined fee rate
+- [ ] multi language
+- [ ] Add more pytests
+- [ ] [bbqr code](https://bbqr.org/)
+- [ ] Include listening to p2p traffic for new tx announcements
+  - [ ] Include desktop notifications (via tray icon)
 
 ## Installation
 
- * Install dependencies and setup poetry
+* Install dependencies and setup poetry
+  
+  ```sh
+  sudo apt install libsecp256k1-1
+  git clone https://github.com/andreasgriffin/bitcoin-safe.git
+  cd bitcoin-safe
+  ```
 
-   ```sh
-   sudo apt install libsecp256k1-1
-   git clone https://github.com/andreasgriffin/bitcoin-safe.git
-   cd bitcoin-safe
-   ```
+* Setup poetry and install dependencies 
+  
+  ```sh
+  pip install poetry
+  poetry install
+  ```
 
- * Setup poetry and install dependencies 
-
-   ```sh
-   pip install poetry
-   poetry config virtualenvs.in-project true
-   poetry install
-   ```
-   
-
-
- * Run  
-
-   ```sh
-   poetry shell
-   python -m bitcoin_safe
-   ```
-
-
+* Run  
+  
+  ```sh
+  poetry shell
+  python -m bitcoin_safe
+  ```
 
 ### Development
 
@@ -118,8 +119,6 @@ pre-commit run --all-files
 
 * 
 * 
-
-
 
 #### Regtest docker environement with electrs and mempool
 
@@ -160,8 +159,6 @@ sudo docker-compose logs -f mempool-api
 ```
 
 * this opens a mempool at http://localhost:8080/
-
-  
 
 #### Control the Regtest environment
 
