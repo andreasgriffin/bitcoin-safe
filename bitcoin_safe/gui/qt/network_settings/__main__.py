@@ -1,3 +1,5 @@
+import logging
+
 import bdkpython as bdk
 import numpy as np
 from PyQt6.QtWidgets import QApplication
@@ -5,6 +7,8 @@ from PyQt6.QtWidgets import QApplication
 from bitcoin_safe.network_config import NetworkConfigs
 
 from .main import NetworkSettingsUI
+
+logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == "__main__":
     import os
@@ -23,7 +27,9 @@ if __name__ == "__main__":
                 network_configs = NetworkConfigs()
 
             self.network_settings_ui = NetworkSettingsUI(
-                network=np.random.choice(list(bdk.Network), size=1)[0], network_configs=network_configs
+                network=np.random.choice(list(bdk.Network), size=1)[0],
+                network_configs=network_configs,
+                signals=None,
             )
 
             self.setCentralWidget(self.network_settings_ui)

@@ -183,4 +183,22 @@ test-seed
 .bitcoin_safe.config
 *.wallet
 bitcoin_core
-tools
+tools-my/
+
+
+dist/
+AppDir/
+*.AppImage
+
+
+bitcoin_safe.dist-info
+
+
+
+
+# translation files
+*.po
+*.csv
+
+screenshots*/
+.DS_Store

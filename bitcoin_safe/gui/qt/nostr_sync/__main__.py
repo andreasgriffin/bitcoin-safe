@@ -1,6 +1,8 @@
 import logging
 from typing import Dict
 
+from bitcoin_safe.signals import SignalsMin
+
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -55,12 +57,12 @@ if __name__ == "__main__":
             return None
 
     class DemoApp(QMainWindow):
-        def __init__(self):
+        def __init__(self, signals_min: SignalsMin):
             super().__init__()
 
             d = load_dict_from_file("my_dict.json")
             if d:
-                self.nostr_sync = NostrSync.from_dump(d, network=bdk.Network.REGTEST)
+                self.nostr_sync = NostrSync.from_dump(d, network=bdk.Network.REGTEST, signals_min=signals_min)
             else:
 
                 protcol_secret_str = "112343112231115111111111311311"
@@ -69,7 +71,10 @@ if __name__ == "__main__":
                 )
 
                 self.nostr_sync = NostrSync.from_keys(
-                    network=bdk.Network.REGTEST, protocol_keys=keys, device_keys=Keys.generate()
+                    network=bdk.Network.REGTEST,
+                    protocol_keys=keys,
+                    device_keys=Keys.generate(),
+                    signals_min=signals_min,
                 )
             self.nostr_sync.subscribe()
             self.setCentralWidget(self.nostr_sync.gui)
@@ -81,6 +86,6 @@ if __name__ == "__main__":
 
     if __name__ == "__main__":
         app = QApplication(sys.argv)
-        demoApp = DemoApp()
+        demoApp = DemoApp(SignalsMin())
         demoApp.show()
         sys.exit(app.exec())

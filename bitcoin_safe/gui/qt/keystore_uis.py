@@ -1,25 +1,56 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.dialogs import question_dialog
+from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 
 from typing import Callable, List
-
-from PyQt6.QtWidgets import QTabWidget
 
 from ...descriptors import AddressType
 from ...wallet import ProtoWallet
 from .keystore_ui import KeyStoreUI, icon_for_label
 
 
-class KeyStoreUIs((QTabWidget)):
+class KeyStoreUIs(DataTabWidget):
     def __init__(
         self,
         get_editable_protowallet: Callable[[], ProtoWallet],
         get_address_type: Callable[[], AddressType],
+        signals_min: SignalsMin,
     ) -> None:
         super().__init__()
+        self.signals_min = signals_min
 
         self.get_editable_protowallet = get_editable_protowallet
         self.get_address_type = get_address_type
@@ -33,6 +64,7 @@ class KeyStoreUIs((QTabWidget)):
                 self.protowallet.network,
                 get_address_type=self.get_address_type,
                 label=self.protowallet.signer_name(i),
+                signals_min=signals_min,
             )
             self.keystore_uis.append(keystore_ui)
 
@@ -44,6 +76,17 @@ class KeyStoreUIs((QTabWidget)):
             signal.connect(self.ui_keystore_ui_change)
         for ui in self.keystore_uis:
             ui.edit_seed.input_field.textChanged.connect(self.ui_keystore_ui_change)
+
+        self.signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        # udpate the label for where the keystore exists
+        for i, keystore in enumerate(self.protowallet.keystores):
+            if not keystore:
+                continue
+            keystore.label = self.protowallet.signer_name(i)
+
+        self._set_keystore_tabs()
 
     @property
     def protowallet(self) -> ProtoWallet:
@@ -59,7 +102,7 @@ class KeyStoreUIs((QTabWidget)):
 
     def set_protowallet_from_keystore_ui(self):
 
-        # and last are the keystore uis, which can cause exceptions
+        # and last are the keystore uis, which can cause exceptions, because the UI is not filled correctly
         for i, keystore_ui in enumerate(self.keystore_uis):
             logger.debug(f"set_keystore_from_ui_values in {keystore_ui.label}")
             ui_keystore = keystore_ui.get_ui_values_as_keystore()
@@ -74,12 +117,7 @@ class KeyStoreUIs((QTabWidget)):
         for i, keystore in enumerate(self.protowallet.keystores):
             if keystore is None:
                 continue
-            if (
-                not keystore.label
-                or keystore.label.startswith("Recovery Signer ")
-                or keystore.label.startswith("Signer ")
-            ):
-                keystore.label = self.protowallet.signer_names(self.protowallet.threshold, i)
+            keystore.label = self.protowallet.signer_names(self.protowallet.threshold, i)
 
     def _set_keystore_tabs(self):
         # add keystore_ui if necessary
@@ -92,6 +130,7 @@ class KeyStoreUIs((QTabWidget)):
                         self.protowallet.network,
                         get_address_type=self.get_address_type,
                         label=self.protowallet.signer_name(i),
+                        signals_min=self.signals_min,
                     )
                 )
         # remove keystore_ui if necessary

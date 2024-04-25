@@ -1,6 +1,36 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 from typing import Optional
 
+import numpy as np
 import requests
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
@@ -8,17 +38,20 @@ from bitcoin_safe.gui.qt.util import (
     Message,
     ensure_scheme,
     get_host_and_port,
+    read_QIcon,
     remove_scheme,
 )
 from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
-    get_default_electrum_url,
     get_default_mempool_url,
     get_default_port,
     get_description,
+    get_electrum_configs,
+    get_esplora_urls,
 )
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType, bdk
+from bitcoin_safe.signals import Signals
 
 logger = logging.getLogger(__name__)
 
@@ -144,18 +177,21 @@ class NetworkSettingsUI(QDialog):
     signal_apply_and_restart = pyqtSignal(str)
     signal_cancel = pyqtSignal()
 
-    def __init__(self, network: bdk.Network, network_configs: NetworkConfigs, parent=None):
+    def __init__(
+        self, network: bdk.Network, network_configs: NetworkConfigs, signals: Optional[Signals], parent=None
+    ):
         super().__init__(parent)
-        self.setWindowTitle("Network Settings")
+        self.signals = signals
         self.network_configs = network_configs
         self.layout = QVBoxLayout(self)
 
+        self.setWindowIcon(read_QIcon("logo.svg"))
         self.network_combobox = QComboBox(self)
         for _network in bdk.Network:
             self.network_combobox.addItem(_network.name)
         self.layout.addWidget(self.network_combobox)
 
-        self.groupbox_connection = QGroupBox("Blockchain data source", self)
+        self.groupbox_connection = QGroupBox(parent=self)
         self.layout.addWidget(self.groupbox_connection)
         self.groupbox_connection.setLayout(QVBoxLayout())
 
@@ -171,17 +207,26 @@ class NetworkSettingsUI(QDialog):
         # Compact Block Filters
         self.compactBlockFiltersTab = QWidget()
         self.compactBlockFiltersLayout = QFormLayout(self.compactBlockFiltersTab)
+        self.compactBlockFiltersLayout.setFieldGrowthPolicy(
+            QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow
+        )
 
         self.cbf_server_typeComboBox = QComboBox(self.compactBlockFiltersTab)
-        self.cbf_server_typeComboBox.addItem("Manual")
-        self.cbf_server_typeComboBox.addItem("Automatic")
+        self.cbf_server_typeComboBox.addItem(self.tr("Manual"), CBFServerType.Manual)
+        self.cbf_server_typeComboBox.addItem(self.tr("Automatic"), CBFServerType.Automatic)
         self.cbf_server_typeComboBox.setCurrentIndex(1)
 
-        self.compactBlockFiltersLayout.addRow("Mode:", self.cbf_server_typeComboBox)
+        self.cbf_server_typeComboBox_label = QLabel()
+        self.compactBlockFiltersLayout.addRow(
+            self.cbf_server_typeComboBox_label, self.cbf_server_typeComboBox
+        )
 
         self.compactblockfilters_ip_address_edit = QCompleterLineEdit(network=network)
         self.compactblockfilters_ip_address_edit.setEnabled(False)
-        self.compactBlockFiltersLayout.addRow("IP Address:", self.compactblockfilters_ip_address_edit)
+        self.compactblockfilters_ip_address_edit_label = QLabel()
+        self.compactBlockFiltersLayout.addRow(
+            self.compactblockfilters_ip_address_edit_label, self.compactblockfilters_ip_address_edit
+        )
 
         self.compactblockfilters_port_edit = QCompleterLineEdit(
             network=network,
@@ -191,9 +236,12 @@ class NetworkSettingsUI(QDialog):
             },
         )
         self.compactblockfilters_port_edit.setEnabled(False)
-        self.compactBlockFiltersLayout.addRow("Port:", self.compactblockfilters_port_edit)
+        self.compactblockfilters_port_edit_label = QLabel()
+        self.compactBlockFiltersLayout.addRow(
+            self.compactblockfilters_port_edit_label, self.compactblockfilters_port_edit
+        )
 
-        self.cbf_description = QLabel("")
+        self.cbf_description = QLabel()
         self.cbf_description.setWordWrap(True)
         self.cbf_description.setTextFormat(Qt.TextFormat.RichText)
         self.cbf_description.setOpenExternalLinks(True)  # Enable opening links
@@ -204,18 +252,28 @@ class NetworkSettingsUI(QDialog):
         # Electrum Server
         self.electrumServerTab = QWidget()
         self.electrumServerLayout = QFormLayout(self.electrumServerTab)
+        self.electrumServerLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         #
         self.electrum_url_edit = QCompleterLineEdit(
             network=network,
-            suggestions={network: [get_default_electrum_url(network)] for network in bdk.Network},
+            suggestions={
+                network: list(
+                    np.unique(
+                        [electrum_config.url for electrum_config in get_electrum_configs(network).values()]
+                    )
+                )
+                for network in bdk.Network
+            },
         )
+        self.electrum_url_edit.editingFinished.connect(self.on_electrum_url_editing_finished)
         self.electrum_use_ssl_checkbox = QCheckBox()
-        self.electrum_use_ssl_checkbox.setText("Enable SSL")
 
-        self.electrumServerLayout.addRow("URL:", self.electrum_url_edit)
-        self.electrumServerLayout.addRow("SSL:", self.electrum_use_ssl_checkbox)
+        self.electrum_url_edit_url_label = QLabel()
+        self.electrumServerLayout.addRow(self.electrum_url_edit_url_label, self.electrum_url_edit)
+        self.electrum_use_ssl_checkbox_label = QLabel()
+        self.electrumServerLayout.addRow(self.electrum_use_ssl_checkbox_label, self.electrum_use_ssl_checkbox)
 
-        self.electrum_description = QLabel("")
+        self.electrum_description = QLabel()
         self.electrum_description.setWordWrap(True)
         self.electrum_description.setTextFormat(Qt.TextFormat.RichText)
         self.electrum_description.setOpenExternalLinks(True)  # Enable opening links
@@ -226,11 +284,18 @@ class NetworkSettingsUI(QDialog):
         # Esplora Server
         self.esploraServerTab = QWidget()
         self.esploraServerLayout = QFormLayout(self.esploraServerTab)
-        self.esplora_url_edit = QCompleterLineEdit(network=network)
+        self.esploraServerLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.esplora_url_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: list(np.unique(list(get_esplora_urls(network).values()))) for network in bdk.Network
+            },
+        )
 
-        self.esploraServerLayout.addRow("URL:", self.esplora_url_edit)
+        self.esplora_url_edit_label = QLabel()
+        self.esploraServerLayout.addRow(self.esplora_url_edit_label, self.esplora_url_edit)
 
-        self.esplora_description = QLabel("")
+        self.esplora_description = QLabel()
         self.esplora_description.setWordWrap(True)
         self.esplora_description.setTextFormat(Qt.TextFormat.RichText)
         self.esplora_description.setOpenExternalLinks(True)  # Enable opening links
@@ -241,6 +306,7 @@ class NetworkSettingsUI(QDialog):
         # RPC
         self.rpcTab = QWidget()
         self.rpcTabLayout = QFormLayout(self.rpcTab)
+        self.rpcTabLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
         self.rpc_ip_address_edit = QCompleterLineEdit(network=network)
         self.rpc_port_edit = QCompleterLineEdit(
@@ -253,12 +319,16 @@ class NetworkSettingsUI(QDialog):
         self.rpc_username_edit = QCompleterLineEdit(network=network)
         self.rpc_password_edit = QCompleterLineEdit(network=network)
 
-        self.rpcTabLayout.addRow("IP Address:", self.rpc_ip_address_edit)
-        self.rpcTabLayout.addRow("Port:", self.rpc_port_edit)
-        self.rpcTabLayout.addRow("Username:", self.rpc_username_edit)
-        self.rpcTabLayout.addRow("Password:", self.rpc_password_edit)
+        self.rpc_ip_address_edit_label = QLabel()
+        self.rpcTabLayout.addRow(self.rpc_ip_address_edit_label, self.rpc_ip_address_edit)
+        self.rpc_port_edit_label = QLabel()
+        self.rpcTabLayout.addRow(self.rpc_port_edit_label, self.rpc_port_edit)
+        self.rpc_username_edit_label = QLabel()
+        self.rpcTabLayout.addRow(self.rpc_username_edit_label, self.rpc_username_edit)
+        self.rpc_password_edit_label = QLabel()
+        self.rpcTabLayout.addRow(self.rpc_password_edit_label, self.rpc_password_edit)
 
-        self.rpc_description = QLabel("")
+        self.rpc_description = QLabel()
         self.rpc_description.setWordWrap(True)
         self.rpc_description.setTextFormat(Qt.TextFormat.RichText)
         self.rpc_description.setOpenExternalLinks(True)  # Enable opening links
@@ -266,7 +336,7 @@ class NetworkSettingsUI(QDialog):
 
         self.stackedWidget.addWidget(self.rpcTab)
 
-        self.groupbox_blockexplorer = QGroupBox("Mempool Instance URL")
+        self.groupbox_blockexplorer = QGroupBox()
         self.groupbox_blockexplorer_layout = QVBoxLayout(self.groupbox_blockexplorer)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
@@ -281,11 +351,11 @@ class NetworkSettingsUI(QDialog):
             | QDialogButtonBox.StandardButton.Ok
             | QDialogButtonBox.StandardButton.Cancel
         )
-        self.button_box.button(QDialogButtonBox.StandardButton.Ok).setText("Apply && Restart")
+        self.button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self.tr("Apply && Restart"))
         self.button_box.accepted.connect(self.on_apply_click)
         self.button_box.rejected.connect(self.on_cancel_click)
 
-        self.button_box.button(QDialogButtonBox.StandardButton.Help).setText("Test Connection")
+        self.button_box.button(QDialogButtonBox.StandardButton.Help).setText(self.tr("Test Connection"))
         self.button_box.helpRequested.connect(self.test_connection)
 
         self.layout.addWidget(self.button_box)
@@ -299,6 +369,38 @@ class NetworkSettingsUI(QDialog):
         self.set_ui(self.network_config)
 
         self._edits_set_network(self.network)
+        if self.signals:
+            self.signals.language_switch.connect(self.updateUi)
+        self.updateUi()
+
+    def updateUi(self):
+        self.setWindowTitle(self.tr("Network Settings"))
+        self.groupbox_connection.setTitle(self.tr("Blockchain data source"))
+        self.electrum_use_ssl_checkbox.setText(self.tr("Enable SSL"))
+        self.esplora_url_edit_label.setText(self.tr("URL:"))
+        self.electrum_url_edit_url_label.setText(self.tr("URL:"))
+        self.electrum_use_ssl_checkbox_label.setText(self.tr("SSL:"))
+        self.compactblockfilters_port_edit_label.setText(self.tr("Port:"))
+        self.cbf_server_typeComboBox_label.setText(self.tr("Mode:"))
+        self.compactblockfilters_ip_address_edit_label.setText(self.tr("IP Address:"))
+        self.rpc_ip_address_edit_label.setText(self.tr("IP Address:"))
+        self.rpc_port_edit_label.setText(self.tr("Port:"))
+        self.rpc_username_edit_label.setText(self.tr("Username:"))
+        self.rpc_password_edit_label.setText(self.tr("Password:"))
+        self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance URL"))
+
+    def on_electrum_url_editing_finished(self):
+        def get_use_ssl(url: str):
+            for electrum_config in get_electrum_configs(self.network).values():
+                if url.strip() == electrum_config.url.strip():
+                    return electrum_config.use_ssl
+            return None
+
+        use_ssl = get_use_ssl(self.electrum_url_edit.text())
+        if use_ssl is None:
+            return
+        logger.debug(f"set use_ssl = {use_ssl}")
+        self.electrum_use_ssl = use_ssl
 
     @property
     def network_config(self) -> NetworkConfig:
@@ -318,7 +420,11 @@ class NetworkSettingsUI(QDialog):
             return "Success" if response else "Failed"
 
         Message(
-            f"Responses:\n    {network_config.server_type.name}: {format_status(server_connection)}\n    Mempool Instance: {format_status(mempool_server)}"
+            self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
+                name=network_config.server_type.name,
+                status=format_status(server_connection),
+                server=format_status(mempool_server),
+            )
         )
 
     def set_server_type_comboBox(self, new_index: int):
@@ -419,7 +525,7 @@ class NetworkSettingsUI(QDialog):
         )
 
     def enableIPPortLineEdit(self, index: int):
-        if self.cbf_server_typeComboBox.itemText(index) == "Manual":
+        if self.cbf_server_typeComboBox.itemData(index) == CBFServerType.Manual:
             self.compactblockfilters_ip_address_edit.setEnabled(True)
             self.compactblockfilters_port_edit.setEnabled(True)
         else:
@@ -457,11 +563,11 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def cbf_server_type(self) -> CBFServerType:
-        return CBFServerType.from_text(self.cbf_server_typeComboBox.currentText())
+        return self.cbf_server_typeComboBox.currentData()
 
     @cbf_server_type.setter
     def cbf_server_type(self, cbf_server_type: CBFServerType):
-        index = self.cbf_server_typeComboBox.findText(cbf_server_type.name)
+        index = self.cbf_server_typeComboBox.findData(cbf_server_type)
         if index != -1:
             self.cbf_server_typeComboBox.setCurrentIndex(index)
             self.enableIPPortLineEdit(index)

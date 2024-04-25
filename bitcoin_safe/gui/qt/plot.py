@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import datetime
 import random
 import sys
@@ -58,15 +87,43 @@ class BalanceChart(QWidget):
         # Set layout
         self.setLayout(layout)
 
+    def set_value_axis_label_format(self, max_value):
+        if max_value != 0:
+            # Determine the number of digits before the decimal
+            import math
+
+            magnitude = int(math.log10(abs(max_value)))
+
+            # Decide the number of decimal places based on the magnitude
+            if magnitude < 1:
+                # Small values, more precision
+                decimals = 3
+            elif magnitude < 3:
+                # Moderate values
+                decimals = 2
+            elif magnitude < 5:
+                # Larger values, less precision needed
+                decimals = 1
+            else:
+                # Very large values, no decimals needed
+                decimals = 0
+        else:
+            # Default to three decimal places if max_value is 0
+            decimals = 3
+
+        # Set the label format on the axis
+        format_string = f"%.{decimals}f"
+        self.value_axis.setLabelFormat(format_string)
+
     def update_chart(self, balance_data, project_until_now=True):
         if len(balance_data) == 0:
             return
         balance_data = np.array(balance_data).copy()
 
-        self.datetime_axis.setTitleText("Date")
+        self.datetime_axis.setTitleText(self.tr("Date"))
         self.datetime_axis.setTickCount(6)
         self.value_axis.setTitleText(self.y_axis_text)
-        self.value_axis.setLabelFormat("%.2f")  # Set format to two decimal places
+        self.set_value_axis_label_format(np.max(balance_data[:, 1]))
 
         # Clear previous series
         self.chart.removeAllSeries()
@@ -177,12 +234,23 @@ class BalanceChart(QWidget):
 
 class WalletBalanceChart(BalanceChart):
     def __init__(self, wallet: Wallet, signals: Signals):
-        super().__init__(y_axis_text=f"Balance ({unit_str(wallet.network)})")
+        super().__init__(y_axis_text="")
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
         self.signals = signals
 
+        self.updateUi()
+
+        # signals
         self.signals.utxos_updated.connect(self.update_balances)
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
+
+        self.datetime_axis.setTitleText(self.tr("Date"))
+        self.value_axis.setTitleText(self.y_axis_text)
+        self.chart.update()
 
     def update_balances(self):
 

@@ -1,9 +1,37 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 from typing import List
 
 from PyQt6.QtCore import QMargins, Qt
-from PyQt6.QtGui import QFont, QResizeEvent, QWheelEvent
+from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import (
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QScrollArea,
@@ -18,7 +46,30 @@ from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from .image_widget import QRCodeWidgetSVG
 
 
-class ReceiveGroup(QGroupBox):
+class TitledComponent(QWidget):
+    def __init__(self, title, hex_color, parent=None):
+        super().__init__(parent)
+
+        self.title = QLabel(title, self)
+
+        font = QFont()
+        font.setBold(True)
+        self.title.setFont(font)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+
+        # Set the background color
+        palette = self.palette()
+        palette.setColor(QPalette.ColorRole.Window, QColor(hex_color))
+        self.setPalette(palette)
+        self.setAutoFillBackground(True)
+
+        self.setLayout(QVBoxLayout())
+        self.layout().setSpacing(3)
+
+        self.layout().addWidget(self.title)
+
+
+class ReceiveGroup(TitledComponent):
     def __init__(
         self,
         category: str,
@@ -27,50 +78,29 @@ class ReceiveGroup(QGroupBox):
         qr_uri: str,
         width=170,
     ):
-        super().__init__(category)
-
-        # Set the stylesheet for the QGroupBox
-        self.setStyleSheet(
-            f"""
-            QGroupBox {{
-                background-color: {hex_color};
-            }}
-            QGroupBox::title {{
-                subcontrol-origin: margin;
-                subcontrol-position: top center; /* Center align the title */
-                margin-top: 3px; /* Margin at the top for the title */
-                margin-left: 0px; /* Align the title text to the center */
-                margin-right: 0px;
-                }}
-            """
-        )
-        font = QFont()
-        font.setBold(True)
-        self.setFont(font)
-
+        super().__init__(title=category, hex_color=hex_color)
         self.setFixedWidth(width)
-
-        v_layout = QVBoxLayout(self)
-        v_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-        v_layout.setSpacing(3)
 
         # QR Code
         self.qr_code = QRCodeWidgetSVG()
         self.qr_code.setMinimumHeight(30)
-        self.qr_code.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.qr_code.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.qr_code.set_data_list([qr_uri])
-        v_layout.addWidget(self.qr_code)
+        self.layout().addWidget(self.qr_code)
 
         self.text_edit = ButtonEdit(input_field=QTextEdit(address))
+        self.text_edit.input_field.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.text_edit.setReadOnly(True)
         self.text_edit.add_copy_button()
         self.text_edit.input_field.setStyleSheet(
             f"""
             background-color: {hex_color};
+            border: none;
             """
         )
+
         self.text_edit.setFixedHeight(55)
-        v_layout.addWidget(self.text_edit)
+        self.layout().addWidget(self.text_edit)
 
 
 class NoVerticalScrollArea(QScrollArea):
@@ -119,11 +149,11 @@ class QuickReceive(QWidget):
 
         # Main Layout
         main_layout = QVBoxLayout(self)
-        self.label = QLabel(title)
+        self.label_title = QLabel(title)
         font = QFont()
         font.setBold(True)
-        self.label.setFont(font)
-        main_layout.addWidget(self.label)
+        self.label_title.setFont(font)
+        main_layout.addWidget(self.label_title)
         main_layout.addWidget(self.scroll_area)
 
         # Group Box Management

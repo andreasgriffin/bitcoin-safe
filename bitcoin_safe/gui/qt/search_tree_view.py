@@ -1,4 +1,35 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
+
+from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +63,8 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx import UITx_Creator
+
+from ...i18n import translate
 
 
 class HTMLDelegate(QStyledItemDelegate):
@@ -201,7 +234,6 @@ class SearchTreeView(QWidget):
 
         self.search_field = QLineEdit(self)
         self.search_field.setClearButtonEnabled(True)
-        self.search_field.setPlaceholderText("Type to search...")
         self.layout().addWidget(self.search_field)
 
         self.popup = CustomPopup(self)
@@ -218,8 +250,12 @@ class SearchTreeView(QWidget):
         self.highlight_delegate = HTMLDelegate(self.tree_view)
         self.tree_view.setItemDelegate(self.highlight_delegate)
 
+        self.updateUi()
         # Install event filter on the main window
         self.window().installEventFilter(self)
+
+    def updateUi(self):
+        self.search_field.setPlaceholderText(translate("mytreeview", "Type to search..."))
 
     def on_search(self, text: str):
         search_results = self.do_search(text)
@@ -262,6 +298,7 @@ class SearchWallets(SearchTreeView):
     def __init__(
         self,
         get_qt_wallets: Callable[[], List[QTWallet]],
+        signal_min: SignalsMin,
         parent=None,
         result_height=300,
         result_width=500,
@@ -274,8 +311,10 @@ class SearchWallets(SearchTreeView):
             result_height=result_height,
             result_width=result_width,
         )
+        self.signal_min = signal_min
 
         self.get_qt_wallets = get_qt_wallets
+        self.signal_min.language_switch.connect(self.updateUi)
 
     def search_result_on_click(self, result_item: ResultItem):
         # call the parent action first

@@ -1,9 +1,42 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
+
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.html import html_f
+from bitcoin_safe.signals import Signals
 
 logger = logging.getLogger(__name__)
 
 from bdkpython import Network
-from PyQt6.QtCore import QCoreApplication, QObject, Qt, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtWidgets import (
     QGroupBox,
@@ -11,7 +44,6 @@ from PyQt6.QtWidgets import (
     QLabel,
     QPushButton,
     QSizePolicy,
-    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -25,9 +57,10 @@ class NewWalletWelcomeScreen(QObject):
     signal_onclick_single_signature = pyqtSignal()
     signal_onclick_custom_signature = pyqtSignal()
 
-    def __init__(self, main_tabs: QTabWidget, network: Network) -> None:
+    def __init__(self, main_tabs: DataTabWidget, network: Network, signals: Signals) -> None:
         super().__init__()
         self.main_tabs = main_tabs
+        self.signals = signals
 
         self.name = "New wallet tab"
         self.network = network
@@ -49,9 +82,10 @@ class NewWalletWelcomeScreen(QObject):
             self.main_tabs,
             self.tab,
             read_QIcon("file.png"),
-            "Create new wallet",
-            "Create new wallet",
+            self.tr("Create new wallet"),
+            self.tr("Create new wallet"),
             focus=True,
+            data=self,
         )
 
     def create_ui(self):
@@ -135,54 +169,58 @@ class NewWalletWelcomeScreen(QObject):
 
         self.horizontalLayout_2.addWidget(self.groupBox_3)
 
-        # self.groupBox_singlesig.setTitle(QCoreApplication.translate("Form", u"Single Signature Wallet", None))
         self.label_singlesig.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.label_multisig.setAlignment(Qt.AlignmentFlag.AlignTop)
+        # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
+        self.label_custom.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.updateUi()
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
         self.label_singlesig.setText(
-            """<h1>Single Signature Wallet</h1>
+            f"""<h1>{self.tr('Single Signature Wallet')}</h1>
 <ul>
-<li>Best for medium-sized funds</li>
+<li>{self.tr('Best for medium-sized funds')}</li>
 </ul>             
-<p><b>Pros:</b></p>
+<p><b>{self.tr('Pros:')}</b></p>
 <ul>
-<li>1 seed (24 secret words) is all you need to access your funds</li>
-<li>1 secure location to store the seed backup (on paper or steel) is needed</li>
+<li>{self.tr('1 seed (24 secret words) is all you need to access your funds')}</li>
+<li>{self.tr('1 secure location to store the seed backup (on paper or steel) is needed')}</li>
 </ul>
-<p><b>Cons:</b></p>
+<p><b>{self.tr('Cons:')}</b></p>
 <ul>
-<li>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</li>
+<li>{self.tr('If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately')}</li>
 </ul>""",
         )
-        self.groupBox_1signingdevice.setTitle(QCoreApplication.translate("Form", "1 signing devices", None))
-        self.pushButton_singlesig.setText(QCoreApplication.translate("Form", "Choose Single Signature", None))
-        # self.groupBox_multisig.setTitle(QCoreApplication.translate("Form", u"2 of 3 Multi-Signature Wallet", None))
-        self.label_multisig.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.groupBox_1signingdevice.setTitle(self.tr("1 signing devices"))
+        self.pushButton_singlesig.setText(self.tr("Choose Single Signature"))
         self.label_multisig.setText(
-            """<h1>2 of 3 Multi-Signature Wallet</h1>
+            f"""<h1>{self.tr('2 of 3 Multi-Signature Wal')}let</h1>
 <ul>
-<li>Best for large funds</li>
+<li>{self.tr('Best for large funds')}</li>
 </ul>             
-<p><b>Pros:</b></p>
+<p><b>{self.tr('Pros:')}</b></p>
 <ul>
-<li>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</li>
+<li>{self.tr('If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)')}</li>
 </ul>
-<p><b>Cons:</b></p>
+<p><b>{self.tr('Cons:')}</b></p>
 <ul>
-<li>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</li>
-<li>The wallet descriptor (QR-code) is necessary to recover the wallet</li>
+<li>{self.tr('3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)')}</li>
+<li>{self.tr('The wallet descriptor (QR-code) is necessary to recover the wallet')}</li>
 </ul>
 """,
         )
-        self.groupBox_3signingdevices.setTitle(QCoreApplication.translate("Form", "3 signing devices", None))
-        self.pushButton_multisig.setText(QCoreApplication.translate("Form", "Choose Multi-Signature", None))
-        # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
-        self.label_custom.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.groupBox_3signingdevices.setTitle(self.tr("3 signing devices"))
+        self.pushButton_multisig.setText(self.tr("Choose Multi-Signature"))
         self.label_custom.setText(
-            """<html><head/><body><h1>Custom or restore existing Wallet</h1>
-                <p><b>Pros:</b></p><p>Customize the wallet to your needs</p>
-                <p><b>Cons:</b></p><p>Less support material online in case of recovery</p>
-                </body></html>"""
+            html_f(
+                f"""<h1>{self.tr('Custom or restore existing Wallet')}</h1>
+                <p><b>{self.tr('Pros:')}</b></p><p>{self.tr('Customize the wallet to your needs')}</p>
+                <p><b>{self.tr('Cons:')}</b></p><p>{self.tr('Less support material online in case of recovery')}</p>""",
+                add_html_and_body=True,
+            )
         )
-        self.pushButton_custom_wallet.setText("Create custom wallet")
+        self.pushButton_custom_wallet.setText(self.tr("Create custom wallet"))
 
     def remove_tab(self):
         index = self.main_tabs.indexOf(self.tab)

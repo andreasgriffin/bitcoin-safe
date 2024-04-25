@@ -1,7 +1,37 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import Message, MessageType
+from bitcoin_safe.html import html_f, link
 
 from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 
@@ -51,21 +81,20 @@ class FeeGroup(QObject):
         self.config = config
         self.vsize = vsize
 
-        fee_rate = fee_rate if fee_rate else (mempool_data.get_prio_fees()[TxPrio.low])
+        fee_rate = fee_rate if fee_rate else (mempool_data.get_prio_fee_rates()[TxPrio.low])
 
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
-        self.groupBox_Fee.setTitle("Fee")
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
         self.groupBox_Fee.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.groupBox_Fee.setLayout(QVBoxLayout())
         self.groupBox_Fee.layout().setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        self.groupBox_Fee.layout().setContentsMargins(
-            int(layout.contentsMargins().left() / 5),
-            int(layout.contentsMargins().top() / 5),
-            int(layout.contentsMargins().right() / 5),
-            int(layout.contentsMargins().bottom() / 5),
-        )
+        # self.groupBox_Fee.layout().setContentsMargins(
+        #     int(layout.contentsMargins().left() / 5),
+        #     int(layout.contentsMargins().top() / 5),
+        #     int(layout.contentsMargins().right() / 5),
+        #     int(layout.contentsMargins().bottom() / 5),
+        # )
 
         if confirmation_time:
             self.mempool = ConfirmedBlock(
@@ -85,27 +114,25 @@ class FeeGroup(QObject):
             self.mempool.button_group, alignment=Qt.AlignmentFlag.AlignHCenter
         )
 
-        self.high_fee_rate_warning_label = QLabel("<font color='red'><b>High feerate</b></font>")
+        self.high_fee_rate_warning_label = QLabel()
         self.high_fee_rate_warning_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(
             self.high_fee_rate_warning_label, alignment=Qt.AlignmentFlag.AlignHCenter
         )
 
-        self.high_fee_warning_label = QLabel("<font color='red'><b>High feerate</b></font>")
+        self.high_fee_warning_label = QLabel()
         self.high_fee_warning_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(
             self.high_fee_warning_label, alignment=Qt.AlignmentFlag.AlignHCenter
         )
 
-        self.approximate_fee_label = QLabel("<font color='black'><b>Approximate fee rate</b></font>")
+        self.approximate_fee_label = QLabel()
         self.approximate_fee_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(
             self.approximate_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter
         )
 
-        self.rbf_fee_label = QLabel(
-            "<font color='black'><b>... is the minimum to replace the existing transactions.</b></font>"
-        )
+        self.rbf_fee_label = QLabel()
         self.rbf_fee_label.setWordWrap(True)
         self.rbf_fee_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(self.rbf_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
@@ -141,17 +168,39 @@ class FeeGroup(QObject):
         self.fiat_fee_label = QLabel()
         self.fiat_fee_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(self.fiat_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
-        self.fx.signal_data_updated.connect(self.set_fiat_fee_label)
-        self.set_fiat_fee_label()
+        self.fx.signal_data_updated.connect(self.updateUi)
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter)
 
-        self.spin_fee_rate.valueChanged.connect(self.set_fiat_fee_label)
-        self.mempool.mempool_data.signal_data_updated.connect(self.update_fee_rate_warning)
+        self.spin_fee_rate.valueChanged.connect(self.updateUi)
+        self.mempool.mempool_data.signal_data_updated.connect(self.updateUi)
+        self.mempool.refresh()
+        self.updateUi()
+
+    def updateUi(self):
+        self.groupBox_Fee.setTitle(self.tr("Fee"))
+        self.rbf_fee_label.setText(
+            html_f(self.tr("... is the minimum to replace the existing transactions."), bf=True)
+        )
+        self.high_fee_rate_warning_label.setText(html_f(self.tr("High fee rate"), color="red", bf=True))
+        self.high_fee_warning_label.setText(html_f(self.tr("High fee"), color="red", bf=True))
+        self.approximate_fee_label.setText(html_f(self.tr("Approximate fee rate"), bf=True))
+
+        self.label_block_number.setHidden(bool(self.mempool.confirmation_time))
+        if self.spin_fee_rate.value():
+            self.label_block_number.setText(
+                self.tr("in ~{n}. Block").format(
+                    n=self.mempool.mempool_data.fee_rate_to_projected_block_index(self.spin_fee_rate.value())
+                    + 1
+                )
+            )
+
+        self.set_fiat_fee_label()
+        self.update_fee_rate_warning()
 
     def set_vsize(self, vsize):
         self.vsize = vsize
-        self.set_fiat_fee_label()
+        self.updateUi()
 
     def set_fiat_fee_label(self):
         if not self.fx.rates.get("usd"):
@@ -168,7 +217,12 @@ class FeeGroup(QObject):
         self.rbf_fee_label.setVisible(bool(min_fee_rate))
         if min_fee_rate:
             self.rbf_fee_label.setText(
-                f"""<font color='black'>{format_fee_rate(min_fee_rate, self.config.network)} is the minimum for <a href="https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki">RBF</a></font>"""
+                (
+                    self.tr("{rate} is the minimum for {rbf}").format(
+                        rate=format_fee_rate(min_fee_rate, self.config.network),
+                        rbf=link("https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki", "RBF"),
+                    )
+                )
             )
             self.rbf_fee_label.setTextFormat(Qt.TextFormat.RichText)
             self.rbf_fee_label.setOpenExternalLinks(True)  # Enable opening links
@@ -179,17 +233,44 @@ class FeeGroup(QObject):
         if total_output_amount > 0:
             too_high = fee / total_output_amount > FEE_RATIO_HIGH_WARNING
         else:
-            Message("Fee rate could not be determined", type=MessageType.Error)
+            Message(self.tr("Fee rate could not be determined"), type=MessageType.Error)
             return
 
-        self.high_fee_warning_label.setVisible(too_high)
+        self.high_fee_warning_label.setVisible(too_high and not self.mempool.confirmation_time)
         if too_high:
             self.high_fee_warning_label.setText(
-                f"<font color='red'><b>High fee ratio: {round(fee/total_output_amount*100)}%</b></font>"
+                html_f(
+                    self.tr("High fee ratio: {ratio}%").format(ratio=round(fee / total_output_amount * 100)),
+                    color="red",
+                    bf=True,
+                )
             )
-            self.high_fee_warning_label.setToolTip(
-                f"""<html><body>The {'' if fee_is_exact else  'estimated'} transaction fee is:\n{Satoshis(fee,network).str_with_unit()}, which is {round(fee/total_output_amount*100)}% of\nthe sending value {Satoshis(total_output_amount, self.config.network).str_with_unit()}</body></html>"""
-            )
+            if fee_is_exact:
+                self.high_fee_warning_label.setToolTip(
+                    html_f(
+                        self.tr(
+                            "The transaction fee is:\n{fee}, which is {percent}% of\nthe sending value {sent}"
+                        ).format(
+                            fee=Satoshis(fee, network).str_with_unit(),
+                            percent=round(fee / total_output_amount * 100),
+                            sent=Satoshis(total_output_amount, self.config.network).str_with_unit(),
+                        ),
+                        add_html_and_body=True,
+                    )
+                )
+            else:
+                self.high_fee_warning_label.setToolTip(
+                    html_f(
+                        self.tr(
+                            "The estimated transaction fee is:\n{fee}, which is {percent}% of\nthe sending value {sent}"
+                        ).format(
+                            fee=Satoshis(fee, network).str_with_unit(),
+                            percent=round(fee / total_output_amount * 100),
+                            sent=Satoshis(total_output_amount, self.config.network).str_with_unit(),
+                        ),
+                        add_html_and_body=True,
+                    )
+                )
 
     def update_fee_rate_warning(self):
         fee_rate = self.spin_fee_rate.value()
@@ -200,9 +281,13 @@ class FeeGroup(QObject):
 
         self.high_fee_rate_warning_label.setVisible(too_high)
         if too_high:
-            self.high_fee_rate_warning_label.setText(f"<font color='red'><b>High fee rate!</b></font>")
+            self.high_fee_rate_warning_label.setText(html_f(self.tr("High fee rate!"), color="red", bf=True))
             self.high_fee_rate_warning_label.setToolTip(
-                f"The high prio mempool fee rate is {format_fee_rate( self.mempool.mempool_data.max_reasonable_fee_rate(), self.config.network)}"
+                self.tr("The high prio mempool fee rate is {rate}").format(
+                    rate=format_fee_rate(
+                        self.mempool.mempool_data.max_reasonable_fee_rate(), self.config.network
+                    )
+                )
             )
 
     def set_fee_rate(
@@ -213,9 +298,6 @@ class FeeGroup(QObject):
         chain_height=None,
     ):
         self.spin_fee_rate.setHidden(fee_rate is None)
-        # always hide label_block_number
-        # self.label_block_number.setHidden(fee_rate is None)
-        self.label_block_number.setHidden(True)
         self.spin_label.setHidden(fee_rate is None)
 
         self.mempool.refresh(
@@ -225,17 +307,10 @@ class FeeGroup(QObject):
         )
         self._set_value(fee_rate if fee_rate else 0)
 
-        self.label_block_number.setVisible(not bool(confirmation_time))
-        if fee_rate is not None:
-            self.label_block_number.setText(
-                f"in ~{self.mempool.mempool_data.fee_rate_to_projected_block_index(fee_rate) +1}. Block"
-            )
-
         if url:
             self.mempool.set_url(url)
 
-        self.update_fee_rate_warning()
-
+        self.updateUi()
         self.signal_set_fee_rate.emit(fee_rate)
 
     def _set_value(self, value: float):
@@ -249,6 +324,6 @@ class FeeGroup(QObject):
             fee_range[1],
             value,
             self.spin_fee_rate.value(),
-            max(self.mempool.mempool_data.fee_min_max(0)),
+            max(self.mempool.mempool_data.fee_rates_min_max(0)),
         )
         self.spin_fee_rate.setRange(*fee_range)

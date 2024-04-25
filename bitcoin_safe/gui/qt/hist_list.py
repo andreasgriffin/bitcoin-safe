@@ -1,7 +1,65 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+# Original Version from:
+#
+# Electrum - lightweight Bitcoin client
+# Copyright (C) 2015 Thomas Voegtlin
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import logging
 import os
 import tempfile
 
+from PyQt6.QtGui import QFont, QFontMetrics
+
+from bitcoin_safe.config import UserConfig
+from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient
 
@@ -15,7 +73,14 @@ from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
-from PyQt6.QtCore import QModelIndex, QPersistentModelIndex, QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import (
+    QModelIndex,
+    QPersistentModelIndex,
+    QPoint,
+    QSize,
+    Qt,
+    pyqtSignal,
+)
 from PyQt6.QtGui import (
     QBrush,
     QColor,
@@ -25,11 +90,18 @@ from PyQt6.QtGui import (
     QFont,
     QStandardItem,
 )
-from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QMenu
+from PyQt6.QtWidgets import (
+    QAbstractItemView,
+    QFileDialog,
+    QMenu,
+    QPushButton,
+    QStyle,
+    QWidget,
+)
 
-from ...i18n import _
+from ...i18n import translate
 from ...signals import Signals, UpdateFilter
-from ...util import Satoshis, block_explorer_URL
+from ...util import Satoshis, block_explorer_URL, confirmation_wait_formatted
 from ...wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -40,7 +112,12 @@ from ...wallet import (
 )
 from .category_list import CategoryEditor
 from .dialog_import import file_to_str
-from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
+from .my_treeview import (
+    MySortModel,
+    MyStandardItemModel,
+    MyTreeView,
+    TreeViewWithToolbar,
+)
 from .taglist import AddressDragInfo
 from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
 
@@ -54,11 +131,11 @@ class AddressUsageStateFilter(IntEnum):
 
     def ui_text(self) -> str:
         return {
-            self.ALL: _("All status"),
-            self.UNUSED: _("Unused"),
-            self.FUNDED: _("Funded"),
-            self.USED_AND_EMPTY: _("Used"),
-            self.FUNDED_OR_UNUSED: _("Funded or Unused"),
+            self.ALL: translate("hist_list", "All status"),
+            self.UNUSED: translate("hist_list", "Unused"),
+            self.FUNDED: translate("hist_list", "Funded"),
+            self.USED_AND_EMPTY: translate("hist_list", "Used"),
+            self.FUNDED_OR_UNUSED: translate("hist_list", "Funded or Unused"),
         }[self]
 
 
@@ -69,9 +146,9 @@ class AddressTypeFilter(IntEnum):
 
     def ui_text(self) -> str:
         return {
-            self.ALL: _("All types"),
-            self.RECEIVING: _("Receiving"),
-            self.CHANGE: _("Change"),
+            self.ALL: translate("hist_list", "All types"),
+            self.RECEIVING: translate("hist_list", "Receiving"),
+            self.CHANGE: translate("hist_list", "Change"),
         }[self]
 
 
@@ -99,16 +176,6 @@ class HistList(MyTreeView):
         Columns.TXID,
     ]
 
-    headers = {
-        Columns.WALLET_ID: _("Wallet"),
-        Columns.STATUS: _("Status"),
-        Columns.CATEGORIES: _("Category"),
-        Columns.LABEL: _("Label"),
-        Columns.AMOUNT: _("Amount"),
-        Columns.BALANCE: _("Balance"),
-        Columns.TXID: _("Txid"),
-    }
-
     column_alignments = {
         Columns.WALLET_ID: Qt.AlignmentFlag.AlignCenter,
         Columns.STATUS: Qt.AlignmentFlag.AlignCenter,
@@ -123,6 +190,7 @@ class HistList(MyTreeView):
         fx,
         config,
         signals: Signals,
+        mempool_data: MempoolData,
         wallet_id=None,
         hidden_columns=None,
         column_widths: Optional[Dict[int, int]] = None,
@@ -135,6 +203,7 @@ class HistList(MyTreeView):
             column_widths=column_widths,
         )
         self.fx = fx
+        self.mempool_data = mempool_data
         self.address_domain = address_domain
         self.hidden_columns = hidden_columns if hidden_columns else []
         self._tx_dict: Dict[str, Tuple[Wallet, bdk.TransactionDetails]] = {}  # txid -> wallet, tx
@@ -144,13 +213,13 @@ class HistList(MyTreeView):
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
+        self.balance = 0
         # self.change_button = QComboBox(self)
         # self.change_button.currentIndexChanged.connect(self.toggle_change)
         # for (
         #     addr_type
         # ) in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
         #     self.change_button.addItem(addr_type.ui_text())
-        self.balance_label = None
         # self.used_button = QComboBox(self)
         # self.used_button.currentIndexChanged.connect(self.toggle_used)
         # for (
@@ -168,9 +237,11 @@ class HistList(MyTreeView):
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
         self.update()
+        # self.signals.utxos_updated.emit(self.update_with_filter)   # TODO: Check if this is necessary
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
+        self.signals.language_switch.connect(self.update)
 
     def get_file_data(self, txid: str):
         for wallet in get_wallets(self.signals):
@@ -262,23 +333,6 @@ class HistList(MyTreeView):
         wallet, tx_details = self._tx_dict[txid]
         self.signals.open_tx_like.emit(tx_details)
 
-    def create_toolbar(self, config=None):
-        toolbar, menu, self.balance_label, self.search_edit = self._create_toolbar_with_menu("")
-
-        font = QFont()
-        font.setPointSize(12)
-        if self.balance_label:
-            self.balance_label.setFont(font)
-
-        # menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
-
-        return toolbar
-
-    def on_hide_toolbar(self):
-        self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
-        self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
-        self.update()
-
     def toggle_change(self, state: int):
         if state == self.show_change:
             return
@@ -310,6 +364,17 @@ class HistList(MyTreeView):
 
         logger.debug(f"Updated  {log_info}")
 
+    def get_headers(self):
+        return {
+            self.Columns.WALLET_ID: self.tr("Wallet"),
+            self.Columns.STATUS: self.tr("Status"),
+            self.Columns.CATEGORIES: self.tr("Category"),
+            self.Columns.LABEL: self.tr("Label"),
+            self.Columns.AMOUNT: self.tr("Amount"),
+            self.Columns.BALANCE: self.tr("Balance"),
+            self.Columns.TXID: self.tr("Txid"),
+        }
+
     def update(self):
         if self.maybe_defer_update():
             return
@@ -323,11 +388,11 @@ class HistList(MyTreeView):
 
         self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
         self.std_model.clear()
-        self.update_headers(self.headers)
+        self.update_headers(self.get_headers())
 
         num_shown = 0
         set_idx = None
-        balance = 0
+        self.balance = 0
         for wallet in wallets:
 
             txid_domain: Optional[Set[str]] = None
@@ -368,13 +433,13 @@ class HistList(MyTreeView):
                 else:
                     amount = tx.received - tx.sent
 
-                balance += amount
+                self.balance += amount
 
                 labels = [""] * len(self.Columns)
                 labels[self.Columns.WALLET_ID] = wallet.id
                 labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).diff()
 
-                labels[self.Columns.BALANCE] = str(Satoshis(balance, wallet.network))
+                labels[self.Columns.BALANCE] = str(Satoshis(self.balance, wallet.network))
                 labels[self.Columns.TXID] = tx.txid
                 items = [QStandardItem(e) for e in labels]
 
@@ -383,7 +448,7 @@ class HistList(MyTreeView):
                 items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
                 if amount < 0:
                     items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ItemDataRole.ForegroundRole)
-                items[self.Columns.BALANCE].setData(balance, self.ROLE_CLIPBOARD_DATA)
+                items[self.Columns.BALANCE].setData(self.balance, self.ROLE_CLIPBOARD_DATA)
                 items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
 
                 # align text and set fonts
@@ -409,23 +474,12 @@ class HistList(MyTreeView):
         self.filter()
         self.proxy.setDynamicSortFilter(True)
 
-        if self.balance_label:
-            balances = [wallet.get_balance() for wallet in wallets]
-            if not balances:
-                self.balance_label.setText("")
-                self.balance_label.setToolTip(None)
-            else:
-                summed_balance = balances[0]
-                for balance in balances[1:]:
-                    summed_balance += balance
-                self.balance_label.setText(summed_balance.format_short(wallets[0].network))
-                self.balance_label.setToolTip(summed_balance.format_long(wallets[0].network))
-
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
         # manually sort, after the data is filled
         self.sortByColumn(HistList.Columns.STATUS, Qt.SortOrder.DescendingOrder)
+        super().update()
 
     def refresh_row(self, key: str, row: int):
         assert row is not None
@@ -438,10 +492,15 @@ class HistList(MyTreeView):
         categories = wallet.get_categories_for_txid(tx.txid)
         category = categories[0] if categories else ""
         status = TxStatus.from_wallet(tx.txid, wallet)
+
+        fee_info = FeeInfo.from_txdetails(tx)
+        estimated_duration_str = confirmation_wait_formatted(
+            self.mempool_data.fee_rate_to_projected_block_index(fee_info.fee_rate())
+        )
         status_text = (
             datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime("%Y-%m-%d %H:%M")
             if status.confirmations()
-            else (TxConfirmationStatus.to_str(status.confirmation_status))
+            else estimated_duration_str
         )
 
         item = [self.std_model.item(row, col) for col in self.Columns]
@@ -480,11 +539,11 @@ class HistList(MyTreeView):
             if not item:
                 return
             txid = txids[0]
-            menu.addAction(_("Details"), lambda: self.signals.open_tx_like.emit(txid))
+            menu.addAction(translate("hist_list", "Details"), lambda: self.signals.open_tx_like.emit(txid))
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", txid)
             if addr_URL:
-                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+                menu.addAction(translate("hist_list", "View on block explorer"), lambda: webopen(addr_URL))
             menu.addSeparator()
 
             # addr_column_title = self.std_model.horizontalHeaderItem(
@@ -494,23 +553,23 @@ class HistList(MyTreeView):
             self.add_copy_menu(menu, idx, force_columns=[self.Columns.TXID])
             # persistent = QPersistentModelIndex(addr_idx)
             # menu.addAction(
-            #     _("Edit {}").format(addr_column_title),
+            #     translate("hist_list", "Edit {}").format(addr_column_title),
             #     lambda p=persistent: self.edit(QModelIndex(p)),
             # )
-            # menu.addAction(_("Request payment"), lambda: self.main_window.receive_at(txid))
+            # menu.addAction(translate("hist_list", "Request payment"), lambda: self.main_window.receive_at(txid))
             # if self.wallet.can_export():
-            #     menu.addAction(_("Private key"), lambda: self.signals.show_private_key(txid))
+            #     menu.addAction(translate("hist_list", "Private key"), lambda: self.signals.show_private_key(txid))
             # if not is_multisig and not self.wallet.is_watching_only():
-            #     menu.addAction(_("Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
-            #     menu.addAction(_("Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
+            #     menu.addAction(translate("hist_list", "Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
+            #     menu.addAction(translate("hist_list", "Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
 
         menu.addAction(
-            _("Copy as csv"),
+            translate("hist_list", "Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
         menu.addAction(
-            _("Export binary transactions"),
+            translate("hist_list", "Export binary transactions"),
             lambda: self.export_raw_transactions(selected),
         )
 
@@ -527,9 +586,13 @@ class HistList(MyTreeView):
             tx_status = TxStatus.from_wallet(txid, wallet)
             if tx_status and tx_status.can_rbf():
                 menu.addSeparator()
-                menu.addAction(_("Edit with higher fee (RBF)"), lambda: self.edit_tx(tx_details))
+                menu.addAction(
+                    translate("hist_list", "Edit with higher fee (RBF)"), lambda: self.edit_tx(tx_details)
+                )
 
-                menu.addAction(_("Cancel transaction (RBF)"), lambda: self.cancel_tx(tx_details))
+                menu.addAction(
+                    translate("hist_list", "Try cancel transaction (RBF)"), lambda: self.cancel_tx(tx_details)
+                )
 
         # run_hook('receive_menu', menu, txids, self.wallet)
         menu.exec(self.viewport().mapToGlobal(position))
@@ -555,7 +618,9 @@ class HistList(MyTreeView):
         wallet = get_wallet(self.wallet_id, self.signals)
         if not wallet:
             Message(
-                f"Cannot fetch wallet '{self.wallet_id}'. Please open the wallet first.",
+                self.tr("Cannot fetch wallet '{id}'. Please open the wallet first.").format(
+                    id=self.wallet_id
+                ),
                 type=MessageType.Error,
             )
             return
@@ -607,3 +672,53 @@ class HistList(MyTreeView):
                 else [],
             )
         )
+
+
+class RefreshButton(QPushButton):
+    def __init__(self, parent=None, height=20):
+        super().__init__(parent)
+        self.setText("")
+        # Use the standard pixmap for the button icon
+        self.setIconSize(QSize(height, height))  # Icon size can be adjusted as needed
+        self.set_icon_allow_refresh()
+
+    def set_icon_allow_refresh(self):
+        icon = self.style().standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        self.setIcon(icon)
+
+    def set_icon_is_syncing(self):
+
+        icon = read_QIcon("status_waiting.png")
+        self.setIcon(icon)
+
+
+class HistListWithToolbar(TreeViewWithToolbar):
+    def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget = None) -> None:
+        super().__init__(hist_list, config, parent=parent)
+        self.hist_list = hist_list
+        self.create_layout()
+
+        self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
+        self.sync_button.clicked.connect(self.hist_list.signals.request_manual_sync.emit)
+        self.toolbar.insertWidget(0, self.sync_button)
+
+    def update(self):
+        super().update()
+
+        if self.balance_label:
+            balance = Satoshis(self.hist_list.balance, self.config.network)
+            self.balance_label.setText(balance.format_as_balance())
+            # self.balance_label.setToolTip(balance.format_long(wallets[0].network))
+
+    def create_toolbar_with_menu(self, title):
+        super().create_toolbar_with_menu(title=title)
+
+        font = QFont()
+        font.setPointSize(12)
+        if self.balance_label:
+            self.balance_label.setFont(font)
+
+    def on_hide_toolbar(self):
+        self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
+        self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
+        self.update()

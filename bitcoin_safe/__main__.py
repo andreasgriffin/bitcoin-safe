@@ -1,7 +1,11 @@
-from .logging_setup import setup_logging
+import sys
 
-setup_logging()
+from .dynamic_lib_load import ensure_pyzbar_works
 
+# this setsup the logging
+from .logging_setup import setup_logging  # type: ignore
+
+ensure_pyzbar_works()
 
 import argparse
 import cProfile
@@ -14,12 +18,19 @@ from .gui.qt.main import MainWindow
 from .gui.qt.util import custom_exception_handler
 
 
-def main():
+def parse_args():
 
     parser = argparse.ArgumentParser(description="Bitcoin Safe")
     parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
+    parser.add_argument(
+        "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
+    )
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
 
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
@@ -29,10 +40,9 @@ def main():
 
 
 if __name__ == "__main__":
-    from .util import DEVELOPMENT_PREFILLS
+    args = parse_args()
 
-    do_profiling = DEVELOPMENT_PREFILLS
-    if do_profiling:
+    if args.profile:
         with cProfile.Profile() as pr:
             main()
 
@@ -43,5 +53,8 @@ if __name__ == "__main__":
             stats.sort_stats("time")
             stats.dump_stats(".prof_stats")
             stats.print_stats()
+            import os
+
+            os.system("snakeviz .prof_stats & ")
     else:
         main()

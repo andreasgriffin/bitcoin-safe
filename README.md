@@ -6,17 +6,52 @@
 
 #### Features
 
-- Single and 2-of-3 Multisig wallet **guide**
+- **Easy** Bitcoin wallet for long-term cold storage
+  - **Best practices** built into the wallet setup
+  - **Easier** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
+    - Automatic coin selection within categories
+  - **Easier** fee selection for non-technical users
+  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
+    - Opportunistic merging of small utxos when fees are low
+  - **Collaborative**: 
+    - Wallet chat and sharing of PSBTs (via nostr)
+    - Label synchronization between trusted devices (via nostr)
+  - **Multi-Language**: 
+    - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, (more upon request)
+- **Fast**: Electrum server andnd upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
+- **Secure**: No seed generation or storage (on mainnet). 
+  - A hardware signer/signing device for safe seed storage is needed (storing seeds on a computer is reckless)
+  - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
 
-- Search across all wallets
+## Installation from Git repository
 
-- RBF and Cancel unconfirmed transactions
+### Ubuntu, Debian, Windows
 
-- Category labeling of addresses 
+- Install `poetry` and run `bitcoin_safe`
+  
+  ```sh
+  git clone https://github.com/andreasgriffin/bitcoin-safe.git
+  cd bitcoin-safe
+  pip install poetry  && poetry install && poetry run python -m bitcoin_safe
+  ```
 
-- Label synchronization between trusted devices   (via nostr)
+### Mac
 
-- Wallet chat and sharing of PSBTs   (via nostr)
+- Run `bitcoin_safe`
+  
+  ```sh
+  git clone https://github.com/andreasgriffin/bitcoin-safe.git
+  cd bitcoin-safe
+  python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
+  ```
+
+- *Optional*: dependency  `zbar` 
+  
+  ```sh
+  xcode-select --install
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  brew install zbar 
+  ```
 
 #### Preview
 
@@ -36,89 +71,24 @@
 
 ![label-sync.gif](docs/label-sync.gif)
 
+#### Goals (for the 2.0 Release)
 
-
-#### Goals (for the 1.0 Release)
-
-- **Easy** Bitcoin wallet for long-term cold storage
-  - **Best practices** built into the wallet setup
-  - **Easier** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
-    - Automatic coin selection within categories
-  - **Easier** fee selection for non-technical users
-  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
-    - Opportunistic merging of small utxos when fees are low
-- **Fast**: Chain data with **Compact Block Filters** by default
+- **Compact Block Filters** by default
   - Compact Block Filters are **fast** and **private**
   - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/issues/679), and will be included in bdk 1.1. For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
-- **Secure**: No seed generation or storage (on mainnet). A hardware signer/signing device will be needed (storing seeds on a computer is reckless)
-  - Powered by **BDK**, using some graphical elements from Electrum, and inspired keystore UI by Sparrow
-  - There should be no privacy leaking data at rest (i.e. encrypted wallet file + databases)
 
-#### Design principles
+#### TODOs for beta release
 
-- KISS: If a new user needs a tutorial video, it is too difficult
-
-- Only present safe options to the user (on mainnet) (warnings are typically ignored by everyone)
-
-- Choose sane defaults and add config options only if they are needed
-
-#### TODOs (getting less)
-
-- [ ] CPFP show combined fee rate
-- [ ] multi language
 - [ ] Add more pytests
-- [ ] [bbqr code](https://bbqr.org/)
-- [ ] Include listening to p2p traffic for new tx announcements
-  - [ ] Include desktop notifications (via tray icon)
+- [ ] [bbqr code](https://bbqr.org/) 
 
-## Installation
-
-* Install dependencies and setup poetry
-  
-  ```sh
-  sudo apt install libsecp256k1-1
-  git clone https://github.com/andreasgriffin/bitcoin-safe.git
-  cd bitcoin-safe
-  ```
-
-* Setup poetry and install dependencies 
-  
-  ```sh
-  pip install poetry
-  poetry install
-  ```
-
-* Run  
-  
-  ```sh
-  poetry shell
-  python -m bitcoin_safe
-  ```
-
-### Development
-
-* Install  requirements:
-
-```shell
-poetry install
-poetry shell
-```
-
-* Automatic commit formatting
-
-```shell
-pip install pre-commit
-pre-commit install
-```
+## Development
 
 * Run the precommit manually for debugging
 
 ```shell
-pre-commit run --all-files
+poetry run pre-commit run --all-files
 ```
-
-* 
-* 
 
 #### Regtest docker environement with electrs and mempool
 

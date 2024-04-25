@@ -1,5 +1,35 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
+from ....i18n import translate
 from ....util import register_cache
 
 logger = logging.getLogger(__name__)
@@ -485,7 +515,7 @@ class CustomListWidget(QListWidget):
             return
 
         if event.mimeData().hasFormat("application/json"):
-            tag = self.itemAt(event.pos())
+            tag = self.itemAt(event.position().toPoint())
 
             data_bytes = event.mimeData().data("application/json")
             json_string = bytes(data_bytes).decode()  # convert bytes to string
@@ -543,22 +573,19 @@ class TagEditor(QWidget):
     ):
         super(TagEditor, self).__init__(parent)
         self.tag_name = tag_name
-        self.default_placeholder_text = f"Add new {self.tag_name}"
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+        self.setLayout(QVBoxLayout())
 
         self.input_field = QLineEdit()
         self.input_field.setClearButtonEnabled(True)
-        self.input_field.setPlaceholderText(self.default_placeholder_text)
         self.input_field.returnPressed.connect(self.add_new_tag_from_input_field)
 
-        self.delete_button = DeleteButton(f"Delete {self.tag_name}", self)
+        self.delete_button = DeleteButton()
         self.delete_button.hide()
 
         self.list_widget = CustomListWidget(parent=self)
-        self.layout.addWidget(self.input_field)
-        self.layout.addWidget(self.delete_button)
-        self.layout.addWidget(self.list_widget)
+        self.layout().addWidget(self.input_field)
+        self.layout().addWidget(self.delete_button)
+        self.layout().addWidget(self.list_widget)
         self.list_widget.signal_start_drag.connect(self.show_delete_button)
         self.list_widget.signal_stop_drag.connect(self.hide_delete_button)
         self.list_widget.signal_addresses_dropped.connect(self.hide_delete_button)
@@ -566,9 +593,18 @@ class TagEditor(QWidget):
         self.delete_button.signal_addresses_dropped.connect(self.hide_delete_button)
 
         self.setAcceptDrops(True)
+        # TagEditor.updateUi  ensure that this is not overwritten in a child class
+        TagEditor.updateUi(self)
 
         if tags:
             self.list_widget.recreate(tags, sub_texts=sub_texts)
+
+    def updateUi(self):
+        self.input_field.setPlaceholderText(self.default_placeholder_text())
+        self.delete_button.setText(translate("tageditor", "Delete {name}").format(name=self.tag_name))
+
+    def default_placeholder_text(self):
+        return translate("tageditor", "Add new {name}").format(name=self.tag_name)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasFormat("application/json"):
@@ -624,9 +660,11 @@ class TagEditor(QWidget):
         new_tag = clean_tag(self.input_field.text())
         item = self.add(new_tag)
         if item:
-            self.input_field.setPlaceholderText(self.default_placeholder_text)
+            self.input_field.setPlaceholderText(self.default_placeholder_text())
         else:
-            self.input_field.setPlaceholderText(f"This {self.tag_name} exists already.")
+            self.input_field.setPlaceholderText(
+                translate("tageditor", "This {name} exists already.").format(name=self.tag_name)
+            )
         self.input_field.clear()
 
     def tag_exists(self, tag: str):

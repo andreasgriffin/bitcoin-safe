@@ -1,13 +1,42 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
-from coincurve import PublicKey
-
 from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 
 from typing import Callable, List, Optional
 
+from nostr_sdk import PublicKey
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtGui import QResizeEvent
 
@@ -89,15 +118,22 @@ class BaseDevice(QWidget):
 class UnTrustedDevice(BaseDevice):
     signal_trust_me = QtCore.pyqtSignal(str)
 
-    def __init__(self, pub_key_bech32: str):
+    def __init__(self, pub_key_bech32: str, signals_min: SignalsMin):
         super().__init__(pub_key_bech32)
+        self.signals_min = signals_min
 
-        self.original_button_title = f"Trust {short_key(pub_key_bech32)}"
-        self.button_add_trusted = QPushButton(self.original_button_title)
+        self.button_add_trusted = QPushButton()
         self.button_add_trusted.clicked.connect(lambda: self.signal_trust_me.emit(pub_key_bech32))
         self.layout().addWidget(self.button_add_trusted)
         self.setMinimumHeight(self.button_add_trusted.sizeHint().height())
         self.timer = QTimer(self)
+        self.updateUi()
+
+        # signals
+        signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.button_add_trusted.setText(self.tr("Trust {id}").format(id=short_key(self.pub_key_bech32)))
 
     def trust_request_active(self) -> bool:
         return self.timer.isActive()
@@ -105,7 +141,9 @@ class UnTrustedDevice(BaseDevice):
     def set_button_status_to_accept(self):
         # Change the button's color to green and text to "Green"
         self.button_add_trusted.setStyleSheet("background-color: green;")
-        self.button_add_trusted.setText(f"Accept trust request from {short_key(self.pub_key_bech32)}")
+        self.button_add_trusted.setText(
+            self.tr("Accept trust request from {other}").format(other=short_key(self.pub_key_bech32))
+        )
 
         self.timer.timeout.connect(self.reset_button)
         seconds = 60
@@ -120,11 +158,16 @@ class UnTrustedDevice(BaseDevice):
 
 class TrustedDevice(BaseDevice):
     def __init__(
-        self, pub_key_bech32: str, on_send: Optional[Callable[[str], None]] = None, chat_visible=True
+        self,
+        pub_key_bech32: str,
+        signals_min: SignalsMin,
+        on_send: Optional[Callable[[str], None]] = None,
+        chat_visible=True,
     ):
         super().__init__(pub_key_bech32)
+        self.signals_min = signals_min
 
-        self.groupbox = QGroupBox(title=f"Device id: {short_key(pub_key_bech32)}")
+        self.groupbox = QGroupBox()
 
         self.layout().addWidget(self.groupbox)
 
@@ -160,27 +203,39 @@ class TrustedDevice(BaseDevice):
         # Apply the QFont to the QGroupBox's title
         self.groupbox.setFont(boldFont)
 
-        label = QLabel(
-            """
-                     <ul>
-                        <li>Syncing Address labels</li>
-                        <li>Can share Transactions</li>
-                    </ul>      
-                    """
-        )
-        self.groupbox.layout().addWidget(label)
-        self.chat_gui = ChatGui()
+        self.label = QLabel()
+        self.groupbox.layout().addWidget(self.label)
+        self.chat_gui = ChatGui(signals_min=self.signals_min)
         self.chat_gui.setVisible(chat_visible)
         self.groupbox.layout().addWidget(self.chat_gui)
         self.setMinimumHeight(self.groupbox.sizeHint().height())
-        if on_send:
-            self.chat_gui.signal_on_message_send.connect(on_send)
 
         self.create_close_button()
 
+        self.updateUi()
+
+        # signals
+        if on_send:
+            self.chat_gui.signal_on_message_send.connect(on_send)
+        signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.groupbox.setTitle(self.tr("Device id: {id}").format(id=short_key(self.pub_key_bech32)))
+        self.label = QLabel(
+            f""" <ul>
+                        <li>{self.tr('Syncing Address labels')}</li>
+                        <li>{self.tr('Can share Transactions')}</li>
+                    </ul>      
+                    """
+        )
+
     @classmethod
     def from_untrusted(cls, untrusted_device: UnTrustedDevice, chat_visible=True) -> "TrustedDevice":
-        return TrustedDevice(untrusted_device.pub_key_bech32, chat_visible=chat_visible)
+        return TrustedDevice(
+            untrusted_device.pub_key_bech32,
+            signals_min=untrusted_device.signals_min,
+            chat_visible=chat_visible,
+        )
 
 
 class DeviceList(QtWidgets.QWidget):
@@ -231,14 +286,7 @@ class DeviceList(QtWidgets.QWidget):
         return None
 
     def get_devices(self) -> List[BaseDevice]:
-        devices: List[BaseDevice] = []
-        for i in range(self.scrollarea.content_widget.layout().count()):
-            layout_item = self.scrollarea.content_widget.layout().itemAt(i)
-            widget = layout_item.widget()
-            if widget is not None:
-                if isinstance(widget, BaseDevice):
-                    devices.append(widget)
-        return devices
+        return self.scrollarea.content_widget.findChildren(BaseDevice)
 
 
 class UnTrustedDeviceList(DeviceList):
@@ -254,8 +302,9 @@ class ConnectedDevices(QtWidgets.QWidget):
     signal_untrust_device = QtCore.pyqtSignal(TrustedDevice)
     signal_renew_keys = QtCore.pyqtSignal()
 
-    def __init__(self, individual_chats_visible=True) -> None:
+    def __init__(self, signals_min: SignalsMin, individual_chats_visible=True) -> None:
         super().__init__()
+        self.signals_min = signals_min
         self.individual_chats_visible = individual_chats_visible
 
         self.setLayout(QHBoxLayout())
@@ -277,32 +326,39 @@ class ConnectedDevices(QtWidgets.QWidget):
         header.layout().addWidget(toolbar_button)
 
         menu = QMenu(self)
-        action = menu.addAction(f"Reset identity for this device")
-        action.triggered.connect(self.signal_renew_keys.emit)
+        self.action_reset_identity = menu.addAction("", self.signal_renew_keys.emit)
         toolbar_button.setMenu(menu)
         toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
-        group_trusted = QGroupBox("Trusted")
-        left_side.layout().addWidget(group_trusted)
+        self.group_trusted = QGroupBox()
+        left_side.layout().addWidget(self.group_trusted)
 
         self.trusted_devices = TrustedDeviceList()
-        group_trusted.setLayout(QVBoxLayout())
-        group_trusted.layout().addWidget(self.trusted_devices)
+        self.group_trusted.setLayout(QVBoxLayout())
+        self.group_trusted.layout().addWidget(self.trusted_devices)
 
-        group_trusted = QGroupBox("UnTrusted")
-        left_side.layout().addWidget(group_trusted)
+        self.group_untrusted = QGroupBox()
+        left_side.layout().addWidget(self.group_untrusted)
 
         self.untrusted_devices = UnTrustedDeviceList()
-        group_trusted.setLayout(QVBoxLayout())
-        group_trusted.layout().addWidget(self.untrusted_devices)
+        self.group_untrusted.setLayout(QVBoxLayout())
+        self.group_untrusted.layout().addWidget(self.untrusted_devices)
 
-        self.groupchat_gui = ChatGui()
+        self.groupchat_gui = ChatGui(signals_min=self.signals_min)
 
+        self.updateUi()
         self.layout().addWidget(self.groupchat_gui)
 
+        self.signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.action_reset_identity.setText(self.tr("Reset identity for this device"))
+        self.group_trusted.setTitle(self.tr("Trusted"))
+        self.group_untrusted.setTitle(self.tr("UnTrusted"))
+
     def set_title(self, my_key: PublicKey):
-        self.title_label.setText(f"My id: {short_key(my_key.to_bech32())}")
+        self.title_label.setText(self.tr("My id: {id}").format(id=short_key(my_key.to_bech32())))
 
     def add_trusted_device(self, device: TrustedDevice):
         if self.trusted_devices.device_already_present(device.pub_key_bech32):
@@ -366,6 +422,8 @@ class ConnectedDevices(QtWidgets.QWidget):
         if device:
             return device
 
-        untrusted_device = UnTrustedDevice(pub_key_bech32=trusted_device.pub_key_bech32)
+        untrusted_device = UnTrustedDevice(
+            pub_key_bech32=trusted_device.pub_key_bech32, signals_min=self.signals_min
+        )
         self.add_untrusted_device(untrusted_device)
         return untrusted_device

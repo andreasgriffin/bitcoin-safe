@@ -1,4 +1,33 @@
-#!/usr/bin/env python
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+# Original Version from:
 #
 # Electrum - lightweight Bitcoin client
 # Copyright (C) 2015 Thomas Voegtlin
@@ -52,15 +81,21 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QMenu,
     QPushButton,
+    QWidget,
 )
 
-from ...i18n import _
+from ...i18n import translate
 from ...rpc import send_rpc_command
 from ...signals import Signals, UpdateFilter
 from ...util import Satoshis, block_explorer_URL
 from ...wallet import TxStatus, Wallet
 from .category_list import CategoryEditor
-from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
+from .my_treeview import (
+    MySortModel,
+    MyStandardItemModel,
+    MyTreeView,
+    TreeViewWithToolbar,
+)
 from .taglist import AddressDragInfo
 from .util import ColorScheme, do_copy, read_QIcon, sort_id_to_icon, webopen
 
@@ -74,11 +109,11 @@ class AddressUsageStateFilter(IntEnum):
 
     def ui_text(self) -> str:
         return {
-            self.ALL: _("All status"),
-            self.UNUSED: _("Unused"),
-            self.FUNDED: _("Funded"),
-            self.USED_AND_EMPTY: _("Used"),
-            self.FUNDED_OR_UNUSED: _("Funded or Unused"),
+            self.ALL: translate("address_list", "All status"),
+            self.UNUSED: translate("address_list", "Unused"),
+            self.FUNDED: translate("address_list", "Funded"),
+            self.USED_AND_EMPTY: translate("address_list", "Used"),
+            self.FUNDED_OR_UNUSED: translate("address_list", "Funded or Unused"),
         }[self]
 
 
@@ -89,9 +124,9 @@ class AddressTypeFilter(IntEnum):
 
     def ui_text(self) -> str:
         return {
-            self.ALL: _("All types"),
-            self.RECEIVING: _("Receiving"),
-            self.CHANGE: _("Change"),
+            self.ALL: translate("address_list", "All types"),
+            self.RECEIVING: translate("address_list", "Receiving"),
+            self.CHANGE: translate("address_list", "Change"),
         }[self]
 
 
@@ -107,17 +142,6 @@ class AddressList(MyTreeView):
         LABEL = enum.auto()
         COIN_BALANCE = enum.auto()
         FIAT_BALANCE = enum.auto()
-
-    headers = {
-        Columns.NUM_TXS: _("Tx"),
-        Columns.TYPE: _("Type"),
-        Columns.INDEX: _("Index"),
-        Columns.ADDRESS: _("Address"),
-        Columns.CATEGORY: _("Category"),
-        Columns.LABEL: _("Label"),
-        Columns.COIN_BALANCE: _("Balance"),
-        Columns.FIAT_BALANCE: _("Fiat Balance"),
-    }
 
     filter_columns = [
         Columns.TYPE,
@@ -155,14 +179,6 @@ class AddressList(MyTreeView):
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
-        self.change_button = QComboBox(self)
-        self.change_button.currentIndexChanged.connect(self.toggle_change)
-        for addr_type in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
-            self.change_button.addItem(addr_type.ui_text())
-        self.used_button = QComboBox(self)
-        self.used_button.currentIndexChanged.connect(self.toggle_used)
-        for addr_usage_state in AddressUsageStateFilter.__members__.values():  # type: AddressUsageStateFilter
-            self.used_button.addItem(addr_usage_state.ui_text())
         self.std_model = MyStandardItemModel(self, drag_key="addresses")
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
@@ -172,6 +188,7 @@ class AddressList(MyTreeView):
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
+        self.signals.language_switch.connect(self.update)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         # handle dropped files
@@ -224,65 +241,6 @@ class AddressList(MyTreeView):
         addr = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         self.signals.show_address.emit(addr)
 
-    def create_toolbar(self, config: UserConfig = None):
-        toolbar, menu, self.balance_label, search_edit = self._create_toolbar_with_menu("")
-        font = QFont()
-        font.setPointSize(12)
-        self.balance_label.setFont(font)
-
-        menu.addToggle(_("Show Filter"), lambda: self.toggle_toolbar(config))
-        menu.addAction(
-            _("Export Labels"),
-            lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
-        )
-        menu.addAction(
-            _("Import Labels"),
-            lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
-        )
-
-        # self.button_fresh_address = QPushButton("Copy fresh receive address")
-        # self.button_fresh_address.clicked.connect(self.get_address)
-        # toolbar.insertWidget(toolbar.count()-2, self.button_fresh_address)
-        # self.button_new_address = QPushButton("+ Add receive address")
-        # self.button_new_address.clicked.connect(
-        #     lambda: self.get_address(force_new=True)
-        # )
-        # toolbar.insertWidget(toolbar.count()-2, self.button_new_address)
-
-        if (
-            config
-            and config.network_config.server_type == BlockchainType.RPC
-            and config.network != bdk.Network.BITCOIN
-        ):
-
-            def mine_to_selected_addresses():
-                selected = self.selected_in_column(self.Columns.ADDRESS)
-                if not selected:
-                    return
-                selected_items = [self.item_from_index(item) for item in selected]
-                addresses = [item.text() for item in selected_items if item]
-
-                for address in addresses:
-                    response = send_rpc_command(
-                        config.network_config.rpc_ip,
-                        str(config.network_config.rpc_port),
-                        config.network_config.rpc_username,
-                        config.network_config.rpc_password,
-                        "generatetoaddress",
-                        params=[1, address],
-                    )
-                    logger.info(f"{response}")
-                self.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
-
-            b = QPushButton("Generate to selected adddresses")
-            b.clicked.connect(mine_to_selected_addresses)
-            toolbar.insertWidget(toolbar.count() - 2, b)
-
-        hbox = self.create_toolbar_buttons()
-        toolbar.insertLayout(toolbar.count() - 1, hbox)
-
-        return toolbar
-
     def get_address(self, force_new=False, category: str = None) -> bdk.AddressInfo:
         if force_new:
             address_info = self.wallet.get_address(force_new=force_new)
@@ -293,24 +251,9 @@ class AddressList(MyTreeView):
             address_info = self.wallet.get_unused_category_address(category)
             address = address_info.address.as_string()
 
-        do_copy(address, title=f"Address {address}")
+        do_copy(address, title=self.tr("Address {address}").format(address=address))
         self.select_row(address, self.Columns.ADDRESS)
         return address_info
-
-    def create_toolbar_buttons(self):
-        def get_toolbar_buttons():
-            return self.change_button, self.used_button
-
-        hbox = QHBoxLayout()
-        buttons = get_toolbar_buttons()
-        for b in buttons:
-            b.setVisible(False)
-            hbox.addWidget(b)
-        self.toolbar_buttons = buttons
-        return hbox
-
-    def on_hide_toolbar(self):
-        self.update()
 
     def toggle_change(self, state: int):
         if state == self.show_change:
@@ -364,10 +307,23 @@ class AddressList(MyTreeView):
         # manually sort, after the data is filled
         self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
 
+    def get_headers(self):
+        return {
+            self.Columns.NUM_TXS: self.tr("Tx"),
+            self.Columns.TYPE: self.tr("Type"),
+            self.Columns.INDEX: self.tr("Index"),
+            self.Columns.ADDRESS: self.tr("Address"),
+            self.Columns.CATEGORY: self.tr("Category"),
+            self.Columns.LABEL: self.tr("Label"),
+            self.Columns.COIN_BALANCE: self.tr("Balance"),
+            self.Columns.FIAT_BALANCE: self.tr("Fiat Balance"),
+        }
+
     def update(self):
         if self.maybe_defer_update():
             return
         logger.debug(f"{self.__class__.__name__} update")
+
         current_selected_key = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         if self.show_change == AddressTypeFilter.RECEIVING:
             addr_list = self.wallet.get_receiving_addresses()
@@ -377,7 +333,7 @@ class AddressList(MyTreeView):
             addr_list = self.wallet.get_addresses()
         self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
         self.std_model.clear()
-        self.update_headers(self.__class__.headers)
+        self.update_headers(self.get_headers())
         set_address = None
         for address in addr_list:
             self.append_address(address)
@@ -391,15 +347,12 @@ class AddressList(MyTreeView):
         self.filter()
         self.proxy.setDynamicSortFilter(True)
 
-        if self.balance_label:
-            balance = self.wallet.get_balance()
-            self.balance_label.setText(balance.format_short(self.wallet.network))
-            self.balance_label.setToolTip(balance.format_long(self.wallet.network))
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
         # manually sort, after the data is filled
         self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
+        super().update()
 
     def append_address(self, address: str):
         balance = self.wallet.get_addr_balance(address).total
@@ -428,12 +381,12 @@ class AddressList(MyTreeView):
         if address_info_min:
             item[self.Columns.INDEX].setData(address_info_min.index, self.ROLE_CLIPBOARD_DATA)
             if address_info_min.is_change():
-                item[self.Columns.TYPE].setText(_("change"))
-                item[self.Columns.TYPE].setData(_("change"), self.ROLE_CLIPBOARD_DATA)
+                item[self.Columns.TYPE].setText(self.tr("change"))
+                item[self.Columns.TYPE].setData(self.tr("change"), self.ROLE_CLIPBOARD_DATA)
                 item[self.Columns.TYPE].setBackground(ColorScheme.YELLOW.as_color(True))
             else:
-                item[self.Columns.TYPE].setText(_("receiving"))
-                item[self.Columns.TYPE].setData(_("receiving"), self.ROLE_CLIPBOARD_DATA)
+                item[self.Columns.TYPE].setText(self.tr("receiving"))
+                item[self.Columns.TYPE].setData(self.tr("receiving"), self.ROLE_CLIPBOARD_DATA)
                 item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
             item[self.key_column].setData(address, self.ROLE_KEY)
             item[self.Columns.TYPE].setData(
@@ -441,7 +394,7 @@ class AddressList(MyTreeView):
                 self.ROLE_SORT_ORDER,
             )
             item[self.Columns.TYPE].setToolTip(
-                f"{address_info_min.address_path()[1]}. {'change' if address_info_min.address_path()[0] else 'receiving'} address"
+                f"""{address_info_min.address_path()[1]}. {self.tr("change address") if address_info_min.address_path()[0] else   self.tr('receiving address')}"""
             )
         # add item
         count = self.std_model.rowCount()
@@ -512,11 +465,11 @@ class AddressList(MyTreeView):
             if not item:
                 return
             addr = addrs[0]
-            menu.addAction(_("Details"), lambda: self.signals.show_address.emit(addr))
+            menu.addAction(self.tr("Details"), lambda: self.signals.show_address.emit(addr))
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "addr", addr)
             if addr_URL:
-                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+                menu.addAction(self.tr("View on block explorer"), lambda: webopen(addr_URL))
 
             menu.addSeparator()
 
@@ -528,21 +481,21 @@ class AddressList(MyTreeView):
             # addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
             # persistent = QPersistentModelIndex(addr_idx)
             # menu.addAction(
-            #     _("Edit {}").format(addr_column_title),
+            #     self.tr("Edit {}").format(addr_column_title),
             #     lambda p=persistent: self.edit(QModelIndex(p)),
             # )
 
         menu.addAction(
-            _("Copy as csv"),
+            self.tr("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
         menu.addSeparator()
         menu.addAction(
-            _("Export Labels"),
+            self.tr("Export Labels"),
             lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
         )
         menu.addAction(
-            _("Import Labels"),
+            self.tr("Import Labels"),
             lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
         )
 
@@ -571,3 +524,99 @@ class AddressList(MyTreeView):
                 txids=self.wallet.get_address_to_txids(edit_key),
             )
         )
+
+
+class AddressListWithToolbar(TreeViewWithToolbar):
+    def __init__(self, address_list: AddressList, config: UserConfig, parent: QWidget = None) -> None:
+        super().__init__(address_list, config, parent=parent)
+        self.address_list: AddressList = address_list
+        self.change_button = QComboBox(self)
+        self.change_button.currentIndexChanged.connect(self.address_list.toggle_change)
+        for addr_type in AddressTypeFilter.__members__.values():  # type: AddressTypeFilter
+            self.change_button.addItem(addr_type.ui_text())
+        self.used_button = QComboBox(self)
+        self.used_button.currentIndexChanged.connect(self.address_list.toggle_used)
+        for addr_usage_state in AddressUsageStateFilter.__members__.values():  # type: AddressUsageStateFilter
+            self.used_button.addItem(addr_usage_state.ui_text())
+
+        self.create_layout()
+
+    def update(self):
+        super().update()
+        self.action_show_filter.setText(self.tr("Show Filter"))
+        self.action_export_labels.setText(self.tr("Export Labels"))
+        self.action_import_labels.setText(self.tr("Import Labels"))
+
+        if self.balance_label:
+            balance = self.address_list.wallet.get_balance()
+            self.balance_label.setText(balance.format_short(self.address_list.wallet.network))
+            self.balance_label.setToolTip(balance.format_long(self.address_list.wallet.network))
+
+    def create_toolbar_with_menu(self, title):
+        super().create_toolbar_with_menu(title=title)
+
+        font = QFont()
+        font.setPointSize(12)
+        self.balance_label.setFont(font)
+
+        self.action_show_filter = self.menu.addToggle("", lambda: self.toggle_toolbar(self.config))
+        self.action_export_labels = self.menu.addAction(
+            "",
+            lambda: self.address_list.signals.export_bip329_labels.emit(self.address_list.wallet.id),
+        )
+        self.action_import_labels = self.menu.addAction(
+            "",
+            lambda: self.address_list.signals.import_bip329_labels.emit(self.address_list.wallet.id),
+        )
+
+        if (
+            self.config
+            and self.config.network_config.server_type == BlockchainType.RPC
+            and self.config.network != bdk.Network.BITCOIN
+        ):
+
+            def mine_to_selected_addresses():
+                selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
+                if not selected:
+                    return
+                selected_items = [self.address_list.item_from_index(item) for item in selected]
+                addresses = [item.text() for item in selected_items if item]
+
+                for address in addresses:
+                    response = send_rpc_command(
+                        self.config.network_config.rpc_ip,
+                        str(self.config.network_config.rpc_port),
+                        self.config.network_config.rpc_username,
+                        self.config.network_config.rpc_password,
+                        "generatetoaddress",
+                        params=[1, address],
+                    )
+                    logger.info(f"{response}")
+                self.address_list.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
+
+            b = QPushButton(self.tr("Generate to selected adddresses"))
+            b.clicked.connect(mine_to_selected_addresses)
+            self.toolbar.insertWidget(self.toolbar.count() - 2, b)
+
+        hbox = self.create_toolbar_buttons()
+        self.toolbar.insertLayout(self.toolbar.count() - 1, hbox)
+
+    def create_toolbar_buttons(self):
+        def get_toolbar_buttons():
+            return self.change_button, self.used_button
+
+        hbox = QHBoxLayout()
+        buttons = get_toolbar_buttons()
+        for b in buttons:
+            b.setVisible(False)
+            hbox.addWidget(b)
+        self.toolbar_buttons = buttons
+        return hbox
+
+    def on_hide_toolbar(self):
+        self.update()
+
+    def show_toolbar(self, is_visible: bool, config=None):
+        super().show_toolbar(is_visible=is_visible, config=config)
+        for b in self.toolbar_buttons:
+            b.setVisible(is_visible)

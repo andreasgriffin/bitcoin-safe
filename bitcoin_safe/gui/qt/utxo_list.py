@@ -1,4 +1,33 @@
-#!/usr/bin/env python
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+# Original Version from:
 #
 # Electrum - lightweight Bitcoin client
 # Copyright (C) 2015 Thomas Voegtlin
@@ -43,14 +72,19 @@ from PyQt6.QtCore import (
     Qt,
 )
 from PyQt6.QtGui import QStandardItem
-from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QMenu
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QWidget
 
-from ...i18n import _
+from ...i18n import translate
 from ...signals import Signals, UpdateFilter
 from ...util import Satoshis, block_explorer_URL
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
-from .my_treeview import MySortModel, MyStandardItemModel, MyTreeView
+from .my_treeview import (
+    MySortModel,
+    MyStandardItemModel,
+    MyTreeView,
+    TreeViewWithToolbar,
+)
 from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
 
@@ -63,11 +97,13 @@ def icon_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTi
 def tooltip_text_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime) -> str:
     if not confirmation_time:
         if is_spent_by_txid:
-            return f"Unconfirmed UTXO is spent by transaction {is_spent_by_txid}"
+            return translate(
+                "utxo_list", "Unconfirmed UTXO is spent by transaction {is_spent_by_txid}"
+            ).format(is_spent_by_txid=is_spent_by_txid)
         else:
-            return "Unconfirmed UTXO"
+            return translate("utxo_list", "Unconfirmed UTXO")
 
-    return f"Confirmed UTXO"
+    return translate("utxo_list", f"Confirmed UTXO")
 
 
 class UTXOList(MyTreeView):
@@ -81,16 +117,6 @@ class UTXOList(MyTreeView):
         AMOUNT = enum.auto()
         PARENTS = enum.auto()
 
-    headers = {
-        Columns.STATUS: _(""),
-        Columns.WALLET_ID: _("Wallet"),
-        Columns.OUTPOINT: _("Outpoint"),
-        Columns.ADDRESS: _("Address"),
-        Columns.CATEGORY: _("Category"),
-        Columns.LABEL: _("Label"),
-        Columns.AMOUNT: _("Amount"),
-        Columns.PARENTS: _("Parents"),
-    }
     filter_columns = [
         Columns.WALLET_ID,
         Columns.OUTPOINT,
@@ -160,7 +186,7 @@ class UTXOList(MyTreeView):
         self.update()
 
         signals.utxos_updated.connect(self.update)
-        self.selectionModel().selectionChanged.connect(self.update_labels)
+        self.signals.language_switch.connect(self.update)
 
         # self.setDragEnabled(True)
         # self.setAcceptDrops(True)
@@ -168,19 +194,6 @@ class UTXOList(MyTreeView):
         # self.setDropIndicatorShown(True)
         # self.setDragDropMode(QAbstractItemView.InternalMove)
         # self.setDefaultDropAction(Qt.MoveAction)
-
-    def update_labels(self):
-        try:
-            amount = sum(self.get_selected_values())
-            self.uxto_selected_label.setText(
-                f"{Satoshis(amount, self.signals.get_network()).str_with_unit()} selected"
-            )
-        except:
-            self.uxto_selected_label.setText(f"")
-
-    def create_toolbar(self, config):
-        toolbar, menu, self.uxto_selected_label, search_edit = self._create_toolbar_with_menu("")
-        return toolbar
 
     def create_menu(self, position: QPoint) -> None:
         selected = self.selected_in_column(self.Columns.OUTPOINT)
@@ -203,21 +216,21 @@ class UTXOList(MyTreeView):
 
             if str(outpoints[0]) in self._wallet_dict:
                 menu.addAction(
-                    _("Open transaction"),
+                    translate("utxo_list", "Open transaction"),
                     lambda: self.signals.open_tx_like.emit(outpoints[0].txid),
                 )
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
             if addr_URL:
-                menu.addAction(_("View on block explorer"), lambda: webopen(addr_URL))
+                menu.addAction(translate("utxo_list", "View on block explorer"), lambda: webopen(addr_URL))
 
             menu.addAction(
-                _("Copy txid:out"),
+                translate("utxo_list", "Copy txid:out"),
                 lambda: self.copyKeyRoleToClipboard([idx.row()]),
             )
 
         menu.addAction(
-            _("Copy as csv"),
+            translate("utxo_list", "Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
@@ -241,6 +254,18 @@ class UTXOList(MyTreeView):
                 address = bdk.Address.from_script(txout.script_pubkey, self.config.network).as_string()
         return wallet, python_utxo, address, satoshis
 
+    def get_headers(self):
+        return {
+            self.Columns.STATUS: (""),
+            self.Columns.WALLET_ID: self.tr("Wallet"),
+            self.Columns.OUTPOINT: self.tr("Outpoint"),
+            self.Columns.ADDRESS: self.tr("Address"),
+            self.Columns.CATEGORY: self.tr("Category"),
+            self.Columns.LABEL: self.tr("Label"),
+            self.Columns.AMOUNT: self.tr("Amount"),
+            self.Columns.PARENTS: self.tr("Parents"),
+        }
+
     def update(self, update_filter: UpdateFilter = None):
         if self.maybe_defer_update():
             return
@@ -260,7 +285,7 @@ class UTXOList(MyTreeView):
             self._wallet_dict.update({str(python_txo.outpoint): wallet_ for python_txo in txos})
 
         self.std_model.clear()
-        self.update_headers(self.__class__.headers)
+        self.update_headers(self.get_headers())
         set_idx = None
         for i, outpoint in enumerate(self.get_outpoints()):
             outpoint = OutPoint.from_bdk(outpoint)
@@ -308,6 +333,7 @@ class UTXOList(MyTreeView):
 
         # manually sort, after the data is filled
         self.sortByColumn(self.Columns.ADDRESS, Qt.SortOrder.AscendingOrder)
+        super().update()
 
     def refresh_row(self, key: bdk.OutPoint, row: int):
         assert row is not None
@@ -380,3 +406,24 @@ class UTXOList(MyTreeView):
     def on_double_click(self, idx: QModelIndex):
         outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)
         self.signals.show_utxo.emit(outpoint)
+
+
+class UtxoListWithToolbar(TreeViewWithToolbar):
+    def __init__(self, utxo_list: UTXOList, config: UserConfig, parent: QWidget = None) -> None:
+        super().__init__(utxo_list, config, parent=parent)
+        self.utxo_list = utxo_list
+        self.utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
+        self.create_layout()
+
+    def update_labels(self):
+        try:
+            amount = sum(self.utxo_list.get_selected_values())
+            self.uxto_selected_label.setText(
+                f"{Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit()} selected"
+            )
+        except:
+            self.uxto_selected_label.setText(f"")
+
+    def create_toolbar_with_menu(self, title):
+        super().create_toolbar_with_menu(title=title)
+        self.uxto_selected_label = self.balance_label

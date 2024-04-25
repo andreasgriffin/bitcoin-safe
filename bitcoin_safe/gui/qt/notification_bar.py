@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import sys
 from typing import Callable, Optional
 
@@ -14,13 +43,16 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from .recipients import CloseButton
+
 
 class NotificationBar(QWidget):
     def __init__(
         self,
         text: str = "",
         optional_button_text: str = None,
-        callback_optional_button_text: Callable = None,
+        callback_optional_button: Callable = None,
+        additional_widget: QWidget = None,
         has_close_button: bool = True,
         parent=None,
     ):
@@ -50,9 +82,13 @@ class NotificationBar(QWidget):
         self.optionalButton = QPushButton()
         self.optionalButton.setVisible(bool(optional_button_text))  # Hidden by default
         self.optionalButton.setText(optional_button_text)
-        if callback_optional_button_text:
-            self.optionalButton.clicked.connect(callback_optional_button_text)
+        if callback_optional_button:
+            self.optionalButton.clicked.connect(callback_optional_button)
         main_widget.layout().addWidget(self.optionalButton)
+
+        # additional_widget
+        if additional_widget:
+            main_widget.layout().addWidget(additional_widget)
 
         # Spacer
         spacer = QWidget()
@@ -60,18 +96,18 @@ class NotificationBar(QWidget):
         main_widget.layout().addWidget(spacer)
 
         # Close Button
-        self.closeButton = QPushButton("x")
+        self.closeButton = CloseButton()
         self.closeButton.clicked.connect(self.hide)
         if has_close_button:
             main_widget.layout().addWidget(self.closeButton)
-        self.closeButton.setFixedWidth(self.sizeHint().height())
+        self.closeButton.setFixedSize(self.sizeHint().height(), self.sizeHint().height())
 
     def set_background_color(self, color: str):
         self.setStyleSheet(f"background-color: {color};")  # Set the background color for the notification bar
 
         # Set the background color for all child widgets, including the spacer
         self.textLabel.setStyleSheet(f"background-color: {color};")
-        self.optionalButton.setStyleSheet(f"background-color: {color};")
+        # self.optionalButton.setStyleSheet(f"background-color: {color};")
         # self.closeButton.setStyleSheet(f"background-color: {color};")
 
     def set_icon(self, icon: Optional[QIcon], sizes=(None, None)):

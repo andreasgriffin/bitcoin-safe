@@ -1,23 +1,66 @@
-from PyQt6.QtCore import QEvent
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+from PyQt6.QtCore import QEvent, pyqtSignal
 from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
     QLineEdit,
-    QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 
-class ExtendedTabWidget(QTabWidget):
+
+class ExtendedTabWidget(DataTabWidget):
+    signal_tab_bar_visibility = pyqtSignal(bool)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.set_top_right_widget()
 
         # Update QLineEdit position when the widget is resized
         self.resizeEvent = self.onResizeEvent
+
+        self.tabBar().installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if obj == self.tabBar() and event.type() == event.Type.Show:
+            if self.top_right_widget:
+                self.signal_tab_bar_visibility.emit(True)
+        elif obj == self.tabBar() and event.type() == event.Type.Hide:
+            if self.top_right_widget:
+                self.signal_tab_bar_visibility.emit(False)
+        return super().eventFilter(obj, event)
 
     def set_top_right_widget(self, top_right_widget: QWidget = None, target_width=150):
         self.top_right_widget = top_right_widget

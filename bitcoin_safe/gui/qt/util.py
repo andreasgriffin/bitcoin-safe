@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import enum
 import logging
 import os
@@ -13,7 +42,7 @@ from urllib.parse import urlparse
 import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import is_bitcoin_address
 from PIL import Image as PilImage
-from PyQt6.QtCore import QCoreApplication, QLocale, QSize, Qt, QTimer, QUrl, pyqtSignal
+from PyQt6.QtCore import QCoreApplication, QSize, Qt, QTimer, QUrl, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -38,13 +67,14 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSystemTrayIcon,
-    QTabWidget,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
-from ...i18n import _, languages
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+
+from ...i18n import translate
 from ...util import register_cache, resource_path
 
 logger = logging.getLogger(__name__)
@@ -253,11 +283,12 @@ def create_button(
 
 
 def add_tab_to_tabs(
-    tabs: QTabWidget,
+    tabs: DataTabWidget,
     tab: QWidget,
     icon: QIcon,
     description: str,
     name: str,
+    data: Any = None,
     position: int = None,
     focus: bool = False,
 ):
@@ -266,11 +297,11 @@ def add_tab_to_tabs(
     tab.tab_name = name
 
     if position is None:
-        tabs.addTab(tab, icon, description.replace("&", "").capitalize())
+        tabs.addTab(tab, icon, description.replace("&", "").capitalize(), data=data)
         if focus:
             tabs.setCurrentIndex(tabs.count() - 1)
     else:
-        tabs.insertTab(position, tab, icon, description.replace("&", "").capitalize())
+        tabs.insertTab(position, tab, icon, description.replace("&", "").capitalize(), data=data)
         if focus:
             tabs.setCurrentIndex(position)
 
@@ -287,7 +318,7 @@ class Buttons(QHBoxLayout):
 
 class CloseButton(QPushButton):
     def __init__(self, dialog):
-        QPushButton.__init__(self, _("Close"))
+        QPushButton.__init__(self, self.tr("Close"))
         self.clicked.connect(dialog.close)
         self.setDefault(True)
 
@@ -474,7 +505,7 @@ class BlockingWaitingDialog(WindowModalDialog):
 
     def __init__(self, parent: QWidget, message: str, task: Callable[[], Any]):
         assert parent
-        WindowModalDialog.__init__(self, parent, _("Please wait"))
+        WindowModalDialog.__init__(self, parent, self.tr("Please wait"))
         self.message_label = QLabel(message)
         vbox = QVBoxLayout(self)
         vbox.addWidget(self.message_label)
@@ -529,23 +560,28 @@ def chained_one_time_signal_connections(
     one_time_signal_connection(signal, f_wrapper)
 
 
-def create_button_box(callback_ok, callback_cancel, ok_text=None, cancel_text=None) -> QDialogButtonBox:
+def create_button_box(
+    callback_ok, callback_cancel, ok_text=None, cancel_text=None
+) -> Tuple[QDialogButtonBox, List[QPushButton]]:
     # Create the QDialogButtonBox instance
     button_box = QDialogButtonBox()
+    buttons: List[QPushButton] = []
 
     # Add an 'Ok' button
     if ok_text is None:
-        button_box.addButton(QDialogButtonBox.StandardButton.Ok)
+        buttons.append(button_box.addButton(QDialogButtonBox.StandardButton.Ok))
     else:
         custom_yes_button = QPushButton(ok_text)
+        buttons.append(custom_yes_button)
         button_box.addButton(custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
         custom_yes_button.clicked.connect(callback_ok)
 
     # Add a 'Cancel' button
     if cancel_text is None:
-        button_box.addButton(QDialogButtonBox.StandardButton.Cancel)
+        buttons.append(button_box.addButton(QDialogButtonBox.StandardButton.Cancel))
     else:
         custom_cancel_button = QPushButton(cancel_text)
+        buttons.append(custom_cancel_button)
         button_box.addButton(custom_cancel_button, QDialogButtonBox.ButtonRole.RejectRole)
         custom_cancel_button.clicked.connect(callback_cancel)
 
@@ -555,7 +591,7 @@ def create_button_box(callback_ok, callback_cancel, ok_text=None, cancel_text=No
     if cancel_text is None:
         button_box.rejected.connect(callback_cancel)
 
-    return button_box
+    return button_box, buttons
 
 
 class ColorSchemeItem:
@@ -608,11 +644,6 @@ def read_QIcon(icon_basename: str) -> QIcon:
     return QIcon(icon_path(icon_basename))
 
 
-def get_default_language():
-    name = QLocale.system().name()
-    return name if name in languages else "en_UK"
-
-
 def char_width_in_lineedit() -> int:
     char_width = QFontMetrics(QLineEdit().font()).averageCharWidth()
     # 'averageCharWidth' seems to underestimate on Windows, hence 'max()'
@@ -643,7 +674,11 @@ def clipboard_contains_address(network: bdk.Network):
 
 def do_copy(text: str, *, title: str = None) -> None:
     QApplication.clipboard().setText(str(text))
-    message = _("Text copied to Clipboard") if title is None else _("{} copied to Clipboard").format(title)
+    message = (
+        translate("d", "Text copied to Clipboard")
+        if title is None
+        else translate("d", "{} copied to Clipboard").format(title)
+    )
     show_tooltip_after_delay(message)
 
 

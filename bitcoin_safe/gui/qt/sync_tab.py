@@ -1,10 +1,39 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import hashlib
 import logging
 from datetime import datetime
 
 import nostr_sdk
 from bitcoin_qrreader.bitcoin_qr import DataType
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtWidgets import QCheckBox, QVBoxLayout
 
 from bitcoin_safe.descriptors import MultipathDescriptor
@@ -15,7 +44,7 @@ from bitcoin_safe.gui.qt.nostr_sync.nostr import BitcoinDM
 from bitcoin_safe.gui.qt.nostr_sync.nostr_sync import NostrSync
 from bitcoin_safe.gui.qt.util import Message, custom_exception_handler
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.util import TaskThread
+from bitcoin_safe.threading_manager import TaskThread
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +53,7 @@ from typing import Dict
 import bdkpython as bdk
 
 
-class SyncTab:
+class SyncTab(QObject):
     def __init__(
         self,
         nostr_sync_dump: Dict,
@@ -35,30 +64,43 @@ class SyncTab:
         auto_open_psbts: bool = True,
         **kwargs,
     ) -> None:
+        super().__init__()
         self.signals = signals
         self.network = network
         self.startup_time = datetime.now()
 
-        self.main_widget = ControlledGroupbox(
-            checkbox_text="Encrypted syncing to trusted devices", enabled=enabled
-        )
+        self.main_widget = ControlledGroupbox(checkbox_text="", enabled=enabled)
         self.main_widget.groupbox.setLayout(QVBoxLayout())
 
         self.main_widget.checkbox.stateChanged.connect(self.checkbox_state_changed)
 
-        self.checkbox_auto_open_psbts = QCheckBox(
-            "Open received Transactions and PSBTs automatically in a new tab"
-        )
+        self.checkbox_auto_open_psbts = QCheckBox()
         self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)
         self.main_widget.groupbox.layout().addWidget(self.checkbox_auto_open_psbts)
 
         self.nostr_sync = (
-            nostr_sync if nostr_sync else NostrSync.from_dump(d=nostr_sync_dump, network=network)
+            nostr_sync
+            if nostr_sync
+            else NostrSync.from_dump(d=nostr_sync_dump, network=network, signals_min=self.signals)
         )
 
+        self.updateUi()
+
+        # signals
         self.nostr_sync.signal_attachement_clicked.connect(self.open_file_object)
         self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
         self.main_widget.groupbox.layout().addWidget(self.nostr_sync.gui)
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.main_widget.checkbox.setText(self.tr("Encrypted syncing to trusted devices"))
+        self.checkbox_auto_open_psbts.setText(
+            self.tr("Open received Transactions and PSBTs automatically in a new tab")
+        )
+
+    def unsubscribe_all(self):
+        if self.enabled():
+            self.nostr_sync.unsubscribe()
 
     def finish_init_after_signal_connection(self):
         if self.enabled():
@@ -82,7 +124,9 @@ class SyncTab:
         def on_error(packed_error_info):
             custom_exception_handler(*packed_error_info)
 
-        TaskThread(self.main_widget).add_and_start(do, on_success, on_done, on_error)
+        TaskThread(self.main_widget, signals_min=self.signals).add_and_start(
+            do, on_success, on_done, on_error
+        )
 
     def on_dm(self, dm: BitcoinDM):
         if dm.event and self.startup_time > datetime.fromtimestamp(dm.event.created_at().as_secs()):
@@ -94,13 +138,17 @@ class SyncTab:
                 return
             if dm.data and dm.data.data_type in [DataType.PSBT, DataType.Tx]:
                 Message(
-                    f"Opening {dm.data.data_type.name} from {short_key(dm.event.author().to_bech32())}",
+                    self.tr("Opening {name} from {author}").format(
+                        name=dm.data.data_type.name, author=short_key(dm.event.author().to_bech32())
+                    ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
                 self.signals.open_tx_like.emit(dm.data.data)
             elif not dm.data:
                 Message(
-                    f"Received message '{dm.description}' from {short_key(dm.event.author().to_bech32())}",
+                    self.tr("Received message '{description}' from {author}").format(
+                        description=dm.description, author=short_key(dm.event.author().to_bech32())
+                    ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
 
@@ -127,6 +175,7 @@ class SyncTab:
             protocol_keys=protocol_keys,
             device_keys=device_keys,
             individual_chats_visible=False,
+            signals_min=signals,
         )
 
         return SyncTab(nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals)

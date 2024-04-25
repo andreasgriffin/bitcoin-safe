@@ -1,9 +1,39 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
 from bitcoin_safe.gui.qt.mytabwidget import ExtendedTabWidget
@@ -21,6 +51,7 @@ from typing import Callable, Dict, List, Optional, Set
 
 import bdkpython as bdk
 from PyQt6.QtCore import QItemSelectionModel, QObject, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -58,7 +89,7 @@ from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
 from ...util import Satoshis, block_explorer_URL, format_fee_rate, serialized_to_hex
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .category_list import CategoryList
-from .recipients import BTCSpinBox, Recipients
+from .recipients import RecipientGroupBox, Recipients
 from .util import (
     Message,
     MessageType,
@@ -66,7 +97,7 @@ from .util import (
     caught_exception_message,
     clear_layout,
 )
-from .utxo_list import UTXOList
+from .utxo_list import UTXOList, UtxoListWithToolbar
 
 
 class UITx_Base(QObject):
@@ -78,6 +109,7 @@ class UITx_Base(QObject):
 
     def create_recipients(self, layout: QLayout, parent=None, allow_edit=True) -> Recipients:
         recipients = Recipients(self.signals, network=self.config.network, allow_edit=allow_edit)
+
         layout.addWidget(recipients)
         recipients.setMinimumWidth(250)
         return recipients
@@ -101,8 +133,7 @@ class UITx_Viewer(UITx_Base):
         config: UserConfig,
         signals: Signals,
         fx: FX,
-        widget_utxo_with_toolbar: SearchableTab,
-        utxo_list: UTXOList,
+        widget_utxo_with_toolbar: UtxoListWithToolbar,
         network: bdk.Network,
         mempool_data: MempoolData,
         data: Data,
@@ -115,13 +146,13 @@ class UITx_Viewer(UITx_Base):
         self.network = network
         self.fee_info = fee_info
         self.blockchain = blockchain
-        self.utxo_list = utxo_list
+        self.utxo_list = widget_utxo_with_toolbar.utxo_list
         self.confirmation_time = confirmation_time
 
         ##################
         self.main_widget = UITx_ViewerTab(serialize=lambda: self.serialize())
         self.main_widget.setLayout(QVBoxLayout())
-        self.main_widget.searchable_list = utxo_list
+        self.main_widget.searchable_list = widget_utxo_with_toolbar.utxo_list
 
         self.upper_widget = QWidget()
         self.upper_widget_layout = QHBoxLayout(self.upper_widget)
@@ -140,16 +171,16 @@ class UITx_Viewer(UITx_Base):
         # inputs
         self.tab_inputs = QWidget()
         self.tab_inputs.setLayout(QVBoxLayout())
+        self.tabs_inputs_outputs.addTab(self.tab_inputs, "")
         self.tab_inputs.layout().addWidget(widget_utxo_with_toolbar)
-        self.tabs_inputs_outputs.addTab(self.tab_inputs, "Inputs")
 
         # outputs
         self.tab_outputs = QWidget()
-        self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
-        self.tabs_inputs_outputs.addTab(self.tab_outputs, "Recipients")
+        self.tab_outputs.setLayout(QVBoxLayout())
+        self.tabs_inputs_outputs.addTab(self.tab_outputs, "")
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
 
-        self.recipients = self.create_recipients(self.tab_outputs_layout, allow_edit=False)
+        self.recipients = self.create_recipients(self.tab_outputs.layout(), allow_edit=False)
 
         # right side bar
         self.right_sidebar = QWidget()
@@ -178,6 +209,7 @@ class UITx_Viewer(UITx_Base):
             confirmation_time=confirmation_time,
             url=block_explorer_URL(config.network_config.mempool_url, "tx", self.extract_tx().txid()),
         )
+        self.signals.language_switch.connect(self.fee_group.updateUi)
 
         # progress bar  import export  flow container
         self.tx_singning_steps_container = QWidget()
@@ -207,7 +239,7 @@ class UITx_Viewer(UITx_Base):
         # if i do  on_clicked=  self.edit    it doesnt reliably trigger the signal. Why???
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox,
-            "Edit",
+            "",
             "pen.svg",
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
@@ -215,7 +247,7 @@ class UITx_Viewer(UITx_Base):
         # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
         self.button_rbf = add_to_buttonbox(
             self.buttonBox,
-            "Edit with increased fee (RBF)",
+            "",
             "pen.svg",
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
@@ -223,22 +255,25 @@ class UITx_Viewer(UITx_Base):
         self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "sd-card.svg")
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
-            "Previous step",
+            "",
             None,
             on_clicked=self.go_to_previous_index,
             role=QDialogButtonBox.ButtonRole.RejectRole,
         )
         self.button_next = add_to_buttonbox(
             self.buttonBox,
-            "Next step",
+            "",
             None,
             on_clicked=self.go_to_next_index,
             role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
         self.button_send = add_to_buttonbox(
-            self.buttonBox, "Send", "send.svg", on_clicked=lambda: self.broadcast()
+            self.buttonBox,
+            "",
+            "send.svg",
+            on_clicked=lambda: self.broadcast(),
+            role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
-        self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
 
         self.main_widget.layout().addWidget(self.buttonBox)
         ##################
@@ -246,9 +281,25 @@ class UITx_Viewer(UITx_Base):
         self.button_save_tx.setVisible(False)
         self.button_send.setVisible(self.data.data_type == DataType.Tx)
 
+        self.updateUi()
         self.reload()
         self.utxo_list.update()
         self.signals.finished_open_wallet.connect(self.reload)
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.tabs_inputs_outputs.setTabText(
+            self.tabs_inputs_outputs.indexOf(self.tab_inputs), self.tr("Inputs")
+        )
+        self.tabs_inputs_outputs.setTabText(
+            self.tabs_inputs_outputs.indexOf(self.tab_outputs), self.tr("Recipients")
+        )
+        self.button_edit_tx.setText(self.tr("Edit"))
+        self.button_rbf.setText(self.tr("Edit with increased fee (RBF)"))
+        self.button_previous.setText(self.tr("Previous step"))
+        self.button_next.setText(self.tr("Next step"))
+        self.button_send.setText(self.tr("Send"))
+        self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
 
     def extract_tx(self) -> bdk.Transaction:
         assert self.data.data_type in [DataType.Tx, DataType.PSBT]
@@ -317,7 +368,10 @@ class UITx_Viewer(UITx_Base):
                 self.signals.signal_broadcast_tx.emit(tx)
             except Exception as e:
                 caught_exception_message(
-                    e, title="Invalid Signatures" if "non-mandatory-script-verify-flag" in str(e) else None
+                    e,
+                    title=self.tr("Invalid Signatures")
+                    if "non-mandatory-script-verify-flag" in str(e)
+                    else None,
                 )
         else:
             logger.error("No blockchain set")
@@ -589,6 +643,7 @@ class UITx_Viewer(UITx_Base):
                 wallet_id: qt_wallet.sync_tab
                 for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
             },
+            signals_min=self.signals,
         )
 
         widget.qr_label.set_always_animate(False)
@@ -602,7 +657,9 @@ class UITx_Viewer(UITx_Base):
         assert isinstance(self.data.data, bdk.PartiallySignedTransaction)
 
         if self.data.data and tx.txid() != self.data.data.txid():
-            Message("The txid of the signed psbt doesnt match the original txid", type=MessageType.Error)
+            Message(
+                self.tr("The txid of the signed psbt doesnt match the original txid"), type=MessageType.Error
+            )
             return
 
         self.set_tx(
@@ -769,7 +826,7 @@ class UITx_Creator(UITx_Base):
         mempool_data: MempoolData,
         fx: FX,
         categories: List[str],
-        widget_utxo_with_toolbar: SearchableTab,
+        widget_utxo_with_toolbar: UtxoListWithToolbar,
         utxo_list: UTXOList,
         config: UserConfig,
         signals: Signals,
@@ -801,18 +858,28 @@ class UITx_Creator(UITx_Base):
         self.widget_right_hand_side_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         self.widget_right_top = QWidget(self.main_widget)
-        self.widget_right_top_layout = QHBoxLayout(self.widget_right_top)
-        self.widget_right_top_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.widget_right_top.setLayout(QHBoxLayout())
+        self.widget_right_top.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        self.recipients: Recipients = self.create_recipients(self.widget_right_top_layout)
+        self.widget_middle = QWidget(self.main_widget)
+        self.widget_middle.setLayout(QVBoxLayout())
+        self.widget_right_top.layout().addWidget(self.widget_middle)
 
-        self.recipients.signal_clicked_send_max_button.connect(
-            lambda recipient_group_box: self.set_max_amount(recipient_group_box.amount_spin_box)
-        )
+        self.balance_label = QLabel()
+        font = QFont()
+        font.setPointSize(12)
+        self.balance_label.setFont(font)
+
+        self.widget_middle.layout().addWidget(self.balance_label)
+
+        self.recipients: Recipients = self.create_recipients(self.widget_middle.layout())
+
+        self.recipients.signal_clicked_send_max_button.connect(self.updateUi)
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(mempool_data, fx, self.widget_right_top_layout, self.config)
-        self.fee_group.signal_set_fee_rate.connect(self.on_set_fee_rate)
+        self.fee_group = FeeGroup(mempool_data, fx, self.widget_right_top.layout(), self.config)
+        self.signals.language_switch.connect(self.fee_group.updateUi)
+        self.fee_group.signal_set_fee_rate.connect(self.updateUi)
 
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
@@ -826,12 +893,63 @@ class UITx_Creator(UITx_Base):
 
         self.splitter.addWidget(self.widget_right_hand_side)
 
+        self.updateUi()
         self.tab_changed(0)
+
+        # signals
         self.tabs_inputs.currentChanged.connect(self.tab_changed)
         self.mempool_data.signal_data_updated.connect(self.update_fee_rate_to_mempool)
+        self.utxo_list.on_selection_changed.connect(self.updateUi)
+        self.recipients.signal_amount_changed.connect(self.updateUi)
+        self.recipients.signal_added_recipient.connect(self.updateUi)
+        self.recipients.signal_removed_recipient.connect(self.updateUi)
+        self.category_list.signal_tag_clicked.connect(self.updateUi)
+        self.signals.utxos_updated.connect(self.updateUi)  # for the balance
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        # translations
+        self.label_select_input_categories.setText(self.tr("Select a category that fits the recipient best"))
+        self.checkBox_reduce_future_fees.setText(self.tr("Reduce future fees\nby merging address balances"))
+        self.tabs_inputs.setTabText(
+            self.tabs_inputs.indexOf(self.tab_inputs_categories), self.tr("Send Category")
+        )
+        self.tabs_inputs.setTabText(self.tabs_inputs.indexOf(self.tab_inputs_utxos), self.tr("Advanced"))
+        self.button_add_utxo.setText(self.tr("Add foreign UTXOs"))
+
+        # infos and warnings
+        fee_rate = self.fee_group.spin_fee_rate.value()
+
+        # non-output dependent  values
+        opportunistic_merging_threshold = self.opportunistic_merging_threshold()
+        self.checkBox_reduce_future_fees.setChecked(fee_rate <= opportunistic_merging_threshold)
+        self.checkBox_reduce_future_fees.setToolTip(
+            self.tr("This checkbox automatically checks \nbelow {rate}").format(
+                rate=format_fee_rate(opportunistic_merging_threshold, self.config.network)
+            )
+        )
+
+        # set max values
+        self.reapply_max_amounts()
+
+        # update fee infos (dependent on output amounts)
+        sent_values = [r.amount for r in self.recipients.recipients]
+
+        fee_info = self.estimate_fee_info(fee_rate)
+        self.fee_group.set_vsize(fee_info.vsize)
+        if bool(sum(sent_values)):
+
+            self.fee_group.set_fee_to_send_ratio(
+                fee_info.fee_amount,
+                sum(sent_values),
+                self.config.network,
+            )
+
+        # balance label
+        self.balance_label.setText(self.wallet.get_balance().format_short(network=self.config.network))
 
     def reset_fee_rate(self):
-        self.fee_group.set_fee_rate(self.mempool_data.get_prio_fees()[TxPrio.low])
+        self.fee_group.set_fee_rate(self.mempool_data.get_prio_fee_rates()[TxPrio.low])
 
     def clear_ui(self):
         self.additional_outpoints.clear()
@@ -845,7 +963,9 @@ class UITx_Creator(UITx_Base):
             self.tabs_inputs.currentWidget() == self.tab_inputs_categories
             and not self.category_list.get_selected()
         ):
-            Message("Please select an input category on the left, that fits the transaction recipients.")
+            Message(
+                self.tr("Please select an input category on the left, that fits the transaction recipients.")
+            )
             return
         self.signal_create_tx.emit(self.get_ui_tx_infos())
 
@@ -879,7 +999,12 @@ class UITx_Creator(UITx_Base):
         category_python_utxo_dict = self._get_category_python_utxo_dict()
 
         return [
-            f"{len(category_python_utxo_dict.get(category, []))} Inputs: {Satoshis(python_utxo_balance(category_python_utxo_dict.get(category, [])), self.wallet.network).str_with_unit()}"
+            self.tr("{num_inputs} Inputs: {inputs}").format(
+                num_inputs=len(category_python_utxo_dict.get(category, [])),
+                inputs=Satoshis(
+                    python_utxo_balance(category_python_utxo_dict.get(category, [])), self.wallet.network
+                ).str_with_unit(),
+            )
             for category in self.wallet.labels.categories
         ]
 
@@ -888,15 +1013,14 @@ class UITx_Creator(UITx_Base):
         self.tabs_inputs = QTabWidget(self.main_widget)
         self.tabs_inputs.setMinimumWidth(200)
         self.tab_inputs_categories = QWidget(self.main_widget)
-        self.tabs_inputs.addTab(self.tab_inputs_categories, "Send Category")
+        self.tabs_inputs.addTab(self.tab_inputs_categories, "")
 
         # tab categories
         self.verticalLayout_inputs = QVBoxLayout(self.tab_inputs_categories)
-        self.label_select_input_categories = QLabel("Select a category that fits the recipient best")
+        self.label_select_input_categories = QLabel()
         self.label_select_input_categories.setWordWrap(True)
         self.checkBox_reduce_future_fees = QCheckBox(self.tab_inputs_categories)
         self.checkBox_reduce_future_fees.setChecked(True)
-        self.checkBox_reduce_future_fees.setText("Reduce future fees\n" f"by merging address balances")
 
         # Taglist
         self.category_list = CategoryList(
@@ -910,13 +1034,13 @@ class UITx_Creator(UITx_Base):
         # tab utxos
         self.tab_inputs_utxos = QWidget(self.main_widget)
         self.verticalLayout_inputs_utxos = QVBoxLayout(self.tab_inputs_utxos)
-        self.tabs_inputs.addTab(self.tab_inputs_utxos, "Advanced")
+        self.tabs_inputs.addTab(self.tab_inputs_utxos, "")
 
         self.verticalLayout_inputs_utxos.addWidget(self.widget_utxo_with_toolbar)
 
         # utxo list
+        self.button_add_utxo = QPushButton()
         if hasattr(bdk.TxBuilder(), "add_foreign_utxo"):
-            self.button_add_utxo = QPushButton("Add foreign UTXOs")
             self.button_add_utxo.clicked.connect(self.click_add_utxo)
             self.verticalLayout_inputs_utxos.addWidget(self.button_add_utxo)
 
@@ -951,7 +1075,7 @@ class UITx_Creator(UITx_Base):
     def click_add_utxo(self):
         def process_input(s: str):
             outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
-            logger.debug(f"Adding outpoints {outpoints}")
+            logger.debug(self.tr("Adding outpoints {outpoints}").format(outpoints=outpoints))
             self.add_outpoints(outpoints)
             self.utxo_list.update()
             self.utxo_list.select_rows(outpoints, self.utxo_list.key_column, self.utxo_list.ROLE_KEY)
@@ -959,34 +1083,16 @@ class UITx_Creator(UITx_Base):
         ImportDialog(
             self.config.network,
             on_open=process_input,
-            window_title="Add Inputs",
-            text_button_ok="Load UTXOs",
-            text_instruction_label="Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint",
-            text_placeholder="Please paste UTXO here",
+            window_title=self.tr("Add Inputs"),
+            text_button_ok=self.tr("Load UTXOs"),
+            text_instruction_label=self.tr(
+                "Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint"
+            ),
+            text_placeholder=self.tr("Please paste UTXO here"),
         ).show()
 
     def opportunistic_merging_threshold(self) -> float:
         return self.wallet.get_ema_fee_rate()
-
-    def on_set_fee_rate(self, fee_rate: float):
-        opportunistic_merging_threshold = self.opportunistic_merging_threshold()
-        self.checkBox_reduce_future_fees.setChecked(fee_rate <= opportunistic_merging_threshold)
-        self.checkBox_reduce_future_fees.setText("Reduce future fees\n" f"by merging address balances")
-        self.checkBox_reduce_future_fees.setToolTip(
-            f"This checkbox automatically checks \nbelow {format_fee_rate(opportunistic_merging_threshold, self.config.network)}"
-        )
-
-        sent_values = [r.amount for r in self.recipients.recipients]
-
-        fee_info = self.estimate_fee_info(fee_rate)
-        self.fee_group.set_vsize(fee_info.vsize)
-        if bool(sum(sent_values)):
-
-            self.fee_group.set_fee_to_send_ratio(
-                fee_info.fee_amount,
-                sum(sent_values),
-                self.config.network,
-            )
 
     def estimate_fee_info(self, fee_rate: float = None):
         sent_values = [r.amount for r in self.recipients.recipients]
@@ -1037,19 +1143,46 @@ class UITx_Creator(UITx_Base):
 
         return infos
 
-    def set_max_amount(self, spin_box: BTCSpinBox):
-        txinfos = self.get_ui_tx_infos()
+    def reapply_max_amounts(self):
+        recipient_group_boxes = self.recipients.get_recipient_group_boxes()
+        for recipient_group_box in recipient_group_boxes:
+            recipient_group_box.amount_spin_box.setMaximum(self.get_total_input_value())
 
+        recipient_group_boxes_max_checked = [
+            recipient_group_box
+            for recipient_group_box in recipient_group_boxes
+            if recipient_group_box.send_max_button.isChecked()
+        ]
+        total_change_amount = self.get_total_change_amount(include_max_checked=False)
+        for recipient_group_box in recipient_group_boxes_max_checked:
+            self.set_max_amount(
+                recipient_group_box, total_change_amount // len(recipient_group_boxes_max_checked)
+            )
+
+    def get_total_input_value(self) -> int:
+        txinfos = self.get_ui_tx_infos()
+        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
+        return total_input_value
+
+    def get_total_change_amount(self, include_max_checked=False) -> int:
+        txinfos = self.get_ui_tx_infos()
         total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
 
         total_output_value = sum(
-            [recipient.amount for recipient in txinfos.recipients]
+            [
+                recipient.amount
+                for recipient in txinfos.recipients
+                if (recipient.checked_max_amount and include_max_checked) or not recipient.checked_max_amount
+            ]
         )  # this includes the old value of the spinbox
 
-        logger.debug(str((total_input_value, total_output_value, spin_box.value())))
+        total_change_amount = total_input_value - total_output_value
+        return total_change_amount
 
-        max_available_amount = total_input_value - total_output_value
-        spin_box.setValue(spin_box.value() + max_available_amount)
+    def set_max_amount(self, recipient_group_box: RecipientGroupBox, max_amount: int):
+        with BlockChangesSignals([recipient_group_box]):
+
+            recipient_group_box.amount_spin_box.setValue(max_amount)
 
     def tab_changed(self, index: int):
         # pyqtSlot called when the current tab changes
@@ -1112,15 +1245,36 @@ class UITx_Creator(UITx_Base):
                 if confirmation_time
             ]
         )
-        conflicted_unconfirmed = set(conflicting_python_utxos) - conflicting_confirmed
         if conflicting_confirmed:
             Message(
-                f"The inputs {[utxo.outpoint for utxo in conflicting_confirmed]} conflict with these confirmed txids {[utxo.is_spent_by_txid for utxo in conflicting_confirmed]}"
+                self.tr("The inputs {inputs} conflict with these confirmed txids {txids}.").format(
+                    inputs=[utxo.outpoint for utxo in conflicting_confirmed],
+                    txids=[utxo.is_spent_by_txid for utxo in conflicting_confirmed],
+                )
             )
+        conflicted_unconfirmed = set(conflicting_python_utxos) - conflicting_confirmed
         if conflicted_unconfirmed:
             # RBF is going on
             # these involved txs i can do rbf
 
+            # for each conflicted_unconfirmed, get all roots and dependents
+            dependents_to_be_replaced: List[bdk.TransactionDetails] = []
+            for utxo in conflicted_unconfirmed:
+                if utxo.is_spent_by_txid:
+                    dependents_to_be_replaced += [
+                        fulltx.tx
+                        for fulltx in self.wallet.get_fulltxdetail_and_dependents(
+                            utxo.is_spent_by_txid, include_root_tx=False
+                        )
+                    ]
+            if dependents_to_be_replaced:
+                Message(
+                    self.tr(
+                        "The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating."
+                    ).format(txids=[dependent.txid for dependent in dependents_to_be_replaced])
+                )
+
+            # for each conflicted_unconfirmed, get all roots and dependents
             txs_to_be_replaced = []
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:

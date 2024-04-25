@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 from typing import Dict, List, Optional, Type
 
@@ -5,6 +34,7 @@ import bdkpython as bdk
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 
 from bitcoin_safe.gui.qt.export_data import (
+    DataGroupBox,
     ExportDataSimple,
     HorizontalImportExportGroups,
 )
@@ -21,7 +51,7 @@ from bitcoin_safe.signer import (
 )
 
 logger = logging.getLogger(__name__)
-from PyQt6.QtWidgets import QGroupBox, QWidget
+from PyQt6.QtWidgets import QWidget
 
 
 class HorizontalImporters(HorizontalImportExportGroups):
@@ -42,7 +72,7 @@ class HorizontalImporters(HorizontalImportExportGroups):
         self._add(self.group_share, SignatureImporterClipboard)
         self._add(self.group_seed, SignatureImporterWallet)
 
-    def _add(self, group: QGroupBox, cls: Type[AbstractSignatureImporter]):
+    def _add(self, group: DataGroupBox, cls: Type[AbstractSignatureImporter]):
         importer = self._get_importer(cls)
         group.setVisible(bool(importer))
         if importer:
@@ -52,6 +82,7 @@ class HorizontalImporters(HorizontalImportExportGroups):
                 self.network,
             )
             group.layout().addWidget(signerui)
+            group.setData(signerui)
 
     def _get_importer(self, cls: Type[AbstractSignatureImporter]) -> Optional[AbstractSignatureImporter]:
         for importer in self.signature_importers:
@@ -69,7 +100,6 @@ class TxSigningSteps(StepProgressContainer):
         signals: Signals,
         parent: QWidget = None,
     ) -> None:
-
         step_labels = []
         sub_indices = []
         enumeration_alphabet = []
@@ -77,16 +107,16 @@ class TxSigningSteps(StepProgressContainer):
             # export
             step_labels.append(
                 (
-                    f"Export transaction to any hardware signer"
+                    self.tr("Export transaction to any hardware signer")
                     if i == 0
-                    else f"Sign with a different hardware signer"
+                    else self.tr("Sign with a different hardware signer")
                 )
             )
             sub_indices.append(i * 2)
             enumeration_alphabet.append(f"{i+1}.a")
 
             # import
-            step_labels.append("Import signature")
+            step_labels.append(self.tr("Import signature"))
             enumeration_alphabet.append(f"{i+1}.b")
 
         super().__init__(step_labels=step_labels, parent=parent, use_resizing_stacked_widget=False)
@@ -96,6 +126,7 @@ class TxSigningSteps(StepProgressContainer):
         self.psbt = psbt
         self.network = network
         self.signals = signals
+        self.signature_importer_dict = signature_importer_dict
 
         first_non_signed_index = None
         # fill ui
@@ -142,6 +173,7 @@ class TxSigningSteps(StepProgressContainer):
                 for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
             },
             usb_signer_ui=usb_signer_ui,
+            signals_min=self.signals,
         )
 
         export_widget.qr_label.set_always_animate(True)
@@ -151,7 +183,9 @@ class TxSigningSteps(StepProgressContainer):
     def create_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
         if signature_importers[0].signature_available:
             return SignedUI(
-                f"Transaction signed with the private key belonging to {signature_importers[0].key_label}",
+                self.tr("Transaction signed with the private key belonging to {label}").format(
+                    label=signature_importers[0].key_label
+                ),
                 self.psbt,
                 self.network,
             )

@@ -1,5 +1,36 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 from datetime import datetime
+
+from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +44,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from bitcoin_safe.gui.qt.nostr_sync.connected_devices.chat_gui import FileObject
+from bitcoin_safe.html import html_f
 
 from .connected_devices.connected_devices import (
     ConnectedDevices,
@@ -57,6 +89,7 @@ def file_to_str(file_path: str):
 
 
 class NostrSync(QObject):
+    signal_add_trusted_device = pyqtSignal(TrustedDevice)
     signal_attachement_clicked = pyqtSignal(FileObject)
     signal_label_bip329_received = pyqtSignal(Data)
 
@@ -65,6 +98,7 @@ class NostrSync(QObject):
         network: bdk.Network,
         nostr_protocol: NostrProtocol,
         group_chat: GroupChat,
+        signals_min: SignalsMin,
         individual_chats_visible=True,
         hide_data_types_in_chat: tuple[DataType] = (DataType.LabelsBip329,),
     ) -> None:
@@ -73,9 +107,10 @@ class NostrSync(QObject):
         self.nostr_protocol = nostr_protocol
         self.group_chat = group_chat
         self.hide_data_types_in_chat = hide_data_types_in_chat
+        self.signals_min = signals_min
 
         self.gui = ConnectedDevices(
-            individual_chats_visible=individual_chats_visible,
+            individual_chats_visible=individual_chats_visible, signals_min=signals_min
         )
         self.gui.set_title(self.group_chat.dm_connection.keys.public_key())
         self.gui.groupchat_gui.chat_list_display.signal_attachement_clicked.connect(
@@ -132,7 +167,12 @@ class NostrSync(QObject):
 
     @classmethod
     def from_keys(
-        cls, network: bdk.Network, protocol_keys: Keys, device_keys: Keys, individual_chats_visible=True
+        cls,
+        network: bdk.Network,
+        protocol_keys: Keys,
+        device_keys: Keys,
+        signals_min: SignalsMin,
+        individual_chats_visible=True,
     ) -> "NostrSync":
         nostr_protocol = NostrProtocol(network=network, keys=protocol_keys)
         group_chat = GroupChat(network=network, keys=device_keys)
@@ -141,6 +181,7 @@ class NostrSync(QObject):
             nostr_protocol=nostr_protocol,
             group_chat=group_chat,
             individual_chats_visible=individual_chats_visible,
+            signals_min=signals_min,
         )
 
     def dump(self) -> Dict[str, Any]:
@@ -155,18 +196,18 @@ class NostrSync(QObject):
         return d
 
     @classmethod
-    def from_dump(cls, d: Dict[str, Any], network: bdk.Network) -> "NostrSync":
+    def from_dump(cls, d: Dict[str, Any], network: bdk.Network, signals_min: SignalsMin) -> "NostrSync":
         d["nostr_protocol"] = NostrProtocol.from_dump(d["nostr_protocol"], network=network)
         d["group_chat"] = GroupChat.from_dump(d["group_chat"], network=network)
 
-        sync = NostrSync(**d, network=network)
+        sync = NostrSync(**d, network=network, signals_min=signals_min)
 
         # add the gui elements for the trusted members
         for member in sync.group_chat.members:
             if sync.is_me(member):
                 # do not add myself as a device
                 continue
-            untrusted_device = UnTrustedDevice(pub_key_bech32=member.to_bech32())
+            untrusted_device = UnTrustedDevice(pub_key_bech32=member.to_bech32(), signals_min=signals_min)
             sync.gui.add_untrusted_device(untrusted_device)
             sync.trust_device(untrusted_device, show_message=False)
 
@@ -299,7 +340,9 @@ class NostrSync(QObject):
             return
         if not dm.please_trust_public_key_bech32:
             # the message was just publishing an author_public_key_bech32
-            untrusted_device = UnTrustedDevice(pub_key_bech32=dm.public_key_bech32)
+            untrusted_device = UnTrustedDevice(
+                pub_key_bech32=dm.public_key_bech32, signals_min=self.signals_min
+            )
             self.gui.add_untrusted_device(untrusted_device)
             self.connect_untrusted_device(untrusted_device)
         else:
@@ -369,7 +412,16 @@ class NostrSync(QObject):
         if show_message and not untrusted_device.trust_request_active():
             QMessageBox.information(
                 self.gui,
-                f"Go to {short_key(untrusted_device.pub_key_bech32)}",
-                f"To complete the connection, accept my <b>{short_key( self.group_chat.dm_connection.keys.public_key().to_bech32())}</b> request on the other device <b>{short_key(untrusted_device.pub_key_bech32)}</b>.",
+                self.tr("Go to {untrusted}").format(untrusted=short_key(untrusted_device.pub_key_bech32)),
+                self.tr(
+                    "To complete the connection, accept my {id} request on the other device {other}."
+                ).format(
+                    id=html_f(
+                        short_key(self.group_chat.dm_connection.keys.public_key().to_bech32()), bf=True
+                    ),
+                    other=html_f(short_key(untrusted_device.pub_key_bech32), bf=True),
+                ),
             )
+
+        self.signal_add_trusted_device.emit(trusted_device)
         return trusted_device

@@ -1,9 +1,39 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import enum
 import logging
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 from packaging import version
+from PyQt6.QtCore import QObject
 
 from .storage import SaveAllClass
 from .util import Satoshis, serialized_to_hex
@@ -260,17 +290,21 @@ class CBFServerType(enum.Enum):
         return CBFServerType._member_map_[t]
 
 
-class Balance:
-    def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0, spendable=0):
+class Balance(QObject):
+    def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0):
+        super().__init__()
         self.immature = immature
         self.trusted_pending = trusted_pending
         self.untrusted_pending = untrusted_pending
         self.confirmed = confirmed
-        self.spendable = spendable
 
     @property
     def total(self):
         return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed
+
+    @property
+    def spendable(self):
+        return self.trusted_pending + self.confirmed
 
     def __add__(self, other: "Balance") -> "Balance":
         summed = {key: self.__dict__[key] + other.__dict__[key] for key in self.__dict__.keys()}
@@ -281,9 +315,12 @@ class Balance:
         details = [
             f"{title}: {Satoshis (value, network=network).str_with_unit()}"
             for title, value in [
-                ("Confirmed", self.confirmed),
-                ("Unconfirmed", self.untrusted_pending + self.trusted_pending),
-                ("Unmatured", self.immature),
+                (self.tr("Confirmed"), self.confirmed),
+                (
+                    self.tr("Unconfirmed"),
+                    self.untrusted_pending + self.trusted_pending,
+                ),
+                (self.tr("Unmatured"), self.immature),
             ]
         ]
         long = "\n".join(details)
@@ -291,7 +328,8 @@ class Balance:
 
     def format_short(self, network: bdk.Network) -> str:
 
-        short = f"Balance: {Satoshis(value=self.total, network= network).str_with_unit()} "
+        short = Satoshis(value=self.total, network=network).format_as_balance()
+
         return short
 
 

@@ -1,7 +1,36 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 import os
 
-from .util import create_button_box
+from .util import create_button_box, read_QIcon
 
 logger = logging.getLogger(__name__)
 from PyQt6.QtGui import QAction, QFont, QIcon
@@ -43,13 +72,15 @@ def question_dialog(
 
 
 class PasswordQuestion(QDialog):
-    def __init__(self, parent=None, label_text="Please enter your password:"):
+    def __init__(self, parent=None, label_text=None):
         super(PasswordQuestion, self).__init__(parent)
 
-        self.setWindowTitle("Password Input")
+        self.setWindowTitle(self.tr("Password Input"))
+        self.setWindowIcon(read_QIcon("logo.svg"))
 
         self.layout = QVBoxLayout(self)
 
+        label_text = label_text if label_text else self.tr("Please enter your password:")
         self.label = QLabel(label_text)
         self.layout.addWidget(self.label)
 
@@ -57,7 +88,7 @@ class PasswordQuestion(QDialog):
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         self.layout.addWidget(self.password_input)
 
-        self.submit_button = QPushButton("Submit", self)
+        self.submit_button = QPushButton(self.tr("Submit"), self)
         self.submit_button.clicked.connect(self.accept)
         self.layout.addWidget(self.submit_button)
 
@@ -88,14 +119,16 @@ def create_icon_from_unicode(unicode_char, font_name="Arial", size=18):
 
 
 class PasswordCreation(QDialog):
-    def __init__(self, parent=None, window_title="Create Password", label_text="Enter your password:"):
+    def __init__(self, parent=None, window_title=None, label_text=None):
         super(PasswordCreation, self).__init__(parent)
 
+        window_title = window_title if window_title else self.tr("Create Password")
         self.setWindowTitle(window_title)
 
         self.layout = QVBoxLayout(self)
 
         # First password input
+        label_text = label_text if label_text else self.tr("Enter your password:")
         self.label1 = QLabel(label_text)
         self.layout.addWidget(self.label1)
 
@@ -107,7 +140,7 @@ class PasswordCreation(QDialog):
         self.icon_hide = create_icon_from_unicode("🙈", size=18)
 
         # Show password action for the first input
-        self.show_password_action1 = QAction(create_icon_from_unicode("👁", size=18), "Show Password")
+        self.show_password_action1 = QAction(create_icon_from_unicode("👁", size=18), self.tr("Show Password"))
         self.show_password_action1.setFont(
             QFont("Arial", 12)
         )  # Set the font to Arial to ensure Unicode support
@@ -115,7 +148,7 @@ class PasswordCreation(QDialog):
         self.password_input1.addAction(self.show_password_action1, QLineEdit.ActionPosition.TrailingPosition)
 
         # Second password input
-        self.label2 = QLabel("Re-enter your password:")
+        self.label2 = QLabel(self.tr("Re-enter your password:"))
         self.layout.addWidget(self.label2)
 
         self.password_input2 = QLineEdit(self)
@@ -134,7 +167,7 @@ class PasswordCreation(QDialog):
         # )
 
         # Submit button
-        self.submit_button = QPushButton("Submit", self)
+        self.submit_button = QPushButton(self.tr("Submit"), self)
         self.submit_button.clicked.connect(self.verify_password)
         self.layout.addWidget(self.submit_button)
 
@@ -148,11 +181,11 @@ class PasswordCreation(QDialog):
         if visibility:
             password_input.setEchoMode(QLineEdit.EchoMode.Normal)
             show_password_action.setIcon(self.icon_hide)
-            show_password_action.setToolTip("Hide Password")  # Set tooltip to "Hide Password"
+            show_password_action.setToolTip(self.tr("Hide Password"))  # Set tooltip to "Hide Password"
         else:
             password_input.setEchoMode(QLineEdit.EchoMode.Password)
             show_password_action.setIcon(self.icon_show)
-            show_password_action.setToolTip("Show Password")  # Set tooltip to "Show Password"
+            show_password_action.setToolTip(self.tr("Show Password"))  # Set tooltip to "Show Password"
 
     def verify_password(self):
         # Check if passwords are identical
@@ -165,8 +198,8 @@ class PasswordCreation(QDialog):
             # Show a message box if passwords don't match
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Icon.Warning)
-            msg_box.setText("Passwords do not match!")
-            msg_box.setWindowTitle("Error")
+            msg_box.setText(self.tr("Passwords do not match!"))
+            msg_box.setWindowTitle(self.tr("Error"))
             msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg_box.exec()
 
@@ -178,22 +211,25 @@ class PasswordCreation(QDialog):
 
 
 class WalletIdDialog(QDialog):
-    def __init__(self, wallet_dir, parent=None, window_title="Choose wallet name", label_text="Wallet name:"):
+    def __init__(self, wallet_dir, parent=None, window_title=None, label_text=None, prefilled=None):
         super().__init__(parent)
         self.wallet_dir = wallet_dir
+        window_title = window_title if window_title else self.tr("Choose wallet name")
         self.setWindowTitle(window_title)
 
         # Create layout
         layout = QVBoxLayout()
 
         # Add name label and input field
+        label_text = label_text if label_text else self.tr("Wallet name:")
         self.name_label = QLabel(label_text)
-        self.name_input = QLineEdit()
+        self.name_input = QLineEdit(prefilled if prefilled else "")
         layout.addWidget(self.name_label)
         layout.addWidget(self.name_input)
 
         # Add buttons
-        layout.addWidget(create_button_box(self.check_wallet_existence, self.reject))
+        self.buttonbox, self.buttons = create_button_box(self.check_wallet_existence, self.reject)
+        layout.addWidget(self.buttonbox)
 
         # Set the layout
         self.setLayout(layout)
@@ -204,7 +240,9 @@ class WalletIdDialog(QDialog):
 
         wallet_file = os.path.join(self.wallet_dir, filename_clean(chosen_wallet_id))
         if os.path.exists(wallet_file):
-            QMessageBox.warning(self, "Error", "A wallet with the same name already exists.")
+            QMessageBox.warning(
+                self, self.tr("Error"), self.tr("A wallet with the same name already exists.")
+            )
         else:
             self.accept()  # Accept the dialog if wallet does not exist
 

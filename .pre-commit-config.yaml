@@ -1,4 +1,13 @@
 repos:
+  - repo: local
+    hooks:
+      - id: check-header
+        name: Check Python File Headers
+        entry: python tools/check_header.py
+        language: system
+        types: [python]
+        files: '\.py$'
+
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.10.1  # Use the specified version of isort
     hooks:
@@ -22,7 +31,7 @@ repos:
     - id: black
       language_version: python3.10
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0  # Use the latest MyPy version
+    rev: v1.9.0  # Use the latest MyPy version
     hooks:
       - id: mypy
         # Additional arguments to MyPy can be added here
@@ -32,11 +41,12 @@ repos:
           - --strict-optional
           # - --no-implicit-optional
           # - --warn-return-any
-          - --warn-unused-ignores
           - --warn-redundant-casts
         additional_dependencies: 
           - types-requests
           - types-PyYAML
+          - types-toml
+
 
 
   # - repo: https://github.com/PyCQA/bandit

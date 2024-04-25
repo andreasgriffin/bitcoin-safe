@@ -1,7 +1,37 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 from typing import Callable, Dict, List, Optional
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -31,16 +61,24 @@ class MyTextEdit(QTextEdit):
 class DescriptorEdit(ButtonEdit):
     signal_change = pyqtSignal(str)
 
-    def __init__(self, network: bdk.Network, get_wallet: Optional[Callable[[], Wallet]] = None):
+    def __init__(
+        self,
+        network: bdk.Network,
+        signals_min: SignalsMin,
+        get_wallet: Optional[Callable[[], Wallet]] = None,
+        signal_update: pyqtSignal = None,
+    ):
         super().__init__(
-            input_field=MyTextEdit(preferred_height=50), button_vertical_align=Qt.AlignmentFlag.AlignBottom
+            input_field=MyTextEdit(preferred_height=50),
+            button_vertical_align=Qt.AlignmentFlag.AlignBottom,
+            signal_update=signal_update,
         )
         self.network = network
 
         def do_pdf():
             if not get_wallet:
                 Message(
-                    "Wallet setup not finished. Please finish before creating a Backup pdf.",
+                    self.tr("Wallet setup not finished. Please finish before creating a Backup pdf."),
                     type=MessageType.Error,
                 )
                 return
@@ -54,7 +92,10 @@ class DescriptorEdit(ButtonEdit):
             self.signal_change.emit(str(data.data_as_string()))
 
         self.add_copy_button()
-        self.add_qr_input_from_camera_button(custom_handle_input=custom_handle_camera_input)
+        self.add_qr_input_from_camera_button(
+            network=self.network,
+            custom_handle_input=custom_handle_camera_input,
+        )
         if get_wallet is not None:
             self.add_pdf_buttton(do_pdf)
         self.set_validator(self._check_if_valid)

@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Original Version from:
 # Electrum - lightweight Bitcoin client
 # Copyright (C) 2011 Thomas Voegtlin
 #
@@ -31,7 +60,7 @@ import logging
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import (
     Any,
@@ -40,7 +69,6 @@ from typing import (
     Iterable,
     List,
     Literal,
-    NamedTuple,
     Optional,
     Set,
     SupportsBytes,
@@ -49,9 +77,9 @@ from typing import (
     Union,
 )
 
-from PyQt6.QtCore import QLocale, QObject, QThread, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import QLocale
 
-from .i18n import _
+from .i18n import translate
 
 locale = QLocale()  # This initializes a QLocale object with the user's default locale
 
@@ -65,27 +93,29 @@ TX_TIMESTAMP_INF = 999_999_999_999
 TX_HEIGHT_INF = 10**9
 
 TX_STATUS = [
-    _("Unconfirmed"),
-    _("Unconfirmed parent"),
-    _("Not Verified"),
-    _("Local"),
+    translate("util", "Unconfirmed"),
+    translate("util", "Unconfirmed parent"),
+    translate("util", "Not Verified"),
+    translate("util", "Local"),
 ]
 
-
-DEVELOPMENT_PREFILLS = False
 
 import bdkpython as bdk
 
 
-def path_to_rel_home_path(path: str) -> str:
-    return str(Path(path).relative_to(Path.home()))
+def path_to_rel_home_path(path: Union[Path, str]) -> Path:
+    try:
+
+        return Path(path).relative_to(Path.home())
+    except:
+        return Path(path)
 
 
-def rel_home_path_to_abs_path(rel_home_path: str) -> str:
-    return str(Path.home() / rel_home_path)
+def rel_home_path_to_abs_path(rel_home_path: Union[Path, str]) -> Path:
+    return Path.home() / rel_home_path
 
 
-def serialized_to_hex(serialized: Iterable[SupportsIndex] | SupportsIndex | SupportsBytes):
+def serialized_to_hex(serialized: Union[Iterable[SupportsIndex], SupportsIndex, SupportsBytes]):
     return bytes(serialized).hex()
 
 
@@ -191,6 +221,7 @@ class CacheManager:
         self._cached_instance_methods_always_keep: List[Any] = []
 
     def clear_instance_cache(self, clear_always_keep=False):
+        logger.debug(f"clear_instance_cache {self.__class__.__name__}")
         for cached_method in self._cached_instance_methods:
             cached_method.cache_clear()
         if clear_always_keep:
@@ -208,7 +239,8 @@ def instance_lru_cache(always_keep=False):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            if func not in self._instance_cache:
+            is_method_in_cache = func in self._instance_cache
+            if not is_method_in_cache:
                 self._instance_cache[func] = lru_cache(maxsize=None)(func.__get__(self))
 
                 if always_keep:
@@ -216,7 +248,12 @@ def instance_lru_cache(always_keep=False):
                 else:
                     self._cached_instance_methods.append(self._instance_cache[func])
 
-            return self._instance_cache[func](*args, **kwargs)
+            result = self._instance_cache[func](*args, **kwargs)
+            if not is_method_in_cache:
+                logger.debug(
+                    f"filled cache {func} with {len(result) if isinstance(result, (list, dict, tuple, set)) else type(result)}"
+                )
+            return result
 
         return wrapper
 
@@ -245,12 +282,12 @@ def jsonlines_to_list_of_dict(jsonlines: str) -> list[Dict]:
 
 class NotEnoughFunds(Exception):
     def __str__(self):
-        return _("Insufficient funds")
+        return translate("util", "Insufficient funds")
 
 
 class NoDynamicFeeEstimates(Exception):
     def __str__(self):
-        return _("Dynamic fee estimates not available")
+        return translate("util", "Dynamic fee estimates not available")
 
 
 class BelowDustLimit(Exception):
@@ -263,7 +300,7 @@ class InvalidPassword(Exception):
 
     def __str__(self):
         if self.message is None:
-            return _("Incorrect password")
+            return translate("util", "Incorrect password")
         else:
             return str(self.message)
 
@@ -274,7 +311,7 @@ class AddTransactionException(Exception):
 
 class UnrelatedTransactionException(AddTransactionException):
     def __str__(self):
-        return _("Transaction is unrelated to this wallet.")
+        return translate("util", "Transaction is unrelated to this wallet.")
 
 
 class FileImportFailed(Exception):
@@ -282,7 +319,7 @@ class FileImportFailed(Exception):
         self.message = str(message)
 
     def __str__(self):
-        return _("Failed to import from file.") + "\n" + self.message
+        return translate("util", "Failed to import from file.") + "\n" + self.message
 
 
 class FileExportFailed(Exception):
@@ -290,7 +327,7 @@ class FileExportFailed(Exception):
         self.message = str(message)
 
     def __str__(self):
-        return _("Failed to export to file.") + "\n" + self.message
+        return translate("util", "Failed to export to file.") + "\n" + self.message
 
 
 class WalletFileException(Exception):
@@ -484,6 +521,9 @@ class Satoshis:
             )
         )
 
+    def format_as_balance(self):
+        return translate("util", "Balance: {amount}").format(amount=self.str_with_unit())
+
     def __bool__(self):
         return bool(self.value)
 
@@ -527,7 +567,7 @@ def format_fee_rate(fee_rate: float, network: bdk.Network) -> str:
 
 
 def age(
-    from_date: Union[int, float, None],  # POSIX timestamp
+    from_date: Union[int, float, None, timedelta],  # POSIX timestamp
     *,
     since_date: datetime = None,
     target_tz=None,
@@ -536,12 +576,14 @@ def age(
     """Takes a timestamp and returns a string with the approximation of the
     age."""
     if from_date is None:
-        return _("Unknown")
-
-    from_date_clean = datetime.fromtimestamp(from_date)
+        return translate("util", "Unknown")
 
     if since_date is None:
         since_date = datetime.now(target_tz)
+
+    from_date_clean = (
+        since_date + from_date if isinstance(from_date, timedelta) else datetime.fromtimestamp(from_date)
+    )
 
     distance_in_time = from_date_clean - since_date
     is_in_past = from_date_clean < since_date
@@ -551,59 +593,66 @@ def age(
     if distance_in_minutes == 0:
         if include_seconds:
             if is_in_past:
-                return _("{} seconds ago").format(distance_in_seconds)
+                return translate("util", "{} seconds ago").format(distance_in_seconds)
             else:
-                return _("in {} seconds").format(distance_in_seconds)
+                return translate("util", "in {} seconds").format(distance_in_seconds)
         else:
             if is_in_past:
-                return _("less than a minute ago")
+                return translate("util", "less than a minute ago")
             else:
-                return _("in less than a minute")
+                return translate("util", "in less than a minute")
     elif distance_in_minutes < 45:
         if is_in_past:
-            return _("about {} minutes ago").format(distance_in_minutes)
+            return translate("util", "about {} minutes ago").format(distance_in_minutes)
         else:
-            return _("in about {} minutes").format(distance_in_minutes)
+            return translate("util", "in about {} minutes").format(distance_in_minutes)
     elif distance_in_minutes < 90:
         if is_in_past:
-            return _("about 1 hour ago")
+            return translate("util", "about 1 hour ago")
         else:
-            return _("in about 1 hour")
+            return translate("util", "in about 1 hour")
     elif distance_in_minutes < 1440:
         if is_in_past:
-            return _("about {} hours ago").format(round(distance_in_minutes / 60.0))
+            return translate("util", "about {} hours ago").format(round(distance_in_minutes / 60.0))
         else:
-            return _("in about {} hours").format(round(distance_in_minutes / 60.0))
+            return translate("util", "in about {} hours").format(round(distance_in_minutes / 60.0))
     elif distance_in_minutes < 2880:
         if is_in_past:
-            return _("about 1 day ago")
+            return translate("util", "about 1 day ago")
         else:
-            return _("in about 1 day")
+            return translate("util", "in about 1 day")
     elif distance_in_minutes < 43220:
         if is_in_past:
-            return _("about {} days ago").format(round(distance_in_minutes / 1440))
+            return translate("util", "about {} days ago").format(round(distance_in_minutes / 1440))
         else:
-            return _("in about {} days").format(round(distance_in_minutes / 1440))
+            return translate("util", "in about {} days").format(round(distance_in_minutes / 1440))
     elif distance_in_minutes < 86400:
         if is_in_past:
-            return _("about 1 month ago")
+            return translate("util", "about 1 month ago")
         else:
-            return _("in about 1 month")
+            return translate("util", "in about 1 month")
     elif distance_in_minutes < 525600:
         if is_in_past:
-            return _("about {} months ago").format(round(distance_in_minutes / 43200))
+            return translate("util", "about {} months ago").format(round(distance_in_minutes / 43200))
         else:
-            return _("in about {} months").format(round(distance_in_minutes / 43200))
+            return translate("util", "in about {} months").format(round(distance_in_minutes / 43200))
     elif distance_in_minutes < 1051200:
         if is_in_past:
-            return _("about 1 year ago")
+            return translate("util", "about 1 year ago")
         else:
-            return _("in about 1 year")
+            return translate("util", "in about 1 year")
     else:
         if is_in_past:
-            return _("over {} years ago").format(round(distance_in_minutes / 525600))
+            return translate("util", "over {} years ago").format(round(distance_in_minutes / 525600))
         else:
-            return _("in over {} years").format(round(distance_in_minutes / 525600))
+            return translate("util", "in over {} years").format(round(distance_in_minutes / 525600))
+
+
+def confirmation_wait_formatted(projected_mempool_block_index: int):
+    estimated_duration = timedelta(minutes=projected_mempool_block_index * 10)
+    estimated_duration = max(estimated_duration, timedelta(minutes=10))
+
+    return age(estimated_duration)
 
 
 def block_explorer_URL(mempool_url: str, kind: str, item: str) -> Optional[str]:
@@ -665,24 +714,25 @@ def versiontuple(v):
 
 class CannotBumpFee(Exception):
     def __str__(self):
-        return _("Cannot bump fee") + ":\n\n" + Exception.__str__(self)
+        return translate("util", "Cannot bump fee") + ":\n\n" + Exception.__str__(self)
 
 
 class CannotDoubleSpendTx(Exception):
     def __str__(self):
-        return _("Cannot cancel transaction") + ":\n\n" + Exception.__str__(self)
+        return translate("util", "Cannot cancel transaction") + ":\n\n" + Exception.__str__(self)
 
 
 class CannotCPFP(Exception):
     def __str__(self):
-        return _("Cannot create child transaction") + ":\n\n" + Exception.__str__(self)
+        return translate("util", "Cannot create child transaction") + ":\n\n" + Exception.__str__(self)
 
 
 class InternalAddressCorruption(Exception):
     def __str__(self):
-        return _(
+        return translate(
+            "util",
             "Wallet file corruption detected. "
-            "Please restore your wallet from seed, and compare the addresses in both files"
+            "Please restore your wallet from seed, and compare the addresses in both files",
         )
 
 
@@ -694,146 +744,6 @@ def remove_duplicates_keep_order(seq):
             seen.add(item)
             result.append(item)
     return result
-
-
-import logging
-import sys
-from typing import Any, Callable, NamedTuple, Tuple
-
-from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-
-class Task(NamedTuple):
-    """Structure for task details."""
-
-    do: Callable[..., Any]
-    cb_success: Callable[[Any], None]
-    cb_done: Callable[[Any], None]
-    cb_error: Callable[[Tuple[Any, ...]], None]
-    cancel: Optional[Callable[[], None]] = None
-
-
-class Worker(QObject):
-    """Worker object to perform tasks in a separate thread."""
-
-    finished: pyqtSignal = pyqtSignal(object, object, object)  # Result, cb_done, cb_success/error
-    error: pyqtSignal = pyqtSignal(object)
-
-    def __init__(self, task: Task) -> None:
-        super().__init__()
-        self.task: Task = task
-
-    @pyqtSlot()
-    def run_task(self) -> None:
-        """Executes the provided task and emits signals based on the outcome."""
-        if not self.task:
-            logger.debug("No task to run.")
-            return
-
-        try:
-            logger.debug(f"Task started: {self.task.do}")
-            result: Any = self.task.do()
-            logger.debug(f"Task finished: {self.task.do}")
-            self.finished.emit(result, self.task.cb_done, self.task.cb_success)
-        except Exception:
-            logger.exception(f"Task raised an exception: {self.task.do}")
-            self.error.emit((sys.exc_info(), self.task.cb_error))
-        finally:
-            if callable(self.task.cancel):
-                logger.debug(f"Task cancellation callback called: {self.task.do}")
-                self.task.cancel()
-
-
-import threading
-
-
-class TaskThread(QThread):
-    """Manages execution of tasks in separate threads."""
-
-    def __init__(self, parent: QObject) -> None:
-        super().__init__(parent)
-        self.worker: Optional[
-            Worker
-        ] = None  # Type hint adjusted because it will be immediately initialized in add_and_start
-        # logger.debug("TaskThread initialized.")
-        self.finished.connect(self.cleanup)  # Connect to the cleanup slot
-
-    def run(self):
-        """Set the thread name and start the thread."""
-        # Set the name for the current thread
-        threading.current_thread().name = f"{self.worker.task.do if self.worker else self}"
-        super().run()  # Call the original run method to start the thread
-
-    def add_and_start(
-        self,
-        do: Callable[..., Any],
-        on_success: Callable[[Any], None],
-        on_done: Callable[[Any], None],
-        on_error: Callable[[Tuple[Any, ...]], None],
-        cancel: Optional[Callable[[], None]] = None,
-    ) -> None:
-        logger.debug(f"Starting new thread {do}.")
-        task: Task = Task(do, on_success, on_done, on_error, cancel)
-        self.worker = Worker(task)
-        self.worker.moveToThread(self)
-        self.worker.finished.connect(self.on_done)
-        self.worker.error.connect(lambda error_info: on_error(error_info))
-        self.started.connect(self.worker.run_task)
-        self.start()
-
-    @pyqtSlot(object, object, object)
-    def on_done(self, result: Any, cb_done: Callable[[Any], None], cb_result: Callable[[Any], None]) -> None:
-        """Handle task completion."""
-        logger.debug(f"Thread done: {self.worker.task.do if self.worker else self}.")
-        cb_done(result)
-        cb_result(result)
-        self.quit()
-
-    def stop(self) -> None:
-        """Stops the thread and any associated task cancellation if defined."""
-        logger.debug("Stopping TaskThread and associated worker.")
-        if self.worker and self.worker.task.cancel:
-            logger.debug(f"Stopping {self.worker.task.do}.")
-            self.worker.task.cancel()
-        self.quit()
-
-    def cleanup(self):
-        """Cleanup slot called when the thread finishes."""
-        if self.worker:
-            # Perform necessary cleanup, e.g., disconnecting signals
-            logger.debug(f"cleanup of thread {self.worker.task.do}.")
-            self.worker.deleteLater()  # Schedule the worker for deletion
-        self.wait()  # Wait for the thread to fully finish
-
-
-class NoThread:
-    "This is great for debugging purposes"
-
-    def __init__(self, *args):
-        pass
-
-    def add_and_start(
-        self,
-        task,
-        on_success=None,
-        on_done=None,
-        on_error=None,
-    ):
-        result = None
-        try:
-            if task:
-                result = task()
-            if on_success:
-                on_success(result)
-        except Exception:
-            if on_error:
-                on_error(sys.exc_info())
-        if on_done:
-            on_done(result)
 
 
 def calculate_ema(data, alpha=0.1):
@@ -848,3 +758,8 @@ def calculate_ema(data, alpha=0.1):
     for i in range(1, len(data)):
         ema = alpha * data[i] + (1 - alpha) * ema
     return ema
+
+
+def briefcase_project_dir() -> Path:
+    # __file__ == /tmp/.mount_Bitcoix7tQIZ/usr/app/bitcoin_safe/util.py
+    return Path(__file__).parent

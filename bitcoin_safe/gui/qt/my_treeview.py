@@ -1,4 +1,32 @@
-#!/usr/bin/env python
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Original Version from:
 #
 # Electrum - lightweight Bitcoin client
 # Copyright (C) 2023 The Electrum Developers
@@ -28,6 +56,7 @@ import logging
 from bitcoin_safe.gui.qt.dialog_import import file_to_str
 
 from ...config import UserConfig
+from ...i18n import translate
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +75,7 @@ from PyQt6 import QtCore
 from PyQt6.QtCore import (
     QAbstractItemModel,
     QEvent,
+    QItemSelection,
     QItemSelectionModel,
     QMimeData,
     QModelIndex,
@@ -55,6 +85,7 @@ from PyQt6.QtCore import (
     QSortFilterProxyModel,
     Qt,
     QUrl,
+    pyqtSignal,
 )
 from PyQt6.QtGui import (
     QCursor,
@@ -83,14 +114,12 @@ from PyQt6.QtWidgets import (
     QMenu,
     QStyledItemDelegate,
     QStyleOptionViewItem,
-    QTabWidget,
     QToolButton,
     QTreeView,
     QVBoxLayout,
     QWidget,
 )
 
-from ...i18n import _
 from .util import do_copy, read_QIcon
 
 
@@ -250,6 +279,8 @@ class ElectrumItemDelegate(QStyledItemDelegate):
 
 
 class MyTreeView(QTreeView):
+    on_selection_changed = pyqtSignal()
+    signal_update = pyqtSignal()
 
     ROLE_CLIPBOARD_DATA = Qt.ItemDataRole.UserRole + 100
     ROLE_CUSTOM_PAINT = Qt.ItemDataRole.UserRole + 101
@@ -299,7 +330,6 @@ class MyTreeView(QTreeView):
         self.is_editor_open = False
 
         self.setRootIsDecorated(False)  # remove left margin
-        self.toolbar_is_visible = False
 
         # When figuring out the size of columns, Qt by default looks at
         # the first 1000 rows (at least if resize mode is QHeaderView.ResizeToContents).
@@ -366,7 +396,7 @@ class MyTreeView(QTreeView):
         menu = QMenu()
 
         menu.addAction(
-            _("Copy as csv"),
+            self.tr("Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
         )
 
@@ -448,6 +478,7 @@ class MyTreeView(QTreeView):
         if last_selected_index:
             # Scroll to the last selected index
             self.scrollTo(last_selected_index)
+        self.viewport().update()
 
     def update_headers(
         self,
@@ -470,6 +501,10 @@ class MyTreeView(QTreeView):
         for col_idx, width in self.column_widths.items():
             self.header().setSectionResizeMode(col_idx, QHeaderView.ResizeMode.Interactive)
             self.header().resizeSection(col_idx, width)
+
+    def selectionChanged(self, selected: QItemSelection, deselected: QItemSelection) -> None:
+        super().selectionChanged(selected, deselected)
+        self.on_selection_changed.emit()
 
     def keyPressEvent(self, event: QKeyEvent):
         if self.itemDelegate().opened:
@@ -655,9 +690,6 @@ class MyTreeView(QTreeView):
         "Returns a [row0_is_now_hidden, row1_is_now_hidden, ...]"
         return [self.hide_row(row) for row in range(self.model().rowCount())]
 
-    def create_toolbar(self, config):
-        return
-
     def as_csv_string(self, row_numbers: Optional[List[int]] = None, export_all=False):
         table = self.get_rows_as_list(
             row_numbers=list(range(self.model().rowCount())) if export_all else row_numbers
@@ -708,45 +740,8 @@ class MyTreeView(QTreeView):
         logger.info(f"CSV Table saved to {file_path}")
         return file_path
 
-    def _create_toolbar_with_menu(self, title):
-        menu = MyMenu(self.config)
-        menu.addAction(_("Export as CSV"), self.export_as_csv)
-
-        toolbar_button = QToolButton()
-        toolbar_button.clicked.connect(lambda: menu.exec(QCursor.pos()))
-        toolbar_button.setIcon(read_QIcon("preferences.png"))
-        toolbar_button.setMenu(menu)
-        toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        toolbar = QHBoxLayout()
-
-        balance_label = QLabel()
-
-        search_edit = QLineEdit()
-        search_edit.setPlaceholderText("Type to filter")
-        search_edit.setClearButtonEnabled(True)
-        search_edit.textChanged.connect(self.filter)
-
-        toolbar.addWidget(balance_label)
-        toolbar.addStretch()
-        toolbar.addWidget(search_edit)
-        toolbar.addWidget(toolbar_button)
-        return toolbar, menu, balance_label, search_edit
-
-    def show_toolbar(self, is_visible: bool, config=None):
-        if is_visible == self.toolbar_is_visible:
-            return
-        self.toolbar_is_visible = is_visible
-        for b in self.toolbar_buttons:
-            b.setVisible(is_visible)
-        if not is_visible:
-            self.on_hide_toolbar()
-
-    def toggle_toolbar(self, config=None):
-        self.show_toolbar(not self.toolbar_is_visible, config)
-
     def add_copy_menu(self, menu: QMenu, idx: QModelIndex, force_columns=None) -> QMenu:
-        cc = menu.addMenu(_("Copy"))
+        cc = menu.addMenu(self.tr("Copy"))
         for column in self.Columns:
             if self.isColumnHidden(column) and (force_columns is None or column not in force_columns):
                 continue
@@ -857,6 +852,10 @@ class MyTreeView(QTreeView):
         if not event.isAccepted():
             event.ignore()
 
+    def update(self):
+        super().update()
+        self.signal_update.emit()
+
 
 class SearchableTab(QWidget):
     def __init__(self, parent=None) -> None:
@@ -865,15 +864,62 @@ class SearchableTab(QWidget):
         self.searchable_list: MyTreeView
 
 
-def _create_list_with_toolbar(l: MyTreeView, tabs: QTabWidget, config: UserConfig) -> SearchableTab:
-    # create a horizontal widget and layout
-    w = SearchableTab(tabs)
-    w.searchable_list = l
-    w.setLayout(QVBoxLayout())
-    w.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-    toolbar = l.create_toolbar(config)
-    if toolbar:
-        w.layout().addLayout(toolbar)
+class TreeViewWithToolbar(SearchableTab):
+    def __init__(self, searchable_list: MyTreeView, config: UserConfig, parent: QWidget = None) -> None:
+        super().__init__(parent=parent)
+        self.config = config
+        self.toolbar_is_visible = False
+        self.searchable_list = searchable_list
 
-    w.layout().addWidget(l)
-    return w
+        # signals
+        self.searchable_list.signal_update.connect(self.update)
+
+    def create_layout(self):
+        self.setLayout(QVBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+
+        self.create_toolbar_with_menu("")
+        self.layout().addLayout(self.toolbar)
+        self.layout().addWidget(self.searchable_list)
+
+    def create_toolbar_with_menu(self, title):
+        self.menu = MyMenu(self.config)
+        self.action_export_as_csv = self.menu.addAction("", self.searchable_list.export_as_csv)
+
+        toolbar_button = QToolButton()
+        toolbar_button.clicked.connect(lambda: self.menu.exec(QCursor.pos()))
+        toolbar_button.setIcon(read_QIcon("preferences.png"))
+        toolbar_button.setMenu(self.menu)
+        toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.toolbar = QHBoxLayout()
+
+        self.balance_label = QLabel()
+
+        self.search_edit = QLineEdit()
+        self.search_edit.setClearButtonEnabled(True)
+        self.search_edit.textChanged.connect(self.searchable_list.filter)
+
+        self.toolbar.addWidget(self.balance_label)
+        self.toolbar.addStretch()
+        self.toolbar.addWidget(self.search_edit)
+        self.toolbar.addWidget(toolbar_button)
+        return self.toolbar, self.menu, self.balance_label, self.search_edit, self.action_export_as_csv
+
+    def show_toolbar(self, is_visible: bool, config=None):
+        if is_visible == self.toolbar_is_visible:
+            return
+        self.toolbar_is_visible = is_visible
+        if not is_visible:
+            self.on_hide_toolbar()
+
+    def on_hide_toolbar(self):
+        pass
+
+    def toggle_toolbar(self, config=None):
+        self.show_toolbar(not self.toolbar_is_visible, config)
+
+    def update(self):
+        super().update()
+        self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
+        self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))

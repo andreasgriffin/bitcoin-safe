@@ -1,4 +1,34 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
+from dataclasses import dataclass
 
 from packaging import version
 
@@ -10,6 +40,9 @@ import bdkpython as bdk
 
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.storage import BaseSaveableClass
+
+from .html import link
+from .i18n import translate
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
@@ -25,12 +58,33 @@ def get_default_mempool_url(network: bdk.Network) -> str:
     return d[network]
 
 
-def get_default_electrum_url(network: bdk.Network) -> str:
+@dataclass
+class ElectrumConfig:
+    url: str
+    use_ssl: bool
+
+
+def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
     d = {
-        bdk.Network.BITCOIN: "127.0.0.1:50001",
-        bdk.Network.REGTEST: "127.0.0.1:50000",  # you can use https://github.com/ngutech21/nigiri-mempool/
-        bdk.Network.TESTNET: "electrum.blockstream.info:60002",
-        bdk.Network.SIGNET: "mutinynet.com:50001",
+        bdk.Network.BITCOIN: {
+            # "default": ElectrumConfig("mempool.space:50002", True),
+            "default": ElectrumConfig("electrum.blockstream.info:50002", True),
+            "blockstream": ElectrumConfig("electrum.blockstream.info:50002", True),
+            "localhost": ElectrumConfig("127.0.0.1:50001", False),
+        },
+        bdk.Network.REGTEST: {
+            "default": ElectrumConfig("127.0.0.1:50000", False),
+            "nigiri": ElectrumConfig("127.0.0.1:50000", False),
+        },  # you can use https://github.com/ngutech21/nigiri-mempool/
+        bdk.Network.TESTNET: {
+            "default": ElectrumConfig("electrum.blockstream.info:60002", True),
+            "blockstream": ElectrumConfig("electrum.blockstream.info:60002", True),
+        },
+        bdk.Network.SIGNET: {
+            "default": ElectrumConfig("mutinynet.com:50001", False),
+            "mutinynet": ElectrumConfig("mutinynet.com:50001", False),
+            "mempool": ElectrumConfig("mempool.space:60602", True),
+        },
     }
     return d[network]
 
@@ -81,10 +135,35 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
     return 0
 
 
+def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
+    d = {
+        bdk.Network.BITCOIN: {
+            "default": "https://blockstream.info/api/",
+            "blockstream": "https://blockstream.info/api/",
+        },
+        bdk.Network.REGTEST: {
+            "default": "http://127.0.0.1:3000",
+            "localhost": "http://127.0.0.1:3000",
+            "nigiri": "http://127.0.0.1:3000",
+        },  # you can use https://github.com/ngutech21/nigiri-mempool/
+        bdk.Network.TESTNET: {
+            "default": "https://blockstream.info/testnet//api/",
+            "blockstream": "https://blockstream.info/testnet/api/",
+        },
+        bdk.Network.SIGNET: {
+            "default": "http://127.0.0.1:3000",
+            "localhost": "http://127.0.0.1:3000",
+        },
+    }
+    return d[network]
+
+
 def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     if server_type == BlockchainType.CompactBlockFilter:
         d = {
-            bdk.Network.BITCOIN: ("This is a private and fast way to connect to the bitcoin network."),
+            bdk.Network.BITCOIN: translate(
+                "net_conf", "This is a private and fast way to connect to the bitcoin network."
+            ),
             bdk.Network.REGTEST: "",
             bdk.Network.TESTNET: "",
             bdk.Network.SIGNET: "",
@@ -93,32 +172,58 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     elif server_type == BlockchainType.Electrum:
         d = {
             bdk.Network.BITCOIN: (
-                "The server can associate your IP address with the wallet addresses.\n"
-                'It is best to use your own server, such as <a href="https://umbrel.com/">umbrel</a>.'
+                translate(
+                    "net_conf",
+                    "The server can associate your IP address with the wallet addresses.\n"
+                    "It is best to use your own server, such as {link}.",
+                ).format(link=link("https://umbrel.com/", "umbrel"))
             ),
             bdk.Network.REGTEST: (
-                'You can setup <a href="https://nigiri.vulpem.com/">nigiri</a> with an electrum server on <a href="http://localhost:50000">localhost:50000</a>'
-                ' and a block explorer on <a href="http://localhost:5000">localhost:5000</a>'
+                translate(
+                    "net_conf",
+                    "You can setup {link} with an electrum server on {server} and a block explorer on {explorer}",
+                ).format(
+                    link=link("https://nigiri.vulpem.com/", "nigiri"),
+                    server=link("http://localhost:50000", "localhost:50000"),
+                    explorer=link("http://localhost:5000", "localhost:5000"),
+                )
             ),
             bdk.Network.TESTNET: (
-                f'A good option is <a href="{get_default_electrum_url(bdk.Network.TESTNET)}">{get_default_electrum_url(bdk.Network.TESTNET)}</a>'
-                ' and a block explorer on <a href="https://blockstream.info/testnet/">https://blockstream.info/testnet</a>.'
+                translate("net_conf", "A good option is {link} and a block explorer on {explorer}.").format(
+                    link=link(get_electrum_configs(bdk.Network.TESTNET)["blockstream"].url),
+                    explorer=link("https://blockstream.info/testnet"),
+                )
             ),
             bdk.Network.SIGNET: (
-                f'A good option is <a href="{get_default_electrum_url(bdk.Network.SIGNET)}">{get_default_electrum_url(bdk.Network.SIGNET)}</a>'
-                ' and a block explorer on <a href="https://mutinynet.com/">https://mutinynet.com</a>. There is a <a href="https://faucet.mutinynet.com">faucet</a>.'
+                translate(
+                    "net_conf",
+                    "A good option is {link} and a block explorer on {explorer}. There is a {faucet}.",
+                ).format(
+                    link=link(get_electrum_configs(bdk.Network.SIGNET)["mutinynet"].url),
+                    explorer=link("https://mutinynet.com/"),
+                    faucet=link("https://faucet.mutinynet.com", "faucet"),
+                )
             ),
         }
         return d[network]
     elif server_type == BlockchainType.Esplora:
         d = {
             bdk.Network.BITCOIN: (
-                "The server can associate your IP address with the wallet addresses.\n"
-                'It is best to use your own server, such as <a href="https://umbrel.com/">umbrel</a>.'
+                translate(
+                    "net_conf",
+                    "The server can associate your IP address with the wallet addresses.\n"
+                    "It is best to use your own server, such as {link}.",
+                ).format(link=link("https://umbrel.com/", "umbrel"))
             ),
             bdk.Network.REGTEST: (
-                'You can setup <a href="https://nigiri.vulpem.com/">nigiri</a> with an esplora server on <a href="http://localhost:3000">localhost:3000</a>'
-                ' and a block explorer on <a href="http://localhost:5000">localhost:5000</a>'
+                translate(
+                    "net_conf",
+                    "You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}",
+                ).format(
+                    setup=link("https://nigiri.vulpem.com/", "nigiri"),
+                    server=link("http://localhost:3000", "localhost:3000"),
+                    explorer=link("http://localhost:5000", "localhost:5000"),
+                )
             ),  # nigiri default
             bdk.Network.TESTNET: "",
             bdk.Network.SIGNET: "",
@@ -127,12 +232,15 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     elif server_type == BlockchainType.RPC:
         d = {
             bdk.Network.BITCOIN: (
-                'You can connect your own Bitcoin node, such as <a href="https://umbrel.com/">umbrel</a>.'
+                translate("net_conf", "You can connect your own Bitcoin node, such as {link}.").format(
+                    link=link("https://umbrel.com/", "umbrel")
+                )
             ),
-            bdk.Network.REGTEST: ('Run your bitcoind with "bitcoind -chain=regtest"'),
-            bdk.Network.TESTNET: ('Run your bitcoind with "bitcoind -chain=test"'),
-            bdk.Network.SIGNET: (
-                'Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.'
+            bdk.Network.REGTEST: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=regtest"'),
+            bdk.Network.TESTNET: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=test"'),
+            bdk.Network.SIGNET: translate(
+                "net_conf",
+                'Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.',
             ),
         }
         return d[network]
@@ -153,14 +261,15 @@ class NetworkConfig(BaseSaveableClass):
         self.cbf_server_type: CBFServerType = CBFServerType.Automatic
         self.compactblockfilters_ip: str = "127.0.0.1"
         self.compactblockfilters_port: int = get_default_port(network, BlockchainType.CompactBlockFilter)
-        self.electrum_url: str = get_default_electrum_url(network)
-        self.electrum_use_ssl: bool = get_default_electrum_use_ssl(network)
+        electrum_config = get_electrum_configs(network)["default"]
+        self.electrum_url: str = electrum_config.url
+        self.electrum_use_ssl: bool = electrum_config.use_ssl
         self.rpc_ip: str = "127.0.0.1"
         self.rpc_port: int = get_default_port(network, BlockchainType.RPC)
         self.rpc_username: str = ""
         self.rpc_password: str = ""
 
-        self.esplora_url: str = "http://127.0.0.1:3000"
+        self.esplora_url: str = get_esplora_urls(network)["default"]
 
         self.mempool_url: str = get_default_mempool_url(network)
 

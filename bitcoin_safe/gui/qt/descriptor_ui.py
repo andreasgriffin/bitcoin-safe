@@ -1,13 +1,43 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
+from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
 
 from typing import Callable, Optional, Tuple
 
 from bitcoin_usb.address_types import get_address_types
-from PyQt6.QtCore import QCoreApplication, QMargins, QObject, Qt, pyqtSignal
+from PyQt6.QtCore import QMargins, QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialogButtonBox,
@@ -22,7 +52,7 @@ from PyQt6.QtWidgets import (
 )
 
 from ...descriptors import AddressType, get_default_address_type
-from ...signals import pyqtSignal
+from ...signals import SignalsMin, pyqtSignal
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 from .custom_edits import DescriptorEdit
@@ -33,11 +63,17 @@ class DescriptorUI(QObject):
     signal_qtwallet_cancel_setting_changes = pyqtSignal()
     signal_qtwallet_cancel_wallet_creation = pyqtSignal()
 
-    def __init__(self, protowallet: ProtoWallet, get_wallet: Optional[Callable[[], Wallet]] = None) -> None:
+    def __init__(
+        self,
+        protowallet: ProtoWallet,
+        signals_min: SignalsMin,
+        get_wallet: Optional[Callable[[], Wallet]] = None,
+    ) -> None:
         super().__init__()
         # if we are in the wallet setp process, then wallet = None
         self.protowallet = protowallet
         self.get_wallet = get_wallet
+        self.signals_min = signals_min
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
@@ -54,6 +90,7 @@ class DescriptorUI(QObject):
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=lambda: self.protowallet,
             get_address_type=self.get_address_type_from_ui,
+            signals_min=signals_min,
         )
         self.tab.layout().addWidget(self.keystore_uis)
 
@@ -64,6 +101,24 @@ class DescriptorUI(QObject):
         self.disable_fields()
 
         self.box_button_bar = self.create_button_bar()
+        self.updateUi()
+        signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.label_signers.setText(self.tr("Required Signers"))
+        self.label_gap.setText(self.tr("Scan Address Limit"))
+        self.edit_descriptor.input_field.setPlaceholderText(
+            self.tr("Paste or scan your descriptor, if you restore a wallet.")
+        )
+
+        self.edit_descriptor.setToolTip(
+            self.tr(
+                'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
+            )
+        )
+        self.box_wallet_type.setTitle(translate("descriptor", "Wallet Type"))
+        self.label_address_type.setText(translate("descriptor", "Address Type"))
+        self.groupBox_wallet_descriptor.setTitle(translate("descriptor", "Wallet Descriptor"))
 
     def set_protowallet(self, protowallet: ProtoWallet):
         self.protowallet = protowallet
@@ -259,14 +314,13 @@ class DescriptorUI(QObject):
         )  # Smaller margins (left, top, right, bottom)
 
         # Removed the unnecessary parent widgets. Using QGroupBox directly as the container.
-        box_wallet_type = QGroupBox()
+        self.box_wallet_type = QGroupBox()
 
         # Create a QFormLayout
-        form_wallet_type = QGridLayout(box_wallet_type)
+        form_wallet_type = QGridLayout(self.box_wallet_type)
 
         # box_signers_with_slider
         self.label_signers = QLabel()
-        self.label_signers.setText("Required Signers")
 
         self.spin_req = QSpinBox()
         self.spin_req.setMinimum(1)
@@ -298,24 +352,25 @@ class DescriptorUI(QObject):
         form_wallet_type.addWidget(self.comboBox_address_type, 2, 1, 1, 3)
 
         # box_gap
-        label_gap = QLabel()
-        label_gap.setWordWrap(True)
-        label_gap.setText("Scan Address Limit")
+        self.label_gap = QLabel()
+        self.label_gap.setWordWrap(True)
 
         self.spin_gap = QSpinBox()
         self.spin_gap.setMinimum(20)
         self.spin_gap.setMaximum(int(1e6))
 
         # Add widgets to the layout
-        form_wallet_type.addWidget(label_gap, 3, 0)
+        form_wallet_type.addWidget(self.label_gap, 3, 0)
         form_wallet_type.addWidget(self.spin_gap, 3, 1, 1, 3)
 
-        box_wallet_type.setLayout(form_wallet_type)
-        box_wallet_type_and_descriptor.layout().addWidget(box_wallet_type)
+        self.box_wallet_type.setLayout(form_wallet_type)
+        box_wallet_type_and_descriptor.layout().addWidget(self.box_wallet_type)
 
         # now the descriptor
-        groupBox_wallet_descriptor = QGroupBox()
-        groupBox_wallet_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.groupBox_wallet_descriptor = QGroupBox()
+        self.groupBox_wallet_descriptor.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
         # below is an example how to highlight the box
         # groupBox_wallet_descriptor.setStyleSheet("""
         # QGroupBox {
@@ -331,19 +386,14 @@ class DescriptorUI(QObject):
         #         padding: 0 5px 0 5px;
         # }
         # """)
-        self.horizontalLayout_4 = QHBoxLayout(groupBox_wallet_descriptor)
-        self.edit_descriptor = (DescriptorEdit)(
+        self.horizontalLayout_4 = QHBoxLayout(self.groupBox_wallet_descriptor)
+        self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
+            signals_min=self.signals_min,
             get_wallet=self.get_wallet,
+            signal_update=self.signals_min.language_switch,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        self.edit_descriptor.input_field.setPlaceholderText(
-            "Paste or scan your descriptor, if you restore a wallet."
-        )
-
-        self.edit_descriptor.setToolTip(
-            f'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
-        )
 
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
 
@@ -358,13 +408,9 @@ class DescriptorUI(QObject):
         #     button.setMaximumWidth(100)
         #     button.clicked.connect(lambda: make_and_open_pdf(self.wallet))
 
-        box_wallet_type_and_descriptor.layout().addWidget(groupBox_wallet_descriptor)
+        box_wallet_type_and_descriptor.layout().addWidget(self.groupBox_wallet_descriptor)
 
         self.tab.layout().addWidget(box_wallet_type_and_descriptor)
-
-        box_wallet_type.setTitle(QCoreApplication.translate("tab", "Wallet Type", None))
-        self.label_address_type.setText(QCoreApplication.translate("tab", "Address Type", None))
-        groupBox_wallet_descriptor.setTitle(QCoreApplication.translate("tab", "Wallet Descriptor", None))
 
         self.spin_signers.valueChanged.connect(self.on_spin_signer_changed)
         self.spin_req.valueChanged.connect(self.on_spin_threshold_changed)
@@ -380,6 +426,9 @@ class DescriptorUI(QObject):
         )
         self.button_box.button(QDialogButtonBox.StandardButton.Discard).clicked.connect(
             self.signal_qtwallet_cancel_setting_changes.emit
+        )
+        self.button_box.button(QDialogButtonBox.StandardButton.Discard).clicked.connect(
+            self.signal_qtwallet_cancel_wallet_creation.emit
         )
 
         self.tab.layout().addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)

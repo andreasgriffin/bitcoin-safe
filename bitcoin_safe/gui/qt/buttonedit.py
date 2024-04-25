@@ -1,8 +1,37 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 from typing import Callable, List, Optional, Union
 
 from bdkpython import bdk
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -14,10 +43,12 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QTextEdit,
+    QVBoxLayout,
     QWidget,
 )
 
-from .util import do_copy, icon_path
+from bitcoin_safe.gui.qt.util import do_copy, icon_path
+from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
 
@@ -41,15 +72,11 @@ class ButtonsField(QWidget):
         width = 0
         height = 0
 
-        # Iterate over all buttons to calculate the total minimum width
-        for i in range(self.grid_layout.count()):
-            item = self.grid_layout.itemAt(i)
-            button = item.widget()
-            if button:
-                width = max(width, button.sizeHint().width())
-                height = max(height, button.sizeHint().height())
+        # Find all buttons and calculate their total minimum width and height
+        for button in self.findChildren(QWidget):
+            width = max(width, button.sizeHint().width())
+            height = max(height, button.sizeHint().height())
 
-        # If we have buttons, return the total width as minimum width, and the height of the first button as minimum height
         if self.grid_layout.count() > 0:
             return QSize(width, height)
 
@@ -112,14 +139,21 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    def __init__(self, text="", button_vertical_align: Optional[Qt] = None, parent=None, input_field=None):
+    def __init__(
+        self,
+        text="",
+        button_vertical_align: Optional[Qt] = None,
+        parent=None,
+        input_field=None,
+        signal_update: pyqtSignal = None,
+    ):
         super().__init__(parent=parent)
         self.callback_is_valid: Optional[Callable[[], bool]] = None
         self.buttons: List[QPushButton] = []  # Store button references
         self.input_field: Union[QTextEdit, QLineEdit] = input_field if input_field else QLineEdit(self)
         if text:
             self.input_field.setText(text)
-        self.button_container = ButtonsField(
+        self.button_container = (ButtonsField)(
             vertical_align=button_vertical_align
             if button_vertical_align
             else (
@@ -128,6 +162,12 @@ class ButtonEdit(QWidget):
                 else Qt.AlignmentFlag.AlignBottom
             )
         )  # Container for buttons to allow dynamic layout changes
+
+        self.button_camera: Optional[SquareButton] = None
+        self.copy_button: Optional[SquareButton] = None
+        self.pdf_button: Optional[SquareButton] = None
+        self.mnemonic_button: Optional[SquareButton] = None
+        self.open_file_button: Optional[SquareButton] = None
 
         self.main_layout = QHBoxLayout(
             self
@@ -141,6 +181,21 @@ class ButtonEdit(QWidget):
         # Ensure there's no spacing that could affect the alignment
         self.main_layout.setSpacing(0)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
+        if signal_update:
+            signal_update.connect(self.updateUi)
+        self.updateUi()
+
+    def updateUi(self):
+        if self.button_camera:
+            self.button_camera.setToolTip(translate("d", "Read QR code from camera"))
+        if self.copy_button:
+            self.copy_button.setToolTip(translate("d", "Copy to clipboard"))
+        if self.pdf_button:
+            self.pdf_button.setToolTip(translate("d", "Create PDF"))
+        if self.mnemonic_button:
+            self.mnemonic_button.setToolTip(translate("d", "Create random mnemonic"))
+        if self.open_file_button:
+            self.open_file_button.setToolTip(translate("d", "Open file"))
 
     def add_button(self, button_path: Optional[str], button_callback: Callable, tooltip: str = ""):
         button = SquareButton(QIcon(button_path), parent=self)  # Create the button with the icon
@@ -154,11 +209,15 @@ class ButtonEdit(QWidget):
         self.button_container.layout().addWidget(button)
         return button
 
-    def add_copy_button(self):
+    def add_copy_button(
+        self,
+    ):
         def on_copy():
             do_copy(self.text())
 
-        self.add_button(icon_path("copy.png"), on_copy, tooltip="Copy to clipboard")
+        self.copy_button = self.add_button(
+            icon_path("copy.png"), on_copy, tooltip=translate("d", "Copy to clipboard")
+        )
 
     def set_input_field(self, input_widget: QWidget):
         # Remove the current input field from the layout and delete it
@@ -191,6 +250,7 @@ class ButtonEdit(QWidget):
 
     def add_qr_input_from_camera_button(
         self,
+        network: bdk.Network,
         *,
         custom_handle_input=None,
     ):
@@ -204,26 +264,40 @@ class ButtonEdit(QWidget):
                     if hasattr(self, "setText"):
                         self.setText(str(data.data_as_string()))
 
-            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback)
+            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback, network=network)
             window.show()
 
-        button = self.add_button(icon_path("camera.svg"), input_qr_from_camera, "Read QR code from camera")
+        self.button_camera = self.add_button(
+            icon_path("camera.svg"), input_qr_from_camera, translate("d", "Read QR code from camera")
+        )
+
         # side-effect: we export these methods:
         self.on_qr_from_camera_input_btn = input_qr_from_camera
 
-        return button
+        return self.button_camera
 
-    def add_pdf_buttton(self, on_click: Callable):
-        button = self.add_button(icon_path("pdf-file.svg"), on_click, tooltip="Create PDF")
+    def add_pdf_buttton(
+        self,
+        on_click: Callable,
+    ):
 
-    def add_random_mnemonic_button(self, callback_seed=None):
+        self.pdf_button = self.add_button(
+            icon_path("pdf-file.svg"), on_click, tooltip=translate("d", "Create PDF")
+        )
+
+    def add_random_mnemonic_button(
+        self,
+        callback_seed=None,
+    ):
         def on_click():
             seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
             self.setText(seed)
             if callback_seed:
                 callback_seed(seed)
 
-        self.add_button(icon_path("dice.svg"), on_click, tooltip="Create random mnemonic")
+        self.mnemonic_button = self.add_button(
+            icon_path("dice.svg"), on_click, tooltip=translate("d", "Create random mnemonic")
+        )
 
     def addResetButton(self, get_reset_text):
         def on_click():
@@ -233,12 +307,14 @@ class ButtonEdit(QWidget):
         # button.setStyleSheet("background-color: white;")
 
     def add_open_file_button(
-        self, callback_open_filepath, filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)"
+        self,
+        callback_open_filepath,
+        filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
     ) -> QPushButton:
         def on_click():
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
-                "Open Transaction/PSBT",
+                translate("d", "Open Transaction/PSBT"),
                 "",
                 filter,
             )
@@ -249,10 +325,12 @@ class ButtonEdit(QWidget):
             logger.debug(f"Selected file: {file_path}")
             callback_open_filepath(file_path)
 
-        button = self.add_button(None, on_click, "Open file")
+        button = self.add_button(None, on_click, translate("d", "Open file"))
         icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
         button.setIcon(icon)
-        return button
+
+        self.open_file_button = button
+        return self.open_file_button
 
     def format_as_error(self, value: bool):
         if value:
@@ -279,10 +357,17 @@ if __name__ == "__main__":
         print("Button clicked!")
 
     app = QApplication(sys.argv)
-    window = ButtonEdit(button_vertical_align=Qt.AlignmentFlag.AlignVCenter)
-    # window.add_button("../icons/copy.png", example_callback)  # Add buttons as needed
-    window.add_copy_button()
-    # Replace QLineEdit with QTextEdit or any other widget if required
-    # window.set_input_field(QTextEdit())
-    window.show()
+    widget = QWidget()
+    widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+    widget.setLayout(QVBoxLayout())
+    widget.layout().setContentsMargins(0, 0, 0, 0)
+    widget.layout().setSpacing(0)
+    for i in range(4):
+        edit = (ButtonEdit)(button_vertical_align=Qt.AlignmentFlag.AlignVCenter)
+        # window.add_button("../icons/copy.png", example_callback)  # Add buttons as needed
+        edit.add_copy_button()
+        # Replace QLineEdit with QTextEdit or any other widget if required
+        # window.set_input_field(QTextEdit())
+        widget.layout().addWidget(edit)
+    widget.show()
     sys.exit(app.exec())

@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -5,7 +34,7 @@ import threading
 from typing import Callable, Dict, List, Optional, Set, Union
 
 import bdkpython as bdk
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, QThread, pyqtSignal
 
 
 class UpdateFilter:
@@ -97,7 +126,14 @@ class SingularSignalFunction(SignalFunction):
         return list(responses.values())[0] if responses else responses
 
 
-class Signals(QObject):
+class SignalsMin(QObject):
+    language_switch = pyqtSignal()
+
+    signal_add_threat = pyqtSignal(QThread)
+    signal_stop_threat = pyqtSignal(QThread)
+
+
+class Signals(SignalsMin):
     """The idea here is to define events that might need to trigger updates of
     the UI or other events  (careful of circular loops)
 
@@ -140,14 +176,18 @@ class Signals(QObject):
     show_onchain_invoice = pyqtSignal()
     save_transaction_into_wallet = pyqtSignal(object)
 
-    get_wallets = SignalFunction(name="get_wallets")
-    get_qt_wallets = SignalFunction(name="get_qt_wallets")
-    get_network = SingularSignalFunction(name="get_network")
-
     show_network_settings = pyqtSignal()
     export_bip329_labels = pyqtSignal(str)  # str= wallet_id
     import_bip329_labels = pyqtSignal(str)  # str= wallet_id
     open_wallet = pyqtSignal(str)  # str= filepath
     finished_open_wallet = pyqtSignal(str)  # str= wallet_id
 
+    request_manual_sync = pyqtSignal()
+
     signal_broadcast_tx = pyqtSignal(bdk.Transaction)
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.get_wallets = SignalFunction(name="get_wallets")
+        self.get_qt_wallets = SignalFunction(name="get_qt_wallets")
+        self.get_network = SingularSignalFunction(name="get_network")

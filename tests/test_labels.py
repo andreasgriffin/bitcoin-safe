@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import datetime
 
 from bitcoin_safe.labels import Label, Labels, LabelType
@@ -6,9 +35,8 @@ from bitcoin_safe.util import clean_lines
 
 def test_label_export():
     labels = Labels()
-    labels.set_addr_label(
-        "some_address", "my label", timestamp=datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
-    )
+    timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
+    labels.set_addr_label("some_address", "my label", timestamp=timestamp)
     labels.set_addr_category("some_address", "category 0")
 
     assert labels.dump()["__class__"] == "Labels"
@@ -22,7 +50,7 @@ def test_label_export():
         "category": "category 0",
         "label": "my label",
         "ref": "some_address",
-        "timestamp": 946681200.0,
+        "timestamp": timestamp,
         "type": "addr",
     }
 
@@ -32,7 +60,9 @@ def test_label_export():
         + f'"{labels.VERSION}"'
         + """, "__class__": "Labels", "categories": ["category 0"], "data": {"some_address": {"VERSION": """
         + f'"{data[0].VERSION}"'
-        + """, "__class__": "Label", "category": "category 0", "label": "my label", "ref": "some_address", "timestamp": 946681200.0, "type": "addr"}}}"""
+        + ', "__class__": "Label", "category": "category 0", "label": "my label", "ref": "some_address", "timestamp": '
+        + f"{timestamp}"
+        + ', "type": "addr"}}}'
     )
 
 
@@ -56,6 +86,24 @@ def test_dumps_data():
     a = labels2.data.get("some_address")
     assert isinstance(a, Label)
     assert a.timestamp == timestamp
+
+
+def test_preservebip329_keys_for_single_label():
+    import json
+
+    labels = Labels()
+    labels.set_addr_category("some_address", "category 0")
+
+    serialized_labels = labels.dumps_data_jsonlines()
+
+    jsondict = json.loads(serialized_labels)
+    for key in Label.bip329_keys:
+        assert key in jsondict
+
+    assert (
+        serialized_labels
+        == '{"__class__": "Label", "VERSION": "0.0.1", "type": "addr", "ref": "some_address", "label": null, "category": "category 0"}'
+    )
 
 
 def test_label_bip329_import():

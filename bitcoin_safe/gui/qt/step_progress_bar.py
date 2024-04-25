@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -58,11 +87,11 @@ class StepProgressBar(QWidget):
         circle_sizes: List[int] = None,
     ):
         super().__init__(parent)
-        self.number_of_steps = number_of_steps
         self.current_index = current_index
         self.clickable = clickable
         self.enumeration_alphabet: Optional[List[str]] = None
         self.cursor_set = False
+        self.labels = [f"Step {i+1}" for i in range(number_of_steps)]  # Default labels
         self.set_circle_sizes(circle_sizes)
         self.tube_width = 4
         self.padding = 0
@@ -70,7 +99,6 @@ class StepProgressBar(QWidget):
         self.max_label_height = 0  # Initialize max label height
         self.use_checkmark_icon = use_checkmark_icon
 
-        self.labels = [f"Step {i+1}" for i in range(number_of_steps)]  # Default labels
         normalized_icon_path = os.path.normpath(
             os.path.join(os.path.dirname(__file__), "../icons/checkmark.png")
         )
@@ -107,9 +135,14 @@ class StepProgressBar(QWidget):
         self.recalculate_max_height()
         super().resizeEvent(event)
 
-    def set_labels(self, labels: List[str]):
+    @property
+    def number_of_steps(self) -> int:
+        return len(self.labels)
 
-        self.labels = labels + [f"Step {i+1}" for i in range(len(labels), self.number_of_steps)]
+    def set_labels(self, labels: List[str]):
+        self.labels = labels
+        self.set_circle_sizes()
+        self.tooltips = [""] * self.number_of_steps
 
         self.recalculate_max_height()
         self.update()
@@ -304,6 +337,10 @@ class HorizontalIndicator(QWidget):
 
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
+    def set_number_of_steps(self, number_of_steps: int):
+        self.number_of_steps = number_of_steps
+        self.update()
+
     def set_current_index(self, index: int):
         self.current_index = index
         self.update()  # Repaint the widget with the new step indicator
@@ -436,17 +473,13 @@ class StepProgressContainer(QWidget):
             if sub_indices is None
             else [12 if i in sub_indices else 20 for i in range(len(step_labels))],
         )
-        self.step_bar.set_labels(step_labels)
 
         self.horizontal_indicator = HorizontalIndicator(len(step_labels), current_index)
         self.stacked_widget = AutoResizingStackedWidget() if use_resizing_stacked_widget else QStackedWidget()
         self.collapsible_current_active = collapsible_current_active
         self.clickable = clickable
 
-        # Create a custom widget for each step
-        for i in range(len(step_labels)):
-            custom_widget = QWidget()
-            self.stacked_widget.addWidget(custom_widget)
+        self.set_labels(step_labels)
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.step_bar)
@@ -460,6 +493,17 @@ class StepProgressContainer(QWidget):
         self.set_current_index(current_index)
 
         self.step_bar.signal_index_clicked.connect(self.on_click)
+
+    def set_labels(self, labels: List[str]):
+        self.step_bar.set_labels(labels=labels)
+        self.horizontal_indicator.set_number_of_steps(len(labels))
+
+        # reset widgets
+        while self.stacked_widget.count() > len(labels):
+            self.stacked_widget.removeWidget(self.stacked_widget.widget(0))
+        for i in range(len(labels) - self.stacked_widget.count()):
+            custom_widget = QWidget()
+            self.stacked_widget.addWidget(custom_widget)
 
     def set_sub_indices(self, sub_indices: List[int] = None):
         self.step_bar.set_circle_sizes(
@@ -516,8 +560,11 @@ class StepProgressContainer(QWidget):
         self.horizontal_indicator.set_current_index(index)
         self.stacked_widget.setCurrentIndex(index)
 
-        self.signal_set_current_widget.emit(self.stacked_widget.widget(index))
+        # this order is important:
         self.signal_widget_focus.emit(self.stacked_widget.widget(index))
+        # in the set_current_widget the callback functions are executed that may change the
+        # visiblities. So it is critical to do the set_current_widget at the end.
+        self.signal_set_current_widget.emit(self.stacked_widget.widget(index))
 
     def set_custom_widget(self, index: int, widget: QWidget):
         """Sets the custom widget for the specified step.
@@ -597,11 +644,13 @@ class TutorialWidget(QWidget):
         logger.debug(f"set visibility of self.external_widgets  {self.external_widgets}")
         for external_widget, set_also_visible in self.external_widgets:
             external_widget.setVisible(set_also_visible)
+            logger.debug(f"Setting {external_widget.__class__.__name__}.setVisible({set_also_visible})")
 
     def on_set_current_widget(self, widget: QWidget):
         if self != widget:
             return
 
+        # the callbacks should only be in on_set_current_widget, but not in on_widget_focus (when i click on it)
         if self.callback_on_set_current_widget:
             logger.debug(f"on_set_current_widget: doing callback: {self.callback_on_set_current_widget}")
             self.callback_on_set_current_widget()
@@ -688,7 +737,7 @@ class MultiProgressContainer(QWidget):
         widget = QWidget()
         widget.setLayout(QVBoxLayout())
 
-        buttonbox = create_button_box(
+        buttonbox, buttons = create_button_box(
             self.go_to_next_index,
             self.go_to_previous_index,
             ok_text="Next step",
@@ -700,7 +749,7 @@ class MultiProgressContainer(QWidget):
         widget = QWidget()
         widget.setLayout(QVBoxLayout())
 
-        buttonbox = create_button_box(
+        buttonbox, buttons = create_button_box(
             self.go_to_next_index,
             self.go_to_previous_index,
             ok_text="Next step",
@@ -761,7 +810,7 @@ class StepProgressContainerWithButtons(StepProgressContainer):
         widget = QWidget()
         widget.setLayout(QVBoxLayout())
 
-        buttonbox = create_button_box(
+        buttonbox, buttons = create_button_box(
             self.go_to_next_index,
             self.go_to_previous_index,
             ok_text="Next step",

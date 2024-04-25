@@ -1,0 +1,67 @@
+{
+  "version": "0.1.0",
+  "configurations": [{
+      "name": "Python: Module",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }, {
+      "name": "nostr_sync",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.nostr_sync",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "taglist",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.taglist",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "network settings",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.network_settings",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "step_progress_bar",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.step_progress_bar",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "Build",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets",
+        // "deb", 
+        "appimage"
+      ],
+      "console": "integratedTerminal"
+    }, {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    }
+
+  ]
+}

@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,6 +57,7 @@ class CategoryList(CustomListWidget):
         self.signals.category_updated.connect(self.refresh)
         self.signals.utxos_updated.connect(self.refresh)
         self.refresh(UpdateFilter(refresh_all=True))
+        self.signals.language_switch.connect(lambda: self.refresh(UpdateFilter(refresh_all=True)))
 
     def refresh(self, update_filter: UpdateFilter):
         self.recreate(self.categories, sub_texts=self.get_sub_texts())
@@ -46,21 +76,29 @@ class CategoryEditor(TagEditor):
         signals: Signals,
         get_sub_texts=None,
         parent=None,
-        tag_name="category",
         prevent_empty_categories=True,
     ):
         sub_texts = get_sub_texts() if get_sub_texts else None
-        super().__init__(parent, categories, tag_name=tag_name, sub_texts=sub_texts)
+        super().__init__(parent, categories, tag_name="", sub_texts=sub_texts)
 
         self.categories = categories
         self.get_sub_texts = get_sub_texts
         self.signals = signals
         self.prevent_empty_categories = prevent_empty_categories
+
+        self.updateUi()
+        # signals
         self.signals.category_updated.connect(self.refresh)
         self.signals.import_bip329_labels.connect(self.refresh)
 
         self.list_widget.signal_tag_deleted.connect(self.on_delete)
         self.list_widget.signal_tag_added.connect(self.on_added)
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        super().updateUi()
+        self.tag_name = self.tr("category")
+        self.refresh(UpdateFilter(refresh_all=True))
 
     def on_added(self, category):
         if not category or category in self.categories:

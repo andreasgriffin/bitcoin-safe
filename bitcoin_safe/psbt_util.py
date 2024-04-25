@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,6 +38,12 @@ from math import ceil
 from typing import Any, Dict, List, Tuple
 
 import bdkpython as bdk
+
+from .dynamic_lib_load import setup_libsecp256k1
+
+setup_libsecp256k1()
+
+
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from bitcoin_safe.util import remove_duplicates_keep_order
@@ -148,7 +183,10 @@ class FeeInfo:
 
     @classmethod
     def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo":
-        return FeeInfo(tx_details.fee, tx_details.transaction.vsize(), is_estimated=False)
+        fee = tx_details.fee
+        # coinbase transaction have fee=None
+        fee = fee if fee is not None else 0
+        return FeeInfo(fee, tx_details.transaction.vsize(), is_estimated=False)
 
     @classmethod
     def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.PartiallySignedTransaction) -> "FeeInfo":

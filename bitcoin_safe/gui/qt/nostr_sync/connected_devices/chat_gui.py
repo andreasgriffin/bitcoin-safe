@@ -1,4 +1,35 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import logging
+
+from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 import os
@@ -148,7 +179,7 @@ class ChatGui(QWidget):
     signal_on_message_send = pyqtSignal(str)
     signal_share_filepath = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, signals_min: SignalsMin):
         super().__init__()
         self.setLayout(QVBoxLayout())
         self.chat_list_display = ChatListWidget()
@@ -156,12 +187,10 @@ class ChatGui(QWidget):
         self.layout().addWidget(self.chat_list_display)
 
         self.textInput = QLineEdit()
-        self.textInput.setPlaceholderText("Type your message here...")
         self.textInput.textChanged.connect(self.textChanged)
 
-        self.sendButton = QPushButton("Send")
+        self.sendButton = QPushButton()
         self.shareButton = QPushButton()
-        self.shareButton.setToolTip("Share a PSBT")
         self.textChanged("")
         current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.shareButton.setIcon(QIcon(os.path.join(current_file_directory, "clip.svg")))
@@ -170,10 +199,17 @@ class ChatGui(QWidget):
         # Placeholder for the dynamic layout
         self.dynamicLayout = QVBoxLayout()
         self.updateDynamicLayout()
+        self.updateUi()
 
         # Connect signals
         self.sendButton.clicked.connect(self.on_send_hit)
         self.textInput.returnPressed.connect(self.on_send_hit)
+        signals_min.language_switch.connect(self.updateUi)
+
+    def updateUi(self):
+        self.textInput.setPlaceholderText(self.tr("Type your message here..."))
+        self.shareButton.setToolTip(self.tr("Share a PSBT"))
+        self.sendButton.setText(self.tr("Send"))
 
     def textChanged(self, text: str):
         there_is_text = bool(self.textInput.text())
@@ -185,9 +221,9 @@ class ChatGui(QWidget):
     ):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Open Transaction/PSBT",
+            self.tr("Open Transaction/PSBT"),
             "",
-            "All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
+            self.tr("All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
         )
         if not file_path:
             logger.debug("No file selected")
@@ -243,10 +279,19 @@ class ChatGui(QWidget):
     def add_own(self, timestamp: int, text: str = "", file_object: FileObject = None):
         if file_object:
             self._add_file(
-                f"Me: {text}", file_object, Qt.AlignmentFlag.AlignRight, "green", timestamp=timestamp
+                self.tr("Me: {text}").format(text=text),
+                file_object,
+                Qt.AlignmentFlag.AlignRight,
+                "green",
+                timestamp=timestamp,
             )
         else:
-            self._add_message(f"Me: {text}", Qt.AlignmentFlag.AlignRight, "green", timestamp=timestamp)
+            self._add_message(
+                self.tr("Me: {text}").format(text=text),
+                Qt.AlignmentFlag.AlignRight,
+                "green",
+                timestamp=timestamp,
+            )
 
     def add_other(
         self, timestamp: int, text: str = "", file_object: FileObject = None, other_name: str = "Other"
@@ -269,7 +314,7 @@ if __name__ == "__main__":
     class DemoApp(QMainWindow):
         def __init__(self):
             super().__init__()
-            self.chatGui = ChatGui()
+            self.chatGui = ChatGui(signals_min=SignalsMin())
             self.setCentralWidget(self.chatGui)
             self.setWindowTitle("Demo Chat App")
             self.chatGui.signal_on_message_send.connect(self.handleMessage)

@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import enum
 import logging
 from math import ceil
@@ -5,6 +34,8 @@ from typing import Any, Dict, List, Tuple
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 from bitcoin_safe.network_config import NetworkConfig
+from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.threading_manager import TaskThread
 
 from .config import MIN_RELAY_FEE
 
@@ -15,8 +46,6 @@ import datetime
 import numpy as np
 import requests
 from PyQt6.QtCore import QObject, pyqtSignal
-
-from .util import TaskThread
 
 feeLevels = [
     1,
@@ -149,7 +178,7 @@ def fee_to_color(fee, colors=chartColors):
     return colors[indizes[-1]]
 
 
-def fetch_json_from_url(url: str):
+def fetch_from_url(url: str, is_json=True):
     logger.debug(f"fetch_json_from_url requests.get({url}, timeout=10)")
 
     try:
@@ -157,7 +186,7 @@ def fetch_json_from_url(url: str):
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
             # Parse the JSON response
-            data = response.json()
+            data = response.json() if is_json else response.content
             return data
         else:
             # If the request was unsuccessful, print the status code
@@ -168,9 +197,9 @@ def fetch_json_from_url(url: str):
         return None
 
 
-def threaded_fetch(url: str, on_success, parent):
+def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True):
     def do():
-        return fetch_json_from_url(url)
+        return fetch_from_url(url, is_json=is_json)
 
     def on_error(packed_error_info):
         custom_exception_handler(*packed_error_info)
@@ -178,7 +207,7 @@ def threaded_fetch(url: str, on_success, parent):
     def on_done(data):
         pass
 
-    TaskThread(parent).add_and_start(do, on_success, on_done, on_error)
+    TaskThread(parent, signals_min=signals_min).add_and_start(do, on_success, on_done, on_error)
 
 
 class TxPrio(enum.Enum):
@@ -190,8 +219,9 @@ class TxPrio(enum.Enum):
 class MempoolData(QObject):
     signal_data_updated = pyqtSignal()
 
-    def __init__(self, network_config: NetworkConfig) -> None:
+    def __init__(self, network_config: NetworkConfig, signals_min: SignalsMin) -> None:
         super().__init__()
+        self.signals_min = signals_min
 
         self.network_config = network_config
         self.mempool_blocks = self._empty_mempool_blocks()
@@ -222,12 +252,12 @@ class MempoolData(QObject):
             }
         ]
 
-    def fee_min_max(self, block_index: int) -> Tuple[int, float]:
+    def fee_rates_min_max(self, block_index: int) -> Tuple[int, float]:
         block_index = min(block_index, len(self.mempool_blocks) - 1)
-        fees = self.mempool_blocks[block_index]["feeRange"]
-        return min(fees), max(fees)
+        fee_rates = self.mempool_blocks[block_index]["feeRange"]
+        return min(fee_rates), max(fee_rates)
 
-    def median_block_fee(self, block_index: int) -> float:
+    def median_block_fee_rate(self, block_index: int) -> float:
         block_index = min(block_index, len(self.mempool_blocks) - 1)
         return self.mempool_blocks[block_index]["medianFee"]
 
@@ -235,7 +265,7 @@ class MempoolData(QObject):
         vBytes_per_block = 1e6
         return ceil(self.mempool_dict["vsize"] / vBytes_per_block)
 
-    def get_prio_fees(self) -> Dict[TxPrio, float]:
+    def get_prio_fee_rates(self) -> Dict[TxPrio, float]:
         return {
             prio: self.recommended[key]
             for prio, key in zip(
@@ -244,7 +274,7 @@ class MempoolData(QObject):
             )
         }
 
-    def get_min_relay_fee(self) -> float:
+    def get_min_relay_fee_rate(self) -> float:
         return self.recommended["minimumFee"]
 
     def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback: int = 100) -> float:
@@ -252,7 +282,7 @@ class MempoolData(QObject):
         if self.mempool_blocks is None:
             return max_reasonable_fee_rate_fallback
 
-        average_fee_rate = sum(self.fee_min_max(0)) / 2
+        average_fee_rate = sum(self.fee_rates_min_max(0)) / 2
 
         # allow for up to 20% more then the average_fee_rate
         slack = 0.2
@@ -273,29 +303,44 @@ class MempoolData(QObject):
                 self.mempool_blocks = mempool_blocks
 
         threaded_fetch(
-            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks", on_mempool_blocks, self
+            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
+            on_mempool_blocks,
+            self,
+            signals_min=self.signals_min,
         )
 
         def on_recommended(recommended):
             if recommended:
                 self.recommended = recommended
 
-        threaded_fetch(f"{self.network_config.mempool_url}api/v1/fees/recommended", on_recommended, self)
+        threaded_fetch(
+            f"{self.network_config.mempool_url}api/v1/fees/recommended",
+            on_recommended,
+            self,
+            signals_min=self.signals_min,
+        )
 
         def on_mempool_dict(mempool_dict):
             if mempool_dict:
                 self.mempool_dict = mempool_dict
+            self.signal_data_updated.emit()
+            logger.info(f"Updated mempool_dict {mempool_dict}")
 
-        threaded_fetch(f"{self.network_config.mempool_url}api/mempool", on_mempool_dict, self)
+        threaded_fetch(
+            f"{self.network_config.mempool_url}api/mempool",
+            on_mempool_dict,
+            self,
+            signals_min=self.signals_min,
+        )
 
     def fetch_block_tip_height(self) -> int:
-        response = fetch_json_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height")
+        response = fetch_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height")
         return response if response else 0
 
-    def fee_rate_to_projected_block_index(self, fee) -> int:
+    def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:
         available_blocks = len(self.mempool_blocks)
         for i in range(available_blocks):
-            v_min, v_max = self.fee_min_max(i)
-            if fee >= v_min:
+            v_min, v_max = self.fee_rates_min_max(i)
+            if fee_rate >= v_min:
                 return i
         return available_blocks

@@ -1,15 +1,18 @@
-#!/usr/bin/env python
 #
-# Electrum - lightweight Bitcoin client
-# Copyright (C) 2012 thomasv@gitorious
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
 #
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of the Software,
-# and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
 #
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
@@ -22,11 +25,14 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+
 import logging
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.util import Satoshis, serialized_to_hex
+from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.util import serialized_to_hex
 
 from .qr_components.image_widget import QRCodeWidgetSVG
 
@@ -34,7 +40,6 @@ logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -45,17 +50,26 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ...i18n import _
 from ...signals import Signals
 from ...wallet import Wallet
-from .hist_list import HistList
+from .hist_list import HistList, HistListWithToolbar
 from .util import Buttons, CloseButton
 
 
 class AddressDialog(QWidget):
-    def __init__(self, fx, config: UserConfig, signals: Signals, wallet: Wallet, address: str, parent=None):
+    def __init__(
+        self,
+        fx,
+        config: UserConfig,
+        signals: Signals,
+        wallet: Wallet,
+        address: str,
+        mempool_data: MempoolData,
+        parent=None,
+    ):
         super().__init__(parent, Qt.WindowType.Window)
-        self.setWindowTitle("Address")
+        self.setWindowTitle(self.tr("Address"))
+        self.mempool_data = mempool_data
         self.address = address
         self.bdk_address = bdk.Address(address, network=wallet.network)
         self.fx = fx
@@ -75,22 +89,27 @@ class AddressDialog(QWidget):
 
         vbox.addWidget(upper_widget)
 
-        tabs = QTabWidget()
-        upper_widget_layout.addWidget(tabs)
+        self.tabs = QTabWidget()
+        upper_widget_layout.addWidget(self.tabs)
 
-        tab1 = QWidget()
-        tab1_layout = QVBoxLayout(tab1)
+        self.tab_details = QWidget()
+        tab1_layout = QVBoxLayout(self.tab_details)
         tab1_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        tabs.addTab(tab1, "Details")
-        tab2 = QWidget()
-        tab2_layout = QVBoxLayout(tab2)
+        self.tabs.addTab(self.tab_details, "")
+        self.tab_advanced = QWidget()
+        tab2_layout = QVBoxLayout(self.tab_advanced)
         tab2_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        tabs.addTab(tab2, "Advanced")
+        self.tabs.addTab(self.tab_advanced, "")
 
         address_info_min = self.wallet.get_address_info_min(address)
         if address_info_min:
-            address_title = f"{'Receiving' if address_info_min.keychain == bdk.KeychainKind.EXTERNAL else 'Change'} address of wallet \"{wallet.id}\"   (with index {address_info_min.index})"
-            tab1_layout.addWidget(QLabel(_(address_title) + ":"))
+
+            address_title = (
+                self.tr("Receiving address of wallet '{wallet_id}' (with index {index})")
+                if address_info_min.keychain == bdk.KeychainKind.EXTERNAL
+                else self.tr("Change address of wallet '{wallet_id}' (with index {index})")
+            ).format(wallet_id=wallet.id, index=address_info_min.index)
+            tab1_layout.addWidget(QLabel(self.tr(address_title) + ":"))
         self.addr_e = ButtonEdit(self.address)
         self.addr_e.setReadOnly(True)
         self.addr_e.add_copy_button()
@@ -102,7 +121,7 @@ class AddressDialog(QWidget):
         except BaseException:
             script_pubkey = None
         if script_pubkey:
-            tab2_layout.addWidget(QLabel(_("Script Pubkey") + ":"))
+            tab2_layout.addWidget(QLabel(self.tr("Script Pubkey") + ":"))
             pubkey_e = ButtonEdit(script_pubkey)
             pubkey_e.add_copy_button()
             pubkey_e.setReadOnly(True)
@@ -110,7 +129,7 @@ class AddressDialog(QWidget):
 
         address_path_str = self.wallet.get_address_path_str(address)
         if address_path_str:
-            tab2_layout.addWidget(QLabel(_("Address descriptor") + ":"))
+            tab2_layout.addWidget(QLabel(self.tr("Address descriptor") + ":"))
             der_path_e = ButtonEdit(address_path_str, input_field=QTextEdit())
             der_path_e.add_copy_button()
             der_path_e.setFixedHeight(50)
@@ -122,18 +141,11 @@ class AddressDialog(QWidget):
         self.qr_code.setMaximumWidth(150)
         upper_widget_layout.addWidget(self.qr_code)
 
-        self.balance_label = QLabel(
-            f"Balance: {Satoshis(   self.wallet.get_addr_balance(self.address).total, self.wallet.network).str_with_unit()}"
-        )
-        font = QFont()
-        font.setPointSize(12)
-        self.balance_label.setFont(font)
-        vbox.addWidget(self.balance_label)
-
         self.hist_list = HistList(
             self.fx,
             self.config,
             self.signals,
+            self.mempool_data,
             self.wallet.id,
             hidden_columns=[
                 HistList.Columns.TXID,
@@ -142,6 +154,12 @@ class AddressDialog(QWidget):
             address_domain=[self.address],
             column_widths={HistList.Columns.TXID: 100},
         )
-        vbox.addWidget(self.hist_list)
+        toolbar = HistListWithToolbar(self.hist_list, self.config, parent=self)
+        vbox.addWidget(toolbar)
 
         vbox.addLayout(Buttons(CloseButton(self)))
+        self.setupUi()
+
+    def setupUi(self):
+        self.tabs.setTabText(self.tabs.indexOf(self.tab_details), self.tr("Details"))
+        self.tabs.setTabText(self.tabs.indexOf(self.tab_advanced), self.tr("Advanced"))

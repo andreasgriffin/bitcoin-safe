@@ -1,3 +1,32 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import functools
 import logging
 import os
@@ -21,6 +50,7 @@ from packaging import version
 
 from .config import MIN_RELAY_FEE, UserConfig
 from .descriptors import AddressType, MultipathDescriptor, get_default_address_type
+from .i18n import translate
 from .keystore import KeyStore
 from .labels import Labels
 from .pythonbdk_types import *
@@ -46,13 +76,13 @@ class TxConfirmationStatus(enum.Enum):
     @classmethod
     def to_str(cls, status: "TxConfirmationStatus") -> str:
         if status == cls.CONFIRMED:
-            return "Confirmed"
+            return translate("wallet", "Confirmed")
         if status == cls.UNCONFIRMED:
-            return "Unconfirmed"
+            return translate("wallet", "Unconfirmed")
         if status == cls.UNCONF_PARENT:
-            return "Unconfirmed parent"
+            return translate("wallet", "Unconfirmed parent")
         if status == cls.LOCAL:
-            return "Local"
+            return translate("wallet", "Local")
 
 
 class TxStatus:
@@ -221,13 +251,13 @@ class ProtoWallet(BaseSaveableClass):
     def set_address_type(self, address_type: AddressType):
         self.address_type = address_type
 
-    @classmethod
-    def signer_names(self, threshold: int, i: int):
+    @staticmethod
+    def signer_names(threshold: int, i: int):
         i += 1
         if i <= threshold:
-            return f"Signer {i}"
+            return translate("d", "Signer {i}").format(i=i)
         else:
-            return f"Recovery Signer {i}"
+            return translate("d", "Recovery Signer {i}").format(i=i)
 
     def signer_name(self, i: int):
         return self.signer_names(self.threshold, i)
@@ -1040,7 +1070,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             if is_confirmed(tx.txid):
                 balances[address].confirmed += txout.value
             else:
-                balances[address].spendable += txout.value
+                balances[address].untrusted_pending += txout.value
 
         return balances
 
@@ -1210,7 +1240,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             trusted_pending=balance.trusted_pending,
             untrusted_pending=balance.untrusted_pending,
             confirmed=balance.confirmed,
-            spendable=balance.spendable,
         )
 
     def get_utxo_name(self, utxo: PythonUtxo) -> str:
@@ -1518,13 +1547,14 @@ class Wallet(BaseSaveableClass, CacheManager):
             return True
         return False
 
-    def get_fulltxdetail_and_dependents(self, txid: str) -> List[FullTxDetail]:
+    def get_fulltxdetail_and_dependents(self, txid: str, include_root_tx=True) -> List[FullTxDetail]:
         result: List[FullTxDetail] = []
         fulltxdetail = self.get_dict_fulltxdetail().get(txid)
         if not fulltxdetail:
             return result
 
-        result.append(fulltxdetail)
+        if include_root_tx:
+            result.append(fulltxdetail)
 
         for output in fulltxdetail.outputs.values():
             if output.is_spent_by_txid:
@@ -1543,23 +1573,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             return default
         ema_fee_rate = calculate_ema(fee_rates, alpha=alpha)
         return ema_fee_rate
-
-    def get_spending_transactions(self, txids: List[str]) -> List[FullTxDetail]:
-        "Returns the FullTxDetail for each txids, if any input-address belongs to this wallet"
-        dict_fulltxdetail = self.get_dict_fulltxdetail()
-        addresses = self.get_addresses()
-
-        spending_transactions: List[FullTxDetail] = []
-        for txid in txids:
-            fulltxdetail = dict_fulltxdetail.get(txid)
-            if not fulltxdetail:
-                continue
-            for inp in fulltxdetail.inputs.values():
-                if not inp:
-                    continue
-                if inp.address in addresses:
-                    spending_transactions.append(fulltxdetail)
-        return spending_transactions
 
 
 ###########
@@ -1651,7 +1664,7 @@ class ToolsTxUiInfo:
         # remove change output if possible
         change_address = get_change_address([recipient.address for recipient in txuiinfos.recipients])
         change_recipient = None
-        if change_address:
+        if change_address and len(txuiinfos.recipients) > 1:
             for i in range(len(txuiinfos.recipients)):
                 if txuiinfos.recipients[i].address == change_address:
                     change_recipient = txuiinfos.recipients.pop(i)
