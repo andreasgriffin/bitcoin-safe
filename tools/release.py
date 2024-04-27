@@ -159,7 +159,7 @@ def main() -> None:
     for file_path, size, modified_time in files:
         print(f"  {file_path.name} - {size} bytes, last modified: {modified_time}")
 
-    if input("Are these the correct files to upload? (y/n): ").lower() == "y":
+    if get_input_with_default("Are these the correct files to upload? (y/n): ", "y").lower() == "y":
         release_name = get_input_with_default("Enter the release name", f"{latest_tag}")
         body = get_input_with_default("Enter the release description")
         draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"

@@ -12,7 +12,7 @@ show_error_codes = true
 
 [tool.poetry]
 name = "bitcoin-safe"
-version = "0.6.0a0"
+version = "0.6.0a1"
 description = "Long-term Bitcoin savings made Easy"
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -25,7 +25,7 @@ source = "init"
 [tool.briefcase]
 project_name = "Bitcoin-Safe"
 bundle = "org.bitcoin-safe"
-version = "0.6.0a0"
+version = "0.6.0a1"
 url = "https://bitcoin-safe.org"
 license = "GNU General Public License v3 (GPLv3)"
 author = "Andreas Griffin"

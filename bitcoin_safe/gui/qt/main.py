@@ -1192,5 +1192,9 @@ class MainWindow(QMainWindow):
         QCoreApplication.quit()
 
     def setup_signal_handlers(self):
-        for sig in [syssignal.SIGTERM, syssignal.SIGINT, syssignal.SIGHUP, syssignal.SIGQUIT]:
+        for sig in [
+            getattr(syssignal, attr)
+            for attr in ["SIGTERM", "SIGINT", "SIGHUP", "SIGQUIT"]
+            if hasattr(syssignal, attr)
+        ]:
             syssignal.signal(sig, self.signal_handler)
