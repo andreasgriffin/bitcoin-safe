@@ -142,3 +142,26 @@ nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0
 ```
 
 * 
+
+
+
+
+## Installation from PyPi
+
+### Ubuntu, Debian, Windows
+
+- Install `poetry` and run `bitcoin_safe`
+  
+  ```sh
+  pip install bitcoin-safe
+  python -m bitcoin_safe
+  ```
+
+### Mac
+
+- Run `bitcoin_safe`
+  
+  ```sh
+  python3 -m pip install bitcoin-safe
+  python3 -m bitcoin_safe
+  ```

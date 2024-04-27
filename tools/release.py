@@ -146,7 +146,10 @@ def main() -> None:
         return
 
     print(f"The latest Git tag is: {latest_tag}")
-    if input(f"Is this the correct tag for the release {latest_tag}? (y/n): ").lower() != "y":
+    if (
+        get_input_with_default(f"Is this the correct tag for the release {latest_tag}? (y/n): ", "y").lower()
+        != "y"
+    ):
         print("Release creation aborted.")
         return
 
@@ -157,7 +160,7 @@ def main() -> None:
         print(f"  {file_path.name} - {size} bytes, last modified: {modified_time}")
 
     if input("Are these the correct files to upload? (y/n): ").lower() == "y":
-        release_name = get_input_with_default("Enter the release name", f"Release {latest_tag}")
+        release_name = get_input_with_default("Enter the release name", f"{latest_tag}")
         body = get_input_with_default("Enter the release description")
         draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
         prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"

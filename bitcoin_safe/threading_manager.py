@@ -144,6 +144,7 @@ class TaskThread(QThread):
 
     def my_quit(self):
         self.quit()
+        self.wait()
         self.signals_min.signal_stop_threat.emit(self)
 
 
@@ -188,7 +189,9 @@ class ThreadingManager:
     def _append(self, thread: TaskThread):
         with self.lock:
             self.threads.append(thread)
-            logger.debug(f"Appended thread {thread}, Number of threads = {len(self.threads)}")
+            logger.debug(
+                f"Appended thread {thread.thread_name}, Number of threads = {len(self.threads)} {[thread.thread_name for thread in   self.threads]}"
+            )
             assert thread in self.threads
 
     def _remove(self, thread: TaskThread):
@@ -196,7 +199,9 @@ class ThreadingManager:
             if thread in self.threads:
                 self.threads.remove(thread)
                 thread.deleteLater()
-            logger.debug(f"Removed thread {thread}, Number of threads = {len(self.threads)}")
+            logger.debug(
+                f"Removed thread {thread.thread_name}, Number of threads = {len(self.threads)} {[thread.thread_name for thread in   self.threads]}"
+            )
 
     def stop_and_wait_all(self, timeout=10):
         # Wait for all threads to finish
