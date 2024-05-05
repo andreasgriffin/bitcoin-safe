@@ -914,22 +914,22 @@ class Wallet(BaseSaveableClass, CacheManager):
         if not self.bdkwallet:
             return self._tips[int(is_change)]
 
-        bdk_tip = self._get_bdk_tip(is_change=is_change)
-
-        if self._tips[int(is_change)] > bdk_tip:
-            self._advance_tip(is_change=is_change, number=self._tips[int(is_change)] - bdk_tip)
-        else:
-            self._tips[int(is_change)] = bdk_tip
-
+        self._advance_tip_if_necessary(is_change=is_change, target=self._tips[int(is_change)])
         return self._tips[int(is_change)]
 
-    def _advance_tip(self, is_change: bool, number: int):
-        assert number >= 0, "Cannot reduce the watched addresses"
-        if number == 0:
-            return
-
+    def _advance_tip_if_necessary(self, is_change: bool, target: int):
         with self.write_lock:
             bdk_get_address = self.bdkwallet.get_internal_address if is_change else self.bdkwallet.get_address
+
+            # check that advancing is even necessary
+            old_address_info: bdk.AddressInfo = bdk_get_address(bdk.AddressIndex.LAST_UNUSED())
+            old_bdk_tip = old_address_info.index
+            number = target - old_bdk_tip
+            if number == 0:
+                return
+            if number < 0:
+                self._tips[int(is_change)] = old_bdk_tip
+                return
 
             logger.debug(f"{self.id} indexing {number} new addresses")
 
@@ -946,18 +946,12 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def advance_tips_by_gap(self) -> Tuple[int, int]:
         "Returns [number of added addresses, number of added change addresses]"
-        change_tip = [0, 0]
+        tip = [0, 0]
         for is_change in [False, True]:
             gap = self.gap_change if is_change else self.gap
-            tip = self._get_tip(is_change=is_change)
             used_tip = self.used_address_tip(is_change=is_change)
-            # there is always 1 unused_addresses_dangling
-            unused_addresses_dangling = tip - used_tip
-            if unused_addresses_dangling < gap:
-                number = gap - unused_addresses_dangling
-                self._advance_tip(is_change=is_change, number=number)
-                change_tip[int(is_change)] = number
-        return (change_tip[0], change_tip[1])
+            self._advance_tip_if_necessary(is_change=is_change, target=used_tip + gap)
+        return (tip[0], tip[1])
 
     def search_index_tuple(self, address, forward_search=500) -> Optional[AddressInfoMin]:
         """Looks for the address"""
@@ -990,8 +984,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             return None
 
         is_change = address_info_min.is_change()
-        number = max(0, address_info_min.index - self.tips[int(is_change)])
-        self._advance_tip(is_change=is_change, number=number)
+        self._advance_tip_if_necessary(is_change=is_change, target=address_info_min.index)
 
         return address_info_min
 
@@ -1143,11 +1136,12 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def _get_all_txos_dict(self, include_not_mine=False) -> Dict[str, PythonUtxo]:
         dict_fulltxdetail = self.get_dict_fulltxdetail()
+        my_addresses = self.get_addresses()
 
         txos: Dict[str, PythonUtxo] = {}
         for fulltxdetail in dict_fulltxdetail.values():
             for python_utxo in fulltxdetail.outputs.values():
-                if include_not_mine or self.is_my_address(python_utxo.address):
+                if include_not_mine or (python_utxo.address in my_addresses):
                     if str(python_utxo.outpoint) in txos:
                         logger.error(
                             f"{str(python_utxo.outpoint)} already present in txos, meaning dict_fulltxdetail has outpoints occuring multiple times"

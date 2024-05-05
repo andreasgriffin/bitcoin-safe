@@ -83,7 +83,7 @@ from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet, filename_clean
 from . import address_dialog
 from .dialog_import import ImportDialog
 from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
-from .mytabwidget import ExtendedTabWidget
+from .extended_tabwidget import ExtendedTabWidgetWithLoading
 from .network_settings.main import NetworkSettingsUI
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
@@ -93,6 +93,7 @@ from .util import (
     MessageType,
     add_tab_to_tabs,
     caught_exception_message,
+    delayed_execution,
     read_QIcon,
     webopen,
 )
@@ -155,6 +156,7 @@ class MainWindow(QMainWindow):
         self.signals.request_manual_sync.connect(self.sync)
         self.signals.export_bip329_labels.connect(self.export_bip329_labels)
         self.signals.import_bip329_labels.connect(self.import_bip329_labels)
+        self.signals.import_electrum_wallet_labels.connect(self.import_electrum_wallet_labels)
         self.signals.open_wallet.connect(self.open_wallet)
         self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
         self.signals.language_switch.connect(self.updateUI)
@@ -164,15 +166,21 @@ class MainWindow(QMainWindow):
         self.search_box = SearchWallets(
             lambda: list(self.qt_wallets.values()),
             signal_min=self.signals,
-            parent=self,
+            parent=self.tab_wallets,
         )
         self.tab_wallets.set_top_right_widget(self.search_box)
+
+        self.updateUI()
+        self.setup_signal_handlers()
+
+        delayed_execution(self.load_last_state, self)
+
+    def load_last_state(self):
 
         opened_qt_wallets = self.open_last_opened_wallets()
         if not opened_qt_wallets:
             self.welcome_screen.add_new_wallet_welcome_tab()
 
-        self.setup_signal_handlers()
         self.open_last_opened_tx()
 
     def set_title(self):
@@ -195,7 +203,7 @@ class MainWindow(QMainWindow):
         MainWindow.setMinimumSize(w, h)
 
         #####
-        self.tab_wallets = ExtendedTabWidget(self)
+        self.tab_wallets = ExtendedTabWidgetWithLoading(self)
         self.tab_wallets.tabBar().setExpanding(True)  # This will expand tabs to fill the tab widget width
         self.tab_wallets.setTabBarAutoHide(False)
         self.tab_wallets.setMovable(True)  # Enable tab reordering
@@ -221,7 +229,7 @@ class MainWindow(QMainWindow):
             vbox.addWidget(notification_bar)
 
         self.update_notification_bar = UpdateNotificationBar(signals_min=self.signals)
-        self.update_notification_bar.check()  # TODO: disable this, after it got more stable
+        # self.update_notification_bar.check()  # TODO: disable this, after it got more stable
         vbox.addWidget(self.update_notification_bar)
 
         vbox.addWidget(self.tab_wallets)
@@ -323,7 +331,7 @@ class MainWindow(QMainWindow):
 
     def showEvent(self, event):
         super().showEvent(event)
-        self.updateUI()
+        # self.updateUI()
 
     def updateUI(self):
 
@@ -360,10 +368,12 @@ class MainWindow(QMainWindow):
         # the search fields
         for qt_wallet in self.qt_wallets.values():
             if self.tab_wallets.top_right_widget:
-                main_search_field_visible = self.tab_wallets.tabBar().isVisible()
-                self.tab_wallets.top_right_widget.setVisible(main_search_field_visible)
+                main_search_field_hidden = (
+                    self.tab_wallets.count() <= 1
+                ) and self.tab_wallets.tabBarAutoHide()
+                self.tab_wallets.top_right_widget.setVisible(not main_search_field_hidden)
                 if qt_wallet.tabs.top_right_widget:
-                    qt_wallet.tabs.top_right_widget.setVisible(not main_search_field_visible)
+                    qt_wallet.tabs.top_right_widget.setVisible(main_search_field_hidden)
 
     def populate_recent_wallets_menu(self):
         self.menu_wallet_recent.clear()
@@ -746,6 +756,21 @@ class MainWindow(QMainWindow):
         for serialized in self.config.opened_txlike.get(str(self.config.network), []):
             self.open_tx_like_in_tab(serialized)
 
+    # def advance_tips_in_background(self, wallet: Wallet):
+    #     def do():
+    #         return wallet.get_address()
+
+    #     def on_error(packed_error_info):
+    #         logger.error("Exception in advance_tips_in_background")
+
+    #     def on_done(data):
+    #         pass
+
+    #     def on_success(data):
+    #         pass
+
+    #     TaskThread(self, signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+
     def open_wallet(self, file_path: Optional[str] = None):
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(
@@ -791,6 +816,7 @@ class MainWindow(QMainWindow):
             caught_exception_message(e, "Wrong password. Wallet could not be loaded.")
             QTWallet.remove_lockfile(Path(file_path))
             return
+        # self.advance_tips_in_background(wallet)
 
         qt_wallet = self.add_qt_wallet(wallet)
         qt_wallet.password = password
@@ -831,9 +857,9 @@ class MainWindow(QMainWindow):
 
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            self.tr("Export labels"),
+            self.tr("Import labels"),
             "",
-            self.tr("All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)"),
+            self.tr("All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)"),
         )
         if not file_path:
             logger.debug("No file selected")
@@ -843,6 +869,27 @@ class MainWindow(QMainWindow):
             lines = file.read()
 
         qt_wallet.wallet.labels.import_bip329_jsonlines(lines)
+        self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
+
+    def import_electrum_wallet_labels(self, wallet_id: str):
+        qt_wallet = self.qt_wallets.get(wallet_id)
+        if not qt_wallet:
+            return
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Import Electrum Wallet labels"),
+            "",
+            self.tr("All Files (*);;JSON Files (*.json)"),
+        )
+        if not file_path:
+            logger.debug("No file selected")
+            return
+
+        with open(file_path, "r") as file:
+            lines = file.read()
+
+        qt_wallet.wallet.labels.import_electrum_wallet_json(lines, network=self.config.network)
         self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
 
     def save_current_wallet(self):
@@ -980,6 +1027,19 @@ class MainWindow(QMainWindow):
 
         return qtprotowallet
 
+    # def add_loading_tab(self)->QWidget:
+    #     tab = QWidget()
+    #     emptyLabel = QLabel("Loading, please wait...", self)
+    #     emptyLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+    #     self.tab_wallets.addTab(tab)
+    #     return tab
+
+    # def remove_loading_tab(self, loading_tab:QWidget):
+    #     idx = self.tab_wallets.indexOf(loading_tab)
+    #     if idx != -1:
+    #         self.tab_wallets.removeTab(idx)
+
     def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
         def set_tab_widget_icon(tab: QWidget, icon: QIcon):
             idx = self.tab_wallets.indexOf(tab)
@@ -1024,7 +1084,7 @@ class MainWindow(QMainWindow):
         search_box = SearchWallets(
             lambda: list(self.qt_wallets.values()),
             signal_min=self.signals,
-            parent=self,
+            parent=self.tab_wallets,
         )
         qt_wallet.tabs.set_top_right_widget(search_box)
 

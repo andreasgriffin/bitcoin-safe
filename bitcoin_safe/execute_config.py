@@ -29,3 +29,4 @@
 
 USE_OS_libsecp256k1 = False
 DEFAULT_MAINNET = False
+ENABLE_THREADING = True

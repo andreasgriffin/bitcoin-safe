@@ -44,11 +44,11 @@ from bitcoin_safe.gui.qt.util import (
 from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
-    get_default_mempool_url,
     get_default_port,
     get_description,
     get_electrum_configs,
     get_esplora_urls,
+    get_mempool_url,
 )
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType, bdk
 from bitcoin_safe.signals import Signals
@@ -340,7 +340,7 @@ class NetworkSettingsUI(QDialog):
         self.groupbox_blockexplorer_layout = QVBoxLayout(self.groupbox_blockexplorer)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
-            suggestions={network: [get_default_mempool_url(network)] for network in bdk.Network},
+            suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
         )
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self.layout.addWidget(self.groupbox_blockexplorer)
@@ -365,8 +365,8 @@ class NetworkSettingsUI(QDialog):
         self.server_type_comboBox.currentIndexChanged.connect(self.set_server_type_comboBox)
         self.cbf_server_typeComboBox.currentIndexChanged.connect(self.enableIPPortLineEdit)
 
-        self.network = network
-        self.set_ui(self.network_config)
+        self.original_network = network
+        self.set_ui(network_configs.configs[network.name])
 
         self._edits_set_network(self.network)
         if self.signals:
@@ -401,14 +401,6 @@ class NetworkSettingsUI(QDialog):
             return
         logger.debug(f"set use_ssl = {use_ssl}")
         self.electrum_use_ssl = use_ssl
-
-    @property
-    def network_config(self) -> NetworkConfig:
-        return self.network_configs.configs[self.network.name]
-
-    @network_config.setter
-    def network_config(self, value: NetworkConfig):
-        self.network_configs.configs[self.network.name] = value
 
     def test_connection(self):
         network_config = self.get_network_settings_from_ui()
@@ -468,13 +460,13 @@ class NetworkSettingsUI(QDialog):
 
         self.add_to_completer_memory()
 
-        self.network_config = self.get_network_settings_from_ui()
+        self.network_configs.configs[self.network.name] = self.get_network_settings_from_ui()
 
         self.close()
         self.signal_apply_and_restart.emit(f"--network {new_network.name.lower()}")
 
     def on_cancel_click(self):
-        self.set_ui(self.network_config)
+        self.set_ui(self.network_configs.configs[self.original_network.name])
         self.signal_cancel.emit()
         self.close()
 
@@ -585,7 +577,7 @@ class NetworkSettingsUI(QDialog):
         try:
             return int(self.compactblockfilters_port_edit.text())
         except:
-            return self.network_config.compactblockfilters_port
+            return self.network_configs.configs[self.network.name].compactblockfilters_port
 
     @compactblockfilters_port.setter
     def compactblockfilters_port(self, port):
@@ -632,7 +624,7 @@ class NetworkSettingsUI(QDialog):
         try:
             return int(self.rpc_port_edit.text())
         except:
-            return self.network_config.rpc_port
+            return self.network_configs.configs[self.network.name].rpc_port
 
     @rpc_port.setter
     def rpc_port(self, port: int):

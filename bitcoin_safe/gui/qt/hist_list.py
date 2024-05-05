@@ -701,10 +701,11 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
         self.sync_button.clicked.connect(self.hist_list.signals.request_manual_sync.emit)
         self.toolbar.insertWidget(0, self.sync_button)
+        self.hist_list.signals.language_switch.connect(self.updateUi)
+        self.hist_list.signals.utxos_updated.connect(self.updateUi)
 
-    def update(self):
-        super().update()
-
+    def updateUi(self):
+        super().updateUi()
         if self.balance_label:
             balance = Satoshis(self.hist_list.balance, self.config.network)
             self.balance_label.setText(balance.format_as_balance())

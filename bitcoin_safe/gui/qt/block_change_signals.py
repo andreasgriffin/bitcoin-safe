@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import List, Set
+from typing import List, Optional, Set
 
 from PyQt6.QtWidgets import QTabWidget, QWidget
 
@@ -38,6 +38,12 @@ logger = logging.getLogger(__name__)
 class BlockChangesSignals:
     def __init__(self, widgets: List[QWidget]) -> None:
         self.widgets: List[QWidget] = widgets
+        self.all_widgets: Optional[Set[QWidget]] = None
+
+    def fill_widget_list(self) -> Set[QWidget]:
+        res = self.collect_all_widgets()
+        self.all_widgets = res
+        return res
 
     def _collect_sub_widget(self, widget: QWidget) -> List[QWidget]:
         """Recursively collect all widgets in a given layout."""
@@ -59,7 +65,7 @@ class BlockChangesSignals:
                 widgets += self._collect_sub_widget(tab_page)
         return widgets
 
-    def all_widgets(self) -> Set[QWidget]:
+    def collect_all_widgets(self) -> Set[QWidget]:
         l = []
         for widget in self.widgets:
             l += self._collect_sub_widget(widget)
@@ -68,9 +74,15 @@ class BlockChangesSignals:
         return set(l)
 
     def __enter__(self):
-        for widget in self.all_widgets():
+        if self.all_widgets is None:
+            self.all_widgets = self.fill_widget_list()
+
+        for widget in self.all_widgets:
             widget.blockSignals(True)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        for widget in self.all_widgets():
+        if self.all_widgets is None:
+            self.all_widgets = self.fill_widget_list()
+
+        for widget in self.all_widgets:
             widget.blockSignals(False)

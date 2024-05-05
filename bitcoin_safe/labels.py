@@ -34,8 +34,10 @@ from bitcoin_safe.util import jsonlines_to_list_of_dict, list_of_dict_to_jsonlin
 
 logger = logging.getLogger(__name__)
 import copy
+import json
 from typing import Any, Dict, List, Literal, Union
 
+from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from packaging import version
 
 from .pythonbdk_types import *
@@ -297,6 +299,25 @@ class Labels(BaseSaveableClass):
         labels = [self._bip329_dict_to_label(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
+    def import_electrum_wallet_json(
+        self,
+        file_content: str,
+        network: bdk.Network,
+        fill_categories=True,
+        timestamp: Union[Literal["now"], float] = "now",
+    ) -> Dict[str, Label]:
+        electrum_dict = json.loads(file_content)
+        list_of_dict = []
+        for key, label in electrum_dict.items():
+            data = Data.from_str(key, network)
+            data_type = "addr"
+            if data.data_type == DataType.Txid:
+                data_type = "tx"
+            list_of_dict.append({"type": data_type, "ref": key, "label": label})
+
+        labels = [self._bip329_dict_to_label(d, timestamp=timestamp) for d in list_of_dict]
+        return self.import_labels(labels=labels, fill_categories=fill_categories)
+
     def _do_overwrite(self, new_label: Label, old_label: Optional[Label]) -> bool:
         if not old_label:
             return True
@@ -338,6 +359,7 @@ class Labels(BaseSaveableClass):
         for key, item in list(self.data.items()):
             if item.category and item.category == old_category:
                 item.category = new_category
+                item.timestamp = datetime.now().timestamp()
                 affected_keys.append(key)
 
         if old_category in self.categories:
@@ -351,7 +373,8 @@ class Labels(BaseSaveableClass):
         for key, item in list(self.data.items()):
             if item.category and item.category == category:
                 affected_keys.append(key)
-                item.category = None
+                item.category = self.get_default_category()
+                item.timestamp = datetime.now().timestamp()
 
         if category in self.categories:
             idx = self.categories.index(category)

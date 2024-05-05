@@ -35,8 +35,8 @@ from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
+from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
-from bitcoin_safe.gui.qt.mytabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.keystore import KeyStore
 

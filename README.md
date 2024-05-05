@@ -18,7 +18,7 @@
     - Label synchronization between trusted devices (via nostr)
   - **Multi-Language**: 
     - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, (more upon request)
-- **Fast**: Electrum server andnd upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
+- **Fast**: Electrum server and upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
 - **Secure**: No seed generation or storage (on mainnet). 
   - A hardware signer/signing device for safe seed storage is needed (storing seeds on a computer is reckless)
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
@@ -70,6 +70,18 @@
 ##### Label Synchronization with trusted devices
 
 ![label-sync.gif](docs/label-sync.gif)
+
+#### More features
+
+* Import export
+  
+  * csv export of every list
+  
+  * Label import and export in [BIP329](https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki) 
+  
+  * Label import of Electrum wallet
+
+* 
 
 #### Goals (for the 2.0 Release)
 
@@ -141,12 +153,7 @@ nigiri rpc generatetoaddress 1 bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0d
 nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0.01
 ```
 
-* 
-
-
-
-
-## Installation from PyPi
+* ## Installation from PyPi
 
 ### Ubuntu, Debian, Windows
 

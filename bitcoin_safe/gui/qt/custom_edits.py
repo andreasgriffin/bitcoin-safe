@@ -132,6 +132,9 @@ class QCompleterLineEdit(QLineEdit):
         self.suggestions = suggestions if suggestions else {network: [] for network in bdk.Network}
         self.network = network  # Set the initial network
         self._completer = QCompleter(self.suggestions[self.network], self)
+        self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
+        self._completer.setFilterMode(Qt.MatchFlag.MatchContains)
+        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.setCompleter(self._completer)
 
     def set_network(self, network):

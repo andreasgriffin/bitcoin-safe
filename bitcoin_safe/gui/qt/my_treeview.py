@@ -354,6 +354,9 @@ class MyTreeView(QTreeView):
         self.setDefaultDropAction(Qt.DropAction.CopyAction)
         self.setDragEnabled(True)  # this must be after the other drag toggles
 
+    def updateUi(self):
+        pass
+
     def startDrag(self, action: Qt.DropAction):
         indexes = self.selectedIndexes()
         if indexes:
@@ -873,6 +876,10 @@ class TreeViewWithToolbar(SearchableTab):
 
         # signals
         self.searchable_list.signal_update.connect(self.update)
+        # in searchable_list signal_update will be sent after the update. and since this
+        # is relevant for the balance to show, i need to update also the balance label
+        # which is done in updateUi
+        self.searchable_list.signal_update.connect(self.updateUi)
 
     def create_layout(self):
         self.setLayout(QVBoxLayout())
@@ -919,7 +926,6 @@ class TreeViewWithToolbar(SearchableTab):
     def toggle_toolbar(self, config=None):
         self.show_toolbar(not self.toolbar_is_visible, config)
 
-    def update(self):
-        super().update()
+    def updateUi(self):
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))

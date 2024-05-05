@@ -49,13 +49,14 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab, TreeViewWithToolbar
-from bitcoin_safe.gui.qt.mytabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.threading_manager import NoThread, TaskThread
 
 from ...config import UserConfig
+from ...execute_config import ENABLE_THREADING
 from ...mempool import MempoolData
 from ...signals import SignalFunction, Signals, UpdateFilter
 from ...tx import TxUiInfos
@@ -223,7 +224,8 @@ class QTWallet(QtWalletBase):
         self.fx = fx
         self._file_path: Optional[str] = None
         self.sync_status: SyncStatus = SyncStatus.unknown
-        self.timer = QTimer()
+        self.timer_sync_retry = QTimer()
+        self.timer_sync_regularly = QTimer()
 
         ########### create tabs
         (
@@ -269,6 +271,7 @@ class QTWallet(QtWalletBase):
         self.signals.language_switch.connect(self.updateUi)
 
         self._start_sync_retry_timer()
+        self._start_sync_regularly_timer()
 
     def updateUi(self):
         self.tabs.setTabText(self.tabs.indexOf(self.send_tab), self.tr("Send"))
@@ -278,17 +281,32 @@ class QTWallet(QtWalletBase):
         self.tabs.setTabText(self.tabs.indexOf(self.addresses_tab), self.tr("Receive"))
 
     def stop_sync_timer(self):
-        self.timer.stop()
+        self.timer_sync_retry.stop()
 
     def close(self):
         self.disconnect_signals()
         self.sync_tab.unsubscribe_all()
         self.stop_sync_timer()
 
-    def _start_sync_retry_timer(self, delay_retry_sync=30):
-        if self.timer.isActive():
+    def _start_sync_regularly_timer(self, delay_retry_sync=60):
+        if self.timer_sync_regularly.isActive():
             return
-        self.timer.setInterval(delay_retry_sync * 1000)
+        self.timer_sync_regularly.setInterval(delay_retry_sync * 1000)
+
+        def sync():
+            if self.sync_status not in [SyncStatus.synced]:
+                return
+
+            logger.info(f"Regular update: Sync wallet {self.wallet.id} again")
+            self.sync()
+
+        self.timer_sync_regularly.timeout.connect(sync)
+        self.timer_sync_regularly.start()
+
+    def _start_sync_retry_timer(self, delay_retry_sync=30):
+        if self.timer_sync_retry.isActive():
+            return
+        self.timer_sync_retry.setInterval(delay_retry_sync * 1000)
 
         def sync_if_needed():
             if self.sync_status in [SyncStatus.syncing, SyncStatus.synced]:
@@ -297,8 +315,8 @@ class QTWallet(QtWalletBase):
             logger.info(f"Retry timer: Try syncing wallet {self.wallet.id}")
             self.sync()
 
-        self.timer.timeout.connect(sync_if_needed)
-        self.timer.start()
+        self.timer_sync_retry.timeout.connect(sync_if_needed)
+        self.timer_sync_retry.start()
 
     def get_mn_tuple(self) -> Tuple[int, int]:
         return self.wallet.get_mn_tuple()
@@ -506,7 +524,7 @@ class QTWallet(QtWalletBase):
         self.wallet_descriptor_ui.protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
-    def refresh_caches_and_ui_lists(self, threaded=False):
+    def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
         self.wallet.clear_cache()
@@ -818,7 +836,11 @@ class QTWallet(QtWalletBase):
 
         logger.info(f"Start syncing wallet {self.wallet.id}")
         self.set_sync_status(SyncStatus.syncing)
-        TaskThread(self, signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+
+        if ENABLE_THREADING:
+            TaskThread(self, signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+        else:
+            NoThread(self).add_and_start(do, on_success, on_done, on_error)
 
     def export_wallet_for_coldcard(self):
         filename = save_file_dialog(

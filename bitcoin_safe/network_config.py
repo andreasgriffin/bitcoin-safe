@@ -48,12 +48,17 @@ MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 
 
-def get_default_mempool_url(network: bdk.Network) -> str:
+def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
     d = {
-        bdk.Network.BITCOIN: "https://mempool.space/",
-        bdk.Network.REGTEST: "http://localhost:8080/",  # you can use https://github.com/ngutech21/nigiri-mempool/
-        bdk.Network.TESTNET: "https://mempool.space/testnet/",
-        bdk.Network.SIGNET: "https://mutinynet.com",
+        bdk.Network.BITCOIN: {
+            "default": "https://mempool.space/",
+            "umbrel": "http://umbrel.local:3006",
+        },
+        bdk.Network.REGTEST: {
+            "default": "http://localhost:8080/"
+        },  # you can use https://github.com/ngutech21/nigiri-mempool/
+        bdk.Network.TESTNET: {"default": "https://mempool.space/testnet/"},
+        bdk.Network.SIGNET: {"default": "https://mutinynet.com"},
     }
     return d[network]
 
@@ -70,6 +75,7 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
             # "default": ElectrumConfig("mempool.space:50002", True),
             "default": ElectrumConfig("electrum.blockstream.info:50002", True),
             "blockstream": ElectrumConfig("electrum.blockstream.info:50002", True),
+            "umbrel": ElectrumConfig("umbrel.local:50001", False),
             "localhost": ElectrumConfig("127.0.0.1:50001", False),
         },
         bdk.Network.REGTEST: {
@@ -271,7 +277,7 @@ class NetworkConfig(BaseSaveableClass):
 
         self.esplora_url: str = get_esplora_urls(network)["default"]
 
-        self.mempool_url: str = get_default_mempool_url(network)
+        self.mempool_url: str = get_mempool_url(network)["default"]
 
     def dump(self):
         d = super().dump()

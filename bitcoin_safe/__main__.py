@@ -8,9 +8,7 @@ from .logging_setup import setup_logging  # type: ignore
 ensure_pyzbar_works()
 
 import argparse
-import cProfile
 import sys
-from pstats import Stats
 
 from PyQt6.QtWidgets import QApplication
 
@@ -43,6 +41,10 @@ if __name__ == "__main__":
     args = parse_args()
 
     if args.profile:
+        import cProfile
+        import os
+        from pstats import Stats
+
         with cProfile.Profile() as pr:
             main()
 
@@ -52,9 +54,7 @@ if __name__ == "__main__":
             stats.strip_dirs()
             stats.sort_stats("time")
             stats.dump_stats(".prof_stats")
-            stats.print_stats()
-            import os
-
             os.system("snakeviz .prof_stats & ")
+            # os.system("pyprof2calltree -i .prof_stats -k & ")
     else:
         main()

@@ -414,12 +414,21 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
         self.utxo_list = utxo_list
         self.utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
         self.create_layout()
+        self.utxo_list.signals.language_switch.connect(self.updateUi)
+        self.utxo_list.signals.utxos_updated.connect(self.updateUi)
+
+    def updateUi(self):
+        super().updateUi()
+
+        self.update_labels()
 
     def update_labels(self):
         try:
             amount = sum(self.utxo_list.get_selected_values())
             self.uxto_selected_label.setText(
-                f"{Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit()} selected"
+                self.tr("{amount} selected").format(
+                    amount=Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit()
+                )
             )
         except:
             self.uxto_selected_label.setText(f"")

@@ -32,16 +32,8 @@ import random
 import sys
 
 import numpy as np
-from PyQt6.QtCharts import (
-    QChart,
-    QChartView,
-    QDateTimeAxis,
-    QLineSeries,
-    QScatterSeries,
-    QValueAxis,
-)
+from PyQt6.QtCharts import QChart, QChartView, QDateTimeAxis, QLineSeries, QValueAxis
 from PyQt6.QtCore import QDateTime, QMargins, Qt, QTimer
-from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
 
 from bitcoin_safe.util import unit_str
@@ -163,6 +155,7 @@ class BalanceChart(QWidget):
 
         # Create Line series
         series = QLineSeries()
+
         for i, (timestamp, balance) in enumerate(balance_data[:-1]):
             next_timestamp, _ = balance_data[i + 1]
             series.append(
@@ -203,33 +196,33 @@ class BalanceChart(QWidget):
 
         print(f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}")
 
-        scatter_series = QScatterSeries()
-        for (timestamp, balance) in balance_data:
-            scatter_series.append(
-                QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
-                balance,
-            )
+        # scatter_series = QScatterSeries()
+        # for (timestamp, balance) in balance_data:
+        #     scatter_series.append(
+        #         QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
+        #         balance,
+        #     )
 
-        scatter_series = QScatterSeries()
-        for (timestamp, balance) in balance_data:
-            scatter_series.append(
-                QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
-                balance,
-            )
+        # scatter_series = QScatterSeries()
+        # for (timestamp, balance) in balance_data:
+        #     scatter_series.append(
+        #         QDateTime.fromSecsSinceEpoch(int(timestamp)).toMSecsSinceEpoch(),
+        #         balance,
+        #     )
 
-        # Set marker shape and size
-        scatter_series.setMarkerShape(QScatterSeries.MarkerShape.MarkerShapeCircle)
-        scatter_series.setMarkerSize(5)
+        # # Set marker shape and size
+        # scatter_series.setMarkerShape(QScatterSeries.MarkerShape.MarkerShapeCircle)
+        # scatter_series.setMarkerSize(5)
 
-        # Set marker color
-        border_color = QColor("#209fdf")  # Blue
-        brush_color = QColor("#209fdf")  # Semi-transparent blue
-        scatter_series.setPen(border_color)
-        scatter_series.setBrush(brush_color)
+        # # Set marker color
+        # border_color = QColor("#209fdf")  # Blue
+        # brush_color = QColor("#209fdf")  # Semi-transparent blue
+        # scatter_series.setPen(border_color)
+        # scatter_series.setBrush(brush_color)
 
-        self.chart.addSeries(scatter_series)
-        scatter_series.attachAxis(self.datetime_axis)
-        scatter_series.attachAxis(self.value_axis)
+        # self.chart.addSeries(scatter_series)
+        # scatter_series.attachAxis(self.datetime_axis)
+        # scatter_series.attachAxis(self.value_axis)
 
 
 class WalletBalanceChart(BalanceChart):

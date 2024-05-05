@@ -30,6 +30,7 @@
 import logging
 
 from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.html import html_f
 from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
@@ -358,7 +359,9 @@ class ConnectedDevices(QtWidgets.QWidget):
         self.group_untrusted.setTitle(self.tr("UnTrusted"))
 
     def set_title(self, my_key: PublicKey):
-        self.title_label.setText(self.tr("My id: {id}").format(id=short_key(my_key.to_bech32())))
+        self.title_label.setText(
+            html_f(self.tr("My id: {id}").format(id=short_key(my_key.to_bech32())), bf=True)
+        )
 
     def add_trusted_device(self, device: TrustedDevice):
         if self.trusted_devices.device_already_present(device.pub_key_bech32):

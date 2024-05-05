@@ -100,6 +100,30 @@ from .taglist import AddressDragInfo
 from .util import ColorScheme, do_copy, read_QIcon, sort_id_to_icon, webopen
 
 
+class ImportMenu:
+    def __init__(self, upper_menu: QMenu, wallet: Wallet, signals: Signals) -> None:
+        self.signals = signals
+        self.wallet = wallet
+        self.import_label_menu = upper_menu.addMenu(
+            "",
+        )
+
+        self.action_bip329 = self.import_label_menu.addAction(
+            "",
+            lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
+        )
+        self.action_electrum = self.import_label_menu.addAction(
+            "",
+            lambda: self.signals.import_electrum_wallet_labels.emit(self.wallet.id),
+        )
+        self.updateUi()
+
+    def updateUi(self):
+        self.import_label_menu.setTitle(translate("menu", "Import Labels"))
+        self.action_bip329.setText(translate("menu", "Import Labels (BIP329 / Sparrow)"))
+        self.action_electrum.setText(translate("menu", "Import Labels (Electrum Wallet)"))
+
+
 class AddressUsageStateFilter(IntEnum):
     ALL = 0
     UNUSED = 1
@@ -185,10 +209,13 @@ class AddressList(MyTreeView):
         self.setModel(self.proxy)
         self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
         self.update()
+        self.updateUi()
+
+        # signals
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
-        self.signals.language_switch.connect(self.update)
+        self.signals.language_switch.connect(self.updateUi)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         # handle dropped files
@@ -494,10 +521,7 @@ class AddressList(MyTreeView):
             self.tr("Export Labels"),
             lambda: self.signals.export_bip329_labels.emit(self.wallet.id),
         )
-        menu.addAction(
-            self.tr("Import Labels"),
-            lambda: self.signals.import_bip329_labels.emit(self.wallet.id),
-        )
+        self.import_label_menu = ImportMenu(menu, wallet=self.wallet, signals=self.signals)
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
         menu.exec(self.viewport().mapToGlobal(position))
@@ -541,11 +565,15 @@ class AddressListWithToolbar(TreeViewWithToolbar):
 
         self.create_layout()
 
-    def update(self):
-        super().update()
+        self.address_list.signals.language_switch.connect(self.updateUi)
+        self.address_list.signals.utxos_updated.connect(self.updateUi)
+
+    def updateUi(self):
+        super().updateUi()
+
         self.action_show_filter.setText(self.tr("Show Filter"))
         self.action_export_labels.setText(self.tr("Export Labels"))
-        self.action_import_labels.setText(self.tr("Import Labels"))
+        self.menu_import_labels.updateUi()
 
         if self.balance_label:
             balance = self.address_list.wallet.get_balance()
@@ -564,9 +592,9 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             "",
             lambda: self.address_list.signals.export_bip329_labels.emit(self.address_list.wallet.id),
         )
-        self.action_import_labels = self.menu.addAction(
-            "",
-            lambda: self.address_list.signals.import_bip329_labels.emit(self.address_list.wallet.id),
+
+        self.menu_import_labels = ImportMenu(
+            self.menu, wallet=self.address_list.wallet, signals=self.address_list.signals
         )
 
         if (

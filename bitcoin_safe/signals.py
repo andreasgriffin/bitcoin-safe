@@ -179,6 +179,7 @@ class Signals(SignalsMin):
     show_network_settings = pyqtSignal()
     export_bip329_labels = pyqtSignal(str)  # str= wallet_id
     import_bip329_labels = pyqtSignal(str)  # str= wallet_id
+    import_electrum_wallet_labels = pyqtSignal(str)  # str= wallet_id
     open_wallet = pyqtSignal(str)  # str= filepath
     finished_open_wallet = pyqtSignal(str)  # str= wallet_id
 

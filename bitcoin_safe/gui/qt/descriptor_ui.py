@@ -82,8 +82,7 @@ class DescriptorUI(QObject):
 
         self.create_wallet_type_and_descriptor()
 
-        with BlockChangesSignals([self.tab]):
-            self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
+        self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
 
         self.edit_descriptor.signal_change.connect(self.on_descriptor_change)
 
@@ -149,8 +148,8 @@ class DescriptorUI(QObject):
             self.set_protowallet_from_descriptor_str(new_value)
             logger.info(f"Successfully set protwallet from descriptor {new_value}")
 
-            self.keystore_uis.set_keystore_ui_from_protowallet()
             self.set_wallet_ui_from_protowallet()
+            self.keystore_uis.set_keystore_ui_from_protowallet()
             self.disable_fields()
         except:
             logger.info(f"Invalid descriptor {new_value}")
@@ -180,6 +179,7 @@ class DescriptorUI(QObject):
     def set_wallet_ui_from_protowallet(self):
         with BlockChangesSignals([self.tab]):
             logger.debug(f"{self.__class__.__name__} set_wallet_ui_from_protowallet")
+            self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
             self.comboBox_address_type.setCurrentText(self.protowallet.address_type.name)
             self.spin_req.setMinimum(1)
             self.spin_req.setMaximum(len(self.protowallet.keystores))
@@ -206,7 +206,6 @@ class DescriptorUI(QObject):
                 self.spin_req.setToolTip(f"A single signing device can sign outgoing transactions.")
 
             self.spin_gap.setValue(self.protowallet.gap)
-        assert len(self.protowallet.keystores) == len(self.keystore_uis)
 
     def set_all_ui_from_protowallet(self):
         """Updates the 3 parts.

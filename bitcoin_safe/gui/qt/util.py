@@ -770,3 +770,10 @@ def clear_layout(layout: QLayout):
         else:
             # item might be a layout itself
             clear_layout(item.layout())
+
+
+def delayed_execution(f, parent, delay=10):
+    timer = QTimer(parent)
+    timer.setSingleShot(True)  # Make sure the timer runs only once
+    timer.timeout.connect(f)  # Connect the timeout signal to the function
+    timer.start(delay)

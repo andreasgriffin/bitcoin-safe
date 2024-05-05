@@ -56,6 +56,7 @@ class LabelSyncer:
         self.nostr_sync.signal_label_bip329_received.connect(self.on_nostr_label_bip329_received)
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
         self.signals.labels_updated.connect(self.on_labels_updated)
+        self.signals.category_updated.connect(self.on_labels_updated)
 
         # store sent UpdateFilters to prevent recursive behavior
         self.sent_update_filter: deque = deque(maxlen=1000)
@@ -114,10 +115,15 @@ class LabelSyncer:
         if update_filter in self.sent_update_filter:
             logger.debug("on_labels_updated: Do nothing because update_filter was sent from here.")
             return
+        if update_filter.refresh_all:
+            logger.debug("on_labels_updated: Do nothing on refresh_all.")
+            return
 
         logger.info(f"on_labels_updated {update_filter}")
 
         refs = list(update_filter.addresses) + list(update_filter.txids)
+        if not refs:
+            return
 
         bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
         self.nostr_sync.group_chat.send(
