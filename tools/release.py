@@ -38,6 +38,19 @@ from typing import Any, Dict, List, Optional, Tuple
 import requests
 
 
+def get_default_description(latest_tag: str):
+    return f"""
+
+**Verify signature**
+
+Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and verify the signature with:
+```
+gpg import 2759AA7148568ECCB03B76301D82124B440F612D.asc
+gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
+```
+"""
+
+
 def run_pytest() -> None:
     """
     Run pytest to execute all unit tests in the project.
@@ -161,7 +174,7 @@ def main() -> None:
 
     if get_input_with_default("Are these the correct files to upload? (y/n): ", "y").lower() == "y":
         release_name = get_input_with_default("Enter the release name", f"{latest_tag}")
-        body = get_input_with_default("Enter the release description")
+        body = get_default_description(latest_tag=latest_tag)
         draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
         prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"
 

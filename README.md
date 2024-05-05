@@ -71,17 +71,19 @@
 
 ![label-sync.gif](docs/label-sync.gif)
 
+
+##### Easy search across wallets
+
+![screenshot0](docs/global-search.gif)
+
+
 #### More features
 
 * Import export
-  
   * csv export of every list
-  
   * Label import and export in [BIP329](https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki) 
-  
   * Label import of Electrum wallet
-
-* 
+ 
 
 #### Goals (for the 2.0 Release)
 
