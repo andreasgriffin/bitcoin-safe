@@ -56,12 +56,12 @@ class GPGKey:
         import re
 
         # try with - separator
-        match = re.search(r"(.*?)-(\d+\.\d+\.\d+)", filename)
+        match = re.search(r"(.*?)-([\d\.]+[a-zA-Z0-9]*)-", filename)
         if match:
             return (match.group(1), match.group(2))
 
         # try with _ separator
-        match = re.search(r"(.*?)_(\d+\.\d+\.\d+)", filename)
+        match = re.search(r"(.*?)_([\d\.]+[a-zA-Z0-9]*)_", filename)
         if match:
             return (match.group(1), match.group(2))
         return (None, None)
@@ -117,6 +117,7 @@ class SignatureVerifyer:
     ) -> None:
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
         self._gpg = None
+        self.import_known_keys()
 
     @staticmethod
     def _get_gpg_path() -> Optional[str]:
@@ -171,7 +172,6 @@ class SignatureVerifyer:
             raise EnvironmentError("GnuPG is not installed on this system.")
 
     def import_known_keys(self) -> None:
-        self.gpg()
         for key in self.list_of_known_keys:
             self.gpg.import_keys(key.key)
 

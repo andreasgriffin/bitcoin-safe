@@ -43,7 +43,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.threading_manager import TaskThread
 
 from ... import __version__
-from ...html import link
+from ...html import html_f, link
 from ...signals import SignalsMin
 from ...signature_manager import (
     Asset,
@@ -112,9 +112,16 @@ class UpdateNotificationBar(NotificationBar):
         self.download_container.setVisible(bool(self.assets))
         if self.assets:
             if self.is_new_version_available():
-                self.textLabel.setText(self.tr("New version available {tag}").format(self.get_asset_tag()))
+                self.textLabel.setText(
+                    self.tr("New version available {tag}").format(tag=self.get_asset_tag())
+                )
                 self.optionalButton.setVisible(False)
                 self.setVisible(True)
+
+                for asset in self.assets:
+                    downloader = Downloader(url=asset.url, destination_dir=tempfile.gettempdir())
+                    downloader.finished.connect(self.on_download_finished)
+                    self.download_container.layout().addWidget(downloader)
             else:
                 self.textLabel.setText(self.tr("You have already the newest version."))
                 self.optionalButton.setVisible(True)
@@ -122,38 +129,48 @@ class UpdateNotificationBar(NotificationBar):
             self.textLabel.setText(self.tr("No update found"))
             self.optionalButton.setVisible(True)
 
-        for asset in self.assets:
-            downloader = Downloader(url=asset.url, destination_dir=tempfile.gettempdir())
-            downloader.finished.connect(self.on_download_finished)
-            self.download_container.layout().addWidget(downloader)
-
     def on_download_finished(self, download_thread: DownloadThread):
         sig_file_path = self.verifyer.get_signature_from_web(download_thread.filename)
+        if not sig_file_path:
+            Message(self.tr("Could not verify the download. Please try again later."))
+            self.refresh()
+            self.setVisible(False)
+            return
+
+        if not self.verifyer.is_gnupg_installed():
+            if platform.system() == "Windows":
+                txt = self.tr(
+                    """Please install  {link} to automatically verify the signature of the update."""
+                ).format(link=link("https://www.gpg4win.org"))
+            elif platform.system() == "Linux":
+                txt = self.tr(
+                    """Please install  GPG via "sudo apt-get -y install gpg" to automatically verify the signature of the update."""
+                )
+            elif platform.system() == "Darwin":
+                txt = self.tr(
+                    """Please install  GPG via "brew install gnupg" to automatically verify the signature of the update."""
+                )
+            Message(txt, type=MessageType.Error)
+
         destination = self.get_download_folder()
-        if (
-            not self.verifyer.is_gnupg_installed()
-            or sig_file_path
-            and self.verifyer.verify_signature(download_thread.filename, expected_public_key=self.key)
-        ):
+        was_signature_verified = None
+        if self.verifyer.is_gnupg_installed():
+            was_signature_verified = self.verifyer.verify_signature(
+                download_thread.filename, expected_public_key=self.key
+            )
+            if not was_signature_verified:
+                Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
+                self.refresh()
+                self.setVisible(False)
+                return
+            else:
+                self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
+
+        if not self.verifyer.is_gnupg_installed() or was_signature_verified:
             # overwrite the download_thread.filename so the show-button still works
             download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
             if sig_file_path:
                 self.move_and_overwrite(sig_file_path, destination)
-
-            if not self.verifyer.is_gnupg_installed():
-                if platform.system() == "Windows":
-                    txt = self.tr(
-                        """Please install  {link} to automatically verify the signature of the update."""
-                    ).format(link=link("https://www.gpg4win.org"))
-                elif platform.system() == "Linux":
-                    txt = self.tr(
-                        """Please install  GPG via "sudo apt-get -y install gpg" to automatically verify the signature of the update."""
-                    )
-                elif platform.system() == "Darwin":
-                    txt = self.tr(
-                        """Please install  GPG via "brew install gnupg" to automatically verify the signature of the update."""
-                    )
-                Message(txt, type=MessageType.Error)
 
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:

@@ -228,18 +228,22 @@ def pytest_bdk_setup_multisig(m=2, n=3, network=bdk.Network.REGTEST) -> PyTestBD
 
 
 def pytest_bdk_setup_single_sig(network=bdk.Network.REGTEST) -> PyTestBDKSetup:
-
+    logger.debug("pytest_bdk_setup_single_sig start")
     blockchain_config = get_blockchain_config(network=network)
+    logger.debug(f"blockchain_config = {blockchain_config}")
 
     blockchain = bdk.Blockchain(blockchain_config)
+    logger.debug(f"blockchain = {blockchain}")
 
     mnemonic = bdk.Mnemonic.from_string(test_seeds[0])
+    logger.debug(f"mnemonic = {mnemonic}")
 
     descriptor = bdk.Descriptor.new_bip84(
         secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
         keychain=bdk.KeychainKind.EXTERNAL,
         network=network,
     )
+    logger.debug(f"descriptor = {descriptor}")
 
     wallet = bdk.Wallet(
         descriptor=descriptor,
@@ -247,17 +251,20 @@ def pytest_bdk_setup_single_sig(network=bdk.Network.REGTEST) -> PyTestBDKSetup:
         network=network,
         database_config=bdk.DatabaseConfig.MEMORY(),
     )
+    logger.debug(f"wallet = {wallet}")
 
     return PyTestBDKSetup(network=network, blockchain=blockchain, descriptors=[descriptor], wallets=[wallet])
 
 
 @pytest.fixture
 def pytest_2_of_3_multisig_wallets() -> PyTestBDKSetup:
+    logger.debug("prepare fixture pytest_2_of_3_multisig_wallets")
     return pytest_bdk_setup_multisig(m=2, n=3, network=bdk.Network.REGTEST)
 
 
 @pytest.fixture
 def pytest_siglesig_wallet() -> PyTestBDKSetup:
+    logger.debug("prepare fixture pytest_siglesig_wallet")
     return pytest_bdk_setup_single_sig(network=bdk.Network.REGTEST)
 
 

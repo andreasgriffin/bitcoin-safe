@@ -83,11 +83,11 @@ class Downloader(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Download Progress")
+        self.setWindowTitle(self.tr("Download Progress"))
         self.layout = QVBoxLayout()
 
         # Use the filename in the button text
-        self.startButton = QPushButton(f"Download {self.filename}")
+        self.startButton = QPushButton(self.tr("Download {}").format(self.filename))
         download_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DriveNetIcon)
         self.startButton.setIcon(download_icon)
         self.startButton.clicked.connect(self.startDownload)
@@ -99,7 +99,7 @@ class Downloader(QWidget):
         self.progress.hide()
 
         # Use the filename in the button text
-        self.showFileButton = QPushButton(f"Show {self.filename} in Folder")
+        self.showFileButton = QPushButton(self.tr("Show {} in Folder").format(self.filename))
         open_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
         self.showFileButton.setIcon(open_icon)
         self.showFileButton.clicked.connect(self.showFile)

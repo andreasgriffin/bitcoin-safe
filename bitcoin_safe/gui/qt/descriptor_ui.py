@@ -240,10 +240,17 @@ class DescriptorUI(QObject):
     def get_address_type_from_ui(self) -> AddressType:
         address_types = get_address_types(self.protowallet.is_multisig())
 
-        address_type = address_types[self.comboBox_address_type.currentIndex()]
+        # sanity check
+        assert (
+            self.comboBox_address_type.currentText()
+            == address_types[self.comboBox_address_type.currentIndex()].name
+        )
+        assert (
+            self.comboBox_address_type.currentData()
+            == address_types[self.comboBox_address_type.currentIndex()]
+        )
 
-        assert address_type.name == self.comboBox_address_type.currentText()
-        return address_type
+        return self.comboBox_address_type.currentData()
 
     def get_m_of_n_from_ui(self) -> Tuple[int, int]:
         return (self.spin_req.value(), self.spin_signers.value())
@@ -289,16 +296,18 @@ class DescriptorUI(QObject):
             address_type_names = [a.name for a in address_types]
 
             # Get the current items in the combo box
-            current_items = [
+            current_names = [
                 self.comboBox_address_type.itemText(i) for i in range(self.comboBox_address_type.count())
             ]
 
             # Check if the new list is different from the current items
-            if address_type_names != current_items:
+            if address_type_names != current_names:
 
                 # Clear and update the combo box
                 self.comboBox_address_type.clear()
-                self.comboBox_address_type.addItems(address_type_names)
+                for address_type in address_types:
+                    self.comboBox_address_type.addItem(address_type.name, userData=address_type)
+
                 default_address_type = get_default_address_type(is_multisig).name
                 if default_address_type in address_type_names:
                     self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
@@ -322,6 +331,7 @@ class DescriptorUI(QObject):
         self.label_signers = QLabel()
 
         self.spin_req = QSpinBox()
+        self.spin_req.setObjectName("spin_req")
         self.spin_req.setMinimum(1)
         self.spin_req.setMaximum(10)
 
@@ -330,6 +340,7 @@ class DescriptorUI(QObject):
         self.label_of.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.spin_signers = QSpinBox()
+        self.spin_signers.setObjectName("spin_signers")
         self.spin_signers.setMinimum(1)
         self.spin_signers.setMaximum(10)
 

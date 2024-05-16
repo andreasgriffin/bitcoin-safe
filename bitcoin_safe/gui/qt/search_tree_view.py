@@ -138,9 +138,10 @@ def demo_on_click(item: ResultItem):
 
 
 class CustomTreeView(QTreeView):
-    def __init__(self, parent=None, on_click=None):
+    def __init__(self, parent=None, on_click=None, on_double_click=None):
         super().__init__(parent)
         self.on_click = on_click
+        self.on_double_click = on_double_click
         self.setModel(QStandardItemModel())
 
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)  # Vertical scrollbar
@@ -161,6 +162,7 @@ class CustomTreeView(QTreeView):
 
         # Connect the clicked signal to the callback function
         self.clicked.connect(self.handle_item_clicked)
+        self.doubleClicked.connect(self.handle_item_double_clicked)
 
     def model(self) -> QStandardItemModel:
         return super().model()
@@ -189,9 +191,21 @@ class CustomTreeView(QTreeView):
         if self.on_click and index.isValid():
             # Retrieve the item from the model
             item = self.model().itemFromIndex(index)
+            if not item:
+                return
             # Perform the action you want based on the clicked item
             # For example, call a custom method of the item (if your item class has one)
             self.on_click(item.result_item)
+
+    def handle_item_double_clicked(self, index: QModelIndex):
+        if self.on_double_click and index.isValid():
+            # Retrieve the item from the model
+            item = self.model().itemFromIndex(index)
+            if not item:
+                return
+            # Perform the action you want based on the clicked item
+            # For example, call a custom method of the item (if your item class has one)
+            self.on_double_click(item.result_item)
 
 
 class CustomPopup(QFrame):
@@ -238,7 +252,7 @@ class SearchTreeView(QWidget):
 
         self.popup = CustomPopup(self)
 
-        self.tree_view = CustomTreeView(self, on_click=on_click)
+        self.tree_view = CustomTreeView(self, on_click=on_click, on_double_click=self.on_double_click)
         self.tree_view.setVisible(False)
         if results_in_popup:
             self.popup.layout().addWidget(self.tree_view)
@@ -253,6 +267,10 @@ class SearchTreeView(QWidget):
         self.updateUi()
         # Install event filter on the main window
         self.window().installEventFilter(self)
+
+    def on_double_click(self, result_item: ResultItem):
+        "Here is what is done on the 2. click of a double click"
+        self.popup.hide()
 
     def updateUi(self):
         self.search_field.setPlaceholderText(translate("mytreeview", "Type to search..."))

@@ -30,6 +30,7 @@
 import argparse
 import csv
 import logging
+import operator
 import os
 import platform
 import shlex
@@ -37,7 +38,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from subprocess import CompletedProcess
-from typing import List, Literal
+from typing import List, Literal, Tuple, Union
 
 import toml
 
@@ -81,6 +82,37 @@ class TranslationHandler:
     def _ts_file(self, language: str) -> Path:
         return self.ts_folder / f"{self.prefix}_{language}.ts"
 
+    @staticmethod
+    def sort_csv(input_file: Path, output_file: Path, sort_columns: Union[Tuple[str, ...], List[str]]):
+        """
+        Sorts a CSV file by specified columns and writes the sorted data to another CSV file.
+
+        Parameters:
+            input_file (Path): The input CSV file path.
+            output_file (Path): The output CSV file path.
+            sort_columns (Tuple[str, ...]): A tuple of column names to sort the CSV data by (in priority order).
+        """
+        # Read the CSV file into a list of dictionaries
+        with open(str(input_file), mode="r", newline="", encoding="utf-8") as infile:
+            reader = csv.DictReader(infile)
+            rows = list(reader)
+
+        # Validate that all sort columns are in the fieldnames
+        fieldnames = reader.fieldnames
+        assert fieldnames
+        for col in sort_columns:
+            if col not in fieldnames:
+                raise ValueError(f"Column '{col}' not found in CSV file")
+
+        # Sort the rows by the specified columns (in priority order)
+        sorted_rows = sorted(rows, key=operator.itemgetter(*sort_columns))
+
+        # Write the sorted data to the output CSV file
+        with open(str(output_file), mode="w", newline="", encoding="utf-8") as outfile:
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
+            writer.writeheader()
+            writer.writerows(sorted_rows)
+
     def update_translations_from_py(self):
         for language in self.languages:
             ts_file = self._ts_file(language)
@@ -89,10 +121,17 @@ class TranslationHandler:
             )  # -no-obsolete
             run_local(f"ts2po {ts_file}  -o {ts_file.with_suffix('.po')}")
             run_local(f"po2csv {ts_file.with_suffix('.po')}  -o {ts_file.with_suffix('.csv')}")
+            self.sort_csv(
+                ts_file.with_suffix(".csv"),
+                ts_file.with_suffix(".csv"),
+                sort_columns=["target", "location", "source"],
+            )
+
         self.delete_po_files()
         self.compile()
 
-    def quote_csv(self, input_file, output_file):
+    @staticmethod
+    def quote_csv(input_file, output_file):
         # Read the CSV content from the input file
         with open(input_file, newline="") as infile:
             reader = csv.reader(infile)
@@ -108,7 +147,11 @@ class TranslationHandler:
             ts_file = self._ts_file(language)
 
             # csv2po cannot handle partially quoted files
-            self.quote_csv(ts_file.with_suffix(".csv"), ts_file.with_suffix(".csv"))
+            self.sort_csv(
+                ts_file.with_suffix(".csv"),
+                ts_file.with_suffix(".csv"),
+                sort_columns=["location", "source", "target"],
+            )
             run_local(f"csv2po {ts_file.with_suffix('.csv')}  -o {ts_file.with_suffix('.po')}")
             run_local(f"po2ts {ts_file.with_suffix('.po')}  -o {ts_file}")
         self.delete_po_files()

@@ -41,7 +41,7 @@ import sys
 import zlib
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Set
 
 import bdkpython as bdk
 import cbor2
@@ -49,14 +49,17 @@ import requests
 from bitcoin_qrreader.bitcoin_qr import Data, DataType
 from nostr_sdk import (
     Client,
-    ClientSigner,
     Event,
     EventId,
     Filter,
     HandleNotification,
     Keys,
+    Kind,
+    KindEnum,
+    NostrSigner,
     PublicKey,
     Relay,
+    RelayMessage,
     RelayStatus,
     SecretKey,
     Timestamp,
@@ -417,7 +420,7 @@ def get_relays(nip: str = "4") -> List[str]:
 
 
 def get_recipient_public_key(event: Event) -> Optional[PublicKey]:
-    if event.kind() != 4:
+    if not event.kind().match_enum(KindEnum.ENCRYPTED_DIRECT_MESSAGE()):
         return None
     for tag in event.tags():
         tag_enum = tag.as_enum()
@@ -562,7 +565,7 @@ class NotificationHandler(HandleNotification):
         self.from_serialized = from_serialized
 
     def is_dm_for_me(self, event: Event) -> bool:
-        if event.kind() != 4:
+        if not event.kind().match_enum(KindEnum.ENCRYPTED_DIRECT_MESSAGE()):
             return False
         recipient_public_key = get_recipient_public_key(event)
         if not recipient_public_key:
@@ -600,14 +603,14 @@ class NotificationHandler(HandleNotification):
         logger.debug(f"Processed dm: {nostr_dm}")
 
     def dm_is_alreay_in_queue(self, dm: BaseDM) -> bool:
-        for item in self.queue:
+        for item in list(self.queue):
             if not isinstance(item, BaseDM):
                 continue
             if item == dm:
                 return True
         return False
 
-    def handle(self, relay_url: str, event: Event):
+    def handle(self, relay_url: str, subscription_id: str, event: Event):
         # logger.debug(f"Received new event from {relay_url}: {event.as_json()}")
         # logger.debug("Decrypting event")
         try:
@@ -615,7 +618,7 @@ class NotificationHandler(HandleNotification):
         except Exception as e:
             logger.error(f"Error during handle: {str(e)} of {relay_url}")
 
-    def handle_msg(self, relay_url, msg):
+    def handle_msg(self, relay_url: str, msg: RelayMessage):
         pass
         # logger.debug(f"Received direct message: {msg}")
 
@@ -642,11 +645,11 @@ class DmConnection(QObject):
         self.queue: deque[BaseDM] = deque(maxlen=10000)
         # self.events is used for replaying events from dump
         self.events: list[Event] = events if events else []
-        self.current_filter_dict: dict[str, Filter] = {}
+        self.current_subscription_dict: Dict[str, PublicKey] = {}  # subscription_id: PublicKey
         self.timer = QTimer()
 
         # Initialize the client with the private key
-        signer = ClientSigner.keys(self.keys)
+        signer = NostrSigner.keys(self.keys)
         self.client = Client(signer)
 
         self.notification_handler = NotificationHandler(
@@ -658,14 +661,14 @@ class DmConnection(QObject):
         )
         self.client.handle_notifications(self.notification_handler)
 
-    def get_currently_allowed(self):
-        allow_list = set(self.current_filter_dict.keys())
+    def get_currently_allowed(self) -> Set[str]:
+        allow_list = set([k.to_bech32() for k in self.current_subscription_dict.values()])
         allow_list.add(self.keys.public_key().to_bech32())
         allow_list.update(self.allow_list)
         return allow_list
 
     def public_key_was_published(self, public_key: PublicKey) -> bool:
-        for dm in self.queue:
+        for dm in list(self.queue):
             if isinstance(dm, ProtocolDM):
                 if dm.public_key_bech32 == public_key.to_bech32():
                     return True
@@ -689,12 +692,17 @@ class DmConnection(QObject):
             return None
 
     def _get_filter(self, recipient: PublicKey, author: PublicKey, start_time: datetime = None):
-        this_filter = Filter().pubkeys([recipient]).authors([author]).kind(4)
+        this_filter = (
+            Filter()
+            .pubkeys([recipient])
+            .authors([author])
+            .kind(Kind.from_enum(KindEnum.ENCRYPTED_DIRECT_MESSAGE()))
+        )
         if start_time:
             this_filter = this_filter.since(timestamp=Timestamp.from_secs(int(start_time.timestamp())))
         return this_filter
 
-    def _filters(self, author_public_keys: list[PublicKey], start_time: datetime = None) -> dict[str, Filter]:
+    def _filters(self, author_public_keys: List[PublicKey], start_time: datetime = None) -> dict[str, Filter]:
         recipient_public_key = self.keys.public_key()
         return {
             author_public_key.to_bech32(): self._get_filter(
@@ -705,31 +713,27 @@ class DmConnection(QObject):
             for author_public_key in author_public_keys
         }
 
-    def subscribe(self, public_keys: List[PublicKey], start_time: datetime = None):
+    def subscribe(self, public_key: PublicKey, start_time: datetime = None) -> str:
         "overwrites previous filters"
-        if not self.client.is_running() or not self.get_connected_relays():
+        if not self.get_connected_relays():
             self.ensure_connected()
 
         self._start_timer()
-        self.current_filter_dict.update(self._filters(public_keys, start_time=start_time))
-        logger.debug(f"self.current_filter_dict {self.current_filter_dict}")
 
-        filters = list(self.current_filter_dict.values())
-        if filters:
-            self.client.subscribe(filters)
-        else:
-            self.client.unsubscribe()
+        subscription_id = self.client.subscribe(
+            self._filters([public_key], start_time=start_time).values(), opts=None
+        )
+        self.current_subscription_dict[subscription_id] = public_key
+        return subscription_id
 
     def unsubscribe_all(self):
-        self.current_filter_dict = {}
-        self.subscribe([])
+        self.unsubscribe(list(self.current_subscription_dict.values()))
 
     def unsubscribe(self, public_keys: List[PublicKey]):
-        for key in self._filters(public_keys).keys():
-            if key in self.current_filter_dict:
-                del self.current_filter_dict[key]
-
-        self.subscribe([])
+        for subscription_id, pub_key in list(self.current_subscription_dict.items()):
+            if pub_key in public_keys:
+                self.client.unsubscribe(subscription_id)
+                del self.current_subscription_dict[subscription_id]
 
     def _start_timer(self, delay_retry_connect=5):
         if not self.use_timer:
@@ -780,7 +784,7 @@ class DmConnection(QObject):
     def from_dump(
         cls, d: Dict, signal_dm: pyqtSignal, from_serialized: Callable[[str], BaseDM]
     ) -> "DmConnection":
-        d["keys"] = Keys(sk=SecretKey.from_bech32(d["keys"]))
+        d["keys"] = Keys(secret_key=SecretKey.from_bech32(d["keys"]))
 
         d["events"] = [Event.from_json(json_item) for json_item in d["events"]]
 
@@ -790,7 +794,7 @@ class DmConnection(QObject):
 
         # now handle the events as if they came from a relay
         for event in self.events:
-            self.notification_handler.handle(relay_url="from_storage", event=event)
+            self.notification_handler.handle(relay_url="from_storage", event=event, subscription_id="replay")
 
 
 class NostrProtocol(QObject):
@@ -840,7 +844,7 @@ class NostrProtocol(QObject):
         self.dm_connection.send(dm, self.dm_connection.keys.public_key())
 
     def subscribe(self):
-        self.dm_connection.subscribe([self.dm_connection.keys.public_key()], start_time=self.start_time)
+        self.dm_connection.subscribe(self.dm_connection.keys.public_key(), start_time=self.start_time)
 
     def dump(self, exclude_protocol_public_key_bech32s: List[str] = None):
         return {
@@ -895,7 +899,7 @@ class GroupChat(QObject):
     def add_member(self, new_member: PublicKey):
         if new_member.to_bech32() not in [k.to_bech32() for k in self.members]:
             self.members.append(new_member)
-            self.dm_connection.subscribe([new_member])
+            self.dm_connection.subscribe(new_member)
             logger.debug(f"Add {new_member.to_bech32()} as trusted")
 
     def remove_member(self, remove_member: PublicKey):
@@ -918,7 +922,8 @@ class GroupChat(QObject):
         return self.members + [self.dm_connection.keys.public_key()]
 
     def subscribe(self):
-        self.dm_connection.subscribe(self.members_including_me(), start_time=self.start_time)
+        for public_key in self.members_including_me():
+            self.dm_connection.subscribe(public_key, start_time=self.start_time)
 
     def dump(self):
         forbidden_data_types = [DataType.LabelsBip329]

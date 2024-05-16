@@ -67,6 +67,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSystemTrayIcon,
+    QTabWidget,
     QToolTip,
     QVBoxLayout,
     QWidget,
@@ -306,6 +307,13 @@ def add_tab_to_tabs(
             tabs.setCurrentIndex(position)
 
 
+def remove_tab(tab: QWidget, tabs: QTabWidget):
+    idx = tabs.indexOf(tab)
+    if idx is None or idx < 0:
+        return
+    tabs.removeTab(idx)
+
+
 class Buttons(QHBoxLayout):
     def __init__(self, *buttons):
         QHBoxLayout.__init__(self)
@@ -423,20 +431,30 @@ class Message:
         )
 
 
-def custom_exception_handler(exc_type, exc_value, exc_traceback):
+def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
     """Custom exception handler to catch unhandled exceptions and display an
     error message box."""
     title = "Error"
+    try:
+        # Format the traceback for the email
+        "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+        error_message = f"{exc_type.__name__}: {exc_value}"
 
-    # Format the traceback
-    "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
-    error_message = f"{exc_type.__name__}: {exc_value}"
+        logger.critical(error_message, exc_info=(exc_type, exc_value, exc_traceback))
+        QMessageBox.critical(
+            None,
+            title,
+            f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed.",
+        )
 
-    QMessageBox.critical(
-        None, title, f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed."
-    )
-
-    logger.critical(error_message, exc_info=(exc_type, exc_value, exc_traceback))
+    except:
+        error_message = str([exc_type, exc_value, exc_traceback])
+        logger.critical(error_message)
+        QMessageBox.critical(
+            None,
+            title,
+            f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed.",
+        )
 
 
 def caught_exception_message(e: Exception, title=None, log_traceback=False) -> Message:

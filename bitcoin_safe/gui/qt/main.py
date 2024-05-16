@@ -47,7 +47,7 @@ import base64
 import os
 import shlex
 import sys
-from typing import Deque, Dict, Literal, Optional, Tuple, Union
+from typing import Deque, Dict, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
@@ -83,7 +83,7 @@ from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet, filename_clean
 from . import address_dialog
 from .dialog_import import ImportDialog
 from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
-from .extended_tabwidget import ExtendedTabWidgetWithLoading
+from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
 from .network_settings.main import NetworkSettingsUI
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
         MainWindow.setMinimumSize(w, h)
 
         #####
-        self.tab_wallets = ExtendedTabWidgetWithLoading(self)
+        self.tab_wallets = ExtendedTabWidget(self)
         self.tab_wallets.tabBar().setExpanding(True)  # This will expand tabs to fill the tab widget width
         self.tab_wallets.setTabBarAutoHide(False)
         self.tab_wallets.setMovable(True)  # Enable tab reordering
@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
             vbox.addWidget(notification_bar)
 
         self.update_notification_bar = UpdateNotificationBar(signals_min=self.signals)
-        # self.update_notification_bar.check()  # TODO: disable this, after it got more stable
+        self.update_notification_bar.check()  # TODO: disable this, after it got more stable
         vbox.addWidget(self.update_notification_bar)
 
         vbox.addWidget(self.tab_wallets)
@@ -744,8 +744,8 @@ class MainWindow(QMainWindow):
 
         return viewer.main_widget, viewer
 
-    def open_last_opened_wallets(self):
-        opened_wallets = []
+    def open_last_opened_wallets(self) -> List[QTWallet]:
+        opened_wallets: List[QTWallet] = []
         for file_path in self.config.last_wallet_files.get(str(self.config.network), []):
             qt_wallet = self.open_wallet(file_path=str(rel_home_path_to_abs_path(file_path)))
             if qt_wallet:
@@ -823,11 +823,7 @@ class MainWindow(QMainWindow):
         qt_wallet.file_path = file_path
         qt_wallet.sync()
 
-        # ensure that the newest open file moves to the top of the queue, but isn't added multiple times
-        recent_wallets = self.config.recently_open_wallets[self.config.network]
-        if qt_wallet.file_path in recent_wallets:
-            recent_wallets.remove(qt_wallet.file_path)
-        recent_wallets.append(qt_wallet.file_path)
+        self.add_recently_open_wallet(qt_wallet.file_path)
 
         self.signals.finished_open_wallet.emit(wallet.id)
         return qt_wallet
@@ -931,7 +927,7 @@ class MainWindow(QMainWindow):
     def new_wallet_id(self) -> str:
         return self.tr("new") + str(len(self.qt_wallets))
 
-    def create_qtwallet_from_protowallet(self, protowallet: ProtoWallet):
+    def create_qtwallet_from_protowallet(self, protowallet: ProtoWallet) -> QTWallet:
 
         wallet = Wallet.from_protowallet(
             protowallet,
@@ -944,6 +940,7 @@ class MainWindow(QMainWindow):
         qt_wallet.address_list_tags.add(self.tr("KYC-Exchange"))
         qt_wallet.save()
         qt_wallet.sync()
+        return qt_wallet
 
     def create_qtwallet_from_ui(
         self,
@@ -954,7 +951,9 @@ class MainWindow(QMainWindow):
     ):
         if keystore_uis.ask_accept_unexpected_origins():
             self.tab_wallets.removeTab(self.tab_wallets.indexOf(wallet_tab))
-            self.create_qtwallet_from_protowallet(protowallet=protowallet)
+            qt_wallet = self.create_qtwallet_from_protowallet(protowallet=protowallet)
+            qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
+
         else:
             wallet_steps.set_current_index(wallet_steps.current_index() - 1)
             return
@@ -1027,19 +1026,6 @@ class MainWindow(QMainWindow):
 
         return qtprotowallet
 
-    # def add_loading_tab(self)->QWidget:
-    #     tab = QWidget()
-    #     emptyLabel = QLabel("Loading, please wait...", self)
-    #     emptyLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-    #     self.tab_wallets.addTab(tab)
-    #     return tab
-
-    # def remove_loading_tab(self, loading_tab:QWidget):
-    #     idx = self.tab_wallets.indexOf(loading_tab)
-    #     if idx != -1:
-    #         self.tab_wallets.removeTab(idx)
-
     def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
         def set_tab_widget_icon(tab: QWidget, icon: QIcon):
             idx = self.tab_wallets.indexOf(tab)
@@ -1050,31 +1036,32 @@ class MainWindow(QMainWindow):
             name=wallet.id
         )
 
-        qt_wallet = QTWallet(
-            wallet,
-            self.config,
-            self.signals,
-            self.mempool_data,
-            self.fx,
-            set_tab_widget_icon=set_tab_widget_icon,
-        )
-        qt_wallet.signal_close_wallet.connect(lambda: self.remove_qt_wallet(qt_wallet))
+        with LoadingWalletTab(self.tab_wallets, wallet.id, focus=True):
+            qt_wallet = QTWallet(
+                wallet,
+                self.config,
+                self.signals,
+                self.mempool_data,
+                self.fx,
+                set_tab_widget_icon=set_tab_widget_icon,
+            )
+            qt_wallet.signal_close_wallet.connect(lambda: self.remove_qt_wallet(qt_wallet))
 
-        # tutorial
-        qt_wallet.wallet_steps = WalletSteps(
-            wallet_tabs=qt_wallet.tabs,
-            qtwalletbase=qt_wallet,
-            qt_wallet=qt_wallet,
-        )
-        # save after every step
-        qt_wallet.wallet_steps.signal_set_current_widget.connect(lambda widget: qt_wallet.save())
+            # tutorial
+            qt_wallet.wallet_steps = WalletSteps(
+                wallet_tabs=qt_wallet.tabs,
+                qtwalletbase=qt_wallet,
+                qt_wallet=qt_wallet,
+            )
+            # save after every step
+            qt_wallet.wallet_steps.signal_set_current_widget.connect(lambda widget: qt_wallet.save())
 
         # add to tabs
         self.qt_wallets[wallet.id] = qt_wallet
         add_tab_to_tabs(
             self.tab_wallets,
             qt_wallet.tab,
-            read_QIcon("file.png"),
+            read_QIcon("status_waiting.png"),
             qt_wallet.wallet.id,
             qt_wallet.wallet.id,
             focus=True,
@@ -1164,10 +1151,16 @@ class MainWindow(QMainWindow):
             if self.tab_wallets.widget(i) == qt_wallet.tab:
                 self.tab_wallets.removeTab(i)
 
+        self.add_recently_open_wallet(qt_wallet.file_path)
+
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
         del self.qt_wallets[qt_wallet.wallet.id]
         self.event_wallet_tab_closed()
+
+    def add_recently_open_wallet(self, file_path: str):
+        self.config.add_recently_open_wallet(file_path)
+        self.populate_recent_wallets_menu()
 
     def remove_all_qt_wallet(self):
 

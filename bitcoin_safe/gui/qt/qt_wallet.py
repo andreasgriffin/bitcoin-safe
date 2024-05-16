@@ -54,12 +54,13 @@ from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab, TreeViewWithToolbar
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.threading_manager import NoThread, TaskThread
+from bitcoin_safe.util import Satoshis
 
 from ...config import UserConfig
 from ...execute_config import ENABLE_THREADING
 from ...mempool import MempoolData
 from ...signals import SignalFunction, Signals, UpdateFilter
-from ...tx import TxUiInfos
+from ...tx import TxUiInfos, short_tx_id
 from ...wallet import ProtoWallet, Wallet, filename_clean, get_wallets
 from .address_list import AddressList, AddressListWithToolbar
 from .bitcoin_quick_receive import BitcoinQuickReceive
@@ -524,12 +525,47 @@ class QTWallet(QtWalletBase):
         self.wallet_descriptor_ui.protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
+    def notify_on_new_txs(self):
+        def format_txs(txs: List[bdk.TransactionDetails]) -> str:
+            return "  \n".join(
+                [
+                    f"{Satoshis( tx.received- tx.sent, self.config.network).diff(unit=True)} in {short_tx_id( tx.txid)}"
+                    for tx in txs
+                ]
+            )
+
+        delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker="notifications")
+        # if transactions were removed (reorg or other), then recalculate everything
+        if delta_txs.removed:
+            Message(
+                self.tr(
+                    "The transactions {txs} in wallet '{wallet}' were removed from the history!!!"
+                ).format(txs=format_txs(delta_txs.removed), wallet=self.wallet.id),
+                no_show=True,
+            ).emit_with(self.signals.notification)
+        elif delta_txs.appended:
+            if len(delta_txs.appended) == 1:
+                Message(
+                    self.tr("New transaction in wallet '{wallet}':\n{txs}").format(
+                        txs=format_txs(delta_txs.appended), wallet=self.wallet.id
+                    ),
+                    no_show=True,
+                ).emit_with(self.signals.notification)
+            else:
+                Message(
+                    self.tr("New transactions in wallet '{wallet}':\n{txs}").format(
+                        txs=format_txs(delta_txs.appended), wallet=self.wallet.id
+                    ),
+                    no_show=True,
+                ).emit_with(self.signals.notification)
+
     def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
         self.wallet.clear_cache()
 
         def do():
+            self.notify_on_new_txs()
             self.wallet.fill_commonly_used_caches()
 
         def on_done(result):

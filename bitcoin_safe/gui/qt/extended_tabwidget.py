@@ -34,12 +34,14 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QSizePolicy,
     QSpacerItem,
+    QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.util import add_tab_to_tabs, read_QIcon, remove_tab
 
 
 class ExtendedTabWidget(DataTabWidget):
@@ -98,16 +100,18 @@ class ExtendedTabWidget(DataTabWidget):
         super().resizeEvent(event)
 
 
-class ExtendedTabWidgetWithLoading(ExtendedTabWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+class LoadingWalletTab(QWidget):
+    def __init__(self, tabs: QTabWidget, name: str, focus=True):
+        super().__init__(tabs)
+        self.tabs = tabs
+        self.name = name
+        self.focus = focus
 
         # Create a QWidget to serve as a container for the QLabel
-        self.labelContainer = QWidget(self)
-        self.labelContainer.setLayout(QVBoxLayout())  # Setting the layout directly
+        self.setLayout(QVBoxLayout())  # Setting the layout directly
 
         # Create and configure QLabel
-        self.emptyLabel = QLabel("Loading, please wait...", self.labelContainer)
+        self.emptyLabel = QLabel("Loading, please wait...", self)
         self.emptyLabel.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
         self.emptyLabel.setStyleSheet("font-size: 16pt;")  # Adjust the font size as needed
 
@@ -116,20 +120,23 @@ class ExtendedTabWidgetWithLoading(ExtendedTabWidget):
         spacerBottom = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         # Add spacers and label to the layout
-        self.labelContainer.layout().addItem(spacerTop)
-        self.labelContainer.layout().addWidget(self.emptyLabel)
-        self.labelContainer.layout().addItem(spacerBottom)
+        self.layout().addItem(spacerTop)
+        self.layout().addWidget(self.emptyLabel)
+        self.layout().addItem(spacerBottom)
 
-        # Connect the signal to update visibility based on tab count
-        self.currentChanged.connect(self.updateVisibility)
+    def __enter__(self):
+        add_tab_to_tabs(
+            self.tabs,
+            self,
+            read_QIcon("status_waiting.png"),
+            self.name,
+            self.name,
+            focus=self.focus,
+        )
+        QApplication.processEvents()
 
-    def updateVisibility(self, index):
-        if self.count() == 0:
-            self.labelContainer.show()
-            self.tabBar().hide()
-        else:
-            self.labelContainer.hide()
-            self.tabBar().show()
+    def __exit__(self, exc_type, exc_value, traceback):
+        remove_tab(self, self.tabs)
 
 
 # Usage example
