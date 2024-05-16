@@ -91,7 +91,7 @@ def test_tutorial_wallet_setup(
     logger.debug(f"start test_tutorial_wallet_setup")
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as (app, main_window):

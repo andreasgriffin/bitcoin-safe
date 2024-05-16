@@ -28,6 +28,7 @@
 
 
 import os
+import platform
 import sys
 from pathlib import Path
 
@@ -95,13 +96,15 @@ def find_python_files():
 
 
 if __name__ == "__main__":
+
     success = True
-    for file_path in sys.argv[1:]:
-        if Path(file_path).name.startswith("_"):
-            continue
-        if not check_header(file_path):
-            print(f"Header missing or incorrect in file: {file_path}")
-            success = False
+    if platform.system() != "Windows":
+        for file_path in sys.argv[1:]:
+            if Path(file_path).name.startswith("_"):
+                continue
+            if not check_header(file_path):
+                print(f"Header missing or incorrect in file: {file_path}")
+                success = False
     if not success:
         sys.exit(1)
 

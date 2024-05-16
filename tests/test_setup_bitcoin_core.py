@@ -29,10 +29,14 @@
 
 import json
 import logging
+import os
+import platform
 import shlex
+import shutil
 import subprocess
 import tarfile
 import time
+import zipfile
 from pathlib import Path
 from typing import Generator
 
@@ -81,13 +85,152 @@ BITCOIN_EXTRACT_DIR = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}"
 BITCOIN_BIN_DIR = BITCOIN_EXTRACT_DIR / "bin"
 
 
-def bitcoin_cli(command, bitcoin_core: Path):
+def runcmd(cmd, background=False):
+    try:
+        system = platform.system()
+        if system == "Windows":
+            # On Windows, use subprocess.Popen to start the process without blocking
+            process = subprocess.Popen(
+                cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+        else:
+            process = subprocess.Popen(
+                shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+
+        if background:
+            return process
+        stdout, stderr = process.communicate()
+        if stderr:
+            raise Exception(stderr)
+        return stdout
+
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while running bitcoind: {e}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+
+
+def bitcoind():
+    """ """
+    system = platform.system()
+    executable = "bitcoind.exe" if system == "Windows" else "bitcoind"
+    cmd = f"{BITCOIN_BIN_DIR / executable} -regtest   -conf={BITCOIN_CONF}"
+
+    if system != "Windows":
+        cmd += " -daemon"
+
+    runcmd(cmd, background=True)
+
+
+def bitcoin_cli(
+    command,
+    bitcoin_core: Path,
+    bitcoin_host=BITCOIN_HOST,
+    bitcoin_port=BITCOIN_PORT,
+    rpc_user=RPC_USER,
+    rpc_password=RPC_PASSWORD,
+):
+    """
+    Run a bitcoin-cli command with the specified parameters.
+
+    Parameters:
+    - command: The bitcoin-cli command to execute.
+    - bitcoin_core: Path to the directory containing bitcoin-cli.
+    - bitcoin_host: Host for RPC connection (default: localhost).
+    - bitcoin_port: Port for RPC connection (default: 8332).
+    - rpc_user: RPC username (default: bitcoin).
+    - rpc_password: RPC password (default: bitcoin).
+
+    Returns:
+    - The result of subprocess.run containing stdout, stderr, and return code.
+    """
+    system = platform.system()
+    executable = "bitcoin-cli.exe" if system == "Windows" else "bitcoin-cli"
     cmd = (
-        str(bitcoin_core / "bitcoin-cli")
-        + f" -rpcconnect={BITCOIN_HOST}  -rpcport={BITCOIN_PORT} -regtest -rpcuser=bitcoin -rpcpassword=bitcoin "
+        str(bitcoin_core / executable)
+        + f" -rpcconnect={bitcoin_host} -rpcport={bitcoin_port} -regtest -rpcuser={rpc_user} -rpcpassword={rpc_password} "
         + command
     )
-    return subprocess.run(shlex.split(cmd), capture_output=True, text=True)
+    return runcmd(cmd)
+
+
+def get_default_bitcoin_data_dir():
+    """Get the default Bitcoin data directory based on the operating system."""
+    system = platform.system()
+    if system == "Windows":
+        appdata = os.getenv("APPDATA")
+        assert appdata
+        return Path(appdata) / "Bitcoin"
+    elif system == "Darwin":  # macOS
+        return Path.home() / "Library" / "Application Support" / "Bitcoin"
+    else:  # Assume Linux/Unix
+        return Path.home() / ".bitcoin"
+
+
+def remove_bitcoin_regtest_folder(custom_datadir=None):
+    """
+    Remove the regtest folder from the Bitcoin data directory.
+
+    Parameters:
+    - custom_datadir: Optional custom Bitcoin data directory.
+    """
+    try:
+        if custom_datadir:
+            bitcoin_data_dir = Path(custom_datadir)
+        else:
+            bitcoin_data_dir = get_default_bitcoin_data_dir()
+
+        regtest_dir = bitcoin_data_dir / "regtest"
+
+        if regtest_dir.exists() and regtest_dir.is_dir():
+            shutil.rmtree(regtest_dir)
+            print(f"Removed {regtest_dir}")
+        else:
+            print(f"{regtest_dir} does not exist or is not a directory")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def download_bitcoin():
+    system = platform.system()
+
+    if system == "Windows":
+        archive_extension = "zip"
+        url = (
+            f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-win64.zip"
+        )
+    elif system == "Darwin":  # macOS
+        archive_extension = "tar.gz"
+        url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-x86_64-apple-darwin.tar.gz"
+    else:  # Assume Linux
+        archive_extension = "tar.gz"
+        url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
+
+    BITCOIN_ARCHIVE = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}.{archive_extension}"
+
+    # Download Bitcoin Core if necessary
+    if not BITCOIN_ARCHIVE.exists():
+        logger.info(f"Downloading Bitcoin Core {BITCOIN_VERSION}...")
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        BITCOIN_ARCHIVE.write_bytes(response.content)
+
+    # Extract Bitcoin Core if necessary
+    if not BITCOIN_BIN_DIR.exists():
+        logger.info(f"Extracting Bitcoin Core {BITCOIN_VERSION}...")
+        if archive_extension == "tar.gz":
+            with tarfile.open(BITCOIN_ARCHIVE, "r:gz") as tar:
+                tar.extractall(path=BITCOIN_DIR)
+        elif archive_extension == "zip":
+            with zipfile.ZipFile(BITCOIN_ARCHIVE, "r") as zip_ref:
+                zip_ref.extractall(path=BITCOIN_DIR)
+        else:
+            raise ValueError(f"Unsupported archive extension: {archive_extension}")
+
+    logger.info(f"Bitcoin Core {BITCOIN_VERSION} is ready to use.")
 
 
 @pytest.fixture(scope="session")
@@ -95,19 +238,7 @@ def bitcoin_core() -> Generator[Path, None, None]:
     # Ensure Bitcoin Core directory exists
     BITCOIN_DIR.mkdir(exist_ok=True)
 
-    # Download Bitcoin Core if necessary
-    if not BITCOIN_ARCHIVE.exists():
-        print(f"Downloading Bitcoin Core {BITCOIN_VERSION}...")
-        url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
-        response = requests.get(url, timeout=2)
-        BITCOIN_ARCHIVE.write_bytes(response.content)
-
-    # Extract Bitcoin Core if necessary
-    if not BITCOIN_BIN_DIR.exists():
-        print(f"Extracting Bitcoin Core {BITCOIN_VERSION}...")
-        with tarfile.open(BITCOIN_ARCHIVE, "r:gz") as tar:
-            tar.extractall(path=BITCOIN_DIR)
-
+    download_bitcoin()
     # Create bitcoin.conf
     BITCOIN_CONF.write_text(BITCOIN_CONF_CONTENT)
 
@@ -116,10 +247,10 @@ def bitcoin_core() -> Generator[Path, None, None]:
     # to ensure bitcoind is stopped
     time.sleep(1)
     # remove the previous chain
-    subprocess.run(shlex.split(f"rm -rf {Path.home() / '.bitcoin' / 'regtest'}"))
+    remove_bitcoin_regtest_folder()
 
     # Start Bitcoin Core
-    subprocess.run(shlex.split(f"{BITCOIN_BIN_DIR / 'bitcoind'} -regtest -daemon -conf={BITCOIN_CONF}"))
+    bitcoind()
 
     # Wait for Bitcoin Core to start
     time.sleep(5)
@@ -135,11 +266,8 @@ def test_get_blockchain_info(bitcoin_core: Path):
     # Execute the command to get blockchain information
     result = bitcoin_cli("getblockchaininfo", bitcoin_core)
 
-    # Check if there was an error
-    assert result.stderr == "", f"Error getting blockchain info: {result.stderr}"
-
     # Parse the output as JSON
-    blockchain_info = json.loads(result.stdout)
+    blockchain_info = json.loads(result)
 
     # Verify some expected fields are present and correct
     assert blockchain_info["chain"] == "regtest", "The chain type should be 'regtest'"
@@ -152,7 +280,7 @@ def mine_blocks(
 ):
     # Mine n blocks to the specified address
     result = bitcoin_cli(f"generatetoaddress {n} {address}", bitcoin_core)
-    return result.stdout.strip()
+    return result.strip()
 
 
 class Faucet:

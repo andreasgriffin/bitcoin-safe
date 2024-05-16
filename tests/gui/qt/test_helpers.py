@@ -29,6 +29,8 @@
 
 import inspect
 import logging
+import os
+import platform
 import shutil
 import tempfile
 from contextlib import contextmanager
@@ -167,7 +169,16 @@ class Shutter:
 
     def create_symlink(self, test_config: UserConfig):
         screenshots_dir = Shutter.directory(self.name)
-        (screenshots_dir / "config_dir").symlink_to(test_config.config_dir)
+        link_name = screenshots_dir / "config_dir"
+
+        if platform.system() == "Windows":
+            # Use mklink to create a directory junction on Windows
+            if os.system(f'mklink /J "{link_name}" "{test_config.config_dir}"') != 0:
+                raise OSError(
+                    f"Failed to create directory junction from {link_name} to {test_config.config_dir}"
+                )
+        else:
+            link_name.symlink_to(test_config.config_dir)
 
 
 def _get_widget_top_level(cls: Type[T], title=None) -> Optional[T]:

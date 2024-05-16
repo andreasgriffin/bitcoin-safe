@@ -1072,12 +1072,12 @@ class MainWindow(QMainWindow):
             data=qt_wallet,
         )
 
-        search_box = SearchWallets(
-            lambda: list(self.qt_wallets.values()),
-            signal_min=self.signals,
-            parent=self.tab_wallets,
-        )
-        qt_wallet.tabs.set_top_right_widget(search_box)
+        # search_box = SearchWallets(
+        #     lambda: list(self.qt_wallets.values()),
+        #     signal_min=self.signals,
+        #     parent=self.tab_wallets,
+        # )
+        # qt_wallet.tabs.set_top_right_widget(search_box)
 
         qt_wallet.wallet_steps.set_visibilities()
         self.signals.event_wallet_tab_added.emit()
