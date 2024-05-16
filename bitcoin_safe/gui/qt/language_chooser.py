@@ -98,11 +98,13 @@ class LanguageChooser(QObject):
 
         # Start with default language (English) in the list
         self.availableLanguages = {"en_US": QLocale(QLocale.Language.English).nativeLanguageName()}
+        logger.debug(f"initialized {self}")
 
     def default_lang(self):
         return list(self.availableLanguages.keys())[0]
 
     def dialog_choose_language(self, parent) -> str:
+        logger.debug(f"dialog_choose_language")
         dialog = LanguageDialog(self.get_languages(), parent)
         lang = dialog.choose_language()
         if not lang:

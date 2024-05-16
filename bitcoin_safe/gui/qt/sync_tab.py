@@ -161,7 +161,7 @@ class SyncTab(QObject):
     ) -> "SyncTab":
         encoded_wallet_descriptor = hashlib.sha256(multipath_descriptor.as_string().encode()).hexdigest()
         protocol_keys = nostr_sdk.Keys(
-            sk=nostr_sdk.SecretKey.from_hex(
+            secret_key=nostr_sdk.SecretKey.from_hex(
                 hashlib.sha256(encoded_wallet_descriptor.encode("utf-8")).hexdigest()
             )
         )

@@ -27,31 +27,21 @@
 # SOFTWARE.
 
 
-# def test_dialog_interaction_yes(qtbot: QtBot, test_start_time: datetime) -> None:
-#     with main_window_context() as main_window:
-#         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+import inspect
 import logging
 import os
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Optional
 from unittest.mock import patch
 
 from PyQt6 import QtGui
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import (
-    QDialogButtonBox,
-    QFileDialog,
-    QMessageBox,
-    QPushButton,
-    QTabWidget,
-    QWidget,
-)
+from PyQt6.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
+from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.tutorial import (
@@ -76,28 +66,17 @@ from ...test_signers import test_seeds
 from .test_helpers import (  # type: ignore
     Shutter,
     assert_message_box,
+    close_wallet,
     do_modal_click,
+    get_tab_with_title,
     get_widget_top_level,
     main_window_context,
+    save_wallet,
     test_config,
     test_start_time,
 )
 
 logger = logging.getLogger(__name__)
-
-
-def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
-    """
-    Returns the tab with the specified title from a QTabWidget.
-
-    :param tabs: The QTabWidget instance containing the tabs.
-    :param title: The title of the tab to find.
-    :return: The QWidget of the tab with the specified title, or None if not found.
-    """
-    for index in range(tabs.count()):
-        if tabs.tabText(index).lower() == title.lower():
-            return tabs.widget(index)
-    return None
 
 
 def test_tutorial_wallet_setup(
@@ -106,12 +85,17 @@ def test_tutorial_wallet_setup(
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
-    wallet_name="test wallet 0",
+    wallet_name="test_tutorial_wallet_setup",
     amount=int(1e6),
 ) -> None:  # bitcoin_core: Path,
-    shutter = Shutter(qtbot, test_start_time)
-    shutter.create_symlink(test_start_time, test_config=test_config)
+    logger.debug(f"start test_tutorial_wallet_setup")
+    frame = inspect.currentframe()
+    assert frame
+    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter.create_symlink(test_config=test_config)
+    logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as (app, main_window):
+        logger.debug(f"(app, main_window) = {(app, main_window)}")
         QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
@@ -209,17 +193,13 @@ def test_tutorial_wallet_setup(
             ]:
                 assert keystore.edit_xpub.input_field.styleSheet() == ""
 
-            # check that you cannot go further without import xpub
-            def password_creation(dialog: PasswordCreation):
-                shutter.save(dialog)
-                dialog.submit_button.click()
-
-            wallet_file = Path(test_config.config_dir) / f"{wallet_name}.wallet"
-            with patch.object(
-                QFileDialog, "getSaveFileName", return_value=(str(wallet_file), "All Files (*)")
-            ) as mock_open:
-                do_modal_click(step.button_create_wallet, password_creation, qtbot, cls=PasswordCreation)
-                mock_open.assert_called_once()
+            save_wallet(
+                shutter=shutter,
+                test_config=test_config,
+                wallet_name=wallet_name,
+                qtbot=qtbot,
+                save_button=step.button_create_wallet,
+            )
 
         page3()
 

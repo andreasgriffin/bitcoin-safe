@@ -76,6 +76,7 @@ class NewWalletWelcomeScreen(QObject):
         self.pushButton_custom_wallet.clicked.connect(
             lambda: call_call_functions([self.signal_onclick_custom_signature.emit, self.remove_tab])
         )
+        logger.debug(f"initialized welcome_screen = {self}")
 
     def add_new_wallet_welcome_tab(self):
         add_tab_to_tabs(

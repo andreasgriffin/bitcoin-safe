@@ -49,6 +49,7 @@ class FX(QObject):
 
         self.rates: Dict[str, Dict] = {}
         self.update()
+        logger.debug(f"initialized {self}")
 
     def update(self):
         def on_success(data):

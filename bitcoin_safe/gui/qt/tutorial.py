@@ -1058,7 +1058,9 @@ class WalletSteps(StepProgressContainer):
         self.set_current_index(index)
 
     def go_to_previous_index(self):
+        logger.info(f"go_to_previous_index: Old index {self.current_index()} = {self.current_step()}")
         self.change_index(max(self.current_index() - 1, 0))
+        logger.info(f"go_to_previous_index: Switched index {self.current_index()} = {self.current_step()}")
 
     def go_to_next_index(self):
         if self.step_bar.current_index + 1 >= self.step_bar.number_of_steps:
@@ -1066,7 +1068,9 @@ class WalletSteps(StepProgressContainer):
             self.set_visibilities()
 
             return
+        logger.info(f"go_to_next_index: Old index {self.current_index()} = {self.current_step()}")
         self.change_index(min(self.step_bar.current_index + 1, self.step_bar.number_of_steps - 1))
+        logger.info(f"go_to_next_index: Switched index {self.current_index()} = {self.current_step()}")
 
     def get_send_tests_steps(self) -> List[TutorialStep]:
         m, n = self.qtwalletbase.get_mn_tuple()

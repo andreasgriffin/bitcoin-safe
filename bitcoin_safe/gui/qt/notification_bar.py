@@ -26,7 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import logging
 import sys
 from typing import Callable, Optional
 
@@ -44,6 +44,8 @@ from PyQt6.QtWidgets import (
 )
 
 from .recipients import CloseButton
+
+logger = logging.getLogger(__name__)
 
 
 class NotificationBar(QWidget):
@@ -101,6 +103,7 @@ class NotificationBar(QWidget):
         if has_close_button:
             main_widget.layout().addWidget(self.closeButton)
         self.closeButton.setFixedSize(self.sizeHint().height(), self.sizeHint().height())
+        logger.debug(f"initialized {self}")
 
     def set_background_color(self, color: str):
         self.setStyleSheet(f"background-color: {color};")  # Set the background color for the notification bar

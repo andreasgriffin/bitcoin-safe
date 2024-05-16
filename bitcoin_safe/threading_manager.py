@@ -157,9 +157,9 @@ class NoThread:
     def add_and_start(
         self,
         task,
-        on_success=None,
-        on_done=None,
-        on_error=None,
+        on_success: Callable = None,
+        on_done: Callable = None,
+        on_error: Callable = None,
     ):
         result = None
         try:

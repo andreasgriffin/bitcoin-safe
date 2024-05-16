@@ -84,6 +84,13 @@ class UserConfig(BaseSaveableClass):
         }
         self.language_code = None
 
+    def add_recently_open_wallet(self, file_path: str):
+        # ensure that the newest open file moves to the top of the queue, but isn't added multiple times
+        recent_wallets = self.recently_open_wallets[self.network]
+        if file_path in recent_wallets:
+            recent_wallets.remove(file_path)
+        recent_wallets.append(file_path)
+
     @property
     def network_config(self) -> NetworkConfig:
         return self.network_configs.configs[self.network.name]

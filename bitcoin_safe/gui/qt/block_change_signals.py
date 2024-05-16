@@ -77,6 +77,9 @@ class BlockChangesSignals:
         if self.all_widgets is None:
             self.all_widgets = self.fill_widget_list()
 
+        # remove the already blocked ones
+        self.all_widgets = set([w for w in self.all_widgets if not w.signalsBlocked()])
+
         for widget in self.all_widgets:
             widget.blockSignals(True)
 
