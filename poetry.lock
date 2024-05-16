@@ -1333,31 +1333,31 @@ cryptography = ">=2.8"
 
 [[package]]
 name = "nostr-sdk"
-version = "0.11.0"
+version = "0.10.0"
 description = "High level client library."
 optional = false
 python-versions = "*"
 files = [
-    {file = "nostr_sdk-0.11.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c2b1ab9cefd968e81815199ae0119749568b968726f81a237086f8eb82571ae0"},
-    {file = "nostr_sdk-0.11.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:f1ca6774682ece51eb73a0352afcdb79ec702d4f347fe4ce8e96074cbff724c9"},
-    {file = "nostr_sdk-0.11.0-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:28a28de9145e04d8bb3e7b222017b95a407da26926fc90af8beb517e70832b51"},
-    {file = "nostr_sdk-0.11.0-cp310-cp310-manylinux_2_31_x86_64.whl", hash = "sha256:1f4cad26ea3449cea72d97fb56af4a82491959e3adbfb2ea76b8ada7c79a6ed8"},
-    {file = "nostr_sdk-0.11.0-cp310-cp310-win_amd64.whl", hash = "sha256:994c509534ace04cb6262f1830b088cb405fc46ae34a4dd08ed911866cb4c5ab"},
-    {file = "nostr_sdk-0.11.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:0e8c9aca8c4c85d2f7810f6fabe6c7b6c58baf659ebd79eefd4f6d9e65a5de2e"},
-    {file = "nostr_sdk-0.11.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:3843d3ba049094ea89d8909bf38d3b5e47b260037ad4477cb57e9e0390238fa4"},
-    {file = "nostr_sdk-0.11.0-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:526ceab4a126d8ae3d71e078451e87f0b2a9af8425c0295de010defdcafeebd2"},
-    {file = "nostr_sdk-0.11.0-cp311-cp311-manylinux_2_31_x86_64.whl", hash = "sha256:853d5ba5cfdfbb8938dc293e121fb5afdf18da6ac34c6f0a45d6738226daabbf"},
-    {file = "nostr_sdk-0.11.0-cp311-cp311-win_amd64.whl", hash = "sha256:c37ca037f995a0bd7d183df44b3a650eefacbaef06720606f0ccbd9f47d64e87"},
-    {file = "nostr_sdk-0.11.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:92dce8428dd623383386ead8183394f28f4ad694b2127aa93338379bab229fd4"},
-    {file = "nostr_sdk-0.11.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:c8a9af2ac95710a575b65f352c6375e80f09c097a0f3c44998a898e5bd685fa3"},
-    {file = "nostr_sdk-0.11.0-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:eb251751875a379deda5f5b00001dd69ea1f655c0d13f58bc39f463b224e9d27"},
-    {file = "nostr_sdk-0.11.0-cp312-cp312-manylinux_2_31_x86_64.whl", hash = "sha256:ef9de5c28a74215cb381c6004b3cf8b87527212b5f768d3cd432c895e7a2afd1"},
-    {file = "nostr_sdk-0.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:efba2ab075e60bf4ef1d93953da89edd2b3c79b7a92b490d7774695706ef14c8"},
-    {file = "nostr_sdk-0.11.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:59f63726909260a189012320c0665193e5135d3515160b30e40c6dc180929687"},
-    {file = "nostr_sdk-0.11.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:003086d44f331406bba53a80efd0417fe98ef29798dd750cb7562350a9aa205c"},
-    {file = "nostr_sdk-0.11.0-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:dfabca1ffb677434e323e760af37b09db0badfe8915daf83c972cbec68080850"},
-    {file = "nostr_sdk-0.11.0-cp39-cp39-manylinux_2_31_x86_64.whl", hash = "sha256:758348a132baa232f08b29842c07b4a24333ca5c8ece2a6e880910f684e39d8d"},
-    {file = "nostr_sdk-0.11.0-cp39-cp39-win_amd64.whl", hash = "sha256:b8074a2e39a5a3b5a707acb2339dd119836ea54bfc63c8b377c30a5c6c3b0771"},
+    {file = "nostr_sdk-0.10.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:64184379a8cbab44be36aa1f64eccbf18c1ec585d5558fbecd7dcc8ba973095a"},
+    {file = "nostr_sdk-0.10.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:c6e4fddd8537de17c18c0bc6677817affaa7b91ce2c7648d5d24acbb1f7851be"},
+    {file = "nostr_sdk-0.10.0-cp310-cp310-manylinux_2_17_x86_64.whl", hash = "sha256:817b2d19ef5e9b4acc29e97b808dd6b8cdd946f89fdaed48200d3346775317ac"},
+    {file = "nostr_sdk-0.10.0-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:af92766a9a1e212a9ab665020827fb4cdba3710a3932e637dbf9469c511e89fa"},
+    {file = "nostr_sdk-0.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:3e63c6e322c2b7251b97de6fd9daf31a254712be23fd5e22d4a49a846c2170a6"},
+    {file = "nostr_sdk-0.10.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9a8e34dd443f1c58428d1f00ecbb3ef0000522ba9349b0750d10bb88e6631a80"},
+    {file = "nostr_sdk-0.10.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:1d97764b7d312b199c3c16fd3c099db658c73bb5398c26244912ffd18ea739d8"},
+    {file = "nostr_sdk-0.10.0-cp311-cp311-manylinux_2_17_x86_64.whl", hash = "sha256:04cd5f6ec450e65e777b55924969aca34af8c8b64681d394c606166a789fec76"},
+    {file = "nostr_sdk-0.10.0-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:6a0c4280bbbeaafbb4c443f1fbd99cd9713c080f04cecf99b9da92b37201ccff"},
+    {file = "nostr_sdk-0.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:ee4c52152ae5bb2903e859db3ea43312f97f5efc9a4f7cc02ddb2b4423f7ea8a"},
+    {file = "nostr_sdk-0.10.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:437e3e44b5807249d9edc53544e66d737b87de86b0f82f8300467c07080389ab"},
+    {file = "nostr_sdk-0.10.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:e97617579edbd8696f7e507465fb1608b8cb77d6965c931220ed6a09a58e87ff"},
+    {file = "nostr_sdk-0.10.0-cp312-cp312-manylinux_2_17_x86_64.whl", hash = "sha256:a91af900ced001e9ce072e267b674e11cba518e31561dc32b78a1f9f667b4f0b"},
+    {file = "nostr_sdk-0.10.0-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:e777fa99005e014025aab18ee501eb440e4c132f9978281c3d0d3ac17edcc579"},
+    {file = "nostr_sdk-0.10.0-cp312-cp312-win_amd64.whl", hash = "sha256:6adfcbfd6e4722b8c322d58425300532be5ef101562a55319619673daad3e095"},
+    {file = "nostr_sdk-0.10.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:6451b5fb7b8b7862f48d131e943f0b0e88de6dc30a8d10e6b313c22127632ddb"},
+    {file = "nostr_sdk-0.10.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:ee16f650bc16214c576e5d9d5cf31bacdaa1310f36081e9c213080dcdf20cf95"},
+    {file = "nostr_sdk-0.10.0-cp39-cp39-manylinux_2_17_x86_64.whl", hash = "sha256:9395b50bc4f4a90bf6521ed6328db25905b8006df5b648d2b1677a75d283206c"},
+    {file = "nostr_sdk-0.10.0-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:702892320f607e63762502c926685c10ea169657f17c5cb9588ec5d1cd064b8c"},
+    {file = "nostr_sdk-0.10.0-cp39-cp39-win_amd64.whl", hash = "sha256:8c8e035e3fdb1652cf96dd0b252f6fb12e82cec102bc19a09b2ec658187a5337"},
 ]
 
 [[package]]
@@ -2369,4 +2369,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "c36d795e0843a24ae2da6d875fb1f42d6ded4aebf55d9ccd3c7538592222d7b3"
+content-hash = "1b41af0ef522e14da5a3af72185b364023aa79c01414cb46d13df5b278322f12"

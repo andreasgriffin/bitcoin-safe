@@ -56,12 +56,12 @@ class GPGKey:
         import re
 
         # try with - separator
-        match = re.search(r"(.*?)-([\d\.]+[a-zA-Z0-9]*)-", filename)
+        match = re.search(r"(.*?)-([\d\.]+[a-zA-Z0-9]*)", filename)
         if match:
             return (match.group(1), match.group(2))
 
         # try with _ separator
-        match = re.search(r"(.*?)_([\d\.]+[a-zA-Z0-9]*)_", filename)
+        match = re.search(r"(.*?)_([\d\.]+[a-zA-Z0-9]*)", filename)
         if match:
             return (match.group(1), match.group(2))
         return (None, None)
