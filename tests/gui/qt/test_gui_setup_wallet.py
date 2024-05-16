@@ -88,11 +88,14 @@ def test_tutorial_wallet_setup(
     wallet_name="test_tutorial_wallet_setup",
     amount=int(1e6),
 ) -> None:  # bitcoin_core: Path,
+    logger.debug(f"start test_tutorial_wallet_setup")
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{test_start_time}_{inspect.getframeinfo(frame).function    }")
     shutter.create_symlink(test_config=test_config)
+    logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as (app, main_window):
+        logger.debug(f"(app, main_window) = {(app, main_window)}")
         QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 

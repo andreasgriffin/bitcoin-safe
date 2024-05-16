@@ -45,11 +45,3 @@ def test_download_manifest_and_verify():
         assert sig_filename == Path(tempdir) / "sparrow-1.8.4-manifest.txt.asc"
         assert manager.is_signature_file_available(Path(tempdir) / "sparrow-1.8.4-manifest.txt")
         assert manager._verify_file(Path(tempdir) / "sparrow-1.8.4-manifest.txt", signature_file=sig_filename)
-
-
-from pytestqt.qtbot import QtBot
-
-
-def test_signer_finalizes_ofn_final_sig_receive(qtbot: QtBot):
-
-    pass

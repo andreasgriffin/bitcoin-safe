@@ -54,6 +54,8 @@ class SpinningButton(QPushButton):
         self.set_enable_signal(enable_signal)
 
     def on_clicked(self):
+        if not self.isEnabled():
+            return
         self.start_spin()
         self.setDisabled(True)
 

@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
     ):
         "If netowrk == None, then the network from the user config will be taken"
         super().__init__()
-        first_boot = not (UserConfig.exists())
+        config_present = UserConfig.exists() or config
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network._member_map_[network.upper()] if network else self.config.network
         self.address_dialogs: Deque[address_dialog.AddressDialog] = deque(maxlen=1000)
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
 
         self.fx = FX(signals_min=self.signals)
         self.language_chooser = LanguageChooser(self, self.config, self.signals.language_switch)
-        if first_boot:
+        if not config_present:
             self.config.language_code = self.language_chooser.dialog_choose_language(self)
         self.language_chooser.set_language(self.config.language_code)
         self.setupUi(self)
@@ -145,6 +145,8 @@ class MainWindow(QMainWindow):
         self.welcome_screen = NewWalletWelcomeScreen(
             self.tab_wallets, network=self.config.network, signals=self.signals
         )
+
+        # signals
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_create_single_signature_wallet)
         self.welcome_screen.signal_onclick_multisig_signature.connect(
             self.click_create_multisig_signature_wallet
@@ -192,6 +194,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(title)
 
     def setupUi(self, MainWindow: QWidget):
+        logger.debug(f"start setupUi")
         # sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         # sizePolicy.setHorizontalStretch(0)
         # sizePolicy.setVerticalStretch(0)
@@ -243,6 +246,7 @@ class MainWindow(QMainWindow):
         # self.setWindowIcon(read_QIcon("electrum.png"))
         self.init_menubar()
         self.set_title()
+        logger.debug(f"done setupUi")
 
     def init_menubar(self):
         self.menubar = QMenuBar()

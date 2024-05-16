@@ -239,6 +239,7 @@ class MempoolData(QObject):
             "total_fee": 0,
             "fee_histogram": [],
         }
+        logger.debug(f"initialized {self}")
 
     def _empty_mempool_blocks(self) -> List[Dict[str, Any]]:
         return [
@@ -301,6 +302,7 @@ class MempoolData(QObject):
         def on_mempool_blocks(mempool_blocks):
             if mempool_blocks:
                 self.mempool_blocks = mempool_blocks
+                logger.info(f"Updated mempool_blocks {mempool_blocks}")
 
         threaded_fetch(
             f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
@@ -308,10 +310,12 @@ class MempoolData(QObject):
             self,
             signals_min=self.signals_min,
         )
+        logger.debug(f"started on_mempool_blocks")
 
         def on_recommended(recommended):
             if recommended:
                 self.recommended = recommended
+                logger.info(f"Updated recommended {recommended}")
 
         threaded_fetch(
             f"{self.network_config.mempool_url}api/v1/fees/recommended",
@@ -319,12 +323,13 @@ class MempoolData(QObject):
             self,
             signals_min=self.signals_min,
         )
+        logger.debug(f"started on_recommended")
 
         def on_mempool_dict(mempool_dict):
             if mempool_dict:
                 self.mempool_dict = mempool_dict
+                logger.info(f"Updated mempool_dict {mempool_dict}")
             self.signal_data_updated.emit()
-            logger.info(f"Updated mempool_dict {mempool_dict}")
 
         threaded_fetch(
             f"{self.network_config.mempool_url}api/mempool",
@@ -332,6 +337,7 @@ class MempoolData(QObject):
             self,
             signals_min=self.signals_min,
         )
+        logger.debug(f"started on_mempool_dict")
 
     def fetch_block_tip_height(self) -> int:
         response = fetch_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height")

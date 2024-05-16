@@ -83,6 +83,7 @@ class Asset:
 class GitHubAssetDownloader:
     def __init__(self, repository: str) -> None:
         self.repository = repository
+        logger.debug(f"initialized {self}")
 
     def _get_assets(self, api_url):
         try:

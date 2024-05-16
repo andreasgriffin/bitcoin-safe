@@ -239,8 +239,8 @@ def do_modal_click(
 
 def assert_message_box(click_pushbutton: QPushButton, tile: str, message_text: str):
     with patch("bitcoin_safe.gui.qt.util.QMessageBox") as mock_msgbox:
-        click_pushbutton.click()
         while not mock_msgbox.called:
+            click_pushbutton.click()
             QApplication.processEvents()
             sleep(0.2)
 
