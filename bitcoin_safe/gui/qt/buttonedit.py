@@ -255,16 +255,17 @@ class ButtonEdit(QWidget):
         custom_handle_input=None,
     ):
         def input_qr_from_camera():
-            from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+            from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
+            from bitcoin_qr_tools.data import Data
 
-            def result_callback(data: bitcoin_qr.Data):
+            def result_callback(data: Data):
                 if custom_handle_input:
                     custom_handle_input(data, self)
                 else:
                     if hasattr(self, "setText"):
                         self.setText(str(data.data_as_string()))
 
-            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback, network=network)
+            window = BitcoinVideoWidget(result_callback=result_callback, network=network)
             window.show()
 
         self.button_camera = self.add_button(

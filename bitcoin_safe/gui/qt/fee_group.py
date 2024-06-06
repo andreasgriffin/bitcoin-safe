@@ -197,6 +197,7 @@ class FeeGroup(QObject):
 
         self.set_fiat_fee_label()
         self.update_fee_rate_warning()
+        self.mempool.refresh()
 
     def set_vsize(self, vsize):
         self.vsize = vsize

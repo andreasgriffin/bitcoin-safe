@@ -79,7 +79,7 @@ class UserConfig(BaseSaveableClass):
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
-        self.recently_open_wallets: Dict[bdk.Network, deque] = {
+        self.recently_open_wallets: Dict[bdk.Network, deque[str]] = {
             network: deque(maxlen=5) for network in bdk.Network
         }
         self.language_code = None

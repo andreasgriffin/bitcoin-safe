@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 from typing import List, Optional
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr
+from bitcoin_qr_tools.data import Data, DataType
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import (
@@ -109,8 +109,8 @@ class RecipientGroupBox(QTabWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         form_layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
-        def on_handle_input(data: bitcoin_qr.Data, parent: QWidget):
-            if data.data_type == bitcoin_qr.DataType.Bip21:
+        def on_handle_input(data: Data, parent: QWidget):
+            if data.data_type == DataType.Bip21:
                 if data.data.get("address"):
                     self.address_line_edit.setText(data.data.get("address"))
                 if data.data.get("amount"):

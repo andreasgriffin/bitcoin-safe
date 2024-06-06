@@ -31,19 +31,17 @@ import logging
 from collections import deque
 from typing import List
 
+from bitcoin_nostr_chat.connected_devices.connected_devices import TrustedDevice
+from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
 from nostr_sdk import PublicKey
 
-from bitcoin_safe.gui.qt.nostr_sync.connected_devices.connected_devices import (
-    TrustedDevice,
-)
-from bitcoin_safe.gui.qt.nostr_sync.nostr import BitcoinDM, ChatLabel
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 
 logger = logging.getLogger(__name__)
+from bitcoin_nostr_chat.nostr_sync import Data, DataType
+
 from bitcoin_safe.labels import Labels, LabelType
 from bitcoin_safe.signals import Signals, UpdateFilter
-
-from .nostr_sync.nostr_sync import Data, DataType
 
 
 class LabelSyncer:
@@ -83,6 +81,8 @@ class LabelSyncer:
         logger.info(f"on_nostr_label_bip329_received {data}")
         if data.data_type == DataType.LabelsBip329:
             changed_labels = self.labels.import_dumps_data(data.data)
+            if not changed_labels:
+                return
             logger.debug(f"on_nostr_label_bip329_received updated: {changed_labels} ")
 
             addresses: List[str] = []

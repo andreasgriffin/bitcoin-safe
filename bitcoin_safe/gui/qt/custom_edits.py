@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from bitcoin_qrreader.bitcoin_qr import MultipathDescriptor
+from bitcoin_qr_tools.multipath_descriptor import MultipathDescriptor
 from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent
 from PyQt6.QtWidgets import QLineEdit, QTextEdit
@@ -85,9 +85,9 @@ class DescriptorEdit(ButtonEdit):
 
             make_and_open_pdf(get_wallet())
 
-        from bitcoin_qrreader import bitcoin_qr
+        from bitcoin_qr_tools.data import Data
 
-        def custom_handle_camera_input(data: bitcoin_qr.Data, parent):
+        def custom_handle_camera_input(data: Data, parent):
             self.setText(str(data.data_as_string()))
             self.signal_change.emit(str(data.data_as_string()))
 

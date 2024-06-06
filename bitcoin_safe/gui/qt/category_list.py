@@ -96,8 +96,8 @@ class CategoryEditor(TagEditor):
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self):
-        super().updateUi()
         self.tag_name = self.tr("category")
+        super().updateUi()
         self.refresh(UpdateFilter(refresh_all=True))
 
     def on_added(self, category):

@@ -217,6 +217,9 @@ class AddressList(MyTreeView):
         self.signals.category_updated.connect(self.update_with_filter)
         self.signals.language_switch.connect(self.updateUi)
 
+    def updateUi(self):
+        self.update()
+
     def dragEnterEvent(self, event: QDragEnterEvent):
         # handle dropped files
         super().dragEnterEvent(event)

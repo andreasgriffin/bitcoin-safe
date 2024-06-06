@@ -29,7 +29,7 @@
 
 import enum
 import logging
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from packaging import version
@@ -160,6 +160,11 @@ class FullTxDetail:
         self.inputs: Dict[str, Optional[PythonUtxo]] = send if send else {}  # outpoint_str: PythonUtxo
         self.tx = tx
         self.txid = tx.txid
+
+    def involved_addresses(self) -> Set:
+        input_addresses = [input.address for input in self.inputs.values() if input]
+        output_addresses = [output.address for output in self.outputs.values() if output]
+        return set(input_addresses).union(output_addresses)
 
     @classmethod
     def fill_received(

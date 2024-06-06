@@ -18,7 +18,7 @@
     - Label synchronization between trusted devices (via nostr)
   - **Multi-Language**: 
     - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, (more upon request)
-- **Fast**: Electrum server and upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
+- **Fast**: Electrum server connectivity and planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
 - **Secure**: No seed generation or storage (on mainnet). 
   - A hardware signer/signing device for safe seed storage is needed (storing seeds on a computer is reckless)
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**

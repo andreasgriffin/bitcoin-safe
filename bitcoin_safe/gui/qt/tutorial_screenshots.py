@@ -30,7 +30,8 @@
 import logging
 from typing import Tuple
 
-from bitcoin_safe.gui.qt.qr_components.image_widget import EnlargableImageWidget
+from bitcoin_qr_tools.qr_widgets import EnlargableImageWidget
+
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
 
 logger = logging.getLogger(__name__)

@@ -37,7 +37,7 @@ import copy
 import json
 from typing import Any, Dict, List, Literal, Union
 
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 from packaging import version
 
 from .pythonbdk_types import *
@@ -120,7 +120,7 @@ class Label(SaveAllClass):
 
 
 class Labels(BaseSaveableClass):
-    VERSION = "0.0.5"
+    VERSION = "0.1.0"
     known_classes = {**BaseSaveableClass.known_classes, "Label": Label}
 
     def __init__(
@@ -134,7 +134,7 @@ class Labels(BaseSaveableClass):
         self.data: Dict[str, Label] = data if data else {}
         self.categories: List[str] = categories if categories else []
 
-        self.separator = ";;"
+        self.separator = " #"
 
     def add_category(self, value: str):
         if value not in self.categories:
@@ -263,7 +263,7 @@ class Labels(BaseSaveableClass):
 
         if new_label.category:
             new_label.label = (
-                f'{new_label.category}{self.separator}{new_label.label if new_label.label else ""}'
+                f'{new_label.label if new_label.label else ""}{self.separator}{new_label.category}'
             )
             new_label.category = None
 
@@ -279,7 +279,18 @@ class Labels(BaseSaveableClass):
         label = Label(**d)
 
         if label.label and (not label.category) and self.separator in label.label:
-            label.category, label.label = label.label.split(self.separator, 1)
+            label.label, *categories = label.label.split(self.separator)
+            if categories:
+                if len(categories) > 1:
+                    logger.warning(f"categories = {categories}. Dropping all but the first non-empty.")
+
+                for category in categories:
+                    # clean category
+                    category = category.replace(self.separator.strip(), "").strip()
+                    if not category:
+                        continue
+                    label.category = category
+                    break
 
         # this prevents that imported labels are overwritten by old syncronizations
         if timestamp == "now":

@@ -33,6 +33,7 @@ import webbrowser
 from pathlib import Path
 from typing import List, Optional
 
+from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL import Image as PilImage
 from reportlab.lib import colors
@@ -49,7 +50,6 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .gui.qt.qr_components.qr import create_qr
 from .gui.qt.util import qicon_to_pil, read_QIcon
 from .wallet import Wallet
 
@@ -206,7 +206,9 @@ class BitcoinWalletRecoveryPDF:
         wallet_descriptor_string: str,
         threshold: int,
     ):
-        qr_image = pilimage_to_reportlab(create_qr(wallet_descriptor_string), width=200, height=200)
+        qr_image = pilimage_to_reportlab(
+            QRGenerator.create_qr_PILimage(wallet_descriptor_string), width=200, height=200
+        )
         if threshold > 1:
             desc_str = Paragraph(
                 f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",

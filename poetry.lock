@@ -120,14 +120,32 @@ files = [
 chardet = ">=3.0.2"
 
 [[package]]
-name = "bitcoin-qrreader"
-version = "0.8.8"
-description = "A python bitcoin qr reader"
+name = "bitcoin-nostr-chat"
+version = "0.1.2"
+description = "A Nostr Chat with participant discovery"
+optional = false
+python-versions = "<3.12,>=3.8.1"
+files = [
+    {file = "bitcoin_nostr_chat-0.1.2-py3-none-any.whl", hash = "sha256:fc298fba6cb4d17afcfb3169204fae4cd948d580d426b381206b7ae7390a1dc1"},
+    {file = "bitcoin_nostr_chat-0.1.2.tar.gz", hash = "sha256:8ed97dad5b664dabf6e134f9a85a1cd83b3a9a95a80e71d2b76292a383812ff2"},
+]
+
+[package.dependencies]
+bitcoin-qr-tools = ">=0.9.0"
+cbor2 = ">=5.6.3,<6.0.0"
+nostr-sdk = "0.10.0"
+pyqt6 = ">=6.6.1,<7.0.0"
+requests = ">=2.31.0,<3.0.0"
+
+[[package]]
+name = "bitcoin-qr-tools"
+version = "0.9.0"
+description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = "<3.12,>=3.8"
 files = [
-    {file = "bitcoin_qrreader-0.8.8-py3-none-any.whl", hash = "sha256:9ed4b5a8da30aed03b8f376e4ffa452361bf5038d2d672d8fc29d1e5f7571369"},
-    {file = "bitcoin_qrreader-0.8.8.tar.gz", hash = "sha256:926b9d3698d5aacf7a1b33a96a092ef2e4dbae6f811f111d5ce44c56520bb5cf"},
+    {file = "bitcoin_qr_tools-0.9.0-py3-none-any.whl", hash = "sha256:0ad932949608b00087d93dfc06e4c164e7cc8d9c890d0a00d0c758f5187b1814"},
+    {file = "bitcoin_qr_tools-0.9.0.tar.gz", hash = "sha256:5ef7483d0e9a46e84ee7a30fb2dc2971c3900a3a0bbe60b50cbbf0966b92fbc9"},
 ]
 
 [package.dependencies]
@@ -137,9 +155,11 @@ hwi = "2.3.1"
 mss = "9.0.1"
 numpy = ">=1.21.0,<2.0.0"
 opencv-python-headless = ">=4.9.0.80,<5.0.0.0"
+pillow = "9.5.0"
 pygame = "2.5.2"
 pyqt6 = ">=6.7.0,<7.0.0"
 pyzbar = "0.1.9"
+segno = "1.5.3"
 
 [[package]]
 name = "bitcoin-usb"
@@ -161,25 +181,26 @@ python-bitcointx = "1.1.4"
 
 [[package]]
 name = "briefcase"
-version = "0.3.17"
+version = "0.3.18"
 description = "Tools to support converting a Python project into a standalone native application."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "briefcase-0.3.17-py3-none-any.whl", hash = "sha256:85d4a86468389581880894f541e9fecef720f36df19e0ed25cdabd805fcb57c1"},
-    {file = "briefcase-0.3.17.tar.gz", hash = "sha256:0c3a9204acfa513929e347082e60504b7f8a6b8a39e5090564830fb8984cc7b0"},
+    {file = "briefcase-0.3.18-py3-none-any.whl", hash = "sha256:84788f709549eeb0c68d76afedf15d0ea1daf824451faea9b91c46016a22941a"},
+    {file = "briefcase-0.3.18.tar.gz", hash = "sha256:0e5fb850bb1aa884463f11316d91dad99530168595ababf92bf8cde0e1519b78"},
 ]
 
 [package.dependencies]
 build = ">=0.10"
-cookiecutter = ">=2.3.1,<3.0"
+cookiecutter = ">=2.6.0,<3.0"
 dmgbuild = {version = ">=1.6,<2.0", markers = "sys_platform == \"darwin\""}
 GitPython = ">=3.1,<4.0"
 importlib-metadata = {version = ">=4.4", markers = "python_version <= \"3.9\""}
 packaging = ">=22.0"
-pip = ">=23.1.1"
+pip = ">=23.1.2"
 platformdirs = ">=2.6,<5.0"
 psutil = ">=5.9,<6.0"
+python-dateutil = ">=2.9.0.post0"
 requests = ">=2.28,<3.0"
 rich = ">=12.6,<14.0"
 setuptools = ">=60"
@@ -188,8 +209,8 @@ tomli-w = ">=1.0,<2.0"
 wheel = ">=0.37"
 
 [package.extras]
-dev = ["coverage-conditional-plugin (==0.9.0)", "coverage[toml] (==7.4.1)", "pre-commit (==3.5.0)", "pre-commit (==3.6.0)", "pytest (==8.0.0)", "pytest-xdist (==3.5.0)", "setuptools-scm (==8.0.4)", "tox (==4.12.1)"]
-docs = ["furo (==2024.1.29)", "pyenchant (==3.2.2)", "sphinx (==7.1.2)", "sphinx (==7.2.6)", "sphinx-autobuild (==2024.2.4)", "sphinx-copybutton (==0.5.2)", "sphinx-tabs (==3.4.5)", "sphinxcontrib-spelling (==8.0.0)"]
+dev = ["coverage-conditional-plugin (==0.9.0)", "coverage[toml] (==7.5.1)", "pre-commit (==3.5.0)", "pre-commit (==3.7.0)", "pytest (==8.1.2)", "pytest-xdist (==3.6.1)", "setuptools-scm (==8.0.4)", "tox (==4.15.0)"]
+docs = ["furo (==2024.4.27)", "pyenchant (==3.2.2)", "sphinx (==7.1.2)", "sphinx (==7.3.7)", "sphinx-autobuild (==2021.3.14)", "sphinx-autobuild (==2024.4.16)", "sphinx-copybutton (==0.5.2)", "sphinx-tabs (==3.4.5)", "sphinxcontrib-spelling (==8.0.0)"]
 
 [[package]]
 name = "build"
@@ -2369,4 +2390,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "1b41af0ef522e14da5a3af72185b364023aa79c01414cb46d13df5b278322f12"
+content-hash = "db62556bcd952cffc8b257f4b42f676440bcdc4c684d222f7bec7e859263e128"

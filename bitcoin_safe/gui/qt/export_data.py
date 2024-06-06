@@ -30,15 +30,15 @@
 import logging
 from typing import Dict, Optional
 
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
+from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
+from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
 
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
-from bitcoin_safe.gui.qt.nostr_sync.connected_devices.connected_devices import short_key
-from bitcoin_safe.gui.qt.nostr_sync.nostr import BitcoinDM, ChatLabel
 from bitcoin_safe.threading_manager import TaskThread
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 
-from .qr_components.image_widget import QRCodeWidgetSVG
 from .sync_tab import SyncTab
 
 logger = logging.getLogger(__name__)
@@ -47,6 +47,7 @@ import json
 import os
 
 import bdkpython as bdk
+from bitcoin_qr_tools.qr_generator import QRGenerator
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QIcon
@@ -63,7 +64,6 @@ from PyQt6.QtWidgets import (
 )
 
 from ...signals import SignalsMin, pyqtSignal
-from .qr_components.qr import create_qr_svg
 from .util import Message, MessageType, do_copy, read_QIcon, save_file_dialog
 
 
@@ -336,7 +336,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         def do():
             self.signal_set_qr_images.connect(self.qr_label.set_images)
             fragments = data.generate_fragments_for_qr(max_qr_size=max_length)
-            images = [create_qr_svg(fragment) for fragment in fragments]
+            images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
         def on_done(result):

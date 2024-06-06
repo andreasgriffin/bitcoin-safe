@@ -32,16 +32,16 @@ import logging
 from datetime import datetime
 
 import nostr_sdk
-from bitcoin_qrreader.bitcoin_qr import DataType
+from bitcoin_nostr_chat.connected_devices.chat_gui import FileObject
+from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
+from bitcoin_nostr_chat.nostr import BitcoinDM
+from bitcoin_nostr_chat.nostr_sync import NostrSync
+from bitcoin_qr_tools.data import DataType
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtWidgets import QCheckBox, QVBoxLayout
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
-from bitcoin_safe.gui.qt.nostr_sync.connected_devices.chat_gui import FileObject
-from bitcoin_safe.gui.qt.nostr_sync.connected_devices.connected_devices import short_key
-from bitcoin_safe.gui.qt.nostr_sync.nostr import BitcoinDM
-from bitcoin_safe.gui.qt.nostr_sync.nostr_sync import NostrSync
 from bitcoin_safe.gui.qt.util import Message, custom_exception_handler
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.threading_manager import TaskThread

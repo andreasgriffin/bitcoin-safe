@@ -114,12 +114,50 @@ def test_label_bip329_import():
     labels.set_addr_category("some_address", "category 0")
 
     s = labels.export_bip329_jsonlines()
+    assert s == '{"type": "addr", "ref": "some_address", "label": "my label #category 0"}'
 
     labels2 = Labels()
     labels2.import_bip329_jsonlines(s, timestamp=timestamp)
 
     assert labels.data == labels2.data
 
+    assert labels2.get_category("some_address") == "category 0"
+    assert labels2.get_label("some_address") == "my label"
+
+
+def test_label_bip329_category_drop_multiple_categories():
+    s = '{"type": "addr", "ref": "some_address", "label": "my label #category 0 #category 1"}'
+
+    labels2 = Labels()
+    labels2.import_bip329_jsonlines(s)
+
+    assert labels2.get_category("some_address") == "category 0"
+    # dropping second category
+    assert labels2.get_label("some_address") == "my label"
+
+
+def test_label_bip329_category_bad_input():
+    # empty
+    s = '{"type": "addr", "ref": "some_address", "label": "my label #"}'
+
+    labels2 = Labels()
+    labels2.import_bip329_jsonlines(s)
+    assert labels2.get_category("some_address") == None
+    assert labels2.get_label("some_address") == "my label"
+
+    #   double hashtag
+    s = '{"type": "addr", "ref": "some_address", "label": "my label ##category 0"}'
+
+    labels2 = Labels()
+    labels2.import_bip329_jsonlines(s)
+    assert labels2.get_category("some_address") == "category 0"
+    assert labels2.get_label("some_address") == "my label"
+
+    #   double hashtag with spaces
+    s = '{"type": "addr", "ref": "some_address", "label": "my label # ### category 0 # ## category 1"}'
+
+    labels2 = Labels()
+    labels2.import_bip329_jsonlines(s)
     assert labels2.get_category("some_address") == "category 0"
     assert labels2.get_label("some_address") == "my label"
 

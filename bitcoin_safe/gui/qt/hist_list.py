@@ -72,7 +72,7 @@ from enum import IntEnum
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 from PyQt6.QtCore import (
     QModelIndex,
     QPersistentModelIndex,
@@ -349,6 +349,18 @@ class HistList(MyTreeView):
         if update_filter.refresh_all:
             return self.update()
 
+        def categories_intersect(model: MyStandardItemModel, row) -> Set:
+            return set(model.data(model.index(row, self.Columns.CATEGORIES))).intersection(
+                set(update_filter.categories)
+            )
+
+        def tx_involves_address(txid) -> Set:
+            (wallet, tx) = self._tx_dict[txid]
+            fulltxdetail = wallet.get_dict_fulltxdetail().get(txid)
+            if not fulltxdetail:
+                return set()
+            return update_filter.addresses.intersection(fulltxdetail.involved_addresses())
+
         logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
 
         log_info = []
@@ -356,9 +368,10 @@ class HistList(MyTreeView):
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
             txid = model.data(model.index(row, self.Columns.TXID))
-            if txid in update_filter.txids or set(
-                model.data(model.index(row, self.Columns.CATEGORIES))
-            ).intersection(set(update_filter.categories)):
+
+            if any(
+                [txid in update_filter.txids, categories_intersect(model, row), tx_involves_address(txid)]
+            ):
                 log_info.append((row, txid))
                 self.refresh_row(txid, row)
 

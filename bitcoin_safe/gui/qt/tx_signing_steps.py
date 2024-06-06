@@ -31,7 +31,7 @@ import logging
 from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 
 from bitcoin_safe.gui.qt.export_data import (
     DataGroupBox,

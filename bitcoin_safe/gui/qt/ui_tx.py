@@ -29,7 +29,7 @@
 
 import logging
 
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 
 from bitcoin_safe.fx import FX

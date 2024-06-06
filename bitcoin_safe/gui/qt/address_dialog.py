@@ -29,12 +29,12 @@
 
 import logging
 
+from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
+
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.util import serialized_to_hex
-
-from .qr_components.image_widget import QRCodeWidgetSVG
 
 logger = logging.getLogger(__name__)
 

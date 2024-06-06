@@ -61,7 +61,13 @@ from ...execute_config import ENABLE_THREADING
 from ...mempool import MempoolData
 from ...signals import SignalFunction, Signals, UpdateFilter
 from ...tx import TxUiInfos, short_tx_id
-from ...wallet import ProtoWallet, Wallet, filename_clean, get_wallets
+from ...wallet import (
+    DeltaCacheListTransactions,
+    ProtoWallet,
+    Wallet,
+    filename_clean,
+    get_wallets,
+)
 from .address_list import AddressList, AddressListWithToolbar
 from .bitcoin_quick_receive import BitcoinQuickReceive
 from .category_list import CategoryEditor
@@ -525,7 +531,11 @@ class QTWallet(QtWalletBase):
         self.wallet_descriptor_ui.protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
-    def notify_on_new_txs(self):
+    def get_delta_txs(self, access_marker="notifications") -> DeltaCacheListTransactions:
+        delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
+        return delta_txs
+
+    def notify_on_new_txs(self, delta_txs: DeltaCacheListTransactions):
         def format_txs(txs: List[bdk.TransactionDetails]) -> str:
             return "  \n".join(
                 [
@@ -534,7 +544,6 @@ class QTWallet(QtWalletBase):
                 ]
             )
 
-        delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker="notifications")
         # if transactions were removed (reorg or other), then recalculate everything
         if delta_txs.removed:
             Message(
@@ -559,24 +568,29 @@ class QTWallet(QtWalletBase):
                     no_show=True,
                 ).emit_with(self.signals.notification)
 
-    def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING):
+    def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING, force_ui_refresh=True):
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
         self.wallet.clear_cache()
 
         def do():
-            self.notify_on_new_txs()
             self.wallet.fill_commonly_used_caches()
 
         def on_done(result):
-            # now do the UI
-            logger.debug("start refresh ui")
+            delta_txs = self.get_delta_txs()
+            change_dict = delta_txs.was_changed()
+            logger.debug(f"change_dict={change_dict}")
+            if force_ui_refresh or change_dict:
+                self.notify_on_new_txs(delta_txs)
 
-            # self.address_list.update()
-            # self.address_list_tags.update()
-            self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
-            self.signals.utxos_updated.emit(UpdateFilter(refresh_all=True))
-            # self.history_list.update()
+                # now do the UI
+                logger.debug("start refresh ui")
+
+                # self.address_list.update()
+                # self.address_list_tags.update()
+                self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
+                self.signals.utxos_updated.emit(UpdateFilter(refresh_all=True))
+                # self.history_list.update()
 
         def on_success(result):
             # now do the UI
@@ -849,7 +863,7 @@ class QTWallet(QtWalletBase):
 
             logger.debug("start updating lists")
             # self.wallet.clear_cache()
-            self.refresh_caches_and_ui_lists()
+            self.refresh_caches_and_ui_lists(force_ui_refresh=False)
             # self.update_tabs()
             logger.debug("finished updating lists")
 
@@ -864,11 +878,12 @@ class QTWallet(QtWalletBase):
         # Possible solutions:
         #   1. Disable cache while syncing and force access to bdk.
         #       This might work, but also probably has considerable freezing effects
+        #       (since bdk is blocked due to syncing)
         #   2. Only use the cache during syncing.  This is the chosen solution here.
         #       by filling all the cache before the sync
         #       Additionally I do this in the main thread so all caches
         #       are filled before the syncing process
-        self.refresh_caches_and_ui_lists(threaded=False)
+        self.refresh_caches_and_ui_lists(threaded=False, force_ui_refresh=False)
 
         logger.info(f"Start syncing wallet {self.wallet.id}")
         self.set_sync_status(SyncStatus.syncing)

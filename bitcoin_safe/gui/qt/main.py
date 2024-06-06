@@ -50,8 +50,8 @@ import sys
 from typing import Deque, Dict, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.data import Data, DataType
 from PyQt6.QtCore import QCoreApplication, QProcess
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
         self.menu_action_open_wallet = self.menu_wallet.addAction("", self.open_wallet)
         self.menu_action_open_wallet.setShortcut(QKeySequence("CTRL+O"))
         self.menu_wallet_recent = self.menu_wallet.addMenu("")
-        self.menu_action_save_current_wallet = self.menu_wallet.addAction("", self.save_current_wallet)
+        self.menu_action_save_current_wallet = self.menu_wallet.addAction("", self.save_qt_wallet)
         self.menu_action_save_current_wallet.setShortcut(QKeySequence("CTRL+S"))
         self.menu_wallet.addSeparator()
 
@@ -382,6 +382,8 @@ class MainWindow(QMainWindow):
     def populate_recent_wallets_menu(self):
         self.menu_wallet_recent.clear()
         for filepath in reversed(self.config.recently_open_wallets[self.config.network]):
+            if not Path(filepath).exists():
+                continue
             self.menu_wallet_recent.addAction(
                 os.path.basename(filepath), lambda filepath=filepath: self.open_wallet(file_path=filepath)
             )
@@ -418,7 +420,7 @@ class MainWindow(QMainWindow):
         new_file_path = os.path.join(directory, filename_clean(new_wallet_id))
 
         qt_wallet.move_wallet_file(new_file_path)
-        qt_wallet.save()
+        self.save_qt_wallet(qt_wallet)
         logger.info(f"Saved {old_filepath} under new name {qt_wallet.file_path}")
         self.set_title()
 
@@ -565,32 +567,30 @@ class MainWindow(QMainWindow):
                 txlike = str(txlike)
 
         if isinstance(txlike, str):
-            res = bitcoin_qr.Data.from_str(txlike, self.config.network)
-            if res.data_type == bitcoin_qr.DataType.Txid:
+            res = Data.from_str(txlike, self.config.network)
+            if res.data_type == DataType.Txid:
                 txdetails = self.fetch_txdetails(res.data)
                 if txdetails:
                     return self.open_tx_in_tab(txdetails)
                 if not txlike:
                     raise Exception(f"txid {res.data} could not be found in wallets")
-            elif res.data_type == bitcoin_qr.DataType.PSBT:
+            elif res.data_type == DataType.PSBT:
                 return self.open_psbt_in_tab(res.data)
-            elif res.data_type == bitcoin_qr.DataType.Tx:
+            elif res.data_type == DataType.Tx:
                 return self.open_tx_in_tab(res.data)
             else:
                 logger.warning(f"DataType {res.data_type.name} was not handled.")
 
     def load_tx_like_from_qr(self):
-        def result_callback(data: bitcoin_qr.Data):
+        def result_callback(data: Data):
             if data.data_type in [
-                bitcoin_qr.DataType.PSBT,
-                bitcoin_qr.DataType.Tx,
-                bitcoin_qr.DataType.Txid,
+                DataType.PSBT,
+                DataType.Tx,
+                DataType.Txid,
             ]:
                 self.open_tx_like_in_tab(data.data)
 
-        window = bitcoin_qr_gui.BitcoinVideoWidget(
-            result_callback=result_callback, network=self.config.network
-        )
+        window = BitcoinVideoWidget(result_callback=result_callback, network=self.config.network)
         window.show()
 
     def dialog_open_tx_from_str(self):
@@ -804,7 +804,10 @@ class MainWindow(QMainWindow):
 
         logger.debug(f"Selected file: {file_path}")
         if not os.path.isfile(file_path):
-            logger.debug(self.tr("There is no such file: {file_path}").format(file_path=file_path))
+            Message(
+                self.tr("There is no such file: {file_path}").format(file_path=file_path),
+                type=MessageType.Error,
+            )
             return
         password = None
         if Storage().has_password(file_path):
@@ -892,14 +895,15 @@ class MainWindow(QMainWindow):
         qt_wallet.wallet.labels.import_electrum_wallet_json(lines, network=self.config.network)
         self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
 
-    def save_current_wallet(self):
-        qt_wallet = self.get_qt_wallet()
+    def save_qt_wallet(self, qt_wallet=None):
+        qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if qt_wallet:
             qt_wallet.save()
+            self.add_recently_open_wallet(qt_wallet.file_path)
 
     def save_all_wallets(self):
         for qt_wallet in self.qt_wallets.values():
-            qt_wallet.save()
+            self.save_qt_wallet(qt_wallet=qt_wallet)
 
     def write_current_open_txs_to_config(self):
         l = []
@@ -942,7 +946,7 @@ class MainWindow(QMainWindow):
         # adding these should only be done at wallet creation
         qt_wallet.address_list_tags.add(self.tr("Friends"))
         qt_wallet.address_list_tags.add(self.tr("KYC-Exchange"))
-        qt_wallet.save()
+        self.save_qt_wallet(qt_wallet)
         qt_wallet.sync()
         return qt_wallet
 
@@ -1180,7 +1184,7 @@ class MainWindow(QMainWindow):
             ):
                 return
             logger.debug(self.tr("Closing wallet {id}").format(id=qt_wallet.wallet.id))
-            qt_wallet.save()
+            self.save_qt_wallet(qt_wallet)
         else:
             logger.debug(self.tr("Closing tab {name}").format(name=self.tab_wallets.tabText(index)))
         self.tab_wallets.removeTab(index)

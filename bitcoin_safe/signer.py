@@ -43,8 +43,8 @@ setup_libsecp256k1()
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_usb.gui import USBGui
 from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 from bitcoin_usb.software_signer import SoftwareSigner
@@ -171,9 +171,9 @@ class SignatureImporterQR(AbstractSignatureImporter):
         )
         self._label = label if label else self.tr("Scan QR code")
 
-    def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: bitcoin_qr.Data):
+    def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
         logger.debug(str(data.data))
-        if data.data_type == bitcoin_qr.DataType.PSBT:
+        if data.data_type == DataType.PSBT:
             scanned_psbt: bdk.PartiallySignedTransaction = data.data
             assert self.txids_match(scanned_psbt, original_psbt), self.tr(
                 "The txid of the signed psbt doesnt match the original txid"
@@ -201,7 +201,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
             logger.debug(f"psbt updated {psbt2.serialize()}")
             self.signal_signature_added.emit(psbt2)
 
-        elif data.data_type == bitcoin_qr.DataType.Tx:
+        elif data.data_type == DataType.Tx:
             scanned_tx: bdk.Transaction = data.data
             if scanned_tx.txid() != original_psbt.txid():
                 Message(
@@ -220,7 +220,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
 
-        window = bitcoin_qr_gui.BitcoinVideoWidget(
+        window = BitcoinVideoWidget(
             result_callback=lambda data: self.scan_result_callback(psbt, data), network=self.network
         )
         window.show()
@@ -255,9 +255,7 @@ class SignatureImporterFile(SignatureImporterQR):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title="Import signed PSBT",
-            on_open=lambda s: self.scan_result_callback(
-                psbt, bitcoin_qr.Data.from_str(s, network=self.network)
-            ),
+            on_open=lambda s: self.scan_result_callback(psbt, Data.from_str(s, network=self.network)),
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
@@ -295,9 +293,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
-            on_open=lambda s: self.scan_result_callback(
-                psbt, bitcoin_qr.Data.from_str(s, network=self.network)
-            ),
+            on_open=lambda s: self.scan_result_callback(psbt, Data.from_str(s, network=self.network)),
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),

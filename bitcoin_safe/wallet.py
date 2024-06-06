@@ -67,6 +67,10 @@ from .util import (
 )
 
 
+class InconsistentBDKState(Exception):
+    pass
+
+
 class TxConfirmationStatus(enum.Enum):
     CONFIRMED = 1
     UNCONFIRMED = 0
@@ -294,10 +298,18 @@ class ProtoWallet(BaseSaveableClass):
 class DeltaCacheListTransactions:
     def __init__(self) -> None:
         super().__init__()
-        self.old: List[bdk.TransactionDetails] = []
+        self.old_state: List[bdk.TransactionDetails] = []
         self.appended: List[bdk.TransactionDetails] = []
         self.removed: List[bdk.TransactionDetails] = []
-        self.new: List[bdk.TransactionDetails] = []
+        self.new_state: List[bdk.TransactionDetails] = []
+
+    def was_changed(self) -> Dict[str, List[bdk.TransactionDetails]]:
+        d = {}
+        if self.appended:
+            d["appended"] = self.appended
+        if self.removed:
+            d["removed"] = self.removed
+        return d
 
 
 class BdkWallet(bdk.Wallet, CacheManager):
@@ -397,18 +409,18 @@ class BdkWallet(bdk.Wallet, CacheManager):
 
         key = "list_delta_transactions" + str(access_marker)
         entry = self._delta_cache[key] = self._delta_cache.get(key, DeltaCacheListTransactions())
-        entry.old = entry.new
+        entry.old_state = entry.new_state
 
         # start_time = time()
-        entry.new = self.list_transactions(include_raw=include_raw)
+        entry.new_state = self.list_transactions(include_raw=include_raw)
 
-        old_ids = [tx.txid for tx in entry.old]
-        new_ids = [tx.txid for tx in entry.new]
+        old_ids = [tx.txid for tx in entry.old_state]
+        new_ids = [tx.txid for tx in entry.new_state]
         appended_ids = set(new_ids) - set(old_ids)
         removed_ids = set(old_ids) - set(new_ids)
 
-        entry.appended = [tx for tx in entry.new if tx.txid in appended_ids]
-        entry.removed = [tx for tx in entry.old if tx.txid in removed_ids]
+        entry.appended = [tx for tx in entry.new_state if tx.txid in appended_ids]
+        entry.removed = [tx for tx in entry.old_state if tx.txid in removed_ids]
 
         # logger.debug(
         #     f"self.bdkwallet.list_delta_transactions {len(entry.new)} results in { time()-start_time}s"
@@ -1054,6 +1066,15 @@ class Wallet(BaseSaveableClass, CacheManager):
         balances: defaultdict[str, Balance] = defaultdict(Balance)
         for i, utxo in enumerate(utxos):
             tx = self.get_tx(utxo.outpoint.txid)
+            if not tx:
+                logger.warning(f"This should not happen. Most likely it is due to outdated caches.")
+                # this way of handeling this special case is suboptimal.
+                # Better would be to handle the caches such that the caches are always consistent
+                self.clear_instance_cache()
+                tx = self.get_tx(utxo.outpoint.txid)
+                if not tx:
+                    raise InconsistentBDKState(f"{utxo.outpoint.txid} not present in transaction details")
+
             txout: bdk.TxOut = tx.transaction.output()[utxo.outpoint.vout]
 
             address = self.bdkwallet.get_address_of_txout(TxOut.from_bdk(txout))
@@ -1092,7 +1113,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         # if transactions were removed (reorg or other), then recalculate everything
         if delta_txs.removed or not self.cache_dict_fulltxdetail:
             self.cache_dict_fulltxdetail = {}
-            txs = delta_txs.new
+            txs = delta_txs.new_state
         else:
             txs = delta_txs.appended
 

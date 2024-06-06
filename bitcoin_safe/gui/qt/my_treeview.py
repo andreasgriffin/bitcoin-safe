@@ -70,7 +70,7 @@ import tempfile
 from decimal import Decimal
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
 
-from bitcoin_qrreader.bitcoin_qr import Data
+from bitcoin_qr_tools.data import Data
 from PyQt6 import QtCore
 from PyQt6.QtCore import (
     QAbstractItemModel,

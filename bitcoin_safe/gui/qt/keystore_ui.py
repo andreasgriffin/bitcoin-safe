@@ -49,7 +49,13 @@ logger = logging.getLogger(__name__)
 from typing import Callable, List
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr
+from bitcoin_qr_tools.data import (
+    Data,
+    DataType,
+    SignerInfo,
+    convert_slip132_to_bip32,
+    is_slip132,
+)
 from bitcoin_usb.address_types import AddressType
 from bitcoin_usb.gui import USBGui
 from bitcoin_usb.software_signer import SoftwareSigner
@@ -207,7 +213,7 @@ class KeyStoreUI(QObject):
         self.button_hwi.clicked.connect(lambda: self.on_hwi_click())
 
         def process_input(s: str):
-            res = bitcoin_qr.Data.from_str(s, self.network)
+            res = Data.from_str(s, self.network)
             self._on_handle_input(res)
 
         self.button_file.clicked.connect(
@@ -336,8 +342,8 @@ class KeyStoreUI(QObject):
     def get_expected_key_origin(self) -> str:
         return self.get_address_type().key_origin(self.network)
 
-    def set_using_signer_info(self, signer_info: bitcoin_qr.SignerInfo):
-        def check_key_origin(signer_info: bitcoin_qr.SignerInfo):
+    def set_using_signer_info(self, signer_info: SignerInfo):
+        def check_key_origin(signer_info: SignerInfo):
             expected_key_origin = self.get_expected_key_origin()
             if signer_info.key_origin != expected_key_origin:
                 Message(
@@ -356,11 +362,11 @@ class KeyStoreUI(QObject):
         self.edit_fingerprint.setText(signer_info.fingerprint)
         self.successful_import_signer_info()
 
-    def _on_handle_input(self, data: bitcoin_qr.Data, parent: QWidget = None):
+    def _on_handle_input(self, data: Data, parent: QWidget = None):
 
-        if data.data_type == bitcoin_qr.DataType.SignerInfo:
+        if data.data_type == DataType.SignerInfo:
             self.set_using_signer_info(data.data)
-        elif data.data_type == bitcoin_qr.DataType.SignerInfos:
+        elif data.data_type == DataType.SignerInfos:
             expected_key_origin = self.get_expected_key_origin()
             # pick the right signer data
             for signer_info in data.data:
@@ -375,18 +381,18 @@ class KeyStoreUI(QObject):
                     )
                 )
 
-        elif data.data_type == bitcoin_qr.DataType.Xpub:
+        elif data.data_type == DataType.Xpub:
             self.edit_xpub.setText(data.data)
-        elif data.data_type == bitcoin_qr.DataType.Fingerprint:
+        elif data.data_type == DataType.Fingerprint:
             self.edit_fingerprint.setText(data.data)
         elif data.data_type in [
-            bitcoin_qr.DataType.Descriptor,
-            bitcoin_qr.DataType.MultiPathDescriptor,
+            DataType.Descriptor,
+            DataType.MultiPathDescriptor,
         ]:
             Message(self.tr("Please paste descriptors into the descriptor field in the top right."))
         elif isinstance(data.data, str) and parent:
             parent.setText(data.data)
-        elif isinstance(data, bitcoin_qr.Data):
+        elif isinstance(data, Data):
             Message(
                 self.tr("{data_type} cannot be used here.").format(data_type=data.data_type),
                 type=MessageType.Error,
@@ -397,13 +403,13 @@ class KeyStoreUI(QObject):
     def xpub_validator(self):
         xpub = self.edit_xpub.text()
         # automatically convert slip132
-        if bitcoin_qr.is_slip132(xpub):
+        if is_slip132(xpub):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
                 title="Converting format",
             )
             try:
-                self.edit_xpub.setText(bitcoin_qr.convert_slip132_to_bip32(xpub))
+                self.edit_xpub.setText(convert_slip132_to_bip32(xpub))
             except:
                 return False
 
@@ -443,9 +449,7 @@ class KeyStoreUI(QObject):
             return
 
         fingerprint, xpub = result
-        self.set_using_signer_info(
-            bitcoin_qr.SignerInfo(fingerprint=fingerprint, key_origin=key_origin, xpub=xpub)
-        )
+        self.set_using_signer_info(SignerInfo(fingerprint=fingerprint, key_origin=key_origin, xpub=xpub))
 
     def get_ui_values_as_keystore(self) -> KeyStore:
         seed_str = self.edit_seed.text().strip()

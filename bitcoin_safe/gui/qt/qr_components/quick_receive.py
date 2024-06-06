@@ -29,6 +29,7 @@
 
 from typing import List
 
+from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import QMargins, Qt
 from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import (
@@ -42,8 +43,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-
-from .image_widget import QRCodeWidgetSVG
 
 
 class TitledComponent(QWidget):
