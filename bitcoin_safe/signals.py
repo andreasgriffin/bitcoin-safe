@@ -31,7 +31,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 import threading
-from typing import Callable, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
@@ -50,7 +50,7 @@ class UpdateFilter:
         self.txids = set(txids) if txids else set()
         self.refresh_all = refresh_all
 
-    def __key__(self):
+    def __key__(self) -> Tuple:
         return tuple(self.__dict__.items())
 
     def __str__(self) -> str:
@@ -61,26 +61,26 @@ class UpdateFilter:
 
 
 class SignalFunction:
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: Optional[str] = None) -> None:
         self.name = name
         self.slots: Dict[str, Callable] = {}
         self.lock = threading.Lock()
 
-    def connect(self, slot: Callable, slot_name=None):
+    def connect(self, slot: Callable, slot_name=None) -> None:
         with self.lock:
             key = slot_name if slot_name and (slot_name not in self.slots) else str(slot)
             self.slots[key] = slot
 
-    def disconnect(self, slot):
+    def disconnect(self, slot) -> None:
         with self.lock:
             keys, values = zip(*list(self.slots.items()))
             idx = values.index(slot)
             del self.slots[keys[idx]]
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         return self.emit(*args, **kwargs)
 
-    def emit(self, *args, slot_name=None, **kwargs):
+    def emit(self, *args, slot_name=None, **kwargs) -> Dict[str, Any]:
         allow_list = [slot_name] if isinstance(slot_name, str) else slot_name
 
         responses = {}
@@ -115,13 +115,13 @@ class SignalFunction:
 
 
 class SingularSignalFunction(SignalFunction):
-    def connect(self, slot: Callable, slot_name=None):
+    def connect(self, slot: Callable, slot_name=None) -> None:
         if not self.slots:
             super().connect(slot, slot_name=slot_name)
         else:
             raise Exception("Not allowed to add a second listener to this signal.")
 
-    def emit(self, *args, **kwargs):
+    def emit(self, *args, **kwargs) -> Any:
         responses = super().emit(*args, **kwargs)
         return list(responses.values())[0] if responses else responses
 

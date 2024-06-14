@@ -29,7 +29,7 @@
 
 import logging
 
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_usb.psbt_finalizer import PSBTFinalizer
 
 from bitcoin_safe.fx import FX
@@ -287,7 +287,7 @@ class UITx_Viewer(UITx_Base):
         self.signals.finished_open_wallet.connect(self.reload)
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.tabs_inputs_outputs.setTabText(
             self.tabs_inputs_outputs.indexOf(self.tab_inputs), self.tr("Inputs")
         )
@@ -309,18 +309,18 @@ class UITx_Viewer(UITx_Base):
             assert isinstance(self.data.data, bdk.PartiallySignedTransaction)
             return self.data.data.extract_tx()
 
-    def go_to_next_index(self):
+    def go_to_next_index(self) -> None:
         if self.tx_singning_steps:
             self.tx_singning_steps.go_to_next_index()
 
-    def go_to_previous_index(self):
+    def go_to_previous_index(self) -> None:
         if self.tx_singning_steps:
             self.tx_singning_steps.go_to_previous_index()
 
     def serialize(self) -> str:
         return self.data.data_as_string()
 
-    def edit(self):
+    def edit(self) -> None:
 
         txinfos = ToolsTxUiInfo.from_tx(
             self.extract_tx(), self.fee_info, self.network, get_wallets(self.signals)
@@ -328,7 +328,7 @@ class UITx_Viewer(UITx_Base):
 
         self.signals.open_tx_like.emit(txinfos)
 
-    def reload(self):
+    def reload(self) -> None:
         if self.data.data_type == DataType.PSBT:
 
             # check if the tx can be finalized and then open the final tx:
@@ -355,7 +355,7 @@ class UITx_Viewer(UITx_Base):
     def txid(self) -> str:
         return self.extract_tx().txid()
 
-    def broadcast(self):
+    def broadcast(self) -> None:
         if not self.data.data_type == DataType.Tx:
             return
         assert isinstance(self.data.data, bdk.Transaction)
@@ -422,7 +422,7 @@ class UITx_Viewer(UITx_Base):
     ) -> Dict[str, List[AbstractSignatureImporter]]:
         signature_importers: Dict[str, List[AbstractSignatureImporter]] = {}
 
-        def get_signing_fingerprints_of_wallet(wallet: Wallet):
+        def get_signing_fingerprints_of_wallet(wallet: Wallet) -> Set[str]:
             # check which keys the wallet can sign
 
             wallet_signing_fingerprints = set(
@@ -650,7 +650,7 @@ class UITx_Viewer(UITx_Base):
         self.export_widget_container.layout().addWidget(widget)
         return widget
 
-    def tx_received(self, tx: bdk.Transaction):
+    def tx_received(self, tx: bdk.Transaction) -> None:
 
         if self.data.data_type != DataType.PSBT:
             return
@@ -670,11 +670,11 @@ class UITx_Viewer(UITx_Base):
             ),
         )
 
-    def _get_total_output_amount(self, simple_psbt: SimplePSBT):
+    def _get_total_output_amount(self, simple_psbt: SimplePSBT) -> int:
         total_output_amount = sum([output.value for output in simple_psbt.outputs])
         return total_output_amount
 
-    def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction):
+    def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction) -> None:
         simple_psbt = SimplePSBT.from_psbt(psbt_with_signatures)
 
         if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
@@ -695,7 +695,7 @@ class UITx_Viewer(UITx_Base):
                 ),
             )
 
-    def is_in_mempool(self, txid: str):
+    def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here
         wallets = get_wallets(self.signals)
         for wallet in wallets:
@@ -709,7 +709,7 @@ class UITx_Viewer(UITx_Base):
         fee_info: FeeInfo = None,
         confirmation_time: bdk.BlockTime = None,
         sent_amount: int = None,
-    ):
+    ) -> None:
         self.data = Data(tx, DataType.Tx)
         self.fee_info = fee_info
 
@@ -748,7 +748,7 @@ class UITx_Viewer(UITx_Base):
         self.set_visibility(confirmation_time)
         self.create_tx_export()
 
-    def set_visibility(self, confirmation_time: bdk.BlockTime = None):
+    def set_visibility(self, confirmation_time: bdk.BlockTime = None) -> None:
         if self.data.data_type == DataType.PSBT:
             self.export_widget_container.setVisible(False)
             self.tx_singning_steps_container.setVisible(True)
@@ -773,7 +773,7 @@ class UITx_Viewer(UITx_Base):
         self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
         self.button_rbf.setVisible(tx_status.can_rbf())
 
-    def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_info: FeeInfo = None):
+    def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_info: FeeInfo = None) -> None:
         """_summary_
 
         Args:
@@ -907,7 +907,7 @@ class UITx_Creator(UITx_Base):
         self.signals.utxos_updated.connect(self.updateUi)  # for the balance
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         # translations
         self.label_select_input_categories.setText(self.tr("Select a category that fits the recipient best"))
         self.checkBox_reduce_future_fees.setText(self.tr("Reduce future fees\nby merging address balances"))
@@ -948,17 +948,17 @@ class UITx_Creator(UITx_Base):
         # balance label
         self.balance_label.setText(self.wallet.get_balance().format_short(network=self.config.network))
 
-    def reset_fee_rate(self):
+    def reset_fee_rate(self) -> None:
         self.fee_group.set_fee_rate(self.mempool_data.get_prio_fee_rates()[TxPrio.low])
 
-    def clear_ui(self):
+    def clear_ui(self) -> None:
         self.additional_outpoints.clear()
         self.set_ui(TxUiInfos())
         self.tabs_inputs.setCurrentIndex(0)
         self.reset_fee_rate()
         self.utxo_list.update()
 
-    def create_tx(self):
+    def create_tx(self) -> None:
         if (
             self.tabs_inputs.currentWidget() == self.tab_inputs_categories
             and not self.category_list.get_selected()
@@ -969,7 +969,7 @@ class UITx_Creator(UITx_Base):
             return
         self.signal_create_tx.emit(self.get_ui_tx_infos())
 
-    def update_fee_rate_to_mempool(self):
+    def update_fee_rate_to_mempool(self) -> None:
         "Do this only ONCE after the mempool data is fetched"
         if self.fee_group.spin_fee_rate.value() == MIN_RELAY_FEE:
             self.reset_fee_rate()
@@ -1008,7 +1008,7 @@ class UITx_Creator(UITx_Base):
             for category in self.wallet.labels.categories
         ]
 
-    def create_inputs_selector(self, layout: QLayout):
+    def create_inputs_selector(self, layout: QLayout) -> None:
 
         self.tabs_inputs = QTabWidget(self.main_widget)
         self.tabs_inputs.setMinimumWidth(200)
@@ -1066,14 +1066,14 @@ class UITx_Creator(UITx_Base):
         if idx_non_zero_category is not None:
             self.category_list.item(idx_non_zero_category).setSelected(True)
 
-    def add_outpoints(self, outpoints: List[OutPoint]):
+    def add_outpoints(self, outpoints: List[OutPoint]) -> None:
         old_outpoints = self.get_outpoints()
         for outpoint in outpoints:
             if outpoint not in old_outpoints:
                 self.additional_outpoints.append(outpoint)
 
-    def click_add_utxo(self):
-        def process_input(s: str):
+    def click_add_utxo(self) -> None:
+        def process_input(s: str) -> None:
             outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
             logger.debug(self.tr("Adding outpoints {outpoints}").format(outpoints=outpoints))
             self.add_outpoints(outpoints)
@@ -1094,7 +1094,7 @@ class UITx_Creator(UITx_Base):
     def opportunistic_merging_threshold(self) -> float:
         return self.wallet.get_ema_fee_rate()
 
-    def estimate_fee_info(self, fee_rate: float = None):
+    def estimate_fee_info(self, fee_rate: float = None) -> FeeInfo:
         sent_values = [r.amount for r in self.recipients.recipients]
         # one more output for the change
         num_outputs = len(sent_values) + 1
@@ -1143,7 +1143,7 @@ class UITx_Creator(UITx_Base):
 
         return infos
 
-    def reapply_max_amounts(self):
+    def reapply_max_amounts(self) -> None:
         recipient_group_boxes = self.recipients.get_recipient_group_boxes()
         for recipient_group_box in recipient_group_boxes:
             recipient_group_box.amount_spin_box.setMaximum(self.get_total_input_value())
@@ -1179,12 +1179,12 @@ class UITx_Creator(UITx_Base):
         total_change_amount = total_input_value - total_output_value
         return total_change_amount
 
-    def set_max_amount(self, recipient_group_box: RecipientGroupBox, max_amount: int):
+    def set_max_amount(self, recipient_group_box: RecipientGroupBox, max_amount: int) -> None:
         with BlockChangesSignals([recipient_group_box]):
 
             recipient_group_box.amount_spin_box.setValue(max_amount)
 
-    def tab_changed(self, index: int):
+    def tab_changed(self, index: int) -> None:
         # pyqtSlot called when the current tab changes
         # print(f"Tab changed to index {index}")
 
@@ -1196,7 +1196,7 @@ class UITx_Creator(UITx_Base):
             # take the coin selection from the category to the utxo tab (but only if one is selected)
             self.set_coin_selection_in_sent_tab(self.get_ui_tx_infos(self.tab_inputs_categories))
 
-    def set_coin_selection_in_sent_tab(self, txinfos: TxUiInfos):
+    def set_coin_selection_in_sent_tab(self, txinfos: TxUiInfos) -> None:
         utxos_for_input = self.wallet.handle_opportunistic_merge_utxos(txinfos)
 
         model = self.utxo_list.model()
@@ -1218,7 +1218,7 @@ class UITx_Creator(UITx_Base):
                     index, QItemSelectionModel.SelectionFlag.Deselect | QItemSelectionModel.SelectionFlag.Rows
                 )
 
-    def set_ui(self, txinfos: TxUiInfos):
+    def set_ui(self, txinfos: TxUiInfos) -> None:
         self.recipients.recipients = txinfos.recipients
         if not self.recipients.recipients:
             self.recipients.add_recipient()

@@ -33,7 +33,7 @@ import platform
 import shutil
 import tempfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from packaging import version
 from PyQt6.QtWidgets import QHBoxLayout, QStyle, QWidget
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 class UpdateNotificationBar(NotificationBar):
     key = KnownGPGKeys.andreasgriffin
 
-    def __init__(self, signals_min: SignalsMin, parent=None):
+    def __init__(self, signals_min: SignalsMin, parent=None) -> None:
         self.download_container = QWidget()
         self.download_container.setLayout(QHBoxLayout())
         current_margins = self.download_container.layout().contentsMargins()
@@ -100,7 +100,7 @@ class UpdateNotificationBar(NotificationBar):
             return False
         return version.parse(tag) > version.parse(__version__)
 
-    def refresh(self):
+    def refresh(self) -> None:
         self.optionalButton.setText(self.tr("Check for Update"))
 
         # clear layout
@@ -129,7 +129,7 @@ class UpdateNotificationBar(NotificationBar):
             self.textLabel.setText(self.tr("No update found"))
             self.optionalButton.setVisible(True)
 
-    def on_download_finished(self, download_thread: DownloadThread):
+    def on_download_finished(self, download_thread: DownloadThread) -> None:
         sig_file_path = self.verifyer.get_signature_from_web(download_thread.filename)
         if not sig_file_path:
             Message(self.tr("Could not verify the download. Please try again later."))
@@ -210,24 +210,24 @@ class UpdateNotificationBar(NotificationBar):
             filtered_assets.append(asset)
         return filtered_assets
 
-    def check(self):
-        def do():
+    def check(self) -> None:
+        def do() -> Any:
             return GitHubAssetDownloader(self.key.repository).get_assets_latest()
 
-        def on_done(result):
+        def on_done(result) -> None:
             pass
 
-        def on_success(assets: List[Asset]):
+        def on_success(assets: List[Asset]) -> None:
             # filter the assets, by recognized and for the platform
 
             self.assets = self.get_filtered_assets(assets)
             self.refresh()
 
-        def on_error(packed_error_info):
+        def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")
 
         TaskThread(self, signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
 
-    def check_and_make_visible(self):
+    def check_and_make_visible(self) -> None:
         self.check()
         self.setVisible(True)

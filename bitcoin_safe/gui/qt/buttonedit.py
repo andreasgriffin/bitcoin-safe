@@ -31,6 +31,8 @@ import logging
 from typing import Callable, List, Optional, Union
 
 from bdkpython import bdk
+from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.data import Data, DecodingException
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent
 from PyQt6.QtWidgets import (
@@ -47,7 +49,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import do_copy, icon_path
+from bitcoin_safe.gui.qt.util import Message, do_copy, icon_path
 from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
@@ -60,14 +62,14 @@ class SquareButton(QPushButton):
 
 
 class ButtonsField(QWidget):
-    def __init__(self, vertical_align: Qt = Qt.AlignmentFlag.AlignBottom, parent=None):
+    def __init__(self, vertical_align: Qt = Qt.AlignmentFlag.AlignBottom, parent=None) -> None:
         super().__init__(parent)
         self.grid_layout = QGridLayout(self)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setSpacing(0)
         self.vertical_align = vertical_align
 
-    def minimumSizeHint(self):
+    def minimumSizeHint(self) -> QSize:
         # Initialize minimum width and height
         width = 0
         height = 0
@@ -83,11 +85,11 @@ class ButtonsField(QWidget):
         # If there are no buttons, fall back to the default minimum size hint
         return super().minimumSizeHint()
 
-    def resizeEvent(self, event: QResizeEvent):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self.rearrange_buttons()
 
-    def rearrange_buttons(self):
+    def rearrange_buttons(self) -> None:
         # Get the current size of the widget
         current_height = self.size().height()
 
@@ -146,7 +148,7 @@ class ButtonEdit(QWidget):
         parent=None,
         input_field=None,
         signal_update: pyqtSignal = None,
-    ):
+    ) -> None:
         super().__init__(parent=parent)
         self.callback_is_valid: Optional[Callable[[], bool]] = None
         self.buttons: List[QPushButton] = []  # Store button references
@@ -185,7 +187,7 @@ class ButtonEdit(QWidget):
             signal_update.connect(self.updateUi)
         self.updateUi()
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         if self.button_camera:
             self.button_camera.setToolTip(translate("d", "Read QR code from camera"))
         if self.copy_button:
@@ -197,7 +199,9 @@ class ButtonEdit(QWidget):
         if self.open_file_button:
             self.open_file_button.setToolTip(translate("d", "Open file"))
 
-    def add_button(self, button_path: Optional[str], button_callback: Callable, tooltip: str = ""):
+    def add_button(
+        self, button_path: Optional[str], button_callback: Callable, tooltip: str = ""
+    ) -> SquareButton:
         button = SquareButton(QIcon(button_path), parent=self)  # Create the button with the icon
         if tooltip:
             button.setToolTip(tooltip)
@@ -211,15 +215,16 @@ class ButtonEdit(QWidget):
 
     def add_copy_button(
         self,
-    ):
-        def on_copy():
+    ) -> SquareButton:
+        def on_copy() -> None:
             do_copy(self.text())
 
         self.copy_button = self.add_button(
             icon_path("copy.png"), on_copy, tooltip=translate("d", "Copy to clipboard")
         )
+        return self.copy_button
 
-    def set_input_field(self, input_widget: QWidget):
+    def set_input_field(self, input_widget: QWidget) -> None:
         # Remove the current input field from the layout and delete it
         self.main_layout.removeWidget(self.input_field)
         self.input_field.deleteLater()
@@ -228,24 +233,24 @@ class ButtonEdit(QWidget):
         self.input_field = input_widget
         self.main_layout.insertWidget(0, self.input_field)  # Insert at the beginning
 
-    def setText(self, value: str):
+    def setText(self, value: str) -> None:
         self.input_field.setText(value)
 
-    def setPlainText(self, value: str):
+    def setPlainText(self, value: str) -> None:
         self.input_field.setText(value)
 
-    def setStyleSheet(self, value: str):
+    def setStyleSheet(self, value: str) -> None:
         self.input_field.setStyleSheet(value)
 
-    def text(self):
+    def text(self) -> str:
         if hasattr(self.input_field, "toPlainText"):
             return getattr(self.input_field, "toPlainText")()
         return self.input_field.text()
 
-    def setPlaceholderText(self, value: str):
+    def setPlaceholderText(self, value: str) -> None:
         self.input_field.setPlaceholderText(value)
 
-    def setReadOnly(self, value: bool):
+    def setReadOnly(self, value: bool) -> None:
         self.input_field.setReadOnly(value)
 
     def add_qr_input_from_camera_button(
@@ -253,18 +258,24 @@ class ButtonEdit(QWidget):
         network: bdk.Network,
         *,
         custom_handle_input=None,
-    ):
-        def input_qr_from_camera():
-            from bitcoin_qrreader import bitcoin_qr, bitcoin_qr_gui
+    ) -> SquareButton:
+        def input_qr_from_camera() -> None:
+            def exception_callback(e: Exception) -> None:
+                if isinstance(e, DecodingException):
+                    Message("Could not recognize the input.")
+                else:
+                    Message(str(e))
 
-            def result_callback(data: bitcoin_qr.Data):
+            def result_callback(data: Data) -> None:
                 if custom_handle_input:
                     custom_handle_input(data, self)
                 else:
                     if hasattr(self, "setText"):
                         self.setText(str(data.data_as_string()))
 
-            window = bitcoin_qr_gui.BitcoinVideoWidget(result_callback=result_callback, network=network)
+            window = BitcoinVideoWidget(
+                result_callback=result_callback, network=network, exception_callback=exception_callback
+            )
             window.show()
 
         self.button_camera = self.add_button(
@@ -279,17 +290,18 @@ class ButtonEdit(QWidget):
     def add_pdf_buttton(
         self,
         on_click: Callable,
-    ):
+    ) -> SquareButton:
 
         self.pdf_button = self.add_button(
             icon_path("pdf-file.svg"), on_click, tooltip=translate("d", "Create PDF")
         )
+        return self.pdf_button
 
     def add_random_mnemonic_button(
         self,
         callback_seed=None,
-    ):
-        def on_click():
+    ) -> SquareButton:
+        def on_click() -> None:
             seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
             self.setText(seed)
             if callback_seed:
@@ -298,12 +310,13 @@ class ButtonEdit(QWidget):
         self.mnemonic_button = self.add_button(
             icon_path("dice.svg"), on_click, tooltip=translate("d", "Create random mnemonic")
         )
+        return self.mnemonic_button
 
-    def addResetButton(self, get_reset_text):
-        def on_click():
+    def addResetButton(self, get_reset_text) -> SquareButton:
+        def on_click() -> None:
             self.setText(get_reset_text())
 
-        self.add_button("reset-update.svg", on_click, "Reset")
+        return self.add_button("reset-update.svg", on_click, "Reset")
         # button.setStyleSheet("background-color: white;")
 
     def add_open_file_button(
@@ -311,7 +324,7 @@ class ButtonEdit(QWidget):
         callback_open_filepath,
         filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
     ) -> QPushButton:
-        def on_click():
+        def on_click() -> None:
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
                 translate("d", "Open Transaction/PSBT"),
@@ -332,7 +345,7 @@ class ButtonEdit(QWidget):
         self.open_file_button = button
         return self.open_file_button
 
-    def format_as_error(self, value: bool):
+    def format_as_error(self, value: bool) -> None:
         if value:
             self.input_field.setStyleSheet(
                 f"{self.input_field.__class__.__name__}" + " { background-color: #ff6c54; }"
@@ -340,12 +353,12 @@ class ButtonEdit(QWidget):
         else:
             self.input_field.setStyleSheet("")
 
-    def format(self):
+    def format(self) -> None:
         if not self.callback_is_valid:
             return self.format_as_error(False)
         self.format_as_error(not self.callback_is_valid())
 
-    def set_validator(self, callback_is_valid: Callable[[], bool]):
+    def set_validator(self, callback_is_valid: Callable[[], bool]) -> None:
         self.callback_is_valid = callback_is_valid
 
 
@@ -353,7 +366,7 @@ class ButtonEdit(QWidget):
 if __name__ == "__main__":
     import sys
 
-    def example_callback():
+    def example_callback() -> None:
         print("Button clicked!")
 
     app = QApplication(sys.argv)

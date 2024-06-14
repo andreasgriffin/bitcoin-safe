@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from .quick_receive import QuickReceive, ReceiveGroup
 
 
-def generate_random_hex_color():
+def generate_random_hex_color() -> str:
     """Generate a random hex color code."""
     random_color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
     return random_color

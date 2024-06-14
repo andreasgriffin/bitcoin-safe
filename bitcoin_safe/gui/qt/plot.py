@@ -43,7 +43,7 @@ from ...wallet import Wallet
 
 
 class BalanceChart(QWidget):
-    def __init__(self, y_axis_text="Balance"):
+    def __init__(self, y_axis_text="Balance") -> None:
         super().__init__()
         self.y_axis_text = y_axis_text
 
@@ -79,7 +79,7 @@ class BalanceChart(QWidget):
         # Set layout
         self.setLayout(layout)
 
-    def set_value_axis_label_format(self, max_value):
+    def set_value_axis_label_format(self, max_value) -> None:
         if max_value != 0:
             # Determine the number of digits before the decimal
             import math
@@ -107,7 +107,7 @@ class BalanceChart(QWidget):
         format_string = f"%.{decimals}f"
         self.value_axis.setLabelFormat(format_string)
 
-    def update_chart(self, balance_data, project_until_now=True):
+    def update_chart(self, balance_data, project_until_now=True) -> None:
         if len(balance_data) == 0:
             return
         balance_data = np.array(balance_data).copy()
@@ -226,7 +226,7 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    def __init__(self, wallet: Wallet, signals: Signals):
+    def __init__(self, wallet: Wallet, signals: Signals) -> None:
         super().__init__(y_axis_text="")
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
@@ -238,14 +238,14 @@ class WalletBalanceChart(BalanceChart):
         self.signals.utxos_updated.connect(self.update_balances)
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
 
         self.datetime_axis.setTitleText(self.tr("Date"))
         self.value_axis.setTitleText(self.y_axis_text)
         self.chart.update()
 
-    def update_balances(self):
+    def update_balances(self) -> None:
 
         # Calculate balance
         balance = 0
@@ -264,7 +264,7 @@ class WalletBalanceChart(BalanceChart):
 
 
 class TransactionSimulator(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.transactions = [
@@ -287,7 +287,7 @@ class TransactionSimulator(QMainWindow):
         # Initial chart update
         self.update_chart()
 
-    def update_chart(self):
+    def update_chart(self) -> None:
         # Calculate balance
         balance: float = 0
         balance_data = []
@@ -298,7 +298,7 @@ class TransactionSimulator(QMainWindow):
         # Update BalanceChart
         self.chart.update_chart(balance_data)
 
-    def add_transaction(self):
+    def add_transaction(self) -> None:
         # Simulating a new transaction (current timestamp, random amount)
         new_transaction = (
             int(

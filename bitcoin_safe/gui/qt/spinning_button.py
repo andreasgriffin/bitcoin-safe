@@ -38,7 +38,7 @@ from .util import icon_path
 
 
 class SpinningButton(QPushButton):
-    def __init__(self, text: str, enable_signal=None, svg_path=None, parent=None):
+    def __init__(self, text: str, enable_signal=None, svg_path=None, parent=None) -> None:
         super().__init__(text, parent)
         if svg_path is None:
             svg_path = icon_path("loader-icon.svg")
@@ -53,40 +53,40 @@ class SpinningButton(QPushButton):
         # Connect the external signal to the button's enable method
         self.set_enable_signal(enable_signal)
 
-    def on_clicked(self):
+    def on_clicked(self) -> None:
         if not self.isEnabled():
             return
         self.start_spin()
         self.setDisabled(True)
 
-    def enable_button(self, *args, **kwargs):
+    def enable_button(self, *args, **kwargs) -> None:
         self.stop_spin()
         self.setEnabled(True)
 
-    def set_enable_signal(self, enable_signal: pyqtSignal):
+    def set_enable_signal(self, enable_signal: pyqtSignal) -> None:
         if enable_signal:
             enable_signal.connect(self.enable_button)
 
-    def start_spin(self):
+    def start_spin(self) -> None:
 
         # Timer to update rotation
         self.timer.timeout.connect(self.rotate_svg)
         self.timer.start(100)  # Update rotation every 100 ms
 
-    def stop_spin(self):
+    def stop_spin(self) -> None:
         self.timer.stop()
 
-    def setIconSize(self, size: QSize):
+    def setIconSize(self, size: QSize) -> None:
         if isinstance(size, QSize):
             self._icon_size = size
         else:
             raise TypeError("Size must be a QSize object")
         self.update()  # Redraw the button
 
-    def iconSize(self):
+    def iconSize(self) -> QSize:
         return self._icon_size
 
-    def rotate_svg(self):
+    def rotate_svg(self) -> None:
         self.rotation_angle = (self.rotation_angle + 10) % 360
         self.update()  # Trigger repaint
 
@@ -120,7 +120,7 @@ class SpinningButton(QPushButton):
             # Restore painter's state to draw the text
             painter.restore()
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
         # Get the default size hint from the superclass
         default_size_hint = super().sizeHint()
 
@@ -134,7 +134,7 @@ class SpinningButton(QPushButton):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super(MainWindow, self).__init__()
 
         # Replace 'path/to/your.svg' with the path to your SVG file

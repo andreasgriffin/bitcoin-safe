@@ -30,6 +30,7 @@
 import logging
 from abc import abstractmethod
 
+from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.html import html_f
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals
@@ -42,6 +43,7 @@ from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
 import numpy as np
+from bitcoin_qr_tools.data import Data
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -78,7 +80,6 @@ from .taglist.main import hash_color
 from .util import (
     Message,
     MessageType,
-    add_centered,
     add_centered_icons,
     caught_exception_message,
     create_button_box,
@@ -135,7 +136,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
         self.signals.language_switch.connect(self.updateUi)
 
-    def set_visibilities(self):
+    def set_visibilities(self) -> None:
         self.tutorial_button_prefill.setVisible(self.status in [self.TxSendStatus.not_filled])
         self.button_create_tx.setVisible(self.status in [self.TxSendStatus.filled])
         self.tutorial_button_prev_step.setVisible(True)
@@ -143,21 +144,21 @@ class FloatingButtonBar(QDialogButtonBox):
             self.status in [self.TxSendStatus.finalized, self.TxSendStatus.sent]
         )
 
-    def set_status(self, status=TxSendStatus):
+    def set_status(self, status=TxSendStatus) -> None:
         if self.status == status:
             return
         self.status = status
         self.set_visibilities()
 
-    def fill_tx(self):
+    def fill_tx(self) -> None:
         self._fill_tx()
         self.set_status(self.TxSendStatus.filled)
 
-    def create_tx(self):
+    def create_tx(self) -> None:
         # before do _create_tx, setup a 1 time connection
         # so I can catch the tx and ensure that TxSendStatus == finalized
         # just in case the suer clicked "go back"
-        def catch_txid(tx: bdk.Transaction):
+        def catch_txid(tx: bdk.Transaction) -> None:
             self.set_status(self.TxSendStatus.finalized)
 
         one_time_signal_connection(self.signals.signal_broadcast_tx, catch_txid)
@@ -165,11 +166,11 @@ class FloatingButtonBar(QDialogButtonBox):
         self._create_tx()
         self.set_status(self.TxSendStatus.finalized)
 
-    def go_to_next_index(self):
+    def go_to_next_index(self) -> None:
         self._go_to_next_index()
         self.set_status(self.TxSendStatus.not_filled)
 
-    def go_to_previous_index(self):
+    def go_to_previous_index(self) -> None:
         self._go_to_previous_index()
         self.set_status(self.TxSendStatus.not_filled)
 
@@ -195,7 +196,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
         self.set_status(self.TxSendStatus.not_filled)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
 
         self.tutorial_button_prefill.setText(self.tr("Fill the transaction fields"))
         self.button_create_tx.setText(self.tr("Create Transaction"))
@@ -244,7 +245,7 @@ class BaseTab(QObject):
     def create(self) -> TutorialWidget:
         pass
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.buttonbox_buttons[0].setText(translate("basetab", "Next step"))
         self.buttonbox_buttons[1].setText(translate("basetab", "Previous Step"))
         self.refs.floating_button_box.updateUi()
@@ -326,7 +327,7 @@ class BuyHardware(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         self.label_buy.setText(
             html_f(self.tr("Do you need to buy a hardware signer?"), add_html_and_body=True, p=True, size=12)
@@ -370,7 +371,7 @@ class GenerateSeed(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         self.screenshot.updateUi()
         self.never_label.setText(self.get_never_label_text())
@@ -407,7 +408,7 @@ class ValidateBackup(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         self.custom_yes_button.setText(self.tr("Yes, I am sure all 24 words are correct"))
         self.custom_cancel_button.setText(self.tr("Previous Step"))
@@ -447,7 +448,7 @@ class ImportXpubs(BaseTab):
             self.keystore_uis.setCurrentIndex(0)
             widget.layout().addWidget(self.keystore_uis)
 
-            def create_wallet():
+            def create_wallet() -> None:
                 try:
                     self.keystore_uis.set_protowallet_from_keystore_ui()
                     self.refs.qtwalletbase.get_editable_protowallet().tutorial_index = (
@@ -468,7 +469,7 @@ class ImportXpubs(BaseTab):
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
 
-        def callback():
+        def callback() -> None:
             self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_tab)
             tutorial_widget.synchronize_visiblity(
                 self.refs.wallet_tabs, set_also_visible=bool(self.refs.qt_wallet)
@@ -483,7 +484,7 @@ class ImportXpubs(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         self.label_import.setText(self.tr("2. Import wallet information into Bitcoin Safe"))
         if self.refs.qt_wallet:
@@ -512,7 +513,7 @@ class BackupSeed(BaseTab):
 
         widget.layout().addWidget(self.label_print_instructions)
 
-        def do_pdf():
+        def do_pdf() -> None:
             if not self.refs.qt_wallet:
                 Message(self.tr("Please complete the previous steps."))
                 return
@@ -543,7 +544,7 @@ class BackupSeed(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
 
         self.custom_yes_button.setText(self.tr("Print recovery sheet"))
@@ -603,7 +604,7 @@ class ReceiveTest(BaseTab):
 
         self.next_button.setHidden(True)
 
-        def on_utxo_update(sync_status):
+        def on_utxo_update(sync_status) -> None:
             if not self.refs.qt_wallet:
                 return
             txos = self.refs.qt_wallet.wallet.get_all_txos(include_not_mine=False)
@@ -618,7 +619,7 @@ class ReceiveTest(BaseTab):
                     )
                 )
 
-        def start_sync():
+        def start_sync() -> None:
             if not self.refs.qt_wallet:
                 Message(self.tr("No wallet setup yet"), type=MessageType.Error)
                 return
@@ -638,7 +639,7 @@ class ReceiveTest(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         test_amount = (
             f"(less than {Satoshis( self.refs.max_test_fund, self.refs.qt_wallet.wallet.network).str_with_unit()}) "
@@ -662,23 +663,6 @@ class ReceiveTest(BaseTab):
 
 class RegisterMultisig(BaseTab):
     def create(self) -> TutorialWidget:
-        def create_register_coldcard_button() -> QPushButton:
-            button_register_coldcard_quorum = QPushButton(
-                self.tr("""Export file to register the multisig on Coldcard""")
-            )
-            # button_style = """
-            # QPushButton {
-            #     padding: 20px 10px; /* Adjust the padding values as needed */
-            # }
-            # """
-            # button_register_quorum.setStyleSheet(button_style)
-
-            def export_wallet_for_coldcard():
-                if self.refs.qt_wallet:
-                    self.refs.qt_wallet.export_wallet_for_coldcard()
-
-            button_register_coldcard_quorum.clicked.connect(export_wallet_for_coldcard)
-            return button_register_coldcard_quorum
 
         widget = QWidget()
         widget.setLayout(QHBoxLayout())
@@ -687,13 +671,37 @@ class RegisterMultisig(BaseTab):
         # width = 300
         # svg_widgets = add_centered_icons(["reset-signer.svg"], widget, max_sizes=[(width, 120)])
         # widget.layout().itemAt(0).widget().setMaximumWidth(width)
-
         self.groupbox1 = ScreenshotsTutorial()
-        tab = QWidget()
-        tab.setLayout(QVBoxLayout())
-        add_centered([create_register_coldcard_button()], tab, direction="v")
-        self.groupbox1.sync_tab.addTab(tab, "Coldcard")
-        widget.layout().addWidget(self.groupbox1)
+        if self.refs.qt_wallet:
+
+            title = "Coldcard - Mk4"
+            export_widget = ExportDataSimple(
+                data=Data.from_str(
+                    self.refs.qt_wallet.wallet.multipath_descriptor.as_string(),
+                    network=self.refs.qt_wallet.wallet.network,
+                ),
+                signals_min=self.refs.qt_wallet.signals,
+                enable_clipboard=False,
+                enable_usb=False,
+                enable_qr=False,
+                layout=QVBoxLayout(),
+            )
+            self.groupbox1.sync_tab.addTab(export_widget, title)
+
+            title = "Coldcard - Q"
+            export_widget = ExportDataSimple(
+                data=Data.from_str(
+                    self.refs.qt_wallet.wallet.multipath_descriptor.as_string(),
+                    network=self.refs.qt_wallet.wallet.network,
+                ),
+                signals_min=self.refs.qt_wallet.signals,
+                enable_clipboard=False,
+                enable_usb=False,
+                layout=QVBoxLayout(),
+            )
+            self.groupbox1.sync_tab.addTab(export_widget, title)
+
+            widget.layout().addWidget(self.groupbox1)
 
         self.screenshot = ScreenshotsRegisterMultisig()
         widget.layout().addWidget(self.screenshot)
@@ -711,7 +719,7 @@ class RegisterMultisig(BaseTab):
         )
         tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
 
-        def callback():
+        def callback() -> None:
             if not self.refs.qt_wallet:
                 return
             balance = self.refs.qt_wallet.wallet.bdkwallet.get_balance().total
@@ -735,7 +743,7 @@ class RegisterMultisig(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         self.groupbox1.title.setText(self.tr("1. Export wallet descriptor"))
         self.custom_yes_button.setText(
@@ -796,7 +804,7 @@ class DistributeSeeds(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
 
         if self.num_keystores() > 1:
@@ -868,7 +876,7 @@ class SendTest(BaseTab):
         )
         tutorial_widget.setMinimumHeight(30)
 
-        def callback():
+        def callback() -> None:
             if not self.refs.qt_wallet:
                 return
             logger.debug(f"tutorial callback")
@@ -912,7 +920,7 @@ class SendTest(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
 
         self.label.setText(
@@ -1026,20 +1034,20 @@ class WalletSteps(StepProgressContainer):
             index = len(members) - 1
         return members[index]
 
-    def get_wallet_tutorial_index(self):
+    def get_wallet_tutorial_index(self) -> int:
         return (
             (self.qt_wallet.wallet.tutorial_index)
             if self.qt_wallet
             else self.qtwalletbase.get_editable_protowallet().tutorial_index
         )
 
-    def set_wallet_tutorial_index(self, value: Optional[int]):
+    def set_wallet_tutorial_index(self, value: Optional[int]) -> None:
         if self.qt_wallet:
             self.qt_wallet.wallet.tutorial_index = value
         else:
             self.qtwalletbase.get_editable_protowallet().tutorial_index = value
 
-    def set_visibilities(self):
+    def set_visibilities(self) -> None:
         should_be_visible = self.get_wallet_tutorial_index() != None
         self.setVisible(should_be_visible)
 
@@ -1054,15 +1062,15 @@ class WalletSteps(StepProgressContainer):
     def num_keystores(self) -> int:
         return self.qtwalletbase.get_mn_tuple()[1]
 
-    def change_index(self, index: int):
+    def change_index(self, index: int) -> None:
         self.set_current_index(index)
 
-    def go_to_previous_index(self):
+    def go_to_previous_index(self) -> None:
         logger.info(f"go_to_previous_index: Old index {self.current_index()} = {self.current_step()}")
         self.change_index(max(self.current_index() - 1, 0))
         logger.info(f"go_to_previous_index: Switched index {self.current_index()} = {self.current_step()}")
 
-    def go_to_next_index(self):
+    def go_to_next_index(self) -> None:
         if self.step_bar.current_index + 1 >= self.step_bar.number_of_steps:
             self.set_wallet_tutorial_index(None)
             self.set_visibilities()
@@ -1106,7 +1114,7 @@ class WalletSteps(StepProgressContainer):
 
             return self.tr("Sign with {label}").format(label=self.get_send_test_labels()[test_number])
 
-    def open_tx(self, test_number: int):
+    def open_tx(self, test_number: int) -> None:
         if not self.qt_wallet:
             return
 
@@ -1133,7 +1141,7 @@ class WalletSteps(StepProgressContainer):
 
         self.qtwalletbase.signals.open_tx_like.emit(txinfos)
 
-    def fill_tx(self):
+    def fill_tx(self) -> None:
         if not self.qt_wallet:
             return
 
@@ -1156,7 +1164,7 @@ class WalletSteps(StepProgressContainer):
             tab_widget.setHidden(tab_widget != self.qt_wallet.send_tab)
         self.open_tx(test_number)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         # step_bar
         labels: Dict[TutorialStep, str] = {
             TutorialStep.buy: self.tr("Turn on hardware signer"),

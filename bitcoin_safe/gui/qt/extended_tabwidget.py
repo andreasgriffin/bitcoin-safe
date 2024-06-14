@@ -47,7 +47,7 @@ from bitcoin_safe.gui.qt.util import add_tab_to_tabs, read_QIcon, remove_tab
 class ExtendedTabWidget(DataTabWidget):
     signal_tab_bar_visibility = pyqtSignal(bool)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.set_top_right_widget()
 
@@ -56,7 +56,7 @@ class ExtendedTabWidget(DataTabWidget):
         self.tabCloseRequested.connect(self.updateLineEditPosition)
         self.currentChanged.connect(self.updateLineEditPosition)
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj, event) -> bool:
         if obj == self.tabBar() and event.type() == event.Type.Show:
             if self.top_right_widget:
                 self.signal_tab_bar_visibility.emit(True)
@@ -65,7 +65,7 @@ class ExtendedTabWidget(DataTabWidget):
                 self.signal_tab_bar_visibility.emit(False)
         return super().eventFilter(obj, event)
 
-    def set_top_right_widget(self, top_right_widget: QWidget = None, target_width=150):
+    def set_top_right_widget(self, top_right_widget: QWidget = None, target_width=150) -> None:
         self.top_right_widget = top_right_widget
         self.target_width = target_width
 
@@ -78,7 +78,7 @@ class ExtendedTabWidget(DataTabWidget):
         super().tabInserted(index)
         self.updateLineEditPosition()
 
-    def updateLineEditPosition(self):
+    def updateLineEditPosition(self) -> None:
         tabBarRect = self.tabBar().geometry()
         availableWidth = self.width()
 
@@ -95,13 +95,13 @@ class ExtendedTabWidget(DataTabWidget):
             )
             self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
-    def resizeEvent(self, event: QResizeEvent):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         self.updateLineEditPosition()
         super().resizeEvent(event)
 
 
 class LoadingWalletTab(QWidget):
-    def __init__(self, tabs: QTabWidget, name: str, focus=True):
+    def __init__(self, tabs: QTabWidget, name: str, focus=True) -> None:
         super().__init__(tabs)
         self.tabs = tabs
         self.name = name
@@ -124,7 +124,7 @@ class LoadingWalletTab(QWidget):
         self.layout().addWidget(self.emptyLabel)
         self.layout().addItem(spacerBottom)
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         add_tab_to_tabs(
             self.tabs,
             self,
@@ -135,7 +135,7 @@ class LoadingWalletTab(QWidget):
         )
         QApplication.processEvents()
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         remove_tab(self, self.tabs)
 
 

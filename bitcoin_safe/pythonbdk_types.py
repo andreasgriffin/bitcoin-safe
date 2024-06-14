@@ -29,7 +29,7 @@
 
 import enum
 import logging
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from packaging import version
@@ -50,22 +50,22 @@ class Recipient:
         self.label = label
         self.checked_max_amount = checked_max_amount
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         "Necessary for the caching"
         return hash(self.__dict__)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def clone(self):
+    def clone(self) -> "Recipient":
         return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
 
 
 class OutPoint(bdk.OutPoint):
-    def __key__(self):
+    def __key__(self) -> Tuple:
         return tuple(v for k, v in sorted(self.__dict__.items()))
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         "Necessary for the caching"
         return hash(self.__key__())
 
@@ -75,13 +75,13 @@ class OutPoint(bdk.OutPoint):
     def __repr__(self) -> str:
         return str(f"{self.__class__.__name__}({self.txid},{self.vout})")
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, OutPoint):
             return (self.txid, self.vout) == (other.txid, other.vout)
         return False
 
     @classmethod
-    def from_bdk(cls, bdk_outpoint: bdk.OutPoint):
+    def from_bdk(cls, bdk_outpoint: bdk.OutPoint) -> "OutPoint":
         if isinstance(bdk_outpoint, OutPoint):
             return bdk_outpoint
         if isinstance(bdk_outpoint, str):
@@ -89,7 +89,7 @@ class OutPoint(bdk.OutPoint):
         return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
 
     @classmethod
-    def from_str(cls, outpoint_str: str):
+    def from_str(cls, outpoint_str: str) -> "OutPoint":
         if isinstance(outpoint_str, OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
@@ -97,10 +97,10 @@ class OutPoint(bdk.OutPoint):
 
 
 class TxOut(bdk.TxOut):
-    def __key__(self):
+    def __key__(self) -> Tuple:
         return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         "Necessary for the caching"
         return hash(self.__key__())
 
@@ -111,12 +111,12 @@ class TxOut(bdk.TxOut):
         return f"{self.__class__.__name__}({self.__key__()})"
 
     @classmethod
-    def from_bdk(cls, tx_out: bdk.TxOut):
+    def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
         if isinstance(tx_out, TxOut):
             return tx_out
         return TxOut(tx_out.value, tx_out.script_pubkey)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, TxOut):
             return (self.value, serialized_to_hex(self.script_pubkey.to_bytes())) == (
                 other.value,
@@ -133,7 +133,7 @@ class PythonUtxo:
         self.is_spent_by_txid: Optional[str] = None
 
 
-def python_utxo_balance(python_utxos: List[PythonUtxo]):
+def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
     return sum([python_utxo.txout.value for python_utxo in python_utxos])
 
 
@@ -161,6 +161,11 @@ class FullTxDetail:
         self.tx = tx
         self.txid = tx.txid
 
+    def involved_addresses(self) -> Set:
+        input_addresses = [input.address for input in self.inputs.values() if input]
+        output_addresses = [output.address for output in self.outputs.values() if output]
+        return set(input_addresses).union(output_addresses)
+
     @classmethod
     def fill_received(
         cls, tx: bdk.TransactionDetails, get_address_of_txout: Callable[[TxOut], str]
@@ -180,7 +185,7 @@ class FullTxDetail:
     def fill_inputs(
         self,
         lookup_dict_fulltxdetail: Dict[str, "FullTxDetail"],
-    ):
+    ) -> None:
         for input in self.tx.transaction.input():
             prev_outpoint = OutPoint.from_bdk(input.previous_output)
             prev_outpoint_str = str(prev_outpoint)
@@ -199,7 +204,7 @@ class FullTxDetail:
 
 
 class AddressInfoMin(SaveAllClass):
-    def __init__(self, address: str, index: int, keychain: bdk.KeychainKind):
+    def __init__(self, address: str, index: int, keychain: bdk.KeychainKind) -> None:
         self.address = address
         self.index = index
         self.keychain = keychain
@@ -217,22 +222,22 @@ class AddressInfoMin(SaveAllClass):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def __key__(self):
+    def __key__(self) -> Tuple:
         return tuple(v for k, v in sorted(self.__dict__.items()))
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         "Necessary for the caching"
         return hash(self.__key__())
 
     @classmethod
-    def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo):
+    def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo) -> "AddressInfoMin":
         return AddressInfoMin(
             bdk_address_info.address.as_string(),
             bdk_address_info.index,
             bdk_address_info.keychain,
         )
 
-    def is_change(self):
+    def is_change(self) -> bool:
         return self.keychain == bdk.KeychainKind.INTERNAL
 
     def address_path(self) -> Tuple[int, int]:
@@ -266,7 +271,7 @@ class BlockchainType(enum.Enum):
         raise ValueError(f"{t} is not a valid BlockchainType")
 
     @classmethod
-    def to_text(cls, t):
+    def to_text(cls, t) -> str:
         if t == cls.CompactBlockFilter:
             return "Compact Block Filters"
         elif t == cls.Electrum:
@@ -275,6 +280,8 @@ class BlockchainType(enum.Enum):
             return "Esplora Server"
         elif t == cls.RPC:
             return "RPC"
+        else:
+            raise ValueError()
 
     @classmethod
     def active_types(cls) -> List["BlockchainType"]:
@@ -286,12 +293,12 @@ class CBFServerType(enum.Enum):
     Manual = enum.auto()
 
     @classmethod
-    def from_text(cls, t):
-        return CBFServerType._member_map_[t]
+    def from_text(cls, t) -> "CBFServerType":
+        return CBFServerType._member_map_[t]  # type: ignore
 
 
 class Balance(QObject):
-    def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0):
+    def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0) -> None:
         super().__init__()
         self.immature = immature
         self.trusted_pending = trusted_pending
@@ -299,11 +306,11 @@ class Balance(QObject):
         self.confirmed = confirmed
 
     @property
-    def total(self):
+    def total(self) -> int:
         return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed
 
     @property
-    def spendable(self):
+    def spendable(self) -> int:
         return self.trusted_pending + self.confirmed
 
     def __add__(self, other: "Balance") -> "Balance":
@@ -333,18 +340,20 @@ class Balance(QObject):
         return short
 
 
-def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=False):
+def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=False) -> str:
     try:
         return bdk.Address.from_script(script_pubkey, network).as_string()
     except:
         if on_error_return_hex:
             return serialized_to_hex(script_pubkey.to_bytes())
+        else:
+            raise
 
 
 if __name__ == "__main__":
     testdict = {}
 
-    def test_hashing(v):
+    def test_hashing(v) -> None:
         testdict[v] = v.__hash__()
         print(testdict[v])
 

@@ -29,12 +29,12 @@
 
 import logging
 
+from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
+
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.util import serialized_to_hex
-
-from .qr_components.image_widget import QRCodeWidgetSVG
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ class AddressDialog(QWidget):
         address: str,
         mempool_data: MempoolData,
         parent=None,
-    ):
+    ) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle(self.tr("Address"))
         self.mempool_data = mempool_data
@@ -160,6 +160,6 @@ class AddressDialog(QWidget):
         vbox.addLayout(Buttons(CloseButton(self)))
         self.setupUi()
 
-    def setupUi(self):
+    def setupUi(self) -> None:
         self.tabs.setTabText(self.tabs.indexOf(self.tab_details), self.tr("Details"))
         self.tabs.setTabText(self.tabs.indexOf(self.tab_advanced), self.tr("Advanced"))

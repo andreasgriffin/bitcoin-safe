@@ -31,7 +31,7 @@ import logging
 from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 
 from bitcoin_safe.gui.qt.export_data import (
     DataGroupBox,
@@ -72,7 +72,7 @@ class HorizontalImporters(HorizontalImportExportGroups):
         self._add(self.group_share, SignatureImporterClipboard)
         self._add(self.group_seed, SignatureImporterWallet)
 
-    def _add(self, group: DataGroupBox, cls: Type[AbstractSignatureImporter]):
+    def _add(self, group: DataGroupBox, cls: Type[AbstractSignatureImporter]) -> None:
         importer = self._get_importer(cls)
         group.setVisible(bool(importer))
         if importer:
@@ -138,7 +138,7 @@ class TxSigningSteps(StepProgressContainer):
                 first_non_signed_index = i
                 self.set_current_index(i * 2)
 
-    def go_to_next_index(self):
+    def go_to_next_index(self) -> None:
         if self.current_index() + 1 < self.count():
             self.set_current_index(self.current_index() + 1)
         else:
@@ -146,7 +146,7 @@ class TxSigningSteps(StepProgressContainer):
             # do not mark as completed,.. Only successful signing can do this
             # self.step_bar.set_mark_current_step_as_completed(True)
 
-    def go_to_previous_index(self):
+    def go_to_previous_index(self) -> None:
         self.step_bar.set_mark_current_step_as_completed(False)
 
         if self.current_index() - 1 >= 0:

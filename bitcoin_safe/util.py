@@ -484,7 +484,7 @@ class Satoshis:
         self.network = network
         self.value = value if isinstance(value, int) else self._to_int(value)
 
-    def _to_int(self, s: str):
+    def _to_int(self, s: Union[float, str]):
         if isinstance(s, float):
             return int(s)
 
@@ -708,27 +708,27 @@ builtin_raw_input = builtins.input
 builtins.input = raw_input
 
 
-def versiontuple(v):
+def versiontuple(v) -> Tuple:
     return tuple(map(int, (v.split("."))))
 
 
 class CannotBumpFee(Exception):
-    def __str__(self):
+    def __str__(self) -> str:
         return translate("util", "Cannot bump fee") + ":\n\n" + Exception.__str__(self)
 
 
 class CannotDoubleSpendTx(Exception):
-    def __str__(self):
+    def __str__(self) -> str:
         return translate("util", "Cannot cancel transaction") + ":\n\n" + Exception.__str__(self)
 
 
 class CannotCPFP(Exception):
-    def __str__(self):
+    def __str__(self) -> str:
         return translate("util", "Cannot create child transaction") + ":\n\n" + Exception.__str__(self)
 
 
 class InternalAddressCorruption(Exception):
-    def __str__(self):
+    def __str__(self) -> str:
         return translate(
             "util",
             "Wallet file corruption detected. "

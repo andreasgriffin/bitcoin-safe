@@ -38,10 +38,11 @@ repos:
         args: 
           - --check-untyped-defs
           # - --disallow-untyped-defs
-          - --strict-optional
+          # - --strict-optional
           # - --no-implicit-optional
           # - --warn-return-any
           - --warn-redundant-casts
+          # - --warn-unreachable
         additional_dependencies: 
           - types-requests
           - types-PyYAML

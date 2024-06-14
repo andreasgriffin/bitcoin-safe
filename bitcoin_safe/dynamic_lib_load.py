@@ -31,6 +31,8 @@ import logging
 import os
 import platform
 import sys
+from importlib.metadata import PackageMetadata
+from typing import Optional
 
 import bitcoin_usb
 import bitcointx
@@ -46,7 +48,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 
 
 # Function to show the warning dialog before starting the QApplication
-def show_message_before_quit(msg: str):
+def show_message_before_quit(msg: str) -> None:
     # Initialize QApplication first
     app = QApplication(sys.argv)
     # Without an application instance, some features might not work as expected
@@ -54,7 +56,7 @@ def show_message_before_quit(msg: str):
     sys.exit(app.exec())
 
 
-def _get_binary_lib_path():
+def _get_binary_lib_path() -> str:
     # Get the platform-specific path to the binary library
     if platform.system() == "Windows":
         # On Windows, construct the path to the DLL
@@ -66,7 +68,7 @@ def _get_binary_lib_path():
     return lib_path
 
 
-def setup_libsecp256k1():
+def setup_libsecp256k1() -> None:
     """The operating system might, or might not provide libsecp256k1 needed for bitcointx
 
     Therefore we require https://pypi.org/project/electrumsv-secp256k1/ in the build process as additional_requires
@@ -92,7 +94,7 @@ def setup_libsecp256k1():
         print(f"use libsecp256k1 from os")
 
 
-def ensure_pyzbar_works():
+def ensure_pyzbar_works() -> None:
     "Ensure Visual C++ Redistributable Packages for Visual Studio 2013"
     # Get the platform-specific path to the binary library
     logger.info(f"Platform: {platform.system()}")
@@ -120,14 +122,14 @@ def ensure_pyzbar_works():
         pass
 
 
-def get_briefcase_meta_data():
+def get_briefcase_meta_data() -> Optional[PackageMetadata]:
     import sys
     from importlib import metadata as importlib_metadata
 
     # Find the name of the module that was used to start the app
     app_module = sys.modules["__main__"].__package__
     if not app_module:
-        return
+        return None
     # Retrieve the app's metadata
     metadata = importlib_metadata.metadata(app_module)
 

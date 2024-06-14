@@ -32,7 +32,7 @@ import json
 import requests
 
 
-def send_rpc_command(ip: str, port: str, username: str, password: str, method: str, params=None):
+def send_rpc_command(ip: str, port: str, username: str, password: str, method: str, params=None) -> str:
     """Sends an RPC command to a Bitcoin node.
 
     :param ip: IP address of the Bitcoin node.

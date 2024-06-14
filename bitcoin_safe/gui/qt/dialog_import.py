@@ -48,7 +48,7 @@ from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 logger = logging.getLogger(__name__)
 
 
-def is_binary(file_path):
+def is_binary(file_path) -> bool:
     """Check if a file is binary or text.
 
     Returns True if binary, False if text.
@@ -64,7 +64,7 @@ def is_binary(file_path):
     return False
 
 
-def file_to_str(file_path):
+def file_to_str(file_path) -> str:
     if is_binary(file_path):
         with open(file_path, "rb") as f:
             return bytes(f.read()).hex()
@@ -80,13 +80,13 @@ class DragAndDropTextEdit(QTextEdit):
         callback_enter=None,
         callback_esc=None,
         process_filepath: Optional[Callable[[str], None]] = None,
-    ):
+    ) -> None:
         super().__init__(parent)
         self.process_filepath = process_filepath
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
 
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
             if self.callback_enter:
                 self.callback_enter(self.toPlainText())
@@ -95,13 +95,13 @@ class DragAndDropTextEdit(QTextEdit):
                 self.callback_esc()
         super().keyPressEvent(event)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
         file_path = event.mimeData().urls()[0].toLocalFile()
         if self.process_filepath:
             self.process_filepath(file_path)
@@ -117,7 +117,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         callback_enter=None,
         callback_esc=None,
         file_filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
-    ):
+    ) -> None:
         super().__init__(
             parent,
             input_field=DragAndDropTextEdit(
@@ -134,7 +134,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         )
         self.button_open_file = self.add_open_file_button(self.process_filepath, filter=file_filter)
 
-    def process_filepath(self, file_path: str):
+    def process_filepath(self, file_path: str) -> None:
         s = file_to_str(file_path)
         self.setText(s)
         self.signal_drop_file.emit(s)
@@ -151,7 +151,7 @@ class ImportDialog(QDialog):
         text_instruction_label="Please paste your Bitcoin Transaction or PSBT in here, or drop a file",
         instruction_widget: Optional[QWidget] = None,
         text_placeholder="Paste your Bitcoin Transaction or PSBT in here or drop a file",
-    ):
+    ) -> None:
         super().__init__(parent)
         self.on_open = on_open
 
@@ -191,11 +191,11 @@ class ImportDialog(QDialog):
         shortcut = QShortcut(QKeySequence("Return"), self)
         shortcut.activated.connect(self.process_input)
 
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key.Key_Escape:
             self.close()
 
-    def process_input(self, s: str):
+    def process_input(self, s: str) -> None:
         if self.on_open:
             self.on_open(s)
 

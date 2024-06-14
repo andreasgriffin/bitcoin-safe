@@ -30,7 +30,7 @@
 import logging
 from abc import abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ class Storage:
     def __init__(self) -> None:
         self.encrypt = Encrypt()
 
-    def save(self, message: str, filename: str, password: Optional[str] = None):
+    def save(self, message: str, filename: str, password: Optional[str] = None) -> None:
         token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
 
         with open(filename, "wb") as f:
@@ -121,8 +121,8 @@ class Storage:
 
 class ClassSerializer:
     @classmethod
-    def general_deserializer(cls, known_classes, class_kwargs):
-        def deserializer(dct):
+    def general_deserializer(cls, known_classes, class_kwargs) -> Callable:
+        def deserializer(dct) -> Dict:
             cls_string = dct.get("__class__")  # e.g. KeyStore
             if cls_string and cls_string in known_classes:
                 obj_cls = known_classes[cls_string]
@@ -160,7 +160,7 @@ class BaseSaveableClass:
     VERSION = "0.0.0"
 
     @abstractmethod
-    def dump(self):
+    def dump(self) -> Dict:
         "Returns the dict"
         d = {}
         d["__class__"] = self.__class__.__name__

@@ -57,7 +57,7 @@ class NotificationBar(QWidget):
         additional_widget: QWidget = None,
         has_close_button: bool = True,
         parent=None,
-    ):
+    ) -> None:
         super().__init__(parent)
         self.setLayout(QVBoxLayout())
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -105,7 +105,7 @@ class NotificationBar(QWidget):
         self.closeButton.setFixedSize(self.sizeHint().height(), self.sizeHint().height())
         logger.debug(f"initialized {self}")
 
-    def set_background_color(self, color: str):
+    def set_background_color(self, color: str) -> None:
         self.setStyleSheet(f"background-color: {color};")  # Set the background color for the notification bar
 
         # Set the background color for all child widgets, including the spacer
@@ -113,7 +113,7 @@ class NotificationBar(QWidget):
         # self.optionalButton.setStyleSheet(f"background-color: {color};")
         # self.closeButton.setStyleSheet(f"background-color: {color};")
 
-    def set_icon(self, icon: Optional[QIcon], sizes=(None, None)):
+    def set_icon(self, icon: Optional[QIcon], sizes=(None, None)) -> None:
         self.icon_label.setVisible(bool(icon))
         if icon:
             sizes = [(s if s else self.textLabel.sizeHint().height()) for s in sizes]
@@ -123,7 +123,7 @@ class NotificationBar(QWidget):
 if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
 
             self.centralWidget = QWidget()
@@ -138,7 +138,7 @@ if __name__ == "__main__":
             layout.addWidget(self.notificationBar)
             layout.addWidget(QTextEdit("some text"))
 
-        def on_button_clicked(self):
+        def on_button_clicked(self) -> None:
             print("Optional Button Clicked")
             self.notificationBar.set_text("Button Clicked!")
 

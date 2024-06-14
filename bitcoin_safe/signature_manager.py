@@ -36,7 +36,7 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import requests
 
@@ -85,7 +85,7 @@ class GitHubAssetDownloader:
         self.repository = repository
         logger.debug(f"initialized {self}")
 
-    def _get_assets(self, api_url):
+    def _get_assets(self, api_url) -> List[Asset]:
         try:
             logger.debug(f"Get assets from {api_url}")
             response = requests.get(api_url, timeout=2)
@@ -157,7 +157,7 @@ class SignatureVerifyer:
         return bool(SignatureVerifyer._get_gpg_path())
 
     @property
-    def gpg(self):
+    def gpg(self) -> Any:
         if self._gpg:
             return self._gpg
 
@@ -248,7 +248,7 @@ class SignatureVerifyer:
         )
         return verification_result.fingerprint == expected_fingerprint and verification_result.valid
 
-    def _verify_file(self, binary_file: Union[Path, str], signature_file: Union[Path, str]):
+    def _verify_file(self, binary_file: Union[Path, str], signature_file: Union[Path, str]) -> Any:
         with open(str(signature_file), "rb") as sig_file:
             return self.gpg.verify_file(data_filename=str(binary_file), fileobj_or_path=sig_file)
 
@@ -260,7 +260,7 @@ class SignatureVerifyer:
         return None
 
     @staticmethod
-    def _download_file(download_url: str, filename: Path):
+    def _download_file(download_url: str, filename: Path) -> Path:
         sig_response = requests.get(download_url, timeout=2)
         sig_response.raise_for_status()
         with open(filename, "wb") as f:
@@ -556,5 +556,5 @@ EmR2yA==
     )
 
     @classmethod
-    def all(cls):
+    def all(cls) -> List[GPGKey]:
         return [v for v in cls.__dict__.values() if isinstance(v, GPGKey)]

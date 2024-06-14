@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 from typing import List, Optional
 
 import bdkpython as bdk
-from bitcoin_qrreader import bitcoin_qr
+from bitcoin_qr_tools.data import Data, DataType
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import (
@@ -63,7 +63,7 @@ from .spinbox import BTCSpinBox
 from .util import ColorScheme
 
 
-def dialog_replace_with_new_receiving_address(address: str):
+def dialog_replace_with_new_receiving_address(address: str) -> bool:
     return question_dialog(
         text=translate(
             "recipients",
@@ -75,11 +75,11 @@ def dialog_replace_with_new_receiving_address(address: str):
 
 
 class CloseButton(QPushButton):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setFixedSize(QSize(16, 16))  # Adjust the size as needed
 
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
         painter = QStylePainter(self)
         option = QStyleOptionButton()
         option.initFrom(self)
@@ -92,7 +92,7 @@ class CloseButton(QPushButton):
 class RecipientGroupBox(QTabWidget):
     signal_close = QtCore.pyqtSignal(QTabWidget)
 
-    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True, title=""):
+    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True, title="") -> None:
         super().__init__()
         self.setTabsClosable(allow_edit)
         self.title = title
@@ -109,8 +109,8 @@ class RecipientGroupBox(QTabWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         form_layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
-        def on_handle_input(data: bitcoin_qr.Data, parent: QWidget):
-            if data.data_type == bitcoin_qr.DataType.Bip21:
+        def on_handle_input(data: Data, parent: QWidget) -> None:
+            if data.data_type == DataType.Bip21:
                 if data.data.get("address"):
                     self.address_line_edit.setText(data.data.get("address"))
                 if data.data.get("amount"):
@@ -128,7 +128,7 @@ class RecipientGroupBox(QTabWidget):
             self.address_line_edit.add_copy_button()
             self.address_line_edit.setReadOnly(True)
 
-        def is_valid():
+        def is_valid() -> bool:
             if not self.address_line_edit.text():
                 # if it is empty, show no error
                 return True
@@ -178,7 +178,7 @@ class RecipientGroupBox(QTabWidget):
         self.updateUi()
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
 
         self.address_label.setText(self.tr("Address"))
         self.label_txlabel.setText(self.tr("Label"))
@@ -191,12 +191,12 @@ class RecipientGroupBox(QTabWidget):
         self.format_address_field()
         self.set_label_placeholder_text()
 
-    def showEvent(self, event):
+    def showEvent(self, event) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
         self.updateUi()
 
-    def on_send_max_button_click(self):
+    def on_send_max_button_click(self) -> None:
         # self.amount_spin_box.setValue(0)
         # self.amount_spin_box.setEnabled(not self.send_max_button.isChecked())
         self.amount_spin_box.set_max(self.send_max_button.isChecked())
@@ -206,7 +206,7 @@ class RecipientGroupBox(QTabWidget):
         return self.address_line_edit.text().strip()
 
     @address.setter
-    def address(self, value: str):
+    def address(self, value: str) -> None:
         self.address_line_edit.setText(value)
 
     @property
@@ -214,7 +214,7 @@ class RecipientGroupBox(QTabWidget):
         return self.label_line_edit.text().strip()
 
     @label.setter
-    def label(self, value: str):
+    def label(self, value: str) -> None:
         self.label_line_edit.setText(value)
 
     @property
@@ -222,7 +222,7 @@ class RecipientGroupBox(QTabWidget):
         return self.amount_spin_box.value()
 
     @amount.setter
-    def amount(self, value: int):
+    def amount(self, value: int) -> None:
         self.amount_spin_box.setValue(value)
 
     @property
@@ -230,13 +230,13 @@ class RecipientGroupBox(QTabWidget):
         return not self.address_line_edit.isReadOnly()
 
     @enabled.setter
-    def enabled(self, state: bool):
+    def enabled(self, state: bool) -> None:
         self.address_line_edit.setReadOnly(not state)
         self.label_line_edit.setReadOnly(not state)
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_button.setEnabled(state)
 
-    def set_label_placeholder_text(self):
+    def set_label_placeholder_text(self) -> None:
         wallets = get_wallets(self.signals)
 
         wallet_id = None
@@ -261,14 +261,14 @@ class RecipientGroupBox(QTabWidget):
                 return wallet
         return None
 
-    def check_if_used(self, *args):
+    def check_if_used(self, *args) -> None:
         wallet_of_address = self.get_wallet_of_address(self.address)
         if self.allow_edit and wallet_of_address and wallet_of_address.address_is_used(self.address):
             if dialog_replace_with_new_receiving_address(self.address):
                 # find an address that is not used yet
                 self.address = wallet_of_address.get_address().address.as_string()
 
-    def format_address_field(self, *args):
+    def format_address_field(self, *args) -> None:
         palette = QtGui.QPalette()
         background_color = None
 
@@ -301,7 +301,7 @@ class Recipients(QtWidgets.QWidget):
     signal_clicked_send_max_button = QtCore.pyqtSignal(RecipientGroupBox)
     signal_amount_changed = QtCore.pyqtSignal(RecipientGroupBox)
 
-    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True):
+    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True) -> None:
         super().__init__()
         self.signals = signals
         self.allow_edit = allow_edit
@@ -330,11 +330,11 @@ class Recipients(QtWidgets.QWidget):
         self.updateUi()
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.recipient_list.setToolTip(self.tr("Recipients"))
         self.add_recipient_button.setText(self.tr("+ Add Recipient"))
 
-    def add_recipient(self, recipient: Recipient = None):
+    def add_recipient(self, recipient: Recipient = None) -> RecipientGroupBox:
         if recipient is None:
             recipient = Recipient("", 0)
         recipient_box = RecipientGroupBox(
@@ -355,7 +355,7 @@ class Recipients(QtWidgets.QWidget):
         )
 
         # insert before the button position
-        def insert_before_button(new_widget: QWidget):
+        def insert_before_button(new_widget: QWidget) -> None:
             index = self.recipient_list.content_widget.layout().indexOf(self.add_recipient_button)
             if index >= 0:
                 self.recipient_list.content_widget.layout().insertWidget(index, new_widget)
@@ -370,7 +370,7 @@ class Recipients(QtWidgets.QWidget):
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 
-    def remove_recipient_widget(self, recipient_box: RecipientGroupBox):
+    def remove_recipient_widget(self, recipient_box: RecipientGroupBox) -> None:
         recipient_box.close()
         recipient_box.setParent(None)
         self.recipient_list.content_widget.layout().removeWidget(recipient_box)
@@ -390,7 +390,7 @@ class Recipients(QtWidgets.QWidget):
         ]
 
     @recipients.setter
-    def recipients(self, recipient_list: List[Recipient]):
+    def recipients(self, recipient_list: List[Recipient]) -> None:
         # remove all old ones
         for recipient_box in self.get_recipient_group_boxes():
             self.remove_recipient_widget(recipient_box)

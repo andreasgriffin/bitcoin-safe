@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -110,11 +110,11 @@ class KeyStoreImporterTypes:
     )  # add networks here to make the seed option visible
 
     @classmethod
-    def list_types(cls, network: bdk.Network):
+    def list_types(cls, network: bdk.Network) -> List[KeyStoreImporterType]:
         return [v for v in [cls.hwi, cls.file, cls.qr, cls.watch_only, cls.seed] if network in v.networks]
 
     @classmethod
-    def list_names(cls, network: bdk.Network):
+    def list_names(cls, network: bdk.Network) -> List[str]:
         return [v.name for v in cls.list_types(network)]
 
 
@@ -150,7 +150,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         self.description = description
 
     @classmethod
-    def is_seed_valid(cls, mnemonic: str):
+    def is_seed_valid(cls, mnemonic: str) -> bool:
         try:
             bdk.Mnemonic.from_string(mnemonic)
             return True
@@ -158,7 +158,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             return False
 
     @classmethod
-    def is_xpub_valid(cls, xpub: str, network: bdk.Network):
+    def is_xpub_valid(cls, xpub: str, network: bdk.Network) -> bool:
         try:
             AddressTypes.p2pkh.bdk_descriptor(
                 bdk.DescriptorPublicKey.from_string(xpub),
@@ -174,7 +174,9 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     def clone(self, class_kwargs=None) -> "KeyStore":
         return KeyStore(**self.__dict__)
 
-    def to_singlesig_multipath_descriptor(self, address_type: AddressType, network: bdk.Network):
+    def to_singlesig_multipath_descriptor(
+        self, address_type: AddressType, network: bdk.Network
+    ) -> MultipathDescriptor:
         "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
         descriptors = [
             address_type.bdk_descriptor(
@@ -199,7 +201,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def dump(self):
+    def dump(self) -> Dict[str, Any]:
         d = super().dump()
 
         # you must copy it, so you not't change any calues
@@ -209,7 +211,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None):
+    def from_dump(cls, dct: Dict, class_kwargs=None) -> "KeyStore":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return KeyStore(**dct)
@@ -231,11 +233,11 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             del dct["VERSION"]
         return dct
 
-    def from_other_keystore(self, other_keystore: "KeyStore"):
+    def from_other_keystore(self, other_keystore: "KeyStore") -> None:
         for k, v in other_keystore.__dict__.items():
             setattr(self, k, v)
 
-    def is_identical_to(self, spk_provider: SimplePubKeyProvider):
+    def is_identical_to(self, spk_provider: SimplePubKeyProvider) -> bool:
         # fill in missing info in keystores
 
         return (

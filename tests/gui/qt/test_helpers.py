@@ -68,7 +68,7 @@ from tests.test_setup_bitcoin_core import (
 logger = logging.getLogger(__name__)
 
 
-def get_current_test_name():
+def get_current_test_name() -> Optional[str]:
     """
     Traverse the call stack and return the name of the current test function.
     """
@@ -81,7 +81,7 @@ def get_current_test_name():
 
 
 @pytest.fixture(scope="session")
-def test_start_time():
+def test_start_time() -> datetime:
     """Fixture to capture the start time of the test session."""
     return datetime.now()
 
@@ -137,7 +137,7 @@ class Shutter:
         self.qtbot = qtbot
         self.name = name
 
-    def save(self, widget, delay=0.2):
+    def save(self, widget: QWidget, delay: float = 0.2) -> None:
         QApplication.processEvents()
         sleep(delay)
         self.save_screenshot(widget, self.qtbot, self.name)
@@ -167,7 +167,7 @@ class Shutter:
 
         return final_filepath
 
-    def create_symlink(self, test_config: UserConfig):
+    def create_symlink(self, test_config: UserConfig) -> None:
         screenshots_dir = Shutter.directory(self.name)
         link_name = screenshots_dir / "config_dir"
 
@@ -181,7 +181,7 @@ class Shutter:
             link_name.symlink_to(test_config.config_dir)
 
 
-def _get_widget_top_level(cls: Type[T], title=None) -> Optional[T]:
+def _get_widget_top_level(cls: Type[T], title: str = None) -> Optional[T]:
     """
     Find the top-level widget of the specified class and title among the active widgets.
 
@@ -207,7 +207,9 @@ def _get_widget_top_level(cls: Type[T], title=None) -> Optional[T]:
     return None
 
 
-def get_widget_top_level(cls: Type[T], qtbot: QtBot, title=None, wait=True, timeout=10000) -> Optional[T]:
+def get_widget_top_level(
+    cls: Type[T], qtbot: QtBot, title: str = None, wait: bool = True, timeout: int = 10000
+) -> Optional[T]:
     """
     Find the top-level widget of the specified class and title among the active widgets.
 
@@ -230,8 +232,8 @@ def do_modal_click(
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
     cls: Type[T] = QMessageBox,
     timeout=5000,
-):
-    def click():
+) -> None:
+    def click() -> None:
         print("\nwaiting for is_dialog_open")
 
         dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
@@ -248,7 +250,7 @@ def do_modal_click(
         qtbot.mouseClick(click_pushbutton, button)
 
 
-def assert_message_box(click_pushbutton: QPushButton, tile: str, message_text: str):
+def assert_message_box(click_pushbutton: QPushButton, tile: str, message_text: str) -> None:
     with patch("bitcoin_safe.gui.qt.util.QMessageBox") as mock_msgbox:
         while not mock_msgbox.called:
             click_pushbutton.click()
@@ -289,10 +291,10 @@ def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
 
 def save_wallet(
     shutter: Shutter, test_config: UserConfig, wallet_name: str, qtbot: QtBot, save_button: QPushButton
-):
+) -> None:
 
     # check that you cannot go further without import xpub
-    def password_creation(dialog: PasswordCreation):
+    def password_creation(dialog: PasswordCreation) -> None:
         shutter.save(dialog)
         dialog.submit_button.click()
 
@@ -306,10 +308,10 @@ def save_wallet(
 
 def close_wallet(
     shutter: Shutter, test_config: UserConfig, wallet_name: str, qtbot: QtBot, main_window: MainWindow
-):
+) -> None:
 
     # check that you cannot go further without import xpub
-    def password_creation(dialog: QMessageBox):
+    def password_creation(dialog: QMessageBox) -> None:
         shutter.save(dialog)
         dialog.button(QMessageBox.StandardButton.Yes).click()
 

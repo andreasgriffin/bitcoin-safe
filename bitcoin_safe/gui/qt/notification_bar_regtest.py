@@ -41,7 +41,7 @@ from PyQt6.QtGui import QIcon
 
 
 class NotificationBarRegtest(NotificationBar):
-    def __init__(self, open_network_settings, network: bdk.Network, signals_min: SignalsMin):
+    def __init__(self, open_network_settings, network: bdk.Network, signals_min: SignalsMin) -> None:
         super().__init__(
             text="",
             optional_button_text="",
@@ -56,7 +56,7 @@ class NotificationBarRegtest(NotificationBar):
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.optionalButton.setText(self.tr("Change Network"))
         self.textLabel.setText(
             self.tr("Network = {network}. The coins are worthless!").format(

@@ -103,7 +103,7 @@ def test_tutorial_wallet_setup(
 
         w = main_window.welcome_screen.pushButton_singlesig
 
-        def on_wallet_id_dialog(dialog: WalletIdDialog):
+        def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -118,7 +118,7 @@ def test_tutorial_wallet_setup(
         assert isinstance(qt_proto_wallet, QTProtoWallet)
         wallet_steps: WalletSteps = qt_proto_wallet.wallet_steps
 
-        def page1():
+        def page1() -> None:
             shutter.save(main_window)
             step: BuyHardware = wallet_steps.tab_generators[TutorialStep.buy]
             assert step.buttonbox_buttons[0].isVisible()
@@ -126,7 +126,7 @@ def test_tutorial_wallet_setup(
 
         page1()
 
-        def page2():
+        def page2() -> None:
             shutter.save(main_window)
             step: GenerateSeed = wallet_steps.tab_generators[TutorialStep.generate]
             assert step.buttonbox_buttons[0].isVisible()
@@ -134,12 +134,12 @@ def test_tutorial_wallet_setup(
 
         page2()
 
-        def page3():
+        def page3() -> None:
             shutter.save(main_window)
             step: ImportXpubs = wallet_steps.tab_generators[TutorialStep.import_xpub]
 
             # check that you cannot go further without import xpub
-            def wrong_entry(dialog: QMessageBox):
+            def wrong_entry(dialog: QMessageBox) -> None:
                 shutter.save(dialog)
 
                 assert (
@@ -161,7 +161,7 @@ def test_tutorial_wallet_setup(
                 assert "{ background-color: #ff6c54; }" in edit.input_field.styleSheet()
 
                 # check that you cannot go further without import xpub
-                def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox):
+                def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
                     shutter.save(dialog)
                     assert dialog.text() == f"{test_seeds[0]} is not a valid public xpub"
                     dialog.button(QMessageBox.StandardButton.Ok).click()
@@ -210,7 +210,7 @@ def test_tutorial_wallet_setup(
         assert qt_wallet
         wallet_steps = qt_wallet.wallet_steps
 
-        def page4():
+        def page4() -> None:
             shutter.save(main_window)
             step: BackupSeed = wallet_steps.tab_generators[TutorialStep.backup_seed]
             with patch("webbrowser.open_new_tab") as mock_open:
@@ -225,7 +225,7 @@ def test_tutorial_wallet_setup(
 
         page4()
 
-        def page5():
+        def page5() -> None:
             shutter.save(main_window)
             step: ValidateBackup = wallet_steps.tab_generators[TutorialStep.validate_backup]
             assert step.custom_yes_button.isVisible()
@@ -233,7 +233,7 @@ def test_tutorial_wallet_setup(
 
         page5()
 
-        def page6():
+        def page6() -> None:
             shutter.save(main_window)
             step: ReceiveTest = wallet_steps.tab_generators[TutorialStep.receive]
             assert step.quick_receive
@@ -254,7 +254,7 @@ def test_tutorial_wallet_setup(
 
         page6()
 
-        def page7():
+        def page7() -> None:
             shutter.save(main_window)
             step: SendTest = wallet_steps.tab_generators[TutorialStep.send]
             assert step.refs.floating_button_box.isVisible()
@@ -283,7 +283,7 @@ def test_tutorial_wallet_setup(
 
         page7()
 
-        def page8():
+        def page8() -> None:
             shutter.save(main_window)
             viewer = main_window.tab_wallets.getCurrentTabData()
             assert isinstance(viewer, UITx_Viewer)
@@ -331,7 +331,7 @@ def test_tutorial_wallet_setup(
 
         page8()
 
-        def page9():
+        def page9() -> None:
             shutter.save(main_window)
             assert isinstance(main_window.tab_wallets.getCurrentTabData(), QTWallet)
 
@@ -351,7 +351,7 @@ def test_tutorial_wallet_setup(
 
         page9()
 
-        def page10():
+        def page10() -> None:
             shutter.save(main_window)
 
             step: DistributeSeeds = wallet_steps.tab_generators[TutorialStep.distribute]

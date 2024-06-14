@@ -31,8 +31,9 @@ import io
 import os
 import webbrowser
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
+from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL import Image as PilImage
 from reportlab.lib import colors
@@ -49,19 +50,18 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .gui.qt.qr_components.qr import create_qr
 from .gui.qt.util import qicon_to_pil, read_QIcon
 from .wallet import Wallet
 
 
-def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200):
+def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
     buffer = io.BytesIO()
     pilimage.save(buffer, format="PNG")
     buffer.seek(0)
     return Image(buffer, width=width, height=height)
 
 
-def create_table(columns: List, col_widths: List[int]):
+def create_table(columns: List, col_widths: List[int]) -> Table:
     # Validate input and create data for the table
     max_rows = max([len(col) for col in columns])
     data = []
@@ -90,7 +90,7 @@ def create_table(columns: List, col_widths: List[int]):
 
 
 class BitcoinWalletRecoveryPDF:
-    def __init__(self):
+    def __init__(self) -> None:
         styles = getSampleStyleSheet()
         self.style_paragraph = ParagraphStyle(name="Centered", parent=styles["BodyText"], alignment=TA_CENTER)
         self.style_paragraph_left = ParagraphStyle(
@@ -100,12 +100,12 @@ class BitcoinWalletRecoveryPDF:
         self.style_heading = ParagraphStyle(
             "centered_heading", parent=styles["Heading1"], alignment=TA_CENTER
         )
-        self.elements = []
+        self.elements: List[Any] = []
 
-    def add_page_break(self):
+    def add_page_break(self) -> None:
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _seed_part(self, seed: Optional[str], keystore_description: str, num_signers: int):
+    def _seed_part(self, seed: Optional[str], keystore_description: str, num_signers: int) -> None:
         self.elements.append(Spacer(1, 5))
         # Additional subtitle
         if num_signers == 1:
@@ -205,8 +205,10 @@ class BitcoinWalletRecoveryPDF:
         self,
         wallet_descriptor_string: str,
         threshold: int,
-    ):
-        qr_image = pilimage_to_reportlab(create_qr(wallet_descriptor_string), width=200, height=200)
+    ) -> None:
+        qr_image = pilimage_to_reportlab(
+            QRGenerator.create_qr_PILimage(wallet_descriptor_string), width=200, height=200
+        )
         if threshold > 1:
             desc_str = Paragraph(
                 f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need {threshold} Seeds and the wallet descriptor.",
@@ -227,7 +229,7 @@ class BitcoinWalletRecoveryPDF:
         threshold: int,
         seed: Optional[str] = None,
         num_signers: int = 1,
-    ):
+    ) -> None:
         self.elements.append(Paragraph(f"<font size=12><b>{title}</b></font>", self.style_heading))
 
         # Small subtitle
@@ -258,11 +260,11 @@ class BitcoinWalletRecoveryPDF:
 
         self._descriptor_part(wallet_descriptor_string, threshold)
 
-    def save_pdf(self, filename: str):
+    def save_pdf(self, filename: str) -> None:
         document = SimpleDocTemplate(filename, pagesize=letter)
         document.build(self.elements)
 
-    def open_pdf(self, filename: str):
+    def open_pdf(self, filename: str) -> None:
         if os.path.exists(filename):
             file_uri = Path(filename).absolute().as_uri()
             webbrowser.open_new_tab(file_uri)
@@ -270,7 +272,7 @@ class BitcoinWalletRecoveryPDF:
             print("File not found!")
 
 
-def make_and_open_pdf(wallet: Wallet):
+def make_and_open_pdf(wallet: Wallet) -> None:
     info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
     pdf_recovery = BitcoinWalletRecoveryPDF()
 

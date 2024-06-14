@@ -31,19 +31,17 @@ import logging
 from collections import deque
 from typing import List
 
+from bitcoin_nostr_chat.connected_devices.connected_devices import TrustedDevice
+from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
 from nostr_sdk import PublicKey
 
-from bitcoin_safe.gui.qt.nostr_sync.connected_devices.connected_devices import (
-    TrustedDevice,
-)
-from bitcoin_safe.gui.qt.nostr_sync.nostr import BitcoinDM, ChatLabel
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 
 logger = logging.getLogger(__name__)
+from bitcoin_nostr_chat.nostr_sync import Data, DataType
+
 from bitcoin_safe.labels import Labels, LabelType
 from bitcoin_safe.signals import Signals, UpdateFilter
-
-from .nostr_sync.nostr_sync import Data, DataType
 
 
 class LabelSyncer:
@@ -61,7 +59,7 @@ class LabelSyncer:
         # store sent UpdateFilters to prevent recursive behavior
         self.sent_update_filter: deque = deque(maxlen=1000)
 
-    def on_add_trusted_device(self, trusted_device: TrustedDevice):
+    def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():
             return
         logger.debug(f"on_add_trusted_device")
@@ -76,13 +74,15 @@ class LabelSyncer:
         )
         logger.debug(f"sent all labels to {trusted_device.pub_key_bech32}")
 
-    def on_nostr_label_bip329_received(self, data: Data):
+    def on_nostr_label_bip329_received(self, data: Data) -> None:
         if not self.sync_tab.enabled():
             return
 
         logger.info(f"on_nostr_label_bip329_received {data}")
         if data.data_type == DataType.LabelsBip329:
             changed_labels = self.labels.import_dumps_data(data.data)
+            if not changed_labels:
+                return
             logger.debug(f"on_nostr_label_bip329_received updated: {changed_labels} ")
 
             addresses: List[str] = []
@@ -109,7 +109,7 @@ class LabelSyncer:
             # the category editor maybe also needs to add categories
             self.signals.category_updated.emit(update_filter)
 
-    def on_labels_updated(self, update_filter: UpdateFilter):
+    def on_labels_updated(self, update_filter: UpdateFilter) -> None:
         if not self.sync_tab.enabled():
             return
         if update_filter in self.sent_update_filter:

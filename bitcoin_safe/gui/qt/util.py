@@ -40,7 +40,7 @@ from typing import Any, Callable, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-from bitcoin_qrreader.bitcoin_qr import is_bitcoin_address
+from bitcoin_qr_tools.data import is_bitcoin_address
 from PIL import Image as PilImage
 from PyQt6.QtCore import QCoreApplication, QSize, Qt, QTimer, QUrl, pyqtSignal
 from PyQt6.QtGui import (
@@ -653,6 +653,10 @@ class ColorScheme:
 
 def icon_path(icon_basename: str):
     return resource_path("gui", "icons", icon_basename)
+
+
+def screenshot_path(basename: str):
+    return resource_path("gui", "screenshots", basename)
 
 
 @lru_cache(maxsize=1000)

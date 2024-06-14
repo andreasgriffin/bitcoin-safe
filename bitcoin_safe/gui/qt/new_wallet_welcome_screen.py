@@ -78,7 +78,7 @@ class NewWalletWelcomeScreen(QObject):
         )
         logger.debug(f"initialized welcome_screen = {self}")
 
-    def add_new_wallet_welcome_tab(self):
+    def add_new_wallet_welcome_tab(self) -> None:
         add_tab_to_tabs(
             self.main_tabs,
             self.tab,
@@ -89,7 +89,7 @@ class NewWalletWelcomeScreen(QObject):
             data=self,
         )
 
-    def create_ui(self):
+    def create_ui(self) -> None:
         self.tab = QWidget()
         self.horizontalLayout_2 = QHBoxLayout(self.tab)
         self.groupBox_singlesig = QGroupBox(self.tab)
@@ -177,7 +177,7 @@ class NewWalletWelcomeScreen(QObject):
         self.updateUi()
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.label_singlesig.setText(
             f"""<h1>{self.tr('Single Signature Wallet')}</h1>
 <ul>
@@ -223,7 +223,7 @@ class NewWalletWelcomeScreen(QObject):
         )
         self.pushButton_custom_wallet.setText(self.tr("Create custom wallet"))
 
-    def remove_tab(self):
+    def remove_tab(self) -> None:
         index = self.main_tabs.indexOf(self.tab)
         if index >= 0 and self.main_tabs.count() > 1:
             self.main_tabs.removeTab(index)

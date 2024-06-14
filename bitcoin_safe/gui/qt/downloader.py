@@ -49,13 +49,13 @@ class DownloadThread(QThread):
     progress = pyqtSignal(int)
     finished = pyqtSignal()
 
-    def __init__(self, url, destination_dir):
+    def __init__(self, url, destination_dir) -> None:
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
         self.filename: Path = self.destination_dir / Path(url).name
 
-    def run(self):
+    def run(self) -> None:
         response = requests.get(self.url, stream=True, timeout=2)
         content_length = response.headers.get("content-length")
 
@@ -75,14 +75,14 @@ class DownloadThread(QThread):
 class Downloader(QWidget):
     finished = pyqtSignal(DownloadThread)
 
-    def __init__(self, url, destination_dir):
+    def __init__(self, url, destination_dir) -> None:
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
         self.filename = Path(url).name  # Extract filename from URL
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.setWindowTitle(self.tr("Download Progress"))
         self.layout = QVBoxLayout()
 
@@ -109,7 +109,7 @@ class Downloader(QWidget):
         self.setLayout(self.layout)
         self.setGeometry(400, 400, 300, 100)
 
-    def startDownload(self):
+    def startDownload(self) -> None:
         self.startButton.hide()
         self.progress.show()
         self.thread = DownloadThread(self.url, str(self.destination_dir))
@@ -117,12 +117,12 @@ class Downloader(QWidget):
         self.thread.finished.connect(self.downloadFinished)
         self.thread.start()
 
-    def downloadFinished(self):
+    def downloadFinished(self) -> None:
         self.progress.hide()
         self.showFileButton.show()
         self.finished.emit(self.thread)
 
-    def showFile(self):
+    def showFile(self) -> None:
         filename = self.thread.filename
         try:
             if platform.system() == "Windows":

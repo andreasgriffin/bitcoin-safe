@@ -37,7 +37,7 @@ import copy
 import json
 from typing import Any, Dict, List, Literal, Union
 
-from bitcoin_qrreader.bitcoin_qr import Data, DataType
+from bitcoin_qr_tools.data import Data, DataType
 from packaging import version
 
 from .pythonbdk_types import *
@@ -120,13 +120,14 @@ class Label(SaveAllClass):
 
 
 class Labels(BaseSaveableClass):
-    VERSION = "0.0.5"
+    VERSION = "0.1.0"
     known_classes = {**BaseSaveableClass.known_classes, "Label": Label}
 
     def __init__(
         self,
         data: Dict[str, Label] = None,
         categories: Optional[List[str]] = None,
+        default_category: str = "default",
     ) -> None:
         super().__init__()
 
@@ -134,13 +135,14 @@ class Labels(BaseSaveableClass):
         self.data: Dict[str, Label] = data if data else {}
         self.categories: List[str] = categories if categories else []
 
-        self.separator = ";;"
+        self.separator = " #"
+        self.default_category = default_category
 
-    def add_category(self, value: str):
+    def add_category(self, value: str) -> None:
         if value not in self.categories:
             self.categories.append(value)
 
-    def del_item(self, ref: str):
+    def del_item(self, ref: str) -> None:
         if ref in self.data:
             del self.data[ref]
 
@@ -164,7 +166,9 @@ class Labels(BaseSaveableClass):
 
         return item.timestamp
 
-    def set_label(self, type: str, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_label(
+        self, type: str, ref: str, label_value, timestamp: Union[Literal["now"], float] = None
+    ) -> None:
         label = self.data.get(ref)
         if not label:
             self.data[ref] = label = Label(type, ref)
@@ -177,7 +181,9 @@ class Labels(BaseSaveableClass):
         if all(value is None for value in [label.category, label.spendable, label.label, label.origin]):
             del self.data[ref]
 
-    def set_category(self, type: str, ref: str, category, timestamp: Union[Literal["now"], float] = None):
+    def set_category(
+        self, type: str, ref: str, category, timestamp: Union[Literal["now"], float] = None
+    ) -> None:
         label = self.data.get(ref)
         if not label:
             self.data[ref] = label = Label(type, ref)
@@ -193,37 +199,38 @@ class Labels(BaseSaveableClass):
         if category and category not in self.categories:
             self.categories.append(category)
 
-    def set_tx_label(self, label_value, value, timestamp: Union[Literal["now"], float] = None):
+    def set_tx_label(self, label_value, value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.tx, label_value, value, timestamp=timestamp)
 
-    def set_addr_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_addr_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.addr, ref, label_value, timestamp=timestamp)
 
-    def set_pubkey_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_pubkey_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.pubkey, ref, label_value, timestamp=timestamp)
 
-    def set_input_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_input_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.input, ref, label_value, timestamp=timestamp)
 
-    def set_output_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_output_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.output, ref, label_value, timestamp=timestamp)
 
-    def set_xpub_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None):
+    def set_xpub_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_label(LabelType.xpub, ref, label_value, timestamp=timestamp)
 
-    def set_addr_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = None):
+    def set_addr_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_category(LabelType.addr, ref, category, timestamp=timestamp)
 
-    def set_tx_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = None):
+    def set_tx_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = None) -> None:
         return self.set_category(LabelType.tx, ref, category, timestamp=timestamp)
 
-    def get_default_category(self):
-        return self.categories[0] if self.categories else None
+    def get_default_category(self) -> str:
+        return self.categories[0] if self.categories else self.default_category
 
     def dump(self) -> Dict:
         d = super().dump()
 
         d["data"] = self.data
+        d["default_category"] = self.default_category
 
         keys = ["categories"]
         for k in keys:
@@ -231,7 +238,7 @@ class Labels(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None):
+    def from_dump(cls, dct: Dict, class_kwargs=None) -> "Labels":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return Labels(**dct)
@@ -263,7 +270,7 @@ class Labels(BaseSaveableClass):
 
         if new_label.category:
             new_label.label = (
-                f'{new_label.category}{self.separator}{new_label.label if new_label.label else ""}'
+                f'{new_label.label if new_label.label else ""}{self.separator}{new_label.category}'
             )
             new_label.category = None
 
@@ -279,7 +286,18 @@ class Labels(BaseSaveableClass):
         label = Label(**d)
 
         if label.label and (not label.category) and self.separator in label.label:
-            label.category, label.label = label.label.split(self.separator, 1)
+            label.label, *categories = label.label.split(self.separator)
+            if categories:
+                if len(categories) > 1:
+                    logger.warning(f"categories = {categories}. Dropping all but the first non-empty.")
+
+                for category in categories:
+                    # clean category
+                    category = category.replace(self.separator.strip(), "").strip()
+                    if not category:
+                        continue
+                    label.category = category
+                    break
 
         # this prevents that imported labels are overwritten by old syncronizations
         if timestamp == "now":
@@ -288,7 +306,7 @@ class Labels(BaseSaveableClass):
             label.timestamp = timestamp
         return label
 
-    def export_bip329_jsonlines(self):
+    def export_bip329_jsonlines(self) -> str:
         list_of_dict = [self._convert_item_to_bip329(item) for item in self.data.values()]
         return list_of_dict_to_jsonlines(list_of_dict)
 
@@ -345,7 +363,7 @@ class Labels(BaseSaveableClass):
                     self.categories.append(item.category)
         return changed_data
 
-    def dumps_data_jsonlines(self, refs: list[str] = None):
+    def dumps_data_jsonlines(self, refs: list[str] = None) -> str:
         return list_of_dict_to_jsonlines(
             [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
         )
@@ -354,8 +372,8 @@ class Labels(BaseSaveableClass):
         labels = [Label.from_dump(label_dict) for label_dict in jsonlines_to_list_of_dict(dumps_data)]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
-    def rename_category(self, old_category: str, new_category: str):
-        affected_keys = []
+    def rename_category(self, old_category: str, new_category: str) -> List[str]:
+        affected_keys: List[str] = []
         for key, item in list(self.data.items()):
             if item.category and item.category == old_category:
                 item.category = new_category

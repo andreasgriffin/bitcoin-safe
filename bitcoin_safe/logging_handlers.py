@@ -35,7 +35,7 @@ import sys
 from .simple_mailer import compose_email
 
 
-def remove_absolute_paths(line: str):
+def remove_absolute_paths(line: str) -> str:
     """
     Replaces absolute paths in a traceback line with relative ones,
     based on the current script's execution path.
@@ -44,7 +44,7 @@ def remove_absolute_paths(line: str):
     return line.replace(current_path, "")
 
 
-def mail_error_repot(error_report: str):
+def mail_error_repot(error_report: str) -> None:
     email = "andreasgriffin@proton.me"
     subject = "Error report"
     body = f"""Error:
@@ -61,10 +61,10 @@ def mail_error_repot(error_report: str):
 
 
 class RelativePathFormatter(logging.Formatter):
-    def formatException(self, exc_info):
+    def formatException(self, exc_info) -> str:
         return remove_absolute_paths(super().formatException(exc_info))
 
-    def format(self, record):
+    def format(self, record) -> str:
         if record.exc_info:
             record.exc_text = self.formatException(record.exc_info)
         return super().format(record)
@@ -75,7 +75,7 @@ class MailHandler(logging.Handler):
         super().__init__(level)
         self.must_include_exc_info = must_include_exc_info
 
-    def emit(self, record):
+    def emit(self, record) -> None:
         """'args', 'asctime', 'created', 'exc_info', 'exc_text', 'filename', 'funcName', 'getMessage', 'levelname', 'levelno', 'lineno', 'message', 'module', 'msecs', 'msg', 'name', 'pathname', 'process', 'processName', 'relativeCreated', 'stack_info', 'thread', 'threadName"""
 
         if (self.must_include_exc_info and record.exc_info) or not self.must_include_exc_info:

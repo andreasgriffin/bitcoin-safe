@@ -39,14 +39,14 @@ logger = logging.getLogger(__name__)
 
 def compose_email(
     email: str, subject: str, body: str, attachment_filenames: List[str] = None, run_in_background=True
-):
+) -> None:
     # Encode the subject and body to ensure spaces and special characters are handled correctly
     subject_encoded = urllib.parse.quote(subject)
     body_encoded = urllib.parse.quote(body)
     mailto_link = f"mailto:{email}?subject={subject_encoded}&body={body_encoded}"
 
     # Function to attempt opening the mailto link with the OS's default email client
-    def try_native_open(mailto_link):
+    def try_native_open(mailto_link) -> None:
         if sys.platform.startswith("linux"):
             # Linux: Use xdg-open to handle the mailto link
             subprocess.run(["xdg-open", mailto_link], check=True)

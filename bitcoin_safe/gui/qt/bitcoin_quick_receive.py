@@ -44,7 +44,7 @@ class BitcoinQuickReceive(QuickReceive):
         wallet: Wallet,
         title="",
         limit_to_categories=None,
-    ):
+    ) -> None:
         super().__init__(title)
         self.signals = signals
         self.wallet = wallet
@@ -54,7 +54,7 @@ class BitcoinQuickReceive(QuickReceive):
         self.signals.category_updated.connect(self.update)
         self.signals.language_switch.connect(self.update)
 
-    def update(self):
+    def update(self) -> None:
         super().update()
         self.clear_boxes()
         self.label_title.setText(self.tr("Quick Receive"))

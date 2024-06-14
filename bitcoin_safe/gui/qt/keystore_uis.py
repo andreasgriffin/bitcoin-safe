@@ -79,7 +79,7 @@ class KeyStoreUIs(DataTabWidget):
 
         self.signals_min.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         # udpate the label for where the keystore exists
         for i, keystore in enumerate(self.protowallet.keystores):
             if not keystore:
@@ -92,7 +92,7 @@ class KeyStoreUIs(DataTabWidget):
     def protowallet(self) -> ProtoWallet:
         return self.get_editable_protowallet()
 
-    def ui_keystore_ui_change(self, *args):
+    def ui_keystore_ui_change(self, *args) -> None:
         logger.debug("ui_keystore_ui_change")
         try:
             self.set_protowallet_from_keystore_ui()
@@ -100,7 +100,7 @@ class KeyStoreUIs(DataTabWidget):
         except:
             logger.warning("ui_keystore_ui_change: Invalid input")
 
-    def set_protowallet_from_keystore_ui(self):
+    def set_protowallet_from_keystore_ui(self) -> None:
 
         # and last are the keystore uis, which can cause exceptions, because the UI is not filled correctly
         for i, keystore_ui in enumerate(self.keystore_uis):
@@ -119,7 +119,7 @@ class KeyStoreUIs(DataTabWidget):
                 continue
             keystore.label = self.protowallet.signer_names(self.protowallet.threshold, i)
 
-    def _set_keystore_tabs(self):
+    def _set_keystore_tabs(self) -> None:
         # add keystore_ui if necessary
         if len(self.keystore_uis) < len(self.protowallet.keystores):
             for i in range(len(self.keystore_uis), len(self.protowallet.keystores)):
@@ -159,7 +159,7 @@ class KeyStoreUIs(DataTabWidget):
             self.setTabText(index, keystore_ui.label)
             self.setTabIcon(index, icon_for_label(keystore_ui.label))
 
-    def set_keystore_ui_from_protowallet(self):
+    def set_keystore_ui_from_protowallet(self) -> None:
         logger.debug(f"set_keystore_ui_from_protowallet")
         self._set_keystore_tabs()
         for keystore, keystore_ui in zip(self.protowallet.keystores, self.keystore_uis):

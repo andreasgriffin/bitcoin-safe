@@ -56,7 +56,7 @@ class BlockChangesSignals:
                 widgets += self._collect_sub_widget(child)
         return widgets
 
-    def _collect_widgets_in_tab(self, tab_widget: QTabWidget):
+    def _collect_widgets_in_tab(self, tab_widget: QTabWidget) -> List[QWidget]:
         """Recursively collect all widgets in a QTabWidget."""
         widgets = []
         for index in range(tab_widget.count()):
@@ -73,7 +73,7 @@ class BlockChangesSignals:
                 l += self._collect_widgets_in_tab(widget)
         return set(l)
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         if self.all_widgets is None:
             self.all_widgets = self.fill_widget_list()
 
@@ -83,7 +83,7 @@ class BlockChangesSignals:
         for widget in self.all_widgets:
             widget.blockSignals(True)
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         if self.all_widgets is None:
             self.all_widgets = self.fill_widget_list()
 

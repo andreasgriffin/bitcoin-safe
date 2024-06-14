@@ -38,7 +38,7 @@ from .execute_config import DEFAULT_MAINNET
 logger = logging.getLogger(__name__)
 
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import appdirs
 import bdkpython as bdk
@@ -72,19 +72,19 @@ class UserConfig(BaseSaveableClass):
         bdk.Network.TESTNET: [0, 1000],
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.network_configs = NetworkConfigs()
         self.network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
-        self.recently_open_wallets: Dict[bdk.Network, deque] = {
+        self.recently_open_wallets: Dict[bdk.Network, deque[str]] = {
             network: deque(maxlen=5) for network in bdk.Network
         }
-        self.language_code = None
+        self.language_code: Optional[str] = None
 
-    def add_recently_open_wallet(self, file_path: str):
+    def add_recently_open_wallet(self, file_path: str) -> None:
         # ensure that the newest open file moves to the top of the queue, but isn't added multiple times
         recent_wallets = self.recently_open_wallets[self.network]
         if file_path in recent_wallets:
@@ -96,17 +96,17 @@ class UserConfig(BaseSaveableClass):
         return self.network_configs.configs[self.network.name]
 
     @property
-    def wallet_dir(self):
+    def wallet_dir(self) -> str:
         return os.path.join(self.config_dir, self.network.name)
 
-    def get(self, key, default=None):
+    def get(self, key: str, default=None) -> Any:
         "For legacy reasons"
         if hasattr(self, key):
             return getattr(self, key)
         else:
             return default
 
-    def dump(self):
+    def dump(self) -> Dict[str, Any]:
         d = super().dump()
         d.update(self.__dict__.copy())
 
@@ -172,13 +172,13 @@ class UserConfig(BaseSaveableClass):
         return dct
 
     @classmethod
-    def exists(cls, password=None, file_path=None):
+    def exists(cls, password=None, file_path=None) -> bool:
         if file_path is None:
             file_path = cls.config_file
         return os.path.isfile(file_path)
 
     @classmethod
-    def from_file(cls, password=None, file_path=None):
+    def from_file(cls, password=None, file_path=None) -> "UserConfig":
         if file_path is None:
             file_path = cls.config_file
         if os.path.isfile(file_path):
@@ -186,5 +186,5 @@ class UserConfig(BaseSaveableClass):
         else:
             return UserConfig()
 
-    def save(self):
+    def save(self) -> None:  # type: ignore
         super().save(self.config_file)

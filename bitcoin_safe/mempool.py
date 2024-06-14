@@ -30,7 +30,7 @@
 import enum
 import logging
 from math import ceil
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 from bitcoin_safe.network_config import NetworkConfig
@@ -171,14 +171,14 @@ mempoolFeeColors = [
 ]
 
 
-def fee_to_color(fee, colors=chartColors):
+def fee_to_color(fee, colors=chartColors) -> str:
     indizes = np.where(np.array(feeLevels) <= fee)[0]
     if len(indizes) == 0:
         return "#000000"
     return colors[indizes[-1]]
 
 
-def fetch_from_url(url: str, is_json=True):
+def fetch_from_url(url: str, is_json=True) -> Optional[Any]:
     logger.debug(f"fetch_json_from_url requests.get({url}, timeout=10)")
 
     try:
@@ -197,14 +197,14 @@ def fetch_from_url(url: str, is_json=True):
         return None
 
 
-def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True):
-    def do():
+def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True) -> None:
+    def do() -> Any:
         return fetch_from_url(url, is_json=is_json)
 
-    def on_error(packed_error_info):
+    def on_error(packed_error_info) -> None:
         custom_exception_handler(*packed_error_info)
 
-    def on_done(data):
+    def on_done(data) -> None:
         pass
 
     TaskThread(parent, signals_min=signals_min).add_and_start(do, on_success, on_done, on_error)
@@ -290,7 +290,7 @@ class MempoolData(QObject):
 
         return average_fee_rate * (1 + slack)
 
-    def set_data_from_mempoolspace(self, force=False):
+    def set_data_from_mempoolspace(self, force=False) -> None:
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
             logger.debug(
                 f"Do not fetch data from {self.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
@@ -299,7 +299,7 @@ class MempoolData(QObject):
 
         self.time_of_data = datetime.datetime.now()
 
-        def on_mempool_blocks(mempool_blocks):
+        def on_mempool_blocks(mempool_blocks) -> None:
             if mempool_blocks:
                 self.mempool_blocks = mempool_blocks
                 logger.info(f"Updated mempool_blocks {mempool_blocks}")
@@ -312,7 +312,7 @@ class MempoolData(QObject):
         )
         logger.debug(f"started on_mempool_blocks")
 
-        def on_recommended(recommended):
+        def on_recommended(recommended) -> None:
             if recommended:
                 self.recommended = recommended
                 logger.info(f"Updated recommended {recommended}")
@@ -325,7 +325,7 @@ class MempoolData(QObject):
         )
         logger.debug(f"started on_recommended")
 
-        def on_mempool_dict(mempool_dict):
+        def on_mempool_dict(mempool_dict) -> None:
             if mempool_dict:
                 self.mempool_dict = mempool_dict
                 logger.info(f"Updated mempool_dict {mempool_dict}")

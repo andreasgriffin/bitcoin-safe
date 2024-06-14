@@ -29,6 +29,7 @@
 
 import logging
 
+from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.i18n import translate
 
@@ -55,7 +56,6 @@ from ...descriptors import AddressType, get_default_address_type
 from ...signals import SignalsMin, pyqtSignal
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
-from .custom_edits import DescriptorEdit
 
 
 class DescriptorUI(QObject):
@@ -103,7 +103,7 @@ class DescriptorUI(QObject):
         self.updateUi()
         signals_min.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.label_signers.setText(self.tr("Required Signers"))
         self.label_gap.setText(self.tr("Scan Address Limit"))
         self.edit_descriptor.input_field.setPlaceholderText(
@@ -119,11 +119,11 @@ class DescriptorUI(QObject):
         self.label_address_type.setText(translate("descriptor", "Address Type"))
         self.groupBox_wallet_descriptor.setTitle(translate("descriptor", "Wallet Descriptor"))
 
-    def set_protowallet(self, protowallet: ProtoWallet):
+    def set_protowallet(self, protowallet: ProtoWallet) -> None:
         self.protowallet = protowallet
         self.set_all_ui_from_protowallet()
 
-    def on_wallet_ui_changes(self):
+    def on_wallet_ui_changes(self) -> None:
         logger.debug("on_wallet_ui_changes")
         try:
             self.set_protowallet_from_ui()
@@ -135,7 +135,7 @@ class DescriptorUI(QObject):
             logger.warning("on_wallet_ui_changes: Invalid input")
             self._set_keystore_tabs()
 
-    def on_descriptor_change(self, new_value: str):
+    def on_descriptor_change(self, new_value: str) -> None:
         new_value = new_value.strip().replace("\n", "")
 
         # self.set_protowallet_from_keystore_ui(cloned_protowallet)
@@ -155,20 +155,20 @@ class DescriptorUI(QObject):
             logger.info(f"Invalid descriptor {new_value}")
             return
 
-    def on_spin_threshold_changed(self, new_value: int):
+    def on_spin_threshold_changed(self, new_value: int) -> None:
         self.on_wallet_ui_changes()
 
-    def on_spin_signer_changed(self, new_value: int):
+    def on_spin_signer_changed(self, new_value: int) -> None:
         self.repopulate_comboBox_address_type(new_value > 1)
 
         self.on_wallet_ui_changes()
 
-    def set_protowallet_from_descriptor_str(self, descriptor: str):
+    def set_protowallet_from_descriptor_str(self, descriptor: str) -> None:
         self.protowallet = ProtoWallet.from_descriptor(
             self.protowallet.id, descriptor, self.protowallet.network
         )
 
-    def _set_keystore_tabs(self):
+    def _set_keystore_tabs(self) -> None:
         self.keystore_uis._set_keystore_tabs()
 
         self.spin_req.setMinimum(1)
@@ -176,7 +176,7 @@ class DescriptorUI(QObject):
         self.spin_signers.setMinimum(self.spin_req.value())
         self.spin_signers.setMaximum(10)
 
-    def set_wallet_ui_from_protowallet(self):
+    def set_wallet_ui_from_protowallet(self) -> None:
         with BlockChangesSignals([self.tab]):
             logger.debug(f"{self.__class__.__name__} set_wallet_ui_from_protowallet")
             self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
@@ -207,7 +207,7 @@ class DescriptorUI(QObject):
 
             self.spin_gap.setValue(self.protowallet.gap)
 
-    def set_all_ui_from_protowallet(self):
+    def set_all_ui_from_protowallet(self) -> None:
         """Updates the 3 parts.
 
         - wallet ui (e.g. gap)
@@ -219,7 +219,7 @@ class DescriptorUI(QObject):
             self.set_wallet_ui_from_protowallet()
             self.set_ui_descriptor()
 
-    def set_protowallet_from_ui(self):
+    def set_protowallet_from_ui(self) -> None:
         logger.debug("set_protowallet_from_keystore_ui")
 
         # these wallet settings must come first
@@ -231,7 +231,7 @@ class DescriptorUI(QObject):
 
         self.keystore_uis.set_protowallet_from_keystore_ui()
 
-    def set_combo_box_address_type_default(self):
+    def set_combo_box_address_type_default(self) -> None:
         address_types = get_address_types(self.protowallet.is_multisig())
         self.comboBox_address_type.setCurrentIndex(
             address_types.index(get_default_address_type(self.protowallet.is_multisig()))
@@ -258,7 +258,7 @@ class DescriptorUI(QObject):
     def get_gap_from_ui(self) -> int:
         return self.spin_gap.value()
 
-    def set_ui_descriptor(self):
+    def set_ui_descriptor(self) -> None:
         logger.debug(f"{self.__class__.__name__} set_ui_descriptor")
         # check if the descriptor actually CAN be calculated to a reasonable degree
         try:
@@ -270,7 +270,7 @@ class DescriptorUI(QObject):
         except:
             self.edit_descriptor.setText("")
 
-    def disable_fields(self):
+    def disable_fields(self) -> None:
         self.comboBox_address_type.setHidden(self.no_edit_mode)
         self.label_address_type.setHidden(self.no_edit_mode)
         self.spin_signers.setHidden(self.no_edit_mode)
@@ -289,7 +289,7 @@ class DescriptorUI(QObject):
             self.label_of.setDisabled(True)
             self.spin_signers.setDisabled(True)
 
-    def repopulate_comboBox_address_type(self, is_multisig: bool):
+    def repopulate_comboBox_address_type(self, is_multisig: bool) -> None:
         with BlockChangesSignals([self.tab]):
             # Fetch the new address types
             address_types = get_address_types(is_multisig)
@@ -312,7 +312,7 @@ class DescriptorUI(QObject):
                 if default_address_type in address_type_names:
                     self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
 
-    def create_wallet_type_and_descriptor(self):
+    def create_wallet_type_and_descriptor(self) -> None:
         box_wallet_type_and_descriptor = QWidget(self.tab)
         box_wallet_type_and_descriptor.setLayout(QHBoxLayout(box_wallet_type_and_descriptor))
 
@@ -425,7 +425,7 @@ class DescriptorUI(QObject):
         self.spin_signers.valueChanged.connect(self.on_spin_signer_changed)
         self.spin_req.valueChanged.connect(self.on_spin_threshold_changed)
 
-    def create_button_bar(self):
+    def create_button_bar(self) -> QDialogButtonBox:
 
         # Create buttons and layout
         self.button_box = QDialogButtonBox(
@@ -442,3 +442,4 @@ class DescriptorUI(QObject):
         )
 
         self.tab.layout().addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
+        return self.button_box

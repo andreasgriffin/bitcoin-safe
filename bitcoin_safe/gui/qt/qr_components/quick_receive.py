@@ -29,6 +29,7 @@
 
 from typing import List
 
+from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import QMargins, Qt
 from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import (
@@ -43,11 +44,9 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 
-from .image_widget import QRCodeWidgetSVG
-
 
 class TitledComponent(QWidget):
-    def __init__(self, title, hex_color, parent=None):
+    def __init__(self, title, hex_color, parent=None) -> None:
         super().__init__(parent)
 
         self.title = QLabel(title, self)
@@ -77,7 +76,7 @@ class ReceiveGroup(TitledComponent):
         address: str,
         qr_uri: str,
         width=170,
-    ):
+    ) -> None:
         super().__init__(title=category, hex_color=hex_color)
         self.setFixedWidth(width)
 
@@ -104,7 +103,7 @@ class ReceiveGroup(TitledComponent):
 
 
 class NoVerticalScrollArea(QScrollArea):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.horizontalScrollBar().valueChanged.connect(self.recenterVerticalScroll)
@@ -113,7 +112,7 @@ class NoVerticalScrollArea(QScrollArea):
         # Override to do nothing, preventing vertical scrolling
         pass
 
-    def recenterVerticalScroll(self):
+    def recenterVerticalScroll(self) -> None:
         # Recenter the vertical scroll position when horizontal scrollbar state changes
         if self.widget():
             max_scroll = self.verticalScrollBar().maximum()
@@ -126,7 +125,7 @@ class NoVerticalScrollArea(QScrollArea):
 
 
 class QuickReceive(QWidget):
-    def __init__(self, title="Quick Receive"):
+    def __init__(self, title="Quick Receive") -> None:
         super().__init__()
 
         self.setSizePolicy(
@@ -171,18 +170,18 @@ class QuickReceive(QWidget):
                 - self.scroll_area.horizontalScrollBar().height()
             )
 
-    def add_box(self, receive_group: ReceiveGroup):
+    def add_box(self, receive_group: ReceiveGroup) -> None:
         self.group_boxes.append(receive_group)
         self.h_layout.addWidget(receive_group)
         self.content_widget.adjustSize()
 
-    def remove_box(self):
+    def remove_box(self) -> None:
         if self.group_boxes:
             group_box = self.group_boxes.pop()
             self.h_layout.removeWidget(group_box)
             group_box.deleteLater()
             self.content_widget.adjustSize()
 
-    def clear_boxes(self):
+    def clear_boxes(self) -> None:
         while self.group_boxes:
             self.remove_box()

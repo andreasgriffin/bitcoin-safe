@@ -40,7 +40,7 @@ class HTMLDelegate:
     def __init__(self) -> None:
         pass
 
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         logger.debug("HTMLDelegate.paint")
         text = index.model().data(index)
 
@@ -75,7 +75,7 @@ class HTMLDelegate:
 
         painter.restore()
 
-    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex):
+    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
         text = index.model().data(index)
 
         doc = QTextDocument()

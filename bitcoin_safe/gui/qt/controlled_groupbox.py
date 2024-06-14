@@ -32,7 +32,7 @@ from PyQt6.QtWidgets import QApplication, QCheckBox, QGroupBox, QVBoxLayout, QWi
 
 
 class ControlledGroupbox(QWidget):
-    def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True):
+    def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True) -> None:
         super().__init__()
 
         self.setLayout(QVBoxLayout())
@@ -52,7 +52,7 @@ class ControlledGroupbox(QWidget):
         self.groupbox.setEnabled(enabled)
         self.checkbox.stateChanged.connect(self.toggleGroupBox)
 
-    def toggleGroupBox(self, value):
+    def toggleGroupBox(self, value) -> None:
         """Toggle the enabled state of the groupbox based on the checkbox."""
         self.groupbox.setEnabled(value == Qt.CheckState.Checked.value)
 
