@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Dict, Optional
+from typing import Any, Callable, Dict, Literal, Optional
 
 from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
@@ -52,6 +52,7 @@ from nostr_sdk import PublicKey
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import (
+    QBoxLayout,
     QGroupBox,
     QHBoxLayout,
     QMenu,
@@ -72,7 +73,7 @@ class DataGroupBox(QGroupBox):
         super().__init__(title=title, parent=parent)
         self.data = data
 
-    def setData(self, data):
+    def setData(self, data) -> None:
         self.data = data
 
 
@@ -81,17 +82,28 @@ class HorizontalImportExportGroups(QWidget):
 
     def __init__(
         self,
+        layout: QBoxLayout = None,
+        enable_qr=True,
+        enable_file=True,
+        enable_usb=True,
+        enable_clipboard=True,
     ) -> None:
         super().__init__()
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        self.setLayout(QHBoxLayout())
+        self.setLayout(layout if layout is not None else QHBoxLayout())
         self.layout().setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
         # qr
         self.group_qr = DataGroupBox("QR Code")
-        self.group_qr.setLayout(QVBoxLayout())
+        self.group_qr.setLayout(QHBoxLayout())
         self.group_qr.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout().addWidget(self.group_qr)
+        if enable_qr:
+            self.layout().addWidget(self.group_qr)
+
+        self.group_qr_buttons = QWidget()
+        self.group_qr_buttons.setLayout(QVBoxLayout())
+        self.group_qr_buttons.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.group_qr.layout().addWidget(self.group_qr_buttons)
 
         # one of the groupboxes i have to make expanding, otherwise nothing is expanding
         self.group_qr.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
@@ -100,19 +112,22 @@ class HorizontalImportExportGroups(QWidget):
         self.group_file = DataGroupBox("File")
         self.group_file.setLayout(QVBoxLayout())
         self.group_file.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout().addWidget(self.group_file)
+        if enable_file:
+            self.layout().addWidget(self.group_file)
 
         # usb
         self.group_usb = DataGroupBox("USB")
         self.group_usb.setLayout(QVBoxLayout())
         self.group_usb.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout().addWidget(self.group_usb)
+        if enable_usb:
+            self.layout().addWidget(self.group_usb)
 
         # clipboard
         self.group_share = DataGroupBox("Share")
         self.group_share.setLayout(QVBoxLayout())
         self.group_share.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout().addWidget(self.group_share)
+        if enable_clipboard:
+            self.layout().addWidget(self.group_share)
 
         # seed
         self.group_seed = DataGroupBox("Seed")
@@ -132,35 +147,53 @@ class ExportDataSimple(HorizontalImportExportGroups):
         signals_min: SignalsMin,
         sync_tabs: dict[str, SyncTab] = None,
         usb_signer_ui: SignerUI = None,
+        layout: QBoxLayout = None,
+        enable_qr=True,
+        enable_file=True,
+        enable_usb=True,
+        enable_clipboard=True,
     ) -> None:
-        super().__init__()
+        super().__init__(
+            layout=layout,
+            enable_qr=enable_qr,
+            enable_file=enable_file,
+            enable_usb=enable_usb,
+            enable_clipboard=enable_clipboard,
+        )
         self.sync_tabs = sync_tabs if sync_tabs else {}
         self.signals_min = signals_min
         self.txid = None
         self.json_data = None
         self.serialized = None
+        self.qr_type: Literal["ur", "bbqr"] = "bbqr"
         self.set_data(data)
 
         self.signal_export_to_file.connect(self.export_to_file)
 
         # qr
         self.qr_label = QRCodeWidgetSVG()
+        self.qr_label.setMinimumSize(20, 20)
         self.qr_label.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
 
-        self.group_qr.layout().addWidget(self.qr_label)
+        group_qr_layout: QHBoxLayout = self.group_qr.layout()
+        group_qr_layout.insertWidget(0, self.qr_label)
         self.lazy_load_qr(data)
 
         self.button_enlarge_qr = QPushButton()
         self.button_enlarge_qr.setIcon(read_QIcon("zoom.png"))
         # self.button_enlarge_qr.setIconSize(QSize(30, 30))  # 24x24 pixels
         self.button_enlarge_qr.clicked.connect(self.qr_label.enlarge_image)
-        self.group_qr.layout().addWidget(self.button_enlarge_qr)
+        self.group_qr_buttons.layout().addWidget(self.button_enlarge_qr)
 
         self.button_save_qr = QPushButton()
         self.button_save_qr.setIcon(read_QIcon("download.png"))
         self.button_save_qr.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         self.button_save_qr.clicked.connect(self.export_qrcode)
-        self.group_qr.layout().addWidget(self.button_save_qr)
+        self.group_qr_buttons.layout().addWidget(self.button_save_qr)
+
+        self.button_switch_qr_type = QPushButton()
+        self.button_switch_qr_type.clicked.connect(self.switch_qr_type)
+        self.group_qr_buttons.layout().addWidget(self.button_switch_qr_type)
 
         # file
         self.button_file = QPushButton()
@@ -182,10 +215,15 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
+        self.signal_set_qr_images.connect(self.qr_label.set_images)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.button_enlarge_qr.setText(self.tr("Enlarge"))
         self.button_save_qr.setText(self.tr("Save as image"))
+        if self.qr_type == "bbqr":
+            self.button_switch_qr_type.setText(self.tr("Show Legacy QR Code"))
+        else:
+            self.button_switch_qr_type.setText(self.tr("Show BBQR Code"))
         self.button_file.setText(self.tr("Export file"))
 
         # copy button
@@ -202,7 +240,13 @@ class ExportDataSimple(HorizontalImportExportGroups):
         for wallet_id, menu in self.menu_share_with_single_devices.items():
             menu.setTitle(self.tr("Share with single device"))
 
-    def set_data(self, data: Data):
+    def switch_qr_type(self) -> None:
+        self.qr_type = "ur" if self.qr_type == "bbqr" else "bbqr"
+        self.clear_qr()
+        self.lazy_load_qr(self.data)
+        self.updateUi()
+
+    def set_data(self, data: Data) -> None:
         self.data = data
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
@@ -231,7 +275,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.copy_toolbutton.setIcon(QIcon(read_QIcon("clip.svg")))
 
         # Create a menu for the button
-        def copy_if_available(s: Optional[str]):
+        def copy_if_available(s: Optional[str]) -> None:
             if s:
                 do_copy(s)
             else:
@@ -258,10 +302,10 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.button_sync_share.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.button_sync_share.setIcon(QIcon(read_QIcon("cloud-sync.svg")))
 
-        def factory(wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str = None):
+        def factory(wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str = None) -> Callable:
             def f(
                 wallet_id=wallet_id, sync_tab=sync_tab, receiver_public_key_bech32=receiver_public_key_bech32
-            ):
+            ) -> None:
                 if not sync_tab.enabled():
                     Message(self.tr("Please enable the sync tab first"))
                     return
@@ -294,7 +338,9 @@ class ExportDataSimple(HorizontalImportExportGroups):
         outer_widget.layout().addWidget(self.button_sync_share)
         return outer_widget
 
-    def on_nostr_share_with_member(self, receiver_public_key: PublicKey, wallet_id: str, sync_tab: SyncTab):
+    def on_nostr_share_with_member(
+        self, receiver_public_key: PublicKey, wallet_id: str, sync_tab: SyncTab
+    ) -> None:
         if not sync_tab.enabled():
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
@@ -305,7 +351,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
             receiver_public_key,
         )
 
-    def on_nostr_share_in_group(self, wallet_id: str, sync_tab: SyncTab):
+    def on_nostr_share_in_group(self, wallet_id: str, sync_tab: SyncTab) -> None:
         if not sync_tab.enabled():
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
@@ -317,35 +363,38 @@ class ExportDataSimple(HorizontalImportExportGroups):
             send_also_to_me=False,
         )
 
-    def export_qrcode(self):
+    def export_qrcode(self) -> Optional[str]:
         filename = save_file_dialog(
             name_filters=["Image (*.png)", "All Files (*.*)"],
             default_suffix="png",
             default_filename=f"{short_tx_id( self.txid)}.png" if self.txid else None,
         )
         if not filename:
-            return
+            return None
 
         # Ensure the file has the .png extension
         if not filename.lower().endswith(".png"):
             filename += ".png"
 
         self.qr_label.save_file(filename)
+        return filename
 
-    def lazy_load_qr(self, data: Data, max_length=200):
-        def do():
-            self.signal_set_qr_images.connect(self.qr_label.set_images)
-            fragments = data.generate_fragments_for_qr(max_qr_size=max_length)
+    def clear_qr(self) -> None:
+        self.qr_label.set_images([])
+
+    def lazy_load_qr(self, data: Data, max_length=200) -> None:
+        def do() -> Any:
+            fragments = data.generate_fragments_for_qr(max_qr_size=max_length, qr_type=self.qr_type)
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
-        def on_done(result):
+        def on_done(result) -> None:
             pass
 
-        def on_error(packed_error_info):
+        def on_error(packed_error_info) -> None:
             Message(packed_error_info, type=MessageType.Error)
 
-        def on_success(result):
+        def on_success(result) -> None:
             if result:
                 # here i must use a signal, and not set the image directly, because
                 # self.qr_label can reference a destroyed c++ object
@@ -353,7 +402,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
         TaskThread(self, signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
 
-    def export_to_file(self):
+    def export_to_file(self) -> Optional[str]:
         default_suffix = "txt"
         if self.data.data_type == DataType.Tx:
             default_suffix = "tx"
@@ -369,9 +418,10 @@ class ExportDataSimple(HorizontalImportExportGroups):
             default_filename=f"{short_tx_id( self.txid)}.{default_suffix}" if self.txid else None,
         )
         if not filename:
-            return
+            return None
 
         # create a file descriptor
         fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
 
         self.data.write_to_filedescriptor(fd)
+        return filename

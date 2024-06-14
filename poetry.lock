@@ -121,31 +121,31 @@ chardet = ">=3.0.2"
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "0.1.2"
+version = "0.2.1"
 description = "A Nostr Chat with participant discovery"
 optional = false
 python-versions = "<3.12,>=3.8.1"
 files = [
-    {file = "bitcoin_nostr_chat-0.1.2-py3-none-any.whl", hash = "sha256:fc298fba6cb4d17afcfb3169204fae4cd948d580d426b381206b7ae7390a1dc1"},
-    {file = "bitcoin_nostr_chat-0.1.2.tar.gz", hash = "sha256:8ed97dad5b664dabf6e134f9a85a1cd83b3a9a95a80e71d2b76292a383812ff2"},
+    {file = "bitcoin_nostr_chat-0.2.1-py3-none-any.whl", hash = "sha256:33c172755035d01efad5e1e80fd0c7887fb8b443a8d643a5e5e79b2aee6e0f16"},
+    {file = "bitcoin_nostr_chat-0.2.1.tar.gz", hash = "sha256:0ac3894f450b0b84de5c706c75e65c5e0d5fbd1b3c21bae7d19ac3d6238586b4"},
 ]
 
 [package.dependencies]
 bitcoin-qr-tools = ">=0.9.0"
 cbor2 = ">=5.6.3,<6.0.0"
-nostr-sdk = "0.10.0"
+nostr-sdk = ">=0.32.1,<0.33.0"
 pyqt6 = ">=6.6.1,<7.0.0"
 requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "0.9.0"
+version = "0.10.2"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = "<3.12,>=3.8"
 files = [
-    {file = "bitcoin_qr_tools-0.9.0-py3-none-any.whl", hash = "sha256:0ad932949608b00087d93dfc06e4c164e7cc8d9c890d0a00d0c758f5187b1814"},
-    {file = "bitcoin_qr_tools-0.9.0.tar.gz", hash = "sha256:5ef7483d0e9a46e84ee7a30fb2dc2971c3900a3a0bbe60b50cbbf0966b92fbc9"},
+    {file = "bitcoin_qr_tools-0.10.2-py3-none-any.whl", hash = "sha256:6f1172ba27765887e49e4bb7ea0b8802e24398fa6a85381571ea48174d1f81bd"},
+    {file = "bitcoin_qr_tools-0.10.2.tar.gz", hash = "sha256:87af490082189ce192fdefd937764eb74f67bb6a35087ca3f03758dcaed4b828"},
 ]
 
 [package.dependencies]
@@ -157,6 +157,7 @@ numpy = ">=1.21.0,<2.0.0"
 opencv-python-headless = ">=4.9.0.80,<5.0.0.0"
 pillow = "9.5.0"
 pygame = "2.5.2"
+pyqrcode = ">=1.2.1,<2.0.0"
 pyqt6 = ">=6.7.0,<7.0.0"
 pyzbar = "0.1.9"
 segno = "1.5.3"
@@ -1354,31 +1355,31 @@ cryptography = ">=2.8"
 
 [[package]]
 name = "nostr-sdk"
-version = "0.10.0"
-description = "High level client library."
+version = "0.32.1"
+description = "High level Nostr client library."
 optional = false
 python-versions = "*"
 files = [
-    {file = "nostr_sdk-0.10.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:64184379a8cbab44be36aa1f64eccbf18c1ec585d5558fbecd7dcc8ba973095a"},
-    {file = "nostr_sdk-0.10.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:c6e4fddd8537de17c18c0bc6677817affaa7b91ce2c7648d5d24acbb1f7851be"},
-    {file = "nostr_sdk-0.10.0-cp310-cp310-manylinux_2_17_x86_64.whl", hash = "sha256:817b2d19ef5e9b4acc29e97b808dd6b8cdd946f89fdaed48200d3346775317ac"},
-    {file = "nostr_sdk-0.10.0-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:af92766a9a1e212a9ab665020827fb4cdba3710a3932e637dbf9469c511e89fa"},
-    {file = "nostr_sdk-0.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:3e63c6e322c2b7251b97de6fd9daf31a254712be23fd5e22d4a49a846c2170a6"},
-    {file = "nostr_sdk-0.10.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9a8e34dd443f1c58428d1f00ecbb3ef0000522ba9349b0750d10bb88e6631a80"},
-    {file = "nostr_sdk-0.10.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:1d97764b7d312b199c3c16fd3c099db658c73bb5398c26244912ffd18ea739d8"},
-    {file = "nostr_sdk-0.10.0-cp311-cp311-manylinux_2_17_x86_64.whl", hash = "sha256:04cd5f6ec450e65e777b55924969aca34af8c8b64681d394c606166a789fec76"},
-    {file = "nostr_sdk-0.10.0-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:6a0c4280bbbeaafbb4c443f1fbd99cd9713c080f04cecf99b9da92b37201ccff"},
-    {file = "nostr_sdk-0.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:ee4c52152ae5bb2903e859db3ea43312f97f5efc9a4f7cc02ddb2b4423f7ea8a"},
-    {file = "nostr_sdk-0.10.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:437e3e44b5807249d9edc53544e66d737b87de86b0f82f8300467c07080389ab"},
-    {file = "nostr_sdk-0.10.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:e97617579edbd8696f7e507465fb1608b8cb77d6965c931220ed6a09a58e87ff"},
-    {file = "nostr_sdk-0.10.0-cp312-cp312-manylinux_2_17_x86_64.whl", hash = "sha256:a91af900ced001e9ce072e267b674e11cba518e31561dc32b78a1f9f667b4f0b"},
-    {file = "nostr_sdk-0.10.0-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:e777fa99005e014025aab18ee501eb440e4c132f9978281c3d0d3ac17edcc579"},
-    {file = "nostr_sdk-0.10.0-cp312-cp312-win_amd64.whl", hash = "sha256:6adfcbfd6e4722b8c322d58425300532be5ef101562a55319619673daad3e095"},
-    {file = "nostr_sdk-0.10.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:6451b5fb7b8b7862f48d131e943f0b0e88de6dc30a8d10e6b313c22127632ddb"},
-    {file = "nostr_sdk-0.10.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:ee16f650bc16214c576e5d9d5cf31bacdaa1310f36081e9c213080dcdf20cf95"},
-    {file = "nostr_sdk-0.10.0-cp39-cp39-manylinux_2_17_x86_64.whl", hash = "sha256:9395b50bc4f4a90bf6521ed6328db25905b8006df5b648d2b1677a75d283206c"},
-    {file = "nostr_sdk-0.10.0-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:702892320f607e63762502c926685c10ea169657f17c5cb9588ec5d1cd064b8c"},
-    {file = "nostr_sdk-0.10.0-cp39-cp39-win_amd64.whl", hash = "sha256:8c8e035e3fdb1652cf96dd0b252f6fb12e82cec102bc19a09b2ec658187a5337"},
+    {file = "nostr_sdk-0.32.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1c8f3f18cf67ed87f09009122b421261e1c315b76b007c98c01357bdd195729b"},
+    {file = "nostr_sdk-0.32.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:d45603bc0f4d00af7a87914ef90d169aadbc6cbff14dccecdc076db397077b06"},
+    {file = "nostr_sdk-0.32.1-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:1f57433ba3c626cc830a48c0e2ace9a145bd5b186087af1b4368b8bf1adb10d1"},
+    {file = "nostr_sdk-0.32.1-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:f9815ba839f7a12e28303d25d6c3ba389a04b129b42973426fd0a27f20d4094c"},
+    {file = "nostr_sdk-0.32.1-cp310-cp310-win_amd64.whl", hash = "sha256:32aaf1919f67b150bb9d3d88df1ff199c3408f93e8e0c9e34731132d12a358de"},
+    {file = "nostr_sdk-0.32.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:a2f43b2bd37fec1e0e59d4481f7cbb9bcf43cdfa6b20d682bec6199d8370decd"},
+    {file = "nostr_sdk-0.32.1-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:0bc694c8c9a78ad3cf253c0afbd8a038f58eecb9ad9f85cc11949e77bfbf21bd"},
+    {file = "nostr_sdk-0.32.1-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:c56dc7d1756753993de32deb47f643417f67628e9951742489f8638030b53a69"},
+    {file = "nostr_sdk-0.32.1-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:cab53e00532802e1e5387de6793d595c5a2938ff5d5ff3b9bf05d6d55812dda5"},
+    {file = "nostr_sdk-0.32.1-cp311-cp311-win_amd64.whl", hash = "sha256:47299cd8f014f573981167f729be2a59ffb202aec9c340b32c2e8d28a300ac67"},
+    {file = "nostr_sdk-0.32.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:515a43d6b0a7fa6a10a9a7e41e65b8dcef51f70f3fa524ce16ed5ab80ae8b722"},
+    {file = "nostr_sdk-0.32.1-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:5e90157f17b9eb2ba6296bc5eb66112537e40795b3401c12aa4b94af7af80f70"},
+    {file = "nostr_sdk-0.32.1-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:db5b7bb476f539ef048cf8a674fabdb995e44b78255ec7e69deee1bb0a5d0722"},
+    {file = "nostr_sdk-0.32.1-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:2b8687b3f1c2bcafbb48aa8fc3d56867d99cfccebc3a49e42fec256bfcfa9ec5"},
+    {file = "nostr_sdk-0.32.1-cp312-cp312-win_amd64.whl", hash = "sha256:67076c620c2ed81cb4027b5b4f12b1fd5bc5ff04308f3e522a2fea71ab1751f1"},
+    {file = "nostr_sdk-0.32.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:cf9cdbedf91df2818b64d03051c6c765df8099ad3c7bb7529cae3a9903f53b23"},
+    {file = "nostr_sdk-0.32.1-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:c243d50cd0e6644cd6ad058ac700822369ce1986b1a27d274cbe32e61ac9e5b4"},
+    {file = "nostr_sdk-0.32.1-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:b773eba28d60fea8164ba1269c87ba3a50951e04f0fc80f01095d31011d40ed5"},
+    {file = "nostr_sdk-0.32.1-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:9e7182087bd3a5ef70bc94d83f3bf87a4a5d0d1885bee7b484a4621c8c1ac65b"},
+    {file = "nostr_sdk-0.32.1-cp39-cp39-win_amd64.whl", hash = "sha256:b11d420ab562ac8af85cd98ece5337801e2c436515b6f1151d091b547c0e085d"},
 ]
 
 [[package]]
@@ -1781,6 +1782,20 @@ files = [
     {file = "pyproject_hooks-1.1.0-py3-none-any.whl", hash = "sha256:7ceeefe9aec63a1064c18d939bdc3adf2d8aa1988a510afec15151578b232aa2"},
     {file = "pyproject_hooks-1.1.0.tar.gz", hash = "sha256:4b37730834edbd6bd37f26ece6b44802fb1c1ee2ece0e54ddff8bfc06db86965"},
 ]
+
+[[package]]
+name = "pyqrcode"
+version = "1.2.1"
+description = "A QR code generator written purely in Python with SVG, EPS, PNG and terminal output."
+optional = false
+python-versions = "*"
+files = [
+    {file = "PyQRCode-1.2.1.tar.gz", hash = "sha256:fdbf7634733e56b72e27f9bce46e4550b75a3a2c420414035cae9d9d26b234d5"},
+    {file = "PyQRCode-1.2.1.zip", hash = "sha256:1b2812775fa6ff5c527977c4cd2ccb07051ca7d0bc0aecf937a43864abe5eff6"},
+]
+
+[package.extras]
+png = ["pypng (>=0.0.13)"]
 
 [[package]]
 name = "pyqt6"
@@ -2390,4 +2405,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "db62556bcd952cffc8b257f4b42f676440bcdc4c684d222f7bec7e859263e128"
+content-hash = "e7630f0bf8b3cbc514bd39c76fd169ef4ccc079caba012df20427ebd0e234087"

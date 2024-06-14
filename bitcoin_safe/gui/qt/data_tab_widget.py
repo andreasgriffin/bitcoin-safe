@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Any
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -37,27 +37,27 @@ from PyQt6.QtWidgets import QApplication, QTabWidget, QWidget
 
 
 class DataTabWidget(QTabWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.tab_data = {}
+        self.tab_data: Dict[int, Any] = {}
 
-    def setTabData(self, index, data):
+    def setTabData(self, index, data) -> None:
         self.tab_data[index] = data
 
-    def tabData(self, index):
+    def tabData(self, index) -> Any:
         return self.tab_data.get(index)
 
-    def getCurrentTabData(self):
+    def getCurrentTabData(self) -> Any:
         current_index = self.currentIndex()
         return self.tabData(current_index)
 
-    def getAllTabData(self):
+    def getAllTabData(self) -> Dict[int, Any]:
         return self.tab_data
 
-    def clearTabData(self):
+    def clearTabData(self) -> None:
         self.tab_data = {}
 
-    def addTab(self, widget, icon=None, description="", data=None):
+    def addTab(self, widget, icon=None, description="", data=None) -> int:
         if icon:
             index = super().addTab(widget, QIcon(icon), description.replace("&", "").capitalize())
         else:
@@ -65,7 +65,7 @@ class DataTabWidget(QTabWidget):
         self.setTabData(index, data)
         return index
 
-    def insertTab(self, index, widget, icon=None, description="", data=None):
+    def insertTab(self, index, widget, icon=None, description="", data=None) -> int:
         if icon:
             new_index = super().insertTab(
                 index, widget, QIcon(icon), description.replace("&", "").capitalize()
@@ -75,11 +75,11 @@ class DataTabWidget(QTabWidget):
         self._updateDataAfterInsert(new_index, data)
         return new_index
 
-    def removeTab(self, index):
+    def removeTab(self, index) -> None:
         super().removeTab(index)
         self._updateDataAfterRemove(index)
 
-    def _updateDataAfterInsert(self, new_index, data):
+    def _updateDataAfterInsert(self, new_index, data) -> None:
         new_data = {}
         for i, d in sorted(self.tab_data.items()):
             if i >= new_index:
@@ -89,7 +89,7 @@ class DataTabWidget(QTabWidget):
         new_data[new_index] = data
         self.tab_data = new_data
 
-    def _updateDataAfterRemove(self, removed_index):
+    def _updateDataAfterRemove(self, removed_index) -> None:
         new_data = {}
         for i, d in self.tab_data.items():
             if i < removed_index:
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     tab_widget.addTab(tab2, description="Tab &2", data="Data for Tab 2")  # No icon
 
     # Connect tab change signal to a function to display current tab data
-    def show_current_tab_data(index):
+    def show_current_tab_data(index) -> None:
         data = tab_widget.getCurrentTabData()
         QMessageBox.information(tab_widget, "Current Tab Data", f"Data for current tab: {data}")
 

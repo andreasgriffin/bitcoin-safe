@@ -69,7 +69,7 @@ import datetime
 import enum
 import json
 from enum import IntEnum
-from typing import Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -195,7 +195,7 @@ class HistList(MyTreeView):
         hidden_columns=None,
         column_widths: Optional[Dict[int, int]] = None,
         address_domain: List[str] = None,
-    ):
+    ) -> None:
         super().__init__(
             config=config,
             stretch_column=HistList.Columns.LABEL,
@@ -243,11 +243,12 @@ class HistList(MyTreeView):
         self.signals.category_updated.connect(self.update_with_filter)
         self.signals.language_switch.connect(self.update)
 
-    def get_file_data(self, txid: str):
+    def get_file_data(self, txid: str) -> Optional[Data]:
         for wallet in get_wallets(self.signals):
             txdetails = wallet.get_tx(txid)
         if txdetails:
             return Data(txdetails.transaction, DataType.Tx)
+        return None
 
     def drag_keys_to_file_paths(
         self, drag_keys: Iterable[str], save_directory: Optional[str] = None
@@ -278,7 +279,7 @@ class HistList(MyTreeView):
 
         return file_urls
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasFormat("application/json"):
             logger.debug("accept drag enter")
             event.acceptProposedAction()
@@ -289,10 +290,10 @@ class HistList(MyTreeView):
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event: QDragMoveEvent):
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
         return self.dragEnterEvent(event)
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
         # handle dropped files
         super().dropEvent(event)
         if event.isAccepted():
@@ -328,24 +329,24 @@ class HistList(MyTreeView):
 
         event.ignore()
 
-    def on_double_click(self, idx: QModelIndex):
+    def on_double_click(self, idx: QModelIndex) -> None:
         txid = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         wallet, tx_details = self._tx_dict[txid]
         self.signals.open_tx_like.emit(tx_details)
 
-    def toggle_change(self, state: int):
+    def toggle_change(self, state: int) -> None:
         if state == self.show_change:
             return
         self.show_change = AddressTypeFilter(state)
         self.update()
 
-    def toggle_used(self, state: int):
+    def toggle_used(self, state: int) -> None:
         if state == self.show_used:
             return
         self.show_used = AddressUsageStateFilter(state)
         self.update()
 
-    def update_with_filter(self, update_filter: UpdateFilter):
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update()
 
@@ -377,7 +378,7 @@ class HistList(MyTreeView):
 
         logger.debug(f"Updated  {log_info}")
 
-    def get_headers(self):
+    def get_headers(self) -> Dict:
         return {
             self.Columns.WALLET_ID: self.tr("Wallet"),
             self.Columns.STATUS: self.tr("Status"),
@@ -388,7 +389,7 @@ class HistList(MyTreeView):
             self.Columns.TXID: self.tr("Txid"),
         }
 
-    def update(self):
+    def update(self) -> None:
         if self.maybe_defer_update():
             return
 
@@ -494,7 +495,7 @@ class HistList(MyTreeView):
         self.sortByColumn(HistList.Columns.STATUS, Qt.SortOrder.DescendingOrder)
         super().update()
 
-    def refresh_row(self, key: str, row: int):
+    def refresh_row(self, key: str, row: int) -> None:
         assert row is not None
         wallet, tx = self._tx_dict[key]
         # STATUS = enum.auto()
@@ -535,7 +536,7 @@ class HistList(MyTreeView):
         item[self.Columns.CATEGORIES].setData(categories, self.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORIES].setBackground(CategoryEditor.color(category))
 
-    def create_menu(self, position: QPoint):
+    def create_menu(self, position: QPoint) -> None:
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.TXID)
         if not selected:
@@ -610,7 +611,7 @@ class HistList(MyTreeView):
         # run_hook('receive_menu', menu, txids, self.wallet)
         menu.exec(self.viewport().mapToGlobal(position))
 
-    def edit_tx(self, tx_details: bdk.TransactionDetails):
+    def edit_tx(self, tx_details: bdk.TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -620,7 +621,7 @@ class HistList(MyTreeView):
 
         self.signals.open_tx_like.emit(txinfos)
 
-    def cancel_tx(self, tx_details: bdk.TransactionDetails):
+    def cancel_tx(self, tx_details: bdk.TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -652,7 +653,7 @@ class HistList(MyTreeView):
 
         self.signals.open_tx_like.emit(txinfos)
 
-    def export_raw_transactions(self, selected_items: List[QStandardItem], folder: str = None):
+    def export_raw_transactions(self, selected_items: List[QStandardItem], folder: str = None) -> None:
         if not folder:
             folder = QFileDialog.getExistingDirectory(None, "Select Folder")
             if not folder:
@@ -665,12 +666,12 @@ class HistList(MyTreeView):
 
         logger.info(f"Saved {len(file_paths)} {self.std_model.drag_key} saved to {folder}")
 
-    def get_edit_key_from_coordinate(self, row: int, col: int):
+    def get_edit_key_from_coordinate(self, row: int, col: int) -> Any:
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=self.ROLE_KEY)
 
-    def on_edited(self, idx: QModelIndex, edit_key: str, *, text: str):
+    def on_edited(self, idx: QModelIndex, edit_key: str, *, text: str) -> None:
         txid = edit_key
         wallet, tx = self._tx_dict[txid]
 
@@ -688,18 +689,18 @@ class HistList(MyTreeView):
 
 
 class RefreshButton(QPushButton):
-    def __init__(self, parent=None, height=20):
+    def __init__(self, parent=None, height=20) -> None:
         super().__init__(parent)
         self.setText("")
         # Use the standard pixmap for the button icon
         self.setIconSize(QSize(height, height))  # Icon size can be adjusted as needed
         self.set_icon_allow_refresh()
 
-    def set_icon_allow_refresh(self):
+    def set_icon_allow_refresh(self) -> None:
         icon = self.style().standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
         self.setIcon(icon)
 
-    def set_icon_is_syncing(self):
+    def set_icon_is_syncing(self) -> None:
 
         icon = read_QIcon("status_waiting.png")
         self.setIcon(icon)
@@ -717,14 +718,14 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.hist_list.signals.language_switch.connect(self.updateUi)
         self.hist_list.signals.utxos_updated.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
         if self.balance_label:
             balance = Satoshis(self.hist_list.balance, self.config.network)
             self.balance_label.setText(balance.format_as_balance())
             # self.balance_label.setToolTip(balance.format_long(wallets[0].network))
 
-    def create_toolbar_with_menu(self, title):
+    def create_toolbar_with_menu(self, title) -> None:
         super().create_toolbar_with_menu(title=title)
 
         font = QFont()
@@ -732,7 +733,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
         if self.balance_label:
             self.balance_label.setFont(font)
 
-    def on_hide_toolbar(self):
+    def on_hide_toolbar(self) -> None:
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.update()

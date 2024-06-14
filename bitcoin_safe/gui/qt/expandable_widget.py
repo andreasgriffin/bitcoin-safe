@@ -43,7 +43,7 @@ from PyQt6.QtWidgets import (
 
 
 class CustomHeader(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setLayout(QHBoxLayout())
         current_margins = self.layout().contentsMargins()
@@ -60,7 +60,7 @@ class CustomHeader(QWidget):
 
 
 class ExpandableWidget(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.setLayout(QVBoxLayout())
@@ -102,14 +102,14 @@ class ExpandableWidget(QWidget):
         self.layout().setSpacing(0)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-    def toggle(self):
+    def toggle(self) -> None:
         is_visible = self.expandableWidget.isVisible()
         self.expandableWidget.setVisible(not is_visible)
         # Change the arrow direction based on visibility
         arrow_type = Qt.ArrowType.LeftArrow if is_visible else Qt.ArrowType.DownArrow
         self.toggleButton.setArrowType(arrow_type)
 
-    def add_header_widget(self, widget: QWidget):
+    def add_header_widget(self, widget: QWidget) -> None:
         """Add custom widget to the header."""
         # Clear any existing widgets in the layout, except the toggle button
         while self.header.layout().count() > 1:  # Leave the toggle button
@@ -120,7 +120,7 @@ class ExpandableWidget(QWidget):
         # Add the new widget before the toggle button
         self.header.layout().insertWidget(0, widget, 1)
 
-    def add_content_widget(self, widget: QWidget):
+    def add_content_widget(self, widget: QWidget) -> None:
         """Add custom widget to the content area."""
         # Clear any existing widgets in the layout (optional)
         while self.expandableWidget.layout().count():

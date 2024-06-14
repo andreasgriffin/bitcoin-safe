@@ -32,7 +32,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import enum
-from typing import List
+from typing import Callable, List
 
 import bdkpython as bdk
 from PyQt6.QtCore import QLocale, QObject, Qt, QTimer, pyqtSignal
@@ -50,7 +50,7 @@ from .util import center_in_widget, open_website
 locale = QLocale()  # This initializes a QLocale object with the user's default locale
 
 
-def format_block_number(block_number):
+def format_block_number(block_number) -> str:
     return locale.toString(int(block_number))
 
 
@@ -75,47 +75,47 @@ class BaseBlockLabel(QLabel):
 
 
 class LabelTitle(BaseBlockLabel):
-    def set(self, text: str, block_type: BlockType):
+    def set(self, text: str, block_type: BlockType) -> None:
         self.setText(html_f(text, color="white" if block_type else "black", size="16px"))
 
 
 class LabelApproximateMedianFee(BaseBlockLabel):
-    def set(self, median_fee: float, block_type: BlockType):
+    def set(self, median_fee: float, block_type: BlockType) -> None:
         s = f"~{int(median_fee)} Sat/vB"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelExactMedianFee(BaseBlockLabel):
-    def set(self, median_fee: float, block_type: BlockType):
+    def set(self, median_fee: float, block_type: BlockType) -> None:
         s = f"{round(median_fee, 1)} Sat/vB"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelNumberConfirmations(BaseBlockLabel):
-    def set(self, i: int, block_type: BlockType):
+    def set(self, i: int, block_type: BlockType) -> None:
         s = f"{i} Confirmation{'s' if i>1 else ''}"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelBlockHeight(BaseBlockLabel):
-    def set(self, i: int, block_type: BlockType):
+    def set(self, i: int, block_type: BlockType) -> None:
         s = f"{round(i)}. Block"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelFeeRange(BaseBlockLabel):
-    def set(self, min_fee: float, max_fee: float):
+    def set(self, min_fee: float, max_fee: float) -> None:
         s = f"{int(min_fee)} - {int(max_fee)} Sat/vB"
 
         self.setText(html_f(s, color="#eee002", size="10px"))
 
 
 class LabelTimeEstimation(BaseBlockLabel):
-    def set(self, block_number: int, block_type: BlockType):
+    def set(self, block_number: int, block_type: BlockType) -> None:
         if block_number < 6:
             s = self.tr("~in {t} min").format(t=(block_number) * 10)
         else:
@@ -125,13 +125,13 @@ class LabelTimeEstimation(BaseBlockLabel):
 
 
 class LabelExplorer(BaseBlockLabel):
-    def set(self, block_type: BlockType):
+    def set(self, block_type: BlockType) -> None:
         s = "visit<br>mempool.space"
         self.setText(html_f(s, color="white" if block_type else "black", size="10px"))
 
 
 class BlockButton(QPushButton):
-    def __init__(self, size=100, parent=None):
+    def __init__(self, size=100, parent=None) -> None:
         super().__init__(parent=parent)
 
         # Create labels for each text line
@@ -164,11 +164,11 @@ class BlockButton(QPushButton):
         self.setMinimumHeight(size)
         self.setMinimumWidth(size)
 
-    def clear_labels(self):
+    def clear_labels(self) -> None:
         for label in self.labels:
             label.setText("")
 
-    def _set_background_gradient(self, color_top: QColor, color_bottom: QColor):
+    def _set_background_gradient(self, color_top: QColor, color_bottom: QColor) -> None:
         # Set the stylesheet for the QPushButton
         self.setStyleSheet(
             f"""
@@ -181,7 +181,7 @@ class BlockButton(QPushButton):
         """
         )
 
-    def set_background_gradient(self, min_fee: float, max_fee: float, block_type: BlockType):
+    def set_background_gradient(self, min_fee: float, max_fee: float, block_type: BlockType) -> None:
         self.block_type = block_type
         if self.block_type == BlockType.confirmed:
             self._set_background_gradient("#115fb0", "#9239f3")
@@ -195,7 +195,7 @@ class BlockButton(QPushButton):
 class VerticalButtonGroup(InvisibleScrollArea):
     signal_button_click = pyqtSignal(int)
 
-    def __init__(self, button_count=3, parent=None, size=100):
+    def __init__(self, button_count=3, parent=None, size=100) -> None:
         super().__init__(parent)
         layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -210,8 +210,8 @@ class VerticalButtonGroup(InvisibleScrollArea):
         for i in range(button_count):
             button = BlockButton(size=size)
 
-            def create_signal_handler(index):
-                def send_signal():
+            def create_signal_handler(index) -> Callable:
+                def send_signal() -> None:
                     return self.signal_button_click.emit(index)
 
                 return send_signal
@@ -233,7 +233,7 @@ class ObjectRequiringMempool(QObject):
         self.timer.timeout.connect(self.mempool_data.set_data_from_mempoolspace)
         self.timer.start(10 * 60 * 1000)  # 10 minutes in milliseconds
 
-    def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime = None):
+    def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime = None) -> None:
         logger.error("This should not be called")
 
 
@@ -261,7 +261,7 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
         self.refresh()
         self.mempool_data.signal_data_updated.connect(self.refresh)
 
-    def refresh(self, **kwargs):
+    def refresh(self, **kwargs) -> None:
         if self.mempool_data is None:
             return
 
@@ -281,7 +281,7 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
             button.label_fee_range.set(*self.mempool_data.fee_rates_min_max(i))
             button.set_background_gradient(*self.mempool_data.fee_rates_min_max(i), BlockType.projected)
 
-    def _on_button_click(self, i: int):
+    def _on_button_click(self, i: int) -> None:
         logger.debug(f"Clicked button {i}: {self.mempool_data.median_block_fee_rate(i)}")
         self.signal_click.emit(self.mempool_data.median_block_fee_rate(i))
 
@@ -311,17 +311,17 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         self.button_group.signal_button_click.connect(self._on_button_click)
         self.mempool_data.signal_data_updated.connect(self.refresh)
 
-    def set_url(self, url: str):
+    def set_url(self, url: str) -> None:
         self.url = url
 
-    def set_unknown_fee_rate(self):
+    def set_unknown_fee_rate(self) -> None:
         for button in self.button_group.buttons:
             button.clear_labels()
             button.label_title.set(self.tr("Unconfirmed"), BlockType.projected)
             button.label_explorer.set(BlockType.projected)
             button.set_background_gradient(0, 1, BlockType.projected)
 
-    def refresh(self, fee_rate=None, **kwargs):
+    def refresh(self, fee_rate=None, **kwargs) -> None:
         self.fee_rate = fee_rate if fee_rate else self.fee_rate
         if self.mempool_data is None:
             return
@@ -343,7 +343,7 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
             button.label_time_estimation.set(block_index + 1, BlockType.projected)
             button.set_background_gradient(*self.mempool_data.fee_rates_min_max(i), BlockType.projected)
 
-    def _on_button_click(self, i: int):
+    def _on_button_click(self, i: int) -> None:
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
         url = (
             self.url
@@ -377,10 +377,10 @@ class ConfirmedBlock(BaseBlock):
 
         self.button_group.signal_button_click.connect(self._on_button_click)
 
-    def set_url(self, url: str):
+    def set_url(self, url: str) -> None:
         self.url = url
 
-    def refresh(self, fee_rate=None, confirmation_time=None, chain_height=None, **kwargs):
+    def refresh(self, fee_rate=None, confirmation_time=None, chain_height=None, **kwargs) -> None:
         self.fee_rate = fee_rate if fee_rate else self.fee_rate
         self.confirmation_time = confirmation_time if confirmation_time else self.confirmation_time
         if not self.confirmation_time:
@@ -409,7 +409,7 @@ class ConfirmedBlock(BaseBlock):
                 button.set_background_gradient(0, 1, BlockType.confirmed)
                 button.label_exact_median_fee.setText("")
 
-    def _on_button_click(self, i: int):
+    def _on_button_click(self, i: int) -> None:
         if self.url:
             open_website(self.url)
         self.signal_click.emit(self.fee_rate)

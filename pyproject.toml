@@ -49,8 +49,8 @@ pyqt6 = "^6.6.1"
 pyqt6-charts = "^6.6.0"
 electrumsv-secp256k1 = "^18.0.0"
 python-gnupg = "^0.5.2" 
-bitcoin-qr-tools = "^0.9.0"
-bitcoin-nostr-chat = "^0.1.2"
+bitcoin-nostr-chat = "^0.2.1"
+bitcoin-qr-tools = "^0.10.2"
 
 
 [tool.briefcase.app.bitcoin-safe]

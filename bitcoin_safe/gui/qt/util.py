@@ -655,6 +655,10 @@ def icon_path(icon_basename: str):
     return resource_path("gui", "icons", icon_basename)
 
 
+def screenshot_path(basename: str):
+    return resource_path("gui", "screenshots", basename)
+
+
 @lru_cache(maxsize=1000)
 def read_QIcon(icon_basename: str) -> QIcon:
     if icon_basename is None:

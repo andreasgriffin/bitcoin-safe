@@ -59,7 +59,7 @@ class LabelSyncer:
         # store sent UpdateFilters to prevent recursive behavior
         self.sent_update_filter: deque = deque(maxlen=1000)
 
-    def on_add_trusted_device(self, trusted_device: TrustedDevice):
+    def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():
             return
         logger.debug(f"on_add_trusted_device")
@@ -74,7 +74,7 @@ class LabelSyncer:
         )
         logger.debug(f"sent all labels to {trusted_device.pub_key_bech32}")
 
-    def on_nostr_label_bip329_received(self, data: Data):
+    def on_nostr_label_bip329_received(self, data: Data) -> None:
         if not self.sync_tab.enabled():
             return
 
@@ -109,7 +109,7 @@ class LabelSyncer:
             # the category editor maybe also needs to add categories
             self.signals.category_updated.emit(update_filter)
 
-    def on_labels_updated(self, update_filter: UpdateFilter):
+    def on_labels_updated(self, update_filter: UpdateFilter) -> None:
         if not self.sync_tab.enabled():
             return
         if update_filter in self.sent_update_filter:

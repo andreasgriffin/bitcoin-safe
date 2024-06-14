@@ -51,8 +51,8 @@ class FX(QObject):
         self.update()
         logger.debug(f"initialized {self}")
 
-    def update(self):
-        def on_success(data):
+    def update(self) -> None:
+        def on_success(data) -> None:
             if not data:
                 logger.debug(f"empty result of https://api.coingecko.com/api/v3/exchange_rates")
                 return

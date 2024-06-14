@@ -83,7 +83,7 @@ class AddressDragInfo:
         return f"AddressDragInfo({self.tags}, {self.addresses})"
 
 
-def hash_string(text: str):
+def hash_string(text: str) -> str:
     return hashlib.sha256(str(text).encode()).hexdigest()
 
 
@@ -92,7 +92,7 @@ def rescale(value: float, old_min: float, old_max: float, new_min: float, new_ma
 
 
 @register_cache(always_keep=True)
-def hash_color(text):
+def hash_color(text) -> QColor:
     hash_value = int(hash_string(text), 16) & 0xFFFFFF
     r = (hash_value & 0xFF0000) >> 16
     g = (hash_value & 0x00FF00) >> 8

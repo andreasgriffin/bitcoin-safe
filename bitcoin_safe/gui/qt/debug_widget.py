@@ -41,14 +41,14 @@ from PyQt6.QtWidgets import (
 
 
 class DebugWidget(QWidget):
-    def paintEvent(self, event: QPaintEvent):
+    def paintEvent(self, event: QPaintEvent) -> None:
         super().paintEvent(event)
         self.drawDebugInfo(self)
 
-    def _cleaned_size_policy(self, policy):
+    def _cleaned_size_policy(self, policy) -> str:
         return str(policy).split(".")[-1]
 
-    def _collect_debug_info(self, widget: QWidget, level=0):
+    def _collect_debug_info(self, widget: QWidget, level=0) -> str:
         indent = "    " * level
         sizePolicy = widget.sizePolicy()
         sizePolicyText = f"{indent}SP: H-{self._cleaned_size_policy(sizePolicy.horizontalPolicy())}, V-{self._cleaned_size_policy(sizePolicy.verticalPolicy())}"
@@ -78,7 +78,7 @@ class DebugWidget(QWidget):
 
         return tooltipText
 
-    def drawDebugInfo(self, widget: QWidget):
+    def drawDebugInfo(self, widget: QWidget) -> None:
         widget_hash = hash(widget)
         random.seed(widget_hash)
         color = QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -102,7 +102,7 @@ class DebugWidget(QWidget):
 
 def generate_debug_class(BaseClass) -> QWidget:
     class DebugClass(BaseClass):
-        def paintEvent(self, event: QPaintEvent):
+        def paintEvent(self, event: QPaintEvent) -> None:
             super().paintEvent(event)
             DebugWidget().drawDebugInfo(self)
 

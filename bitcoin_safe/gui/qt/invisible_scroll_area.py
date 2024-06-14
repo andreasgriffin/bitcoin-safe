@@ -33,7 +33,7 @@ from PyQt6.QtWidgets import QScrollArea, QWidget
 
 
 class InvisibleScrollArea(QScrollArea):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
 
         self.unique_id = uuid.uuid4()

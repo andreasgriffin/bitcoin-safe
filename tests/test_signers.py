@@ -154,7 +154,7 @@ class PyTestBDKSetup:
     wallets: List[bdk.Wallet]
 
 
-def get_blockchain_config(network: bdk.Network):
+def get_blockchain_config(network: bdk.Network) -> bdk.BlockchainConfig.RPC:
     return bdk.BlockchainConfig.RPC(
         bdk.RpcConfig(
             f"127.0.0.1:{BITCOIN_PORT}",

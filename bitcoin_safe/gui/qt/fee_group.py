@@ -161,14 +161,14 @@ class FeeGroup(QObject):
         self.spin_label.setText(unit_fee_str(self.config.network))
         self.widget_around_spin_box.layout().addWidget(self.spin_label)
 
-        self.label_block_number = QLabel()
-        self.label_block_number.setHidden(True)
-        self.groupBox_Fee.layout().addWidget(self.label_block_number, alignment=Qt.AlignmentFlag.AlignHCenter)
-
         self.fiat_fee_label = QLabel()
         self.fiat_fee_label.setHidden(True)
         self.groupBox_Fee.layout().addWidget(self.fiat_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
         self.fx.signal_data_updated.connect(self.updateUi)
+
+        self.label_block_number = QLabel()
+        self.label_block_number.setHidden(True)
+        self.groupBox_Fee.layout().addWidget(self.label_block_number, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         layout.addWidget(self.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter)
 
@@ -177,7 +177,7 @@ class FeeGroup(QObject):
         self.mempool.refresh()
         self.updateUi()
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.groupBox_Fee.setTitle(self.tr("Fee"))
         self.rbf_fee_label.setText(
             html_f(self.tr("... is the minimum to replace the existing transactions."), bf=True)
@@ -186,7 +186,8 @@ class FeeGroup(QObject):
         self.high_fee_warning_label.setText(html_f(self.tr("High fee"), color="red", bf=True))
         self.approximate_fee_label.setText(html_f(self.tr("Approximate fee rate"), bf=True))
 
-        self.label_block_number.setHidden(bool(self.mempool.confirmation_time))
+        # only in editor mode
+        self.label_block_number.setHidden(self.spin_fee_rate.isReadOnly())
         if self.spin_fee_rate.value():
             self.label_block_number.setText(
                 self.tr("in ~{n}. Block").format(
@@ -199,11 +200,11 @@ class FeeGroup(QObject):
         self.update_fee_rate_warning()
         self.mempool.refresh()
 
-    def set_vsize(self, vsize):
+    def set_vsize(self, vsize) -> None:
         self.vsize = vsize
         self.updateUi()
 
-    def set_fiat_fee_label(self):
+    def set_fiat_fee_label(self) -> None:
         if not self.fx.rates.get("usd"):
             self.fiat_fee_label.setHidden(True)
             return
@@ -214,7 +215,7 @@ class FeeGroup(QObject):
         self.fiat_fee_label.setText(format_dollar(self.fx.rates["usd"]["value"] / 1e8 * fee))
         self.fiat_fee_label.setHidden(False)
 
-    def set_rbf_label(self, min_fee_rate: Optional[float]):
+    def set_rbf_label(self, min_fee_rate: Optional[float]) -> None:
         self.rbf_fee_label.setVisible(bool(min_fee_rate))
         if min_fee_rate:
             self.rbf_fee_label.setText(
@@ -230,7 +231,7 @@ class FeeGroup(QObject):
 
     def set_fee_to_send_ratio(
         self, fee: int, total_output_amount: int, network: bdk.Network, fee_is_exact=False
-    ):
+    ) -> None:
         if total_output_amount > 0:
             too_high = fee / total_output_amount > FEE_RATIO_HIGH_WARNING
         else:
@@ -273,7 +274,7 @@ class FeeGroup(QObject):
                     )
                 )
 
-    def update_fee_rate_warning(self):
+    def update_fee_rate_warning(self) -> None:
         fee_rate = self.spin_fee_rate.value()
 
         too_high = fee_rate > self.mempool.mempool_data.max_reasonable_fee_rate()
@@ -297,7 +298,7 @@ class FeeGroup(QObject):
         url: str = None,
         confirmation_time: bdk.BlockTime = None,
         chain_height=None,
-    ):
+    ) -> None:
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
@@ -314,11 +315,11 @@ class FeeGroup(QObject):
         self.updateUi()
         self.signal_set_fee_rate.emit(fee_rate)
 
-    def _set_value(self, value: float):
+    def _set_value(self, value: float) -> None:
         self.update_spin_fee_range(value)
         self.spin_fee_rate.setValue(value)
 
-    def update_spin_fee_range(self, value: float = 0):
+    def update_spin_fee_range(self, value: float = 0) -> None:
         "Set the acceptable range"
         fee_range = self.config.fee_ranges[self.config.network].copy()
         fee_range[1] = max(

@@ -52,5 +52,5 @@ def html_f(s: str, color=None, bf=False, p=False, size=None, add_html_and_body=F
     return s
 
 
-def link(url, text=None):
+def link(url, text=None) -> str:
     return f"<a href='{url}'>{text if text else url}</a>"

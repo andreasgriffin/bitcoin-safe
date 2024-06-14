@@ -261,7 +261,7 @@ class NetworkConfig(BaseSaveableClass):
         "CBFServerType": CBFServerType,
     }
 
-    def __init__(self, network: bdk.Network):
+    def __init__(self, network: bdk.Network) -> None:
         self.network = network
         self.server_type: BlockchainType = BlockchainType.Electrum
         self.cbf_server_type: CBFServerType = CBFServerType.Automatic
@@ -279,14 +279,14 @@ class NetworkConfig(BaseSaveableClass):
 
         self.mempool_url: str = get_mempool_url(network)["default"]
 
-    def dump(self):
+    def dump(self) -> Dict[str, Any]:
         d = super().dump()
         d.update(self.__dict__)
 
         return d
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None):
+    def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         u = NetworkConfig(network=dct["network"])
@@ -333,20 +333,20 @@ class NetworkConfigs(BaseSaveableClass):
             del dct["VERSION"]
         return dct
 
-    def dump(self):
+    def dump(self) -> Dict:
         d = super().dump()
         d["configs"] = {k: v.dump() for k, v in self.configs.items()}
         return d
 
     @classmethod
-    def from_file(cls, filename: str, password: str = None):
+    def from_file(cls, filename: str, password: str = None) -> "NetworkConfigs":
         return super()._from_file(
             filename=filename,
             password=password,
         )
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None):
+    def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfigs":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**dct)

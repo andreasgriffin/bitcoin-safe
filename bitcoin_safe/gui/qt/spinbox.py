@@ -38,14 +38,14 @@ from ...util import Satoshis
 class BTCSpinBox(QtWidgets.QDoubleSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
 
-    def __init__(self, network: bdk.Network, parent=None):
+    def __init__(self, network: bdk.Network, parent=None) -> None:
         super().__init__(parent)
         self.network = network
         self._is_max = False
         self.setDecimals(0)  # Set the number of decimal places
         self.setRange(0, 21e6 * 1e8)  # Define range as required
 
-    def set_max(self, value: bool):
+    def set_max(self, value: bool) -> None:
         self.setDisabled(value)
         self._is_max = value
         self.setValue(super().value())
@@ -53,7 +53,7 @@ class BTCSpinBox(QtWidgets.QDoubleSpinBox):
     def value(self) -> int:
         return round(super().value())
 
-    def textFromValue(self, value: int):
+    def textFromValue(self, value: int) -> str:
         if self._is_max:
             return self.tr("Max ≈ {amount}").format(amount=str(Satoshis(value, self.network)))
         return str(Satoshis(value, self.network))

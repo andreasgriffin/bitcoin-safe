@@ -88,6 +88,7 @@ from PyQt6.QtCore import (
     pyqtSignal,
 )
 from PyQt6.QtGui import (
+    QAction,
     QCursor,
     QDrag,
     QDragEnterEvent,
@@ -124,12 +125,12 @@ from .util import do_copy, read_QIcon
 
 
 class MyMenu(QMenu):
-    def __init__(self, config: UserConfig):
+    def __init__(self, config: UserConfig) -> None:
         QMenu.__init__(self)
         self.setToolTipsVisible(True)
         self.config = config
 
-    def addToggle(self, text: str, callback: Callable, *, tooltip=""):
+    def addToggle(self, text: str, callback: Callable, *, tooltip="") -> QAction:
         m = self.addAction(text, callback)
         m.setCheckable(True)
         m.setToolTip(tooltip)
@@ -142,7 +143,7 @@ class MyStandardItemModel(QStandardItemModel):
         parent,
         drag_key: str = "item",
         drag_keys_to_file_paths=None,
-    ):
+    ) -> None:
         super().__init__(parent)
         self.mytreeview: MyTreeView = parent
         self.drag_key = drag_key
@@ -157,7 +158,7 @@ class MyStandardItemModel(QStandardItemModel):
         file_path = os.path.join(save_directory, f"export.csv") if save_directory else None
         return [self.mytreeview.csv_drag_keys_to_file_path(drag_keys=drag_keys, file_path=file_path)]
 
-    def flags(self, index: QtCore.QModelIndex):
+    def flags(self, index: QtCore.QModelIndex) -> QtCore.Qt.ItemFlag:
         if index.column() == self.mytreeview.key_column:  # only enable dragging for column 1
             return super().flags(index) | Qt.ItemFlag.ItemIsDragEnabled
         else:
@@ -194,11 +195,11 @@ class MyStandardItemModel(QStandardItemModel):
 
 
 class MySortModel(QSortFilterProxyModel):
-    def __init__(self, parent, *, sort_role: int):
+    def __init__(self, parent, *, sort_role: int) -> None:
         super().__init__(parent)
         self._sort_role = sort_role
 
-    def lessThan(self, source_left: QModelIndex, source_right: QModelIndex):
+    def lessThan(self, source_left: QModelIndex, source_right: QModelIndex) -> bool:
         item1 = self.sourceModel().itemFromIndex(source_left)
         item2 = self.sourceModel().itemFromIndex(source_right)
         data1 = item1.data(self._sort_role)
@@ -214,19 +215,19 @@ class MySortModel(QSortFilterProxyModel):
 
 
 class ElectrumItemDelegate(QStyledItemDelegate):
-    def __init__(self, tv: "MyTreeView"):
+    def __init__(self, tv: "MyTreeView") -> None:
         super().__init__(tv)
         self.icon_shift_right = 30
         self.tv = tv
         self.opened = None
 
-        def on_closeEditor(editor: QLineEdit, hint):
+        def on_closeEditor(editor: QLineEdit, hint) -> None:
             self.opened = None
             self.tv.is_editor_open = False
             if self.tv._pending_update:
                 self.tv.update()
 
-        def on_commitData(editor: QLineEdit):
+        def on_commitData(editor: QLineEdit) -> None:
             new_text = editor.text()
             idx = QModelIndex(self.opened)
             row, col = idx.row(), idx.column()
@@ -237,11 +238,11 @@ class ElectrumItemDelegate(QStyledItemDelegate):
         self.closeEditor.connect(on_closeEditor)
         self.commitData.connect(on_commitData)
 
-    def initStyleOption(self, option: QStyleOptionViewItem, index: QModelIndex):
+    def initStyleOption(self, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         super().initStyleOption(option, index)
         option.displayAlignment = self.tv.column_alignments.get(index.column(), Qt.AlignmentFlag.AlignLeft)
 
-    def createEditor(self, parent, option: QStyleOptionViewItem, idx: QModelIndex):
+    def createEditor(self, parent, option: QStyleOptionViewItem, idx: QModelIndex) -> QWidget:
         self.opened = QPersistentModelIndex(idx)
         self.tv.is_editor_open = True
         return super().createEditor(parent, option, idx)
@@ -296,7 +297,7 @@ class MyTreeView(QTreeView):
 
     class BaseColumnsEnum(enum.IntEnum):
         @staticmethod
-        def _generate_next_value_(name: str, start: int, count: int, last_values):
+        def _generate_next_value_(name: str, start: int, count: int, last_values) -> int:
             # this is overridden to get a 0-based counter
             return count
 
@@ -310,7 +311,7 @@ class MyTreeView(QTreeView):
         stretch_column: Optional[int] = None,
         column_widths: Optional[Dict[int, int]] = None,
         editable_columns: Optional[Sequence[int]] = None,
-    ):
+    ) -> None:
         parent = parent
         super().__init__(parent)
         self.std_model = MyStandardItemModel(parent)
@@ -354,10 +355,10 @@ class MyTreeView(QTreeView):
         self.setDefaultDropAction(Qt.DropAction.CopyAction)
         self.setDragEnabled(True)  # this must be after the other drag toggles
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         pass
 
-    def startDrag(self, action: Qt.DropAction):
+    def startDrag(self, action: Qt.DropAction) -> None:
         indexes = self.selectedIndexes()
         if indexes:
             drag = QDrag(self)
@@ -406,21 +407,22 @@ class MyTreeView(QTreeView):
         # run_hook('receive_menu', menu, addrs, self.wallet)
         menu.exec(self.viewport().mapToGlobal(position))
 
-    def set_editability(self, items: List[QStandardItem]):
+    def set_editability(self, items: List[QStandardItem]) -> None:
         for idx, i in enumerate(items):
             i.setEditable(idx in self.editable_columns)
 
-    def selected_in_column(self, column: int):
+    def selected_in_column(self, column: int) -> List[QModelIndex]:
         items = self.selectionModel().selectedIndexes()
         return list(x for x in items if x.column() == column)
 
-    def current_row_in_column(self, column: int):
+    def current_row_in_column(self, column: int) -> Optional[QModelIndex]:
         idx = self.selectionModel().currentIndex()
         if idx.isValid():
             # Retrieve data for a specific role from the current index
             # Replace 'YourSpecificRole' with the role you are interested in
             # For example, QtCore.Qt.DisplayRole for the display text
             return idx.sibling(idx.row(), column)
+        return None
 
     def get_role_data_for_current_item(self, *, col, role) -> Any:
         idx = self.selectionModel().currentIndex()
@@ -450,7 +452,7 @@ class MyTreeView(QTreeView):
         else:
             return model
 
-    def set_current_idx(self, set_current: QPersistentModelIndex):
+    def set_current_idx(self, set_current: QPersistentModelIndex) -> None:
         if set_current:
             assert isinstance(set_current, QPersistentModelIndex)
             assert set_current.isValid()
@@ -458,12 +460,12 @@ class MyTreeView(QTreeView):
                 QModelIndex(set_current), QItemSelectionModel.SelectionFlag.SelectCurrent
             )
 
-    def select_row(self, content, column, role=Qt.ItemDataRole.DisplayRole):
+    def select_row(self, content, column, role=Qt.ItemDataRole.DisplayRole) -> None:
         return self.select_rows([content], column, role)
 
     def select_rows(
         self, content_list, column, role=Qt.ItemDataRole.DisplayRole, clear_previous_selection=True
-    ):
+    ) -> None:
         last_selected_index = None
         model = self.model()
         selection_model = self.selectionModel()
@@ -486,7 +488,7 @@ class MyTreeView(QTreeView):
     def update_headers(
         self,
         headers: Union[Dict[Any, str], Iterable[str]],
-    ):
+    ) -> None:
         # headers is either a list of column names, or a dict: (col_idx->col_name)
         if not isinstance(headers, dict):  # convert to dict
             headers = dict(enumerate(headers))
@@ -509,7 +511,7 @@ class MyTreeView(QTreeView):
         super().selectionChanged(selected, deselected)
         self.on_selection_changed.emit()
 
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if self.itemDelegate().opened:
             return
         if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
@@ -530,8 +532,8 @@ class MyTreeView(QTreeView):
         else:
             super().keyPressEvent(event)
 
-    def copyKeyRoleToClipboard(self, row_numbers):
-        def get_data(row, col):
+    def copyKeyRoleToClipboard(self, row_numbers) -> None:
+        def get_data(row, col) -> Any:
             model = self.model()
             index = model.index(row, self.key_column)
 
@@ -551,8 +553,8 @@ class MyTreeView(QTreeView):
             stream.write(str(get_data(row, self.ROLE_KEY)) + "\n")  # append newline character after each row
         do_copy(stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text")
 
-    def get_rows_as_list(self, row_numbers):
-        def get_data(row, col):
+    def get_rows_as_list(self, row_numbers) -> Any:
+        def get_data(row, col) -> Any:
             model = self.model()  # assuming this is a QAbstractItemModel or subclass
             index = model.index(row, col)
 
@@ -580,7 +582,7 @@ class MyTreeView(QTreeView):
 
         return table
 
-    def copyRowsToClipboardAsCSV(self, row_numbers):
+    def copyRowsToClipboardAsCSV(self, row_numbers) -> None:
         table = self.get_rows_as_list(row_numbers)
 
         stream = io.StringIO()
@@ -588,7 +590,7 @@ class MyTreeView(QTreeView):
         writer.writerows(table)
         do_copy(stream.getvalue(), title=f"{len(row_numbers)} rows have ben copied as csv")
 
-    def mouseDoubleClickEvent(self, event: QMouseEvent):
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
         idx: QModelIndex = self.indexAt(event.pos())
         if self.proxy:
             idx = self.proxy.mapToSource(idx)
@@ -601,16 +603,16 @@ class MyTreeView(QTreeView):
         else:
             self.on_double_click(idx)
 
-    def on_double_click(self, idx: QModelIndex):
+    def on_double_click(self, idx: QModelIndex) -> None:
         pass
 
-    def on_activated(self, idx: QModelIndex):
+    def on_activated(self, idx: QModelIndex) -> None:
         # on 'enter' we show the menu
         pt = self.visualRect(idx).bottomLeft()
         pt.setX(50)
         self.customContextMenuRequested.emit(pt)
 
-    def edit(self, idx, trigger=QAbstractItemView.EditTrigger.AllEditTriggers, event=None):
+    def edit(self, idx, trigger=QAbstractItemView.EditTrigger.AllEditTriggers, event=None) -> bool:
         """
         this is to prevent:
            edit: editing failed
@@ -621,7 +623,7 @@ class MyTreeView(QTreeView):
     def on_edited(self, idx: QModelIndex, edit_key, *, text: str) -> None:
         raise NotImplementedError()
 
-    def should_hide(self, row: int):
+    def should_hide(self, row: int) -> bool:
         """row_num is for self.model().
 
         So if there is a proxy, it is the row number in that!
@@ -635,7 +637,7 @@ class MyTreeView(QTreeView):
             return ""
         return item.text()
 
-    def get_role_data_from_coordinate(self, row: int, col: int, *, role):
+    def get_role_data_from_coordinate(self, row: int, col: int, *, role) -> Any:
         idx = self.model().index(row, col)
         item = self.item_from_index(idx)
         if not item:
@@ -643,7 +645,7 @@ class MyTreeView(QTreeView):
         role_data = item.data(role)
         return role_data
 
-    def get_edit_key_from_coordinate(self, row: int, col: int):
+    def get_edit_key_from_coordinate(self, row: int, col: int) -> Any:
         # overriding this might allow avoiding storing duplicate data
         return self.get_role_data_from_coordinate(row, col, role=self.ROLE_EDIT_KEY)
 
@@ -693,7 +695,7 @@ class MyTreeView(QTreeView):
         "Returns a [row0_is_now_hidden, row1_is_now_hidden, ...]"
         return [self.hide_row(row) for row in range(self.model().rowCount())]
 
-    def as_csv_string(self, row_numbers: Optional[List[int]] = None, export_all=False):
+    def as_csv_string(self, row_numbers: Optional[List[int]] = None, export_all=False) -> str:
         table = self.get_rows_as_list(
             row_numbers=list(range(self.model().rowCount())) if export_all else row_numbers
         )
@@ -704,7 +706,7 @@ class MyTreeView(QTreeView):
 
         return stream.getvalue()
 
-    def export_as_csv(self, file_path=None):
+    def export_as_csv(self, file_path=None) -> None:
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
                 self, "Export csv", "", "All Files (*);;Text Files (*.csv)"
@@ -768,7 +770,7 @@ class MyTreeView(QTreeView):
     def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
         do_copy(text, title=title)
 
-    def showEvent(self, e: QShowEvent):
+    def showEvent(self, e: QShowEvent) -> None:
         super().showEvent(e)
         if e.isAccepted() and self._pending_update:
             self._forced_update = True
@@ -789,7 +791,7 @@ class MyTreeView(QTreeView):
                 return row
         return None
 
-    def refresh_all(self):
+    def refresh_all(self) -> None:
         if self.maybe_defer_update():
             return
         for row in range(0, self.std_model.rowCount()):
@@ -800,18 +802,18 @@ class MyTreeView(QTreeView):
     def refresh_row(self, key: str, row: int) -> None:
         pass
 
-    def refresh_item(self, key: str):
+    def refresh_item(self, key: str) -> None:
         row = self.find_row_by_key(key)
         if row is not None:
             self.refresh_row(key, row)
 
-    def delete_item(self, key: str):
+    def delete_item(self, key: str) -> None:
         row = self.find_row_by_key(key)
         if row is not None:
             self.std_model.takeRow(row)
         self.hide_if_empty()
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
             # Iterate through the list of dropped file URLs
             for url in event.mimeData().urls():
@@ -830,10 +832,10 @@ class MyTreeView(QTreeView):
         if not event.isAccepted():
             event.ignore()
 
-    def dragMoveEvent(self, event: QDragMoveEvent):
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
         return self.dragEnterEvent(event)
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
         if event.mimeData().hasUrls():
             # Iterate through the list of dropped file URLs
             for url in event.mimeData().urls():
@@ -855,7 +857,7 @@ class MyTreeView(QTreeView):
         if not event.isAccepted():
             event.ignore()
 
-    def update(self):
+    def update(self) -> None:
         super().update()
         self.signal_update.emit()
 
@@ -881,7 +883,7 @@ class TreeViewWithToolbar(SearchableTab):
         # which is done in updateUi
         self.searchable_list.signal_update.connect(self.updateUi)
 
-    def create_layout(self):
+    def create_layout(self) -> None:
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
@@ -913,19 +915,19 @@ class TreeViewWithToolbar(SearchableTab):
         self.toolbar.addWidget(toolbar_button)
         return self.toolbar, self.menu, self.balance_label, self.search_edit, self.action_export_as_csv
 
-    def show_toolbar(self, is_visible: bool, config=None):
+    def show_toolbar(self, is_visible: bool, config=None) -> None:
         if is_visible == self.toolbar_is_visible:
             return
         self.toolbar_is_visible = is_visible
         if not is_visible:
             self.on_hide_toolbar()
 
-    def on_hide_toolbar(self):
+    def on_hide_toolbar(self) -> None:
         pass
 
-    def toggle_toolbar(self, config=None):
+    def toggle_toolbar(self, config=None) -> None:
         self.show_toolbar(not self.toolbar_is_visible, config)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))

@@ -53,6 +53,7 @@
 # SOFTWARE.
 
 import logging
+from typing import Any, Dict, Tuple
 
 from ...config import UserConfig
 from ...network_config import BlockchainType
@@ -118,7 +119,7 @@ class ImportMenu:
         )
         self.updateUi()
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.import_label_menu.setTitle(translate("menu", "Import Labels"))
         self.action_bip329.setText(translate("menu", "Import Labels (BIP329 / Sparrow)"))
         self.action_electrum.setText(translate("menu", "Import Labels (Electrum Wallet)"))
@@ -189,7 +190,7 @@ class AddressList(MyTreeView):
     key_column = Columns.ADDRESS
     column_widths = {Columns.ADDRESS: 150, Columns.COIN_BALANCE: 100}
 
-    def __init__(self, fx, config: UserConfig, wallet: Wallet, signals: Signals):
+    def __init__(self, fx, config: UserConfig, wallet: Wallet, signals: Signals) -> None:
         super().__init__(
             config=config,
             stretch_column=self.stretch_column,
@@ -217,10 +218,10 @@ class AddressList(MyTreeView):
         self.signals.category_updated.connect(self.update_with_filter)
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.update()
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         # handle dropped files
         super().dragEnterEvent(event)
         if event.isAccepted():
@@ -235,10 +236,10 @@ class AddressList(MyTreeView):
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event: QDragMoveEvent):
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
         return self.dragEnterEvent(event)
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
         # handle dropped files
         super().dropEvent(event)
         if event.isAccepted():
@@ -267,7 +268,7 @@ class AddressList(MyTreeView):
 
         event.ignore()
 
-    def on_double_click(self, idx: QModelIndex):
+    def on_double_click(self, idx: QModelIndex) -> None:
         addr = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
         self.signals.show_address.emit(addr)
 
@@ -285,19 +286,19 @@ class AddressList(MyTreeView):
         self.select_row(address, self.Columns.ADDRESS)
         return address_info
 
-    def toggle_change(self, state: int):
+    def toggle_change(self, state: int) -> None:
         if state == self.show_change:
             return
         self.show_change = AddressTypeFilter(state)
         self.update()
 
-    def toggle_used(self, state: int):
+    def toggle_used(self, state: int) -> None:
         if state == self.show_used:
             return
         self.show_used = AddressUsageStateFilter(state)
         self.update()
 
-    def update_with_filter(self, update_filter: UpdateFilter):
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update()
         logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
@@ -337,7 +338,7 @@ class AddressList(MyTreeView):
         # manually sort, after the data is filled
         self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
 
-    def get_headers(self):
+    def get_headers(self) -> Dict:
         return {
             self.Columns.NUM_TXS: self.tr("Tx"),
             self.Columns.TYPE: self.tr("Type"),
@@ -349,7 +350,7 @@ class AddressList(MyTreeView):
             self.Columns.FIAT_BALANCE: self.tr("Fiat Balance"),
         }
 
-    def update(self):
+    def update(self) -> None:
         if self.maybe_defer_update():
             return
         logger.debug(f"{self.__class__.__name__} update")
@@ -384,7 +385,7 @@ class AddressList(MyTreeView):
         self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
         super().update()
 
-    def append_address(self, address: str):
+    def append_address(self, address: str) -> None:
         balance = self.wallet.get_addr_balance(address).total
         is_used_and_empty = self.wallet.address_is_used(address) and balance == 0
         if self.show_used == AddressUsageStateFilter.UNUSED and (balance or is_used_and_empty):
@@ -431,7 +432,7 @@ class AddressList(MyTreeView):
         self.std_model.insertRow(count, item)
         self.refresh_row(address, count)
 
-    def refresh_row(self, key: str, row: int):
+    def refresh_row(self, key: str, row: int) -> None:
         assert row is not None
         address = key
         label = self.wallet.get_label_for_address(address)
@@ -478,7 +479,7 @@ class AddressList(MyTreeView):
         # if calculated_width > current_width:
         #     self.header().resizeSection(self.Columns.ADDRESS, calculated_width)
 
-    def create_menu(self, position: QPoint):
+    def create_menu(self, position: QPoint) -> None:
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.ADDRESS)
         if not selected:
@@ -538,12 +539,12 @@ class AddressList(MyTreeView):
     #             raise
     #     super().place_text_on_clipboard(text, title=title)
 
-    def get_edit_key_from_coordinate(self, row, col):
+    def get_edit_key_from_coordinate(self, row, col) -> Any:
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=self.ROLE_KEY)
 
-    def on_edited(self, idx, edit_key, *, text):
+    def on_edited(self, idx, edit_key, *, text) -> None:
         self.wallet.labels.set_addr_label(edit_key, text, timestamp="now")
         self.signals.labels_updated.emit(
             UpdateFilter(
@@ -571,7 +572,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.address_list.signals.language_switch.connect(self.updateUi)
         self.address_list.signals.utxos_updated.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         super().updateUi()
 
         self.action_show_filter.setText(self.tr("Show Filter"))
@@ -583,7 +584,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             self.balance_label.setText(balance.format_short(self.address_list.wallet.network))
             self.balance_label.setToolTip(balance.format_long(self.address_list.wallet.network))
 
-    def create_toolbar_with_menu(self, title):
+    def create_toolbar_with_menu(self, title) -> None:
         super().create_toolbar_with_menu(title=title)
 
         font = QFont()
@@ -606,7 +607,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             and self.config.network != bdk.Network.BITCOIN
         ):
 
-            def mine_to_selected_addresses():
+            def mine_to_selected_addresses() -> None:
                 selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
                 if not selected:
                     return
@@ -632,8 +633,8 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         hbox = self.create_toolbar_buttons()
         self.toolbar.insertLayout(self.toolbar.count() - 1, hbox)
 
-    def create_toolbar_buttons(self):
-        def get_toolbar_buttons():
+    def create_toolbar_buttons(self) -> QHBoxLayout:
+        def get_toolbar_buttons() -> Tuple[QComboBox, QComboBox]:
             return self.change_button, self.used_button
 
         hbox = QHBoxLayout()
@@ -644,10 +645,10 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.toolbar_buttons = buttons
         return hbox
 
-    def on_hide_toolbar(self):
+    def on_hide_toolbar(self) -> None:
         self.update()
 
-    def show_toolbar(self, is_visible: bool, config=None):
+    def show_toolbar(self, is_visible: bool, config=None) -> None:
         super().show_toolbar(is_visible=is_visible, config=config)
         for b in self.toolbar_buttons:
             b.setVisible(is_visible)

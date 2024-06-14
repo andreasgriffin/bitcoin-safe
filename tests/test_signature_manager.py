@@ -35,7 +35,7 @@ from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
 logger = logging.getLogger(__name__)
 
 
-def test_download_manifest_and_verify():
+def test_download_manifest_and_verify() -> None:
     manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all())
 
     with tempfile.TemporaryDirectory() as tempdir:

@@ -68,7 +68,7 @@ from ...i18n import translate
 
 
 class HTMLDelegate(QStyledItemDelegate):
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         logger.debug("HTMLDelegate.paint")
         text = index.model().data(index, Qt.ItemDataRole.DisplayRole)
         option.state & QStyle.StateFlag.State_Selected
@@ -103,14 +103,14 @@ class ResultItem:
 
         self.set_parent(parent)
 
-    def set_parent(self, parent: "ResultItem" = None):
+    def set_parent(self, parent: "ResultItem" = None) -> None:
         self.parent = parent
         if self.parent:
             if self not in self.parent.children:
                 self.parent.children.append(self)
 
 
-def demo_do_search(search_text: str):
+def demo_do_search(search_text: str) -> ResultItem:
     # Demo search function. Replace with actual search logic
     # Returns data in the format expected by CustomTreeView.set_data
     root = ResultItem("")
@@ -133,12 +133,12 @@ def demo_do_search(search_text: str):
     return root
 
 
-def demo_on_click(item: ResultItem):
+def demo_on_click(item: ResultItem) -> None:
     print("Item Clicked:", item.text)
 
 
 class CustomTreeView(QTreeView):
-    def __init__(self, parent=None, on_click=None, on_double_click=None):
+    def __init__(self, parent=None, on_click=None, on_double_click=None) -> None:
         super().__init__(parent)
         self.on_click = on_click
         self.on_double_click = on_double_click
@@ -167,18 +167,19 @@ class CustomTreeView(QTreeView):
     def model(self) -> QStandardItemModel:
         return super().model()
 
-    def set_data(self, data: ResultItem):
+    def set_data(self, data: ResultItem) -> None:
         self.model().clear()  # Clear existing items
         self._populate_model(data)
         self.expandAll()  # Expand all items after setting data
         self.resizeColumnToContents(0)  # Resize the first column
 
-    def _populate_model(self, result_item: ResultItem, model_parent=None):
-        def add_child(child: ResultItem):
+    def _populate_model(self, result_item: ResultItem, model_parent: QWidget = None) -> None:
+        def add_child(child: ResultItem) -> QStandardItem:
             model_item = QStandardItem(child.text)
             model_item.setEditable(False)
             model_item.result_item = child
-            model_parent.appendRow(model_item)
+            if model_parent:
+                model_parent.appendRow(model_item)
             return model_item
 
         model_parent = self.model().invisibleRootItem() if model_parent is None else add_child(result_item)
@@ -187,7 +188,7 @@ class CustomTreeView(QTreeView):
             # Recursively process the value
             self._populate_model(child, model_parent=model_parent)
 
-    def handle_item_clicked(self, index: QModelIndex):
+    def handle_item_clicked(self, index: QModelIndex) -> None:
         if self.on_click and index.isValid():
             # Retrieve the item from the model
             item = self.model().itemFromIndex(index)
@@ -197,7 +198,7 @@ class CustomTreeView(QTreeView):
             # For example, call a custom method of the item (if your item class has one)
             self.on_click(item.result_item)
 
-    def handle_item_double_clicked(self, index: QModelIndex):
+    def handle_item_double_clicked(self, index: QModelIndex) -> None:
         if self.on_double_click and index.isValid():
             # Retrieve the item from the model
             item = self.model().itemFromIndex(index)
@@ -209,7 +210,7 @@ class CustomTreeView(QTreeView):
 
 
 class CustomPopup(QFrame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super(CustomPopup, self).__init__(parent, Qt.WindowType.Tool | Qt.WindowType.FramelessWindowHint)
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(0, 1, 0, 0)  # Left, Top, Right, Bottom margins
@@ -219,7 +220,7 @@ class CustomPopup(QFrame):
         self.hide()  # Start hidden
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         # Check if the pressed key is 'Esc'
         if event.key() == Qt.Key.Key_Escape:
             # Close the widget
@@ -237,7 +238,7 @@ class SearchTreeView(QWidget):
         on_click: Optional[Callable] = None,
         result_width=None,
         result_height=300,
-    ):
+    ) -> None:
         super().__init__(parent)
         self.on_click = on_click
         self.do_search = do_search
@@ -268,14 +269,14 @@ class SearchTreeView(QWidget):
         # Install event filter on the main window
         self.window().installEventFilter(self)
 
-    def on_double_click(self, result_item: ResultItem):
+    def on_double_click(self, result_item: ResultItem) -> None:
         "Here is what is done on the 2. click of a double click"
         self.popup.hide()
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.search_field.setPlaceholderText(translate("mytreeview", "Type to search..."))
 
-    def on_search(self, text: str):
+    def on_search(self, text: str) -> None:
         search_results = self.do_search(text)
         self.tree_view.set_data(search_results)
         self.tree_view.update()  # Update the view to redraw with highlights
@@ -287,7 +288,7 @@ class SearchTreeView(QWidget):
         else:
             self.popup.hide()
 
-    def position_popup(self):
+    def position_popup(self) -> None:
         self.popup.setFixedSize(
             self.search_field.width() if self.result_width is None else self.result_width, self.result_height
         )  # Set a fixed size or adjust as needed
@@ -299,7 +300,7 @@ class SearchTreeView(QWidget):
         self.popup.move(global_pos)
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         # Check if the pressed key is 'Esc'
         if event.key() == Qt.Key.Key_Escape:
             # Close the widget
@@ -320,7 +321,7 @@ class SearchWallets(SearchTreeView):
         parent=None,
         result_height=300,
         result_width=500,
-    ):
+    ) -> None:
         super().__init__(
             self.do_search,
             parent=parent,
@@ -334,7 +335,7 @@ class SearchWallets(SearchTreeView):
         self.get_qt_wallets = get_qt_wallets
         self.signal_min.language_switch.connect(self.updateUi)
 
-    def search_result_on_click(self, result_item: ResultItem):
+    def search_result_on_click(self, result_item: ResultItem) -> None:
         # call the parent action first
         if result_item.parent is not None:
             self.search_result_on_click(result_item.parent)
@@ -455,7 +456,7 @@ class SearchWallets(SearchTreeView):
 if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
 
             self.central_widget = QWidget()

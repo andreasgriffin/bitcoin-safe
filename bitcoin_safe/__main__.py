@@ -16,7 +16,7 @@ from .gui.qt.main import MainWindow
 from .gui.qt.util import custom_exception_handler
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description="Bitcoin Safe")
     parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
@@ -27,7 +27,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
 
     sys.excepthook = custom_exception_handler

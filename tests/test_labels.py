@@ -62,7 +62,7 @@ def test_label_export():
         + f'"{data[0].VERSION}"'
         + ', "__class__": "Label", "category": "category 0", "label": "my label", "ref": "some_address", "timestamp": '
         + f"{timestamp}"
-        + ', "type": "addr"}}}'
+        + ', "type": "addr"}}, "default_category": "default"}'
     )
 
 
@@ -142,7 +142,7 @@ def test_label_bip329_category_bad_input():
 
     labels2 = Labels()
     labels2.import_bip329_jsonlines(s)
-    assert labels2.get_category("some_address") == None
+    assert labels2.get_category("some_address") == labels2.default_category
     assert labels2.get_label("some_address") == "my label"
 
     #   double hashtag

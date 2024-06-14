@@ -42,9 +42,8 @@ from PyQt6.QtWidgets import QCheckBox, QVBoxLayout
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
-from bitcoin_safe.gui.qt.util import Message, custom_exception_handler
+from bitcoin_safe.gui.qt.util import Message
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.threading_manager import TaskThread
 
 logger = logging.getLogger(__name__)
 
@@ -92,54 +91,38 @@ class SyncTab(QObject):
         self.main_widget.groupbox.layout().addWidget(self.nostr_sync.gui)
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.main_widget.checkbox.setText(self.tr("Encrypted syncing to trusted devices"))
         self.checkbox_auto_open_psbts.setText(
             self.tr("Open received Transactions and PSBTs automatically in a new tab")
         )
 
-    def unsubscribe_all(self):
+    def unsubscribe_all(self) -> None:
         if self.enabled():
             self.nostr_sync.unsubscribe()
 
-    def finish_init_after_signal_connection(self):
+    def finish_init_after_signal_connection(self) -> None:
         if self.enabled():
             self.on_enable(self.enabled())
 
-    def checkbox_state_changed(self, state):
+    def checkbox_state_changed(self, state) -> None:
         self.on_enable(state == Qt.CheckState.Checked.value)
 
-    def subscribe(self):
-        def do():
-            self.nostr_sync.subscribe()
+    def subscribe(self) -> None:
+        self.nostr_sync.subscribe()
 
-        def on_done(result):
-            # now do the UI
-            logger.debug("done nostr_sync.subscribe")
-
-        def on_success(result):
-            # now do the UI
-            logger.debug("on_success nostr_sync.subscribe")
-
-        def on_error(packed_error_info):
-            custom_exception_handler(*packed_error_info)
-
-        TaskThread(self.main_widget, signals_min=self.signals).add_and_start(
-            do, on_success, on_done, on_error
-        )
-
-    def on_dm(self, dm: BitcoinDM):
-        if dm.event and self.startup_time > datetime.fromtimestamp(dm.event.created_at().as_secs()):
+    def on_dm(self, dm: BitcoinDM) -> None:
+        if dm.created_at and self.startup_time > datetime.fromtimestamp(dm.created_at.as_secs()):
             # dm was created before startup
             return
-        if dm.event:
-            if self.nostr_sync.is_me(dm.event.author()):
+        if dm.author:
+            if self.nostr_sync.is_me(dm.author):
                 # do nothing if i sent it
                 return
             if dm.data and dm.data.data_type in [DataType.PSBT, DataType.Tx]:
                 Message(
                     self.tr("Opening {name} from {author}").format(
-                        name=dm.data.data_type.name, author=short_key(dm.event.author().to_bech32())
+                        name=dm.data.data_type.name, author=short_key(dm.author.to_bech32())
                     ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
@@ -147,12 +130,12 @@ class SyncTab(QObject):
             elif not dm.data:
                 Message(
                     self.tr("Received message '{description}' from {author}").format(
-                        description=dm.description, author=short_key(dm.event.author().to_bech32())
+                        description=dm.description, author=short_key(dm.author.to_bech32())
                     ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
 
-    def enabled(self):
+    def enabled(self) -> bool:
         return self.main_widget.checkbox.isChecked()
 
     @classmethod
@@ -191,12 +174,12 @@ class SyncTab(QObject):
     def from_dump(cls, sync_tab_dump: Dict, network: bdk.Network, signals: Signals) -> "SyncTab":
         return SyncTab(**sync_tab_dump, network=network, signals=signals)
 
-    def open_file_object(self, file_object: FileObject):
+    def open_file_object(self, file_object: FileObject) -> None:
         if not file_object or not file_object.data:
             return
         self.signals.open_tx_like.emit(file_object.data.data)
 
-    def on_enable(self, enable: bool):
+    def on_enable(self, enable: bool) -> None:
         if enable:
             self.subscribe()
         else:

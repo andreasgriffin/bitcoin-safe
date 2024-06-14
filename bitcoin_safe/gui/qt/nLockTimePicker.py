@@ -47,11 +47,11 @@ from PyQt6.QtWidgets import (
 
 
 class DateTimePicker(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.dateTimeEdit = QDateTimeEdit(self)
         self.dateTimeEdit.setCalendarPopup(True)
 
@@ -62,7 +62,7 @@ class DateTimePicker(QWidget):
         layout.addWidget(self.dateTimeEdit)
         self.setLayout(layout)
 
-    def print_time(self):
+    def print_time(self) -> None:
         # Convert QDateTime to Python datetime object
         local_datetime = self.get_datetime()
 
@@ -76,7 +76,7 @@ class DateTimePicker(QWidget):
 
 
 class CheckBoxGroupBox(QWidget):
-    def __init__(self, enabled=True):
+    def __init__(self, enabled=True) -> None:
         super().__init__()
         # Create the checkbox
         self.checkbox = QCheckBox()
@@ -96,7 +96,7 @@ class CheckBoxGroupBox(QWidget):
         self.setLayout(layout)
         self.toggleGroupBox(self.checkbox.checkState())
 
-    def toggleGroupBox(self, state: Qt.CheckState):
+    def toggleGroupBox(self, state: Qt.CheckState) -> None:
         # Enable or disable the group box based on the checkbox state
         self.groupBox.setEnabled(state == Qt.CheckState.Checked)
 

@@ -73,8 +73,8 @@ def test_custom_wallet_setup_custom_single_sig(
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
-    wallet_name="test_custom_wallet_setup_custom_single_sig",
-    amount=int(1e6),
+    wallet_name: str = "test_custom_wallet_setup_custom_single_sig",
+    amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
     frame = inspect.currentframe()
     assert frame
@@ -89,7 +89,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         w = main_window.welcome_screen.pushButton_custom_wallet
 
-        def on_wallet_id_dialog(dialog: WalletIdDialog):
+        def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -103,7 +103,7 @@ def test_custom_wallet_setup_custom_single_sig(
         qt_proto_wallet = main_window.tab_wallets.get_data_for_tab(w)
         assert isinstance(qt_proto_wallet, QTProtoWallet)
 
-        def test_block_change_signals():
+        def test_block_change_signals() -> None:
             with BlockChangesSignals([qt_proto_wallet.wallet_descriptor_ui.tab]):
                 assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
             with BlockChangesSignals([qt_proto_wallet.wallet_descriptor_ui.tab]):
@@ -111,7 +111,7 @@ def test_custom_wallet_setup_custom_single_sig(
                     assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
                 assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
 
-        def check_consistent():
+        def check_consistent() -> None:
             signers = qt_proto_wallet.wallet_descriptor_ui.spin_signers.value()
             qt_proto_wallet.wallet_descriptor_ui.spin_req.value()
 
@@ -132,7 +132,7 @@ def test_custom_wallet_setup_custom_single_sig(
                     for i in range(qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.count())
                 ]
 
-        def page1():
+        def page1() -> None:
             shutter.save(main_window)
 
             assert qt_proto_wallet.wallet_descriptor_ui.spin_req.value() == 3
@@ -149,7 +149,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         page1()
 
-        def change_to_single_sig():
+        def change_to_single_sig() -> None:
             assert qt_proto_wallet.protowallet.is_multisig()
             qt_proto_wallet.wallet_descriptor_ui.spin_req.setValue(1)
             assert qt_proto_wallet.wallet_descriptor_ui.spin_req.value() == 1
@@ -165,7 +165,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         change_to_single_sig()
 
-        def do_save_wallet():
+        def do_save_wallet() -> None:
             key = qt_proto_wallet.wallet_descriptor_ui.keystore_uis.keystore_uis[0]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
@@ -200,7 +200,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         main_window.tab_wallets.get_data_for_tab(w)
 
-        def do_close_wallet():
+        def do_close_wallet() -> None:
 
             close_wallet(
                 shutter=shutter,
@@ -214,7 +214,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         do_close_wallet()
 
-        def do_open_wallet():
+        def do_open_wallet() -> None:
             assert (
                 wallet_name in list(main_window.config.recently_open_wallets[main_window.config.network])[0]
             )

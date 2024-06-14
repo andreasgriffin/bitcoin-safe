@@ -33,7 +33,7 @@ import os
 import shutil
 from abc import abstractmethod
 from pathlib import Path
-from typing import Callable, List, Optional, Set, Tuple
+from typing import Any, Callable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
@@ -96,11 +96,11 @@ class SignalCarryingObject(QObject):
         super().__init__(parent)
         self._connected_signals: List[Tuple[SignalFunction, Callable]] = []
 
-    def connect_signal(self, signal, f, **kwargs):
+    def connect_signal(self, signal, f, **kwargs) -> None:
         signal.connect(f, **kwargs)
         self._connected_signals.append((signal, f))
 
-    def disconnect_signals(self):
+    def disconnect_signals(self) -> None:
         for signal, f in self._connected_signals:
             signal.disconnect(f)
 
@@ -109,7 +109,7 @@ class QtWalletBase(SignalCarryingObject):
     wallet_steps: QWidget
     wallet_descriptor_tab: QWidget
 
-    def __init__(self, config: UserConfig, signals: Signals):
+    def __init__(self, config: UserConfig, signals: Signals) -> None:
         super().__init__()
         self.config = config
         self.signals = signals
@@ -145,7 +145,7 @@ class QTProtoWallet(QtWalletBase):
         protowallet: ProtoWallet,
         config: UserConfig,
         signals: Signals,
-    ):
+    ) -> None:
         super().__init__(config=config, signals=signals)
 
         (
@@ -160,7 +160,7 @@ class QTProtoWallet(QtWalletBase):
         return self.wallet_descriptor_ui.protowallet
 
     @protowallet.setter
-    def protowallet(self, protowallet):
+    def protowallet(self, protowallet) -> None:
         self.wallet_descriptor_ui.set_protowallet(protowallet)
 
     def get_mn_tuple(self) -> Tuple[int, int]:
@@ -185,7 +185,7 @@ class QTProtoWallet(QtWalletBase):
         wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(self.signal_close_wallet.emit)
         return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
-    def on_apply_setting_changes(self):
+    def on_apply_setting_changes(self) -> None:
         try:
             self.wallet_descriptor_ui.set_protowallet_from_ui()
         except Exception as e:
@@ -220,7 +220,7 @@ class QTWallet(QtWalletBase):
         mempool_data: MempoolData,
         fx: FX,
         set_tab_widget_icon: Optional[Callable[[QWidget, QIcon], None]] = None,
-    ):
+    ) -> None:
         super().__init__(signals=signals, config=config)
 
         self.mempool_data = mempool_data
@@ -280,27 +280,27 @@ class QTWallet(QtWalletBase):
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.tabs.setTabText(self.tabs.indexOf(self.send_tab), self.tr("Send"))
         self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_tab), self.tr("Descriptor"))
         self.tabs.setTabText(self.tabs.indexOf(self.sync_tab_widget), self.tr("Sync"))
         self.tabs.setTabText(self.tabs.indexOf(self.history_tab), self.tr("History"))
         self.tabs.setTabText(self.tabs.indexOf(self.addresses_tab), self.tr("Receive"))
 
-    def stop_sync_timer(self):
+    def stop_sync_timer(self) -> None:
         self.timer_sync_retry.stop()
 
-    def close(self):
+    def close(self) -> None:
         self.disconnect_signals()
         self.sync_tab.unsubscribe_all()
         self.stop_sync_timer()
 
-    def _start_sync_regularly_timer(self, delay_retry_sync=60):
+    def _start_sync_regularly_timer(self, delay_retry_sync=60) -> None:
         if self.timer_sync_regularly.isActive():
             return
         self.timer_sync_regularly.setInterval(delay_retry_sync * 1000)
 
-        def sync():
+        def sync() -> None:
             if self.sync_status not in [SyncStatus.synced]:
                 return
 
@@ -310,12 +310,12 @@ class QTWallet(QtWalletBase):
         self.timer_sync_regularly.timeout.connect(sync)
         self.timer_sync_regularly.start()
 
-    def _start_sync_retry_timer(self, delay_retry_sync=30):
+    def _start_sync_retry_timer(self, delay_retry_sync=30) -> None:
         if self.timer_sync_retry.isActive():
             return
         self.timer_sync_retry.setInterval(delay_retry_sync * 1000)
 
-        def sync_if_needed():
+        def sync_if_needed() -> None:
             if self.sync_status in [SyncStatus.syncing, SyncStatus.synced]:
                 return
 
@@ -336,10 +336,10 @@ class QTWallet(QtWalletBase):
         return self._file_path if self._file_path else filename_clean(self.wallet.id)
 
     @file_path.setter
-    def file_path(self, value: Optional[str]):
+    def file_path(self, value: Optional[str]) -> None:
         self._file_path = value
 
-    def apply_setting_changes(self):
+    def apply_setting_changes(self) -> None:
         self.wallet_descriptor_ui.set_protowallet_from_ui()
         old_wallet = self.wallet
         new_wallet = Wallet.from_protowallet(self.wallet_descriptor_ui.protowallet, self.config)
@@ -364,7 +364,7 @@ class QTWallet(QtWalletBase):
         self.wallet.clear_cache(clear_always_keep=True)
         self.sync()
 
-    def create_and_add_settings_tab(self):
+    def create_and_add_settings_tab(self) -> Tuple[QWidget, DescriptorUI]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
             protowallet=self.wallet.as_protowallet(), signals_min=self.signals, get_wallet=lambda: self.wallet
@@ -435,20 +435,21 @@ class QTWallet(QtWalletBase):
         )
         return filename
 
-    def move_wallet_file(self, new_file_path):
+    def move_wallet_file(self, new_file_path) -> Optional[str]:
         if os.path.exists(new_file_path):
             Message(
                 self.tr("Cannot move the wallet file, because {file_path} exists").format(
                     file_path=new_file_path
                 )
             )
-            return
+            return None
         shutil.move(self.file_path, new_file_path)
         self.remove_lockfile(Path(self.file_path))
         old_file_path = self.file_path
         self.file_path = new_file_path
         self.get_wallet_lockfile(Path(self.file_path))
         logger.info(f"Saved {old_file_path} under new name {self.file_path}")
+        return new_file_path
 
     @classmethod
     def get_wallet_lockfile_path(cls, wallet_file_path: Path) -> Path:
@@ -464,7 +465,7 @@ class QTWallet(QtWalletBase):
             return lockfile_path
 
     @classmethod
-    def remove_lockfile(cls, wallet_file_path: Path):
+    def remove_lockfile(cls, wallet_file_path: Path) -> None:
         lock_file_path = cls.get_wallet_lockfile_path(wallet_file_path)
         if not lock_file_path:
             return
@@ -472,7 +473,7 @@ class QTWallet(QtWalletBase):
             os.remove(lock_file_path)
             logger.debug(f"Lock file {lock_file_path} removed.")
 
-    def save(self):
+    def save(self) -> Optional[str]:
         if not self._file_path:
             if not os.path.exists(self.config.wallet_dir):
                 os.makedirs(self.config.wallet_dir, exist_ok=True)
@@ -491,7 +492,7 @@ class QTWallet(QtWalletBase):
                     title="Delete wallet",
                 ):
                     logger.debug("No file selected")
-                    return
+                    return None
 
         # if it is the first time saving, then the user can set a password
         if not os.path.isfile(self.file_path):
@@ -511,23 +512,25 @@ class QTWallet(QtWalletBase):
             password=self.password,
         )
         logger.info(f"wallet {self.wallet.id} saved")
+        return self.file_path
 
-    def change_password(self):
+    def change_password(self) -> Optional[str]:
         if self.password:
             ui_password_question = PasswordQuestion(label_text="Your current password:")
             password = ui_password_question.ask_for_password()
             password = password if password else None
             if password != self.password:
                 Message(self.tr("Password incorrect"), type=MessageType.Warning)
-                return
+                return None
 
         self.password = PasswordCreation(
             window_title=self.tr("Change password"), label_text=self.tr("New password:")
         ).get_password()
         self.save()
         Message(self.tr("Wallet saved"))
+        return self.password
 
-    def cancel_setting_changes(self):
+    def cancel_setting_changes(self) -> None:
         self.wallet_descriptor_ui.protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
@@ -535,7 +538,7 @@ class QTWallet(QtWalletBase):
         delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
         return delta_txs
 
-    def notify_on_new_txs(self, delta_txs: DeltaCacheListTransactions):
+    def notify_on_new_txs(self, delta_txs: DeltaCacheListTransactions) -> None:
         def format_txs(txs: List[bdk.TransactionDetails]) -> str:
             return "  \n".join(
                 [
@@ -568,15 +571,15 @@ class QTWallet(QtWalletBase):
                     no_show=True,
                 ).emit_with(self.signals.notification)
 
-    def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING, force_ui_refresh=True):
+    def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING, force_ui_refresh=True) -> None:
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
         self.wallet.clear_cache()
 
-        def do():
+        def do() -> Any:
             self.wallet.fill_commonly_used_caches()
 
-        def on_done(result):
+        def on_done(result) -> None:
             delta_txs = self.get_delta_txs()
             change_dict = delta_txs.was_changed()
             logger.debug(f"change_dict={change_dict}")
@@ -592,11 +595,11 @@ class QTWallet(QtWalletBase):
                 self.signals.utxos_updated.emit(UpdateFilter(refresh_all=True))
                 # self.history_list.update()
 
-        def on_success(result):
+        def on_success(result) -> None:
             # now do the UI
             logger.debug("on_success refresh ui")
 
-        def on_error(packed_error_info):
+        def on_error(packed_error_info) -> None:
             custom_exception_handler(*packed_error_info)
 
         if threaded:
@@ -604,7 +607,7 @@ class QTWallet(QtWalletBase):
         else:
             NoThread(self).add_and_start(do, on_success, on_done, on_error)
 
-    def _create_send_tab(self, tabs: QTabWidget):
+    def _create_send_tab(self, tabs: QTabWidget) -> Tuple[SearchableTab, UITx_Creator]:
         utxo_list = UTXOList(
             self.config,
             self.signals,
@@ -636,7 +639,7 @@ class QTWallet(QtWalletBase):
 
         return uitx_creator.main_widget, uitx_creator
 
-    def create_psbt(self, txinfos: TxUiInfos):
+    def create_psbt(self, txinfos: TxUiInfos) -> None:
         try:
             builder_infos = self.wallet.create_psbt(txinfos)
 
@@ -674,19 +677,19 @@ class QTWallet(QtWalletBase):
         self.connect_signal(self.signals.get_qt_wallets, lambda: self, slot_name=self.wallet.id)
         return wallet
 
-    def rename_category(self, old_category: str, new_category: str):
+    def rename_category(self, old_category: str, new_category: str) -> None:
         affected_keys = self.wallet.labels.rename_category(old_category, new_category)
         self.signals.category_updated.emit(
             UpdateFilter(addresses=affected_keys, categories=([old_category]), txids=affected_keys)
         )
 
-    def delete_category(self, category: str):
+    def delete_category(self, category: str) -> None:
         affected_keys = self.wallet.labels.delete_category(category)
         self.signals.category_updated.emit(
             UpdateFilter(addresses=affected_keys, categories=([category]), txids=affected_keys)
         )
 
-    def set_category(self, address_drag_info: AddressDragInfo):
+    def set_category(self, address_drag_info: AddressDragInfo) -> None:
         for address in address_drag_info.addresses:
             for category in address_drag_info.tags:
                 self.wallet.labels.set_addr_category(address, category, timestamp="now")
@@ -703,10 +706,10 @@ class QTWallet(QtWalletBase):
             )
         )
 
-    def create_status_bar(self, tab: QWidget, outer_layout):
+    def create_status_bar(self, tab: QWidget, outer_layout) -> None:
         pass
 
-    def update_status_visualization(self, sync_status: SyncStatus):
+    def update_status_visualization(self, sync_status: SyncStatus) -> None:
         if not self.wallet:
             return
 
@@ -795,18 +798,18 @@ class QTWallet(QtWalletBase):
         splitter1.setSizes([1, 1])
         return tab, l, plot, toolbar
 
-    def _subtexts_for_categories(self):
+    def _subtexts_for_categories(self) -> List[str]:
         return [self.tr("Click for new address")] * len(self.wallet.labels.categories)
 
-        d = {}
-        for address in self.wallet.get_addresses():
-            category = self.wallet.labels.get_category(address)
-            if category not in d:
-                d[category] = []
+        # d = {}
+        # for address in self.wallet.get_addresses():
+        #     category = self.wallet.labels.get_category(address)
+        #     if category not in d:
+        #         d[category] = []
 
-            d[category].append(address)
+        #     d[category].append(address)
 
-        return [f"{len(d.get(category, []))} Addresses" for category in self.wallet.labels.categories]
+        # return [f"{len(d.get(category, []))} Addresses" for category in self.wallet.labels.categories]
 
     def _create_addresses_tab(self, tabs: QTabWidget) -> Tuple[SearchableTab, AddressList, CategoryEditor]:
         l = AddressList(self.fx, self.config, self.wallet, self.signals)
@@ -818,7 +821,7 @@ class QTWallet(QtWalletBase):
             get_sub_texts=self._subtexts_for_categories,
         )
 
-        def create_new_address(category):
+        def create_new_address(category) -> None:
             self.address_list.get_address(force_new=True, category=category)
 
         tags.list_widget.signal_tag_clicked.connect(create_new_address)
@@ -829,27 +832,27 @@ class QTWallet(QtWalletBase):
         add_tab_to_tabs(tabs, tab, read_QIcon("receive.svg"), "", "receive", position=1, data=toolbar)
         return tab, l, tags
 
-    def set_sync_status(self, new: SyncStatus):
+    def set_sync_status(self, new: SyncStatus) -> None:
         self.sync_status = new
         logger.debug(f"{self.wallet.id} set_sync_status {new}")
         self.signal_on_change_sync_status.emit(new)
         QApplication.processEvents()
 
-    def sync(self):
+    def sync(self) -> None:
         if self.sync_status == SyncStatus.syncing:
             logger.info(f"Syncing already in progress")
             return
 
-        def progress_function_threadsafe(progress: float, message: str):
+        def progress_function_threadsafe(progress: float, message: str) -> None:
             self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
 
-        def do():
+        def do() -> Any:
             self.wallet.sync(progress_function_threadsafe=progress_function_threadsafe)
 
-        def on_done(result):
+        def on_done(result) -> None:
             pass
 
-        def on_error(packed_error_info):
+        def on_error(packed_error_info) -> None:
             self.set_sync_status(SyncStatus.error)
             logger.info(
                 f"Could not sync. SynStatus set to {SyncStatus.error.name} for wallet {self.wallet.id}"
@@ -857,7 +860,7 @@ class QTWallet(QtWalletBase):
             logger.error(str(packed_error_info))
             # custom_exception_handler(*packed_error_info)
 
-        def on_success(result):
+        def on_success(result) -> None:
             self.set_sync_status(SyncStatus.synced)
             logger.debug(f"{self.wallet.id} success syncing wallet {self.wallet.id}")
 
@@ -893,15 +896,15 @@ class QTWallet(QtWalletBase):
         else:
             NoThread(self).add_and_start(do, on_success, on_done, on_error)
 
-    def export_wallet_for_coldcard(self):
+    def export_wallet_for_coldcard(self) -> Optional[str]:
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
             default_filename=filename_clean(self.wallet.id, file_extension=".txt")[:24],
         )
         if not filename:
-            return
+            return None
 
-        text = f"""# Coldcard descriptor export of wallet: {self.wallet.id}\n{self.wallet.multipath_descriptor.bdk_descriptors[0].as_string() }"""
         with open(filename, "w") as file:
-            file.write(text)
+            file.write(self.wallet.export_coldcard_wallet_descriptor())
+        return filename

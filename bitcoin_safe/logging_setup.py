@@ -40,7 +40,7 @@ from bitcoin_safe import __version__
 from bitcoin_safe.logging_handlers import MailHandler, RelativePathFormatter
 
 
-def setup_logging():
+def setup_logging() -> None:
 
     # Configuring formatters
     relative_path_formatter = RelativePathFormatter(
@@ -80,7 +80,7 @@ def setup_logging():
     logger = logging.getLogger(__name__)
 
     # Set the function to handle uncaught exceptions
-    def handle_uncaught_exception(exc_type, exc_value, exc_traceback):
+    def handle_uncaught_exception(exc_type, exc_value, exc_traceback) -> None:
         logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = handle_uncaught_exception

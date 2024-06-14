@@ -48,7 +48,7 @@ class CategoryList(CustomListWidget):
         parent=None,
         tag_name="category",
         immediate_release=True,
-    ):
+    ) -> None:
         super().__init__(parent, enable_drag=False, immediate_release=immediate_release)
 
         self.categories = categories
@@ -59,11 +59,11 @@ class CategoryList(CustomListWidget):
         self.refresh(UpdateFilter(refresh_all=True))
         self.signals.language_switch.connect(lambda: self.refresh(UpdateFilter(refresh_all=True)))
 
-    def refresh(self, update_filter: UpdateFilter):
+    def refresh(self, update_filter: UpdateFilter) -> None:
         self.recreate(self.categories, sub_texts=self.get_sub_texts())
 
     @classmethod
-    def color(cls, category):
+    def color(cls, category) -> QColor:
         if not category:
             return QColor(255, 255, 255, 255)
         return hash_color(category)
@@ -77,7 +77,7 @@ class CategoryEditor(TagEditor):
         get_sub_texts=None,
         parent=None,
         prevent_empty_categories=True,
-    ):
+    ) -> None:
         sub_texts = get_sub_texts() if get_sub_texts else None
         super().__init__(parent, categories, tag_name="", sub_texts=sub_texts)
 
@@ -95,19 +95,19 @@ class CategoryEditor(TagEditor):
         self.list_widget.signal_tag_added.connect(self.on_added)
         self.signals.language_switch.connect(self.updateUi)
 
-    def updateUi(self):
+    def updateUi(self) -> None:
         self.tag_name = self.tr("category")
         super().updateUi()
         self.refresh(UpdateFilter(refresh_all=True))
 
-    def on_added(self, category):
+    def on_added(self, category) -> None:
         if not category or category in self.categories:
             return
 
         self.categories.append(category)
         self.signals.category_updated.emit(UpdateFilter(categories=[category]))
 
-    def on_delete(self, category):
+    def on_delete(self, category) -> None:
         if category not in self.categories:
             return
         idx = self.categories.index(category)
@@ -118,11 +118,11 @@ class CategoryEditor(TagEditor):
             self.list_widget.add("Default")
             self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
 
-    def refresh(self, update_filter: UpdateFilter):
+    def refresh(self, update_filter: UpdateFilter) -> None:
         self.list_widget.recreate(self.categories, sub_texts=self.get_sub_texts())
 
     @classmethod
-    def color(cls, category):
+    def color(cls, category) -> QColor:
         if not category:
             return QColor(255, 255, 255, 255)
         return hash_color(category)

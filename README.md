@@ -7,12 +7,14 @@
 #### Features
 
 - **Easy** Bitcoin wallet for long-term cold storage
-  - **Best practices** built into the wallet setup
-  - **Easier** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
+  - **Easy** Multisig-Wallet Setup
+    - Step-by-Step instructions
+    - including transactions to test every hardware signer
+  - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
     - Automatic coin selection within categories
-  - **Easier** fee selection for non-technical users
-  - Automatic UTXO management as much as possible to prevent uneconomical UTXOs in the future
-    - Opportunistic merging of small utxos when fees are low
+  - **Sending** for non-technical users
+    - 1-click fee selection 
+    - Automatic merging of small utxos when fees are low
   - **Collaborative**: 
     - Wallet chat and sharing of PSBTs (via nostr)
     - Label synchronization between trusted devices (via nostr)
@@ -21,7 +23,7 @@
 - **Fast**: Electrum server connectivity and planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release 
 - **Secure**: No seed generation or storage (on mainnet). 
   - A hardware signer/signing device for safe seed storage is needed (storing seeds on a computer is reckless)
-  - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
+  - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)** 
 
 ## Installation from Git repository
 
@@ -79,22 +81,24 @@
 
 #### More features
 
-* Import export
-  * csv export of every list
-  * Label import and export in [BIP329](https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki) 
+* Many Import and Export options
+  * CSV export of every list
+  * Label import and export in [BIP329](https://bip329.org/) 
   * Label import of Electrum wallet
- 
+* Animated [Coldcard Q - QR code](https://bbqr.org/) and Legacy QR codes 
+* Connectivity to Electrum Servers, Esplora Server, RPC Bitcoin Node (like on [Umbrel](https://umbrel.com/))
+
+
+#### TODOs for beta release
+
+- [ ] Add more pytests
+
 
 #### Goals (for the 2.0 Release)
 
 - **Compact Block Filters** by default
   - Compact Block Filters are **fast** and **private**
   - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/issues/679), and will be included in bdk 1.1. For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
-
-#### TODOs for beta release
-
-- [ ] Add more pytests
-- [ ] [bbqr code](https://bbqr.org/) 
 
 ## Development
 
