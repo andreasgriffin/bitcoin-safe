@@ -34,7 +34,7 @@ author_email = "andreasgriffin@proton.me"
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"
 fpdf2 = "2.7.4"
-requests = "2.31.0"
+requests = "2.32.2"
 pyyaml = "6.0"
 pillow = "9.5.0"
 numpy = "^1.21.0"
