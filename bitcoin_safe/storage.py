@@ -44,6 +44,7 @@ import os
 import secrets
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
+from typing import Callable, Dict, Iterable, Type
 
 import bdkpython as bdk
 from cryptography.fernet import Fernet
@@ -51,6 +52,18 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from packaging import version
+
+
+def varnames(method: Callable) -> Iterable[str]:
+    return method.__code__.co_varnames[: method.__code__.co_argcount]
+
+
+def filtered_dict(d: Dict, allowed_keys: Iterable[str]) -> Dict:
+    return {k: v for k, v in d.items() if k in allowed_keys}
+
+
+def filtered_for_init(d: Dict, cls: Type) -> Dict:
+    return filtered_dict(d, varnames(cls.__init__))
 
 
 class Encrypt:
@@ -266,4 +279,4 @@ class SaveAllClass(BaseSaveableClass):
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs=None):
         super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**dct)
+        return cls(**filtered_for_init(dct, cls))

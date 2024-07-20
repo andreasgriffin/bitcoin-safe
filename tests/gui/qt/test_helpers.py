@@ -32,7 +32,6 @@ import logging
 import os
 import platform
 import shutil
-import tempfile
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -40,7 +39,6 @@ from time import sleep
 from typing import Callable, Generator, Optional, Tuple, Type, TypeVar, Union
 from unittest.mock import patch
 
-import bdkpython as bdk
 import pytest
 from PyQt6 import QtCore
 from PyQt6.QtWidgets import (
@@ -57,13 +55,6 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation
 from bitcoin_safe.gui.qt.main import MainWindow
-from bitcoin_safe.pythonbdk_types import BlockchainType
-from tests.test_setup_bitcoin_core import (
-    BITCOIN_HOST,
-    BITCOIN_PORT,
-    RPC_PASSWORD,
-    RPC_USER,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -84,24 +75,6 @@ def get_current_test_name() -> Optional[str]:
 def test_start_time() -> datetime:
     """Fixture to capture the start time of the test session."""
     return datetime.now()
-
-
-class TestConfig(UserConfig):
-    config_dir = Path(tempfile.mkdtemp())
-    config_file = Path(config_dir) / (UserConfig.app_name + ".conf")
-
-
-@pytest.fixture(scope="session")
-def test_config() -> TestConfig:
-    config = TestConfig()
-    logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
-    config.network = bdk.Network.REGTEST
-    config.network_config.server_type = BlockchainType.RPC
-    config.network_config.rpc_ip = BITCOIN_HOST
-    config.network_config.rpc_port = BITCOIN_PORT
-    config.network_config.rpc_username = RPC_USER
-    config.network_config.rpc_password = RPC_PASSWORD
-    return config
 
 
 @contextmanager

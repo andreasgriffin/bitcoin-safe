@@ -39,7 +39,7 @@ from typing import Any, Dict
 import bdkpython as bdk
 
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
-from bitcoin_safe.storage import BaseSaveableClass
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .html import link
 from .i18n import translate
@@ -289,7 +289,7 @@ class NetworkConfig(BaseSaveableClass):
     def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        u = NetworkConfig(network=dct["network"])
+        u = cls(**filtered_for_init(dct, cls))
 
         for k, v in dct.items():
             if v is not None:  # only overwrite the default value, if there is a value
@@ -349,4 +349,4 @@ class NetworkConfigs(BaseSaveableClass):
     def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfigs":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        return cls(**dct)
+        return cls(**filtered_for_init(dct, cls))

@@ -224,33 +224,6 @@
     </message>
 </context>
 <context>
-    <name>ChatGui</name>
-    <message>
-        <source>Type your message here...</source>
-        <translation>अपना संदेश यहाँ टाइप करें...</translation>
-    </message>
-    <message>
-        <source>Share a PSBT</source>
-        <translation>पीएसबीटी साझा करें</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>भेजें</translation>
-    </message>
-    <message>
-        <source>Open Transaction/PSBT</source>
-        <translation>ट्रांजैक्शन/पीएसबीटी खोलें</translation>
-    </message>
-    <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>सभी फाइलें ();;पीएसबीटी (.psbt);;ट्रांजेक्शन (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>मैं: {text}</translation>
-    </message>
-</context>
-<context>
     <name>CloseButton</name>
     <message>
         <source>Close</source>
@@ -265,29 +238,21 @@
     </message>
 </context>
 <context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Reset identity for this device</source>
-        <translation>इस डिवाइस के लिए पहचान रीसेट करें</translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>विश्वसनीय</translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>अविश्वसनीय</translation>
-    </message>
-    <message>
-        <source>My id: {id}</source>
-        <translation>मेरी आईडी: {id}</translation>
-    </message>
-</context>
-<context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
         <translation>वॉलेट सेटअप पूरा नहीं हुआ है। कृपया बैकअप पीडीएफ बनाने से पहले इसे पूरा करें।</translation>
+    </message>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>विवरणक अमान्य है</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>विवरणक निर्यात करें</translation>
     </message>
 </context>
 <context>
@@ -359,8 +324,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge</source>
-        <translation>बढ़ाएँ</translation>
+        <source>Show {} QR code</source>
+        <translation>{} QR कोड दिखाएं</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -385,6 +354,10 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
         <translation>कृपया पहले {wallet_id} में सिंकिंग को सक्षम करें</translation>
+    </message>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>{} QR को बड़ा करें</translation>
     </message>
     <message>
         <source>Save as image</source>
@@ -413,10 +386,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>विश्वसनीय उपकरणों के साथ साझा करें</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
     </message>
 </context>
 <context>
@@ -487,6 +456,10 @@ the sending value {sent}</source>
     <message>
         <source>Create Transaction</source>
         <translation>लेन-देन बनाएं</translation>
+    </message>
+    <message>
+        <source>Create Transaction again</source>
+        <translation>फिर से लेनदेन बनाएं</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -619,6 +592,10 @@ Location of signing device: .....</source>
         <translation>USB से कनेक्ट करें</translation>
     </message>
     <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
+    </message>
+    <message>
         <source>{xpub} is not a valid public xpub</source>
         <translation>{xpub} एक मान्य सार्वजनिक xpub नहीं है</translation>
     </message>
@@ -664,6 +641,13 @@ Location of signing device: .....</source>
     <message>
         <source>~in {t} hours</source>
         <translation>~{t} घंटों में</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>लाइसेंस जानकारी</translation>
     </message>
 </context>
 <context>
@@ -825,6 +809,10 @@ Location of signing device: .....</source>
         <translation>कृपया {filename} के लिए पासवर्ड दर्ज करें:</translation>
     </message>
     <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>id {name} वाला एक वॉलेट पहले से खुला है। कृपया इसे पहले बंद करें।</translation>
+    </message>
+    <message>
         <source>Export labels</source>
         <translation>लेबल निर्यात करें</translation>
     </message>
@@ -841,12 +829,12 @@ Location of signing device: .....</source>
         <translation>सभी फ़ाइलें (*);;JSONL फ़ाइलें (*.jsonl);;JSON फ़ाइलें (*.json)</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -885,12 +873,12 @@ Location of signing device: .....</source>
         <translation>वॉलेट {id} बंद करना</translation>
     </message>
     <message>
-        <source>Closing tab {name}</source>
-        <translation>टैब {name} बंद करना</translation>
-    </message>
-    <message>
         <source>&amp;Change/Export</source>
         <translation>&amp;परिवर्तन/निर्यात</translation>
+    </message>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>टैब {name} बंद करना</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1095,17 +1083,6 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
-    <name>NostrSync</name>
-    <message>
-        <source>Go to {untrusted}</source>
-        <translation>{untrusted} पर जाएं</translation>
-    </message>
-    <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>कनेक्शन पूरा करने के लिए, दूसरे उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करें।</translation>
-    </message>
-</context>
-<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1205,9 +1182,9 @@ Location of signing device: .....</source>
         <translation>वॉलेट &apos;{wallet}&apos; में नया लेनदेन: {txs}  </translation>
     </message>
     <message>
-        <source>New transactions in wallet &apos;{wallet}&apos;:
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>वॉलेट &apos;{wallet}&apos; में नए लेनदेन: {txs}  </translation>
+        <translation>वॉलेट &apos;{wallet}&apos; में {number} नए लेनदेन हैं: {txs}</translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1321,10 +1298,6 @@ Location of signing device: .....</source>
 </context>
 <context>
     <name>RegisterMultisig</name>
-    <message>
-        <source>Export file to register the multisig on Coldcard</source>
-        <translation>कोल्डकार्ड पर मल्टीसिग पंजीकृत करने के लिए फ़ाइल निर्यात करें</translation>
-    </message>
     <message>
         <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
 Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
@@ -1496,21 +1469,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
-    <message>
-        <source>Device id: {id}</source>
-        <translation>डिवाइस आईडी: {id}</translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>पता लेबल सिंक करना</translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>लेन-देन साझा कर सकते हैं</translation>
-    </message>
-</context>
-<context>
     <name>TxSigningSteps</name>
     <message>
         <source>Export transaction to any hardware signer</source>
@@ -1663,17 +1621,6 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>माता-पिता</translation>
-    </message>
-</context>
-<context>
-    <name>UnTrustedDevice</name>
-    <message>
-        <source>Trust {id}</source>
-        <translation>{id} पर भरोसा करें</translation>
-    </message>
-    <message>
-        <source>Accept trust request from {other}</source>
-        <translation>{other} से भरोसा अनुरोध स्वीकार करें</translation>
     </message>
 </context>
 <context>

@@ -130,7 +130,7 @@ class MainWindow(QMainWindow):
         self.mempool_data = MempoolData(network_config=self.config.network_config, signals_min=self.signals)
         self.mempool_data.set_data_from_mempoolspace()
 
-        self.last_qtwallet = None
+        self.last_qtwallet: Optional[QTWallet] = None
         # connect the listeners
         self.signals.show_address.connect(self.show_address)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
@@ -152,6 +152,11 @@ class MainWindow(QMainWindow):
             self.click_create_multisig_signature_wallet
         )
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
+        self.signals.create_qt_wallet_from_wallet.connect(self.add_qt_wallet)
+        self.signals.close_qt_wallet.connect(
+            lambda wallet_id: self.remove_qt_wallet(self.qt_wallets.get(wallet_id))
+        )
+
         self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
         self.signals.chain_data_changed.connect(self.sync)
@@ -836,6 +841,14 @@ class MainWindow(QMainWindow):
             return None
         # self.advance_tips_in_background(wallet)
 
+        if wallet.id in self.qt_wallets:
+            Message(
+                self.tr("A wallet with id {name} is already open. Please close it first.").format(
+                    name=wallet.id
+                )
+            )
+            return None
+
         qt_wallet = self.add_qt_wallet(wallet)
         qt_wallet.password = password
         qt_wallet.file_path = file_path
@@ -1006,6 +1019,7 @@ class MainWindow(QMainWindow):
         )
 
         qtprotowallet = QTProtoWallet(config=self.config, signals=self.signals, protowallet=protowallet)
+
         qtprotowallet.signal_close_wallet.connect(
             lambda: self.close_tab(self.tab_wallets.indexOf(qtprotowallet.tab))
         )
@@ -1047,7 +1061,7 @@ class MainWindow(QMainWindow):
 
         return qtprotowallet
 
-    def add_qt_wallet(self, wallet: Wallet) -> QTWallet:
+    def add_qt_wallet(self, wallet: Wallet, file_path: str = None, password: str = None) -> QTWallet:
         def set_tab_widget_icon(tab: QWidget, icon: QIcon) -> None:
             idx = self.tab_wallets.indexOf(tab)
             if idx != -1:
@@ -1058,6 +1072,7 @@ class MainWindow(QMainWindow):
         )
 
         with LoadingWalletTab(self.tab_wallets, wallet.id, focus=True):
+            self.welcome_screen.remove_tab()
             qt_wallet = QTWallet(
                 wallet,
                 self.config,
@@ -1065,8 +1080,9 @@ class MainWindow(QMainWindow):
                 self.mempool_data,
                 self.fx,
                 set_tab_widget_icon=set_tab_widget_icon,
+                file_path=file_path,
+                password=password,
             )
-            qt_wallet.signal_close_wallet.connect(lambda: self.remove_qt_wallet(qt_wallet))
 
             # tutorial
             qt_wallet.wallet_steps = WalletSteps(
@@ -1074,8 +1090,6 @@ class MainWindow(QMainWindow):
                 qtwalletbase=qt_wallet,
                 qt_wallet=qt_wallet,
             )
-            # save after every step
-            qt_wallet.wallet_steps.signal_set_current_widget.connect(lambda widget: qt_wallet.save())
 
         # add to tabs
         self.qt_wallets[wallet.id] = qt_wallet
@@ -1168,7 +1182,7 @@ class MainWindow(QMainWindow):
     def event_wallet_tab_added(self) -> None:
         pass
 
-    def remove_qt_wallet(self, qt_wallet: QTWallet) -> None:
+    def remove_qt_wallet(self, qt_wallet: Optional[QTWallet]) -> None:
         if not qt_wallet:
             return
         for i in range(self.tab_wallets.count()):

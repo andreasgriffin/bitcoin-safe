@@ -237,7 +237,7 @@ class HistList(MyTreeView):
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
         self.update()
-        # self.signals.utxos_updated.emit(self.update_with_filter)   # TODO: Check if this is necessary
+        self.signals.utxos_updated.connect(self.update_with_filter)
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
@@ -389,6 +389,59 @@ class HistList(MyTreeView):
             self.Columns.TXID: self.tr("Txid"),
         }
 
+    def _init_row(
+        self, wallet: Wallet, tx: bdk.TransactionDetails, status_sort_index: int, old_balance: int
+    ) -> Tuple[List[QStandardItem], int]:
+        """
+
+        Returns:
+            Tuple[List[QStandardItem] , int]: items, amount
+        """
+
+        # WALLET_ID = enum.auto()
+        # AMOUNT = enum.auto()
+        # BALANCE = enum.auto()
+        # TXID = enum.auto()
+        self._tx_dict[tx.txid] = (wallet, tx)
+
+        # calculate the amount
+        if self.address_domain:
+            fulltxdetail = wallet.get_dict_fulltxdetail().get(tx.txid)
+            assert fulltxdetail, f"Could not find the transaction for {tx.txid}"
+            amount = fulltxdetail.sum_outputs(self.address_domain) - fulltxdetail.sum_inputs(
+                self.address_domain
+            )
+        else:
+            amount = tx.received - tx.sent
+
+        labels = [""] * len(self.Columns)
+        labels[self.Columns.WALLET_ID] = wallet.id
+        labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).str_as_change()
+
+        labels[self.Columns.BALANCE] = str(Satoshis(old_balance, wallet.network))
+        labels[self.Columns.TXID] = tx.txid
+        items = [QStandardItem(e) for e in labels]
+
+        items[self.Columns.STATUS].setData(status_sort_index, self.ROLE_SORT_ORDER)
+        items[self.Columns.WALLET_ID].setData(wallet.id, self.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
+        if amount < 0:
+            items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ItemDataRole.ForegroundRole)
+        items[self.Columns.BALANCE].setData(old_balance, self.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
+
+        # align text and set fonts
+        # for i, item in enumerate(items):
+        #     item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
+        #     if i in (self.Columns.TXID,):
+        #         item.setFont(QFont(MONOSPACE_FONT))
+
+        self.set_editability(items)
+
+        items[self.key_column].setData(tx.txid, self.ROLE_KEY)
+
+        return items, amount
+
     def update(self) -> None:
         if self.maybe_defer_update():
             return
@@ -413,7 +466,7 @@ class HistList(MyTreeView):
             if self.address_domain:
                 txid_domain = set()
                 for address in self.address_domain:
-                    txid_domain = txid_domain.union(wallet.get_address_to_txids(address))
+                    txid_domain = txid_domain.union(wallet.get_involved_txids(address))
 
             # always take sorted_delta_list_transactions().new as a start because it is correctly sorted
             for i, tx in enumerate(wallet.sorted_delta_list_transactions()):
@@ -421,59 +474,9 @@ class HistList(MyTreeView):
                     if tx.txid not in txid_domain:
                         continue
 
-                # WALLET_ID = enum.auto()
-                # AMOUNT = enum.auto()
-                # BALANCE = enum.auto()
-                # TXID = enum.auto()
-                self._tx_dict[tx.txid] = (wallet, tx)
-
-                # calculate the amount
-                if self.address_domain:
-                    fulltxdetail = wallet.get_dict_fulltxdetail().get(tx.txid)
-                    assert fulltxdetail, f"Could not find the transaction for {tx.txid}"
-                    amount = sum(
-                        [
-                            python_utxo.txout.value
-                            for python_utxo in fulltxdetail.outputs.values()
-                            if python_utxo and python_utxo.address in self.address_domain
-                        ]
-                    ) - sum(
-                        [
-                            python_utxo.txout.value
-                            for python_utxo in fulltxdetail.inputs.values()
-                            if python_utxo and python_utxo.address in self.address_domain
-                        ]
-                    )
-                else:
-                    amount = tx.received - tx.sent
-
+                items, amount = self._init_row(wallet, tx, i, self.balance)
                 self.balance += amount
 
-                labels = [""] * len(self.Columns)
-                labels[self.Columns.WALLET_ID] = wallet.id
-                labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).diff()
-
-                labels[self.Columns.BALANCE] = str(Satoshis(self.balance, wallet.network))
-                labels[self.Columns.TXID] = tx.txid
-                items = [QStandardItem(e) for e in labels]
-
-                items[self.Columns.STATUS].setData(i, self.ROLE_SORT_ORDER)
-                items[self.Columns.WALLET_ID].setData(wallet.id, self.ROLE_CLIPBOARD_DATA)
-                items[self.Columns.AMOUNT].setData(amount, self.ROLE_CLIPBOARD_DATA)
-                if amount < 0:
-                    items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ItemDataRole.ForegroundRole)
-                items[self.Columns.BALANCE].setData(self.balance, self.ROLE_CLIPBOARD_DATA)
-                items[self.Columns.TXID].setData(tx.txid, self.ROLE_CLIPBOARD_DATA)
-
-                # align text and set fonts
-                # for i, item in enumerate(items):
-                #     item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
-                #     if i in (self.Columns.TXID,):
-                #         item.setFont(QFont(MONOSPACE_FONT))
-
-                self.set_editability(items)
-
-                items[self.key_column].setData(tx.txid, self.ROLE_KEY)
                 num_shown += 1
                 # add item
                 count = self.std_model.rowCount()
@@ -504,7 +507,12 @@ class HistList(MyTreeView):
 
         label = wallet.get_label_for_txid(tx.txid)
         categories = wallet.get_categories_for_txid(tx.txid)
-        category = categories[0] if categories else ""
+        categories_without_default = set(categories) - set([wallet.labels.get_default_category()])
+        category = (
+            list(categories_without_default)[0]
+            if categories_without_default
+            else (categories[0] if categories else "")
+        )
         status = TxStatus.from_wallet(tx.txid, wallet)
 
         fee_info = FeeInfo.from_txdetails(tx)

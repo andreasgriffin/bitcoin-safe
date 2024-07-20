@@ -182,6 +182,8 @@ class Signals(SignalsMin):
     import_electrum_wallet_labels = pyqtSignal(str)  # str= wallet_id
     open_wallet = pyqtSignal(str)  # str= filepath
     finished_open_wallet = pyqtSignal(str)  # str= wallet_id
+    create_qt_wallet_from_wallet = pyqtSignal(object, object, object)  # object = wallet, file_path, password
+    close_qt_wallet = pyqtSignal(str)  # str = wallet_id
 
     request_manual_sync = pyqtSignal()
 

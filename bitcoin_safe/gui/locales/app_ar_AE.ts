@@ -224,33 +224,6 @@
     </message>
 </context>
 <context>
-    <name>ChatGui</name>
-    <message>
-        <source>Type your message here...</source>
-        <translation>اكتب رسالتك هنا...</translation>
-    </message>
-    <message>
-        <source>Share a PSBT</source>
-        <translation>مشاركة PSBT</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>إرسال</translation>
-    </message>
-    <message>
-        <source>Open Transaction/PSBT</source>
-        <translation>فتح المعاملة/PSBT</translation>
-    </message>
-    <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>جميع الملفات ();;PSBT (.psbt);;معاملة (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>أنا: {text}</translation>
-    </message>
-</context>
-<context>
     <name>CloseButton</name>
     <message>
         <source>Close</source>
@@ -265,29 +238,21 @@
     </message>
 </context>
 <context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Reset identity for this device</source>
-        <translation>إعادة تعيين الهوية لهذا الجهاز</translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>موثوق</translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>غير موثوق</translation>
-    </message>
-    <message>
-        <source>My id: {id}</source>
-        <translation>هويتي: {id}</translation>
-    </message>
-</context>
-<context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
         <translation>لم يتم الانتهاء من إعداد المحفظة. يرجى الانتهاء قبل إنشاء ملف PDF للنسخ الاحتياطي.</translation>
+    </message>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>الواصف غير صالح</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>تصدير الواصف</translation>
     </message>
 </context>
 <context>
@@ -359,8 +324,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge</source>
-        <translation>تكبير</translation>
+        <source>Show {} QR code</source>
+        <translation>عرض رمز الاستجابة السريعة {}</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -385,6 +354,10 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
         <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
+    </message>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>تكبير رمز الاستجابة السريعة {}</translation>
     </message>
     <message>
         <source>Save as image</source>
@@ -413,10 +386,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>مشاركة مع الأجهزة الموثوق بها</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -487,6 +456,10 @@ the sending value {sent}</source>
     <message>
         <source>Create Transaction</source>
         <translation>إنشاء معاملة</translation>
+    </message>
+    <message>
+        <source>Create Transaction again</source>
+        <translation>إنشاء معاملة مرة أخرى</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -619,6 +592,10 @@ Location of signing device: .....</source>
         <translation>توصيل USB</translation>
     </message>
     <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>يرجى التأكد من عدم وجود برامج أخرى تستخدم الموقع الإلكتروني للتوقيع الأجهزة</translation>
+    </message>
+    <message>
         <source>{xpub} is not a valid public xpub</source>
         <translation>{xpub} ليس xpub عامًا صالحًا</translation>
     </message>
@@ -664,6 +641,13 @@ Location of signing device: .....</source>
     <message>
         <source>~in {t} hours</source>
         <translation>~ في {t} ساعة</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>معلومات الترخيص</translation>
     </message>
 </context>
 <context>
@@ -825,6 +809,10 @@ Location of signing device: .....</source>
         <translation>يرجى إدخال كلمة المرور لـ {اسم_الملف}:</translation>
     </message>
     <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>محفظة بمعرف {name} مفتوحة بالفعل. الرجاء إغلاقها أولاً.</translation>
+    </message>
+    <message>
         <source>Export labels</source>
         <translation>تصدير التسميات</translation>
     </message>
@@ -841,12 +829,12 @@ Location of signing device: .....</source>
         <translation>جميع الملفات (*);;ملفات JSONL (*.jsonl);;ملفات JSON (*.json)</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>استيراد تسميات محفظة إلكتروم</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;حفظ المحفظة الحالية</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>استيراد تسميات محفظة إلكتروم</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -885,12 +873,12 @@ Location of signing device: .....</source>
         <translation>جارٍ إغلاق المحفظة {id}</translation>
     </message>
     <message>
-        <source>Closing tab {name}</source>
-        <translation>جارٍ إغلاق التبويب {name}</translation>
-    </message>
-    <message>
         <source>&amp;Change/Export</source>
         <translation>&amp;تغيير/تصدير</translation>
+    </message>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>جارٍ إغلاق التبويب {name}</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1095,17 +1083,6 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
-    <name>NostrSync</name>
-    <message>
-        <source>Go to {untrusted}</source>
-        <translation>الانتقال إلى {untrusted}</translation>
-    </message>
-    <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>لإكمال الاتصال، قبل طلبي {id} على الجهاز الآخر {other}.</translation>
-    </message>
-</context>
-<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1205,9 +1182,9 @@ Location of signing device: .....</source>
         <translation>معاملة جديدة في المحفظة &apos;{wallet}&apos;: {txs}  </translation>
     </message>
     <message>
-        <source>New transactions in wallet &apos;{wallet}&apos;:
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>معاملات جديدة في المحفظة &apos;{wallet}&apos;: {txs}  </translation>
+        <translation>{number} معاملات جديدة في المحفظة &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1321,10 +1298,6 @@ Location of signing device: .....</source>
 </context>
 <context>
     <name>RegisterMultisig</name>
-    <message>
-        <source>Export file to register the multisig on Coldcard</source>
-        <translation>تصدير ملف لتسجيل المتعددة التوقيع على Coldcard</translation>
-    </message>
     <message>
         <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
 Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
@@ -1496,21 +1469,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
-    <message>
-        <source>Device id: {id}</source>
-        <translation>معرف الجهاز: {id}</translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>مزامنة تسميات العناوين</translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>يمكن مشاركة المعاملات</translation>
-    </message>
-</context>
-<context>
     <name>TxSigningSteps</name>
     <message>
         <source>Export transaction to any hardware signer</source>
@@ -1663,17 +1621,6 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>آباء</translation>
-    </message>
-</context>
-<context>
-    <name>UnTrustedDevice</name>
-    <message>
-        <source>Trust {id}</source>
-        <translation>الثقة {المعرف}</translation>
-    </message>
-    <message>
-        <source>Accept trust request from {other}</source>
-        <translation>قبول طلب الثقة من {other}</translation>
     </message>
 </context>
 <context>

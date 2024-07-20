@@ -143,6 +143,9 @@ class FloatingButtonBar(QDialogButtonBox):
         self.button_yes_it_is_in_hist.setVisible(
             self.status in [self.TxSendStatus.finalized, self.TxSendStatus.sent]
         )
+        self.button_create_tx_again.setVisible(
+            self.status in [self.TxSendStatus.finalized, self.TxSendStatus.sent]
+        )
 
     def set_status(self, status=TxSendStatus) -> None:
         if self.status == status:
@@ -190,6 +193,11 @@ class FloatingButtonBar(QDialogButtonBox):
         self.button_yes_it_is_in_hist.clicked.connect(self.go_to_next_index)
         self.addButton(self.button_yes_it_is_in_hist, QDialogButtonBox.ButtonRole.AcceptRole)
 
+        self.button_create_tx_again = QPushButton()
+        self.button_create_tx_again.setVisible(False)
+        self.button_create_tx_again.clicked.connect(self.fill_tx)
+        self.addButton(self.button_create_tx_again, QDialogButtonBox.ButtonRole.AcceptRole)
+
         self.tutorial_button_prev_step = QPushButton()
         self.tutorial_button_prev_step.clicked.connect(self.go_to_previous_index)
         self.addButton(self.tutorial_button_prev_step, QDialogButtonBox.ButtonRole.RejectRole)
@@ -200,6 +208,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
         self.tutorial_button_prefill.setText(self.tr("Fill the transaction fields"))
         self.button_create_tx.setText(self.tr("Create Transaction"))
+        self.button_create_tx_again.setText(self.tr("Create Transaction again"))
         self.button_yes_it_is_in_hist.setText(self.tr("Yes, I see the transaction in the history"))
         self.tutorial_button_prev_step.setText(self.tr("Previous Step"))
 
@@ -604,7 +613,7 @@ class ReceiveTest(BaseTab):
 
         self.next_button.setHidden(True)
 
-        def on_utxo_update(sync_status) -> None:
+        def on_sync_done(sync_status) -> None:
             if not self.refs.qt_wallet:
                 return
             txos = self.refs.qt_wallet.wallet.get_all_txos(include_not_mine=False)
@@ -625,8 +634,8 @@ class ReceiveTest(BaseTab):
                 return
 
             self.refs.qt_wallet.sync()
-            self.check_button.set_enable_signal(self.refs.qtwalletbase.signals.utxos_updated)
-            one_time_signal_connection(self.refs.qtwalletbase.signals.utxos_updated, on_utxo_update)
+            self.check_button.set_enable_signal(self.refs.qtwalletbase.signal_after_sync)
+            one_time_signal_connection(self.refs.qtwalletbase.signal_after_sync, on_sync_done)
 
         self.check_button.clicked.connect(start_sync)
 
@@ -1014,6 +1023,8 @@ class WalletSteps(StepProgressContainer):
                 else self.qt_wallet.wallet.tutorial_index
             )
             self.set_current_index(step)
+            # save after every step
+            self.signal_set_current_widget.connect(lambda widget: self.qt_wallet.save())
 
         self.updateUi()
         self.set_visibilities()

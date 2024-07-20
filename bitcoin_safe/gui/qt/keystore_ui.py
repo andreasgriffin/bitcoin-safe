@@ -444,7 +444,16 @@ class KeyStoreUI(QObject):
         address_type = self.get_address_type()
         usb = USBGui(self.network)
         key_origin = address_type.key_origin(self.network)
-        result = usb.get_fingerprint_and_xpub(key_origin=key_origin)
+        try:
+            result = usb.get_fingerprint_and_xpub(key_origin=key_origin)
+        except Exception as e:
+            Message(
+                str(e)
+                + "\n\n"
+                + self.tr("Please ensure that there are no other programs accessing the Hardware signer"),
+                type=MessageType.Error,
+            )
+            return
         if not result:
             return
 

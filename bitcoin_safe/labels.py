@@ -41,7 +41,7 @@ from bitcoin_qr_tools.data import Data, DataType
 from packaging import version
 
 from .pythonbdk_types import *
-from .storage import BaseSaveableClass
+from .storage import BaseSaveableClass, filtered_for_init
 
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
 
@@ -241,7 +241,7 @@ class Labels(BaseSaveableClass):
     def from_dump(cls, dct: Dict, class_kwargs=None) -> "Labels":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        return Labels(**dct)
+        return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:

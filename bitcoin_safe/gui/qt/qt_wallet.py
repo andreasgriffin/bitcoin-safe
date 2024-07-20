@@ -33,7 +33,7 @@ import os
 import shutil
 from abc import abstractmethod
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
@@ -63,6 +63,7 @@ from ...signals import SignalFunction, Signals, UpdateFilter
 from ...tx import TxUiInfos, short_tx_id
 from ...wallet import (
     DeltaCacheListTransactions,
+    DescriptorExportTools,
     ProtoWallet,
     Wallet,
     filename_clean,
@@ -105,7 +106,16 @@ class SignalCarryingObject(QObject):
             signal.disconnect(f)
 
 
+class SyncStatus(enum.Enum):
+    unknown = enum.auto()
+    unsynced = enum.auto()
+    syncing = enum.auto()
+    synced = enum.auto()
+    error = enum.auto()
+
+
 class QtWalletBase(SignalCarryingObject):
+    signal_after_sync = pyqtSignal(SyncStatus)  # SyncStatus
     wallet_steps: QWidget
     wallet_descriptor_tab: QWidget
 
@@ -198,19 +208,9 @@ class QTProtoWallet(QtWalletBase):
         return self.protowallet
 
 
-class SyncStatus(enum.Enum):
-    unknown = enum.auto()
-    unsynced = enum.auto()
-    syncing = enum.auto()
-    synced = enum.auto()
-    error = enum.auto()
-
-
 class QTWallet(QtWalletBase):
     signal_settext_balance_label = pyqtSignal(str)
-    signal_close_wallet = pyqtSignal()
     signal_on_change_sync_status = pyqtSignal(SyncStatus)  # SyncStatus
-    signal_after_sync = pyqtSignal(SyncStatus)  # SyncStatus
 
     def __init__(
         self,
@@ -220,16 +220,18 @@ class QTWallet(QtWalletBase):
         mempool_data: MempoolData,
         fx: FX,
         set_tab_widget_icon: Optional[Callable[[QWidget, QIcon], None]] = None,
+        password: str = None,
+        file_path: str = None,
     ) -> None:
         super().__init__(signals=signals, config=config)
 
         self.mempool_data = mempool_data
         self.wallet = self.set_wallet(wallet)
-        self.password: Optional[str] = None
+        self.password = password
         self.set_tab_widget_icon = set_tab_widget_icon
         self.wallet_descriptor_tab = None
         self.fx = fx
-        self._file_path: Optional[str] = None
+        self._file_path = file_path
         self.sync_status: SyncStatus = SyncStatus.unknown
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
@@ -339,31 +341,6 @@ class QTWallet(QtWalletBase):
     def file_path(self, value: Optional[str]) -> None:
         self._file_path = value
 
-    def apply_setting_changes(self) -> None:
-        self.wallet_descriptor_ui.set_protowallet_from_ui()
-        old_wallet = self.wallet
-        new_wallet = Wallet.from_protowallet(self.wallet_descriptor_ui.protowallet, self.config)
-        # compare if something change
-        if old_wallet.is_essentially_equal(new_wallet):
-            Message(self.tr("No changes to apply."))
-            return
-
-        # do backup
-        filename = self.save_backup()
-        if filename:
-            Message(self.tr("Backup saved to {filename}").format(filename=filename))
-        else:
-            Message(self.tr("Backup failed. Aborting Changes."))
-            return
-
-        # replace old wallet & save
-        self.wallet = new_wallet
-        self.save()
-
-        # update wallet
-        self.wallet.clear_cache(clear_always_keep=True)
-        self.sync()
-
     def create_and_add_settings_tab(self) -> Tuple[QWidget, DescriptorUI]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
@@ -378,22 +355,58 @@ class QTWallet(QtWalletBase):
             data=wallet_descriptor_ui,
         )
 
-        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.apply_setting_changes)
+        wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(
+            self.on_qtwallet_apply_setting_changes
+        )
         wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
         return wallet_descriptor_ui.tab, wallet_descriptor_ui
 
+    def on_qtwallet_apply_setting_changes(self):
+        # save old status, such that the backup has all old data (inlcuding the "SyncTab" in the data_dump)
+        self.save()
+
+        self.wallet_descriptor_ui.set_protowallet_from_ui()
+        new_wallet = Wallet.from_protowallet(
+            protowallet=self.wallet_descriptor_ui.protowallet,
+            config=self.config,
+            data_dump=self.wallet.data_dump,
+            labels=self.wallet.labels,
+        )
+        # compare if something change
+        if self.wallet.is_essentially_equal(new_wallet):
+            Message(self.tr("No changes to apply."))
+            return
+
+        # do backup
+        filename = self.save_backup()
+        if filename:
+            Message(self.tr("Backup saved to {filename}").format(filename=filename))
+        else:
+            Message(self.tr("Backup failed. Aborting Changes."))
+            return
+
+        self.signals.close_qt_wallet.emit(self.wallet.id)
+        self.signals.create_qt_wallet_from_wallet.emit(new_wallet, self._file_path, self.password)
+
+    def get_sync_tab_data(self) -> Optional[Dict]:
+        return self.wallet.data_dump.get("SyncTab")
+
+    def set_sync_tab_data(self, data: Dict):
+        self.wallet.data_dump["SyncTab"] = data
+
     def create_and_add_sync_tab(self) -> Tuple[SyncTab, QWidget, LabelSyncer]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
+        sync_tab_data = self.get_sync_tab_data()
         sync_tab = (
-            SyncTab.from_dump(self.wallet.sync_tab_dump, network=self.config.network, signals=self.signals)
-            if self.wallet.sync_tab_dump
+            SyncTab.from_dump(sync_tab_data, network=self.config.network, signals=self.signals)
+            if sync_tab_data
             else SyncTab.from_descriptor_new_device_keys(
                 self.wallet.multipath_descriptor,
                 network=self.config.network,
                 signals=self.signals,
             )
         )
-        self.wallet.sync_tab_dump = sync_tab.dump()
+        self.set_sync_tab_data(sync_tab.dump())
 
         add_tab_to_tabs(
             self.tabs, sync_tab.main_widget, read_QIcon("cloud-sync.svg"), "", "sync", data=sync_tab
@@ -505,7 +518,7 @@ class QTWallet(QtWalletBase):
             )
 
         if self.sync_tab:
-            self.wallet.sync_tab_dump = self.sync_tab.dump()
+            self.set_sync_tab_data(self.sync_tab.dump())
 
         self.wallet.save(
             self.file_path,
@@ -542,7 +555,7 @@ class QTWallet(QtWalletBase):
         def format_txs(txs: List[bdk.TransactionDetails]) -> str:
             return "  \n".join(
                 [
-                    f"{Satoshis( tx.received- tx.sent, self.config.network).diff(unit=True)} in {short_tx_id( tx.txid)}"
+                    f"{Satoshis( tx.received- tx.sent, self.config.network).str_as_change(unit=True)} in {short_tx_id( tx.txid)}"
                     for tx in txs
                 ]
             )
@@ -565,8 +578,10 @@ class QTWallet(QtWalletBase):
                 ).emit_with(self.signals.notification)
             else:
                 Message(
-                    self.tr("New transactions in wallet '{wallet}':\n{txs}").format(
-                        txs=format_txs(delta_txs.appended), wallet=self.wallet.id
+                    self.tr("{number} new transactions in wallet '{wallet}':\n{txs}").format(
+                        number=len(delta_txs.appended),
+                        txs=format_txs(delta_txs.appended),
+                        wallet=self.wallet.id,
                     ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
@@ -591,7 +606,7 @@ class QTWallet(QtWalletBase):
 
                 # self.address_list.update()
                 # self.address_list_tags.update()
-                self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
+                # self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
                 self.signals.utxos_updated.emit(UpdateFilter(refresh_all=True))
                 # self.history_list.update()
 
@@ -667,10 +682,6 @@ class QTWallet(QtWalletBase):
     def set_wallet(self, wallet: Wallet) -> Wallet:
         self.wallet = wallet
 
-        # for name, signal in self.signals.__dict__.items():
-        #     if hasattr(self.wallet, name) and callable(getattr(self.wallet, name)):
-        #         signal.connect(getattr(self.wallet, name), name=self.wallet.id)
-
         self.connect_signal(self.signals.addresses_updated, self.wallet.on_addresses_updated)
 
         self.connect_signal(self.signals.get_wallets, lambda: self.wallet, slot_name=self.wallet.id)
@@ -696,7 +707,7 @@ class QTWallet(QtWalletBase):
 
         txids: Set[str] = set()
         for address in address_drag_info.addresses:
-            txids = txids.union(self.wallet.get_address_to_txids(address))
+            txids = txids.union(self.wallet.get_involved_txids(address))
 
         self.signals.category_updated.emit(
             UpdateFilter(
@@ -906,5 +917,7 @@ class QTWallet(QtWalletBase):
             return None
 
         with open(filename, "w") as file:
-            file.write(self.wallet.export_coldcard_wallet_descriptor())
+            file.write(
+                DescriptorExportTools.get_coldcard_str(self.wallet.id, self.wallet.multipath_descriptor)
+            )
         return filename

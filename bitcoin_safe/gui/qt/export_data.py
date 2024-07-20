@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Any, Callable, Dict, Literal, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
@@ -53,6 +53,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import (
     QBoxLayout,
+    QComboBox,
     QGroupBox,
     QHBoxLayout,
     QMenu,
@@ -140,6 +141,8 @@ class HorizontalImportExportGroups(QWidget):
 class ExportDataSimple(HorizontalImportExportGroups):
     signal_export_to_file = pyqtSignal()
     signal_set_qr_images = pyqtSignal(list)
+    default_qr_types = ["bbqr", "ur", "text"]
+    qr_types_descriptions = {"ur": "Legacy", "bbqr": "BBQr", "text": "Text"}
 
     def __init__(
         self,
@@ -165,7 +168,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.txid = None
         self.json_data = None
         self.serialized = None
-        self.qr_type: Literal["ur", "bbqr"] = "bbqr"
+        self.qr_types = self.default_qr_types.copy()
         self.set_data(data)
 
         self.signal_export_to_file.connect(self.export_to_file)
@@ -177,7 +180,6 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
         group_qr_layout: QHBoxLayout = self.group_qr.layout()
         group_qr_layout.insertWidget(0, self.qr_label)
-        self.lazy_load_qr(data)
 
         self.button_enlarge_qr = QPushButton()
         self.button_enlarge_qr.setIcon(read_QIcon("zoom.png"))
@@ -191,9 +193,10 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.button_save_qr.clicked.connect(self.export_qrcode)
         self.group_qr_buttons.layout().addWidget(self.button_save_qr)
 
-        self.button_switch_qr_type = QPushButton()
-        self.button_switch_qr_type.clicked.connect(self.switch_qr_type)
-        self.group_qr_buttons.layout().addWidget(self.button_switch_qr_type)
+        self.combo_qr_type = QComboBox()
+        self.fill_combo_qr_type(self.default_qr_types)
+        self.group_qr_buttons.layout().addWidget(self.combo_qr_type)
+        self.combo_qr_type.currentIndexChanged.connect(self.switch_qr_type)
 
         # file
         self.button_file = QPushButton()
@@ -214,16 +217,28 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.group_share.layout().addWidget(self.create_sync_share_button())
 
         self.updateUi()
+        self.lazy_load_qr(data)
         self.signals_min.language_switch.connect(self.updateUi)
         self.signal_set_qr_images.connect(self.qr_label.set_images)
 
+    def fill_combo_qr_type(self, qr_types: List[str]):
+        self.combo_qr_type.blockSignals(True)
+        self.combo_qr_type.clear()
+        for qr_type in qr_types:
+            self.combo_qr_type.addItem(
+                self.tr("Show {} QR code").format(self.qr_types_descriptions[qr_type]), userData=qr_type
+            )
+        self.combo_qr_type.blockSignals(False)
+
     def updateUi(self) -> None:
-        self.button_enlarge_qr.setText(self.tr("Enlarge"))
+        self.button_enlarge_qr.setText(
+            self.tr("Enlarge {} QR").format(self.qr_types_descriptions[self.combo_qr_type.currentData()])
+        )
         self.button_save_qr.setText(self.tr("Save as image"))
-        if self.qr_type == "bbqr":
-            self.button_switch_qr_type.setText(self.tr("Show Legacy QR Code"))
-        else:
-            self.button_switch_qr_type.setText(self.tr("Show BBQR Code"))
+
+        if self.qr_types != [self.combo_qr_type.itemData(i) for i in range(self.combo_qr_type.count())]:
+            self.fill_combo_qr_type(self.qr_types)
+
         self.button_file.setText(self.tr("Export file"))
 
         # copy button
@@ -241,7 +256,6 @@ class ExportDataSimple(HorizontalImportExportGroups):
             menu.setTitle(self.tr("Share with single device"))
 
     def switch_qr_type(self) -> None:
-        self.qr_type = "ur" if self.qr_type == "bbqr" else "bbqr"
         self.clear_qr()
         self.lazy_load_qr(self.data)
         self.updateUi()
@@ -257,6 +271,11 @@ class ExportDataSimple(HorizontalImportExportGroups):
             assert isinstance(data.data, bdk.Transaction)
             self.txid = data.data.txid()
             self.json_data = json.dumps(transaction_to_dict(data.data), indent=4)
+
+        if data.data_type in [DataType.Descriptor, DataType.MultiPathDescriptor]:
+            self.qr_types = ["text", "bbqr"]
+        else:
+            self.qr_types = self.default_qr_types.copy()
 
     def _get_data_name(self) -> str:
         if self.data.data_type == DataType.PSBT:
@@ -384,7 +403,12 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
     def lazy_load_qr(self, data: Data, max_length=200) -> None:
         def do() -> Any:
-            fragments = data.generate_fragments_for_qr(max_qr_size=max_length, qr_type=self.qr_type)
+            if self.combo_qr_type.currentData() == "text":
+                fragments = [data.data_as_string()]
+            else:
+                fragments = data.generate_fragments_for_qr(
+                    max_qr_size=max_length, qr_type=self.combo_qr_type.currentData()
+                )
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
