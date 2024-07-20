@@ -44,6 +44,7 @@ from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
 from bitcoin_safe.gui.qt.util import Message
 from bitcoin_safe.signals import Signals
+from bitcoin_safe.storage import filtered_for_init
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +173,7 @@ class SyncTab(QObject):
 
     @classmethod
     def from_dump(cls, sync_tab_dump: Dict, network: bdk.Network, signals: Signals) -> "SyncTab":
-        return SyncTab(**sync_tab_dump, network=network, signals=signals)
+        return cls(**filtered_for_init(sync_tab_dump, cls), network=network, signals=signals)
 
     def open_file_object(self, file_object: FileObject) -> None:
         if not file_object or not file_object.data:

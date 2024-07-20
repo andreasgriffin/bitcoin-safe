@@ -45,9 +45,35 @@ import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import MultipathDescriptor
 from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtWidgets import QDialog, QVBoxLayout
 
 from ...pdfrecovery import make_and_open_pdf
+from ...wallet import DescriptorExportTools
 from .util import Message, MessageType, icon_path
+
+
+class DescriptorExport(QDialog):
+    def __init__(self, descriptor: MultipathDescriptor, signals_min: SignalsMin, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Export Descriptor"))
+        self.setModal(True)
+
+        self.descriptor = descriptor
+        self.data = Data(descriptor, DataType.MultiPathDescriptor)
+
+        export_widget = ExportDataSimple(
+            data=self.data,
+            signals_min=signals_min,
+            enable_clipboard=False,
+            enable_usb=False,
+        )
+
+        self.setLayout(QVBoxLayout())
+
+        self.layout().addWidget(export_widget)
+
+    def get_coldcard_str(self, wallet_id: str) -> str:
+        return DescriptorExportTools.get_coldcard_str(wallet_id=wallet_id, descriptor=self.descriptor)
 
 
 class DescriptorEdit(ButtonEdit):
@@ -98,16 +124,11 @@ class DescriptorEdit(ButtonEdit):
         if not self._check_if_valid():
             Message(self.tr("Descriptor not valid"))
             return
-        data = Data(
-            MultipathDescriptor.from_descriptor_str(self.text(), self.network), DataType.MultiPathDescriptor
+
+        dialog = DescriptorExport(
+            MultipathDescriptor.from_descriptor_str(self.text(), self.network), self.signals_min, parent=self
         )
-        widget = ExportDataSimple(
-            data=data,
-            signals_min=self.signals_min,
-            enable_clipboard=False,
-            enable_usb=False,
-        )
-        widget.show()
+        dialog.show()
 
     def _check_if_valid(self) -> bool:
         if not self.text():

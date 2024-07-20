@@ -510,7 +510,7 @@ class Satoshis:
     def str_with_unit(self, color_formatting: Literal["html", "rich", "bash"] = "rich"):
         return f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True, unicode_space_character=True )} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
 
-    def diff(self, color_formatting: Optional[Literal["html", "rich", "bash"]] = None, unit=False):
+    def str_as_change(self, color_formatting: Optional[Literal["html", "rich", "bash"]] = None, unit=False):
 
         return (
             f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True,   indicate_balance_change=True)}"
@@ -559,7 +559,7 @@ def unit_str(network: bdk.Network) -> str:
 
 def unit_fee_str(network: bdk.Network) -> str:
     "Sat/vB"
-    return f"{unit_str(network=network)}/vB"
+    return "Sat/vB" if network is None or network == bdk.Network.BITCOIN else "tSat/vB"
 
 
 def format_fee_rate(fee_rate: float, network: bdk.Network) -> str:

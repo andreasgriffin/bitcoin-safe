@@ -61,6 +61,7 @@ from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from bitcoin_safe.util import Satoshis
 
+from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from ...test_signers import test_seeds
 from .test_helpers import (  # type: ignore
@@ -72,7 +73,6 @@ from .test_helpers import (  # type: ignore
     get_widget_top_level,
     main_window_context,
     save_wallet,
-    test_config,
     test_start_time,
 )
 

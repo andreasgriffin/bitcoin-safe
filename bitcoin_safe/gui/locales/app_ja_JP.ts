@@ -224,33 +224,6 @@
     </message>
 </context>
 <context>
-    <name>ChatGui</name>
-    <message>
-        <source>Type your message here...</source>
-        <translation>ここにメッセージを入力...</translation>
-    </message>
-    <message>
-        <source>Share a PSBT</source>
-        <translation>PSBTを共有</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>送信</translation>
-    </message>
-    <message>
-        <source>Open Transaction/PSBT</source>
-        <translation>トランザクション/PSBTを開く</translation>
-    </message>
-    <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>すべてのファイル ();;PSBT (.psbt);;トランザクション (.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>私: {text}</translation>
-    </message>
-</context>
-<context>
     <name>CloseButton</name>
     <message>
         <source>Close</source>
@@ -265,29 +238,21 @@
     </message>
 </context>
 <context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Reset identity for this device</source>
-        <translation>このデバイスのIDをリセット</translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>信頼できる</translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>信頼できない</translation>
-    </message>
-    <message>
-        <source>My id: {id}</source>
-        <translation>私のID: {id}</translation>
-    </message>
-</context>
-<context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
         <translation>ウォレットの設定が完了していません。バックアップPDFを作成する前に完了してください。</translation>
+    </message>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>ディスクリプターが無効です</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>ディスクリプターをエクスポートする</translation>
     </message>
 </context>
 <context>
@@ -359,8 +324,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge</source>
-        <translation>拡大</translation>
+        <source>Show {} QR code</source>
+        <translation>{} QRコードを表示する</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -385,6 +354,10 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
         <translation>まず{wallet_id}で同期を有効にしてください</translation>
+    </message>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>{} QRを拡大する</translation>
     </message>
     <message>
         <source>Save as image</source>
@@ -413,10 +386,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>信頼できるデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
     </message>
 </context>
 <context>
@@ -487,6 +456,10 @@ the sending value {sent}</source>
     <message>
         <source>Create Transaction</source>
         <translation>トランザクションを作成</translation>
+    </message>
+    <message>
+        <source>Create Transaction again</source>
+        <translation>再度トランザクションを作成する</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -619,6 +592,10 @@ Location of signing device: .....</source>
         <translation>{xpub} は有効な公開xpubではありません</translation>
     </message>
     <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>ハードウェア署名者へのアクセスが他のプログラムによって行われていないことを確認してください</translation>
+    </message>
+    <message>
         <source>{xpub} is not a valid public xpub</source>
         <translation>まずハードウェアウォレットから公開鍵情報をインポートしてください</translation>
     </message>
@@ -664,6 +641,13 @@ Location of signing device: .....</source>
     <message>
         <source>~in {t} hours</source>
         <translation>&amp;ウォレット</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>ライセンス情報</translation>
     </message>
 </context>
 <context>
@@ -825,6 +809,10 @@ Location of signing device: .....</source>
         <translation>すべてのファイル ();;JSONファイル (.jsonl);;JSONファイル (.json)</translation>
     </message>
     <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>ID {name} のウォレットが既に開かれています。先にそれを閉じてください。</translation>
+    </message>
+    <message>
         <source>Export labels</source>
         <translation>新規</translation>
     </message>
@@ -841,12 +829,12 @@ Location of signing device: .....</source>
         <translation>すべてのファイル (*);;JSONL ファイル (*.jsonl);;JSON ファイル (*.json)</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Electrum ウォレットラベルのインポート</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;変更/エクスポート</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Electrum ウォレットラベルのインポート</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -885,12 +873,12 @@ Location of signing device: .....</source>
         <translation>次のブロック</translation>
     </message>
     <message>
-        <source>Closing tab {name}</source>
-        <translation>{n} ブロック</translation>
-    </message>
-    <message>
         <source>&amp;Change/Export</source>
         <translation>ウォレットの&amp;名前を変更</translation>
+    </message>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>{n} ブロック</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1095,17 +1083,6 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
-    <name>NostrSync</name>
-    <message>
-        <source>Go to {untrusted}</source>
-        <translation>ネットワークを変更</translation>
-    </message>
-    <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>ネットワーク = {network}. そのコインは無価値です！</translation>
-    </message>
-</context>
-<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1205,9 +1182,9 @@ Location of signing device: .....</source>
         <translation>ウォレット &apos;{wallet}&apos; の新しいトランザクション: {txs}  </translation>
     </message>
     <message>
-        <source>New transactions in wallet &apos;{wallet}&apos;:
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>ウォレット &apos;{wallet}&apos; の新しいトランザクション: {txs}  </translation>
+        <translation>ウォレット &apos;{wallet}&apos; に {number} 件の新しいトランザクションがあります：{txs}</translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1321,10 +1298,6 @@ Location of signing device: .....</source>
 </context>
 <context>
     <name>RegisterMultisig</name>
-    <message>
-        <source>Export file to register the multisig on Coldcard</source>
-        <translation>Coldcardにマルチシグを登録するためのファイルをエクスポート</translation>
-    </message>
     <message>
         <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
 Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
@@ -1496,21 +1469,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
-    <message>
-        <source>Device id: {id}</source>
-        <translation>デバイスID：{id}</translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>アドレスラベルの同期</translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>トランザクションを共有できる</translation>
-    </message>
-</context>
-<context>
     <name>TxSigningSteps</name>
     <message>
         <source>Export transaction to any hardware signer</source>
@@ -1663,17 +1621,6 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>親</translation>
-    </message>
-</context>
-<context>
-    <name>UnTrustedDevice</name>
-    <message>
-        <source>Trust {id}</source>
-        <translation>{id}を信頼</translation>
-    </message>
-    <message>
-        <source>Accept trust request from {other}</source>
-        <translation>他のデバイス{other}からの信頼要求を受け入れる</translation>
     </message>
 </context>
 <context>

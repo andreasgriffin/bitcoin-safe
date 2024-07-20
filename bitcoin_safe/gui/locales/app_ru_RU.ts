@@ -224,33 +224,6 @@
     </message>
 </context>
 <context>
-    <name>ChatGui</name>
-    <message>
-        <source>Type your message here...</source>
-        <translation>Введите свое сообщение здесь...</translation>
-    </message>
-    <message>
-        <source>Share a PSBT</source>
-        <translation>Поделиться PSBT</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>Отправить</translation>
-    </message>
-    <message>
-        <source>Open Transaction/PSBT</source>
-        <translation>Открыть транзакцию/PSBT</translation>
-    </message>
-    <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>Я: {text}</translation>
-    </message>
-</context>
-<context>
     <name>CloseButton</name>
     <message>
         <source>Close</source>
@@ -265,29 +238,21 @@
     </message>
 </context>
 <context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Reset identity for this device</source>
-        <translation>Сбросить идентификацию для этого устройства</translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>Доверенный</translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>Недоверенный</translation>
-    </message>
-    <message>
-        <source>My id: {id}</source>
-        <translation>Мой идентификатор: {id}</translation>
-    </message>
-</context>
-<context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
         <translation>Настройка кошелька не завершена. Пожалуйста, завершите перед созданием резервной копии в PDF.</translation>
+    </message>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>Дескриптор недействителен</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>Экспортировать дескриптор</translation>
     </message>
 </context>
 <context>
@@ -359,8 +324,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge</source>
-        <translation>Увеличить</translation>
+        <source>Show {} QR code</source>
+        <translation>Показать {} QR-код</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Поделиться со всеми устройствами в {wallet_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -385,6 +354,10 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
         <translation>Пожалуйста, сначала включите синхронизацию в кошельке {wallet_id}</translation>
+    </message>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>Увеличить {} QR</translation>
     </message>
     <message>
         <source>Save as image</source>
@@ -413,10 +386,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>Поделиться с доверенными устройствами</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Поделиться со всеми устройствами в {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -487,6 +456,10 @@ the sending value {sent}</source>
     <message>
         <source>Create Transaction</source>
         <translation>Создать транзакцию</translation>
+    </message>
+    <message>
+        <source>Create Transaction again</source>
+        <translation>Создать транзакцию снова</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -619,6 +592,10 @@ Location of signing device: .....</source>
         <translation>Подключить USB</translation>
     </message>
     <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>Пожалуйста, убедитесь, что нет других программ, использующих аппаратный подписывающий устройство</translation>
+    </message>
+    <message>
         <source>{xpub} is not a valid public xpub</source>
         <translation>{xpub} не является действительным публичным xpub</translation>
     </message>
@@ -664,6 +641,13 @@ Location of signing device: .....</source>
     <message>
         <source>~in {t} hours</source>
         <translation>примерно через {t} часов</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>Информация о лицензии</translation>
     </message>
 </context>
 <context>
@@ -825,6 +809,10 @@ Location of signing device: .....</source>
         <translation>Пожалуйста, введите пароль для {filename}:</translation>
     </message>
     <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>Кошелек с идентификатором {name} уже открыт. Пожалуйста, сначала закройте его.</translation>
+    </message>
+    <message>
         <source>Export labels</source>
         <translation>Экспортировать метки</translation>
     </message>
@@ -841,12 +829,12 @@ Location of signing device: .....</source>
         <translation>Все файлы (*);;Файлы JSONL (*.jsonl);;Файлы JSON (*.json)</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Импортировать метки кошелька Electrum</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;Сохранить текущий кошелек</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Импортировать метки кошелька Electrum</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -885,12 +873,12 @@ Location of signing device: .....</source>
         <translation>Закрытие кошелька {id}</translation>
     </message>
     <message>
-        <source>Closing tab {name}</source>
-        <translation>Закрытие вкладки {name}</translation>
-    </message>
-    <message>
         <source>&amp;Change/Export</source>
         <translation>&amp;Изменить/Экспортировать</translation>
+    </message>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>Закрытие вкладки {name}</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1095,17 +1083,6 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
-    <name>NostrSync</name>
-    <message>
-        <source>Go to {untrusted}</source>
-        <translation>Перейти к {untrusted}</translation>
-    </message>
-    <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>Для завершения соединения примите мой запрос {id} на другом устройстве {other}.</translation>
-    </message>
-</context>
-<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1205,9 +1182,9 @@ Location of signing device: .....</source>
         <translation>Новая транзакция в кошельке &apos;{wallet}&apos;: {txs}  </translation>
     </message>
     <message>
-        <source>New transactions in wallet &apos;{wallet}&apos;:
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>Новые транзакции в кошельке &apos;{wallet}&apos;: {txs}  </translation>
+        <translation>{number} новых транзакций в кошельке &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1321,10 +1298,6 @@ Location of signing device: .....</source>
 </context>
 <context>
     <name>RegisterMultisig</name>
-    <message>
-        <source>Export file to register the multisig on Coldcard</source>
-        <translation>Экспортировать файл для регистрации мультисига на Coldcard</translation>
-    </message>
     <message>
         <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
 Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
@@ -1496,21 +1469,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
-    <message>
-        <source>Device id: {id}</source>
-        <translation>Идентификатор устройства: {id}</translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>Синхронизация меток адресов</translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>Может делиться транзакциями</translation>
-    </message>
-</context>
-<context>
     <name>TxSigningSteps</name>
     <message>
         <source>Export transaction to any hardware signer</source>
@@ -1663,17 +1621,6 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>Родители</translation>
-    </message>
-</context>
-<context>
-    <name>UnTrustedDevice</name>
-    <message>
-        <source>Trust {id}</source>
-        <translation>Доверять {id}</translation>
-    </message>
-    <message>
-        <source>Accept trust request from {other}</source>
-        <translation>Принять запрос доверия от {other}</translation>
     </message>
 </context>
 <context>

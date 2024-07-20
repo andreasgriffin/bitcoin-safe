@@ -202,6 +202,24 @@ class FullTxDetail:
             python_utxo.is_spent_by_txid = self.tx.txid
             self.inputs[prev_outpoint_str] = python_utxo
 
+    def sum_outputs(self, address_domain: List[str]) -> int:
+        return sum(
+            [
+                python_utxo.txout.value
+                for python_utxo in self.outputs.values()
+                if python_utxo and python_utxo.address in address_domain
+            ]
+        )
+
+    def sum_inputs(self, address_domain: List[str]) -> int:
+        return sum(
+            [
+                python_utxo.txout.value
+                for python_utxo in self.inputs.values()
+                if python_utxo and python_utxo.address in address_domain
+            ]
+        )
+
 
 class AddressInfoMin(SaveAllClass):
     def __init__(self, address: str, index: int, keychain: bdk.KeychainKind) -> None:

@@ -224,33 +224,6 @@
     </message>
 </context>
 <context>
-    <name>ChatGui</name>
-    <message>
-        <source>Type your message here...</source>
-        <translation>在此输入您的信息...</translation>
-    </message>
-    <message>
-        <source>Share a PSBT</source>
-        <translation>分享一个PSBT</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>发送</translation>
-    </message>
-    <message>
-        <source>Open Transaction/PSBT</source>
-        <translation>打开交易/PSBT</translation>
-    </message>
-    <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>所有文件 (*);;PSBT (*.psbt);;交易 (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>我：{text}</translation>
-    </message>
-</context>
-<context>
     <name>CloseButton</name>
     <message>
         <source>Close</source>
@@ -265,29 +238,21 @@
     </message>
 </context>
 <context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Reset identity for this device</source>
-        <translation>为此设备重置身份</translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>可信的</translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>不可信的</translation>
-    </message>
-    <message>
-        <source>My id: {id}</source>
-        <translation>我的ID：{id}</translation>
-    </message>
-</context>
-<context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
         <translation>钱包设置未完成。请在创建备份PDF之前完成设置。</translation>
+    </message>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>描述符无效</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>导出描述符</translation>
     </message>
 </context>
 <context>
@@ -359,8 +324,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge</source>
-        <translation>放大</translation>
+        <source>Show {} QR code</source>
+        <translation>显示 {} 二维码</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>与{wallet_id}中的所有设备共享</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -385,6 +354,10 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
         <translation>请先在钱包{wallet_id}中启用同步</translation>
+    </message>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>放大 {} 二维码</translation>
     </message>
     <message>
         <source>Save as image</source>
@@ -413,10 +386,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>与可信设备共享</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>与{wallet_id}中的所有设备共享</translation>
     </message>
 </context>
 <context>
@@ -487,6 +456,10 @@ the sending value {sent}</source>
     <message>
         <source>Create Transaction</source>
         <translation>创建交易</translation>
+    </message>
+    <message>
+        <source>Create Transaction again</source>
+        <translation>再次创建交易</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -620,6 +593,10 @@ Location of signing device: .....</source>
         <translation>连接USB</translation>
     </message>
     <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>请确保没有其他程序访问硬件签名器</translation>
+    </message>
+    <message>
         <source>{xpub} is not a valid public xpub</source>
         <translation>{xpub} 不是有效的公共xpub</translation>
     </message>
@@ -665,6 +642,13 @@ Location of signing device: .....</source>
     <message>
         <source>~in {t} hours</source>
         <translation>大约在{t}小时内</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>许可证信息</translation>
     </message>
 </context>
 <context>
@@ -826,6 +810,10 @@ Location of signing device: .....</source>
         <translation>请输入 {filename} 的密码：</translation>
     </message>
     <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>带有 id {name} 的钱包已经打开。请先关闭它。</translation>
+    </message>
+    <message>
         <source>Export labels</source>
         <translation>导出标签</translation>
     </message>
@@ -842,12 +830,12 @@ Location of signing device: .....</source>
         <translation>所有文件 (*);;JSONL 文件 (*.jsonl);;JSON 文件 (*.json)</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>导入 Electrum 钱包标签</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;保存当前钱包</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>导入 Electrum 钱包标签</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -886,12 +874,12 @@ Location of signing device: .....</source>
         <translation>正在关闭钱包 {id}</translation>
     </message>
     <message>
-        <source>Closing tab {name}</source>
-        <translation>正在关闭标签页 {name}</translation>
-    </message>
-    <message>
         <source>&amp;Change/Export</source>
         <translation>更改/导出</translation>
+    </message>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>正在关闭标签页 {name}</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1098,17 +1086,6 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
-    <name>NostrSync</name>
-    <message>
-        <source>Go to {untrusted}</source>
-        <translation>前往{untrusted}</translation>
-    </message>
-    <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>为完成连接，请在另一设备{other}上接受我的{id}请求。</translation>
-    </message>
-</context>
-<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1208,9 +1185,9 @@ Location of signing device: .....</source>
         <translation>钱包“{wallet}”中有新交易：{txs}  </translation>
     </message>
     <message>
-        <source>New transactions in wallet &apos;{wallet}&apos;:
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>钱包“{wallet}”中有新交易：{txs}  </translation>
+        <translation>钱包 &apos;{wallet}&apos; 中有 {number} 笔新交易：{txs}</translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1324,10 +1301,6 @@ Location of signing device: .....</source>
 </context>
 <context>
     <name>RegisterMultisig</name>
-    <message>
-        <source>Export file to register the multisig on Coldcard</source>
-        <translation>导出文件以在Coldcard上注册多签</translation>
-    </message>
     <message>
         <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
 Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
@@ -1499,21 +1472,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
-    <message>
-        <source>Device id: {id}</source>
-        <translation>设备ID：{id}</translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>同步地址标签</translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>可以共享交易</translation>
-    </message>
-</context>
-<context>
     <name>TxSigningSteps</name>
     <message>
         <source>Export transaction to any hardware signer</source>
@@ -1669,17 +1627,6 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>父交易</translation>
-    </message>
-</context>
-<context>
-    <name>UnTrustedDevice</name>
-    <message>
-        <source>Trust {id}</source>
-        <translation>信任{id}</translation>
-    </message>
-    <message>
-        <source>Accept trust request from {other}</source>
-        <translation>接受来自{other}的信任请求</translation>
     </message>
 </context>
 <context>

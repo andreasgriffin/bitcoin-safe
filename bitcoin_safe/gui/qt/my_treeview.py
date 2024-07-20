@@ -489,11 +489,16 @@ class MyTreeView(QTreeView):
         self,
         headers: Union[Dict[Any, str], Iterable[str]],
     ) -> None:
+        # Get the current sorting column and order
+        current_column = self.header().sortIndicatorSection()
+        current_order = self.header().sortIndicatorOrder()
+
         # headers is either a list of column names, or a dict: (col_idx->col_name)
         if not isinstance(headers, dict):  # convert to dict
             headers = dict(enumerate(headers))
         col_names = [headers[col_idx] for col_idx in sorted(headers.keys())]
         self.original_model().setHorizontalHeaderLabels(col_names)
+        self.sortByColumn(current_column, current_order)  # reapply old sorting
         self.header().setStretchLastSection(False)
         for col_idx in headers:
             sm = (

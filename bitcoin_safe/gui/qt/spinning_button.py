@@ -38,7 +38,7 @@ from .util import icon_path
 
 
 class SpinningButton(QPushButton):
-    def __init__(self, text: str, enable_signal=None, svg_path=None, parent=None) -> None:
+    def __init__(self, text: str, enable_signal=None, svg_path=None, parent=None, timeout=20) -> None:
         super().__init__(text, parent)
         if svg_path is None:
             svg_path = icon_path("loader-icon.svg")
@@ -46,22 +46,27 @@ class SpinningButton(QPushButton):
         self.rotation_angle = 0
         self._icon_size = QSize(18, 18)  # Default icon size
         self.timer = QTimer(self)
+        self.timeout_timer = QTimer(self)
         self.padding = 3
+        self.timeout = timeout
 
         self.clicked.connect(self.on_clicked)
 
         # Connect the external signal to the button's enable method
         self.set_enable_signal(enable_signal)
+        self.timeout_timer.timeout.connect(self.enable_button)
 
     def on_clicked(self) -> None:
         if not self.isEnabled():
             return
         self.start_spin()
         self.setDisabled(True)
+        self.timeout_timer.start(self.timeout * 1000)
 
     def enable_button(self, *args, **kwargs) -> None:
         self.stop_spin()
         self.setEnabled(True)
+        self.timeout_timer.stop()
 
     def set_enable_signal(self, enable_signal: pyqtSignal) -> None:
         if enable_signal:

@@ -46,7 +46,7 @@ from bitcoin_safe.html import link
 class LicenseDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("License Info")
+        self.setWindowTitle(self.tr("License Info"))
         self.setModal(True)
         self.initUI()
 

@@ -208,6 +208,7 @@ class AddressList(MyTreeView):
         self.proxy = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
         self.proxy.setSourceModel(self.std_model)
         self.setModel(self.proxy)
+        self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
         self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
         self.update()
         self.updateUi()
@@ -216,6 +217,7 @@ class AddressList(MyTreeView):
         self.signals.addresses_updated.connect(self.update_with_filter)
         self.signals.labels_updated.connect(self.update_with_filter)
         self.signals.category_updated.connect(self.update_with_filter)
+        self.signals.utxos_updated.connect(self.update_with_filter)
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
@@ -313,9 +315,10 @@ class AddressList(MyTreeView):
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
             address = model.data(model.index(row, self.Columns.ADDRESS))
-            if (
-                address in update_filter.addresses
-                or model.data(model.index(row, self.Columns.CATEGORY)) in update_filter.categories
+            address_match = address in update_filter.addresses
+            category_match = model.data(model.index(row, self.Columns.CATEGORY)) in update_filter.categories
+            if address_match or (
+                not update_filter.addresses and category_match or len(update_filter.categories) > 1
             ):
                 log_info.append((row, address))
                 self.refresh_row(address, row)
@@ -334,9 +337,6 @@ class AddressList(MyTreeView):
                 remaining_addresses = remaining_addresses - set([address])
 
         logger.debug(f"Updated addresses  {log_info}.  remaining_addresses = {remaining_addresses}")
-
-        # manually sort, after the data is filled
-        self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
 
     def get_headers(self) -> Dict:
         return {
@@ -382,7 +382,6 @@ class AddressList(MyTreeView):
             self.hideColumn(hidden_column)
 
         # manually sort, after the data is filled
-        self.sortByColumn(self.Columns.TYPE, Qt.SortOrder.AscendingOrder)
         super().update()
 
     def append_address(self, address: str) -> None:
@@ -438,7 +437,7 @@ class AddressList(MyTreeView):
         label = self.wallet.get_label_for_address(address)
         category = self.wallet.labels.get_category(address)
 
-        txids = self.wallet.get_address_to_txids(address)
+        txids = self.wallet.get_involved_txids(address)
         fulltxdetails = [self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids]
         txs_involed = [fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail]
 
@@ -549,7 +548,7 @@ class AddressList(MyTreeView):
         self.signals.labels_updated.emit(
             UpdateFilter(
                 addresses=[edit_key],
-                txids=self.wallet.get_address_to_txids(edit_key),
+                txids=self.wallet.get_involved_txids(edit_key),
             )
         )
 

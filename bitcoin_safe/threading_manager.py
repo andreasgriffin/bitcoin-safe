@@ -205,7 +205,8 @@ class ThreadingManager:
 
     def stop_and_wait_all(self, timeout=10):
         # Wait for all threads to finish
-        logger.warning(f"unfinished Threads {list(self.threads)}")
+        if self.threads:
+            logger.warning(f"unfinished Threads {list(self.threads)}")
         for thread in list(self.threads):
             if thread.isRunning():
                 thread.stop()

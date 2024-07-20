@@ -82,6 +82,7 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
 
         self.add_image_tab("coldcard-generate-seed.png", "Coldcard - Mk4")
         self.add_image_tab("q-generate-seed.png", "Coldcard - Q")
+        # self.add_image_tab("bitbox02-generate-seed.png", "Bitbox02", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -94,6 +95,7 @@ class ScreenshotsExportXpub(ScreenshotsTutorial):
 
         self.add_image_tab("coldcard-wallet-export.png", "Coldcard - Mk4", size_hint=(400, 50))
         self.add_image_tab("q-wallet-export.png", "Coldcard - Q", size_hint=(400, 50))
+        # self.add_image_tab("bitbox02-wallet-export.png", "Bitbox02", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -111,6 +113,8 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
 
         self.add_image_tab("coldcard-view-seed.png", "Coldcard - Mk4")
         self.add_image_tab("q-view-seed.png", "Coldcard - Q")
+        # self.add_image_tab("bitbox02-view-seed.png", "Bitbox02", size_hint=(500, 50))
+
         self.title.setWordWrap(True)
         self.updateUi()
 
@@ -130,7 +134,7 @@ class ScreenshotsResetSigner(ScreenshotsTutorial):
     ) -> None:
         super().__init__(group, parent)
 
-        self.add_image_tab("coldcard-destroy-seed.png", "Coldcard - Mk4")
+        self.add_image_tab("coldcard-destroy-seed.png", "Coldcard - Mk4", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -145,7 +149,7 @@ class ScreenshotsRestoreSigner(ScreenshotsTutorial):
     ) -> None:
         super().__init__(group, parent)
 
-        self.add_image_tab("coldcard-import-seed.png", "Coldcard - Mk4")
+        self.add_image_tab("coldcard-import-seed.png", "Coldcard - Mk4", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -163,8 +167,8 @@ class ScreenshotsRegisterMultisig(ScreenshotsTutorial):
             parent,
         )
 
-        self.add_image_tab("coldcard-register-multisig-decriptor.png", "Coldcard - Mk4")
-        self.add_image_tab("q-register-multisig-decriptor.png", "Coldcard - Q")
+        self.add_image_tab("coldcard-register-multisig-decriptor.png", "Coldcard - Mk4", size_hint=(500, 50))
+        self.add_image_tab("q-register-multisig-decriptor.png", "Coldcard - Q", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:

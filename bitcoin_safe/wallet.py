@@ -46,6 +46,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 import bdkpython as bdk
 import numpy as np
 from bitcoin_usb.address_types import DescriptorInfo
+from bitcoin_usb.software_signer import derive as software_signer_derive
 from packaging import version
 
 from .config import MIN_RELAY_FEE, UserConfig
@@ -54,7 +55,7 @@ from .i18n import translate
 from .keystore import KeyStore
 from .labels import Labels
 from .pythonbdk_types import *
-from .storage import BaseSaveableClass
+from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos
 from .util import (
     CacheManager,
@@ -208,7 +209,7 @@ class ProtoWallet(BaseSaveableClass):
     def from_dump(cls, dct, class_kwargs=None) -> "ProtoWallet":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        return ProtoWallet(**dct)
+        return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
@@ -439,11 +440,15 @@ class BdkWallet(bdk.Wallet, CacheManager):
             return bdk.Address.from_script(txout.script_pubkey, self.network()).as_string()
 
 
+class WalletInputsInconsistentError(Exception):
+    pass
+
+
 class Wallet(BaseSaveableClass, CacheManager):
     """If any bitcoin logic (ontop of bdk) has to be done, then here is the
     place."""
 
-    VERSION = "0.1.3"
+    VERSION = "0.1.4"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "KeyStore": KeyStore,
@@ -459,8 +464,8 @@ class Wallet(BaseSaveableClass, CacheManager):
         network: bdk.Network,
         config: UserConfig,
         gap=20,
-        gap_change=20,
-        sync_tab_dump: Dict = None,
+        gap_change=5,
+        data_dump: Dict = None,
         labels: Labels = None,
         _blockchain_height: int = None,
         _tips: List[int] = None,
@@ -470,6 +475,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     ) -> None:
         super().__init__()
         CacheManager.__init__(self)
+        self.check_consistency(keystores, descriptor_str, network=network)
 
         self.id = id
         self.network = network if network else config.network
@@ -479,10 +485,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         ), f"Cannot load a wallet for {self.network}, when the network {config.network} is configured"
         self.gap = gap
         self.gap_change = gap_change
-        self.descriptor_str: str = descriptor_str
+        self.keystores = keystores
         self.config: UserConfig = config
         self.write_lock = Lock()
-        self.sync_tab_dump: Dict = sync_tab_dump if sync_tab_dump else {}
+        self.data_dump: Dict = data_dump if data_dump else {}
         self.labels: Labels = labels if labels else Labels()
         self.labels.default_category = "Friends"
         # refresh dependent values
@@ -495,23 +501,56 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.refresh_wallet = False
         # end refresh dependent values
 
-        descriptor_info = DescriptorInfo.from_str(self.descriptor_str)
-        self.keystores = keystores
-        if not self.keystores:
-            self.keystores = [KeyStore(**descriptor_info.spk_providers.__dict__, network=self.network)]
-        # the descriptor_info should have everything
-        # except the mnemonic, label, ....
-        # we check that both sources are really identical
-        for keystore, spk_provider in zip(
-            sorted(self.keystores, key=lambda k: k.fingerprint),
-            sorted(descriptor_info.spk_providers, key=lambda k: k.fingerprint),
-        ):
-            if not keystore.is_identical_to(spk_provider):
-                raise Exception(f"Keystores {keystore} is not identical to {spk_provider}")
-
         self.create_bdkwallet(MultipathDescriptor.from_descriptor_str(descriptor_str, self.network))
         self.blockchain = None
         self.clear_cache()
+
+    @staticmethod
+    def check_consistency(keystores: List[KeyStore], descriptor_str: str, network: bdk.Network):
+        def get_keystore(fingerprint) -> Optional[KeyStore]:
+            for keystore in keystores:
+                if keystore.fingerprint == fingerprint:
+                    return keystore
+            return None
+
+        if not keystores:
+            raise WalletInputsInconsistentError("No keystores set")
+        for _keystore in keystores:
+            if not _keystore:
+                raise WalletInputsInconsistentError("Keystore not set")
+
+        descriptor_info = DescriptorInfo.from_str(descriptor_str)
+
+        # the descriptor_info should have everything
+        # except the mnemonic, label, ....
+        # we check that both sources are really identical
+        if len(keystores) != len(descriptor_info.spk_providers):
+            raise WalletInputsInconsistentError("Length of keystore doesnt match descriptor")
+        for spk_provider in descriptor_info.spk_providers:
+            keystore = get_keystore(spk_provider.fingerprint)
+            if not keystore:
+                raise WalletInputsInconsistentError(
+                    f"Keystore with fingerprint {spk_provider.fingerprint} not found"
+                )
+            if not keystore.is_identical_to(spk_provider):
+                raise WalletInputsInconsistentError(
+                    f"Keystores {keystore} is not identical to {spk_provider}"
+                )
+
+        # if mnemonic is given check derivation is correct
+        for keystore in keystores:
+            if keystore.mnemonic:
+                xpub, fingerprint = software_signer_derive(keystore.mnemonic, keystore.key_origin, network)
+                if xpub != keystore.xpub:
+                    raise WalletInputsInconsistentError(
+                        f"xpub {xpub} at {keystore.key_origin} doesnt match mnemonic"
+                    )
+                if KeyStore.format_fingerprint(fingerprint) != KeyStore.format_fingerprint(
+                    keystore.fingerprint
+                ):
+                    raise WalletInputsInconsistentError(
+                        f"fingerprint {fingerprint} at {keystore.key_origin} doesnt match mnemonic"
+                    )
 
     def clear_cache(self, clear_always_keep=False) -> None:
         self.cache_dict_fulltxdetail: Dict[str, FullTxDetail] = {}  # txid:FullTxDetail
@@ -538,16 +577,14 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def as_protowallet(self) -> ProtoWallet:
         # fill the protowallet with the xpub info
-        protowallet = ProtoWallet.from_descriptor(self.id, self.descriptor_str, network=self.network)
-        # fill all fields that the public info doesn't contain
-        if self.keystores:
-            # fill the fields, that the descrioptor doesn't contain
-            for own_keystore, keystore in zip(self.keystores, protowallet.keystores):
-                if not keystore:
-                    continue
-                keystore.mnemonic = own_keystore.mnemonic
-                keystore.description = own_keystore.description
-                keystore.label = own_keystore.label
+        protowallet = ProtoWallet.from_descriptor(
+            self.id, self.multipath_descriptor.as_string_private(), network=self.network
+        )
+        protowallet.gap = self.gap
+        protowallet.gap_change = self.gap_change
+        protowallet.tutorial_index = self.tutorial_index
+        protowallet.keystores = [keystore.clone() for keystore in self.keystores]
+
         return protowallet
 
     @classmethod
@@ -555,6 +592,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         cls,
         protowallet: ProtoWallet,
         config: UserConfig,
+        data_dump: Dict = None,
+        labels: Labels = None,
+        _blockchain_height: int = None,
+        _tips: List[int] = None,
+        refresh_wallet=False,
     ) -> "Wallet":
 
         keystores = []
@@ -581,26 +623,49 @@ class Wallet(BaseSaveableClass, CacheManager):
             network=protowallet.network,
             config=config,
             tutorial_index=protowallet.tutorial_index,
+            data_dump=data_dump,
+            labels=labels,
+            _blockchain_height=_blockchain_height,
+            _tips=_tips,
+            refresh_wallet=refresh_wallet,
         )
 
-    def is_essentially_equal(self, other_wallet: "Wallet") -> bool:
+    def get_relevant_differences(self, other_wallet: "Wallet") -> Set[str]:
         "Compares the relevant entries like keystores"
+        differences = set()
         this = self.dump()
         other = other_wallet.dump()
 
         keys = [
             "id",
             "gap",
-            "network",
             "gap_change",
-            "keystores",
-            "labels",
-            "descriptor_str",
+            "network",
         ]
         for k in keys:
             if this[k] != other[k]:
-                return False
-        return True
+                differences.add(k)
+
+        if self.labels.export_bip329_jsonlines() != other_wallet.labels.export_bip329_jsonlines():
+            differences.add("labels")
+
+        if len(self.keystores) != len(other_wallet.keystores):
+            differences.add("keystores")
+
+        for keystore, other_keystore in zip(self.keystores, other_wallet.keystores):
+            if not keystore.is_equal(other_keystore):
+                differences.add("keystores")
+
+        if (
+            self.multipath_descriptor.as_string_private()
+            != other_wallet.multipath_descriptor.as_string_private()
+        ):
+            differences.add("multipath_descriptor")
+
+        return differences
+
+    def is_essentially_equal(self, other_wallet: "Wallet") -> bool:
+        return not self.get_relevant_differences(other_wallet)
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()
@@ -612,15 +677,16 @@ class Wallet(BaseSaveableClass, CacheManager):
             "gap_change",
             "keystores",
             "labels",
-            "descriptor_str",
             "_blockchain_height",
             "_tips",
             "refresh_wallet",
             "tutorial_index",
-            "sync_tab_dump",
+            "data_dump",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
+
+        d["descriptor_str"] = self.multipath_descriptor.as_string_private()
 
         return d
 
@@ -651,6 +717,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             if dct.get("sync_tab_dump"):
                 del dct["sync_tab_dump"]
 
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.3"):
+            if dct.get("sync_tab_dump"):
+                dct["data_dump"] = {"SyncTab": dct["sync_tab_dump"]}
+
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:
             del dct["VERSION"]
@@ -665,7 +735,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             # must contain "Wallet":{"config": ... }
             dct.update(class_kwargs[cls.__name__])
 
-        return Wallet(**dct)
+        return cls(**filtered_for_init(dct, cls))
 
     def set_gap(self, gap: int) -> None:
         self.gap = gap
@@ -759,7 +829,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return self.blockchain
 
     def _get_uniquie_wallet_id(self) -> str:
-        return f"{replace_non_alphanumeric(self.id)}-{hash_string(self.descriptor_str)}"
+        return f"{replace_non_alphanumeric(self.id)}-{hash_string(self.multipath_descriptor.as_string())}"
 
     def sync(self, progress_function_threadsafe=None) -> None:
         if self.blockchain is None:
@@ -1098,7 +1168,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         """
         return self.get_address_balances()[address]
 
-    def get_address_to_txids(self, address: str) -> Set[str]:
+    def get_involved_txids(self, address: str) -> Set[str]:
         # this also fills self.cache_address_to_txids
         self.get_dict_fulltxdetail()
         return self.cache_address_to_txids.get(address, set())
@@ -1179,7 +1249,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     @instance_lru_cache()
     def address_is_used(self, address: str) -> bool:
         """Check if any tx had this address as an output."""
-        return bool(self.get_address_to_txids(address))
+        return bool(self.get_involved_txids(address))
 
     def get_address_path_str(self, address: str) -> str:
         index = None
@@ -1201,20 +1271,26 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
         return public_descriptor_string_combined
 
-    def get_categories_for_txid(self, txid: str) -> List[str]:
+    def get_input_and_output_utxos(self, txid: str) -> List[PythonUtxo]:
         fulltxdetail = self.get_dict_fulltxdetail().get(txid)
         if not fulltxdetail:
             return []
 
+        l = [python_utxo for python_utxo in fulltxdetail.outputs.values() if python_utxo] + [
+            python_utxo for python_utxo in fulltxdetail.inputs.values() if python_utxo
+        ]
+
+        return l
+
+    def get_categories_for_txid(self, txid: str) -> List[str]:
+        python_utxos = self.get_input_and_output_utxos(txid)
+        if not python_utxos:
+            return []
+
         l = np.unique(
-            clean_list(
-                [
-                    self.labels.get_category(python_utxo.address)
-                    for python_utxo in fulltxdetail.outputs.values()
-                    if python_utxo
-                ]
-            )
+            clean_list([self.labels.get_category(python_utxo.address) for python_utxo in python_utxos])
         )
+
         return list(l)
 
     def get_label_for_address(self, address: str, autofill_from_txs=True) -> str:
@@ -1222,7 +1298,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         label = maybe_label if maybe_label else ""
 
         if not label and autofill_from_txs:
-            txids = self.get_address_to_txids(address)
+            txids = self.get_involved_txids(address)
 
             tx_labels = clean_list(
                 [self.get_label_for_txid(txid, autofill_from_addresses=False) for txid in txids]
@@ -1236,16 +1312,12 @@ class Wallet(BaseSaveableClass, CacheManager):
         label = maybe_label if maybe_label else ""
 
         if not label and autofill_from_addresses:
-            fulltxdetail = self.get_dict_fulltxdetail().get(txid)
-            if not fulltxdetail:
+            python_utxos = self.get_input_and_output_utxos(txid)
+            if not python_utxos:
                 return label
 
             address_labels = clean_list(
-                [
-                    self.get_label_for_address(python_utxo.address)
-                    for python_utxo in fulltxdetail.outputs.values()
-                    if python_utxo
-                ]
+                [self.get_label_for_address(python_utxo.address) for python_utxo in python_utxos]
             )
             label = ", ".join(address_labels)
 
@@ -1592,8 +1664,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         ema_fee_rate = calculate_ema(fee_rates, alpha=alpha)
         return ema_fee_rate
 
-    def export_coldcard_wallet_descriptor(self) -> str:
-        return f"""# Coldcard descriptor export of wallet: {self.id}\n{self.multipath_descriptor.bdk_descriptors[0].as_string() }"""
+
+class DescriptorExportTools:
+    @staticmethod
+    def get_coldcard_str(wallet_id: str, descriptor: MultipathDescriptor) -> str:
+        return f"""# Coldcard descriptor export of wallet: {wallet_id}\n{ descriptor.bdk_descriptors[0].as_string() }"""
 
 
 ###########

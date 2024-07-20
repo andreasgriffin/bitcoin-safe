@@ -44,7 +44,7 @@ from bitcoin_usb.address_types import (
 from packaging import version
 
 from .descriptors import MultipathDescriptor
-from .storage import BaseSaveableClass, SaveAllClass
+from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 
 class KeyStoreImporterType(SaveAllClass):
@@ -149,6 +149,9 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         self.mnemonic = mnemonic
         self.description = description
 
+    def is_equal(self, other: "KeyStore") -> bool:
+        return self.__dict__ == other.__dict__
+
     @classmethod
     def is_seed_valid(cls, mnemonic: str) -> bool:
         try:
@@ -214,7 +217,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     def from_dump(cls, dct: Dict, class_kwargs=None) -> "KeyStore":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        return KeyStore(**dct)
+        return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
