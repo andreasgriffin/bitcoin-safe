@@ -32,6 +32,8 @@ import os
 import platform
 import sys
 
+from bitcoin_safe import __version__
+
 from .simple_mailer import compose_email
 
 
@@ -46,7 +48,7 @@ def remove_absolute_paths(line: str) -> str:
 
 def mail_error_repot(error_report: str) -> None:
     email = "andreasgriffin@proton.me"
-    subject = "Error report"
+    subject = f"Error report - Bitcoin Safe Version: {__version__}"
     body = f"""Error:
             {error_report}
             """.replace(
@@ -56,7 +58,8 @@ def mail_error_repot(error_report: str) -> None:
     # Write additional system info if needed
     body += "\n\nSystem Info:\n"
     body += f"OS: {platform.platform()}\n"
-    body += f"Python Version: {sys.version}\n\n"
+    body += f"Python Version: {sys.version}\n"
+    body += f"Bitcoin Safe Version: {__version__}\n\n"
     return compose_email(email, subject, body)
 
 

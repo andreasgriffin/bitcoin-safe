@@ -864,6 +864,7 @@ class MyTreeView(QTreeView):
 
     def update(self) -> None:
         super().update()
+        logger.debug(f"{self.__class__.__name__} done updating")
         self.signal_update.emit()
 
 

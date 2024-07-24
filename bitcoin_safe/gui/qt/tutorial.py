@@ -1017,12 +1017,8 @@ class WalletSteps(StepProgressContainer):
             self.set_custom_widget(i, widget)
 
         if self.qt_wallet:
-            step = (
-                self.count() - 1
-                if self.qt_wallet.wallet.tutorial_index is None
-                else self.qt_wallet.wallet.tutorial_index
-            )
-            self.set_current_index(step)
+            if self.qt_wallet.wallet.tutorial_index is not None:
+                self.set_current_index(self.qt_wallet.wallet.tutorial_index)
             # save after every step
             self.signal_set_current_widget.connect(lambda widget: self.qt_wallet.save())
 

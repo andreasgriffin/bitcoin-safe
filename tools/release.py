@@ -29,7 +29,9 @@
 
 import datetime
 import getpass
+import hashlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -57,7 +59,7 @@ gpg import 2759AA7148568ECCB03B76301D82124B440F612D.asc
 gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 ```
 
-#### Install on Mac, Linux, or Windows 
+#### Install and run on Mac, Linux, or Windows 
 ```
 python3 -m pip install bitcoin-safe
 python3 -m bitcoin_safe
@@ -89,6 +91,82 @@ def get_latest_git_tag() -> Optional[str]:
     except subprocess.CalledProcessError as e:
         print("Failed to fetch latest Git tag:", e)
         return None
+
+
+def get_default_remote():
+    try:
+        # Retrieve the list of remotes and their URLs
+        result = subprocess.run(["git", "remote", "-v"], check=True, text=True, capture_output=True)
+        remote_info = result.stdout.splitlines()
+
+        # Parse the first remote name from the output
+        default_remote = remote_info[0].split()[0]
+        return default_remote
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to retrieve remote information: {e}")
+        return None
+
+
+def add_and_publish_git_tag(tag):
+    try:
+
+        # Add the tag
+        subprocess.run(["git", "tag", tag], check=True)
+
+        # Get the default remote name
+        remote_name = get_default_remote()
+        if remote_name:
+            # Push the tag to the default remote
+            print(f"Tag '{tag}' pushing to remote '{remote_name}'")
+            subprocess.run(["git", "push", remote_name, tag], check=True)
+            print(f"Tag '{tag}' successfully pushed to remote '{remote_name}'")
+        else:
+            print("Could not determine default remote.")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to push tag '{tag}': {e}")
+
+
+def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
+    """_summary_
+
+    Returns:
+        Tuple[str, str]: (whl_file, hash_value)
+    """
+
+    def run_poetry_build():
+        # Run `poetry build`
+        subprocess.run(["poetry", "build"], check=True)
+
+    def get_whl_file():
+        # Locate the .whl file in the dist directory
+        for filename in os.listdir(dist_dir):
+            if filename.endswith(".whl"):
+                return os.path.join(dist_dir, filename)
+        return None
+
+    def calculate_sha256(file_path):
+        # Calculate the SHA-256 hash of the file
+        sha256_hash = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+        return sha256_hash.hexdigest()
+
+    run_poetry_build()
+
+    whl_file = get_whl_file()
+    if not whl_file:
+        raise Exception("No .whl file found in the dist directory.")
+
+    hash_value = calculate_sha256(whl_file)
+    pip_install_command = f"pip install {Path(dist_dir)/whl_file} --hash=sha256:{hash_value}"
+    print(pip_install_command)
+    return whl_file, hash_value
+
+
+def publish_pypi_wheel(dist_dir="dist"):
+    whl_file, hash_value = create_pypi_wheel(dist_dir=dist_dir)
+    subprocess.run(["poetry", "publish"], check=True)
 
 
 def create_github_release(
@@ -168,17 +246,22 @@ def main() -> None:
     owner = "andreasgriffin"
     repo = "bitcoin-safe"
 
-    latest_tag: Optional[str] = get_latest_git_tag()
-    if latest_tag is None:
-        return
+    from bitcoin_safe import __version__
 
-    print(f"The latest Git tag is: {latest_tag}")
-    if (
-        get_input_with_default(f"Is this the correct tag for the release {latest_tag}? (y/n): ", "y").lower()
+    latest_tag: Optional[str] = get_latest_git_tag()
+    if latest_tag == __version__ and (
+        get_input_with_default(
+            f"The tag {latest_tag} exists already. Do you want to continue? (y/n): ", "n"
+        ).lower()
         != "y"
     ):
-        print("Release creation aborted.")
         return
+
+    if get_input_with_default(f"Is this version {__version__} correct? (y/n): ", "y").lower() != "y":
+        return
+
+    if latest_tag != __version__:
+        add_and_publish_git_tag(__version__)
 
     directory = Path("dist")
     files = list_directory_files(directory)
@@ -186,23 +269,26 @@ def main() -> None:
     for file_path, size, modified_time in files:
         print(f"  {file_path.name} - {size} bytes, last modified: {modified_time}")
 
-    if get_input_with_default("Are these the correct files to upload? (y/n): ", "y").lower() == "y":
-        release_name = get_input_with_default("Enter the release name", f"{latest_tag}")
-        body = get_default_description(latest_tag=latest_tag)
-        draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
-        prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"
-
-        token = getpass.getpass("Enter your GitHub token: ")
-        release_result = create_github_release(
-            token, owner, repo, latest_tag, release_name, body, draft, prerelease
-        )
-        print("Release created successfully:", json.dumps(release_result, indent=2))
-
-        for file_path, _, _ in files:
-            upload_release_asset(token, owner, repo, release_result["id"], file_path)
-            print(f"Asset {file_path.name} uploaded successfully.")
-    else:
+    if not get_input_with_default("Are these the correct files to upload? (y/n): ", "y").lower() == "y":
         print("Asset upload aborted.")
+        return
+
+    release_name = get_input_with_default("Enter the release name", f"{__version__}")
+    body = get_default_description(latest_tag=__version__)
+    draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
+    prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"
+    token = getpass.getpass("Enter your GitHub token: ")
+    release_result = create_github_release(
+        token, owner, repo, __version__, release_name, body, draft, prerelease
+    )
+    print("Release created successfully:", json.dumps(release_result, indent=2))
+
+    for file_path, _, _ in files:
+        upload_release_asset(token, owner, repo, release_result["id"], file_path)
+        print(f"Asset {file_path.name} uploaded successfully.")
+
+    if get_input_with_default("Publish pypi package? (y/n): ", "y").lower() == "y":
+        publish_pypi_wheel(dist_dir=directory)
 
 
 if __name__ == "__main__":

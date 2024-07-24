@@ -269,9 +269,11 @@ def test_tutorial_wallet_setup(
             assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
                 "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
             ]
-            assert box.address_line_edit.text() == "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
+            assert box.address == "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
             assert (
-                box.address_line_edit.input_field.palette().color(QtGui.QPalette.ColorRole.Base).name()
+                box.recipient_widget.address_edit.input_field.palette()
+                .color(QtGui.QPalette.ColorRole.Base)
+                .name()
                 == "#8af296"
             )
             assert qt_wallet.uitx_creator.recipients.recipients[0].amount == amount

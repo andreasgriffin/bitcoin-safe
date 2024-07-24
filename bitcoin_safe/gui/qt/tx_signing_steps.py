@@ -31,7 +31,7 @@ import logging
 from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.data import Data
 
 from bitcoin_safe.gui.qt.export_data import (
     DataGroupBox,
@@ -167,7 +167,7 @@ class TxSigningSteps(StepProgressContainer):
             )
 
         export_widget = ExportDataSimple(
-            data=Data(self.psbt, DataType.PSBT),
+            data=Data.from_psbt(self.psbt),
             sync_tabs={
                 wallet_id: qt_wallet.sync_tab
                 for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()

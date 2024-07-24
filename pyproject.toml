@@ -12,7 +12,7 @@ show_error_codes = true
 
 [tool.poetry]
 name = "bitcoin-safe"
-version = "0.7.1a0"
+version = "0.7.2a0"
 description = "Long-term Bitcoin savings made Easy"
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -48,7 +48,7 @@ pyqt6-charts = "^6.6.0"
 electrumsv-secp256k1 = "^18.0.0"
 python-gnupg = "^0.5.2"
 bitcoin-nostr-chat = "^0.2.3"
-bitcoin-qr-tools = "^0.10.6"
+bitcoin-qr-tools = "^0.10.8"
 bitcoin-usb = "^0.1.16"
 
 [tool.briefcase.app.bitcoin-safe]

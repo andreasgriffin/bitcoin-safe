@@ -30,7 +30,7 @@
 import logging
 from typing import Callable, Optional
 
-from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.data import Data
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import MyTextEdit
@@ -59,7 +59,7 @@ class DescriptorExport(QDialog):
         self.setModal(True)
 
         self.descriptor = descriptor
-        self.data = Data(descriptor, DataType.MultiPathDescriptor)
+        self.data = Data.from_multipath_descriptor(descriptor)
 
         export_widget = ExportDataSimple(
             data=self.data,

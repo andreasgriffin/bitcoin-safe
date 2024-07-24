@@ -89,7 +89,7 @@ from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
 from ...util import Satoshis, block_explorer_URL, format_fee_rate, serialized_to_hex
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .category_list import CategoryList
-from .recipients import RecipientGroupBox, Recipients
+from .recipients import Recipients, RecipientTabWidget
 from .util import (
     Message,
     MessageType,
@@ -107,8 +107,15 @@ class UITx_Base(QObject):
         self.mempool_data = mempool_data
         self.config = config
 
-    def create_recipients(self, layout: QLayout, parent=None, allow_edit=True) -> Recipients:
-        recipients = Recipients(self.signals, network=self.config.network, allow_edit=allow_edit)
+    def create_recipients(
+        self, layout: QLayout, parent=None, allow_edit=True, dismiss_label_on_focus_loss=True
+    ) -> Recipients:
+        recipients = Recipients(
+            self.signals,
+            network=self.config.network,
+            allow_edit=allow_edit,
+            dismiss_label_on_focus_loss=dismiss_label_on_focus_loss,
+        )
 
         layout.addWidget(recipients)
         recipients.setMinimumWidth(250)
@@ -180,7 +187,9 @@ class UITx_Viewer(UITx_Base):
         self.tabs_inputs_outputs.addTab(self.tab_outputs, "")
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
 
-        self.recipients = self.create_recipients(self.tab_outputs.layout(), allow_edit=False)
+        self.recipients = self.create_recipients(
+            self.tab_outputs.layout(), allow_edit=False, dismiss_label_on_focus_loss=True
+        )
 
         # right side bar
         self.right_sidebar = QWidget()
@@ -710,7 +719,7 @@ class UITx_Viewer(UITx_Base):
         confirmation_time: bdk.BlockTime = None,
         sent_amount: int = None,
     ) -> None:
-        self.data = Data(tx, DataType.Tx)
+        self.data = Data.from_tx(tx)
         self.fee_info = fee_info
 
         if fee_info is not None:
@@ -781,7 +790,7 @@ class UITx_Viewer(UITx_Base):
             fee_rate (_type_, optional): This is the exact fee_rate chosen in txbuilder. If not given it has
                                         to be estimated with estimate_segwit_tx_size_from_psbt.
         """
-        self.data = Data(psbt, DataType.PSBT)
+        self.data = Data.from_psbt(psbt)
         self.fee_info = fee_info
 
         # if fee_rate is set, it means the
@@ -872,7 +881,9 @@ class UITx_Creator(UITx_Base):
 
         self.widget_middle.layout().addWidget(self.balance_label)
 
-        self.recipients: Recipients = self.create_recipients(self.widget_middle.layout())
+        self.recipients: Recipients = self.create_recipients(
+            self.widget_middle.layout(), dismiss_label_on_focus_loss=False
+        )
 
         self.recipients.signal_clicked_send_max_button.connect(self.updateUi)
         self.recipients.add_recipient()
@@ -1146,12 +1157,12 @@ class UITx_Creator(UITx_Base):
     def reapply_max_amounts(self) -> None:
         recipient_group_boxes = self.recipients.get_recipient_group_boxes()
         for recipient_group_box in recipient_group_boxes:
-            recipient_group_box.amount_spin_box.setMaximum(self.get_total_input_value())
+            recipient_group_box.recipient_widget.amount_spin_box.setMaximum(self.get_total_input_value())
 
         recipient_group_boxes_max_checked = [
             recipient_group_box
             for recipient_group_box in recipient_group_boxes
-            if recipient_group_box.send_max_button.isChecked()
+            if recipient_group_box.recipient_widget.send_max_button.isChecked()
         ]
         total_change_amount = self.get_total_change_amount(include_max_checked=False)
         for recipient_group_box in recipient_group_boxes_max_checked:
@@ -1179,10 +1190,10 @@ class UITx_Creator(UITx_Base):
         total_change_amount = total_input_value - total_output_value
         return total_change_amount
 
-    def set_max_amount(self, recipient_group_box: RecipientGroupBox, max_amount: int) -> None:
+    def set_max_amount(self, recipient_group_box: RecipientTabWidget, max_amount: int) -> None:
         with BlockChangesSignals([recipient_group_box]):
 
-            recipient_group_box.amount_spin_box.setValue(max_amount)
+            recipient_group_box.recipient_widget.amount_spin_box.setValue(max_amount)
 
     def tab_changed(self, index: int) -> None:
         # pyqtSlot called when the current tab changes
