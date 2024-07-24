@@ -110,13 +110,13 @@ requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "0.10.6"
+version = "0.10.8"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = "<3.12,>=3.8"
 files = [
-    {file = "bitcoin_qr_tools-0.10.6-py3-none-any.whl", hash = "sha256:858b4b43411de952b900bb999d4c47fc1b4a7f4613537a29fe84210eddcc8769"},
-    {file = "bitcoin_qr_tools-0.10.6.tar.gz", hash = "sha256:b72cb70778b4e8b62ca77aaea45f5e0be9a79c87552fae016ae004b54bfb5fca"},
+    {file = "bitcoin_qr_tools-0.10.8-py3-none-any.whl", hash = "sha256:e779d2e6abb772ea09101f207298b9736a531f4dd916c0bc3fef05b79f867236"},
+    {file = "bitcoin_qr_tools-0.10.8.tar.gz", hash = "sha256:287dea0a583a6e054a7c8fc6bf91237724274e4bf90047da7ab655caaa146b4d"},
 ]
 
 [package.dependencies]
@@ -2401,4 +2401,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "33c3015ecdecb5d0c6cd68390ebb1c9abfb3c59d65dcced7fa58a5e505b95ae0"
+content-hash = "2f05f12fff927ce9ebe60f16177071dc1932aea8b449dc6d7149c02ae4105706"

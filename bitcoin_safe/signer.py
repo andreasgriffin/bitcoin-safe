@@ -332,7 +332,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         try:
             signed_psbt = self.usb.sign(psbt)
             if signed_psbt:
-                self.scan_result_callback(psbt, Data(signed_psbt, DataType.PSBT))
+                self.scan_result_callback(psbt, Data.from_psbt(signed_psbt))
         except Exception as e:
             if "multisig" in str(e).lower():
                 question_dialog(

@@ -29,22 +29,25 @@
 
 import logging
 
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.address_edit import AddressEdit
 
 from ...pythonbdk_types import Recipient
 from .invisible_scroll_area import InvisibleScrollArea
 
 logger = logging.getLogger(__name__)
 
-from typing import List, Optional
+from typing import List
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import QSize
+from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtWidgets import (
+    QFormLayout,
+    QHBoxLayout,
     QLabel,
-    QMessageBox,
+    QLineEdit,
     QPushButton,
     QSizePolicy,
     QStyle,
@@ -54,24 +57,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ...i18n import translate
-from ...signals import Signals
+from ...signals import Signals, UpdateFilter
 from ...util import unit_str
-from ...wallet import Wallet, get_wallets
-from .dialogs import question_dialog
 from .spinbox import BTCSpinBox
-from .util import ColorScheme
-
-
-def dialog_replace_with_new_receiving_address(address: str) -> bool:
-    return question_dialog(
-        text=translate(
-            "recipients",
-            f"Address {address} was used already. Would you like to get a fresh receiving address?",
-        ),
-        title=translate("recipients", "Address Already Used"),
-        buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-    )
 
 
 class CloseButton(QPushButton):
@@ -89,67 +77,73 @@ class CloseButton(QPushButton):
         painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 
 
-class RecipientGroupBox(QTabWidget):
-    signal_close = QtCore.pyqtSignal(QTabWidget)
+class LabelLineEdit(QLineEdit):
+    signal_enterPressed = pyqtSignal()  # Signal for Enter key
+    signal_textEditedAndFocusLost = pyqtSignal()  # Signal for text edited and focus lost
 
-    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True, title="") -> None:
-        super().__init__()
-        self.setTabsClosable(allow_edit)
-        self.title = title
-        self.tab = QWidget()
-        self.addTab(self.tab, title)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.originalText = ""
+        self.textChangedSinceFocus = False
+        self.installEventFilter(self)  # Install an event filter
+        self.textChanged.connect(self.onTextChanged)  # Connect the textChanged signal
 
+    def onTextChanged(self):
+        self.textChangedSinceFocus = True  # Set flag when text changes
+
+    def eventFilter(self, obj, event):
+        if obj == self:
+            if event.type() == QKeyEvent.Type.FocusIn:
+                self.originalText = self.text()  # Store text when focused
+                self.textChangedSinceFocus = False  # Reset change flag
+            elif event.type() == QKeyEvent.Type.FocusOut:
+                if self.textChangedSinceFocus:
+                    self.signal_textEditedAndFocusLost.emit()  # Emit signal if text was edited
+                self.textChangedSinceFocus = False  # Reset change flag
+        return super().eventFilter(obj, event)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+            self.signal_enterPressed.emit()  # Emit Enter pressed signal
+        elif event.key() == Qt.Key.Key_Escape:
+            self.setText(self.originalText)  # Reset text on ESC
+        else:
+            super().keyPressEvent(event)
+
+
+class RecipientWidget(QWidget):
+    def __init__(
+        self,
+        signals: Signals,
+        network: bdk.Network,
+        allow_edit=True,
+        allow_label_edit=True,
+        parent=None,
+        dismiss_label_on_focus_loss=True,
+    ) -> None:
+        super().__init__(parent=parent)
         self.signals = signals
         self.allow_edit = allow_edit
+        self.allow_label_edit = allow_label_edit
 
-        self.tabCloseRequested.connect(lambda: self.signal_close.emit(self))
-
-        form_layout = QtWidgets.QFormLayout()
-        self.tab.setLayout(form_layout)
+        self.form_layout = QFormLayout()
+        self.setLayout(self.form_layout)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        form_layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.form_layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        # works only for automatically created QLabels
+        # self.form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
-        def on_handle_input(data: Data, parent: QWidget) -> None:
-            if data.data_type == DataType.Bip21:
-                if data.data.get("address"):
-                    self.address_line_edit.setText(data.data.get("address"))
-                if data.data.get("amount"):
-                    self.amount_spin_box.setValue(data.data.get("amount"))
-                if data.data.get("label"):
-                    self.label_line_edit.setText(data.data.get("label"))
+        self.address_edit = AddressEdit(
+            network=network, allow_edit=allow_edit, parent=self, signals=self.signals
+        )
+        # ensure that the address_edit is the minimum vertical size
+        self.address_edit.button_container.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.label_line_edit = LabelLineEdit()
 
-        self.address_line_edit = ButtonEdit(signal_update=self.signals.language_switch)
-        if allow_edit:
-            self.address_line_edit.add_qr_input_from_camera_button(
-                network=network,
-                custom_handle_input=on_handle_input,
-            )
-        else:
-            self.address_line_edit.add_copy_button()
-            self.address_line_edit.setReadOnly(True)
-
-        def is_valid() -> bool:
-            if not self.address_line_edit.text():
-                # if it is empty, show no error
-                return True
-            try:
-                bdk_address = bdk.Address(self.address_line_edit.text().strip(), network=network)
-                if self.signals.get_network.emit() == bdk.Network.SIGNET:
-                    # bdk treats signet AND testnet as testnet
-                    assert bdk_address.network() in [bdk.Network.SIGNET, bdk.Network.TESTNET]
-                else:
-                    assert bdk_address.network() == self.signals.get_network.emit()
-                return True
-            except:
-                return False
-
-        self.address_line_edit.set_validator(is_valid)
-        self.label_line_edit = QtWidgets.QLineEdit()
-
-        self.amount_layout = QtWidgets.QHBoxLayout()
+        self.amount_layout = QHBoxLayout()
         self.amount_spin_box = BTCSpinBox(self.signals.get_network())
-        self.label_unit = QtWidgets.QLabel(unit_str(self.signals.get_network()))
-        self.send_max_button = QtWidgets.QPushButton()
+        self.label_unit = QLabel(unit_str(self.signals.get_network()))
+        self.send_max_button = QPushButton()
         self.send_max_button.setCheckable(True)
         self.send_max_button.setMaximumWidth(80)
         self.send_max_button.clicked.connect(self.on_send_max_button_click)
@@ -159,24 +153,53 @@ class RecipientGroupBox(QTabWidget):
             self.amount_layout.addWidget(self.send_max_button)
 
         self.address_label = QLabel()
+        self.address_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         self.label_txlabel = QLabel()
+        self.label_txlabel.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         self.amount_label = QLabel()
+        self.amount_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
-        form_layout.addRow(self.address_label, self.address_line_edit)
-        form_layout.addRow(self.label_txlabel, self.label_line_edit)
-        form_layout.addRow(self.amount_label, self.amount_layout)
+        self.form_layout.addRow(self.address_label, self.address_edit)
+        self.form_layout.addRow(self.label_txlabel, self.label_line_edit)
+        self.form_layout.addRow(self.amount_label, self.amount_layout)
 
-        if not allow_edit:
-            self.address_line_edit.setReadOnly(True)
-            self.label_line_edit.setReadOnly(True)
-            self.amount_spin_box.setReadOnly(True)
-
-        self.address_line_edit.input_field.textChanged.connect(self.format_address_field)
-        self.address_line_edit.input_field.textChanged.connect(self.set_label_placeholder_text)
-        self.address_line_edit.input_field.textChanged.connect(self.check_if_used)
+        self.address_edit.setReadOnly(not allow_edit)
+        self.amount_spin_box.setReadOnly(not allow_edit)
+        self.label_line_edit.setReadOnly(not allow_label_edit)
 
         self.updateUi()
+
+        # signals
         self.signals.language_switch.connect(self.updateUi)
+        self.address_edit.signal_text_change.connect(self.autofill_label)
+        self.address_edit.signal_bip21_input.connect(self.on_handle_input)
+        self.label_line_edit.signal_enterPressed.connect(self.on_label_edited)
+        if dismiss_label_on_focus_loss:
+            self.label_line_edit.signal_textEditedAndFocusLost.connect(
+                lambda: self.label_line_edit.setText(self.label_line_edit.originalText)
+            )
+
+    def on_label_edited(self) -> None:
+        wallet = self.address_edit.get_wallet_of_address()
+        if not wallet:
+            return
+        address = self.address_edit.address
+        wallet.labels.set_addr_label(address, self.label_line_edit.text().strip(), timestamp="now")
+        self.signals.labels_updated.emit(
+            UpdateFilter(
+                addresses=[address],
+                txids=wallet.get_involved_txids(address),
+            )
+        )
+
+    def on_handle_input(self, data: Data, parent: QWidget) -> None:
+        if data.data_type == DataType.Bip21:
+            if data.data.get("address"):
+                self.address_edit.address = data.data.get("address")
+            if data.data.get("amount"):
+                self.amount_spin_box.setValue(data.data.get("amount"))
+            if data.data.get("label"):
+                self.label_line_edit.setText(data.data.get("label"))
 
     def updateUi(self) -> None:
 
@@ -186,10 +209,9 @@ class RecipientGroupBox(QTabWidget):
 
         self.label_line_edit.setPlaceholderText(self.tr("Enter label here"))
         self.send_max_button.setText(self.tr("Send max"))
-        self.address_line_edit.setPlaceholderText(self.tr("Enter address here"))
 
-        self.format_address_field()
-        self.set_label_placeholder_text()
+        self.address_edit.updateUi()
+        self.autofill_label()
 
     def showEvent(self, event) -> None:
         # this is necessary, otherwise the background color of the
@@ -203,11 +225,11 @@ class RecipientGroupBox(QTabWidget):
 
     @property
     def address(self) -> str:
-        return self.address_line_edit.text().strip()
+        return self.address_edit.address
 
     @address.setter
     def address(self, value: str) -> None:
-        self.address_line_edit.setText(value)
+        self.address_edit.address = value
 
     @property
     def label(self) -> str:
@@ -227,85 +249,126 @@ class RecipientGroupBox(QTabWidget):
 
     @property
     def enabled(self) -> bool:
-        return not self.address_line_edit.isReadOnly()
+        return not self.address_edit.isReadOnly()
 
     @enabled.setter
     def enabled(self, state: bool) -> None:
-        self.address_line_edit.setReadOnly(not state)
+        self.address_edit.setReadOnly(not state)
         self.label_line_edit.setReadOnly(not state)
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_button.setEnabled(state)
 
-    def set_label_placeholder_text(self) -> None:
-        wallets = get_wallets(self.signals)
-
-        wallet_id = None
-        label = ""
-        for wallet in wallets:
-            if self.address in wallet.get_addresses():
-                wallet_id = wallet.id
-                label = wallet.get_label_for_address(self.address)
-                if label:
-                    break
-
-        if wallet_id:
+    def autofill_label(self, *args):
+        wallet = self.address_edit.get_wallet_of_address()
+        if wallet:
+            label = wallet.get_label_for_address(self.address_edit.address)
             self.label_line_edit.setPlaceholderText(label)
             if not self.allow_edit:
                 self.label_line_edit.setText(label)
+
         else:
             self.label_line_edit.setPlaceholderText(self.tr("Enter label for recipient address"))
 
-    def get_wallet_of_address(self, address: str) -> Optional[Wallet]:
-        for wallet in get_wallets(self.signals):
-            if wallet.is_my_address(address):
-                return wallet
-        return None
 
-    def check_if_used(self, *args) -> None:
-        wallet_of_address = self.get_wallet_of_address(self.address)
-        if self.allow_edit and wallet_of_address and wallet_of_address.address_is_used(self.address):
-            if dialog_replace_with_new_receiving_address(self.address):
-                # find an address that is not used yet
-                self.address = wallet_of_address.get_address().address.as_string()
+class RecipientTabWidget(QTabWidget):
+    signal_close = pyqtSignal(QTabWidget)
 
-    def format_address_field(self, *args) -> None:
-        palette = QtGui.QPalette()
-        background_color = None
-
-        wallet_of_address = self.get_wallet_of_address(self.address)
-        if wallet_of_address and wallet_of_address.is_my_address(self.address):
-            self.setTabText(self.indexOf(self.tab), self.tr('Wallet "{id}"').format(id=wallet_of_address.id))
-
-            if wallet_of_address.is_change(self.address):
-                background_color = ColorScheme.YELLOW.as_color(background=True)
-                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
-            else:
-                background_color = ColorScheme.GREEN.as_color(background=True)
-                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
-        else:
-            palette = self.address_line_edit.input_field.style().standardPalette()
-            self.setTabText(self.indexOf(self.tab), self.title)
-
-        self.address_line_edit.input_field.setPalette(palette)
-        self.address_line_edit.input_field.update()
-        self.address_line_edit.update()
-        logger.debug(
-            f"{self.__class__.__name__} format_address_field for self.address {self.address}, background_color = {background_color.name() if background_color else None}"
+    def __init__(
+        self,
+        signals: Signals,
+        network: bdk.Network,
+        allow_edit=True,
+        title="",
+        parent=None,
+        tab_string=None,
+        dismiss_label_on_focus_loss=True,
+    ) -> None:
+        super().__init__(parent=parent)
+        self.setTabsClosable(allow_edit)
+        self.title = title
+        self.tab_string = tab_string if tab_string else self.tr('Wallet "{id}"')
+        self.recipient_widget = RecipientWidget(
+            signals=signals,
+            network=network,
+            allow_edit=allow_edit,
+            parent=self,
+            dismiss_label_on_focus_loss=dismiss_label_on_focus_loss,
         )
-        self.setTabBarAutoHide(not self.tabText(self.indexOf(self.tab)) and not self.allow_edit)
+        self.addTab(self.recipient_widget, title)
+
+        self.tabCloseRequested.connect(lambda: self.signal_close.emit(self))
+
+        self.recipient_widget.address_edit.signal_text_change.connect(self.autofill_tab_text)
+
+    def updateUi(self) -> None:
+        self.recipient_widget.updateUi()
+        self.autofill_tab_text()
+
+    def showEvent(self, event) -> None:
+        # this is necessary, otherwise the background color of the
+        # address_line_edit.input_field is not updated properly when setting the adddress
+        self.updateUi()
+
+    @property
+    def address(self) -> str:
+        return self.recipient_widget.address
+
+    @address.setter
+    def address(self, value: str) -> None:
+        self.recipient_widget.address = value
+
+    @property
+    def label(self) -> str:
+        return self.recipient_widget.label
+
+    @label.setter
+    def label(self, value: str) -> None:
+        self.recipient_widget.label = value
+
+    @property
+    def amount(self) -> int:
+        return self.recipient_widget.amount
+
+    @amount.setter
+    def amount(self, value: int) -> None:
+        self.recipient_widget.amount = value
+
+    @property
+    def enabled(self) -> bool:
+        return not self.recipient_widget.enabled
+
+    @enabled.setter
+    def enabled(self, state: bool) -> None:
+        self.recipient_widget.enabled = state
+
+    def autofill_tab_text(self, *args):
+        wallet = self.recipient_widget.address_edit.get_wallet_of_address()
+        if wallet:
+            self.setTabText(self.indexOf(self.recipient_widget), self.tab_string.format(id=wallet.id))
+            self.setTabBarAutoHide(
+                not self.tabText(self.indexOf(self.recipient_widget)) and not self.recipient_widget.allow_edit
+            )
+        else:
+            self.setTabText(self.indexOf(self.recipient_widget), self.title)
+            self.setTabBarAutoHide(
+                not self.tabText(self.indexOf(self.recipient_widget)) and not self.recipient_widget.allow_edit
+            )
 
 
 class Recipients(QtWidgets.QWidget):
-    signal_added_recipient = QtCore.pyqtSignal(RecipientGroupBox)
-    signal_removed_recipient = QtCore.pyqtSignal(RecipientGroupBox)
-    signal_clicked_send_max_button = QtCore.pyqtSignal(RecipientGroupBox)
-    signal_amount_changed = QtCore.pyqtSignal(RecipientGroupBox)
+    signal_added_recipient = pyqtSignal(RecipientTabWidget)
+    signal_removed_recipient = pyqtSignal(RecipientTabWidget)
+    signal_clicked_send_max_button = pyqtSignal(RecipientTabWidget)
+    signal_amount_changed = pyqtSignal(RecipientTabWidget)
 
-    def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True) -> None:
+    def __init__(
+        self, signals: Signals, network: bdk.Network, allow_edit=True, dismiss_label_on_focus_loss=False
+    ) -> None:
         super().__init__()
         self.signals = signals
         self.allow_edit = allow_edit
         self.network = network
+        self.dismiss_label_on_focus_loss = dismiss_label_on_focus_loss
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
@@ -334,23 +397,24 @@ class Recipients(QtWidgets.QWidget):
         self.recipient_list.setToolTip(self.tr("Recipients"))
         self.add_recipient_button.setText(self.tr("+ Add Recipient"))
 
-    def add_recipient(self, recipient: Recipient = None) -> RecipientGroupBox:
+    def add_recipient(self, recipient: Recipient = None) -> RecipientTabWidget:
         if recipient is None:
             recipient = Recipient("", 0)
-        recipient_box = RecipientGroupBox(
+        recipient_box = RecipientTabWidget(
             self.signals,
             network=self.network,
             allow_edit=self.allow_edit,
             title="Recipient" if self.allow_edit else "",
+            dismiss_label_on_focus_loss=self.dismiss_label_on_focus_loss,
         )
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
         if recipient.checked_max_amount:
-            recipient_box.send_max_button.click()
+            recipient_box.recipient_widget.send_max_button.click()
         if recipient.label:
             recipient_box.label = recipient.label
         recipient_box.signal_close.connect(self.remove_recipient_widget)
-        recipient_box.amount_spin_box.valueChanged.connect(
+        recipient_box.recipient_widget.amount_spin_box.valueChanged.connect(
             lambda *args: self.signal_amount_changed.emit(recipient_box)
         )
 
@@ -364,13 +428,13 @@ class Recipients(QtWidgets.QWidget):
 
         insert_before_button(recipient_box)
 
-        recipient_box.send_max_button.clicked.connect(
+        recipient_box.recipient_widget.send_max_button.clicked.connect(
             lambda: self.signal_clicked_send_max_button.emit(recipient_box)
         )
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 
-    def remove_recipient_widget(self, recipient_box: RecipientGroupBox) -> None:
+    def remove_recipient_widget(self, recipient_box: RecipientTabWidget) -> None:
         recipient_box.close()
         recipient_box.setParent(None)
         self.recipient_list.content_widget.layout().removeWidget(recipient_box)
@@ -384,7 +448,7 @@ class Recipients(QtWidgets.QWidget):
                 recipient_box.address,
                 recipient_box.amount,
                 recipient_box.label if recipient_box.label else None,
-                checked_max_amount=recipient_box.send_max_button.isChecked(),
+                checked_max_amount=recipient_box.recipient_widget.send_max_button.isChecked(),
             )
             for recipient_box in self.get_recipient_group_boxes()
         ]
@@ -398,5 +462,5 @@ class Recipients(QtWidgets.QWidget):
         for recipient in recipient_list:
             self.add_recipient(recipient)
 
-    def get_recipient_group_boxes(self) -> List[RecipientGroupBox]:
-        return self.recipient_list.findChildren(RecipientGroupBox)
+    def get_recipient_group_boxes(self) -> List[RecipientTabWidget]:
+        return self.recipient_list.findChildren(RecipientTabWidget)

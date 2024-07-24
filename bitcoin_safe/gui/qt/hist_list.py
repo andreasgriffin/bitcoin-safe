@@ -72,7 +72,7 @@ from enum import IntEnum
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.data import Data
 from PyQt6.QtCore import (
     QModelIndex,
     QPersistentModelIndex,
@@ -247,7 +247,7 @@ class HistList(MyTreeView):
         for wallet in get_wallets(self.signals):
             txdetails = wallet.get_tx(txid)
         if txdetails:
-            return Data(txdetails.transaction, DataType.Tx)
+            return Data.from_tx(txdetails.transaction)
         return None
 
     def drag_keys_to_file_paths(

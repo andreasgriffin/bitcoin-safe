@@ -49,6 +49,16 @@ repos:
           - types-toml
 
 
+  - repo: local
+    hooks:
+      - id: update-poetry-version
+        name: Update Poetry Version
+        entry: python .update_version.py  
+        language: python
+        always_run: true
+        files: pyproject.toml
+        additional_dependencies:
+          - toml
 
   # - repo: https://github.com/PyCQA/bandit
   #   rev: 1.7.6  # Use the latest version

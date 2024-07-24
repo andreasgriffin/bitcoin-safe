@@ -188,7 +188,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.group_qr_buttons.layout().addWidget(self.button_enlarge_qr)
 
         self.button_save_qr = QPushButton()
-        self.button_save_qr.setIcon(read_QIcon("download.png"))
+        # self.button_save_qr.setIcon(read_QIcon("download.png"))
         self.button_save_qr.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         self.button_save_qr.clicked.connect(self.export_qrcode)
         self.group_qr_buttons.layout().addWidget(self.button_save_qr)
@@ -226,7 +226,9 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.combo_qr_type.clear()
         for qr_type in qr_types:
             self.combo_qr_type.addItem(
-                self.tr("Show {} QR code").format(self.qr_types_descriptions[qr_type]), userData=qr_type
+                read_QIcon("qr-code.svg"),
+                self.tr("{} QR code").format(self.qr_types_descriptions[qr_type]),
+                userData=qr_type,
             )
         self.combo_qr_type.blockSignals(False)
 

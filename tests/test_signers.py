@@ -35,7 +35,7 @@ from uuid import uuid4
 import bdkpython as bdk
 import pytest
 from _pytest.logging import LogCaptureFixture
-from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.data import Data
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.signer import SignatureImporterClipboard
@@ -283,7 +283,7 @@ def test_signer_finalizes_ofn_final_sig_receive(
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.scan_result_callback(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
-            data=Data(bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3), DataType.PSBT),
+            data=Data.from_psbt(bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3)),
         )
 
     # Now check the argument with which the signal was emitted
@@ -310,7 +310,7 @@ def test_signer_recognizes_finalized_tx_received(
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.scan_result_callback(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
-            data=Data(bdk.Transaction(hex_to_serialized(fully_signed_tx)), DataType.Tx),
+            data=Data.from_tx(bdk.Transaction(hex_to_serialized(fully_signed_tx))),
         )
 
     # Now check the argument with which the signal was emitted

@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
+from bitcoin_qr_tools.data import Data
 from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -291,6 +292,7 @@ class QTWallet(QtWalletBase):
 
     def stop_sync_timer(self) -> None:
         self.timer_sync_retry.stop()
+        self.timer_sync_regularly.stop()
 
     def close(self) -> None:
         self.disconnect_signals()
@@ -551,40 +553,70 @@ class QTWallet(QtWalletBase):
         delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
         return delta_txs
 
-    def notify_on_new_txs(self, delta_txs: DeltaCacheListTransactions) -> None:
-        def format_txs(txs: List[bdk.TransactionDetails]) -> str:
-            return "  \n".join(
-                [
-                    f"{Satoshis( tx.received- tx.sent, self.config.network).str_as_change(unit=True)} in {short_tx_id( tx.txid)}"
-                    for tx in txs
-                ]
-            )
+    def format_txs(self, txs: List[bdk.TransactionDetails]) -> str:
+        return "\n".join(
+            [
+                self.tr("  {amount} in {shortid}").format(
+                    amount=Satoshis(tx.received - tx.sent, self.config.network).str_as_change(unit=True),
+                    shortid=short_tx_id(tx.txid),
+                )
+                for tx in txs
+            ]
+        )
+
+    def hanlde_removed_txs(self, removed_txs: List[bdk.TransactionDetails]) -> None:
+        if not removed_txs:
+            return
 
         # if transactions were removed (reorg or other), then recalculate everything
-        if delta_txs.removed:
+        message_content = self.tr(
+            "The transactions \n{txs}\n in wallet '{wallet}' were removed from the history!!!"
+        ).format(txs=self.format_txs(removed_txs), wallet=self.wallet.id)
+        Message(
+            message_content,
+            no_show=True,
+        ).emit_with(self.signals.notification)
+        if question_dialog(
+            message_content + "\n" + self.tr("Do you want to save a copy of these transactions?")
+        ):
+            folder_path = QFileDialog.getExistingDirectory(
+                self.parent(), "Select Folder to save the removed transactions"
+            )
+
+            if folder_path:
+                for tx in removed_txs:
+                    data = Data.from_tx(tx.transaction)
+                    filename = Path(folder_path) / f"{short_tx_id( tx.txid)}.tx"
+
+                    # create a file descriptor
+                    fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+                    data.write_to_filedescriptor(fd)
+                    logger.info(f"Exported {tx.txid} to {filename}")
+
+    def handle_appended_txs(self, appended_txs: List[bdk.TransactionDetails]) -> None:
+        if not appended_txs:
+            return
+
+        if len(appended_txs) == 1:
             Message(
-                self.tr(
-                    "The transactions {txs} in wallet '{wallet}' were removed from the history!!!"
-                ).format(txs=format_txs(delta_txs.removed), wallet=self.wallet.id),
+                self.tr("New transaction in wallet '{wallet}':\n{txs}").format(
+                    txs=self.format_txs(appended_txs), wallet=self.wallet.id
+                ),
                 no_show=True,
             ).emit_with(self.signals.notification)
-        elif delta_txs.appended:
-            if len(delta_txs.appended) == 1:
-                Message(
-                    self.tr("New transaction in wallet '{wallet}':\n{txs}").format(
-                        txs=format_txs(delta_txs.appended), wallet=self.wallet.id
-                    ),
-                    no_show=True,
-                ).emit_with(self.signals.notification)
-            else:
-                Message(
-                    self.tr("{number} new transactions in wallet '{wallet}':\n{txs}").format(
-                        number=len(delta_txs.appended),
-                        txs=format_txs(delta_txs.appended),
-                        wallet=self.wallet.id,
-                    ),
-                    no_show=True,
-                ).emit_with(self.signals.notification)
+        else:
+            Message(
+                self.tr("{number} new transactions in wallet '{wallet}':\n{txs}").format(
+                    number=len(appended_txs),
+                    txs=self.format_txs(appended_txs),
+                    wallet=self.wallet.id,
+                ),
+                no_show=True,
+            ).emit_with(self.signals.notification)
+
+    def handle_delta_txs(self, delta_txs: DeltaCacheListTransactions) -> None:
+        self.hanlde_removed_txs(delta_txs.removed)
+        self.handle_appended_txs(delta_txs.appended)
 
     def refresh_caches_and_ui_lists(self, threaded=ENABLE_THREADING, force_ui_refresh=True) -> None:
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
@@ -599,7 +631,7 @@ class QTWallet(QtWalletBase):
             change_dict = delta_txs.was_changed()
             logger.debug(f"change_dict={change_dict}")
             if force_ui_refresh or change_dict:
-                self.notify_on_new_txs(delta_txs)
+                self.handle_delta_txs(delta_txs)
 
                 # now do the UI
                 logger.debug("start refresh ui")

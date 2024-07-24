@@ -672,7 +672,7 @@ class MainWindow(QMainWindow):
             fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False) if fee is not None else None,
             confirmation_time=confirmation_time,
             blockchain=self.get_blockchain_of_any_wallet(),
-            data=Data(tx, data_type=DataType.Tx),
+            data=Data.from_tx(tx),
         )
 
         add_tab_to_tabs(
@@ -748,7 +748,7 @@ class MainWindow(QMainWindow):
             mempool_data=self.mempool_data,
             fee_info=fee_info,
             blockchain=self.get_blockchain_of_any_wallet(),
-            data=Data(psbt, data_type=DataType.PSBT),
+            data=Data.from_psbt(psbt),
         )
 
         psbt.extract_tx().txid()

@@ -155,7 +155,7 @@ class ButtonEdit(QWidget):
         self.input_field: Union[QTextEdit, QLineEdit] = input_field if input_field else QLineEdit(self)
         if text:
             self.input_field.setText(text)
-        self.button_container = (ButtonsField)(
+        self.button_container = ButtonsField(
             vertical_align=button_vertical_align
             if button_vertical_align
             else (
