@@ -92,13 +92,13 @@ chardet = ">=3.0.2"
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "0.2.3"
+version = "0.2.4"
 description = "A Nostr Chat with participant discovery"
 optional = false
 python-versions = "<3.12,>=3.8.1"
 files = [
-    {file = "bitcoin_nostr_chat-0.2.3-py3-none-any.whl", hash = "sha256:1f4ac9402a3fa4b9b8ce3c82ddd3b064a0face8865389ed8da813e5d73e8cc32"},
-    {file = "bitcoin_nostr_chat-0.2.3.tar.gz", hash = "sha256:43f294b2347193317fc67e07421abf0c37d3edfe058fed2d8f50063b0a4dcf1f"},
+    {file = "bitcoin_nostr_chat-0.2.4-py3-none-any.whl", hash = "sha256:115ec5919b7ab5c470cc096ef966fb211dbb0ebbe9d8136bcef4a76e0f1cdcf3"},
+    {file = "bitcoin_nostr_chat-0.2.4.tar.gz", hash = "sha256:26e0b29a1ac04ad06e87e665b8fca25956b61ad8b565429621bd700e793a9211"},
 ]
 
 [package.dependencies]
@@ -135,13 +135,13 @@ segno = "1.6.1"
 
 [[package]]
 name = "bitcoin-usb"
-version = "0.1.16"
+version = "0.2.0"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = "<3.12,>=3.8.1"
 files = [
-    {file = "bitcoin_usb-0.1.16-py3-none-any.whl", hash = "sha256:a3c516c8122eb5a10f2e6fa3d2fea2e8902b96a332374e036f9c46fadd58b638"},
-    {file = "bitcoin_usb-0.1.16.tar.gz", hash = "sha256:3c5a089aa8fbb78e416eb0e79dfcb11036d084468320cb3cd99274bc9704e0d3"},
+    {file = "bitcoin_usb-0.2.0-py3-none-any.whl", hash = "sha256:0ecfee874a98d9dc126969495a28503b01df4241f49dbad0a5a2337b4d22ec4e"},
+    {file = "bitcoin_usb-0.2.0.tar.gz", hash = "sha256:6ab911512fb3088b21c5af78ad25e892ccb35f7c60ed9d2dc506d5b66f0847be"},
 ]
 
 [package.dependencies]
@@ -2227,6 +2227,17 @@ files = [
 ]
 
 [[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -2401,4 +2412,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "2f05f12fff927ce9ebe60f16177071dc1932aea8b449dc6d7149c02ae4105706"
+content-hash = "d90c20d157e49c2b978f502a6b8278aabbba44f1c66b2576ef61a90882cdf56a"

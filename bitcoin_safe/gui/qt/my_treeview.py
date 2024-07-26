@@ -714,7 +714,7 @@ class MyTreeView(QTreeView):
     def export_as_csv(self, file_path=None) -> None:
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
-                self, "Export csv", "", "All Files (*);;Text Files (*.csv)"
+                self, self.tr("Export csv"), "", self.tr("All Files (*);;Text Files (*.csv)")
             )
             if not file_path:
                 logger.debug("No file selected")

@@ -69,13 +69,13 @@ from bitcoin_safe.gui.qt.tutorial_screenshots import (
     ScreenshotsViewSeed,
 )
 
-from ...pdfrecovery import make_and_open_pdf
+from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...tx import TxUiInfos
 from ...util import Satoshis
 from .qr_components.quick_receive import ReceiveGroup
 from .spinning_button import SpinningButton
-from .step_progress_bar import StepProgressContainer, TutorialWidget
+from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .taglist.main import hash_color
 from .util import (
     Message,
@@ -265,7 +265,9 @@ class BaseTab(QObject):
     def get_never_label_text(self) -> str:
         return html_f(
             html_f(
-                translate("tutorial", "Never share the 24 secret words with anyone!"),
+                translate("tutorial", "Never share the {number} secret words with anyone!").format(
+                    number=TEXT_24_WORDS
+                ),
                 p=True,
                 size=12,
                 color="red",
@@ -305,6 +307,14 @@ class BuyHardware(BaseTab):
         self.label_buy.setWordWrap(True)
         right_widget.layout().addWidget(self.label_buy)
 
+        self.button_buy_q = QPushButton()
+        self.button_buy_q.setIcon(QIcon(icon_path("coldcard-only.svg")))
+        self.button_buy_q.clicked.connect(
+            lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
+        )
+        right_widget.layout().addWidget(self.button_buy_q)
+        self.button_buy_q.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
+
         self.button_buycoldcard = QPushButton()
         self.button_buycoldcard.setIcon(QIcon(icon_path("coldcard-only.svg")))
         self.button_buycoldcard.clicked.connect(
@@ -331,7 +341,9 @@ class BuyHardware(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -343,7 +355,8 @@ class BuyHardware(BaseTab):
         )
 
         self.button_buybitbox.setText(self.tr("Buy a {name}").format(name="Bitbox02\nBitcoin Only Edition"))
-        self.button_buycoldcard.setText(self.tr("Buy a Coldcard\n5% off"))
+        self.button_buycoldcard.setText(self.tr("Buy a Coldcard Mk4\n5% off"))
+        self.button_buy_q.setText(self.tr("Buy a Coldcard Q\n5% off"))
         self.label_turn_on.setText(
             html_f(
                 self.tr("Turn on your {n} hardware signers").format(n=self.num_keystores())
@@ -374,8 +387,12 @@ class GenerateSeed(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -411,15 +428,21 @@ class ValidateBackup(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
 
     def updateUi(self) -> None:
         super().updateUi()
-        self.custom_yes_button.setText(self.tr("Yes, I am sure all 24 words are correct"))
+        self.custom_yes_button.setText(
+            self.tr("Yes, I am sure all {number} words are correct").format(number=TEXT_24_WORDS)
+        )
         self.custom_cancel_button.setText(self.tr("Previous Step"))
         self.screenshot.updateUi()
         self.never_label.setText(self.get_never_label_text())
@@ -481,14 +504,16 @@ class ImportXpubs(BaseTab):
         def callback() -> None:
             self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_tab)
             tutorial_widget.synchronize_visiblity(
-                self.refs.wallet_tabs, set_also_visible=bool(self.refs.qt_wallet)
+                VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
             )
 
         tutorial_widget.set_callback(callback)
         tutorial_widget.synchronize_visiblity(
-            self.refs.wallet_tabs, set_also_visible=bool(self.refs.qt_wallet)
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
         )
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -547,8 +572,12 @@ class BackupSeed(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -563,7 +592,7 @@ class BackupSeed(BaseTab):
             html_f(
                 f"""<ol>
         <li>{self.tr('Print the pdf (it also contains the wallet descriptor)')}</li>
-        <li>{self.tr('Write each 24-word seed onto the printed pdf.') if self.num_keystores()>1 else self.tr('Write the 24-word seed onto the printed pdf.') }</li>
+        <li>{self.tr('Write each {number} word seed onto the printed pdf.').format(number=TEXT_24_WORDS) if self.num_keystores()>1 else self.tr('Write the {number} word seed onto the printed pdf.').format(number=TEXT_24_WORDS) }</li>
         </ol>""",
                 add_html_and_body=True,
                 p=True,
@@ -642,8 +671,12 @@ class ReceiveTest(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -726,7 +759,9 @@ class RegisterMultisig(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
 
         def callback() -> None:
             if not self.refs.qt_wallet:
@@ -746,8 +781,12 @@ class RegisterMultisig(BaseTab):
                 )
 
         tutorial_widget.set_callback(callback)
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -807,8 +846,12 @@ class DistributeSeeds(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(self.refs.wallet_tabs, set_also_visible=False)
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
 
         self.updateUi()
         return tutorial_widget
@@ -917,13 +960,19 @@ class SendTest(BaseTab):
 
         tutorial_widget.set_callback(callback)
         tutorial_widget.synchronize_visiblity(
-            self.refs.wallet_tabs, set_also_visible=bool(self.refs.qt_wallet)
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
         )
-        tutorial_widget.synchronize_visiblity(self.refs.floating_button_box, set_also_visible=True)
-        tutorial_widget.synchronize_visiblity(tutorial_widget.button_box, set_also_visible=False)
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(
+                self.refs.floating_button_box, on_focus_set_visible=True, on_unfocus_set_visible=False
+            )
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(tutorial_widget.button_box, on_focus_set_visible=False)
+        )
         if self.refs.qt_wallet:
             tutorial_widget.synchronize_visiblity(
-                self.refs.qt_wallet.uitx_creator.button_box, set_also_visible=False
+                VisibilityOption(self.refs.qt_wallet.uitx_creator.button_box, on_focus_set_visible=False)
             )
 
         self.updateUi()

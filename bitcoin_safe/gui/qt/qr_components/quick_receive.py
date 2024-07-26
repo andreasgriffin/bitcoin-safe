@@ -83,7 +83,7 @@ class ReceiveGroup(TitledComponent):
         # QR Code
         self.qr_code = QRCodeWidgetSVG()
         self.qr_code.setMinimumHeight(30)
-        self.qr_code.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.qr_code.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.qr_code.set_data_list([qr_uri])
         self.layout().addWidget(self.qr_code)
 
@@ -98,7 +98,7 @@ class ReceiveGroup(TitledComponent):
             """
         )
 
-        self.text_edit.setFixedHeight(55)
+        self.text_edit.setFixedHeight(60)
         self.layout().addWidget(self.text_edit)
 
 

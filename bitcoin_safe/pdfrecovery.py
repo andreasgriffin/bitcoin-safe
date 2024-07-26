@@ -50,8 +50,12 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from bitcoin_safe.i18n import translate
+
 from .gui.qt.util import qicon_to_pil, read_QIcon
 from .wallet import Wallet
+
+TEXT_24_WORDS = translate("pdf", "12 or 24")
 
 
 def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
@@ -110,20 +114,26 @@ class BitcoinWalletRecoveryPDF:
         # Additional subtitle
         if num_signers == 1:
             instructions1 = Paragraph(
-                f"""1. Write the secret 24 words (Mnemonic Seed) in this table<br/>
+                translate(
+                    "pdf",
+                    """1. Write the secret {number} words (Mnemonic Seed) in this table<br/>
                 2. Fold this  paper at the line below <br/>
                 3. Put this paper in a secure location, where only you have access<br/>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 """,
+                ).format(number=TEXT_24_WORDS),
                 self.style_paragraph_left,
             )
         else:
             instructions1 = Paragraph(
-                f"""1. Write the secret 24 words (Mnemonic Seed) in this table<br/>
+                translate(
+                    "pdf",
+                    """1. Write the secret {number} words (Mnemonic Seed) in this table<br/>
                 2. Fold this  paper at the line below <br/>
                 3. Put each paper in a different secure location, where only you have access<br/>
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 """,
+                ).format(number=TEXT_24_WORDS),
                 self.style_paragraph_left,
             )
 
@@ -216,7 +226,10 @@ class BitcoinWalletRecoveryPDF:
             )
         else:
             desc_str = Paragraph(
-                f"The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret 24 words (Seed).",
+                translate(
+                    "pdf",
+                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret {number} words (Seed).",
+                ).format(number=TEXT_24_WORDS, wallet_descriptor_string=wallet_descriptor_string),
                 self.style_paragraph,
             )
         self.elements.append(create_table([[qr_image], [desc_str]], [250, 300]))

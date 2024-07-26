@@ -175,15 +175,23 @@ class SignatureImporterQR(AbstractSignatureImporter):
         logger.debug(str(data.data))
         if data.data_type == DataType.PSBT:
             scanned_psbt: bdk.PartiallySignedTransaction = data.data
-            assert self.txids_match(scanned_psbt, original_psbt), self.tr(
-                "The txid of the signed psbt doesnt match the original txid"
-            )
+
+            if not self.txids_match(scanned_psbt, original_psbt):
+                Message(
+                    self.tr("The txid of the signed psbt doesnt match the original txid"),
+                    type=MessageType.Error,
+                )
+                return
 
             logger.debug(str(scanned_psbt.serialize()))
             psbt2 = original_psbt.combine(scanned_psbt)
-            assert self.txids_match(psbt2, original_psbt), self.tr(
-                "The txid of the signed psbt doesnt match the original txid"
-            )
+
+            if not self.txids_match(psbt2, original_psbt):
+                Message(
+                    self.tr("The txid of the signed psbt doesnt match the original txid"),
+                    type=MessageType.Error,
+                )
+                return
 
             if psbt2.serialize() == original_psbt.serialize():
                 logger.debug(f"psbt unchanged {psbt2.serialize()}")
@@ -209,9 +217,6 @@ class SignatureImporterQR(AbstractSignatureImporter):
                     type=MessageType.Error,
                 )
                 return
-            # assert (
-            #     scanned_tx.txid() == original_psbt.txid()
-            # ), "The txid of the signed psbt doesnt match the original txid"
 
             # TODO: Actually check if the tx is fully signed
             self.signal_final_tx_received.emit(scanned_tx)

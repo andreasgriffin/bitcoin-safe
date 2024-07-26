@@ -28,13 +28,14 @@
 
 
 import logging
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
 import os
 import sys
 from math import ceil
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional
 
 from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -451,6 +452,7 @@ class AutoResizingStackedWidget(QWidget):
 class StepProgressContainer(QWidget):
     signal_set_current_widget = pyqtSignal(QWidget)
     signal_widget_focus = pyqtSignal(QWidget)
+    signal_widget_unfocus = pyqtSignal(QWidget)
 
     def __init__(
         self,
@@ -541,11 +543,15 @@ class StepProgressContainer(QWidget):
         self.set_focus(index)
 
     def set_focus(self, index: int) -> None:
-        if self.stacked_widget.currentIndex() == index:
+        old_index = self.stacked_widget.currentIndex()
+
+        if old_index == index:
             return
+
         self.stacked_widget.setCurrentIndex(index)
         self.horizontal_indicator.set_current_index(index)
 
+        self.signal_widget_unfocus.emit(self.stacked_widget.widget(old_index))
         self.signal_widget_focus.emit(self.stacked_widget.widget(index))
 
     def set_stacked_widget_visible(self, is_visible: bool) -> None:
@@ -553,7 +559,9 @@ class StepProgressContainer(QWidget):
         self.stacked_widget.setVisible(is_visible)
 
     def set_current_index(self, index: int) -> None:
-        if self.current_index() == index:
+        old_index = self.current_index()
+
+        if old_index == index:
             return
 
         self.step_bar.set_current_index(index)
@@ -561,6 +569,7 @@ class StepProgressContainer(QWidget):
         self.stacked_widget.setCurrentIndex(index)
 
         # this order is important:
+        self.signal_widget_unfocus.emit(self.stacked_widget.widget(old_index))
         self.signal_widget_focus.emit(self.stacked_widget.widget(index))
         # in the set_current_widget the callback functions are executed that may change the
         # visiblities. So it is critical to do the set_current_widget at the end.
@@ -578,6 +587,7 @@ class StepProgressContainer(QWidget):
         # Remove the old widget if there is one
         old_widget = self.stacked_widget.widget(index)
         if old_widget is not None:
+            self.signal_widget_unfocus.emit(old_widget)
             self.stacked_widget.removeWidget(old_widget)
 
         # Add the new custom widget for the step
@@ -592,6 +602,13 @@ class StepProgressContainer(QWidget):
             self.signal_widget_focus.emit(widget)
 
 
+@dataclass
+class VisibilityOption:
+    widget: QWidget
+    on_focus_set_visible: bool
+    on_unfocus_set_visible: Optional[bool] = None
+
+
 class TutorialWidget(QWidget):
     def __init__(
         self,
@@ -603,7 +620,7 @@ class TutorialWidget(QWidget):
         super().__init__()
         self.container = container
         self.button_box = button_box
-        self.external_widgets: List[Tuple[QWidget, bool]] = []
+        self.visibility_options: List[VisibilityOption] = []
         self.buttonbox_always_visible = buttonbox_always_visible
         self.callback_on_set_current_widget: Optional[Callable] = None
 
@@ -615,6 +632,7 @@ class TutorialWidget(QWidget):
         self.layout().addWidget(button_box)
 
         self.container.signal_set_current_widget.connect(self.on_set_current_widget)
+        self.container.signal_widget_unfocus.connect(self.on_widget_unfocus)
         self.container.signal_widget_focus.connect(self.on_widget_focus)
 
     def set_widget(self, widget: QWidget) -> None:
@@ -632,6 +650,18 @@ class TutorialWidget(QWidget):
         # Insert the new widget at position 0 in the layout
         self.layout().insertWidget(0, widget)
 
+    def on_widget_unfocus(self, widget: QWidget) -> None:
+        if self != widget:
+            return
+        logger.debug(f"on_widget_unfocus ")
+        logger.debug(f"unset visibility of {self.visibility_options}")
+        for visibility_option in self.visibility_options:
+            if visibility_option.on_unfocus_set_visible is not None:
+                visibility_option.widget.setVisible(visibility_option.on_unfocus_set_visible)
+                logger.debug(
+                    f"Setting {visibility_option.widget.__class__.__name__}.setVisible({visibility_option.on_unfocus_set_visible})"
+                )
+
     def on_widget_focus(self, widget: QWidget) -> None:
         if self != widget:
             return
@@ -641,10 +671,12 @@ class TutorialWidget(QWidget):
         )
         self.button_box.setVisible(active_eq_visible or self.buttonbox_always_visible)
 
-        logger.debug(f"set visibility of self.external_widgets  {self.external_widgets}")
-        for external_widget, set_also_visible in self.external_widgets:
-            external_widget.setVisible(set_also_visible)
-            logger.debug(f"Setting {external_widget.__class__.__name__}.setVisible({set_also_visible})")
+        logger.debug(f"set visibility of {self.visibility_options}")
+        for visibility_option in self.visibility_options:
+            visibility_option.widget.setVisible(visibility_option.on_focus_set_visible)
+            logger.debug(
+                f"Setting {visibility_option.widget.__class__.__name__}.setVisible({visibility_option.on_focus_set_visible})"
+            )
 
     def on_set_current_widget(self, widget: QWidget) -> None:
         if self != widget:
@@ -655,15 +687,14 @@ class TutorialWidget(QWidget):
             logger.debug(f"on_set_current_widget: doing callback: {self.callback_on_set_current_widget}")
             self.callback_on_set_current_widget()
 
-    def synchronize_visiblity(self, external_widget: QWidget, set_also_visible: bool) -> None:
-        existing_widgets = [t[0] for t in self.external_widgets]
-        if external_widget in existing_widgets:
+    def synchronize_visiblity(self, visibility_option: VisibilityOption) -> None:
+        existing_widgets = [t.widget for t in self.visibility_options]
+        if visibility_option.widget in existing_widgets:
             # handle the case that I set the visibility before
-            idx = existing_widgets.index(external_widget)
-            self.external_widgets[idx] = (external_widget, set_also_visible)
-
+            idx = existing_widgets.index(visibility_option.widget)
+            self.visibility_options[idx] = visibility_option
         else:
-            self.external_widgets.append((external_widget, set_also_visible))
+            self.visibility_options.append(visibility_option)
 
     def set_callback(self, callback: Callable) -> None:
         self.callback_on_set_current_widget = callback

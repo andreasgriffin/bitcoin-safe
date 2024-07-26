@@ -44,6 +44,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +117,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         parent=None,
         callback_enter=None,
         callback_esc=None,
-        file_filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
+        file_filter=translate("DragAndDropButtonEdit", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
     ) -> None:
         super().__init__(
             parent,
