@@ -33,6 +33,7 @@ from typing import Tuple
 from bitcoin_qr_tools.qr_widgets import EnlargableImageWidget
 
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
+from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
 
 logger = logging.getLogger(__name__)
 from PyQt6.QtGui import QFont
@@ -80,13 +81,17 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget = None) -> None:
         super().__init__(group, parent)
 
-        self.add_image_tab("coldcard-generate-seed.png", "Coldcard - Mk4")
-        self.add_image_tab("q-generate-seed.png", "Coldcard - Q")
+        self.add_image_tab("coldcard-generate-seed.png", "Coldcard - Mk4", size_hint=(400, 50))
+        self.add_image_tab("q-generate-seed.png", "Coldcard - Q", size_hint=(400, 50))
         # self.add_image_tab("bitbox02-generate-seed.png", "Bitbox02", size_hint=(500, 50))
         self.updateUi()
 
     def updateUi(self) -> None:
-        self.set_title(self.tr("Generate 24 secret seed words on each hardware signer"))
+        self.set_title(
+            self.tr("Generate {number} secret seed words on each hardware signer").format(
+                number=TEXT_24_WORDS
+            )
+        )
 
 
 class ScreenshotsExportXpub(ScreenshotsTutorial):
@@ -111,8 +116,8 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
     ) -> None:
         super().__init__(group, parent)
 
-        self.add_image_tab("coldcard-view-seed.png", "Coldcard - Mk4")
-        self.add_image_tab("q-view-seed.png", "Coldcard - Q")
+        self.add_image_tab("coldcard-view-seed.png", "Coldcard - Mk4", size_hint=(400, 50))
+        self.add_image_tab("q-view-seed.png", "Coldcard - Q", size_hint=(400, 50))
         # self.add_image_tab("bitbox02-view-seed.png", "Bitbox02", size_hint=(500, 50))
 
         self.title.setWordWrap(True)
@@ -121,8 +126,8 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
     def updateUi(self) -> None:
         self.set_title(
             self.tr(
-                "Compare the 24 words on the backup paper to 'View Seed Words' from Coldcard.\nIf you make a mistake here, your money is lost!"
-            )
+                "Compare the {number} words on the backup paper to 'View Seed Words' from Coldcard.\nIf you make a mistake here, your money is lost!"
+            ).format(number=TEXT_24_WORDS)
         )
 
 

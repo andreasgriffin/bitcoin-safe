@@ -498,13 +498,15 @@ class QTWallet(QtWalletBase):
             while not self._file_path:
                 self._file_path, _ = QFileDialog.getSaveFileName(
                     self.parent(),
-                    "Save wallet",
+                    self.tr("Save wallet"),
                     f"{os.path.join(self.config.wallet_dir, filename_clean(self.wallet.id))}",
-                    "All Files (*);;Wallet Files (*.wallet)",
+                    self.tr("All Files (*);;Wallet Files (*.wallet)"),
                 )
                 if not self._file_path and question_dialog(
-                    text=f"Are you SURE you don't want save the wallet {self.wallet.id}?",
-                    title="Delete wallet",
+                    text=self.tr("Are you SURE you don't want save the wallet {id}?").format(
+                        id=self.wallet.id
+                    ),
+                    title=self.tr("Delete wallet"),
                 ):
                     logger.debug("No file selected")
                     return None

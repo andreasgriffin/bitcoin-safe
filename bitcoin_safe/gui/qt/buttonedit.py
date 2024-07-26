@@ -322,12 +322,12 @@ class ButtonEdit(QWidget):
     def add_open_file_button(
         self,
         callback_open_filepath,
-        filter="All Files (*);;PSBT (*.psbt);;Transation (*.tx)",
+        filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
     ) -> QPushButton:
         def on_click() -> None:
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
-                translate("d", "Open Transaction/PSBT"),
+                translate("open_file", "Open Transaction/PSBT"),
                 "",
                 filter,
             )

@@ -5,7 +5,6 @@ compact-filters-*
 *.tx
 *.jsonl
 .directory
-.vscode
 coding_tests
 
 

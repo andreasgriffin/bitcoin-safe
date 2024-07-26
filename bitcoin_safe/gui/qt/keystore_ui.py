@@ -348,8 +348,12 @@ class KeyStoreUI(QObject):
             if signer_info.key_origin != expected_key_origin:
                 Message(
                     self.tr(
-                        "The xPub Origin {key_origin} is not the expected {expected_key_origin} for {self.get_address_type().name}"
-                    ).format(key_origin=signer_info.key_origin, expected_key_origin=expected_key_origin),
+                        "The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}"
+                    ).format(
+                        key_origin=signer_info.key_origin,
+                        expected_key_origin=expected_key_origin,
+                        address_type=self.get_address_type().name,
+                    ),
                     type=MessageType.Error,
                 )
                 return False

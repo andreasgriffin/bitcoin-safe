@@ -1,0 +1,129 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+    
+
+  {
+      "name": "Python: Module",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe",
+      "console": "integratedTerminal",
+      "args": [
+        // "--profile",  
+      ],
+      "justMyCode": false
+    },
+    {
+      "name": "Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "-vvv", 
+        "--ignore=coding_tests",
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Pytest gui",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [ 
+        "-vvv", 
+        "tests/gui",
+        "--ignore=coding_tests",
+        "-s",  // Disable all capturing of outputs        
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Pytest non-gui",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [ 
+        "-vvv", 
+        "--ignore=tests/gui",
+        "--ignore=coding_tests",
+        "-s",  // Disable all capturing of outputs        
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },   {
+      "name": "taglist",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.taglist",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "network settings",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.network_settings",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
+      "name": "step_progress_bar",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.gui.qt.step_progress_bar",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },{
+      "name": "Translation update",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+          "--update_translations" 
+    ],
+      "console": "integratedTerminal"
+  },{
+    "name": "Translation csv to ts",
+    "type": "python",
+    "request": "launch",
+    "program": "tools/build.py",
+    "args": [
+        "--csv_to_ts" 
+  ],
+    "console": "integratedTerminal"
+},{
+  "name": "Build",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets", 
+  //     // "deb", 
+      // "appimage",
+      // "--sign",
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Sign",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      // "--targets", 
+  //     // "deb", 
+      // "appimage",
+      "--sign",
+],
+  "console": "integratedTerminal"
+},{
+    "name": "Python: Current File",
+    "type": "python",
+    "request": "launch",
+    "program": "${file}",
+    "console": "integratedTerminal"
+}
+
+  ]
+}

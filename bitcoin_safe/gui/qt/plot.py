@@ -85,20 +85,8 @@ class BalanceChart(QWidget):
             import math
 
             magnitude = int(math.log10(abs(max_value)))
+            decimals = -min(magnitude, 0) + 1
 
-            # Decide the number of decimal places based on the magnitude
-            if magnitude < 1:
-                # Small values, more precision
-                decimals = 3
-            elif magnitude < 3:
-                # Moderate values
-                decimals = 2
-            elif magnitude < 5:
-                # Larger values, less precision needed
-                decimals = 1
-            else:
-                # Very large values, no decimals needed
-                decimals = 0
         else:
             # Default to three decimal places if max_value is 0
             decimals = 3

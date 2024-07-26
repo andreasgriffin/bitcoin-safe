@@ -93,6 +93,16 @@ def get_latest_git_tag() -> Optional[str]:
         return None
 
 
+def get_checkout_main():
+    try:
+        # Retrieve the list of remotes and their URLs
+        result = subprocess.run(["git", "checkout", "main"], check=True, text=True, capture_output=True)
+        return
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to checkout main: {e}")
+        return None
+
+
 def get_default_remote():
     try:
         # Retrieve the list of remotes and their URLs
@@ -239,6 +249,7 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
 
 
 def main() -> None:
+    get_checkout_main()
 
     print("Running tests before proceeding...")
     run_pytest()

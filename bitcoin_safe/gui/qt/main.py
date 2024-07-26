@@ -356,7 +356,7 @@ class MainWindow(QMainWindow):
         self.menu_action_export_for_coldcard.setText(self.tr("&Export for Coldcard"))
         self.menu_action_refresh_wallet.setText(self.tr("Re&fresh"))
         self.menu_transaction.setTitle(self.tr("&Transaction"))
-        self.menu_load_transaction.setTitle(self.tr("&Transaction and PSBT"))
+        self.menu_load_transaction.setTitle(self.tr("&Load Transaction or PSBT"))
         self.menu_action_open_tx_file.setText(self.tr("From &file"))
         self.menu_action_open_tx_from_str.setText(self.tr("From &text"))
         self.menu_action_load_tx_from_qr.setText(self.tr("From &QR Code"))
@@ -797,7 +797,7 @@ class MainWindow(QMainWindow):
                 self,
                 self.tr("Open Wallet"),
                 self.config.wallet_dir,
-                self.tr("Wallet Files (*.wallet)"),
+                self.tr("Wallet Files (*.wallet);;All Files (*)"),
             )
             if not file_path:
                 logger.debug("No file selected")
