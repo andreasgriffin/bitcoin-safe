@@ -29,7 +29,6 @@
 
 import io
 import os
-import webbrowser
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -52,7 +51,7 @@ from reportlab.platypus import (
 
 from bitcoin_safe.i18n import translate
 
-from .gui.qt.util import qicon_to_pil, read_QIcon
+from .gui.qt.util import qicon_to_pil, read_QIcon, xdg_open_file
 from .wallet import Wallet
 
 TEXT_24_WORDS = translate("pdf", "12 or 24")
@@ -279,8 +278,7 @@ class BitcoinWalletRecoveryPDF:
 
     def open_pdf(self, filename: str) -> None:
         if os.path.exists(filename):
-            file_uri = Path(filename).absolute().as_uri()
-            webbrowser.open_new_tab(file_uri)
+            xdg_open_file(Path(filename))
         else:
             print("File not found!")
 

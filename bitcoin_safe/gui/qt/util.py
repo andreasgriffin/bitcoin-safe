@@ -32,10 +32,12 @@ import logging
 import os
 import os.path
 import platform
+import subprocess
 import sys
 import traceback
 import webbrowser
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Callable, List, Optional, Tuple
 from urllib.parse import urlparse
 
@@ -114,6 +116,16 @@ TX_ICONS = [
 
 class QtWalletBase(QWidget):
     pass
+
+
+def xdg_open_file(filename: Path):
+    system_name = platform.system()
+    if system_name == "Windows":
+        subprocess.call(["start", str(filename)], shell=True)
+    elif system_name == "Darwin":  # macOS
+        subprocess.call(["open", str(filename)])
+    elif system_name == "Linux":  # Linux
+        subprocess.call(["xdg-open", str(filename)])
 
 
 def sort_id_to_icon(sort_id: int) -> str:

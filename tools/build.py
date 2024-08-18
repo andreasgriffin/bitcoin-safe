@@ -40,7 +40,7 @@ from pathlib import Path
 from subprocess import CompletedProcess
 from typing import List, Literal, Tuple, Union
 
-import toml
+import tomlkit
 
 from bitcoin_safe import __version__
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureSigner
@@ -58,7 +58,7 @@ class TranslationHandler:
     def __init__(
         self,
         module_name,
-        languages=["zh_CN", "es_ES", "ru_RU", "hi_IN", "pt_PT", "ja_JP", "ar_AE"],
+        languages=["zh_CN", "es_ES", "ru_RU", "hi_IN", "pt_PT", "ja_JP", "ar_AE", "it_IT"],
         prefix="app",
     ) -> None:
         self.module_name = module_name
@@ -197,7 +197,7 @@ class Builder:
     ):
         # Load pyproject.toml
         with open(pyproject_path, "r") as file:
-            pyproject_data = toml.load(file)
+            pyproject_data = tomlkit.load(file)
 
         # Load and parse poetry lock file
         with open(poetry_lock_path, "r") as file:
@@ -229,7 +229,7 @@ class Builder:
 
         # Write updated pyproject.toml
         with open(pyproject_path, "w") as file:
-            toml.dump(pyproject_data, file)
+            tomlkit.dump(pyproject_data, file)
 
     def briefcase_appimage(self):
         run_local("poetry run briefcase -u  package    linux  appimage")
@@ -243,23 +243,29 @@ class Builder:
     def briefcase_deb(self):
         # _run_local(" briefcase -u  package --target ubuntu:23.10") # no bdkpython for python3.11
         # _run_local(" briefcase -u  package --target ubuntu:23.04") # no bdkpython for python3.11
-        run_local("poetry run briefcase -u  package --target ubuntu:22.04")
+        run_local("poetry run briefcase -u  package --target ubuntu:22.04 -p deb")
 
-    def package_application(self, targets: List[Literal["windows", "mac", "appimage", "deb", "snap"]]):
+    def briefcase_flatpak(self):
+        run_local("poetry run briefcase   package linux flatpak")
+
+    def package_application(self, targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]]):
         if self.version is None:
             print("Version could not be determined.")
             return
-
         shutil.rmtree("build")
         self.update_briefcase_requires()
-        if "appimage" in targets:
-            self.briefcase_appimage()
-        if "windows" in targets:
-            self.briefcase_windows()
-        if "mac" in targets:
-            self.briefcase_mac()
-        if "deb" in targets:
-            self.briefcase_deb()
+
+        f_map = {
+            "appimage": self.briefcase_appimage,
+            "windows": self.briefcase_windows,
+            "mac": self.briefcase_mac,
+            "deb": self.briefcase_deb,
+            "flatpak": self.briefcase_flatpak,
+            "snap": self.build_snap,
+        }
+
+        for target in targets:
+            f_map[target]()
 
         # if "linux" in targets:
         #     self.create_briefcase_binaries_in_docker(target_platform="linux")
@@ -270,9 +276,6 @@ class Builder:
 
         # if "appimage" in targets:
         #     self.create_appimage_with_appimage_tool()
-        # if "snap" in targets:
-        #     self.create_snapcraft_yaml()
-        #     subprocess.run(["snapcraft"], cwd="./")
 
         print(f"Packaging completed for version {self.version}.")
 
@@ -303,12 +306,121 @@ class Builder:
                 return False
         return True
 
+    def build_snap(self):
+        """
+        Build a Snap package for a Python application.
+        """
+
+        # Create necessary directories
+        build_snap_dir = Path(self.build_dir) / "snap"
+        bin_dir = build_snap_dir / "bin"
+        gui_dir = build_snap_dir / "gui"
+
+        os.makedirs(build_snap_dir, exist_ok=True)
+        os.makedirs(bin_dir, exist_ok=True)
+        os.makedirs(gui_dir, exist_ok=True)
+
+        # Copy the entire module folder to the build/snap directory
+        src_folder = Path(self.module_name)
+        dst_folder = build_snap_dir / self.module_name
+        if dst_folder.exists():
+            shutil.rmtree(dst_folder)  # Remove if already exists to avoid conflicts
+        shutil.copytree(src_folder, dst_folder)
+
+        # Copy the application entry point to the build/snap/bin directory
+        app_entry_point = src_folder / "__main__.py"
+        shutil.copy(app_entry_point, bin_dir)
+
+        # Create desktop file in the gui subfolder
+        app_name = self.app_name_formatter(self.module_name).lower()
+        desktop_file_path = gui_dir / f"{app_name}.desktop"
+        with open(desktop_file_path, "w") as desktop_file:
+            desktop_file.write(
+                f"""
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name={app_name}
+Exec={app_name}
+Icon={app_name}/gui/icons/logo.svg
+Comment={app_name} application
+Terminal=false
+Categories=Utility;
+        """
+            )
+
+        # Path to snapcraft.yaml
+        snapcraft_yaml_path = build_snap_dir / "snapcraft.yaml"
+
+        # Generate a basic snapcraft.yaml if it doesn't exist
+        if not snapcraft_yaml_path.exists():
+            with open(snapcraft_yaml_path, "w") as snapcraft_file:
+                snapcraft_file.write(
+                    f"""
+name: {app_name}
+version: '{self.version}'
+summary: {app_name} Snap Package
+description: |
+    This is a Snap package for {app_name}.
+
+grade: stable
+confinement: strict
+base: core22  # Base set to Ubuntu 22.04
+
+parts:
+    {app_name}:
+        plugin: python
+        python-packages: ['PyQt6']
+        source: .
+        stage-packages:
+            - libqt6gui6
+            - libqt6widgets6
+            - libqt6core6
+            - libqt6network6
+            - libqt6svg6 
+            
+            
+apps:
+    {app_name}:
+        command: python -m {self.module_name}
+
+        plugs:
+            - raw-usb
+            - hardware-observe
+
+        desktop: $SNAP/gui/{app_name}.desktop 
+            """
+                )
+
+        # Check if Snapcraft is installed
+        os.chdir(build_snap_dir)
+        run_local("snapcraft")
+
+        # Find the resulting .snap file
+        dist_dir = Path(self.build_dir) / "dist"
+        dist_dir.mkdir(exist_ok=True)
+        snap_file = next(build_snap_dir.glob("*.snap"), None)
+
+        if snap_file:
+            # Move the resulting Snap file to the dist directory
+            shutil.move(snap_file, dist_dir / snap_file.name)
+            print(f"Snap package built successfully: {dist_dir / snap_file.name}")
+        else:
+            raise RuntimeError("Snap package build was successful, but the .snap file was not found.")
+
+        # Return to the original directory
+        os.chdir(Path.cwd().parent.parent.parent)
+
 
 def get_default_targets() -> List[str]:
     if platform.system() == "Windows":
         return ["windows"]
     elif platform.system() == "Linux":
-        return ["appimage"]
+        return [
+            "appimage",
+            # "flatpak",
+            "deb",
+        ]
     elif platform.system() == "Darwin":
         return ["mac"]
     return []
@@ -317,12 +429,11 @@ def get_default_targets() -> List[str]:
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Package the Python application.")
-    parser.add_argument("--snap", action="store_true", help="Build a snap package")
     parser.add_argument("--clean", action="store_true", help=f"Removes the {Builder.build_dir} folder")
     parser.add_argument(
         "--targets",
         nargs="*",
-        help=f"The targets: linux windows mac appimage snap .  The default is {get_default_targets()}",
+        help=f"The target formats.  The default is {get_default_targets()}",
     )
     parser.add_argument("--sign", action="store_true", help="Signs all files in dist")
     parser.add_argument("--verify", action="store_true", help="Signs all files in dist")
