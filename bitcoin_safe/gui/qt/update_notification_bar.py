@@ -195,7 +195,10 @@ class UpdateNotificationBar(NotificationBar):
             ):
                 continue
             elif platform.system() == "Linux" and not any(
-                [asset.name.endswith(ending) for ending in ["AppImage", "deb", "rpm"]]
+                [
+                    asset.name.endswith(ending)
+                    for ending in ["AppImage", "deb", "rpm", "flatpak", "snap", "pkg.tar.zst"]
+                ]
             ):
                 continue
             elif platform.system() == "Darwin" and not any(

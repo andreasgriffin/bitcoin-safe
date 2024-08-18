@@ -213,7 +213,7 @@ def test_tutorial_wallet_setup(
         def page4() -> None:
             shutter.save(main_window)
             step: BackupSeed = wallet_steps.tab_generators[TutorialStep.backup_seed]
-            with patch("webbrowser.open_new_tab") as mock_open:
+            with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                 assert step.custom_yes_button.isVisible()
                 step.custom_yes_button.click()
                 mock_open.assert_called_once()
