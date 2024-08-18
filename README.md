@@ -18,7 +18,7 @@
   - Wallet chat and sharing of PSBTs (via nostr)
   - Label synchronization between trusted devices (via nostr)
 - **Multi-Language**:
-  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, (more upon request)
+  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, (more upon request)
 - **Fast**: 
   - Electrum server connectivity 
   - planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release
@@ -50,12 +50,6 @@
 
 ## Full Features List
 
-- **Connectivity Features**
-  
-  - Electrum Servers
-  - Esplora Server
-  - RPC Bitcoin Node
-
 - **Import and Export Capabilities**
   
   - CSV export for all lists
@@ -65,9 +59,11 @@
 
 - **Wallet Features**
   
+  - Simplified address labeling using categories like KYC, Non-KYC, Work, Friends
+  - Cancel unconfirmed transactions (via Replace-by-Fee)
+  - Bump fee on transactions (via Replace-by-Fee)
   - Encrypted wallet storage
   - Backup PDF with Descriptor (Text and QR code)
-  - Simplified address labeling using categories like KYC, Non-KYC, Work, Friends
 
 - **Hardware Signer Connectivity**
   
@@ -83,7 +79,7 @@
 
 - **Languages**
   
-  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, (more upon request)
+  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, (more upon request)
 
 - **Transaction / PSBT Creation**
   

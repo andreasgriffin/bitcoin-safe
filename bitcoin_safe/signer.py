@@ -32,6 +32,7 @@ from typing import List
 
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PubKeyInfo
 
 from .dynamic_lib_load import setup_libsecp256k1
@@ -46,12 +47,12 @@ import bdkpython as bdk
 from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_usb.gui import USBGui
-from bitcoin_usb.psbt_finalizer import PSBTFinalizer
+from bitcoin_usb.psbt_tools import PSBTTools
 from bitcoin_usb.software_signer import SoftwareSigner
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from .keystore import KeyStoreImporterTypes
-from .util import tx_of_psbt_to_hex
+from .util import tx_of_psbt_to_hex, tx_to_hex
 from .wallet import Wallet
 
 
@@ -63,19 +64,17 @@ class AbstractSignatureImporter(QObject):
     def __init__(
         self,
         network: bdk.Network,
-        blockchain: bdk.Blockchain,
         signature_available: bool = False,
         key_label: str = "",
-        pub_keys_without_signature: List[PubKeyInfo] = None,
+        pub_keys_without_signature: List[PubKeyInfo] | None = None,
     ) -> None:
         super().__init__()
         self.network = network
-        self.blockchain = blockchain
         self.signature_available = signature_available
         self.key_label = key_label
         self.pub_keys_without_signature = pub_keys_without_signature
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         pass
 
     @property
@@ -104,7 +103,6 @@ class SignatureImporterWallet(AbstractSignatureImporter):
     ) -> None:
         super().__init__(
             network=network,
-            blockchain=wallet.blockchain,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=[
@@ -123,7 +121,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
     def can_sign(self) -> bool:
         return bool(self.software_signers)
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         for software_signer in self.software_signers:
@@ -147,7 +145,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
 
     @property
     def label(self) -> str:
-        return f"Sign with mnemonic seed"
+        return self.tr("Sign with mnemonic seed")
 
 
 class SignatureImporterQR(AbstractSignatureImporter):
@@ -156,20 +154,19 @@ class SignatureImporterQR(AbstractSignatureImporter):
     def __init__(
         self,
         network: bdk.Network,
-        blockchain: bdk.Blockchain,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
-        label: str = None,
+        label: str | None = None,
     ) -> None:
         super().__init__(
             network=network,
-            blockchain=blockchain,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
         )
         self._label = label if label else self.tr("Scan QR code")
+        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
 
     def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
         logger.debug(str(data.data))
@@ -194,11 +191,14 @@ class SignatureImporterQR(AbstractSignatureImporter):
                 return
 
             if psbt2.serialize() == original_psbt.serialize():
-                logger.debug(f"psbt unchanged {psbt2.serialize()}")
+                Message(
+                    self.tr("No additional signatures were added"),
+                    type=MessageType.Error,
+                )
                 return
 
             # check if the tx can be finalized:
-            finalized_tx = PSBTFinalizer.finalize(psbt2)
+            finalized_tx = PSBTTools.finalize(psbt2, network=self.network)
             if finalized_tx:
                 assert finalized_tx.txid() == original_psbt.txid(), self.tr(
                     "bitcoin_tx libary error. The txid should not be changed during finalizing"
@@ -217,18 +217,26 @@ class SignatureImporterQR(AbstractSignatureImporter):
                     type=MessageType.Error,
                 )
                 return
+            if tx_to_hex(scanned_tx) == tx_to_hex(original_psbt.extract_tx()):
+                Message(
+                    self.tr("No additional signatures were added"),
+                    type=MessageType.Error,
+                )
+                return
 
             # TODO: Actually check if the tx is fully signed
             self.signal_final_tx_received.emit(scanned_tx)
         else:
             logger.warning(f"Datatype {data.data_type} is not valid for importing signatures")
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
-
-        window = BitcoinVideoWidget(
-            result_callback=lambda data: self.scan_result_callback(psbt, data), network=self.network
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
+        self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network)
+        self._temp_bitcoin_video_widget.signal_data.connect(
+            lambda data: self.scan_result_callback(psbt, data)
         )
-        window.show()
+        self._temp_bitcoin_video_widget.show()
 
     @property
     def label(self) -> str:
@@ -241,25 +249,23 @@ class SignatureImporterFile(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
-        blockchain: bdk.Blockchain,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
-        label: str = "Import file",
+        label: str = translate("importer", "Import file"),
     ) -> None:
         super().__init__(
             network=network,
-            blockchain=blockchain,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
             label=label,
         )
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         tx_dialog = ImportDialog(
             network=self.network,
-            window_title="Import signed PSBT",
+            window_title=self.tr("Import signed PSBT"),
             on_open=lambda s: self.scan_result_callback(psbt, Data.from_str(s, network=self.network)),
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
@@ -279,22 +285,20 @@ class SignatureImporterClipboard(SignatureImporterFile):
     def __init__(
         self,
         network: bdk.Network,
-        blockchain: bdk.Blockchain,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
-        label: str = "Import Signature",
+        label: str = translate("importer", "Import Signature"),
     ) -> None:
         super().__init__(
             network=network,
-            blockchain=blockchain,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
             label=label,
         )
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
@@ -316,16 +320,14 @@ class SignatureImporterUSB(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
-        blockchain: bdk.Blockchain,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
-        label: str = None,
+        label: str | None = None,
     ) -> None:
         label = label if label else self.tr("USB Signing")
         super().__init__(
             network=network,
-            blockchain=blockchain,
             signature_available=signature_available,
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
@@ -333,7 +335,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         )
         self.usb = USBGui(self.network)
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions = None):
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         try:
             signed_psbt = self.usb.sign(psbt)
             if signed_psbt:

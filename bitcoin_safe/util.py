@@ -53,6 +53,8 @@
 import json
 import logging
 
+from bitcoin_safe.gui.qt.data_tab_widget import T
+
 logger = logging.getLogger(__name__)
 
 import builtins
@@ -77,7 +79,7 @@ from typing import (
     Union,
 )
 
-from PyQt6.QtCore import QLocale
+from PyQt6.QtCore import QByteArray, QLocale
 
 from .i18n import translate
 
@@ -103,6 +105,14 @@ TX_STATUS = [
 import bdkpython as bdk
 
 
+def is_int(a: Any) -> bool:
+    try:
+        int(a)
+    except:
+        return False
+    return True
+
+
 def path_to_rel_home_path(path: Union[Path, str]) -> Path:
     try:
 
@@ -125,6 +135,10 @@ def hex_to_serialized(hex_string: str):
 
 def tx_of_psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
     return serialized_to_hex(psbt.extract_tx().serialize())
+
+
+def tx_to_hex(tx: bdk.Transaction):
+    return serialized_to_hex(tx.serialize())
 
 
 def call_call_functions(functions: List[Callable]):
@@ -264,7 +278,7 @@ def clean_dict(d: Dict):
     return {k: v for k, v in d.items() if v}
 
 
-def clean_list(l: List):
+def clean_list(l: Iterable[T | None]) -> List[T]:
     return [v for v in l if v]
 
 
@@ -416,7 +430,7 @@ def color_format_str(
 
 
 def format_dollar(value: float) -> str:
-    return f"${round(value, 2)}"
+    return f"${value:.2f}"
 
 
 # Main formatting function
@@ -545,7 +559,7 @@ class Satoshis:
         return summed
 
 
-def resource_path(*parts):
+def resource_path(*parts: str):
     return os.path.join(pkg_dir, *parts)
 
 
@@ -555,6 +569,10 @@ pkg_dir = os.path.split(os.path.realpath(__file__))[0]
 
 def unit_str(network: bdk.Network) -> str:
     return "BTC" if network is None or network == bdk.Network.BITCOIN else "tBTC"
+
+
+def unit_sat_str(network: bdk.Network) -> str:
+    return "Sat" if network is None or network == bdk.Network.BITCOIN else "tSat"
 
 
 def unit_fee_str(network: bdk.Network) -> str:
@@ -569,7 +587,7 @@ def format_fee_rate(fee_rate: float, network: bdk.Network) -> str:
 def age(
     from_date: Union[int, float, None, timedelta],  # POSIX timestamp
     *,
-    since_date: datetime = None,
+    since_date: datetime | None = None,
     target_tz=None,
     include_seconds: bool = False,
 ) -> str:
@@ -655,7 +673,7 @@ def confirmation_wait_formatted(projected_mempool_block_index: int):
     return age(estimated_duration)
 
 
-def block_explorer_URL(mempool_url: str, kind: str, item: str) -> Optional[str]:
+def block_explorer_URL(mempool_url: str, kind: Literal["tx", "addr"], item: str) -> Optional[str]:
     explorer_url, explorer_dict = mempool_url, {
         "tx": "tx/",
         "addr": "address/",
@@ -763,3 +781,11 @@ def calculate_ema(data, alpha=0.1):
 def briefcase_project_dir() -> Path:
     # __file__ == /tmp/.mount_Bitcoix7tQIZ/usr/app/bitcoin_safe/util.py
     return Path(__file__).parent
+
+
+def qbytearray_to_str(a: QByteArray) -> str:
+    return a.data().decode()
+
+
+def str_to_qbytearray(s: str) -> QByteArray:
+    return QByteArray(s.encode())  # type: ignore[call-overload]

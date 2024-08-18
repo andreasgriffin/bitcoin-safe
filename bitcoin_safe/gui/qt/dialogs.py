@@ -28,8 +28,11 @@
 
 
 import logging
-import os
+from pathlib import Path
 from typing import Optional
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 
 from .util import create_button_box, read_QIcon
 
@@ -49,7 +52,7 @@ from ...wallet import filename_clean
 
 
 def question_dialog(
-    text="", title="", buttons=QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Yes
+    text="", title="Question", buttons=QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Yes
 ) -> bool:
     msg_box = QMessageBox()
     msg_box.setWindowTitle(title)
@@ -79,29 +82,45 @@ class PasswordQuestion(QDialog):
         self.setWindowTitle(self.tr("Password Input"))
         self.setWindowIcon(read_QIcon("logo.svg"))
 
-        self.layout = QVBoxLayout(self)
+        self._layout = QVBoxLayout(self)
 
         label_text = label_text if label_text else self.tr("Please enter your password:")
         self.label = QLabel(label_text)
-        self.layout.addWidget(self.label)
+        self._layout.addWidget(self.label)
 
         self.password_input = QLineEdit(self)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-        self.layout.addWidget(self.password_input)
+        self._layout.addWidget(self.password_input)
+
+        # Create show/hide icons
+        self.icon_show = create_icon_from_unicode("👁", size=18)
+        self.icon_hide = create_icon_from_unicode("🙈", size=18)
+
+        # Toggle password visibility action
+        self.toggle_action = QAction(self.icon_show, self.tr("Show Password"), self)
+        self.toggle_action.setFont(QFont("Arial", 12))  # Ensure Unicode support
+        self.toggle_action.triggered.connect(self.toggle_password_visibility)
+        self.password_input.addAction(self.toggle_action, QLineEdit.ActionPosition.TrailingPosition)
 
         self.submit_button = QPushButton(self.tr("Submit"), self)
         self.submit_button.clicked.connect(self.accept)
-        self.layout.addWidget(self.submit_button)
+        self._layout.addWidget(self.submit_button)
+
+    def toggle_password_visibility(self):
+        if self.password_input.echoMode() == QLineEdit.EchoMode.Password:
+            self.password_input.setEchoMode(QLineEdit.EchoMode.Normal)
+            self.toggle_action.setIcon(self.icon_hide)
+            self.toggle_action.setText(self.tr("Hide Password"))
+        else:
+            self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+            self.toggle_action.setIcon(self.icon_show)
+            self.toggle_action.setText(self.tr("Show Password"))
 
     def ask_for_password(self) -> Optional[str]:
         if self.exec() == QDialog.DialogCode.Accepted:
             return self.password_input.text()
         else:
             return None
-
-
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 
 
 def create_icon_from_unicode(unicode_char, font_name="Arial", size=18) -> QIcon:
@@ -126,16 +145,16 @@ class PasswordCreation(QDialog):
         window_title = window_title if window_title else self.tr("Create Password")
         self.setWindowTitle(window_title)
 
-        self.layout = QVBoxLayout(self)
+        self._layout = QVBoxLayout(self)
 
         # First password input
         label_text = label_text if label_text else self.tr("Enter your password:")
         self.label1 = QLabel(label_text)
-        self.layout.addWidget(self.label1)
+        self._layout.addWidget(self.label1)
 
         self.password_input1 = QLineEdit(self)
         self.password_input1.setEchoMode(QLineEdit.EchoMode.Password)
-        self.layout.addWidget(self.password_input1)
+        self._layout.addWidget(self.password_input1)
 
         self.icon_show = create_icon_from_unicode("👁", size=18)
         self.icon_hide = create_icon_from_unicode("🙈", size=18)
@@ -150,11 +169,11 @@ class PasswordCreation(QDialog):
 
         # Second password input
         self.label2 = QLabel(self.tr("Re-enter your password:"))
-        self.layout.addWidget(self.label2)
+        self._layout.addWidget(self.label2)
 
         self.password_input2 = QLineEdit(self)
         self.password_input2.setEchoMode(QLineEdit.EchoMode.Password)
-        self.layout.addWidget(self.password_input2)
+        self._layout.addWidget(self.password_input2)
 
         # Show password action for the second input
         # self.show_password_action2 = QAction(self.icon_show, "Show Password")
@@ -170,7 +189,7 @@ class PasswordCreation(QDialog):
         # Submit button
         self.submit_button = QPushButton(self.tr("Submit"), self)
         self.submit_button.clicked.connect(self.verify_password)
-        self.layout.addWidget(self.submit_button)
+        self._layout.addWidget(self.submit_button)
 
     def toggle_password_visibility(self) -> None:
         new_visibility = self.password_input1.echoMode() == QLineEdit.EchoMode.Password
@@ -212,14 +231,16 @@ class PasswordCreation(QDialog):
 
 
 class WalletIdDialog(QDialog):
-    def __init__(self, wallet_dir, parent=None, window_title=None, label_text=None, prefilled=None) -> None:
+    def __init__(
+        self, wallet_dir: Path, parent=None, window_title=None, label_text=None, prefilled=None
+    ) -> None:
         super().__init__(parent)
         self.wallet_dir = wallet_dir
         window_title = window_title if window_title else self.tr("Choose wallet name")
         self.setWindowTitle(window_title)
 
         # Create layout
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         # Add name label and input field
         label_text = label_text if label_text else self.tr("Wallet name:")
@@ -233,19 +254,26 @@ class WalletIdDialog(QDialog):
         layout.addWidget(self.buttonbox)
 
         # Set the layout
-        self.setLayout(layout)
         self.name_input.setFocus()
 
     def check_wallet_existence(self) -> None:
-        chosen_wallet_id = self.name_input.text()
-
-        wallet_file = os.path.join(self.wallet_dir, filename_clean(chosen_wallet_id))
-        if os.path.exists(wallet_file):
+        wallet_file = self.wallet_dir / self.filename
+        if wallet_file.exists():
             QMessageBox.warning(
-                self, self.tr("Error"), self.tr("A wallet with the same name already exists.")
+                self,
+                self.tr("Error"),
+                self.tr("The wallet {filename} exists already.").format(filename=wallet_file),
             )
         else:
             self.accept()  # Accept the dialog if wallet does not exist
+
+    @property
+    def wallet_id(self) -> str:
+        return self.name_input.text()
+
+    @property
+    def filename(self) -> str:
+        return filename_clean(self.wallet_id.lower())
 
 
 if __name__ == "__main__":

@@ -37,14 +37,24 @@ from unittest.mock import patch
 
 from PyQt6 import QtGui
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton
+from PyQt6.QtWidgets import (
+    QApplication,
+    QDialogButtonBox,
+    QMessageBox,
+    QPushButton,
+    QWidget,
+)
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
-from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.tutorial import (
+from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet
+from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
+from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
+from bitcoin_safe.gui.qt.util import MessageType
+from bitcoin_safe.gui.qt.wallet_steps import (
     BackupSeed,
     BuyHardware,
     DistributeSeeds,
@@ -52,34 +62,45 @@ from bitcoin_safe.gui.qt.tutorial import (
     ImportXpubs,
     ReceiveTest,
     SendTest,
+    StickerTheHardware,
     TutorialStep,
-    ValidateBackup,
     WalletSteps,
 )
-from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
-from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from bitcoin_safe.util import Satoshis
 
+from ...non_gui.test_signers import test_seeds
 from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from ...test_signers import test_seeds
 from .test_helpers import (  # type: ignore
     Shutter,
-    assert_message_box,
     close_wallet,
     do_modal_click,
+    get_called_args_message_box,
     get_tab_with_title,
     get_widget_top_level,
     main_window_context,
     save_wallet,
     test_start_time,
+    type_text_in_edit,
 )
 
 logger = logging.getLogger(__name__)
 
 
+def enter_text(text: str, widget: QWidget) -> None:
+    """
+    Simulates key-by-key text entry into a specified PyQt widget.
+
+    :param text: The string of text to be entered into the widget.
+    :param widget: The PyQt widget where the text will be entered.
+    """
+    for char in text:
+        QTest.keyClick(widget, char)
+
+
 def test_tutorial_wallet_setup(
+    qapp: QApplication,
     qtbot: QtBot,
     test_start_time: datetime,
     test_config: UserConfig,
@@ -94,8 +115,8 @@ def test_tutorial_wallet_setup(
     shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
-    with main_window_context(test_config=test_config) as (app, main_window):
-        logger.debug(f"(app, main_window) = {(app, main_window)}")
+    with main_window_context(test_config=test_config) as main_window:
+        logger.debug(f"(app, main_window) = {main_window}")
         QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
@@ -126,15 +147,23 @@ def test_tutorial_wallet_setup(
 
         page1()
 
-        def page2() -> None:
+        def page_sticker() -> None:
+            shutter.save(main_window)
+            step: StickerTheHardware = wallet_steps.tab_generators[TutorialStep.sticker]
+            assert step.buttonbox_buttons[0].isVisible()
+            step.buttonbox_buttons[0].click()
+
+        page_sticker()
+
+        def page_generate() -> None:
             shutter.save(main_window)
             step: GenerateSeed = wallet_steps.tab_generators[TutorialStep.generate]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
-        page2()
+        page_generate()
 
-        def page3() -> None:
+        def page_import() -> None:
             shutter.save(main_window)
             step: ImportXpubs = wallet_steps.tab_generators[TutorialStep.import_xpub]
 
@@ -142,36 +171,110 @@ def test_tutorial_wallet_setup(
             def wrong_entry(dialog: QMessageBox) -> None:
                 shutter.save(dialog)
 
-                assert (
-                    dialog.text() == "Please import the public key information from the hardware wallet first"
-                )
+                assert dialog.text() == "Please import the complete data for Signer 1!"
                 dialog.button(QMessageBox.StandardButton.Ok).click()
 
             do_modal_click(step.button_create_wallet, wrong_entry, qtbot, cls=QMessageBox)
 
             # import xpub
-            keystore = step.keystore_uis.keystore_uis[0]
+            assert step.keystore_uis
+            keystore = list(step.keystore_uis.getAllTabData().values())[0]
             keystore.tabs_import_type.setCurrentWidget(keystore.tab_manual)
             shutter.save(main_window)
 
+            # # fingerprint
+            # type_text_in_edit("0000", keystore.edit_fingerprint.input_field)
+            # shutter.save(main_window)
+            # assert "{ background-color: #ff6c54; }" in edit.input_field.styleSheet()
+
+            # def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+            #     shutter.save(dialog)
+            #     assert dialog.text() == f"Please import the information from all hardware signers first"
+            #     dialog.button(QMessageBox.StandardButton.Ok).click()
+
+            # do_modal_click(step.button_create_wallet, wrong_entry_xpub_try_to_proceed, qtbot, cls=QMessageBox)
+            # shutter.save(main_window)
             # check that inputting in the wrong field gives an error
-            for edit in [keystore.edit_xpub, keystore.edit_key_origin, keystore.edit_fingerprint]:
-                edit.setText(test_seeds[0])
+            for edit, wrong_text, valid_text, error_message in [
+                (
+                    keystore.edit_xpub.input_field,
+                    "tpub1111",
+                    "tpubDDnGNapGEY6AZAdQbfRJgMg9fvz8pUBrLwvyvUqEgcUfgzM6zc2eVK4vY9x9L5FJWdX8WumXuLEDV5zDZnTfbn87vLe9XceCFwTu9so9Kks",
+                    "Please import the complete data for Signer 1!",
+                ),
+                (
+                    keystore.edit_fingerprint.input_field,
+                    "000",
+                    "a42c6dd3",
+                    "Please import the complete data for Signer 1!",
+                ),
+            ]:
+                type_text_in_edit(wrong_text, edit)
                 shutter.save(main_window)
-                assert "{ background-color: #ff6c54; }" in edit.input_field.styleSheet()
+                assert "{ background-color: #ff6c54; }" in edit.styleSheet()
 
                 # check that you cannot go further without import xpub
                 def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
                     shutter.save(dialog)
-                    assert dialog.text() == f"{test_seeds[0]} is not a valid public xpub"
+                    assert dialog.text() == error_message
                     dialog.button(QMessageBox.StandardButton.Ok).click()
 
                 do_modal_click(
                     step.button_create_wallet, wrong_entry_xpub_try_to_proceed, qtbot, cls=QMessageBox
                 )
                 shutter.save(main_window)
+                edit.clear()
+                type_text_in_edit(valid_text, edit)
+
+            # key_origin
+            edit, wrong_text, valid_text, error_message = (
+                keystore.edit_key_origin.input_field,
+                "m/0h00",
+                "m/84h/1h/0h",
+                "Signer 1: Unexpected key origin",
+            )
+            type_text_in_edit(wrong_text, edit)
+            shutter.save(main_window)
+            assert "{ background-color: #ff6c54; }" in edit.styleSheet()
+
+            with patch("bitcoin_safe.gui.qt.keystore_uis.question_dialog") as mock_question:
+                with patch("bitcoin_safe.gui.qt.main.Message") as mock_message:
+
+                    # check that you cannot go further without import xpub
+                    def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                        shutter.save(dialog)
+                        assert dialog.text() == error_message
+                        dialog.button(QMessageBox.StandardButton.Ignore).click()
+
+                    do_modal_click(
+                        step.button_create_wallet, wrong_entry_xpub_try_to_proceed, qtbot, cls=QMessageBox
+                    )
+
+                    QTest.qWait(200)
+
+                    # Inspect the call arguments for each call
+                    calls = mock_question.call_args_list
+
+                    first_call_args = calls[0][0]  # args of the first call
+                    assert first_call_args == (
+                        "The key derivation path m/0h00 of Signer 1 is not the default m/84h/1h/0h for the address type Single Sig (SegWit/p2wpkh). Do you want to proceed anyway?",
+                    )
+
+                    QTest.qWait(200)
+
+                    # Inspect the call arguments for each call
+                    calls = mock_message.call_args_list
+
+                    first_call_args = calls[0][0]  # args of the first call
+                    assert first_call_args == ("('Invalid BIP32 path', '0h00')",)
+
+            shutter.save(main_window)
+            edit.clear()
+            type_text_in_edit(valid_text, edit)
 
             # correct entry
+            for edit in [keystore.edit_xpub, keystore.edit_key_origin, keystore.edit_fingerprint]:
+                edit.setText("")
             keystore.edit_seed.setText(test_seeds[0])
             shutter.save(main_window)
             assert keystore.edit_fingerprint.text().lower() == "5aa39a43"
@@ -201,7 +304,7 @@ def test_tutorial_wallet_setup(
                 save_button=step.button_create_wallet,
             )
 
-        page3()
+        page_import()
 
         ######################################################
         # now that the qt wallet is created i have to reload the
@@ -210,41 +313,40 @@ def test_tutorial_wallet_setup(
         assert qt_wallet
         wallet_steps = qt_wallet.wallet_steps
 
-        def page4() -> None:
+        def page_backup() -> None:
             shutter.save(main_window)
             step: BackupSeed = wallet_steps.tab_generators[TutorialStep.backup_seed]
-            with patch("webbrowser.open_new_tab") as mock_open:
+            with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                 assert step.custom_yes_button.isVisible()
                 step.custom_yes_button.click()
                 mock_open.assert_called_once()
 
-                temp_file = os.path.join(Path.home(), f"Descriptor and seed backup of {wallet_name}.pdf")
+                temp_file = os.path.join(Path.home(), f"Seed backup of {wallet_name}.pdf")
                 assert Path(temp_file).exists()
                 # remove the file again
                 Path(temp_file).unlink()
 
-        page4()
+        page_backup()
 
-        def page5() -> None:
-            shutter.save(main_window)
-            step: ValidateBackup = wallet_steps.tab_generators[TutorialStep.validate_backup]
-            assert step.custom_yes_button.isVisible()
-            step.custom_yes_button.click()
-
-        page5()
-
-        def page6() -> None:
+        def page_receive() -> None:
             shutter.save(main_window)
             step: ReceiveTest = wallet_steps.tab_generators[TutorialStep.receive]
-            assert step.quick_receive
-            address = step.quick_receive.text_edit.input_field.toPlainText()
+            assert isinstance(step.quick_receive, BitcoinQuickReceive)
+            address = step.quick_receive.group_boxes[0].text_edit.input_field.toPlainText()
             assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
             faucet.send(address, amount=amount)
 
-            assert_message_box(
+            called_args_message_box = get_called_args_message_box(
+                "bitcoin_safe.gui.qt.wallet_steps.Message",
                 step.check_button,
-                "Information",
-                f"Received {Satoshis(amount, test_config.network).str_with_unit()}",
+                repeat_clicking_until_message_box_called=True,
+            )
+            assert str(called_args_message_box) == str(
+                (
+                    "Balance = {amount}".format(
+                        amount=Satoshis(amount, network=test_config.network).str_with_unit()
+                    ),
+                )
             )
             assert not step.check_button.isVisible()
             assert step.next_button.isVisible()
@@ -252,52 +354,55 @@ def test_tutorial_wallet_setup(
             step.next_button.click()
             shutter.save(main_window)
 
-        page6()
+        page_receive()
 
-        def page7() -> None:
+        def page_send() -> None:
             shutter.save(main_window)
             step: SendTest = wallet_steps.tab_generators[TutorialStep.send]
             assert step.refs.floating_button_box.isVisible()
-            assert step.refs.floating_button_box.tutorial_button_prefill.isVisible()
+            assert step.refs.floating_button_box.button_create_tx.isVisible()
+            assert not step.refs.floating_button_box.tutorial_button_prefill.isVisible()
 
-            step.refs.floating_button_box.tutorial_button_prefill.click()
             shutter.save(main_window)
 
             assert qt_wallet.tabs.currentWidget() == qt_wallet.send_tab
             box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
             shutter.save(main_window)
             assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
-                "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
+                "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
             ]
-            assert box.address == "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
+            assert box.address == "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
             assert (
                 box.recipient_widget.address_edit.input_field.palette()
                 .color(QtGui.QPalette.ColorRole.Base)
                 .name()
                 == "#8af296"
             )
-            assert qt_wallet.uitx_creator.recipients.recipients[0].amount == amount
+            fee_info = qt_wallet.uitx_creator.estimate_fee_info(
+                qt_wallet.uitx_creator.fee_group.spin_fee_rate.value()
+            )
+            assert qt_wallet.uitx_creator.recipients.recipients[0].amount == amount - fee_info.fee_amount
             assert qt_wallet.uitx_creator.recipients.recipients[0].checked_max_amount
 
             assert step.refs.floating_button_box.button_create_tx.isVisible()
             step.refs.floating_button_box.button_create_tx.click()
             shutter.save(main_window)
 
-        page7()
+        page_send()
 
-        def page8() -> None:
+        def page_sign() -> None:
             shutter.save(main_window)
             viewer = main_window.tab_wallets.getCurrentTabData()
             assert isinstance(viewer, UITx_Viewer)
             assert [recipient.address for recipient in viewer.recipients.recipients] == [
-                "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
+                "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
             ]
             assert [recipient.label for recipient in viewer.recipients.recipients] == ["Send Test"]
             assert [recipient.amount for recipient in viewer.recipients.recipients] == [999890]
             assert viewer.fee_info
-            assert round(viewer.fee_info.fee_rate(), 1) == 2.7
+            assert round(viewer.fee_info.fee_rate(), 1) == 1.3
             assert not viewer.fee_group.allow_edit
-            assert viewer.fee_group.spin_fee_rate.value() == 2.7
+            assert viewer.fee_group.spin_fee_rate.value() == 1.3
             assert viewer.fee_group.approximate_fee_label.isVisible()
 
             assert viewer.button_next.isVisible()
@@ -326,32 +431,21 @@ def test_tutorial_wallet_setup(
             shutter.save(main_window)
 
             assert viewer.button_send.isVisible()
-            viewer.button_send.click()
+
+            with patch("bitcoin_safe.gui.qt.wallet_steps.Message") as mock_message:
+                with qtbot.waitSignal(
+                    main_window.signals.wallet_signals[qt_wallet.wallet.id].updated, timeout=10000
+                ):  # Timeout after 10 seconds
+                    viewer.button_send.click()
+                qtbot.wait(1000)
+                mock_message.assert_called_with(
+                    main_window.tr("All Send tests done successfully."), type=MessageType.Info
+                )
 
             # hist list
             shutter.save(main_window)
 
-        page8()
-
-        def page9() -> None:
-            shutter.save(main_window)
-            assert isinstance(main_window.tab_wallets.getCurrentTabData(), QTWallet)
-
-            step: SendTest = wallet_steps.tab_generators[TutorialStep.send]
-            assert step.refs.floating_button_box.isVisible()
-            assert step.refs.floating_button_box.button_yes_it_is_in_hist.isVisible()
-
-            # because updating the cache is threaded by default, I have to force a nonthreaded update
-            qt_wallet.refresh_caches_and_ui_lists(threaded=False)
-
-            assert len(qt_wallet.wallet.bdkwallet.list_transactions()) == 2
-            assert len(qt_wallet.wallet.sorted_delta_list_transactions()) == 2
-
-            assert step.refs.floating_button_box.button_yes_it_is_in_hist.isVisible()
-            step.refs.floating_button_box.button_yes_it_is_in_hist.click()
-            shutter.save(main_window)
-
-        page9()
+        page_sign()
 
         def page10() -> None:
             shutter.save(main_window)
@@ -363,6 +457,32 @@ def test_tutorial_wallet_setup(
             shutter.save(main_window)
 
         page10()
+
+        def do_close_wallet() -> None:
+
+            close_wallet(
+                shutter=shutter,
+                test_config=test_config,
+                wallet_name=wallet_name,
+                qtbot=qtbot,
+                main_window=main_window,
+            )
+
+            shutter.save(main_window)
+
+        do_close_wallet()
+
+        def check_that_it_is_in_recent_wallets() -> None:
+            assert any(
+                [
+                    (wallet_name in name)
+                    for name in main_window.config.recently_open_wallets[main_window.config.network]
+                ]
+            )
+
+            shutter.save(main_window)
+
+        check_that_it_is_in_recent_wallets()
 
         # end
         shutter.save(main_window)

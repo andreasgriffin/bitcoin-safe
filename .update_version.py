@@ -26,7 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import toml
+import tomlkit
 
 from bitcoin_safe import __version__
 
@@ -34,15 +34,18 @@ from bitcoin_safe import __version__
 def update_poetry_version(file_path, new_version):
     # Read the pyproject.toml file
     with open(file_path, "r") as file:
-        data = toml.load(file)
+        data = tomlkit.load(file)
 
     # Update the version under tool.poetry
     if "tool" in data and "poetry" in data["tool"] and "version" in data["tool"]["poetry"]:
         data["tool"]["poetry"]["version"] = new_version
         data["tool"]["briefcase"]["version"] = new_version
+        data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["flatpak"]["version"] = new_version
+        data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["appimage"]["version"] = new_version
+
         # Write the updated data back to pyproject.toml
         with open(file_path, "w") as file:
-            toml.dump(data, file)
+            tomlkit.dump(data, file)
         print(f"Version updated to {new_version} in pyproject.toml")
     else:
         print("Could not find the 'tool.poetry.version' key in the pyproject.toml")

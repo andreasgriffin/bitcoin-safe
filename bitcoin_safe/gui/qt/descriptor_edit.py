@@ -31,20 +31,24 @@ import logging
 from typing import Callable, Optional
 
 from bitcoin_qr_tools.data import Data
+from bitcoin_qr_tools.multipath_descriptor import (
+    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+)
 
+from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.gui.qt.analyzers import DescriptorAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.custom_edits import MyTextEdit
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from bitcoin_qr_tools.multipath_descriptor import MultipathDescriptor
-from PyQt6.QtCore import QEvent, Qt, pyqtSignal
-from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtCore import Qt, pyqtBoundSignal, pyqtSignal
 from PyQt6.QtWidgets import QDialog, QVBoxLayout
 
 from ...pdfrecovery import make_and_open_pdf
@@ -53,46 +57,61 @@ from .util import Message, MessageType, icon_path
 
 
 class DescriptorExport(QDialog):
-    def __init__(self, descriptor: MultipathDescriptor, signals_min: SignalsMin, parent=None):
-        super().__init__(parent)
+    def __init__(
+        self,
+        descriptor: MultipathDescriptor,
+        signals_min: SignalsMin,
+        network: bdk.Network,
+        parent=None,
+        threading_parent: ThreadingManager | None = None,
+    ):
+        super().__init__(parent, signals_min=signals_min, threading_parent=threading_parent)  # type: ignore
         self.setWindowTitle(self.tr("Export Descriptor"))
         self.setModal(True)
 
         self.descriptor = descriptor
         self.data = Data.from_multipath_descriptor(descriptor)
+        self.setMinimumSize(500, 250)
 
-        export_widget = ExportDataSimple(
+        self.export_widget = ExportDataSimple(
             data=self.data,
             signals_min=signals_min,
             enable_clipboard=False,
             enable_usb=False,
+            network=network,
+            threading_parent=threading_parent,
         )
 
-        self.setLayout(QVBoxLayout())
-
-        self.layout().addWidget(export_widget)
+        self._layout = QVBoxLayout(self)
+        self._layout.addWidget(self.export_widget)
 
     def get_coldcard_str(self, wallet_id: str) -> str:
         return DescriptorExportTools.get_coldcard_str(wallet_id=wallet_id, descriptor=self.descriptor)
 
 
 class DescriptorEdit(ButtonEdit):
-    signal_change = pyqtSignal(str)
+    signal_descriptor_change = pyqtSignal(str)
 
     def __init__(
         self,
         network: bdk.Network,
         signals_min: SignalsMin,
+        get_lang_code: Callable[[], str],
         get_wallet: Optional[Callable[[], Wallet]] = None,
-        signal_update: pyqtSignal = None,
+        signal_update: pyqtBoundSignal | None = None,
+        threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
-            input_field=MyTextEdit(preferred_height=50),
+            input_field=AnalyzerTextEdit(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
-        )
+            signals_min=signals_min,
+            threading_parent=threading_parent,
+        )  # type: ignore
+        self.threading_parent = threading_parent
         self.signals_min = signals_min
         self.network = network
+        self.input_field
 
         def do_pdf() -> None:
             if not get_wallet:
@@ -102,13 +121,7 @@ class DescriptorEdit(ButtonEdit):
                 )
                 return
 
-            make_and_open_pdf(get_wallet())
-
-        from bitcoin_qr_tools.data import Data
-
-        def custom_handle_camera_input(data: Data, parent) -> None:
-            self.setText(str(data.data_as_string()))
-            self.signal_change.emit(str(data.data_as_string()))
+            make_and_open_pdf(get_wallet(), lang_code=get_lang_code())
 
         self.add_copy_button()
         self.add_button(icon_path("qr-code.svg"), self.show_export_widget, tooltip="Show QR code")
@@ -116,34 +129,46 @@ class DescriptorEdit(ButtonEdit):
             self.add_pdf_buttton(do_pdf)
         self.add_qr_input_from_camera_button(
             network=self.network,
-            custom_handle_input=custom_handle_camera_input,
         )
-        self.set_validator(self._check_if_valid)
+        self.signal_data.connect(self._custom_handle_camera_input)
+        self.input_field.setAnalyzer(DescriptorAnalyzer(self.network, parent=self))
+        self.input_field.textChanged.connect(self.on_input_field_textChanged)
+
+    def on_input_field_textChanged(self):
+        self.signal_descriptor_change.emit(self.text_cleaned())
+
+    def _custom_handle_camera_input(self, data: Data) -> None:
+        self.setText(str(data.data_as_string()))
+        self.signal_descriptor_change.emit(self._clean_text(str(data.data_as_string())))
 
     def show_export_widget(self):
         if not self._check_if_valid():
             Message(self.tr("Descriptor not valid"))
             return
 
-        dialog = DescriptorExport(
-            MultipathDescriptor.from_descriptor_str(self.text(), self.network), self.signals_min, parent=self
-        )
-        dialog.show()
+        try:
+            dialog = DescriptorExport(
+                descriptor=MultipathDescriptor.from_descriptor_str(self.text(), self.network),
+                signals_min=self.signals_min,
+                parent=self,
+                network=self.network,
+                threading_parent=self.threading_parent,
+            )
+            dialog.show()
+        except:
+            logger.error(
+                f"Could not create a DescriptorExport for {self.__class__.__name__} with text {self.text()}"
+            )
+            return
+
+    def _clean_text(self, text: str) -> str:
+        return text.strip().replace("\n", "")
+
+    def text_cleaned(self) -> str:
+        return self._clean_text(self.text())
 
     def _check_if_valid(self) -> bool:
         if not self.text():
             return True
-        try:
-            MultipathDescriptor.from_descriptor_str(self.text(), self.network)
-            return True
-        except:
-            return False
 
-    def keyReleaseEvent(self, e: QKeyEvent) -> None:
-        # print(e.type(), e.modifiers(),  [key for key in Qt.Key if  key.value == e.key() ] , e.matches(QKeySequence.StandardKey.Paste) )
-        # If it's a regular key press
-        if e.type() == QEvent.Type.KeyRelease:
-            self.signal_change.emit(self.text())
-        # If it's another type of shortcut, let the parent handle it
-        else:
-            super().keyReleaseEvent(e)
+        return BitcoinQRMultipathDescriptor.is_valid(self.text_cleaned(), network=self.network)

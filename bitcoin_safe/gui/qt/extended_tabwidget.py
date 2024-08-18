@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Type
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import (
@@ -34,24 +36,23 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QSizePolicy,
     QSpacerItem,
-    QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
-from bitcoin_safe.gui.qt.util import add_tab_to_tabs, read_QIcon, remove_tab
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget, T
+from bitcoin_safe.gui.qt.util import read_QIcon
 
 
 class ExtendedTabWidget(DataTabWidget):
     signal_tab_bar_visibility = pyqtSignal(bool)
 
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
+    def __init__(self, data_class: Type[T], parent=None) -> None:
+        super().__init__(data_class, parent=parent)
         self.set_top_right_widget()
 
-        self.tabBar().installEventFilter(self)
+        self.tabBar().installEventFilter(self)  # type: ignore
 
         self.tabCloseRequested.connect(self.updateLineEditPosition)
         self.currentChanged.connect(self.updateLineEditPosition)
@@ -65,26 +66,27 @@ class ExtendedTabWidget(DataTabWidget):
                 self.signal_tab_bar_visibility.emit(False)
         return super().eventFilter(obj, event)
 
-    def set_top_right_widget(self, top_right_widget: QWidget = None, target_width=150) -> None:
+    def set_top_right_widget(self, top_right_widget: QWidget | None = None, target_width=150) -> None:
         self.top_right_widget = top_right_widget
         self.target_width = target_width
 
         # Adjust the size and position of the QLineEdit
         if self.top_right_widget:
-            self.top_right_widget.setParent(self)
             self.top_right_widget.setFixedWidth(self.target_width)
+            self.top_right_widget.setParent(self)
+            self.updateLineEditPosition()
 
     def tabInserted(self, index: int) -> None:
         super().tabInserted(index)
         self.updateLineEditPosition()
 
     def updateLineEditPosition(self) -> None:
-        tabBarRect = self.tabBar().geometry()
+        tabBarRect = self.tabBar().geometry()  # type: ignore[union-attr]
         availableWidth = self.width()
 
         line_width = availableWidth // 2 if availableWidth < 2 * self.target_width else self.target_width
 
-        self.tabBar().setMaximumWidth(availableWidth - line_width - 3)
+        self.tabBar().setMaximumWidth(availableWidth - line_width - 3)  # type: ignore[union-attr]
 
         # Update QLineEdit geometry
         lineEditX = self.width() - line_width - 2
@@ -95,23 +97,23 @@ class ExtendedTabWidget(DataTabWidget):
             )
             self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
-    def resizeEvent(self, event: QResizeEvent) -> None:
+    def resizeEvent(self, event: QResizeEvent | None) -> None:
         self.updateLineEditPosition()
         super().resizeEvent(event)
 
 
 class LoadingWalletTab(QWidget):
-    def __init__(self, tabs: QTabWidget, name: str, focus=True) -> None:
+    def __init__(self, tabs: DataTabWidget, name: str, focus=True) -> None:
         super().__init__(tabs)
         self.tabs = tabs
         self.name = name
         self.focus = focus
 
         # Create a QWidget to serve as a container for the QLabel
-        self.setLayout(QVBoxLayout())  # Setting the layout directly
+        self._layout = QVBoxLayout(self)  # Setting the layout directly
 
         # Create and configure QLabel
-        self.emptyLabel = QLabel("Loading, please wait...", self)
+        self.emptyLabel = QLabel(self.tr("Loading, please wait..."), self)
         self.emptyLabel.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
         self.emptyLabel.setStyleSheet("font-size: 16pt;")  # Adjust the font size as needed
 
@@ -120,23 +122,25 @@ class LoadingWalletTab(QWidget):
         spacerBottom = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         # Add spacers and label to the layout
-        self.layout().addItem(spacerTop)
-        self.layout().addWidget(self.emptyLabel)
-        self.layout().addItem(spacerBottom)
+        self._layout.addItem(spacerTop)
+        self._layout.addWidget(self.emptyLabel)
+        self._layout.addItem(spacerBottom)
 
     def __enter__(self) -> None:
-        add_tab_to_tabs(
-            self.tabs,
-            self,
-            read_QIcon("status_waiting.png"),
-            self.name,
-            self.name,
+        self.tabs.add_tab(
+            tab=self,
+            icon=read_QIcon("status_waiting.svg"),
+            description=self.name,
+            data=None,
             focus=self.focus,
         )
         QApplication.processEvents()
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        remove_tab(self, self.tabs)
+        idx = self.tabs.indexOf(self)
+        if idx is None or idx < 0:
+            return
+        self.tabs.removeTab(idx)
 
 
 # Usage example
@@ -145,7 +149,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     edit = QLineEdit(f"Ciiiiii")
-    tabWidget = ExtendedTabWidget()
+    tabWidget = ExtendedTabWidget(object)
 
     # Add tabs with larger widgets
     for i in range(3):
@@ -156,7 +160,7 @@ if __name__ == "__main__":
         layout.addWidget(label)
         layout.addWidget(textEdit)
         widget.setLayout(layout)
-        tabWidget.addTab(widget, f"Tab {i+1}")
+        tabWidget.addTab(widget, description=f"Tab {i+1}")
 
     tabWidget.show()
     sys.exit(app.exec())

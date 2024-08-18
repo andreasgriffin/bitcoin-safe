@@ -33,8 +33,11 @@ import typing
 from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
+from bitcoin_safe.gui.qt.register_multisig import USBValidateAddressWidget
+from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.util import serialized_to_hex
 
@@ -43,19 +46,12 @@ logger = logging.getLogger(__name__)
 import bdkpython as bdk
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent
-from PyQt6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QSizePolicy,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QFormLayout, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
 
 from ...signals import Signals
 from ...wallet import Wallet
 from .hist_list import HistList
-from .util import Buttons, CloseButton
+from .util import Buttons, CloseButton, read_QIcon
 
 
 class AddressDetailsAdvanced(QWidget):
@@ -82,12 +78,37 @@ class AddressDetailsAdvanced(QWidget):
             form_layout.addRow(self.tr("Script Pubkey"), pubkey_e)
 
         if address_path_str:
-            der_path_e = ButtonEdit(address_path_str, input_field=QTextEdit())
+            der_path_e = ButtonEdit(address_path_str)
             der_path_e.add_copy_button()
             der_path_e.setFixedHeight(50)
             der_path_e.setReadOnly(True)
 
             form_layout.addRow(self.tr("Address descriptor"), der_path_e)
+
+
+class AddressValidateTab(QWidget):
+    def __init__(
+        self,
+        bdk_address: bdk.Address,
+        wallet_descriptor: MultipathDescriptor,
+        kind: bdk.KeychainKind,
+        address_index: int,
+        network: bdk.Network,
+        signals: Signals,
+        parent: typing.Optional["QWidget"],
+    ) -> None:
+        super().__init__(parent)
+
+        self._layout = QHBoxLayout(self)
+
+        edit_addr_descriptor = USBValidateAddressWidget(network=network, signals=signals)
+        edit_addr_descriptor.set_descriptor(
+            descriptor=wallet_descriptor,
+            expected_address=bdk_address.as_string(),
+            kind=kind,
+            address_index=address_index,
+        )
+        self._layout.addWidget(edit_addr_descriptor)
 
 
 class QRAddress(QRCodeWidgetSVG):
@@ -129,8 +150,8 @@ class AddressDialog(QWidget):
 
         upper_widget = QWidget()
         # upper_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        upper_widget.setLayout(QHBoxLayout())
-        upper_widget.layout().setContentsMargins(0, 0, 0, 0)
+        self.upper_widget_layout = QHBoxLayout(upper_widget)
+        self.upper_widget_layout.setContentsMargins(0, 0, 0, 0)
 
         vbox.addWidget(upper_widget)
 
@@ -140,14 +161,13 @@ class AddressDialog(QWidget):
             parent=self,
             signals=self.signals,
             tab_string=self.tr('Address of wallet "{id}"'),
-            dismiss_label_on_focus_loss=True,
         )
         self.recipient_tabs.address = self.address
         label = wallet.labels.get_label(self.address)
         self.recipient_tabs.label = label if label else ""
         self.recipient_tabs.amount = wallet.get_addr_balance(self.address).total
 
-        upper_widget.layout().addWidget(self.recipient_tabs)
+        self.upper_widget_layout.addWidget(self.recipient_tabs)
 
         self.tab_advanced = AddressDetailsAdvanced(
             bdk_address=self.bdk_address,
@@ -156,9 +176,24 @@ class AddressDialog(QWidget):
         )
         self.recipient_tabs.addTab(self.tab_advanced, "")
 
+        address_info = self.wallet.get_address_info_min(address)
+        if address_info:
+            self.tab_validate = AddressValidateTab(
+                bdk_address=self.bdk_address,
+                network=config.network,
+                signals=self.signals,
+                wallet_descriptor=self.wallet.multipath_descriptor,
+                kind=address_info.keychain,
+                address_index=address_info.index,
+                parent=self,
+            )
+            self.recipient_tabs.addTab(
+                self.tab_validate, read_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
+            )
+
         self.qr_code = QRAddress()
         self.qr_code.set_address(self.bdk_address)
-        upper_widget.layout().addWidget(self.qr_code)
+        self.upper_widget_layout.addWidget(self.qr_code)
 
         self.hist_list = HistList(
             self.fx,
@@ -179,7 +214,7 @@ class AddressDialog(QWidget):
         self.setupUi()
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:  # type: ignore[override]
         # Check if the pressed key is 'Esc'
         if event.key() == Qt.Key.Key_Escape:
             # Close the widget
@@ -188,3 +223,4 @@ class AddressDialog(QWidget):
     def setupUi(self) -> None:
         self.recipient_tabs.updateUi()
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
+        self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))

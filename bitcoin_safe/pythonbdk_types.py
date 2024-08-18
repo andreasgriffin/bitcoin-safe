@@ -35,10 +35,18 @@ import bdkpython as bdk
 from packaging import version
 from PyQt6.QtCore import QObject
 
-from .storage import SaveAllClass
+from .storage import BaseSaveableClass, SaveAllClass
 from .util import Satoshis, serialized_to_hex
 
 logger = logging.getLogger(__name__)
+
+
+def is_address(a: str, network: bdk.Network) -> bool:
+    try:
+        bdk.Address(a, network=network)
+    except:
+        return False
+    return True
 
 
 class Recipient:
@@ -94,6 +102,10 @@ class OutPoint(bdk.OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
         return OutPoint(txid, int(vout))
+
+
+def get_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
+    return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
 
 
 class TxOut(bdk.TxOut):
@@ -161,22 +173,25 @@ class FullTxDetail:
         self.tx = tx
         self.txid = tx.txid
 
-    def involved_addresses(self) -> Set:
+    def involved_addresses(self) -> Set[str]:
         input_addresses = [input.address for input in self.inputs.values() if input]
         output_addresses = [output.address for output in self.outputs.values() if output]
         return set(input_addresses).union(output_addresses)
 
     @classmethod
     def fill_received(
-        cls, tx: bdk.TransactionDetails, get_address_of_txout: Callable[[TxOut], str]
+        cls, tx: bdk.TransactionDetails, get_address_of_txout: Callable[[TxOut], str | None]
     ) -> "FullTxDetail":
         res = FullTxDetail(tx)
         txid = tx.txid
         for vout, txout in enumerate(tx.transaction.output()):
             address = get_address_of_txout(TxOut.from_bdk(txout))
-            out_point = OutPoint(txid, vout)
-            if address is None:
+            if not address:
+                logger.error(
+                    f"Could not calculate the address of {TxOut.from_bdk(txout)}. This should not happen, unless it is a mining input."
+                )
                 continue
+            out_point = OutPoint(txid, vout)
             python_utxo = PythonUtxo(address, out_point, txout)
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
@@ -186,8 +201,7 @@ class FullTxDetail:
         self,
         lookup_dict_fulltxdetail: Dict[str, "FullTxDetail"],
     ) -> None:
-        for input in self.tx.transaction.input():
-            prev_outpoint = OutPoint.from_bdk(input.previous_output)
+        for prev_outpoint in get_outpoints(self.tx.transaction):
             prev_outpoint_str = str(prev_outpoint)
 
             # check if I have the prev_outpoint fulltxdetail
@@ -315,7 +329,12 @@ class CBFServerType(enum.Enum):
         return CBFServerType._member_map_[t]  # type: ignore
 
 
-class Balance(QObject):
+class Balance(QObject, SaveAllClass):
+    VERSION = "0.0.1"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
+
     def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0) -> None:
         super().__init__()
         self.immature = immature
@@ -333,7 +352,7 @@ class Balance(QObject):
 
     def __add__(self, other: "Balance") -> "Balance":
         summed = {key: self.__dict__[key] + other.__dict__[key] for key in self.__dict__.keys()}
-        return Balance(**summed)
+        return self.__class__(**summed)
 
     def format_long(self, network: bdk.Network) -> str:
 
@@ -357,15 +376,25 @@ class Balance(QObject):
 
         return short
 
+    @classmethod
+    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+            pass
 
-def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=False) -> str:
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
+        return dct
+
+
+def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=True) -> str:
     try:
         return bdk.Address.from_script(script_pubkey, network).as_string()
     except:
         if on_error_return_hex:
             return serialized_to_hex(script_pubkey.to_bytes())
         else:
-            raise
+            return ""
 
 
 if __name__ == "__main__":

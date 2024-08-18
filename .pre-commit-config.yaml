@@ -58,7 +58,7 @@ repos:
         always_run: true
         files: pyproject.toml
         additional_dependencies:
-          - toml
+          - tomlkit
 
   # - repo: https://github.com/PyCQA/bandit
   #   rev: 1.7.6  # Use the latest version

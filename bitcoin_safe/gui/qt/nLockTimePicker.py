@@ -72,7 +72,7 @@ class DateTimePicker(QWidget):
         print("UTC Time:", utc_datetime)
 
     def get_datetime(self) -> datetime:
-        return self.dateTimeEdit.dateTime().toPython()
+        return self.dateTimeEdit.dateTime().toPyDateTime()
 
 
 class CheckBoxGroupBox(QWidget):
@@ -85,9 +85,7 @@ class CheckBoxGroupBox(QWidget):
 
         # Create the group box
         self.groupBox = QGroupBox()
-        groupBoxLayout = QVBoxLayout()
-
-        self.groupBox.setLayout(groupBoxLayout)
+        self.groupBox_layout = QVBoxLayout(self.groupBox)
 
         # Arrange the checkbox and group box in a layout
         layout = QVBoxLayout()
@@ -113,10 +111,10 @@ class nLocktimePicker(CheckBoxGroupBox):
         label.setTextFormat(Qt.TextFormat.RichText)
         label.setOpenExternalLinks(True)  # Enable opening links
         label.setWordWrap(True)
-        self.groupBox.layout().addWidget(label)
+        self.groupBox_layout.addWidget(label)
 
         self.nlocktime_picker = DateTimePicker()
-        self.groupBox.layout().addWidget(self.nlocktime_picker)
+        self.groupBox_layout.addWidget(self.nlocktime_picker)
 
 
 if __name__ == "__main__":

@@ -239,11 +239,7 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
     str: The user input or the default value if the user inputs nothing.
     """
     # Adjust the prompt based on whether a default value is provided
-    if default is not None:
-        user_input = input(f"{prompt} (default: {default}): ")
-    else:
-        user_input = input(f"{prompt}: ")
-
+    user_input = input(f"{prompt} (default: {default}): ")
     # Return the user input or the default if the input is empty and a default is specified
     return user_input if user_input else default
 

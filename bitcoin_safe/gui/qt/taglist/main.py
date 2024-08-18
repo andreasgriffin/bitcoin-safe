@@ -30,13 +30,13 @@
 import logging
 
 from ....i18n import translate
-from ....util import register_cache
+from ....util import qbytearray_to_str, register_cache, str_to_qbytearray
 
 logger = logging.getLogger(__name__)
 
 import hashlib
 import json
-from typing import Dict, Generator, List, Optional, Tuple
+from typing import Dict, Generator, Iterable, List, Optional, Tuple
 
 from PyQt6.QtCore import QMimeData, QModelIndex, QRect, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -71,11 +71,11 @@ from PyQt6.QtWidgets import (
 
 
 def clean_tag(tag: str) -> str:
-    return tag.strip().capitalize()
+    return tag.strip()
 
 
 class AddressDragInfo:
-    def __init__(self, tags: List[Optional[str]], addresses: List[str]) -> None:
+    def __init__(self, tags: Iterable[Optional[str]], addresses: List[str]) -> None:
         self.tags = tags
         self.addresses = addresses
 
@@ -106,7 +106,7 @@ def hash_color(text) -> QColor:
 
 
 class CustomListWidgetItem(QListWidgetItem):
-    def __init__(self, item_text: str, sub_text: str = None, parent=None):
+    def __init__(self, item_text: str, sub_text: str | None = None, parent=None):
         super(CustomListWidgetItem, self).__init__(parent)
         self.setText(item_text)
         self.subtext = sub_text
@@ -124,20 +124,34 @@ class CustomListWidgetItem(QListWidgetItem):
             "tag": self.text(),
         }
 
-        json_string = json.dumps(d).encode()
-        mime_data.setData("application/json", json_string)
+        mime_data.setData("application/json", str_to_qbytearray(json.dumps(d)))
         return mime_data
 
 
 class CustomDelegate(QStyledItemDelegate):
-    signal_tag_renamed = pyqtSignal(object, object)
+    signal_tag_renamed = pyqtSignal(str, str)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.currentlyEditingIndex = QModelIndex()
-        self.imageCache: Dict[
-            Tuple[QModelIndex, QStyle.StateFlag, str, str], QImage
-        ] = {}  # Cache for storing pre-rendered images
+        self.imageCache: Dict[Tuple[QModelIndex, QStyle.StateFlag, str, str, int, int], QImage] = (
+            {}
+        )  # Cache for storing pre-rendered images
+        self.cache_size = 100
+
+    def _remove_first_cache_item(self):
+        key = None
+        for key in self.imageCache.keys():
+            break
+        if key in self.imageCache:
+            del self.imageCache[key]
+
+    def add_to_cache(self, key, value):
+        # logger.debug(f"Cache size {self.__class__.__name__}: {len(self.imageCache)}")
+        if len(self.imageCache) + 1 > self.cache_size:
+            self._remove_first_cache_item()
+
+        self.imageCache[key] = value
 
     def renderHtmlToImage(self, index: QModelIndex, option: QStyleOptionViewItem, text: str, subtext: str):
         """
@@ -164,7 +178,9 @@ class CustomDelegate(QStyledItemDelegate):
         buttion_option.palette.setColor(QPalette.ColorRole.Button, color)
 
         # Draw button-like background
-        QApplication.style().drawControl(QStyle.ControlElement.CE_PushButton, buttion_option, painter)
+        (QApplication.style() or QStyle()).drawControl(
+            QStyle.ControlElement.CE_PushButton, buttion_option, painter
+        )
 
         # Render HTML text
         self.draw_html_text(painter, text, subtext, buttion_option.rect, scale=1)
@@ -243,7 +259,11 @@ class CustomDelegate(QStyledItemDelegate):
             doc.drawContents(painter)
             painter.restore()
 
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex):
+        if not painter:
+            super().paint(painter=painter, option=option, index=index)
+            return
+
         # Check if the editor is open for this index
         if self.currentlyEditingIndex.isValid() and self.currentlyEditingIndex == index:
             text = ""  # Set text to empty if editor is open
@@ -252,11 +272,18 @@ class CustomDelegate(QStyledItemDelegate):
             text = index.data(Qt.ItemDataRole.DisplayRole)
             subtext = index.data(Qt.ItemDataRole.UserRole + 2)  # Assuming subtext is stored in UserRole + 2
 
-        key = (index, option.state, text, subtext)
+        key = (
+            index,
+            option.state,
+            text,
+            subtext,
+            option.rect.width(),
+            option.rect.height(),
+        )
         # Ensure there's an image rendered for this index
         if key not in self.imageCache:
             # Render and cache the item appearance
-            self.imageCache[key] = self.renderHtmlToImage(index, option, text, subtext)
+            self.add_to_cache(key, self.renderHtmlToImage(index, option, text, subtext))
 
         # Draw the cached image
         image = self.imageCache[key]
@@ -281,17 +308,22 @@ class CustomDelegate(QStyledItemDelegate):
         )
         return editor
 
-    def setEditorData(self, editor: QLineEdit, index: QModelIndex):
-        value = index.model().data(index, Qt.ItemDataRole.EditRole)
+    def setEditorData(self, editor: QLineEdit, index: QModelIndex):  # type: ignore[override]
+        model = index.model()
+        if not model:
+            return
+        value = model.data(index, Qt.ItemDataRole.EditRole)
         editor.setText(value)
 
-    def setModelData(self, editor: QLineEdit, model, index: QModelIndex):
-        old_value = index.model().data(index, Qt.ItemDataRole.EditRole)
+    def setModelData(self, editor: QLineEdit, model, index: QModelIndex):  # type: ignore[override]
+        model = index.model()
+        if not model:
+            return
+        old_value = model.data(index, Qt.ItemDataRole.EditRole)
         new_value = clean_tag(editor.text())
 
         model.setData(index, editor.text(), Qt.ItemDataRole.EditRole)
         self.currentlyEditingIndex = QModelIndex()
-
         self.signal_tag_renamed.emit(old_value, new_value)
 
 
@@ -302,11 +334,17 @@ class DeleteButton(QPushButton):
     def __init__(self, *args, **kwargs):
         super(DeleteButton, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
+        icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_TrashIcon)
+        self.setIcon(icon)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasFormat("application/json"):
-            data_bytes = event.mimeData().data("application/json")
-            json_string = bytes(data_bytes).decode()  # convert bytes to string
+    def dragEnterEvent(self, event: QDragEnterEvent | None):
+        if not event:
+            super().dragEnterEvent(event)
+            return
+
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
+            json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
             logger.debug(f"dragEnterEvent: Got {d}")
@@ -316,18 +354,18 @@ class DeleteButton(QPushButton):
 
         event.ignore()
 
-    def dragLeaveEvent(self, event: QDragLeaveEvent):
+    def dragLeaveEvent(self, event: QDragLeaveEvent | None):
         "this is just to hide/undide the button"
         logger.debug("Drag has left the delete button")
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent | None):
         super().dropEvent(event)
-        if event.isAccepted():
+        if not event or event.isAccepted():
             return
 
-        if event.mimeData().hasFormat("application/json"):
-            data_bytes = event.mimeData().data("application/json")
-            json_string = bytes(data_bytes).decode()  # convert bytes to string
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
+            json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
             logger.debug(f"dropEvent: Got {d}")
@@ -349,7 +387,7 @@ class CustomListWidget(QListWidget):
     signal_tag_added = pyqtSignal(str)
     signal_tag_clicked = pyqtSignal(str)
     signal_tag_deleted = pyqtSignal(str)
-    signal_tag_renamed = pyqtSignal(object, object)
+    signal_tag_renamed = pyqtSignal(str, str)
     signal_addresses_dropped = pyqtSignal(AddressDragInfo)
     signal_start_drag = pyqtSignal(object)
     signal_stop_drag = pyqtSignal(object)
@@ -366,7 +404,8 @@ class CustomListWidget(QListWidget):
         self.setSelectionBehavior(QListWidget.SelectionBehavior.SelectItems)
 
         self.setAcceptDrops(True)
-        self.viewport().setAcceptDrops(True)
+        if viewport := self.viewport():
+            viewport.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
         self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
         self.setDefaultDropAction(Qt.DropAction.CopyAction)
@@ -401,7 +440,7 @@ class CustomListWidget(QListWidget):
         self.signal_tag_added.emit(item_text)
         return item
 
-    def on_item_clicked(self, item: CustomListWidgetItem):
+    def on_item_clicked(self, item: QListWidgetItem):
         self.signal_tag_clicked.emit(item.text())
         # print( [item.text() for item in self.selectedItems()])
 
@@ -421,36 +460,37 @@ class CustomListWidget(QListWidget):
         for item in self.selectedItems():
             item.text()
             item.setText(new_text)
-            item.setBackground()
+            # item.setBackground()
 
     def setAllSelection(self, selected=True):
         for i in range(self.count()):
             item = self.item(i)
-            item.setSelected(selected)
+            if item:
+                item.setSelected(selected)
 
-    def mousePressEvent(self, event: QMouseEvent):
-        item = self.itemAt(event.pos())
-        if item is None:
-            # Click is on empty space, do nothing
-            return
-        else:
-            if event.button() == Qt.MouseButton.LeftButton:
-                self._drag_start_position = event.pos()
-                if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
-                    if item.isSelected():
-                        self.setAllSelection(False)
-                        return
-
+    def mousePressEvent(self, event: QMouseEvent | None):
+        if not event:
             super().mousePressEvent(event)
+            return
 
-    def mouseDoubleClickEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
+        item = self.itemAt(event.pos())
+        if item and event.button() == Qt.MouseButton.LeftButton:
+            self._drag_start_position = event.pos()
+            if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
+                if item.isSelected():
+                    self.setAllSelection(False)
+                    return
+
+        super().mousePressEvent(event)
+
+    def mouseDoubleClickEvent(self, event: QMouseEvent | None):
+        if event and event.button() == Qt.MouseButton.LeftButton:
             pass
 
         super().mouseDoubleClickEvent(event)
 
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
+    def mouseReleaseEvent(self, event: QMouseEvent | None):
+        if event and event.button() == Qt.MouseButton.LeftButton:
             # Perform actions that should happen after the mouse button is released
             # This could be updating the state of the widget, triggering signals, etc.
 
@@ -464,7 +504,11 @@ class CustomListWidget(QListWidget):
 
         super().mouseReleaseEvent(event)
 
-    def mouseMoveEvent(self, event: QMouseEvent):
+    def mouseMoveEvent(self, event: QMouseEvent | None):
+        if not event:
+            super().mouseMoveEvent(event)
+            return
+
         if self._drag_start_position is None:
             self._drag_start_position = event.pos()
         if not (event.buttons() & Qt.MouseButton.LeftButton):
@@ -474,16 +518,21 @@ class CustomListWidget(QListWidget):
         if self.dragEnabled():
             self.startDrag(Qt.DropAction.MoveAction)
 
-    def startDrag(self, action: Qt.DropAction):
+        super().mouseMoveEvent(event)
+
+    def startDrag(self, action: Qt.DropAction | None):
         item = self.currentItem()
-        if not item:
+        if not action or not isinstance(item, CustomListWidgetItem):
             return
         rect = self.visualItemRect(item)
 
         drag = QDrag(self)
         drag.setMimeData(item.mimeData())
 
-        pixmap = self.viewport().grab(rect)
+        viewport = self.viewport()
+        if not viewport:
+            return
+        pixmap = viewport.grab(rect)
         cursor_pos = self.mapFromGlobal(QCursor.pos())
         drag.setPixmap(pixmap)
         drag.setHotSpot(cursor_pos - rect.topLeft())
@@ -493,13 +542,17 @@ class CustomListWidget(QListWidget):
 
         self.signal_stop_drag.emit(action)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasFormat("application/json"):
+    def dragEnterEvent(self, event: QDragEnterEvent | None):
+        if not event:
+            super().dragEnterEvent(event)
+            return
+
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
 
-            data_bytes = event.mimeData().data("application/json")
-            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            json_string = qbytearray_to_str(mime_data.data("application/json"))
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
             logger.debug(f"dragEnterEvent: {json_string}")
@@ -508,17 +561,17 @@ class CustomListWidget(QListWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent | None):
         logger.debug("drop")
         super().dropEvent(event)
-        if event.isAccepted():
+        if not event or event.isAccepted():
             return
 
-        if event.mimeData().hasFormat("application/json"):
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
             tag = self.itemAt(event.position().toPoint())
 
-            data_bytes = event.mimeData().data("application/json")
-            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
             if d.get("type") == "drag_addresses":
@@ -534,20 +587,22 @@ class CustomListWidget(QListWidget):
     def delete_item(self, item_text: str):
         for i in range(self.count()):
             item = self.item(i)
-            if item.text() == item_text:
+            if item and item.text() == item_text:
                 self.takeItem(i)
                 self.signal_tag_deleted.emit(item_text)
                 break
 
-    def get_items(self) -> Generator[CustomListWidgetItem, None, None]:
+    def get_items(self) -> Generator[QListWidgetItem, None, None]:
         for i in range(self.count()):
-            yield self.item(i)
+            item = self.item(i)
+            if item:
+                yield item
 
     def get_item_texts(self) -> Generator[str, None, None]:
         for item in self.get_items():
             yield item.text()
 
-    def recreate(self, tags: List[str], sub_texts: List[Optional[str]] = None):
+    def recreate(self, tags: List[str], sub_texts: Iterable[str | None] | None = None):
         # Store the texts of selected items
         selected_texts = [item.text() for item in self.selectedItems()]
 
@@ -556,24 +611,28 @@ class CustomListWidget(QListWidget):
             self.takeItem(i)
 
         # Add all items back
-        sub_texts = sub_texts if sub_texts else [None] * len(tags)
-        for sub_text, tag in zip(sub_texts, tags):
+        cleaned_sub_texts = sub_texts if sub_texts else [None] * len(tags)
+        for sub_text, tag in zip(cleaned_sub_texts, tags):
             self.add(tag, sub_text=sub_text)  # Assuming `self.add` correctly adds items
 
         # Re-select items based on stored texts
         for i in range(self.count()):
             item = self.item(i)
-            if item.text() in selected_texts:
+            if item and item.text() in selected_texts:
                 item.setSelected(True)
 
 
 class TagEditor(QWidget):
     def __init__(
-        self, parent=None, tags: List[str] = None, sub_texts: List[Optional[str]] = None, tag_name="tag"
+        self,
+        parent=None,
+        tags: List[str] | None = None,
+        sub_texts: Iterable[str | None] | None = None,
+        tag_name="tag",
     ):
         super(TagEditor, self).__init__(parent)
         self.tag_name = tag_name
-        self.setLayout(QVBoxLayout())
+        self._layout = QVBoxLayout(self)
 
         self.input_field = QLineEdit()
         self.input_field.setClearButtonEnabled(True)
@@ -583,9 +642,9 @@ class TagEditor(QWidget):
         self.delete_button.hide()
 
         self.list_widget = CustomListWidget(parent=self)
-        self.layout().addWidget(self.input_field)
-        self.layout().addWidget(self.delete_button)
-        self.layout().addWidget(self.list_widget)
+        self._layout.addWidget(self.input_field)
+        self._layout.addWidget(self.delete_button)
+        self._layout.addWidget(self.list_widget)
         self.list_widget.signal_start_drag.connect(self.show_delete_button)
         self.list_widget.signal_stop_drag.connect(self.hide_delete_button)
         self.list_widget.signal_addresses_dropped.connect(self.hide_delete_button)
@@ -606,13 +665,17 @@ class TagEditor(QWidget):
     def default_placeholder_text(self):
         return translate("tageditor", "Add new {name}").format(name=self.tag_name)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasFormat("application/json"):
+    def dragEnterEvent(self, event: QDragEnterEvent | None):
+        if not event:
+            super().dragEnterEvent(event)
+            return
+
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
 
-            data_bytes = event.mimeData().data("application/json")
-            json_string = bytes(data_bytes).decode()  # convert bytes to string
+            json_string = qbytearray_to_str(mime_data.data("application/json"))
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
             logger.debug(f"dragEnterEvent: {json_string}")
@@ -624,20 +687,26 @@ class TagEditor(QWidget):
         else:
             event.ignore()
 
-    def dragLeaveEvent(self, event: QDragLeaveEvent):
+    def dragLeaveEvent(self, event: QDragLeaveEvent | None):
         "this is just to hide/undide the button"
+        if not event:
+            super().dragLeaveEvent(event)
+            return
+
         if not self.rect().contains(self.mapFromGlobal(QCursor.pos())):
             logger.debug("Drag operation left the TagEditor")
             self.hide_delete_button()
         else:
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent | None):
         super().dropEvent(event)
-        if event.isAccepted():
+
+        if not event or event.isAccepted():
             return
 
-        if event.mimeData().hasFormat("application/json"):
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasFormat("application/json"):
             self.hide_delete_button()
             event.accept()
         else:
@@ -651,7 +720,7 @@ class TagEditor(QWidget):
         self.input_field.show()
         self.delete_button.hide()
 
-    def add(self, new_tag: str, sub_text: str = None) -> Optional[CustomListWidgetItem]:
+    def add(self, new_tag: str, sub_text: str | None = None) -> Optional[CustomListWidgetItem]:
         if not self.tag_exists(new_tag):
             return self.list_widget.add(new_tag, sub_text=sub_text)
         return None
@@ -669,6 +738,7 @@ class TagEditor(QWidget):
 
     def tag_exists(self, tag: str):
         for i in range(self.list_widget.count()):
-            if self.list_widget.item(i).text() == tag:
+            item = self.list_widget.item(i)
+            if item and item.text() == tag:
                 return True
         return False

@@ -49,7 +49,7 @@ def setup_logging() -> None:
 
     # Configuring handlers
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.DEBUG)
+    console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(relative_path_formatter)
 
     app_name = "bitcoin_safe"

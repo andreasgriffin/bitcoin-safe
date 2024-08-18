@@ -172,6 +172,9 @@ mempoolFeeColors = [
 
 
 def fee_to_color(fee, colors=chartColors) -> str:
+    if fee == 0:
+        # for 0 just use the same color as 1
+        fee = 1
     indizes = np.where(np.array(feeLevels) <= fee)[0]
     if len(indizes) == 0:
         return "#000000"
@@ -197,7 +200,7 @@ def fetch_from_url(url: str, is_json=True) -> Optional[Any]:
         return None
 
 
-def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True) -> None:
+def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True) -> TaskThread:
     def do() -> Any:
         return fetch_from_url(url, is_json=is_json)
 
@@ -207,7 +210,7 @@ def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_jso
     def on_done(data) -> None:
         pass
 
-    TaskThread(parent, signals_min=signals_min).add_and_start(do, on_success, on_done, on_error)
+    return TaskThread(signals_min=signals_min).add_and_start(do, on_success, on_done, on_error)
 
 
 class TxPrio(enum.Enum):
@@ -278,11 +281,8 @@ class MempoolData(QObject):
     def get_min_relay_fee_rate(self) -> float:
         return self.recommended["minimumFee"]
 
-    def max_reasonable_fee_rate(self, max_reasonable_fee_rate_fallback: int = 100) -> float:
+    def max_reasonable_fee_rate(self) -> float:
         "Average fee of the 0 projected block"
-        if self.mempool_blocks is None:
-            return max_reasonable_fee_rate_fallback
-
         average_fee_rate = sum(self.fee_rates_min_max(0)) / 2
 
         # allow for up to 20% more then the average_fee_rate
@@ -304,7 +304,7 @@ class MempoolData(QObject):
                 self.mempool_blocks = mempool_blocks
                 logger.info(f"Updated mempool_blocks {mempool_blocks}")
 
-        threaded_fetch(
+        self._thread_mempool_blocks = threaded_fetch(
             f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
             on_mempool_blocks,
             self,
@@ -317,7 +317,7 @@ class MempoolData(QObject):
                 self.recommended = recommended
                 logger.info(f"Updated recommended {recommended}")
 
-        threaded_fetch(
+        self._thread_recommended = threaded_fetch(
             f"{self.network_config.mempool_url}api/v1/fees/recommended",
             on_recommended,
             self,
@@ -331,7 +331,7 @@ class MempoolData(QObject):
                 logger.info(f"Updated mempool_dict {mempool_dict}")
             self.signal_data_updated.emit()
 
-        threaded_fetch(
+        self._thread_mempool = threaded_fetch(
             f"{self.network_config.mempool_url}api/mempool",
             on_mempool_dict,
             self,

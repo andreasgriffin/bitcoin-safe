@@ -55,6 +55,11 @@ class GPGKey:
     def extract_prefix_and_version(filename: str) -> tuple[Optional[str], Optional[str]]:
         import re
 
+        if filename.endswith(".deb"):
+            match = re.search(r"(.+)_(.+?)(?:-.+)?_.*\.deb", filename)
+            if match:
+                return (match.group(1), match.group(2))
+
         # try with - separator
         match = re.search(r"(.*?)-([\d\.]+[a-zA-Z0-9]*)", filename)
         if match:
@@ -117,7 +122,7 @@ class SignatureVerifyer:
         list_of_known_keys: Optional[List[GPGKey]],
     ) -> None:
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
-        self._gpg = None
+        self._gpg: Any = None
         self.import_known_keys()
 
     @staticmethod
@@ -167,7 +172,10 @@ class SignatureVerifyer:
 
             gnupg = _gnupg
 
-            self._gpg = gnupg.GPG(gpgbinary=self._get_gpg_path())
+            gpg_path = self._get_gpg_path()
+            if not gpg_path:
+                raise EnvironmentError("GnuPG path could not be determined.")
+            self._gpg = gnupg.GPG(gpgbinary=gpg_path)
             return self._gpg
         else:
             raise EnvironmentError("GnuPG is not installed on this system.")
