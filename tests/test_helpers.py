@@ -61,4 +61,5 @@ def test_config() -> TestConfig:
     config.network_config.rpc_port = BITCOIN_PORT
     config.network_config.rpc_username = RPC_USER
     config.network_config.rpc_password = RPC_PASSWORD
+
     return config

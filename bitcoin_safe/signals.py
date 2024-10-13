@@ -27,28 +27,63 @@
 # SOFTWARE.
 
 
+import enum
 import logging
+from collections import defaultdict
+from enum import Enum
 
 logger = logging.getLogger(__name__)
 import threading
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+)
 
 import bdkpython as bdk
-from PyQt6.QtCore import QObject, QThread, pyqtSignal
+from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
+from PyQt6.QtCore import QThread, pyqtSignal
+
+
+class UpdateFilterReason(Enum):
+    UserInput = enum.auto()
+    UserImport = enum.auto()
+    SourceLabelSyncer = enum.auto()
+    Unknown = enum.auto()
+    UserReplacedAddress = enum.auto()
+    NewAddressRevealed = enum.auto()
+    CategoryAssigned = enum.auto()
+    CategoryAdded = enum.auto()
+    CategoryRenamed = enum.auto()
+    CategoryDeleted = enum.auto()
+    GetUnusedCategoryAddress = enum.auto()
+    RefreshCaches = enum.auto()
+    CreatePSBT = enum.auto()
+    TxCreator = enum.auto()
 
 
 class UpdateFilter:
     def __init__(
         self,
-        addresses: Union[Set[str], List[str]] = None,
-        categories: Union[Set[str], List[Optional[str]]] = None,
-        txids: Union[Set[str], List[str]] = None,
+        outpoints: Iterable[str] | None = None,
+        addresses: Iterable[str] | None = None,
+        categories: Iterable[Optional[str]] | None = None,
+        txids: Iterable[str] | None = None,
         refresh_all=False,
+        reason: UpdateFilterReason = UpdateFilterReason.Unknown,
     ) -> None:
-        self.addresses = set(addresses) if addresses else set()
+        self.outpoints: Set[str] = set(outpoints) if outpoints else set()
+        self.addresses: Set[str] = set(addresses) if addresses else set()
         self.categories = set(categories) if categories else set()
         self.txids = set(txids) if txids else set()
         self.refresh_all = refresh_all
+        self.reason = reason
 
     def __key__(self) -> Tuple:
         return tuple(self.__dict__.items())
@@ -66,16 +101,19 @@ class SignalFunction:
         self.slots: Dict[str, Callable] = {}
         self.lock = threading.Lock()
 
-    def connect(self, slot: Callable, slot_name=None) -> None:
+    def connect(self, slot: Callable[[], Any], slot_name=None) -> None:
         with self.lock:
             key = slot_name if slot_name and (slot_name not in self.slots) else str(slot)
             self.slots[key] = slot
 
     def disconnect(self, slot) -> None:
         with self.lock:
-            keys, values = zip(*list(self.slots.items()))
-            idx = values.index(slot)
-            del self.slots[keys[idx]]
+            keys, values = list(self.slots.keys()), list(self.slots.values())
+            if slot in values:
+                idx = values.index(slot)
+                del self.slots[keys[idx]]
+            else:
+                logger.debug(f"Tried to disconnect {slot}. But it is not in {values}. Skipping.")
 
     def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         return self.emit(*args, **kwargs)
@@ -89,7 +127,7 @@ class SignalFunction:
                 f"SignalFunction {self.name if self.name else ''}.emit() was called, but no listeners {self.slots} are listening."
             )
 
-        delete_slots = []
+        delete_slots: List[Callable[[], Any]] = []
         with self.lock:
             for key, slot in self.slots.items():
                 if allow_list and key not in allow_list:
@@ -101,7 +139,9 @@ class SignalFunction:
                 try:
                     responses[key] = slot(*args, **kwargs)
                 except:
-                    logger.warning(f"{slot} with key {key} could not be called. The slot will be deleted.")
+                    logger.warning(
+                        f"{slot} with key {key} caused an exception. {slot} with key {key} could not be called, perhaps because the object doesnt exisst anymore. The slot will be deleted."
+                    )
                     delete_slots.append(slot)
                     continue
             logger.debug(
@@ -125,12 +165,33 @@ class SingularSignalFunction(SignalFunction):
         responses = super().emit(*args, **kwargs)
         return list(responses.values())[0] if responses else responses
 
+    def __call__(self, *args, **kwargs) -> Any:
+        return self.emit(*args, **kwargs)
 
-class SignalsMin(QObject):
-    language_switch = pyqtSignal()
 
+class SignalsMin(NostrSignalsMin):
     signal_add_threat = pyqtSignal(QThread)
     signal_stop_threat = pyqtSignal(QThread)
+
+
+class WalletSignals(SignalsMin):
+    updated = pyqtSignal(UpdateFilter)
+    completions_updated = pyqtSignal()
+
+    show_utxo = pyqtSignal(object)
+    show_address = pyqtSignal(str, str)  # address, wallet_id
+
+    export_bip329_labels = pyqtSignal(str)  # str= wallet_id
+    export_labels = pyqtSignal(str)  # str= wallet_id
+    import_labels = pyqtSignal(str)  # str= wallet_id
+    import_bip329_labels = pyqtSignal(str)  # str= wallet_id
+    import_electrum_wallet_labels = pyqtSignal(str)  # str= wallet_id
+
+    finished_psbt_creation = pyqtSignal()
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.get_display_balance = SignalFunction(name="get_display_balance")
 
 
 class Signals(SignalsMin):
@@ -152,45 +213,29 @@ class Signals(SignalsMin):
     """
 
     open_tx_like = pyqtSignal(object)
-    utxos_updated = pyqtSignal(UpdateFilter)
-    addresses_updated = pyqtSignal(UpdateFilter)
-    labels_updated = pyqtSignal(UpdateFilter)
-    category_updated = pyqtSignal(UpdateFilter)
-    completions_updated = pyqtSignal()
     event_wallet_tab_closed = pyqtSignal()
     event_wallet_tab_added = pyqtSignal()
 
-    update_all_in_qt_wallet = pyqtSignal()
-
-    show_utxo = pyqtSignal(object)
-    show_address = pyqtSignal(str)
-    show_private_key = pyqtSignal(str)
-
     chain_data_changed = pyqtSignal(str)  # the string is the reason
-
     notification = pyqtSignal(object)  # should be a Message instance
 
-    cpfp_dialog = pyqtSignal(bdk.TransactionDetails)
-    dscancel_dialog = pyqtSignal()
-    bump_fee_dialog = pyqtSignal()
-    show_onchain_invoice = pyqtSignal()
-    save_transaction_into_wallet = pyqtSignal(object)
-
     show_network_settings = pyqtSignal()
-    export_bip329_labels = pyqtSignal(str)  # str= wallet_id
-    import_bip329_labels = pyqtSignal(str)  # str= wallet_id
-    import_electrum_wallet_labels = pyqtSignal(str)  # str= wallet_id
     open_wallet = pyqtSignal(str)  # str= filepath
     finished_open_wallet = pyqtSignal(str)  # str= wallet_id
     create_qt_wallet_from_wallet = pyqtSignal(object, object, object)  # object = wallet, file_path, password
     close_qt_wallet = pyqtSignal(str)  # str = wallet_id
 
     request_manual_sync = pyqtSignal()
-
     signal_broadcast_tx = pyqtSignal(bdk.Transaction)
+
+    # this is for non-wallet bound objects like UitxViewer
+    any_wallet_updated = pyqtSignal(UpdateFilter)
 
     def __init__(self) -> None:
         super().__init__()
         self.get_wallets = SignalFunction(name="get_wallets")
         self.get_qt_wallets = SignalFunction(name="get_qt_wallets")
         self.get_network = SingularSignalFunction(name="get_network")
+        self.get_mempool_url = SingularSignalFunction(name="get_mempool_url")
+
+        self.wallet_signals: DefaultDict[str, WalletSignals] = defaultdict(WalletSignals)

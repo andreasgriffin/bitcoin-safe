@@ -38,12 +38,12 @@ from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QLabel,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ def file_to_str(file_path) -> str:
             return f.read()
 
 
-class DragAndDropTextEdit(QTextEdit):
+class DragAndDropTextEdit(AnalyzerTextEdit):
     def __init__(
         self,
         parent=None,
@@ -82,12 +82,16 @@ class DragAndDropTextEdit(QTextEdit):
         callback_esc=None,
         process_filepath: Optional[Callable[[str], None]] = None,
     ) -> None:
-        super().__init__(parent)
+        super().__init__(parent=parent)
         self.process_filepath = process_filepath
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
+        if not event:
+            super().keyPressEvent(event)
+            return
+
         if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
             if self.callback_enter:
                 self.callback_enter(self.toPlainText())
@@ -96,16 +100,31 @@ class DragAndDropTextEdit(QTextEdit):
                 self.callback_esc()
         super().keyPressEvent(event)
 
-    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
-        if event.mimeData().hasUrls():
+    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
+        if not event:
+            super().dragEnterEvent(event)
+            return
+
+        mime_data = event.mimeData()
+        if mime_data and mime_data.hasUrls():
             event.accept()
         else:
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent) -> None:
-        file_path = event.mimeData().urls()[0].toLocalFile()
-        if self.process_filepath:
-            self.process_filepath(file_path)
+        super().dragEnterEvent(event)
+
+    def dropEvent(self, event: QDropEvent | None) -> None:
+        if not event:
+            super().dropEvent(event)
+            return
+
+        mime_data = event.mimeData()
+        if mime_data:
+            file_path = mime_data.urls()[0].toLocalFile()
+            if self.process_filepath:
+                self.process_filepath(file_path)
+
+        super().dropEvent(event)
 
 
 class DragAndDropButtonEdit(ButtonEdit):
@@ -120,7 +139,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         file_filter=translate("DragAndDropButtonEdit", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
     ) -> None:
         super().__init__(
-            parent,
+            parent=parent,
             input_field=DragAndDropTextEdit(
                 parent=parent,
                 callback_enter=callback_enter,
@@ -177,23 +196,25 @@ class ImportDialog(QDialog):
         # buttons
         self.buttonBox = QDialogButtonBox(self)
         self.cancel_button = self.buttonBox.addButton(QDialogButtonBox.StandardButton.Cancel)
+        if self.cancel_button:
+            self.cancel_button.clicked.connect(self.close)
         # self.button_file = self.buttonBox.addButton(QDialogButtonBox.Open)
         self.button_ok = self.buttonBox.addButton(QDialogButtonBox.StandardButton.Ok)
-        self.button_ok.setDefault(True)
-        self.button_ok.setText(text_button_ok)
+        if self.button_ok:
+            self.button_ok.setDefault(True)
+            self.button_ok.setText(text_button_ok)
+            self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.text()))
 
         layout.addWidget(self.buttonBox)
 
         # connect signals
-        self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.text()))
         self.text_edit.signal_drop_file.connect(self.process_input)
-        self.cancel_button.clicked.connect(self.close)
 
         shortcut = QShortcut(QKeySequence("Return"), self)
         shortcut.activated.connect(self.process_input)
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key.Key_Escape:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
+        if event and event.key() == Qt.Key.Key_Escape:
             self.close()
 
     def process_input(self, s: str) -> None:

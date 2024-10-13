@@ -32,12 +32,20 @@ import signal as syssignal
 from collections import deque
 from pathlib import Path
 
+from bitcoin_usb.tool_gui import ToolGui
+
 from bitcoin_safe import __version__
+from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
+from bitcoin_safe.gui.qt.category_list import CategoryEditor
+from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
+from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
+from bitcoin_safe.keystore import KeyStoreImporterTypes
+from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.util import rel_home_path_to_abs_path
 
@@ -45,23 +53,21 @@ logger = logging.getLogger(__name__)
 
 import base64
 import os
-import shlex
 import sys
-from typing import Deque, Dict, List, Literal, Optional, Tuple, Union
+from typing import Deque, Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.data import Data, DataType
-from PyQt6.QtCore import QCoreApplication, QProcess
-from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QShortcut
+from PyQt6.QtCore import QCoreApplication, QProcess, Qt, QTimer
+from PyQt6.QtGui import QCloseEvent, QIcon, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
     QMainWindow,
-    QMenu,
-    QMenuBar,
     QScrollArea,
     QSizePolicy,
+    QStyle,
     QSystemTrayIcon,
     QTabWidget,
     QVBoxLayout,
@@ -69,17 +75,17 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
-from bitcoin_safe.gui.qt.tutorial import ImportXpubs, TutorialStep, WalletSteps
+from bitcoin_safe.gui.qt.wallet_steps import ImportXpubs, TutorialStep, WalletSteps
 
 from ...config import UserConfig
 from ...fx import FX
 from ...mempool import MempoolData
 from ...psbt_util import FeeInfo, SimplePSBT
-from ...pythonbdk_types import OutPoint
-from ...signals import Signals, UpdateFilter
+from ...pythonbdk_types import get_outpoints
+from ...signals import Signals
 from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet, filename_clean
+from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .dialog_import import ImportDialog
 from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
@@ -91,7 +97,6 @@ from .ui_tx import UITx_Viewer, UITx_ViewerTab
 from .util import (
     Message,
     MessageType,
-    add_tab_to_tabs,
     caught_exception_message,
     delayed_execution,
     read_QIcon,
@@ -103,28 +108,30 @@ from .utxo_list import UTXOList, UtxoListWithToolbar
 class MainWindow(QMainWindow):
     def __init__(
         self,
-        network: Literal["bitcoin", "regtest", "signet", "testnet"] = None,
-        config: UserConfig = None,
+        network: Literal["bitcoin", "regtest", "signet", "testnet"] | None = None,
+        config: UserConfig | None = None,
         **kwargs,
     ) -> None:
         "If netowrk == None, then the network from the user config will be taken"
         super().__init__()
         config_present = UserConfig.exists() or config
         self.config = config if config else UserConfig.from_file()
-        self.config.network = bdk.Network._member_map_[network.upper()] if network else self.config.network
+        self.config.network = bdk.Network[network.upper()] if network else self.config.network
+        self.new_startup_network: bdk.Network | None = None
         self.address_dialogs: Deque[address_dialog.AddressDialog] = deque(maxlen=1000)
-
-        self.setMinimumSize(600, 450)
+        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+        self.setMinimumSize(600, 600)
 
         self.signals = Signals()
         self.qt_wallets: Dict[str, QTWallet] = {}
         self.threading_manager = ThreadingManager(signals_min=self.signals)
 
         self.fx = FX(signals_min=self.signals)
-        self.language_chooser = LanguageChooser(self, self.config, self.signals.language_switch)
+        self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
         if not config_present:
             self.config.language_code = self.language_chooser.dialog_choose_language(self)
         self.language_chooser.set_language(self.config.language_code)
+        self.hwi_tool_gui = ToolGui(self.config.network)
         self.setupUi(self)
 
         self.mempool_data = MempoolData(network_config=self.config.network_config, signals_min=self.signals)
@@ -132,14 +139,14 @@ class MainWindow(QMainWindow):
 
         self.last_qtwallet: Optional[QTWallet] = None
         # connect the listeners
-        self.signals.show_address.connect(self.show_address)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
-        self.signals.get_network.connect(lambda: self.config.network)
+        self.signals.get_network.connect(self.get_network)
+        self.signals.get_mempool_url.connect(self.get_mempool_url)
 
         self.network_settings_ui = NetworkSettingsUI(
             self.config.network, self.config.network_configs, signals=self.signals
         )
-        self.network_settings_ui.signal_apply_and_restart.connect(self.save_and_restart)
+        self.network_settings_ui.signal_apply_and_shutdown.connect(self.shutdown)
         self.signals.show_network_settings.connect(self.open_network_settings)
 
         self.welcome_screen = NewWalletWelcomeScreen(
@@ -161,9 +168,6 @@ class MainWindow(QMainWindow):
         self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
         self.signals.chain_data_changed.connect(self.sync)
         self.signals.request_manual_sync.connect(self.sync)
-        self.signals.export_bip329_labels.connect(self.export_bip329_labels)
-        self.signals.import_bip329_labels.connect(self.import_bip329_labels)
-        self.signals.import_electrum_wallet_labels.connect(self.import_electrum_wallet_labels)
         self.signals.open_wallet.connect(self.open_wallet)
         self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
         self.signals.language_switch.connect(self.updateUI)
@@ -171,7 +175,7 @@ class MainWindow(QMainWindow):
         self._init_tray()
 
         self.search_box = SearchWallets(
-            lambda: list(self.qt_wallets.values()),
+            get_qt_wallets=self.get_qt_wallets,
             signal_min=self.signals,
             parent=self.tab_wallets,
         )
@@ -181,6 +185,15 @@ class MainWindow(QMainWindow):
         self.setup_signal_handlers()
 
         delayed_execution(self.load_last_state, self)
+
+    def get_qt_wallets(self) -> List[QTWallet]:
+        return list(self.qt_wallets.values())
+
+    def get_mempool_url(self) -> str:
+        return self.config.network_config.mempool_url
+
+    def get_network(self) -> bdk.Network:
+        return self.config.network
 
     def load_last_state(self) -> None:
 
@@ -211,8 +224,8 @@ class MainWindow(QMainWindow):
         MainWindow.setMinimumSize(w, h)
 
         #####
-        self.tab_wallets = ExtendedTabWidget(self)
-        self.tab_wallets.tabBar().setExpanding(True)  # This will expand tabs to fill the tab widget width
+        self.tab_wallets = ExtendedTabWidget(object, parent=self)
+        self.tab_wallets.tabBar().setExpanding(True)  # type: ignore[union-attr]  # This will expand tabs to fill the tab widget width
         self.tab_wallets.setTabBarAutoHide(False)
         self.tab_wallets.setMovable(True)  # Enable tab reordering
         self.tab_wallets.setTabsClosable(True)
@@ -230,13 +243,15 @@ class MainWindow(QMainWindow):
         # header bar about testnet coins
         if self.config.network != bdk.Network.BITCOIN:
             notification_bar = NotificationBarRegtest(
-                open_network_settings=lambda: self.open_network_settings(),
+                open_network_settings=self.open_network_settings,
                 network=self.config.network,
                 signals_min=self.signals,
             )
             vbox.addWidget(notification_bar)
 
-        self.update_notification_bar = UpdateNotificationBar(signals_min=self.signals)
+        self.update_notification_bar = UpdateNotificationBar(
+            signals_min=self.signals, threading_parent=self.threading_manager
+        )
         self.update_notification_bar.check()  # TODO: disable this, after it got more stable
         vbox.addWidget(self.update_notification_bar)
 
@@ -254,61 +269,112 @@ class MainWindow(QMainWindow):
         logger.debug(f"done setupUi")
 
     def init_menubar(self) -> None:
-        self.menubar = QMenuBar()
+        self.menubar = MenuBar()
         # menu wallet
-        self.menu_wallet = self.menubar.addMenu("")
-        self.menu_action_new_wallet = self.menu_wallet.addAction("", self.new_wallet)
-        self.menu_action_open_wallet = self.menu_wallet.addAction("", self.open_wallet)
+        self.menu_wallet = self.menubar.add_menu("")
+        self.menu_action_new_wallet = self.menu_wallet.add_action("", self.new_wallet)
+        self.menu_action_new_wallet.setIcon(
+            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_FileDialogNewFolder)
+        )
+
+        self.menu_action_open_wallet = self.menu_wallet.add_action("", self.open_wallet)
         self.menu_action_open_wallet.setShortcut(QKeySequence("CTRL+O"))
-        self.menu_wallet_recent = self.menu_wallet.addMenu("")
-        self.menu_action_save_current_wallet = self.menu_wallet.addAction("", self.save_qt_wallet)
+        self.menu_action_open_wallet.setIcon(
+            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
+        )
+
+        self.menu_wallet_recent = self.menu_wallet.add_menu("")
+
+        self.menu_action_save_current_wallet = self.menu_wallet.add_action("", self.save_qt_wallet)
         self.menu_action_save_current_wallet.setShortcut(QKeySequence("CTRL+S"))
+        self.menu_action_save_current_wallet.setIcon(
+            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
+        )
         self.menu_wallet.addSeparator()
 
-        # change & export wallet
-        self.menu_wallet_change_export = self.menu_wallet.addMenu("")
-        self.menu_action_rename_wallet = self.menu_wallet_change_export.addAction("", self.change_wallet_id)
-        self.menu_action_change_password = self.menu_wallet_change_export.addAction(
-            "", self.change_wallet_password
+        self.menu_action_search = self.menu_wallet.add_action("", self.focus_search_box)
+        self.menu_action_search.setShortcut(QKeySequence("CTRL+F"))
+        self.menu_action_search.setIcon(read_QIcon("search.svg"))
+
+        # change wallet
+        self.menu_wallet_change = self.menu_wallet.add_menu("")
+        self.menu_wallet_change.setIcon(read_QIcon("password.svg"))
+        self.menu_action_rename_wallet = self.menu_wallet_change.add_action("", self.change_wallet_id)
+        self.menu_action_change_password = self.menu_wallet_change.add_action("", self.change_wallet_password)
+        self.menu_action_change_password.setIcon(read_QIcon("password.svg"))
+
+        # export wallet
+        self.menu_wallet_export = self.menu_wallet.add_menu("")
+        self.menu_action_export_pdf = self.menu_wallet_export.add_action(
+            "", self.export_wallet_pdf, icon=read_QIcon("descriptor-backup.svg")
         )
-        self.menu_action_export_for_coldcard = self.menu_wallet_change_export.addAction(
-            "", self.export_wallet_for_coldcard
+        self.menu_action_export_for_coldcard = self.menu_wallet_export.add_action(
+            "", self.export_wallet_for_coldcard, icon=read_QIcon("coldcard-only.svg")
+        )
+        self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
+            "", self.export_wallet_for_coldcard_q
         )
 
         self.menu_wallet.addSeparator()
-        self.menu_action_refresh_wallet = self.menu_wallet.addAction(
+        self.menu_action_refresh_wallet = self.menu_wallet.add_action(
             "", self.signals.request_manual_sync.emit
         )
         self.menu_action_refresh_wallet.setShortcut(QKeySequence("F5"))
+        self.menu_action_refresh_wallet.setIcon(
+            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        )
 
         # menu transaction
-        self.menu_transaction = self.menubar.addMenu("")
-        self.menu_load_transaction = self.menu_transaction.addMenu("")
-        self.menu_action_open_tx_file = self.menu_load_transaction.addAction("", self.open_tx_file)
-        self.menu_action_open_tx_from_str = self.menu_load_transaction.addAction(
-            "", self.dialog_open_tx_from_str
+        self.menu_tools = self.menubar.add_menu("")
+
+        self.menu_action_open_hwi_manager = self.menu_tools.add_action(
+            "",
+            self.hwi_tool_gui.show,
+            icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+        )
+
+        self.menu_load_transaction = self.menu_tools.add_menu("")
+        self.menu_action_open_tx_file = self.menu_load_transaction.add_action(
+            "",
+            self.open_tx_file,
+            icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon),
+        )
+        self.menu_action_open_tx_from_str = self.menu_load_transaction.add_action(
+            "",
+            self.dialog_open_tx_from_str,
+            icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_FileIcon),
         )
         self.menu_action_open_tx_from_str.setShortcut(QKeySequence("CTRL+L"))
 
-        self.menu_action_load_tx_from_qr = self.menu_load_transaction.addAction("", self.load_tx_like_from_qr)
+        self.menu_action_load_tx_from_qr = self.menu_load_transaction.add_action(
+            "", self.load_tx_like_from_qr, icon=read_QIcon("qr-code.svg")
+        )
 
         # menu settings
-        self.menu_settings = self.menubar.addMenu("")
-        self.menu_action_network_settings = self.menu_settings.addAction("", self.open_network_settings)
+        self.menu_settings = self.menubar.add_menu("")
+        self.menu_action_network_settings = self.menu_settings.add_action(
+            "",
+            self.open_network_settings,
+            icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DriveNetIcon),
+        )
         self.menu_action_network_settings.setShortcut(QKeySequence("CTRL+P"))
-        self.menu_action_toggle_tutorial = self.menu_settings.addAction("", self.toggle_tutorial)
-        self.language_menu = self.menu_settings.addMenu("")
+        self.menu_action_toggle_tutorial = self.menu_settings.add_action("", self.toggle_tutorial)
+        self.language_menu = self.menu_settings.add_menu("")
 
         # menu about
-        self.menu_about = self.menubar.addMenu("")
-        self.menu_action_version = self.menu_about.addAction(
+        self.menu_about = self.menubar.add_menu("")
+        self.menu_action_version = self.menu_about.add_action(
             "", lambda: webopen("https://github.com/andreasgriffin/bitcoin-safe/releases")
         )
-        self.menu_action_check_update = self.menu_about.addAction(
+        self.menu_action_check_update = self.menu_about.add_action(
             "", self.update_notification_bar.check_and_make_visible
         )
         self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
-        self.menu_action_license = self.menu_about.addAction("", lambda: LicenseDialog().exec())
+
+        def menu_action_license():
+            LicenseDialog().exec()
+
+        self.menu_action_license = self.menu_about.add_action("", menu_action_license)
 
         # assigning menu bar
         self.setMenuBar(self.menubar)
@@ -319,24 +385,6 @@ class MainWindow(QMainWindow):
         # other shortcuts
         self.shortcut_close_tab = QShortcut(QKeySequence("Ctrl+W"), self)
         self.shortcut_close_tab.activated.connect(lambda: self.close_tab(self.tab_wallets.currentIndex()))
-
-        # # Create a menu
-        # self.search_menu = QMenu("Search Menu", self)
-        # self.menubar.addMenu(self.search_menu)
-
-        # # Create a QWidgetAction that allows embedding a QLineEdit
-        # widgetAction = QWidgetAction(self.search_menu)
-
-        # self.search_box_in_menu = SearchWallets(
-        #     lambda: list(self.qt_wallets.values()),
-        #     signal_min=self.signals,
-        #     parent=self,
-        # )
-        # # self.search_menu.aboutToHide.connect(self.search_box_in_menu.popup.hide)
-        # widgetAction.setDefaultWidget(self.search_box_in_menu)
-
-        # # Add QWidgetAction to the menu
-        # self.search_menu.addAction(widgetAction)
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
@@ -350,12 +398,17 @@ class MainWindow(QMainWindow):
         self.menu_action_open_wallet.setText(self.tr("&Open Wallet"))
         self.menu_wallet_recent.setTitle(self.tr("Open &Recent"))
         self.menu_action_save_current_wallet.setText(self.tr("&Save Current Wallet"))
-        self.menu_wallet_change_export.setTitle(self.tr("&Change/Export"))
+        self.menu_action_search.setText(self.tr("&Search"))
+        self.menu_wallet_change.setTitle(self.tr("&Change"))
+        self.menu_wallet_export.setTitle(self.tr("&Export"))
         self.menu_action_rename_wallet.setText(self.tr("&Rename Wallet"))
         self.menu_action_change_password.setText(self.tr("&Change Password"))
-        self.menu_action_export_for_coldcard.setText(self.tr("&Export for Coldcard"))
+        self.menu_action_export_for_coldcard.setText(self.tr("&Export Coldcard txt file"))
+        self.menu_action_export_pdf.setText(self.tr("&Export Wallet PDF"))
+        self.menu_action_export_descriptor.setText(self.tr("&Export Descriptor"))
         self.menu_action_refresh_wallet.setText(self.tr("Re&fresh"))
-        self.menu_transaction.setTitle(self.tr("&Transaction"))
+        self.menu_tools.setTitle(self.tr("&Tools"))
+        self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
         self.menu_load_transaction.setTitle(self.tr("&Load Transaction or PSBT"))
         self.menu_action_open_tx_file.setText(self.tr("From &file"))
         self.menu_action_open_tx_from_str.setText(self.tr("From &text"))
@@ -384,14 +437,22 @@ class MainWindow(QMainWindow):
                 if qt_wallet.tabs.top_right_widget:
                     qt_wallet.tabs.top_right_widget.setVisible(main_search_field_hidden)
 
+    def focus_search_box(self):
+        self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
     def populate_recent_wallets_menu(self) -> None:
         self.menu_wallet_recent.clear()
+
+        def factory(filepath):
+            def f(*args):
+                self.open_wallet(file_path=filepath)
+
+            return f
+
         for filepath in reversed(self.config.recently_open_wallets[self.config.network]):
             if not Path(filepath).exists():
                 continue
-            self.menu_wallet_recent.addAction(
-                os.path.basename(filepath), lambda filepath=filepath: self.open_wallet(file_path=filepath)
-            )
+            self.menu_wallet_recent.add_action(os.path.basename(filepath), factory(filepath=filepath))
 
     def change_wallet_id(self) -> Optional[str]:
         qt_wallet = self.get_qt_wallet()
@@ -402,15 +463,16 @@ class MainWindow(QMainWindow):
         old_id = qt_wallet.wallet.id
 
         # ask for wallet name
-        dialog = WalletIdDialog(self.config.wallet_dir, prefilled=old_id)
+        dialog = WalletIdDialog(Path(self.config.wallet_dir), prefilled=old_id)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            new_wallet_id = dialog.name_input.text()
+            new_wallet_id = dialog.wallet_id
+            new_wallet_filename = dialog.filename
             logger.info(f"new wallet name: {new_wallet_id}")
         else:
             return None
 
         # in the wallet
-        qt_wallet.wallet.id = new_wallet_id
+        qt_wallet.wallet.set_wallet_id(new_wallet_id)
         # change dict key
         self.qt_wallets[new_wallet_id] = qt_wallet
         del self.qt_wallets[old_id]
@@ -422,7 +484,7 @@ class MainWindow(QMainWindow):
         old_filepath = qt_wallet.file_path
         directory, old_filename = os.path.split(old_filepath)
 
-        new_file_path = os.path.join(directory, filename_clean(new_wallet_id))
+        new_file_path = os.path.join(directory, new_wallet_filename)
 
         qt_wallet.move_wallet_file(new_file_path)
         self.save_qt_wallet(qt_wallet)
@@ -439,15 +501,23 @@ class MainWindow(QMainWindow):
         qt_wallet.change_password()
 
     def on_signal_broadcast_tx(self, transaction: bdk.Transaction) -> None:
+        def f_sync_all(qt_wallets: List[QTWallet]):
+            for qt_wallet in qt_wallets:
+                qt_wallet.sync()
+
+        qt_wallets_to_sync: List[QTWallet] = []
+
         last_qt_wallet_involved: Optional[QTWallet] = None
         for qt_wallet in self.qt_wallets.values():
             if qt_wallet.wallet.transaction_involves_wallet(transaction):
-                qt_wallet.sync()
+                qt_wallets_to_sync.append(qt_wallet)
                 last_qt_wallet_involved = qt_wallet
 
         if last_qt_wallet_involved:
             self.tab_wallets.setCurrentWidget(last_qt_wallet_involved.tab)
             last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
+
+        QTimer.singleShot(500, lambda: f_sync_all(qt_wallets_to_sync))
 
     def on_tab_changed(self, index: int) -> None:
         qt_wallet = self.get_qt_wallet(self.tab_wallets.widget(index))
@@ -458,9 +528,8 @@ class MainWindow(QMainWindow):
         self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), self)
         self.tray.setToolTip("Bitcoin Safe")
 
-        menu = QMenu(self)
-        exitAction = QAction("&Exit", self, triggered=self.close)
-        menu.addAction(exitAction)
+        menu = Menu(self)
+        menu.add_action(text="&Exit", slot=self.close)
 
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(self.onTrayIconActivated)
@@ -472,10 +541,9 @@ class MainWindow(QMainWindow):
         icon, _ = message.get_icon_and_title()
         title = message.title or "Bitcoin Safe"
         if message.msecs:
-            return self.tray.showMessage(
-                title, message.msg, Message.icon_to_q_system_tray_icon(icon), message.msecs
-            )
-        self.tray.showMessage(title, message.msg, Message.icon_to_q_system_tray_icon(icon))
+            self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon), message.msecs)
+            return
+        self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon))
 
     def onTrayIconActivated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
@@ -484,13 +552,37 @@ class MainWindow(QMainWindow):
     def open_network_settings(self) -> None:
         self.network_settings_ui.exec()
 
-    def export_wallet_for_coldcard(self, wallet: Wallet = None) -> None:
+    def export_wallet_for_coldcard(self, wallet: Wallet | None = None) -> None:
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
             Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
             return
 
         qt_wallet.export_wallet_for_coldcard()
+
+    def export_wallet_for_coldcard_q(self, wallet: Wallet | None = None) -> None:
+        qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
+        if not qt_wallet or not qt_wallet.wallet:
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            return
+
+        edit = qt_wallet.wallet_descriptor_ui.edit_descriptor
+        dialog = DescriptorExport(
+            MultipathDescriptor.from_descriptor_str(edit.text(), qt_wallet.wallet.network),
+            qt_wallet.signals,
+            parent=self,
+            network=self.config.network,
+            threading_parent=self.threading_manager,
+        )
+        dialog.show()
+
+    def export_wallet_pdf(self, wallet: Wallet | None = None) -> None:
+        qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
+        if not qt_wallet or not qt_wallet.wallet:
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            return
+
+        make_and_open_pdf(qt_wallet.wallet, lang_code=self.language_chooser.get_current_lang_code())
 
     def open_tx_file(self, file_path: Optional[str] = None) -> None:
         if not file_path:
@@ -501,10 +593,10 @@ class MainWindow(QMainWindow):
                 self.tr("All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
             )
             if not file_path:
-                logger.debug("No file selected")
+                logger.info("No file selected")
                 return
 
-        logger.debug(self.tr("Selected file: {file_path}").format(file_path=file_path))
+        logger.info(self.tr("Selected file: {file_path}").format(file_path=file_path))
         with open(file_path, "rb") as file:
             string_content = file.read()
 
@@ -529,7 +621,7 @@ class MainWindow(QMainWindow):
             str,
         ],
     ) -> None:
-        logger.debug(f"Trying to open tx with type {type(txlike)}")
+        logger.info(f"Trying to open tx with type {type(txlike)}")
 
         # first do the bdk instance cases
         if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
@@ -544,7 +636,7 @@ class MainWindow(QMainWindow):
             wallet = ToolsTxUiInfo.get_likely_source_wallet(txlike, self.signals)
 
             if not wallet:
-                logger.debug(
+                logger.info(
                     f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
                 )
                 current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
@@ -576,7 +668,11 @@ class MainWindow(QMainWindow):
                 txlike = str(txlike)
 
         if isinstance(txlike, str):
-            res = Data.from_str(txlike, self.config.network)
+            try:
+                res = Data.from_str(txlike, self.config.network)
+            except:
+                Message(self.tr("Could not decode this string"), type=MessageType.Error)
+                return None
             if res.data_type == DataType.Txid:
                 txdetails = self.fetch_txdetails(res.data)
                 if txdetails:
@@ -603,8 +699,11 @@ class MainWindow(QMainWindow):
             ]:
                 self.open_tx_like_in_tab(data.data)
 
-        window = BitcoinVideoWidget(result_callback=result_callback, network=self.config.network)
-        window.show()
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
+        self._temp_bitcoin_video_widget = BitcoinVideoWidget()
+        self._temp_bitcoin_video_widget.signal_data.connect(result_callback)
+        self._temp_bitcoin_video_widget.show()
         return None
 
     def dialog_open_tx_from_str(self) -> None:
@@ -623,10 +722,16 @@ class MainWindow(QMainWindow):
         )
         tx_dialog.show()
 
+    def get_tab_with_title(self, tab_widget: QTabWidget, title) -> Optional[int]:
+        for i in range(tab_widget.count()):
+            if title == tab_widget.tabText(i):
+                return i
+        return None
+
     def open_tx_in_tab(
         self, txlike: Union[bdk.Transaction, bdk.TransactionDetails]
-    ) -> Tuple[UITx_ViewerTab, UITx_Viewer]:
-        tx: bdk.Transaction = None
+    ) -> Optional[Tuple[UITx_ViewerTab, UITx_Viewer]]:
+        tx: bdk.Transaction | None = None
         fee = None
         confirmation_time = None
 
@@ -646,18 +751,38 @@ class MainWindow(QMainWindow):
         elif isinstance(txlike, bdk.Transaction):
             tx = txlike
 
-        def get_outpoints() -> List[OutPoint]:
-            return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
+        if not tx:
+            logger.error(f"could not open {tx}")
+            return None
+
+        title = self.tr("Transaction {txid}").format(txid=short_tx_id(tx.txid()))
+        data = Data.from_tx(tx)
+
+        # check if the same tab with exactly the same data is open already
+        tab_idx = self.get_tab_with_title(self.tab_wallets, title)
+        if tab_idx is not None and isinstance(tab_data := self.tab_wallets.tabData(tab_idx), UITx_Viewer):
+            # if the tab_data is a tx, then just dismiss the tx
+            if tab_data.data.data_type == DataType.Tx:
+                self.tab_wallets.setCurrentIndex(tab_idx)
+                return None
+            # if tab_data is a psbt, then add the signature from tx
+            if tab_data.data.data_type == DataType.PSBT:
+                tab_data.tx_received(tx)
+                self.tab_wallets.setCurrentIndex(tab_idx)
+                return None
 
         utxo_list = UTXOList(
             self.config,
             self.signals,
-            get_outpoints=get_outpoints,
+            get_outpoints=lambda: get_outpoints(tx),
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
             ],
             keep_outpoint_order=True,
+            # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
+            sort_column=UTXOList.Columns.ADDRESS,
+            sort_order=Qt.SortOrder.AscendingOrder,
         )
 
         widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, self.tab_wallets)
@@ -672,28 +797,27 @@ class MainWindow(QMainWindow):
             fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False) if fee is not None else None,
             confirmation_time=confirmation_time,
             blockchain=self.get_blockchain_of_any_wallet(),
-            data=Data.from_tx(tx),
+            data=data,
+            parent=self,
         )
 
-        add_tab_to_tabs(
-            self.tab_wallets,
-            viewer.main_widget,
-            read_QIcon("send.svg"),
-            self.tr("Transaction {txid}").format(txid=short_tx_id(tx.txid())),
-            self.tr("Transaction {txid}").format(txid=short_tx_id(tx.txid())),
+        self.tab_wallets.add_tab(
+            tab=viewer,
+            icon=read_QIcon("send.svg"),
+            description=title,
             focus=True,
             data=viewer,
         )
 
-        return viewer.main_widget, viewer
+        return viewer, viewer
 
     def open_psbt_in_tab(
         self,
         tx: Union[
             bdk.PartiallySignedTransaction, TxBuilderInfos, bdk.TxBuilderResult, str, bdk.TransactionDetails
         ],
-    ) -> Tuple[UITx_ViewerTab, UITx_Viewer]:
-        psbt: bdk.PartiallySignedTransaction = None
+    ) -> Optional[Tuple[UITx_ViewerTab, UITx_Viewer]]:
+        psbt: bdk.PartiallySignedTransaction | None = None
         fee_info: Optional[FeeInfo] = None
 
         logger.debug(f"tx is of type {type(tx)}")
@@ -722,19 +846,39 @@ class MainWindow(QMainWindow):
             logger.debug("is bdk.TransactionDetails")
             raise Exception("cannot handle TransactionDetails")
 
-        def get_outpoints() -> List[OutPoint]:
-            return [OutPoint.from_bdk(input.previous_output) for input in psbt.extract_tx().input()]
+        if not psbt:
+            logger.error(f"{tx} could not be converted to a psbt")
+            return None
+
+        data = Data.from_psbt(psbt)
+        title = self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.txid()))
+
+        # check if the same tab with exactly the same data is open already
+        tab_idx = self.get_tab_with_title(self.tab_wallets, title)
+        if tab_idx is not None and isinstance(tab_data := self.tab_wallets.tabData(tab_idx), UITx_Viewer):
+            # if the tab_data is a tx, then just dismiss the psbt (a tx is better than a psbt)
+            if tab_data.data.data_type == DataType.Tx:
+                self.tab_wallets.setCurrentIndex(tab_idx)
+                return None
+            # if tab_data is a psbt, then add the signature from data
+            if tab_data.data.data_type == DataType.PSBT:
+                tab_data.signature_added(psbt)
+                self.tab_wallets.setCurrentIndex(tab_idx)
+                return None
 
         utxo_list = UTXOList(
             self.config,
             self.signals,
-            get_outpoints=get_outpoints,
+            get_outpoints=lambda: get_outpoints(psbt.extract_tx()),
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
                 UTXOList.Columns.PARENTS,
             ],
             txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
             keep_outpoint_order=True,
+            # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
+            sort_column=UTXOList.Columns.ADDRESS,
+            sort_order=Qt.SortOrder.AscendingOrder,
         )
 
         widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, parent=self.tab_wallets)
@@ -748,21 +892,19 @@ class MainWindow(QMainWindow):
             mempool_data=self.mempool_data,
             fee_info=fee_info,
             blockchain=self.get_blockchain_of_any_wallet(),
-            data=Data.from_psbt(psbt),
+            data=data,
+            parent=self,
         )
 
-        psbt.extract_tx().txid()
-        add_tab_to_tabs(
-            self.tab_wallets,
-            viewer.main_widget,
-            read_QIcon("qr-code.svg"),
-            self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.txid())),
-            self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.txid())),
+        self.tab_wallets.add_tab(
+            tab=viewer,
+            icon=read_QIcon("qr-code.svg"),
+            description=title,
             focus=True,
             data=viewer,
         )
 
-        return viewer.main_widget, viewer
+        return viewer, viewer
 
     def open_last_opened_wallets(self) -> List[QTWallet]:
         opened_wallets: List[QTWallet] = []
@@ -789,7 +931,7 @@ class MainWindow(QMainWindow):
     #     def on_success(data):
     #         pass
 
-    #     TaskThread(self, signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+    #     TaskThread( signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
 
     def open_wallet(self, file_path: Optional[str] = None) -> Optional[QTWallet]:
         if not file_path:
@@ -800,7 +942,7 @@ class MainWindow(QMainWindow):
                 self.tr("Wallet Files (*.wallet);;All Files (*)"),
             )
             if not file_path:
-                logger.debug("No file selected")
+                logger.info("No file selected")
                 return None
 
         # make sure this wallet isn't open already by this instance
@@ -818,7 +960,7 @@ class MainWindow(QMainWindow):
             ):
                 return None
 
-        logger.debug(f"Selected file: {file_path}")
+        logger.info(f"Selected file: {file_path}")
         if not os.path.isfile(file_path):
             Message(
                 self.tr("There is no such file: {file_path}").format(file_path=file_path),
@@ -859,67 +1001,7 @@ class MainWindow(QMainWindow):
         self.signals.finished_open_wallet.emit(wallet.id)
         return qt_wallet
 
-    def export_bip329_labels(self, wallet_id: str) -> None:
-        qt_wallet = self.qt_wallets.get(wallet_id)
-        if not qt_wallet:
-            return
-        s = qt_wallet.wallet.labels.export_bip329_jsonlines()
-        file_path, _ = QFileDialog.getSaveFileName(
-            self,
-            self.tr("Export labels"),
-            f"{wallet_id}_labels.jsonl",
-            self.tr("All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)"),
-        )
-        if not file_path:
-            logger.debug("No file selected")
-            return
-
-        with open(file_path, "w") as file:
-            file.write(s)
-
-    def import_bip329_labels(self, wallet_id: str) -> None:
-        qt_wallet = self.qt_wallets.get(wallet_id)
-        if not qt_wallet:
-            return
-
-        file_path, _ = QFileDialog.getOpenFileName(
-            self,
-            self.tr("Import labels"),
-            "",
-            self.tr("All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)"),
-        )
-        if not file_path:
-            logger.debug("No file selected")
-            return
-
-        with open(file_path, "r") as file:
-            lines = file.read()
-
-        qt_wallet.wallet.labels.import_bip329_jsonlines(lines)
-        self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
-
-    def import_electrum_wallet_labels(self, wallet_id: str) -> None:
-        qt_wallet = self.qt_wallets.get(wallet_id)
-        if not qt_wallet:
-            return
-
-        file_path, _ = QFileDialog.getOpenFileName(
-            self,
-            self.tr("Import Electrum Wallet labels"),
-            "",
-            self.tr("All Files (*);;JSON Files (*.json)"),
-        )
-        if not file_path:
-            logger.debug("No file selected")
-            return
-
-        with open(file_path, "r") as file:
-            lines = file.read()
-
-        qt_wallet.wallet.labels.import_electrum_wallet_json(lines, network=self.config.network)
-        self.signals.labels_updated.emit(UpdateFilter(refresh_all=True))
-
-    def save_qt_wallet(self, qt_wallet: QTWallet = None) -> None:
+    def save_qt_wallet(self, qt_wallet: QTWallet | None = None) -> None:
         qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if qt_wallet:
             qt_wallet.save()
@@ -957,19 +1039,16 @@ class MainWindow(QMainWindow):
         self.welcome_screen.add_new_wallet_welcome_tab()
 
     def new_wallet_id(self) -> str:
-        return self.tr("new") + str(len(self.qt_wallets))
+        return f'{self.tr("new")}{len(self.qt_wallets)}'
 
     def create_qtwallet_from_protowallet(self, protowallet: ProtoWallet) -> QTWallet:
-
         wallet = Wallet.from_protowallet(
-            protowallet,
-            self.config,
+            protowallet, self.config, default_category=CategoryEditor.get_default_categories()[0]
         )
 
         qt_wallet = self.add_qt_wallet(wallet)
         # adding these should only be done at wallet creation
-        qt_wallet.address_list_tags.add(self.tr("Friends"))
-        qt_wallet.address_list_tags.add(self.tr("KYC-Exchange"))
+        qt_wallet.address_list_tags.add_default_categories()
         self.save_qt_wallet(qt_wallet)
         qt_wallet.sync()
         return qt_wallet
@@ -979,23 +1058,23 @@ class MainWindow(QMainWindow):
         wallet_tab: QWidget,
         protowallet: ProtoWallet,
         keystore_uis: KeyStoreUIs,
-        wallet_steps: WalletSteps,
     ) -> None:
-        if keystore_uis.ask_accept_unexpected_origins():
-            self.tab_wallets.removeTab(self.tab_wallets.indexOf(wallet_tab))
-            qt_wallet = self.create_qtwallet_from_protowallet(protowallet=protowallet)
-            qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
+        try:
+            if keystore_uis.ask_accept_unexpected_origins():
+                qt_wallet = self.create_qtwallet_from_protowallet(protowallet=protowallet)
+                self.tab_wallets.removeTab(self.tab_wallets.indexOf(wallet_tab))
+                qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
 
-        else:
-            wallet_steps.set_current_index(wallet_steps.current_index() - 1)
-            return
+            else:
+                return
+        except Exception as e:
+            Message(str(e), type=MessageType.Error)
 
     def create_qtwallet_from_qtprotowallet(self, qtprotowallet: QTProtoWallet) -> None:
         self.create_qtwallet_from_ui(
             wallet_tab=qtprotowallet.tab,
             protowallet=qtprotowallet.protowallet,
             keystore_uis=qtprotowallet.wallet_descriptor_ui.keystore_uis,
-            wallet_steps=qtprotowallet.wallet_steps,
         )
 
     def create_qtprotowallet(
@@ -1003,9 +1082,9 @@ class MainWindow(QMainWindow):
     ) -> Optional[QTProtoWallet]:
 
         # ask for wallet name
-        dialog = WalletIdDialog(self.config.wallet_dir)
+        dialog = WalletIdDialog(Path(self.config.wallet_dir))
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            wallet_id = dialog.name_input.text()
+            wallet_id = dialog.wallet_id
             logger.info(f"new wallet name: {wallet_id}")
         else:
             return None
@@ -1018,7 +1097,13 @@ class MainWindow(QMainWindow):
             wallet_id=wallet_id,
         )
 
-        qtprotowallet = QTProtoWallet(config=self.config, signals=self.signals, protowallet=protowallet)
+        qtprotowallet = QTProtoWallet(
+            config=self.config,
+            signals=self.signals,
+            protowallet=protowallet,
+            threading_parent=self.threading_manager,
+            get_lang_code=self.language_chooser.get_current_lang_code,
+        )
 
         qtprotowallet.signal_close_wallet.connect(
             lambda: self.close_tab(self.tab_wallets.indexOf(qtprotowallet.tab))
@@ -1038,30 +1123,41 @@ class MainWindow(QMainWindow):
             wallet_steps.set_visibilities()
         qtprotowallet.wallet_steps = wallet_steps
 
-        tab_import_xpub: ImportXpubs = wallet_steps.tab_generators[TutorialStep.import_xpub]
-        wallet_steps.signal_create_wallet.connect(
-            lambda: self.create_qtwallet_from_ui(
+        tab_import_xpub = wallet_steps.tab_generators[TutorialStep.import_xpub]
+        if not isinstance(tab_import_xpub, ImportXpubs):
+            logger.error(f"{tab_import_xpub} is not of type ImportXpubs")
+            return None
+
+        def create_qtwallet_from_ui():
+            if not isinstance(tab_import_xpub, ImportXpubs):
+                logger.error(f"{tab_import_xpub} is not of type ImportXpubs")  # type: ignore[unreachable]
+                return None
+
+            if not tab_import_xpub.keystore_uis:
+                Message("Cannot create wallet, because no keystores are available", type=MessageType.Error)
+                return
+            self.create_qtwallet_from_ui(
                 wallet_tab=qtprotowallet.tab,
                 protowallet=protowallet,
                 keystore_uis=tab_import_xpub.keystore_uis,
-                wallet_steps=wallet_steps,
             )
-        )
+
+        wallet_steps.signal_create_wallet.connect(create_qtwallet_from_ui)
 
         # add to tabs
-        add_tab_to_tabs(
-            self.tab_wallets,
-            qtprotowallet.tab,
-            read_QIcon("file.png"),
-            qtprotowallet.protowallet.id,
-            qtprotowallet.protowallet.id,
+        self.tab_wallets.add_tab(
+            tab=qtprotowallet.tab,
+            icon=read_QIcon("file.png"),
+            description=qtprotowallet.protowallet.id,
             focus=True,
             data=qtprotowallet,
         )
 
         return qtprotowallet
 
-    def add_qt_wallet(self, wallet: Wallet, file_path: str = None, password: str = None) -> QTWallet:
+    def add_qt_wallet(
+        self, wallet: Wallet, file_path: str | None = None, password: str | None = None
+    ) -> QTWallet:
         def set_tab_widget_icon(tab: QWidget, icon: QIcon) -> None:
             idx = self.tab_wallets.indexOf(tab)
             if idx != -1:
@@ -1082,6 +1178,8 @@ class MainWindow(QMainWindow):
                 set_tab_widget_icon=set_tab_widget_icon,
                 file_path=file_path,
                 password=password,
+                threading_parent=self.threading_manager,
+                get_lang_code=self.language_chooser.get_current_lang_code,
             )
 
             # tutorial
@@ -1093,12 +1191,10 @@ class MainWindow(QMainWindow):
 
         # add to tabs
         self.qt_wallets[wallet.id] = qt_wallet
-        add_tab_to_tabs(
-            self.tab_wallets,
-            qt_wallet.tab,
-            read_QIcon("status_waiting.png"),
-            qt_wallet.wallet.id,
-            qt_wallet.wallet.id,
+        self.tab_wallets.add_tab(
+            tab=qt_wallet.tab,
+            icon=read_QIcon("status_waiting.svg"),
+            description=qt_wallet.wallet.id,
             focus=True,
             data=qt_wallet,
         )
@@ -1111,7 +1207,12 @@ class MainWindow(QMainWindow):
         # qt_wallet.tabs.set_top_right_widget(search_box)
 
         qt_wallet.wallet_steps.set_visibilities()
+        self.language_chooser.add_signal_language_switch(
+            self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
+        )
+        self.signals.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
         self.signals.event_wallet_tab_added.emit()
+
         # this is a
         self.last_qtwallet = qt_wallet
         return qt_wallet
@@ -1132,12 +1233,12 @@ class MainWindow(QMainWindow):
 
     def _get_qt_base_wallet(
         self,
-        qt_base_wallets: Dict[str, QtWalletBase],
-        tab: QTabWidget = None,
+        qt_base_wallets: Iterable[QtWalletBase],
+        tab: QWidget | None = None,
         if_none_serve_last_active=False,
-    ) -> Optional[QTWallet]:
+    ) -> Optional[QtWalletBase]:
         tab = self.tab_wallets.currentWidget() if tab is None else tab
-        for qt_base_wallet in qt_base_wallets.values():
+        for qt_base_wallet in qt_base_wallets:
             if tab == qt_base_wallet.tab:
                 return qt_base_wallet
         if if_none_serve_last_active:
@@ -1145,11 +1246,14 @@ class MainWindow(QMainWindow):
         return None
 
     def get_qt_wallet(
-        self, tab: QTabWidget = None, if_none_serve_last_active: bool = False
+        self, tab: QWidget | None = None, if_none_serve_last_active: bool = False
     ) -> Optional[QTWallet]:
-        return self._get_qt_base_wallet(
-            self.qt_wallets, tab=tab, if_none_serve_last_active=if_none_serve_last_active
+        base_wallet = self._get_qt_base_wallet(
+            self.qt_wallets.values(), tab=tab, if_none_serve_last_active=if_none_serve_last_active
         )
+        if isinstance(base_wallet, QTWallet):
+            return base_wallet
+        return None
 
     def get_blockchain_of_any_wallet(self) -> Optional[bdk.Blockchain]:
         for qt_wallet in self.qt_wallets.values():
@@ -1157,9 +1261,8 @@ class MainWindow(QMainWindow):
                 return qt_wallet.wallet.blockchain
         return None
 
-    def show_address(self, addr: str, parent: QWidget = None) -> None:
-
-        qt_wallet = self.get_qt_wallet()
+    def show_address(self, addr: str, wallet_id: str, parent: QWidget | None = None) -> None:
+        qt_wallet = self.qt_wallets.get(wallet_id)
         if not qt_wallet:
             return
 
@@ -1213,11 +1316,19 @@ class MainWindow(QMainWindow):
                 self.tr("Close wallet {id}?").format(id=qt_wallet.wallet.id), self.tr("Close wallet")
             ):
                 return
-            logger.debug(self.tr("Closing wallet {id}").format(id=qt_wallet.wallet.id))
+            logger.info(self.tr("Closing wallet {id}").format(id=qt_wallet.wallet.id))
             self.save_qt_wallet(qt_wallet)
         else:
-            logger.debug(self.tr("Closing tab {name}").format(name=self.tab_wallets.tabText(index)))
+            logger.info(self.tr("Closing tab {name}").format(name=self.tab_wallets.tabText(index)))
+
+        # get the tabdata before removing the tab
+        tab_data = self.tab_wallets.tabData(index)
         self.tab_wallets.removeTab(index)
+        if isinstance(tab_data, ThreadingManager):
+            # this is necessary to ensure the closeevent
+            # and with it the thread cleanup is called
+            tab_data.stop_and_wait_all()
+
         if qt_wallet:
             self.remove_qt_wallet(qt_wallet)
 
@@ -1229,57 +1340,50 @@ class MainWindow(QMainWindow):
         if qt_wallet:
             qt_wallet.sync()
 
-    def closeEvent(self, event: QCloseEvent) -> None:
+    def closeEvent(self, event: Optional[QCloseEvent]) -> None:
         self.threading_manager.stop_and_wait_all()
 
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
-        self.save_config()
+
+        self.write_current_open_txs_to_config()
+        self.config.save()
         self.save_all_wallets()
         self.remove_all_qt_wallet()
+
+        if self.new_startup_network:
+            self.config.network = self.new_startup_network
+            self.config.save()
+
         logger.info(f"Finished close handling")
         super().closeEvent(event)
 
-    def save_config(self) -> None:
-        self.write_current_open_txs_to_config()
-        self.config.save()
+    def restart(self, new_startup_network: bdk.Network | None = None) -> None:
+        """
+        Currently only works in Linux
+        and then it seems that it freezes. So do not use
 
-    def save_and_restart(self, params: str) -> None:
-        self.save_config()
-        self.restart(params=params)
+        Args:
+            new_startup_network (bdk.Network | None, optional): _description_. Defaults to None.
+        """
+        args: List[str] = []  #  sys.argv[1:]
+        self.new_startup_network = new_startup_network
+        QCoreApplication.quit()
 
-    def restart(self, params: str) -> None:
-        # Use shlex.split to properly handle spaces and special characters in arguments
-        params_list = shlex.split(params)
+        status = QProcess.startDetached(sys.executable, ["-m", "bitcoin_safe"] + args)
+        if not status:
+            sys.exit(-1)
 
-        # Prepare the command line arguments, excluding the first one which is the script name
-        # and add the new params_list
-        args = sys.argv[1:] + params_list
-
-        # Trigger the close event
-        close_event = QCloseEvent()
-        self.closeEvent(close_event)
-
-        if close_event.isAccepted():
-            # Quit the current application
-            QCoreApplication.quit()
-
-            # Start a new instance of the application with the updated arguments
-            status = QProcess.startDetached(sys.executable, ["-m", "bitcoin_safe"] + args)
-
-            # If the application failed to restart, exit with an error code
-            if not status:
-                sys.exit(-1)
-        else:
-            # The close event was not accepted, so the application will not quit.
-            pass
+    def shutdown(self, new_startup_network: bdk.Network | None = None) -> None:
+        self.new_startup_network = new_startup_network
+        QCoreApplication.quit()
 
     def signal_handler(self, signum, frame) -> None:
-        logger.debug(f"Handling signal: {signum}")
+        logger.info(f"Handling signal: {signum}")
         close_event = QCloseEvent()
         self.closeEvent(close_event)
-        logger.debug(f"Received signal {signum}, exiting.")
+        logger.info(f"Received signal {signum}, exiting.")
         QCoreApplication.quit()
 
     def setup_signal_handlers(self) -> None:

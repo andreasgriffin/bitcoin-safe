@@ -201,3 +201,5 @@ bitcoin_safe.dist-info
 
 screenshots*/
 .DS_Store
+
+profile.html

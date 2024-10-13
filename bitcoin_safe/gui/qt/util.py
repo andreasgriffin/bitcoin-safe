@@ -29,22 +29,31 @@
 
 import enum
 import logging
-import os
-import os.path
 import platform
+import shlex
 import subprocess
 import sys
 import traceback
 import webbrowser
+import xml.etree.ElementTree as ET
 from functools import lru_cache
+from io import BytesIO
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import bdkpython as bdk
+import PIL.Image as PilImage
 from bitcoin_qr_tools.data import is_bitcoin_address
-from PIL import Image as PilImage
-from PyQt6.QtCore import QCoreApplication, QSize, Qt, QTimer, QUrl, pyqtSignal
+from PyQt6.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QSize,
+    Qt,
+    QTimer,
+    QUrl,
+    pyqtBoundSignal,
+)
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -58,6 +67,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtWidgets import (
     QApplication,
+    QBoxLayout,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
@@ -68,14 +78,14 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSizePolicy,
+    QStyle,
     QSystemTrayIcon,
-    QTabWidget,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 
 from ...i18n import translate
 from ...util import register_cache, resource_path
@@ -103,7 +113,7 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 )
 
 
-TX_ICONS = [
+TX_ICONS: List[str] = [
     "unconfirmed.svg",
     "clock1.png",
     "clock2.png",
@@ -121,11 +131,11 @@ class QtWalletBase(QWidget):
 def xdg_open_file(filename: Path):
     system_name = platform.system()
     if system_name == "Windows":
-        subprocess.call(["start", str(filename)], shell=True)
+        subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
     elif system_name == "Darwin":  # macOS
-        subprocess.call(["open", str(filename)])
+        subprocess.call(shlex.split(f'open "{filename}"'))
     elif system_name == "Linux":  # Linux
-        subprocess.call(["xdg-open", str(filename)])
+        subprocess.call(shlex.split(f'xdg-open "{filename}"'))
 
 
 def sort_id_to_icon(sort_id: int) -> str:
@@ -159,7 +169,7 @@ def qresize(qsize: QSize, max_sizes: Tuple[int, int]):
 
 
 def center_in_widget(
-    widgets: List[QWidget], parent: QWidget, direction="h", alignment=Qt.AlignmentFlag.AlignCenter
+    widgets: Iterable[QWidget], parent: QWidget, direction="h", alignment=Qt.AlignmentFlag.AlignCenter
 ):
     outer_layout = QHBoxLayout(parent) if direction == "h" else QVBoxLayout(parent)
     outer_layout.setAlignment(alignment)
@@ -169,19 +179,38 @@ def center_in_widget(
     return outer_layout
 
 
-def add_centered(
-    widgets: List[QWidget], parent: QWidget, direction="h", alignment=Qt.AlignmentFlag.AlignCenter
-):
-    widget1 = QWidget(parent)
-    parent.layout().addWidget(widget1)
-    inner_layout = center_in_widget(widgets, widget1, direction=direction, alignment=alignment)
-    inner_layout.setContentsMargins(1, 0, 1, 0)  # left, top, right, bottom
-    return inner_layout
+def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) -> QPushButton:
+    # add the help buttonbox
+    button_help = QPushButton()
+    button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    button_help.setText(title)
+    button_help.setIcon(
+        (button_help.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion)
+    )
+
+    def show_screenshot_tutorial():
+        help_widget.setWindowTitle(title)
+        help_widget.show()
+
+    button_help.clicked.connect(show_screenshot_tutorial)
+    return button_help
+
+
+def generate_help_message_button(message, title=translate("help", "Help")) -> QPushButton:
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle(title)
+    msg_box.setIcon(QMessageBox.Icon.Information)  # Set icon to Information which is often used for Help
+    msg_box.setText(message)
+    msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)  # Add OK button
+
+    help_button = generate_help_button(msg_box, title=title)
+    return help_button
 
 
 class AspectRatioSvgWidget(QSvgWidget):
     def __init__(self, svg_path: str, max_width: int, max_height: int, parent=None):
         super().__init__(parent)
+        self.svg_path = svg_path
         self.load(svg_path)
         self._max_width = max_width
         self._max_height = max_height
@@ -194,21 +223,56 @@ class AspectRatioSvgWidget(QSvgWidget):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
         return qsize
 
+    def modify_svg_text(self, old_text: str, new_text: str):
+
+        # Load the original SVG content
+        with open(self.svg_path, "r", encoding="utf-8") as file:
+            original_svg_content = file.read()
+
+        # Register namespaces if needed (for saving purposes)
+        namespaces = {
+            "": "http://www.w3.org/2000/svg",
+            "ns0": "http://www.w3.org/2000/svg",
+            "ns1": "http://www.w3.org/2000/svg",
+        }
+
+        # Parse the SVG content
+        tree = ET.ElementTree(ET.fromstring(original_svg_content))
+        root = tree.getroot()
+
+        # Find all text elements in the SVG
+        for tspan in root.findall(".//{http://www.w3.org/2000/svg}tspan"):
+            if tspan.text == old_text:
+                tspan.text = new_text
+
+        # Convert the modified SVG tree back to a bytes representation
+        fake_file = BytesIO()
+        tree.write(fake_file, encoding="utf-8", xml_declaration=True)
+
+        byte_data = fake_file.getvalue()
+        modified_svg_content = QByteArray(byte_data)  # type: ignore[call-overload]
+        self.load(modified_svg_content)
+
 
 def add_centered_icons(
-    paths: List[str], parent, direction="h", alignment=Qt.AlignmentFlag.AlignCenter, max_sizes=None
+    paths: List[str],
+    parent_layout: QBoxLayout,
+    direction="h",
+    alignment: Qt.AlignmentFlag = Qt.AlignmentFlag.AlignCenter,
+    max_sizes: Iterable[Tuple[int, int]] = [],
 ):
     max_sizes = max_sizes if max_sizes else [(60, 80) for path in paths]
-    if isinstance(max_sizes[0], (float, int)):
-        max_sizes = [max_sizes]
-    if len(paths) > 1 and len(max_sizes) == 1:
-        max_sizes = max_sizes * len(paths)
+    if len(paths) > 1 and len(max_sizes) == 1:  # type: ignore
+        max_sizes = max_sizes * len(paths)  # type: ignore
 
     svg_widgets = [
         AspectRatioSvgWidget(icon_path(path), *max_size) for max_size, path in zip(max_sizes, paths)
     ]
 
-    inner_layout = add_centered(svg_widgets, parent, direction=direction, alignment=alignment)
+    widget1 = QWidget()
+    parent_layout.addWidget(widget1)
+    inner_layout = center_in_widget(svg_widgets, widget1, direction=direction, alignment=alignment)
+    inner_layout.setContentsMargins(1, 0, 1, 0)  # left, top, right, bottom
 
     return svg_widgets
 
@@ -216,7 +280,7 @@ def add_centered_icons(
 def add_to_buttonbox(
     buttonBox: QDialogButtonBox,
     text: str,
-    icon_name: str = None,
+    icon_name: str | None = None,
     on_clicked=None,
     role=QDialogButtonBox.ButtonRole.ActionRole,
 ):
@@ -232,97 +296,6 @@ def add_to_buttonbox(
     if on_clicked:
         button.clicked.connect(on_clicked)
     return button
-
-
-def create_button(
-    text, icon_paths: List[str], parent: QWidget, max_sizes=None, button_max_height=200, word_wrap=True
-) -> QPushButton:
-    button = QPushButton(parent)
-    if button_max_height:
-        button.setMaximumHeight(button_max_height)
-    # Set the vertical size policy of the button to Expanding
-    size_policy = button.sizePolicy()
-    size_policy.setVerticalPolicy(size_policy.Policy.Expanding)
-    button.setSizePolicy(size_policy)
-
-    parent.layout().addWidget(button)
-
-    # add the icons to
-    widget1 = QWidget(button)
-    widget2 = QWidget(button)
-    layout = center_in_widget([widget1, widget2], button, direction="v")
-    # prent.layout().setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-    # layout.setContentsMargins(0, 0, 0, 0)
-
-    label_icon = QLabel()
-    label_icon.setWordWrap(word_wrap)
-    label_icon.setText(text)
-    label_icon.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-    label_icon.setHidden(not bool(text))
-    label_icon.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-    layout = center_in_widget([label_icon], widget1, direction="h")
-    if not text:
-        layout.setContentsMargins(0, 0, 0, 0)
-
-    if not isinstance(icon_paths, (list, tuple)):
-        icon_paths = [icon_paths]
-    layout = QHBoxLayout(widget2)
-
-    # Calculate total width and height of all widgets in layout
-    total_width = 0
-    total_height = 0
-
-    if icon_paths:
-        max_sizes = max_sizes if max_sizes else [(60, 60)] * len(icon_paths)
-        total_width += sum(w for w, h in max_sizes)
-        total_height += max(h for w, h in max_sizes)
-        add_centered_icons(
-            icon_paths,
-            widget2,
-            layout,
-            max_sizes=max_sizes,
-        )
-
-    # Add layout margins
-    # margins = layout.contentsMargins()
-    # total_width += margins.left() + margins.right()
-    # total_height += margins.top() + margins.bottom()
-
-    # # Set minimum size of button
-    # button.setMinimumSize(total_width, total_height)
-    layout.setContentsMargins(0, 0, 0, 0)
-    return button
-
-
-def add_tab_to_tabs(
-    tabs: DataTabWidget,
-    tab: QWidget,
-    icon: QIcon,
-    description: str,
-    name: str,
-    data: Any = None,
-    position: int = None,
-    focus: bool = False,
-):
-    tab.tab_icon = icon
-    tab.tab_description = description
-    tab.tab_name = name
-
-    if position is None:
-        tabs.addTab(tab, icon, description.replace("&", "").capitalize(), data=data)
-        if focus:
-            tabs.setCurrentIndex(tabs.count() - 1)
-    else:
-        tabs.insertTab(position, tab, icon, description.replace("&", "").capitalize(), data=data)
-        if focus:
-            tabs.setCurrentIndex(position)
-
-
-def remove_tab(tab: QWidget, tabs: QTabWidget):
-    idx = tabs.indexOf(tab)
-    if idx is None or idx < 0:
-        return
-    tabs.removeTab(idx)
 
 
 class Buttons(QHBoxLayout):
@@ -348,14 +321,18 @@ class MessageType(enum.Enum):
     Error = enum.auto()
     Critical = enum.auto()
 
+    @classmethod
+    def from_analyzer_state(cls, analyzer_state: AnalyzerState) -> "MessageType":
+        return list(MessageType)[int(analyzer_state) - 1]
+
 
 class Message:
     def __init__(
         self,
-        msg,
-        parent=None,
-        title=None,
-        icon=None,
+        msg: str,
+        parent: QWidget | None = None,
+        title: str | None = None,
+        icon: Union[QIcon, QPixmap, QMessageBox.Icon] | None = None,
         msecs=None,
         type: MessageType = MessageType.Info,
         no_show=False,
@@ -374,16 +351,29 @@ class Message:
             self.show()
 
     @staticmethod
-    def icon_to_q_system_tray_icon(icon: Optional[QMessageBox.Icon]) -> QSystemTrayIcon.MessageIcon:
-        if icon == QMessageBox.Icon.Information:
-            return QSystemTrayIcon.MessageIcon.Information
-        if icon == QMessageBox.Icon.Warning:
-            return QSystemTrayIcon.MessageIcon.Warning
-        if icon == QMessageBox.Icon.Critical:
-            return QSystemTrayIcon.MessageIcon.Critical
+    def system_tray_icon(
+        icon: Optional[Union[QIcon, QPixmap, QMessageBox.Icon, QSystemTrayIcon.MessageIcon]]
+    ) -> Union[QIcon, QSystemTrayIcon.MessageIcon]:
+        if isinstance(icon, QIcon):
+            return icon
+
+        if isinstance(icon, QSystemTrayIcon.MessageIcon):
+            return icon
+
+        if isinstance(icon, QPixmap):
+            return QIcon(icon)
+
+        if type(icon) == QMessageBox.Icon:
+            if icon == QMessageBox.Icon.Information:
+                return QSystemTrayIcon.MessageIcon.Information
+            if icon == QMessageBox.Icon.Warning:
+                return QSystemTrayIcon.MessageIcon.Warning
+            if icon == QMessageBox.Icon.Critical:
+                return QSystemTrayIcon.MessageIcon.Critical
+
         return QSystemTrayIcon.MessageIcon.NoIcon
 
-    def get_icon_and_title(self) -> Tuple[QMessageBox.Icon, str]:
+    def get_icon_and_title(self) -> Tuple[Union[QIcon, QPixmap, QMessageBox.Icon], str]:
         icon = QMessageBox.Icon.Information
         title = "Information"
         if self.type in [MessageType.Warning]:
@@ -396,11 +386,14 @@ class Message:
             icon = QMessageBox.Icon.Critical
             title = "Critical Error"
 
-        icon = self.icon or icon
+        return_icon = self.icon or icon
         title = self.title or title
-        return icon, title
+        return return_icon, title
 
     def show(self):
+        self.create().exec()
+
+    def create(self) -> QMessageBox:
         logger.warning(str(self.__dict__))
 
         icon, title = self.get_icon_and_title()
@@ -413,13 +406,29 @@ class Message:
             **self.kwargs,
         )
 
-    def emit_with(self, notification_signal: pyqtSignal):
+    def ask(
+        self,
+        yes_button: QMessageBox.StandardButton = QMessageBox.StandardButton.Ok,
+        no_button: QMessageBox.StandardButton = QMessageBox.StandardButton.Cancel,
+    ) -> bool:
+        msg_box = self.create()
+        msg_box.setStandardButtons(yes_button | no_button)
+        ret = msg_box.exec()
+
+        # Check which button was clicked
+        if ret == yes_button:
+            return True
+        elif ret == no_button:
+            return False
+        return False
+
+    def emit_with(self, notification_signal: pyqtBoundSignal):
         logger.debug(str(self.__dict__))
         return notification_signal.emit(self)
 
     def msg_box(
         self,
-        icon: QIcon,
+        icon: Union[QIcon, QPixmap, QMessageBox.Icon],
         parent,
         title: str,
         text: str,
@@ -428,7 +437,7 @@ class Message:
         defaultButton=QMessageBox.StandardButton.NoButton,
         rich_text=True,
         checkbox=None,
-    ):
+    ) -> QMessageBox:
         # parent = parent or self.top_level_window()
         return custom_message_box(
             icon=icon,
@@ -453,7 +462,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
 
         logger.critical(error_message, exc_info=(exc_type, exc_value, exc_traceback))
         QMessageBox.critical(
-            None,
+            None,  # type: ignore[arg-type]
             title,
             f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed.",
         )
@@ -462,7 +471,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
         error_message = str([exc_type, exc_value, exc_traceback])
         logger.critical(error_message)
         QMessageBox.critical(
-            None,
+            None,  # type: ignore[arg-type]
             title,
             f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed.",
         )
@@ -480,7 +489,7 @@ def caught_exception_message(e: Exception, title=None, log_traceback=False) -> M
 
 def custom_message_box(
     *,
-    icon: QIcon,
+    icon: Union[QIcon, QPixmap, QMessageBox.Icon],
     parent,
     title: str,
     text: str,
@@ -488,12 +497,24 @@ def custom_message_box(
     defaultButton=QMessageBox.StandardButton.NoButton,
     rich_text=False,
     checkbox=None,
-):
-    if type(icon) is QPixmap:
-        d = QMessageBox(QMessageBox.Icon.Information, title, str(text), buttons, parent)
-        d.setIconPixmap(icon)
-    else:
+) -> QMessageBox:
+
+    if not isinstance(icon, (QIcon, QPixmap, QMessageBox.Icon)):
+        raise ValueError(f"{icon} is not a valid type")
+
+    if isinstance(icon, QMessageBox.Icon):
         d = QMessageBox(icon, title, str(text), buttons, parent)
+    else:
+        d = QMessageBox(QMessageBox.Icon.Information, title, str(text), buttons, parent)
+        pixmap_icon = None
+        if isinstance(icon, QPixmap):
+            pixmap_icon = icon
+        if isinstance(icon, QIcon):
+            pixmap_icon = icon.pixmap(60, 60)
+
+        if pixmap_icon:
+            d.setIconPixmap(pixmap_icon)
+
     d.setWindowModality(Qt.WindowModality.WindowModal)
     d.setDefaultButton(defaultButton)
     if rich_text:
@@ -510,7 +531,7 @@ def custom_message_box(
         d.setTextFormat(Qt.TextFormat.PlainText)
     if checkbox is not None:
         d.setCheckBox(checkbox)
-    return d.exec()
+    return d
 
 
 class WindowModalDialog(QDialog):
@@ -552,7 +573,7 @@ class BlockingWaitingDialog(WindowModalDialog):
             self.accept()
 
 
-def one_time_signal_connection(signal: pyqtSignal, f: Callable):
+def one_time_signal_connection(signal: pyqtBoundSignal, f: Callable):
     def f_wrapper(*args, **kwargs):
         signal.disconnect(f_wrapper)
         return f(*args, **kwargs)
@@ -560,17 +581,8 @@ def one_time_signal_connection(signal: pyqtSignal, f: Callable):
     signal.connect(f_wrapper)
 
 
-def robust_disconnect(slot: pyqtSignal, f):
-    if not slot or not f:
-        return
-    try:
-        slot.disconnect(f)
-    except:
-        pass
-
-
 def chained_one_time_signal_connections(
-    signals: List[pyqtSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
+    signals: List[pyqtBoundSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
 ):
     "If after the i. f is called, it connects the i+1. signal"
 
@@ -598,7 +610,9 @@ def create_button_box(
 
     # Add an 'Ok' button
     if ok_text is None:
-        buttons.append(button_box.addButton(QDialogButtonBox.StandardButton.Ok))
+        ok_button = button_box.addButton(QDialogButtonBox.StandardButton.Ok)
+        if ok_button:
+            buttons.append(ok_button)
     else:
         custom_yes_button = QPushButton(ok_text)
         buttons.append(custom_yes_button)
@@ -607,7 +621,9 @@ def create_button_box(
 
     # Add a 'Cancel' button
     if cancel_text is None:
-        buttons.append(button_box.addButton(QDialogButtonBox.StandardButton.Cancel))
+        cancel_button = button_box.addButton(QDialogButtonBox.StandardButton.Cancel)
+        if cancel_button:
+            buttons.append(cancel_button)
     else:
         custom_cancel_button = QPushButton(cancel_text)
         buttons.append(custom_cancel_button)
@@ -654,7 +670,8 @@ class ColorScheme:
     @staticmethod
     def has_dark_background(widget: QWidget):
         background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
-        brightness = sum(background_color.getRgb()[0:3])
+        rgb = background_color.getRgb()[0:3]
+        brightness = sum([c for c in rgb if c])
         return brightness < (255 * 3 / 2)
 
     @staticmethod
@@ -671,8 +688,8 @@ def screenshot_path(basename: str):
 
 
 @lru_cache(maxsize=1000)
-def read_QIcon(icon_basename: str) -> QIcon:
-    if icon_basename is None:
+def read_QIcon(icon_basename: Optional[str]) -> QIcon:
+    if not icon_basename:
         return QIcon()
     return QIcon(icon_path(icon_basename))
 
@@ -688,25 +705,22 @@ def font_height() -> int:
 
 
 def webopen(url: str):
-    if sys.platform == "linux" and os.environ.get("APPIMAGE"):
-        # When on Linux webbrowser.open can fail in AppImage because it can't find the correct libdbus.
-        # We just fork the process and unset LD_LIBRARY_PATH before opening the URL.
-        # See #5425
-        if os.fork() == 0:
-            del os.environ["LD_LIBRARY_PATH"]
-            webbrowser.open(url)
-            os._exit(0)
-    else:
-        webbrowser.open(url)
+    webbrowser.open(url)
 
 
-def clipboard_contains_address(network: bdk.Network):
-    text = QApplication.clipboard().text()
-    return is_bitcoin_address(text, network)
+def clipboard_contains_address(network: bdk.Network) -> bool:
+    clipboard = QApplication.clipboard()
+    if not clipboard:
+        return False
+    return is_bitcoin_address(clipboard.text(), network)
 
 
-def do_copy(text: str, *, title: str = None) -> None:
-    QApplication.clipboard().setText(str(text))
+def do_copy(text: str, *, title: str | None = None) -> None:
+    clipboard = QApplication.clipboard()
+    if not clipboard:
+        show_tooltip_after_delay("Clipboard not available")
+        return
+    clipboard.setText(str(text))
     message = (
         translate("d", "Text copied to Clipboard")
         if title is None
@@ -734,15 +748,16 @@ def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
 
     # Convert QImage to raw bytes
     buffer = qimage.bits()
-    buffer.setsize(width * height * 4)  # RGBA8888 = 4 bytes per pixel
+    if buffer:
+        buffer.setsize(width * height * 4)  # RGBA8888 = 4 bytes per pixel
 
     # Convert raw bytes to a PIL image
-    pil_image = PilImage.frombuffer("RGBA", (width, height), bytes(buffer), "raw", "RGBA", 0, 1)
+    pil_image = PilImage.frombuffer("RGBA", (width, height), bytes(buffer), "raw", "RGBA", 0, 1)  # type: ignore[call-overload]
 
     return pil_image
 
 
-def save_file_dialog(name_filters=None, default_suffix=None, default_filename=None):
+def save_file_dialog(name_filters=None, default_suffix=None, default_filename=None) -> Optional[str]:
     file_dialog = QFileDialog()
     file_dialog.setWindowTitle("Save File")
     if default_suffix:
@@ -761,6 +776,7 @@ def save_file_dialog(name_filters=None, default_suffix=None, default_filename=No
         # Do something with the selected file path, e.g., save data to the file
         logger.debug(f"Selected save file: {selected_file}")
         return selected_file
+    return None
 
 
 def remove_scheme(url):
@@ -780,7 +796,7 @@ def ensure_scheme(url, default_scheme="https://"):
         return f"{default_scheme}{url}"
 
 
-def get_host_and_port(url) -> Tuple[str, int]:
+def get_host_and_port(url) -> Tuple[str | None, int | None]:
 
     parsed_url = urlparse(ensure_scheme(url))
 
@@ -788,25 +804,21 @@ def get_host_and_port(url) -> Tuple[str, int]:
     return parsed_url.hostname, parsed_url.port
 
 
-def clear_layout(layout: QLayout):
-    """
-    Remove all widgets from a layout and delete them.
-
-    Parameters:
-    - layout: QLayout - The layout from which to remove all widgets.
-    """
-    while layout.count():
-        item = layout.takeAt(0)
-        widget = item.widget()
-        if widget is not None:
-            widget.deleteLater()
-        else:
-            # item might be a layout itself
-            clear_layout(item.layout())
-
-
 def delayed_execution(f, parent, delay=10):
     timer = QTimer(parent)
     timer.setSingleShot(True)  # Make sure the timer runs only once
     timer.timeout.connect(f)  # Connect the timeout signal to the function
     timer.start(delay)
+
+
+def clear_layout(layout: QLayout) -> None:
+    """Helper method to remove all widgets from the grid layout."""
+    while layout.count():
+        item = layout.takeAt(0)
+        if not item:
+            continue
+        widget = item.widget()
+        if widget:
+            layout.removeWidget(widget)
+            widget.setParent(None)  # Remove widget from parent to fully disconnect it
+            widget.deleteLater()

@@ -29,9 +29,15 @@
 
 import logging
 
+from bitcoin_qr_tools.multipath_descriptor import (
+    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+)
+
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +52,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QMessageBox,
     QSizePolicy,
     QSpinBox,
     QVBoxLayout,
@@ -67,31 +74,35 @@ class DescriptorUI(QObject):
         self,
         protowallet: ProtoWallet,
         signals_min: SignalsMin,
+        get_lang_code: Callable[[], str],
         get_wallet: Optional[Callable[[], Wallet]] = None,
+        threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__()
         # if we are in the wallet setp process, then wallet = None
         self.protowallet = protowallet
         self.get_wallet = get_wallet
         self.signals_min = signals_min
+        self.get_lang_code = get_lang_code
+        self.threading_parent = threading_parent
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
         self.tab = QWidget()
-        self.tab.setLayout(QVBoxLayout())
+        self.tab_layout = QVBoxLayout(self.tab)
 
         self.create_wallet_type_and_descriptor()
 
         self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
 
-        self.edit_descriptor.signal_change.connect(self.on_descriptor_change)
+        self.edit_descriptor.signal_descriptor_change.connect(self.on_descriptor_change)
 
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=lambda: self.protowallet,
             get_address_type=self.get_address_type_from_ui,
             signals_min=signals_min,
         )
-        self.tab.layout().addWidget(self.keystore_uis)
+        self.tab_layout.addWidget(self.keystore_uis)
 
         self.keystore_uis.setCurrentIndex(0)
 
@@ -105,7 +116,7 @@ class DescriptorUI(QObject):
 
     def updateUi(self) -> None:
         self.label_signers.setText(self.tr("Required Signers"))
-        self.label_gap.setText(self.tr("Scan Address Limit"))
+        self.label_gap.setText(self.tr("Scan Addresses ahead"))
         self.edit_descriptor.input_field.setPlaceholderText(
             self.tr("Paste or scan your descriptor, if you restore a wallet.")
         )
@@ -115,7 +126,7 @@ class DescriptorUI(QObject):
                 'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
             )
         )
-        self.box_wallet_type.setTitle(translate("descriptor", "Wallet Type"))
+        self.box_wallet_type.setTitle(translate("descriptor", "Wallet Properties"))
         self.label_address_type.setText(translate("descriptor", "Address Type"))
         self.groupBox_wallet_descriptor.setTitle(translate("descriptor", "Wallet Descriptor"))
 
@@ -136,13 +147,25 @@ class DescriptorUI(QObject):
             self._set_keystore_tabs()
 
     def on_descriptor_change(self, new_value: str) -> None:
-        new_value = new_value.strip().replace("\n", "")
-
-        # self.set_protowallet_from_keystore_ui(cloned_protowallet)
-        if hasattr(self, "_edit_descriptor_cache") and self._edit_descriptor_cache == new_value:
-            # no change
+        if not BitcoinQRMultipathDescriptor.is_valid(new_value, network=self.protowallet.network):
+            logger.debug("Descriptor invalid")
             return
-        self._edit_descriptor_cache: str = new_value
+
+        old_descriptor = self.protowallet.to_multipath_descriptor()
+
+        if old_descriptor and (new_value == old_descriptor.as_string()):
+            logger.info("Descriptor unchanged")
+            return
+        else:
+            logger.info(f"Descriptor changed: {old_descriptor}  -->  {new_value}")
+            if not question_dialog(
+                text=self.tr(
+                    f"Fill signer information based on the new descriptor?",
+                ),
+                title=self.tr("New descriptor entered"),
+                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            ):
+                return
 
         try:
             self.set_protowallet_from_descriptor_str(new_value)
@@ -192,7 +215,7 @@ class DescriptorUI(QObject):
             if self.spin_req.value() < self.spin_signers.value():
 
                 labels_of_recovery_signers = [
-                    f'"{keystore_ui.label}"' for keystore_ui in self.keystore_uis.keystore_uis
+                    f'"{keystore_ui.label}"' for keystore_ui in self.keystore_uis.getAllTabData().values()
                 ][self.spin_req.value() :]
                 self.spin_req.setToolTip(
                     f"In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n"
@@ -269,6 +292,7 @@ class DescriptorUI(QObject):
                 self.edit_descriptor.setText("")
         except:
             self.edit_descriptor.setText("")
+        self.edit_descriptor.format_and_apply_validator()
 
     def disable_fields(self) -> None:
         self.comboBox_address_type.setHidden(self.no_edit_mode)
@@ -314,10 +338,10 @@ class DescriptorUI(QObject):
 
     def create_wallet_type_and_descriptor(self) -> None:
         box_wallet_type_and_descriptor = QWidget(self.tab)
-        box_wallet_type_and_descriptor.setLayout(QHBoxLayout(box_wallet_type_and_descriptor))
+        box_wallet_type_and_descriptor_layout = QHBoxLayout(box_wallet_type_and_descriptor)
 
-        current_margins = box_wallet_type_and_descriptor.layout().contentsMargins()
-        box_wallet_type_and_descriptor.layout().setContentsMargins(
+        current_margins = box_wallet_type_and_descriptor_layout.contentsMargins()
+        box_wallet_type_and_descriptor_layout.setContentsMargins(
             QMargins(0, 0, 0, current_margins.bottom())
         )  # Smaller margins (left, top, right, bottom)
 
@@ -374,7 +398,7 @@ class DescriptorUI(QObject):
         form_wallet_type.addWidget(self.spin_gap, 3, 1, 1, 3)
 
         self.box_wallet_type.setLayout(form_wallet_type)
-        box_wallet_type_and_descriptor.layout().addWidget(self.box_wallet_type)
+        box_wallet_type_and_descriptor_layout.addWidget(self.box_wallet_type)
 
         # now the descriptor
         self.groupBox_wallet_descriptor = QGroupBox()
@@ -402,25 +426,16 @@ class DescriptorUI(QObject):
             signals_min=self.signals_min,
             get_wallet=self.get_wallet,
             signal_update=self.signals_min.language_switch,
+            threading_parent=self.threading_parent,
+            get_lang_code=self.get_lang_code,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
 
-        # if self.wallet:
-        #     button = create_button(
-        #         "Print the \ndescriptor",
-        #         icon_path("pdf-file.svg"),
-        #         box_wallet_type_and_descriptor,
-        #         self.horizontalLayout_4,
-        #         max_sizes=[(30, 50)],
-        #     )
-        #     button.setMaximumWidth(100)
-        #     button.clicked.connect(lambda: make_and_open_pdf(self.wallet))
+        box_wallet_type_and_descriptor_layout.addWidget(self.groupBox_wallet_descriptor)
 
-        box_wallet_type_and_descriptor.layout().addWidget(self.groupBox_wallet_descriptor)
-
-        self.tab.layout().addWidget(box_wallet_type_and_descriptor)
+        self.tab_layout.addWidget(box_wallet_type_and_descriptor)
 
         self.spin_signers.valueChanged.connect(self.on_spin_signer_changed)
         self.spin_req.valueChanged.connect(self.on_spin_threshold_changed)
@@ -431,15 +446,12 @@ class DescriptorUI(QObject):
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Apply | QDialogButtonBox.StandardButton.Discard
         )
-        self.button_box.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(
-            self.signal_qtwallet_apply_setting_changes.emit
-        )
-        self.button_box.button(QDialogButtonBox.StandardButton.Discard).clicked.connect(
-            self.signal_qtwallet_cancel_setting_changes.emit
-        )
-        self.button_box.button(QDialogButtonBox.StandardButton.Discard).clicked.connect(
-            self.signal_qtwallet_cancel_wallet_creation.emit
-        )
+        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Apply):
+            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes.emit)
+        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
+            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes.emit)
+        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
+            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation.emit)
 
-        self.tab.layout().addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
+        self.tab_layout.addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
         return self.button_box

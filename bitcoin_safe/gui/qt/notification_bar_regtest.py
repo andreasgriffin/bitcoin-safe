@@ -51,7 +51,7 @@ class NotificationBarRegtest(NotificationBar):
         self.network = network
         self.signals_min = signals_min
         self.set_background_color("lightblue")
-        self.set_icon(QIcon(icon_path("bitcoin-testnet.png")))
+        self.set_icon(QIcon(icon_path(f"bitcoin-{network.name.lower()}.svg")))
 
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)

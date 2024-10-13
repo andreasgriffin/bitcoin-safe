@@ -137,14 +137,30 @@ class ClassSerializer:
     def general_deserializer(cls, known_classes, class_kwargs) -> Callable:
         def deserializer(dct) -> Dict:
             cls_string = dct.get("__class__")  # e.g. KeyStore
-            if cls_string and cls_string in known_classes:
-                obj_cls = known_classes[cls_string]
-                if hasattr(obj_cls, "from_dump"):  # is there KeyStore.from_dump ?
-                    if class_kwargs.get(cls_string):  #  apply additional arguments to the class from_dump
-                        dct.update(class_kwargs.get(cls_string))
-                    return obj_cls.from_dump(dct, class_kwargs=class_kwargs)  # do: KeyStore.from_dump(**dct)
+            if cls_string:
+                if cls_string in known_classes:
+                    obj_cls = known_classes[cls_string]
+                    if hasattr(obj_cls, "from_dump"):  # is there KeyStore.from_dump ?
+                        if class_kwargs.get(cls_string):  #  apply additional arguments to the class from_dump
+                            dct.update(class_kwargs.get(cls_string))
+                        return obj_cls.from_dump(
+                            dct, class_kwargs=class_kwargs
+                        )  # do: KeyStore.from_dump(**dct)
+                    else:
+                        raise Exception(f"{obj_cls} doesnt have a from_dump classmethod.")
                 else:
-                    raise Exception(f"{obj_cls} doesnt have a from_dump classmethod.")
+                    raise Exception(
+                        f"""{cls_string} not in known_classes {known_classes}."""
+                        """Did you add the following to the child class?
+                                            VERSION = "0.0.1"
+                                            known_classes = {
+                                                **BaseSaveableClass.known_classes,
+                                            }"""
+                        f"""And did you add
+                                       "cls_string":{cls_string}
+                                       to the parent BaseSaveableClass ?
+    """
+                    )
             elif dct.get("__enum__"):
                 obj_cls = known_classes.get(dct["name"])
                 if obj_cls:
@@ -212,7 +228,6 @@ class BaseSaveableClass:
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-        not bool(password)
         storage = Storage()
         storage.save(
             self.dumps(indent=None if password else 4),

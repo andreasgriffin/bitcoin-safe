@@ -4,7 +4,7 @@
       {
           "label": "Poetry Install",
           "type": "shell",
-          "command": "poetry install",
+          "command": "python -m poetry install",
           "options": {
               "cwd": "${workspaceFolder}"  // Ensures command runs in the project root
           },

@@ -1,2 +1,2 @@
 # this is the source of the version information
-__version__ = "0.7.4a0"
+__version__ = "1.0.0b0"

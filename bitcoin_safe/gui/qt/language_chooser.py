@@ -30,20 +30,19 @@
 import logging
 
 from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.gui.qt.wrappers import Menu
 
 logger = logging.getLogger(__name__)
 
 import os
 from typing import Dict, List, Optional
 
-from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, QTranslator, pyqtSignal
-from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, QTranslator, pyqtBoundSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
     QDialog,
     QDialogButtonBox,
-    QMenu,
     QVBoxLayout,
     QWidget,
 )
@@ -55,16 +54,16 @@ class LanguageDialog(QDialog):
     def __init__(self, languages: Dict[str, str], parent=None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Select Language")
-        self.setLayout(QVBoxLayout())
+        self._layout = QVBoxLayout(self)
         self.comboBox = QComboBox()
         self.setupComboBox(languages)
-        self.layout().addWidget(self.comboBox)
+        self._layout.addWidget(self.comboBox)
 
         # Add dialog buttons
         self.buttonBox = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
-        self.layout().addWidget(self.buttonBox)
+        self._layout.addWidget(self.buttonBox)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         self.setModal(True)
@@ -72,10 +71,13 @@ class LanguageDialog(QDialog):
         self.centerOnScreen()
 
     def centerOnScreen(self) -> None:
-        screen = QApplication.primaryScreen().geometry()
+        screen = QApplication.primaryScreen()
+        if not screen:
+            return
+        rect = screen.geometry()
         dialog_size = self.geometry()
-        x = (screen.width() - dialog_size.width()) // 2
-        y = (screen.height() - dialog_size.height()) // 2
+        x = (rect.width() - dialog_size.width()) // 2
+        y = (rect.height() - dialog_size.height()) // 2
         self.move(x, y)
 
     def setupComboBox(self, languages: Dict[str, str]) -> None:
@@ -90,15 +92,21 @@ class LanguageDialog(QDialog):
 
 
 class LanguageChooser(QObject):
-    def __init__(self, parent: QWidget, config: UserConfig, signal_language_switch: pyqtSignal) -> None:
+    def __init__(
+        self, parent: QWidget, config: UserConfig, signals_language_switch: List[pyqtBoundSignal]
+    ) -> None:
         super().__init__(parent)
         self.config = config
-        self.signal_language_switch = signal_language_switch
+        self.signals_language_switch = signals_language_switch
         self.installed_translators: List[QTranslator] = []
+        self.current_language_code: str = "en_US"
 
         # Start with default language (English) in the list
         self.availableLanguages = {"en_US": QLocale(QLocale.Language.English).nativeLanguageName()}
         logger.debug(f"initialized {self}")
+
+    def get_current_lang_code(self) -> str:
+        return self.current_language_code
 
     def default_lang(self) -> str:
         return list(self.availableLanguages.keys())[0]
@@ -116,15 +124,18 @@ class LanguageChooser(QObject):
         self.availableLanguages.update(self.scanForLanguages())
         return self.availableLanguages
 
-    def populate_language_menu(self, language_menu: QMenu) -> None:
+    def populate_language_menu(self, language_menu: Menu) -> None:
         language_menu.clear()
 
         # Menu Bar for language selection
+        def factory(lang):
+            def f(lang=lang):
+                self.switchLanguage(langCode=lang)
+
+            return f
 
         for lang, name in self.get_languages().items():
-            action = QAction(name, self)
-            action.triggered.connect(lambda checked, lang=lang: self.switchLanguage(lang))
-            language_menu.addAction(action)
+            language_menu.add_action(text=name, slot=factory(lang))
 
     def scanForLanguages(self) -> Dict[str, str]:
         languages: Dict[str, str] = {}
@@ -148,14 +159,16 @@ class LanguageChooser(QObject):
 
     def _install_translator(self, name: str, path: str) -> None:
         translator_qt = QTranslator()
-        if translator_qt.load(name, path):
-            QApplication.instance().installTranslator(translator_qt)
+        instance = QApplication.instance()
+        if translator_qt.load(name, path) and instance:
+            instance.installTranslator(translator_qt)
             self.installed_translators.append(translator_qt)
 
     def set_language(self, langCode: Optional[str]) -> None:
         # remove all installed translators
-        while self.installed_translators:
-            QApplication.instance().removeTranslator(self.installed_translators.pop())
+        instance = QApplication.instance()
+        while self.installed_translators and instance:
+            instance.removeTranslator(self.installed_translators.pop())
 
         # first install the qt translations
         self._install_translator(
@@ -173,8 +186,13 @@ class LanguageChooser(QObject):
         # qt_zh_CN.qm
 
         self._install_translator(f"app_{langCode}", str(self.config.locales_path))
+        self.current_language_code = langCode if langCode else "en_US"
 
     def switchLanguage(self, langCode) -> None:
         self.set_language(langCode)
-        self.signal_language_switch.emit()  # Emit the signal when the language is switched
+        for signal in self.signals_language_switch:
+            signal.emit()  # Emit the signal when the language is switched
         self.config.language_code = langCode
+
+    def add_signal_language_switch(self, signal_language_switch: pyqtBoundSignal):
+        self.signals_language_switch.append(signal_language_switch)

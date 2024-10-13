@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,14 @@ from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 
 class KeyStoreImporterType(SaveAllClass):
-    def __init__(self, id: str, name: str, description: str, icon_filename: str, networks="all") -> None:
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        description: str,
+        icon_filename: str,
+        networks: List[bdk.Network] | Literal["all"] = "all",
+    ) -> None:
         self.id = id
         self.name = name
         self.description = description
@@ -143,11 +150,32 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         )
 
         self.network = network
-        assert self.is_xpub_valid(xpub=xpub, network=self.network)
+        if not self.is_xpub_valid(xpub=xpub, network=self.network):
+            raise ValueError(f"{xpub} is not a valid xpub")
 
         self.label = label
         self.mnemonic = mnemonic
         self.description = description
+
+    def get_relevant_differences(self, other_keystore: "KeyStore") -> Set[str]:
+        "Compares the relevant entries like keystores"
+        differences = set()
+        this = self.dump()
+        other = other_keystore.dump()
+
+        keys = [
+            "xpub",
+            "fingerprint",
+            "key_origin",
+            "network",
+            "mnemonic",
+            "derivation_path",
+        ]
+        for k in keys:
+            if this[k] != other[k]:
+                differences.add(k)
+
+        return differences
 
     def is_equal(self, other: "KeyStore") -> bool:
         return self.__dict__ == other.__dict__
@@ -182,17 +210,19 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     ) -> MultipathDescriptor:
         "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
         descriptors = [
-            address_type.bdk_descriptor(
-                bdk.DescriptorPublicKey.from_string(self.xpub),
-                self.fingerprint,
-                keychainkind,
-                network,
-            )
-            if not self.mnemonic
-            else address_type.bdk_descriptor_secret(
-                bdk.DescriptorSecretKey(network, bdk.Mnemonic.from_str(self.mnemonic), ""),
-                keychainkind,
-                network,
+            (
+                address_type.bdk_descriptor(
+                    bdk.DescriptorPublicKey.from_string(self.xpub),
+                    self.fingerprint,
+                    keychainkind,
+                    network,
+                )
+                if not self.mnemonic
+                else address_type.bdk_descriptor_secret(
+                    bdk.DescriptorSecretKey(network, bdk.Mnemonic.from_str(self.mnemonic), ""),  # type: ignore
+                    keychainkind,
+                    network,
+                )
             )
             for keychainkind in [
                 bdk.KeychainKind.EXTERNAL,
