@@ -31,6 +31,7 @@ import logging
 import sys
 import threading
 from collections import deque
+from types import TracebackType
 from typing import Any, Callable, NamedTuple, Optional, Tuple
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
@@ -55,7 +56,7 @@ class Worker(QObject):
     """Worker object to perform tasks in a separate thread."""
 
     finished: pyqtSignal = pyqtSignal(object, object, object)  # Result, cb_done, cb_success/error
-    error: pyqtSignal = pyqtSignal(object)
+    error: pyqtSignal = pyqtSignal(object, object)
 
     def __init__(self, task: Task) -> None:
         super().__init__()
@@ -107,6 +108,8 @@ class TaskThread(QThread):
             NoThread().add_and_start(do, on_success, on_done, on_error)
             return self
 
+        self.cancelled = False
+
         logger.debug(f"Starting new thread {do}.")
         task: Task = Task(do, on_success, on_done, on_error, cancel)
         self.worker = Worker(task)
@@ -126,36 +129,41 @@ class TaskThread(QThread):
         if self.worker.thread_name:
             return self.worker.thread_name
 
-    def on_error(self, error_info):
+    def on_error(
+        self,
+        error_info: tuple[type[BaseException], BaseException, TracebackType],
+        cb_error: Callable[[Any], None],
+    ):
         if self.worker:
-            self.worker.task.cb_error(error_info)
+            cb_error(error_info)
         self.my_quit()
 
     @pyqtSlot(object, object, object)
     def on_done(self, result: Any, cb_done: Callable[[Any], None], cb_result: Callable[[Any], None]) -> None:
         """Handle task completion."""
-        logger.debug(f"Thread done: {self.thread_name}.")
-        cb_done(result)
-        cb_result(result)
+        if not self.cancelled:
+            logger.debug(f"Thread done: {self.thread_name}.")
+            cb_done(result)
+            cb_result(result)
         self.my_quit()
 
     def stop(self) -> None:
         """Stops the thread and any associated task cancellation if defined."""
-        logger.info("Stopping TaskThread and associated worker.")
+        logger.debug(f"Stopping {self.thread_name}.")
         if self.worker and self.worker.task.cancel:
-            logger.debug(f"Stopping {self.thread_name}.")
+            self.cancelled = True
             self.worker.task.cancel()
         self.my_quit()
+        logger.debug(f"Stopped {self.thread_name}.")
 
     def my_quit(self):
+        name = self.thread_name
         try:
+            self.cancelled = True
             self.quit()
             self.wait()
-            # cannot put it in finally, since QThread might be already destroyed
-            # and then self is not recognized as a QThread decendent any more in pyqtSignal
-            self.deleteLater()
         except:
-            pass
+            logger.error(f"An error during the shutdown of {name}")
 
 
 class NoThread:
@@ -230,9 +238,11 @@ class ThreadingManager:
         # Wait for all threads to finish
         while self.taskthreads:
             taskthread = self.taskthreads.pop()
+            logger.debug(f"stop taskthreads {taskthread}")
             taskthread.stop()
 
     def end_threading_manager(self):
+        logger.debug(f"end_threading_manager of {self}")
         self.stop_and_wait_all()
 
         if self.threading_parent and self in self.threading_parent.threading_manager_children:

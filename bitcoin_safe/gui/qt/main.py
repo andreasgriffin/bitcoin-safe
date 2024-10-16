@@ -1343,8 +1343,6 @@ class MainWindow(QMainWindow):
             qt_wallet.sync()
 
     def closeEvent(self, event: Optional[QCloseEvent]) -> None:
-        self.threading_manager.end_threading_manager()
-
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
@@ -1352,13 +1350,16 @@ class MainWindow(QMainWindow):
         self.write_current_open_txs_to_config()
         self.config.save()
         self.save_all_wallets()
+
+        self.threading_manager.end_threading_manager()
+
         self.remove_all_qt_wallet()
 
         if self.new_startup_network:
             self.config.network = self.new_startup_network
             self.config.save()
 
-        logger.info(f"Finished close handling")
+        logger.info(f"Finished close handling of {self}")
         super().closeEvent(event)
 
     def restart(self, new_startup_network: bdk.Network | None = None) -> None:
