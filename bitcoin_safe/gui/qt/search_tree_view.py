@@ -63,18 +63,29 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx import UITx_Creator
+from bitcoin_safe.i18n import translate
 
-from ...i18n import translate
 
+class SearchHTMLDelegate(QStyledItemDelegate):
+    def __init__(self, parent: QWidget) -> None:
+        super().__init__(parent)
+        self.setParent(parent=parent)
 
-class HTMLDelegate(QStyledItemDelegate):
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        logger.debug("HTMLDelegate.paint")
-        text = index.model().data(index, Qt.ItemDataRole.DisplayRole)
-        option.state & QStyle.StateFlag.State_Selected
+    def setParent(self, parent: "QWidget") -> None:  # type: ignore[override]
+        self._parent = parent
+        super().setParent(parent)
+
+    def parent(self) -> QWidget:
+        return self._parent
+
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:  # type: ignore[override]
+        model = index.model()
+        if not model:
+            return
+        text = model.data(index, Qt.ItemDataRole.DisplayRole)
 
         # Use QStyle to draw the item. This respects the native theme.
-        self.parent().style().drawPrimitive(
+        (self.parent().style() or QStyle()).drawPrimitive(
             QStyle.PrimitiveElement.PE_PanelItemViewItem, option, painter, self.parent()
         )
 
@@ -95,7 +106,7 @@ class HTMLDelegate(QStyledItemDelegate):
 
 
 class ResultItem:
-    def __init__(self, text: str, parent: "ResultItem" = None, obj=None, obj_key=None) -> None:
+    def __init__(self, text: str, parent: Optional["ResultItem"] = None, obj=None, obj_key=None) -> None:
         self.text = text
         self.obj = obj
         self.obj_key = obj_key
@@ -103,7 +114,7 @@ class ResultItem:
 
         self.set_parent(parent)
 
-    def set_parent(self, parent: "ResultItem" = None) -> None:
+    def set_parent(self, parent: Optional["ResultItem"] = None) -> None:
         self.parent = parent
         if self.parent:
             if self not in self.parent.children:
@@ -137,12 +148,23 @@ def demo_on_click(item: ResultItem) -> None:
     print("Item Clicked:", item.text)
 
 
+class CustomItem(QStandardItem):
+    def __init__(self, *args) -> None:
+        super().__init__(*args)
+        self.result_item: Optional[ResultItem] = None
+
+
+class CustomItemModel(QStandardItemModel):
+    def invisibleRootItem(self) -> CustomItem | None:
+        return super().invisibleRootItem()  # type: ignore
+
+
 class CustomTreeView(QTreeView):
     def __init__(self, parent=None, on_click=None, on_double_click=None) -> None:
         super().__init__(parent)
         self.on_click = on_click
         self.on_double_click = on_double_click
-        self.setModel(QStandardItemModel())
+        self.setModel(CustomItemModel())
 
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)  # Vertical scrollbar
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)  # Horizontal scrollbar
@@ -164,8 +186,14 @@ class CustomTreeView(QTreeView):
         self.clicked.connect(self.handle_item_clicked)
         self.doubleClicked.connect(self.handle_item_double_clicked)
 
-    def model(self) -> QStandardItemModel:
-        return super().model()
+    def setModel(self, model: Optional[CustomItemModel]) -> None:  # type: ignore[override]
+        self._source_model = model
+        super().setModel(model)
+
+    def model(self) -> CustomItemModel:
+        if self._source_model:
+            return self._source_model
+        raise Exception("model not set")
 
     def set_data(self, data: ResultItem) -> None:
         self.model().clear()  # Clear existing items
@@ -173,16 +201,18 @@ class CustomTreeView(QTreeView):
         self.expandAll()  # Expand all items after setting data
         self.resizeColumnToContents(0)  # Resize the first column
 
-    def _populate_model(self, result_item: ResultItem, model_parent: QWidget = None) -> None:
-        def add_child(child: ResultItem) -> QStandardItem:
-            model_item = QStandardItem(child.text)
+    def _populate_model(self, result_item: ResultItem, model_parent: CustomItem | None = None) -> None:
+        def add_child(child: ResultItem) -> CustomItem:
+            model_item = CustomItem(child.text)
             model_item.setEditable(False)
             model_item.result_item = child
             if model_parent:
                 model_parent.appendRow(model_item)
             return model_item
 
-        model_parent = self.model().invisibleRootItem() if model_parent is None else add_child(result_item)
+        model_parent = (
+            self.model().invisibleRootItem() if model_parent is None else add_child(result_item)
+        )  # type: ignore[assignment]
 
         for child in result_item.children:
             # Recursively process the value
@@ -194,6 +224,9 @@ class CustomTreeView(QTreeView):
             item = self.model().itemFromIndex(index)
             if not item:
                 return
+            if not isinstance(item, CustomItem):
+                logger.error(f"{item} has wrong type  {type(item)} != CustomItem")
+                return
             # Perform the action you want based on the clicked item
             # For example, call a custom method of the item (if your item class has one)
             self.on_click(item.result_item)
@@ -204,6 +237,9 @@ class CustomTreeView(QTreeView):
             item = self.model().itemFromIndex(index)
             if not item:
                 return
+            if not isinstance(item, CustomItem):
+                logger.error(f"{item} has wrong type  {type(item)} != CustomItem")
+                return
             # Perform the action you want based on the clicked item
             # For example, call a custom method of the item (if your item class has one)
             self.on_double_click(item.result_item)
@@ -212,15 +248,15 @@ class CustomTreeView(QTreeView):
 class CustomPopup(QFrame):
     def __init__(self, parent=None) -> None:
         super(CustomPopup, self).__init__(parent, Qt.WindowType.Tool | Qt.WindowType.FramelessWindowHint)
-        self.setLayout(QVBoxLayout())
-        self.layout().setContentsMargins(0, 1, 0, 0)  # Left, Top, Right, Bottom margins
+        self._layout = QVBoxLayout(self)
+        self._layout.setContentsMargins(0, 1, 0, 0)  # Left, Top, Right, Bottom margins
 
         # self.setFrameShape(QFrame.Panel)
 
         self.hide()  # Start hidden
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:  # type: ignore[override]
         # Check if the pressed key is 'Esc'
         if event.key() == Qt.Key.Key_Escape:
             # Close the widget
@@ -244,30 +280,32 @@ class SearchTreeView(QWidget):
         self.do_search = do_search
         self.result_width = result_width
         self.result_height = result_height
-        self.setLayout(QVBoxLayout())
-        self.layout().setContentsMargins(0, 0, 0, 0)
+        self._layout = QVBoxLayout(self)
+        self._layout.setContentsMargins(0, 0, 0, 0)
 
         self.search_field = QLineEdit(self)
         self.search_field.setClearButtonEnabled(True)
-        self.layout().addWidget(self.search_field)
+        self._layout.addWidget(self.search_field)
 
         self.popup = CustomPopup(self)
 
         self.tree_view = CustomTreeView(self, on_click=on_click, on_double_click=self.on_double_click)
         self.tree_view.setVisible(False)
         if results_in_popup:
-            self.popup.layout().addWidget(self.tree_view)
+            self.popup._layout.addWidget(self.tree_view)
         else:
-            self.layout().addWidget(self.tree_view)
+            self._layout.addWidget(self.tree_view)
 
         self.search_field.textChanged.connect(self.on_search)
 
-        self.highlight_delegate = HTMLDelegate(self.tree_view)
+        self.highlight_delegate = SearchHTMLDelegate(self.tree_view)
         self.tree_view.setItemDelegate(self.highlight_delegate)
 
         self.updateUi()
         # Install event filter on the main window
-        self.window().installEventFilter(self)
+        window = self.window()
+        if window:
+            window.installEventFilter(self)
 
     def on_double_click(self, result_item: ResultItem) -> None:
         "Here is what is done on the 2. click of a double click"
@@ -300,13 +338,13 @@ class SearchTreeView(QWidget):
         self.popup.move(global_pos)
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:  # type: ignore[override]
         # Check if the pressed key is 'Esc'
         if event.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.popup.hide()
 
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:  # type: ignore[override]
         if obj in [self, self.window()]:
             if event.type() == QEvent.Type.Move or event.type() == QEvent.Type.Resize:
                 self.position_popup()
@@ -343,17 +381,24 @@ class SearchWallets(SearchTreeView):
         if isinstance(result_item.obj, MyTreeView):
             result_item.obj.select_row(result_item.obj_key, result_item.obj.key_column)
         elif isinstance(result_item.obj, SearchableTab):
-            tabs: QTabWidget = result_item.obj.parent().parent()
-            if isinstance(tabs, QTabWidget):
-                tabs.setCurrentWidget(result_item.obj)
+            parent = result_item.obj.parent()
+            if parent:
+                tabs = parent.parent()
+                if isinstance(tabs, QTabWidget):
+                    tabs.setCurrentWidget(result_item.obj)
         elif isinstance(result_item.obj, UITx_Creator):
-            tabs = result_item.obj.main_widget.parent().parent()
-            if isinstance(tabs, QTabWidget):
-                tabs.setCurrentWidget(result_item.obj.main_widget)
+            parent = result_item.obj.parent()
+            if parent:
+                these_tabs = parent.parent()
+                if isinstance(these_tabs, QTabWidget):
+                    these_tabs.setCurrentWidget(result_item.obj)
             result_item.obj.tabs_inputs.setCurrentWidget(result_item.obj.tab_inputs_utxos)
         elif isinstance(result_item.obj, QTWallet):
-            wallet_tabs: QTabWidget = result_item.obj.tab.parent().parent()
-            wallet_tabs.setCurrentWidget(result_item.obj.tab)
+            parent = result_item.obj.tab.parent()
+            if parent:
+                wallet_tabs = parent.parent()
+                if isinstance(wallet_tabs, QTabWidget):
+                    wallet_tabs.setCurrentWidget(result_item.obj.tab)
 
     def do_search(self, search_text: str) -> ResultItem:
         def format_result_text(matching_string: str) -> str:
@@ -426,7 +471,7 @@ class SearchWallets(SearchTreeView):
             wallet_txos = ResultItem(
                 f"<span style='font-weight:bold;'>Spent Outputs</span>", obj=qt_wallet.history_tab
             )
-            for pythonutxo in qt_wallet.wallet.get_all_txos():
+            for pythonutxo in qt_wallet.wallet.get_all_txos_dict().values():
                 outpoint_str = str(pythonutxo.outpoint)
                 if search_text in outpoint_str:
                     if pythonutxo.is_spent_by_txid:
@@ -462,11 +507,11 @@ if __name__ == "__main__":
             self.central_widget = QWidget()
             self.setCentralWidget(self.central_widget)
 
-            self.layout = QVBoxLayout(self.central_widget)
+            self.central_widget_layout = QVBoxLayout(self.central_widget)
 
             self.search_tree_view = SearchTreeView(demo_do_search, on_click=demo_on_click)
-            self.layout.addWidget(self.search_tree_view)
-            self.layout.addWidget(QPushButton())
+            self.central_widget_layout.addWidget(self.search_tree_view)
+            self.central_widget_layout.addWidget(QPushButton("dummy"))
 
     app = QApplication(sys.argv)
     main_window = MainWindow()

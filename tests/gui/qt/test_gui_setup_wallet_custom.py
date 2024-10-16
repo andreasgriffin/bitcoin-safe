@@ -36,13 +36,13 @@ from time import sleep
 import bdkpython as bdk
 from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QDialogButtonBox
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
-from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet
+from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from tests.gui.qt.test_gui_setup_wallet import (
     close_wallet,
@@ -54,7 +54,6 @@ from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
     Shutter,
-    assert_message_box,
     close_wallet,
     do_modal_click,
     get_tab_with_title,
@@ -68,6 +67,7 @@ logger = logging.getLogger(__name__)
 
 
 def test_custom_wallet_setup_custom_single_sig(
+    qapp: QApplication,
     qtbot: QtBot,
     test_start_time: datetime,
     test_config: UserConfig,
@@ -81,13 +81,13 @@ def test_custom_wallet_setup_custom_single_sig(
     shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
 
     shutter.create_symlink(test_config=test_config)
-    with main_window_context(test_config=test_config) as (app, main_window):
+    with main_window_context(test_config=test_config) as main_window:
         QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
-        w = main_window.welcome_screen.pushButton_custom_wallet
+        button = main_window.welcome_screen.pushButton_custom_wallet
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             shutter.save(dialog)
@@ -97,7 +97,7 @@ def test_custom_wallet_setup_custom_single_sig(
             dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
             shutter.save(main_window)
 
-        do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
+        do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
         w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
         qt_proto_wallet = main_window.tab_wallets.get_data_for_tab(w)
@@ -115,7 +115,7 @@ def test_custom_wallet_setup_custom_single_sig(
             signers = qt_proto_wallet.wallet_descriptor_ui.spin_signers.value()
             qt_proto_wallet.wallet_descriptor_ui.spin_req.value()
 
-            assert signers == len(qt_proto_wallet.wallet_descriptor_ui.keystore_uis.keystore_uis)
+            assert signers == qt_proto_wallet.wallet_descriptor_ui.keystore_uis.count()
             for i in range(signers):
                 assert qt_proto_wallet.wallet_descriptor_ui.keystore_uis.tabText(
                     i
@@ -141,7 +141,7 @@ def test_custom_wallet_setup_custom_single_sig(
                 qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.currentData() == AddressTypes.p2wsh
             )
             assert qt_proto_wallet.wallet_descriptor_ui.spin_gap.value() == 20
-            assert len(qt_proto_wallet.wallet_descriptor_ui.keystore_uis.keystore_uis) == 5
+            assert qt_proto_wallet.wallet_descriptor_ui.keystore_uis.count() == 5
 
             shutter.save(main_window)
             check_consistent()
@@ -166,7 +166,7 @@ def test_custom_wallet_setup_custom_single_sig(
         change_to_single_sig()
 
         def do_save_wallet() -> None:
-            key = qt_proto_wallet.wallet_descriptor_ui.keystore_uis.keystore_uis[0]
+            key = list(qt_proto_wallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
             shutter.save(main_window)
@@ -198,7 +198,11 @@ def test_custom_wallet_setup_custom_single_sig(
 
         do_save_wallet()
 
-        main_window.tab_wallets.get_data_for_tab(w)
+        # get the new qt wallet
+        qt_wallet = main_window.tab_wallets.get_data_for_tab(
+            get_tab_with_title(main_window.tab_wallets, title=wallet_name)
+        )
+        assert isinstance(qt_wallet, QTWallet)
 
         def do_close_wallet() -> None:
 
@@ -214,14 +218,17 @@ def test_custom_wallet_setup_custom_single_sig(
 
         do_close_wallet()
 
-        def do_open_wallet() -> None:
-            assert (
-                wallet_name in list(main_window.config.recently_open_wallets[main_window.config.network])[0]
+        def check_that_it_is_in_recent_wallets() -> None:
+            assert any(
+                [
+                    (wallet_name in name)
+                    for name in main_window.config.recently_open_wallets[main_window.config.network]
+                ]
             )
 
             shutter.save(main_window)
 
-        do_open_wallet()
+        check_that_it_is_in_recent_wallets()
 
         # end
         shutter.save(main_window)

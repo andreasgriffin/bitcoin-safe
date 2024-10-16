@@ -344,19 +344,29 @@ class Faucet:
             logger.debug(f"faucet syncing {progress, message}")
 
         progress = bdk.Progress()
-        progress.update = update
+        progress.update = update  # type: ignore
 
         self.wallet.sync(self.blockchain, progress)
 
-    def initial_mine(self):
+    def mine(self, blocks=1, address=None):
+        address = (
+            address
+            if address
+            else self.wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
+        )
         block_hashes = mine_blocks(
             self.bitcoin_core,
-            200,
-            address=self.wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string(),
+            blocks,
+            address=address,
         )
         self.sync()
         balance = self.wallet.get_balance()
         logger.debug(f"Faucet Wallet balance is: {balance.total}")
+
+    def initial_mine(self):
+        self.mine(
+            blocks=200, address=self.wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
+        )
 
 
 @pytest.fixture(scope="session")

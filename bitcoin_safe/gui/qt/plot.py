@@ -28,6 +28,7 @@
 
 
 import datetime
+import logging
 import random
 import sys
 
@@ -38,8 +39,10 @@ from PyQt6.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWid
 
 from bitcoin_safe.util import unit_str
 
-from ...signals import Signals
+from ...signals import UpdateFilter, WalletSignals
 from ...wallet import Wallet
+
+logger = logging.getLogger(__name__)
 
 
 class BalanceChart(QWidget):
@@ -53,7 +56,8 @@ class BalanceChart(QWidget):
         # Create chart
         self.chart = QChart()
         self.chart.setBackgroundBrush(Qt.GlobalColor.white)
-        self.chart.legend().hide()
+        if legend := self.chart.legend():
+            legend.hide()
 
         # Reduce the overall chart margins
         layout.setContentsMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
@@ -214,17 +218,17 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    def __init__(self, wallet: Wallet, signals: Signals) -> None:
+    def __init__(self, wallet: Wallet, wallet_signals: WalletSignals) -> None:
         super().__init__(y_axis_text="")
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
-        self.signals = signals
+        self.wallet_signals = wallet_signals
 
         self.updateUi()
 
         # signals
-        self.signals.utxos_updated.connect(self.update_balances)
-        self.signals.language_switch.connect(self.updateUi)
+        self.wallet_signals.updated.connect(self.update_balances)
+        self.wallet_signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
         self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
@@ -233,7 +237,17 @@ class WalletBalanceChart(BalanceChart):
         self.value_axis.setTitleText(self.y_axis_text)
         self.chart.update()
 
-    def update_balances(self) -> None:
+    def update_balances(self, update_filter: UpdateFilter) -> None:
+        should_update = False
+        if should_update or update_filter.refresh_all:
+            should_update = True
+        if should_update or update_filter.outpoints:
+            should_update = True
+
+        if not should_update:
+            return
+
+        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
 
         # Calculate balance
         balance = 0

@@ -54,36 +54,35 @@
 
 import logging
 
+from bitcoin_safe.gui.qt.wrappers import Menu
+
 from ...config import UserConfig
-from ...pythonbdk_types import OutPoint, PythonUtxo
+from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
 
 logger = logging.getLogger(__name__)
 
 
 import enum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import bdkpython as bdk
-from PyQt6.QtCore import (
-    QModelIndex,
-    QPersistentModelIndex,
-    QPoint,
-    QSortFilterProxyModel,
-    Qt,
-)
+from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
-from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QWidget
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 from ...i18n import translate
-from ...signals import Signals, UpdateFilter
-from ...util import Satoshis, block_explorer_URL
+from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...util import Satoshis, block_explorer_URL, clean_list
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
+    MyItemDataRole,
     MySortModel,
     MyStandardItemModel,
     MyTreeView,
+    QItemSelectionModel,
     TreeViewWithToolbar,
+    needs_frequent_flag,
 )
 from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
@@ -136,7 +135,11 @@ class UTXOList(MyTreeView):
         Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths = {Columns.STATUS: 15, Columns.ADDRESS: 100, Columns.AMOUNT: 100}
+    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
+        Columns.STATUS: 15,
+        Columns.ADDRESS: 100,
+        Columns.AMOUNT: 100,
+    }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
 
@@ -145,9 +148,11 @@ class UTXOList(MyTreeView):
         config: UserConfig,
         signals: Signals,
         get_outpoints,
-        hidden_columns=None,
-        txout_dict: Optional[Dict[str, bdk.TxOut]] = None,
+        hidden_columns: List[int] | None = None,
+        txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] | None = None,
         keep_outpoint_order=False,
+        sort_column: int | None = None,
+        sort_order: Qt.SortOrder | None = None,
     ):
         """_summary_
 
@@ -164,29 +169,34 @@ class UTXOList(MyTreeView):
             stretch_column=self.stretch_column,
             column_widths=self.column_widths,
             editable_columns=[],
+            signals=signals,
+            sort_column=sort_column if sort_column is not None else UTXOList.Columns.ADDRESS,
+            sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
         )
         self.config: UserConfig = config
         self.keep_outpoint_order = keep_outpoint_order
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.get_outpoints = get_outpoints
-        self.txout_dict: Dict[str, bdk.TxOut] = txout_dict if txout_dict else {}
+        self.txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] = txout_dict if txout_dict else {}
         self._pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[str, Wallet] = {}  # outpoint --> wallet
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
-        self.std_model = MyStandardItemModel(self, drag_key="outpoints")
-        self.proxy: QSortFilterProxyModel = MySortModel(self, sort_role=self.ROLE_SORT_ORDER)
-        self.proxy.setSourceModel(self.std_model)
+        self._source_model = MyStandardItemModel(self, drag_key="outpoints")
+        self.proxy = MySortModel(
+            self, source_model=self._source_model, sort_role=MyItemDataRole.ROLE_SORT_ORDER
+        )
         self.setModel(self.proxy)
 
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
 
-        self.update()
+        self.update_content()
 
-        signals.utxos_updated.connect(self.update)
-        self.signals.language_switch.connect(self.update)
+        # signals
+        signals.any_wallet_updated.connect(self.update_with_filter)
+        self.signals.language_switch.connect(self.updateUi)
 
         # self.setDragEnabled(True)
         # self.setAcceptDrops(True)
@@ -195,47 +205,75 @@ class UTXOList(MyTreeView):
         # self.setDragDropMode(QAbstractItemView.InternalMove)
         # self.setDefaultDropAction(Qt.MoveAction)
 
-    def create_menu(self, position: QPoint) -> None:
-        selected = self.selected_in_column(self.Columns.OUTPOINT)
+    def create_menu(self, position: QPoint) -> Menu:
+        selected: List[QModelIndex] = self.selected_in_column(self.Columns.OUTPOINT)
         if not selected:
-            selected = [self.current_row_in_column(self.Columns.OUTPOINT)]
-        menu = QMenu()
+            current_row = self.current_row_in_column(self.Columns.OUTPOINT)
+            if current_row:
+                selected = [current_row]
+
+        menu = Menu()
 
         multi_select = len(selected) > 1
         outpoints: List[OutPoint] = [
-            OutPoint.from_str(self.model().data(item, role=self.ROLE_KEY)) for item in selected
+            self.model().data(item, role=MyItemDataRole.ROLE_KEY) for item in selected
         ]
-        menu = QMenu()
+
         if not multi_select:
             idx = self.indexAt(position)
             if not idx.isValid():
-                return
+                return menu
             item = self.item_from_index(idx)
             if not item:
-                return
+                return menu
 
             if str(outpoints[0]) in self._wallet_dict:
-                menu.addAction(
+                menu.add_action(
                     translate("utxo_list", "Open transaction"),
                     lambda: self.signals.open_tx_like.emit(outpoints[0].txid),
                 )
 
-            addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
-            if addr_URL:
-                menu.addAction(translate("utxo_list", "View on block explorer"), lambda: webopen(addr_URL))
+            txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
+            if txid_URL:
+                menu.add_action(
+                    translate("utxo_list", "View on block explorer"),
+                    lambda: webopen(txid_URL),
+                    icon=read_QIcon("link.svg"),
+                )
 
-            menu.addAction(
-                translate("utxo_list", "Copy txid:out"),
-                lambda: self.copyKeyRoleToClipboard([idx.row()]),
+            wallet_ids: List[str] = clean_list(
+                [
+                    self.model().data(item, role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+                    for item in self.selected_in_column(self.Columns.WALLET_ID)
+                ]
             )
+            addresses: List[str] = clean_list(
+                [
+                    self.model().data(item, role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+                    for item in self.selected_in_column(self.Columns.ADDRESS)
+                ]
+            )
+            if wallet_ids and addresses:
+                menu.add_action(
+                    translate("utxo_list", "Open Address Details"),
+                    lambda: self.signals.wallet_signals[wallet_ids[0]].show_address.emit(
+                        addresses[0], wallet_ids[0]
+                    ),
+                )
 
-        menu.addAction(
+            self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.Columns.OUTPOINT])
+
+        menu.add_action(
             translate("utxo_list", "Copy as csv"),
             lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+            icon=read_QIcon("csv-file.svg"),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
-        menu.exec(self.viewport().mapToGlobal(position))
+        if viewport := self.viewport():
+            menu.exec(viewport.mapToGlobal(position))
+
+        return menu
 
     def get_wallet_address_satoshis(
         self, outpoint: OutPoint
@@ -266,27 +304,61 @@ class UTXOList(MyTreeView):
             self.Columns.PARENTS: self.tr("Parents"),
         }
 
-    def update(self, update_filter: UpdateFilter = None):
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        should_update = False
+        if should_update or update_filter.refresh_all:
+            should_update = True
+        if should_update or update_filter.categories or update_filter.addresses:
+            should_update = True
+
+        if should_update:
+            return self.update_content()
+
+        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+
+        self._before_update_content()
+
+        log_info = []
+        model = self._source_model
+        # Select rows with an ID in id_list
+        for row in range(model.rowCount()):
+            outpoint: OutPoint = model.data(model.index(row, self.key_column))
+
+            if (
+                update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+                and model.data(
+                    model.index(row, self.key_column), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+                )
+            ) or any([outpoint in update_filter.outpoints]):
+                log_info.append((row, str(outpoint)))
+                self.refresh_row(outpoint, row)
+
+        logger.debug(f"Updated  {log_info}")
+
+        self._after_update_content()
+
+    def update_content(self):
         if self.maybe_defer_update():
             return
 
         def str_format(v):
             return str(v) if v else "Unknown"
 
-        current_key = self.get_role_data_for_current_item(col=self.key_column, role=self.ROLE_KEY)
+        self._before_update_content()
+
+        current_key = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
 
         # build dicts to look up the outpoints later (fast)
 
         self._wallet_dict = {}  # outpoint_str:Wallet
         self._pythonutxo_dict = {}  # outpoint_str:PythonUTXO
         for wallet_ in get_wallets(self.signals):
-            txos = wallet_.get_all_txos(include_not_mine=True)
-            self._pythonutxo_dict.update({str(python_txo.outpoint): python_txo for python_txo in txos})
-            self._wallet_dict.update({str(python_txo.outpoint): wallet_ for python_txo in txos})
+            txos_dict = wallet_.get_all_txos_dict(include_not_mine=True)
+            self._pythonutxo_dict.update(txos_dict)
+            self._wallet_dict.update({outpoint_str: wallet_ for outpoint_str in txos_dict.keys()})
 
-        self.std_model.clear()
+        self._source_model.clear()
         self.update_headers(self.get_headers())
-        set_idx = None
         for i, outpoint in enumerate(self.get_outpoints()):
             outpoint = OutPoint.from_bdk(outpoint)
             wallet, python_utxo, address, satoshis = self.get_wallet_address_satoshis(outpoint)
@@ -298,42 +370,31 @@ class UTXOList(MyTreeView):
             items = [QStandardItem(x) for x in labels]
             self.set_editability(items)
             items[self.Columns.OUTPOINT].setText(str(outpoint))
-            items[self.Columns.OUTPOINT].setData(str(outpoint), self.ROLE_KEY)
-            items[self.Columns.OUTPOINT].setData(str(outpoint), self.ROLE_CLIPBOARD_DATA)
+            items[self.Columns.OUTPOINT].setData(outpoint, MyItemDataRole.ROLE_KEY)
+            items[self.Columns.OUTPOINT].setData(str(outpoint), MyItemDataRole.ROLE_CLIPBOARD_DATA)
             items[self.Columns.OUTPOINT].setToolTip(str(outpoint))
 
-            items[self.Columns.ADDRESS].setData(i, self.ROLE_SORT_ORDER)
+            items[self.Columns.ADDRESS].setData(i, MyItemDataRole.ROLE_SORT_ORDER)
             # items[self.Columns.ADDRESS].setFont(QFont(MONOSPACE_FONT))
-            items[self.Columns.ADDRESS].setData(labels[self.Columns.ADDRESS], self.ROLE_CLIPBOARD_DATA)
+            items[self.Columns.ADDRESS].setData(
+                labels[self.Columns.ADDRESS], MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
             items[self.Columns.ADDRESS].setToolTip(labels[self.Columns.ADDRESS])
             # items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.AMOUNT].setData(
-                satoshis.value if satoshis else str_format(satoshis), self.ROLE_CLIPBOARD_DATA
+                satoshis.value if satoshis else str_format(satoshis), MyItemDataRole.ROLE_CLIPBOARD_DATA
             )
-            # items[self.Columns.PARENTS].setFont(QFont(MONOSPACE_FONT))
-            # items[self.Columns.OUTPOINT].setFont(QFont(MONOSPACE_FONT))
 
             # add item
-            count = self.std_model.rowCount()
-            self.std_model.insertRow(count, items)
+            count = self._source_model.rowCount()
+            self._source_model.insertRow(count, items)
             self.refresh_row(outpoint, count)
-            idx = self.std_model.index(count, self.Columns.LABEL)
-            if outpoint == current_key:
-                set_idx = QPersistentModelIndex(idx)
-        if set_idx:
-            self.set_current_idx(set_idx)
 
-        self.header().setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.ResizeMode.Interactive)
+        if isinstance(header := self.header(), QHeaderView):
+            header.setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.ResizeMode.Interactive)
 
-        # show/hide self.Columns
-        self.filter()
-        self.proxy.setDynamicSortFilter(True)
-        for hidden_column in self.hidden_columns:
-            self.hideColumn(hidden_column)
-
-        # manually sort, after the data is filled
-        self.sortByColumn(self.Columns.ADDRESS, Qt.SortOrder.AscendingOrder)
-        super().update()
+        self._after_update_content()
+        super().update_content()
 
     def refresh_row(self, key: bdk.OutPoint, row: int):
         assert row is not None
@@ -344,10 +405,15 @@ class UTXOList(MyTreeView):
             return
 
         txdetails = wallet.get_tx(outpoint.txid) if wallet else None
-        sort_id = TxStatus.from_wallet(txdetails.txid, wallet).sort_id() if txdetails and wallet else -1
+        status = TxStatus.from_wallet(txdetails.txid, wallet) if txdetails and wallet else None
+        sort_id = status.sort_id() if status else -1
 
-        items = [self.std_model.item(row, col) for col in self.Columns]
+        _items = [self._source_model.item(row, col) for col in self.Columns]
+        items = [entry for entry in _items if entry]
 
+        if needs_frequent_flag(status=status):
+            # unconfirmed txos might be confirmed, and need to be updated more often
+            items[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         items[self.Columns.STATUS].setIcon(
             read_QIcon(
                 icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.confirmation_time, sort_id)
@@ -362,16 +428,16 @@ class UTXOList(MyTreeView):
 
         wallet_id = wallet.id if wallet and address and wallet.is_my_address(address) else ""
         items[self.Columns.WALLET_ID].setText(wallet_id)
-        items[self.Columns.WALLET_ID].setData(wallet_id, self.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.WALLET_ID].setData(wallet_id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         txid = outpoint.txid
 
         category = wallet.labels.get_category(address) if wallet and address else ""
 
-        items[self.Columns.CATEGORY].setText(category)
-        items[self.Columns.CATEGORY].setData(category, self.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.CATEGORY].setText(category if category else "")
+        items[self.Columns.CATEGORY].setData(category, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         label = wallet.get_label_for_txid(txid) or "" if wallet else ""
         items[self.Columns.LABEL].setText(label)
-        items[self.Columns.LABEL].setData(label, self.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         color = self._default_bg_brush
         for col in items:
             col.setBackground(color)
@@ -395,27 +461,35 @@ class UTXOList(MyTreeView):
         if not self.model():
             return []
         items = self.selected_in_column(self.Columns.OUTPOINT)
-        return [OutPoint.from_str(x.data(self.ROLE_KEY)) for x in items]
+        return [x.data(MyItemDataRole.ROLE_KEY) for x in items]
 
-    def get_selected_values(self) -> List[OutPoint]:
+    def get_selected_values(self) -> List[int]:
         if not self.model():
             return []
         items = self.selected_in_column(self.Columns.AMOUNT)
-        return [x.data(self.ROLE_CLIPBOARD_DATA) for x in items]
+        return [x.data(MyItemDataRole.ROLE_CLIPBOARD_DATA) for x in items]
 
     def on_double_click(self, idx: QModelIndex):
-        outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(self.ROLE_KEY)
-        self.signals.show_utxo.emit(outpoint)
+        outpoint = idx.sibling(idx.row(), self.Columns.OUTPOINT).data(MyItemDataRole.ROLE_KEY)
+        wallets = get_wallets(self.signals)
+        for wallet in wallets:
+            python_utxo = wallet.get_python_txo(str(outpoint))
+            if python_utxo:
+                self.signals.wallet_signals[wallet.id].show_utxo.emit(outpoint)
 
 
 class UtxoListWithToolbar(TreeViewWithToolbar):
-    def __init__(self, utxo_list: UTXOList, config: UserConfig, parent: QWidget = None) -> None:
+    def __init__(self, utxo_list: UTXOList, config: UserConfig, parent: QWidget | None = None) -> None:
         super().__init__(utxo_list, config, parent=parent)
         self.utxo_list = utxo_list
-        self.utxo_list.selectionModel().selectionChanged.connect(self.update_labels)
+        selection_model = self.utxo_list.selectionModel()
+        if not selection_model:
+            selection_model = QItemSelectionModel(self.utxo_list.model())
+            self.utxo_list.setSelectionModel(selection_model)
+        self.utxo_list.signal_selection_changed.connect(self.update_labels)
         self.create_layout()
         self.utxo_list.signals.language_switch.connect(self.updateUi)
-        self.utxo_list.signals.utxos_updated.connect(self.updateUi)
+        self.utxo_list.signals.any_wallet_updated.connect(self.updateUi)
 
     def updateUi(self):
         super().updateUi()
@@ -424,10 +498,12 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
 
     def update_labels(self):
         try:
-            amount = sum(self.utxo_list.get_selected_values())
+            selected_values = self.utxo_list.get_selected_values()
+            amount = sum(selected_values)
             self.uxto_selected_label.setText(
-                self.tr("{amount} selected").format(
-                    amount=Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit()
+                self.tr("{amount} selected ({number} UTXOs)").format(
+                    amount=Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit(),
+                    number=len(selected_values),
                 )
             )
         except:

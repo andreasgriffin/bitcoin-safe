@@ -35,18 +35,19 @@ class ControlledGroupbox(QWidget):
     def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True) -> None:
         super().__init__()
 
-        self.setLayout(QVBoxLayout())
+        self._layout = QVBoxLayout(self)
 
         # Create the checkbox and add it to the layout
         self.checkbox = QCheckBox(checkbox_text, self)
         self.checkbox.setChecked(enabled)  # Set the initial state based on the 'enabled' argument
-        self.layout().addWidget(self.checkbox)
+        self._layout.addWidget(self.checkbox)
 
         # Create the groupbox
         self.groupbox = QGroupBox(groupbox_text, self)
+        self.groupbox_layout = QVBoxLayout(self.groupbox)
 
         # Add the groupbox to the main widget's layout
-        self.layout().addWidget(self.groupbox)
+        self._layout.addWidget(self.groupbox)
 
         # Set the initial enabled state of the groupbox
         self.groupbox.setEnabled(enabled)

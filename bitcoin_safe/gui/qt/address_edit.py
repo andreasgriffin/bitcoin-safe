@@ -29,7 +29,9 @@
 
 import logging
 
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
+from bitcoin_safe.util import block_explorer_URL
 
 logger = logging.getLogger(__name__)
 
@@ -39,13 +41,13 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QWidget
+from PyQt6.QtWidgets import QMessageBox, QSizePolicy, QStyle
 
 from ...i18n import translate
-from ...signals import Signals
-from ...wallet import Wallet, get_wallets
+from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...wallet import Wallet, get_wallet_of_address
 from .dialogs import question_dialog
-from .util import ColorScheme
+from .util import ColorScheme, icon_path, webopen
 
 
 class AddressEdit(ButtonEdit):
@@ -57,9 +59,9 @@ class AddressEdit(ButtonEdit):
         network: bdk.Network,
         text="",
         allow_edit: bool = True,
-        button_vertical_align: Optional[QtCore.Qt] = None,
+        button_vertical_align: Optional[QtCore.Qt.AlignmentFlag] = None,
         parent=None,
-        signals: Signals = None,
+        signals: Signals | None = None,
     ) -> None:
         self.signals = signals
         self.network = network
@@ -73,33 +75,53 @@ class AddressEdit(ButtonEdit):
 
         self.setPlaceholderText(self.tr("Enter address here"))
 
-        def on_handle_input(data: Data, parent: QWidget) -> None:
+        def on_handle_input(data: Data) -> None:
             if data.data_type == DataType.Bip21:
                 if data.data.get("address"):
                     self.setText(data.data.get("address"))
                 self.signal_bip21_input.emit(data)
 
-        if allow_edit:
-            self.add_qr_input_from_camera_button(
-                network=network,
-                custom_handle_input=on_handle_input,
-            )
-        else:
-            self.add_copy_button()
-            self.setReadOnly(True)
+        self.camera_button = self.add_qr_input_from_camera_button(
+            network=network,
+        )
+        self.signal_data.connect(on_handle_input)
+        self.copy_button = self.add_copy_button()
+        self.mempool_button = self._add_mempool_button(self.signals) if self.signals else None
 
-        def is_valid() -> bool:
-            if not self.text():
-                # if it is empty, show no error
-                return True
-            try:
-                bdk_address = bdk.Address(self.address, network=network)
-                return bool(bdk_address)
-            except:
-                return False
+        self.input_field.setAnalyzer(AddressAnalyzer(self.network, parent=self))
 
-        self.set_validator(is_valid)
+        # ensure that the address_edit is the minimum vertical size
+        self.setMaximumHeight(self.input_field.height())
+        self.button_container.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.set_allow_edit(allow_edit)
+
+        # signals
         self.input_field.textChanged.connect(self.on_text_changed)
+
+    def set_allow_edit(self, allow_edit: bool):
+        self.allow_edit = allow_edit
+
+        self.setReadOnly(not allow_edit)
+
+        if self.camera_button:
+            self.camera_button.setVisible(allow_edit)
+        if self.copy_button:
+            self.copy_button.setHidden(allow_edit)
+        if self.mempool_button:
+            self.mempool_button.setHidden(allow_edit)
+
+    def _add_mempool_button(self, signals: Signals) -> SquareButton:
+        def on_click() -> None:
+            mempool_url: str = signals.get_mempool_url()
+            addr_URL = block_explorer_URL(mempool_url, "addr", self.address)
+            if addr_URL:
+                webopen(addr_URL)
+
+        copy_button = self.add_button(
+            icon_path("link.svg"), on_click, tooltip=translate("d", "View on block explorer")
+        )
+        return copy_button
 
     @property
     def address(self) -> str:
@@ -109,22 +131,18 @@ class AddressEdit(ButtonEdit):
     def address(self, value: str) -> None:
         self.setText(value)
 
-    def get_wallet_of_address(self) -> Optional[Wallet]:
-        if not self.signals:
-            return None
-        for wallet in get_wallets(self.signals):
-            if wallet.is_my_address(self.address):
-                return wallet
-        return None
-
     def updateUi(self):
         super().updateUi()
 
-        wallet = self.get_wallet_of_address()
+        wallet = None
+        if self.signals:
+            wallet = get_wallet_of_address(self.address, self.signals)
         self.format_address_field(wallet=wallet)
 
     def on_text_changed(self, *args):
-        wallet = self.get_wallet_of_address()
+        wallet = None
+        if self.signals:
+            wallet = get_wallet_of_address(self.address, self.signals)
 
         self.format_address_field(wallet=wallet)
 
@@ -133,20 +151,27 @@ class AddressEdit(ButtonEdit):
 
         self.signal_text_change.emit(self.address)
 
+    @staticmethod
+    def color_address(address: str, wallet: Wallet) -> Optional[QtGui.QColor]:
+        if wallet.is_my_address(address):
+            if wallet.is_change(address):
+                return ColorScheme.YELLOW.as_color(background=True)
+            else:
+                return ColorScheme.GREEN.as_color(background=True)
+        return None
+
     def format_address_field(self, wallet: Optional[Wallet]) -> None:
         palette = QtGui.QPalette()
         background_color = None
 
+        background_color = None
         if wallet:
-            if wallet.is_change(self.address):
-                background_color = ColorScheme.YELLOW.as_color(background=True)
-                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
-            else:
-                background_color = ColorScheme.GREEN.as_color(background=True)
-                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
+            background_color = self.color_address(self.address, wallet)
 
+        if background_color:
+            palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
         else:
-            palette = self.input_field.style().standardPalette()
+            palette = (self.input_field.style() or QStyle()).standardPalette()
 
         self.input_field.setPalette(palette)
         self.input_field.update()
@@ -164,4 +189,12 @@ class AddressEdit(ButtonEdit):
             title=translate("recipients", "Address Already Used"),
             buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         ):
-            self.address = wallet.get_address().address.as_string()
+            old_category = wallet.labels.get_category(address)
+            self.address = wallet.get_unused_category_address(category=old_category).address.as_string()
+
+            if self.signals:
+                self.signals.wallet_signals[wallet.id].updated.emit(
+                    UpdateFilter(addresses=set([self.address]), reason=UpdateFilterReason.UserReplacedAddress)
+                )
+
+            self.format_address_field(wallet)

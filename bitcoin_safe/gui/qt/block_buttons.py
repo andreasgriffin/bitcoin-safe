@@ -36,11 +36,10 @@ from typing import Callable, List
 
 import bdkpython as bdk
 from PyQt6.QtCore import QLocale, QObject, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.util import block_explorer_URL_of_projected_block
+from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
 from ...html import html_f
 from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
@@ -61,17 +60,18 @@ class BlockType(enum.Enum):
 
 
 class BaseBlockLabel(QLabel):
-    def __init__(self, text: str = "", parent=None) -> None:
+    def __init__(self, network: bdk.Network, text: str = "", parent=None) -> None:
         super().__init__(text, parent)
+        self.network = network
 
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setWordWrap(True)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setHidden(not text)
 
-    def setText(self, arg__1: str) -> None:
-        self.setHidden(not arg__1)
-        return super().setText(arg__1)
+    def setText(self, s: str | None) -> None:
+        self.setHidden(not s)
+        return super().setText(s)
 
 
 class LabelTitle(BaseBlockLabel):
@@ -81,14 +81,14 @@ class LabelTitle(BaseBlockLabel):
 
 class LabelApproximateMedianFee(BaseBlockLabel):
     def set(self, median_fee: float, block_type: BlockType) -> None:
-        s = f"~{int(median_fee)} Sat/vB"
+        s = f"~{int(median_fee)} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelExactMedianFee(BaseBlockLabel):
     def set(self, median_fee: float, block_type: BlockType) -> None:
-        s = f"{round(median_fee, 1)} Sat/vB"
+        s = f"{round(median_fee, 1)} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
@@ -109,7 +109,7 @@ class LabelBlockHeight(BaseBlockLabel):
 
 class LabelFeeRange(BaseBlockLabel):
     def set(self, min_fee: float, max_fee: float) -> None:
-        s = f"{int(min_fee)} - {int(max_fee)} Sat/vB"
+        s = f"{int(min_fee)} - {int(max_fee)} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="#eee002", size="10px"))
 
@@ -131,19 +131,19 @@ class LabelExplorer(BaseBlockLabel):
 
 
 class BlockButton(QPushButton):
-    def __init__(self, size=100, parent=None) -> None:
+    def __init__(self, network: bdk.Network, size=100, parent=None) -> None:
         super().__init__(parent=parent)
 
         # Create labels for each text line
 
-        self.label_approximate_median_fee = LabelApproximateMedianFee()
-        self.label_exact_median_fee = LabelExactMedianFee()
-        self.label_number_confirmations = LabelNumberConfirmations()
-        self.label_block_height = LabelBlockHeight()
-        self.label_fee_range = LabelFeeRange()
-        self.label_title = LabelTitle()
-        self.label_time_estimation = LabelTimeEstimation()
-        self.label_explorer = LabelExplorer()
+        self.label_approximate_median_fee = LabelApproximateMedianFee(network)
+        self.label_exact_median_fee = LabelExactMedianFee(network)
+        self.label_number_confirmations = LabelNumberConfirmations(network)
+        self.label_block_height = LabelBlockHeight(network)
+        self.label_fee_range = LabelFeeRange(network)
+        self.label_title = LabelTitle(network)
+        self.label_time_estimation = LabelTimeEstimation(network)
+        self.label_explorer = LabelExplorer(network)
 
         # define the order:
         self.labels = [
@@ -168,7 +168,7 @@ class BlockButton(QPushButton):
         for label in self.labels:
             label.setText("")
 
-    def _set_background_gradient(self, color_top: QColor, color_bottom: QColor) -> None:
+    def _set_background_gradient(self, color_top: str, color_bottom: str) -> None:
         # Set the stylesheet for the QPushButton
         self.setStyleSheet(
             f"""
@@ -195,20 +195,20 @@ class BlockButton(QPushButton):
 class VerticalButtonGroup(InvisibleScrollArea):
     signal_button_click = pyqtSignal(int)
 
-    def __init__(self, button_count=3, parent=None, size=100) -> None:
+    def __init__(self, network: bdk.Network, button_count=3, parent=None, size=100) -> None:
         super().__init__(parent)
         layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setMinimumWidth(size + 50)
-        if button_count > 1:
-            self.setMinimumHeight(size + 20)
+        self.setMinimumWidth(size + 30)
+        # if button_count > 1:
+        #     self.setMinimumHeight(size + 20)
 
         self.setWidgetResizable(True)
         self.buttons: List[BlockButton] = []
 
         # Create buttons
         for i in range(button_count):
-            button = BlockButton(size=size)
+            button = BlockButton(network=network, size=size)
 
             def create_signal_handler(index) -> Callable:
                 def send_signal() -> None:
@@ -233,45 +233,63 @@ class ObjectRequiringMempool(QObject):
         self.timer.timeout.connect(self.mempool_data.set_data_from_mempoolspace)
         self.timer.start(10 * 60 * 1000)  # 10 minutes in milliseconds
 
-    def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime = None) -> None:
+    def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime | None = None) -> None:
         logger.error("This should not be called")
 
 
 class BaseBlock(QObject):
+    signal_click = pyqtSignal(float)
+
     def __init__(
         self,
-        confirmation_time: bdk.BlockTime = None,
+        mempool_data: MempoolData,
+        button_group: VerticalButtonGroup,
+        confirmation_time: bdk.BlockTime | None = None,
         parent=None,
     ) -> None:
         QObject.__init__(self, parent=parent)
         self.confirmation_time = confirmation_time
+        self.mempool_data = mempool_data
+        self.button_group = button_group
+
+        # signals
+        self.button_group.signal_button_click.connect(self._on_button_click)
+        self.mempool_data.signal_data_updated.connect(self.refresh)
+
+    def refresh(self, **kwargs) -> None:
+        pass
+
+    def set_url(self, url: str) -> None:
+        pass
+
+    def _on_button_click(self, i: int) -> None:
+        pass
 
 
 class MempoolButtons(BaseBlock, ObjectRequiringMempool):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
-    signal_click = pyqtSignal(float)
 
     def __init__(self, mempool_data: MempoolData, max_button_count=3, parent=None) -> None:
-        BaseBlock.__init__(self, confirmation_time=None, parent=parent)
+        button_group = VerticalButtonGroup(
+            network=mempool_data.network_config.network, button_count=max_button_count, parent=parent
+        )
+        BaseBlock.__init__(
+            self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
+        )
         ObjectRequiringMempool.__init__(self, mempool_data=mempool_data, parent=parent)
 
-        self.button_group = VerticalButtonGroup(button_count=max_button_count, parent=parent)
-
-        self.button_group.signal_button_click.connect(self._on_button_click)
         self.refresh()
-        self.mempool_data.signal_data_updated.connect(self.refresh)
 
     def refresh(self, **kwargs) -> None:
-        if self.mempool_data is None:
-            return
-
         for i, button in enumerate(self.button_group.buttons):
             block_number = i + 1
             button.setVisible(i < max(1, self.mempool_data.num_mempool_blocks()))
             button.label_title.set(
-                self.tr("Next Block")
-                if block_number == 1
-                else self.tr("{n}. Block").format(n=format_block_number(block_number)),
+                (
+                    self.tr("Next Block")
+                    if block_number == 1
+                    else self.tr("{n}. Block").format(n=format_block_number(block_number))
+                ),
                 block_type=BlockType.projected,
             )
             button.label_time_estimation.set(block_number, block_type=BlockType.projected)
@@ -288,28 +306,28 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
 
 class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
     "The Button showing the block in which the fee_rate fits"
-    signal_click = pyqtSignal(float)
 
     def __init__(
         self,
         mempool_data: MempoolData,
         config: UserConfig,
-        fee_rate=1,
+        fee_rate: float = 1,
         parent=None,
     ) -> None:
-        BaseBlock.__init__(self, confirmation_time=None, parent=parent)
+        button_group = VerticalButtonGroup(
+            network=mempool_data.network_config.network, size=100, button_count=1, parent=parent
+        )
+
+        BaseBlock.__init__(
+            self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
+        )
         ObjectRequiringMempool.__init__(self, mempool_data=mempool_data, parent=parent)
 
-        self.median_block_fee_borders = None
         self.config = config
         self.fee_rate = fee_rate
         self.url = ""
 
-        self.button_group = VerticalButtonGroup(size=100, button_count=1, parent=parent)
         self.refresh()
-
-        self.button_group.signal_button_click.connect(self._on_button_click)
-        self.mempool_data.signal_data_updated.connect(self.refresh)
 
     def set_url(self, url: str) -> None:
         self.url = url
@@ -322,26 +340,26 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
             button.set_background_gradient(0, 1, BlockType.projected)
 
     def refresh(self, fee_rate=None, **kwargs) -> None:
-        self.fee_rate = fee_rate if fee_rate else self.fee_rate
-        if self.mempool_data is None:
-            return
-
-        if self.fee_rate is None:
-            self.set_unknown_fee_rate()
-            return
+        self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
+        # if self.fee_rate is None:
+        #     self.set_unknown_fee_rate()
+        #     return
 
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
 
-        for i, button in enumerate(self.button_group.buttons):
+        for button in self.button_group.buttons:
+
             button.label_title.set(
                 self.tr("~{n}. Block").format(n=format_block_number(block_index + 1)), BlockType.projected
             )
             button.label_approximate_median_fee.set(
-                self.mempool_data.median_block_fee_rate(i), block_type=BlockType.projected
+                self.mempool_data.median_block_fee_rate(block_index), block_type=BlockType.projected
             )
-            button.label_fee_range.set(*self.mempool_data.fee_rates_min_max(i))
+            button.label_fee_range.set(*self.mempool_data.fee_rates_min_max(block_index))
             button.label_time_estimation.set(block_index + 1, BlockType.projected)
-            button.set_background_gradient(*self.mempool_data.fee_rates_min_max(i), BlockType.projected)
+            button.set_background_gradient(
+                *self.mempool_data.fee_rates_min_max(block_index), BlockType.projected
+            )
 
     def _on_button_click(self, i: int) -> None:
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
@@ -352,36 +370,38 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         )
         if url:
             open_website(url)
-        if self.median_block_fee_borders:
-            self.signal_click.emit(self.median_block_fee_borders[block_index])
 
 
 class ConfirmedBlock(BaseBlock):
     "Showing a confirmed block"
-    signal_click = pyqtSignal(float)  # txid
 
     def __init__(
         self,
         mempool_data: MempoolData,
-        url: str = None,
-        confirmation_time: bdk.BlockTime = None,
-        fee_rate=None,
+        url: str | None = None,
+        confirmation_time: bdk.BlockTime | None = None,
+        fee_rate: float | None = None,
         parent=None,
     ) -> None:
-        super().__init__(parent=parent, confirmation_time=confirmation_time)
+        button_group = VerticalButtonGroup(
+            network=mempool_data.network_config.network, button_count=1, parent=parent, size=120
+        )
 
-        self.button_group = VerticalButtonGroup(button_count=1, parent=parent, size=120)
+        super().__init__(
+            parent=parent,
+            mempool_data=mempool_data,
+            button_group=button_group,
+            confirmation_time=confirmation_time,
+        )
+
         self.fee_rate = fee_rate
         self.url = url
-        self.mempool_data = mempool_data
-
-        self.button_group.signal_button_click.connect(self._on_button_click)
 
     def set_url(self, url: str) -> None:
         self.url = url
 
     def refresh(self, fee_rate=None, confirmation_time=None, chain_height=None, **kwargs) -> None:
-        self.fee_rate = fee_rate if fee_rate else self.fee_rate
+        self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
         self.confirmation_time = confirmation_time if confirmation_time else self.confirmation_time
         if not self.confirmation_time:
             return
@@ -422,7 +442,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    widget = VerticalButtonGroup(3)
+    widget = VerticalButtonGroup(network=bdk.Network.REGTEST)
     widget.show()
 
     sys.exit(app.exec())

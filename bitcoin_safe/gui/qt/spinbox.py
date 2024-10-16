@@ -53,17 +53,19 @@ class BTCSpinBox(QtWidgets.QDoubleSpinBox):
     def value(self) -> int:
         return round(super().value())
 
-    def textFromValue(self, value: int) -> str:
+    def textFromValue(self, value: int) -> str:  # type: ignore[override]
         if self._is_max:
             return self.tr("Max ≈ {amount}").format(amount=str(Satoshis(value, self.network)))
         return str(Satoshis(value, self.network))
 
-    def valueFromText(self, text: str) -> int:
+    def valueFromText(self, text: str | None) -> int:
         if self._is_max:
             return 0
-        return Satoshis(text, self.network).value
+        return Satoshis(text if text else 0, self.network).value
 
-    def validate(self, text: str, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
+    def validate(self, text: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
+        if text is None:
+            text = ""
         try:
             # Try to convert the text to a float
             self.valueFromText(text)

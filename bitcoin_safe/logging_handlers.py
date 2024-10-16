@@ -82,7 +82,7 @@ class MailHandler(logging.Handler):
         """'args', 'asctime', 'created', 'exc_info', 'exc_text', 'filename', 'funcName', 'getMessage', 'levelname', 'levelno', 'lineno', 'message', 'module', 'msecs', 'msg', 'name', 'pathname', 'process', 'processName', 'relativeCreated', 'stack_info', 'thread', 'threadName"""
 
         if (self.must_include_exc_info and record.exc_info) or not self.must_include_exc_info:
-            exc_type, exc_value, exc_traceback = record.exc_info
+            exc_type, exc_value, exc_traceback = record.exc_info  # type: ignore
 
             message = str(self.format(record))
             mail_error_repot(message)

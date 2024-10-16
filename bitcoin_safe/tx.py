@@ -33,11 +33,17 @@ from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.util import serialized_to_hex
 
-from .pythonbdk_types import OutPoint, PythonUtxo, Recipient, UtxosForInputs
+from .pythonbdk_types import (
+    OutPoint,
+    PythonUtxo,
+    Recipient,
+    UtxosForInputs,
+    robust_address_str_from_script,
+)
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 
@@ -72,7 +78,10 @@ class TxUiInfos:
     "A wrapper around tx_builder to collect even more infos"
 
     def __init__(self) -> None:
-        self.utxo_dict: Dict[str, PythonUtxo] = {}  # {outpoint_string:utxo} It is Ok if outpoint_string:None
+        self.utxo_dict: Dict[OutPoint, PythonUtxo] = (
+            {}
+        )  # {outpoint_string:utxo} It is Ok if outpoint_string:None
+        self.global_xpubs: Dict[str, Tuple[str, str]] = {}  # xpub:(fingerprint, key_origin)
         self.fee_rate: Optional[float] = None
         self.opportunistic_merge_utxos = True
         self.spend_all_utxos = False
@@ -82,6 +91,9 @@ class TxUiInfos:
 
         # self.exclude_fingerprints_from_signing :List[str]=[]
 
+        self.hide_UTXO_selection = False
+        self.recipient_read_only = False
+
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
 
@@ -90,7 +102,7 @@ class TxUiInfos:
 
     def fill_utxo_dict_from_utxos(self, utxos: List[PythonUtxo]):
         for utxo in utxos:
-            self.utxo_dict[str(OutPoint.from_bdk(utxo.outpoint))] = utxo
+            self.utxo_dict[OutPoint.from_bdk(utxo.outpoint)] = utxo
 
 
 class TxBuilderInfos:
@@ -118,7 +130,7 @@ class TxBuilderInfos:
         self.fee_rate = fee_rate
 
 
-def transaction_to_dict(tx: bdk.Transaction) -> Dict[str, Any]:
+def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, Any]:
     # Serialize inputs
     inputs = []
     for inp in tx.input():
@@ -138,6 +150,7 @@ def transaction_to_dict(tx: bdk.Transaction) -> Dict[str, Any]:
             {
                 "value": out.value,
                 "script_pubkey": serialized_to_hex(out.script_pubkey.to_bytes()),
+                "address": robust_address_str_from_script(out.script_pubkey, network=network),
             }
         )
 

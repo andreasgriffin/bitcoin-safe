@@ -51,7 +51,7 @@ class SyncedTabWidget(QTabWidget):
     def __init__(
         self,
         group: str,
-        parent: QWidget = None,
+        parent: QWidget | None = None,
         tab_position: QTabWidget.TabPosition = QTabWidget.TabPosition.North,
     ) -> None:
         super().__init__(parent)

@@ -40,13 +40,18 @@ class HTMLDelegate:
     def __init__(self) -> None:
         pass
 
-    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        logger.debug("HTMLDelegate.paint")
-        text = index.model().data(index)
+    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        if not painter:
+            return
+        model = index.model()
+        if not model:
+            return
+
+        text = model.data(index)
 
         painter.save()
 
-        option.widget.style().drawControl(
+        (option.widget.style() or QStyle()).drawControl(
             QStyle.ControlElement.CE_ItemViewItem, option, painter, option.widget
         )
 
@@ -76,13 +81,16 @@ class HTMLDelegate:
         painter.restore()
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
-        text = index.model().data(index)
+        model = index.model()
+        if not model:
+            return QSize()
+        text = model.data(index)
 
         doc = QTextDocument()
         doc.setHtml(text)
         doc.setTextWidth(200)  # Set a fixed width for the calculation
 
-        return QSize(doc.idealWidth(), doc.size().height() - 10)
+        return QSize(int(doc.idealWidth()), int(doc.size().height() - 10))
 
     def show_tooltip(self, evt: QHelpEvent) -> bool:
         # QToolTip.showText(evt.globalPosition(), ', '.join(self.categories))

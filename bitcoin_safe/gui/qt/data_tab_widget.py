@@ -28,89 +28,111 @@
 
 
 import logging
-from typing import Any, Dict
+from typing import Dict, Generic, Type, TypeVar
 
 logger = logging.getLogger(__name__)
+
+from typing import Dict, Generic, Type, TypeVar
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QTabWidget, QWidget
 
+T = TypeVar("T")
 
-class DataTabWidget(QTabWidget):
-    def __init__(self, parent=None) -> None:
+
+class DataTabWidget(Generic[T], QTabWidget):
+    def __init__(self, data_class: Type[T], parent=None) -> None:
         super().__init__(parent)
-        self.tab_data: Dict[int, Any] = {}
+        self._data_class = data_class
+        self._tab_data: Dict[QWidget, T] = {}
 
-    def setTabData(self, index, data) -> None:
-        self.tab_data[index] = data
+    def setTabData(self, widget: QWidget, data: T) -> None:
+        self._tab_data[widget] = data
 
-    def tabData(self, index) -> Any:
-        return self.tab_data.get(index)
+    def tabData(self, index: int) -> T | None:
+        tab = self.widget(index)
+        if not tab:
+            return None
+        return self._tab_data[tab]
 
-    def getCurrentTabData(self) -> Any:
-        current_index = self.currentIndex()
-        return self.tabData(current_index)
+    def get_data_for_tab(self, tab: QWidget) -> T:
+        return self._tab_data[tab]
 
-    def getAllTabData(self) -> Dict[int, Any]:
-        return self.tab_data
+    def getCurrentTabData(self) -> T | None:
+        current_widget = self.currentWidget()
+        if not current_widget:
+            return None
+        return self._tab_data[current_widget]
+
+    def getAllTabData(self) -> Dict[QWidget, T]:
+        widgets_raw = [self.widget(i) for i in range(self.count())]
+        widgets = [w for w in widgets_raw if w]
+        return {widget: self.get_data_for_tab(widget) for widget in widgets}
 
     def clearTabData(self) -> None:
-        self.tab_data = {}
+        self._tab_data.clear()
 
-    def addTab(self, widget, icon=None, description="", data=None) -> int:
+    def clear(self) -> None:
+        """Override the clear method to also clear the tab data."""
+        super().clear()
+        self._tab_data.clear()
+
+    def addTab(  # type: ignore[override]
+        self, widget: QWidget, icon: QIcon | None = None, description: str = "", data: T | None = None
+    ) -> int:  # type: ignore[override]
         if icon:
-            index = super().addTab(widget, QIcon(icon), description.replace("&", "").capitalize())
+            index = super().addTab(widget, icon, description)
         else:
-            index = super().addTab(widget, description.replace("&", "").capitalize())
-        self.setTabData(index, data)
+            index = super().addTab(widget, description)
+        if data is not None:
+            self.setTabData(widget, data)
         return index
 
-    def insertTab(self, index, widget, icon=None, description="", data=None) -> int:
+    def insertTab(  # type: ignore[override]
+        self, index: int, widget: QWidget, data: T, icon: QIcon | None = None, description: str = ""
+    ) -> int:  # type: ignore[override]
         if icon:
-            new_index = super().insertTab(
-                index, widget, QIcon(icon), description.replace("&", "").capitalize()
-            )
+            new_index = super().insertTab(index, widget, icon, description)
         else:
-            new_index = super().insertTab(index, widget, description.replace("&", "").capitalize())
-        self._updateDataAfterInsert(new_index, data)
+            new_index = super().insertTab(index, widget, description)
+        if data is not None:
+            self.setTabData(widget, data)
         return new_index
 
-    def removeTab(self, index) -> None:
+    def add_tab(
+        self,
+        tab: QWidget,
+        icon: QIcon | None,
+        description: str,
+        data: T,
+        position: int | None = None,
+        focus: bool = False,
+    ):
+        if position is None:
+            index = self.addTab(tab, icon, description, data=data)
+            if focus:
+                self.setCurrentIndex(self.count() - 1)
+        else:
+            self.insertTab(position, tab, data, icon, description)
+            if focus:
+                self.setCurrentIndex(position)
+
+    def removeTab(self, index: int) -> None:
+        widget = self.widget(index)
         super().removeTab(index)
-        self._updateDataAfterRemove(index)
-
-    def _updateDataAfterInsert(self, new_index, data) -> None:
-        new_data = {}
-        for i, d in sorted(self.tab_data.items()):
-            if i >= new_index:
-                new_data[i + 1] = d
-            else:
-                new_data[i] = d
-        new_data[new_index] = data
-        self.tab_data = new_data
-
-    def _updateDataAfterRemove(self, removed_index) -> None:
-        new_data = {}
-        for i, d in self.tab_data.items():
-            if i < removed_index:
-                new_data[i] = d
-            elif i > removed_index:
-                new_data[i - 1] = d
-        self.tab_data = new_data
-
-    def get_data_for_tab(self, tab: QWidget) -> Any:
-        index = self.indexOf(tab)
-        return self.tabData(index)
+        if widget in self._tab_data:
+            del self._tab_data[widget]
 
 
 if __name__ == "__main__":
     import sys
 
-    from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
+    from PyQt6.QtWidgets import QApplication, QWidget
 
     app = QApplication(sys.argv)
 
-    tab_widget = DataTabWidget()
+    tab_widget = DataTabWidget(str)
+    tab_widget.setMovable(True)
     tab1 = QWidget()
     tab2 = QWidget()
 
@@ -121,7 +143,7 @@ if __name__ == "__main__":
     # Connect tab change signal to a function to display current tab data
     def show_current_tab_data(index) -> None:
         data = tab_widget.getCurrentTabData()
-        QMessageBox.information(tab_widget, "Current Tab Data", f"Data for current tab: {data}")
+        tab_widget.setToolTip(f"Data for current tab: {data}")
 
     tab_widget.currentChanged.connect(show_current_tab_data)
 

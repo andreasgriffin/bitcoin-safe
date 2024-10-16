@@ -31,6 +31,7 @@ import logging
 import os
 import platform
 import sys
+from ctypes.util import find_library
 from importlib.metadata import PackageMetadata
 from typing import Optional
 
@@ -52,11 +53,11 @@ def show_message_before_quit(msg: str) -> None:
     # Initialize QApplication first
     app = QApplication(sys.argv)
     # Without an application instance, some features might not work as expected
-    QMessageBox.warning(None, "Warning", msg, QMessageBox.StandardButton.Ok)
+    QMessageBox.warning(None, "Warning", msg, QMessageBox.StandardButton.Ok)  # type: ignore[arg-type]
     sys.exit(app.exec())
 
 
-def _get_binary_lib_path() -> str:
+def _get_binary_lib_path_from_electrumsv() -> str:
     # Get the platform-specific path to the binary library
     if platform.system() == "Windows":
         # On Windows, construct the path to the DLL
@@ -66,6 +67,19 @@ def _get_binary_lib_path() -> str:
         # On Linux and macOS, directly use the __file__ attribute
         lib_path = _libsecp256k1.__file__
     return lib_path
+
+
+def is_libsecp256k1_available() -> bool:
+    """
+    Try to find the 'libsecp256k1' library in the system's standard library locations.
+
+    Returns:
+        str: The full path to the library if found, otherwise None.
+    """
+    # Define the library name based on the operating system specifics
+    lib_name = "secp256k1"
+
+    return bool(find_library(lib_name))
 
 
 def setup_libsecp256k1() -> None:
@@ -79,19 +93,16 @@ def setup_libsecp256k1() -> None:
         # which is needed for bitcointx.
         # bitcointx and with it the prebuild libsecp256k1 is not used for anything security critical
         # key derivation with bitcointx is restricted to testnet/regtest/signet
-        # and the PSBTFinalizer using bitcointx is safe because it handles no key material
+        # and the PSBTTools using bitcointx is safe because it handles no key material
     """
-    from .execute_config import USE_OS_libsecp256k1
 
-    if not USE_OS_libsecp256k1:
-        lib_path = _get_binary_lib_path()
+    if is_libsecp256k1_available():
+        logger.info(f"libsecp256k1: Found on OS")
+    else:
+        lib_path = _get_binary_lib_path_from_electrumsv()
         print(f"setting libsecp256k1 path {lib_path}")
         bitcoin_usb.set_custom_secp256k1_path(lib_path)
         bitcointx.set_custom_secp256k1_path(lib_path)
-
-        print(f"set libsecp256k1 path {lib_path}")
-    else:
-        print(f"use libsecp256k1 from os")
 
 
 def ensure_pyzbar_works() -> None:

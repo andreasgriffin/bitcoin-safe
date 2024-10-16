@@ -74,80 +74,10 @@ def send_rpc_command(ip: str, port: Union[str, int], username: str, password: st
     return response.json()
 
 
-# Initialize bdk and configurations
-network = bdk.Network.REGTEST
-
-
-# Set up argument parsing
-parser = argparse.ArgumentParser(description="Bitcoin Wallet Operations")
-parser.add_argument("-s", "--seed", help="Mnemonic seed phrase", type=str, default="")
-parser.add_argument("-d", "--descriptor", help="Descriptor", type=str, default="")
-parser.add_argument("-m", "--mine", type=int, default=101)
-parser.add_argument("-tx", "--transactions", type=int, default=20)
-parser.add_argument("--always_new_addresses", action="store_true")
-args = parser.parse_args()
-
-# Use provided mnemonic or generate a new one
-mnemonic = bdk.Mnemonic.from_string(args.seed) if args.seed else None
-if mnemonic:
-    print(f"Mnemonic: {mnemonic.as_string()}")
-db_config = bdk.DatabaseConfig.MEMORY()
-
-
-gap = 20
-
-rpc_ip = "127.0.0.1:18443"
-rpc_username = "admin1"
-rpc_password = "123"
-# RPC Blockchain Configuration
-blockchain_config = bdk.BlockchainConfig.RPC(
-    bdk.RpcConfig(
-        rpc_ip,
-        bdk.Auth.USER_PASS(rpc_username, rpc_password),
-        network,
-        "new0-51117772c02f89651e192a79b2deac8d332cc1a5b67bb21e931d2395e5455c1a9b7c",
-        bdk.RpcSyncParams(0, 0, False, 10),
-    )
-)
-blockchain_config = bdk.BlockchainConfig.ESPLORA(
-    bdk.EsploraConfig("http://127.0.0.1:3000", None, 1, gap * 2, 20)
-)
-
-
-blockchain = bdk.Blockchain(blockchain_config)
-
-# Create Wallet
-if mnemonic:
-    descriptor = bdk.Descriptor.new_bip84(
-        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-        keychain=bdk.KeychainKind.EXTERNAL,
-        network=network,
-    )
-    change_descriptor = bdk.Descriptor.new_bip84(
-        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-        keychain=bdk.KeychainKind.INTERNAL,
-        network=network,
-    )
-    wallet = bdk.Wallet(
-        descriptor=descriptor,
-        change_descriptor=change_descriptor,
-        network=network,
-        database_config=db_config,
-    )
-if descriptor:
-    descriptor = bdk.Descriptor(args.descriptor, network)
-    wallet = bdk.Wallet(
-        descriptor=descriptor,
-        change_descriptor=None,
-        network=network,
-        database_config=db_config,
-    )
-
-
-def mine_coins(wallet, blocks=101):
+def mine_coins(rpc_ip, rpc_username, rpc_password, wallet, blocks=101, always_new_addresses=False):
     """Mine some blocks to generate coins for the wallet."""
     address = wallet.get_address(
-        bdk.AddressIndex.NEW() if args.always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
+        bdk.AddressIndex.NEW() if always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
     ).address.as_string()
     print(f"Mining {blocks} blocks to {address}")
     ip, port = rpc_ip.split(":")
@@ -162,12 +92,12 @@ def mine_coins(wallet, blocks=101):
     print(response)
 
 
-def extend_tip(n):
+def extend_tip(wallet, n):
     return [wallet.get_address(bdk.AddressIndex.NEW()) for i in range(n)]
 
 
-def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10):
-    if args.always_new_addresses:
+def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10, always_new_addresses=False):
+    if always_new_addresses:
         address_indices = [wallet.get_address(bdk.AddressIndex.NEW()).index for _ in range(n)]
     else:
         tip = wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).index
@@ -182,14 +112,16 @@ def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10):
 
 
 # Function to create complex transactions
-def create_complex_transactions(wallet: bdk.Wallet, blockchain, n=300):
+def create_complex_transactions(
+    rpc_ip, rpc_username, rpc_password, wallet: bdk.Wallet, blockchain, n=300, always_new_addresses=True
+):
     for i in range(n):
         try:
             # Build the transaction
             tx_builder = bdk.TxBuilder().fee_rate(1.0).enable_rbf()
 
             recieve_address_infos: List[bdk.AddressInfo] = generate_random_own_addresses_info(
-                wallet, randint(1, 10)
+                wallet, randint(1, 10), always_new_addresses=always_new_addresses
             )
             for recieve_address_info in recieve_address_infos:
                 amount = randint(10000, 1000000)  # Random amount
@@ -208,7 +140,14 @@ def create_complex_transactions(wallet: bdk.Wallet, blockchain, n=300):
                 f"Broadcast tx {final_tx.txid()} to addresses {[recieve_address_info.index for recieve_address_info in recieve_address_infos]}"
             )
             if np.random.random() < 0.2:
-                mine_coins(wallet, blocks=1)
+                mine_coins(
+                    rpc_ip,
+                    rpc_username,
+                    rpc_password,
+                    wallet,
+                    blocks=1,
+                    always_new_addresses=always_new_addresses,
+                )
 
             wallet.sync(blockchain, None)
         except Exception:
@@ -222,10 +161,87 @@ def update(progress: float, message: str):
 
 
 def main():
-    # ... [existing wallet setup code] ...
+
+    # Initialize bdk and configurations
+    network = bdk.Network.REGTEST
+
+    # Set up argument parsing
+    parser = argparse.ArgumentParser(description="Bitcoin Wallet Operations")
+    parser.add_argument("-s", "--seed", help="Mnemonic seed phrase", type=str, default="")
+    parser.add_argument("-d", "--descriptor", help="Descriptor", type=str, default="")
+    parser.add_argument("-m", "--mine", type=int, default=0)
+    parser.add_argument("-tx", "--transactions", type=int, default=20)
+    parser.add_argument("--always_new_addresses", action="store_true")
+    args = parser.parse_args()
+
+    db_config = bdk.DatabaseConfig.MEMORY()
+
+    gap = 20
+
+    rpc_ip = "127.0.0.1:18443"
+    rpc_username = "admin1"
+    rpc_password = "123"
+    # RPC Blockchain Configuration
+    blockchain_config = bdk.BlockchainConfig.RPC(
+        bdk.RpcConfig(
+            rpc_ip,
+            bdk.Auth.USER_PASS(rpc_username, rpc_password),
+            network,
+            "new0-51117772c02f89651e192a79b2deac8d332cc1a5b67bb21e931d2395e5455c1a9b7c",
+            bdk.RpcSyncParams(0, 0, False, 10),
+        )
+    )
+    blockchain_config = bdk.BlockchainConfig.ESPLORA(
+        bdk.EsploraConfig("http://127.0.0.1:3000", None, 1, gap * 2, 20)
+    )
+
+    blockchain = bdk.Blockchain(blockchain_config)
+
+    # Create Wallet
+    if args.descriptor:
+        descriptor = bdk.Descriptor(args.descriptor, network)
+        wallet = bdk.Wallet(
+            descriptor=descriptor,
+            change_descriptor=None,
+            network=network,
+            database_config=db_config,
+        )
+
+    if args.seed:
+
+        # Use provided mnemonic or generate a new one
+        mnemonic = bdk.Mnemonic.from_string(args.seed) if args.seed else None
+        if mnemonic:
+            print(f"Mnemonic: {mnemonic.as_string()}")
+        descriptor = bdk.Descriptor.new_bip84(
+            secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+            keychain=bdk.KeychainKind.EXTERNAL,
+            network=network,
+        )
+        change_descriptor = bdk.Descriptor.new_bip84(
+            secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+            keychain=bdk.KeychainKind.INTERNAL,
+            network=network,
+        )
+        wallet = bdk.Wallet(
+            descriptor=descriptor,
+            change_descriptor=change_descriptor,
+            network=network,
+            database_config=db_config,
+        )
+
+    if not wallet:
+        raise Exception("A wallet cannot be defined")
 
     # Mine some blocks to get coins
-    mine_coins(wallet, blocks=args.mine)
+    mine_coins(
+        rpc_ip,
+        rpc_username,
+        rpc_password,
+        wallet,
+        blocks=args.mine,
+        always_new_addresses=args.always_new_addresses,
+    )
     if args.mine:
         time.sleep(5)
 
@@ -237,8 +253,16 @@ def main():
     print(wallet.get_balance())
 
     #  create transactions
-    extend_tip(gap // 5)
-    create_complex_transactions(wallet, blockchain, args.transactions)
+    extend_tip(wallet, gap // 5)
+    create_complex_transactions(
+        rpc_ip,
+        rpc_username,
+        rpc_password,
+        wallet,
+        blockchain,
+        n=args.transactions,
+        always_new_addresses=args.always_new_addresses,
+    )
 
 
 if __name__ == "__main__":

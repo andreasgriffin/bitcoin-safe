@@ -61,7 +61,7 @@ class BlockChangesSignals:
         widgets = []
         for index in range(tab_widget.count()):
             tab_page = tab_widget.widget(index)
-            if tab_page.layout():
+            if tab_page and tab_page.layout():
                 widgets += self._collect_sub_widget(tab_page)
         return widgets
 

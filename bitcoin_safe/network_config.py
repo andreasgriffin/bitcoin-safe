@@ -138,7 +138,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.SIGNET: 38332,
         }
         return d[network]
-    return 0
+    raise ValueError(f"Could not get port for {network, server_type}")
 
 
 def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
@@ -250,7 +250,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             ),
         }
         return d[network]
-    return 0
+    raise ValueError(f"Could not get description for {network, server_type}")
 
 
 class NetworkConfig(BaseSaveableClass):
@@ -316,7 +316,7 @@ class NetworkConfigs(BaseSaveableClass):
     VERSION = "0.0.0"
     known_classes = {**BaseSaveableClass.known_classes, "NetworkConfig": NetworkConfig}
 
-    def __init__(self, configs: dict[str, NetworkConfig] = None) -> None:
+    def __init__(self, configs: dict[str, NetworkConfig] | None = None) -> None:
         super().__init__()
 
         self.configs: dict[str, NetworkConfig] = (
@@ -339,7 +339,7 @@ class NetworkConfigs(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_file(cls, filename: str, password: str = None) -> "NetworkConfigs":
+    def from_file(cls, filename: str, password: str | None = None) -> "NetworkConfigs":
         return super()._from_file(
             filename=filename,
             password=password,

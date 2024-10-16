@@ -29,7 +29,6 @@
 
 import hashlib
 import logging
-from datetime import datetime
 
 import nostr_sdk
 from bitcoin_nostr_chat.connected_devices.chat_gui import FileObject
@@ -38,7 +37,7 @@ from bitcoin_nostr_chat.nostr import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_qr_tools.data import DataType
 from PyQt6.QtCore import QObject, Qt
-from PyQt6.QtWidgets import QCheckBox, QVBoxLayout
+from PyQt6.QtWidgets import QCheckBox
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
@@ -48,7 +47,7 @@ from bitcoin_safe.storage import filtered_for_init
 
 logger = logging.getLogger(__name__)
 
-from typing import Dict
+from typing import Any, Dict
 
 import bdkpython as bdk
 
@@ -59,7 +58,7 @@ class SyncTab(QObject):
         nostr_sync_dump: Dict,
         network: bdk.Network,
         signals: Signals,
-        nostr_sync: NostrSync = None,
+        nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
         **kwargs,
@@ -67,21 +66,16 @@ class SyncTab(QObject):
         super().__init__()
         self.signals = signals
         self.network = network
-        self.startup_time = datetime.now()
 
         self.main_widget = ControlledGroupbox(checkbox_text="", enabled=enabled)
-        self.main_widget.groupbox.setLayout(QVBoxLayout())
-
         self.main_widget.checkbox.stateChanged.connect(self.checkbox_state_changed)
 
         self.checkbox_auto_open_psbts = QCheckBox()
         self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)
-        self.main_widget.groupbox.layout().addWidget(self.checkbox_auto_open_psbts)
+        self.main_widget.groupbox_layout.addWidget(self.checkbox_auto_open_psbts)
 
         self.nostr_sync = (
-            nostr_sync
-            if nostr_sync
-            else NostrSync.from_dump(d=nostr_sync_dump, network=network, signals_min=self.signals)
+            nostr_sync if nostr_sync else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals)
         )
 
         self.updateUi()
@@ -89,7 +83,7 @@ class SyncTab(QObject):
         # signals
         self.nostr_sync.signal_attachement_clicked.connect(self.open_file_object)
         self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
-        self.main_widget.groupbox.layout().addWidget(self.nostr_sync.gui)
+        self.main_widget.groupbox_layout.addWidget(self.nostr_sync.gui)
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
@@ -108,13 +102,29 @@ class SyncTab(QObject):
 
     def checkbox_state_changed(self, state) -> None:
         self.on_enable(state == Qt.CheckState.Checked.value)
+        if state == Qt.CheckState.Checked.value:
+            Message(
+                self.tr(
+                    "Please backup your sync key:\n{nsec}\n\nYou can restore your labels at a later time with 'Import Sync Key'."
+                ).format(
+                    nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
+                )
+            )
 
     def subscribe(self) -> None:
         self.nostr_sync.subscribe()
 
     def on_dm(self, dm: BitcoinDM) -> None:
-        if dm.created_at and self.startup_time > datetime.fromtimestamp(dm.created_at.as_secs()):
-            # dm was created before startup
+        """
+        Catches DataType.PSBT, DataType.Tx and opens them in a tab
+        It also notifies of
+
+        Args:
+            dm (BitcoinDM): _description_
+        """
+        if dm.created_at < self.nostr_sync.group_chat.last_shutdown:
+            # dm was created before the last shutdown,
+            # and therefore should have been received already.
             return
         if dm.author:
             if self.nostr_sync.is_me(dm.author):
@@ -141,7 +151,11 @@ class SyncTab(QObject):
 
     @classmethod
     def from_descriptor_new_device_keys(
-        cls, multipath_descriptor: MultipathDescriptor, network: bdk.Network, signals: Signals
+        cls,
+        multipath_descriptor: MultipathDescriptor,
+        network: bdk.Network,
+        signals: Signals,
+        parent: QObject | None = None,
     ) -> "SyncTab":
         encoded_wallet_descriptor = hashlib.sha256(multipath_descriptor.as_string().encode()).hexdigest()
         protocol_keys = nostr_sdk.Keys(
@@ -160,11 +174,12 @@ class SyncTab(QObject):
             device_keys=device_keys,
             individual_chats_visible=False,
             signals_min=signals,
+            parent=parent,
         )
 
         return SyncTab(nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals)
 
-    def dump(self) -> Dict:
+    def dump(self) -> Dict[str, Any]:
         return {
             "auto_open_psbts": self.checkbox_auto_open_psbts.isChecked(),
             "enabled": self.main_widget.checkbox.isChecked(),

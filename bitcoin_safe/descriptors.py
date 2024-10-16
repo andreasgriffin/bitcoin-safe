@@ -72,7 +72,7 @@ class MultipathDescriptor(BitcoinQRMultipathDescriptor):
         for p in change_spk_providers:
             p.derivation_path = ConstDerivationPaths.change
 
-        return MultipathDescriptor(
+        return cls(
             DescriptorInfo(
                 address_type=address_type,
                 spk_providers=receive_spk_providers,
@@ -84,3 +84,6 @@ class MultipathDescriptor(BitcoinQRMultipathDescriptor):
                 threshold=threshold,
             ).get_bdk_descriptor(network),
         )
+
+    def __str__(self) -> str:
+        return self.as_string()

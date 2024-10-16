@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 network_configs = NetworkConfigs()
 
             self.network_settings_ui = NetworkSettingsUI(
-                network=np.random.choice(list(bdk.Network), size=1)[0],
+                network=np.random.choice(np.array(list(bdk.Network)), size=1)[0],
                 network_configs=network_configs,
                 signals=None,
             )

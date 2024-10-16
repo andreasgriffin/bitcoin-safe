@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 def compose_email(
-    email: str, subject: str, body: str, attachment_filenames: List[str] = None, run_in_background=True
+    email: str, subject: str, body: str, attachment_filenames: List[str] | None = None, run_in_background=True
 ) -> None:
     # Encode the subject and body to ensure spaces and special characters are handled correctly
     subject_encoded = urllib.parse.quote(subject)

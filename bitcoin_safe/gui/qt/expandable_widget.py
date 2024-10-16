@@ -45,10 +45,10 @@ from PyQt6.QtWidgets import (
 class CustomHeader(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setLayout(QHBoxLayout())
-        current_margins = self.layout().contentsMargins()
-        self.layout().setContentsMargins(current_margins.top(), 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self.layout().setSpacing(2)  # Reduce horizontal spacing
+        self._layout = QHBoxLayout(self)
+        current_margins = self._layout.contentsMargins()
+        self._layout.setContentsMargins(current_margins.top(), 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self._layout.setSpacing(2)  # Reduce horizontal spacing
 
         # Set the policy to expanding to use all available space
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -63,11 +63,11 @@ class ExpandableWidget(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.setLayout(QVBoxLayout())
+        self._layout = QVBoxLayout(self)
 
         # Always visible widget
         self.header = CustomHeader(self)
-        self.layout().addWidget(self.header)
+        self._layout.addWidget(self.header)
 
         # Button for expanding/collapsing
         self.toggleButton = QToolButton(self)
@@ -90,17 +90,17 @@ class ExpandableWidget(QWidget):
         self.toggleButton.clicked.connect(self.toggle)
 
         # Position the button on the right within the header
-        self.header.layout().addWidget(self.toggleButton)
+        self.header._layout.addWidget(self.toggleButton)
 
         # Expandable widget
         self.expandableWidget = QWidget()  # Use a QWidget to allow adding custom content
-        self.expandableWidget.setLayout(QVBoxLayout())  # Set the layout for the content
+        self.expandableWidget_layout = QVBoxLayout(self.expandableWidget)
         self.expandableWidget.setVisible(False)
         self.expandableWidget.setStyleSheet("background: white; padding: 15px; border: 1px solid grey;")
-        self.layout().addWidget(self.expandableWidget)
+        self._layout.addWidget(self.expandableWidget)
 
-        self.layout().setSpacing(0)
-        self.layout().setContentsMargins(0, 0, 0, 0)
+        self._layout.setSpacing(0)
+        self._layout.setContentsMargins(0, 0, 0, 0)
 
     def toggle(self) -> None:
         is_visible = self.expandableWidget.isVisible()
@@ -112,23 +112,31 @@ class ExpandableWidget(QWidget):
     def add_header_widget(self, widget: QWidget) -> None:
         """Add custom widget to the header."""
         # Clear any existing widgets in the layout, except the toggle button
-        while self.header.layout().count() > 1:  # Leave the toggle button
-            child = self.header.layout().takeAt(0)
-            if child.widget() is not self.toggleButton:
-                child.widget().deleteLater()
+        while self.header._layout.count() > 1:  # Leave the toggle button
+            layout_item = self.header._layout.takeAt(0)
+            if not layout_item:
+                break
+            child_widget = layout_item.widget()
+            if not child_widget:
+                break
+            if child_widget is not self.toggleButton:
+                child_widget.deleteLater()
 
         # Add the new widget before the toggle button
-        self.header.layout().insertWidget(0, widget, 1)
+        self.header._layout.insertWidget(0, widget, 1)
 
     def add_content_widget(self, widget: QWidget) -> None:
         """Add custom widget to the content area."""
         # Clear any existing widgets in the layout (optional)
-        while self.expandableWidget.layout().count():
-            child = self.expandableWidget.layout().takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+        while self.expandableWidget_layout.count():
+            layout_item = self.expandableWidget_layout.takeAt(0)
+            if not layout_item:
+                break
+            child_widget = layout_item.widget()
+            if child_widget:
+                child_widget.deleteLater()
 
-        self.expandableWidget.layout().addWidget(widget)
+        self.expandableWidget_layout.addWidget(widget)
 
 
 # Main application

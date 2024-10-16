@@ -49,6 +49,7 @@ from bitcoin_safe.signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
+from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 from PyQt6.QtWidgets import QWidget
@@ -81,7 +82,7 @@ class HorizontalImporters(HorizontalImportExportGroups):
                 self.psbt,
                 self.network,
             )
-            group.layout().addWidget(signerui)
+            group._layout.addWidget(signerui)
             group.setData(signerui)
 
     def _get_importer(self, cls: Type[AbstractSignatureImporter]) -> Optional[AbstractSignatureImporter]:
@@ -98,10 +99,11 @@ class TxSigningSteps(StepProgressContainer):
         psbt: bdk.PartiallySignedTransaction,
         network: bdk.Network,
         signals: Signals,
-        parent: QWidget = None,
+        parent: QWidget | None = None,
+        threading_parent: ThreadingManager | None = None,
     ) -> None:
         step_labels = []
-        sub_indices = []
+        self.sub_indices = []
         enumeration_alphabet = []
         for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
             # export
@@ -112,16 +114,22 @@ class TxSigningSteps(StepProgressContainer):
                     else self.tr("Sign with a different hardware signer")
                 )
             )
-            sub_indices.append(i * 2)
-            enumeration_alphabet.append(f"{i+1}.a")
+            self.sub_indices.append(self._get_idx(i, 0))
+            enumeration_alphabet.append(self._get_name(i, 0))
 
             # import
             step_labels.append(self.tr("Import signature"))
-            enumeration_alphabet.append(f"{i+1}.b")
+            enumeration_alphabet.append(self._get_name(i, 1))
 
-        super().__init__(step_labels=step_labels, parent=parent, use_resizing_stacked_widget=False)
+        super().__init__(
+            step_labels=step_labels,
+            parent=parent,
+            use_resizing_stacked_widget=False,
+            signals_min=signals,
+            threading_parent=threading_parent,
+        )
         self.step_bar.set_enumeration_alphabet(enumeration_alphabet)
-        self.set_sub_indices(sub_indices)
+        self.set_sub_indices(self.sub_indices)
 
         self.psbt = psbt
         self.network = network
@@ -131,12 +139,22 @@ class TxSigningSteps(StepProgressContainer):
         first_non_signed_index = None
         # fill ui
         for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
-            self.set_custom_widget(i * 2, self.create_export_widget(signature_importer_list))
-            self.set_custom_widget(i * 2 + 1, self.create_import_widget(signature_importer_list))
+            self.set_custom_widget(self._get_idx(i, 0), self.create_export_widget(signature_importer_list))
+            self.set_custom_widget(self._get_idx(i, 1), self.create_import_widget(signature_importer_list))
             # set the index, to the first unsigned step
             if first_non_signed_index is None and (not signature_importer_list[0].signature_available):
                 first_non_signed_index = i
-                self.set_current_index(i * 2)
+                self.set_current_index(self._get_idx(i, 0))
+
+    def _get_idx(self, i: int, j: int) -> int:
+        return 2 * i + j
+
+    def _get_name(self, i: int, j: int) -> str:
+        alphabet = "abcdefghijklmnopqrstuvwxyz"
+        return f"{i+1}.{alphabet[j]}"
+
+    def set_current_index(self, index: int) -> None:
+        super().set_current_index(index)
 
     def go_to_next_index(self) -> None:
         if self.current_index() + 1 < self.count():
@@ -174,6 +192,8 @@ class TxSigningSteps(StepProgressContainer):
             },
             usb_signer_ui=usb_signer_ui,
             signals_min=self.signals,
+            network=self.network,
+            threading_parent=self.threading_parent,
         )
 
         export_widget.qr_label.set_always_animate(True)
