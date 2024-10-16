@@ -284,7 +284,7 @@ class QTWallet(QtWalletBase):
         self.sync_tab.unsubscribe_all()
         self.sync_tab.nostr_sync.stop()
         self.stop_sync_timer()
-        self.stop_and_wait_all()
+        self.end_threading_manager()
 
     def _start_sync_regularly_timer(self, delay_retry_sync=60) -> None:
         if self.timer_sync_regularly.isActive():
@@ -618,7 +618,9 @@ class QTWallet(QtWalletBase):
         self.hanlde_removed_txs(delta_txs.removed)
         self.handle_appended_txs(delta_txs.appended)
 
-    def refresh_caches_and_ui_lists(self, enable_threading=ENABLE_THREADING, force_ui_refresh=True) -> None:
+    def refresh_caches_and_ui_lists(
+        self, enable_threading=ENABLE_THREADING, force_ui_refresh=True, chain_height_advanced=False
+    ) -> None:
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
         self.wallet.clear_cache()
@@ -637,8 +639,17 @@ class QTWallet(QtWalletBase):
                 logger.debug("start refresh ui")
 
                 self.wallet_signals.updated.emit(
-                    UpdateFilter(refresh_all=True, reason=UpdateFilterReason.RefreshCaches)
+                    UpdateFilter(
+                        refresh_all=True,
+                        reason=(
+                            UpdateFilterReason.TransactionChange
+                            if change_dict
+                            else UpdateFilterReason.ForceRefresh
+                        ),
+                    )
                 )
+            elif chain_height_advanced:
+                self.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.ChainHeightAdvanced))
 
         def on_success(result) -> None:
             # now do the UI
@@ -964,7 +975,9 @@ class QTWallet(QtWalletBase):
 
             logger.info("start updating lists")
             # self.wallet.clear_cache()
-            self.refresh_caches_and_ui_lists(force_ui_refresh=False)
+            self.refresh_caches_and_ui_lists(
+                force_ui_refresh=False, chain_height_advanced=self.wallet.get_height() != old_chain_height
+            )
             # self.update_tabs()
             logger.info("finished updating lists")
 
@@ -984,6 +997,7 @@ class QTWallet(QtWalletBase):
         #       by filling all the cache before the sync
         #       Additionally I do this in the main thread so all caches
         #       are filled before the syncing process
+        old_chain_height = self.wallet.get_height()
         self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False)
 
         logger.info(f"Start syncing wallet {self.wallet.id}")

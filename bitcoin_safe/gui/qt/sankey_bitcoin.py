@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import bdkpython as bdk
 from PyQt6.QtGui import QColor
@@ -86,17 +86,17 @@ class SankeyBitcoin(SankeyWidget):
         self.set_tx(self.tx)
 
     @property
-    def outpoints(self) -> List[str]:
+    def outpoints(self) -> List[OutPoint]:
         if not self.tx:
             return []
         txid = self.tx.txid()
-        return [f"{txid}:{i}" for i in range(len(self.tx.output()))]
+        return [OutPoint(txid=txid, vout=vout) for vout in range(len(self.tx.output()))]
 
     @property
-    def input_outpoints(self) -> List[str]:
+    def input_outpoints(self) -> List[OutPoint]:
         if not self.tx:
             return []
-        return [str(OutPoint.from_bdk(inp.previous_output)) for inp in self.tx.input()]
+        return [OutPoint.from_bdk(inp.previous_output) for inp in self.tx.input()]
 
     def set_tx(self, tx: bdk.Transaction, fee_info: FeeInfo | None = None) -> bool:
         self.tx = tx
@@ -115,7 +115,8 @@ class SankeyBitcoin(SankeyWidget):
             address = robust_address_str_from_script(txout.script_pubkey, network=self.network)
             self.addresses.append(address)
 
-            label, color = self.get_address_info(address, wallets=wallets)
+            label = self.get_address_label(address, wallets=wallets)
+            color = self.get_address_color(address, wallets=wallets)
             labels[flow_index] = label if label else address
             tooltips[flow_index] = html_f(
                 ((label + "\n" + address) if label else address)
@@ -149,7 +150,8 @@ class SankeyBitcoin(SankeyWidget):
             self.addresses.append(txo.address)
             flow_index = FlowIndex(flow_type=FlowType.InFlow, i=i)
 
-            label, color = self.get_address_info(txo.address, wallets=wallets)
+            label = self.get_address_label(txo.address, wallets=wallets)
+            color = self.get_address_color(txo.address, wallets=wallets)
             labels[flow_index] = label if label else txo.address
             tooltips[flow_index] = html_f(
                 ((label + "\n" + txo.address) if label else txo.address)
@@ -193,7 +195,7 @@ class SankeyBitcoin(SankeyWidget):
         )
         return True
 
-    def get_address_info(self, address: str, wallets: List[Wallet]) -> Tuple[str | None, QColor | None]:
+    def get_address_color(self, address: str, wallets: List[Wallet]) -> QColor | None:
         def get_wallet():
             for wallet in wallets:
                 if wallet.is_my_address(address):
@@ -202,12 +204,19 @@ class SankeyBitcoin(SankeyWidget):
 
         wallet = get_wallet()
         if not wallet:
-            return None, None
+            return None
         color = AddressEdit.color_address(address, wallet)
         if not color:
             logger.error("This should not happen, since wallet should only be found if the address is mine.")
-            return None, None
-        return wallet.labels.get_label(address), color
+            return None
+        return color
+
+    def get_address_label(self, address: str, wallets: List[Wallet]) -> str | None:
+        for wallet in wallets:
+            label = wallet.labels.get_label(address)
+            if label:
+                return label
+        return None
 
     def get_python_txo(self, outpoint: str, wallets: List[Wallet] | None = None) -> Optional[PythonUtxo]:
         wallets = wallets if wallets else get_wallets(self.signals)

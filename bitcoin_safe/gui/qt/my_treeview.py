@@ -58,6 +58,7 @@ from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import str_to_qbytearray
+from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -128,6 +129,15 @@ from PyQt6.QtWidgets import (
 from .util import do_copy, read_QIcon
 
 
+def needs_frequent_flag(status: TxStatus | None) -> bool:
+    if not status:
+        return True
+
+    if status.confirmations() < 6:
+        return True
+    return False
+
+
 class MyItemDataRole(enum.IntEnum):
     ROLE_CLIPBOARD_DATA = Qt.ItemDataRole.UserRole + 100
     ROLE_CUSTOM_PAINT = Qt.ItemDataRole.UserRole + 101
@@ -135,6 +145,7 @@ class MyItemDataRole(enum.IntEnum):
     ROLE_FILTER_DATA = Qt.ItemDataRole.UserRole + 103
     ROLE_SORT_ORDER = Qt.ItemDataRole.UserRole + 1000
     ROLE_KEY = Qt.ItemDataRole.UserRole + 1001
+    ROLE_FREQUENT_UPDATEFLAG = Qt.ItemDataRole.UserRole + 1002
 
 
 class MyMenu(Menu):

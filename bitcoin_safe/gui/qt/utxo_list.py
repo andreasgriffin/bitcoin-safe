@@ -71,7 +71,7 @@ from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 from ...i18n import translate
-from ...signals import Signals, UpdateFilter
+from ...signals import Signals, UpdateFilter, UpdateFilterReason
 from ...util import Satoshis, block_explorer_URL, clean_list
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
@@ -82,6 +82,7 @@ from .my_treeview import (
     MyTreeView,
     QItemSelectionModel,
     TreeViewWithToolbar,
+    needs_frequent_flag,
 )
 from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
@@ -307,14 +308,34 @@ class UTXOList(MyTreeView):
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
-        if should_update or update_filter.outpoints or update_filter.categories or update_filter.addresses:
+        if should_update or update_filter.categories or update_filter.addresses:
             should_update = True
 
-        if not should_update:
-            return
+        if should_update:
+            return self.update_content()
 
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-        return self.update_content()
+
+        self._before_update_content()
+
+        log_info = []
+        model = self._source_model
+        # Select rows with an ID in id_list
+        for row in range(model.rowCount()):
+            outpoint: OutPoint = model.data(model.index(row, self.key_column))
+
+            if (
+                update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+                and model.data(
+                    model.index(row, self.key_column), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+                )
+            ) or any([outpoint in update_filter.outpoints]):
+                log_info.append((row, str(outpoint)))
+                self.refresh_row(outpoint, row)
+
+        logger.debug(f"Updated  {log_info}")
+
+        self._after_update_content()
 
     def update_content(self):
         if self.maybe_defer_update():
@@ -384,11 +405,15 @@ class UTXOList(MyTreeView):
             return
 
         txdetails = wallet.get_tx(outpoint.txid) if wallet else None
-        sort_id = TxStatus.from_wallet(txdetails.txid, wallet).sort_id() if txdetails and wallet else -1
+        status = TxStatus.from_wallet(txdetails.txid, wallet) if txdetails and wallet else None
+        sort_id = status.sort_id() if status else -1
 
         _items = [self._source_model.item(row, col) for col in self.Columns]
         items = [entry for entry in _items if entry]
 
+        if needs_frequent_flag(status=status):
+            # unconfirmed txos might be confirmed, and need to be updated more often
+            items[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         items[self.Columns.STATUS].setIcon(
             read_QIcon(
                 icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.confirmation_time, sort_id)

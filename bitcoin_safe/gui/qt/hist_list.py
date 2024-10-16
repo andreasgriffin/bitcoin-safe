@@ -104,6 +104,7 @@ from .my_treeview import (
     MyStandardItemModel,
     MyTreeView,
     TreeViewWithToolbar,
+    needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
 from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
@@ -373,7 +374,12 @@ class HistList(MyTreeView):
         for row in range(model.rowCount()):
             txid = model.data(model.index(row, self.Columns.TXID))
 
-            if any(
+            if (
+                update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+                and model.data(
+                    model.index(row, self.key_column), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+                )
+            ) or any(
                 [txid in update_filter.txids, categories_intersect(model, row), tx_involves_address(txid)]
             ):
                 log_info.append((row, txid))
@@ -511,26 +517,28 @@ class HistList(MyTreeView):
         )
         status_text = (
             datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime("%Y-%m-%d %H:%M")
-            if status.confirmations()
+            if tx.confirmation_time
             else estimated_duration_str
+        )
+        status_data = (
+            datetime.datetime.fromtimestamp(tx.confirmation_time.height).strftime("%Y-%m-%d %H:%M")
+            if tx.confirmation_time
+            else TxConfirmationStatus.to_str(status.confirmation_status)
+        )
+        status_tooltip = (
+            self.tr("{number} Confirmations").format(number=status.confirmations())
+            if 1 <= status.confirmations() <= 6
+            else status_text
         )
 
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
+        if needs_frequent_flag(status=status):
+            item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.STATUS].setText(status_text)
-        item[self.Columns.STATUS].setData(
-            (
-                tx.confirmation_time.height
-                if status.confirmations()
-                else (TxConfirmationStatus.to_str(status.confirmation_status))
-            ),
-            MyItemDataRole.ROLE_CLIPBOARD_DATA,
-        )
+        item[self.Columns.STATUS].setData(status_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
-
-        item[self.Columns.STATUS].setToolTip(
-            f"{status.confirmations()} Confirmations" if status.confirmations() else status_text
-        )
+        item[self.Columns.STATUS].setToolTip(status_tooltip)
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORIES].setText(category)

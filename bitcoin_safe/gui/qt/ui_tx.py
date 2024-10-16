@@ -514,7 +514,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 pass
 
             def on_success(finalized_tx) -> None:
-                print("here")
                 if finalized_tx:
                     assert (
                         finalized_tx.txid() == self.data.data.txid()
@@ -818,6 +817,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             psbt=self.data.data,
             network=self.network,
             signals=self.signals,
+            threading_parent=self,
         )
 
         self.tx_singning_steps_container_layout.addWidget(tx_singning_steps)

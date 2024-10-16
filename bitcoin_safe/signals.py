@@ -32,6 +32,8 @@ import logging
 from collections import defaultdict
 from enum import Enum
 
+from bitcoin_safe.pythonbdk_types import OutPoint
+
 logger = logging.getLogger(__name__)
 import threading
 from typing import (
@@ -66,19 +68,22 @@ class UpdateFilterReason(Enum):
     RefreshCaches = enum.auto()
     CreatePSBT = enum.auto()
     TxCreator = enum.auto()
+    TransactionChange = enum.auto()
+    ForceRefresh = enum.auto()
+    ChainHeightAdvanced = enum.auto()
 
 
 class UpdateFilter:
     def __init__(
         self,
-        outpoints: Iterable[str] | None = None,
+        outpoints: Iterable[OutPoint] | None = None,
         addresses: Iterable[str] | None = None,
         categories: Iterable[Optional[str]] | None = None,
         txids: Iterable[str] | None = None,
         refresh_all=False,
         reason: UpdateFilterReason = UpdateFilterReason.Unknown,
     ) -> None:
-        self.outpoints: Set[str] = set(outpoints) if outpoints else set()
+        self.outpoints: Set[OutPoint] = set(outpoints) if outpoints else set()
         self.addresses: Set[str] = set(addresses) if addresses else set()
         self.categories = set(categories) if categories else set()
         self.txids = set(txids) if txids else set()

@@ -97,6 +97,7 @@ from .my_treeview import (
     MyStandardItemModel,
     MyTreeView,
     TreeViewWithToolbar,
+    needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
 from .util import ColorScheme, Message, do_copy, read_QIcon, sort_id_to_icon, webopen
@@ -377,8 +378,15 @@ class AddressList(MyTreeView):
             address = model.data(model.index(row, self.Columns.ADDRESS))
             address_match = address in update_filter.addresses
             category_match = model.data(model.index(row, self.Columns.CATEGORY)) in update_filter.categories
-            if address_match or (
-                not update_filter.addresses and category_match or len(update_filter.categories) > 1
+            if (
+                (
+                    update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+                    and model.data(
+                        model.index(row, self.key_column), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+                    )
+                )
+                or address_match
+                or (not update_filter.addresses and category_match or len(update_filter.categories) > 1)
             ):
                 log_info.append((row, address))
                 self.refresh_row(address, row)
@@ -491,12 +499,9 @@ class AddressList(MyTreeView):
         fulltxdetails = [self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids]
         txs_involed = [fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail]
 
-        sort_id = (
-            min([TxStatus.from_wallet(tx.txid, self.wallet).sort_id() for tx in txs_involed])
-            if txs_involed
-            else None
-        )
-        icon_path = sort_id_to_icon(sort_id) if sort_id is not None else None
+        statuses = [TxStatus.from_wallet(tx.txid, self.wallet) for tx in txs_involed]
+        min_status = sorted(statuses, key=lambda status: status.sort_id())[0] if statuses else None
+        icon_path = sort_id_to_icon(min_status.sort_id()) if min_status else None
         num = len(txs_involed)
 
         balance = self.wallet.get_addr_balance(address).total
@@ -506,6 +511,8 @@ class AddressList(MyTreeView):
         fiat_balance_str = ""
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
+        if needs_frequent_flag(status=min_status):
+            item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORY].setText(category if category else "")

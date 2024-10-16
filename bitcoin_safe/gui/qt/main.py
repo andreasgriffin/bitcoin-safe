@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         self.qt_wallets: Dict[str, QTWallet] = {}
         self.threading_manager = ThreadingManager(signals_min=self.signals)
 
-        self.fx = FX(signals_min=self.signals)
+        self.fx = FX(signals_min=self.signals, threading_parent=self.threading_manager)
         self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
         if not config_present:
             self.config.language_code = self.language_chooser.dialog_choose_language(self)
@@ -799,6 +799,7 @@ class MainWindow(QMainWindow):
             blockchain=self.get_blockchain_of_any_wallet(),
             data=data,
             parent=self,
+            threading_parent=self.threading_manager,
         )
 
         self.tab_wallets.add_tab(
@@ -894,6 +895,7 @@ class MainWindow(QMainWindow):
             blockchain=self.get_blockchain_of_any_wallet(),
             data=data,
             parent=self,
+            threading_parent=self.threading_manager,
         )
 
         self.tab_wallets.add_tab(
@@ -1327,7 +1329,7 @@ class MainWindow(QMainWindow):
         if isinstance(tab_data, ThreadingManager):
             # this is necessary to ensure the closeevent
             # and with it the thread cleanup is called
-            tab_data.stop_and_wait_all()
+            tab_data.end_threading_manager()
 
         if qt_wallet:
             self.remove_qt_wallet(qt_wallet)
@@ -1341,7 +1343,7 @@ class MainWindow(QMainWindow):
             qt_wallet.sync()
 
     def closeEvent(self, event: Optional[QCloseEvent]) -> None:
-        self.threading_manager.stop_and_wait_all()
+        self.threading_manager.end_threading_manager()
 
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()

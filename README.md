@@ -17,7 +17,7 @@
   - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, 🇫🇷 French - Français, (more upon request)
 - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
   - Automatic coin selection within categories
-  - Transaction flow diagrams, visualizing inputs and outputs
+  - Transaction flow diagrams, visualizing inputs and outputs, click on inputs and output to trace the money flow
 - **Sending** for non-technical users
   - 1-click fee selection via mempool-blocks
   - Automatic merging of small utxos when fees are low
@@ -30,13 +30,18 @@
 
 ## Preview
 
-##### Sending
-
-![screenshot0](docs/send.gif)
 
 ##### Setup a multisig wallet
 
 ![screenshot1](docs/multisig-setup.gif)
+
+##### Transaction exploring via the money flow diagram 
+
+![diagram](docs/explorer.gif)
+
+##### Sending
+
+![screenshot0](docs/send.gif)
 
 ##### PSBT sharing with trusted devices
 

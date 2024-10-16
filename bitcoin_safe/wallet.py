@@ -957,6 +957,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             if i > 0:
                 self.clear_cache()
             self.get_addresses()
+            self.get_height()
 
             advanced_tips = self.advance_tips_by_gap()
             logger.info(f"{self.id} tips were advanced by {advanced_tips}")

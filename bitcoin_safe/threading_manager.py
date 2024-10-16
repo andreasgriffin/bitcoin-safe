@@ -196,6 +196,7 @@ class ThreadingManager:
         self.taskthreads: deque[TaskThread] = deque()
         self.threading_manager_children: deque[ThreadingManager] = deque()
         self.lock = Lock()
+        self.threading_parent = threading_parent
 
         if threading_parent:
             threading_parent.threading_manager_children.append(self)
@@ -221,12 +222,18 @@ class ThreadingManager:
                 f"Removed thread {thread.thread_name}, Number of threads = {len(self.taskthreads)} {[thread.thread_name for thread in   self.taskthreads]}"
             )
 
-    def stop_and_wait_all(self, timeout=10):
+    def stop_and_wait_all(self):
         while self.threading_manager_children:
             child = self.threading_manager_children.pop()
-            child.stop_and_wait_all()
+            child.end_threading_manager()
 
         # Wait for all threads to finish
         while self.taskthreads:
             taskthread = self.taskthreads.pop()
             taskthread.stop()
+
+    def end_threading_manager(self):
+        self.stop_and_wait_all()
+
+        if self.threading_parent and self in self.threading_parent.threading_manager_children:
+            self.threading_parent.threading_manager_children.remove(self)

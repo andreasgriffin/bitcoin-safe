@@ -110,13 +110,13 @@ requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "0.14.6"
+version = "0.14.7"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = "<3.13,>=3.9"
 files = [
-    {file = "bitcoin_qr_tools-0.14.6-py3-none-any.whl", hash = "sha256:4cb655cc9c6b795cd6c1b1c926bec6041de708d7ccb6eb215a4b0946b5bcc1ff"},
-    {file = "bitcoin_qr_tools-0.14.6.tar.gz", hash = "sha256:aa81bdb83b3caf124b4039bbb8524b843416ce6f6dc4937a3efffd531f5dbb7f"},
+    {file = "bitcoin_qr_tools-0.14.7-py3-none-any.whl", hash = "sha256:2f7fad74727d94519f8e3268300c30482881a755b2fa95c2aec6b90c03b0ce5b"},
+    {file = "bitcoin_qr_tools-0.14.7.tar.gz", hash = "sha256:8aac9bef85fe110df82348f58250aafebbf65b169e660161291c71ac5d7c1110"},
 ]
 
 [package.dependencies]
@@ -2346,13 +2346,13 @@ files = [
 
 [[package]]
 name = "translate-toolkit"
-version = "3.13.5"
+version = "3.14.1"
 description = "Tools and API for translation and localization engineering."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "translate_toolkit-3.13.5-py3-none-any.whl", hash = "sha256:f2a549973ca50ad56d299050401ee55bfd8265dd6f7c9307c77ece2f0e8e2ca8"},
-    {file = "translate_toolkit-3.13.5.tar.gz", hash = "sha256:53c59c919e52a9787c0d1d7ccd34df9508e9f58bb84d1d52d27a9bda5203d768"},
+    {file = "translate_toolkit-3.14.1-py3-none-any.whl", hash = "sha256:74dd963f770ec1d18e44895d8a9f86d47a0d73b270b22a69a5652f30ae2dca79"},
+    {file = "translate_toolkit-3.14.1.tar.gz", hash = "sha256:2148c437c529d4eaf89c5a3bd5690376eabee97c3c39b7d4824001a7cf333e86"},
 ]
 
 [package.dependencies]
@@ -2360,15 +2360,15 @@ lxml = ">=4.6.3"
 wcwidth = ">=0.2.10"
 
 [package.extras]
-all = ["BeautifulSoup4 (>=4.10.0)", "aeidon (==1.15)", "charset-normalizer (==3.3.2)", "cheroot (==10.0.1)", "fluent.syntax (==0.19.0)", "iniparse (==0.5)", "mistletoe (==1.4.0)", "phply (==1.2.6)", "pyenchant (==3.2.2)", "pyparsing (==3.1.4)", "python-Levenshtein (>=0.21.0)", "ruamel.yaml (==0.18.6)", "vobject (==0.9.8)"]
-chardet = ["charset-normalizer (==3.3.2)"]
+all = ["BeautifulSoup4 (>=4.10.0)", "aeidon (==1.15)", "charset-normalizer (==3.4.0)", "cheroot (==10.0.1)", "fluent.syntax (==0.19.0)", "iniparse (==0.5)", "mistletoe (==1.4.0)", "phply (==1.2.6)", "pyenchant (==3.2.2)", "pyparsing (==3.2.0)", "python-Levenshtein (>=0.21.0)", "ruamel.yaml (==0.18.6)", "vobject (==0.9.8)"]
+chardet = ["charset-normalizer (==3.4.0)"]
 fluent = ["fluent.syntax (==0.19.0)"]
 ical = ["vobject (==0.9.8)"]
 ini = ["iniparse (==0.5)"]
 levenshtein = ["python-Levenshtein (>=0.21.0)"]
 markdown = ["mistletoe (==1.4.0)"]
 php = ["phply (==1.2.6)"]
-rc = ["pyparsing (==3.1.4)"]
+rc = ["pyparsing (==3.2.0)"]
 spellcheck = ["pyenchant (==3.2.2)"]
 subtitles = ["aeidon (==1.15)"]
 tmserver = ["cheroot (==10.0.1)"]
@@ -2481,4 +2481,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "6230851e56531063fb041b948c29c763e1dca319daf21b30744ae7bacfd6b088"
+content-hash = "4afd3fd31767ab297309d324d50c0a694a889721f46013a827def6c25fa1947a"

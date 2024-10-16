@@ -262,9 +262,13 @@ class TabInfo:
 
 class BaseTab(QObject, ThreadingManager):
     def __init__(self, refs: TabInfo, threading_parent: ThreadingManager | None = None) -> None:
-        super().__init__(parent=refs.container, signals_min=refs.qt_wallet.signals_min if refs.qt_wallet else refs.qtwalletbase.signals_min, threading_parent=threading_parent)  # type: ignore
         self.refs = refs
-        self.threading_parent = threading_parent
+        self.threading_parent = (
+            threading_parent
+            if threading_parent
+            else (self.refs.qt_wallet if self.refs.qt_wallet else self.refs.qtwalletbase)
+        )
+        super().__init__(parent=refs.container, signals_min=refs.qt_wallet.signals_min if refs.qt_wallet else refs.qtwalletbase.signals_min, threading_parent=self.threading_parent)  # type: ignore
 
         self.buttonbox, self.buttonbox_buttons = create_button_box(
             self.refs.go_to_next_index,
