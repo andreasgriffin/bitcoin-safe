@@ -56,9 +56,8 @@ def setup_logging() -> None:
     config_dir = Path(appdirs.user_config_dir(app_name))
     config_dir.mkdir(parents=True, exist_ok=True)
 
-    file_handler = logging.handlers.RotatingFileHandler(
-        filename=config_dir / ".bitcoin_safe.log", maxBytes=1000000, backupCount=3
-    )
+    log_file = config_dir / ".bitcoin_safe.log"
+    file_handler = logging.handlers.RotatingFileHandler(filename=log_file, maxBytes=1000000, backupCount=3)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(relative_path_formatter)
 
@@ -89,7 +88,7 @@ def setup_logging() -> None:
     logger.info(f"Version: {__version__}")
     logger.info(f"Python version: {sys.version}. On platform: {describe_os_version()}")
     # logger.info(f"Logging to file: {str(logger.handlers[-1].filename)}")
-    logger.info(f"Log filters: verbosity {logger.level}")
+    logger.info(f"Logging {logging.DEBUG} to {log_file}")
 
 
 def describe_os_version() -> str:

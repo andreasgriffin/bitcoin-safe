@@ -88,7 +88,7 @@ class FX(QObject, ThreadingManager):
             if self.rates:
                 self.signal_data_updated.emit()
 
-        self.taskthreads.append(
+        self.append_thread(
             threaded_fetch(
                 "https://api.coingecko.com/api/v3/exchange_rates",
                 on_success,

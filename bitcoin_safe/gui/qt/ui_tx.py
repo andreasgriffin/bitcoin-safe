@@ -525,8 +525,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                     )
                     return
 
-            self.taskthreads.append(
-                TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+            self.append_thread(
+                (TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error))
             )
 
         elif self.data.data_type == DataType.Tx:
@@ -1005,8 +1005,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
 
-        self.taskthreads.append(
-            TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
+        self.append_thread(
+            (TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error))
         )
 
     def set_visibility(self, confirmation_time: bdk.BlockTime | None) -> None:

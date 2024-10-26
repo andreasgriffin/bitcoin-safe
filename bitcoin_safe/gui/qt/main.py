@@ -124,7 +124,7 @@ class MainWindow(QMainWindow):
 
         self.signals = Signals()
         self.qt_wallets: Dict[str, QTWallet] = {}
-        self.threading_manager = ThreadingManager(signals_min=self.signals)
+        self.threading_manager = ThreadingManager(signals_min=self.signals, name=self.__class__.__name__)
 
         self.fx = FX(signals_min=self.signals, threading_parent=self.threading_manager)
         self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
@@ -134,7 +134,11 @@ class MainWindow(QMainWindow):
         self.hwi_tool_gui = ToolGui(self.config.network)
         self.setupUi(self)
 
-        self.mempool_data = MempoolData(network_config=self.config.network_config, signals_min=self.signals)
+        self.mempool_data = MempoolData(
+            network_config=self.config.network_config,
+            signals_min=self.signals,
+            threading_parent=self.threading_manager,
+        )
         self.mempool_data.set_data_from_mempoolspace()
 
         self.last_qtwallet: Optional[QTWallet] = None

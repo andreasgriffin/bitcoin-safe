@@ -236,8 +236,8 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")
 
-        self.taskthreads.append(
-            TaskThread(signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
+        self.append_thread(
+            (TaskThread(signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error))
         )
 
     def check_and_make_visible(self) -> None:

@@ -50,7 +50,7 @@ from typing import (
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
-from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 
 class UpdateFilterReason(Enum):
@@ -176,8 +176,7 @@ class SingularSignalFunction(SignalFunction):
 
 
 class SignalsMin(NostrSignalsMin):
-    signal_add_threat = pyqtSignal(QThread)
-    signal_stop_threat = pyqtSignal(QThread)
+    pass
 
 
 class WalletSignals(SignalsMin):

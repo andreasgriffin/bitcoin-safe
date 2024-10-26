@@ -665,7 +665,7 @@ class QTWallet(QtWalletBase):
         def on_error(packed_error_info) -> None:
             custom_exception_handler(*packed_error_info)
 
-        self.taskthreads.append(
+        self.append_thread(
             TaskThread(signals_min=self.signals, enable_threading=enable_threading).add_and_start(
                 do, on_success, on_done, on_error
             )
@@ -754,8 +754,8 @@ class QTWallet(QtWalletBase):
         def on_error(packed_error_info) -> None:
             self.wallet_signals.finished_psbt_creation.emit()
 
-        self._create_psbt_thread = TaskThread(signals_min=self.signals).add_and_start(
-            do, on_success, on_done, on_error
+        self.append_thread(
+            TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
         )
 
     def set_wallet(self, wallet: Wallet) -> Wallet:
@@ -1030,8 +1030,8 @@ class QTWallet(QtWalletBase):
         self.set_sync_status(SyncStatus.syncing)
 
         self._last_syncing_start = datetime.datetime.now()
-        self._sync_thread = TaskThread(signals_min=self.signals).add_and_start(
-            do, on_success, on_done, on_error
+        self.append_thread(
+            TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error)
         )
 
     def export_wallet_for_coldcard(self) -> Optional[str]:

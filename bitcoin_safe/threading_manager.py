@@ -31,6 +31,7 @@ import logging
 import sys
 import threading
 from collections import deque
+from threading import Lock
 from types import TracebackType
 from typing import Any, Callable, NamedTuple, Optional, Tuple
 
@@ -61,10 +62,7 @@ class Worker(QObject):
     def __init__(self, task: Task) -> None:
         super().__init__()
         self.task: Task = task
-
-    @property
-    def thread_name(self):
-        return str(self.task.do)
+        self.thread_name = str(self.task.do)
 
     @pyqtSlot()
     def run_task(self) -> None:
@@ -87,6 +85,8 @@ class Worker(QObject):
 class TaskThread(QThread):
     """Manages execution of tasks in separate threads."""
 
+    signal_stop_threat = pyqtSignal(str)
+
     def __init__(self, signals_min: SignalsMin, enable_threading: bool = ENABLE_THREADING) -> None:
         super().__init__()
         self.signals_min = signals_min
@@ -94,6 +94,19 @@ class TaskThread(QThread):
             None  # Type hint adjusted because it will be immediately initialized in add_and_start
         )
         self.enable_threading = enable_threading
+        self._thread_name: str | None = None
+
+    @property
+    def thread_name(self) -> str | None:
+        return self._thread_name
+
+    @thread_name.setter
+    def thread_name(self, value: str | None):
+        logger.debug(f"setting thread_name of {self} to {value}")
+        self._thread_name = value
+
+    def __str__(self) -> str:
+        return str(self.thread_name)
 
     def add_and_start(
         self,
@@ -104,30 +117,26 @@ class TaskThread(QThread):
         cancel: Optional[Callable[[], None]] = None,
     ) -> "TaskThread":
 
-        if not self.enable_threading:
-            NoThread().add_and_start(do, on_success, on_done, on_error)
-            return self
+        # if not self.enable_threading:
+        #     NoThread().add_and_start(do, on_success, on_done, on_error)
+        #     return self
 
         self.cancelled = False
 
-        logger.debug(f"Starting new thread {do}.")
         task: Task = Task(do, on_success, on_done, on_error, cancel)
         self.worker = Worker(task)
-        self.worker.moveToThread(self)
+        if self.enable_threading:
+            self.worker.moveToThread(self)
         self.worker.finished.connect(self.on_done)
         self.worker.error.connect(self.on_error)
         self.started.connect(self.worker.run_task)
-        self.signals_min.signal_add_threat.emit(self)
+
+        self.thread_name = self.worker.thread_name
+        logger.debug(f"Starting new thread {self.thread_name}")
+
         self.start()
 
         return self
-
-    @property
-    def thread_name(self):
-        if not self.worker:
-            return None
-        if self.worker.thread_name:
-            return self.worker.thread_name
 
     def on_error(
         self,
@@ -157,13 +166,13 @@ class TaskThread(QThread):
         logger.debug(f"Stopped {self.thread_name}.")
 
     def my_quit(self):
-        name = self.thread_name
         try:
             self.cancelled = True
             self.quit()
             self.wait()
+            self.signal_stop_threat.emit(self.thread_name)
         except:
-            logger.error(f"An error during the shutdown of {name}")
+            logger.error(f"An error during the shutdown of {self.thread_name}")
 
 
 class NoThread:
@@ -192,12 +201,9 @@ class NoThread:
             on_done(result)
 
 
-from threading import Lock
-
-
 class ThreadingManager:
     def __init__(
-        self, signals_min: SignalsMin, threading_parent: "ThreadingManager" = None, **kwargs  # type: ignore
+        self, signals_min: SignalsMin, threading_parent: "ThreadingManager" = None, name=None, **kwargs  # type: ignore
     ) -> None:
         super().__init__(**kwargs)
         self.signals_min = signals_min
@@ -205,29 +211,30 @@ class ThreadingManager:
         self.threading_manager_children: deque[ThreadingManager] = deque()
         self.lock = Lock()
         self.threading_parent = threading_parent
+        self.threading_manager_name = name if name else self.__class__.__name__
 
         if threading_parent:
             threading_parent.threading_manager_children.append(self)
 
-        if self.signals_min:
-            self.signals_min.signal_add_threat.connect(self._append)
-            self.signals_min.signal_stop_threat.connect(self._remove)
-
-    def _append(self, thread: TaskThread):
+    def append_thread(self, thread: TaskThread):
         with self.lock:
             self.taskthreads.append(thread)
+            thread.signal_stop_threat.connect(self.remove_thread)
             logger.debug(
-                f"Appended thread {thread.thread_name}, Number of threads = {len(self.taskthreads)} {[thread.thread_name for thread in   self.taskthreads]}"
+                f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self.taskthreads)} {[str(thread) for thread in  self.taskthreads]}"
             )
-            assert thread in self.taskthreads
 
-    def _remove(self, thread: TaskThread):
+    def remove_thread(self, thread_name: str | None):
         with self.lock:
-            if thread in self.taskthreads:
-                self.taskthreads.remove(thread)
-                thread.deleteLater()
+            for thread in list(self.taskthreads):
+                # if not thread.thread_name:
+                #     # remove empty threads
+                #     # (unclear why thread_name is set to None when threads are done)
+                #     self.taskthreads.remove(thread)
+                if thread.thread_name == thread_name:
+                    self.taskthreads.remove(thread)
             logger.debug(
-                f"Removed thread {thread.thread_name}, Number of threads = {len(self.taskthreads)} {[thread.thread_name for thread in   self.taskthreads]}"
+                f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self.taskthreads)} {[str(thread) for thread in  self.taskthreads]}"
             )
 
     def stop_and_wait_all(self):

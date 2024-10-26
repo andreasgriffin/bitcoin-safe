@@ -495,7 +495,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
                 # self.qr_label can reference a destroyed c++ object
                 self.signal_set_qr_images.emit(result)
 
-        self.taskthreads.append(
+        self.append_thread(
             TaskThread(signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
         )
 

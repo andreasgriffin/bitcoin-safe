@@ -35,7 +35,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import TaskThread
+from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from .config import MIN_RELAY_FEE
 
@@ -219,11 +219,16 @@ class TxPrio(enum.Enum):
     high = enum.auto()
 
 
-class MempoolData(QObject):
+class MempoolData(ThreadingManager, QObject):
     signal_data_updated = pyqtSignal()
 
-    def __init__(self, network_config: NetworkConfig, signals_min: SignalsMin) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        network_config: NetworkConfig,
+        signals_min: SignalsMin,
+        threading_parent: ThreadingManager,
+    ) -> None:
+        super().__init__(signals_min=signals_min, threading_parent=threading_parent)
         self.signals_min = signals_min
 
         self.network_config = network_config
@@ -304,11 +309,13 @@ class MempoolData(QObject):
                 self.mempool_blocks = mempool_blocks
                 logger.info(f"Updated mempool_blocks {mempool_blocks}")
 
-        self._thread_mempool_blocks = threaded_fetch(
-            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
-            on_mempool_blocks,
-            self,
-            signals_min=self.signals_min,
+        self.append_thread(
+            threaded_fetch(
+                f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
+                on_mempool_blocks,
+                self,
+                signals_min=self.signals_min,
+            )
         )
         logger.debug(f"started on_mempool_blocks")
 
@@ -317,11 +324,13 @@ class MempoolData(QObject):
                 self.recommended = recommended
                 logger.info(f"Updated recommended {recommended}")
 
-        self._thread_recommended = threaded_fetch(
-            f"{self.network_config.mempool_url}api/v1/fees/recommended",
-            on_recommended,
-            self,
-            signals_min=self.signals_min,
+        self.append_thread(
+            threaded_fetch(
+                f"{self.network_config.mempool_url}api/v1/fees/recommended",
+                on_recommended,
+                self,
+                signals_min=self.signals_min,
+            )
         )
         logger.debug(f"started on_recommended")
 
@@ -331,11 +340,13 @@ class MempoolData(QObject):
                 logger.info(f"Updated mempool_dict {mempool_dict}")
             self.signal_data_updated.emit()
 
-        self._thread_mempool = threaded_fetch(
-            f"{self.network_config.mempool_url}api/mempool",
-            on_mempool_dict,
-            self,
-            signals_min=self.signals_min,
+        self.append_thread(
+            threaded_fetch(
+                f"{self.network_config.mempool_url}api/mempool",
+                on_mempool_dict,
+                self,
+                signals_min=self.signals_min,
+            )
         )
         logger.debug(f"started on_mempool_dict")
 
