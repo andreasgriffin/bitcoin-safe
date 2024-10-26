@@ -60,10 +60,6 @@
         <translation>Адрес {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>сдача</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>получение</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>Баланс</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>Баланс в фиатной валюте</translation>
+        <source>change</source>
+        <translation>сдача</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>Txid</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} Подтверждений</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>Не удается получить кошелек &apos;{id}&apos;. Пожалуйста, сначала откройте кошелек.</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;Открыть кошелек</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>тест</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>Пожалуйста, сначала выберите кошелек.</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>OK</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Открыть &amp;Недавние</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>Пожалуйста, вставьте вашу биткойн-транзакцию или PSBT сюда, или перетащите файл</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Открыть &amp;Недавние</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>Такого файла нет: {file_path}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Сохранить текущий кошелек</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>Пожалуйста, введите пароль для {filename}:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Сохранить текущий кошелек</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>Главное окно  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Поиск  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>Подключенные устройства  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Поиск  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>Переключить пароль  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Изменить  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>Отобразить адрес  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;Изменить  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Ответы:     {name}: {status}     Экземпляр Mempool: {server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>Ошибка соединения с сервером. 
+{responses}
+
+Вы хотите продолжить?</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>{number} новых транзакций в кошельке &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>Переименовать или объединить категории</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>Выберите новое имя или существующее имя для объединения:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Нажмите для нового адреса</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>Импортировать метки</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Синхронизация</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Все файлы (*);;Файлы JSONL (*.jsonl);;Файлы JSON (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Успешно обновлено {number} меток  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>Синхронизация</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

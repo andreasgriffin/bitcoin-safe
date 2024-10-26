@@ -30,7 +30,11 @@
 import logging
 from datetime import datetime
 
-from bitcoin_safe.util import jsonlines_to_list_of_dict, list_of_dict_to_jsonlines
+from bitcoin_safe.util import (
+    jsonlines_to_list_of_dict,
+    list_of_dict_to_jsonline_list,
+    list_of_dict_to_jsonlines,
+)
 
 logger = logging.getLogger(__name__)
 import copy
@@ -376,6 +380,11 @@ class Labels(BaseSaveableClass):
                     self.categories.append(item.category)
         return changed_data
 
+    def dumps_data_jsonline_list(self, refs: list[str] | None = None) -> List[str]:
+        return list_of_dict_to_jsonline_list(
+            [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
+        )
+
     def dumps_data_jsonlines(self, refs: list[str] | None = None) -> str:
         return list_of_dict_to_jsonlines(
             [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
@@ -400,7 +409,8 @@ class Labels(BaseSaveableClass):
         if old_category in self.categories:
             idx = self.categories.index(old_category)
             self.categories.pop(idx)
-            self.categories.insert(idx, new_category)
+            if new_category not in self.categories:
+                self.categories.insert(idx, new_category)
         return affected_keys
 
     def delete_category(self, category: str) -> List[str]:

@@ -60,10 +60,6 @@
         <translation>Adresse {address}  </translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>change  </translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>réception  </translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>Solde  </translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>Solde en monnaie fiduciaire  </translation>
+        <source>change</source>
+        <translation>change  </translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>Txid</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} Confirmations</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>Impossible de récupérer le portefeuille &apos;{id}&apos;. Veuillez d&apos;abord ouvrir le portefeuille.  </translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;Ouvrir le portefeuille  </translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>test  </translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>Veuillez d&apos;abord sélectionner le portefeuille.  </translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>OK  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Ouvrir &amp;Récent  </translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>Veuillez coller votre Transaction Bitcoin ou PSBT ici, ou déposer un fichier  </translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Ouvrir &amp;Récent  </translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>Aucun fichier de ce type : {file_path}  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Enregistrer le Portefeuille Actuel  </translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>Veuillez entrer le mot de passe pour {filename} :  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Enregistrer le Portefeuille Actuel  </translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>MainWindow  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Recherche  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>Appareils connectés  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Recherche  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>Basculer la phrase secrète  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Changer  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>Afficher l&apos;adresse  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;Changer  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Réponses : {name} : {status} Instance Mempool : {server}  </translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>Erreur de connexion au serveur. 
+{responses}
+
+Voulez-vous continuer malgré tout ?</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>{number} nouvelles transactions dans le portefeuille &apos;{wallet}&apos; : {txs}  </translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>Renommer ou fusionner les catégories</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>Choisissez un nouveau nom, ou un nom existant pour la fusion:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Cliquez pour une nouvelle adresse  </translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>Importer les étiquettes  </translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Synchroniser  </translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Tous les fichiers (*);;Fichiers JSONL (*.jsonl);;Fichiers JSON (*.json)  </translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Mise à jour réussie de {number} étiquettes  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>Synchroniser  </translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

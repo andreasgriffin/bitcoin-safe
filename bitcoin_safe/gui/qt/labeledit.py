@@ -28,12 +28,14 @@
 
 
 import logging
+from typing import List
 
 from PyQt6 import QtGui
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtWidgets import (
     QApplication,
+    QCompleter,
     QHBoxLayout,
     QLineEdit,
     QSizePolicy,
@@ -56,7 +58,20 @@ class LabelLineEdit(QLineEdit):
         self.originalText = ""
         self.textChangedSinceFocus = False
         self.installEventFilter(self)  # Install an event filter
+
+        self._model = QStringListModel()
+        self._completer = QCompleter(self._model, self)
+        self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
+        self._completer.setFilterMode(Qt.MatchFlag.MatchContains)
+        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.setCompleter(self._completer)
+
+        # signals
         self.textChanged.connect(self.onTextChanged)  # Connect the textChanged signal
+
+    def set_completer_list(self, strings: List[str]):
+        self._model.setStringList(strings)
+        self._completer.setModel(self._model)
 
     def onTextChanged(self):
         self.textChangedSinceFocus = True  # Set flag when text changes
@@ -81,6 +96,10 @@ class LabelLineEdit(QLineEdit):
             self.signal_enterPressed.emit()  # Emit Enter pressed signal
         elif event.key() == Qt.Key.Key_Escape:
             self.setText(self.originalText)  # Reset text on ESC
+        elif self._model.stringList() and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+            popup = self._completer.popup()
+            if popup and not popup.isVisible():
+                self._completer.complete()
         else:
             super().keyPressEvent(event)
 

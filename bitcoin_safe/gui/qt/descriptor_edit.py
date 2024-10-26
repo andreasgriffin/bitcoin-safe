@@ -65,7 +65,7 @@ class DescriptorExport(QDialog):
         parent=None,
         threading_parent: ThreadingManager | None = None,
     ):
-        super().__init__(parent, signals_min=signals_min, threading_parent=threading_parent)  # type: ignore
+        super().__init__(parent)
         self.setWindowTitle(self.tr("Export Descriptor"))
         self.setModal(True)
 

@@ -28,12 +28,13 @@
 
 
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import requests
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import (
     Message,
     ensure_scheme,
@@ -75,7 +76,7 @@ from PyQt6.QtWidgets import (
 )
 
 
-def test_mempool_space_server(url: str):
+def test_mempool_space_server(url: str) -> bool:
     try:
         response = requests.get(f"{url}/api/blocks/tip/height", timeout=2)
         return response.status_code == 200
@@ -122,13 +123,16 @@ def get_electrum_server_version(host: str, port: int, use_ssl: bool = True, time
 
 def test_connection(network_config: NetworkConfig) -> Optional[str]:
     if network_config.server_type == BlockchainType.Electrum:
+        try:
+            host, port = get_host_and_port(network_config.electrum_url)
 
-        host, port = get_host_and_port(network_config.electrum_url)
-
-        if host is None or port is None:
-            logger.warning(f"No host or port given")
+            if host is None or port is None:
+                logger.warning(f"No host or port given")
+                return None
+            return get_electrum_server_version(host=host, port=port, use_ssl=network_config.electrum_use_ssl)
+        except Exception as e:
+            logger.warning(f"Electrum connection test failed: {e}")
             return None
-        return get_electrum_server_version(host=host, port=port, use_ssl=network_config.electrum_use_ssl)
 
     elif network_config.server_type == BlockchainType.Esplora:
         try:
@@ -404,22 +408,29 @@ class NetworkSettingsUI(QDialog):
         logger.debug(f"set use_ssl = {use_ssl}")
         self.electrum_use_ssl = use_ssl
 
-    def test_connection(self):
-        network_config = self.get_network_settings_from_ui()
+    def _test_connection(self, network_config: NetworkConfig) -> Tuple[str | None, bool]:
         server_connection = test_connection(network_config=network_config)
 
         mempool_server = test_mempool_space_server(url=network_config.mempool_url)
+        return server_connection, mempool_server
 
+    def _format_test_responses(
+        self, network_config: NetworkConfig, server_connection: str | None, mempool_server: bool
+    ) -> str:
         def format_status(response):
             return "Success" if response else "Failed"
 
-        Message(
-            self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
-                name=network_config.server_type.name,
-                status=format_status(server_connection),
-                server=format_status(mempool_server),
-            )
+        return self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
+            name=network_config.server_type.name,
+            status=format_status(server_connection),
+            server=format_status(mempool_server),
         )
+
+    def test_connection(self):
+        new_network_config = self.get_network_settings_from_ui()
+        server_connection, mempool_server = self._test_connection(network_config=new_network_config)
+
+        Message(self._format_test_responses(new_network_config, server_connection, mempool_server))
 
     def set_server_type_comboBox(self, new_index: int):
         if self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
@@ -458,11 +469,24 @@ class NetworkSettingsUI(QDialog):
         self.edit_mempool_url.add_current_to_memory()
 
     def on_apply_click(self):
+        new_network_config = self.get_network_settings_from_ui()
+        server_connection, mempool_server = self._test_connection(network_config=new_network_config)
+
+        if not all([server_connection, mempool_server]):
+            if not question_dialog(
+                self.tr("Error in server connection.\n{responses}\n\n Do you want to proceed anyway?").format(
+                    responses=self._format_test_responses(
+                        new_network_config, server_connection, mempool_server
+                    )
+                )
+            ):
+                return
+
         new_network = self.network
 
         self.add_to_completer_memory()
 
-        self.network_configs.configs[self.network.name] = self.get_network_settings_from_ui()
+        self.network_configs.configs[self.network.name] = new_network_config
 
         self.close()
         self.signal_apply_and_shutdown.emit(new_network)

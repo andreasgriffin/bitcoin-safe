@@ -77,7 +77,7 @@ class Worker(QObject):
             self.finished.emit(result, self.task.cb_done, self.task.cb_success)
         except Exception:
             logger.exception(f"Task raised an exception: {self.task.do}")
-            self.error.emit((sys.exc_info(), self.task.cb_error))
+            self.error.emit(sys.exc_info(), self.task.cb_error)
         finally:
             if callable(self.task.cancel):
                 logger.debug(f"Task cancellation callback called: {self.task.do}")

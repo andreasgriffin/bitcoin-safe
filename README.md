@@ -9,7 +9,7 @@
 - **Easy** Multisig-Wallet Setup
   - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
   - Test transactions enure that all hardware signers are ready
-  - Full support for [Coldcard](https://coldcard.com/), [Coldcard Q](https://coldcard.com/), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, Sd card
+  - Full support for [Coldcard](https://coldcard.com/), [Coldcard Q](https://coldcard.com/), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
 - **Secure**: Hardware signers only
   - All wallets require hardware signers/wallets for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
@@ -20,7 +20,7 @@
   - Transaction flow diagrams, visualizing inputs and outputs, click on inputs and output to trace the money flow
 - **Sending** for non-technical users
   - 1-click fee selection via mempool-blocks
-  - Automatic merging of small utxos when fees are low
+  - Automatic merging of utxos when fees are low
 - **Collaborative**:
   - Label synchronization between different computers and encrypted cloud backup
   - Wallet chat and PSBTs sharing between different computers
@@ -92,7 +92,7 @@
 - **Transaction / PSBT Creation**
   
   - 1-click fee selection and mempool block preview
-  - Automatic merging of small utxos when fees are low
+  - Automatic merging of utxos when fees are low
   - Highlighting of own addresses 
 
 - **Security and Reliability**
@@ -107,6 +107,7 @@
   - Simplified setup for multisig wallets, including step-by-step instructions and PDF backup sheet
   - Test signing with all hardware signers
   - Collaborative wallet management including chat and PSBT sharing via nostr and label synchronization between trusted devices
+  - Optional custom nostr server 
 
 - **Upcoming Features**
   
@@ -117,6 +118,14 @@
 
 
 ## Installation from Git repository
+
+Install dependencies: 
+
+  ```sh
+  sudo apt install  qt6-tools-dev-tools libqt6*
+  ```
+
+
 
 ### Ubuntu, Debian, Windows
 

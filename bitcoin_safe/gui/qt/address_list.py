@@ -55,6 +55,7 @@
 import logging
 from typing import Any, Dict, Tuple
 
+from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 from ...config import UserConfig
@@ -229,9 +230,10 @@ class AddressList(MyTreeView):
         Columns.LABEL: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.COIN_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         Columns.NUM_TXS: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    hidden_columns = [Columns.INDEX, Columns.FIAT_BALANCE]
+    hidden_columns = [Columns.INDEX]
 
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
@@ -239,7 +241,7 @@ class AddressList(MyTreeView):
 
     def __init__(
         self,
-        fx,
+        fx: FX,
         config: UserConfig,
         wallet: Wallet,
         wallet_signals: WalletSignals,
@@ -272,6 +274,7 @@ class AddressList(MyTreeView):
         # signals
         self.wallet_signals.updated.connect(self.update_with_filter)
         self.wallet_signals.language_switch.connect(self.updateUi)
+        self.fx.signal_data_updated.connect(self.on_update_fx_rates)
 
     def updateUi(self) -> None:
         self.update_content()
@@ -363,6 +366,21 @@ class AddressList(MyTreeView):
         self.show_used = AddressUsageStateFilter(state)
         self.update_content()
 
+    def on_update_fx_rates(self):
+        addresses_with_balance = []
+
+        model = self.sourceModel()
+        for row in range(model.rowCount()):
+            address = model.data(model.index(row, self.Columns.ADDRESS))
+            balance = model.data(
+                model.index(row, self.Columns.COIN_BALANCE), role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
+            if balance:
+                addresses_with_balance.append(address)
+
+        update_filter = UpdateFilter(addresses=addresses_with_balance, reason=UpdateFilterReason.NewFxRates)
+        self.update_with_filter(update_filter)
+
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()
@@ -416,7 +434,7 @@ class AddressList(MyTreeView):
             self.Columns.CATEGORY: self.tr("Category"),
             self.Columns.LABEL: self.tr("Label"),
             self.Columns.COIN_BALANCE: self.tr("Balance"),
-            self.Columns.FIAT_BALANCE: self.tr("Fiat Balance"),
+            self.Columns.FIAT_BALANCE: "$ " + self.tr("Balance"),
         }
 
     def update_content(self) -> None:
@@ -508,7 +526,17 @@ class AddressList(MyTreeView):
         balance_text = str(Satoshis(balance, self.wallet.network))
         # create item
 
-        fiat_balance_str = ""
+        dollar_amount = self.fx.to_fiat("usd", balance)
+        fiat_balance_str = (
+            self.fx.format_dollar(dollar_amount, prepend_dollar_sign=False)
+            if dollar_amount is not None
+            else ""
+        )
+        fiat_balance_data = (
+            self.fx.format_dollar(dollar_amount, prepend_dollar_sign=False)
+            if dollar_amount is not None
+            else ""
+        )
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
         if needs_frequent_flag(status=min_status):
@@ -524,7 +552,7 @@ class AddressList(MyTreeView):
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
-        item[self.Columns.FIAT_BALANCE].setData(fiat_balance_str, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setData(fiat_balance_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -598,9 +626,16 @@ class AddressList(MyTreeView):
 
     def on_edited(self, idx, edit_key, *, text) -> None:
         self.wallet.labels.set_addr_label(edit_key, text, timestamp="now")
+        categories = []
+        if not self.wallet.labels.get_category_raw(edit_key):
+            # also fix the category to have consitency across wallets via the labelsyncer
+            category = self.wallet.labels.get_category(edit_key)
+            categories += [category]
+            self.wallet.labels.set_addr_category(edit_key, category, timestamp="now")
         self.wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=[edit_key],
+                categories=categories,
                 txids=self.wallet.get_involved_txids(edit_key),
                 reason=UpdateFilterReason.UserInput,
             )

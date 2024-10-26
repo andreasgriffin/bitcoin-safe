@@ -1331,12 +1331,13 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.fee_group.set_fee_rate(self.mempool_data.get_prio_fee_rates()[TxPrio.low])
 
     def clear_ui(self) -> None:
-        with BlockChangesSignals([self, self.utxo_list]):
+        with BlockChangesSignals([self.utxo_list]):
             self.additional_outpoints.clear()
             self.set_ui(TxUiInfos())
             self.reset_fee_rate()
             self.utxo_list.update_content()
         self.tabs_inputs.setCurrentIndex(0)
+        self.category_list.select_category(self.wallet.labels.get_default_category())
 
     def create_tx(self) -> None:
         if (

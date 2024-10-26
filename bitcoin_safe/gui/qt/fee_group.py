@@ -56,7 +56,7 @@ from PyQt6.QtWidgets import (
 
 from ...mempool import MempoolData, TxPrio
 from ...signals import pyqtSignal
-from ...util import Satoshis, format_dollar, format_fee_rate, unit_fee_str
+from ...util import Satoshis, format_fee_rate, unit_fee_str
 from .block_buttons import (
     BaseBlock,
     ConfirmedBlock,
@@ -245,17 +245,17 @@ class FeeGroup(QObject):
         self.mempool().refresh()
 
     def set_fiat_fee_label(self) -> None:
-        if not self.fx.rates.get("usd"):
-            self.fiat_fee_label.setHidden(True)
-            return
         self.fiat_fee_label.setHidden(self.fee_info is None)
         if self.fee_info is None:
             return
 
         fee = self.fee_info.vsize * self.spin_fee_rate.value()
-        dollar_amount = self.fx.rates["usd"]["value"] / 1e8 * fee
+        dollar_amount = self.fx.to_fiat("usd", int(fee))
+        if dollar_amount is None:
+            self.fiat_fee_label.setHidden(True)
+            return
 
-        dollar_text = format_dollar(dollar_amount)
+        dollar_text = self.fx.format_dollar(dollar_amount)
         if dollar_amount > 100:
             # make red when dollar amount high
             dollar_text = html_f(dollar_text, bf=True, color="red")

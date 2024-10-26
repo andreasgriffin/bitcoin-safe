@@ -423,13 +423,15 @@ class HistList(MyTreeView):
                 self.address_domain
             )
         else:
-            amount = tx.received - tx.sent
+            amount = int(tx.received - tx.sent)
+
+        new_balance = old_balance + amount
 
         labels = [""] * len(self.Columns)
         labels[self.Columns.WALLET_ID] = wallet.id
         labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).str_as_change()
 
-        labels[self.Columns.BALANCE] = str(Satoshis(old_balance, wallet.network))
+        labels[self.Columns.BALANCE] = str(Satoshis(new_balance, wallet.network))
         labels[self.Columns.TXID] = tx.txid
         items = [QStandardItem(e) for e in labels]
 
@@ -438,7 +440,7 @@ class HistList(MyTreeView):
         items[self.Columns.AMOUNT].setData(amount, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         if amount < 0:
             items[self.Columns.AMOUNT].setData(QBrush(QColor("red")), Qt.ItemDataRole.ForegroundRole)
-        items[self.Columns.BALANCE].setData(old_balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.BALANCE].setData(new_balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         items[self.Columns.TXID].setData(tx.txid, MyItemDataRole.ROLE_CLIPBOARD_DATA)
 
         # align text and set fonts

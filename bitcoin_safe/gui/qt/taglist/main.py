@@ -38,7 +38,7 @@ import hashlib
 import json
 from typing import Dict, Generator, Iterable, List, Optional, Tuple
 
-from PyQt6.QtCore import QMimeData, QModelIndex, QRect, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QRect, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -533,9 +533,10 @@ class CustomListWidget(QListWidget):
         if not viewport:
             return
         pixmap = viewport.grab(rect)
-        cursor_pos = self.mapFromGlobal(QCursor.pos())
+        hotspot_pos = QPoint(0, 0)
         drag.setPixmap(pixmap)
-        drag.setHotSpot(cursor_pos - rect.topLeft())
+        drag.setHotSpot(hotspot_pos)
+
         self.signal_start_drag.emit(action)
 
         drag.exec(action)

@@ -29,6 +29,7 @@
 
 import logging
 from datetime import datetime
+from time import sleep
 from typing import List
 
 from bitcoin_nostr_chat.connected_devices.connected_devices import (
@@ -62,6 +63,40 @@ class LabelSyncer(QObject):
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
         self.wallet_signals.updated.connect(self.on_labels_updated)
 
+    @staticmethod
+    def chunk_lines(lines: List[str], max_len: int = 60_000) -> List[List[str]]:
+        len_of_lines = [len(line) for line in lines]  # Calculate the length of each line
+
+        # Determine split points
+        split_indices = []
+        current_length = 0
+
+        for i, line_length in enumerate(len_of_lines):
+            if current_length + line_length > max_len:
+                split_indices.append(i)
+                current_length = line_length  # Start new chunk with current line
+            else:
+                current_length += line_length + 1  # +1 for the newline, included in the next chunk
+
+        # Use split indices to construct chunks
+        chunks = []
+        start_index = 0
+
+        for index in split_indices:
+            chunks.append(lines[start_index:index])
+            start_index = index
+
+        # Add the final chunk
+        if start_index < len(lines):
+            chunks.append(lines[start_index:])
+
+        return chunks
+
+    def get_chunked_bitcoin_data(self, refs: List[str]) -> List[Data]:
+        lines = self.labels.dumps_data_jsonline_list(refs=refs)
+        chunks = self.chunk_lines(lines, max_len=60_000)
+        return [Data(data="\n".join(chunk), data_type=DataType.LabelsBip329) for chunk in chunks]
+
     def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():
             return
@@ -70,17 +105,17 @@ class LabelSyncer(QObject):
         # send entire label data
         refs = list(self.labels.data.keys())
 
-        bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
-        self.nostr_sync.group_chat.dm_connection.send(
-            BitcoinDM(
-                event=None,
-                label=ChatLabel.SingleRecipient,
-                description="",
-                data=bitcoin_data,
-                created_at=datetime.now(),
-            ),
-            PublicKey.from_bech32(trusted_device.pub_key_bech32),
-        )
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.dm_connection.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.SingleRecipient,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                ),
+                PublicKey.from_bech32(trusted_device.pub_key_bech32),
+            )
         logger.info(f"Sent all labels to trusted device {short_key( trusted_device.pub_key_bech32)}")
 
     def on_nostr_label_bip329_received(self, data: Data, author: PublicKey) -> None:
@@ -109,11 +144,7 @@ class LabelSyncer(QObject):
             elif label.type == LabelType.tx:
                 txids.append(label.ref)
 
-        new_categories = [
-            label.category
-            for label in changed_labels.values()
-            if label.category not in self.labels.categories
-        ]
+        new_categories = [label.category for label in changed_labels.values()]
         update_filter = UpdateFilter(
             addresses=addresses,
             txids=txids,
@@ -153,16 +184,16 @@ class LabelSyncer(QObject):
         if not refs:
             return
 
-        bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
-        self.nostr_sync.group_chat.send(
-            BitcoinDM(
-                event=None,
-                label=ChatLabel.GroupChat,
-                description="",
-                data=bitcoin_data,
-                created_at=datetime.now(),
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.GroupChat,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                )
             )
-        )
         logger.info(
             f"{self.__class__.__name__}: Sent {len(update_filter.addresses)} addresses, {len(update_filter.txids)} txids to {[short_key(m.to_bech32()) for m in  self.nostr_sync.group_chat.members]}"
         )
@@ -176,15 +207,18 @@ class LabelSyncer(QObject):
         refs = list(self.labels.data.keys())
 
         my_key = self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key()
-        bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
-        self.nostr_sync.group_chat.dm_connection.send(
-            BitcoinDM(
-                event=None,
-                label=ChatLabel.SingleRecipient,
-                description="",
-                data=bitcoin_data,
-                created_at=datetime.now(),
-            ),
-            my_key,
-        )
-        logger.info(f"{self.__class__.__name__}: Sent all labels to myself {short_key(my_key.to_bech32())}")
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.dm_connection.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.SingleRecipient,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                ),
+                my_key,
+            )
+        # sleep here to give the relays time to receive the message
+        # but if the relays fail, then better fail sending the messages,
+        # than blocking the wallet from closing
+        sleep(0.2)

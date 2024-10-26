@@ -60,10 +60,6 @@
         <translation>Indirizzo {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>cambio</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>ricezione</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>Saldo</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>Saldo in valuta</translation>
+        <source>change</source>
+        <translation>cambio</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>Txid</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} Conferme</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>Non è possibile recuperare il portafoglio &apos;{id}&apos;. Si prega di aprire prima il portafoglio.</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;Apri Portafoglio</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>test</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>Si prega di selezionare prima il portafoglio.</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>OK</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Apri &amp;Recente</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>Incolla qui la tua Transazione Bitcoin o PSBT, o rilascia un file</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Apri &amp;Recente</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>Non esiste un file: {file_path}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Salva Portafoglio Corrente</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>Inserisci la password per {filename}:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Salva Portafoglio Corrente</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>Finestra principale  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Ricerca  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>Dispositivi collegati  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Ricerca  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>Attiva/Disattiva Passphrase  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Cambia  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>Mostra indirizzo  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;Cambia  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Risposte:     {name}: {status}     Istanza Mempool: {server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>Errore nella connessione al server. 
+{responses}
+
+Vuoi procedere comunque?</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>{number} nuove transazioni nel portafoglio &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>Rinominare o unire le categorie</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>Scegli un nuovo nome, o un nome esistente per la fusione:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Clicca per un nuovo indirizzo</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>Importa etichette</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Sincronizza</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Tutti i File (*);;File JSONL (*.jsonl);;File JSON (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Aggiornato con successo {number} etichette  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>Sincronizza</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

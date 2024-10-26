@@ -60,10 +60,6 @@
         <translation>地址 {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>找零</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>接收</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>余额</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>法币余额</translation>
+        <source>change</source>
+        <translation>找零</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>交易标识符</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} 确认</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>无法获取钱包&apos;{id}&apos;。请先打开钱包。</translation>
     </message>
@@ -1093,10 +1093,6 @@ Location of signing device: .....</source>
         <translation>&amp;打开钱包</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>测试</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>请先选择钱包。</translation>
     </message>
@@ -1133,12 +1129,12 @@ Location of signing device: .....</source>
         <translation>确定</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>打开&amp;最近</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>请在此粘贴您的比特币交易或PSBT，或拖放文件</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>打开&amp;最近</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1177,12 +1173,12 @@ Location of signing device: .....</source>
         <translation>没有这样的文件：{file_path}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;保存当前钱包</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>请输入 {filename} 的密码：</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;保存当前钱包</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1221,12 +1217,12 @@ Location of signing device: .....</source>
         <translation>主窗口  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;搜索  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>已连接设备  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;搜索  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1265,12 +1261,12 @@ Location of signing device: .....</source>
         <translation>切换密码短语  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;更改  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>显示地址  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;更改  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1378,6 +1374,16 @@ Location of signing device: .....</source>
         <translation>响应：
     {name}：{status}
     Mempool实例：{server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>服务器连接错误。 
+{responses}
+
+您还要继续吗？</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1657,6 +1663,14 @@ Location of signing device: .....</source>
         <translation>钱包 &apos;{wallet}&apos; 中有 {number} 笔新交易：{txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>重命名或合并类别</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>选择一个新名称，或一个已有名称以进行合并：</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>点击获取新地址</translation>
     </message>
@@ -1673,16 +1687,16 @@ Location of signing device: .....</source>
         <translation>导入标签</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>同步</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>所有文件 (*);;JSONL 文件 (*.jsonl);;JSON 文件 (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>成功更新了{number}个标签  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>同步</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

@@ -71,6 +71,7 @@ class UpdateFilterReason(Enum):
     TransactionChange = enum.auto()
     ForceRefresh = enum.auto()
     ChainHeightAdvanced = enum.auto()
+    NewFxRates = enum.auto()
 
 
 class UpdateFilter:

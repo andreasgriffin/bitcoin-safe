@@ -60,10 +60,6 @@
         <translation>पता {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>परिवर्तन</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>प्राप्ति</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>बैलेंस</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>फिएट बैलेंस</translation>
+        <source>change</source>
+        <translation>परिवर्तन</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>लेन-देन पहचानकर्ता</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} पुष्टिकरण</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;वॉलेट खोलें</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>परीक्षण</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>कृपया पहले वॉलेट चुनें।</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>ठीक है</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>हाल का खोलें</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>कृपया अपना बिटकॉइन लेन-देन या PSBT यहाँ पेस्ट करें, या एक फ़ाइल ड्रॉप करें</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>हाल का खोलें</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>ऐसी कोई फ़ाइल नहीं है: {file_path}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>कृपया {filename} के लिए पासवर्ड दर्ज करें:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>मुख्य विंडो  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;खोजें  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>जुड़े हुए उपकरण  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;खोजें  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>पासफ़्रेज़ टॉगल करें  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;बदलें  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>पता प्रदर्शित करें  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;बदलें  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>प्रतिक्रियाएँ: {name}: {status} मेमपूल इंस्टेंस: {server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>सर्वर से कनेक्शन में त्रुटि। 
+{responses}
+
+क्या आप फिर भी आगे बढ़ना चाहते हैं?</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>वॉलेट &apos;{wallet}&apos; में {number} नए लेनदेन हैं: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>श्रेणियों का नाम बदलें या विलय करें</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>नया नाम चुनें, या विलय के लिए मौजूदा नाम चुनें:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>नया पता के लिए क्लिक करें</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>लेबल आयात करें</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>सिंक</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>सभी फ़ाइलें (*);;JSONL फ़ाइलें (*.jsonl);;JSON फ़ाइलें (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>सफलतापूर्वक {number} लेबल अपडेट किए गए  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>सिंक</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

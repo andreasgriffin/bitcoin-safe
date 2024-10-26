@@ -32,6 +32,7 @@ import logging
 import os
 import platform
 import shutil
+import subprocess
 from pathlib import Path
 from typing import List, Literal
 
@@ -40,7 +41,6 @@ from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureSigner
-from tools.dependency_check import DependencyCheck
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -116,35 +116,121 @@ class Builder:
         with open(pyproject_path, "w") as file:
             tomlkit.dump(pyproject_data, file)
 
-        if platform.system() == "Linux":
-            DependencyCheck.check_local_files_match_lockfile()
-        else:
-            pass
-            # the whl files build in Windows have a different checksum, and therefore the check will fail
+    def build_appimage_docker(
+        self, docker_no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
+    ):
+        """_summary_
 
-    def briefcase_appimage(self):
+        Args:
+            no_cache (bool, optional): _description_. Defaults to False.
+            build_commit (None | str | Literal['current_commit'], optional): _description_. Defaults to 'current_commit'.
+                    'current_commit' = which means it will build the current HEAD.
+                    None = uses the cwd
+                    commit_hash = clones this commit hash into /tmp
+        """
+        PROJECT_ROOT = Path(".").resolve()
+        PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT
+        CONTRIB_APPIMAGE = PROJECT_ROOT / "tools" / "build-linux" / "appimage"
+        DISTDIR = PROJECT_ROOT / "dist"
+        BUILD_UID = PROJECT_ROOT.stat().st_uid
+        CACHEDIR = CONTRIB_APPIMAGE / ".cache" / "appimage"
+        # Note: Sourcing 'build_tools_util.sh' is omitted; ensure equivalent functions are defined if needed.
+
+        # Initialize DOCKER_BUILD_FLAGS
+        DOCKER_BUILD_FLAGS = ""
+
+        if docker_no_cache:
+            logger.info("BITCOINSAFE_DOCKER_NOCACHE is set. Forcing rebuild of docker image.")
+            DOCKER_BUILD_FLAGS = "--pull --no-cache"
+            logger.info(f"BITCOINSAFE_DOCKER_NOCACHE is set. Deleting {CACHEDIR}")
+            run_local(f'rm -rf "{CACHEDIR}"')
+
+        if build_commit == "current_commit":
+            # Get the current git HEAD commit
+            result = subprocess.run(
+                ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True
+            )
+            build_commit = result.stdout.strip()
+
+        if not build_commit:
+            # Local development build
+            DOCKER_BUILD_FLAGS += f" --build-arg UID={BUILD_UID}"
+
+        logger.info("Building docker image.")
+        run_local(
+            f'docker build {DOCKER_BUILD_FLAGS} -t bitcoin_safe-appimage-builder-img "{CONTRIB_APPIMAGE}"'
+        )
+
+        # Possibly do a fresh clone
+        FRESH_CLONE = False
+        if build_commit:
+            logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
+            FRESH_CLONE = Path("/tmp/bitcoin_safe_build/appimage/bitcoin_safe_clone/bitcoin_safe")
+            try:
+                run_local(f'rm -rf "{FRESH_CLONE}"')
+            except subprocess.CalledProcessError:
+                logger.info("We need sudo to remove previous FRESH_CLONE.")
+                run_local(f'sudo rm -rf "{FRESH_CLONE}"')
+            os.umask(0o022)
+            run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
+            os.chdir(str(FRESH_CLONE))
+            run_local(f'git checkout "{build_commit}"')
+            PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
+        else:
+            logger.info("Not doing fresh clone.")
+
+        logger.info("Building binary...")
+        # Check UID and possibly chown
+        if build_commit:
+            if os.getuid() != 1000 or os.getgid() != 1000:
+                logger.info("Need to chown -R FRESH_CLONE directory. Prompting for sudo.")
+                run_local(f'sudo chown -R 1000:1000 "{FRESH_CLONE}"')
+
+        run_local(
+            f"docker run -it "
+            f"--name bitcoin_safe-appimage-builder-cont "
+            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/bitcoin_safe '
+            f"--rm "
+            f"--workdir /opt/bitcoin_safe/tools/build-linux/appimage "
+            f"bitcoin_safe-appimage-builder-img "
+            f"./make_appimage.sh"
+        )
+
+        # Ensure the resulting binary location is independent of fresh_clone
+        if FRESH_CLONE:
+            os.makedirs(DISTDIR, exist_ok=True)
+            shutil.copytree(FRESH_CLONE / "dist", DISTDIR, dirs_exist_ok=True)
+
+    def briefcase_appimage(self, **kwargs):
+        # briefcase appimage building works on some systems, but not on others... unknown why.
+        # so we build using the electrum docker by default
         run_local("poetry run briefcase -u  package    linux  appimage")
 
-    def briefcase_windows(self):
+    def briefcase_windows(self, **kwargs):
         run_local("poetry run briefcase -u  package    windows")
 
-    def briefcase_mac(self):
+    def briefcase_mac(self, **kwargs):
         run_local("python3 -m poetry run   briefcase -u  package    macOS  app --no-notarize")
 
-    def briefcase_deb(self):
+    def briefcase_deb(self, **kwargs):
         # _run_local(" briefcase -u  package --target ubuntu:23.10") # no bdkpython for python3.11
         # _run_local(" briefcase -u  package --target ubuntu:23.04") # no bdkpython for python3.11
         run_local("poetry run briefcase -u  package --target ubuntu:22.04 -p deb")
 
-    def briefcase_flatpak(self):
+    def briefcase_flatpak(self, **kwargs):
         run_local("poetry run briefcase   package linux flatpak")
 
-    def package_application(self, targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]]):
         shutil.rmtree("build")
+
+    def package_application(
+        self,
+        targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]],
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
+    ):
         self.update_briefcase_requires()
 
         f_map = {
-            "appimage": self.briefcase_appimage,
+            "appimage": self.build_appimage_docker,
             "windows": self.briefcase_windows,
             "mac": self.briefcase_mac,
             "deb": self.briefcase_deb,
@@ -153,7 +239,7 @@ class Builder:
         }
 
         for target in targets:
-            f_map[target]()
+            f_map[target](build_commit=build_commit)
 
         # if "linux" in targets:
         #     self.create_briefcase_binaries_in_docker(target_platform="linux")
@@ -194,7 +280,7 @@ class Builder:
                 return False
         return True
 
-    def build_snap(self):
+    def build_snap(self, **kwargs):
         """
         Build a Snap package for a Python application.
         """

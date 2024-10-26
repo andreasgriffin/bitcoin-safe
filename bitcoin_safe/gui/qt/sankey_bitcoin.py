@@ -46,7 +46,7 @@ from bitcoin_safe.pythonbdk_types import (
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
 from bitcoin_safe.util import Satoshis
-from bitcoin_safe.wallet import Wallet, get_wallets
+from bitcoin_safe.wallet import Wallet, get_label_from_any_wallet, get_wallets
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,9 @@ class SankeyBitcoin(SankeyWidget):
             address = robust_address_str_from_script(txout.script_pubkey, network=self.network)
             self.addresses.append(address)
 
-            label = self.get_address_label(address, wallets=wallets)
+            label = get_label_from_any_wallet(
+                address, signals=self.signals, wallets=wallets, autofill_from_txs=False
+            )
             color = self.get_address_color(address, wallets=wallets)
             labels[flow_index] = label if label else address
             tooltips[flow_index] = html_f(
@@ -150,7 +152,9 @@ class SankeyBitcoin(SankeyWidget):
             self.addresses.append(txo.address)
             flow_index = FlowIndex(flow_type=FlowType.InFlow, i=i)
 
-            label = self.get_address_label(txo.address, wallets=wallets)
+            label = get_label_from_any_wallet(
+                txo.address, signals=self.signals, wallets=wallets, autofill_from_txs=False
+            )
             color = self.get_address_color(txo.address, wallets=wallets)
             labels[flow_index] = label if label else txo.address
             tooltips[flow_index] = html_f(
@@ -210,13 +214,6 @@ class SankeyBitcoin(SankeyWidget):
             logger.error("This should not happen, since wallet should only be found if the address is mine.")
             return None
         return color
-
-    def get_address_label(self, address: str, wallets: List[Wallet]) -> str | None:
-        for wallet in wallets:
-            label = wallet.labels.get_label(address)
-            if label:
-                return label
-        return None
 
     def get_python_txo(self, outpoint: str, wallets: List[Wallet] | None = None) -> Optional[PythonUtxo]:
         wallets = wallets if wallets else get_wallets(self.signals)

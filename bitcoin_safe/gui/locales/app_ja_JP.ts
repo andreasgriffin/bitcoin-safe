@@ -60,10 +60,6 @@
         <translation>アドレス {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>変更</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>受取</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>残高</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>フィアット残高</translation>
+        <source>change</source>
+        <translation>変更</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>トランザクションID</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} 回の確認</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>ウォレット &apos;{id}&apos; を開けません。まずウォレットを開いてください。</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>最近開いた&amp;ウォレット</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>まずウォレットを選んでください。</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>トランザクション/PSBTを開く</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>BitcoinトランザクションまたはPSBTをここに貼り付けるか、ファイルをドロップしてください</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>現在のウォレットを&amp;保存</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>トランザクション {txid}</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>現在のウォレットを&amp;保存</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>ラベルをエクスポート</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;変更/エクスポート</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>すべてのファイル ();;JSONファイル (.jsonl);;JSONファイル (.json)</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>メインウィンドウ  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;検索  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>接続されたデバイス  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;検索  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>パスフレーズを切り替える  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;変更  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>アドレスを表示する  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;変更  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>シングルシグネチャーウォレット</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>サーバー接続エラー。 
+{responses}
+
+それでも進みますか？</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>ウォレット &apos;{wallet}&apos; に {number} 件の新しいトランザクションがあります：{txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>カテゴリーの名前を変更またはマージ</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>新しい名前、またはマージするための既存の名前を選択してください：</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>ウォレットの設定がまだありません</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>ラベルのインポート</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>受取</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>すべてのファイル (*);;JSONL ファイル (*.jsonl);;JSON ファイル (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>正常に{number}のラベルを更新しました  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>受取</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

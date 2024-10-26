@@ -34,14 +34,19 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.labeledit import LabelAndCategoryEdit
 from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.wallet import Wallet, get_wallet_of_address, get_wallets
+from bitcoin_safe.wallet import (
+    Wallet,
+    get_label_from_any_wallet,
+    get_wallet_of_address,
+    get_wallets,
+)
 
 from ...pythonbdk_types import Recipient, is_address
 from .invisible_scroll_area import InvisibleScrollArea
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, List, Optional, Set
+from typing import Any, List, Set
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -169,23 +174,18 @@ class RecipientWidget(QWidget):
         The address doesnt have to belong to any wallet, but might be a recipient
         """
 
-        def address_in_txs(edit_address, wallet: Wallet) -> bool:
-            for tx_details in wallet.get_txs().values():
-                tx_addresses = wallet.list_tx_addresses(tx_details.transaction)
-                for addresses in tx_addresses.values():
-                    if edit_address in addresses:
-                        return True
-            return False
-
         result = set()
         if not self.signals:
             return set()
 
         for wallet in get_wallets(self.signals):
+            if wallet.is_my_address(edit_address):
+                result.add(wallet)
+                continue
             if wallet.get_label_for_address(edit_address):
                 result.add(wallet)
                 continue
-            if address_in_txs(edit_address, wallet):
+            if wallet.get_involved_txids(edit_address):
                 result.add(wallet)
                 continue
         return result
@@ -200,9 +200,18 @@ class RecipientWidget(QWidget):
         self.label_line_edit.set(new_labeltext, self.label_line_edit.category())
         for wallet in wallets:
             wallet.labels.set_addr_label(address, new_labeltext, timestamp="now")
+
+            categories = []
+            if not wallet.labels.get_category_raw(address):
+                # also fix the category to have consitency across wallets via the labelsyncer
+                category = wallet.labels.get_category(address)
+                categories += [category]
+                wallet.labels.set_addr_category(address, category, timestamp="now")
+
             self.signals.wallet_signals[wallet.id].updated.emit(
                 UpdateFilter(
                     addresses=[address],
+                    categories=categories,
                     txids=wallet.get_involved_txids(address),
                     reason=UpdateFilterReason.UserInput,
                 )
@@ -289,15 +298,6 @@ class RecipientWidget(QWidget):
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_button.setEnabled(state)
 
-    def get_label_from_any_wallet(self) -> Optional[str]:
-        if not self.signals:
-            return None
-        for wallet in get_wallets(self.signals):
-            label = wallet.get_label_for_address(self.address_edit.address)
-            if label:
-                return label
-        return None
-
     def autofill_category(self, update_filter: UpdateFilter | None = None):
         if update_filter and not (
             self.address_edit.address in update_filter.addresses
@@ -325,13 +325,20 @@ class RecipientWidget(QWidget):
 
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
 
-        label = self.get_label_from_any_wallet()
+        label = get_label_from_any_wallet(
+            self.address_edit.address, signals=self.signals, autofill_from_txs=False
+        )
         if label:
             self.label_line_edit.set_placeholder(label)
             if not self.allow_edit:
                 self.label_line_edit.set_label(label)
         else:
             self.label_line_edit.set_placeholder(self.tr("Enter label for recipient address"))
+
+            completer_label = get_label_from_any_wallet(
+                self.address_edit.address, signals=self.signals, autofill_from_txs=True
+            )
+            self.label_line_edit.label_edit.set_completer_list([completer_label] if completer_label else [])
 
     def autofill_label_and_category(self, update_filter: UpdateFilter | None = None):
         self.autofill_label(update_filter)

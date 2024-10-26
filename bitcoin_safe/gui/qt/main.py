@@ -509,7 +509,7 @@ class MainWindow(QMainWindow):
 
         last_qt_wallet_involved: Optional[QTWallet] = None
         for qt_wallet in self.qt_wallets.values():
-            if qt_wallet.wallet.transaction_involves_wallet(transaction):
+            if qt_wallet.wallet.transaction_related_to_my_addresses(transaction):
                 qt_wallets_to_sync.append(qt_wallet)
                 last_qt_wallet_involved = qt_wallet
 
@@ -546,8 +546,11 @@ class MainWindow(QMainWindow):
         self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon))
 
     def onTrayIconActivated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
-        if reason == QSystemTrayIcon.ActivationReason.Trigger:
-            Message(self.tr("test"), no_show=True).emit_with(self.signals.notification)
+        # Attempts to bring the window to the foreground
+        self.raise_()
+        self.activateWindow()
+        # if reason == QSystemTrayIcon.ActivationReason.Trigger:
+        #     Message(self.tr("test"), no_show=True).emit_with(self.signals.notification)
 
     def open_network_settings(self) -> None:
         self.network_settings_ui.exec()

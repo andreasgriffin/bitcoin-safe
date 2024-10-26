@@ -60,10 +60,6 @@
         <translation>Endereço {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>troco</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>recebimento</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>Saldo</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>Saldo em moeda fiduciária</translation>
+        <source>change</source>
+        <translation>troco</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>Identificador de Transação</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} Confirmações</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>Não é possível abrir a carteira &apos;{id}&apos;. Por favor, abra a carteira primeiro.</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;Abrir Carteira</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>teste</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>Por favor, selecione a carteira primeiro.</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>OK</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Abrir &amp;Recente</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>Por favor, cole sua Transação Bitcoin ou PSBT aqui, ou solte um arquivo</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Abrir &amp;Recente</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>Não existe tal arquivo: {file_path}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Salvar Carteira Atual</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>Por favor, insira a senha para {filename}:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Salvar Carteira Atual</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>Janela Principal  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Pesquisar  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>Dispositivos conectados  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Pesquisar  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>Alternar Passphrase  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Mudar  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>Mostrar Endereço  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;Mudar  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Respostas: {name}: {status}     Instância do Mempool: {server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>Erro na conexão com o servidor. 
+{responses}
+
+Deseja prosseguir mesmo assim?</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>{number} novas transações na carteira &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>Renomear ou fundir categorias</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>Escolha um novo nome, ou um nome existente para fusão:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Clique para novo endereço</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>Importar etiquetas</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Sincronizar</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Todos os Ficheiros (*);;Ficheiros JSONL (*.jsonl);;Ficheiros JSON (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Atualizado com sucesso {number} etiquetas  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>Sincronizar</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

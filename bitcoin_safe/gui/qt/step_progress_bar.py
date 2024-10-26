@@ -454,7 +454,7 @@ class AutoResizingStackedWidget(QWidget):
         return self.widgets.index(widget) if widget in self.widgets else -1
 
 
-class StepProgressContainer(QWidget, ThreadingManager):
+class StepProgressContainer(ThreadingManager, QWidget):
     signal_set_current_widget = pyqtSignal(QWidget)
     signal_widget_focus = pyqtSignal(QWidget)
     signal_widget_unfocus = pyqtSignal(QWidget)
@@ -472,7 +472,7 @@ class StepProgressContainer(QWidget, ThreadingManager):
         use_resizing_stacked_widget=True,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
-        super().__init__(parent, signals_min=signals_min, threading_parent=threading_parent)  # type: ignore
+        super().__init__(parent=parent, signals_min=signals_min, threading_parent=threading_parent)  # type: ignore
         self.signals_min = signals_min
         self.threading_parent = threading_parent
         self.step_bar = StepProgressBar(

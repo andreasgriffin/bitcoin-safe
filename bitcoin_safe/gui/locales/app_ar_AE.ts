@@ -60,10 +60,6 @@
         <translation>العنوان {address}</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>تغيير</translation>
-    </message>
-    <message>
         <source>receiving</source>
         <translation>استقبال</translation>
     </message>
@@ -116,8 +112,8 @@
         <translation>رصيد</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>رصيد نقدي</translation>
+        <source>change</source>
+        <translation>تغيير</translation>
     </message>
 </context>
 <context>
@@ -800,6 +796,10 @@ the sending value {sent}</source>
         <translation>معرف المعاملة</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} تأكيدات</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>تعذر جلب المحفظة &apos;{id}&apos;. يرجى فتح المحفظة أولاً.</translation>
     </message>
@@ -1092,10 +1092,6 @@ Location of signing device: .....</source>
         <translation>&amp;فتح المحفظة</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>اختبار</translation>
-    </message>
-    <message>
         <source>Please select the wallet first.</source>
         <translation>يرجى تحديد المحفظة أولاً.</translation>
     </message>
@@ -1132,12 +1128,12 @@ Location of signing device: .....</source>
         <translation>موافق</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>فتح &amp;الأخيرة</translation>
-    </message>
-    <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>يرجى لصق معاملات البيتكوين الخاصة بك أو PSBT هنا، أو إسقاط ملف</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>فتح &amp;الأخيرة</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1176,12 +1172,12 @@ Location of signing device: .....</source>
         <translation>لا يوجد ملف بهذا الاسم: {مسار_الملف}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;حفظ المحفظة الحالية</translation>
-    </message>
-    <message>
         <source>Please enter the password for {filename}:</source>
         <translation>يرجى إدخال كلمة المرور لـ {اسم_الملف}:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1220,12 +1216,12 @@ Location of signing device: .....</source>
         <translation>النافذة الرئيسية  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;بحث  </translation>
-    </message>
-    <message>
         <source>Connected devices</source>
         <translation>الأجهزة المتصلة  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;بحث  </translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -1264,12 +1260,12 @@ Location of signing device: .....</source>
         <translation>تبديل عبارة المرور  </translation>
     </message>
     <message>
-        <source>&amp;Change</source>
-        <translation>&amp;تغيير  </translation>
-    </message>
-    <message>
         <source>Display Address</source>
         <translation>عرض العنوان  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;تغيير  </translation>
     </message>
     <message>
         <source>Actions</source>
@@ -1375,6 +1371,16 @@ Location of signing device: .....</source>
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>الردود: {name}: {status}     Mempool Instance: {server}</translation>
+    </message>
+    <message>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>خطأ في اتصال الخادم. 
+{responses}
+
+هل تريد المتابعة على أي حال؟ </translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -1654,6 +1660,14 @@ Location of signing device: .....</source>
         <translation>{number} معاملات جديدة في المحفظة &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>إعادة تسمية أو دمج الفئات</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>اختر اسمًا جديدًا، أو اسمًا موجودًا للدمج:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>انقر للحصول على عنوان جديد</translation>
     </message>
@@ -1670,16 +1684,16 @@ Location of signing device: .....</source>
         <translation>استيراد التسميات</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>مزامنة</translation>
+    </message>
+    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>جميع الملفات (*);;ملفات JSONL (*.jsonl);;ملفات JSON (*.json)</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>تم تحديث {number} من العلامات بنجاح  </translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation>مزامنة</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>

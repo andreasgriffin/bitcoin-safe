@@ -43,6 +43,7 @@ from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
+    QInputDialog,
     QMessageBox,
     QSplitter,
     QTabWidget,
@@ -196,6 +197,7 @@ class QTWallet(QtWalletBase):
 
         self._last_syncing_start = datetime.datetime.now()
         self._syncing_delay = timedelta(seconds=0)
+        self._last_sync_chain_height = 0
 
         ########### create tabs
         (
@@ -359,7 +361,7 @@ class QTWallet(QtWalletBase):
         new_wallet = Wallet.from_protowallet(
             protowallet=self.wallet_descriptor_ui.protowallet,
             config=self.config,
-            data_dump=self.wallet.data_dump,
+            data_dump=None,  # This forces a recrtion of the sync tab, including the updated group-discovery key from the (updated) descriptor  #,self.wallet.data_dump,
             labels=self.wallet.labels,
             default_category=self.wallet.labels.default_category,
         )
@@ -619,11 +621,16 @@ class QTWallet(QtWalletBase):
         self.handle_appended_txs(delta_txs.appended)
 
     def refresh_caches_and_ui_lists(
-        self, enable_threading=ENABLE_THREADING, force_ui_refresh=True, chain_height_advanced=False
+        self,
+        enable_threading=ENABLE_THREADING,
+        force_ui_refresh=True,
+        chain_height_advanced=False,
+        clear_cache=True,
     ) -> None:
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
         logger.debug("refresh_caches_and_ui_lists")
-        self.wallet.clear_cache()
+        if clear_cache:
+            self.wallet.clear_cache()
 
         def do() -> Any:
             self.wallet.fill_commonly_used_caches()
@@ -775,13 +782,26 @@ class QTWallet(QtWalletBase):
         )
 
     def delete_category(self, category: str) -> None:
-        affected_keys = self.wallet.labels.delete_category(category)
+        # Show dialog and get input
+        text, ok = QInputDialog.getText(
+            self.tab,
+            self.tr("Rename or merge categories"),
+            self.tr("Choose a new name, or an existing name for merging:"),
+            text=category,
+        )
+        if ok and text:
+            new_category = text
+        else:
+            # just rename it with the same name
+            new_category = category
+
+        affected_keys = self.wallet.labels.rename_category(category, new_category)
         self.wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=affected_keys,
                 categories=([category]),
                 txids=affected_keys,
-                reason=UpdateFilterReason.CategoryDeleted,
+                reason=UpdateFilterReason.CategoryRenamed,
             )
         )
 
@@ -920,10 +940,11 @@ class QTWallet(QtWalletBase):
         toolbar = AddressListWithToolbar(l, self.config, parent=tabs, signals=self.signals)
 
         tags = CategoryEditor(
-            self.wallet.labels.categories,
+            lambda: self.wallet.labels.categories,
             self.wallet_signals,
             get_sub_texts=self._subtexts_for_categories,
         )
+        tags.signal_category_added.connect(self.on_add_category)
 
         def create_new_address(category) -> None:
             self.address_list.get_address(force_new=True, category=category)
@@ -935,6 +956,9 @@ class QTWallet(QtWalletBase):
 
         tabs.add_tab(tab=tab, icon=read_QIcon("receive.svg"), description="", position=1, data=toolbar)
         return tab, l, tags
+
+    def on_add_category(self, category: str) -> None:
+        self.wallet.labels.add_category(category)
 
     def set_sync_status(self, new: SyncStatus) -> None:
         self.sync_status = new
@@ -955,7 +979,7 @@ class QTWallet(QtWalletBase):
 
         def on_done(result) -> None:
             self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
-            interval_timer_sync_regularly = int(self._syncing_delay.total_seconds() * 200)
+            interval_timer_sync_regularly = max(int(self._syncing_delay.total_seconds() * 200), 30)  # in sec
             self.timer_sync_regularly.setInterval(interval_timer_sync_regularly * 1000)
             logger.info(
                 f"Syncing took {self._syncing_delay} --> set the interval_timer_sync_regularly to {interval_timer_sync_regularly}s"
@@ -976,11 +1000,14 @@ class QTWallet(QtWalletBase):
             logger.info("start updating lists")
             # self.wallet.clear_cache()
             self.refresh_caches_and_ui_lists(
-                force_ui_refresh=False, chain_height_advanced=self.wallet.get_height() != old_chain_height
+                force_ui_refresh=False,
+                chain_height_advanced=self.wallet.get_height() != self._last_sync_chain_height,
             )
             # self.update_tabs()
             logger.info("finished updating lists")
+            self._last_sync_chain_height = self.wallet.get_height()
 
+            self.fx.update_if_needed()
             self.signal_after_sync.emit(self.sync_status)
 
         logger.info(f"Refresh all caches before syncing.")
@@ -995,10 +1022,9 @@ class QTWallet(QtWalletBase):
         #       (since bdk is blocked due to syncing)
         #   2. Only use the cache during syncing.  This is the chosen solution here.
         #       by filling all the cache before the sync
-        #       Additionally I do this in the main thread so all caches
+        #       I do this in the main thread so all caches
         #       are filled before the syncing process
-        old_chain_height = self.wallet.get_height()
-        self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False)
+        self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False, clear_cache=False)
 
         logger.info(f"Start syncing wallet {self.wallet.id}")
         self.set_sync_status(SyncStatus.syncing)

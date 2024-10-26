@@ -991,7 +991,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             "out": self.get_output_addresses(transaction),
         }
 
-    def transaction_involves_wallet(self, transaction: bdk.Transaction) -> bool:
+    def transaction_related_to_my_addresses(self, transaction: bdk.Transaction) -> bool:
         addresses = self.get_addresses()
         for tx_addresses in self.list_tx_addresses(transaction).values():
             if set(addresses).intersection(set([a for a in tx_addresses if a])):
@@ -1868,6 +1868,23 @@ def get_wallet_of_outpoints(outpoints: List[OutPoint], signals: Signals) -> Opti
 
     i = np.argmax(number_intersections)
     return wallets[i]
+
+
+def get_label_from_any_wallet(
+    address: str,
+    signals: Signals,
+    autofill_from_txs: bool,
+    wallets: List[Wallet] | None = None,
+    verbose_label=False,
+) -> Optional[str]:
+    wallets = wallets if wallets is not None else get_wallets(signals)
+    for wallet in wallets:
+        label = wallet.get_label_for_address(
+            address, autofill_from_txs=autofill_from_txs, verbose_label=verbose_label
+        )
+        if label:
+            return label
+    return None
 
 
 ###########

@@ -282,8 +282,12 @@ def clean_list(l: Iterable[T | None]) -> List[T]:
     return [v for v in l if v]
 
 
+def list_of_dict_to_jsonline_list(list_of_dict: list[Dict]):
+    return [json.dumps(d) for d in list_of_dict]
+
+
 def list_of_dict_to_jsonlines(list_of_dict: list[Dict]):
-    return "\n".join([json.dumps(d) for d in list_of_dict])
+    return "\n".join(list_of_dict_to_jsonline_list(list_of_dict))
 
 
 def clean_lines(lines: List[str]) -> List[str]:
@@ -427,10 +431,6 @@ def color_format_str(
         return f"\033[{ansi_code}m{s}\033[0m"
 
     return s
-
-
-def format_dollar(value: float) -> str:
-    return f"${value:.2f}"
 
 
 # Main formatting function

@@ -36,6 +36,7 @@ from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
 from bitcoin_nostr_chat.nostr import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_qr_tools.data import DataType
+from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtWidgets import QCheckBox
 
@@ -47,7 +48,7 @@ from bitcoin_safe.storage import filtered_for_init
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import bdkpython as bdk
 
@@ -69,6 +70,7 @@ class SyncTab(QObject):
 
         self.main_widget = ControlledGroupbox(checkbox_text="", enabled=enabled)
         self.main_widget.checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.main_widget.checkbox.clicked.connect(self.publish_key_if_clicked)
 
         self.checkbox_auto_open_psbts = QCheckBox()
         self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)
@@ -85,6 +87,14 @@ class SyncTab(QObject):
         self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
         self.main_widget.groupbox_layout.addWidget(self.nostr_sync.gui)
         self.signals.language_switch.connect(self.updateUi)
+
+    def publish_key_if_clicked(self):
+        # just in case the relay lost the publish key message. I republish here
+        if self.main_widget.checkbox.isChecked():
+            logger.info(
+                f"Publish my key {self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()} in protocol chat {self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()}"
+            )
+            self.nostr_sync.publish_my_key_in_protocol(force=True)
 
     def updateUi(self) -> None:
         self.main_widget.checkbox.setText(self.tr("Encrypted syncing to trusted devices"))
@@ -122,7 +132,7 @@ class SyncTab(QObject):
         Args:
             dm (BitcoinDM): _description_
         """
-        if dm.created_at < self.nostr_sync.group_chat.last_shutdown:
+        if self.nostr_sync.group_chat.sync_start and (dm.created_at < self.nostr_sync.group_chat.sync_start):
             # dm was created before the last shutdown,
             # and therefore should have been received already.
             return
@@ -150,6 +160,18 @@ class SyncTab(QObject):
         return self.main_widget.checkbox.isChecked()
 
     @classmethod
+    def generate_hash_hex(
+        cls,
+        address_type: AddressType,
+        xpubs: List[str],
+        network: bdk.Network,
+    ) -> str:
+        default_key_origin = address_type.key_origin(network)
+
+        total_string = default_key_origin + "".join(sorted(xpubs))
+        return hashlib.sha256(total_string.encode()).hexdigest()
+
+    @classmethod
     def from_descriptor_new_device_keys(
         cls,
         multipath_descriptor: MultipathDescriptor,
@@ -157,10 +179,14 @@ class SyncTab(QObject):
         signals: Signals,
         parent: QObject | None = None,
     ) -> "SyncTab":
-        encoded_wallet_descriptor = hashlib.sha256(multipath_descriptor.as_string().encode()).hexdigest()
+        descriptor_info = DescriptorInfo.from_str(multipath_descriptor.as_string())
+        xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
+
         protocol_keys = nostr_sdk.Keys(
             secret_key=nostr_sdk.SecretKey.from_hex(
-                hashlib.sha256(encoded_wallet_descriptor.encode("utf-8")).hexdigest()
+                hashlib.sha256(
+                    cls.generate_hash_hex(descriptor_info.address_type, xpubs, network).encode("utf-8")
+                ).hexdigest()
             )
         )
 
