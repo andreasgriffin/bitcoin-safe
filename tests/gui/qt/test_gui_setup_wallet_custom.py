@@ -230,6 +230,13 @@ def test_custom_wallet_setup_custom_single_sig(
 
         check_that_it_is_in_recent_wallets()
 
+        def switch_language() -> None:
+            main_window.language_chooser.switchLanguage("zh_CN")
+
+            shutter.save(main_window)
+
+        switch_language()
+
         # end
         shutter.save(main_window)
         sleep(2)

@@ -1794,4 +1794,4 @@ class WalletSteps(WalletStepsBase):
                 else self.tr("Send test")
             )
 
-        self.set_labels([labels[key] for key in self.tab_generators])
+        self.set_labels([labels[key] for key in self.tab_generators if key in labels])
