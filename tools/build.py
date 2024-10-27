@@ -45,6 +45,7 @@ from bitcoin_safe.signature_manager import (
     SignatureSigner,
     SignatureVerifyer,
 )
+from tools.release import get_git_tag
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -56,6 +57,10 @@ class Builder:
     def __init__(self, module_name, clean_all=False):
         self.module_name = module_name
         self.version = __version__ if __version__ else "unknown-version"
+        if __version__ != get_git_tag():
+            # i still proceed with this, since I need to test the builds,
+            # before the git tag is set
+            logger.error(f"__version__ {__version__} != git tag {get_git_tag()}")
 
         self.app_name = (
             f"{self.app_name_formatter(module_name)}_{self.version}" if self.version else "unknown-version"
@@ -97,6 +102,8 @@ class Builder:
         # Extract packages from the lock file
         for package in poetry_lock_data["package"]:
             name = package["name"]
+            if name in ["xattr", "poetry"]:
+                continue
             version = package["version"]
             if package.get("source"):
                 briefcase_requires.append(package.get("source", {}).get("url"))

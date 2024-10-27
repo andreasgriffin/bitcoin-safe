@@ -83,14 +83,9 @@ def run_pytest() -> None:
         sys.exit("Stopping script due to failed tests.")
 
 
-def get_latest_git_tag() -> Optional[str]:
-    """Fetch the latest tag from the local git repository."""
-    try:
-        latest_tag = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"]).decode().strip()
-        return latest_tag
-    except subprocess.CalledProcessError as e:
-        print("Failed to fetch latest Git tag:", e)
-        return None
+def get_git_tag() -> str:
+    """Fetch the tag from the git repository."""
+    return subprocess.check_output(["git", "describe", "--tags", "--dirty", "--always"]).decode().strip()
 
 
 def get_checkout_main():
@@ -255,10 +250,10 @@ def main() -> None:
 
     from bitcoin_safe import __version__
 
-    latest_tag: Optional[str] = get_latest_git_tag()
-    if latest_tag == __version__ and (
+    git_tag: Optional[str] = get_git_tag()
+    if git_tag == __version__ and (
         get_input_with_default(
-            f"The tag {latest_tag} exists already. Do you want to continue? (y/n): ", "n"
+            f"The tag {git_tag} exists already. Do you want to continue? (y/n): ", "n"
         ).lower()
         != "y"
     ):
@@ -267,8 +262,10 @@ def main() -> None:
     if get_input_with_default(f"Is this version {__version__} correct? (y/n): ", "y").lower() != "y":
         return
 
-    if latest_tag != __version__:
-        add_and_publish_git_tag(__version__)
+    if git_tag != __version__:
+        print(f"Error: Git tag {git_tag} != {__version__}")
+        return
+        # add_and_publish_git_tag(__version__)
 
     directory = Path("dist")
     files = list_directory_files(directory)
