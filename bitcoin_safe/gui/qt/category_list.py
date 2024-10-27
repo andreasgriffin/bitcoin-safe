@@ -75,8 +75,10 @@ class CategoryList(CustomListWidget):
         self.refresh(UpdateFilter(refresh_all=True))
 
     @staticmethod
-    def shoud_update(update_filter: UpdateFilter) -> bool:
+    def shoud_update(update_filter: UpdateFilter | None = None) -> bool:
         should_update = False
+        if update_filter is None:
+            return True
         if should_update or update_filter.refresh_all:
             should_update = True
         if should_update or update_filter.categories:
@@ -86,7 +88,7 @@ class CategoryList(CustomListWidget):
 
         return should_update
 
-    def refresh(self, update_filter: UpdateFilter) -> None:
+    def refresh(self, update_filter: UpdateFilter | None = None) -> None:
         if not self.shoud_update(update_filter):
             return
 
