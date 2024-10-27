@@ -472,7 +472,7 @@ class StepProgressContainer(ThreadingManager, QWidget):
         use_resizing_stacked_widget=True,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
-        super().__init__(parent=parent, signals_min=signals_min, threading_parent=threading_parent)  # type: ignore
+        super().__init__(parent=parent, threading_parent=threading_parent)  # type: ignore
         self.signals_min = signals_min
         self.threading_parent = threading_parent
         self.step_bar = StepProgressBar(

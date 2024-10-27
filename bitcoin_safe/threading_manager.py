@@ -38,7 +38,6 @@ from typing import Any, Callable, NamedTuple, Optional, Tuple
 from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 
 from bitcoin_safe.execute_config import ENABLE_THREADING
-from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
 
@@ -87,9 +86,8 @@ class TaskThread(QThread):
 
     signal_stop_threat = pyqtSignal(str)
 
-    def __init__(self, signals_min: SignalsMin, enable_threading: bool = ENABLE_THREADING) -> None:
+    def __init__(self, enable_threading: bool = ENABLE_THREADING) -> None:
         super().__init__()
-        self.signals_min = signals_min
         self.worker: Optional[Worker] = (
             None  # Type hint adjusted because it will be immediately initialized in add_and_start
         )
@@ -203,38 +201,39 @@ class NoThread:
 
 class ThreadingManager:
     def __init__(
-        self, signals_min: SignalsMin, threading_parent: "ThreadingManager" = None, name=None, **kwargs  # type: ignore
+        self, threading_parent: "ThreadingManager" = None, threading_manager_name=None, **kwargs  # type: ignore
     ) -> None:
         super().__init__(**kwargs)
-        self.signals_min = signals_min
-        self.taskthreads: deque[TaskThread] = deque()
+        self._taskthreads: deque[TaskThread] = deque()
         self.threading_manager_children: deque[ThreadingManager] = deque()
         self.lock = Lock()
         self.threading_parent = threading_parent
-        self.threading_manager_name = name if name else self.__class__.__name__
+        self.threading_manager_name = (
+            threading_manager_name if threading_manager_name else self.__class__.__name__
+        )
 
         if threading_parent:
             threading_parent.threading_manager_children.append(self)
 
     def append_thread(self, thread: TaskThread):
         with self.lock:
-            self.taskthreads.append(thread)
+            self._taskthreads.append(thread)
             thread.signal_stop_threat.connect(self.remove_thread)
             logger.debug(
-                f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self.taskthreads)} {[str(thread) for thread in  self.taskthreads]}"
+                f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
     def remove_thread(self, thread_name: str | None):
         with self.lock:
-            for thread in list(self.taskthreads):
+            for thread in list(self._taskthreads):
                 # if not thread.thread_name:
                 #     # remove empty threads
                 #     # (unclear why thread_name is set to None when threads are done)
                 #     self.taskthreads.remove(thread)
                 if thread.thread_name == thread_name:
-                    self.taskthreads.remove(thread)
+                    self._taskthreads.remove(thread)
             logger.debug(
-                f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self.taskthreads)} {[str(thread) for thread in  self.taskthreads]}"
+                f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
     def stop_and_wait_all(self):
@@ -243,8 +242,8 @@ class ThreadingManager:
             child.end_threading_manager()
 
         # Wait for all threads to finish
-        while self.taskthreads:
-            taskthread = self.taskthreads.pop()
+        while self._taskthreads:
+            taskthread = self._taskthreads.pop()
             logger.debug(f"stop taskthreads {taskthread}")
             taskthread.stop()
 

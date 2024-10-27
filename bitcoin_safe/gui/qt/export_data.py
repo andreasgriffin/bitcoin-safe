@@ -176,7 +176,6 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             enable_file=enable_file,
             enable_usb=enable_usb,
             enable_clipboard=enable_clipboard,
-            signals_min=signals_min,
             threading_parent=threading_parent,
         )
         self.network = network
@@ -495,9 +494,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
                 # self.qr_label can reference a destroyed c++ object
                 self.signal_set_qr_images.emit(result)
 
-        self.append_thread(
-            TaskThread(signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
-        )
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def export_to_file(self, default_filename=None) -> Optional[str]:
         default_suffix = "txt"

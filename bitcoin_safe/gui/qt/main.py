@@ -124,9 +124,9 @@ class MainWindow(QMainWindow):
 
         self.signals = Signals()
         self.qt_wallets: Dict[str, QTWallet] = {}
-        self.threading_manager = ThreadingManager(signals_min=self.signals, name=self.__class__.__name__)
+        self.threading_manager = ThreadingManager(threading_manager_name=self.__class__.__name__)
 
-        self.fx = FX(signals_min=self.signals, threading_parent=self.threading_manager)
+        self.fx = FX(threading_parent=self.threading_manager)
         self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
         if not config_present:
             self.config.language_code = self.language_chooser.dialog_choose_language(self)

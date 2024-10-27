@@ -43,7 +43,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
-from ...html import html_f, link
+from ...html import html_f
 from ...signals import SignalsMin
 from ...signature_manager import (
     Asset,
@@ -78,7 +78,6 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             has_close_button=True,
             parent=parent,
             threading_parent=threading_parent,
-            signals_min=signals_min,
         )
         self.signals_min = signals_min
         refresh_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
@@ -142,42 +141,24 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             self.setVisible(False)
             return
 
-        if not self.verifyer.is_gnupg_installed():
-            txt = None
-            if platform.system() == "Windows":
-                txt = self.tr(
-                    """Please install  {link} to automatically verify the signature of the update."""
-                ).format(link=link("https://www.gpg4win.org"))
-            elif platform.system() == "Linux":
-                txt = self.tr(
-                    """Please install  GPG via "sudo apt-get -y install gpg" to automatically verify the signature of the update."""
-                )
-            elif platform.system() == "Darwin":
-                txt = self.tr(
-                    """Please install  GPG via "brew install gnupg" to automatically verify the signature of the update."""
-                )
-            if txt:
-                Message(txt, type=MessageType.Error)
-
         destination = self.get_download_folder()
         was_signature_verified = None
-        if self.verifyer.is_gnupg_installed():
-            was_signature_verified = self.verifyer.verify_signature(
-                download_thread.filename, expected_public_key=self.key
-            )
-            if not was_signature_verified:
-                Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
-                self.refresh()
-                self.setVisible(False)
-                return
-            else:
-                self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
 
-        if not self.verifyer.is_gnupg_installed() or was_signature_verified:
-            # overwrite the download_thread.filename so the show-button still works
-            download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
-            if sig_file_path:
-                self.move_and_overwrite(sig_file_path, destination)
+        was_signature_verified = self.verifyer.verify_signature(
+            download_thread.filename, expected_public_key=self.key
+        )
+        if not was_signature_verified:
+            Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
+            self.refresh()
+            self.setVisible(False)
+            return
+
+        self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
+
+        # overwrite the download_thread.filename so the show-button still works
+        download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
+        if sig_file_path:
+            self.move_and_overwrite(sig_file_path, destination)
 
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:
@@ -236,9 +217,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")
 
-        self.append_thread(
-            (TaskThread(signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error))
-        )
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def check_and_make_visible(self) -> None:
         self.check()

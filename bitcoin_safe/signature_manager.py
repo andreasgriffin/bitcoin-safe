@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import glob
 import hashlib
 import logging
@@ -38,6 +37,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+import pgpy  # Python-native OpenPGP library
 import requests
 
 gnupg = None
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class GPGKey:
+class SimpleGPGKey:
     key: str
     repository: str  # org/repo_name
     prefix: str
@@ -119,70 +119,42 @@ class GitHubAssetDownloader:
 class SignatureVerifyer:
     def __init__(
         self,
-        list_of_known_keys: Optional[List[GPGKey]],
+        list_of_known_keys: Optional[List[SimpleGPGKey]],
     ) -> None:
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
-        self._gpg: Any = None
+        self.public_keys: Dict[str, pgpy.PGPKey] = {}
         self.import_known_keys()
 
-    @staticmethod
-    def _get_gpg_path() -> Optional[str]:
-        command = "gpg"
-        gpg_path = shutil.which(command)
-        if gpg_path:
-            try:
-                subprocess.run(
-                    [command, "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                )
-                return command
-            except subprocess.CalledProcessError:
-                return None
-        elif platform.system() == "Windows":
-            import winreg
+    def import_public_key_file(self, path: Path) -> pgpy.PGPKey:
+        with open(str(path), "r") as file:
+            return self.import_public_key_block(file.read())
 
-            try:
-                # Open the registry key
-                with winreg.OpenKey(  # type: ignore
-                    winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\GnuPG", 0, winreg.KEY_READ  # type: ignore
-                ) as key:
-                    # Read the value of the Install Directory
-                    install_dir, _ = winreg.QueryValueEx(key, "Install Directory")  # type: ignore
-                    gpg_path = os.path.join(install_dir, "bin", "gpg.exe")
-                    if os.path.isfile(gpg_path):
-                        return gpg_path
-            except FileNotFoundError:
-                pass
-            except OSError as e:
-                print(f"Error accessing registry: {e}")
-            return None
-        return None
+    def import_public_key_block(self, public_key_block: str) -> pgpy.PGPKey:
+        """
+        Import a public key block and return its fingerprint.
 
-    @staticmethod
-    def is_gnupg_installed() -> bool:
-        return bool(SignatureVerifyer._get_gpg_path())
+        :param public_key_block: The public key block in ASCII armor format.
+        :return: The fingerprint of the imported public key.
+        """
 
-    @property
-    def gpg(self) -> Any:
-        if self._gpg:
-            return self._gpg
+        result = pgpy.PGPKey.from_blob(public_key_block)
+        public_key = None
+        if isinstance(result, pgpy.PGPKey):
+            public_key = result
+        elif isinstance(result, tuple):
+            public_key, _ = result
 
-        if self.is_gnupg_installed():
-            global gnupg
-            import gnupg as _gnupg
+        if isinstance(public_key, pgpy.PGPKey):
+            fingerprint = str(public_key.fingerprint)
+            self.public_keys[fingerprint] = public_key
+            logger.info(f"Public key imported with fingerprint: {public_key.fingerprint}")
+            return public_key
 
-            gnupg = _gnupg
-
-            gpg_path = self._get_gpg_path()
-            if not gpg_path:
-                raise EnvironmentError("GnuPG path could not be determined.")
-            self._gpg = gnupg.GPG(gpgbinary=gpg_path)
-            return self._gpg
-        else:
-            raise EnvironmentError("GnuPG is not installed on this system.")
+        raise Exception(f"Could not process result f{result}")
 
     def import_known_keys(self) -> None:
         for key in self.list_of_known_keys:
-            self.gpg.import_keys(key.key)
+            self.import_public_key_block(key.key)
 
     @staticmethod
     def verify_manifest_hashes(manifest_file: Path) -> bool:
@@ -232,7 +204,7 @@ class SignatureVerifyer:
         manifest = signature_file.parent / signature_file.name.removesuffix(".asc")
         return manifest if self.verify_manifest_hashes(manifest) else None
 
-    def verify_signature(self, binary_filename: Path, expected_public_key: GPGKey) -> bool:
+    def verify_signature(self, binary_filename: Path, expected_public_key: SimpleGPGKey) -> bool:
         signature_file = self.get_signature_file(binary_filename)
         if not signature_file:
             signature_file = self.get_signature_from_web(binary_filename)
@@ -241,24 +213,47 @@ class SignatureVerifyer:
                 return False
 
         key = self.get_key(binary_filename)
-        expected_fingerprint = self.import_public_key_block(expected_public_key.key)
+        public_key = self.import_public_key_block(expected_public_key.key)
+        if not public_key:
+            logger.error("Expected public key not found.")
+            return False
+
         binary_file_to_check = binary_filename
         if key and key.manifest_ending:
-
             manifest_file = self.get_valid_manifest(signature_file)
-            if not (manifest_file):
+            if not manifest_file:
                 return False
-
             binary_file_to_check = manifest_file
 
         verification_result = self._verify_file(
-            binary_file=binary_file_to_check, signature_file=signature_file
+            public_key=public_key, binary_file=binary_file_to_check, signature_file=signature_file
         )
-        return verification_result.fingerprint == expected_fingerprint and verification_result.valid
 
-    def _verify_file(self, binary_file: Union[Path, str], signature_file: Union[Path, str]) -> Any:
-        with open(str(signature_file), "rb") as sig_file:
-            return self.gpg.verify_file(data_filename=str(binary_file), fileobj_or_path=sig_file)
+        return verification_result
+
+    def _verify_file(
+        self, public_key: pgpy.PGPKey, binary_file: Union[Path, str], signature_file: Union[Path, str]
+    ) -> bool:
+        try:
+            with open(str(signature_file), "rb") as sig_file:
+                signature = pgpy.PGPSignature.from_blob(sig_file.read())
+
+            with open(str(binary_file), "rb") as bin_file:
+                message_data = bin_file.read()
+
+            pgpmessage = pgpy.PGPMessage.new(message_data, file=True)
+
+            # Verify the signature
+            verify_result = public_key.verify(pgpmessage.message, signature)
+            if not verify_result:
+                return False
+            good_signatures = list(verify_result.good_signatures)
+            bad_signatures = list(verify_result.bad_signatures)
+            # 1 single bad signature creates a False result
+            return bool(good_signatures) and not bool(bad_signatures)
+        except Exception as e:
+            logger.error(f"Verification failed: {e}")
+            return False
 
     @staticmethod
     def _get_asset_url(assets: List[Asset], ending: str) -> Optional[str]:
@@ -279,19 +274,16 @@ class SignatureVerifyer:
     def _download_asset_file(
         assets: List[Asset], target_directory: Path, asset_ending: str
     ) -> Optional[Path]:
-        if url := SignatureSigner._get_asset_url(assets, asset_ending):
+        if url := SignatureVerifyer._get_asset_url(assets, asset_ending):
             url_filename = Path(url).name
             filename = target_directory / url_filename
-            SignatureSigner._download_file(url, filename)
+            SignatureVerifyer._download_file(url, filename)
             return filename
         return None
 
     def get_signature_file(self, binary_filename: Path) -> Optional[Path]:
         key = self.get_key(binary_filename)
-        if not key:
-            return None
-
-        if key.manifest_ending:
+        if key and key.manifest_ending:
             manifest_files = glob.glob(str(binary_filename.parent / f"*{key.manifest_ending}"))
             sig_files = glob.glob(str(binary_filename.parent / f"*{key.manifest_ending}.asc"))
 
@@ -305,7 +297,7 @@ class SignatureVerifyer:
         sig_file = self.get_signature_file(binary_filename)
         return sig_file.exists() if sig_file else False
 
-    def get_key(self, binary_filename: Path) -> Optional[GPGKey]:
+    def get_key(self, binary_filename: Path) -> Optional[SimpleGPGKey]:
         for key in self.list_of_known_keys:
             tag = key.get_tag_if_mine(binary_filename.name)
             if tag:
@@ -340,6 +332,92 @@ class SignatureVerifyer:
                 )
         return sig_filename
 
+    def get_key_meta_info(self, key: SimpleGPGKey) -> Dict:
+        """
+        Retrieve meta-information about a key given its fingerprint.
+
+        :param key: The GPGKey object containing the key data.
+        :return: A dictionary containing the key's meta-information.
+        """
+        public_key = self.import_public_key_block(key.key)
+
+        key_info = {
+            "fingerprint": public_key.fingerprint,
+            "userids": [uid.name for uid in public_key.userids],
+            "created": public_key.created,
+            "algorithm": public_key.key_algorithm.name,
+        }
+        return key_info
+
+
+class GPGSignatureVerifyer:
+    def __init__(
+        self,
+        list_of_known_keys: Optional[List[SimpleGPGKey]],
+    ) -> None:
+        self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
+        self._gpg: Any = None
+        self.import_known_keys()
+
+    @staticmethod
+    def _get_gpg_path() -> Optional[str]:
+        command = "gpg"
+        gpg_path = shutil.which(command)
+        if gpg_path:
+            try:
+                subprocess.run(
+                    [command, "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                return command
+            except subprocess.CalledProcessError:
+                return None
+        elif platform.system() == "Windows":
+            import winreg
+
+            try:
+                # Open the registry key
+                with winreg.OpenKey(  # type: ignore
+                    winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\GnuPG", 0, winreg.KEY_READ  # type: ignore
+                ) as key:
+                    # Read the value of the Install Directory
+                    install_dir, _ = winreg.QueryValueEx(key, "Install Directory")  # type: ignore
+                    gpg_path = os.path.join(install_dir, "bin", "gpg.exe")
+                    if os.path.isfile(gpg_path):
+                        return gpg_path
+            except FileNotFoundError:
+                pass
+            except OSError as e:
+                print(f"Error accessing registry: {e}")
+            return None
+        return None
+
+    @classmethod
+    def is_gnupg_installed(cls) -> bool:
+        return bool(cls._get_gpg_path())
+
+    @property
+    def gpg(self) -> Any:
+        if self._gpg:
+            return self._gpg
+
+        if self.is_gnupg_installed():
+            global gnupg
+            import gnupg as _gnupg
+
+            gnupg = _gnupg
+
+            gpg_path = self._get_gpg_path()
+            if not gpg_path:
+                raise EnvironmentError("GnuPG path could not be determined.")
+            self._gpg = gnupg.GPG(gpgbinary=gpg_path)
+            return self._gpg
+        else:
+            raise EnvironmentError("GnuPG is not installed on this system.")
+
+    def import_known_keys(self) -> None:
+        for key in self.list_of_known_keys:
+            self.gpg.import_keys(key.key)
+
     def import_public_key_block(self, public_key_block: str) -> str:
         """
         Import a public key block into the GnuPG keyring and return its fingerprint.
@@ -358,30 +436,13 @@ class SignatureVerifyer:
         logger.info(f"Public key imported with fingerprint: {fingerprint}")
         return fingerprint
 
-    def get_key_meta_info(self, key: GPGKey) -> Dict:
-        """
-        Retrieve meta information about a key given its fingerprint.
 
-        :param fingerprint: The fingerprint of the public key.
-        :return: A dictionary containing the key's meta information.
-        """
-        fingerprint = self.import_public_key_block(key.key)
-        keys = self.gpg.list_keys(keys=fingerprint)
-
-        if not keys:
-            raise ValueError("Key not found.")
-
-        # Assuming we're interested in the first match, which should be unique by fingerprint
-        key_info = keys[0]
-        return key_info
-
-
-class SignatureSigner(SignatureVerifyer):
+class SignatureSigner(GPGSignatureVerifyer):
     def __init__(
         self,
         version: str,
         app_name: str,
-        list_of_known_keys: Optional[List[GPGKey]],
+        list_of_known_keys: Optional[List[SimpleGPGKey]],
         file_dir: str = "dist/",
     ) -> None:
         super().__init__(list_of_known_keys=list_of_known_keys)
@@ -393,20 +454,22 @@ class SignatureSigner(SignatureVerifyer):
     def get_files_to_sign(self) -> List[Path]:
         return [f for f in Path(self.file_dir).iterdir() if f.is_file() and not f.name.endswith(".asc")]
 
-    def sign_files(self, key: GPGKey) -> None:
+    def sign_files(self, key: SimpleGPGKey) -> List[Path]:
         my_fingerprint = self.import_public_key_block(key.key)
-        for file_path in self.get_files_to_sign():
+        files = self.get_files_to_sign()
+        for file_path in files:
 
             self.gpg.sign_file(
                 open(file_path, "rb"), keyid=my_fingerprint, detach=True, output=str(file_path) + ".asc"
             )
             logger.info(f"File signed: {file_path.name}.asc")
+        return files
 
 
 @dataclass
 class KnownGPGKeys:
 
-    andreasgriffin = GPGKey(
+    andreasgriffin = SimpleGPGKey(
         key="""
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -464,7 +527,7 @@ NnbI2qloVKa8RMWB8kx6NZ8LiM+JUyKjOOixt7NRPCxINWTjdOFOwIGC8CrY6ghJ
         repository="andreasgriffin/bitcoin-safe",
         prefix="bitcoin-safe",
     )
-    craigraw = GPGKey(
+    craigraw = SimpleGPGKey(
         repository="sparrowwallet/sparrow",
         prefix="sparrow",
         manifest_ending="manifest.txt",
@@ -564,5 +627,5 @@ EmR2yA==
     )
 
     @classmethod
-    def all(cls) -> List[GPGKey]:
-        return [v for v in cls.__dict__.values() if isinstance(v, GPGKey)]
+    def all(cls) -> List[SimpleGPGKey]:
+        return [v for v in cls.__dict__.values() if isinstance(v, SimpleGPGKey)]

@@ -12,7 +12,7 @@
       "args": [
         // "--profile",  
       ],
-      "justMyCode": false
+      // "justMyCode": false
     },
     {
       "name": "Pytest",

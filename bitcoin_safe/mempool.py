@@ -200,7 +200,7 @@ def fetch_from_url(url: str, is_json=True) -> Optional[Any]:
         return None
 
 
-def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_json=True) -> TaskThread:
+def threaded_fetch(url: str, on_success, is_json=True) -> TaskThread:
     def do() -> Any:
         return fetch_from_url(url, is_json=is_json)
 
@@ -210,7 +210,7 @@ def threaded_fetch(url: str, on_success, parent, signals_min: SignalsMin, is_jso
     def on_done(data) -> None:
         pass
 
-    return TaskThread(signals_min=signals_min).add_and_start(do, on_success, on_done, on_error)
+    return TaskThread().add_and_start(do, on_success, on_done, on_error)
 
 
 class TxPrio(enum.Enum):
@@ -228,7 +228,7 @@ class MempoolData(ThreadingManager, QObject):
         signals_min: SignalsMin,
         threading_parent: ThreadingManager,
     ) -> None:
-        super().__init__(signals_min=signals_min, threading_parent=threading_parent)
+        super().__init__(threading_parent=threading_parent)
         self.signals_min = signals_min
 
         self.network_config = network_config
@@ -313,8 +313,6 @@ class MempoolData(ThreadingManager, QObject):
             threaded_fetch(
                 f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
                 on_mempool_blocks,
-                self,
-                signals_min=self.signals_min,
             )
         )
         logger.debug(f"started on_mempool_blocks")
@@ -328,8 +326,6 @@ class MempoolData(ThreadingManager, QObject):
             threaded_fetch(
                 f"{self.network_config.mempool_url}api/v1/fees/recommended",
                 on_recommended,
-                self,
-                signals_min=self.signals_min,
             )
         )
         logger.debug(f"started on_recommended")
@@ -344,8 +340,6 @@ class MempoolData(ThreadingManager, QObject):
             threaded_fetch(
                 f"{self.network_config.mempool_url}api/mempool",
                 on_mempool_dict,
-                self,
-                signals_min=self.signals_min,
             )
         )
         logger.debug(f"started on_mempool_dict")

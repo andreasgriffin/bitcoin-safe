@@ -268,7 +268,7 @@ class BaseTab(QObject, ThreadingManager):
             if threading_parent
             else (self.refs.qt_wallet if self.refs.qt_wallet else self.refs.qtwalletbase)
         )
-        super().__init__(parent=refs.container, signals_min=refs.qt_wallet.signals_min if refs.qt_wallet else refs.qtwalletbase.signals_min, threading_parent=self.threading_parent)  # type: ignore
+        super().__init__(parent=refs.container, threading_parent=self.threading_parent)  # type: ignore
 
         self.buttonbox, self.buttonbox_buttons = create_button_box(
             self.refs.go_to_next_index,

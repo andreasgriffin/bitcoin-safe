@@ -68,7 +68,7 @@ class QtWalletBase(SignalCarryingObject, ThreadingManager):
         threading_parent: ThreadingManager | None = None,
         **kwargs
     ) -> None:
-        super().__init__(signals_min=signals, threading_parent=threading_parent, **kwargs)
+        super().__init__(threading_parent=threading_parent, **kwargs)
         self.get_lang_code = get_lang_code
         self.threading_parent = threading_parent
         self.config = config

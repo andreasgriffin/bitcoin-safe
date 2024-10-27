@@ -40,7 +40,11 @@ import tomlkit
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
-from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureSigner
+from bitcoin_safe.signature_manager import (
+    KnownGPGKeys,
+    SignatureSigner,
+    SignatureVerifyer,
+)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -260,19 +264,16 @@ class Builder:
             app_name=self.app_name_formatter(self.module_name),
             list_of_known_keys=[KnownGPGKeys.andreasgriffin],
         )
-        manager.sign_files(KnownGPGKeys.andreasgriffin)
-        assert self.verify(), "Error: Signatures do NOT match fingerprint!!!!"
+        signed_files = manager.sign_files(KnownGPGKeys.andreasgriffin)
+        assert self.verify(signed_files), "Error: Signature Verification failed!!!!"
 
-    def verify(self):
-        manager = SignatureSigner(
-            version=self.version,
-            app_name=self.app_name_formatter(self.module_name),
+    def verify(self, signed_files: List[Path]):
+        manager = SignatureVerifyer(
             list_of_known_keys=[KnownGPGKeys.andreasgriffin],
         )
 
-        files = manager.get_files_to_sign()
-        assert files
-        for filepath in files:
+        assert signed_files
+        for filepath in signed_files:
             is_valid = manager.verify_signature(
                 binary_filename=filepath, expected_public_key=KnownGPGKeys.andreasgriffin
             )

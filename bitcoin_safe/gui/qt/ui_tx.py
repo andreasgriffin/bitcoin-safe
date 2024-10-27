@@ -248,7 +248,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             parent=parent,
             config=config,
             signals=signals,
-            signals_min=signals,
             mempool_data=mempool_data,
             threading_parent=threading_parent,
         )
@@ -525,9 +524,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                     )
                     return
 
-            self.append_thread(
-                (TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error))
-            )
+            self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
         elif self.data.data_type == DataType.Tx:
             self.set_tx(
@@ -1005,9 +1002,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
 
-        self.append_thread(
-            (TaskThread(signals_min=self.signals).add_and_start(do, on_success, on_done, on_error))
-        )
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def set_visibility(self, confirmation_time: bdk.BlockTime | None) -> None:
         is_psbt = self.data.data_type == DataType.PSBT
