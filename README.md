@@ -2,39 +2,46 @@
 
 #### Long-term Bitcoin savings made Easy
 
-#### ⚠️ Currently ALPHA -- Use only on regtest / testnet / signet ⚠️
+#### BETA Version -- Use with Caution
 
 ## Features
 
 - **Easy** Multisig-Wallet Setup
-  - Step-by-Step instructions with a PDF backup sheet
-  - test signing with all hardware signer
+  - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
+  - Test transactions enure that all hardware signers are ready
+  - Full support for [Coldcard](https://coldcard.com/), [Coldcard Q](https://coldcard.com/), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
+- **Secure**: Hardware signers only
+  - All wallets require hardware signers/wallets for safe seed storage 
+  - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
+- **Multi-Language**:
+  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, 🇫🇷 French - Français, (more upon request)
 - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
   - Automatic coin selection within categories
+  - Transaction flow diagrams, visualizing inputs and outputs, click on inputs and output to trace the money flow
 - **Sending** for non-technical users
-  - 1-click fee selection
-  - Automatic merging of small utxos when fees are low
+  - 1-click fee selection via mempool-blocks
+  - Automatic merging of utxos when fees are low
 - **Collaborative**:
-  - Wallet chat and sharing of PSBTs (via nostr)
-  - Label synchronization between trusted devices (via nostr)
-- **Multi-Language**:
-  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, (more upon request)
+  - Label synchronization between different computers and encrypted cloud backup
+  - Wallet chat and PSBTs sharing between different computers
 - **Fast**: 
-  - Electrum server connectivity 
+  - Electrum server syncing
   - planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release
-- **Secure**: No seed generation or storage (on mainnet).
-  - A hardware signer/signing device for safe seed storage is needed (storing seeds on a computer is reckless)
-  - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
 
 ## Preview
 
-##### Sending
-
-![screenshot0](docs/send.gif)
 
 ##### Setup a multisig wallet
 
 ![screenshot1](docs/multisig-setup.gif)
+
+##### Transaction exploring via the money flow diagram 
+
+![diagram](docs/explorer.gif)
+
+##### Sending
+
+![screenshot0](docs/send.gif)
 
 ##### PSBT sharing with trusted devices
 
@@ -53,6 +60,7 @@
 - **Import and Export Capabilities**
   
   - CSV export for all lists
+  - CSV import for batch transactions
   - Label import and export using [BIP329](https://bip329.org/)
   - Label import from Electrum wallet
   - Drag and drop for Transactions, PSBTs, and CSV files
@@ -69,7 +77,7 @@
   
   - MicroSD (files)
   - USB
-  - QR codes
+  - QR codes (enhanced QR code detection for Laptop cameras)
   - Animated QR codes including [BBQr](https://bbqr.org/) and legacy formats
 
 - **Search and Filtering Options**
@@ -84,7 +92,7 @@
 - **Transaction / PSBT Creation**
   
   - 1-click fee selection and mempool block preview
-  - Automatic merging of small utxos when fees are low
+  - Automatic merging of utxos when fees are low
   - Highlighting of own addresses 
 
 - **Security and Reliability**
@@ -99,6 +107,7 @@
   - Simplified setup for multisig wallets, including step-by-step instructions and PDF backup sheet
   - Test signing with all hardware signers
   - Collaborative wallet management including chat and PSBT sharing via nostr and label synchronization between trusted devices
+  - Optional custom nostr server 
 
 - **Upcoming Features**
   
@@ -107,11 +116,16 @@
       - Compact Block Filters are **fast** and **private**
       - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/issues/679), and will be included in bdk 1.1. For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
 
-#### TODOs for beta release
-
-- [ ] Add more pytests
 
 ## Installation from Git repository
+
+Install dependencies: 
+
+  ```sh
+  sudo apt install  qt6-tools-dev-tools libqt6*
+  ```
+
+
 
 ### Ubuntu, Debian, Windows
 

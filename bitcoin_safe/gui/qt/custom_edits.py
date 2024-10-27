@@ -27,34 +27,98 @@
 # SOFTWARE.
 
 
+import enum
 import logging
-from typing import Dict, List
+from abc import abstractmethod
+from dataclasses import dataclass
+from typing import Dict, Iterable, List, Optional
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent
-from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit
+from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit, QWidget
 
 
-class MyTextEdit(QTextEdit):
-    def __init__(self, preferred_height=50) -> None:
-        super().__init__()
-        self.preferred_height = preferred_height
-
-    def sizeHint(self) -> QSize:
-        size = super().sizeHint()
-        size.setHeight(self.preferred_height)
-        return size
+class AnalyzerState(enum.IntEnum):
+    Valid = enum.auto()
+    Warning = enum.auto()
+    Invalid = enum.auto()
 
 
-class QCompleterLineEdit(QLineEdit):
+@dataclass
+class AnalyzerMessage:
+    msg: str
+    state: AnalyzerState
+
+    @classmethod
+    def valid(cls):
+        return cls("", AnalyzerState.Valid)
+
+    def __str__(self) -> str:
+        return f"{self.state.name}: {self.msg}"
+
+
+class BaseAnalyzer:
+    @abstractmethod
+    def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        raise NotImplementedError()
+
+    @staticmethod
+    def worst_message(l: List[AnalyzerMessage]):
+        if not l:
+            return AnalyzerMessage("", AnalyzerState.Valid)
+        states = [message.state for message in l]
+        worst_state = max(states)
+        return l[states.index(worst_state)]
+
+
+class AnalyzerLineEdit(QLineEdit):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent=parent)
+        self._smart_state: Optional[BaseAnalyzer] = None
+
+    def setAnalyzer(self, smart_state: BaseAnalyzer):
+        """Set a custom validator."""
+        self._smart_state = smart_state
+
+    def analyzer(self) -> Optional[BaseAnalyzer]:
+        return self._smart_state
+
+
+class AnalyzerTextEdit(QTextEdit):
+    def __init__(self, text: Optional[str] = None, parent: Optional[QWidget] = None) -> None:
+        super().__init__(text, parent)
+        self._smart_state: Optional[BaseAnalyzer] = None
+
+    def setAnalyzer(self, smart_state: BaseAnalyzer):
+        """Set a custom validator."""
+        self._smart_state = smart_state
+
+    def analyzer(self) -> Optional[BaseAnalyzer]:
+        return self._smart_state
+
+    def text(self) -> str:
+        return self.toPlainText()
+
+    def cursorPosition(self) -> int:
+        """Get the current cursor position within the text."""
+        return self.textCursor().position()
+
+    def setCursorPosition(self, position: int):
+        """Set the cursor position to the specified index."""
+        cursor = self.textCursor()
+        cursor.setPosition(position)
+        self.setTextCursor(cursor)
+
+
+class QCompleterLineEdit(AnalyzerLineEdit):
     signal_focus_out = pyqtSignal()
 
     def __init__(
-        self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] = None, parent=None
+        self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] | None = None, parent=None
     ) -> None:
         super().__init__(parent)
         # Dictionary to store suggestions for each network
@@ -64,7 +128,12 @@ class QCompleterLineEdit(QLineEdit):
         self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
         self._completer.setFilterMode(Qt.MatchFlag.MatchContains)
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self._model = QStringListModel()
         self.setCompleter(self._completer)
+
+    def set_completer_list(self, words: Iterable[str]):
+        self._model.setStringList(words)
+        self._completer.setModel(self._model)
 
     def set_network(self, network) -> None:
         """Set the network and update the completer."""
@@ -96,14 +165,19 @@ class QCompleterLineEdit(QLineEdit):
         """Updates the completer with the current network's suggestions
         list."""
         if self.network:
-            self._completer.model().setStringList(self.suggestions[self.network])
+            self.set_completer_list(self.suggestions[self.network])
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
+        if not event:
+            super(QCompleterLineEdit, self).keyPressEvent(event)
+            return
+
         if self.network and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
-            if not self._completer.popup().isVisible():
+            popup = self._completer.popup()
+            if popup and not popup.isVisible():
                 self._completer.complete()
         super(QCompleterLineEdit, self).keyPressEvent(event)
 
-    def focusOutEvent(self, event: QFocusEvent) -> None:
+    def focusOutEvent(self, event: QFocusEvent | None) -> None:
         super().focusOutEvent(event)
         self.signal_focus_out.emit()

@@ -30,26 +30,53 @@
 import logging
 from typing import Dict
 
-from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
 from .mempool import threaded_fetch
 
 
-class FX(QObject):
+class FX(QObject, ThreadingManager):
     signal_data_updated = pyqtSignal()
 
-    def __init__(self, signals_min: SignalsMin) -> None:
-        super().__init__()
-        self.signals_min = signals_min
+    def __init__(self, threading_parent: ThreadingManager | None = None) -> None:
+        super().__init__(threading_parent=threading_parent)  # type: ignore
 
         self.rates: Dict[str, Dict] = {}
         self.update()
         logger.debug(f"initialized {self}")
+
+    def update_if_needed(self) -> None:
+        if self.rates:
+            return
+        self.update()
+
+    @staticmethod
+    def format_dollar(amount: float, prepend_dollar_sign=True) -> str:
+        symbol = "$"
+        locale = QLocale(QLocale.Language.English, QLocale.Country.UnitedStates)
+        formatted_amount = locale.toCurrencyString(amount, symbol=symbol)
+        if not prepend_dollar_sign:
+            formatted_amount = formatted_amount.lstrip(symbol)
+        return formatted_amount
+
+    def to_fiat(self, currency: str, amount: int) -> float | None:
+        currency = currency.lower()
+        if currency not in self.rates:
+            return None
+
+        dollar_amount = self.rates[currency]["value"] / 1e8 * amount
+        return dollar_amount
+
+    def to_fiat_str(self, currency: str, amount: int) -> str:
+        dollar_amount = self.to_fiat(currency, amount)
+        if dollar_amount is None:
+            return ""
+        return self.format_dollar(dollar_amount)
 
     def update(self) -> None:
         def on_success(data) -> None:
@@ -57,8 +84,12 @@ class FX(QObject):
                 logger.debug(f"empty result of https://api.coingecko.com/api/v3/exchange_rates")
                 return
             self.rates = data.get("rates", {})
-            self.signal_data_updated.emit()
+            if self.rates:
+                self.signal_data_updated.emit()
 
-        threaded_fetch(
-            "https://api.coingecko.com/api/v3/exchange_rates", on_success, self, signals_min=self.signals_min
+        self.append_thread(
+            threaded_fetch(
+                "https://api.coingecko.com/api/v3/exchange_rates",
+                on_success,
+            )
         )

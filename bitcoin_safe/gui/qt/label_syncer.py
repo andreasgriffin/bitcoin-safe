@@ -28,12 +28,17 @@
 
 
 import logging
-from collections import deque
+from datetime import datetime
+from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.connected_devices.connected_devices import TrustedDevice
+from bitcoin_nostr_chat.connected_devices.connected_devices import (
+    TrustedDevice,
+    short_key,
+)
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
 from nostr_sdk import PublicKey
+from PyQt6.QtCore import QObject
 
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 
@@ -41,23 +46,56 @@ logger = logging.getLogger(__name__)
 from bitcoin_nostr_chat.nostr_sync import Data, DataType
 
 from bitcoin_safe.labels import Labels, LabelType
-from bitcoin_safe.signals import Signals, UpdateFilter
+from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason, WalletSignals
 
 
-class LabelSyncer:
-    def __init__(self, labels: Labels, sync_tab: SyncTab, signals: Signals) -> None:
+class LabelSyncer(QObject):
+    def __init__(self, labels: Labels, sync_tab: SyncTab, wallet_signals: WalletSignals) -> None:
+        super().__init__()
         self.labels = labels
         self.sync_tab = sync_tab
         self.nostr_sync = sync_tab.nostr_sync
-        self.signals = signals
+        self.wallet_signals = wallet_signals
+
+        self.apply_own_labels = True
 
         self.nostr_sync.signal_label_bip329_received.connect(self.on_nostr_label_bip329_received)
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
-        self.signals.labels_updated.connect(self.on_labels_updated)
-        self.signals.category_updated.connect(self.on_labels_updated)
+        self.wallet_signals.updated.connect(self.on_labels_updated)
 
-        # store sent UpdateFilters to prevent recursive behavior
-        self.sent_update_filter: deque = deque(maxlen=1000)
+    @staticmethod
+    def chunk_lines(lines: List[str], max_len: int = 60_000) -> List[List[str]]:
+        len_of_lines = [len(line) for line in lines]  # Calculate the length of each line
+
+        # Determine split points
+        split_indices = []
+        current_length = 0
+
+        for i, line_length in enumerate(len_of_lines):
+            if current_length + line_length > max_len:
+                split_indices.append(i)
+                current_length = line_length  # Start new chunk with current line
+            else:
+                current_length += line_length + 1  # +1 for the newline, included in the next chunk
+
+        # Use split indices to construct chunks
+        chunks = []
+        start_index = 0
+
+        for index in split_indices:
+            chunks.append(lines[start_index:index])
+            start_index = index
+
+        # Add the final chunk
+        if start_index < len(lines):
+            chunks.append(lines[start_index:])
+
+        return chunks
+
+    def get_chunked_bitcoin_data(self, refs: List[str]) -> List[Data]:
+        lines = self.labels.dumps_data_jsonline_list(refs=refs)
+        chunks = self.chunk_lines(lines, max_len=60_000)
+        return [Data(data="\n".join(chunk), data_type=DataType.LabelsBip329) for chunk in chunks]
 
     def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():
@@ -67,65 +105,120 @@ class LabelSyncer:
         # send entire label data
         refs = list(self.labels.data.keys())
 
-        bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
-        self.nostr_sync.group_chat.dm_connection.send(
-            BitcoinDM(event=None, label=ChatLabel.SingleRecipient, description="", data=bitcoin_data),
-            PublicKey.from_bech32(trusted_device.pub_key_bech32),
-        )
-        logger.debug(f"sent all labels to {trusted_device.pub_key_bech32}")
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.dm_connection.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.SingleRecipient,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                ),
+                PublicKey.from_bech32(trusted_device.pub_key_bech32),
+            )
+        logger.info(f"Sent all labels to trusted device {short_key( trusted_device.pub_key_bech32)}")
 
-    def on_nostr_label_bip329_received(self, data: Data) -> None:
+    def on_nostr_label_bip329_received(self, data: Data, author: PublicKey) -> None:
         if not self.sync_tab.enabled():
             return
 
-        logger.info(f"on_nostr_label_bip329_received {data}")
-        if data.data_type == DataType.LabelsBip329:
-            changed_labels = self.labels.import_dumps_data(data.data)
-            if not changed_labels:
-                return
-            logger.debug(f"on_nostr_label_bip329_received updated: {changed_labels} ")
+        if data.data_type != DataType.LabelsBip329:
+            logger.debug(f"on_nostr_label_bip329_received received wrong type {type(data)}")
+            return
 
-            addresses: List[str] = []
-            txids: List[str] = []
-            for label in changed_labels.values():
-                if label.type == LabelType.addr:
-                    addresses.append(label.ref)
-                elif label.type == LabelType.tx:
-                    txids.append(label.ref)
+        if self.sync_tab.nostr_sync.is_me(author) and not self.apply_own_labels:
+            logger.debug(f"on_nostr_label_bip329_received do not apply laybels from myself {author}")
+            return
 
-            new_categories = [
-                label.category
-                for label in changed_labels.values()
-                if label.category not in self.labels.categories
-            ]
-            update_filter = UpdateFilter(addresses=addresses, txids=txids, categories=new_categories)
-            self.sent_update_filter.append(update_filter)
-            #  make the wallet add new addresses
-            self.signals.addresses_updated.emit(update_filter)
+        changed_labels = self.labels.import_dumps_data(data.data)
+        if not changed_labels:
+            logger.debug(f"no labels changed in on_nostr_label_bip329_received")
+            return
+        logger.info(f"on_nostr_label_bip329_received applied {len(changed_labels)} labels: {changed_labels} ")
 
-            # recognize new labels
-            self.signals.labels_updated.emit(update_filter)
+        addresses: List[str] = []
+        txids: List[str] = []
+        for label in changed_labels.values():
+            if label.type == LabelType.addr:
+                addresses.append(label.ref)
+            elif label.type == LabelType.tx:
+                txids.append(label.ref)
 
-            # the category editor maybe also needs to add categories
-            self.signals.category_updated.emit(update_filter)
+        new_categories = [label.category for label in changed_labels.values()]
+        update_filter = UpdateFilter(
+            addresses=addresses,
+            txids=txids,
+            categories=new_categories,
+            reason=UpdateFilterReason.SourceLabelSyncer,
+        )
+        #  make the wallet add new addresses
+        self.wallet_signals.updated.emit(update_filter)
+        logger.info(
+            f"{self.__class__.__name__}: Received {len(addresses)} addresses, {len(txids)} txids, {len(new_categories)} categories  from {short_key(author.to_bech32())}"
+        )
 
     def on_labels_updated(self, update_filter: UpdateFilter) -> None:
         if not self.sync_tab.enabled():
             return
-        if update_filter in self.sent_update_filter:
+        if update_filter.reason == UpdateFilterReason.SourceLabelSyncer:
             logger.debug("on_labels_updated: Do nothing because update_filter was sent from here.")
             return
         if update_filter.refresh_all:
             logger.debug("on_labels_updated: Do nothing on refresh_all.")
             return
 
-        logger.info(f"on_labels_updated {update_filter}")
+        should_update = False
+        if should_update or update_filter.refresh_all:
+            should_update = True
+        if should_update or update_filter.addresses:
+            should_update = True
+        if should_update or update_filter.categories:
+            should_update = True
+
+        if not should_update:
+            return
+
+        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
 
         refs = list(update_filter.addresses) + list(update_filter.txids)
         if not refs:
             return
 
-        bitcoin_data = Data(data=self.labels.dumps_data_jsonlines(refs=refs), data_type=DataType.LabelsBip329)
-        self.nostr_sync.group_chat.send(
-            BitcoinDM(event=None, label=ChatLabel.GroupChat, description="", data=bitcoin_data)
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.GroupChat,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                )
+            )
+        logger.info(
+            f"{self.__class__.__name__}: Sent {len(update_filter.addresses)} addresses, {len(update_filter.txids)} txids to {[short_key(m.to_bech32()) for m in  self.nostr_sync.group_chat.members]}"
         )
+
+    def send_all_labels_to_myself(self):
+        if not self.sync_tab.enabled():
+            return
+        logger.debug(f"send_all_labels_to_myself")
+
+        # send entire label data
+        refs = list(self.labels.data.keys())
+
+        my_key = self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key()
+        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
+            self.nostr_sync.group_chat.dm_connection.send(
+                BitcoinDM(
+                    event=None,
+                    label=ChatLabel.SingleRecipient,
+                    description="",
+                    data=bitcoin_data,
+                    created_at=datetime.now(),
+                ),
+                my_key,
+            )
+        # sleep here to give the relays time to receive the message
+        # but if the relays fail, then better fail sending the messages,
+        # than blocking the wallet from closing
+        sleep(0.2)

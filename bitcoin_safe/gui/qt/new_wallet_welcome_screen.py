@@ -49,7 +49,7 @@ from PyQt6.QtWidgets import (
 )
 
 from ...util import call_call_functions
-from .util import add_centered_icons, add_tab_to_tabs, icon_path, qresize, read_QIcon
+from .util import add_centered_icons, icon_path, qresize, read_QIcon
 
 
 class NewWalletWelcomeScreen(QObject):
@@ -57,7 +57,7 @@ class NewWalletWelcomeScreen(QObject):
     signal_onclick_single_signature = pyqtSignal()
     signal_onclick_custom_signature = pyqtSignal()
 
-    def __init__(self, main_tabs: DataTabWidget, network: Network, signals: Signals) -> None:
+    def __init__(self, main_tabs: DataTabWidget[object], network: Network, signals: Signals) -> None:
         super().__init__()
         self.main_tabs = main_tabs
         self.signals = signals
@@ -79,12 +79,10 @@ class NewWalletWelcomeScreen(QObject):
         logger.debug(f"initialized welcome_screen = {self}")
 
     def add_new_wallet_welcome_tab(self) -> None:
-        add_tab_to_tabs(
-            self.main_tabs,
-            self.tab,
-            read_QIcon("file.png"),
-            self.tr("Create new wallet"),
-            self.tr("Create new wallet"),
+        self.main_tabs.add_tab(
+            tab=self.tab,
+            icon=read_QIcon("file.png"),
+            description=self.tr("Create new wallet"),
             focus=True,
             data=self,
         )
@@ -138,11 +136,11 @@ class NewWalletWelcomeScreen(QObject):
 
         self.groupBox_3signingdevices = QGroupBox(self.groupBox_multisig)
         self.groupBox_3signingdevices.setEnabled(True)
-        self.horizontalLayout_3 = QHBoxLayout(self.groupBox_3signingdevices)
+        self.groupBox_3signingdevices_layout = QHBoxLayout(self.groupBox_3signingdevices)
 
         add_centered_icons(
-            ["coldcard-only.svg"] * 2 + ["usb-stick.svg"],
-            self.groupBox_3signingdevices,
+            ["coldcard-only.svg"] * 2 + ["bitbox02.svg"],
+            self.groupBox_3signingdevices_layout,
             max_sizes=[(60, 80), (60, 80), (60, 50)],
         )
 

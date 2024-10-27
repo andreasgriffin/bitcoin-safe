@@ -31,11 +31,13 @@ import logging
 import sys
 import threading
 from collections import deque
+from threading import Lock
+from types import TracebackType
 from typing import Any, Callable, NamedTuple, Optional, Tuple
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 
-from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.execute_config import ENABLE_THREADING
 
 logger = logging.getLogger(__name__)
 
@@ -54,24 +56,17 @@ class Worker(QObject):
     """Worker object to perform tasks in a separate thread."""
 
     finished: pyqtSignal = pyqtSignal(object, object, object)  # Result, cb_done, cb_success/error
-    error: pyqtSignal = pyqtSignal(object)
+    error: pyqtSignal = pyqtSignal(object, object)
 
     def __init__(self, task: Task) -> None:
         super().__init__()
         self.task: Task = task
-
-    @property
-    def thread_name(self):
-        return str(self.task.do)
+        self.thread_name = str(self.task.do)
 
     @pyqtSlot()
     def run_task(self) -> None:
         """Executes the provided task and emits signals based on the outcome."""
         threading.current_thread().name = self.thread_name
-        if not self.task:
-            logger.debug("No task to run.")
-            return
-
         try:
             logger.debug(f"Task started: {self.task.do}")
             result: Any = self.task.do()
@@ -79,7 +74,7 @@ class Worker(QObject):
             self.finished.emit(result, self.task.cb_done, self.task.cb_success)
         except Exception:
             logger.exception(f"Task raised an exception: {self.task.do}")
-            self.error.emit((sys.exc_info(), self.task.cb_error))
+            self.error.emit(sys.exc_info(), self.task.cb_error)
         finally:
             if callable(self.task.cancel):
                 logger.debug(f"Task cancellation callback called: {self.task.do}")
@@ -89,12 +84,27 @@ class Worker(QObject):
 class TaskThread(QThread):
     """Manages execution of tasks in separate threads."""
 
-    def __init__(self, parent: QObject, signals_min: SignalsMin) -> None:
-        super().__init__(parent)
-        self.signals_min = signals_min
-        self.worker: Optional[
-            Worker
-        ] = None  # Type hint adjusted because it will be immediately initialized in add_and_start
+    signal_stop_threat = pyqtSignal(str)
+
+    def __init__(self, enable_threading: bool = ENABLE_THREADING) -> None:
+        super().__init__()
+        self.worker: Optional[Worker] = (
+            None  # Type hint adjusted because it will be immediately initialized in add_and_start
+        )
+        self.enable_threading = enable_threading
+        self._thread_name: str | None = None
+
+    @property
+    def thread_name(self) -> str | None:
+        return self._thread_name
+
+    @thread_name.setter
+    def thread_name(self, value: str | None):
+        logger.debug(f"setting thread_name of {self} to {value}")
+        self._thread_name = value
+
+    def __str__(self) -> str:
+        return str(self.thread_name)
 
     def add_and_start(
         self,
@@ -103,49 +113,64 @@ class TaskThread(QThread):
         on_done: Callable[[Any], None],
         on_error: Callable[[Tuple[Any, ...]], None],
         cancel: Optional[Callable[[], None]] = None,
-    ) -> None:
-        logger.debug(f"Starting new thread {do}.")
+    ) -> "TaskThread":
+
+        # if not self.enable_threading:
+        #     NoThread().add_and_start(do, on_success, on_done, on_error)
+        #     return self
+
+        self.cancelled = False
+
         task: Task = Task(do, on_success, on_done, on_error, cancel)
         self.worker = Worker(task)
-        self.worker.moveToThread(self)
+        if self.enable_threading:
+            self.worker.moveToThread(self)
         self.worker.finished.connect(self.on_done)
         self.worker.error.connect(self.on_error)
         self.started.connect(self.worker.run_task)
-        self.signals_min.signal_add_threat.emit(self)
+
+        self.thread_name = self.worker.thread_name
+        logger.debug(f"Starting new thread {self.thread_name}")
+
         self.start()
 
-    @property
-    def thread_name(self):
-        if not self.worker:
-            return None
-        if self.worker.thread_name:
-            return self.worker.thread_name
+        return self
 
-    def on_error(self, error_info):
+    def on_error(
+        self,
+        error_info: tuple[type[BaseException], BaseException, TracebackType],
+        cb_error: Callable[[Any], None],
+    ):
         if self.worker:
-            self.worker.task.cb_error(error_info)
+            cb_error(error_info)
         self.my_quit()
 
     @pyqtSlot(object, object, object)
     def on_done(self, result: Any, cb_done: Callable[[Any], None], cb_result: Callable[[Any], None]) -> None:
         """Handle task completion."""
-        logger.debug(f"Thread done: {self.thread_name}.")
-        cb_done(result)
-        cb_result(result)
+        if not self.cancelled:
+            logger.debug(f"Thread done: {self.thread_name}.")
+            cb_done(result)
+            cb_result(result)
         self.my_quit()
 
     def stop(self) -> None:
         """Stops the thread and any associated task cancellation if defined."""
-        logger.debug("Stopping TaskThread and associated worker.")
+        logger.debug(f"Stopping {self.thread_name}.")
         if self.worker and self.worker.task.cancel:
-            logger.debug(f"Stopping {self.thread_name}.")
+            self.cancelled = True
             self.worker.task.cancel()
         self.my_quit()
+        logger.debug(f"Stopped {self.thread_name}.")
 
     def my_quit(self):
-        self.quit()
-        self.wait()
-        self.signals_min.signal_stop_threat.emit(self)
+        try:
+            self.cancelled = True
+            self.quit()
+            self.wait()
+            self.signal_stop_threat.emit(self.thread_name)
+        except:
+            logger.error(f"An error during the shutdown of {self.thread_name}")
 
 
 class NoThread:
@@ -157,9 +182,9 @@ class NoThread:
     def add_and_start(
         self,
         task,
-        on_success: Callable = None,
-        on_done: Callable = None,
-        on_error: Callable = None,
+        on_success: Optional[Callable] = None,
+        on_done: Optional[Callable] = None,
+        on_error: Optional[Callable] = None,
     ):
         result = None
         try:
@@ -174,41 +199,57 @@ class NoThread:
             on_done(result)
 
 
-from threading import Lock
-
-
 class ThreadingManager:
-    def __init__(self, signals_min: SignalsMin) -> None:
-        self.signals_min = signals_min
-        self.threads: deque[TaskThread] = deque()
+    def __init__(
+        self, threading_parent: "ThreadingManager" = None, threading_manager_name=None, **kwargs  # type: ignore
+    ) -> None:
+        super().__init__(**kwargs)
+        self._taskthreads: deque[TaskThread] = deque()
+        self.threading_manager_children: deque[ThreadingManager] = deque()
         self.lock = Lock()
+        self.threading_parent = threading_parent
+        self.threading_manager_name = (
+            threading_manager_name if threading_manager_name else self.__class__.__name__
+        )
 
-        self.signals_min.signal_add_threat.connect(self._append)
-        self.signals_min.signal_stop_threat.connect(self._remove)
+        if threading_parent:
+            threading_parent.threading_manager_children.append(self)
 
-    def _append(self, thread: TaskThread):
+    def append_thread(self, thread: TaskThread):
         with self.lock:
-            self.threads.append(thread)
+            self._taskthreads.append(thread)
+            thread.signal_stop_threat.connect(self.remove_thread)
             logger.debug(
-                f"Appended thread {thread.thread_name}, Number of threads = {len(self.threads)} {[thread.thread_name for thread in   self.threads]}"
-            )
-            assert thread in self.threads
-
-    def _remove(self, thread: TaskThread):
-        with self.lock:
-            if thread in self.threads:
-                self.threads.remove(thread)
-                thread.deleteLater()
-            logger.debug(
-                f"Removed thread {thread.thread_name}, Number of threads = {len(self.threads)} {[thread.thread_name for thread in   self.threads]}"
+                f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
-    def stop_and_wait_all(self, timeout=10):
+    def remove_thread(self, thread_name: str | None):
+        with self.lock:
+            for thread in list(self._taskthreads):
+                # if not thread.thread_name:
+                #     # remove empty threads
+                #     # (unclear why thread_name is set to None when threads are done)
+                #     self.taskthreads.remove(thread)
+                if thread.thread_name == thread_name:
+                    self._taskthreads.remove(thread)
+            logger.debug(
+                f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
+            )
+
+    def stop_and_wait_all(self):
+        while self.threading_manager_children:
+            child = self.threading_manager_children.pop()
+            child.end_threading_manager()
+
         # Wait for all threads to finish
-        if self.threads:
-            logger.warning(f"unfinished Threads {list(self.threads)}")
-        for thread in list(self.threads):
-            if thread.isRunning():
-                thread.stop()
-                if not thread.wait(timeout * 1000):
-                    logger.warning(f"Thread {thread.thread_name } did not finish timely")
+        while self._taskthreads:
+            taskthread = self._taskthreads.pop()
+            logger.debug(f"stop taskthreads {taskthread}")
+            taskthread.stop()
+
+    def end_threading_manager(self):
+        logger.debug(f"end_threading_manager of {self}")
+        self.stop_and_wait_all()
+
+        if self.threading_parent and self in self.threading_parent.threading_manager_children:
+            self.threading_parent.threading_manager_children.remove(self)

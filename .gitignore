@@ -201,3 +201,22 @@ bitcoin_safe.dist-info
 
 screenshots*/
 .DS_Store
+
+profile.html
+
+docs/org
+
+
+
+# build results
+
+tools/build-linux/appimage/build
+tools/secp256k1
+tools/zbar
+bitcoin_safe
+!/bitcoin_safe/
+
+*.so.0
+*.so.1
+version
+tools/libusb/

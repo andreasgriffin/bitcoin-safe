@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AddressAnalyzer</name>
+    <message>
+        <source>Missing Address</source>
+        <translation>पता गायब  </translation>
+    </message>
+    <message>
+        <source>Valid Address</source>
+        <translation>वैध पता  </translation>
+    </message>
+    <message>
+        <source>Invalid Address</source>
+        <translation>पता अमान्य  </translation>
+    </message>
+</context>
+<context>
     <name>AddressDetailsAdvanced</name>
     <message>
         <source>Script Pubkey</source>
@@ -26,6 +41,10 @@
         <source>Advanced</source>
         <translation>उन्नत</translation>
     </message>
+    <message>
+        <source>Validate</source>
+        <translation>सत्यापित करें  </translation>
+    </message>
 </context>
 <context>
     <name>AddressEdit</name>
@@ -39,10 +58,6 @@
     <message>
         <source>Address {address}</source>
         <translation>पता {address}</translation>
-    </message>
-    <message>
-        <source>change</source>
-        <translation>परिवर्तन</translation>
     </message>
     <message>
         <source>receiving</source>
@@ -67,10 +82,6 @@
     <message>
         <source>Copy as csv</source>
         <translation>सीएसवी के रूप में कॉपी करें</translation>
-    </message>
-    <message>
-        <source>Export Labels</source>
-        <translation>लेबल निर्यात करें</translation>
     </message>
     <message>
         <source>Tx</source>
@@ -101,8 +112,8 @@
         <translation>बैलेंस</translation>
     </message>
     <message>
-        <source>Fiat Balance</source>
-        <translation>फिएट बैलेंस</translation>
+        <source>change</source>
+        <translation>परिवर्तन</translation>
     </message>
 </context>
 <context>
@@ -110,10 +121,6 @@
     <message>
         <source>Show Filter</source>
         <translation>फ़िल्टर दिखाएँ</translation>
-    </message>
-    <message>
-        <source>Export Labels</source>
-        <translation>लेबल निर्यात करें</translation>
     </message>
     <message>
         <source>Generate to selected adddresses</source>
@@ -146,12 +153,12 @@
         <translation>पीडीएफ प्रिंट करें (इसमें वॉलेट वर्णनकर्ता भी शामिल है)</translation>
     </message>
     <message>
-        <source>Write each {number} word seed onto the printed pdf.</source>
-        <translation>प्रिंटेड पीडीएफ पर प्रत्येक {number} शब्दों का बीज लिखें।</translation>
+        <source>Glue the {number} word seed onto the matching printed pdf.</source>
+        <translation>मिलान करने वाले मुद्रित पीडीएफ पर {number} शब्द बीज चिपकाएं।  </translation>
     </message>
     <message>
-        <source>Write the {number} word seed onto the printed pdf.</source>
-        <translation>प्रिंटेड पीडीएफ पर {number} शब्दों का बीज लिखें।</translation>
+        <source>Glue the {number} word seed onto the printed pdf.</source>
+        <translation>मुद्रित पीडीएफ पर {number} शब्द बीज चिपकाएं।  </translation>
     </message>
 </context>
 <context>
@@ -177,14 +184,22 @@
     </message>
 </context>
 <context>
+    <name>BitBox02PairingDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>Please verify the pairing code matches what is
+shown on your BitBox02.</source>
+        <translation>कृपया सत्यापित करें कि जोड़ने का कोड वही है जो आपके BitBox02 पर दिखाया गया है।  </translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
         <translation>क्विक रिसीव</translation>
-    </message>
-    <message>
-        <source>Receive Address</source>
-        <translation>रिसीव पता</translation>
     </message>
 </context>
 <context>
@@ -197,37 +212,72 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Do you need to buy a hardware signer?</source>
-        <translation>क्या आपको हार्डवेयर साइनर खरीदने की आवश्यकता है?</translation>
+        <source>Buy {number} hardware signers.                            
+                        &lt;ul&gt;
+                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
+                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                        &lt;/ul&gt;
+                           </source>
+        <translation>{number} हार्डवेयर साइनर खरीदें। विभिन्न प्रतिष्ठित विक्रेताओं से खरीदना सबसे सुरक्षित है, अच्छे विकल्प हैं:  </translation>
     </message>
     <message>
         <source>Buy a {name}</source>
         <translation>{name} खरीदें</translation>
     </message>
     <message>
-        <source>Buy a Coldcard Mk4
-5% off</source>
-        <translation type="unfinished"></translation>
+        <source>Buy a Coldcard Mk4</source>
+        <translation>Coldcard Mk4 खरीदें  </translation>
     </message>
     <message>
-        <source>Buy a Coldcard Q
-5% off</source>
-        <translation type="unfinished"></translation>
+        <source>Buy a Coldcard Q</source>
+        <translation>Coldcard Q खरीदें  </translation>
     </message>
     <message>
-        <source>Turn on your {n} hardware signers</source>
-        <translation>अपने {n} हार्डवेयर साइनर्स को चालू करें</translation>
-    </message>
-    <message>
-        <source>Turn on your hardware signer</source>
-        <translation>अपना हार्डवेयर साइनर चालू करें</translation>
+        <source>Buy a Blockstream Jade
+10% off</source>
+        <translation>Blockstream Jade खरीदें, 10% छूट प्राप्त करें  </translation>
     </message>
 </context>
 <context>
     <name>CategoryEditor</name>
     <message>
+        <source>KYC Exchange</source>
+        <translation>KYC एक्सचेंज  </translation>
+    </message>
+    <message>
+        <source>Private</source>
+        <translation>निजी  </translation>
+    </message>
+    <message>
         <source>category</source>
         <translation>श्रेणी</translation>
+    </message>
+</context>
+<context>
+    <name>ChatGui</name>
+    <message>
+        <source>Type your message here...</source>
+        <translation>यहाँ अपना संदेश टाइप करें...  </translation>
+    </message>
+    <message>
+        <source>Share a PSBT</source>
+        <translation>PSBT साझा करें  </translation>
+    </message>
+    <message>
+        <source>Send</source>
+        <translation>भेजें</translation>
+    </message>
+    <message>
+        <source>Open Transaction/PSBT</source>
+        <translation>लेन-देन/PSBT खोलें</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
+    </message>
+    <message>
+        <source>Me: {text}</source>
+        <translation>मैं: {text}  </translation>
     </message>
 </context>
 <context>
@@ -242,6 +292,60 @@
     <message>
         <source>Block {n}</source>
         <translation>ब्लॉक {n}</translation>
+    </message>
+</context>
+<context>
+    <name>ConnectedDevices</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>आपकी सिंक कुंजी है: {sync_key} इसे सहेजें, और जब आप &apos;इम्पोर्ट सिंक कुंजी&apos; पर क्लिक करेंगे, तो यह आपके लेबल को nostr रिले से पुनः प्राप्त करना चाहिए।  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>सिंक कुंजी निर्यात  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>सिंक कुंजी निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>सिंक कुंजी आयात करें  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>सिंक कुंजी रीसेट करें  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>कस्टम रिले सूची सेट करें  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>विश्वसनीय  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>अविश्वसनीय  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>मेरा उपकरण: {id}  </translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorAnalyzer</name>
+    <message>
+        <source>Missing Descriptor</source>
+        <translation>विवरणक गायब  </translation>
+    </message>
+    <message>
+        <source>Invalid Descriptor</source>
+        <translation>अमान्य विवरणक  </translation>
     </message>
 </context>
 <context>
@@ -269,8 +373,8 @@
         <translation>आवश्यक साइनर्स</translation>
     </message>
     <message>
-        <source>Scan Address Limit</source>
-        <translation>स्कैन पता सीमा</translation>
+        <source>Scan Addresses ahead</source>
+        <translation>पते स्कैन करें आगे  </translation>
     </message>
     <message>
         <source>Paste or scan your descriptor, if you restore a wallet.</source>
@@ -280,6 +384,48 @@
         <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
         <translation>यह &quot;वर्णनकर्ता&quot; वॉलेट को पुनर्निर्माण करने के लिए सभी जानकारी रखता है। कृपया धन की पुनर्प्राप्ति के लिए इस वर्णनकर्ता का बैकअप लें!</translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>नया विवरणक दर्ज किया गया  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Select the detected device</source>
+        <translation>पता लगाए गए उपकरण का चयन करें  </translation>
+    </message>
+</context>
+<context>
+    <name>DisplayAddressDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>P2SH-P2WPKH</source>
+        <translation>P2SH-P2WPKH  </translation>
+    </message>
+    <message>
+        <source>P2WPKH</source>
+        <translation>P2WPKH  </translation>
+    </message>
+    <message>
+        <source>P2PKH</source>
+        <translation>P2PKH  </translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>पता</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>जाओ  </translation>
+    </message>
+    <message>
+        <source>Derivation Path</source>
+        <translation>व्युत्पन्न पथ  </translation>
     </message>
 </context>
 <context>
@@ -350,6 +496,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>एकल उपकरण के साथ साझा करें</translation>
     </message>
     <message>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>{data_type} को हार्डवेयर साइनर में निर्यात करें  </translation>
+    </message>
+    <message>
         <source>PSBT</source>
         <translation>PSBT</translation>
     </message>
@@ -409,10 +559,8 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>शुल्क</translation>
     </message>
     <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+        <source>High fee ratio: {ratio}%</source>
+        <translation>उच्च शुल्क अनुपात: {ratio}%</translation>
     </message>
     <message>
         <source>The estimated transaction fee is:
@@ -421,24 +569,14 @@ the sending value {sent}</source>
         <translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
     </message>
     <message>
-        <source>High fee rate!</source>
-        <translation>उच्च शुल्क दर!</translation>
-    </message>
-    <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर है {rate}</translation>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
     </message>
     <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... मौजूदा लेन-देनों को बदलने के लिए न्यूनतम है।</translation>
-    </message>
-    <message>
-        <source>High fee rate</source>
-        <translation>उच्च शुल्क दर</translation>
-    </message>
-    <message>
-        <source>High fee</source>
-        <translation>उच्च शुल्क</translation>
     </message>
     <message>
         <source>Approximate fee rate</source>
@@ -453,27 +591,47 @@ the sending value {sent}</source>
         <translation>{rate} {rbf} के लिए न्यूनतम है</translation>
     </message>
     <message>
-        <source>Fee rate could not be determined</source>
-        <translation>शुल्क दर निर्धारित नहीं की जा सकी</translation>
+        <source>High fee rate!</source>
+        <translation>उच्च शुल्क दर!</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>उच्च शुल्क अनुपात: {ratio}%</translation>
+        <source>The high prio mempool fee rate is {rate}</source>
+        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर है {rate}</translation>
+    </message>
+    <message>
+        <source>{sent} is sent!</source>
+        <translation>{sent} भेजा गया है!  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, and {sent} is sent!</source>
+        <translation>लेनदेन शुल्क है: {fee}, और {sent} भेजा गया है!  </translation>
+    </message>
+</context>
+<context>
+    <name>FingerprintAnalyzer</name>
+    <message>
+        <source>Missing Fingerprint</source>
+        <translation>फिंगरप्रिंट गायब  </translation>
+    </message>
+    <message>
+        <source>Invalid Fingerprint</source>
+        <translation>अमान्य फिंगरप्रिंट  </translation>
     </message>
 </context>
 <context>
     <name>FloatingButtonBar</name>
     <message>
-        <source>Fill the transaction fields</source>
-        <translation>लेन-देन क्षेत्रों को भरें</translation>
+        <source>Prefill transaction fields</source>
+        <translation>लेन-देन क्षेत्रों को पूर्व भरें  </translation>
     </message>
     <message>
         <source>Create Transaction</source>
         <translation>लेन-देन बनाएं</translation>
     </message>
     <message>
-        <source>Create Transaction again</source>
-        <translation>फिर से लेनदेन बनाएं</translation>
+        <source>Prefill Transaction again</source>
+        <translation>फिर से लेन-देन पूर्व भरें  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -482,6 +640,129 @@ the sending value {sent}</source>
     <message>
         <source>Previous Step</source>
         <translation>पिछला चरण</translation>
+    </message>
+</context>
+<context>
+    <name>FontLayout</name>
+    <message>
+        <source>Italic</source>
+        <translation>Italic</translation>
+    </message>
+    <message>
+        <source>Bold</source>
+        <translation>Bold</translation>
+    </message>
+</context>
+<context>
+    <name>GenerateSeed</name>
+    <message>
+        <source>Sticker Label</source>
+        <translation>स्टिकर लेबल  </translation>
+    </message>
+    <message>
+        <source>Please enter the name (sticker label) of the hardware signer</source>
+        <translation>कृपया हार्डवेयर साइनर का नाम (स्टिकर लेबल) दर्ज करें  </translation>
+    </message>
+    <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
+    </message>
+    <message>
+        <source>The setup didnt complete. Please repeat.</source>
+        <translation>सेटअप पूरा नहीं हुआ। कृपया दोहराएं।  </translation>
+    </message>
+    <message>
+        <source>Success! Please complete this step with all hardware signers and then click Next.</source>
+        <translation>सफलता! कृपया इस चरण को सभी हार्डवेयर साइनरों के साथ पूरा करें और फिर अगला क्लिक करें।  </translation>
+    </message>
+</context>
+<context>
+    <name>GetKeypoolOptionsDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>पथ  </translation>
+    </message>
+    <message>
+        <source>m/0&apos;/0&apos;/*</source>
+        <translation>m/0&apos;/0&apos;/*  </translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>शुरू  </translation>
+    </message>
+    <message>
+        <source>End</source>
+        <translation>अंत  </translation>
+    </message>
+    <message>
+        <source>Internal</source>
+        <translation>आंतरिक  </translation>
+    </message>
+    <message>
+        <source>keypool</source>
+        <translation>keypool  </translation>
+    </message>
+    <message>
+        <source>P2SH-P2WPKH</source>
+        <translation>P2SH-P2WPKH  </translation>
+    </message>
+    <message>
+        <source>P2WPKH</source>
+        <translation>P2WPKH  </translation>
+    </message>
+    <message>
+        <source>P2PKH</source>
+        <translation>P2PKH  </translation>
+    </message>
+    <message>
+        <source>Account</source>
+        <translation>खाता  </translation>
+    </message>
+</context>
+<context>
+    <name>GetXpubDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>Derivation Path</source>
+        <translation>व्युत्पन्न पथ  </translation>
+    </message>
+    <message>
+        <source>Get xpub</source>
+        <translation>एक्सपब प्राप्त करें  </translation>
+    </message>
+    <message>
+        <source>xpub</source>
+        <translation>xpub  </translation>
+    </message>
+</context>
+<context>
+    <name>HardwareSignerInteractionWidget</name>
+    <message>
+        <source>Import File or Text</source>
+        <translation>फ़ाइल या पाठ आयात करें  </translation>
+    </message>
+    <message>
+        <source>Export File</source>
+        <translation>फ़ाइल निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>क्यूआर कोड  </translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <translation>यूएसबी  </translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>मदद  </translation>
     </message>
 </context>
 <context>
@@ -515,6 +796,10 @@ the sending value {sent}</source>
         <translation>लेन-देन पहचानकर्ता</translation>
     </message>
     <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} पुष्टिकरण</translation>
+    </message>
+    <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
         <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
     </message>
@@ -534,8 +819,27 @@ the sending value {sent}</source>
         <translation>अगला चरण</translation>
     </message>
     <message>
+        <source>Next signer</source>
+        <translation>अगला हस्ताक्षरकर्ता  </translation>
+    </message>
+    <message>
+        <source>Previous signer</source>
+        <translation>पिछला हस्ताक्षरकर्ता  </translation>
+    </message>
+    <message>
         <source>Previous Step</source>
         <translation>पिछला चरण</translation>
+    </message>
+</context>
+<context>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>Missing Key origin</source>
+        <translation>मिसिंग की उत्पत्ति  </translation>
+    </message>
+    <message>
+        <source>Unexpected key origin</source>
+        <translation>अप्रत्याशित की उत्पत्ति  </translation>
     </message>
 </context>
 <context>
@@ -543,6 +847,10 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>फिंगरप्रिंट और xpub आयात करें</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>कृपया शीर्ष दाएं में वर्णनकर्ता फ़ील्ड में वर्णनकर्ता पेस्ट करें।</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -563,10 +871,6 @@ the sending value {sent}</source>
     <message>
         <source>Description</source>
         <translation>विवरण</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>लेबल</translation>
     </message>
     <message>
         <source>Fingerprint</source>
@@ -594,18 +898,6 @@ Location of signing device: .....</source>
         <translation>हस्ताक्षर डिवाइस का नाम: ...... हस्ताक्षर डिवाइस का स्थान: .....</translation>
     </message>
     <message>
-        <source>Import file or text</source>
-        <translation>फाइल या टेक्स्ट आयात करें</translation>
-    </message>
-    <message>
-        <source>Scan</source>
-        <translation>स्कैन करें</translation>
-    </message>
-    <message>
-        <source>Connect USB</source>
-        <translation>USB से कनेक्ट करें</translation>
-    </message>
-    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
     </message>
@@ -614,16 +906,16 @@ Location of signing device: .....</source>
         <translation>{xpub} एक मान्य सार्वजनिक xpub नहीं है</translation>
     </message>
     <message>
-        <source>Please import the public key information from the hardware wallet first</source>
-        <translation>कृपया पहले हार्डवेयर वॉलेट से सार्वजनिक कुंजी की जानकारी आयात करें</translation>
+        <source>Please import the information from all hardware signers first</source>
+        <translation>कृपया सभी हार्डवेयर साइनरों से जानकारी पहले आयात करें  </translation>
     </message>
     <message>
-        <source>Please paste the exported file (like coldcard-export.json or sparrow-export.json):</source>
-        <translation>कृपया निर्यातित फ़ाइल (जैसे कि coldcard-export.json या sparrow-export.json) पेस्ट करें:</translation>
+        <source>Please paste the exported file (like sparrow-export.json):</source>
+        <translation>कृपया निर्यातित फ़ाइल (जैसे कि sparrow-export.json) पेस्ट करें:  </translation>
     </message>
     <message>
-        <source>Please paste the exported file (like coldcard-export.json or sparrow-export.json)</source>
-        <translation>कृपया निर्यातित फ़ाइल (जैसे कि coldcard-export.json या sparrow-export.json) पेस्ट करें</translation>
+        <source>Please paste the exported file (like sparrow-export.json)</source>
+        <translation>कृपया निर्यातित फ़ाइल (जैसे कि sparrow-export.json) पेस्ट करें  </translation>
     </message>
     <message>
         <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
@@ -634,6 +926,10 @@ Location of signing device: .....</source>
         <translation>xPub उत्पत्ति {key_origin} और xPub एक साथ होते हैं। कृपया सही xPub उत्पत्ति जोड़ी चुनें।</translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>प्रदान की गई जानकारी {key_origin_network} के लिए है। कृपया {network} नेटवर्क के लिए xPub प्रदान करें  </translation>
+    </message>
+    <message>
         <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
         <translation>xPub मूल {key_origin} {address_type} के लिए अपेक्षित {expected_key_origin} नहीं है</translation>
     </message>
@@ -641,9 +937,28 @@ Location of signing device: .....</source>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>उम्मीद की गई की-उत्पत्ति {expected_key_origin} के लिए कोई साइनर डेटा नहीं मिला।</translation>
     </message>
+</context>
+<context>
+    <name>KeyStoreUIs</name>
     <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>कृपया शीर्ष दाएं में वर्णनकर्ता फ़ील्ड में वर्णनकर्ता पेस्ट करें।</translation>
+        <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
+        <translation>सभी {number} हस्ताक्षरकर्ताओं की उंगलियों के निशान {fingerprints} के साथ भरना  </translation>
+    </message>
+    <message>
+        <source>Please import the complete data for Signer {i}!</source>
+        <translation>कृपया साइनर {i} के लिए पूर्ण डेटा आयात करें!  </translation>
+    </message>
+    <message>
+        <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+        <translation>आपने एक ही फिंगरप्रिंट कई बार आयात किया है!!! कृपया एक अलग हस्ताक्षर उपकरण का उपयोग करें।  </translation>
+    </message>
+    <message>
+        <source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
+        <translation>आपने एक ही xpub कई बार आयात किया है!!! कृपया एक अलग हस्ताक्षर उपकरण का उपयोग करें।  </translation>
+    </message>
+    <message>
+        <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
+        <translation>आपके आयातित की उत्पत्तियाँ {key_origins} अलग हैं! कृपया दोबारा जांच लें अगर आपने इसे इरादतन किया था।  </translation>
     </message>
 </context>
 <context>
@@ -665,18 +980,56 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>LinkingWarningBar</name>
+    <message>
+        <source>{caterory} (in wallet {wallet_ids})</source>
+        <translation>{caterory} (वॉलेट {wallet_ids} में)  </translation>
+    </message>
+    <message>
+        <source>This transaction combines the coin categories {categories} and makes both categories linkable!</source>
+        <translation>यह लेन-देन सिक्का श्रेणियों {categories} को मिलाता है और दोनों श्रेणियों को लिंक करने योग्य बनाता है!  </translation>
+    </message>
+</context>
+<context>
+    <name>LoadingWalletTab</name>
+    <message>
+        <source>Loading, please wait...</source>
+        <translation>लोड हो रहा है, कृपया प्रतीक्षा करें...  </translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>&amp;Wallet</source>
         <translation>&amp;वॉलेट</translation>
     </message>
     <message>
+        <source>&amp;Change Password</source>
+        <translation>&amp;पासवर्ड बदलें</translation>
+    </message>
+    <message>
+        <source>&amp;Export Coldcard txt file</source>
+        <translation>&amp;कोल्डकार्ड txt फ़ाइल निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>&amp;Export Wallet PDF</source>
+        <translation>&amp;वॉलेट PDF निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>&amp;Export Descriptor</source>
+        <translation>&amp;विवरणक निर्यात करें  </translation>
+    </message>
+    <message>
         <source>Re&amp;fresh</source>
         <translation>ताज़ा करें</translation>
     </message>
     <message>
-        <source>&amp;Transaction</source>
-        <translation>&amp;लेन-देन</translation>
+        <source>&amp;Tools</source>
+        <translation>&amp;उपकरण  </translation>
+    </message>
+    <message>
+        <source>&amp;USB Signer Tools</source>
+        <translation>&amp;USB साइनर टूल्स  </translation>
     </message>
     <message>
         <source>&amp;Load Transaction or PSBT</source>
@@ -689,6 +1042,10 @@ Location of signing device: .....</source>
     <message>
         <source>From &amp;text</source>
         <translation>टेक्स्ट से</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;नया वॉलेट</translation>
     </message>
     <message>
         <source>From &amp;QR Code</source>
@@ -711,10 +1068,6 @@ Location of signing device: .....</source>
         <translation>&amp;भाषाएँ</translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;नया वॉलेट</translation>
-    </message>
-    <message>
         <source>&amp;About</source>
         <translation>&amp;के बारे में</translation>
     </message>
@@ -735,8 +1088,8 @@ Location of signing device: .....</source>
         <translation>कृपया वॉलेट चुनें</translation>
     </message>
     <message>
-        <source>test</source>
-        <translation>परीक्षण</translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;वॉलेट खोलें</translation>
     </message>
     <message>
         <source>Please select the wallet first.</source>
@@ -755,16 +1108,16 @@ Location of signing device: .....</source>
         <translation>चयनित फ़ाइल: {file_path}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;वॉलेट खोलें</translation>
-    </message>
-    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>कोई वॉलेट खुला नहीं है। कृपया इस लेन-देन को संपादित करने के लिए प्रेषक वॉलेट खोलें।</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation>कृपया इस लेन-देन को संपादित करने के लिए प्रेषक वॉलेट खोलें।</translation>
+    </message>
+    <message>
+        <source>Could not decode this string</source>
+        <translation>इस स्ट्रिंग को डिकोड नहीं कर सका  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -777,6 +1130,10 @@ Location of signing device: .....</source>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
         <translation>कृपया अपना बिटकॉइन लेन-देन या PSBT यहाँ पेस्ट करें, या एक फ़ाइल ड्रॉप करें</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>हाल का खोलें</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -796,11 +1153,7 @@ Location of signing device: .....</source>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>हाल का खोलें</translation>
+        <translation>वॉलेट फ़ाइलें (*.wallet);;सभी फ़ाइलें (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
@@ -823,48 +1176,16 @@ Location of signing device: .....</source>
         <translation>कृपया {filename} के लिए पासवर्ड दर्ज करें:</translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open. Please close it first.</source>
-        <translation>id {name} वाला एक वॉलेट पहले से खुला है। कृपया इसे पहले बंद करें।</translation>
-    </message>
-    <message>
-        <source>Export labels</source>
-        <translation>लेबल निर्यात करें</translation>
-    </message>
-    <message>
-        <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-        <translation>सभी फाइलें (*);;JSON फाइलें (*.jsonl);;JSON फाइलें (*.json)</translation>
-    </message>
-    <message>
-        <source>Import labels</source>
-        <translation>लेबल आयात करें</translation>
-    </message>
-    <message>
-        <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-        <translation>सभी फ़ाइलें (*);;JSONL फ़ाइलें (*.jsonl);;JSON फ़ाइलें (*.json)</translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
-    </message>
-    <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>सभी फ़ाइलें (*);;JSON फ़ाइलें (*.json)</translation>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>id {name} वाला एक वॉलेट पहले से खुला है। कृपया इसे पहले बंद करें।</translation>
     </message>
     <message>
         <source>new</source>
         <translation>नया</translation>
-    </message>
-    <message>
-        <source>Friends</source>
-        <translation>मित्र</translation>
-    </message>
-    <message>
-        <source>KYC-Exchange</source>
-        <translation>KYC-एक्सचेंज</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open.  </source>
@@ -887,24 +1208,84 @@ Location of signing device: .....</source>
         <translation>वॉलेट {id} बंद करना</translation>
     </message>
     <message>
-        <source>&amp;Change/Export</source>
-        <translation>&amp;परिवर्तन/निर्यात</translation>
-    </message>
-    <message>
         <source>Closing tab {name}</source>
         <translation>टैब {name} बंद करना</translation>
     </message>
     <message>
+        <source>MainWindow</source>
+        <translation>मुख्य विंडो  </translation>
+    </message>
+    <message>
+        <source>Connected devices</source>
+        <translation>जुड़े हुए उपकरण  </translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;खोजें  </translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>ताज़ा करें  </translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>पासफ़्रेज़ सेट करें  </translation>
+    </message>
+    <message>
+        <source>Get an xpub</source>
+        <translation>एक एक्सपब प्राप्त करें  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>संदेश हस्ताक्षर करें  </translation>
+    </message>
+    <message>
+        <source>Sign PSBT</source>
+        <translation>PSBT हस्ताक्षर करें  </translation>
+    </message>
+    <message>
+        <source>Change the options used for getkeypool</source>
+        <translation>getkeypool के लिए प्रयुक्त विकल्पों में परिवर्तन करें  </translation>
+    </message>
+    <message>
+        <source>Change getkeypool options</source>
+        <translation>getkeypool विकल्पों में परिवर्तन करें  </translation>
+    </message>
+    <message>
+        <source>Send Pin</source>
+        <translation>पिन भेजें  </translation>
+    </message>
+    <message>
+        <source>Toggle Passphrase</source>
+        <translation>पासफ़्रेज़ टॉगल करें  </translation>
+    </message>
+    <message>
+        <source>Display Address</source>
+        <translation>पता प्रदर्शित करें  </translation>
+    </message>
+    <message>
+        <source>&amp;Change</source>
+        <translation>&amp;बदलें  </translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation>क्रियाएँ  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
+    </message>
+    <message>
+        <source>Descriptors</source>
+        <translation>विवरणक  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;निर्यात  </translation>
+    </message>
+    <message>
         <source>&amp;Rename Wallet</source>
         <translation>&amp;वॉलेट का नाम बदलें</translation>
-    </message>
-    <message>
-        <source>&amp;Change Password</source>
-        <translation>&amp;पासवर्ड बदलें</translation>
-    </message>
-    <message>
-        <source>&amp;Export for Coldcard</source>
-        <translation>&amp;कोल्डकार्ड के लिए निर्यात करें</translation>
     </message>
 </context>
 <context>
@@ -930,22 +1311,29 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>MultiLineListView</name>
+    <message>
+        <source>Delete all messages</source>
+        <translation>सभी संदेश हटाएं  </translation>
+    </message>
+</context>
+<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
         <translation>सीएसवी के रूप में कॉपी करें</translation>
     </message>
     <message>
+        <source>Copy</source>
+        <translation>कॉपी</translation>
+    </message>
+    <message>
         <source>Export csv</source>
-        <translation type="unfinished"></translation>
+        <translation>csv निर्यात करें  </translation>
     </message>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy</source>
-        <translation>कॉपी</translation>
+        <translation>सभी फ़ाइलें (*);;टेक्स्ट फ़ाइलें (*.csv)  </translation>
     </message>
 </context>
 <context>
@@ -953,10 +1341,6 @@ Location of signing device: .....</source>
     <message>
         <source>Manual</source>
         <translation>मैनुअल</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>पोर्ट:</translation>
     </message>
     <message>
         <source>Mode:</source>
@@ -979,18 +1363,28 @@ Location of signing device: .....</source>
         <translation>मेमपूल इंस्टेंस URL</translation>
     </message>
     <message>
+        <source>Apply &amp;&amp; Shutdown</source>
+        <translation>लागू करें &amp;&amp; बंद करें  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>प्रतिक्रियाएँ: {name}: {status} मेमपूल इंस्टेंस: {server}</translation>
     </message>
     <message>
-        <source>Automatic</source>
-        <translation>स्वचालित</translation>
+        <source>Error in server connection.
+{responses}
+
+ Do you want to proceed anyway?</source>
+        <translation>सर्वर से कनेक्शन में त्रुटि। 
+{responses}
+
+क्या आप फिर भी आगे बढ़ना चाहते हैं?</translation>
     </message>
     <message>
-        <source>Apply &amp;&amp; Restart</source>
-        <translation>लागू करें &amp;&amp; पुनः आरंभ करें</translation>
+        <source>Automatic</source>
+        <translation>स्वचालित</translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1015,6 +1409,10 @@ Location of signing device: .....</source>
     <message>
         <source>SSL:</source>
         <translation>SSL:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>पोर्ट:</translation>
     </message>
 </context>
 <context>
@@ -1105,6 +1503,17 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>NostrSync</name>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>{untrusted} में जाएँ  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>अन्य उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करके कनेक्शन पूरा करें।  </translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1161,8 +1570,16 @@ Location of signing device: .....</source>
         <translation>कृपया अपना पासवर्ड दर्ज करें:</translation>
     </message>
     <message>
+        <source>Show Password</source>
+        <translation>पासवर्ड दिखाएं</translation>
+    </message>
+    <message>
         <source>Submit</source>
         <translation>सबमिट करें</translation>
+    </message>
+    <message>
+        <source>Hide Password</source>
+        <translation>पासवर्ड छुपाएं</translation>
     </message>
 </context>
 <context>
@@ -1179,20 +1596,24 @@ Location of signing device: .....</source>
         <translation>भेजें</translation>
     </message>
     <message>
+        <source>Cannot move the wallet file, because {file_path} exists</source>
+        <translation>वॉलेट फ़ाइल को स्थानांतरित नहीं किया जा सकता, क्योंकि {file_path} मौजूद है</translation>
+    </message>
+    <message>
         <source>Save wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>वॉलेट सेव करें  </translation>
     </message>
     <message>
         <source>All Files (*);;Wallet Files (*.wallet)</source>
-        <translation type="unfinished"></translation>
+        <translation>सभी फ़ाइलें (*);;वॉलेट फ़ाइलें (*.wallet)  </translation>
     </message>
     <message>
         <source>Are you SURE you don&apos;t want save the wallet {id}?</source>
-        <translation type="unfinished"></translation>
+        <translation>क्या आप सुनिश्चित हैं कि आप वॉलेट {id} को सेव नहीं करना चाहते हैं?  </translation>
     </message>
     <message>
         <source>Delete wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>वॉलेट हटाएं  </translation>
     </message>
     <message>
         <source>Password incorrect</source>
@@ -1215,14 +1636,14 @@ Location of signing device: .....</source>
         <translation>  {amount} में {shortid}</translation>
     </message>
     <message>
+        <source>Descriptor</source>
+        <translation>वर्णनकर्ता</translation>
+    </message>
+    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
         <translation>वॉलेट &apos;{wallet}&apos; में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
-    </message>
-    <message>
-        <source>Descriptor</source>
-        <translation>वर्णनकर्ता</translation>
     </message>
     <message>
         <source>Do you want to save a copy of these transactions?</source>
@@ -1239,12 +1660,48 @@ Location of signing device: .....</source>
         <translation>वॉलेट &apos;{wallet}&apos; में {number} नए लेनदेन हैं: {txs}</translation>
     </message>
     <message>
+        <source>Rename or merge categories</source>
+        <translation>श्रेणियों का नाम बदलें या विलय करें</translation>
+    </message>
+    <message>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>नया नाम चुनें, या विलय के लिए मौजूदा नाम चुनें:</translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>नया पता के लिए क्लिक करें</translation>
     </message>
     <message>
+        <source>Export labels</source>
+        <translation>लेबल निर्यात करें</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>सभी फाइलें (*);;JSON फाइलें (*.jsonl);;JSON फाइलें (*.json)</translation>
+    </message>
+    <message>
+        <source>Import labels</source>
+        <translation>लेबल आयात करें</translation>
+    </message>
+    <message>
         <source>Sync</source>
         <translation>सिंक</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>सभी फ़ाइलें (*);;JSONL फ़ाइलें (*.jsonl);;JSON फ़ाइलें (*.json)</translation>
+    </message>
+    <message>
+        <source>Successfully updated {number} Labels</source>
+        <translation>सफलतापूर्वक {number} लेबल अपडेट किए गए  </translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>सभी फ़ाइलें (*);;JSON फ़ाइलें (*.json)</translation>
     </message>
     <message>
         <source>History</source>
@@ -1267,23 +1724,32 @@ Location of signing device: .....</source>
         <translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
     </message>
     <message>
-        <source>Cannot move the wallet file, because {file_path} exists</source>
-        <translation>वॉलेट फ़ाइल को स्थानांतरित नहीं किया जा सकता, क्योंकि {file_path} मौजूद है</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>आगे बढ़ने से सभी वॉलेट पते बदल सकते हैं। क्या आप आगे बढ़ना चाहते हैं?  </translation>
     </message>
 </context>
 <context>
     <name>ReceiveTest</name>
     <message>
-        <source>Received {amount}</source>
-        <translation>प्राप्त {amount}</translation>
+        <source>Balance = {amount}</source>
+        <translation>बैलेंस = {amount}  </translation>
     </message>
     <message>
         <source>No wallet setup yet</source>
         <translation>अभी तक कोई वॉलेट सेटअप नहीं</translation>
     </message>
     <message>
-        <source>Receive a small amount {test_amount} to an address of this wallet</source>
-        <translation>इस वॉलेट के पते पर एक छोटी राशि {test_amount} प्राप्त करें</translation>
+        <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
+                    &lt;br&gt;&lt;br&gt;
+                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                    To know if you control the funds, you have to test spending from the wallet. 
+                    &lt;br&gt;
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    &lt;br&gt;
+                    &lt;br&gt;
+                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    </source>
+        <translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (जो {test_amount} से कम है) प्राप्त करें।&lt;br&gt;&lt;br&gt;&lt;b&gt;क्यों?&lt;/b&gt;&lt;br&gt;यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा।&lt;br&gt;तो वॉलेट में बड़ी मात्रा में बिटकॉइन भेजने से पहले, वॉलेट से खर्च करना और सभी साइनर्स का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।&lt;br&gt;&lt;br&gt;&lt;b&gt;जब तक आप सभी भेजने के परीक्षण पूरे नहीं कर लेते, वॉलेट में बड़ी धनराशि न भेजें!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1335,54 +1801,131 @@ Location of signing device: .....</source>
 <context>
     <name>Recipients</name>
     <message>
+        <source>Address</source>
+        <translation>पता</translation>
+    </message>
+    <message>
+        <source>{address} is not a valid address!</source>
+        <translation>{address} एक मान्य पता नहीं है!  </translation>
+    </message>
+    <message>
+        <source>{amount} is not a valid integer!</source>
+        <translation>{amount} एक मान्य पूर्णांक नहीं है!  </translation>
+    </message>
+    <message>
         <source>Recipients</source>
         <translation>प्राप्तकर्ता</translation>
     </message>
     <message>
-        <source>+ Add Recipient</source>
-        <translation>+ प्राप्तकर्ता जोड़ें</translation>
+        <source>Add Recipient</source>
+        <translation>प्राप्तकर्ता जोड़ें  </translation>
+    </message>
+    <message>
+        <source>Import/Export</source>
+        <translation>आयात/निर्यात  </translation>
+    </message>
+    <message>
+        <source>Export CSV Template</source>
+        <translation>CSV टेम्पलेट निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Import CSV file</source>
+        <translation>CSV फ़ाइल आयात करें  </translation>
+    </message>
+    <message>
+        <source>Export as CSV file</source>
+        <translation>CSV फ़ाइल के रूप में निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Amount [{unit}]</source>
+        <translation>राशि [{unit}]  </translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>लेबल</translation>
+    </message>
+    <message>
+        <source>Export csv</source>
+        <translation>csv निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>All Files (*);;Wallet Files (*.csv)</source>
+        <translation>सभी फ़ाइलें (*);;वॉलेट फ़ाइलें (*.csv)  </translation>
+    </message>
+    <message>
+        <source>Open CSV</source>
+        <translation>CSV खोलें  </translation>
+    </message>
+    <message>
+        <source>All Files (*);;CSV (*.csv)</source>
+        <translation>सभी फ़ाइलें (*);;CSV (*.csv)  </translation>
+    </message>
+    <message>
+        <source>Please use the CSV template and include the header row.</source>
+        <translation>कृपया CSV टेम्पलेट का उपयोग करें और हैडर रो शामिल करें।  </translation>
+    </message>
+    <message>
+        <source>No rows recognized</source>
+        <translation>कोई पंक्तियाँ पहचानी नहीं गईं  </translation>
     </message>
 </context>
 <context>
     <name>RegisterMultisig</name>
     <message>
-        <source>Your balance {balance} is greater than a maximally allowed test amount of {amount}!
-Please do the hardware signer reset only  with a lower balance!  (Send some funds out before)</source>
-        <translation>आपका बैलेंस {balance} अधिकतम अनुमति वाली परीक्षण राशि {amount} से अधिक है! कृपया कम बैलेंस के साथ ही हार्डवेयर साइनर रीसेट करें! (पहले कुछ फंड भेजें)</translation>
+        <source>2. Import wallet information into Bitcoin Safe</source>
+        <translation>२. बिटकॉइन सुरक्षित में वॉलेट जानकारी आयात करें</translation>
     </message>
     <message>
-        <source>1. Export wallet descriptor</source>
-        <translation>1. वॉलेट वर्णनकर्ता निर्यात करें</translation>
+        <source>Skip step</source>
+        <translation>चरण छोड़ें</translation>
     </message>
     <message>
-        <source>Yes, I registered the multisig on the {n} hardware signer</source>
-        <translation>हाँ, मैंने {n} हार्डवेयर साइनर पर मल्टीसिग पंजीकृत किया है</translation>
+        <source>Next step</source>
+        <translation>अगला चरण</translation>
+    </message>
+    <message>
+        <source>Next signer</source>
+        <translation>अगला हस्ताक्षरकर्ता  </translation>
+    </message>
+    <message>
+        <source>Previous signer</source>
+        <translation>पिछला हस्ताक्षरकर्ता  </translation>
     </message>
     <message>
         <source>Previous Step</source>
         <translation>पिछला चरण</translation>
     </message>
     <message>
-        <source>2. Import in each hardware signer</source>
-        <translation>प्रत्येक हार्डवेयर साइनर में आयात करें</translation>
+        <source>Yes, I registered the multisig on the {n} hardware signer</source>
+        <translation>हाँ, मैंने {n} हार्डवेयर साइनर पर मल्टीसिग पंजीकृत किया है</translation>
     </message>
+</context>
+<context>
+    <name>RelayDialog</name>
     <message>
-        <source>2. Import in the hardware signer</source>
-        <translation>हार्डवेयर साइनर में आयात करें</translation>
+        <source>Enter custom Nostr Relays</source>
+        <translation>कस्टम नोस्ट्र रिले दर्ज करें  </translation>
+    </message>
+</context>
+<context>
+    <name>SankeyBitcoin</name>
+    <message>
+        <source>Fee</source>
+        <translation>शुल्क</translation>
     </message>
 </context>
 <context>
     <name>ScreenshotsExportXpub</name>
     <message>
-        <source>1. Export the wallet information from the hardware signer</source>
-        <translation>हार्डवेयर साइनर से वॉलेट जानकारी निर्यात करें</translation>
+        <source>How-to export the wallet information from the hardware signer</source>
+        <translation>हार्डवेयर साइनर से वॉलेट जानकारी को निर्यात करने का तरीका  </translation>
     </message>
 </context>
 <context>
     <name>ScreenshotsGenerateSeed</name>
     <message>
-        <source>Generate {number} secret seed words on each hardware signer</source>
-        <translation>प्रत्येक हार्डवेयर साइनर पर {number} गुप्त बीज शब्द उत्पन्न करें</translation>
+        <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
+        <translation>प्रत्येक हार्डवेयर साइनर पर {number} गुप्त बीज शब्द उत्पन्न करें और उन्हें रिकवरी शीट पर लिखें  </translation>
     </message>
 </context>
 <context>
@@ -1393,25 +1936,33 @@ Please do the hardware signer reset only  with a lower balance!  (Send some fund
     </message>
 </context>
 <context>
-    <name>ScreenshotsResetSigner</name>
-    <message>
-        <source>Reset the hardware signer.</source>
-        <translation>हार्डवेयर साइनर रीसेट करें।</translation>
-    </message>
-</context>
-<context>
-    <name>ScreenshotsRestoreSigner</name>
-    <message>
-        <source>Restore the hardware signer.</source>
-        <translation>हार्डवेयर साइनर पुनर्स्थापित करें।</translation>
-    </message>
-</context>
-<context>
     <name>ScreenshotsViewSeed</name>
     <message>
-        <source>Compare the {number} words on the backup paper to &apos;View Seed Words&apos; from Coldcard.
+        <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-        <translation>Coldcard से &apos;बीज शब्द देखें&apos; के लिए बैकअप पेपर पर {number} शब्दों की तुलना करें। यदि आप यहाँ गलती करते हैं, तो आपका पैसा खो जाएगा!</translation>
+        <translation>बैकअप पेपर पर {number} शब्दों की तुलना हार्डवेयर साइनर से करें। यदि आप यहाँ गलती करते हैं, तो आपका पैसा खो जाएगा!  </translation>
+    </message>
+</context>
+<context>
+    <name>SeedAnalyzer</name>
+    <message>
+        <source>Missing Seed</source>
+        <translation>बीज गायब  </translation>
+    </message>
+    <message>
+        <source>Invalid seed</source>
+        <translation>अमान्य बीज  </translation>
+    </message>
+</context>
+<context>
+    <name>SendPinDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?  </translation>
     </message>
 </context>
 <context>
@@ -1427,6 +1978,63 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>हार्डवेयर साइनर काम कर रहा है, इसे सुनिश्चित करने के लिए भेज परीक्षण पूरा करें!</translation>
+    </message>
+</context>
+<context>
+    <name>SetPassphraseDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+</context>
+<context>
+    <name>SignMessageDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>Signature</source>
+        <translation>हस्ताक्षर  </translation>
+    </message>
+    <message>
+        <source>Message</source>
+        <translation>संदेश  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>संदेश हस्ताक्षर करें  </translation>
+    </message>
+    <message>
+        <source>Derivation Path</source>
+        <translation>व्युत्पन्न पथ  </translation>
+    </message>
+</context>
+<context>
+    <name>SignPSBTDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>संवाद  </translation>
+    </message>
+    <message>
+        <source>PSBT To Sign</source>
+        <translation>हस्ताक्षर करने के लिए PSBT  </translation>
+    </message>
+    <message>
+        <source>Import PSBT</source>
+        <translation>PSBT आयात करें  </translation>
+    </message>
+    <message>
+        <source>PSBT Result</source>
+        <translation>PSBT परिणाम  </translation>
+    </message>
+    <message>
+        <source>Export PSBT</source>
+        <translation>PSBT निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Sign PSBT</source>
+        <translation>PSBT हस्ताक्षर करें  </translation>
     </message>
 </context>
 <context>
@@ -1451,6 +2059,10 @@ If you make a mistake here, your money is lost!</source>
 <context>
     <name>SignatureImporterFile</name>
     <message>
+        <source>Import signed PSBT</source>
+        <translation>हस्ताक्षरित PSBT आयात करें</translation>
+    </message>
+    <message>
         <source>OK</source>
         <translation>ठीक है</translation>
     </message>
@@ -1474,6 +2086,10 @@ If you make a mistake here, your money is lost!</source>
         <translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
     </message>
     <message>
+        <source>No additional signatures were added</source>
+        <translation>कोई अतिरिक्त हस्ताक्षर नहीं जोड़े गए  </translation>
+    </message>
+    <message>
         <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
         <translation>bitcoin_tx पुस्तकालय त्रुटि। txid को अंतिम रूप देते समय बदला नहीं जाना चाहिए</translation>
     </message>
@@ -1495,6 +2111,21 @@ If you make a mistake here, your money is lost!</source>
         <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
         <translation>हस्ताक्षरित psbt का txid मूल Transaction Identifier से मेल नहीं खाता। रद्द करना</translation>
     </message>
+    <message>
+        <source>Sign with mnemonic seed</source>
+        <translation>म्नेमोनिक सीड के साथ हस्ताक्षर करें  </translation>
+    </message>
+</context>
+<context>
+    <name>StickerTheHardware</name>
+    <message>
+        <source>Put the following stickers on your hardware:</source>
+        <translation>अपने हार्डवेयर पर निम्नलिखित स्टिकर लगाएं:  </translation>
+    </message>
+    <message>
+        <source>&quot;{sticker}&quot; on {device_name}</source>
+        <translation>&quot;{sticker}&quot; पर {device_name}  </translation>
+    </message>
 </context>
 <context>
     <name>SyncTab</name>
@@ -1507,12 +2138,85 @@ If you make a mistake here, your money is lost!</source>
         <translation>नई टैब में स्वचालित रूप से प्राप्त लेन-देन और PSBTs खोलें</translation>
     </message>
     <message>
+        <source>Please backup your sync key:
+{nsec}
+
+You can restore your labels at a later time with &apos;Import Sync Key&apos;.</source>
+        <translation>कृपया अपनी सिंक कुंजी का बैकअप लें: {nsec} आप बाद में &apos;आयात सिंक कुंजी&apos; के साथ अपने लेबल्स को पुनर्स्थापित कर सकते हैं।  </translation>
+    </message>
+    <message>
         <source>Opening {name} from {author}</source>
         <translation>{author} से {name} खोलना</translation>
     </message>
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>{author} से प्राप्त संदेश &apos;{description}&apos;</translation>
+    </message>
+</context>
+<context>
+    <name>ToolGui</name>
+    <message>
+        <source>USB Signer Tools</source>
+        <translation>USB साइनर टूल्स  </translation>
+    </message>
+    <message>
+        <source>Paste your descriptor to be signed</source>
+        <translation>अपना विवरणक पेस्ट करें जिसे साइन किया जाना है  </translation>
+    </message>
+    <message>
+        <source>Display Address</source>
+        <translation>पता प्रदर्शित करें  </translation>
+    </message>
+    <message>
+        <source>Wipe Device</source>
+        <translation>डिवाइस मिटाएं  </translation>
+    </message>
+    <message>
+        <source>Get xpubs</source>
+        <translation>एक्सपब प्राप्त करें  </translation>
+    </message>
+    <message>
+        <source>XPUBs</source>
+        <translation>XPUBs  </translation>
+    </message>
+    <message>
+        <source>Paste your PSBT in here</source>
+        <translation>यहाँ अपना PSBT पेस्ट करें  </translation>
+    </message>
+    <message>
+        <source>Sign PSBT</source>
+        <translation>PSBT हस्ताक्षर करें  </translation>
+    </message>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <message>
+        <source>Paste your text to be signed</source>
+        <translation>हस्ताक्षर करने के लिए अपना टेक्स्ट पेस्ट करें  </translation>
+    </message>
+    <message>
+        <source>Address index</source>
+        <translation>पता सूची  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>संदेश हस्ताक्षर करें  </translation>
+    </message>
+</context>
+<context>
+    <name>TrustedDevice</name>
+    <message>
+        <source>Connected to {id}</source>
+        <translation>{id} से जुड़ा हुआ  </translation>
+    </message>
+    <message>
+        <source>Syncing Address labels</source>
+        <translation>पता लेबल सिंक करना  </translation>
+    </message>
+    <message>
+        <source>Can share Transactions</source>
+        <translation>लेन-देन साझा कर सकते हैं  </translation>
     </message>
 </context>
 <context>
@@ -1539,6 +2243,14 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>प्राप्तकर्ता के लिए सबसे उपयुक्त श्रेणी चुनें</translation>
+    </message>
+    <message>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} इनपुट: {inputs}</translation>
+    </message>
+    <message>
+        <source>Adding outpoints {outpoints}</source>
+        <translation>आउटपॉइंट्स {outpoints} जोड़ना</translation>
     </message>
     <message>
         <source>Add Inputs</source>
@@ -1583,6 +2295,10 @@ by merging address balances</source>
         <translation>विदेशी UTXOs जोड़ें</translation>
     </message>
     <message>
+        <source>Create</source>
+        <translation>बनाएं  </translation>
+    </message>
+    <message>
         <source>This checkbox automatically checks 
 below {rate}</source>
         <translation>यह चेकबॉक्स स्वचालित रूप से {rate} के नीचे जांचता है</translation>
@@ -1592,12 +2308,8 @@ below {rate}</source>
         <translation>कृपया बाएं तरफ एक इनपुट श्रेणी चुनें, जो लेन-देन प्राप्तकर्ताओं के अनुरूप हो।</translation>
     </message>
     <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} इनपुट: {inputs}</translation>
-    </message>
-    <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>आउटपॉइंट्स {outpoints} जोड़ना</translation>
+        <source>Do you want to continue, even though both coin categories become linkable?</source>
+        <translation>क्या आप जारी रखना चाहते हैं, हालांकि दोनों सिक्का श्रेणियाँ लिंक करने योग्य बन जाती हैं?  </translation>
     </message>
 </context>
 <context>
@@ -1607,8 +2319,20 @@ below {rate}</source>
         <translation>इनपुट्स</translation>
     </message>
     <message>
+        <source>Import file</source>
+        <translation>फाइल आयात करें  </translation>
+    </message>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
+    </message>
+    <message>
         <source>Recipients</source>
         <translation>प्राप्तकर्ता</translation>
+    </message>
+    <message>
+        <source>Diagram</source>
+        <translation>आरेख</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -1634,9 +2358,50 @@ below {rate}</source>
         <source>Invalid Signatures</source>
         <translation>अमान्य हस्ताक्षर</translation>
     </message>
+</context>
+<context>
+    <name>USBGui</name>
     <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
+        <source>Unlock USB devices</source>
+        <translation>यूएसबी उपकरणों को अनलॉक करें  </translation>
+    </message>
+    <message>
+        <source>Please unlock USB devices</source>
+        <translation>कृपया यूएसबी उपकरणों को अनलॉक करें  </translation>
+    </message>
+    <message>
+        <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
+        <translation>USB के माध्यम से मल्टीसिग वॉलेट्स का पंजीकरण {device_type} द्वारा समर्थित नहीं है। कृपया sd-कार्ड्स का उपयोग करें या QR कोड स्कैन करें। </translation>
+    </message>
+</context>
+<context>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Register Multisig wallet on hardware signer</source>
+        <translation>हार्डवेयर साइनर पर मल्टीसिग वॉलेट पंजीकृत करें  </translation>
+    </message>
+    <message>
+        <source>Register Multisig</source>
+        <translation>मल्टीसिग पंजीकरण  </translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>मदद  </translation>
+    </message>
+    <message>
+        <source>Successfully registered multisig wallet on hardware signer</source>
+        <translation>हार्डवेयर साइनर पर मल्टीसिग वॉलेट सफलतापूर्वक पंजीकृत  </translation>
+    </message>
+</context>
+<context>
+    <name>USBValidateAddressWidget</name>
+    <message>
+        <source>Validate address</source>
+        <translation>पता मान्य करें  </translation>
+    </message>
+    <message>
+        <source>Validate receive address:</source>
+        <translation>प्राप्त पते को मान्य करें:  </translation>
     </message>
 </context>
 <context>
@@ -1668,6 +2433,17 @@ below {rate}</source>
     <message>
         <source>Parents</source>
         <translation>माता-पिता</translation>
+    </message>
+</context>
+<context>
+    <name>UnTrustedDevice</name>
+    <message>
+        <source>Trust {id}</source>
+        <translation>{id} पर भरोसा करें  </translation>
+    </message>
+    <message>
+        <source>Accept trust request from {other}</source>
+        <translation>{other} से भरोसा अनुरोध स्वीकार करें  </translation>
     </message>
 </context>
 <context>
@@ -1716,8 +2492,8 @@ below {rate}</source>
 <context>
     <name>UtxoListWithToolbar</name>
     <message>
-        <source>{amount} selected</source>
-        <translation>{amount} चयनित</translation>
+        <source>{amount} selected ({number} UTXOs)</source>
+        <translation>{amount} चयनित ({number} UTXOs)  </translation>
     </message>
 </context>
 <context>
@@ -1757,8 +2533,8 @@ below {rate}</source>
         <translation>त्रुटि</translation>
     </message>
     <message>
-        <source>A wallet with the same name already exists.</source>
-        <translation>इसी नाम का वॉलेट पहले से मौजूद है।</translation>
+        <source>The wallet {filename} exists already.</source>
+        <translation>वॉलेट {filename} पहले से मौजूद है।  </translation>
     </message>
 </context>
 <context>
@@ -1766,6 +2542,18 @@ below {rate}</source>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>पहले आपके पास एक प्रारंभिक वॉलेट होना चाहिए</translation>
+    </message>
+    <message>
+        <source>Generate Seed</source>
+        <translation>बीज उत्पन्न करें</translation>
+    </message>
+    <message>
+        <source>Import signer info</source>
+        <translation>साइनर जानकारी आयात करें</translation>
+    </message>
+    <message>
+        <source>Backup Seed</source>
+        <translation>बीज बैकअप</translation>
     </message>
     <message>
         <source>Validate Backup</source>
@@ -1792,6 +2580,17 @@ below {rate}</source>
         <translation>परीक्षण भेजें</translation>
     </message>
     <message>
+        <source>All Send tests done successfully.</source>
+        <translation>सभी भेजने के परीक्षण सफलतापूर्वक किए गए।  </translation>
+    </message>
+    <message>
+        <source>The test transaction 
+&apos;{tx_text}&apos;
+ was done successfully. Please proceed to do the send test: 
+&apos;{next_text}&apos;</source>
+        <translation>परीक्षण लेनदेन &apos;{tx_text}&apos; सफलतापूर्वक किया गया। कृपया भेजने के परीक्षण के लिए आगे बढ़ें: &apos;{next_text}&apos;  </translation>
+    </message>
+    <message>
         <source> and </source>
         <translation>और</translation>
     </message>
@@ -1808,20 +2607,31 @@ below {rate}</source>
         <translation>वॉलेट फंडेड नहीं है। कृपया वॉलेट को फंड करें।</translation>
     </message>
     <message>
-        <source>Turn on hardware signer</source>
-        <translation>हार्डवेयर साइनर चालू करें</translation>
+        <source>Buy hardware signers</source>
+        <translation>हार्डवेयर साइनर खरीदें  </translation>
     </message>
     <message>
-        <source>Generate Seed</source>
-        <translation>बीज उत्पन्न करें</translation>
+        <source>Label the hardware signers</source>
+        <translation>हार्डवेयर साइनर को लेबल करें  </translation>
+    </message>
+</context>
+<context>
+    <name>XpubAnalyzer</name>
+    <message>
+        <source>Missing xPub</source>
+        <translation>गुम xPub  </translation>
     </message>
     <message>
-        <source>Import signer info</source>
-        <translation>साइनर जानकारी आयात करें</translation>
+        <source>The xpub is in SLIP132 format. Converting to standard format.</source>
+        <translation>xpub SLIP132 प्रारूप में है। मानक प्रारूप में परिवर्तित करना।</translation>
     </message>
     <message>
-        <source>Backup Seed</source>
-        <translation>बीज बैकअप</translation>
+        <source>Converting format</source>
+        <translation>प्रारूप परिवर्तन  </translation>
+    </message>
+    <message>
+        <source>Invalid xpub</source>
+        <translation>Xpub अमान्य  </translation>
     </message>
 </context>
 <context>
@@ -1871,22 +2681,109 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>No USB devices found</source>
+        <translation>USB उपकरण नहीं मिले  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>व्युत्पन्न_पथ {value} को / से शुरू होना चाहिए  </translation>
+    </message>
+    <message>
+        <source>h cannot appear twice in a index</source>
+        <translation>एक अनुक्रमणिका में h दो बार नहीं आ सकता  </translation>
+    </message>
+    <message>
+        <source>{value} must start with m/</source>
+        <translation>{value} को m/ से शुरू होना चाहिए  </translation>
+    </message>
+    <message>
+        <source>{value} cannot contain //</source>
+        <translation>{value} में // नहीं हो सकता  </translation>
+    </message>
+    <message>
+        <source>{value} cannot contain /h</source>
+        <translation>{value} में /h नहीं हो सकता  </translation>
+    </message>
+    <message>
+        <source>{value} cannot contain hh</source>
+        <translation>{value} में hh नहीं हो सकता  </translation>
+    </message>
+    <message>
+        <source>{value} cannot end with /</source>
+        <translation>{value} / से खत्म नहीं हो सकता  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} एक वैध फिंगरप्रिंट नहीं है  </translation>
+    </message>
+    <message>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>कुंजी मूल {key_origin} के नेटवर्क भाग {network_str} को h के साथ कठोर किया जाना चाहिए  </translation>
+    </message>
+    <message>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>{key_origin} में अज्ञात नेटवर्क/सिक्का प्रकार {network_str}  </translation>
+    </message>
+    <message>
+        <source>USB Devices</source>
+        <translation>USB उपकरण  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>स्क्रिप्ट निष्पादित करना  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।  </translation>
+    </message>
+    <message>
+        <source>No device selected</source>
+        <translation>कोई उपकरण चयनित नहीं  </translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>त्रुटि</translation>
+    </message>
+    <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>udev फ़ाइलें गायब होने के कारण USB त्रुटियाँ उत्पन्न हो सकती हैं। क्या आप अब udev फ़ाइलें स्थापित करना चाहते हैं?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev फ़ाइलें स्थापित करें  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>कृपया परिवर्तनों को लागू करने के लिए अपने कंप्यूटर को पुनरारंभ करें।  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>कंप्यूटर पुनरारंभ करें  </translation>
+    </message>
+    <message>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>{name} के लिए कोई HWI एड्रेसटाइप नहीं मिल सका  </translation>
+    </message>
+</context>
+<context>
     <name>constant</name>
     <message>
         <source>Transaction (*.txn *.psbt);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>लेन-देन (*.txn *.psbt);;सभी फ़ाइलें (*)  </translation>
     </message>
     <message>
         <source>Partial Transaction (*.psbt)</source>
-        <translation type="unfinished"></translation>
+        <translation>आंशिक लेन-देन (*.psbt)  </translation>
     </message>
     <message>
         <source>Complete Transaction (*.txn)</source>
-        <translation type="unfinished"></translation>
+        <translation>पूर्ण लेन-देन (*.txn)  </translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>सभी फ़ाइलें (*)  </translation>
     </message>
 </context>
 <context>
@@ -1896,8 +2793,24 @@ below {rate}</source>
         <translation>साइनर {i}</translation>
     </message>
     <message>
+        <source>Open file</source>
+        <translation>फाइल खोलें</translation>
+    </message>
+    <message>
+        <source>Read QR code from camera</source>
+        <translation>कैमरा से QR कोड पढ़ें</translation>
+    </message>
+    <message>
+        <source>Recovery</source>
+        <translation>पुनर्प्राप्ति  </translation>
+    </message>
+    <message>
         <source>Recovery Signer {i}</source>
         <translation>रिकवरी साइनर {i}</translation>
+    </message>
+    <message>
+        <source>View on block explorer</source>
+        <translation>ब्लॉक एक्सप्लोरर पर देखें</translation>
     </message>
     <message>
         <source>Text copied to Clipboard</source>
@@ -1908,8 +2821,8 @@ below {rate}</source>
         <translation>{} क्लिपबोर्ड में कॉपी किया गया</translation>
     </message>
     <message>
-        <source>Read QR code from camera</source>
-        <translation>कैमरा से QR कोड पढ़ें</translation>
+        <source>Import from camera</source>
+        <translation>कैमरा से आयात करें  </translation>
     </message>
     <message>
         <source>Copy to clipboard</source>
@@ -1923,16 +2836,12 @@ below {rate}</source>
         <source>Create random mnemonic</source>
         <translation>रैंडम म्नेमोनिक बनाएं</translation>
     </message>
-    <message>
-        <source>Open file</source>
-        <translation>फाइल खोलें</translation>
-    </message>
 </context>
 <context>
     <name>descriptor</name>
     <message>
-        <source>Wallet Type</source>
-        <translation>वॉलेट प्रकार</translation>
+        <source>Wallet Properties</source>
+        <translation>वॉलेट गुण  </translation>
     </message>
     <message>
         <source>Address Type</source>
@@ -1941,6 +2850,24 @@ below {rate}</source>
     <message>
         <source>Wallet Descriptor</source>
         <translation>वॉलेट वर्णनकर्ता</translation>
+    </message>
+</context>
+<context>
+    <name>export</name>
+    <message>
+        <source>Export Labels</source>
+        <translation>लेबल निर्यात करें</translation>
+    </message>
+    <message>
+        <source>Export Labels for other wallets (BIP329)</source>
+        <translation>अन्य वॉलेट्स के लिए लेबल निर्यात करें (BIP329)  </translation>
+    </message>
+</context>
+<context>
+    <name>help</name>
+    <message>
+        <source>Help</source>
+        <translation>मदद  </translation>
     </message>
 </context>
 <context>
@@ -1958,8 +2885,8 @@ below {rate}</source>
         <translation>सीएसवी के रूप में कॉपी करें</translation>
     </message>
     <message>
-        <source>Export binary transactions</source>
-        <translation>बाइनरी लेन-देन निर्यात करें</translation>
+        <source>Save as file</source>
+        <translation>फ़ाइल के रूप में सहेजें  </translation>
     </message>
     <message>
         <source>Edit with higher fee (RBF)</source>
@@ -2003,6 +2930,24 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>import</name>
+    <message>
+        <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
+        <translation>कृपया सिंक टैब पर जाएं और वहां अपनी सिंक की आयात करें। फिर लेबल्स स्वचालित रूप से पुनर्स्थापित हो जाएंगे।  </translation>
+    </message>
+</context>
+<context>
+    <name>importer</name>
+    <message>
+        <source>Import file</source>
+        <translation>फाइल आयात करें  </translation>
+    </message>
+    <message>
+        <source>Import Signature</source>
+        <translation>हस्ताक्षर आयात करें</translation>
+    </message>
+</context>
+<context>
     <name>lib_load</name>
     <message>
         <source>You are missing the {link}
@@ -2023,6 +2968,14 @@ Please install it.</source>
     <message>
         <source>Import Labels (Electrum Wallet)</source>
         <translation>इलेक्ट्रम वॉलेट के लिए लेबल आयात करें</translation>
+    </message>
+    <message>
+        <source>Restore labels from cloud using an existing sync key</source>
+        <translation>मौजूदा सिंक की का उपयोग करके क्लाउड से लेबल्स को पुनर्स्थापित करें  </translation>
+    </message>
+    <message>
+        <source>Export Labels</source>
+        <translation>लेबल निर्यात करें</translation>
     </message>
 </context>
 <context>
@@ -2102,24 +3055,56 @@ It is best to use your own server, such as {link}.</source>
         <translation>12 या 24</translation>
     </message>
     <message>
-        <source>1. Write the secret {number} words (Mnemonic Seed) in this table&lt;br/&gt;
+        <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
+        <translation>{keystore_label}: फिंगरप्रिंट: {keystore_fingerprint}, की ओरिजिन: {keystore_key_origin}, {keystore_xpub}  </translation>
+    </message>
+    <message>
+        <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
+        <translation>{i}. {threshold} का {m} मल्टी-सिग वॉलेट का सीड बैकअप: &quot;{id}&quot;  </translation>
+    </message>
+    <message>
+        <source>Seed backup of {id}</source>
+        <translation>{id} का सीड बैकअप  </translation>
+    </message>
+    <message>
+        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. इस तालिका में गुप्त {number} शब्द (म्नेमोनिक बीज) लिखें &lt;br/&gt;                 2. इस कागज को नीचे की रेखा पर मोड़ें &lt;br/&gt;                 3. इस कागज को एक सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो &lt;br/&gt;                 4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ, या b) दूसरे सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
+        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्दों) को नीचे दी गई तालिका पर गोंद या टेप करें&lt;br/&gt;2. नीचे दी गई लाइन पर इस कागज को मोड़ें&lt;br/&gt;3. इस कागज को केवल आपके पास पहुँचने वाली सुरक्षित जगह में रखें&lt;br/&gt;4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ रख सकते हैं, या b) दूसरी सुरक्षित जगह में (अगर उपलब्ध है)  </translation>
     </message>
     <message>
-        <source>1. Write the secret {number} words (Mnemonic Seed) in this table&lt;br/&gt;
+        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. इस तालिका में गुप्त {number} शब्द (म्नेमोनिक बीज) लिखें &lt;br/&gt;                 2. इस कागज को नीचे की रेखा पर मोड़ें &lt;br/&gt;                 3. प्रत्येक कागज को अलग-अलग सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो &lt;br/&gt;                 4. आप हार्डवेयर साइनरों को या तो a) संबंधित कागज़ के बीज बैकअप के साथ, या b) प्रत्येक को दूसरे सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
+        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्द) को नीचे दी गई तालिका पर चिपकाएं या टेप करें&lt;br/&gt;2. इस कागज को नीचे की रेखा पर मोड़ें&lt;br/&gt;3. प्रत्येक कागज को अलग सुरक्षित स्थान पर रखें, जहां केवल आपकी पहुंच हो&lt;br/&gt;4. आप हार्डवेयर साइनर्स को a) संबंधित पेपर सीड बैकअप के साथ रख सकते हैं, या b) प्रत्येक को एक और सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
     </message>
     <message>
-        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet, to see your balances, but to spent from it you need the secret {number} words (Seed).</source>
-        <translation>वॉलेट विवरणक (QR कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको अपने शेष राशियों को देखने के लिए केवल देखने वाला वॉलेट बनाने की अनुमति देता है, लेकिन इससे खर्च करने के लिए आपको गुप्त {number} शब्द (बीज) की आवश्यकता होती है।</translation>
+        <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
+        <translation>हार्डवेयर साइनर के लिए गुप्त सीड शब्द: कभी भी कंप्यूटर में टाइप न करें। कभी चित्र न बनाएं।  </translation>
+    </message>
+    <message>
+        <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
+        <translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;उत्तराधिकारियों के लिए निर्देश:  </translation>
+    </message>
+    <message>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
+        <translation>वॉलेट डिस्क्रिप्टर (क्यूआर कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको अपने बैलेंस को देखने के लिए वॉच-ओनली वॉलेट बनाने की अनुमति देता है। इससे खर्च करने के लिए आपको {threshold} सीड्स और वॉलेट डिस्क्रिप्टर की आवश्यकता होती है।  </translation>
+    </message>
+    <message>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
+        <translation>वॉलेट डिस्क्रिप्टर (QR कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको अपने बैलेंस को देखने के लिए वॉच-ओनली वॉलेट बनाने की अनुमति देता है। इससे खर्च करने के लिए आपको {number} शब्दों (सीड) का रहस्य चाहिए। </translation>
+    </message>
+    <message>
+        <source>Created with</source>
+        <translation>बनाया गया  </translation>
+    </message>
+    <message>
+        <source>Please fold here!</source>
+        <translation>कृपया यहाँ मोड़ें!</translation>
     </message>
 </context>
 <context>
@@ -2157,6 +3142,19 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Never make a picture of them!</source>
         <translation>कभी भी उनकी तस्वीर न बनाएं!</translation>
+    </message>
+</context>
+<context>
+    <name>usb</name>
+    <message>
+        <source>Pair Bitbox02</source>
+        <translation>Bitbox02 को जोड़ें  </translation>
+    </message>
+    <message>
+        <source>Please compare and confirm the pairing code on your BitBox02:
+
+{code}</source>
+        <translation>कृपया अपने BitBox02 पर जोड़ी गई कोड की तुलना करें और पुष्टि करें: {code}  </translation>
     </message>
 </context>
 <context>
@@ -2333,12 +3331,71 @@ It is best to use your own server, such as {link}.</source>
         <translation>ब्लॉक एक्सप्लोरर पर देखें</translation>
     </message>
     <message>
-        <source>Copy txid:out</source>
-        <translation>txid:out कॉपी करें</translation>
+        <source>Open Address Details</source>
+        <translation>पते का विवरण खोलें</translation>
     </message>
     <message>
         <source>Copy as csv</source>
         <translation>सीएसवी के रूप में कॉपी करें</translation>
+    </message>
+</context>
+<context>
+    <name>video</name>
+    <message>
+        <source>Camera</source>
+        <translation>कैमरा  </translation>
+    </message>
+    <message>
+        <source>Screen</source>
+        <translation>स्क्रीन  </translation>
+    </message>
+    <message>
+        <source>Enter RTSP URL</source>
+        <translation>RTSP URL दर्ज करें  </translation>
+    </message>
+    <message>
+        <source>RTSP URL:</source>
+        <translation>RTSP URL:  </translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>त्रुटि</translation>
+    </message>
+    <message>
+        <source>The camera could not be opened</source>
+        <translation>कैमरा खोला नहीं जा सका  </translation>
+    </message>
+    <message>
+        <source>Camera:</source>
+        <translation>कैमरा:  </translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>सेटिंग्स  </translation>
+    </message>
+    <message>
+        <source>Enhance picture for detection</source>
+        <translation>डिटेक्शन के लिए चित्र सुधारें  </translation>
+    </message>
+    <message>
+        <source>Zoom:</source>
+        <translation>ज़ूम:  </translation>
+    </message>
+    <message>
+        <source>Brightness (reduce for bright displays):</source>
+        <translation>चमक (चमकदार डिस्प्ले के लिए कम करें):  </translation>
+    </message>
+    <message>
+        <source>Postprocess</source>
+        <translation>पोस्टप्रोसेस  </translation>
+    </message>
+    <message>
+        <source>Show camera controls</source>
+        <translation>कैमरा कंट्रोल्स दिखाएं  </translation>
+    </message>
+    <message>
+        <source>Add RTSP Camera</source>
+        <translation>RTSP कैमरा जोड़ें  </translation>
     </message>
 </context>
 <context>
@@ -2358,6 +3415,18 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Local</source>
         <translation>स्थानीय</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>अज्ञात</translation>
+    </message>
+    <message>
+        <source>Change of:</source>
+        <translation>परिवर्तन का:  </translation>
+    </message>
+    <message>
+        <source>Send to:</source>
+        <translation>भेजें:</translation>
     </message>
 </context>
 </TS>

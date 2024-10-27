@@ -5,14 +5,14 @@ build-backend = "setuptools.build_meta"
 [tool.black]
 line-length = 110
 
-[tool.mypy]
-no_implicit_optional = false
-ignore_missing_imports = true
-show_error_codes = true
+
+
 
 [tool.poetry]
 name = "bitcoin-safe"
-version = "0.7.4a0"
+# the version here and in all other places in this toml are updated automatically
+# from the source: bitcoin_safe/__init__.py
+version = "1.0.0b0"
 description = "Long-term Bitcoin savings made Easy"
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -22,22 +22,13 @@ homepage = "https://github.com/andreasgriffin/bitcoin-safe"
 [tool.poetry-version-plugin]
 source = "init"
 
-[tool.briefcase]
-project_name = "Bitcoin-Safe"
-bundle = "org.bitcoin-safe"
-version = "0.7.4a0"
-url = "https://bitcoin-safe.org"
-license = "GPL-3.0"
-author = "Andreas Griffin"
-author_email = "andreasgriffin@proton.me"
-
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.10,<3.11"
 fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
 bdkpython = "^0.31.0"
-cryptography = "^42.0.2"
+cryptography = "^43.0.1"
 hwi = ">=2.3.1"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
@@ -46,10 +37,26 @@ pyqt6 = "^6.6.1"
 pyqt6-charts = "^6.6.0"
 electrumsv-secp256k1 = "^18.0.0"
 python-gnupg = "^0.5.2"
-bitcoin-qr-tools = "^0.10.9"
-bitcoin-nostr-chat = "^0.2.5"
-bitcoin-usb = "^0.2.1"
-numpy = "^2.0.1"
+# bitcoin-qr-tools =   {path="../bitcoin-qr-tools"} #  "^0.10.15"
+# bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
+# bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
+bitcoin-qr-tools =    "^0.14.8"
+bitcoin-nostr-chat =    "^0.4.1"
+bitcoin-usb =  "^0.5.3"
+numpy = "^2.0.1" 
+importlib = "^1.0.4"
+pgpy = "^0.6.0"
+
+
+[tool.briefcase]
+project_name = "Bitcoin-Safe"
+bundle = "org.bitcoin-safe"
+version = "1.0.0b0"
+url = "https://github.com/andreasgriffin/bitcoin-safe"
+license.file = "LICENSE"
+author = "Andreas Griffin"
+author_email = "andreasgriffin@proton.me"
+
 
 [tool.briefcase.app.bitcoin-safe]
 formal_name = "Bitcoin-Safe"
@@ -57,23 +64,26 @@ description = "A bitcoin wallet for the entire family."
 long_description = "More details about the app should go here.\n"
 sources = [ "bitcoin_safe",]
 test_sources = [ "tests",]
-test_requires = [ "pytest",]
-requires = ["appdirs==1.4.4", "arrow==1.3.0", "asn1crypto==1.5.1", "base58==2.1.1", "bdkpython==0.31.0", "binaryornot==0.4.4", "bitcoin-nostr-chat==0.2.5", "bitcoin-qr-tools==0.10.9", "bitcoin-usb==0.2.1", "briefcase==0.3.19", "build==1.2.1", "cbor2==5.6.4", "certifi==2024.7.4", "cffi==1.17.0", "cfgv==3.4.0", "chardet==5.2.0", "charset-normalizer==3.3.2", "click==8.1.7", "colorama==0.4.6", "cookiecutter==2.6.0", "cryptography==42.0.8", "defusedxml==0.7.1", "distlib==0.3.8", "dmgbuild==1.6.2", "ds-store==1.3.1", "ecdsa==0.19.0", "electrumsv-secp256k1==18.0.0", "exceptiongroup==1.2.2", "filelock==3.15.4", "fonttools==4.53.1", "fpdf2==2.7.9", "gitdb==4.0.11", "gitpython==3.1.43", "hidapi==0.14.0.post2", "hwi==3.0.0", "identify==2.6.0", "idna==3.7", "importlib-metadata==8.2.0", "iniconfig==2.0.0", "jinja2==3.1.4", "libusb1==3.1.0", "lxml==5.3.0", "mac-alias==2.2.2", "markdown-it-py==3.0.0", "markupsafe==2.1.5", "mdurl==0.1.2", "mnemonic==0.21", "mss==9.0.1", "nodeenv==1.9.1", "noiseprotocol==0.3.1", "nostr-sdk==0.32.2", "numpy==2.0.1", "opencv-python-headless==4.10.0.84", "packaging==24.1", "pillow==10.4.0", "pip==24.2", "platformdirs==4.2.2", "pluggy==1.5.0", "pre-commit==3.8.0", "protobuf==4.25.4", "psutil==5.9.8", "pyaes==1.6.1", "pycparser==2.22", "pygame==2.6.0", "pygments==2.18.0", "pyprof2calltree==1.4.5", "pyproject-hooks==1.1.0", "pyqrcode==1.2.1", "pyqt6==6.7.1", "pyqt6-charts==6.7.0", "pyqt6-charts-qt6==6.7.2", "pyqt6-qt6==6.7.2", "pyqt6-sip==13.8.0", "pyserial==3.5", "pytest==8.3.2", "pytest-qt==4.4.0", "pytest-xvfb==3.0.0", "python-bitcointx==1.1.4", "python-dateutil==2.9.0.post0", "python-gnupg==0.5.2", "python-slugify==8.0.4", "pyvirtualdisplay==3.0", "pyyaml==6.0.2", "pyzbar==0.1.9", "reportlab==4.0.8", "requests==2.32.3", "rich==13.7.1", "segno==1.6.1", "semver==3.0.2", "setuptools==72.2.0", "six==1.16.0", "smmap==5.0.1", "snakeviz==2.2.0", "text-unidecode==1.3", "tomli==2.0.1", "tomli-w==1.0.0", "tomlkit==0.13.2", "tornado==6.4.1", "translate-toolkit==3.13.3", "types-python-dateutil==2.9.0.20240316", "typing-extensions==4.12.2", "urllib3==2.2.2", "virtualenv==20.26.3", "wcwidth==0.2.13", "wheel==0.44.0", "zipp==3.20.0"]
-icon = "tools/resources/icon"
+test_requires = [ "pytest",] 
 resources = [ "bitcoin_safe/gui/locales/*.qm",]
+# these requirements are updated from the poetry lock file automatically
+requires = ["appdirs==1.4.4", "arrow==1.3.0", "asn1crypto==1.5.1", "base58==2.1.1", "bdkpython==0.31.0", "binaryornot==0.4.4", "bitcoin-nostr-chat==0.4.1", "bitcoin-qr-tools==0.14.8", "bitcoin-usb==0.5.3", "briefcase==0.3.19", "build==1.2.2.post1", "cachecontrol==0.14.0", "cbor2==5.6.5", "certifi==2024.8.30", "cffi==1.17.1", "cfgv==3.4.0", "chardet==5.2.0", "charset-normalizer==3.4.0", "cleo==2.1.0", "click==8.1.7", "colorama==0.4.6", "cookiecutter==2.6.0", "crashtest==0.4.1", "cryptography==43.0.3", "defusedxml==0.7.1", "distlib==0.3.9", "dmgbuild==1.6.2", "ds-store==1.3.1", "dulwich==0.21.7", "ecdsa==0.19.0", "electrumsv-secp256k1==18.0.0", "exceptiongroup==1.2.2", "fastjsonschema==2.20.0", "filelock==3.16.1", "fonttools==4.54.1", "fpdf2==2.8.1", "gitdb==4.0.11", "gitpython==3.1.43", "hidapi==0.14.0.post2", "hwi==3.1.0", "identify==2.6.1", "idna==3.10", "importlib==1.0.4", "importlib-metadata==8.5.0", "iniconfig==2.0.0", "installer==0.7.0", "jaraco-classes==3.4.0", "jeepney==0.8.0", "jinja2==3.1.4", "keyring==24.3.1", "libusb1==3.1.0", "lxml==5.3.0", "mac-alias==2.2.2", "markdown-it-py==3.0.0", "markupsafe==3.0.2", "mdurl==0.1.2", "mnemonic==0.21", "more-itertools==10.5.0", "msgpack==1.1.0", "mss==9.0.2", "nodeenv==1.9.1", "noiseprotocol==0.3.1", "nostr-sdk==0.32.2", "numpy==2.1.2", "opencv-python-headless==4.10.0.84", "packaging==24.1", "pexpect==4.9.0", "pgpy==0.6.0", "pillow==10.4.0", "pip==24.2", "pkginfo==1.11.2", "platformdirs==4.3.6", "pluggy==1.5.0", "poetry==1.8.4", "poetry-core==1.9.1", "poetry-plugin-export==1.8.0", "pre-commit==3.8.0", "protobuf==4.25.5", "psutil==5.9.8", "ptyprocess==0.7.0", "pyaes==1.6.1", "pyasn1==0.6.1", "pycparser==2.22", "pygame==2.6.1", "pygments==2.18.0", "pyprof2calltree==1.4.5", "pyproject-hooks==1.2.0", "pyqrcode==1.2.1", "pyqt6==6.7.1", "pyqt6-charts==6.7.0", "pyqt6-charts-qt6==6.7.3", "pyqt6-qt6==6.7.3", "pyqt6-sip==13.8.0", "pyserial==3.5", "pytest==8.3.3", "pytest-qt==4.4.0", "pytest-xvfb==3.0.0", "python-bitcointx==1.1.4", "python-dateutil==2.9.0.post0", "python-gnupg==0.5.3", "python-slugify==8.0.4", "pyvirtualdisplay==3.0", "pywin32-ctypes==0.2.3", "pyyaml==6.0.2", "pyzbar==0.1.9", "rapidfuzz==3.10.1", "reportlab==4.0.8", "requests==2.32.3", "requests-toolbelt==1.0.0", "rich==13.9.3", "secretstorage==3.3.3", "segno==1.6.1", "semver==3.0.2", "setuptools==75.2.0", "shellingham==1.5.4", "six==1.16.0", "smmap==5.0.1", "snakeviz==2.2.0", "text-unidecode==1.3", "tomli==2.0.2", "tomli-w==1.1.0", "tomlkit==0.13.2", "tornado==6.4.1", "translate-toolkit==3.14.1", "trove-classifiers==2024.10.21.16", "types-python-dateutil==2.9.0.20241003", "typing-extensions==4.12.2", "urllib3==2.2.3", "virtualenv==20.27.0", "wcwidth==0.2.13", "wheel==0.44.0", "xattr==1.1.0", "zipp==3.20.2"]
+
+ 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 pytest-qt = ">=4.4.0"
 briefcase = "0.3.19"
 requests = "^2.31.0"
-pre-commit = "^3.6.2"
+pre-commit = "^3.8.0"
 python-gnupg = "^0.5.2"
 translate-toolkit = "^3.12.2"
 snakeviz = "^2.2.0"
 pyprof2calltree = "^1.4.5"
 pytest-xvfb = "^3.0.0"
 tomlkit = "^0.13.2"
+poetry = "^1.8.4"
 
 [tool.briefcase.app.bitcoin-safe.macOS]
 universal_build = true
@@ -103,10 +113,14 @@ supported = false
 NSCameraUsageDescription = "This application supports scanning QR-codes."
 
 [tool.briefcase.app.bitcoin-safe.linux.appimage]
+# deprecated.  appimage are build using the 
+# dedicated docker container
 manylinux = "manylinux_2_28"
 icon = "tools/resources/icon"
 resources = [ "tools/resources/icon/*.png", "tools/resources/icon/*.svg",]
-version = "0.7.4a0"
+version = "1.0.0b0"
+# system_requires = [ "cmake", "gcc", "gcc-c++", "make", "perl",  "git",   "libxcb", "libxcb-devel", "xcb-util", "xcb-util-devel",   "mesa-libGL-devel", "openssl-devel",   "bison", "flex", "gperf", "sqlite-devel",  "libicu-devel"]
+
 
 [tool.briefcase.app.bitcoin-safe.linux.flatpak]
 bundle = "org.bitcoinsafe"
@@ -114,7 +128,7 @@ flatpak_runtime = "org.kde.Platform"
 flatpak_runtime_version = "6.6"
 flatpak_sdk = "org.kde.Sdk"
 
-version = "0.7.4a0"
+version = "1.0.0b0"
 
 
 [tool.briefcase.app.bitcoin-safe.linux.system.debian]

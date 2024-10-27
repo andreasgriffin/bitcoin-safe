@@ -66,21 +66,21 @@ class UserConfig(BaseSaveableClass):
     config_file = config_dir / (app_name + ".conf")
 
     fee_ranges = {
-        bdk.Network.BITCOIN: [1, 1000],
-        bdk.Network.REGTEST: [0, 1000],
-        bdk.Network.SIGNET: [0, 1000],
-        bdk.Network.TESTNET: [0, 1000],
+        bdk.Network.BITCOIN: [1.0, 1000],
+        bdk.Network.REGTEST: [0.0, 1000],
+        bdk.Network.SIGNET: [0.0, 1000],
+        bdk.Network.TESTNET: [0.0, 1000],
     }
 
     def __init__(self) -> None:
         self.network_configs = NetworkConfigs()
-        self.network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET
+        self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.recently_open_wallets: Dict[bdk.Network, deque[str]] = {
-            network: deque(maxlen=5) for network in bdk.Network
+            network: deque(maxlen=15) for network in bdk.Network
         }
         self.language_code: Optional[str] = None
 
@@ -178,11 +178,11 @@ class UserConfig(BaseSaveableClass):
         return os.path.isfile(file_path)
 
     @classmethod
-    def from_file(cls, password=None, file_path=None) -> "UserConfig":
+    def from_file(cls, password: str | None = None, file_path: Path | None = None) -> "UserConfig":
         if file_path is None:
             file_path = cls.config_file
         if os.path.isfile(file_path):
-            return super()._from_file(file_path, password=password)
+            return super()._from_file(str(file_path), password=password)
         else:
             return UserConfig()
 

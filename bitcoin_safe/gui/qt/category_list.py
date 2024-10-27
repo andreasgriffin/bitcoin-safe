@@ -31,35 +31,66 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import List
+from typing import Callable, List
 
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QColor
 
-from ...signals import Signals, UpdateFilter
+from ...signals import UpdateFilter, UpdateFilterReason, WalletSignals
 from .taglist import CustomListWidget, TagEditor, hash_color
 
 
 class CategoryList(CustomListWidget):
     def __init__(
         self,
-        categories: List,
-        signals: Signals,
-        get_sub_texts=None,
+        categories: List[str],
+        wallet_signals: WalletSignals,
+        get_sub_texts: Callable[[], List[str]],
         parent=None,
-        tag_name="category",
         immediate_release=True,
     ) -> None:
         super().__init__(parent, enable_drag=False, immediate_release=immediate_release)
 
         self.categories = categories
         self.get_sub_texts = get_sub_texts
-        self.signals = signals
-        self.signals.category_updated.connect(self.refresh)
-        self.signals.utxos_updated.connect(self.refresh)
+        self.wallet_signals = wallet_signals
+        self.wallet_signals.updated.connect(self.refresh)
         self.refresh(UpdateFilter(refresh_all=True))
-        self.signals.language_switch.connect(lambda: self.refresh(UpdateFilter(refresh_all=True)))
+
+        # signals
+        self.wallet_signals.updated.connect(self.refresh)
+        self.wallet_signals.import_labels.connect(self.refresh)
+        self.wallet_signals.import_bip329_labels.connect(self.refresh)
+        self.wallet_signals.import_electrum_wallet_labels.connect(self.refresh)
+
+        self.wallet_signals.language_switch.connect(self.refresh)
+
+    def select_category(self, category: str):
+        for i in range(self.count()):
+            item = self.item(i)
+            if item:
+                item.setSelected(item.text() == category)
+
+    def on_language_switch(self):
+        self.refresh(UpdateFilter(refresh_all=True))
+
+    @staticmethod
+    def shoud_update(update_filter: UpdateFilter) -> bool:
+        should_update = False
+        if should_update or update_filter.refresh_all:
+            should_update = True
+        if should_update or update_filter.categories:
+            should_update = True
+        if should_update or update_filter.outpoints:
+            should_update = True
+
+        return should_update
 
     def refresh(self, update_filter: UpdateFilter) -> None:
+        if not self.shoud_update(update_filter):
+            return
+
+        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
         self.recreate(self.categories, sub_texts=self.get_sub_texts())
 
     @classmethod
@@ -70,30 +101,41 @@ class CategoryList(CustomListWidget):
 
 
 class CategoryEditor(TagEditor):
+    signal_category_added = pyqtSignal(str)
+
     def __init__(
         self,
-        categories: List,
-        signals: Signals,
-        get_sub_texts=None,
+        get_categories: Callable[[], List[str]],
+        wallet_signals: WalletSignals,
+        get_sub_texts: Callable[[], List[str]],
         parent=None,
         prevent_empty_categories=True,
     ) -> None:
-        sub_texts = get_sub_texts() if get_sub_texts else None
-        super().__init__(parent, categories, tag_name="", sub_texts=sub_texts)
+        super().__init__(parent, get_categories(), sub_texts=get_sub_texts())
 
-        self.categories = categories
+        self.get_categories = get_categories
         self.get_sub_texts = get_sub_texts
-        self.signals = signals
+        self.wallet_signals = wallet_signals
         self.prevent_empty_categories = prevent_empty_categories
 
         self.updateUi()
         # signals
-        self.signals.category_updated.connect(self.refresh)
-        self.signals.import_bip329_labels.connect(self.refresh)
+        self.wallet_signals.updated.connect(self.refresh)
+        self.wallet_signals.import_labels.connect(self.refresh)
+        self.wallet_signals.import_bip329_labels.connect(self.refresh)
+        self.wallet_signals.import_electrum_wallet_labels.connect(self.refresh)
 
         self.list_widget.signal_tag_deleted.connect(self.on_delete)
         self.list_widget.signal_tag_added.connect(self.on_added)
-        self.signals.language_switch.connect(self.updateUi)
+        self.wallet_signals.language_switch.connect(self.updateUi)
+
+    @classmethod
+    def get_default_categories(cls) -> List[str]:
+        return [cls.tr("KYC Exchange"), cls.tr("Private")]
+
+    def add_default_categories(self):
+        for category in self.get_default_categories():
+            self.add(category)
 
     def updateUi(self) -> None:
         self.tag_name = self.tr("category")
@@ -101,25 +143,33 @@ class CategoryEditor(TagEditor):
         self.refresh(UpdateFilter(refresh_all=True))
 
     def on_added(self, category) -> None:
-        if not category or category in self.categories:
+        if not category or category in self.get_categories():
             return
+        self.signal_category_added.emit(category)
 
-        self.categories.append(category)
-        self.signals.category_updated.emit(UpdateFilter(categories=[category]))
+        self.wallet_signals.updated.emit(
+            UpdateFilter(categories=[category], reason=UpdateFilterReason.CategoryAdded)
+        )
 
-    def on_delete(self, category) -> None:
-        if category not in self.categories:
+    def on_delete(self, category: str) -> None:
+        if category not in self.get_categories():
             return
-        idx = self.categories.index(category)
-        self.categories.pop(idx)
-        self.signals.category_updated.emit(UpdateFilter(categories=[category]))
+        self.wallet_signals.updated.emit(
+            UpdateFilter(categories=[category], reason=UpdateFilterReason.CategoryDeleted)
+        )
 
-        if not self.categories and self.prevent_empty_categories:
+        if not self.get_categories() and self.prevent_empty_categories:
             self.list_widget.add("Default")
-            self.signals.category_updated.emit(UpdateFilter(refresh_all=True))
+            self.wallet_signals.updated.emit(
+                UpdateFilter(refresh_all=True, reason=UpdateFilterReason.CategoryDeleted)
+            )
 
     def refresh(self, update_filter: UpdateFilter) -> None:
-        self.list_widget.recreate(self.categories, sub_texts=self.get_sub_texts())
+        if not CategoryList.shoud_update(update_filter):
+            return
+
+        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        self.list_widget.recreate(self.get_categories(), sub_texts=self.get_sub_texts())
 
     @classmethod
     def color(cls, category) -> QColor:

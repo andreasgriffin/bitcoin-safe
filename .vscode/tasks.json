@@ -1,14 +1,12 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-      {
-          "label": "Poetry Install",
-          "type": "shell",
-          "command": "poetry install",
-          "options": {
-              "cwd": "${workspaceFolder}"  // Ensures command runs in the project root
-          },
-          "problemMatcher": []
-      }
-  ]
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "Poetry Install",
+        "type": "shell",
+        "command": "${command:python.interpreterPath} -m poetry install",
+        "options": {
+            "cwd": "${workspaceFolder}" // Ensures command runs in the project root
+        },
+        "problemMatcher": []
+    }]
 }

@@ -1,0 +1,4 @@
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z jammy main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z jammy-updates main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z jammy-security main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z jammy-backports main restricted universe

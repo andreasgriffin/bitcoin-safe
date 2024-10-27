@@ -28,12 +28,13 @@
 
 
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import requests
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import (
     Message,
     ensure_scheme,
@@ -75,7 +76,7 @@ from PyQt6.QtWidgets import (
 )
 
 
-def test_mempool_space_server(url: str):
+def test_mempool_space_server(url: str) -> bool:
     try:
         response = requests.get(f"{url}/api/blocks/tip/height", timeout=2)
         return response.status_code == 200
@@ -122,13 +123,16 @@ def get_electrum_server_version(host: str, port: int, use_ssl: bool = True, time
 
 def test_connection(network_config: NetworkConfig) -> Optional[str]:
     if network_config.server_type == BlockchainType.Electrum:
+        try:
+            host, port = get_host_and_port(network_config.electrum_url)
 
-        host, port = get_host_and_port(network_config.electrum_url)
-
-        if host is None or port is None:
-            logger.warning(f"No host or port given")
+            if host is None or port is None:
+                logger.warning(f"No host or port given")
+                return None
+            return get_electrum_server_version(host=host, port=port, use_ssl=network_config.electrum_use_ssl)
+        except Exception as e:
+            logger.warning(f"Electrum connection test failed: {e}")
             return None
-        return get_electrum_server_version(host=host, port=port, use_ssl=network_config.electrum_use_ssl)
 
     elif network_config.server_type == BlockchainType.Esplora:
         try:
@@ -167,14 +171,12 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
         # This case might require a different approach depending on how you intend to connect to the p2p network.
         # This is a placeholder as testing p2p connections is more complex and out of scope for this example.
         raise Exception("Not implemented yet")
-
-    else:
-        logger.warning("Invalid blockchain type.")
-        return None
+    raise Exception(f"Invalud {network_config.server_type}")
 
 
 class NetworkSettingsUI(QDialog):
-    signal_apply_and_restart = pyqtSignal(str)
+    signal_apply_and_restart = pyqtSignal(bdk.Network)
+    signal_apply_and_shutdown = pyqtSignal(bdk.Network)
     signal_cancel = pyqtSignal()
 
     def __init__(
@@ -183,26 +185,28 @@ class NetworkSettingsUI(QDialog):
         super().__init__(parent)
         self.signals = signals
         self.network_configs = network_configs
-        self.layout = QVBoxLayout(self)
+        self._layout = QVBoxLayout(self)
 
         self.setWindowIcon(read_QIcon("logo.svg"))
         self.network_combobox = QComboBox(self)
         for _network in bdk.Network:
-            self.network_combobox.addItem(_network.name)
-        self.layout.addWidget(self.network_combobox)
+            self.network_combobox.addItem(
+                read_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
+            )
+        self._layout.addWidget(self.network_combobox)
 
         self.groupbox_connection = QGroupBox(parent=self)
-        self.layout.addWidget(self.groupbox_connection)
-        self.groupbox_connection.setLayout(QVBoxLayout())
+        self._layout.addWidget(self.groupbox_connection)
+        self.groupbox_connection_layout = QVBoxLayout(self.groupbox_connection)
 
         self.server_type_comboBox = QComboBox(self)
         for blockchain_type in BlockchainType.active_types():
             self.server_type_comboBox.addItem(BlockchainType.to_text(blockchain_type))
 
-        self.groupbox_connection.layout().addWidget(self.server_type_comboBox)
+        self.groupbox_connection_layout.addWidget(self.server_type_comboBox)
 
         self.stackedWidget = QStackedWidget(self)
-        self.groupbox_connection.layout().addWidget(self.stackedWidget)
+        self.groupbox_connection_layout.addWidget(self.stackedWidget)
 
         # Compact Block Filters
         self.compactBlockFiltersTab = QWidget()
@@ -343,7 +347,7 @@ class NetworkSettingsUI(QDialog):
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
         )
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
-        self.layout.addWidget(self.groupbox_blockexplorer)
+        self._layout.addWidget(self.groupbox_blockexplorer)
 
         # Create buttons and layout
         self.button_box = QDialogButtonBox(
@@ -351,14 +355,14 @@ class NetworkSettingsUI(QDialog):
             | QDialogButtonBox.StandardButton.Ok
             | QDialogButtonBox.StandardButton.Cancel
         )
-        self.button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self.tr("Apply && Restart"))
         self.button_box.accepted.connect(self.on_apply_click)
         self.button_box.rejected.connect(self.on_cancel_click)
 
-        self.button_box.button(QDialogButtonBox.StandardButton.Help).setText(self.tr("Test Connection"))
+        if help_button := self.button_box.button(QDialogButtonBox.StandardButton.Help):
+            help_button.setText(self.tr("Test Connection"))
         self.button_box.helpRequested.connect(self.test_connection)
 
-        self.layout.addWidget(self.button_box)
+        self._layout.addWidget(self.button_box)
 
         # Signals and Slots
         self.network_combobox.currentIndexChanged.connect(self.on_network_change)
@@ -388,6 +392,8 @@ class NetworkSettingsUI(QDialog):
         self.rpc_username_edit_label.setText(self.tr("Username:"))
         self.rpc_password_edit_label.setText(self.tr("Password:"))
         self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance URL"))
+        if ok_button := self.button_box.button(QDialogButtonBox.StandardButton.Ok):
+            ok_button.setText(self.tr("Apply && Shutdown"))
 
     def on_electrum_url_editing_finished(self):
         def get_use_ssl(url: str):
@@ -402,22 +408,29 @@ class NetworkSettingsUI(QDialog):
         logger.debug(f"set use_ssl = {use_ssl}")
         self.electrum_use_ssl = use_ssl
 
-    def test_connection(self):
-        network_config = self.get_network_settings_from_ui()
+    def _test_connection(self, network_config: NetworkConfig) -> Tuple[str | None, bool]:
         server_connection = test_connection(network_config=network_config)
 
         mempool_server = test_mempool_space_server(url=network_config.mempool_url)
+        return server_connection, mempool_server
 
+    def _format_test_responses(
+        self, network_config: NetworkConfig, server_connection: str | None, mempool_server: bool
+    ) -> str:
         def format_status(response):
             return "Success" if response else "Failed"
 
-        Message(
-            self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
-                name=network_config.server_type.name,
-                status=format_status(server_connection),
-                server=format_status(mempool_server),
-            )
+        return self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
+            name=network_config.server_type.name,
+            status=format_status(server_connection),
+            server=format_status(mempool_server),
         )
+
+    def test_connection(self):
+        new_network_config = self.get_network_settings_from_ui()
+        server_connection, mempool_server = self._test_connection(network_config=new_network_config)
+
+        Message(self._format_test_responses(new_network_config, server_connection, mempool_server))
 
     def set_server_type_comboBox(self, new_index: int):
         if self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
@@ -432,7 +445,7 @@ class NetworkSettingsUI(QDialog):
             self.stackedWidget.setCurrentWidget(self.rpcTab)
 
     def on_network_change(self, new_index: int):
-        new_network = bdk.Network._member_map_[self.network_combobox.itemText(new_index)]
+        new_network = self.network_combobox.itemData(new_index)
 
         self._edits_set_network(new_network)
         self.set_ui(self.network_configs.configs[new_network.name])
@@ -456,14 +469,27 @@ class NetworkSettingsUI(QDialog):
         self.edit_mempool_url.add_current_to_memory()
 
     def on_apply_click(self):
+        new_network_config = self.get_network_settings_from_ui()
+        server_connection, mempool_server = self._test_connection(network_config=new_network_config)
+
+        if not all([server_connection, mempool_server]):
+            if not question_dialog(
+                self.tr("Error in server connection.\n{responses}\n\n Do you want to proceed anyway?").format(
+                    responses=self._format_test_responses(
+                        new_network_config, server_connection, mempool_server
+                    )
+                )
+            ):
+                return
+
         new_network = self.network
 
         self.add_to_completer_memory()
 
-        self.network_configs.configs[self.network.name] = self.get_network_settings_from_ui()
+        self.network_configs.configs[self.network.name] = new_network_config
 
         self.close()
-        self.signal_apply_and_restart.emit(f"--network {new_network.name.lower()}")
+        self.signal_apply_and_shutdown.emit(new_network)
 
     def on_cancel_click(self):
         self.set_ui(self.network_configs.configs[self.original_network.name])
@@ -471,11 +497,13 @@ class NetworkSettingsUI(QDialog):
         self.close()
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
-        if event.key() == Qt.Key.Key_Escape:
+        if event and event.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.on_cancel_click()
+
+        super().keyPressEvent(event)
 
     def get_network_settings_from_ui(self) -> NetworkConfig:
         "returns current ui as NetworkConfig"
@@ -539,7 +567,7 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def network(self) -> bdk.Network:
-        return bdk.Network._member_map_[self.network_combobox.currentText()]
+        return self.network_combobox.currentData()
 
     @network.setter
     def network(self, value: bdk.Network):

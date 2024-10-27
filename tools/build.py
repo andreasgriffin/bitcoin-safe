@@ -28,137 +28,26 @@
 
 
 import argparse
-import csv
 import logging
-import operator
 import os
 import platform
-import shlex
 import shutil
 import subprocess
 from pathlib import Path
-from subprocess import CompletedProcess
-from typing import List, Literal, Tuple, Union
+from typing import List, Literal
 
 import tomlkit
+from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
-from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureSigner
+from bitcoin_safe.signature_manager import (
+    KnownGPGKeys,
+    SignatureSigner,
+    SignatureVerifyer,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def run_local(cmd) -> CompletedProcess:
-    completed_process = subprocess.run(shlex.split(cmd), check=True)
-    return completed_process
-
-
-# https://www.fincher.org/Utilities/CountryLanguageList.shtml
-class TranslationHandler:
-    def __init__(
-        self,
-        module_name,
-        languages=["zh_CN", "es_ES", "ru_RU", "hi_IN", "pt_PT", "ja_JP", "ar_AE", "it_IT"],
-        prefix="app",
-    ) -> None:
-        self.module_name = module_name
-        self.ts_folder = Path(module_name) / "gui" / "locales"
-        self.prefix = prefix
-        self.languages = languages
-
-    def delete_po_files(self):
-        for file in self.ts_folder.glob("*.po"):
-            file.unlink()
-
-    def get_all_python_files(self) -> List[str]:
-        project_dir = Path(self.module_name)
-        python_files = [str(file) for file in project_dir.rglob("*.py")]
-        return python_files
-
-    def get_all_ts_files(self) -> List[str]:
-        python_files = [str(file) for file in self.ts_folder.rglob("*.ts")]
-        return python_files
-
-    def _ts_file(self, language: str) -> Path:
-        return self.ts_folder / f"{self.prefix}_{language}.ts"
-
-    @staticmethod
-    def sort_csv(input_file: Path, output_file: Path, sort_columns: Union[Tuple[str, ...], List[str]]):
-        """
-        Sorts a CSV file by specified columns and writes the sorted data to another CSV file.
-
-        Parameters:
-            input_file (Path): The input CSV file path.
-            output_file (Path): The output CSV file path.
-            sort_columns (Tuple[str, ...]): A tuple of column names to sort the CSV data by (in priority order).
-        """
-        # Read the CSV file into a list of dictionaries
-        with open(str(input_file), mode="r", newline="", encoding="utf-8") as infile:
-            reader = csv.DictReader(infile)
-            rows = list(reader)
-
-        # Validate that all sort columns are in the fieldnames
-        fieldnames = reader.fieldnames
-        assert fieldnames
-        for col in sort_columns:
-            if col not in fieldnames:
-                raise ValueError(f"Column '{col}' not found in CSV file")
-
-        # Sort the rows by the specified columns (in priority order)
-        sorted_rows = sorted(rows, key=operator.itemgetter(*sort_columns))
-
-        # Write the sorted data to the output CSV file
-        with open(str(output_file), mode="w", newline="", encoding="utf-8") as outfile:
-            writer = csv.DictWriter(outfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
-            writer.writeheader()
-            writer.writerows(sorted_rows)
-
-    def update_translations_from_py(self):
-        for language in self.languages:
-            ts_file = self._ts_file(language)
-            run_local(
-                f"pylupdate6  {' '.join(self.get_all_python_files())} -no-obsolete  -ts {ts_file}"
-            )  # -no-obsolete
-            run_local(f"ts2po {ts_file}  -o {ts_file.with_suffix('.po')}")
-            run_local(f"po2csv {ts_file.with_suffix('.po')}  -o {ts_file.with_suffix('.csv')}")
-            self.sort_csv(
-                ts_file.with_suffix(".csv"),
-                ts_file.with_suffix(".csv"),
-                sort_columns=["target", "location", "source"],
-            )
-
-        self.delete_po_files()
-        self.compile()
-
-    @staticmethod
-    def quote_csv(input_file, output_file):
-        # Read the CSV content from the input file
-        with open(input_file, newline="") as infile:
-            reader = csv.reader(infile)
-            rows = list(reader)
-
-        # Write the CSV content with quotes around each item to the output file
-        with open(output_file, "w", newline="") as outfile:
-            writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
-            writer.writerows(rows)
-
-    def csv_to_ts(self):
-        for language in self.languages:
-            ts_file = self._ts_file(language)
-
-            # csv2po cannot handle partially quoted files
-            self.sort_csv(
-                ts_file.with_suffix(".csv"),
-                ts_file.with_suffix(".csv"),
-                sort_columns=["location", "source", "target"],
-            )
-            run_local(f"csv2po {ts_file.with_suffix('.csv')}  -o {ts_file.with_suffix('.po')}")
-            run_local(f"po2ts {ts_file.with_suffix('.po')}  -o {ts_file}")
-        self.delete_po_files()
-        self.compile()
-
-    def compile(self):
-        run_local(f"/usr/lib/qt6/bin/lrelease   {' '.join(self.get_all_ts_files())}")
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Builder:
@@ -192,30 +81,30 @@ class Builder:
         # which is needed for bitcointx.
         # bitcointx and with it the prebuild libsecp256k1 is not used for anything security critical
         # key derivation with bitcointx is restricted to testnet/regtest/signet
-        # and the PSBTFinalizer using bitcointx is safe because it handles no key material
+        # and the PSBTTools using bitcointx is safe because it handles no key material
         additional_requires=[],
     ):
+
         # Load pyproject.toml
         with open(pyproject_path, "r") as file:
             pyproject_data = tomlkit.load(file)
 
         # Load and parse poetry lock file
         with open(poetry_lock_path, "r") as file:
-            poetry_lock_content = file.read()
+            poetry_lock_data = tomlkit.load(file)
 
         briefcase_requires = []
-        packages = poetry_lock_content.split("[[package]]")
-        for package in packages[1:]:  # Skip the first part as it's before the first package
-            lines = package.split("\n")
-            name = version = None
-            for line in lines:
-                if line.strip().startswith("name ="):
-                    name = line.split('"')[1].strip()
-                elif line.strip().startswith("version ="):
-                    version = line.split('"')[1].strip()
-            if name and version:
+        # Extract packages from the lock file
+        for package in poetry_lock_data["package"]:
+            name = package["name"]
+            version = package["version"]
+            if package.get("source"):
+                briefcase_requires.append(package.get("source", {}).get("url"))
+            else:
                 briefcase_requires.append(f"{name}=={version}")
-        briefcase_requires += additional_requires
+
+        # Append any additional requires
+        briefcase_requires.extend(additional_requires)
 
         # Ensure the structure exists before updating it
         pyproject_data.setdefault("tool", {}).setdefault("briefcase", {}).setdefault("app", {}).setdefault(
@@ -231,32 +120,121 @@ class Builder:
         with open(pyproject_path, "w") as file:
             tomlkit.dump(pyproject_data, file)
 
-    def briefcase_appimage(self):
+    def build_appimage_docker(
+        self, docker_no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
+    ):
+        """_summary_
+
+        Args:
+            no_cache (bool, optional): _description_. Defaults to False.
+            build_commit (None | str | Literal['current_commit'], optional): _description_. Defaults to 'current_commit'.
+                    'current_commit' = which means it will build the current HEAD.
+                    None = uses the cwd
+                    commit_hash = clones this commit hash into /tmp
+        """
+        PROJECT_ROOT = Path(".").resolve()
+        PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT
+        CONTRIB_APPIMAGE = PROJECT_ROOT / "tools" / "build-linux" / "appimage"
+        DISTDIR = PROJECT_ROOT / "dist"
+        BUILD_UID = PROJECT_ROOT.stat().st_uid
+        CACHEDIR = CONTRIB_APPIMAGE / ".cache" / "appimage"
+        # Note: Sourcing 'build_tools_util.sh' is omitted; ensure equivalent functions are defined if needed.
+
+        # Initialize DOCKER_BUILD_FLAGS
+        DOCKER_BUILD_FLAGS = ""
+
+        if docker_no_cache:
+            logger.info("BITCOINSAFE_DOCKER_NOCACHE is set. Forcing rebuild of docker image.")
+            DOCKER_BUILD_FLAGS = "--pull --no-cache"
+            logger.info(f"BITCOINSAFE_DOCKER_NOCACHE is set. Deleting {CACHEDIR}")
+            run_local(f'rm -rf "{CACHEDIR}"')
+
+        if build_commit == "current_commit":
+            # Get the current git HEAD commit
+            result = subprocess.run(
+                ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True
+            )
+            build_commit = result.stdout.strip()
+
+        if not build_commit:
+            # Local development build
+            DOCKER_BUILD_FLAGS += f" --build-arg UID={BUILD_UID}"
+
+        logger.info("Building docker image.")
+        run_local(
+            f'docker build {DOCKER_BUILD_FLAGS} -t bitcoin_safe-appimage-builder-img "{CONTRIB_APPIMAGE}"'
+        )
+
+        # Possibly do a fresh clone
+        FRESH_CLONE = False
+        if build_commit:
+            logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
+            FRESH_CLONE = Path("/tmp/bitcoin_safe_build/appimage/bitcoin_safe_clone/bitcoin_safe")
+            try:
+                run_local(f'rm -rf "{FRESH_CLONE}"')
+            except subprocess.CalledProcessError:
+                logger.info("We need sudo to remove previous FRESH_CLONE.")
+                run_local(f'sudo rm -rf "{FRESH_CLONE}"')
+            os.umask(0o022)
+            run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
+            os.chdir(str(FRESH_CLONE))
+            run_local(f'git checkout "{build_commit}"')
+            PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
+        else:
+            logger.info("Not doing fresh clone.")
+
+        logger.info("Building binary...")
+        # Check UID and possibly chown
+        if build_commit:
+            if os.getuid() != 1000 or os.getgid() != 1000:
+                logger.info("Need to chown -R FRESH_CLONE directory. Prompting for sudo.")
+                run_local(f'sudo chown -R 1000:1000 "{FRESH_CLONE}"')
+
+        run_local(
+            f"docker run -it "
+            f"--name bitcoin_safe-appimage-builder-cont "
+            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/bitcoin_safe '
+            f"--rm "
+            f"--workdir /opt/bitcoin_safe/tools/build-linux/appimage "
+            f"bitcoin_safe-appimage-builder-img "
+            f"./make_appimage.sh"
+        )
+
+        # Ensure the resulting binary location is independent of fresh_clone
+        if FRESH_CLONE:
+            os.makedirs(DISTDIR, exist_ok=True)
+            shutil.copytree(FRESH_CLONE / "dist", DISTDIR, dirs_exist_ok=True)
+
+    def briefcase_appimage(self, **kwargs):
+        # briefcase appimage building works on some systems, but not on others... unknown why.
+        # so we build using the electrum docker by default
         run_local("poetry run briefcase -u  package    linux  appimage")
 
-    def briefcase_windows(self):
+    def briefcase_windows(self, **kwargs):
         run_local("poetry run briefcase -u  package    windows")
 
-    def briefcase_mac(self):
+    def briefcase_mac(self, **kwargs):
         run_local("python3 -m poetry run   briefcase -u  package    macOS  app --no-notarize")
 
-    def briefcase_deb(self):
+    def briefcase_deb(self, **kwargs):
         # _run_local(" briefcase -u  package --target ubuntu:23.10") # no bdkpython for python3.11
         # _run_local(" briefcase -u  package --target ubuntu:23.04") # no bdkpython for python3.11
         run_local("poetry run briefcase -u  package --target ubuntu:22.04 -p deb")
 
-    def briefcase_flatpak(self):
+    def briefcase_flatpak(self, **kwargs):
         run_local("poetry run briefcase   package linux flatpak")
 
-    def package_application(self, targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]]):
-        if self.version is None:
-            print("Version could not be determined.")
-            return
         shutil.rmtree("build")
+
+    def package_application(
+        self,
+        targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]],
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
+    ):
         self.update_briefcase_requires()
 
         f_map = {
-            "appimage": self.briefcase_appimage,
+            "appimage": self.build_appimage_docker,
             "windows": self.briefcase_windows,
             "mac": self.briefcase_mac,
             "deb": self.briefcase_deb,
@@ -265,7 +243,7 @@ class Builder:
         }
 
         for target in targets:
-            f_map[target]()
+            f_map[target](build_commit=build_commit)
 
         # if "linux" in targets:
         #     self.create_briefcase_binaries_in_docker(target_platform="linux")
@@ -286,19 +264,16 @@ class Builder:
             app_name=self.app_name_formatter(self.module_name),
             list_of_known_keys=[KnownGPGKeys.andreasgriffin],
         )
-        manager.sign_files(KnownGPGKeys.andreasgriffin)
-        assert self.verify(), "Error: Signatures do NOT match fingerprint!!!!"
+        signed_files = manager.sign_files(KnownGPGKeys.andreasgriffin)
+        assert self.verify(signed_files), "Error: Signature Verification failed!!!!"
 
-    def verify(self):
-        manager = SignatureSigner(
-            version=self.version,
-            app_name=self.app_name_formatter(self.module_name),
+    def verify(self, signed_files: List[Path]):
+        manager = SignatureVerifyer(
             list_of_known_keys=[KnownGPGKeys.andreasgriffin],
         )
 
-        files = manager.get_files_to_sign()
-        assert files
-        for filepath in files:
+        assert signed_files
+        for filepath in signed_files:
             is_valid = manager.verify_signature(
                 binary_filename=filepath, expected_public_key=KnownGPGKeys.andreasgriffin
             )
@@ -306,7 +281,7 @@ class Builder:
                 return False
         return True
 
-    def build_snap(self):
+    def build_snap(self, **kwargs):
         """
         Build a Snap package for a Python application.
         """
@@ -419,7 +394,7 @@ def get_default_targets() -> List[str]:
         return [
             "appimage",
             # "flatpak",
-            "deb",
+            # "deb",
         ]
     elif platform.system() == "Darwin":
         return ["mac"]

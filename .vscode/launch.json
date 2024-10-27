@@ -12,7 +12,7 @@
       "args": [
         // "--profile",  
       ],
-      "justMyCode": false
+      // "justMyCode": false
     },
     {
       "name": "Pytest",
@@ -24,7 +24,7 @@
         "--ignore=coding_tests",
       ],
       "console": "integratedTerminal",
-      "justMyCode": true
+      //  "justMyCode": false
     },
     {
       "name": "Pytest gui",
@@ -38,7 +38,7 @@
         "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-      "justMyCode": true
+       "justMyCode": false
     },
     {
       "name": "Pytest non-gui",
@@ -52,8 +52,21 @@
         "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-      "justMyCode": true
-    },   {
+       "justMyCode": false
+    }, {
+      "name": "Pytest: Current File",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [ 
+        "-vvv", 
+        "${file}",
+        "-s",  // Disable all capturing of outputs        
+      ], 
+      "console": "integratedTerminal",
+       "justMyCode": false
+    },
+      {
       "name": "taglist",
       "type": "python",
       "request": "launch",
@@ -118,11 +131,11 @@
 ],
   "console": "integratedTerminal"
 },{
-    "name": "Python: Current File",
-    "type": "python",
-    "request": "launch",
-    "program": "${file}",
-    "console": "integratedTerminal"
+  "name": "Current File",
+  "type": "python",
+  "request": "launch",
+  "program": "${file}",
+  "console": "integratedTerminal"
 }
 
   ]

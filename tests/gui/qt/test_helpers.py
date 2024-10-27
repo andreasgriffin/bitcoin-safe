@@ -36,18 +36,21 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Callable, Generator, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Generator, List, Optional, Type, TypeVar, Union
 from unittest.mock import patch
 
 import pytest
 from PyQt6 import QtCore
+from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QPushButton,
     QTabWidget,
+    QTextEdit,
     QWidget,
 )
 from pytestqt.qtbot import QtBot
@@ -78,27 +81,14 @@ def test_start_time() -> datetime:
 
 
 @contextmanager
-def application_context() -> Generator[QApplication, None, None]:
-    """Context manager that manages the QApplication lifecycle."""
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    try:
-        yield app
-    finally:
-        app.quit()
-
-
-@contextmanager
-def main_window_context(test_config: UserConfig) -> Generator[Tuple[QApplication, MainWindow], None, None]:
+def main_window_context(test_config: UserConfig) -> Generator[MainWindow, None, None]:
     """Context manager that manages the MainWindow lifecycle."""
-    with application_context() as app:
-        window = MainWindow(config=test_config)
-        window.show()
-        try:
-            yield app, window
-        finally:
-            window.close()
+    window = MainWindow(config=test_config)
+    window.show()
+    try:
+        yield window
+    finally:
+        window.close()
 
 
 # Define a Type Variable
@@ -154,7 +144,7 @@ class Shutter:
             link_name.symlink_to(test_config.config_dir)
 
 
-def _get_widget_top_level(cls: Type[T], title: str = None) -> Optional[T]:
+def _get_widget_top_level(cls: Type[T], title: str | None = None) -> Optional[T]:
     """
     Find the top-level widget of the specified class and title among the active widgets.
 
@@ -165,8 +155,8 @@ def _get_widget_top_level(cls: Type[T], title: str = None) -> Optional[T]:
     Returns:
     QWidget or False: The widget if found, otherwise False.
     """
-    QApplication.processEvents()
     for widget in QApplication.topLevelWidgets():
+        logger.debug(str(widget))
         # Check instance and, if a title is provided, whether the title matches
         if (
             isinstance(widget, cls)
@@ -181,7 +171,7 @@ def _get_widget_top_level(cls: Type[T], title: str = None) -> Optional[T]:
 
 
 def get_widget_top_level(
-    cls: Type[T], qtbot: QtBot, title: str = None, wait: bool = True, timeout: int = 10000
+    cls: Type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10000
 ) -> Optional[T]:
     """
     Find the top-level widget of the specified class and title among the active widgets.
@@ -205,6 +195,7 @@ def do_modal_click(
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
     cls: Type[T] = QMessageBox,
     timeout=5000,
+    timer_delay=200,
 ) -> None:
     def click() -> None:
         print("\nwaiting for is_dialog_open")
@@ -216,23 +207,28 @@ def do_modal_click(
         print("Do on_open")
         on_open(dialog)
 
-    QtCore.QTimer.singleShot(200, click)
+    QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
         click_pushbutton()
     else:
         qtbot.mouseClick(click_pushbutton, button)
 
 
-def assert_message_box(click_pushbutton: QPushButton, tile: str, message_text: str) -> None:
-    with patch("bitcoin_safe.gui.qt.util.QMessageBox") as mock_msgbox:
-        while not mock_msgbox.called:
+def get_called_args_message_box(
+    patch_str: str,
+    click_pushbutton: QPushButton,
+    repeat_clicking_until_message_box_called=False,
+) -> List[Any]:
+    with patch(patch_str) as mock_message:
+        while not mock_message.called:
             click_pushbutton.click()
             QApplication.processEvents()
             sleep(0.2)
+            if not repeat_clicking_until_message_box_called:
+                break
 
-        called_args, called_kwargs = mock_msgbox.call_args
-        assert called_args[1] == tile
-        assert called_args[2] == message_text
+        called_args, called_kwargs = mock_message.call_args
+        return called_args
 
 
 def simulate_user_response(
@@ -246,6 +242,27 @@ def simulate_user_response(
             qtbot.mouseClick(widget.button(button_type), QtCore.Qt.MouseButton.LeftButton)
             return True
     return None
+
+
+def type_text_in_edit(text: str, edit: Union[QLineEdit, QTextEdit]) -> None:
+    """
+    Simulate typing text into a QLineEdit or QTextEdit widget.
+
+    :param text: The text to type into the edit widget.
+    :param edit: The QLineEdit or QTextEdit widget where the text will be typed.
+    """
+    edit.setFocus()
+    QApplication.processEvents()
+
+    # Ensure the widget has focus
+    if not edit.hasFocus():
+        edit.setFocus()
+        QApplication.processEvents()
+
+    # Simulate typing each character
+    for char in text:
+        QTest.keyClick(edit, char)
+        QApplication.processEvents()
 
 
 def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:

@@ -28,6 +28,7 @@
 
 
 import random
+from typing import Type, TypeVar
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QPainter, QPaintEvent
@@ -41,7 +42,7 @@ from PyQt6.QtWidgets import (
 
 
 class DebugWidget(QWidget):
-    def paintEvent(self, event: QPaintEvent) -> None:
+    def paintEvent(self, event: QPaintEvent | None) -> None:
         super().paintEvent(event)
         self.drawDebugInfo(self)
 
@@ -57,8 +58,9 @@ class DebugWidget(QWidget):
         classNameText = f"{indent}Class: {widget.__class__.__name__}"
 
         # Margins (for QLayout if exists)
-        if widget.layout():
-            margins = widget.layout().getContentsMargins()
+        layout = widget.layout()
+        if layout:
+            margins = layout.getContentsMargins()
             marginText = f"{indent}Margins: {margins}"
         else:
             marginText = f"{indent}No layout/margins"
@@ -100,14 +102,17 @@ class DebugWidget(QWidget):
         )
 
 
-def generate_debug_class(BaseClass) -> QWidget:
-    class DebugClass(BaseClass):
+W = TypeVar("W", bound=QWidget)
+
+
+def generate_debug_class(BaseClass: Type[W]) -> Type[W]:
+    class DebugClass(BaseClass):  # type: ignore
         def paintEvent(self, event: QPaintEvent) -> None:
             super().paintEvent(event)
             DebugWidget().drawDebugInfo(self)
 
     DebugClass.__name__ = f"{BaseClass.__name__}"
-    return DebugClass
+    return DebugClass  # type: ignore
 
 
 if __name__ == "__main__":

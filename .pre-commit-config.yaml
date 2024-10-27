@@ -8,14 +8,14 @@ repos:
         types: [python]
         files: '\.py$'
 
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1  # Use the specified version of isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2  # Use the specified version of isort
     hooks:
       - id: isort
         args:
           - --profile=black  # Set the import order style (change 'google' to your preferred style)          
   - repo: https://github.com/myint/autoflake
-    rev: v2.3.0  # Use the latest version of autoflake
+    rev: v2.3.1  # Use the latest version of autoflake
     hooks:
       - id: autoflake
         args:
@@ -26,28 +26,40 @@ repos:
           - --exclude=__init__.py
           - --remove-duplicate-keys 
   - repo: https://github.com/ambv/black
-    rev: 22.3.0
+    rev: 24.8.0
     hooks:
     - id: black
       language_version: python3.10
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0  # Use the latest MyPy version
+    rev: v1.11.2   # Use the latest MyPy version
     hooks:
       - id: mypy
-        # Additional arguments to MyPy can be added here
+        files: ^bitcoin_safe/ 
         args: 
           - --check-untyped-defs
           # - --disallow-untyped-defs
+          # - --disallow-incomplete-defs
           # - --strict-optional
-          # - --no-implicit-optional
+          - --implicit-optional
+          - --strict-equality
           # - --warn-return-any
           - --warn-redundant-casts
-          # - --warn-unreachable
+          - --warn-unreachable
+          # - --disallow-any-generics           
+          # - --strict        
+          - --install-types
+          - --non-interactive   
+          - --ignore-missing-imports
+          - --show-error-codes 
         additional_dependencies: 
           - types-requests
           - types-PyYAML
-          - types-toml
-
+          - types-toml    
+          - pytest-mypy
+          - types-Pillow
+          - types-reportlab
+          - pyqt6 
+          - bdkpython
 
   - repo: local
     hooks:

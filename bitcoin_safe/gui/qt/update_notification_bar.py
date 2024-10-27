@@ -40,10 +40,10 @@ from PyQt6.QtWidgets import QHBoxLayout, QStyle, QWidget
 
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.threading_manager import TaskThread
+from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
-from ...html import html_f, link
+from ...html import html_f
 from ...signals import SignalsMin
 from ...signature_manager import (
     Asset,
@@ -56,17 +56,19 @@ from .util import Message, MessageType
 logger = logging.getLogger(__name__)
 
 
-class UpdateNotificationBar(NotificationBar):
+class UpdateNotificationBar(NotificationBar, ThreadingManager):
     key = KnownGPGKeys.andreasgriffin
 
-    def __init__(self, signals_min: SignalsMin, parent=None) -> None:
+    def __init__(
+        self, signals_min: SignalsMin, parent=None, threading_parent: ThreadingManager | None = None
+    ) -> None:
         self.download_container = QWidget()
-        self.download_container.setLayout(QHBoxLayout())
-        current_margins = self.download_container.layout().contentsMargins()
-        self.download_container.layout().setContentsMargins(
+        self.download_container_layout = QHBoxLayout(self.download_container)
+        current_margins = self.download_container_layout.contentsMargins()
+        self.download_container_layout.setContentsMargins(
             current_margins.left(), 1, current_margins.right(), 0
         )  # Left, Top, Right, Bottom margins
-        self.download_container.layout().setSpacing(self.download_container.layout().spacing() // 2)
+        self.download_container_layout.setSpacing(self.download_container_layout.spacing() // 2)
 
         super().__init__(
             text="",
@@ -75,9 +77,10 @@ class UpdateNotificationBar(NotificationBar):
             additional_widget=self.download_container,
             has_close_button=True,
             parent=parent,
+            threading_parent=threading_parent,
         )
         self.signals_min = signals_min
-        refresh_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        refresh_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
         self.optionalButton.setIcon(refresh_icon)
 
         self.verifyer = SignatureVerifyer(list_of_known_keys=[self.key])
@@ -104,10 +107,11 @@ class UpdateNotificationBar(NotificationBar):
         self.optionalButton.setText(self.tr("Check for Update"))
 
         # clear layout
-        while self.download_container.layout().count():
-            child = self.download_container.layout().takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+        while self.download_container_layout.count():
+            if (layout_item := self.download_container_layout.takeAt(0)) and (
+                _widget := layout_item.widget()
+            ):
+                _widget.deleteLater()
 
         self.download_container.setVisible(bool(self.assets))
         if self.assets:
@@ -121,7 +125,7 @@ class UpdateNotificationBar(NotificationBar):
                 for asset in self.assets:
                     downloader = Downloader(url=asset.url, destination_dir=tempfile.gettempdir())
                     downloader.finished.connect(self.on_download_finished)
-                    self.download_container.layout().addWidget(downloader)
+                    self.download_container_layout.addWidget(downloader)
             else:
                 self.textLabel.setText(self.tr("You have already the newest version."))
                 self.optionalButton.setVisible(True)
@@ -137,40 +141,24 @@ class UpdateNotificationBar(NotificationBar):
             self.setVisible(False)
             return
 
-        if not self.verifyer.is_gnupg_installed():
-            if platform.system() == "Windows":
-                txt = self.tr(
-                    """Please install  {link} to automatically verify the signature of the update."""
-                ).format(link=link("https://www.gpg4win.org"))
-            elif platform.system() == "Linux":
-                txt = self.tr(
-                    """Please install  GPG via "sudo apt-get -y install gpg" to automatically verify the signature of the update."""
-                )
-            elif platform.system() == "Darwin":
-                txt = self.tr(
-                    """Please install  GPG via "brew install gnupg" to automatically verify the signature of the update."""
-                )
-            Message(txt, type=MessageType.Error)
-
         destination = self.get_download_folder()
         was_signature_verified = None
-        if self.verifyer.is_gnupg_installed():
-            was_signature_verified = self.verifyer.verify_signature(
-                download_thread.filename, expected_public_key=self.key
-            )
-            if not was_signature_verified:
-                Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
-                self.refresh()
-                self.setVisible(False)
-                return
-            else:
-                self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
 
-        if not self.verifyer.is_gnupg_installed() or was_signature_verified:
-            # overwrite the download_thread.filename so the show-button still works
-            download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
-            if sig_file_path:
-                self.move_and_overwrite(sig_file_path, destination)
+        was_signature_verified = self.verifyer.verify_signature(
+            download_thread.filename, expected_public_key=self.key
+        )
+        if not was_signature_verified:
+            Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
+            self.refresh()
+            self.setVisible(False)
+            return
+
+        self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
+
+        # overwrite the download_thread.filename so the show-button still works
+        download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
+        if sig_file_path:
+            self.move_and_overwrite(sig_file_path, destination)
 
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:
@@ -229,7 +217,7 @@ class UpdateNotificationBar(NotificationBar):
         def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")
 
-        TaskThread(self, signals_min=self.signals_min).add_and_start(do, on_success, on_done, on_error)
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def check_and_make_visible(self) -> None:
         self.check()

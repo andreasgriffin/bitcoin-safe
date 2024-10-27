@@ -36,6 +36,12 @@ logger = logging.getLogger(__name__)
 
 
 class BlockChangesSignals:
+    """
+    Blocks signals from all recursive widgets that are in the layout
+
+    This takes a long time, so do not use it on widgets with many subwidgets
+    """
+
     def __init__(self, widgets: List[QWidget]) -> None:
         self.widgets: List[QWidget] = widgets
         self.all_widgets: Optional[Set[QWidget]] = None
@@ -61,7 +67,7 @@ class BlockChangesSignals:
         widgets = []
         for index in range(tab_widget.count()):
             tab_page = tab_widget.widget(index)
-            if tab_page.layout():
+            if tab_page and tab_page.layout():
                 widgets += self._collect_sub_widget(tab_page)
         return widgets
 
