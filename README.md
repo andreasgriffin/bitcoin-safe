@@ -120,15 +120,14 @@
 
 ## Installation from Git repository
 
+
+### Ubuntu, Debian, Windows
+
 Install dependencies: 
 
   ```sh
   sudo apt install  qt6-tools-dev-tools libqt6*
   ```
-
-
-
-### Ubuntu, Debian, Windows
 
 - Install `poetry` and run `bitcoin_safe`
   

@@ -1318,6 +1318,9 @@ class MainWindow(QMainWindow):
             self.remove_qt_wallet(qt_wallet)
 
     def close_tab(self, index: int) -> None:
+        self.tab_wallets.remove_tab_from_history(index)
+        self.tab_wallets.jump_to_last_active_tab()
+
         # qt_wallet
         qt_wallet = self.get_qt_wallet(tab=self.tab_wallets.widget(index))
         if qt_wallet:

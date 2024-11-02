@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import argparse
 import datetime
 import getpass
 import hashlib
@@ -239,7 +240,29 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
     return user_input if user_input else default
 
 
+RELEASE_INSTRUCTIONS = """
+1. Manually create a git tag
+2. Build all artifacts
+3. Sign all artifacts (build.py --sign)
+4. release.py (will also create and publish a pypi package)
+5. Manually update the description of the release and click publish
+"""
+
+
+def parse_args() -> argparse.Namespace:
+
+    parser = argparse.ArgumentParser(description="Release Bitcoin Safe")
+    parser.add_argument("--more_help", action="store_true", help=RELEASE_INSTRUCTIONS)
+
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+    if args.more_help:
+        print(RELEASE_INSTRUCTIONS)
+        return
+
     get_checkout_main()
 
     print("Running tests before proceeding...")
