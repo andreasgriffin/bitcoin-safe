@@ -41,6 +41,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
+from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
@@ -203,6 +204,18 @@ def test_custom_wallet_setup_custom_single_sig(
             get_tab_with_title(main_window.tab_wallets, title=wallet_name)
         )
         assert isinstance(qt_wallet, QTWallet)
+
+        def export_wallet_descriptor() -> None:
+            def on_dialog(dialog: DescriptorExport):
+                shutter.save(dialog)
+                assert dialog.isVisible()
+                dialog.close()
+
+            do_modal_click(main_window.export_wallet_for_coldcard_q, on_dialog, qtbot, cls=DescriptorExport)
+
+            shutter.save(main_window)
+
+        export_wallet_descriptor()
 
         def do_close_wallet() -> None:
 

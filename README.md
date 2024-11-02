@@ -8,21 +8,22 @@
 
 - **Easy** Multisig-Wallet Setup
   - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
-  - Test transactions enure that all hardware signers are ready
+  - Test transactions ensure that all hardware signers are ready
   - Full support for [Coldcard](https://coldcard.com/), [Coldcard Q](https://coldcard.com/), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
 - **Secure**: Hardware signers only
   - All wallets require hardware signers/wallets for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
 - **Multi-Language**:
-  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, 🇫🇷 French - Français, (more upon request)
+  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, 🇫🇷 French - Français, 🇩🇪 German - Deutsch, (more upon request)
 - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
   - Automatic coin selection within categories
   - Transaction flow diagrams, visualizing inputs and outputs, click on inputs and output to trace the money flow
 - **Sending** for non-technical users
   - 1-click fee selection via mempool-blocks
   - Automatic merging of utxos when fees are low
-- **Collaborative**:
-  - Label synchronization between different computers and encrypted cloud backup
+- **SyncTalk**:
+  - Encrypted cloud backup (via nostr) of labels
+  - Label synchronization between different computers
   - Wallet chat and PSBTs sharing between different computers
 - **Fast**: 
   - Electrum server syncing

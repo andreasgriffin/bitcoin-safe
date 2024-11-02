@@ -259,7 +259,7 @@ class QTWallet(QtWalletBase):
     def updateUi(self) -> None:
         self.tabs.setTabText(self.tabs.indexOf(self.send_tab), self.tr("Send"))
         self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_tab), self.tr("Descriptor"))
-        self.tabs.setTabText(self.tabs.indexOf(self.sync_tab_widget), self.tr("Sync"))
+        self.tabs.setTabText(self.tabs.indexOf(self.sync_tab_widget), self.tr("SyncTalk"))
         self.tabs.setTabText(self.tabs.indexOf(self.history_tab), self.tr("History"))
         self.tabs.setTabText(self.tabs.indexOf(self.addresses_tab), self.tr("Receive"))
 

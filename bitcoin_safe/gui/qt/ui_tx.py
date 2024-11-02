@@ -536,25 +536,17 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
     def txid(self) -> str:
         return self.extract_tx().txid()
 
-    def broadcast(self) -> None:
-        if not self.data.data_type == DataType.Tx:
-            return
-        if not isinstance(self.data.data, bdk.Transaction):
-            logger.error(f"{self.data.data} is not of type bdk.Transaction")
-            return
-        tx = self.data.data
+    def _get_height(self) -> int | None:
+        for wallet in get_wallets(self.signals):
+            return wallet.get_height()
+        return None
 
-        if not self.blockchain:
-            for wallet in get_wallets(self.signals):
-                if wallet.blockchain:
-                    self.blockchain = wallet.blockchain
-                    logger.error(f"Using {self.blockchain} from wallet {wallet.id}")
-
-        logger.debug(f"broadcasting {serialized_to_hex( self.data.data.serialize())}")
+    def _broadcast(self, tx: bdk.Transaction) -> bool:
         if self.blockchain:
             try:
                 self.blockchain.broadcast(tx)
                 self.signals.signal_broadcast_tx.emit(tx)
+                return True
             except Exception as e:
                 caught_exception_message(
                     e,
@@ -566,6 +558,32 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 )
         else:
             logger.error("No blockchain set")
+
+        return False
+
+    def _set_blockchain(self):
+        for wallet in get_wallets(self.signals):
+            if wallet.blockchain:
+                self.blockchain = wallet.blockchain
+                logger.error(f"Using {self.blockchain} from wallet {wallet.id}")
+
+    def broadcast(self) -> None:
+        if not self.data.data_type == DataType.Tx:
+            return
+        if not isinstance(self.data.data, bdk.Transaction):
+            logger.error(f"{self.data.data} is not of type bdk.Transaction")
+            return
+        tx = self.data.data
+
+        if not self.blockchain:
+            self._set_blockchain()
+
+        logger.debug(f"broadcasting {serialized_to_hex( self.data.data.serialize())}")
+        success = self._broadcast(tx)
+        if success:
+            logger.info(f"Successfully broadcasted {serialized_to_hex( self.data.data.serialize())}")
+        else:
+            logger.error(f"Failed to broadcast {serialized_to_hex( self.data.data.serialize())}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
@@ -948,7 +966,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 fee_info=fee_info,
                 url=block_explorer_URL(self.config.network_config.mempool_url, "tx", tx.txid()),
                 confirmation_time=confirmation_time,
-                chain_height=self.blockchain.get_height() if self.blockchain else None,
+                chain_height=self._get_height(),
             )
             # calcualte the fee warning. However since in a tx I don't know what is a change address,
             # it is not possible to give  fee warning for the sent (vs. change) amount
