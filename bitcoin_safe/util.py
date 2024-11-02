@@ -83,9 +83,6 @@ from PyQt6.QtCore import QByteArray, QLocale
 
 from .i18n import translate
 
-locale = QLocale()  # This initializes a QLocale object with the user's default locale
-
-
 TX_HEIGHT_FUTURE = -3
 TX_HEIGHT_LOCAL = -2
 TX_HEIGHT_UNCONF_PARENT = -1
@@ -448,7 +445,7 @@ def format_number(
     integer_part, decimal_part = f"{number/1e8:.8f}".split(".")
 
     # Format the integer part with commas or OS native separators
-    abs_integer_part_formatted = locale.toString(abs(int(integer_part)))
+    abs_integer_part_formatted = QLocale().toString(abs(int(integer_part)))
 
     # Split the decimal part into groups
     decimal_groups = [decimal_part[:2], decimal_part[2:5], decimal_part[5:]]
@@ -488,7 +485,7 @@ def format_number(
     # Combine integer and decimal parts with separator
     int_part = color_format_str(integer_part_formatted, overall_color, color_formatting)
 
-    formatted_number = f"{int_part}{color_format_str(locale.decimalPoint(), overall_color, color_formatting)}{decimal_part_formatted}"
+    formatted_number = f"{int_part}{color_format_str(QLocale().decimalPoint(), overall_color, color_formatting)}{decimal_part_formatted}"
 
     return formatted_number
 
@@ -502,7 +499,7 @@ class Satoshis:
         if isinstance(s, float):
             return int(s)
 
-        f = locale.toDouble(str(s).replace(unit_str(self.network), "").strip().replace(" ", ""))[0] * 1e8
+        f = QLocale().toDouble(str(s).replace(unit_str(self.network), "").strip().replace(" ", ""))[0] * 1e8
         return int(round(f))
 
     def __repr__(self):

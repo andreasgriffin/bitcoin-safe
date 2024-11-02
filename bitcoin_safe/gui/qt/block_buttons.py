@@ -46,11 +46,9 @@ from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
 from .invisible_scroll_area import InvisibleScrollArea
 from .util import center_in_widget, open_website
 
-locale = QLocale()  # This initializes a QLocale object with the user's default locale
-
 
 def format_block_number(block_number) -> str:
-    return locale.toString(int(block_number))
+    return QLocale().toString(int(block_number))
 
 
 class BlockType(enum.Enum):
@@ -400,7 +398,9 @@ class ConfirmedBlock(BaseBlock):
     def set_url(self, url: str) -> None:
         self.url = url
 
-    def refresh(self, fee_rate=None, confirmation_time=None, chain_height=None, **kwargs) -> None:
+    def refresh(
+        self, fee_rate=None, confirmation_time=None, chain_height: int | None = None, **kwargs
+    ) -> None:
         self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
         self.confirmation_time = confirmation_time if confirmation_time else self.confirmation_time
         if not self.confirmation_time:

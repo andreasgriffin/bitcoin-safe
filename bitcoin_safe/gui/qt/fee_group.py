@@ -356,7 +356,7 @@ class FeeGroup(QObject):
         fee_info: FeeInfo | None = None,
         url: str | None = None,
         confirmation_time: bdk.BlockTime | None = None,
-        chain_height=None,
+        chain_height: int | None = None,
     ) -> None:
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit

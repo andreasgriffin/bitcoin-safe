@@ -437,19 +437,21 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         )
 
     def export_qrcode(self) -> Optional[str]:
+        image_format = "gif" if len(self.qr_label.svg_renderers) > 1 else "png"
+
         filename = save_file_dialog(
-            name_filters=["Image (*.png)", "All Files (*.*)"],
-            default_suffix="png",
-            default_filename=f"{short_tx_id( self.txid)}.png" if self.txid else None,
+            name_filters=[
+                self.tr("Image (*.{image_format})", "All Files (*.*)").format(image_format=image_format)
+            ],
+            default_suffix=image_format,
+            default_filename=f"{short_tx_id( self.txid)}.{image_format}" if self.txid else None,
         )
         if not filename:
             return None
 
-        # Ensure the file has the .png extension
-        if not filename.lower().endswith(".png"):
-            filename += ".png"
-
-        self.qr_label.save_file(filename)
+        self.qr_label.save_file(
+            base_filename=filename.rstrip(f".{image_format}"), image_format=image_format.upper()
+        )
         return filename
 
     def clear_qr(self) -> None:

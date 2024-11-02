@@ -61,7 +61,7 @@ class TranslationHandler:
     def __init__(
         self,
         module_name,
-        languages=["zh_CN", "es_ES", "ru_RU", "hi_IN", "pt_PT", "ja_JP", "ar_AE", "it_IT", "fr_FR"],
+        languages=["zh_CN", "es_ES", "ru_RU", "hi_IN", "pt_PT", "ja_JP", "ar_AE", "it_IT", "fr_FR", "de_DE"],
         prefix="app",
     ) -> None:
         self.module_name = module_name
@@ -76,7 +76,7 @@ Translate all following lines   to the following languages
  {languages}
 Formatting instructions:
 - no bullets points.  
-- preserve the linebreaks of each line perfectly! 
+- preserve the linebreaks of each line perfectly! YOU MUST preserve the linebreaks of each line perfectly!
 - leave the brackets {{}} and their content unchanged
 - group by language  (add 2 linebreaks after the language caption)
 - please keep the linebreaks as in the originals

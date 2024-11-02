@@ -29,6 +29,8 @@
 
 import logging
 
+from bitcoin_safe.html import html_f
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
@@ -63,7 +65,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx import UITx_Creator
-from bitcoin_safe.i18n import translate
 
 
 class SearchHTMLDelegate(QStyledItemDelegate):
@@ -312,7 +313,7 @@ class SearchTreeView(QWidget):
         self.popup.hide()
 
     def updateUi(self) -> None:
-        self.search_field.setPlaceholderText(translate("mytreeview", "Type to search..."))
+        self.search_field.setPlaceholderText(translate("search_treeview", "Type to search..."))
 
     def on_search(self, text: str) -> None:
         search_results = self.do_search(text)
@@ -409,13 +410,9 @@ class SearchWallets(SearchTreeView):
         search_text = search_text.strip()
         root = ResultItem("")
         for qt_wallet in self.get_qt_wallets():
-            wallet_item = ResultItem(
-                f"<span style='font-weight:bold;'>{qt_wallet.wallet.id}</span>", obj=qt_wallet
-            )
+            wallet_item = ResultItem(html_f(qt_wallet.wallet.id, bf=True), obj=qt_wallet)
 
-            wallet_addresses = ResultItem(
-                f"<span style='font-weight:bold;'>Addresses</span>", obj=qt_wallet.addresses_tab
-            )
+            wallet_addresses = ResultItem(html_f(self.tr("Addresses"), bf=True), obj=qt_wallet.addresses_tab)
             for address in qt_wallet.wallet.get_addresses():
                 if search_text in address:
                     ResultItem(
@@ -439,9 +436,7 @@ class SearchWallets(SearchTreeView):
                     wallet_addresses.set_parent(wallet_item)
                     wallet_item.set_parent(root)
 
-            wallet_tx_ids = ResultItem(
-                f"<span style='font-weight:bold;'>Transaction Ids</span>", obj=qt_wallet.history_tab
-            )
+            wallet_tx_ids = ResultItem(html_f(self.tr("Transactions"), bf=True), obj=qt_wallet.history_tab)
             for txid, fulltxdetail in qt_wallet.wallet.get_dict_fulltxdetail().items():
                 if search_text in txid:
                     ResultItem(
@@ -465,12 +460,8 @@ class SearchWallets(SearchTreeView):
                     wallet_tx_ids.set_parent(wallet_item)
                     wallet_item.set_parent(root)
 
-            wallet_utxos = ResultItem(
-                f"<span style='font-weight:bold;'>UTXOs</span>", obj=qt_wallet.uitx_creator
-            )
-            wallet_txos = ResultItem(
-                f"<span style='font-weight:bold;'>Spent Outputs</span>", obj=qt_wallet.history_tab
-            )
+            wallet_utxos = ResultItem(html_f(self.tr("UTXOs"), bf=True), obj=qt_wallet.uitx_creator)
+            wallet_txos = ResultItem(html_f(self.tr("Spent Outputs"), bf=True), obj=qt_wallet.history_tab)
             for pythonutxo in qt_wallet.wallet.get_all_txos_dict().values():
                 outpoint_str = str(pythonutxo.outpoint)
                 if search_text in outpoint_str:

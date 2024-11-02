@@ -37,7 +37,15 @@ logger = logging.getLogger(__name__)
 import os
 from typing import Dict, List, Optional
 
-from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, QTranslator, pyqtBoundSignal
+from PyQt6.QtCore import (
+    QLibraryInfo,
+    QLocale,
+    QObject,
+    Qt,
+    QTranslator,
+    pyqtBoundSignal,
+)
+from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -48,6 +56,64 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
+
+FLAGS = {
+    "en_US": "🇺🇸",
+    "en_GB": "🇬🇧",
+    "zh_CN": "🇨🇳",
+    "zh_TW": "🇹🇼",
+    "es_ES": "🇪🇸",
+    "es_MX": "🇲🇽",
+    "ru_RU": "🇷🇺",
+    "hi_IN": "🇮🇳",
+    "pt_PT": "🇵🇹",
+    "pt_BR": "🇧🇷",
+    "ja_JP": "🇯🇵",
+    "ar_AE": "🇦🇪",
+    "it_IT": "🇮🇹",
+    "fr_FR": "🇫🇷",
+    "de_DE": "🇩🇪",
+    "ko_KR": "🇰🇷",
+    "nl_NL": "🇳🇱",
+    "sv_SE": "🇸🇪",
+    "no_NO": "🇳🇴",
+    "da_DK": "🇩🇰",
+    "fi_FI": "🇫🇮",
+    "pl_PL": "🇵🇱",
+    "tr_TR": "🇹🇷",
+    "el_GR": "🇬🇷",
+    "cs_CZ": "🇨🇿",
+    "hu_HU": "🇭🇺",
+    "he_IL": "🇮🇱",
+    "th_TH": "🇹🇭",
+    "id_ID": "🇮🇩",
+    "ms_MY": "🇲🇾",
+    "vi_VN": "🇻🇳",
+    "ro_RO": "🇷🇴",
+    "uk_UA": "🇺🇦",
+    "bg_BG": "🇧🇬",
+    "sk_SK": "🇸🇰",
+    "sl_SI": "🇸🇮",
+    "hr_HR": "🇭🇷",
+    "lt_LT": "🇱🇹",
+    "lv_LV": "🇱🇻",
+    "et_EE": "🇪🇪",
+    "is_IS": "🇮🇸",
+    "mt_MT": "🇲🇹",
+    "ga_IE": "🇮🇪",
+    "af_ZA": "🇿🇦",
+    "ur_PK": "🇵🇰",
+    "fa_IR": "🇮🇷",
+    "am_ET": "🇪🇹",
+    "sw_KE": "🇰🇪",
+    "bn_BD": "🇧🇩",
+    "ta_IN": "🇮🇳",
+    "te_IN": "🇮🇳",
+    "ml_IN": "🇮🇳",
+    "kn_IN": "🇮🇳",
+    "mr_IN": "🇮🇳",
+    "pa_IN": "🇮🇳",
+}
 
 
 class LanguageDialog(QDialog):
@@ -102,8 +168,27 @@ class LanguageChooser(QObject):
         self.current_language_code: str = "en_US"
 
         # Start with default language (English) in the list
-        self.availableLanguages = {"en_US": QLocale(QLocale.Language.English).nativeLanguageName()}
+        self.availableLanguages = {"en_US": QLocale("en_US").nativeLanguageName()}
         logger.debug(f"initialized {self}")
+
+    @staticmethod
+    def create_flag_icon(unicode_flag: str, size: int = 32) -> QIcon:
+        # Create a QPixmap to render the flag onto
+        pixmap = QPixmap(size, size)
+        pixmap.fill(Qt.GlobalColor.transparent)  # Start with a transparent background
+
+        # Set up the QPainter to draw the flag
+        painter = QPainter(pixmap)
+        font = QFont()
+        font.setPointSize(int(size * 0.7))  # Adjust font size relative to the icon size
+        painter.setFont(font)
+
+        # Draw the Unicode flag character centered on the pixmap
+        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, unicode_flag)
+        painter.end()
+
+        # Create and return the QIcon from the pixmap
+        return QIcon(pixmap)
 
     def get_current_lang_code(self) -> str:
         return self.current_language_code
@@ -135,7 +220,8 @@ class LanguageChooser(QObject):
             return f
 
         for lang, name in self.get_languages().items():
-            language_menu.add_action(text=name, slot=factory(lang))
+            icon = self.create_flag_icon(FLAGS[lang]) if lang in FLAGS else QIcon()
+            language_menu.add_action(text=name, slot=factory(lang), icon=icon)
 
     def scanForLanguages(self) -> Dict[str, str]:
         languages: Dict[str, str] = {}
@@ -165,6 +251,7 @@ class LanguageChooser(QObject):
             self.installed_translators.append(translator_qt)
 
     def set_language(self, langCode: Optional[str]) -> None:
+        langCode = langCode if langCode else "en_US"
         # remove all installed translators
         instance = QApplication.instance()
         while self.installed_translators and instance:
@@ -186,7 +273,8 @@ class LanguageChooser(QObject):
         # qt_zh_CN.qm
 
         self._install_translator(f"app_{langCode}", str(self.config.locales_path))
-        self.current_language_code = langCode if langCode else "en_US"
+        QLocale.setDefault(QLocale(langCode))
+        self.current_language_code = langCode
 
     def switchLanguage(self, langCode) -> None:
         self.set_language(langCode)

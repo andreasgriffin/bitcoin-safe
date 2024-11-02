@@ -452,7 +452,11 @@ class SignatureSigner(GPGSignatureVerifyer):
         self.app_name = app_name
 
     def get_files_to_sign(self) -> List[Path]:
-        return [f for f in Path(self.file_dir).iterdir() if f.is_file() and not f.name.endswith(".asc")]
+        return [
+            f
+            for f in Path(self.file_dir).iterdir()
+            if f.is_file() and (not f.name.endswith(".asc")) and (not f.name.startswith("."))
+        ]
 
     def sign_files(self, key: SimpleGPGKey) -> List[Path]:
         my_fingerprint = self.import_public_key_block(key.key)
