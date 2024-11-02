@@ -30,17 +30,19 @@
 import logging
 from typing import Dict, Generic, Type, TypeVar
 
+from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
+
 logger = logging.getLogger(__name__)
 
 from typing import Dict, Generic, Type, TypeVar
 
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QTabWidget, QWidget
+from PyQt6.QtWidgets import QApplication, QWidget
 
 T = TypeVar("T")
 
 
-class DataTabWidget(Generic[T], QTabWidget):
+class DataTabWidget(Generic[T], HistTabWidget):
     def __init__(self, data_class: Type[T], parent=None) -> None:
         super().__init__(parent)
         self._data_class = data_class
