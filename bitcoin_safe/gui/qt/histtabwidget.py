@@ -27,7 +27,7 @@
 # SOFTWARE.
 
 
-from typing import List, Optional
+from typing import Optional
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -37,6 +37,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 
 
 class HistTabWidget(QTabWidget):
@@ -48,7 +50,7 @@ class HistTabWidget(QTabWidget):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self._tab_history: List[int] = []  # History of activated tab indices
+        self._tab_history: UniqueDeque[int] = UniqueDeque(maxlen=100000)  # History of activated tab indices
         self.currentChanged.connect(self.on_current_changed)
 
     def on_current_changed(self, index: int) -> None:
@@ -57,7 +59,7 @@ class HistTabWidget(QTabWidget):
         Args:
             index (int): The index of the newly activated tab.
         """
-        if index >= 0 and (not self._tab_history or self._tab_history[-1] != index):
+        if index >= 0:
             self._tab_history.append(index)
 
     def remove_tab_from_history(self, index: int) -> None:
@@ -68,21 +70,25 @@ class HistTabWidget(QTabWidget):
         """
         # Remove the closed tab from history and adjust the indices
         if index in self._tab_history:
-            self._tab_history = [i for i in self._tab_history if i != index]
-        self._tab_history = [i - 1 if i > index else i for i in self._tab_history]
+            self._tab_history = UniqueDeque([i for i in self._tab_history if i != index])
+        self._tab_history = UniqueDeque([i - 1 if i > index else i for i in self._tab_history])
 
     def get_last_active_tab(self) -> int:
-        if self._tab_history:
+        if len(self._tab_history) >= 2:
+            return self._tab_history[-2]
+        elif len(self._tab_history) >= 1:
             return self._tab_history[-1]
-        elif self.count() > 0:
-            return 0
-        return -1
+        return self.currentIndex()
 
     def jump_to_last_active_tab(self) -> None:
         """Sets the current tab to the last active one from history or to the first tab if history is empty."""
         index = self.get_last_active_tab()
         if index >= 0:
             self.setCurrentIndex(index)
+
+    def removeTab(self, index: int) -> None:
+        self.remove_tab_from_history(index)
+        return super().removeTab(index)
 
 
 if __name__ == "__main__":
@@ -94,13 +100,12 @@ if __name__ == "__main__":
             self.tab_widget.setTabsClosable(True)
 
             def remove(index):
-                self.tab_widget.remove_tab_from_history(index)
                 self.tab_widget.jump_to_last_active_tab()
                 self.tab_widget.removeTab(index)
 
             self.tab_widget.tabCloseRequested.connect(remove)
             self.tab_widget.currentChanged.connect(
-                lambda: print(f"New array = {self.tab_widget._tab_history}")
+                lambda: print(f"on_currentChanged = {self.tab_widget._tab_history}")
             )
             self.setCentralWidget(self.tab_widget)
             # Adding example tabs

@@ -28,10 +28,11 @@
 
 
 import logging
-from collections import deque
 from pathlib import Path
 
 from packaging import version
+
+from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 
 from .execute_config import DEFAULT_MAINNET
 
@@ -54,6 +55,9 @@ from .util import (
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 NO_FEE_WARNING_BELOW = 10  # sat/vB
+
+
+RECENT_WALLET_MAXLEN = 15
 
 
 class UserConfig(BaseSaveableClass):
@@ -79,17 +83,13 @@ class UserConfig(BaseSaveableClass):
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
-        self.recently_open_wallets: Dict[bdk.Network, deque[str]] = {
-            network: deque(maxlen=15) for network in bdk.Network
+        self.recently_open_wallets: Dict[bdk.Network, UniqueDeque[str]] = {
+            network: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network
         }
         self.language_code: Optional[str] = None
 
     def add_recently_open_wallet(self, file_path: str) -> None:
-        # ensure that the newest open file moves to the top of the queue, but isn't added multiple times
-        recent_wallets = self.recently_open_wallets[self.network]
-        if file_path in recent_wallets:
-            recent_wallets.remove(file_path)
-        recent_wallets.append(file_path)
+        self.recently_open_wallets[self.network].append(file_path)
 
     @property
     def network_config(self) -> NetworkConfig:
@@ -122,9 +122,10 @@ class UserConfig(BaseSaveableClass):
     def from_dump(cls, dct: Dict, class_kwargs=None) -> "UserConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
         dct["recently_open_wallets"] = {
-            bdk.Network._member_map_[k]: deque(v, maxlen=5)
+            bdk.Network._member_map_[k]: UniqueDeque(v, maxlen=RECENT_WALLET_MAXLEN)
             for k, v in dct.get(
-                "recently_open_wallets", {network.name: deque(maxlen=5) for network in bdk.Network}
+                "recently_open_wallets",
+                {network.name: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network},
             ).items()
         }
         # for better portability between computers the saved string is relative to the home folder
