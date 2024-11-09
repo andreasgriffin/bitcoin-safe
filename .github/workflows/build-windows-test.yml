@@ -1,7 +1,15 @@
 name: Build Windows Test
 
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled]
+    branches:
+      - main
+
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.label.name == 'run-build-test')  
     runs-on: ubuntu-latest
       - name: Checkout repository
         uses: actions/checkout@v3
