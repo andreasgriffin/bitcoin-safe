@@ -1,0 +1,87 @@
+name: Build Artifacts Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for 'ready-to-merge' Label
+        id: check_label
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = await github.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const hasLabel = labels.data.some(label => label.name === 'ready-to-merge');
+            core.setOutput('hasLabel', hasLabel);
+      - name: Build Steps
+        if: steps.check_label.outputs.hasLabel == 'true'
+        # ... your build steps here
+      - name: Fail Job if Label Is Missing
+        if: steps.check_label.outputs.hasLabel != 'true'
+        run: |
+          echo "::error::'ready-to-merge' label is missing. Build test must be run before merging."
+          exit 1
+
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Setup xvfb (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+                                libxkbcommon-x11-0 \
+                                libxcb-icccm4 \
+                                libxcb-image0 \
+                                libxcb-keysyms1 \
+                                libxcb-randr0 \
+                                libxcb-render-util0 \
+                                libxcb-xinerama0 \
+                                libxcb-xinput0 \
+                                libxcb-xfixes0 \
+                                libxcb-shape0 \
+                                libglib2.0-0 \
+                                libgl1-mesa-dev \
+                                '^libxcb.*-dev' \
+                                libx11-xcb-dev \
+                                libglu1-mesa-dev \
+                                libxrender-dev \
+                                libxi-dev \
+                                libxkbcommon-dev \
+                                libxkbcommon-x11-dev \
+                                libsecp256k1-0
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+          
+      - name: Run build script
+        run: poetry run python tools/build.py --targets appimage --commit None
+
+
+      - name: Check for AppImage file
+        run: |
+          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
+            echo "AppImage file is missing"
+            exit 1
+          fi

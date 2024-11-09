@@ -1,18 +1,37 @@
 name: Build Artifacts Test
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
-
 jobs:
   build:
-    runs-on: ubuntu-latest  # GitHub-hosted runner with Docker installed
+    runs-on: ubuntu-latest
     steps:
+      - name: Check for 'ready-to-merge' Label
+        id: check_label
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = await github.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const hasLabel = labels.data.some(label => label.name === 'ready-to-merge');
+            core.setOutput('hasLabel', hasLabel);
+      - name: Build Steps
+        if: steps.check_label.outputs.hasLabel == 'true'
+        # ... your build steps here
+      - name: Fail Job if Label Is Missing
+        if: steps.check_label.outputs.hasLabel != 'true'
+        run: |
+          echo "::error::'ready-to-merge' label is missing. Build test must be run before merging."
+          exit 1
+
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -57,15 +76,8 @@ jobs:
           poetry install  
           
       - name: Run build script
-        run: poetry run python tools/build.py --targets appimage windows --commit None
+        run: poetry run python tools/build.py --targets windows --commit None
 
-
-      - name: Check for AppImage file
-        run: |
-          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
-            echo "AppImage file is missing"
-            exit 1
-          fi
 
       - name: Check for portable EXE file
         run: |
