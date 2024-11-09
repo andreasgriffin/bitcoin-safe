@@ -93,6 +93,7 @@ def get_electrum_server_version(host: str, port: int, use_ssl: bool = True, time
             ssock: Optional[socket.socket] = None
             if use_ssl:
                 context = ssl.create_default_context()
+                context.minimum_version = ssl.TLSVersion.TLSv1_2
                 ssock = context.wrap_socket(sock, server_hostname=host)
             else:
                 ssock = sock
