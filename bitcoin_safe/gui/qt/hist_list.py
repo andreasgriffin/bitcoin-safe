@@ -87,7 +87,12 @@ from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QStyle,
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...util import Satoshis, block_explorer_URL, confirmation_wait_formatted
+from ...util import (
+    Satoshis,
+    block_explorer_URL,
+    confirmation_wait_formatted,
+    time_logger,
+)
 from ...wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -97,7 +102,6 @@ from ...wallet import (
     get_wallets,
 )
 from .category_list import CategoryEditor
-from .dialog_import import file_to_str
 from .my_treeview import (
     MyItemDataRole,
     MySortModel,
@@ -326,8 +330,7 @@ class HistList(MyTreeView):
                 # Iterate through the list of dropped file URLs
                 for url in mime_data.urls():
                     # Convert URL to local file path
-                    file_path = url.toLocalFile()
-                    self.signals.open_tx_like.emit(file_to_str(file_path))
+                    self.signals.open_file_path.emit(url.toLocalFile())
 
         event.ignore()
 
@@ -348,6 +351,7 @@ class HistList(MyTreeView):
         self.show_used = AddressUsageStateFilter(state)
         self.update_content()
 
+    @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()

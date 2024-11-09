@@ -28,7 +28,6 @@
 
 
 import logging
-import os
 import platform
 import sys
 from ctypes.util import find_library
@@ -39,7 +38,7 @@ from typing import Optional
 import bitcoin_usb
 import bitcointx
 
-from .html import link
+from .html_utils import link
 from .i18n import translate
 
 logger = logging.getLogger(__name__)
@@ -57,20 +56,6 @@ def show_message_before_quit(msg: str) -> None:
     sys.exit(app.exec())
 
 
-def get_libsecp256k1_electrumsv_path() -> str:
-    from electrumsv_secp256k1 import _libsecp256k1
-
-    # Get the platform-specific path to the binary library
-    if platform.system() == "Windows":
-        # On Windows, construct the path to the DLL
-        here = os.path.dirname(os.path.abspath(_libsecp256k1.__file__))
-        lib_path = os.path.join(here, "libsecp256k1.dll")
-    else:
-        # On Linux and macOS, directly use the __file__ attribute
-        lib_path = _libsecp256k1.__file__
-    return lib_path
-
-
 def get_libsecp256k1_os_path() -> str | None:
     "This cannot be used directly, because it doesnt return an absolute path"
     lib_name = "secp256k1"
@@ -78,30 +63,37 @@ def get_libsecp256k1_os_path() -> str | None:
 
 
 def get_packaged_libsecp256k1_path() -> str | None:
-    # for apppimage it is
-    # __file__ = squashfs-root/usr/lib/python3.10/site-packages/bitcoin_safe/dynamic_lib_load.py
-    # and the lib is in
-    # squashfs-root/usr/lib/libsecp256k1.so.0.0.0
-    packaged_lib_path = Path(__file__).parent.parent.parent.parent
-    for name in ["libsecp256k1.so.0.0.0", "libsecp256k1.so.0"]:
-        lib_path = packaged_lib_path / name
-        if lib_path.exists():
-            return str(lib_path)
+    if platform.system() == "Linux":
+        # for apppimage it is
+        # __file__ = squashfs-root/usr/lib/python3.10/site-packages/bitcoin_safe/dynamic_lib_load.py
+        # and the lib is in
+        # squashfs-root/usr/lib/libsecp256k1.so.0.0.0
+
+        for name in ["libsecp256k1.so.0.0.0", "libsecp256k1.so.0"]:
+            lib_path = Path(__file__).parent.parent.parent.parent / name
+            logger.info(f"Searching for {name} in {lib_path.absolute()}")
+            if lib_path.exists():
+                return str(lib_path)
+
+    elif platform.system() == "Windows":
+        # for exe the dlls are packages in the same folder as dynamic_lib_load.py
+        # packaged in setup:  __file__ = C:/Program Files/Bitcoin Safe/_internals/bitcoin_safe/dynamic_lib_load.pyc
+        # the dll is in: C:/Program Files/Bitcoin Safe/_internals/libsecp256k1-2.dll
+        for name in ["libsecp256k1-2.dll"]:
+            # logger.info(f"file in  {Path(__file__).absolute()}")
+            lib_path = Path(__file__).parent.parent / name
+            logger.info(f"Searching for {name} in {lib_path.absolute()}")
+            if lib_path.exists():
+                return str(lib_path)
+
     return None
 
 
 def setup_libsecp256k1() -> None:
-    """The operating system might, or might not provide libsecp256k1 needed for bitcointx
+    """
+    The packaged versions com with libsecp256k1
 
-    Therefore we require https://pypi.org/project/electrumsv-secp256k1/ in the build process as additional_requires
-    and point the bicointx library here to this binary.
-
-    This isn't ideal, but:
-        # electrumsv-secp256k1 offers libsecp256k1 prebuild for different platforms
-        # which is needed for bitcointx.
-        # bitcointx and with it the prebuild libsecp256k1 is not used for anything security critical
-        # key derivation with bitcointx is restricted to testnet/regtest/signet
-        # and the PSBTTools using bitcointx is safe because it handles no key material
+    Only if you install it via pip/git, libsecp256k1 is required to be on the system
     """
 
     lib_path = None
@@ -111,13 +103,6 @@ def setup_libsecp256k1() -> None:
     if packaged_libsecp256k1_path:
         logger.info(f"libsecp256k1 found in package.: {packaged_libsecp256k1_path}")
         lib_path = packaged_libsecp256k1_path
-
-    # Fallback choice is the electrumsv version
-    if not lib_path:
-        binary_lib_path_from_electrumsv = get_libsecp256k1_electrumsv_path()
-        if binary_lib_path_from_electrumsv:
-            logger.info(f"libsecp256k1 found via fallbackmethod: {binary_lib_path_from_electrumsv}")
-            lib_path = binary_lib_path_from_electrumsv
 
     if lib_path:
         logger.info(f"Setting libsecp256k1: {lib_path}")

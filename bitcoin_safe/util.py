@@ -52,16 +52,19 @@
 
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
-from bitcoin_safe.gui.qt.data_tab_widget import T
+import numpy as np
+
+from bitcoin_safe.gui.qt.data_tab_widget import T2, T
 
 logger = logging.getLogger(__name__)
-
 import builtins
 import logging
 import os
 import re
 import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import (
@@ -269,6 +272,45 @@ def instance_lru_cache(always_keep=False):
         return wrapper
 
     return decorator
+
+
+def time_logger(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        duration = end_time - start_time
+
+        message = f"Function {func.__qualname__} needed {duration:.3f}s"
+        if duration < 5e-2:
+            logger.debug(message)
+        else:
+            logger.info(message)
+
+        return result
+
+    return wrapper
+
+
+def threadtable(f, arglist, max_workers=20):
+    with ThreadPoolExecutor(max_workers=int(max_workers)) as executor:
+        logger.debug("Starting {} threads {}({})".format(max_workers, str(f), str(arglist)))
+        res = []
+        for arg in arglist:
+            res.append(executor.submit(f, arg))
+    return [r.result() for r in res]
+
+
+@time_logger
+def threadtable_batched(f: Callable[[T], T2], txs: List[T], number_chunks=8) -> List[T2]:
+    chunks = np.array_split(np.array(txs), number_chunks)
+
+    def batched_f(txs):
+        return [f(tx) for tx in txs]
+
+    result = threadtable(batched_f, chunks, max_workers=number_chunks)
+    return sum(result, [])
 
 
 def clean_dict(d: Dict):

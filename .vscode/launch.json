@@ -111,10 +111,29 @@
   "request": "launch",
   "program": "tools/build.py",
   "args": [
-      "--targets", 
-  //     // "deb", 
-      // "appimage",
-      // "--sign",
+      "--targets",   "appimage", "windows", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build Linux (Current Files)",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+    "--targets",  "appimage",  
+    "--commit",  "None",  
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build Windows (Current Files)",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+    "--targets",  "windows",  
+    "--commit",  "None",  
 ],
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task
@@ -123,11 +142,17 @@
   "type": "python",
   "request": "launch",
   "program": "tools/build.py",
-  "args": [
-      // "--targets", 
-  //     // "deb", 
-      // "appimage",
+  "args": [ 
       "--sign",
+],
+  "console": "integratedTerminal"
+},{
+  "name": "Lock no cache",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [ 
+      "--lock",
 ],
   "console": "integratedTerminal"
 },{

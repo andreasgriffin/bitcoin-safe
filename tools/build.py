@@ -51,6 +51,9 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
+TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
+
+
 class Builder:
     build_dir = "build"
 
@@ -82,11 +85,6 @@ class Builder:
         self,
         pyproject_path="pyproject.toml",
         poetry_lock_path="poetry.lock",
-        # electrumsv-secp256k1 offers libsecp256k1 prebuild for different platforms
-        # which is needed for bitcointx.
-        # bitcointx and with it the prebuild libsecp256k1 is not used for anything security critical
-        # key derivation with bitcointx is restricted to testnet/regtest/signet
-        # and the PSBTTools using bitcointx is safe because it handles no key material
         additional_requires=[],
     ):
 
@@ -128,33 +126,59 @@ class Builder:
             tomlkit.dump(pyproject_data, file)
 
     def build_appimage_docker(
-        self, docker_no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
+        self, no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
+    ):
+        self.build_in_docker(
+            "bitcoin_safe-appimage-builder-img",
+            Path("tools/build-linux/appimage"),
+            no_cache=no_cache,
+            build_commit=build_commit,
+        )
+
+    def build_windows_exe_and_installer_docker(
+        self, no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
+    ):
+        self.build_in_docker(
+            "bitcoin_safe-wine-builder-img",
+            Path("tools/build-wine"),
+            no_cache=no_cache,
+            build_commit=build_commit,
+        )
+
+    def build_in_docker(
+        self,
+        docker_image: str,
+        build_folder: Path,
+        no_cache=False,
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
     ):
         """_summary_
 
         Args:
+            docker_image (str): Example: "bitcoin_safe-wine-builder-img"
+            build_folder (Path): Example: Path("tools/build-wine"), or Path("tools/build-linux/appimage")
             no_cache (bool, optional): _description_. Defaults to False.
             build_commit (None | str | Literal['current_commit'], optional): _description_. Defaults to 'current_commit'.
                     'current_commit' = which means it will build the current HEAD.
                     None = uses the cwd
                     commit_hash = clones this commit hash into /tmp
         """
-        PROJECT_ROOT = Path(".").resolve()
+        PROJECT_ROOT = Path(".").resolve().absolute()
         PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT
-        CONTRIB_APPIMAGE = PROJECT_ROOT / "tools" / "build-linux" / "appimage"
+        path_build = PROJECT_ROOT / build_folder
         DISTDIR = PROJECT_ROOT / "dist"
         BUILD_UID = PROJECT_ROOT.stat().st_uid
-        CACHEDIR = CONTRIB_APPIMAGE / ".cache" / "appimage"
-        # Note: Sourcing 'build_tools_util.sh' is omitted; ensure equivalent functions are defined if needed.
+        BUILD_CACHEDIR = path_build / ".cache"
+        original_dir = os.getcwd()
 
         # Initialize DOCKER_BUILD_FLAGS
         DOCKER_BUILD_FLAGS = ""
 
-        if docker_no_cache:
+        if no_cache:
             logger.info("BITCOINSAFE_DOCKER_NOCACHE is set. Forcing rebuild of docker image.")
             DOCKER_BUILD_FLAGS = "--pull --no-cache"
-            logger.info(f"BITCOINSAFE_DOCKER_NOCACHE is set. Deleting {CACHEDIR}")
-            run_local(f'rm -rf "{CACHEDIR}"')
+            logger.info(f"BITCOINSAFE_DOCKER_NOCACHE is set. Deleting {BUILD_CACHEDIR}")
+            run_local(f'rm -rf "{BUILD_CACHEDIR}"')
 
         if build_commit == "current_commit":
             # Get the current git HEAD commit
@@ -166,17 +190,16 @@ class Builder:
         if not build_commit:
             # Local development build
             DOCKER_BUILD_FLAGS += f" --build-arg UID={BUILD_UID}"
+            logger.info(f"Building within current project")
 
         logger.info("Building docker image.")
-        run_local(
-            f'docker build {DOCKER_BUILD_FLAGS} -t bitcoin_safe-appimage-builder-img "{CONTRIB_APPIMAGE}"'
-        )
+        run_local(f'docker build {DOCKER_BUILD_FLAGS} -t {docker_image} "{path_build}"')
 
         # Possibly do a fresh clone
         FRESH_CLONE = False
         if build_commit:
             logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            FRESH_CLONE = Path("/tmp/bitcoin_safe_build/appimage/bitcoin_safe_clone/bitcoin_safe")
+            FRESH_CLONE = Path(f"/tmp/{docker_image.replace(' ','')}/fresh_clone/bitcoin_safe")
             try:
                 run_local(f'rm -rf "{FRESH_CLONE}"')
             except subprocess.CalledProcessError:
@@ -186,9 +209,12 @@ class Builder:
             run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
             os.chdir(str(FRESH_CLONE))
             run_local(f'git checkout "{build_commit}"')
+            os.chdir(original_dir)
             PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
         else:
             logger.info("Not doing fresh clone.")
+
+        Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / build_folder / "dist"
 
         logger.info("Building binary...")
         # Check UID and possibly chown
@@ -199,22 +225,30 @@ class Builder:
 
         run_local(
             f"docker run -it "
-            f"--name bitcoin_safe-appimage-builder-cont "
-            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/bitcoin_safe '
+            f"--name {docker_image}-container "
+            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/wine64/drive_c/bitcoin_safe '
             f"--rm "
-            f"--workdir /opt/bitcoin_safe/tools/build-linux/appimage "
-            f"bitcoin_safe-appimage-builder-img "
-            f"./make_appimage.sh"
+            f"--workdir /opt/wine64/drive_c/bitcoin_safe/{build_folder} "
+            f"{docker_image} "
+            f"./run_in_docker.sh"
         )
 
         # Ensure the resulting binary location is independent of fresh_clone
-        if FRESH_CLONE:
+        if Source_Dist_dir != DISTDIR:
             os.makedirs(DISTDIR, exist_ok=True)
-            shutil.copytree(FRESH_CLONE / "dist", DISTDIR, dirs_exist_ok=True)
+            for file in Source_Dist_dir.iterdir():
+                if not file.is_file():
+                    continue
+                logger.info(f"Moving {file} --> {DISTDIR / file.name}")
+                shutil.move(
+                    file,
+                    DISTDIR
+                    / (file.name.replace(self.module_name, self.app_name_formatter(self.module_name))),
+                )
 
     def briefcase_appimage(self, **kwargs):
         # briefcase appimage building works on some systems, but not on others... unknown why.
-        # so we build using the electrum docker by default
+        # so we build using the bitcoin_safe docker by default
         run_local("poetry run briefcase -u  package    linux  appimage")
 
     def briefcase_windows(self, **kwargs):
@@ -235,14 +269,14 @@ class Builder:
 
     def package_application(
         self,
-        targets: List[Literal["windows", "mac", "appimage", "deb", "flatpak"]],
-        build_commit: None | str | Literal["current_commit"] = "current_commit",
+        targets: List[TARGET_LITERAL],
+        build_commit: None | str | Literal["current_commit"] = None,
     ):
         self.update_briefcase_requires()
 
         f_map = {
             "appimage": self.build_appimage_docker,
-            "windows": self.briefcase_windows,
+            "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.briefcase_mac,
             "deb": self.briefcase_deb,
             "flatpak": self.briefcase_flatpak,
@@ -273,6 +307,9 @@ class Builder:
         )
         signed_files = manager.sign_files(KnownGPGKeys.andreasgriffin)
         assert self.verify(signed_files), "Error: Signature Verification failed!!!!"
+
+    def lock(self):
+        run_local("poetry lock --no-cache --no-update")
 
     def verify(self, signed_files: List[Path]):
         manager = SignatureVerifyer(
@@ -323,7 +360,7 @@ class Builder:
 Version=1.0
 Type=Application
 Name={app_name}
-Exec={app_name}
+Exec={app_name} %F
 Icon={app_name}/gui/icons/logo.svg
 Comment={app_name} application
 Terminal=false
@@ -374,6 +411,7 @@ apps:
             """
                 )
 
+        original_dir = os.getcwd()
         # Check if Snapcraft is installed
         os.chdir(build_snap_dir)
         run_local("snapcraft")
@@ -391,10 +429,10 @@ apps:
             raise RuntimeError("Snap package build was successful, but the .snap file was not found.")
 
         # Return to the original directory
-        os.chdir(Path.cwd().parent.parent.parent)
+        os.chdir(original_dir)
 
 
-def get_default_targets() -> List[str]:
+def get_default_targets() -> List[TARGET_LITERAL]:
     if platform.system() == "Windows":
         return ["windows"]
     elif platform.system() == "Linux":
@@ -413,9 +451,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Package the Python application.")
     parser.add_argument("--clean", action="store_true", help=f"Removes the {Builder.build_dir} folder")
     parser.add_argument(
+        "--commit",
+        type=str,
+        help=f"The commit to be build. tag|commit_hash|'None'|'current_commit' .   The default is 'current_commit'.  None, will build within the current project.",
+        default="current_commit",
+    )
+    parser.add_argument(
         "--targets",
         nargs="*",
         help=f"The target formats.  The default is {get_default_targets()}",
+        default=None,
     )
     parser.add_argument("--sign", action="store_true", help="Signs all files in dist")
     parser.add_argument("--verify", action="store_true", help="Signs all files in dist")
@@ -423,28 +468,40 @@ if __name__ == "__main__":
         "--update_translations", action="store_true", help="Updates the translation locales files"
     )
     parser.add_argument("--csv_to_ts", action="store_true", help="Overwrites the ts files with csv as source")
+    parser.add_argument(
+        "--lock",
+        action="store_true",
+        help="poetry lock --no-update --no-cache. This is important to ensure all hashes are included in the lockfile. ",
+    )
     args = parser.parse_args()
-    # clean args
-    targets = args.targets
-    # clean targets
-    if targets is None:
-        print("No --targets argument was given.")
-        targets = []
-    elif not targets:
-        print("--targets was given without any values.")
-        targets = get_default_targets()
-    else:
-        print(f"--targets was given with the values: {args.targets}")
-        targets = [t.replace(",", "") for t in targets]
 
-    builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
-    builder.package_application(targets=targets)
+    if args.lock:
+        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
+        builder.lock()
 
-    translation_handler = TranslationHandler(module_name="bitcoin_safe")
+    if args.commit == "None":
+        args.commit = None
+
+    if args.targets is not None:
+        # clean args
+        targets: List[TARGET_LITERAL] = args.targets
+        if not targets:
+            print("--targets was given without any values.")
+            targets = get_default_targets()
+        else:
+            print(f"--targets was given with the values: {args.targets}")
+            targets = [t.replace(",", "") for t in targets]
+
+        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
+        builder.package_application(targets=targets, build_commit=args.commit)
+
     if args.update_translations:
+        translation_handler = TranslationHandler(module_name="bitcoin_safe")
         translation_handler.update_translations_from_py()
     if args.csv_to_ts:
+        translation_handler = TranslationHandler(module_name="bitcoin_safe")
         translation_handler.csv_to_ts()
 
     if args.sign:
+        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
         builder.sign()

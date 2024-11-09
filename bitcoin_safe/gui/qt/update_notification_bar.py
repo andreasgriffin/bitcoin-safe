@@ -43,7 +43,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
-from ...html import html_f
+from ...html_utils import html_f
 from ...signals import SignalsMin
 from ...signature_manager import (
     Asset,

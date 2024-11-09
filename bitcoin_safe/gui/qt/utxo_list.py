@@ -72,7 +72,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...util import Satoshis, block_explorer_URL, clean_list
+from ...util import Satoshis, block_explorer_URL, clean_list, time_logger
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -304,6 +304,7 @@ class UTXOList(MyTreeView):
             self.Columns.PARENTS: self.tr("Parents"),
         }
 
+    @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         should_update = False
         if should_update or update_filter.refresh_all:

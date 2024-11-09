@@ -217,6 +217,7 @@ class Signals(SignalsMin):
     I immediately break the rule however for pyqtSignal, which is a function call
     """
 
+    open_file_path = pyqtSignal(object)
     open_tx_like = pyqtSignal(object)
     event_wallet_tab_closed = pyqtSignal()
     event_wallet_tab_added = pyqtSignal()

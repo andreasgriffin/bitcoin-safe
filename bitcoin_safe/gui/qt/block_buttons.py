@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
-from ...html import html_f
+from ...html_utils import html_f
 from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
 from .invisible_scroll_area import InvisibleScrollArea
 from .util import center_in_widget, open_website

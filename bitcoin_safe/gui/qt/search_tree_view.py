@@ -29,7 +29,7 @@
 
 import logging
 
-from bitcoin_safe.html import html_f
+from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import SignalsMin
 

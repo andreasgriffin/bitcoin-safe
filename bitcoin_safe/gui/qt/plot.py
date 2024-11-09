@@ -172,7 +172,7 @@ class BalanceChart(QWidget):
             max_balance,
         )
 
-        buffer_time = 60 * 60
+        buffer_time = (max_timestamp - min_timestamp) * 0.02
         self.datetime_axis.setMin(QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)))
         self.datetime_axis.setMax(QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)))
         self.value_axis.setMin(min_balance)

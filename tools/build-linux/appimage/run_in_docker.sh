@@ -5,11 +5,11 @@ set -e
 PROJECT_ROOT="$(dirname "$(readlink -e "$0")")/../../.."
 CONTRIB="$PROJECT_ROOT/tools"
 CONTRIB_APPIMAGE="$CONTRIB/build-linux/appimage"
-DISTDIR="$PROJECT_ROOT/dist"
+DISTDIR="$CONTRIB_APPIMAGE/dist"
 BUILDDIR="$CONTRIB_APPIMAGE/build/appimage"
 APPDIR="$BUILDDIR/bitcoin_safe.AppDir"
-CACHEDIR="$CONTRIB_APPIMAGE/.cache/appimage"
-export DLL_TARGET_DIR="$CACHEDIR/dlls"
+BUILD_CACHEDIR="$CONTRIB_APPIMAGE/.cache/appimage"
+export DLL_TARGET_DIR="$BUILD_CACHEDIR/dlls"
 PIP_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/pip_cache"
 POETRY_WHEEL_DIR="$CONTRIB_APPIMAGE/.cache/poetry_wheel"
 POETRY_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/poetry_cache"
@@ -29,38 +29,39 @@ VERSION=$(git describe --tags --dirty --always)
 APPIMAGE="$DISTDIR/bitcoin_safe-$VERSION-x86_64.AppImage"
 
 rm -rf "$BUILDDIR"
-mkdir -p "$APPDIR" "$CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DIR"
+rm -rf "$POETRY_WHEEL_DIR" # delete whl
+mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DIR" "$POETRY_WHEEL_DIR"
 
 # potential leftover from setuptools that might make pip put garbage in binary
 rm -rf "$PROJECT_ROOT/build"
 
 
 info "downloading some dependencies."
-download_if_not_exist "$CACHEDIR/functions.sh" "https://raw.githubusercontent.com/AppImage/pkg2appimage/$PKG2APPIMAGE_COMMIT/functions.sh"
-verify_hash "$CACHEDIR/functions.sh" "8f67711a28635b07ce539a9b083b8c12d5488c00003d6d726c7b134e553220ed"
+download_if_not_exist "$BUILD_CACHEDIR/functions.sh" "https://raw.githubusercontent.com/AppImage/pkg2appimage/$PKG2APPIMAGE_COMMIT/functions.sh"
+verify_hash "$BUILD_CACHEDIR/functions.sh" "8f67711a28635b07ce539a9b083b8c12d5488c00003d6d726c7b134e553220ed"
 
-download_if_not_exist "$CACHEDIR/appimagetool" "https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage"
-verify_hash "$CACHEDIR/appimagetool" "df3baf5ca5facbecfc2f3fa6713c29ab9cefa8fd8c1eac5d283b79cab33e4acb"
+download_if_not_exist "$BUILD_CACHEDIR/appimagetool" "https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage"
+verify_hash "$BUILD_CACHEDIR/appimagetool" "df3baf5ca5facbecfc2f3fa6713c29ab9cefa8fd8c1eac5d283b79cab33e4acb"
 
-download_if_not_exist "$CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz"
-verify_hash "$CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "afb74bf19130e7a47d10312c8f5e784f24e0527981eab68e20546cfb865830b8"
+download_if_not_exist "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz"
+verify_hash "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "afb74bf19130e7a47d10312c8f5e784f24e0527981eab68e20546cfb865830b8"
 
 
 
 info "building python."
-tar xf "$CACHEDIR/Python-$PYTHON_VERSION.tar.xz" -C "$CACHEDIR"
+tar xf "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" -C "$BUILD_CACHEDIR"
 (
-    if [ -f "$CACHEDIR/Python-$PYTHON_VERSION/python" ]; then
+    if [ -f "$BUILD_CACHEDIR/Python-$PYTHON_VERSION/python" ]; then
         info "python already built, skipping"
         exit 0
     fi
-    cd "$CACHEDIR/Python-$PYTHON_VERSION"
+    cd "$BUILD_CACHEDIR/Python-$PYTHON_VERSION"
     LC_ALL=C export BUILD_DATE=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%b %d %Y")
     LC_ALL=C export BUILD_TIME=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%H:%M:%S")
     # Patch taken from Ubuntu http://archive.ubuntu.com/ubuntu/pool/main/p/python3.10/python3.10_3.10.12-1~22.04.6.debian.tar.xz
     patch -p1 < "$CONTRIB_APPIMAGE/patches/python-3.10-reproducible-buildinfo.diff"
     ./configure \
-        --cache-file="$CACHEDIR/python.config.cache" \
+        --cache-file="$BUILD_CACHEDIR/python.config.cache" \
         --prefix="$APPDIR/usr" \
         --enable-ipv6 \
         --enable-shared \
@@ -69,7 +70,7 @@ tar xf "$CACHEDIR/Python-$PYTHON_VERSION.tar.xz" -C "$CACHEDIR"
 )
 info "installing python."
 (
-    cd "$CACHEDIR/Python-$PYTHON_VERSION"
+    cd "$BUILD_CACHEDIR/Python-$PYTHON_VERSION"
     make -s install > /dev/null || fail "Could not install Python"
     # When building in docker on macOS, python builds with .exe extension because the
     # case insensitive file system of macOS leaks into docker. This causes the build
@@ -148,7 +149,7 @@ cp "$CONTRIB_APPIMAGE/apprun.sh" "$APPDIR/AppRun"
 info "finalizing AppDir."
 (
     export PKG2AICOMMIT="$PKG2APPIMAGE_COMMIT"
-    . "$CACHEDIR/functions.sh"
+    . "$BUILD_CACHEDIR/functions.sh"
 
     cd "$APPDIR"
     # copy system dependencies
@@ -236,11 +237,11 @@ find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
 info "creating the AppImage."
 (
     cd "$BUILDDIR"
-    cp "$CACHEDIR/appimagetool" "$CACHEDIR/appimagetool_copy"
+    cp "$BUILD_CACHEDIR/appimagetool" "$BUILD_CACHEDIR/appimagetool_copy"
     # zero out "appimage" magic bytes, as on some systems they confuse the linker
-    sed -i 's|AI\x02|\x00\x00\x00|' "$CACHEDIR/appimagetool_copy"
-    chmod +x "$CACHEDIR/appimagetool_copy"
-    "$CACHEDIR/appimagetool_copy" --appimage-extract
+    sed -i 's|AI\x02|\x00\x00\x00|' "$BUILD_CACHEDIR/appimagetool_copy"
+    chmod +x "$BUILD_CACHEDIR/appimagetool_copy"
+    "$BUILD_CACHEDIR/appimagetool_copy" --appimage-extract
     # We build a small wrapper for mksquashfs that removes the -mkfs-time option
     # as it conflicts with SOURCE_DATE_EPOCH.
     mv "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs" "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs_orig"

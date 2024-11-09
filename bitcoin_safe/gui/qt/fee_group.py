@@ -32,7 +32,7 @@ import logging
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import icon_path
-from bitcoin_safe.html import html_f, link
+from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 
 from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig

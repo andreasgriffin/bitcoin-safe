@@ -40,6 +40,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget
 
 T = TypeVar("T")
+T2 = TypeVar("T2")
 
 
 class DataTabWidget(Generic[T], HistTabWidget):
