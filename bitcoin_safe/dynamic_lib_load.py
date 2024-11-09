@@ -108,8 +108,10 @@ def setup_libsecp256k1() -> None:
         logger.info(f"Setting libsecp256k1: {lib_path}")
         bitcoin_usb.set_custom_secp256k1_path(lib_path)
         bitcointx.set_custom_secp256k1_path(lib_path)
+    elif get_libsecp256k1_os_path():
+        logger.info(f"libsecp256k1 was found in the OS")
     else:
-        logger.info(f"libsecp256k1 could not be found at all. This app will not start")
+        logger.info(f"libsecp256k1 could not be found.")
 
 
 def ensure_pyzbar_works() -> None:
