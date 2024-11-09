@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_HOST: tcp://localhost:2375    
     services:
       docker:
         image: docker:19.03.12-dind
@@ -25,7 +27,6 @@ jobs:
     - name: Set up Docker environment
       run: |
         sudo service docker start
-        echo "DOCKER_HOST=tcp://localhost:2375" >> $GITHUB_ENV
 
     - name: Set up Python
       uses: actions/setup-python@v3
