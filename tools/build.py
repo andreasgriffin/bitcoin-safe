@@ -219,7 +219,7 @@ class Builder:
 
         logger.info("Building binary...")
         run_local(
-            f"docker run -it "
+            f"docker run  "
             f"--name {docker_image}-container "
             f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/wine64/drive_c/bitcoin_safe '
             f"--rm "
