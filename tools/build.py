@@ -145,18 +145,6 @@ class Builder:
             build_commit=build_commit,
         )
         
-    def set_docker_environment(self):
-        # Check if running in GitHub Actions
-        if 'GITHUB_ACTIONS' in os.environ:
-            # Set DOCKER_HOST only if running in GitHub Actions
-            os.environ['DOCKER_HOST'] = 'tcp://localhost:2375'
-        else:
-            # Optionally, handle local settings or leave as default for local Docker usage
-            if 'DOCKER_HOST' not in os.environ:
-                # Set to default Unix socket if not specified, or just omit this block to use system default
-                os.environ['DOCKER_HOST'] = 'unix:///var/run/docker.sock'
-        
-
     def build_in_docker(
         self,
         docker_image: str,
@@ -183,8 +171,6 @@ class Builder:
         BUILD_UID = PROJECT_ROOT.stat().st_uid
         BUILD_CACHEDIR = path_build / ".cache"
         original_dir = os.getcwd()
-
-        self.set_docker_environment()
         
         # Initialize DOCKER_BUILD_FLAGS
         DOCKER_BUILD_FLAGS = ""

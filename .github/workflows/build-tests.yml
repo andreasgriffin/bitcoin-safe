@@ -8,85 +8,72 @@ on:
     branches:
       - main
 
+
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      DOCKER_HOST: tcp://localhost:2375    
-    services:
-      docker:
-        image: docker:19.03.12-dind
-        options: --privileged
-        ports:
-          - 2375:2375
-
+    runs-on: ubuntu-latest  # GitHub-hosted runner with Docker installed
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Docker environment
-      run: |
-        sudo service docker start
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
+      - name: Setup xvfb (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+                                libxkbcommon-x11-0 \
+                                libxcb-icccm4 \
+                                libxcb-image0 \
+                                libxcb-keysyms1 \
+                                libxcb-randr0 \
+                                libxcb-render-util0 \
+                                libxcb-xinerama0 \
+                                libxcb-xinput0 \
+                                libxcb-xfixes0 \
+                                libxcb-shape0 \
+                                libglib2.0-0 \
+                                libgl1-mesa-dev \
+                                '^libxcb.*-dev' \
+                                libx11-xcb-dev \
+                                libglu1-mesa-dev \
+                                libxrender-dev \
+                                libxi-dev \
+                                libxkbcommon-dev \
+                                libxkbcommon-x11-dev \
+                                libsecp256k1-0
 
-
-    - name: Setup xvfb (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb \
-                               libxkbcommon-x11-0 \
-                               libxcb-icccm4 \
-                               libxcb-image0 \
-                               libxcb-keysyms1 \
-                               libxcb-randr0 \
-                               libxcb-render-util0 \
-                               libxcb-xinerama0 \
-                               libxcb-xinput0 \
-                               libxcb-xfixes0 \
-                               libxcb-shape0 \
-                               libglib2.0-0 \
-                               libgl1-mesa-dev \
-                               '^libxcb.*-dev' \
-                               libx11-xcb-dev \
-                               libglu1-mesa-dev \
-                               libxrender-dev \
-                               libxi-dev \
-                               libxkbcommon-dev \
-                               libxkbcommon-x11-dev \
-                               libsecp256k1-0
-
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-        poetry install  
-         
-    - name: Run build script
-      run: poetry run python tools/build.py --targets appimage windows
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+          
+      - name: Run build script
+        run: poetry run python tools/build.py --targets appimage windows
 
 
-    - name: Check for AppImage file
-      run: |
-        if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
-          echo "AppImage file is missing"
-          exit 1
-        fi
+      - name: Check for AppImage file
+        run: |
+          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
+            echo "AppImage file is missing"
+            exit 1
+          fi
 
-    - name: Check for portable EXE file
-      run: |
-        if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
-          echo "Portable EXE file is missing"
-          exit 1
-        fi
+      - name: Check for portable EXE file
+        run: |
+          if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
+            echo "Portable EXE file is missing"
+            exit 1
+          fi
 
-    - name: Check for setup EXE file
-      run: |
-        if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
-          echo "Setup EXE file is missing"
-          exit 1
-        fi
+      - name: Check for setup EXE file
+        run: |
+          if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
+            echo "Setup EXE file is missing"
+            exit 1
+          fi
