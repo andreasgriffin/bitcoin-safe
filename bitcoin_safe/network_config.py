@@ -41,7 +41,7 @@ import bdkpython as bdk
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
-from .html import link
+from .html_utils import link
 from .i18n import translate
 
 MIN_RELAY_FEE = 1

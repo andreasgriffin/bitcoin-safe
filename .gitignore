@@ -41,7 +41,6 @@ MANIFEST
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -198,6 +197,7 @@ bitcoin_safe.dist-info
 # translation files
 *.po
 *.csv
+*.xcf
 
 screenshots*/
 .DS_Store
@@ -220,3 +220,4 @@ bitcoin_safe
 *.so.1
 version
 tools/libusb/
+*.dll

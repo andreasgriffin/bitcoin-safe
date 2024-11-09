@@ -40,7 +40,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.html import link
+from bitcoin_safe.html_utils import link
 
 
 class LicenseDialog(QDialog):

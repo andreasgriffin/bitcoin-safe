@@ -36,19 +36,9 @@ from pathlib import Path
 from subprocess import CompletedProcess
 from typing import List, Tuple, Union
 
+from bitcoin_safe.util import threadtable
+
 logger = logging.getLogger(__name__)
-
-
-from concurrent.futures.thread import ThreadPoolExecutor
-
-
-def threadtable(f, arglist, max_workers=20):
-    with ThreadPoolExecutor(max_workers=int(max_workers)) as executor:
-        logger.debug("Starting {} threads {}({})".format(max_workers, str(f), str(arglist)))
-        res = []
-        for arg in arglist:
-            res.append(executor.submit(f, arg))
-    return [r.result() for r in res]
 
 
 def run_local(cmd) -> CompletedProcess:

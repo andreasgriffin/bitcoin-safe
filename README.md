@@ -9,7 +9,7 @@
 - **Easy** Multisig-Wallet Setup
   - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
   - Test transactions ensure that all hardware signers are ready
-  - Full support for [Coldcard](https://coldcard.com/), [Coldcard Q](https://coldcard.com/), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
+  - Full support for [Coldcard](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Coldcard Q](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
 - **Secure**: Hardware signers only
   - All wallets require hardware signers/wallets for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
@@ -64,6 +64,7 @@
   - CSV import for batch transactions
   - Label import and export using [BIP329](https://bip329.org/)
   - Label import from Electrum wallet
+  - Export of the money flow diagram to svg
   - Drag and drop for Transactions, PSBTs, and CSV files
 
 - **Wallet Features**
@@ -88,7 +89,7 @@
 
 - **Languages**
   
-  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, (more upon request)
+  - 🇺🇸 English, 🇨🇳 Chinese - 简体中文, 🇪🇸 Spanish - español de España, 🇯🇵 Japanese - 日本語, 🇷🇺 Russian - русский, 🇵🇹 Portuguese - português europeu, 🇮🇳 Hindi - हिन्दी, Arabic - العربية, 🇮🇹 Italian - italiano, 🇫🇷 French - Français, 🇩🇪 German - Deutsch, (more upon request)
 
 - **Transaction / PSBT Creation**
   

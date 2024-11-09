@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="502.003mm" height="270.933mm"
+ viewBox="0 0 1423 768"
+ xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2" baseProfile="tiny">
+<title>SVG Export by Bitcoin Safe</title>
+<desc>SVG Export by Bitcoin Safe</desc>
+<defs>
+
+    <linearGradient id="linear000000" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#8af296"/>
+    <stop offset="100%" stop-color="#7616ff"/>
+    </linearGradient>
+    
+    <linearGradient id="linear000001" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#7616ff"/>
+    <stop offset="100%" stop-color="#7616ff"/>
+    </linearGradient>
+    
+    <linearGradient id="linear000002" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#7616ff"/>
+    <stop offset="100%" stop-color="#f3f71b"/>
+    </linearGradient>
+    
+    <linearGradient id="linear000003" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#7616ff"/>
+    <stop offset="100%" stop-color="#8af296"/>
+    </linearGradient>
+    
+    <linearGradient id="linear000004" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#7616ff"/>
+    <stop offset="100%" stop-color="#7616ff"/>
+    </linearGradient>
+    
+</defs>
+<g fill="none" stroke="black" stroke-width="1" fill-rule="evenodd" stroke-linecap="square" stroke-linejoin="bevel" >
+
+<g fill="none" stroke="url(#linear000000)" stroke-opacity="1" stroke-width="377" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"
+font-family="Sans Serif" font-size="9" font-weight="400" font-style="normal" 
+>
+<path vector-effect="none" fill-rule="evenodd" d="M188,245.76 C331,246 381,304 524,304 "/>
+</g>
+
+<g fill="none" stroke="url(#linear000001)" stroke-opacity="1" stroke-width="162" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"
+font-family="Sans Serif" font-size="9" font-weight="400" font-style="normal" 
+>
+<path vector-effect="none" fill-rule="evenodd" d="M80,629.76 C223,630 489,573 632,573 "/>
+</g>
+
+<g fill="none" stroke="url(#linear000002)" stroke-opacity="1" stroke-width="350" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"
+font-family="Sans Serif" font-size="9" font-weight="400" font-style="normal" 
+>
+<path vector-effect="none" fill-rule="evenodd" d="M1249,213.12 C1107,214 1029,290 885,290 "/>
+</g>
+
+<g fill="none" stroke="url(#linear000003)" stroke-opacity="1" stroke-width="162" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"
+font-family="Sans Serif" font-size="9" font-weight="400" font-style="normal" 
+>
+<path vector-effect="none" fill-rule="evenodd" d="M1343,545.28 C1201,546 934,546 791,546 "/>
+</g>
+
+<g fill="none" stroke="url(#linear000004)" stroke-opacity="1" stroke-width="27" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"
+font-family="Sans Serif" font-size="9" font-weight="400" font-style="normal" 
+>
+<path vector-effect="none" fill-rule="evenodd" d="M1410,716.16 C1268,717 867,640 724,640 "/>
+</g>
+</g>
+</svg>

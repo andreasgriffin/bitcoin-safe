@@ -89,7 +89,7 @@ from PyQt6.QtWidgets import (
 from ...i18n import translate
 from ...rpc import send_rpc_command
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
-from ...util import Satoshis, block_explorer_URL
+from ...util import Satoshis, block_explorer_URL, time_logger
 from ...wallet import TxStatus, Wallet
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -327,6 +327,11 @@ class AddressList(MyTreeView):
                 event.accept()
                 return
 
+            elif mime_data.hasUrls():
+                # Iterate through the list of dropped file URLs
+                for url in mime_data.urls():
+                    # Convert URL to local file path
+                    self.signals.open_file_path.emit(url.toLocalFile())
         event.ignore()
 
     def on_double_click(self, idx: QModelIndex) -> None:
@@ -381,6 +386,7 @@ class AddressList(MyTreeView):
         update_filter = UpdateFilter(addresses=addresses_with_balance, reason=UpdateFilterReason.NewFxRates)
         self.update_with_filter(update_filter)
 
+    @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()

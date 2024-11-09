@@ -1034,8 +1034,12 @@ class MyTreeView(QTreeView):
         self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
 
     def _after_update_content(self):
-        self.sortByColumn(self._current_column, self._current_order)
+        # the following 2 lines (in this order)
+        # call the sorting only once, in the default case
+        # since sorting is slow (~1s, for 3k entries), DO NOT CHANGE the order here,
+        # or you double the sorting time
         self.proxy.setDynamicSortFilter(True)
+        self.sortByColumn(self._current_column, self._current_order)
 
         # show/hide self.Columns
         self.filter()

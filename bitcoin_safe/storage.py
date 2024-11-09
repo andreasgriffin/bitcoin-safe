@@ -35,7 +35,6 @@ from typing import Any, Callable, Dict, Optional, Union
 logger = logging.getLogger(__name__)
 
 
-import copy
 import enum
 import json
 import os
@@ -288,7 +287,7 @@ class BaseSaveableClass:
 class SaveAllClass(BaseSaveableClass):
     def dump(self):
         d = super().dump()
-        d.update(copy.deepcopy(self.__dict__))
+        d.update(self.__dict__.copy())
         return d
 
     @classmethod

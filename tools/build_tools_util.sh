@@ -160,3 +160,53 @@ find_links = ''
 EOF
 }
 
+
+
+
+
+function replace_once() {
+  local text="$1"
+  local search_str="$2"
+  local replace_str="$3"
+
+  # Check if the search string is at the beginning of the text
+  if [[ "$text" == "$search_str"* ]]; then
+    # Remove the search string and check the remainder
+    local prefix=${text#$search_str}
+    
+    # If the prefix still starts with the search string or is the same as before removing,
+    # it means 'search_str' appears more than once at the start or not at all after the first
+    if [[ "$prefix" == "$text" ]] || [[ "$prefix" == "$search_str"* ]]; then
+      echo "Error: '$search_str' does not appear exactly once at the left side of '$text'" >&2
+      exit 1
+    else
+      # Replace the first occurrence of search_str with replace_str
+      local new_text="${text/#$search_str/$replace_str}"
+      echo "$new_text"
+    fi
+  else
+    echo "Error: '$search_str' is not at the left side of '$text'" >&2
+    exit 1
+  fi
+}
+
+# replaces  /opt/wine64/drive_c/   -->  c:/
+function win_path() {
+    local text="$1"
+
+
+
+    here="$(dirname "$(readlink -e "$0")")"
+    test -n "$here" -a -d "$here" || exit
+    # here = /opt/wine64/drive_c/bitcoin_safe/tools/build-wine 
+    CONTRIB="$here/.."
+    PROJECT_ROOT="$CONTRIB/.."
+
+    # Correctly capturing the output of realpath into a variable
+    local search_path=$(realpath "$PROJECT_ROOT/..")
+
+    # Assuming replace_once function exists and is used to replace the first occurrence
+    # This will echo the result after replacing the first occurrence of search_path in text with "c:"
+    echo $(replace_once "$text" "$search_path" "c:")
+}
+

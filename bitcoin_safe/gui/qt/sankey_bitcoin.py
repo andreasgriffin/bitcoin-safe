@@ -35,7 +35,7 @@ from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.sankey_widget import FlowIndex, FlowType, SankeyWidget
-from bitcoin_safe.html import html_f
+from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import (
     OutPoint,

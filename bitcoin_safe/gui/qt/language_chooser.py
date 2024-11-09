@@ -148,7 +148,8 @@ class LanguageDialog(QDialog):
 
     def setupComboBox(self, languages: Dict[str, str]) -> None:
         for lang, name in languages.items():
-            self.comboBox.addItem(name, lang)
+            icon = LanguageChooser.create_flag_icon(FLAGS[lang]) if lang in FLAGS else QIcon()
+            self.comboBox.addItem(icon, name, lang)
 
     def choose_language(self) -> Optional[str]:
         if self.exec() == QDialog.DialogCode.Accepted:

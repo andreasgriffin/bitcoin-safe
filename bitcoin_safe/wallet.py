@@ -67,6 +67,7 @@ from .util import (
     hash_string,
     instance_lru_cache,
     replace_non_alphanumeric,
+    time_logger,
 )
 
 
@@ -368,6 +369,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
         return self.peek_addressinfo(index, is_change=is_change).address.as_string()
 
     @instance_lru_cache()
+    @time_logger
     def list_unspent(self) -> List[bdk.LocalUtxo]:
         start_time = time()
         result: List[bdk.LocalUtxo] = super().list_unspent()
@@ -947,6 +949,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         ]
         return [a for a in output_addresses if a]
 
+    @time_logger
     def fill_commonly_used_caches(self) -> None:
         i = 0
         new_addresses_were_watched = True
@@ -960,13 +963,15 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.get_height()
 
             advanced_tips = self.advance_tips_by_gap()
-            logger.info(f"{self.id} tips were advanced by {advanced_tips}")
             new_addresses_were_watched = any(advanced_tips)
+            if new_addresses_were_watched:
+                logger.info(f"{self.id} tips were advanced by {advanced_tips}")
             i += 1
             if i > 100:
                 break
         self.bdkwallet.list_unspent()
         self.get_dict_fulltxdetail()
+        self.get_all_txos_dict()
 
     @instance_lru_cache()
     def get_txs(self) -> Dict[str, bdk.TransactionDetails]:
@@ -1200,6 +1205,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return self.cache_address_to_txids.get(address, set())
 
     @instance_lru_cache()
+    @time_logger
     def get_dict_fulltxdetail(self) -> Dict[str, FullTxDetail]:
         """
         Createa a map of txid : to FullTxDetail
@@ -1248,6 +1254,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         # map : 2.714s
         # for loop:  2.76464
         # multithreading : 6.3021s
+        # threadtable_batched: 4.1 s , this should perform best, however bdk is probably the bottleneck and not-multithreading capable
         key_value_pairs = list(map(process_inputs, txs))
         for txid, fulltxdetail in key_value_pairs:
             append_dicts(txid, list(fulltxdetail.inputs.values()))

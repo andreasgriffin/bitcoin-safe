@@ -43,7 +43,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
-from bitcoin_safe.html import html_f
+from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
@@ -101,6 +101,7 @@ from ...util import (
     clean_list,
     format_fee_rate,
     serialized_to_hex,
+    time_logger,
 )
 from ...wallet import (
     ToolsTxUiInfo,
@@ -1014,7 +1015,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         def on_success(success) -> None:
             if success:
                 self.tabs_inputs_outputs.addTab(
-                    self.sankey_bitcoin, icon=read_QIcon("flows.png"), description=self.tr("Diagram")
+                    self.sankey_bitcoin, icon=read_QIcon("flows.svg"), description=self.tr("Diagram")
                 )
 
         def on_error(packed_error_info) -> None:
@@ -1230,6 +1231,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.signals.language_switch.connect(self.updateUi)
         self.signals.wallet_signals[self.wallet.id].updated.connect(self.update_with_filter)
 
+    @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         should_update = False
         if should_update or update_filter.refresh_all:
@@ -1351,6 +1353,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
             self.utxo_list.update_content()
         self.tabs_inputs.setCurrentIndex(0)
         self.category_list.select_category(self.wallet.labels.get_default_category())
+        self.update_amounts_and_categories()
 
     def create_tx(self) -> None:
         if (

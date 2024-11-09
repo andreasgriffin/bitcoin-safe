@@ -44,7 +44,7 @@ from bitcoin_safe.gui.qt.keystore_ui import (
 from bitcoin_safe.gui.qt.qr_types import QrType
 from bitcoin_safe.gui.qt.register_multisig import USBRegisterMultisigWidget
 from bitcoin_safe.gui.qt.wallet_steps_base import WalletStepsBase
-from bitcoin_safe.html import html_f
+from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager

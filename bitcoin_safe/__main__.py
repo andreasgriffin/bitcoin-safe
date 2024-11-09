@@ -1,9 +1,10 @@
 import sys
 
-from .dynamic_lib_load import ensure_pyzbar_works
+# all import must be absolute, because this is the entry script for pyinstaller
+from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works
 
 # this setsup the logging
-from .logging_setup import setup_logging  # type: ignore
+from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 
 ensure_pyzbar_works()
 
@@ -12,8 +13,8 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from .gui.qt.main import MainWindow
-from .gui.qt.util import custom_exception_handler
+from bitcoin_safe.gui.qt.main import MainWindow
+from bitcoin_safe.gui.qt.util import custom_exception_handler
 
 
 def parse_args() -> argparse.Namespace:
@@ -22,6 +23,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
     parser.add_argument(
         "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
+    )
+    parser.add_argument(
+        "open_files_at_startup",
+        metavar="FILE",
+        type=str,
+        nargs="*",
+        help="File to process, can be of type tx, psbt, wallet files.",
     )
 
     return parser.parse_args()

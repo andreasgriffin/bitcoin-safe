@@ -87,7 +87,7 @@ from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
-from .dialog_import import ImportDialog
+from .dialog_import import ImportDialog, file_to_str
 from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
 from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
 from .network_settings.main import NetworkSettingsUI
@@ -110,10 +110,12 @@ class MainWindow(QMainWindow):
         self,
         network: Literal["bitcoin", "regtest", "signet", "testnet"] | None = None,
         config: UserConfig | None = None,
+        open_files_at_startup: List[str] | None = None,
         **kwargs,
     ) -> None:
         "If netowrk == None, then the network from the user config will be taken"
         super().__init__()
+        self.open_files_at_startup = open_files_at_startup if open_files_at_startup else []
         config_present = UserConfig.exists() or config
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
@@ -143,6 +145,7 @@ class MainWindow(QMainWindow):
 
         self.last_qtwallet: Optional[QTWallet] = None
         # connect the listeners
+        self.signals.open_file_path.connect(self.open_file_path)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
@@ -206,6 +209,15 @@ class MainWindow(QMainWindow):
             self.welcome_screen.add_new_wallet_welcome_tab()
 
         self.open_last_opened_tx()
+        for file_path in self.open_files_at_startup:
+            self.open_file_path(file_path=file_path)
+
+    def open_file_path(self, file_path: str):
+        if file_path and Path(file_path).exists():
+            if file_path.endswith(".wallet"):
+                self.open_wallet(file_path=file_path)
+            else:
+                self.signals.open_tx_like.emit(file_to_str(file_path))
 
     def set_title(self) -> None:
         title = "Bitcoin Safe"

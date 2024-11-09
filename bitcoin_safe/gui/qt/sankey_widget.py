@@ -31,10 +31,12 @@ import logging
 import math
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
-from PyQt6.QtCore import QPointF, QRectF, pyqtSignal
+from PyQt6.QtCore import QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
+    QAction,
     QColor,
     QLinearGradient,
     QMouseEvent,
@@ -42,7 +44,15 @@ from PyQt6.QtGui import (
     QPainterPath,
     QPen,
 )
-from PyQt6.QtWidgets import QApplication, QTabWidget, QToolTip, QWidget
+from PyQt6.QtSvg import QSvgGenerator
+from PyQt6.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QMenu,
+    QTabWidget,
+    QToolTip,
+    QWidget,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +91,8 @@ class SankeyWidget(QWidget):
         self.setMouseTracking(True)  # Enable mouse tracking
 
         # self.signal_on_label_click.connect(lambda flow_index: print(flow_index))
+
+        self.gradient_dict: Dict[str, Tuple[QColor, QColor]] = {}
 
     @property
     def image_width(self) -> float:
@@ -192,6 +204,7 @@ class SankeyWidget(QWidget):
         end_y_positions: List[float],
         flow_type: FlowType,
         reverse=False,
+        workaround_for_svg=False,
     ):
         image_left = (
             self.x_offset if not reverse else self.image_width + self.x_offset
@@ -217,6 +230,7 @@ class SankeyWidget(QWidget):
                 direction,
                 self.colors.get(flow_index, self.border_color),
                 self.center_color,
+                workaround_for_svg=workaround_for_svg,
             )
 
             # Draw text at the start point
@@ -240,6 +254,7 @@ class SankeyWidget(QWidget):
         direction: int,
         start_color: QColor,
         end_color: QColor,
+        workaround_for_svg=False,
     ):
         path = QPainterPath()
         path.moveTo(start_x, start_y)
@@ -252,11 +267,18 @@ class SankeyWidget(QWidget):
             math.ceil(end_y),
         )
 
-        gradient = QLinearGradient(QPointF(start_x, start_y), QPointF(end_x, end_y))
-        gradient.setColorAt(0, start_color)
-        gradient.setColorAt(1, end_color)
         pen = QPen()
-        pen.setBrush(gradient)
+        if workaround_for_svg:
+            color_name = QColor(len(self.gradient_dict)).name()
+            self.gradient_dict[color_name] = (
+                (start_color, end_color) if direction == 1 else (end_color, start_color)
+            )
+            pen.setBrush(QColor(color_name))
+        else:
+            gradient = QLinearGradient(QPointF(start_x, start_y), QPointF(end_x, end_y))
+            gradient.setColorAt(0, start_color)
+            gradient.setColorAt(1, end_color)
+            pen.setBrush(gradient)
         pen.setWidth(math.ceil(width))
         painter.setPen(pen)
         painter.drawPath(path)
@@ -319,9 +341,8 @@ class SankeyWidget(QWidget):
         painter.setPen(text_color)
         painter.drawText(position, text)
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    def draw_content(self, painter: QPainter, workaround_for_svg=False):
+        self.gradient_dict.clear()
         self.text_rects.clear()
 
         self._paint_one_side(
@@ -330,6 +351,7 @@ class SankeyWidget(QWidget):
             y_start_positions=self.in_flow_y_positions,
             end_y_positions=self.end_in_y_positions,
             flow_type=FlowType.InFlow,
+            workaround_for_svg=workaround_for_svg,
         )
         self._paint_one_side(
             painter,
@@ -338,8 +360,13 @@ class SankeyWidget(QWidget):
             end_y_positions=self.end_out_y_positions,
             reverse=True,
             flow_type=FlowType.OutFlow,
+            workaround_for_svg=workaround_for_svg,
         )
         painter.end()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        self.draw_content(painter)
 
     def mouseMoveEvent(self, event: QMouseEvent | None) -> None:
         if not event:
@@ -359,10 +386,63 @@ class SankeyWidget(QWidget):
     def mousePressEvent(self, event: QMouseEvent | None) -> None:
         if not event:
             return
-        for rect, flow_index in self.text_rects:
-            if rect.contains(event.position()):
-                self.signal_on_label_click.emit(flow_index)
-                break
+
+        if event.button() == Qt.MouseButton.RightButton:
+            # Right-click detected, show context menu
+            menu = QMenu(self)
+            export_action = QAction("Export to svg", self)
+            menu.addAction(export_action)
+            # Connect the action to the export method
+            export_action.triggered.connect(self.export_to_svg)
+            # Show the menu at the cursor position
+            menu.exec(event.globalPosition().toPoint())
+        else:
+            # Handle other mouse events (e.g., left-click)
+            for rect, flow_index in self.text_rects:
+                if rect.contains(event.position()):
+                    self.signal_on_label_click.emit(flow_index)
+                    break
+
+    def export_to_svg(self) -> None:
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Export svg"), "", self.tr("All Files (*);;Text Files (*.svg)")
+        )
+        if not file_path:
+            logger.info("No file selected")
+            return
+        self._export_to_svg(Path(file_path))
+
+    def _export_to_svg(self, filename: Path) -> None:
+        self.workaround_for_svg = True
+        width, height = self.width(), self.height()
+        generator = QSvgGenerator()
+        generator.setFileName(str(filename))
+        generator.setSize(QSize(width, height))
+        generator.setViewBox(QRect(0, 0, width, height))
+
+        generator.setTitle("SVG Export by Bitcoin Safe")
+        generator.setDescription("SVG Export by Bitcoin Safe")
+
+        self.draw_content(QPainter(generator), workaround_for_svg=True)
+
+        with open(str(filename), "r") as file:
+            contents = file.read()
+        with open(str(filename), "w") as file:
+            defs = ""
+            for color_name, (start_color, end_color) in self.gradient_dict.items():
+                gradient_name = f"linear{color_name.lstrip('#')}"
+                defs += f"""
+    <linearGradient id="{gradient_name}" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="{start_color.name()}"/>
+    <stop offset="100%" stop-color="{end_color.name()}"/>
+    </linearGradient>
+    """
+
+                contents = contents.replace(f'stroke="{color_name}"', f'stroke="url(#{gradient_name})"')
+            contents = contents.replace("<defs>\n</defs>", f"<defs>\n{defs}\n</defs>")
+
+            file.write(contents)
+        self.workaround_for_svg = False
 
 
 if __name__ == "__main__":
@@ -389,19 +469,26 @@ if __name__ == "__main__":
         30.0,
         5.0,
     ]
-    labels = {
-        FlowIndex(FlowType.InFlow, 0): "1\n1",
-        FlowIndex(FlowType.InFlow, 1): "2",
-        FlowIndex(FlowType.OutFlow, 0): "4",
-        FlowIndex(FlowType.OutFlow, 1): "4",
-        FlowIndex(FlowType.OutFlow, 2): "5",
+    labels: Dict[FlowIndex, str] = {
+        # FlowIndex(FlowType.InFlow, 0): "1\n1",
+        # FlowIndex(FlowType.InFlow, 1): "2",
+        # FlowIndex(FlowType.OutFlow, 0): "4",
+        # FlowIndex(FlowType.OutFlow, 1): "4",
+        # FlowIndex(FlowType.OutFlow, 2): "5",
     }
 
     app = QApplication(sys.argv)
     tabs = QTabWidget()
 
     sankey = SankeyWidget()
-    sankey.set(in_flows=in_flows, out_flows=out_flows, colors=colors, text_outline=True, labels=labels)
+    sankey.set(
+        in_flows=in_flows,
+        out_flows=out_flows,
+        colors=colors,
+        text_outline=True,
+        labels=labels,
+        space_fraction=0.3,
+    )
     tabs.addTab(sankey, "sankey")
     tabs.show()
     sys.exit(app.exec())
