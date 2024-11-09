@@ -150,6 +150,11 @@ class Builder:
         if 'GITHUB_ACTIONS' in os.environ:
             # Set DOCKER_HOST only if running in GitHub Actions
             os.environ['DOCKER_HOST'] = 'tcp://localhost:2375'
+        else:
+            # Optionally, handle local settings or leave as default for local Docker usage
+            if 'DOCKER_HOST' not in os.environ:
+                # Set to default Unix socket if not specified, or just omit this block to use system default
+                os.environ['DOCKER_HOST'] = 'unix:///var/run/docker.sock'
         
 
     def build_in_docker(
