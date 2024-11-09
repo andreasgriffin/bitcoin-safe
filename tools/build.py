@@ -144,7 +144,7 @@ class Builder:
             no_cache=no_cache,
             build_commit=build_commit,
         )
-        
+
     def build_in_docker(
         self,
         docker_image: str,
@@ -171,7 +171,7 @@ class Builder:
         BUILD_UID = PROJECT_ROOT.stat().st_uid
         BUILD_CACHEDIR = path_build / ".cache"
         original_dir = os.getcwd()
-        
+
         # Initialize DOCKER_BUILD_FLAGS
         DOCKER_BUILD_FLAGS = ""
 
@@ -218,12 +218,6 @@ class Builder:
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / build_folder / "dist"
 
         logger.info("Building binary...")
-        # Check UID and possibly chown
-        if build_commit:
-            if os.getuid() != 1000 or os.getgid() != 1000:
-                logger.info("Need to chown -R FRESH_CLONE directory. Prompting for sudo.")
-                run_local(f'sudo chown -R 1000:1000 "{FRESH_CLONE}"')
-
         run_local(
             f"docker run -it "
             f"--name {docker_image}-container "
