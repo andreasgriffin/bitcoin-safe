@@ -163,6 +163,7 @@ class Builder:
                     None = uses the cwd
                     commit_hash = clones this commit hash into /tmp
         """
+
         PROJECT_ROOT = Path(".").resolve().absolute()
         PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT
         path_build = PROJECT_ROOT / build_folder
@@ -217,14 +218,8 @@ class Builder:
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / build_folder / "dist"
 
         logger.info("Building binary...")
-        # Check UID and possibly chown
-        if build_commit:
-            if os.getuid() != 1000 or os.getgid() != 1000:
-                logger.info("Need to chown -R FRESH_CLONE directory. Prompting for sudo.")
-                run_local(f'sudo chown -R 1000:1000 "{FRESH_CLONE}"')
-
         run_local(
-            f"docker run -it "
+            f"docker run  "
             f"--name {docker_image}-container "
             f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/wine64/drive_c/bitcoin_safe '
             f"--rm "
