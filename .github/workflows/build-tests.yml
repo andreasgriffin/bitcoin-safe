@@ -11,21 +11,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: 
+      DOCKER_HOST: tcp://localhost:2375    
     services:
       docker:
         image: docker:19.03.12-dind
         options: --privileged
         ports:
           - 2375:2375
-
+          
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Set up Docker environment
-      run: |
-        sudo service docker start
-        echo "DOCKER_HOST=tcp://localhost:2375" >> $GITHUB_ENV
 
     - name: Set up Python
       uses: actions/setup-python@v3
