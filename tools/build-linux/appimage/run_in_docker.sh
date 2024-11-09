@@ -16,7 +16,7 @@ POETRY_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/poetry_cache"
 
 . "$CONTRIB"/build_tools_util.sh
 
-git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
+git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported. PROJECT_ROOT contents:\n$(ls -la "$PROJECT_ROOT")"
 
 export GCC_STRIP_BINARIES="1"
 

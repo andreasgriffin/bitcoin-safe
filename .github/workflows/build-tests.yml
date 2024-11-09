@@ -57,7 +57,7 @@ jobs:
           poetry install  
           
       - name: Run build script
-        run: poetry run python tools/build.py --targets appimage windows
+        run: poetry run python tools/build.py --targets appimage windows --commit None
 
 
       - name: Check for AppImage file
