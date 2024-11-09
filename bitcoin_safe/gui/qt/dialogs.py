@@ -285,6 +285,6 @@ if __name__ == "__main__":
     dialog = PasswordCreation()
     password = dialog.get_password()
     if password:
-        print(f"Password created: {password}")
+        print("Password created successfully.")
     sys.exit(app.exec())
     quit()
