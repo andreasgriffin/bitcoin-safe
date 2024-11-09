@@ -40,7 +40,7 @@ jobs:
         poetry install  
          
     - name: Run build script
-      run: python tools/build.py --targets appimage windows
+      run: poetry run python tools/build.py --targets appimage windows
 
 
     - name: Check for AppImage file
