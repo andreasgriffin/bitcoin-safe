@@ -1,37 +1,8 @@
-name: Build Artifacts Test
-
-on:
-  pull_request:
-    branches:
-      - main
+name: Build AppImage Test
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Check for 'ready-to-merge' Label
-        id: check_label
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const labels = await github.issues.listLabelsOnIssue({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const hasLabel = labels.data.some(label => label.name === 'ready-to-merge');
-            core.setOutput('hasLabel', hasLabel);
-      - name: Build Steps
-        if: steps.check_label.outputs.hasLabel == 'true'
-        # ... your build steps here
-      - name: Fail Job if Label Is Missing
-        if: steps.check_label.outputs.hasLabel != 'true'
-        run: |
-          echo "::error::'ready-to-merge' label is missing. Build test must be run before merging."
-          exit 1
-
-
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
