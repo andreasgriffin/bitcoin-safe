@@ -3,10 +3,10 @@ name: Build Windows Test
 on:
   workflow_dispatch:
     inputs:
-      input:
-        description: "Test"
+      tags:
+        description: 'Test Build AppImage'
         required: false
-        default: ""
+        type: boolean
 
 jobs:
   build:
