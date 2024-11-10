@@ -50,6 +50,23 @@ def remove_absolute_paths(line: str) -> str:
     return line.replace(current_path, "")
 
 
+def get_system_info_as_text() -> str:
+    if hasattr(platform, "freedesktop_os_release"):
+        os_release_info = platform.freedesktop_os_release()
+        distro_name = os_release_info.get("NAME", "Unknown")
+        distro_version = os_release_info.get("VERSION", "")
+    else:
+        distro_name = "Unknown"
+        distro_version = ""
+
+    body = "\n\nSystem Info:\n"
+    body += f"OS: {platform.platform()}\n"
+    body += f"Distribution: {distro_name} {distro_version}\n"
+    body += f"Python Version: {sys.version}\n"
+    body += f"Bitcoin Safe Version: {__version__}\n\n"
+    return body
+
+
 def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     email = "andreasgriffin@proton.me"
     subject = f"Error report - Bitcoin Safe Version: {__version__}"
@@ -66,10 +83,7 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     )
 
     # Write additional system info if needed
-    body += "\n\nSystem Info:\n"
-    body += f"OS: {platform.platform()}\n"
-    body += f"Python Version: {sys.version}\n"
-    body += f"Bitcoin Safe Version: {__version__}\n\n"
+    body += get_system_info_as_text()
     return body
 
 
@@ -82,11 +96,7 @@ def mail_error_repot(error_report: str) -> None:
         "    ", ""
     )
 
-    # Write additional system info if needed
-    body += "\n\nSystem Info:\n"
-    body += f"OS: {platform.platform()}\n"
-    body += f"Python Version: {sys.version}\n"
-    body += f"Bitcoin Safe Version: {__version__}\n\n"
+    body += get_system_info_as_text()
     return compose_email(email, subject, body)
 
 
