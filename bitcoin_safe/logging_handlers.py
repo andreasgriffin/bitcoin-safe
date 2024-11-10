@@ -30,7 +30,11 @@
 import logging
 import os
 import platform
+import shlex
+import subprocess
 import sys
+import tempfile
+from pathlib import Path
 
 from bitcoin_safe import __version__
 
@@ -44,6 +48,29 @@ def remove_absolute_paths(line: str) -> str:
     """
     current_path = os.getcwd() + os.sep
     return line.replace(current_path, "")
+
+
+def text_error_report(error_report: str, file_path: Path | None = None) -> str:
+    email = "andreasgriffin@proton.me"
+    subject = f"Error report - Bitcoin Safe Version: {__version__}"
+    body = ""
+    if file_path:
+        body += f"You can see the full logfile at: {file_path}\n\n"
+
+    body += f"Please email this to: {email}\n\n"
+    body += f"{subject}\n\n"
+    body += f"""Error:
+            {error_report}
+            """.replace(
+        "    ", ""
+    )
+
+    # Write additional system info if needed
+    body += "\n\nSystem Info:\n"
+    body += f"OS: {platform.platform()}\n"
+    body += f"Python Version: {sys.version}\n"
+    body += f"Bitcoin Safe Version: {__version__}\n\n"
+    return body
 
 
 def mail_error_repot(error_report: str) -> None:
@@ -86,3 +113,30 @@ class MailHandler(logging.Handler):
 
             message = str(self.format(record))
             mail_error_repot(message)
+
+
+class OpenLogHandler(logging.Handler):
+    def __init__(self, file_path: Path, level=logging.CRITICAL) -> None:
+        super().__init__(level)
+        self.file_path = file_path
+
+    @staticmethod
+    def xdg_open_file(filename: Path):
+        system_name = platform.system()
+        if system_name == "Windows":
+            subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
+        elif system_name == "Darwin":  # macOS
+            subprocess.call(shlex.split(f'open "{filename}"'))
+        elif system_name == "Linux":  # Linux
+            subprocess.call(shlex.split(f'xdg-open "{filename}"'))
+
+    def emit(self, record) -> None:
+
+        message = text_error_report(str(self.format(record)), file_path=self.file_path)
+
+        # Create a temporary file with a message to the user
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".txt") as temp_file:
+            temp_file.write(message)
+            temp_file_path = temp_file.name
+
+            self.xdg_open_file(Path(temp_file_path))
