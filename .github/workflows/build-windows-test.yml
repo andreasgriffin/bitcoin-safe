@@ -1,4 +1,4 @@
-name: Build AppImage Test
+name: Build Test Windows 
 
 on:
   workflow_dispatch:
@@ -55,60 +55,19 @@ jobs:
           poetry install  
           
       - name: Run build script
-        run: poetry run python tools/build.py --targets appimage --commit None
+        run: poetry run python tools/build.py --targets windows --commit None
 
 
-      - name: Check for AppImage file
+      - name: Check for portable EXE file
         run: |
-          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
-            echo "AppImage file is missing"
+          if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
+            echo "Portable EXE file is missing"
             exit 1
           fi
 
-
-      # - name: Install Dependencies for gui test
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y xvfb libfuse2 xdotool
-      #   shell: bash
-
-      # - name: Start Xvfb
-      #   run: Xvfb :99 -screen 0 1024x768x16 &
-      #   env:
-      #     DISPLAY: ":99"
-                
-      # - name: Run AppImage
-      #   run: |
-      #     APPIMAGE=$(find ./dist -maxdepth 1 -name "*.AppImage" | head -n 1)
-      #     if [ -z "$APPIMAGE" ]; then
-      #       echo "No AppImage file found in ./dist/"
-      #       exit 1
-      #     fi
-      #     echo "Running AppImage: $APPIMAGE"
-      #     chmod +x "$APPIMAGE"
-      #     "$APPIMAGE" &
-      #   env:
-      #     DISPLAY: ":99"
-
-
-      # - name: Wait for Application to Start
-      #   run: sleep 5
-
-      # - name: Check for Application Window
-      #   run: |
-      #     WINDOW_NAME="Bitcoin Safe"
-      #     WINDOW_ID=$(xdotool search --name "$WINDOW_NAME")
-      #     if [ -z "$WINDOW_ID" ]; then
-      #       echo "Application window not found."
-      #       exit 1
-      #     else
-      #       echo "Application window found with ID: $WINDOW_ID"
-      #     fi
-      #   env:
-      #     DISPLAY: ":99"
-
-      # - name: Close Application
-      #   run: |
-      #     xdotool search --name "Bitcoin Safe" windowkill %@ || true
-      #   env:
-      #     DISPLAY: ":99"
+      - name: Check for setup EXE file
+        run: |
+          if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
+            echo "Setup EXE file is missing"
+            exit 1
+          fi
