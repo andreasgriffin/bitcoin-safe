@@ -88,7 +88,7 @@ RUN apt-get update -q  && \
         libzbar0 \
         libsecp256k1-0  
         
-# other
+# other needed for systems that lack libxcb  by default (linux Mint)
 RUN apt-get update -q  && \
     apt-get install -qy  \ 
         libxkbcommon-x11-0 \
@@ -104,6 +104,7 @@ RUN apt-get update -q  && \
         libxcb-icccm4 \
         libxcb-image0 \
         libxcb-keysyms1 \
+        libxcb-cursor-dev \ 
         libxcb-util1 \
         libxcb-render-util0 \
         libx11-xcb1 \
