@@ -55,11 +55,15 @@ def test_no_error_logging(caplog: LogCaptureFixture):
 
 
 def test_exception_logging(caplog: LogCaptureFixture):
-    with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
-        mock_compose_email.return_value = "Mocked Function"
+    with patch("bitcoin_safe.logging_handlers.OpenLogHandler.emit") as mock_OpenLogHandler_emit:
+        mock_OpenLogHandler_emit.return_value = "Mocked OpenLogHandler.emit"
+        with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
+            mock_compose_email.return_value = "Mocked Function"
 
-        with caplog.at_level(logging.INFO):
-            logger.critical("this should compose an email", exc_info=sys.exc_info())
+            with caplog.at_level(logging.INFO):
+                logger.critical("this should compose an email", exc_info=sys.exc_info())
 
-            # Assert that the mocked function was called
-            mock_compose_email.assert_called_once()
+                # Assert that the mocked function was called
+                mock_compose_email.assert_called_once()
+                # Assert that the mocked function was called
+                mock_OpenLogHandler_emit.assert_called_once()

@@ -35,9 +35,14 @@ import sys
 from pathlib import Path
 
 import appdirs
+from PyQt6.QtCore import QtMsgType, qInstallMessageHandler
 
 from bitcoin_safe import __version__
-from bitcoin_safe.logging_handlers import MailHandler, RelativePathFormatter
+from bitcoin_safe.logging_handlers import (
+    MailHandler,
+    OpenLogHandler,
+    RelativePathFormatter,
+)
 
 
 def setup_logging() -> None:
@@ -61,11 +66,11 @@ def setup_logging() -> None:
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(relative_path_formatter)
 
-    custom_handler = (
+    mail_handler = (
         MailHandler()
     )  # Assuming MailHandler is correctly implemented in bitcoin_safe.logging_handlers
-    custom_handler.setLevel(logging.CRITICAL)
-    custom_handler.setFormatter(relative_path_formatter)
+    mail_handler.setLevel(logging.CRITICAL)
+    mail_handler.setFormatter(relative_path_formatter)
     # Assuming 'must_include_exc_info' is handled internally in the MailHandler implementation
 
     # Configuring loggers
@@ -73,7 +78,8 @@ def setup_logging() -> None:
     root_logger.setLevel(logging.DEBUG)
     root_logger.addHandler(console_handler)
     root_logger.addHandler(file_handler)
-    root_logger.addHandler(custom_handler)
+    root_logger.addHandler(OpenLogHandler(file_path=log_file))
+    root_logger.addHandler(mail_handler)
     root_logger.propagate = True
 
     logger = logging.getLogger(__name__)
@@ -83,6 +89,23 @@ def setup_logging() -> None:
         logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = handle_uncaught_exception
+
+    def qt_message_handler(msg_type, context, message):
+        if msg_type == QtMsgType.QtDebugMsg:
+            logger.debug(message)
+        elif msg_type == QtMsgType.QtInfoMsg:
+            logger.info(message)
+        elif msg_type == QtMsgType.QtWarningMsg:
+            logger.warning(message)
+        elif msg_type == QtMsgType.QtCriticalMsg:
+            logger.error(message)
+        elif msg_type == QtMsgType.QtFatalMsg:
+            logger.critical(message)
+        else:
+            logger.error(message)
+
+    # Install the message handler as early as possible
+    qInstallMessageHandler(qt_message_handler)
 
     logger.info(f"========================= Starting Bitcoin Safe ========================")
     logger.info(f"Version: {__version__}")
