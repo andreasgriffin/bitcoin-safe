@@ -125,7 +125,7 @@ def ensure_pyzbar_works() -> None:
 
             pyzbar.__name__
             logger.info(f"pyzbar successfully loaded ")
-        except FileNotFoundError:
+        except:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
             logger.info(f"pyzbar not loaded ")
             show_message_before_quit(
                 translate("lib_load", """You are missing the {link}\nPlease install it.""").format(
@@ -137,8 +137,7 @@ def ensure_pyzbar_works() -> None:
             )
             sys.exit()
     else:
-        # On Linux this shoudn't be a problem, because I specidfied
-        # system_runtime_requires = [ "libzbar0",  ....#
+        # On Linux this shoudn't be a problem, because I include libzar in the package
         pass
 
 

@@ -18,17 +18,16 @@ if not cmdline_name:
 hiddenimports = []
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
 
+packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs", "cv2"]
 
 binaries = []
 # Workaround for "Retro Look":
 binaries += [b for b in collect_dynamic_libs('PyQt6') if 'qwindowsvista' in b[0]]
-binaries += collect_dynamic_libs('bdkpython')
-binaries += collect_dynamic_libs('nostr_sdk')
-binaries += collect_dynamic_libs('pyzbar')
-binaries += collect_dynamic_libs('electrumsv_secp256k1')
+for package_with_dlls in packages_with_dlls:
+    binaries += collect_dynamic_libs(package_with_dlls)
 # add libsecp256k1, libusb, etc:
 binaries += [(f"{PROJECT_ROOT}/{PYPKG}/*.dll", '.')]
-
+print(f"Included binaries: {binaries}")
 
 datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
@@ -44,7 +43,7 @@ datas = [
 
 # We don't put these files in to actually include them in the script but to make the Analysis method scan them for imports
 a = Analysis([f"../../{PYPKG}/__main__.py" ],
-              pathex=[f"{PROJECT_ROOT}/{PYPKG}"],
+             pathex=[f"{PROJECT_ROOT}/{PYPKG}"] + [f"{PROJECT_ROOT}/{package_with_dlls}" for package_with_dlls in packages_with_dlls],
              binaries=binaries,
              datas=datas,
              hiddenimports=hiddenimports,
@@ -56,6 +55,7 @@ for d in a.datas:
     if 'pyconfig' in d[0]:
         a.datas.remove(d)
         break
+print(f"Included datas: {datas}")
 
 # Strip out parts of Qt that we never use. Reduces binary size by tens of MBs. see #4815
 qt_bins2remove=(
