@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="200"
+   height="300"
+   viewBox="0 0 200 300"
+   fill="none"
+   version="1.1"
+   id="svg1576"
+   sodipodi:docname="generic-hardware-wallet.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1580" />
+  <sodipodi:namedview
+     id="namedview1578"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.4216667"
+     inkscape:cx="36.576788"
+     inkscape:cy="149.47245"
+     inkscape:window-width="1280"
+     inkscape:window-height="662"
+     inkscape:window-x="640"
+     inkscape:window-y="159"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1576" />
+  <rect
+     x="111"
+     y="181"
+     width="68"
+     height="28"
+     stroke="black"
+     stroke-opacity="0.25"
+     stroke-width="2"
+     id="rect1568" />
+  <rect
+     x="21"
+     y="181"
+     width="68"
+     height="28"
+     stroke="black"
+     stroke-opacity="0.25"
+     stroke-width="2"
+     id="rect1570" />
+  <rect
+     x="21"
+     y="41"
+     width="158"
+     height="118"
+     stroke="black"
+     stroke-opacity="0.25"
+     stroke-width="2"
+     id="rect1572" />
+  <path
+     d="M30 2H170V-2H30V2ZM198 30V270H202V30H198ZM170 298H30V302H170V298ZM2 270V30H-2V270H2ZM30 298C14.536 298 2 285.464 2 270H-2C-2 287.673 12.3269 302 30 302V298ZM198 270C198 285.464 185.464 298 170 298V302C187.673 302 202 287.673 202 270H198ZM170 2C185.464 2 198 14.536 198 30H202C202 12.3269 187.673 -2 170 -2V2ZM30 -2C12.3269 -2 -2 12.3269 -2 30H2C2 14.536 14.536 2 30 2V-2Z"
+     fill="black"
+     id="path1574" />
+  <g
+     id="g358"
+     transform="translate(9.7099117,2.3988889)">
+    <rect
+       style="fill:#ffff00;stroke-width:11.0477"
+       id="rect304"
+       width="165.47148"
+       height="25.423618"
+       x="7.4371142"
+       y="5.9912944"
+       rx="6.9483471" />
+    <text
+       xml:space="preserve"
+       style="font-size:17.2645px;font-family:'Accanthis ADF Std No3';-inkscape-font-specification:'Accanthis ADF Std No3';fill:#ffff00;stroke-width:3.40613"
+       x="14.426712"
+       y="24.581799"
+       id="text464"><tspan
+         sodipodi:role="line"
+         id="tspan462"
+         x="14.426712"
+         y="24.581799"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.2645px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;stroke-width:3.40613">Label</tspan></text>
+  </g>
+</svg>

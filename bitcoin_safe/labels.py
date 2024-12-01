@@ -259,6 +259,16 @@ class Labels(BaseSaveableClass):
     def from_dump(cls, dct: Dict, class_kwargs=None) -> "Labels":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
+        # handle a case of incorrectly saved labels
+        # (only ever happend when there was a savings bug in a development version)
+        if "data" in dct:
+            for key, value in list(dct["data"].items()):
+                # it should be Label
+                if isinstance(value, dict):
+                    # but if it is just a dict, then convert it to a label
+                    dct["data"][key] = Label(**value)
+                    logger.debug(f"Incorrect saved label data. Converting {value} to Label")
+
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod

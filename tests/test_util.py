@@ -46,7 +46,7 @@ from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from bitcoin_safe.util import path_to_rel_home_path, rel_home_path_to_abs_path
 
 
-class TestClass(QObject):
+class MySignalclass(QObject):
     signal = pyqtSignal()
 
 
@@ -114,7 +114,7 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
     with caplog.at_level(logging.INFO):
 
         n = 4
-        instances = [TestClass() for _ in range(n)]
+        instances = [MySignalclass() for _ in range(n)]
 
         def factory(i, instance):
             def f(i=i, instance=instance):
@@ -143,7 +143,7 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
     with caplog.at_level(logging.INFO):
 
         n = 4
-        instances = [TestClass() for _ in range(n)]
+        instances = [MySignalclass() for _ in range(n)]
 
         def factory(i, instance):
             def f(i=i, instance=instance):

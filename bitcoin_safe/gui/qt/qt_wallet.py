@@ -68,7 +68,6 @@ from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...wallet import (
     DeltaCacheListTransactions,
-    DescriptorExportTools,
     ProtoWallet,
     Wallet,
     filename_clean,
@@ -89,7 +88,6 @@ from .util import (
     caught_exception_message,
     custom_exception_handler,
     read_QIcon,
-    save_file_dialog,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
 
@@ -407,9 +405,9 @@ class QTWallet(QtWalletBase):
         )
         self.set_sync_tab_data(sync_tab.dump())
 
-        self.tabs.add_tab(
-            tab=sync_tab.main_widget, icon=read_QIcon("cloud-sync.svg"), description="", data=sync_tab
-        )
+        icon_path = SyncTab.get_icon_path(enabled=sync_tab.enabled())
+        self.tabs.add_tab(tab=sync_tab.main_widget, icon=QIcon(icon_path), description="", data=sync_tab)
+        sync_tab.main_widget.checkbox.stateChanged.connect(self._set_sync_tab_icon)
 
         label_syncer = LabelSyncer(self.wallet.labels, sync_tab, self.wallet_signals)
         sync_tab.finish_init_after_signal_connection()
@@ -417,6 +415,13 @@ class QTWallet(QtWalletBase):
 
     def __repr__(self) -> str:
         return f"QTWallet({self.__dict__})"
+
+    def _set_sync_tab_icon(self, enabled: bool):
+        index = self.tabs.indexOf(self.sync_tab.main_widget)
+        if index < 0:
+            return
+        icon_path = SyncTab.get_icon_path(enabled=enabled)
+        self.tabs.setTabIcon(index, QIcon(icon_path))
 
     def save_backup(self) -> str:
         """_summary_
@@ -436,10 +441,8 @@ class QTWallet(QtWalletBase):
                 break
 
         # save the tutorial step into the wallet
-        if self.wallet_steps:
-            self.wallet.tutorial_index = (
-                self.wallet_steps.current_index() if not self.wallet_steps.isHidden() else None
-            )
+        if self.wizard:
+            self.wallet.tutorial_index = self.wizard.current_index() if not self.wizard.isHidden() else None
 
         self.wallet.save(
             filename,
@@ -513,10 +516,8 @@ class QTWallet(QtWalletBase):
             self.password = PasswordCreation().get_password()
 
         # save the tutorial step into the wallet
-        if self.wallet_steps:
-            self.wallet.tutorial_index = (
-                self.wallet_steps.current_index() if not self.wallet_steps.isHidden() else None
-            )
+        if self.wizard:
+            self.wallet.tutorial_index = self.wizard.current_index() if not self.wizard.isHidden() else None
 
         if self.sync_tab:
             self.set_sync_tab_data(self.sync_tab.dump())
@@ -537,9 +538,13 @@ class QTWallet(QtWalletBase):
                 Message(self.tr("Password incorrect"), type=MessageType.Warning)
                 return None
 
-        self.password = PasswordCreation(
+        new_password = PasswordCreation(
             window_title=self.tr("Change password"), label_text=self.tr("New password:")
         ).get_password()
+        if new_password is None:
+            return None
+
+        self.password = new_password
         self.save()
         Message(self.tr("Wallet saved"))
         return self.password
@@ -1027,21 +1032,6 @@ class QTWallet(QtWalletBase):
 
         self._last_syncing_start = datetime.datetime.now()
         self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
-
-    def export_wallet_for_coldcard(self) -> Optional[str]:
-        filename = save_file_dialog(
-            name_filters=["Text (*.txt)", "All Files (*.*)"],
-            default_suffix="txt",
-            default_filename=filename_clean(self.wallet.id, file_extension=".txt")[:24],
-        )
-        if not filename:
-            return None
-
-        with open(filename, "w") as file:
-            file.write(
-                DescriptorExportTools.get_coldcard_str(self.wallet.id, self.wallet.multipath_descriptor)
-            )
-        return filename
 
     def get_editable_protowallet(self) -> ProtoWallet:
         return self.wallet.as_protowallet()

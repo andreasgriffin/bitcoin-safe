@@ -54,17 +54,18 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
 from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
-from bitcoin_safe.gui.qt.wallet_steps import (
+from bitcoin_safe.gui.qt.wizard import (
     BackupSeed,
     BuyHardware,
     DistributeSeeds,
     GenerateSeed,
     ImportXpubs,
+    LabelBackup,
     ReceiveTest,
     SendTest,
     StickerTheHardware,
     TutorialStep,
-    WalletSteps,
+    Wizard,
 )
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from bitcoin_safe.util import Satoshis
@@ -99,7 +100,7 @@ def enter_text(text: str, widget: QWidget) -> None:
         QTest.keyClick(widget, char)
 
 
-def test_tutorial_wallet_setup(
+def test_wizard(
     qapp: QApplication,
     qtbot: QtBot,
     test_start_time: datetime,
@@ -117,7 +118,7 @@ def test_tutorial_wallet_setup(
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
         logger.debug(f"(app, main_window) = {main_window}")
-        QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
@@ -137,11 +138,11 @@ def test_tutorial_wallet_setup(
         w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
         qt_proto_wallet = main_window.tab_wallets.get_data_for_tab(w)
         assert isinstance(qt_proto_wallet, QTProtoWallet)
-        wallet_steps: WalletSteps = qt_proto_wallet.wallet_steps
+        wizard: Wizard = qt_proto_wallet.wizard
 
         def page1() -> None:
             shutter.save(main_window)
-            step: BuyHardware = wallet_steps.tab_generators[TutorialStep.buy]
+            step: BuyHardware = wizard.tab_generators[TutorialStep.buy]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -149,7 +150,7 @@ def test_tutorial_wallet_setup(
 
         def page_sticker() -> None:
             shutter.save(main_window)
-            step: StickerTheHardware = wallet_steps.tab_generators[TutorialStep.sticker]
+            step: StickerTheHardware = wizard.tab_generators[TutorialStep.sticker]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -157,7 +158,7 @@ def test_tutorial_wallet_setup(
 
         def page_generate() -> None:
             shutter.save(main_window)
-            step: GenerateSeed = wallet_steps.tab_generators[TutorialStep.generate]
+            step: GenerateSeed = wizard.tab_generators[TutorialStep.generate]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -165,7 +166,7 @@ def test_tutorial_wallet_setup(
 
         def page_import() -> None:
             shutter.save(main_window)
-            step: ImportXpubs = wallet_steps.tab_generators[TutorialStep.import_xpub]
+            step: ImportXpubs = wizard.tab_generators[TutorialStep.import_xpub]
 
             # check that you cannot go further without import xpub
             def wrong_entry(dialog: QMessageBox) -> None:
@@ -311,11 +312,11 @@ def test_tutorial_wallet_setup(
         w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
         qt_wallet = main_window.get_qt_wallet(tab=w)
         assert qt_wallet
-        wallet_steps = qt_wallet.wallet_steps
+        wizard = qt_wallet.wizard
 
         def page_backup() -> None:
             shutter.save(main_window)
-            step: BackupSeed = wallet_steps.tab_generators[TutorialStep.backup_seed]
+            step: BackupSeed = wizard.tab_generators[TutorialStep.backup_seed]
             with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                 assert step.custom_yes_button.isVisible()
                 step.custom_yes_button.click()
@@ -330,14 +331,14 @@ def test_tutorial_wallet_setup(
 
         def page_receive() -> None:
             shutter.save(main_window)
-            step: ReceiveTest = wallet_steps.tab_generators[TutorialStep.receive]
+            step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
             assert isinstance(step.quick_receive, BitcoinQuickReceive)
             address = step.quick_receive.group_boxes[0].text_edit.input_field.toPlainText()
             assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
             faucet.send(address, amount=amount)
 
             called_args_message_box = get_called_args_message_box(
-                "bitcoin_safe.gui.qt.wallet_steps.Message",
+                "bitcoin_safe.gui.qt.wizard.Message",
                 step.check_button,
                 repeat_clicking_until_message_box_called=True,
             )
@@ -358,7 +359,7 @@ def test_tutorial_wallet_setup(
 
         def page_send() -> None:
             shutter.save(main_window)
-            step: SendTest = wallet_steps.tab_generators[TutorialStep.send]
+            step: SendTest = wizard.tab_generators[TutorialStep.send]
             assert step.refs.floating_button_box.isVisible()
             assert step.refs.floating_button_box.button_create_tx.isVisible()
             assert not step.refs.floating_button_box.tutorial_button_prefill.isVisible()
@@ -432,7 +433,7 @@ def test_tutorial_wallet_setup(
 
             assert viewer.button_send.isVisible()
 
-            with patch("bitcoin_safe.gui.qt.wallet_steps.Message") as mock_message:
+            with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
                 with qtbot.waitSignal(
                     main_window.signals.wallet_signals[qt_wallet.wallet.id].updated, timeout=10000
                 ):  # Timeout after 10 seconds
@@ -450,13 +451,24 @@ def test_tutorial_wallet_setup(
         def page10() -> None:
             shutter.save(main_window)
 
-            step: DistributeSeeds = wallet_steps.tab_generators[TutorialStep.distribute]
+            step: DistributeSeeds = wizard.tab_generators[TutorialStep.distribute]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
             shutter.save(main_window)
 
         page10()
+
+        def page11() -> None:
+            shutter.save(main_window)
+
+            step: LabelBackup = wizard.tab_generators[TutorialStep.sync]
+            assert step.buttonbox_buttons[0].isVisible()
+            step.buttonbox_buttons[0].click()
+
+            shutter.save(main_window)
+
+        page11()
 
         def do_close_wallet() -> None:
 

@@ -1,0 +1,133 @@
+{
+    "VERSION": "0.2.0",
+    "__class__": "Wallet",
+    "_blockchain_height": 200,
+    "_tips": [
+        20,
+        5
+    ],
+    "data_dump": {
+        "SyncTab": {
+            "auto_open_psbts": true,
+            "enabled": false,
+            "nostr_sync_dump": {
+                "debug": false,
+                "group_chat": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec1jsx7mqm8cqxm2q5k7ysud2xkhr5ug5arj759wkqjdv7mtx2lcppq3llqrw",
+                        "relay_list": {
+                            "last_updated": 1732695602.84203,
+                            "max_age": 30,
+                            "relays": []
+                        },
+                        "use_timer": false
+                    },
+                    "members": [],
+                    "network": "REGTEST",
+                    "sync_start": 1732714678.794401,
+                    "use_compression": true
+                },
+                "individual_chats_visible": false,
+                "network": "REGTEST",
+                "nostr_protocol": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec150nca9dh60249qg7fgknp2g7cn748m3f5a3a0us06ca9wfpjl9xqm755vl",
+                        "relay_list": {
+                            "last_updated": 1732695602.839202,
+                            "max_age": 30,
+                            "relays": []
+                        },
+                        "use_timer": false
+                    },
+                    "network": "REGTEST",
+                    "sync_start": null,
+                    "use_compression": true
+                }
+            }
+        },
+        "display_balance": {
+            "VERSION": "0.0.1",
+            "__class__": "Balance",
+            "confirmed": 0,
+            "immature": 0,
+            "trusted_pending": 0,
+            "untrusted_pending": 0
+        }
+    },
+    "descriptor_str": "wsh(sortedmulti(1,[5aa39a43/48'/1'/0'/2']tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD/<0;1>/*,[5459f23b/48'/1'/0'/2']tpubDF5XHNeYNBkmPio8Zkw8zz6hBFoQ5BgXthUENZ7x51nbgNeC7exH6ZR8ZHSLEkLrKLxL1ELarJoDcZ1ZCAVCGALKA2V2KrNfegb2dPvdY5K/<0;1>/*))#4e59znyp",
+    "gap": 20,
+    "gap_change": 5,
+    "id": "test_custom_wallet_setup_custom_single_sig",
+    "keystores": [
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "5AA39A43",
+            "key_origin": "m/48h/1h/0h/2h",
+            "label": "Signer 1",
+            "mnemonic": "peanut all ghost appear daring exotic choose disease bird ready love salad",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD"
+        },
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "5459F23B",
+            "key_origin": "m/48h/1h/0h/2h",
+            "label": "Recovery Signer 2",
+            "mnemonic": "chair useful hammer word edge hat title drastic priority chalk city gentle",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDF5XHNeYNBkmPio8Zkw8zz6hBFoQ5BgXthUENZ7x51nbgNeC7exH6ZR8ZHSLEkLrKLxL1ELarJoDcZ1ZCAVCGALKA2V2KrNfegb2dPvdY5K"
+        }
+    ],
+    "labels": {
+        "VERSION": "0.1.0",
+        "__class__": "Labels",
+        "categories": [
+            "KYC Exchange",
+            "Private"
+        ],
+        "data": {
+            "bcrt1q6cyag8pxec68ptvcgr3qgp3v89w8md463gfshcdzhr5nazjxtqgqqsk5hu": {
+                "VERSION": "0.0.2",
+                "__class__": "Label",
+                "category": "Private",
+                "label": null,
+                "ref": "bcrt1q6cyag8pxec68ptvcgr3qgp3v89w8md463gfshcdzhr5nazjxtqgqqsk5hu",
+                "timestamp": 1732714677.939355,
+                "type": "addr"
+            },
+            "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl": {
+                "VERSION": "0.0.2",
+                "__class__": "Label",
+                "category": "KYC Exchange",
+                "label": null,
+                "ref": "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl",
+                "timestamp": 1732714677.908788,
+                "type": "addr"
+            }
+        },
+        "default_category": "KYC Exchange"
+    },
+    "network": {
+        "__enum__": true,
+        "name": "Network",
+        "value": "REGTEST"
+    },
+    "refresh_wallet": false,
+    "tutorial_index": null
+}

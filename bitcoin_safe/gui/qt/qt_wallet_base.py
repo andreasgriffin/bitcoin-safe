@@ -37,7 +37,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.signal_carrying_object import SignalCarryingObject
-from bitcoin_safe.gui.qt.wallet_steps_base import WalletStepsBase
+from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.threading_manager import ThreadingManager
 
 from ...config import UserConfig
@@ -57,7 +57,7 @@ class SyncStatus(enum.Enum):
 
 class QtWalletBase(SignalCarryingObject, ThreadingManager):
     signal_after_sync = pyqtSignal(SyncStatus)  # SyncStatus
-    wallet_steps: WalletStepsBase
+    wizard: WizardBase
     wallet_descriptor_tab: QWidget
 
     def __init__(

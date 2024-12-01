@@ -1832,13 +1832,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         return ema_fee_rate
 
 
-class DescriptorExportTools:
-    @staticmethod
-    def get_coldcard_str(wallet_id: str, descriptor: MultipathDescriptor) -> str:
-        return f"""# Coldcard descriptor export of wallet: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
-{ descriptor.bdk_descriptors[0].as_string() }"""
-
-
 ###########
 # Functions that operatate on signals.get_wallets().values()
 

@@ -35,14 +35,13 @@ import subprocess
 import sys
 import traceback
 import webbrowser
-import xml.etree.ElementTree as ET
 from functools import lru_cache
-from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import bdkpython as bdk
+import numpy as np
 import PIL.Image as PilImage
 from bitcoin_qr_tools.data import is_bitcoin_address
 from PyQt6.QtCore import (
@@ -86,9 +85,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-
-from ...i18n import translate
-from ...util import register_cache, resource_path
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.util import register_cache, resource_path
 
 logger = logging.getLogger(__name__)
 
@@ -216,41 +214,22 @@ class AspectRatioSvgWidget(QSvgWidget):
         self._max_height = max_height
         # self.setMinimumSize(max_width, max_height)
 
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setFixedSize(self.calculate_proportional_size())
 
     def calculate_proportional_size(self):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
         return qsize
 
-    def modify_svg_text(self, old_text: str, new_text: str):
-
+    def modify_svg_text(self, *replace_tuples: Tuple[str, str]):
         # Load the original SVG content
         with open(self.svg_path, "r", encoding="utf-8") as file:
             original_svg_content = file.read()
 
-        # Register namespaces if needed (for saving purposes)
-        namespaces = {
-            "": "http://www.w3.org/2000/svg",
-            "ns0": "http://www.w3.org/2000/svg",
-            "ns1": "http://www.w3.org/2000/svg",
-        }
+        for old_text, new_text in replace_tuples:
+            original_svg_content = original_svg_content.replace(old_text, new_text)
 
-        # Parse the SVG content
-        tree = ET.ElementTree(ET.fromstring(original_svg_content))
-        root = tree.getroot()
-
-        # Find all text elements in the SVG
-        for tspan in root.findall(".//{http://www.w3.org/2000/svg}tspan"):
-            if tspan.text == old_text:
-                tspan.text = new_text
-
-        # Convert the modified SVG tree back to a bytes representation
-        fake_file = BytesIO()
-        tree.write(fake_file, encoding="utf-8", xml_declaration=True)
-
-        byte_data = fake_file.getvalue()
-        modified_svg_content = QByteArray(byte_data)  # type: ignore[call-overload]
+        modified_svg_content = QByteArray(original_svg_content.encode())  # type: ignore[call-overload]
         self.load(modified_svg_content)
 
 
@@ -280,13 +259,15 @@ def add_centered_icons(
 def add_to_buttonbox(
     buttonBox: QDialogButtonBox,
     text: str,
-    icon_name: str | None = None,
+    icon_name: str | QIcon | None = None,
     on_clicked=None,
     role=QDialogButtonBox.ButtonRole.ActionRole,
 ):
     # Create a custom QPushButton with an icon
     button = QPushButton(text)
-    if icon_name:
+    if isinstance(icon_name, QIcon):
+        button.setIcon(icon_name)
+    elif icon_name:
         button.setIcon(QIcon(icon_path(icon_name)))
 
     # Add the button to the QDialogButtonBox
@@ -679,8 +660,16 @@ class ColorScheme:
         ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
 
 
-def icon_path(icon_basename: str):
+def icon_path(icon_basename: str) -> str:
     return resource_path("gui", "icons", icon_basename)
+
+
+def hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", signer_basename)
+
+
+def generated_hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", "generated", signer_basename)
 
 
 def screenshot_path(basename: str):
@@ -757,9 +746,11 @@ def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
     return pil_image
 
 
-def save_file_dialog(name_filters=None, default_suffix=None, default_filename=None) -> Optional[str]:
+def save_file_dialog(
+    name_filters=None, default_suffix=None, default_filename=None, window_title="Save File"
+) -> Optional[str]:
     file_dialog = QFileDialog()
-    file_dialog.setWindowTitle("Save File")
+    file_dialog.setWindowTitle(window_title)
     if default_suffix:
         file_dialog.setDefaultSuffix(default_suffix)
 
@@ -822,3 +813,49 @@ def clear_layout(layout: QLayout) -> None:
             layout.removeWidget(widget)
             widget.setParent(None)  # Remove widget from parent to fully disconnect it
             widget.deleteLater()
+
+
+def svg_widgets_hardware_signers(
+    num_keystores: int, parent: QWidget, sticker=False, max_width=200, max_height=200
+) -> List[AspectRatioSvgWidget]:
+    def stretch(l: List) -> List:
+        new = [l[0]] * int(np.ceil(num_keystores / len(l))) + l[1:] * int(np.ceil(num_keystores / len(l)))
+        return new[:num_keystores]
+
+    hardware_signers = [
+        {
+            "path": hardware_signer_path("coldcard-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("jade-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("bitbox02-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("passport-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+    ]
+
+    widgets = [
+        AspectRatioSvgWidget(
+            hardware_signer["path"],
+            max_width=hardware_signer["max_width"],
+            max_height=hardware_signer["max_height"],
+            parent=parent,
+        )
+        for hardware_signer in stretch(hardware_signers)
+    ]
+
+    if not sticker:
+        for widget in widgets:
+            widget.modify_svg_text(('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", ""))
+    return widgets

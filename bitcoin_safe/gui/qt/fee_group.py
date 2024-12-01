@@ -113,7 +113,10 @@ class FeeGroup(QObject):
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
         self.groupBox_Fee.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.groupBox_Fee_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        self.groupBox_Fee_layout.setContentsMargins(0, 0, 0, 0)
+        current_margins = self.groupBox_Fee_layout.contentsMargins()
+        self.groupBox_Fee_layout.setContentsMargins(
+            0, 0, 0, current_margins.bottom()
+        )  # Left, Top, Right, Bottom margins
 
         self._confirmed_block = None
         self._mempool_projected_block = None
@@ -143,7 +146,9 @@ class FeeGroup(QObject):
                 mempool_data, config=self.config, fee_rate=fee_rate
             )
         else:
-            self._mempool_buttons = MempoolButtons(mempool_data, max_button_count=3)
+            self._mempool_buttons = MempoolButtons(
+                fee_rate=fee_rate, mempool_data=mempool_data, max_button_count=5
+            )
 
         if allow_edit:
             self.mempool().signal_click.connect(self.set_fee_rate)
@@ -222,7 +227,7 @@ class FeeGroup(QObject):
         self.approximate_fee_label.setText(html_f(self.tr("Approximate fee rate"), bf=True))
 
         # only in editor mode
-        self.label_block_number.setHidden(self.spin_fee_rate.isReadOnly())
+        self.label_block_number.setHidden(True)
         if self.spin_fee_rate.value():
             self.label_block_number.setText(
                 self.tr("in ~{n}. Block").format(

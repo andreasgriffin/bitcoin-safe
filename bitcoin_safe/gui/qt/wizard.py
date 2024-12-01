@@ -33,6 +33,7 @@ from abc import abstractmethod
 
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.gui import USBGui
+from PyQt6.QtWidgets import QCheckBox
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
@@ -41,10 +42,11 @@ from bitcoin_safe.gui.qt.keystore_ui import (
     HardwareSignerInteractionWidget,
     icon_for_label,
 )
-from bitcoin_safe.gui.qt.qr_types import QrType
-from bitcoin_safe.gui.qt.register_multisig import USBRegisterMultisigWidget
-from bitcoin_safe.gui.qt.wallet_steps_base import WalletStepsBase
-from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
+from bitcoin_safe.gui.qt.sync_tab import SyncTab
+from bitcoin_safe.gui.qt.wizard_base import WizardBase
+from bitcoin_safe.hardware_signers import HardwareSigners
+from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager
@@ -57,7 +59,6 @@ from math import ceil
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
-import numpy as np
 from bitcoin_qr_tools.data import Data
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
@@ -78,9 +79,7 @@ from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet, QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.tutorial_screenshots import (
-    HardwareSigners,
     ScreenshotsGenerateSeed,
-    ScreenshotsRegisterMultisig,
     ScreenshotsTutorial,
     ScreenshotsViewSeed,
 )
@@ -99,9 +98,12 @@ from .util import (
     caught_exception_message,
     center_in_widget,
     create_button_box,
+    generate_help_button,
+    generated_hardware_signer_path,
     icon_path,
     one_time_signal_connection,
     open_website,
+    svg_widgets_hardware_signers,
 )
 
 
@@ -126,6 +128,7 @@ class TutorialStep(enum.Enum):
     send9 = enum.auto()
     send10 = enum.auto()
     distribute = enum.auto()
+    sync = enum.auto()
 
 
 class FloatingButtonBar(QDialogButtonBox):
@@ -325,16 +328,11 @@ class BuyHardware(BaseTab):
         widget_layout = QHBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        num_coldcards = int(np.ceil(self.num_keystores() / 2))
-        num_bitbox = int(np.floor(self.num_keystores() / 2))
-        add_centered_icons(
-            ["coldcard-only.svg"] * num_coldcards + ["bitbox02.svg"] * num_bitbox,
-            widget_layout,
-            max_sizes=[(60, 80)] * num_coldcards + [(60, 50)] * num_bitbox,
+        svg_widgets = svg_widgets_hardware_signers(
+            self.num_keystores(), parent=widget, max_height=100, max_width=100
         )
-
-        if (_layout_item := widget_layout.itemAt(0)) and (_widget := _layout_item.widget()):
-            _widget.setMaximumWidth(200)
+        for i, svg_widget in enumerate(svg_widgets):
+            widget_layout.addWidget(svg_widget)
 
         right_widget = QWidget()
         right_widget_layout = QVBoxLayout(right_widget)
@@ -346,7 +344,7 @@ class BuyHardware(BaseTab):
         right_widget_layout.addWidget(self.label_buy)
 
         self.button_buy_q = QPushButton()
-        self.button_buy_q.setIcon(QIcon(icon_path("coldcard-only.svg")))
+        self.button_buy_q.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
         self.button_buy_q.clicked.connect(
             lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
         )
@@ -355,7 +353,7 @@ class BuyHardware(BaseTab):
         self.button_buy_q.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
         self.button_buycoldcard = QPushButton()
-        self.button_buycoldcard.setIcon(QIcon(icon_path("coldcard-only.svg")))
+        self.button_buycoldcard.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
         self.button_buycoldcard.clicked.connect(
             lambda: open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
         )
@@ -364,7 +362,7 @@ class BuyHardware(BaseTab):
         self.button_buycoldcard.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
         self.button_buybitbox = QPushButton()
-        self.button_buybitbox.setIcon(QIcon(icon_path("bitbox02.svg")))
+        self.button_buybitbox.setIcon(QIcon(generated_hardware_signer_path("bitbox02.svg")))
         self.button_buybitbox.clicked.connect(
             lambda: open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
         )
@@ -373,7 +371,7 @@ class BuyHardware(BaseTab):
             right_widget_layout.addWidget(self.button_buybitbox)
 
         self.button_buyjade = QPushButton()
-        self.button_buyjade.setIcon(QIcon(icon_path("jade.png")))
+        self.button_buyjade.setIcon(QIcon(generated_hardware_signer_path("jade.svg")))
         self.button_buyjade.clicked.connect(
             lambda: open_website("https://store.blockstream.com/?code=XEocg5boS77D")
         )
@@ -456,16 +454,11 @@ class StickerTheHardware(BaseTab):
         self.label = QLabel()
         widget_layout.addWidget(self.label)
 
-        paths: List[str] = [icon_path("coldcard-sticker.svg")] * int(np.ceil(self.num_keystores() / 2)) + [
-            icon_path("bitbox02-sticker.svg")
-        ] * int(np.floor(self.num_keystores() / 2))
-        svg_widgets = []
-        for i in range(self.num_keystores()):
-            svg_widget = AspectRatioSvgWidget(paths[i], max_width=400, max_height=200, parent=widget)
+        svg_widgets = svg_widgets_hardware_signers(self.num_keystores(), parent=widget)
+        for i, svg_widget in enumerate(svg_widgets):
             svg_widget.modify_svg_text(
-                old_text="Label", new_text=self.refs.qtwalletbase.get_editable_protowallet().sticker_name(i)
+                ("Label", self.refs.qtwalletbase.get_editable_protowallet().sticker_name(i))
             )
-            svg_widgets.append(svg_widget)
 
         widget1 = QWidget(parent=widget)
         widget_layout.addWidget(widget1)
@@ -817,6 +810,9 @@ class BackupSeed(BaseTab):
 
         widget_layout.addWidget(self.label_print_instructions)
 
+        screenshots = ScreenshotsViewSeed()
+        self.button_help = generate_help_button(screenshots, title="View seed words")
+
         def do_pdf() -> None:
             if not self.refs.qt_wallet:
                 Message(self.tr("Please complete the previous steps."))
@@ -832,6 +828,7 @@ class BackupSeed(BaseTab):
         self.custom_cancel_button = QPushButton()
         self.custom_cancel_button.clicked.connect(self.refs.go_to_previous_index)
         buttonbox.addButton(self.custom_cancel_button, QDialogButtonBox.ButtonRole.RejectRole)
+        buttonbox.addButton(self.button_help, QDialogButtonBox.ButtonRole.HelpRole)
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
@@ -1116,71 +1113,24 @@ class RegisterMultisig(BaseTab):
                 enable_qr=True,
                 network=self.refs.qtwalletbase.config.network,
                 threading_parent=self.threading_parent,
+                wallet_name=self.refs.qt_wallet.wallet.id,
             )
+            self.export_qr_widget.set_minimum_size_as_floating_window()
 
         # ui hardware_signer_interactions
         self.hardware_signer_tabs = DataTabWidget(HardwareSignerInteractionWidget)
         widget_layout.addWidget(self.hardware_signer_tabs)
         for label in self.refs.qtwalletbase.get_keystore_labels():
 
-            hardware_signer_interaction = HardwareSignerInteractionWidget()
+            hardware_signer_interaction = RegisterMultisigInteractionWidget(
+                qt_wallet=self.refs.qt_wallet, threading_parent=self, parent=widget
+            )
             self.hardware_signer_tabs.addTab(
                 hardware_signer_interaction,
                 icon=icon_for_label(label),
                 description=label,
                 data=hardware_signer_interaction,
             )
-
-            ## help
-            screenshots = ScreenshotsRegisterMultisig()
-            hardware_signer_interaction.add_help_button(screenshots)
-            button_export_file = hardware_signer_interaction.add_export_file_button()
-            export_qr_button, export_qr_menu = hardware_signer_interaction.add_export_qr_button()
-            button_hwi = hardware_signer_interaction.add_hwi_button()
-
-            if self.export_qr_widget and self.refs.qt_wallet:
-                ## file
-                def export():
-                    if self.export_qr_widget and self.refs.qt_wallet:
-                        self.export_qr_widget.export_to_file(
-                            default_filename=f"{self.refs.qt_wallet.wallet.id}.txt"
-                        )
-
-                button_export_file.clicked.connect(export)
-
-                ## qr
-
-                def factory_show_export_widget(qr_type: QrType):
-                    def show_export_widget(qr_type: QrType = qr_type):
-                        if not self.export_qr_widget:
-                            return
-                        self.export_qr_widget.setCurrentQrType(value=qr_type)
-                        self.export_qr_widget.setMinimumSize(450, 300)
-                        self.export_qr_widget.show()
-
-                    return show_export_widget
-
-                for qr_type in self.export_qr_widget.qr_types:
-                    text = f"{qr_type.display_name} - {', '.join([hardware_signer.display_name for name, hardware_signer in  HardwareSigners.__dict__.items()  if not name.startswith('__')  and hardware_signer.qr_type==qr_type])}"
-                    export_qr_menu.add_action(text, factory_show_export_widget(qr_type))
-
-                ## hwi
-
-                addresses = self.refs.qt_wallet.wallet.get_addresses()
-                index = 0
-                address = addresses[index] if len(addresses) > index else ""
-                usb_widget = USBRegisterMultisigWidget(
-                    network=self.refs.qt_wallet.wallet.network,
-                    signals=self.refs.qt_wallet.signals,
-                )
-                usb_widget.set_descriptor(
-                    keystores=self.refs.qt_wallet.wallet.keystores,
-                    descriptor=self.refs.qt_wallet.wallet.multipath_descriptor,
-                    expected_address=address,
-                    kind=bdk.KeychainKind.EXTERNAL,
-                    address_index=index,
-                )
-                button_hwi.clicked.connect(lambda: usb_widget.show())
 
         widget_layout.addWidget(self.hardware_signer_tabs)
 
@@ -1298,7 +1248,6 @@ class DistributeSeeds(BaseTab):
         right_widget_layout.addWidget(self.label_main)
 
         right_widget_layout.addItem(QSpacerItem(1, 40))
-        self.button_next.setIcon(QIcon(icon_path("checkmark.svg")))
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
@@ -1347,7 +1296,97 @@ class DistributeSeeds(BaseTab):
                     size=12,
                 )
             )
+
+
+class LabelBackup(BaseTab):
+    def create(self) -> TutorialWidget:
+
+        widget = QWidget()
+        widget_layout = QHBoxLayout(widget)
+        widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+
+        self.checkbox = QCheckBox()
+        self.checkbox.setEnabled(bool(self.refs.qt_wallet))
+        if self.refs.qt_wallet:
+            self.refs.qt_wallet.sync_tab.main_widget.checkbox.stateChanged.connect(
+                self.checkbox_state_changed
+            )
+            self.checkbox.stateChanged.connect(self.refs.qt_wallet.sync_tab.main_widget.checkbox.setChecked)
+
+        left_widget = QWidget()
+        left_widget_layout = QVBoxLayout(left_widget)
+        left_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        widget_layout.addWidget(left_widget)
+
+        self.icon = AspectRatioSvgWidget(icon_path("cloud-sync-off.svg"), 300, 300)
+        left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
+
+        left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
+
+        right_widget = QWidget()
+        right_widget_layout = QVBoxLayout(right_widget)
+        right_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        widget_layout.addWidget(right_widget)
+
+        self.label_main = QLabel(widget)
+        self.label_main.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse | Qt.TextInteractionFlag.LinksAccessibleByMouse
+        )
+        self.label_main.setOpenExternalLinks(True)  # Allows opening links externally
+        self.label_main.setMinimumWidth(700)
+        self.label_main.setWordWrap(True)
+        right_widget_layout.addWidget(self.label_main)
+
+        # right_widget_layout.addItem(QSpacerItem(1, 40))
+
+        self.button_next.setIcon(QIcon(icon_path("checkmark.svg")))
+
+        tutorial_widget = TutorialWidget(
+            self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        )
+        tutorial_widget.synchronize_visiblity(
+            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
+        )
+
+        self.updateUi()
+        return tutorial_widget
+
+    def checkbox_state_changed(self, state) -> None:
+        # update the icon
+        self.updateUi()
+
+    def updateUi(self) -> None:
+        super().updateUi()
+
+        self.label_main.setText(
+            html_f(
+                f"""                
+<ul>
+<li>{self.tr('Encrypted cloud backup of the address labels and categories')}</li>
+    <ul>
+    <li>{self.tr('Backup secret sync key:')  + '<br>'+ html_f( self.refs.qt_wallet.sync_tab.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(), bf=True) if self.refs.qt_wallet else ''}</li> 
+    </ul>   
+<li>{self.tr('Multi-computer synchronization and chat')}</li> 
+    <ul>
+    <li>{self.tr('Choose trusted computers in SyncTalk tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
+    </ul>
+</ul>   
+ """,
+                add_html_and_body=True,
+                p=True,
+                size=12,
+            )
+        )
         self.button_next.setText(self.tr("Finish"))
+        self.checkbox.setText(self.tr("Enable"))
+        icon_path = SyncTab.get_icon_path(
+            enabled=bool(self.refs.qt_wallet and self.refs.qt_wallet.sync_tab.enabled())
+        )
+        self.icon.load(icon_path)
+        self.checkbox.setChecked(self.refs.qt_wallet.sync_tab.enabled() if self.refs.qt_wallet else False)
 
 
 class SendTest(BaseTab):
@@ -1452,7 +1491,7 @@ class SendTest(BaseTab):
         )
 
 
-class WalletSteps(WalletStepsBase):
+class Wizard(WizardBase):
     signal_create_wallet = pyqtSignal()
 
     def __init__(
@@ -1519,6 +1558,7 @@ class WalletSteps(WalletStepsBase):
             )
 
         self.tab_generators[TutorialStep.distribute] = DistributeSeeds(refs=refs)
+        self.tab_generators[TutorialStep.sync] = LabelBackup(refs=refs)
 
         self.wallet_tabs = wallet_tabs
         self.max_test_fund = max_test_fund
@@ -1786,6 +1826,7 @@ class WalletSteps(WalletStepsBase):
             TutorialStep.receive: self.tr("Receive Test"),
             TutorialStep.distribute: self.tr("Put in secure locations"),
             TutorialStep.register: self.tr("Register multisig on signers"),
+            TutorialStep.sync: self.tr("SyncTalk"),
         }
         for i, tutoral_step in enumerate(self.get_send_tests_steps()):
             labels[tutoral_step] = (

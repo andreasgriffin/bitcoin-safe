@@ -66,7 +66,7 @@ Translate all following lines   to the following languages
  {languages}
 Formatting instructions:
 - no bullets points.  
-- preserve the linebreaks of each line perfectly! YOU MUST preserve the linebreaks of each line perfectly!
+- preserve the linebreaks of each line perfectly! keep the newline after each translated line.
 - leave the brackets {{}} and their content unchanged
 - group by language  (add 2 linebreaks after the language caption)
 - please keep the linebreaks as in the originals

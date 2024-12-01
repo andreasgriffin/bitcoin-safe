@@ -12,8 +12,8 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.0.0b4"
-description = "Long-term Bitcoin savings made Easy"
+version = "1.0.0b5"
+description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
 readme = "README.md"
@@ -39,9 +39,9 @@ python-gnupg = "^0.5.2"
 # bitcoin-qr-tools =   {path="../bitcoin-qr-tools"} #  "^0.10.15"
 # bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
 # bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
-bitcoin-qr-tools =    "^0.14.10"
-bitcoin-nostr-chat =    "^0.4.1"
-bitcoin-usb =  "^0.5.3"
+bitcoin-qr-tools =    "^0.15.2"
+bitcoin-nostr-chat =    "^0.5.0"
+bitcoin-usb =  "^0.6.0"
 numpy = "^2.0.1" 
 pgpy = "^0.6.0"
 
@@ -49,7 +49,7 @@ pgpy = "^0.6.0"
 [tool.briefcase]
 project_name = "Bitcoin-Safe"
 bundle = "org.bitcoin-safe"
-version = "1.0.0b4"
+version = "1.0.0b5"
 url = "https://github.com/andreasgriffin/bitcoin-safe"
 author = "Andreas Griffin"
 author_email = "andreasgriffin@proton.me"
@@ -118,7 +118,7 @@ NSCameraUsageDescription = "This application supports scanning QR-codes."
 manylinux = "manylinux_2_28"
 icon = "tools/resources/icon"
 resources = [ "tools/resources/icon/*.png", "tools/resources/icon/*.svg",]
-version = "1.0.0b4"
+version = "1.0.0b5"
 # system_requires = [ "cmake", "gcc", "gcc-c++", "make", "perl",  "git",   "libxcb", "libxcb-devel", "xcb-util", "xcb-util-devel",   "mesa-libGL-devel", "openssl-devel",   "bison", "flex", "gperf", "sqlite-devel",  "libicu-devel"]
 
 
@@ -128,7 +128,7 @@ flatpak_runtime = "org.kde.Platform"
 flatpak_runtime_version = "6.6"
 flatpak_sdk = "org.kde.Sdk"
 
-version = "1.0.0b4"
+version = "1.0.0b5"
 
 
 [tool.briefcase.app.bitcoin-safe.linux.system.debian]

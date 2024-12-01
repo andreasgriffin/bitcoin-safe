@@ -55,6 +55,7 @@ from ..test_setup_bitcoin_core import (  # type: ignore
     faucet,
 )
 
+bacon_seed = ("bacon " * 24).strip()
 test_seeds = """peanut all ghost appear daring exotic choose disease bird ready love salad
 chair useful hammer word edge hat title drastic priority chalk city gentle
 expand text improve perfect sponsor gesture flush wolf poem blouse kangaroo lesson

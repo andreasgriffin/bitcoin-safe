@@ -29,7 +29,6 @@
 
 import logging
 import signal as syssignal
-from collections import deque
 from pathlib import Path
 
 from bitcoin_usb.tool_gui import ToolGui
@@ -42,6 +41,7 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
+from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 import base64
 import os
 import sys
-from typing import Deque, Dict, Iterable, List, Literal, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
@@ -75,7 +75,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
-from bitcoin_safe.gui.qt.wallet_steps import ImportXpubs, TutorialStep, WalletSteps
+from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
 
 from ...config import UserConfig
 from ...fx import FX
@@ -87,6 +87,7 @@ from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
+from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
 from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
 from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
@@ -120,8 +121,7 @@ class MainWindow(QMainWindow):
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
         self.new_startup_network: bdk.Network | None = None
-        self.address_dialogs: Deque[address_dialog.AddressDialog] = deque(maxlen=1000)
-        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+        self.attached_widgets = AttachedWidgets(maxlen=1000)
         self.setMinimumSize(600, 600)
 
         self.signals = Signals()
@@ -134,6 +134,7 @@ class MainWindow(QMainWindow):
             self.config.language_code = self.language_chooser.dialog_choose_language(self)
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network)
+        self.hwi_tool_gui.setWindowIcon(read_QIcon("logo.svg"))
         self.setupUi(self)
 
         self.mempool_data = MempoolData(
@@ -257,13 +258,13 @@ class MainWindow(QMainWindow):
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         # header bar about testnet coins
+        self.notification_bar_testnet = NotificationBarRegtest(
+            open_network_settings=self.open_network_settings,
+            network=self.config.network,
+            signals_min=self.signals,
+        )
         if self.config.network != bdk.Network.BITCOIN:
-            notification_bar = NotificationBarRegtest(
-                open_network_settings=self.open_network_settings,
-                network=self.config.network,
-                signals_min=self.signals,
-            )
-            vbox.addWidget(notification_bar)
+            vbox.addWidget(self.notification_bar_testnet)
 
         self.update_notification_bar = UpdateNotificationBar(
             signals_min=self.signals, threading_parent=self.threading_manager
@@ -324,11 +325,11 @@ class MainWindow(QMainWindow):
         self.menu_action_export_pdf = self.menu_wallet_export.add_action(
             "", self.export_wallet_pdf, icon=read_QIcon("descriptor-backup.svg")
         )
-        self.menu_action_export_for_coldcard = self.menu_wallet_export.add_action(
-            "", self.export_wallet_for_coldcard, icon=read_QIcon("coldcard-only.svg")
-        )
         self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
-            "", self.export_wallet_for_coldcard_q
+            "", self.show_descriptor_export_window
+        )
+        self.menu_action_register_multisig = self.menu_wallet_export.add_action(
+            "", self.show_register_multisig
         )
 
         self.menu_wallet.addSeparator()
@@ -419,9 +420,9 @@ class MainWindow(QMainWindow):
         self.menu_wallet_export.setTitle(self.tr("&Export"))
         self.menu_action_rename_wallet.setText(self.tr("&Rename Wallet"))
         self.menu_action_change_password.setText(self.tr("&Change Password"))
-        self.menu_action_export_for_coldcard.setText(self.tr("&Export Coldcard txt file"))
         self.menu_action_export_pdf.setText(self.tr("&Export Wallet PDF"))
-        self.menu_action_export_descriptor.setText(self.tr("&Export Descriptor"))
+        self.menu_action_export_descriptor.setText(self.tr("&Export Descriptor/Wallet to hardware signers"))
+        self.menu_action_register_multisig.setText(self.tr("&Register Multisig with hardware signers"))
         self.menu_action_refresh_wallet.setText(self.tr("Re&fresh"))
         self.menu_tools.setTitle(self.tr("&Tools"))
         self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
@@ -571,29 +572,39 @@ class MainWindow(QMainWindow):
     def open_network_settings(self) -> None:
         self.network_settings_ui.exec()
 
-    def export_wallet_for_coldcard(self, wallet: Wallet | None = None) -> None:
-        qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
-        if not qt_wallet or not qt_wallet.wallet:
-            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
-            return
-
-        qt_wallet.export_wallet_for_coldcard()
-
-    def export_wallet_for_coldcard_q(self, wallet: Wallet | None = None) -> None:
+    def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
             Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
             return
 
         edit = qt_wallet.wallet_descriptor_ui.edit_descriptor
-        dialog = DescriptorExport(
+        d = DescriptorExport(
             MultipathDescriptor.from_descriptor_str(edit.text(), qt_wallet.wallet.network),
             qt_wallet.signals,
             parent=self,
             network=self.config.network,
             threading_parent=self.threading_manager,
+            wallet_id=qt_wallet.wallet.id,
         )
-        dialog.show()
+        self.attached_widgets.append(d)
+        d.show()
+
+    def show_register_multisig(self, wallet: Wallet | None = None) -> None:
+        qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
+        if not qt_wallet or not qt_wallet.wallet:
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            return
+        if not qt_wallet.wallet.is_multisig():
+            Message(self.tr("Please select a Multisignature wallet first"), type=MessageType.Warning)
+            return
+
+        hardware_signer_interaction = RegisterMultisigInteractionWidget(
+            qt_wallet=qt_wallet, threading_parent=self.threading_manager
+        )
+        hardware_signer_interaction.set_minimum_size_as_floating_window()
+        hardware_signer_interaction.show()
+        self.attached_widgets.append(hardware_signer_interaction)
 
     def export_wallet_pdf(self, wallet: Wallet | None = None) -> None:
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
@@ -718,11 +729,11 @@ class MainWindow(QMainWindow):
             ]:
                 self.open_tx_like_in_tab(data.data)
 
-        if self._temp_bitcoin_video_widget:
-            self._temp_bitcoin_video_widget.close()
-        self._temp_bitcoin_video_widget = BitcoinVideoWidget()
-        self._temp_bitcoin_video_widget.signal_data.connect(result_callback)
-        self._temp_bitcoin_video_widget.show()
+        self.attached_widgets.remove_all_of_type(BitcoinVideoWidget)
+        d = BitcoinVideoWidget()
+        self.attached_widgets.append(d)
+        d.signal_data.connect(result_callback)
+        d.show()
         return None
 
     def dialog_open_tx_from_str(self) -> None:
@@ -739,6 +750,7 @@ class MainWindow(QMainWindow):
             ),
             text_placeholder=self.tr("Paste your Bitcoin Transaction or PSBT in here or drop a file"),
         )
+        self.attached_widgets.append(tx_dialog)
         tx_dialog.show()
 
     def get_tab_with_title(self, tab_widget: QTabWidget, title) -> Optional[int]:
@@ -1134,17 +1146,17 @@ class MainWindow(QMainWindow):
         )
 
         # tutorial
-        wallet_steps = WalletSteps(
+        wizard = Wizard(
             wallet_tabs=qtprotowallet.tabs,
             qtwalletbase=qtprotowallet,
         )
         if show_tutorial:
             protowallet.tutorial_index = 0
-            wallet_steps.set_current_index(protowallet.tutorial_index)
-            wallet_steps.set_visibilities()
-        qtprotowallet.wallet_steps = wallet_steps
+            wizard.set_current_index(protowallet.tutorial_index)
+            wizard.set_visibilities()
+        qtprotowallet.wizard = wizard
 
-        tab_import_xpub = wallet_steps.tab_generators[TutorialStep.import_xpub]
+        tab_import_xpub = wizard.tab_generators[TutorialStep.import_xpub]
         if not isinstance(tab_import_xpub, ImportXpubs):
             logger.error(f"{tab_import_xpub} is not of type ImportXpubs")
             return None
@@ -1163,7 +1175,7 @@ class MainWindow(QMainWindow):
                 keystore_uis=tab_import_xpub.keystore_uis,
             )
 
-        wallet_steps.signal_create_wallet.connect(create_qtwallet_from_ui)
+        wizard.signal_create_wallet.connect(create_qtwallet_from_ui)
 
         # add to tabs
         self.tab_wallets.add_tab(
@@ -1204,7 +1216,7 @@ class MainWindow(QMainWindow):
             )
 
             # tutorial
-            qt_wallet.wallet_steps = WalletSteps(
+            qt_wallet.wizard = Wizard(
                 wallet_tabs=qt_wallet.tabs,
                 qtwalletbase=qt_wallet,
                 qt_wallet=qt_wallet,
@@ -1227,7 +1239,7 @@ class MainWindow(QMainWindow):
         # )
         # qt_wallet.tabs.set_top_right_widget(search_box)
 
-        qt_wallet.wallet_steps.set_visibilities()
+        qt_wallet.wizard.set_visibilities()
         self.language_chooser.add_signal_language_switch(
             self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
         )
@@ -1244,13 +1256,13 @@ class MainWindow(QMainWindow):
             Message(self.tr("Please complete the wallet setup."))
             return
 
-        if qt_wallet.wallet_steps:
+        if qt_wallet.wizard:
             if qt_wallet.wallet.tutorial_index is None:
-                qt_wallet.wallet.tutorial_index = qt_wallet.wallet_steps.step_bar.number_of_steps - 1
+                qt_wallet.wallet.tutorial_index = qt_wallet.wizard.step_bar.number_of_steps - 1
             else:
                 qt_wallet.wallet.tutorial_index = None
 
-            qt_wallet.wallet_steps.set_visibilities()
+            qt_wallet.wizard.set_visibilities()
 
     def _get_qt_base_wallet(
         self,
@@ -1296,7 +1308,7 @@ class MainWindow(QMainWindow):
             self.mempool_data,
             parent=parent,
         )
-        self.address_dialogs.append(d)
+        self.attached_widgets.append(d)
         d.show()
 
     def event_wallet_tab_closed(self) -> None:
@@ -1380,6 +1392,7 @@ class MainWindow(QMainWindow):
             self.config.network = self.new_startup_network
             self.config.save()
 
+        self.tray.hide()
         logger.info(f"Finished close handling of {self}")
         super().closeEvent(event)
 

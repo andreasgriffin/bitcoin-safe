@@ -558,6 +558,7 @@ class AddressList(MyTreeView):
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
+        item[self.Columns.FIAT_BALANCE].setForeground(QBrush(color))
         item[self.Columns.FIAT_BALANCE].setData(fiat_balance_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="171"
+   height="300"
+   viewBox="0 0 171 300"
+   fill="none"
+   version="1.1"
+   id="svg749"
+   sodipodi:docname="cobo.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview751"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.9492577"
+     inkscape:cx="100.80761"
+     inkscape:cy="169.55172"
+     inkscape:window-width="1169"
+     inkscape:window-height="1008"
+     inkscape:window-x="751"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg749" />
+  <g
+     clip-path="url(#clip0)"
+     id="g742">
+    <rect
+       x="1.2439"
+       y="4"
+       width="168"
+       height="295"
+       stroke="black"
+       stroke-width="2"
+       id="rect714" />
+    <rect
+       x="115.244"
+       y="1"
+       width="30"
+       height="3"
+       stroke="black"
+       stroke-width="2"
+       id="rect716" />
+    <rect
+       x="16.2439"
+       y="24"
+       width="138"
+       height="240"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect718" />
+    <rect
+       x="26.2439"
+       y="161"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect720" />
+    <rect
+       x="26.2439"
+       y="61"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect722" />
+    <rect
+       x="26.2439"
+       y="186"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect724" />
+    <rect
+       x="26.2439"
+       y="86"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect726" />
+    <rect
+       x="26.2439"
+       y="211"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect728" />
+    <rect
+       x="26.2439"
+       y="111"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect730" />
+    <rect
+       x="26.2439"
+       y="236"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect732" />
+    <rect
+       x="26.2439"
+       y="137"
+       width="118"
+       height="10"
+       rx="5"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect734" />
+    <rect
+       x="26.2439"
+       y="36"
+       width="10"
+       height="10"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect736" />
+    <rect
+       x="134.244"
+       y="36"
+       width="10"
+       height="10"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect738" />
+    <rect
+       x="66.2439"
+       y="277"
+       width="38"
+       height="6"
+       stroke="black"
+       stroke-opacity="0.25"
+       stroke-width="2"
+       id="rect740" />
+  </g>
+  <defs
+     id="defs747">
+    <clipPath
+       id="clip0">
+      <rect
+         width="170"
+         height="300"
+         fill="white"
+         transform="translate(0.243896)"
+         id="rect744" />
+    </clipPath>
+  </defs>
+  <g
+     id="g358"
+     transform="translate(-5.0122312,-0.74754997)">
+    <rect
+       style="fill:#ffff00;stroke-width:11.0477"
+       visibility="hidden" id="rect304"
+       width="165.47148"
+       height="25.423618"
+       x="7.4371142"
+       y="5.9912944"
+       rx="6.9483471" />
+    <text
+       xml:space="preserve"
+       style="font-size:17.2645px;font-family:'Accanthis ADF Std No3';-inkscape-font-specification:'Accanthis ADF Std No3';fill:#ffff00;stroke-width:3.40613"
+       x="14.426712"
+       y="24.581799"
+       id="text464"><tspan
+         sodipodi:role="line"
+         id="tspan462"
+         x="14.426712"
+         y="24.581799"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.2645px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;stroke-width:3.40613"></tspan></text>
+  </g>
+</svg>
