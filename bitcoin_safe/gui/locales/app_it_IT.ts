@@ -184,6 +184,28 @@
     </message>
 </context>
 <context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
+    </message>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>Vai a {untrusted}  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>Per completare la connessione, accetta la mia richiesta {id} sull&apos;altro dispositivo {other}.  </translation>
+    </message>
+</context>
+<context>
     <name>BitBox02PairingDialog</name>
     <message>
         <source>Dialog</source>
@@ -254,6 +276,13 @@ shown on your BitBox02.</source>
     </message>
 </context>
 <context>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>Puoi inviare solo PSBTs o transazioni  </translation>
+    </message>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
@@ -292,49 +321,6 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>Blocco {n}</translation>
-    </message>
-</context>
-<context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Your sync key is:
-
-{sync_key}
-
- Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>La tua chiave di sincronizzazione è: {sync_key} Salvatela, e quando cliccherai su &apos;importa chiave di sincronizzazione&apos;, dovrebbe ripristinare le tue etichette dai relay nostr.  </translation>
-    </message>
-    <message>
-        <source>Sync key Export</source>
-        <translation>Esportazione chiave di sincronizzazione  </translation>
-    </message>
-    <message>
-        <source>Export sync key</source>
-        <translation>Esporta chiave di sincronizzazione  </translation>
-    </message>
-    <message>
-        <source>Import sync key</source>
-        <translation>Importa chiave di sincronizzazione  </translation>
-    </message>
-    <message>
-        <source>Reset sync key</source>
-        <translation>Reimposta chiave di sincronizzazione  </translation>
-    </message>
-    <message>
-        <source>Set custom Relay list</source>
-        <translation>Imposta l&apos;elenco dei Relay personalizzati  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>Fidato  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>Non fidato  </translation>
-    </message>
-    <message>
-        <source>My Device: {id}</source>
-        <translation>Il mio dispositivo: {id}  </translation>
     </message>
 </context>
 <context>
@@ -478,10 +464,21 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>Ingrandire  </translation>
+    </message>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge {} QR</source>
-        <translation>Ingrandisci {} QR</translation>
+        <source>Export to file</source>
+        <translation>Esporta in file  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Condividi con tutti i dispositivi in {wallet_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -516,6 +513,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Immagine (*.{image_format})  </translation>
     </message>
     <message>
+        <source>Enlarge {} QR</source>
+        <translation>Ingrandisci {} QR</translation>
+    </message>
+    <message>
         <source>Save as image</source>
         <translation>Salva come immagine</translation>
     </message>
@@ -542,10 +543,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>Condividi con dispositivi fidati</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Condividi con tutti i dispositivi in {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -1525,12 +1522,15 @@ Vuoi procedere comunque?</translation>
 <context>
     <name>NostrSync</name>
     <message>
-        <source>Go to {untrusted}</source>
-        <translation>Vai a {untrusted}  </translation>
+        <source>Group Chat</source>
+        <translation>Chat di Gruppo  </translation>
     </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
     <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>Per completare la connessione, accetta la mia richiesta {id} sull&apos;altro dispositivo {other}.  </translation>
+        <source>Chat</source>
+        <translation>Chat  </translation>
     </message>
 </context>
 <context>
@@ -2191,8 +2191,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>Backup delle etichette e sincronizzazione crittografata ai dispositivi fidati  </translation>
     </message>
     <message>
-        <source>Open received Transactions and PSBTs automatically in a new tab</source>
-        <translation>Apri automaticamente le Transazioni e PSBT ricevuti in una nuova scheda</translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>Apri Transazioni e PSBTs ricevuti  </translation>
     </message>
     <message>
         <source>Please backup your sync key:
@@ -2297,6 +2297,49 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
         <translation>Transazione firmata con la chiave privata appartenente a {label}</translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>La tua chiave di sincronizzazione è: {sync_key} Salvatela, e quando cliccherai su &apos;importa chiave di sincronizzazione&apos;, dovrebbe ripristinare le tue etichette dai relay nostr.  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>Esportazione chiave di sincronizzazione  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>Esporta chiave di sincronizzazione  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>Importa chiave di sincronizzazione  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>Reimposta chiave di sincronizzazione  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>Imposta l&apos;elenco dei Relay personalizzati  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>Fidato  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>Non fidato  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>Il mio dispositivo: {id}  </translation>
     </message>
 </context>
 <context>
@@ -2587,7 +2630,7 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>WalletSteps</name>
+    <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>Devi avere prima un portafoglio inizializzato</translation>

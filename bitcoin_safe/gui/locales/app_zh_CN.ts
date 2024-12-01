@@ -184,6 +184,28 @@
     </message>
 </context>
 <context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>无法识别 {file_content} 为 BitcoinData  </translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>无法识别 {file_content} 为 BitcoinData  </translation>
+    </message>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>前往{untrusted}  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>为了完成连接，请在另一设备{other}上接受我的{id}请求。  </translation>
+    </message>
+</context>
+<context>
     <name>BitBox02PairingDialog</name>
     <message>
         <source>Dialog</source>
@@ -254,6 +276,13 @@ shown on your BitBox02.</source>
     </message>
 </context>
 <context>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>您只能发送 PSBTs 或交易  </translation>
+    </message>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
@@ -292,49 +321,6 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>区块 {n}</translation>
-    </message>
-</context>
-<context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Your sync key is:
-
-{sync_key}
-
- Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>您的同步密钥是：{sync_key} 保存它，当您点击“导入同步密钥”时，它应该会从nostr中继恢复您的标签。  </translation>
-    </message>
-    <message>
-        <source>Sync key Export</source>
-        <translation>同步密钥导出  </translation>
-    </message>
-    <message>
-        <source>Export sync key</source>
-        <translation>导出同步密钥  </translation>
-    </message>
-    <message>
-        <source>Import sync key</source>
-        <translation>导入同步密钥  </translation>
-    </message>
-    <message>
-        <source>Reset sync key</source>
-        <translation>重置同步密钥  </translation>
-    </message>
-    <message>
-        <source>Set custom Relay list</source>
-        <translation>设置自定义中继列表  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>信任  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>未受信任  </translation>
-    </message>
-    <message>
-        <source>My Device: {id}</source>
-        <translation>我的设备：{id}  </translation>
     </message>
 </context>
 <context>
@@ -478,10 +464,21 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>放大  </translation>
+    </message>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge {} QR</source>
-        <translation>放大 {} 二维码</translation>
+        <source>Export to file</source>
+        <translation>导出到文件  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>与{wallet_id}中的所有设备共享</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -516,6 +513,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>图像 (*.{image_format})  </translation>
     </message>
     <message>
+        <source>Enlarge {} QR</source>
+        <translation>放大 {} 二维码</translation>
+    </message>
+    <message>
         <source>Save as image</source>
         <translation>保存为图片</translation>
     </message>
@@ -542,10 +543,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>与可信设备共享</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>与{wallet_id}中的所有设备共享</translation>
     </message>
 </context>
 <context>
@@ -1528,12 +1525,15 @@ Location of signing device: .....</source>
 <context>
     <name>NostrSync</name>
     <message>
-        <source>Go to {untrusted}</source>
-        <translation>前往{untrusted}  </translation>
+        <source>Group Chat</source>
+        <translation>群聊  </translation>
     </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
     <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>为了完成连接，请在另一设备{other}上接受我的{id}请求。  </translation>
+        <source>Chat</source>
+        <translation>聊天  </translation>
     </message>
 </context>
 <context>
@@ -2194,8 +2194,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>标签备份和加密同步到受信任的设备  </translation>
     </message>
     <message>
-        <source>Open received Transactions and PSBTs automatically in a new tab</source>
-        <translation>在新标签页中自动打开接收到的交易和PSBTs</translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>打开接收到的交易和 PSBTs  </translation>
     </message>
     <message>
         <source>Please backup your sync key:
@@ -2300,6 +2300,49 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
         <translation>使用属于{label}的私钥签署的交易</translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>您的同步密钥是：{sync_key} 保存它，当您点击“导入同步密钥”时，它应该会从nostr中继恢复您的标签。  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>同步密钥导出  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>导出同步密钥  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>导入同步密钥  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>重置同步密钥  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>设置自定义中继列表  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>信任  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>未受信任  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>我的设备：{id}  </translation>
     </message>
 </context>
 <context>
@@ -2593,7 +2636,7 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>WalletSteps</name>
+    <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>您必须首先有一个初始化的钱包</translation>

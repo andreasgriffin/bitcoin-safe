@@ -184,6 +184,28 @@
     </message>
 </context>
 <context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>{file_content} を BitcoinData として認識できませんでした  </translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>{file_content} を BitcoinData として認識できませんでした  </translation>
+    </message>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>{untrusted}に移動する  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。  </translation>
+    </message>
+</context>
+<context>
     <name>BitBox02PairingDialog</name>
     <message>
         <source>Dialog</source>
@@ -254,6 +276,13 @@ shown on your BitBox02.</source>
     </message>
 </context>
 <context>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>PSBTs またはトランザクションのみ送信できます  </translation>
+    </message>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
@@ -292,49 +321,6 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>ブロック {n}</translation>
-    </message>
-</context>
-<context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Your sync key is:
-
-{sync_key}
-
- Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>あなたの同期キーは：{sync_key} これを保存し、&apos;インポート同期キー&apos;をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。  </translation>
-    </message>
-    <message>
-        <source>Sync key Export</source>
-        <translation>同期キーのエクスポート  </translation>
-    </message>
-    <message>
-        <source>Export sync key</source>
-        <translation>同期キーをエクスポート  </translation>
-    </message>
-    <message>
-        <source>Import sync key</source>
-        <translation>同期キーをインポート  </translation>
-    </message>
-    <message>
-        <source>Reset sync key</source>
-        <translation>同期キーをリセット  </translation>
-    </message>
-    <message>
-        <source>Set custom Relay list</source>
-        <translation>カスタムリレーリストを設定する  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>信頼済み  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>信頼されていない  </translation>
-    </message>
-    <message>
-        <source>My Device: {id}</source>
-        <translation>私のデバイス：{id}  </translation>
     </message>
 </context>
 <context>
@@ -478,10 +464,21 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>拡大  </translation>
+    </message>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge {} QR</source>
-        <translation>{} QRを拡大する</translation>
+        <source>Export to file</source>
+        <translation>ファイルにエクスポート  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -516,6 +513,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>画像 (*.{image_format})  </translation>
     </message>
     <message>
+        <source>Enlarge {} QR</source>
+        <translation>{} QRを拡大する</translation>
+    </message>
+    <message>
         <source>Save as image</source>
         <translation>画像として保存</translation>
     </message>
@@ -542,10 +543,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>信頼できるデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
     </message>
 </context>
 <context>
@@ -1525,12 +1522,15 @@ Location of signing device: .....</source>
 <context>
     <name>NostrSync</name>
     <message>
-        <source>Go to {untrusted}</source>
-        <translation>{untrusted}に移動する  </translation>
+        <source>Group Chat</source>
+        <translation>グループチャット  </translation>
     </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
     <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。  </translation>
+        <source>Chat</source>
+        <translation>チャット  </translation>
     </message>
 </context>
 <context>
@@ -2191,8 +2191,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>信頼できるデバイスへのラベルバックアップと暗号化された同期  </translation>
     </message>
     <message>
-        <source>Open received Transactions and PSBTs automatically in a new tab</source>
-        <translation>受信したトランザクションとPSBTを新しいタブで自動的に開く</translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>受信したトランザクションと PSBTs を開く  </translation>
     </message>
     <message>
         <source>Please backup your sync key:
@@ -2297,6 +2297,49 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
         <translation>{label}に属するプライベートキーで署名されたトランザクション</translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>あなたの同期キーは：{sync_key} これを保存し、&apos;インポート同期キー&apos;をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>同期キーのエクスポート  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>同期キーをエクスポート  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>同期キーをインポート  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>同期キーをリセット  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>カスタムリレーリストを設定する  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>信頼済み  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>信頼されていない  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>私のデバイス：{id}  </translation>
     </message>
 </context>
 <context>
@@ -2587,7 +2630,7 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>WalletSteps</name>
+    <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>初めに初期化されたウォレットが必要です</translation>

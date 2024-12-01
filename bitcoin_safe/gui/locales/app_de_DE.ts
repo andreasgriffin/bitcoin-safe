@@ -184,6 +184,28 @@
     </message>
 </context>
 <context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Konnte {file_content} nicht als BitcoinData erkennen  </translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Konnte {file_content} nicht als BitcoinData erkennen  </translation>
+    </message>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>Gehen Sie zu {untrusted}  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>Um die Verbindung abzuschließen, akzeptieren Sie meine {id}-Anfrage auf dem anderen Gerät {other}.  </translation>
+    </message>
+</context>
+<context>
     <name>BitBox02PairingDialog</name>
     <message>
         <source>Dialog</source>
@@ -254,6 +276,13 @@ shown on your BitBox02.</source>
     </message>
 </context>
 <context>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>Sie können nur PSBTs oder Transaktionen senden  </translation>
+    </message>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
@@ -292,49 +321,6 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>Block {n}  </translation>
-    </message>
-</context>
-<context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Your sync key is:
-
-{sync_key}
-
- Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>Ihr Synchronisationsschlüssel lautet: {sync_key}   Speichern Sie ihn, und wenn Sie auf &apos;Sync-Key importieren&apos; klicken, sollten Ihre Labels von den Nostr-Relays wiederhergestellt werden.  </translation>
-    </message>
-    <message>
-        <source>Sync key Export</source>
-        <translation>Sync-Key-Export  </translation>
-    </message>
-    <message>
-        <source>Export sync key</source>
-        <translation>Sync-Key exportieren  </translation>
-    </message>
-    <message>
-        <source>Import sync key</source>
-        <translation>Sync-Key importieren  </translation>
-    </message>
-    <message>
-        <source>Reset sync key</source>
-        <translation>Sync-Key zurücksetzen  </translation>
-    </message>
-    <message>
-        <source>Set custom Relay list</source>
-        <translation>Benutzerdefinierte Relay-Liste festlegen  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>Vertrauenswürdig  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>Nicht vertrauenswürdig  </translation>
-    </message>
-    <message>
-        <source>My Device: {id}</source>
-        <translation>Mein Gerät: {id}  </translation>
     </message>
 </context>
 <context>
@@ -478,10 +464,21 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>Vergrößern  </translation>
+    </message>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge {} QR</source>
-        <translation>Vergrößern {} QR  </translation>
+        <source>Export to file</source>
+        <translation>In Datei exportieren  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Mit allen Geräten in {wallet_id} teilen  </translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -516,6 +513,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Bild (*.{image_format})  </translation>
     </message>
     <message>
+        <source>Enlarge {} QR</source>
+        <translation>Vergrößern {} QR  </translation>
+    </message>
+    <message>
         <source>Save as image</source>
         <translation>Als Bild speichern  </translation>
     </message>
@@ -542,10 +543,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>Mit vertrauenswürdigen Geräten teilen  </translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Mit allen Geräten in {wallet_id} teilen  </translation>
     </message>
 </context>
 <context>
@@ -1522,12 +1519,15 @@ Location of signing device: .....</source>
 <context>
     <name>NostrSync</name>
     <message>
-        <source>Go to {untrusted}</source>
-        <translation>Gehen Sie zu {untrusted}  </translation>
+        <source>Group Chat</source>
+        <translation>Gruppenchat  </translation>
     </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
     <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>Um die Verbindung abzuschließen, akzeptieren Sie meine {id}-Anfrage auf dem anderen Gerät {other}.  </translation>
+        <source>Chat</source>
+        <translation>Chat  </translation>
     </message>
 </context>
 <context>
@@ -2188,8 +2188,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>Label-Backup und verschlüsselte Synchronisation zu vertrauenswürdigen Geräten  </translation>
     </message>
     <message>
-        <source>Open received Transactions and PSBTs automatically in a new tab</source>
-        <translation>Empfangene Transaktionen und PSBTs automatisch in einem neuen Tab öffnen  </translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>Empfangene Transaktionen und PSBTs öffnen  </translation>
     </message>
     <message>
         <source>Please backup your sync key:
@@ -2294,6 +2294,49 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
         <translation>Transaktion signiert mit dem privaten Schlüssel, der zu {label} gehört  </translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>Ihr Synchronisationsschlüssel lautet: {sync_key}   Speichern Sie ihn, und wenn Sie auf &apos;Sync-Key importieren&apos; klicken, sollten Ihre Labels von den Nostr-Relays wiederhergestellt werden.  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>Sync-Key-Export  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>Sync-Key exportieren  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>Sync-Key importieren  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>Sync-Key zurücksetzen  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>Benutzerdefinierte Relay-Liste festlegen  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>Vertrauenswürdig  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>Nicht vertrauenswürdig  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>Mein Gerät: {id}  </translation>
     </message>
 </context>
 <context>
@@ -2584,7 +2627,7 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>WalletSteps</name>
+    <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>Sie müssen zuerst ein initialisiertes Wallet haben  </translation>

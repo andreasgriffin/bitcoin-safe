@@ -184,6 +184,28 @@
     </message>
 </context>
 <context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>{file_content} को BitcoinData के रूप में पहचानने में विफल  </translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>{file_content} को BitcoinData के रूप में पहचानने में विफल  </translation>
+    </message>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>{untrusted} में जाएँ  </translation>
+    </message>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>अन्य उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करके कनेक्शन पूरा करें।  </translation>
+    </message>
+</context>
+<context>
     <name>BitBox02PairingDialog</name>
     <message>
         <source>Dialog</source>
@@ -254,6 +276,13 @@ shown on your BitBox02.</source>
     </message>
 </context>
 <context>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>आप केवल PSBTs या लेन-देन ही भेज सकते हैं  </translation>
+    </message>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
@@ -292,49 +321,6 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>ब्लॉक {n}</translation>
-    </message>
-</context>
-<context>
-    <name>ConnectedDevices</name>
-    <message>
-        <source>Your sync key is:
-
-{sync_key}
-
- Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>आपकी सिंक कुंजी है: {sync_key} इसे सहेजें, और जब आप &apos;इम्पोर्ट सिंक कुंजी&apos; पर क्लिक करेंगे, तो यह आपके लेबल को nostr रिले से पुनः प्राप्त करना चाहिए।  </translation>
-    </message>
-    <message>
-        <source>Sync key Export</source>
-        <translation>सिंक कुंजी निर्यात  </translation>
-    </message>
-    <message>
-        <source>Export sync key</source>
-        <translation>सिंक कुंजी निर्यात करें  </translation>
-    </message>
-    <message>
-        <source>Import sync key</source>
-        <translation>सिंक कुंजी आयात करें  </translation>
-    </message>
-    <message>
-        <source>Reset sync key</source>
-        <translation>सिंक कुंजी रीसेट करें  </translation>
-    </message>
-    <message>
-        <source>Set custom Relay list</source>
-        <translation>कस्टम रिले सूची सेट करें  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>विश्वसनीय  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>अविश्वसनीय  </translation>
-    </message>
-    <message>
-        <source>My Device: {id}</source>
-        <translation>मेरा उपकरण: {id}  </translation>
     </message>
 </context>
 <context>
@@ -478,10 +464,21 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>बड़ा करें  </translation>
+    </message>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Enlarge {} QR</source>
-        <translation>{} QR को बड़ा करें</translation>
+        <source>Export to file</source>
+        <translation>फ़ाइल में निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -516,6 +513,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>इमेज (*.{image_format})  </translation>
     </message>
     <message>
+        <source>Enlarge {} QR</source>
+        <translation>{} QR को बड़ा करें</translation>
+    </message>
+    <message>
         <source>Save as image</source>
         <translation>छवि के रूप में सहेजें</translation>
     </message>
@@ -542,10 +543,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Share with trusted devices</source>
         <translation>विश्वसनीय उपकरणों के साथ साझा करें</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
     </message>
 </context>
 <context>
@@ -1525,12 +1522,15 @@ Location of signing device: .....</source>
 <context>
     <name>NostrSync</name>
     <message>
-        <source>Go to {untrusted}</source>
-        <translation>{untrusted} में जाएँ  </translation>
+        <source>Group Chat</source>
+        <translation>समूह चैट  </translation>
     </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
     <message>
-        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>अन्य उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करके कनेक्शन पूरा करें।  </translation>
+        <source>Chat</source>
+        <translation>चैट  </translation>
     </message>
 </context>
 <context>
@@ -2191,8 +2191,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>विश्वसनीय उपकरणों में लेबल बैकअप और एन्क्रिप्टेड सिंकिंग  </translation>
     </message>
     <message>
-        <source>Open received Transactions and PSBTs automatically in a new tab</source>
-        <translation>नई टैब में स्वचालित रूप से प्राप्त लेन-देन और PSBTs खोलें</translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>प्राप्त लेन-देन और PSBTs खोलें  </translation>
     </message>
     <message>
         <source>Please backup your sync key:
@@ -2297,6 +2297,49 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
         <translation>{label} के निजी कुंजी के साथ हस्ताक्षरित लेन-देन</translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
+
+{sync_key}
+
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>आपकी सिंक कुंजी है: {sync_key} इसे सहेजें, और जब आप &apos;इम्पोर्ट सिंक कुंजी&apos; पर क्लिक करेंगे, तो यह आपके लेबल को nostr रिले से पुनः प्राप्त करना चाहिए।  </translation>
+    </message>
+    <message>
+        <source>Sync key Export</source>
+        <translation>सिंक कुंजी निर्यात  </translation>
+    </message>
+    <message>
+        <source>Export sync key</source>
+        <translation>सिंक कुंजी निर्यात करें  </translation>
+    </message>
+    <message>
+        <source>Import sync key</source>
+        <translation>सिंक कुंजी आयात करें  </translation>
+    </message>
+    <message>
+        <source>Reset sync key</source>
+        <translation>सिंक कुंजी रीसेट करें  </translation>
+    </message>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>कस्टम रिले सूची सेट करें  </translation>
+    </message>
+    <message>
+        <source>Trusted</source>
+        <translation>विश्वसनीय  </translation>
+    </message>
+    <message>
+        <source>UnTrusted</source>
+        <translation>अविश्वसनीय  </translation>
+    </message>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>मेरा उपकरण: {id}  </translation>
     </message>
 </context>
 <context>
@@ -2587,7 +2630,7 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>WalletSteps</name>
+    <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
         <translation>पहले आपके पास एक प्रारंभिक वॉलेट होना चाहिए</translation>

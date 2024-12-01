@@ -36,6 +36,7 @@
         // "-vvv", 
         "tests/gui",
         "--ignore=coding_tests",
+        "--ignore=tools",
         // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
@@ -49,7 +50,7 @@
       "args": [ 
         "-vvv", 
         "--ignore=tests/gui",
-        "--ignore=coding_tests",
+        "--ignore=tools",
         "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
@@ -63,6 +64,7 @@
         "-vvv", 
         "${file}",
         "-s",  // Disable all capturing of outputs        
+        "--ignore=tools",
       ], 
       "console": "integratedTerminal",
        "justMyCode": false

@@ -1,0 +1,134 @@
+{
+    "VERSION": "0.2.0",
+    "__class__": "Wallet",
+    "_blockchain_height": 0,
+    "_tips": [
+        0,
+        0
+    ],
+    "data_dump": {
+        "SyncTab": {
+            "auto_open_psbts": true,
+            "enabled": false,
+            "nostr_sync_dump": {
+                "debug": false,
+                "group_chat": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec1sd0qyhupxpv58xnylhxncltzu66ptpdxycq0fjf5ta0dl0gglnzq6kkn06",
+                        "relay_list": {
+                            "last_updated": 1733069860.341953,
+                            "max_age": 30,
+                            "relays": [ 
+                            ]
+                        },
+                        "use_timer": false
+                    },
+                    "members": [],
+                    "network": "REGTEST",
+                    "sync_start": 1733069863.502291,
+                    "use_compression": true
+                },
+                "individual_chats_visible": false,
+                "network": "REGTEST",
+                "nostr_protocol": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec1mgfkn0wd8cmvw97td8eee5yrwtn6h4p4degyjlymdv6v5sl8rt6sc2lyns",
+                        "relay_list": {
+                            "last_updated": 1733069860.338576,
+                            "max_age": 30,
+                            "relays": [ 
+                            ]
+                        },
+                        "use_timer": false
+                    },
+                    "network": "REGTEST",
+                    "sync_start": null,
+                    "use_compression": true
+                }
+            }
+        }
+    },
+    "descriptor_str": "wsh(sortedmulti(2,[6627f20a/48'/1'/0'/2']tpubDEa9phJRMmAjQVQbkAA4WGJdaRtXjNTLsqfsEF3NaxiKEqfbdgBe56pQhR7h1ZpTKWiCDRfHyraRxBnojJazxhefELoiv5QDLzT1ANZrXhU/<0;1>/*,[dc8dcab4/48'/1'/0'/2']tpubDFQ6uhn3kCZBSQBAsQPjrhidZiAkxM8ywxxQadsATpqUk7TxVLsSnZi6sDMwbZqWVrVDTnGQGYKRU4yZ8RQwVNNc7vyN1p8qJoxvbeVs2Yc/<0;1>/*,[bac81685/48'/1'/0'/2']tpubDFUSsDE7pGLWKiBYsWpXWVw6rdo19J2UNAkg8k2WLTtYTHrCXWHbFmUBswBq6DrDrMuKc7eK3kKuT1L7bm4u4avhG5wnAEgatJ7398H38JF/<0;1>/*))#shz96rrf",
+    "gap": 20,
+    "gap_change": 5,
+    "id": "pytest",
+    "keystores": [
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "BAC81685",
+            "key_origin": "m/48h/1h/0h/2h",
+            "label": "Signer 1",
+            "mnemonic": "base episode pyramid share teach degree ocean copper merit auto source noble",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDFUSsDE7pGLWKiBYsWpXWVw6rdo19J2UNAkg8k2WLTtYTHrCXWHbFmUBswBq6DrDrMuKc7eK3kKuT1L7bm4u4avhG5wnAEgatJ7398H38JF"
+        },
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "6627F20A",
+            "key_origin": "m/48h/1h/0h/2h",
+            "label": "Signer 2",
+            "mnemonic": "scout clarify assist brain moon canvas rack memory coast gauge short child",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDEa9phJRMmAjQVQbkAA4WGJdaRtXjNTLsqfsEF3NaxiKEqfbdgBe56pQhR7h1ZpTKWiCDRfHyraRxBnojJazxhefELoiv5QDLzT1ANZrXhU"
+        },
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "DC8DCAB4",
+            "key_origin": "m/48h/1h/0h/2h",
+            "label": "Recovery Signer 3",
+            "mnemonic": "client tiny thing glory day music captain employ reflect alpha borrow adjust",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDFQ6uhn3kCZBSQBAsQPjrhidZiAkxM8ywxxQadsATpqUk7TxVLsSnZi6sDMwbZqWVrVDTnGQGYKRU4yZ8RQwVNNc7vyN1p8qJoxvbeVs2Yc"
+        }
+    ],
+    "labels": {
+        "VERSION": "0.1.0",
+        "__class__": "Labels",
+        "categories": [
+            "KYC Exchange",
+            "Private"
+        ],
+        "data": {
+            "bcrt1q4xla4rzmuyytu4yzgm7cyef400mckj8syjranlw4a6hq2df5gtaqtsehrk": {
+                "VERSION": "0.0.2",
+                "__class__": "Label",
+                "category": "KYC Exchange",
+                "label": null,
+                "ref": "bcrt1q4xla4rzmuyytu4yzgm7cyef400mckj8syjranlw4a6hq2df5gtaqtsehrk",
+                "timestamp": 1733069861.342763,
+                "type": "addr"
+            }
+        },
+        "default_category": "KYC Exchange"
+    },
+    "network": {
+        "__enum__": true,
+        "name": "Network",
+        "value": "REGTEST"
+    },
+    "refresh_wallet": false,
+    "tutorial_index": null
+}
