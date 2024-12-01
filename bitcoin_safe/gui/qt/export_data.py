@@ -29,18 +29,22 @@
 
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
+from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
 
+from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
+from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
-from bitcoin_safe.gui.qt.qr_types import QrType, QrTypes
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
+from bitcoin_safe.wallet import filename_clean
 
 from .sync_tab import SyncTab
 
@@ -67,6 +71,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from ...hardware_signers import (
+    DescriptorExportType,
+    DescriptorExportTypes,
+    DescriptorQrExportTypes,
+    HardwareSigner,
+    HardwareSigners,
+)
 from ...signals import SignalsMin, pyqtSignal
 from .util import Message, MessageType, do_copy, read_QIcon, save_file_dialog
 
@@ -148,13 +159,7 @@ class HorizontalImportExportGroups(QWidget):
 
 
 class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
-    signal_export_to_file = pyqtSignal()
     signal_set_qr_images = pyqtSignal(list)
-    default_qr_types = [
-        QrTypes.bbqr,
-        QrTypes.ur,
-        QrTypes.text,
-    ]
 
     def __init__(
         self,
@@ -169,6 +174,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         enable_usb=True,
         enable_clipboard=True,
         threading_parent: ThreadingManager | None = None,
+        wallet_name: str = "MultiSig",
     ) -> None:
         super().__init__(
             layout=layout,
@@ -184,10 +190,9 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.txid = None
         self.json_data = None
         self.serialized = None
-        self.qr_types: List[QrType] = self.default_qr_types.copy()
+        self.qr_types = QrExportTypes.as_list()
+        self.wallet_id = wallet_name
         self.set_data(data)
-
-        self.signal_export_to_file.connect(self.export_to_file)
 
         # qr
         self.qr_label = QRCodeWidgetSVG(always_animate=True)
@@ -208,19 +213,21 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.group_qr_buttons_layout.addWidget(self.button_save_qr)
 
         self.combo_qr_type = QComboBox()
-        self.fill_combo_qr_type(self.default_qr_types)
         self.group_qr_buttons_layout.addWidget(self.combo_qr_type)
         self.combo_qr_type.currentIndexChanged.connect(self.switch_qr_type)
 
         # file
-        self.button_file = QPushButton()
+        self.button_file = QToolButton()
         self.button_file.setIcon(
             (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
         )
-        self.button_file.clicked.connect(lambda: self.signal_export_to_file.emit())
-
+        self.button_file.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.button_file_menu = Menu(self)
+        self.button_file.setMenu(self.button_file_menu)
+        self.button_file.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.group_file._layout.addWidget(self.button_file)
 
+        self.refresh_qr_and_file_menus_if_needed(self.qr_types)
         # usb
         show_usb = bool(usb_signer_ui and self.data.data_type == DataType.PSBT)
         self.group_usb.setVisible(show_usb)
@@ -237,39 +244,120 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.signals_min.language_switch.connect(self.updateUi)
         self.signal_set_qr_images.connect(self.qr_label.set_images)
 
-    def setCurrentQrType(self, value: QrType):
+    def set_minimum_size_as_floating_window(self):
+        self.setMinimumSize(650, 300)
+
+    def setCurrentQrType(self, value: QrExportType):
         for i in range(self.combo_qr_type.count()):
             if value == self.combo_qr_type.itemData(i):
                 self.combo_qr_type.setCurrentIndex(i)
 
-    def getCurrentQrType(self) -> Optional[QrType]:
+    def getCurrentExportType(self) -> Optional[QrExportType]:
         return self.combo_qr_type.currentData()
 
-    def getItemQrType(self, i: int) -> QrType:
+    def getItemExportType(self, i: int) -> QrExportType:
         return self.combo_qr_type.itemData(i)
 
-    def fill_combo_qr_type(self, qr_types: List[QrType]):
+    @staticmethod
+    def fill_file_menu_descriptor_export_actions(
+        menu: Menu,
+        wallet_id: str,
+        multipath_descriptor: MultipathDescriptor,
+        network: bdk.Network,
+    ):
+        menu.blockSignals(True)
+        menu.clear()
+
+        def factory_save_file(descripor_type: DescriptorExportType):
+            def save_descriptor(descripor_type: DescriptorExportType = descripor_type):
+                return DescriptorExportTools.export(
+                    wallet_id=wallet_id,
+                    multipath_descriptor=multipath_descriptor,
+                    network=network,
+                    descripor_type=descripor_type,
+                )
+
+            return save_descriptor
+
+        for export_type in DescriptorExportTypes.as_list():
+            menu.add_action(
+                ExportDataSimple.get_export_display_name(export_type=export_type),
+                factory_save_file(export_type),
+                icon=ExportDataSimple.get_export_icon(export_type=export_type),
+            )
+        menu.blockSignals(False)
+
+    def fill_file_menu_export_actions(
+        self,
+        icon: QIcon,
+    ):
+        self.button_file_menu.blockSignals(True)
+        self.button_file_menu.clear()
+        self.button_file_menu.add_action(
+            self.tr("Export to file"),
+            self.export_to_file,
+            icon=icon,
+        )
+        self.button_file_menu.blockSignals(False)
+
+    @staticmethod
+    def get_export_display_name(export_type: Union[DescriptorExportType, QrExportType]) -> str:
+        parts = [export_type.display_name]
+        filtered_hardware_signers = HardwareSigners.filtered_by([export_type])  # type:ignore
+
+        hardware_names = ", ".join(
+            [hardware_signer.display_name for hardware_signer in filtered_hardware_signers]
+        )
+        if hardware_names:
+            parts += [hardware_names]
+        return " - ".join(parts)
+
+    @staticmethod
+    def get_export_icon(export_type: Union[DescriptorExportType, QrExportType]) -> QIcon:
+        filtered_hardware_signers = HardwareSigners.filtered_by([export_type])  # type:ignore
+        if filtered_hardware_signers:
+            filtered_hardware_signer = filtered_hardware_signers[0]
+            return QIcon(filtered_hardware_signer.icon_path)
+        else:
+            return QIcon()
+
+    def refresh_qr_and_file_menus_if_needed(self, qr_types: List[QrExportType]):
+        if [t.name for t in self.qr_types] == [
+            self.getItemExportType(i).name for i in range(self.combo_qr_type.count())
+        ]:
+            # no  change needed
+            return
+
+        # combo_qr_type
         self.combo_qr_type.blockSignals(True)
         self.combo_qr_type.clear()
         for qr_type in qr_types:
             self.combo_qr_type.addItem(
-                read_QIcon("qr-code.svg"),
-                self.tr("{} QR code").format(qr_type.display_name),
+                self.get_export_icon(qr_type),
+                self.get_export_display_name(qr_type),
                 userData=qr_type,
             )
         self.combo_qr_type.blockSignals(False)
 
+        file_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
+        if isinstance(self.data.data, MultipathDescriptor):
+            self.fill_file_menu_descriptor_export_actions(
+                menu=self.button_file_menu,
+                wallet_id=self.wallet_id,
+                multipath_descriptor=self.data.data,
+                network=self.network,
+            )
+        else:
+            self.fill_file_menu_export_actions(icon=file_icon)
+
     def updateUi(self) -> None:
-        selected_qr_type = self.getCurrentQrType()
+        selected_qr_type = self.getCurrentExportType()
         self.button_enlarge_qr.setText(
             self.tr("Enlarge {} QR").format(selected_qr_type.display_name if selected_qr_type else "")
         )
         self.button_save_qr.setText(self.tr("Save as image"))
 
-        if [t.name for t in self.qr_types] != [
-            self.getItemQrType(i).name for i in range(self.combo_qr_type.count())
-        ]:
-            self.fill_combo_qr_type(self.qr_types)
+        self.refresh_qr_and_file_menus_if_needed(self.qr_types)
 
         self.button_file.setText(self.tr("Export file"))
 
@@ -313,9 +401,9 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             self.json_data = json.dumps(transaction_to_dict(data.data, network=self.network), indent=4)
 
         if data.data_type in [DataType.Descriptor, DataType.MultiPathDescriptor]:
-            self.qr_types = [QrTypes.text, QrTypes.bbqr, QrTypes.specterdiy_descriptor_export]
+            self.qr_types = DescriptorQrExportTypes.as_list()
         else:
-            self.qr_types = self.default_qr_types.copy()
+            self.qr_types = QrExportTypes.as_list()
 
     def _get_data_name(self) -> str:
         if self.data.data_type == DataType.PSBT:
@@ -408,14 +496,23 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             )
             return
         sync_tab.nostr_sync.group_chat.dm_connection.send(
-            BitcoinDM(
-                label=ChatLabel.SingleRecipient,
-                data=self.data,
-                event=None,
-                description="",
-                created_at=datetime.now(),
-            ),
+            self.to_dm(),
             receiver_public_key,
+        )
+
+    def to_dm(
+        self,
+    ) -> BitcoinDM:
+        return BitcoinDM(
+            label=ChatLabel.GroupChat,
+            data=self.data,
+            event=None,
+            description=(
+                f"{self.data.data_type.name} {short_tx_id(self.txid)}"
+                if self.txid
+                else self.data.data_type.name
+            ),
+            created_at=datetime.now(),
         )
 
     def on_nostr_share_in_group(self, wallet_id: str, sync_tab: SyncTab) -> None:
@@ -426,17 +523,11 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             return
 
         sync_tab.nostr_sync.group_chat.send(
-            BitcoinDM(
-                label=ChatLabel.GroupChat,
-                data=self.data,
-                event=None,
-                description="",
-                created_at=datetime.now(),
-            ),
+            self.to_dm(),
             send_also_to_me=False,
         )
 
-    def export_qrcode(self) -> Optional[str]:
+    def export_qrcode(self) -> Optional[Path]:
         image_format = "gif" if len(self.qr_label.svg_renderers) > 1 else "png"
 
         filename = save_file_dialog(
@@ -449,36 +540,40 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         if not filename:
             return None
 
+        file_path = Path(filename)
         self.qr_label.save_file(
-            base_filename=filename.rstrip(f".{image_format}"), image_format=image_format.upper()
+            filename=file_path,
         )
-        return filename
+        return file_path
 
     def clear_qr(self) -> None:
         self.qr_label.set_images([])
 
+    def generate_qr_fragments(self, data: Data) -> List[str]:
+        qr_export_type = self.getCurrentExportType()
+        if not qr_export_type:
+            return []
+
+        # only handle the DescriptorExportTypes, everything else is handles in  generate_fragments_for_qr
+        if qr_export_type.name == DescriptorExportTypes.specterdiy.name:
+            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            return [
+                DescriptorExportTools._get_specter_diy_str(
+                    wallet_id=self.wallet_id, descriptor_str=data.data_as_string()
+                )
+            ]
+        elif qr_export_type.name == DescriptorExportTypes.passport.name:
+            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            passport_str = DescriptorExportTools._get_passport_str(
+                wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
+            )
+            return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
+        else:
+            return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
+
     def lazy_load_qr(self, data: Data) -> None:
         def do() -> Any:
-            qr_type = self.getCurrentQrType()
-            if not qr_type:
-                return
-
-            if qr_type.name == QrTypes.text.name:
-                fragments = [data.data_as_string()]
-            elif qr_type.name == QrTypes.specterdiy_descriptor_export.name:
-                assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
-                simplified_descriptor = (
-                    data.data_as_string()
-                    .split("#")[0]
-                    .replace("/<0;1>/*", "")
-                    .replace("0/*", "")
-                    .replace("1/*", "")
-                )
-                wallet_name = "MultiSig"
-                fragments = [f"addwallet {wallet_name}&{simplified_descriptor}"]
-            else:
-                fragments = data.generate_fragments_for_qr(qr_type=qr_type.name)  # type: ignore
-
+            fragments = self.generate_qr_fragments(data=data)
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
@@ -498,6 +593,23 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
+    def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> Optional[str]:
+        if not isinstance(self.data.data, MultipathDescriptor):
+            return None
+
+        filename = save_file_dialog(
+            name_filters=["Text (*.txt)", "All Files (*.*)"],
+            default_suffix="txt",
+            default_filename=filename_clean(self.wallet_id, file_extension=".txt")[:24],
+            window_title=f"Save {hardware_signer.display_name} file",
+        )
+        if not filename:
+            return None
+
+        with open(filename, "w") as file:
+            file.write(s)
+        return filename
+
     def export_to_file(self, default_filename=None) -> Optional[str]:
         default_suffix = "txt"
         if self.data.data_type == DataType.Tx:
@@ -507,8 +619,13 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         if not default_filename and self.txid:
             default_filename = f"{short_tx_id( self.txid)}.{default_suffix}"
-        if not default_filename and self.data.data_type == DataType.Descriptor:
-            default_filename = f"descriptor.txt"
+        if not default_filename and self.data.data_type in [
+            DataType.Descriptor,
+            DataType.MultiPathDescriptor,
+        ]:
+            default_filename = (
+                f"{filename_clean( self.wallet_id, file_extension='', replace_spaces_by='_')}.txt"
+            )
 
         filename = save_file_dialog(
             name_filters=[

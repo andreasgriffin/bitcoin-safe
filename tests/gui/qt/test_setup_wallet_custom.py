@@ -45,11 +45,7 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
-from tests.gui.qt.test_gui_setup_wallet import (
-    close_wallet,
-    get_tab_with_title,
-    save_wallet,
-)
+from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
@@ -83,7 +79,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
@@ -211,7 +207,7 @@ def test_custom_wallet_setup_custom_single_sig(
                 assert dialog.isVisible()
                 dialog.close()
 
-            do_modal_click(main_window.export_wallet_for_coldcard_q, on_dialog, qtbot, cls=DescriptorExport)
+            do_modal_click(main_window.show_descriptor_export_window, on_dialog, qtbot, cls=DescriptorExport)
 
             shutter.save(main_window)
 
@@ -245,7 +241,8 @@ def test_custom_wallet_setup_custom_single_sig(
 
         def switch_language() -> None:
             main_window.language_chooser.switchLanguage("zh_CN")
-
+            shutter.save(main_window)
+            main_window.language_chooser.switchLanguage("en_US")
             shutter.save(main_window)
 
         switch_language()

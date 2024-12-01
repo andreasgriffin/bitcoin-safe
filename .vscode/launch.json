@@ -33,10 +33,10 @@
       "request": "launch",
       "module": "pytest",
       "args": [ 
-        "-vvv", 
+        // "-vvv", 
         "tests/gui",
         "--ignore=coding_tests",
-        "-s",  // Disable all capturing of outputs        
+        // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
        "justMyCode": false

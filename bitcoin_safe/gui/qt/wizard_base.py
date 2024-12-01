@@ -28,20 +28,13 @@
 
 
 import logging
-from dataclasses import dataclass
-from typing import Literal
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class QrType:
-    name: Literal["bbqr", "ur", "text", "specterdiy_descriptor_export"]
-    display_name: str
+from .step_progress_bar import StepProgressContainer
 
 
-class QrTypes:
-    bbqr = QrType("bbqr", "BBQr")
-    ur = QrType("ur", "Legacy")
-    text = QrType("text", "Text")
-    specterdiy_descriptor_export = QrType("specterdiy_descriptor_export", "Specter DIY")
+class WizardBase(StepProgressContainer):
+    def set_visibilities(self) -> None:
+        pass

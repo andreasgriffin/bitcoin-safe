@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 
 from bdkpython import Network
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -49,7 +48,7 @@ from PyQt6.QtWidgets import (
 )
 
 from ...util import call_call_functions
-from .util import add_centered_icons, icon_path, qresize, read_QIcon
+from .util import read_QIcon, svg_widgets_hardware_signers
 
 
 class NewWalletWelcomeScreen(QObject):
@@ -104,10 +103,11 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_1signingdevice.setEnabled(True)
         self.horizontalLayout_4 = QHBoxLayout(self.groupBox_1signingdevice)
 
-        self.svg_widget = QSvgWidget(icon_path("coldcard-only.svg"))
-        self.svg_widget.setMinimumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
-        self.svg_widget.setMaximumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
-        self.horizontalLayout_4.addWidget(self.svg_widget)
+        svg_widgets = svg_widgets_hardware_signers(
+            1, parent=self.groupBox_1signingdevice, max_height=100, max_width=100
+        )
+        for svg_widget in svg_widgets:
+            self.horizontalLayout_4.addWidget(svg_widget)
 
         # set size of groupbox according to svg
         self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -138,11 +138,11 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_3signingdevices.setEnabled(True)
         self.groupBox_3signingdevices_layout = QHBoxLayout(self.groupBox_3signingdevices)
 
-        add_centered_icons(
-            ["coldcard-only.svg"] * 2 + ["bitbox02.svg"],
-            self.groupBox_3signingdevices_layout,
-            max_sizes=[(60, 80), (60, 80), (60, 50)],
+        svg_widgets = svg_widgets_hardware_signers(
+            3, parent=self.groupBox_3signingdevices, max_height=100, max_width=100
         )
+        for i, svg_widget in enumerate(svg_widgets):
+            self.groupBox_3signingdevices_layout.addWidget(svg_widget)
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
         # set size of groupbox according to svg

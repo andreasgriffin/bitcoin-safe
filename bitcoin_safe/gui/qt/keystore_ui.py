@@ -79,6 +79,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QSizePolicy,
+    QStyle,
     QTabWidget,
     QTextEdit,
     QToolButton,
@@ -107,8 +108,8 @@ def icon_for_label(label: str) -> QIcon:
 
 
 class HardwareSignerInteractionWidget(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
@@ -119,7 +120,7 @@ class HardwareSignerInteractionWidget(QWidget):
         self.button_export_qr: Optional[QToolButton] = None
         self.button_hwi: Optional[QPushButton] = None
         self.help_button: Optional[QPushButton] = None
-        self.button_export_file: Optional[QPushButton] = None
+        self.button_export_file: Optional[QToolButton] = None
 
         self._layout.addWidget(self.buttonBox)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -133,13 +134,21 @@ class HardwareSignerInteractionWidget(QWidget):
         )
         return button_import_file
 
-    def add_export_file_button(self) -> QPushButton:
+    def add_export_file_button(self) -> Tuple[QToolButton, Menu]:
+        # Create a custom QPushButton with an icon
+        button = QToolButton(self)
+        button.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
+        button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
-        # Create custom buttons
-        self.button_export_file = button_export_file = add_to_buttonbox(
-            self.buttonBox, self.tr(""), KeyStoreImporterTypes.file.icon_filename
-        )
-        return button_export_file
+        # Add the button to the QDialogButtonBox
+        self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
+
+        menu = Menu(self)
+        button.setMenu(menu)
+        button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+
+        self.button_export_file = button
+        return self.button_export_file, menu
 
     def add_qr_import_buttonn(self) -> QPushButton:
         self.button_import_qr = button_import_qr = add_to_buttonbox(
@@ -269,18 +278,9 @@ class KeyStoreUI(QObject):
         self.label_seed = QLabel()
         self.edit_seed = ButtonEdit()
 
-        def callback_seed(seed: str) -> None:
-            try:
-                keystore = self.get_ui_values_as_keystore()
-            except Exception as e:
-                Message(str(e), type=MessageType.Error)
-                return
-            self.edit_fingerprint.setText(keystore.fingerprint)
-            self.edit_xpub.setText(keystore.xpub)
-            self.key_origin = keystore.key_origin
-
-        self.edit_seed.add_random_mnemonic_button(callback_seed=callback_seed)
+        self.edit_seed.add_random_mnemonic_button(callback_seed=self.on_edit_seed_changed)
         self.edit_seed.input_field.setAnalyzer(SeedAnalyzer(parent=self))
+        self.edit_seed.input_field.textChanged.connect(self.on_edit_seed_changed)
 
         # put them on the formLayout
         self.formLayout = QFormLayout(self.tab_manual)
@@ -361,6 +361,16 @@ class KeyStoreUI(QObject):
 
         self.edit_key_origin_input.textChanged.connect(self.format_all_fields)
         self.signals_min.language_switch.connect(self.updateUi)
+
+    def on_edit_seed_changed(self, text: str):
+        try:
+            keystore = self.get_ui_values_as_keystore()
+        except Exception as e:
+            Message(str(e), type=MessageType.Error)
+            return
+        self.edit_fingerprint.setText(keystore.fingerprint)
+        self.edit_xpub.setText(keystore.xpub)
+        self.key_origin = keystore.key_origin
 
     def seed_visibility(self, visible=False) -> None:
 

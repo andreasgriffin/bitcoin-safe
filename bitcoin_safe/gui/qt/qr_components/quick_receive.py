@@ -33,6 +33,7 @@ from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import QMargins, Qt
 from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import (
+    QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
     QScrollArea,
@@ -91,6 +92,12 @@ class ReceiveGroup(TitledComponent):
             border: none;
             """
         )
+
+        glow_effect = QGraphicsDropShadowEffect()
+        glow_effect.setOffset(3)
+        glow_effect.setBlurRadius(10)
+        glow_effect.setColor(QColor(hex_color))
+        self.setGraphicsEffect(glow_effect)
 
         self.text_edit.setFixedHeight(60)
         self._layout.addWidget(self.text_edit)

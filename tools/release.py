@@ -317,6 +317,8 @@ def main() -> None:
     if get_input_with_default("Publish pypi package? (y/n): ", "y").lower() == "y":
         publish_pypi_wheel(dist_dir=directory)
 
+    print("Update features in \n    https://github.com/thebitcoinhole/software-wallets")
+
 
 if __name__ == "__main__":
     main()

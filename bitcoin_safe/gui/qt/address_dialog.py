@@ -36,7 +36,7 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
-from bitcoin_safe.gui.qt.register_multisig import USBValidateAddressWidget
+from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.util import serialized_to_hex

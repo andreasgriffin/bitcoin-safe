@@ -31,18 +31,18 @@ import hashlib
 import logging
 
 import nostr_sdk
-from bitcoin_nostr_chat.connected_devices.chat_gui import FileObject
-from bitcoin_nostr_chat.connected_devices.connected_devices import short_key
 from bitcoin_nostr_chat.nostr import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
+from bitcoin_nostr_chat.ui.chat_gui import FileObject
+from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
-from PyQt6.QtWidgets import QCheckBox
+from PyQt6.QtGui import QAction
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
-from bitcoin_safe.gui.qt.util import Message
+from bitcoin_safe.gui.qt.util import Message, icon_path
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.storage import filtered_for_init
 
@@ -69,24 +69,34 @@ class SyncTab(QObject):
         self.network = network
 
         self.main_widget = ControlledGroupbox(checkbox_text="", enabled=enabled)
+        self.main_widget.groupbox_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+
         self.main_widget.checkbox.stateChanged.connect(self.checkbox_state_changed)
         self.main_widget.checkbox.clicked.connect(self.publish_key_if_clicked)
-
-        self.checkbox_auto_open_psbts = QCheckBox()
-        self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)
-        self.main_widget.groupbox_layout.addWidget(self.checkbox_auto_open_psbts)
 
         self.nostr_sync = (
             nostr_sync if nostr_sync else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals)
         )
 
+        self.main_widget.groupbox_layout.addWidget(self.nostr_sync.ui)
+
+        # Create a checkable QAction
+        self.checkbox_auto_open_psbts = QAction("")
+        self.checkbox_auto_open_psbts.setCheckable(True)
+        self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)  # Set default state to checked
+        self.nostr_sync.ui.menu.addAction(self.checkbox_auto_open_psbts)
+        # self.main_widget.groupbox_layout.addWidget(self.checkbox_auto_open_psbts)
+
         self.updateUi()
 
         # signals
-        self.nostr_sync.signal_attachement_clicked.connect(self.open_file_object)
+        self.nostr_sync.chat.signal_attachement_clicked.connect(self.open_file_object)
         self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
-        self.main_widget.groupbox_layout.addWidget(self.nostr_sync.gui)
         self.signals.language_switch.connect(self.updateUi)
+
+    @staticmethod
+    def get_icon_path(enabled: bool) -> str:
+        return icon_path("cloud-sync.svg") if enabled else icon_path("cloud-sync-off.svg")
 
     def publish_key_if_clicked(self):
         # just in case the relay lost the publish key message. I republish here
@@ -96,11 +106,13 @@ class SyncTab(QObject):
             )
             self.nostr_sync.publish_my_key_in_protocol(force=True)
 
+    @classmethod
+    def get_checkbox_text(cls):
+        return cls.tr("Label backup and encrypted syncing to trusted devices")
+
     def updateUi(self) -> None:
-        self.main_widget.checkbox.setText(self.tr("Encrypted syncing to trusted devices"))
-        self.checkbox_auto_open_psbts.setText(
-            self.tr("Open received Transactions and PSBTs automatically in a new tab")
-        )
+        self.main_widget.checkbox.setText(self.get_checkbox_text())
+        self.checkbox_auto_open_psbts.setText(self.tr("Open received Transactions and PSBTs"))
 
     def unsubscribe_all(self) -> None:
         if self.enabled():
@@ -140,7 +152,11 @@ class SyncTab(QObject):
             if self.nostr_sync.is_me(dm.author):
                 # do nothing if i sent it
                 return
-            if dm.data and dm.data.data_type in [DataType.PSBT, DataType.Tx]:
+            if (
+                dm.data
+                and dm.data.data_type in [DataType.PSBT, DataType.Tx]
+                and self.checkbox_auto_open_psbts.isChecked()
+            ):
                 Message(
                     self.tr("Opening {name} from {author}").format(
                         name=dm.data.data_type.name, author=short_key(dm.author.to_bech32())

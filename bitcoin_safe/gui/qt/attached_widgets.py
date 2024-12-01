@@ -28,13 +28,18 @@
 
 
 import logging
+from collections import deque
 
 logger = logging.getLogger(__name__)
 
+from typing import Type
 
-from .step_progress_bar import StepProgressContainer
+from PyQt6.QtWidgets import QWidget
 
 
-class WalletStepsBase(StepProgressContainer):
-    def set_visibilities(self) -> None:
-        pass
+class AttachedWidgets(deque):
+    def remove_all_of_type(self, cls: Type[QWidget]) -> None:
+        for widget in list(self):
+            if isinstance(widget, cls):
+                widget.close()
+                self.remove(widget)

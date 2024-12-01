@@ -41,6 +41,7 @@ from unittest.mock import patch
 
 import pytest
 from PyQt6 import QtCore
+from PyQt6.QtGui import QAction
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
     QApplication,
@@ -189,19 +190,24 @@ def get_widget_top_level(
 
 
 def do_modal_click(
-    click_pushbutton: Union[Callable, QWidget],
+    click_pushbutton: Union[Callable, QWidget, QAction],
     on_open: Callable[[T], None],
     qtbot: QtBot,
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
-    cls: Type[T] = QMessageBox,
+    cls: Type[T] = Union[QMessageBox, QWidget],
     timeout=5000,
     timer_delay=200,
 ) -> None:
     def click() -> None:
+        QApplication.processEvents()
         print("\nwaiting for is_dialog_open")
 
-        dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
-        assert dialog
+        try:
+            dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
+        except Exception as e:
+            logger.error(f"Failed to get {cls.__name__}")
+            raise e
+        assert dialog, f"Failed to get {cls.__name__}"
 
         print("is_dialog_open = True")
         print("Do on_open")
@@ -210,6 +216,8 @@ def do_modal_click(
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
         click_pushbutton()
+    elif isinstance(click_pushbutton, QAction):
+        click_pushbutton.trigger()
     else:
         qtbot.mouseClick(click_pushbutton, button)
 
@@ -281,7 +289,7 @@ def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
 
 def save_wallet(
     shutter: Shutter, test_config: UserConfig, wallet_name: str, qtbot: QtBot, save_button: QPushButton
-) -> None:
+) -> Path:
 
     # check that you cannot go further without import xpub
     def password_creation(dialog: PasswordCreation) -> None:
@@ -293,7 +301,9 @@ def save_wallet(
         QFileDialog, "getSaveFileName", return_value=(str(wallet_file), "All Files (*)")
     ) as mock_open:
         do_modal_click(save_button, password_creation, qtbot, cls=PasswordCreation)
+        QApplication.processEvents()
         mock_open.assert_called_once()
+    return wallet_file
 
 
 def close_wallet(

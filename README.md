@@ -9,7 +9,7 @@
 - **Easy** Multisig-Wallet Setup
   - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
   - Test transactions ensure that all hardware signers are ready
-  - Full support for [Coldcard](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Coldcard Q](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), and Specter DIY, supporting QR, USB, SD-card
+  - Full support for [Coldcard](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Coldcard Q](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Bitbox02](https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), Foundation Passport, Specter DIY, using   *QR*, *USB*, and *SD-card* 
 - **Secure**: Hardware signers only
   - All wallets require hardware signers/wallets for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
@@ -80,7 +80,7 @@
   - MicroSD (files)
   - USB
   - QR codes (enhanced QR code detection for Laptop cameras)
-  - Animated QR codes including [BBQr](https://bbqr.org/) and legacy formats
+  - Animated QR codes including [Coldcard/BBQr](https://bbqr.org/) and [Passport](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md) format
 
 - **Search and Filtering Options**
   

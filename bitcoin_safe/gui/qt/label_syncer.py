@@ -32,11 +32,8 @@ from datetime import datetime
 from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.connected_devices.connected_devices import (
-    TrustedDevice,
-    short_key,
-)
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.ui.ui import TrustedDevice, short_key
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
@@ -59,7 +56,9 @@ class LabelSyncer(QObject):
 
         self.apply_own_labels = True
 
-        self.nostr_sync.signal_label_bip329_received.connect(self.on_nostr_label_bip329_received)
+        self.nostr_sync.label_connector.signal_label_bip329_received.connect(
+            self.on_nostr_label_bip329_received
+        )
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
         self.wallet_signals.updated.connect(self.on_labels_updated)
 
