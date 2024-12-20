@@ -32,7 +32,7 @@ jobs:
 
 
       - name: Upload DMG Files from dist/
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dmgs
           path: dist/*.dmg
