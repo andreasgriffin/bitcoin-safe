@@ -112,7 +112,7 @@ exe = EXE(
     upx=True,
     icon=ICONS_FILE,
     console=False,
-    target_arch='x86_64',  # TODO investigate building 'universal2'
+    target_arch='arm64',  # TODO investigate building 'universal2'
 )
 
 app = BUNDLE(
