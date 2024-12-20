@@ -946,8 +946,8 @@ Location of signing device: .....</source>
         <translation>Synchronisation multi-ordinateur et chat  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncTalk tab on each computer.</source>
-        <translation>Choisissez des ordinateurs de confiance dans l&apos;onglet SyncTalk sur chaque ordinateur.  </translation>
+        <source>Choose trusted computers in SyncChat tab on each computer.</source>
+        <translation>Choisissez des ordinateurs de confiance dans l&apos;onglet SyncChat sur chaque ordinateur.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -983,8 +983,8 @@ Location of signing device: .....</source>
 <context>
     <name>LinkingWarningBar</name>
     <message>
-        <source>{caterory} (in wallet {wallet_ids})</source>
-        <translation>{caterory} (dans le portefeuille {wallet_ids})  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (dans le portefeuille {wallet_ids})  </translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
@@ -1001,8 +1001,16 @@ Location of signing device: .....</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>&amp;Wallet</source>
-        <translation>&amp;Portefeuille  </translation>
+        <source>Close Tab</source>
+        <translation>Fermer l&apos;onglet  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;Exporter  </translation>
+    </message>
+    <message>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;Renommer le portefeuille  </translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
@@ -1037,16 +1045,16 @@ Location of signing device: .....</source>
         <translation>&amp;Outils de signataire USB  </translation>
     </message>
     <message>
+        <source>Close all transactions</source>
+        <translation>Fermer toutes les transactions  </translation>
+    </message>
+    <message>
         <source>&amp;Load Transaction or PSBT</source>
         <translation>&amp;Charger la Transaction ou PSBT  </translation>
     </message>
     <message>
         <source>From &amp;file</source>
         <translation>Depuis &amp;fichier  </translation>
-    </message>
-    <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;Nouveau Portefeuille  </translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
@@ -1081,16 +1089,16 @@ Location of signing device: .....</source>
         <translation>&amp;À propos  </translation>
     </message>
     <message>
+        <source>&amp;Wallet</source>
+        <translation>&amp;Portefeuille  </translation>
+    </message>
+    <message>
         <source>&amp;Version: {}</source>
         <translation>&amp;Version : {}  </translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
         <translation>&amp;Vérifier la mise à jour  </translation>
-    </message>
-    <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;Ouvrir le portefeuille  </translation>
     </message>
     <message>
         <source>&amp;License</source>
@@ -1125,16 +1133,16 @@ Location of signing device: .....</source>
         <translation>Fichier sélectionné : {file_path}  </translation>
     </message>
     <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;Nouveau Portefeuille  </translation>
+    </message>
+    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>Aucun portefeuille ouvert. Veuillez ouvrir le portefeuille expéditeur pour modifier cette transaction.  </translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation> Veuillez ouvrir le portefeuille expéditeur pour modifier cette transaction.  </translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>Ouvrir &amp;Récent  </translation>
     </message>
     <message>
         <source>Could not decode this string</source>
@@ -1169,16 +1177,16 @@ Location of signing device: .....</source>
         <translation>Ouvrir le portefeuille  </translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;Ouvrir le portefeuille  </translation>
+    </message>
+    <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
         <translation>Fichiers de portefeuille (*.wallet);;Tous les fichiers (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>Le portefeuille {file_path} est déjà ouvert.  </translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Enregistrer le Portefeuille Actuel  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1213,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>Veuillez terminer la configuration du portefeuille.  </translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>Ouvrir &amp;Récent  </translation>
+    </message>
+    <message>
         <source>Close wallet {id}?</source>
         <translation>Fermer le portefeuille {id} ?  </translation>
     </message>
@@ -1221,12 +1233,16 @@ Location of signing device: .....</source>
         <translation>Fermer le portefeuille  </translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Recherche  </translation>
-    </message>
-    <message>
         <source>Closing wallet {id}</source>
         <translation>Fermeture du portefeuille {id}  </translation>
+    </message>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>Voulez-vous enregistrer le PSBT {id}?  </translation>
+    </message>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>Enregistrer PSBT?  </translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
@@ -1249,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>Définir la phrase secrète  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Enregistrer le Portefeuille Actuel  </translation>
+    </message>
+    <message>
         <source>Get an xpub</source>
         <translation>Obtenir un xpub  </translation>
     </message>
@@ -1263,10 +1283,6 @@ Location of signing device: .....</source>
     <message>
         <source>Change the options used for getkeypool</source>
         <translation>Changer les options utilisées pour getkeypool  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Changer  </translation>
     </message>
     <message>
         <source>Change getkeypool options</source>
@@ -1293,16 +1309,16 @@ Location of signing device: .....</source>
         <translation>Keypool  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Recherche  </translation>
+    </message>
+    <message>
         <source>Descriptors</source>
         <translation>Descripteurs  </translation>
     </message>
     <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Exporter  </translation>
-    </message>
-    <message>
-        <source>&amp;Rename Wallet</source>
-        <translation>&amp;Renommer le portefeuille  </translation>
+        <source>&amp;Change</source>
+        <translation>&amp;Changer  </translation>
     </message>
 </context>
 <context>
@@ -1704,8 +1720,8 @@ Voulez-vous continuer malgré tout ?</translation>
         <translation>Importer les étiquettes  </translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1826,10 +1842,6 @@ Voulez-vous continuer malgré tout ?</translation>
     <message>
         <source>Send max</source>
         <translation>Envoyer le max  </translation>
-    </message>
-    <message>
-        <source>Enter label for recipient address</source>
-        <translation>Entrez l&apos;étiquette pour l&apos;adresse du destinataire  </translation>
     </message>
 </context>
 <context>
@@ -2199,6 +2211,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>Veuillez d&apos;abord activer l&apos;onglet de synchronisation  </translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>Partager avec des appareils de confiance  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Partager avec tous les appareils dans {wallet_id}  </translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>Partager avec un seul appareil  </translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>Veuillez d&apos;abord activer la synchronisation dans le portefeuille {wallet_id}  </translation>
+    </message>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
@@ -2222,29 +2257,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>Message reçu &apos;{description}&apos; de {author}  </translation>
-    </message>
-</context>
-<context>
-    <name>SyncTalkToolButton</name>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>Veuillez d&apos;abord activer l&apos;onglet de synchronisation  </translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>Partager avec des appareils de confiance  </translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Partager avec tous les appareils dans {wallet_id}  </translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>Partager avec un seul appareil  </translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Veuillez d&apos;abord activer la synchronisation dans le portefeuille {wallet_id}  </translation>
     </message>
 </context>
 <context>
@@ -2467,6 +2479,10 @@ below {rate}</source>
         <translation>Entrées  </translation>
     </message>
     <message>
+        <source>Invalid Signatures</source>
+        <translation>Signatures invalides  </translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Importer un fichier  </translation>
     </message>
@@ -2503,8 +2519,8 @@ below {rate}</source>
         <translation>Envoyer  </translation>
     </message>
     <message>
-        <source>Invalid Signatures</source>
-        <translation>Signatures invalides  </translation>
+        <source>Label: </source>
+        <translation>Étiquette :  </translation>
     </message>
 </context>
 <context>
@@ -2681,6 +2697,17 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>Entrez l&apos;étiquette pour l&apos;adresse du destinataire  </translation>
+    </message>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>Entrez une étiquette pour la transaction  </translation>
+    </message>
+</context>
+<context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
@@ -2715,8 +2742,8 @@ below {rate}</source>
         <translation>Enregistrer le multisig sur les signataires  </translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -2765,16 +2792,16 @@ below {rate}</source>
 <context>
     <name>XpubAnalyzer</name>
     <message>
-        <source>Missing xPub</source>
-        <translation>xPub manquant  </translation>
-    </message>
-    <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
         <translation>Le xpub est au format SLIP132. Conversion au format standard.</translation>
     </message>
     <message>
         <source>Converting format</source>
         <translation>Conversion de format  </translation>
+    </message>
+    <message>
+        <source>Missing xPub</source>
+        <translation>xPub manquant  </translation>
     </message>
     <message>
         <source>Invalid xpub</source>
@@ -3178,12 +3205,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Une bonne option est {link} et un explorateur de blocs sur {explorer}.  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>Une bonne option est {link} et un explorateur de blocs sur {explorer}. Il y a un {faucet}.  </translation>
-    </message>
-    <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Vous pouvez configurer {setup} avec un serveur esplora sur {server} et un explorateur de blocs sur {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Une bonne option est {link} et un explorateur de blocs sur {explorer}. Il y a un {faucet}.  </translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>

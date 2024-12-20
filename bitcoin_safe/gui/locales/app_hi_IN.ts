@@ -946,8 +946,8 @@ Location of signing device: .....</source>
         <translation>मल्टी-कंप्यूटर सिंक्रोनाइजेशन और चैट  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncTalk tab on each computer.</source>
-        <translation>प्रत्येक कंप्यूटर पर SyncTalk टैब में विश्वसनीय कंप्यूटरों का चयन करें।  </translation>
+        <source>Choose trusted computers in SyncChat tab on each computer.</source>
+        <translation>प्रत्येक कंप्यूटर पर SyncChat टैब में विश्वसनीय कंप्यूटरों का चयन करें।  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -983,8 +983,8 @@ Location of signing device: .....</source>
 <context>
     <name>LinkingWarningBar</name>
     <message>
-        <source>{caterory} (in wallet {wallet_ids})</source>
-        <translation>{caterory} (वॉलेट {wallet_ids} में)  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (वॉलेट {wallet_ids} में)  </translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
@@ -1001,8 +1001,16 @@ Location of signing device: .....</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>&amp;Wallet</source>
-        <translation>&amp;वॉलेट</translation>
+        <source>Close Tab</source>
+        <translation>टैब बंद करें  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;निर्यात  </translation>
+    </message>
+    <message>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;वॉलेट का नाम बदलें</translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
@@ -1037,16 +1045,16 @@ Location of signing device: .....</source>
         <translation>&amp;USB साइनर टूल्स  </translation>
     </message>
     <message>
+        <source>Close all transactions</source>
+        <translation>सभी लेन-देन बंद करें  </translation>
+    </message>
+    <message>
         <source>&amp;Load Transaction or PSBT</source>
         <translation>&amp;लोड ट्रांजैक्शन या PSBT</translation>
     </message>
     <message>
         <source>From &amp;file</source>
         <translation>फ़ाइल से</translation>
-    </message>
-    <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;नया वॉलेट</translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
@@ -1081,16 +1089,16 @@ Location of signing device: .....</source>
         <translation>&amp;के बारे में</translation>
     </message>
     <message>
+        <source>&amp;Wallet</source>
+        <translation>&amp;वॉलेट</translation>
+    </message>
+    <message>
         <source>&amp;Version: {}</source>
         <translation>&amp;संस्करण: {}</translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
         <translation>&amp;अपडेट के लिए जाँचें</translation>
-    </message>
-    <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;वॉलेट खोलें</translation>
     </message>
     <message>
         <source>&amp;License</source>
@@ -1125,16 +1133,16 @@ Location of signing device: .....</source>
         <translation>चयनित फ़ाइल: {file_path}</translation>
     </message>
     <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;नया वॉलेट</translation>
+    </message>
+    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>कोई वॉलेट खुला नहीं है। कृपया इस लेन-देन को संपादित करने के लिए प्रेषक वॉलेट खोलें।</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation>कृपया इस लेन-देन को संपादित करने के लिए प्रेषक वॉलेट खोलें।</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>हाल का खोलें</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
@@ -1169,16 +1177,16 @@ Location of signing device: .....</source>
         <translation>वॉलेट खोलें</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;वॉलेट खोलें</translation>
+    </message>
+    <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
         <translation>वॉलेट फ़ाइलें (*.wallet);;सभी फ़ाइलें (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>वॉलेट {file_path} पहले से खुला है।</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1213,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>कृपया वॉलेट सेटअप पूरा करें।</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>हाल का खोलें</translation>
+    </message>
+    <message>
         <source>Close wallet {id}?</source>
         <translation>वॉलेट {id} बंद करें?</translation>
     </message>
@@ -1221,12 +1233,16 @@ Location of signing device: .....</source>
         <translation>वॉलेट बंद करें</translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;खोजें  </translation>
-    </message>
-    <message>
         <source>Closing wallet {id}</source>
         <translation>वॉलेट {id} बंद करना</translation>
+    </message>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>क्या आप PSBT {id} को सहेजना चाहते हैं?  </translation>
+    </message>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>PSBT सहेजें?  </translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
@@ -1249,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>पासफ़्रेज़ सेट करें  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
+    </message>
+    <message>
         <source>Get an xpub</source>
         <translation>एक एक्सपब प्राप्त करें  </translation>
     </message>
@@ -1263,10 +1283,6 @@ Location of signing device: .....</source>
     <message>
         <source>Change the options used for getkeypool</source>
         <translation>getkeypool के लिए प्रयुक्त विकल्पों में परिवर्तन करें  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;बदलें  </translation>
     </message>
     <message>
         <source>Change getkeypool options</source>
@@ -1293,16 +1309,16 @@ Location of signing device: .....</source>
         <translation>Keypool  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;खोजें  </translation>
+    </message>
+    <message>
         <source>Descriptors</source>
         <translation>विवरणक  </translation>
     </message>
     <message>
-        <source>&amp;Export</source>
-        <translation>&amp;निर्यात  </translation>
-    </message>
-    <message>
-        <source>&amp;Rename Wallet</source>
-        <translation>&amp;वॉलेट का नाम बदलें</translation>
+        <source>&amp;Change</source>
+        <translation>&amp;बदलें  </translation>
     </message>
 </context>
 <context>
@@ -1704,8 +1720,8 @@ Location of signing device: .....</source>
         <translation>लेबल आयात करें</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1826,10 +1842,6 @@ Location of signing device: .....</source>
     <message>
         <source>Send max</source>
         <translation>अधिकतम भेजें</translation>
-    </message>
-    <message>
-        <source>Enter label for recipient address</source>
-        <translation>प्राप्तकर्ता पते के लिए लेबल दर्ज करें</translation>
     </message>
 </context>
 <context>
@@ -2199,6 +2211,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>कृपया पहले सिंक टैब को सक्षम करें</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>विश्वसनीय उपकरणों के साथ साझा करें</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>एकल उपकरण के साथ साझा करें</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>कृपया पहले {wallet_id} में सिंकिंग को सक्षम करें</translation>
+    </message>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
@@ -2222,29 +2257,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>{author} से प्राप्त संदेश &apos;{description}&apos;</translation>
-    </message>
-</context>
-<context>
-    <name>SyncTalkToolButton</name>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>कृपया पहले सिंक टैब को सक्षम करें</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>विश्वसनीय उपकरणों के साथ साझा करें</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id} में सभी उपकरणों के साथ साझा करें</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>एकल उपकरण के साथ साझा करें</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>कृपया पहले {wallet_id} में सिंकिंग को सक्षम करें</translation>
     </message>
 </context>
 <context>
@@ -2467,6 +2479,10 @@ below {rate}</source>
         <translation>इनपुट्स</translation>
     </message>
     <message>
+        <source>Invalid Signatures</source>
+        <translation>अमान्य हस्ताक्षर</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>फाइल आयात करें  </translation>
     </message>
@@ -2503,8 +2519,8 @@ below {rate}</source>
         <translation>भेजें</translation>
     </message>
     <message>
-        <source>Invalid Signatures</source>
-        <translation>अमान्य हस्ताक्षर</translation>
+        <source>Label: </source>
+        <translation>लेबल:  </translation>
     </message>
 </context>
 <context>
@@ -2681,6 +2697,17 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>प्राप्तकर्ता पते के लिए लेबल दर्ज करें</translation>
+    </message>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>लेन-देन के लिए लेबल दर्ज करें  </translation>
+    </message>
+</context>
+<context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
@@ -2715,8 +2742,8 @@ below {rate}</source>
         <translation>साइनर्स पर मल्टीसिग पंजीकृत करें</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -2765,16 +2792,16 @@ below {rate}</source>
 <context>
     <name>XpubAnalyzer</name>
     <message>
-        <source>Missing xPub</source>
-        <translation>गुम xPub  </translation>
-    </message>
-    <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
         <translation>xpub SLIP132 प्रारूप में है। मानक प्रारूप में परिवर्तित करना।</translation>
     </message>
     <message>
         <source>Converting format</source>
         <translation>प्रारूप परिवर्तन  </translation>
+    </message>
+    <message>
+        <source>Missing xPub</source>
+        <translation>गुम xPub  </translation>
     </message>
     <message>
         <source>Invalid xpub</source>
@@ -3178,12 +3205,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>एक अच्छा विकल्प है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}।</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>एक अच्छा विकल्प है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। वहाँ एक {faucet} है।</translation>
-    </message>
-    <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>आप {setup} के साथ एक esplora सर्वर पर {server} और एक ब्लॉक एक्सप्लोरर पर {explorer} के साथ सेटअप कर सकते हैं</translation>
+    </message>
+    <message>
+        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>एक अच्छा विकल्प है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। वहाँ एक {faucet} है।</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>

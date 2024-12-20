@@ -946,8 +946,8 @@ Location of signing device: .....</source>
         <translation>マルチコンピュータ同期とチャット  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncTalk tab on each computer.</source>
-        <translation>各コンピューターのSyncTalkタブで信頼できるコンピューターを選択します。  </translation>
+        <source>Choose trusted computers in SyncChat tab on each computer.</source>
+        <translation>各コンピューターのSyncChatタブで信頼できるコンピューターを選択してください。  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -983,8 +983,8 @@ Location of signing device: .....</source>
 <context>
     <name>LinkingWarningBar</name>
     <message>
-        <source>{caterory} (in wallet {wallet_ids})</source>
-        <translation>{caterory}（ウォレット{wallet_ids}内）  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category}（ウォレット {wallet_ids} 内）  </translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
@@ -1001,8 +1001,16 @@ Location of signing device: .....</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>&amp;Wallet</source>
-        <translation>&amp;新しいウォレット</translation>
+        <source>Close Tab</source>
+        <translation>タブを閉じる  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;エクスポート  </translation>
+    </message>
+    <message>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;パスワードを変更</translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
@@ -1037,16 +1045,16 @@ Location of signing device: .....</source>
         <translation>&amp;USB署名者ツール  </translation>
     </message>
     <message>
+        <source>Close all transactions</source>
+        <translation>すべての取引を閉じる  </translation>
+    </message>
+    <message>
         <source>&amp;Load Transaction or PSBT</source>
         <translation>&amp;トランザクションまたはPSBTをロード</translation>
     </message>
     <message>
         <source>From &amp;file</source>
         <translation>テキスト&amp;から</translation>
-    </message>
-    <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;ウォレットを開く</translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
@@ -1081,16 +1089,16 @@ Location of signing device: .....</source>
         <translation>&amp;バージョン：{}</translation>
     </message>
     <message>
+        <source>&amp;Wallet</source>
+        <translation>&amp;新しいウォレット</translation>
+    </message>
+    <message>
         <source>&amp;Version: {}</source>
         <translation>&amp;アップデートを確認</translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
         <translation>&amp;ライセンス</translation>
-    </message>
-    <message>
-        <source>&amp;Open Wallet</source>
-        <translation>最近開いた&amp;ウォレット</translation>
     </message>
     <message>
         <source>&amp;License</source>
@@ -1125,16 +1133,16 @@ Location of signing device: .....</source>
         <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
     </message>
     <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;ウォレットを開く</translation>
+    </message>
+    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>トランザクションまたはPSBTを開く</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation>OK</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>現在のウォレットを&amp;保存</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
@@ -1169,16 +1177,16 @@ Location of signing device: .....</source>
         <translation>ウォレット {file_path} はすでに開いています。</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
         <translation>ウォレットファイル (*.wallet);;すべてのファイル (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>ウォレットはすでに開いています</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1213,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>ウォレットを閉じる</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>現在のウォレットを&amp;保存</translation>
+    </message>
+    <message>
         <source>Close wallet {id}?</source>
         <translation>ウォレット {id} を閉じる</translation>
     </message>
@@ -1221,12 +1233,16 @@ Location of signing device: .....</source>
         <translation>タブ {name} を閉じる</translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;検索  </translation>
-    </message>
-    <message>
         <source>Closing wallet {id}</source>
         <translation>次のブロック</translation>
+    </message>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>PSBT {id} を保存しますか？  </translation>
+    </message>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>PSBTを保存しますか？  </translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
@@ -1249,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>パスフレーズを設定する  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;変更/エクスポート</translation>
+    </message>
+    <message>
         <source>Get an xpub</source>
         <translation>xpubを取得する  </translation>
     </message>
@@ -1263,10 +1283,6 @@ Location of signing device: .....</source>
     <message>
         <source>Change the options used for getkeypool</source>
         <translation>getkeypool用のオプションを変更する  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;変更  </translation>
     </message>
     <message>
         <source>Change getkeypool options</source>
@@ -1293,16 +1309,16 @@ Location of signing device: .....</source>
         <translation>Keypool  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;検索  </translation>
+    </message>
+    <message>
         <source>Descriptors</source>
         <translation>ディスクリプタ  </translation>
     </message>
     <message>
-        <source>&amp;Export</source>
-        <translation>&amp;エクスポート  </translation>
-    </message>
-    <message>
-        <source>&amp;Rename Wallet</source>
-        <translation>&amp;パスワードを変更</translation>
+        <source>&amp;Change</source>
+        <translation>&amp;変更  </translation>
     </message>
 </context>
 <context>
@@ -1704,8 +1720,8 @@ Location of signing device: .....</source>
         <translation>ラベルのインポート</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1826,10 +1842,6 @@ Location of signing device: .....</source>
     <message>
         <source>Send max</source>
         <translation>受取人アドレスのラベルを入力</translation>
-    </message>
-    <message>
-        <source>Enter label for recipient address</source>
-        <translation>受取人を追加</translation>
     </message>
 </context>
 <context>
@@ -2199,6 +2211,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>まず同期タブを有効にしてください</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>信頼できるデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>単一のデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>まず{wallet_id}で同期を有効にしてください</translation>
+    </message>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
@@ -2222,29 +2257,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>{author}からのメッセージ &apos;{description}&apos; を受け取った</translation>
-    </message>
-</context>
-<context>
-    <name>SyncTalkToolButton</name>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>まず同期タブを有効にしてください</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>信頼できるデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>単一のデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>まず{wallet_id}で同期を有効にしてください</translation>
     </message>
 </context>
 <context>
@@ -2467,6 +2479,10 @@ below {rate}</source>
         <translation>入力</translation>
     </message>
     <message>
+        <source>Invalid Signatures</source>
+        <translation>無効な署名</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>ファイルをインポート  </translation>
     </message>
@@ -2503,8 +2519,8 @@ below {rate}</source>
         <translation>送信</translation>
     </message>
     <message>
-        <source>Invalid Signatures</source>
-        <translation>無効な署名</translation>
+        <source>Label: </source>
+        <translation>ラベル：  </translation>
     </message>
 </context>
 <context>
@@ -2681,6 +2697,17 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>受取人を追加</translation>
+    </message>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>取引のためのラベルを入力してください  </translation>
+    </message>
+</context>
+<context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
@@ -2715,8 +2742,8 @@ below {rate}</source>
         <translation>マルチシグをサイナーに登録</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -2765,16 +2792,16 @@ below {rate}</source>
 <context>
     <name>XpubAnalyzer</name>
     <message>
-        <source>Missing xPub</source>
-        <translation>xPubが不足しています  </translation>
-    </message>
-    <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
         <translation>インポート</translation>
     </message>
     <message>
         <source>Converting format</source>
         <translation>形式を変換する  </translation>
+    </message>
+    <message>
+        <source>Missing xPub</source>
+        <translation>xPubが不足しています  </translation>
     </message>
     <message>
         <source>Invalid xpub</source>
@@ -3178,12 +3205,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>良いオプションは{link}と{explorer}上のブロックエクスプローラーです。</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>良いオプションは{link}と{explorer}上のブロックエクスプローラーです。蛇口があります。</translation>
-    </message>
-    <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>{setup}を{server}上のEsploraサーバーと{explorer}上のブロックエクスプローラーに設定できます。</translation>
+    </message>
+    <message>
+        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>良いオプションは{link}と{explorer}上のブロックエクスプローラーです。蛇口があります。</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>

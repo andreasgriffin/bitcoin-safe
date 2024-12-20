@@ -946,8 +946,8 @@ Location of signing device: .....</source>
         <translation>Синхронизация и чат на нескольких компьютерах  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncTalk tab on each computer.</source>
-        <translation>Выберите доверенные компьютеры на вкладке SyncTalk на каждом компьютере.  </translation>
+        <source>Choose trusted computers in SyncChat tab on each computer.</source>
+        <translation>Выберите доверенные компьютеры на вкладке SyncChat на каждом компьютере.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -983,8 +983,8 @@ Location of signing device: .....</source>
 <context>
     <name>LinkingWarningBar</name>
     <message>
-        <source>{caterory} (in wallet {wallet_ids})</source>
-        <translation>{caterory} (в кошельке {wallet_ids})  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (в кошельке {wallet_ids})  </translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
@@ -1001,8 +1001,16 @@ Location of signing device: .....</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>&amp;Wallet</source>
-        <translation>&amp;Кошелек</translation>
+        <source>Close Tab</source>
+        <translation>Закрыть вкладку  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;Экспорт  </translation>
+    </message>
+    <message>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;Переименовать кошелек</translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
@@ -1037,16 +1045,16 @@ Location of signing device: .....</source>
         <translation>&amp;Инструменты USB подписанта  </translation>
     </message>
     <message>
+        <source>Close all transactions</source>
+        <translation>Закрыть все транзакции  </translation>
+    </message>
+    <message>
         <source>&amp;Load Transaction or PSBT</source>
         <translation>&amp;Загрузить транзакцию или PSBT</translation>
     </message>
     <message>
         <source>From &amp;file</source>
         <translation>Из &amp;файла</translation>
-    </message>
-    <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;Новый кошелек</translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
@@ -1081,16 +1089,16 @@ Location of signing device: .....</source>
         <translation>&amp;О программе</translation>
     </message>
     <message>
+        <source>&amp;Wallet</source>
+        <translation>&amp;Кошелек</translation>
+    </message>
+    <message>
         <source>&amp;Version: {}</source>
         <translation>&amp;Версия: {}</translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
         <translation>&amp;Проверить наличие обновлений</translation>
-    </message>
-    <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;Открыть кошелек</translation>
     </message>
     <message>
         <source>&amp;License</source>
@@ -1125,16 +1133,16 @@ Location of signing device: .....</source>
         <translation>Выбранный файл: {file_path}</translation>
     </message>
     <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;Новый кошелек</translation>
+    </message>
+    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>Кошелек не открыт. Пожалуйста, откройте отправляющий кошелек для редактирования этой транзакции.</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation>Откройте отправляющий кошелек для редактирования этой транзакции.</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>Открыть &amp;Недавние</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
@@ -1169,16 +1177,16 @@ Location of signing device: .....</source>
         <translation>Открыть кошелек</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;Открыть кошелек</translation>
+    </message>
+    <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
         <translation>Файлы кошельков (*.wallet);;Все файлы (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>Кошелек {file_path} уже открыт.</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Сохранить текущий кошелек</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1213,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>Пожалуйста, завершите настройку кошелька.</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>Открыть &amp;Недавние</translation>
+    </message>
+    <message>
         <source>Close wallet {id}?</source>
         <translation>Закрыть кошелек {id}?</translation>
     </message>
@@ -1221,12 +1233,16 @@ Location of signing device: .....</source>
         <translation>Закрыть кошелек</translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;Поиск  </translation>
-    </message>
-    <message>
         <source>Closing wallet {id}</source>
         <translation>Закрытие кошелька {id}</translation>
+    </message>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>Вы хотите сохранить PSBT {id}?  </translation>
+    </message>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>Сохранить PSBT?  </translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
@@ -1249,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>Установить пароль  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Сохранить текущий кошелек</translation>
+    </message>
+    <message>
         <source>Get an xpub</source>
         <translation>Получить xpub  </translation>
     </message>
@@ -1263,10 +1283,6 @@ Location of signing device: .....</source>
     <message>
         <source>Change the options used for getkeypool</source>
         <translation>Изменить настройки, используемые для getkeypool  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;Изменить  </translation>
     </message>
     <message>
         <source>Change getkeypool options</source>
@@ -1293,16 +1309,16 @@ Location of signing device: .....</source>
         <translation>Keypool  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Поиск  </translation>
+    </message>
+    <message>
         <source>Descriptors</source>
         <translation>Дескрипторы  </translation>
     </message>
     <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Экспорт  </translation>
-    </message>
-    <message>
-        <source>&amp;Rename Wallet</source>
-        <translation>&amp;Переименовать кошелек</translation>
+        <source>&amp;Change</source>
+        <translation>&amp;Изменить  </translation>
     </message>
 </context>
 <context>
@@ -1704,8 +1720,8 @@ Location of signing device: .....</source>
         <translation>Импортировать метки</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1826,10 +1842,6 @@ Location of signing device: .....</source>
     <message>
         <source>Send max</source>
         <translation>Отправить максимум</translation>
-    </message>
-    <message>
-        <source>Enter label for recipient address</source>
-        <translation>Введите метку для адреса получателя</translation>
     </message>
 </context>
 <context>
@@ -2199,6 +2211,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>Пожалуйста, сначала включите вкладку синхронизации</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>Поделиться с доверенными устройствами</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Поделиться со всеми устройствами в {wallet_id}</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>Поделиться с одним устройством</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>Пожалуйста, сначала включите синхронизацию в кошельке {wallet_id}</translation>
+    </message>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
@@ -2222,29 +2257,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>Получено сообщение &apos;{description}&apos; от {author}</translation>
-    </message>
-</context>
-<context>
-    <name>SyncTalkToolButton</name>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>Пожалуйста, сначала включите вкладку синхронизации</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>Поделиться с доверенными устройствами</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Поделиться со всеми устройствами в {wallet_id}</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>Поделиться с одним устройством</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Пожалуйста, сначала включите синхронизацию в кошельке {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -2467,6 +2479,10 @@ below {rate}</source>
         <translation>Входы</translation>
     </message>
     <message>
+        <source>Invalid Signatures</source>
+        <translation>Недействительные подписи</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Импортировать файл  </translation>
     </message>
@@ -2503,8 +2519,8 @@ below {rate}</source>
         <translation>Отправить</translation>
     </message>
     <message>
-        <source>Invalid Signatures</source>
-        <translation>Недействительные подписи</translation>
+        <source>Label: </source>
+        <translation>Метка:  </translation>
     </message>
 </context>
 <context>
@@ -2681,6 +2697,17 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>Введите метку для адреса получателя</translation>
+    </message>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>Введите метку для транзакции  </translation>
+    </message>
+</context>
+<context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
@@ -2715,8 +2742,8 @@ below {rate}</source>
         <translation>Зарегистрировать мультисиг на подписывающих устройствах</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -2765,16 +2792,16 @@ below {rate}</source>
 <context>
     <name>XpubAnalyzer</name>
     <message>
-        <source>Missing xPub</source>
-        <translation>Отсутствует xPub  </translation>
-    </message>
-    <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
         <translation>xpub в формате SLIP132. Преобразование в стандартный формат.</translation>
     </message>
     <message>
         <source>Converting format</source>
         <translation>Конвертация формата  </translation>
+    </message>
+    <message>
+        <source>Missing xPub</source>
+        <translation>Отсутствует xPub  </translation>
     </message>
     <message>
         <source>Invalid xpub</source>
@@ -3178,12 +3205,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Хороший вариант - {link} и блок-эксплорер на {explorer}.</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>Хороший вариант - {link} и блок-эксплорер на {explorer}. Есть {faucet}.</translation>
-    </message>
-    <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Вы можете настроить {setup} с сервером esplora на {server} и блок-эксплорером на {explorer}</translation>
+    </message>
+    <message>
+        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Хороший вариант - {link} и блок-эксплорер на {explorer}. Есть {faucet}.</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>

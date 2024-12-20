@@ -946,8 +946,8 @@ Location of signing device: .....</source>
         <translation>مزامنة متعددة الأجهزة والدردشة  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncTalk tab on each computer.</source>
-        <translation>اختر الحواسيب الموثوقة في تبويب SyncTalk على كل جهاز.  </translation>
+        <source>Choose trusted computers in SyncChat tab on each computer.</source>
+        <translation>اختر الحواسيب الموثوقة في تبويب SyncChat على كل جهاز.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -983,8 +983,8 @@ Location of signing device: .....</source>
 <context>
     <name>LinkingWarningBar</name>
     <message>
-        <source>{caterory} (in wallet {wallet_ids})</source>
-        <translation>{caterory} (في محفظة {wallet_ids})  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (في محفظة {wallet_ids})  </translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
@@ -1001,8 +1001,16 @@ Location of signing device: .....</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>&amp;Wallet</source>
-        <translation>&amp;المحفظة</translation>
+        <source>Close Tab</source>
+        <translation>إغلاق التبويب  </translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;تصدير  </translation>
+    </message>
+    <message>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;إعادة تسمية المحفظة</translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
@@ -1037,16 +1045,16 @@ Location of signing device: .....</source>
         <translation>&amp;أدوات موقع USB  </translation>
     </message>
     <message>
+        <source>Close all transactions</source>
+        <translation>إغلاق جميع المعاملات  </translation>
+    </message>
+    <message>
         <source>&amp;Load Transaction or PSBT</source>
         <translation>&amp;تحميل المعاملة أو PSBT</translation>
     </message>
     <message>
         <source>From &amp;file</source>
         <translation>من &amp;ملف</translation>
-    </message>
-    <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;محفظة جديدة</translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
@@ -1081,16 +1089,16 @@ Location of signing device: .....</source>
         <translation>&amp;حول</translation>
     </message>
     <message>
+        <source>&amp;Wallet</source>
+        <translation>&amp;المحفظة</translation>
+    </message>
+    <message>
         <source>&amp;Version: {}</source>
         <translation>&amp;الإصدار: {}</translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
         <translation>&amp;التحقق من التحديث</translation>
-    </message>
-    <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;فتح المحفظة</translation>
     </message>
     <message>
         <source>&amp;License</source>
@@ -1125,16 +1133,16 @@ Location of signing device: .....</source>
         <translation>الملف المحدد: {مسار_الملف}</translation>
     </message>
     <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;محفظة جديدة</translation>
+    </message>
+    <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
         <translation>لا توجد محفظة مفتوحة. يرجى فتح محفظة الإرسال لتعديل هذه الصفقة.</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this thransaction.</source>
         <translation> يرجى فتح محفظة الإرسال لتعديل هذه الصفقة.</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>فتح &amp;الأخيرة</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
@@ -1169,16 +1177,16 @@ Location of signing device: .....</source>
         <translation>فتح المحفظة</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
         <translation>ملفات المحفظة (*.wallet);;كل الملفات (*)  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>المحفظة {مسار_الملف} مفتوحة بالفعل.</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1213,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>يرجى استكمال إعداد المحفظة.</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>فتح &amp;الأخيرة</translation>
+    </message>
+    <message>
         <source>Close wallet {id}?</source>
         <translation>هل تريد إغلاق المحفظة {id}؟</translation>
     </message>
@@ -1221,12 +1233,16 @@ Location of signing device: .....</source>
         <translation>إغلاق المحفظة</translation>
     </message>
     <message>
-        <source>&amp;Search</source>
-        <translation>&amp;بحث  </translation>
-    </message>
-    <message>
         <source>Closing wallet {id}</source>
         <translation>جارٍ إغلاق المحفظة {id}</translation>
+    </message>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>هل تريد حفظ PSBT {id}؟  </translation>
+    </message>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>حفظ PSBT؟  </translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
@@ -1249,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>تعيين عبارة المرور  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;حفظ المحفظة الحالية</translation>
+    </message>
+    <message>
         <source>Get an xpub</source>
         <translation>احصل على xpub  </translation>
     </message>
@@ -1263,10 +1283,6 @@ Location of signing device: .....</source>
     <message>
         <source>Change the options used for getkeypool</source>
         <translation>تغيير الخيارات المستخدمة لـ getkeypool  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;تغيير  </translation>
     </message>
     <message>
         <source>Change getkeypool options</source>
@@ -1293,16 +1309,16 @@ Location of signing device: .....</source>
         <translation>Keypool  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;بحث  </translation>
+    </message>
+    <message>
         <source>Descriptors</source>
         <translation>الموصوفات  </translation>
     </message>
     <message>
-        <source>&amp;Export</source>
-        <translation>&amp;تصدير  </translation>
-    </message>
-    <message>
-        <source>&amp;Rename Wallet</source>
-        <translation>&amp;إعادة تسمية المحفظة</translation>
+        <source>&amp;Change</source>
+        <translation>&amp;تغيير  </translation>
     </message>
 </context>
 <context>
@@ -1704,8 +1720,8 @@ Location of signing device: .....</source>
         <translation>استيراد التسميات</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1826,10 +1842,6 @@ Location of signing device: .....</source>
     <message>
         <source>Send max</source>
         <translation>إرسال الحد الأقصى</translation>
-    </message>
-    <message>
-        <source>Enter label for recipient address</source>
-        <translation>أدخل التسمية لعنوان المستلم</translation>
     </message>
 </context>
 <context>
@@ -2199,6 +2211,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>يرجى تمكين علامة المزامنة أولاً</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>مشاركة مع الأجهزة الموثوق بها</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>مشاركة مع جهاز واحد</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
+    </message>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
@@ -2222,29 +2257,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Received message &apos;{description}&apos; from {author}</source>
         <translation>تم استلام الرسالة &quot;{description}&quot; من {author}</translation>
-    </message>
-</context>
-<context>
-    <name>SyncTalkToolButton</name>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>يرجى تمكين علامة المزامنة أولاً</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>مشاركة مع الأجهزة الموثوق بها</translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>مشاركة مع جهاز واحد</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
     </message>
 </context>
 <context>
@@ -2467,6 +2479,10 @@ below {rate}</source>
         <translation>المدخلات</translation>
     </message>
     <message>
+        <source>Invalid Signatures</source>
+        <translation>التوقيعات غير صالحة</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>استيراد ملف  </translation>
     </message>
@@ -2503,8 +2519,8 @@ below {rate}</source>
         <translation>يرسل</translation>
     </message>
     <message>
-        <source>Invalid Signatures</source>
-        <translation>التوقيعات غير صالحة</translation>
+        <source>Label: </source>
+        <translation>التسمية:  </translation>
     </message>
 </context>
 <context>
@@ -2681,6 +2697,17 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>أدخل التسمية لعنوان المستلم</translation>
+    </message>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>أدخل تسمية للمعاملة  </translation>
+    </message>
+</context>
+<context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
@@ -2715,8 +2742,8 @@ below {rate}</source>
         <translation>تسجيل multisig على الموقعين</translation>
     </message>
     <message>
-        <source>SyncTalk</source>
-        <translation>SyncTalk</translation>
+        <source>SyncChat</source>
+        <translation>SyncChat  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -2765,16 +2792,16 @@ below {rate}</source>
 <context>
     <name>XpubAnalyzer</name>
     <message>
-        <source>Missing xPub</source>
-        <translation>xPub مفقود  </translation>
-    </message>
-    <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
         <translation>xpub في تنسيق SLIP132. تحويل إلى تنسيق قياسي.</translation>
     </message>
     <message>
         <source>Converting format</source>
         <translation>تحويل الصيغة  </translation>
+    </message>
+    <message>
+        <source>Missing xPub</source>
+        <translation>xPub مفقود  </translation>
     </message>
     <message>
         <source>Invalid xpub</source>
@@ -3178,12 +3205,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>الخيار الجيد هو {link} ومستكشف الكتل على {explorer}.</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>الخيار الجيد هو {link} ومستكشف الكتل على {explorer}. هناك {faucet}.</translation>
-    </message>
-    <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>يمكنك إعداد {setup} باستخدام خادم esplora على {server} ومستكشف الكتل على {explorer}</translation>
+    </message>
+    <message>
+        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>الخيار الجيد هو {link} ومستكشف الكتل على {explorer}. هناك {faucet}.</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
