@@ -1,0 +1,98 @@
+{
+    "VERSION": "0.2.0",
+    "__class__": "Wallet",
+    "_blockchain_height": 200,
+    "_tips": [
+        20,
+        5
+    ],
+    "data_dump": {
+        "SyncTab": {
+            "auto_open_psbts": true,
+            "enabled": false,
+            "nostr_sync_dump": {
+                "debug": false,
+                "group_chat": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec1pw22tvk733pgfj6qg5t94d29770v7fpt33rcj2my58nfh297ldpsmtwk0w",
+                        "relay_list": {
+                            "last_updated": 1733161716.077338,
+                            "max_age": 30,
+                            "relays": []
+                        },
+                        "use_timer": false
+                    },
+                    "members": [],
+                    "network": "REGTEST",
+                    "sync_start": 1733161992.260739,
+                    "use_compression": true
+                },
+                "individual_chats_visible": false,
+                "network": "REGTEST",
+                "nostr_protocol": {
+                    "dm_connection_dump": {
+                        "dms_from_dump": [],
+                        "keys": "nsec17jteg40g8zknj9qwqkle6f7v348faqsxjycyhadfge0zq66e2d9qa7wx3v",
+                        "relay_list": {
+                            "last_updated": 1733161716.075222,
+                            "max_age": 30,
+                            "relays": []
+                        },
+                        "use_timer": false
+                    },
+                    "network": "REGTEST",
+                    "sync_start": null,
+                    "use_compression": true
+                }
+            }
+        },
+        "display_balance": {
+            "VERSION": "0.0.1",
+            "__class__": "Balance",
+            "confirmed": 0,
+            "immature": 0,
+            "trusted_pending": 0,
+            "untrusted_pending": 10000000
+        }
+    },
+    "descriptor_str": "wpkh([dadb03a1/84'/1'/0']tpubDDPm1zscD2G27Mp4Y6jYasoSEwNyjE6UgLMB3wSsv9Cz7aCsWf4YqvGEqaV2PQ1xGXvbnp8RbDN1cHtLdiFVB1bxoUHRZsvPN64TRTfBj1L/<0;1>/*)#f8fk0g2j",
+    "gap": 20,
+    "gap_change": 5,
+    "id": "send_test",
+    "keystores": [
+        {
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/0/*",
+            "description": "",
+            "fingerprint": "DADB03A1",
+            "key_origin": "m/84h/1h/0h",
+            "label": "Signer 1",
+            "mnemonic": "plug tissue prison random hedgehog tone slim balcony faint squirrel sight under",
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
+            },
+            "xpub": "tpubDDPm1zscD2G27Mp4Y6jYasoSEwNyjE6UgLMB3wSsv9Cz7aCsWf4YqvGEqaV2PQ1xGXvbnp8RbDN1cHtLdiFVB1bxoUHRZsvPN64TRTfBj1L"
+        }
+    ],
+    "labels": {
+        "VERSION": "0.1.0",
+        "__class__": "Labels",
+        "categories": [
+            "KYC Exchange",
+            "Private"
+        ],
+        "data": { },
+        "default_category": "KYC Exchange"
+    },
+    "network": {
+        "__enum__": true,
+        "name": "Network",
+        "value": "REGTEST"
+    },
+    "refresh_wallet": false,
+    "tutorial_index": null
+}
