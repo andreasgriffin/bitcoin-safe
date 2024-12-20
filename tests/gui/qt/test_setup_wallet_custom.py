@@ -34,6 +34,7 @@ from pathlib import Path
 from time import sleep
 
 import bdkpython as bdk
+import pytest
 from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox
@@ -63,6 +64,7 @@ from .test_helpers import (  # type: ignore
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.marker_qt_1
 def test_custom_wallet_setup_custom_single_sig(
     qapp: QApplication,
     qtbot: QtBot,

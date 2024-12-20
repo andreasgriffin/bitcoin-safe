@@ -37,6 +37,7 @@ from time import sleep
 from unittest.mock import patch
 
 import bdkpython as bdk
+import pytest
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.tool_gui import ToolGui
@@ -74,6 +75,7 @@ from .test_helpers import (  # type: ignore
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.marker_qt_2
 def test_wallet_features_multisig(
     qapp: QApplication,
     qtbot: QtBot,

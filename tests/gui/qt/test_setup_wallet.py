@@ -35,6 +35,7 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import patch
 
+import pytest
 from PyQt6 import QtGui
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
@@ -100,6 +101,7 @@ def enter_text(text: str, widget: QWidget) -> None:
         QTest.keyClick(widget, char)
 
 
+@pytest.mark.marker_qt_1
 def test_wizard(
     qapp: QApplication,
     qtbot: QtBot,

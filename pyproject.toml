@@ -46,6 +46,13 @@ numpy = "^2.0.1"
 pgpy = "^0.6.0"
 
 
+[tool.pytest.ini_options]
+markers = [
+    "marker_qt_1: marks tests as marker_qt_1 (deselect by default)",
+    "marker_qt_2: marks tests as marker_qt_2 (deselect by default)"
+]
+
+
 [tool.briefcase]
 project_name = "Bitcoin-Safe"
 bundle = "org.bitcoin-safe"

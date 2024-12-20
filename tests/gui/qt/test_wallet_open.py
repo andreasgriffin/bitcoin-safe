@@ -35,6 +35,7 @@ from datetime import datetime
 from pathlib import Path
 from time import sleep
 
+import pytest
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
@@ -60,6 +61,7 @@ from .test_helpers import (  # type: ignore
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.marker_qt_2
 def test_open_wallet_and_address_is_consistent(
     qapp: QApplication,
     qtbot: QtBot,
