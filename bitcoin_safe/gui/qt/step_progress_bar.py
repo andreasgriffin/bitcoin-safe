@@ -32,6 +32,7 @@ from dataclasses import dataclass
 
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +79,7 @@ def height_of_str(text, widget: QWidget, max_width: float) -> float:
 
 class StepProgressBar(QWidget):
     # Define a new signal that emits the number of the index clicked
-    signal_index_clicked = pyqtSignal(int)
+    signal_index_clicked: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
 
     def __init__(
         self,
@@ -455,9 +456,9 @@ class AutoResizingStackedWidget(QWidget):
 
 
 class StepProgressContainer(ThreadingManager, QWidget):
-    signal_set_current_widget = pyqtSignal(QWidget)
-    signal_widget_focus = pyqtSignal(QWidget)
-    signal_widget_unfocus = pyqtSignal(QWidget)
+    signal_set_current_widget: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    signal_widget_focus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    signal_widget_unfocus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
 
     def __init__(
         self,
@@ -474,7 +475,8 @@ class StepProgressContainer(ThreadingManager, QWidget):
     ) -> None:
         super().__init__(parent=parent, threading_parent=threading_parent)  # type: ignore
         self.signals_min = signals_min
-        self.threading_parent = threading_parent
+        if threading_parent:
+            self.threading_parent = threading_parent
         self.step_bar = StepProgressBar(
             len(step_labels),
             current_index=current_index,
@@ -566,8 +568,10 @@ class StepProgressContainer(ThreadingManager, QWidget):
         self.stacked_widget.setCurrentIndex(index)
         self.horizontal_indicator.set_current_index(index)
 
-        self.signal_widget_unfocus.emit(self.stacked_widget.widget(old_index))
-        self.signal_widget_focus.emit(self.stacked_widget.widget(index))
+        if widget_unfocus := self.stacked_widget.widget(old_index):
+            self.signal_widget_unfocus.emit(widget_unfocus)
+        if widget_focus := self.stacked_widget.widget(index):
+            self.signal_widget_focus.emit(widget_focus)
 
     def set_stacked_widget_visible(self, is_visible: bool) -> None:
         self.horizontal_indicator.setVisible(is_visible)
@@ -584,11 +588,13 @@ class StepProgressContainer(ThreadingManager, QWidget):
         self.stacked_widget.setCurrentIndex(index)
 
         # this order is important:
-        self.signal_widget_unfocus.emit(self.stacked_widget.widget(old_index))
-        self.signal_widget_focus.emit(self.stacked_widget.widget(index))
-        # in the set_current_widget the callback functions are executed that may change the
-        # visiblities. So it is critical to do the set_current_widget at the end.
-        self.signal_set_current_widget.emit(self.stacked_widget.widget(index))
+        if old_widget := self.stacked_widget.widget(old_index):
+            self.signal_widget_unfocus.emit(old_widget)
+        if new_widget := self.stacked_widget.widget(index):
+            self.signal_widget_focus.emit(new_widget)
+            # in the set_current_widget the callback functions are executed that may change the
+            # visiblities. So it is critical to do the set_current_widget at the end.
+            self.signal_set_current_widget.emit(new_widget)
 
     def set_custom_widget(self, index: int, widget: QWidget) -> None:
         """Sets the custom widget for the specified step.

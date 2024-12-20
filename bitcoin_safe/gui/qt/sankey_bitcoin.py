@@ -34,14 +34,16 @@ import bdkpython as bdk
 from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
+from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.sankey_widget import FlowIndex, FlowType, SankeyWidget
 from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.labels import LabelType
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     TxOut,
-    get_outpoints,
+    get_prev_outpoints,
     robust_address_str_from_script,
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
@@ -57,8 +59,10 @@ class SankeyBitcoin(SankeyWidget):
         self.signals = signals
         self.network = network
         self.tx: bdk.Transaction | None = None
+        self.fee_info: FeeInfo | None = None
         self.txouts: List[TxOut] = []
         self.addresses: List[str] = []
+        self.txo_dict: Dict[str, PythonUtxo] = {}
 
         self.signals.any_wallet_updated.connect(self.refresh)
         self.signal_on_label_click.connect(self.on_label_click)
@@ -83,7 +87,7 @@ class SankeyBitcoin(SankeyWidget):
             return
 
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-        self.set_tx(self.tx)
+        self.set_tx(self.tx, fee_info=self.fee_info, txo_dict=self.txo_dict)
 
     @property
     def outpoints(self) -> List[OutPoint]:
@@ -98,8 +102,45 @@ class SankeyBitcoin(SankeyWidget):
             return []
         return [OutPoint.from_bdk(inp.previous_output) for inp in self.tx.input()]
 
-    def set_tx(self, tx: bdk.Transaction, fee_info: FeeInfo | None = None) -> bool:
+    def set_tx(
+        self,
+        tx: bdk.Transaction,
+        fee_info: FeeInfo | None = None,
+        txo_dict: Dict[str, PythonUtxo] | None = None,
+    ) -> bool:
+        def get_label_and_tooltip(
+            value: int | None,
+            label: str | None,
+            address: str | None,
+            count: int,
+            connect_right=False,
+            connect_left=False,
+        ):
+            display_label = ""
+            tooltip = ""
+
+            if connect_left:
+                display_label += "⮜ "
+
+            if label:
+                display_label += label + "\n"
+                tooltip += label + "\n"
+            elif address:
+                # display_label += address
+                tooltip += address + "\n"
+
+            if value is not None:
+                # if count<10 :
+                display_label += Satoshis(value, self.network).str_with_unit(color_formatting=None)
+                tooltip += Satoshis(value, self.network).str_with_unit()
+
+            if connect_right:
+                display_label += " ➤"
+            return display_label.strip("\n"), ""  # html_f(tooltip,add_html_and_body=True,)
+
+        self.fee_info = fee_info
         self.tx = tx
+        self.txo_dict = txo_dict if txo_dict else {}
         self.addresses = []
         wallets = get_wallets(self.signals)
 
@@ -109,23 +150,30 @@ class SankeyBitcoin(SankeyWidget):
 
         # output
         self.txouts = [TxOut.from_bdk(txout) for txout in tx.output()]
-        out_flows: List[float] = [txout.value for txout in self.txouts]
-        for i, txout in enumerate(self.txouts):
-            flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=i)
+        out_flows: List[int] = [txout.value for txout in self.txouts]
+        for vout, txout in enumerate(self.txouts):
+            flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=vout)
             address = robust_address_str_from_script(txout.script_pubkey, network=self.network)
             self.addresses.append(address)
 
             label = get_label_from_any_wallet(
-                address, signals=self.signals, wallets=wallets, autofill_from_txs=False
+                label_type=LabelType.addr,
+                ref=address,
+                signals=self.signals,
+                wallets=wallets,
+                autofill_from_txs=False,
             )
             color = self.get_address_color(address, wallets=wallets)
-            labels[flow_index] = label if label else address
-            tooltips[flow_index] = html_f(
-                ((label + "\n" + address) if label else address)
-                + "\n"
-                + Satoshis(txout.value, self.network).str_with_unit(),
-                add_html_and_body=True,
+
+            outpoint = self.txo_dict.get(str(OutPoint(txid=self.tx.txid(), vout=vout)))
+            labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
+                value=txout.value,
+                label=label,
+                address=address,
+                count=len(self.txouts),
+                connect_right=bool(outpoint and outpoint.is_spent_by_txid),
             )
+
             if color:
                 colors[flow_index] = color
 
@@ -137,47 +185,94 @@ class SankeyBitcoin(SankeyWidget):
         }
 
         # input
-        in_python_txos: List[PythonUtxo] = []
-        sufficient_info = True
-        for outpoint in get_outpoints(tx):
+        in_flows: List[int | None] = []
+        prev_outpoints = get_prev_outpoints(tx)
+        for vout, outpoint in enumerate(prev_outpoints):
             outpoint_str = str(outpoint)
-            if outpoint_str not in outpoint_dict:
+            flow_index = FlowIndex(flow_type=FlowType.InFlow, i=vout)
+
+            if outpoint_str in outpoint_dict:
+                python_utxo, wallet = outpoint_dict[outpoint_str]
+                address = python_utxo.address
+                value = python_utxo.txout.value
+                in_flows.append(value)
+
+                # add labels and colors
+                self.addresses.append(address)
+
+                label = get_label_from_any_wallet(
+                    label_type=LabelType.addr,
+                    ref=address,
+                    signals=self.signals,
+                    wallets=wallets,
+                    autofill_from_txs=False,
+                )
+                color = self.get_address_color(address, wallets=wallets)
+                labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
+                    value=value,
+                    label=label,
+                    address=address,
+                    count=len(prev_outpoints),
+                    connect_left=bool(
+                        python_utxo
+                    ),  # if a python utxo is available, it means I know the previous tx
+                )
+                if color:
+                    colors[flow_index] = color
+            elif outpoint_str in self.txo_dict:
+                value = self.txo_dict[outpoint_str].txout.value
+                in_flows.append(value)
+                labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
+                    value=value, label=None, address=None, count=len(prev_outpoints)
+                )
+            else:
                 # ensure all inputs are known
-                sufficient_info = False
-                break
-            python_utxo, wallet = outpoint_dict[outpoint_str]
-            in_python_txos.append(python_utxo)
+                in_flows.append(None)
+                continue
 
-        for i, txo in enumerate(in_python_txos):
-            self.addresses.append(txo.address)
-            flow_index = FlowIndex(flow_type=FlowType.InFlow, i=i)
-
-            label = get_label_from_any_wallet(
-                txo.address, signals=self.signals, wallets=wallets, autofill_from_txs=False
+        # handle cases where i have sufficient info to still construct a diagram
+        if (None in in_flows) and fee_info and not fee_info.is_estimated:
+            num_unknown_inputs = in_flows.count(None)
+            missing_inflows = (
+                sum(out_flows) + fee_info.fee_amount - sum([v for v in in_flows if v is not None])
             )
-            color = self.get_address_color(txo.address, wallets=wallets)
-            labels[flow_index] = label if label else txo.address
-            tooltips[flow_index] = html_f(
-                ((label + "\n" + txo.address) if label else txo.address)
-                + "\n"
-                + Satoshis(txo.txout.value, self.network).str_with_unit(),
-                add_html_and_body=True,
-            )
-            if color:
-                colors[flow_index] = color
+            # if there is only 1 input unknown, I can still construct a diagram, if the fee is known
+            if num_unknown_inputs == 1:
+                for vout, in_flow in enumerate(in_flows):
+                    if in_flow is None:
+                        in_flows[vout] = missing_inflows
+                        flow_index = FlowIndex(flow_type=FlowType.InFlow, i=vout)
+                        labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
+                            value=missing_inflows, label=None, address=None, count=len(in_flows)
+                        )
+                        break
 
-        in_flows: List[float] = [txo.txout.value for txo in in_python_txos]
+            elif num_unknown_inputs > 1:
+                # if there is fee info, but the inputs are unknown I can make the unknown inputs half transparent
+                # to indicate an unknown amount
+                remaining_missing_inflows = missing_inflows
+                remaining_unknown_inputs = num_unknown_inputs
+                for vout, in_flow in enumerate(in_flows):
+                    if in_flow is None and remaining_unknown_inputs > 0:
+                        amount = remaining_missing_inflows // remaining_unknown_inputs
+                        remaining_missing_inflows -= amount
+                        remaining_unknown_inputs -= 1
 
-        if not sufficient_info:
-            # if there is only 1 input and the fee is known, I can still construct a diagram
-            if len(get_outpoints(tx)) == 1 and len(in_flows) == 0 and fee_info and not fee_info.is_estimated:
-                in_flows = [sum(out_flows) + fee_info.fee_amount]
-                sufficient_info = True
+                        in_flows[vout] = amount
+                        flow_index = FlowIndex(flow_type=FlowType.InFlow, i=vout)
+                        colors[flow_index] = QColor("#00000000")
 
-        if not sufficient_info:
+                if sum(out_flows) + fee_info.fee_amount != sum([v for v in in_flows if v is not None]):
+                    logger.warning(
+                        f"Error in sankey bitcoin widget.  There should be enough info to construct a partial diagram."
+                    )
+                    return False
+
+        if None in in_flows:
             return False
 
-        in_sum = sum(in_flows)
+        pure_in_flows = [v for v in in_flows if v is not None]
+        in_sum = sum(pure_in_flows)
 
         # other
         fee = int(in_sum - sum(out_flows))
@@ -191,7 +286,7 @@ class SankeyBitcoin(SankeyWidget):
             )
 
         self.set(
-            in_flows=in_flows,
+            in_flows=pure_in_flows,
             out_flows=out_flows,
             colors=colors,
             labels=labels,
@@ -231,16 +326,20 @@ class SankeyBitcoin(SankeyWidget):
             # careful, the last flow_index.i is the fee, so
             # outflow indexes go 1 larger than the actual vout index
             outpoint = OutPoint(self.tx.txid(), flow_index.i)
-            txo = self.get_python_txo(str(outpoint))
+            txo = self.txo_dict.get(str(outpoint)) or self.get_python_txo(str(outpoint))
             if not txo:
                 return
             if txo.is_spent_by_txid:
                 # open the spending tx
-                self.signals.open_tx_like.emit(txo.is_spent_by_txid)
+                self.signals.open_tx_like.emit(
+                    PackagedTxLike(tx_like=txo.is_spent_by_txid, focus_ui_elements=UiElements.diagram)
+                )
 
         elif flow_index.flow_type == FlowType.InFlow:
-            outpoints = get_outpoints(self.tx)
+            outpoints = get_prev_outpoints(self.tx)
             if len(outpoints) <= flow_index.i:
                 return
             outpoint = outpoints[flow_index.i]
-            self.signals.open_tx_like.emit(outpoint.txid)
+            self.signals.open_tx_like.emit(
+                PackagedTxLike(tx_like=outpoint.txid, focus_ui_elements=UiElements.diagram)
+            )

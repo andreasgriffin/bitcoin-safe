@@ -29,10 +29,12 @@
 
 import sys
 
-from PyQt6.QtCore import QRectF, QSize, QTimer, pyqtBoundSignal
+from PyQt6.QtCore import QRectF, QSize, QTimer
 from PyQt6.QtGui import QIcon, QPainter, QPaintEvent
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
+
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .util import icon_path
 
@@ -41,7 +43,7 @@ class SpinningButton(QPushButton):
     def __init__(
         self,
         text: str,
-        enable_signal: pyqtBoundSignal | None = None,
+        enable_signal: TypedPyQtSignalNo | None = None,
         enabled_icon=QIcon(),
         spinning_svg_path=None,
         parent=None,
@@ -81,7 +83,7 @@ class SpinningButton(QPushButton):
         self.setEnabled(True)
         self.timeout_timer.stop()
 
-    def set_enable_signal(self, enable_signal: pyqtBoundSignal) -> None:
+    def set_enable_signal(self, enable_signal: TypedPyQtSignal | TypedPyQtSignalNo) -> None:
         if enable_signal:
             enable_signal.connect(self.enable_button)
 

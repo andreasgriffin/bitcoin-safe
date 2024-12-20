@@ -36,14 +36,12 @@ import copy
 
 import bdkpython as bdk
 from bitcoin_usb.address_types import (
-    AddressType,
     AddressTypes,
     ConstDerivationPaths,
     SimplePubKeyProvider,
 )
 from packaging import version
 
-from .descriptors import MultipathDescriptor
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 
@@ -190,6 +188,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @classmethod
     def is_xpub_valid(cls, xpub: str, network: bdk.Network) -> bool:
+        if not AddressTypes.p2pkh.bdk_descriptor:
+            return False
         try:
             AddressTypes.p2pkh.bdk_descriptor(
                 bdk.DescriptorPublicKey.from_string(xpub),
@@ -202,34 +202,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         except:
             return False
 
-    def clone(self, class_kwargs=None) -> "KeyStore":
+    def clone(self, class_kwargs: Dict | None = None) -> "KeyStore":
         return KeyStore(**self.__dict__)
-
-    def to_singlesig_multipath_descriptor(
-        self, address_type: AddressType, network: bdk.Network
-    ) -> MultipathDescriptor:
-        "Uses the bdk descriptor templates to create the descriptor from xpub or seed"
-        descriptors = [
-            (
-                address_type.bdk_descriptor(
-                    bdk.DescriptorPublicKey.from_string(self.xpub),
-                    self.fingerprint,
-                    keychainkind,
-                    network,
-                )
-                if not self.mnemonic
-                else address_type.bdk_descriptor_secret(
-                    bdk.DescriptorSecretKey(network, bdk.Mnemonic.from_str(self.mnemonic), ""),  # type: ignore
-                    keychainkind,
-                    network,
-                )
-            )
-            for keychainkind in [
-                bdk.KeychainKind.EXTERNAL,
-                bdk.KeychainKind.INTERNAL,
-            ]
-        ]
-        return MultipathDescriptor(*descriptors)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
@@ -244,7 +218,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None) -> "KeyStore":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "KeyStore":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**filtered_for_init(dct, cls))

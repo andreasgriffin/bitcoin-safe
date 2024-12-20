@@ -30,13 +30,12 @@
 import logging
 import os
 import platform
-import shlex
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 from bitcoin_safe import __version__
+from bitcoin_safe.util_os import xdg_open_file
 
 from .simple_mailer import compose_email
 
@@ -130,16 +129,6 @@ class OpenLogHandler(logging.Handler):
         super().__init__(level)
         self.file_path = file_path
 
-    @staticmethod
-    def xdg_open_file(filename: Path):
-        system_name = platform.system()
-        if system_name == "Windows":
-            subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
-        elif system_name == "Darwin":  # macOS
-            subprocess.call(shlex.split(f'open "{filename}"'))
-        elif system_name == "Linux":  # Linux
-            subprocess.call(shlex.split(f'xdg-open "{filename}"'))
-
     def emit(self, record) -> None:
 
         message = text_error_report(str(self.format(record)), file_path=self.file_path)
@@ -149,4 +138,4 @@ class OpenLogHandler(logging.Handler):
             temp_file.write(message)
             temp_file_path = temp_file.name
 
-            self.xdg_open_file(Path(temp_file_path))
+            xdg_open_file(Path(temp_file_path), is_text_file=True)

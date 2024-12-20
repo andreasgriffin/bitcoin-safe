@@ -60,15 +60,15 @@ from PyQt6.QtWidgets import (
 )
 
 from ...descriptors import AddressType, get_default_address_type
-from ...signals import SignalsMin, pyqtSignal
+from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 
 
 class DescriptorUI(QObject):
-    signal_qtwallet_apply_setting_changes = pyqtSignal()
-    signal_qtwallet_cancel_setting_changes = pyqtSignal()
-    signal_qtwallet_cancel_wallet_creation = pyqtSignal()
+    signal_qtwallet_apply_setting_changes: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_qtwallet_cancel_setting_changes: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_qtwallet_cancel_wallet_creation: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
@@ -188,7 +188,9 @@ class DescriptorUI(QObject):
 
     def set_protowallet_from_descriptor_str(self, descriptor: str) -> None:
         self.protowallet = ProtoWallet.from_descriptor(
-            self.protowallet.id, descriptor, self.protowallet.network
+            self.protowallet.id,
+            descriptor,
+            self.protowallet.network,
         )
 
     def _set_keystore_tabs(self) -> None:

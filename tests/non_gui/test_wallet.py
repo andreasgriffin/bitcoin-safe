@@ -38,25 +38,29 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.wallet import ProtoWallet, Wallet, WalletInputsInconsistentError
 
-from ..test_helpers import test_config  # type: ignore
-from .test_signers import test_seeds
+from ..test_helpers import test_config, test_config_main_chain  # type: ignore
+from .test_signers import bacon_seed, test_seeds
 
 logger = logging.getLogger(__name__)
 
 
+def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Network.REGTEST) -> KeyStore:
+    mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
+    key_origin = key_origin
+    xpub, fingerprint = derive(mnemonic, key_origin, network)
+
+    return KeyStore(
+        xpub, fingerprint, key_origin, label, network=network, mnemonic=seed_str, description=label
+    )
+
+
 def create_test_seed_keystores(
-    signers: int, key_origins: List[str], network=bdk.Network.REGTEST
+    signers: int, key_origins: List[str], network=bdk.Network.REGTEST, test_seed_offset=0
 ) -> List[KeyStore]:
     keystores: List[KeyStore] = []
-    for i, seed_str in enumerate(test_seeds[:signers]):
-        mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
-        key_origin = key_origins[i]
-        xpub, fingerprint = derive(mnemonic, key_origin, network)
-
+    for i, seed_str in enumerate(test_seeds[test_seed_offset : test_seed_offset + signers]):
         keystores.append(
-            KeyStore(
-                xpub, fingerprint, key_origin, f"{i}", network=network, mnemonic=seed_str, description=f"{i}"
-            )
+            create_keystore(seed_str=seed_str, key_origin=key_origins[i], label=f"{i}", network=network)
         )
     return keystores
 
@@ -82,7 +86,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
         wallet_id="some id",
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     expected_keystores = [
@@ -91,7 +95,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "fingerprint": "5AA39A43",
             "key_origin": "m/41h/1h/0h/2h",
             "derivation_path": "/0/*",
-            "network": bdk.Network.REGTEST,
+            "network": test_config.network,
             "label": "0",
             "mnemonic": "peanut all ghost appear daring exotic choose disease bird ready love salad",
             "description": "0",
@@ -101,7 +105,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "fingerprint": "5459F23B",
             "key_origin": "m/42h/1h/0h/2h",
             "derivation_path": "/0/*",
-            "network": bdk.Network.REGTEST,
+            "network": test_config.network,
             "label": "1",
             "mnemonic": "chair useful hammer word edge hat title drastic priority chalk city gentle",
             "description": "1",
@@ -111,7 +115,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "fingerprint": "A302D279",
             "key_origin": "m/43h/1h/0h/2h",
             "derivation_path": "/0/*",
-            "network": bdk.Network.REGTEST,
+            "network": test_config.network,
             "label": "2",
             "mnemonic": "expand text improve perfect sponsor gesture flush wolf poem blouse kangaroo lesson",
             "description": "2",
@@ -121,7 +125,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "fingerprint": "BAC81685",
             "key_origin": "m/44h/1h/0h/2h",
             "derivation_path": "/0/*",
-            "network": bdk.Network.REGTEST,
+            "network": test_config.network,
             "label": "3",
             "mnemonic": "base episode pyramid share teach degree ocean copper merit auto source noble",
             "description": "3",
@@ -131,7 +135,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "fingerprint": "6627F20A",
             "key_origin": "m/45h/1h/0h/2h",
             "derivation_path": "/0/*",
-            "network": bdk.Network.REGTEST,
+            "network": test_config.network,
             "label": "4",
             "mnemonic": "scout clarify assist brain moon canvas rack memory coast gauge short child",
             "description": "4",
@@ -160,7 +164,7 @@ def test_protowallet_import_export_descriptor(test_config: UserConfig):
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
         wallet_id="some id",
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     multipath_descriptor = protowallet.to_multipath_descriptor()
@@ -178,12 +182,12 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
     "Tests if keystores are correctly handles in Wallet.from_protowallet and wallet.as_protowallet()"
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     wallet = Wallet(
@@ -201,7 +205,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
         wallet_id=wallet_id,
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
     wallet2 = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
 
@@ -217,12 +221,12 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
 def test_is_multisig(test_config: UserConfig):
     wallet_id = "some id"
     descriptor = "wpkh([5aa39a43/84'/1'/0']tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#xaf9qzlf"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/84h/1h/0h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
     # roll keystores
     keystores = keystores[3:] + keystores[:3]
@@ -240,12 +244,12 @@ def test_is_multisig(test_config: UserConfig):
 def test_is_multisig2(test_config: UserConfig):
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     wallet = Wallet(
@@ -263,12 +267,12 @@ def test_dump(test_config: UserConfig):
     "Tests if dump works correctly"
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     wallet = Wallet(
@@ -291,12 +295,12 @@ def test_dump(test_config: UserConfig):
 def test_correct_addresses(test_config: UserConfig):
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/84h/1h/0h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     wallet = Wallet(
@@ -321,13 +325,13 @@ def test_correct_addresses(test_config: UserConfig):
 def test_inconsistent_key_origins(test_config: UserConfig):
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     # wrong derivation path
     keystores = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/24h/1h/0h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     with pytest.raises(WalletInputsInconsistentError) as exc_info:
@@ -343,13 +347,13 @@ def test_inconsistent_key_origins(test_config: UserConfig):
 def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     # wrong derivation path
     keystores = create_test_seed_keystores(
         signers=2,
         key_origins=[f"m/84h/1h/0h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )[1:]
 
     with pytest.raises(WalletInputsInconsistentError) as exc_info:
@@ -365,12 +369,12 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
 def test_mixed_keystores_is_consistent(test_config: UserConfig):
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
         key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
-        network=bdk.Network.REGTEST,
+        network=test_config.network,
     )
 
     wallet = Wallet(
@@ -386,7 +390,7 @@ def test_mixed_keystores_is_consistent(test_config: UserConfig):
 
 def test_wallet_dump_and_restore(test_config: UserConfig):
     "Tests if dump works correctly"
-    network = bdk.Network.REGTEST
+    network = test_config.network
 
     protowallet = create_multisig_protowallet(
         threshold=2,
@@ -405,3 +409,29 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
     assert len(wallet.keystores) == len(restored_wallet.keystores)
     for org_keystore, restored_keystore in zip(wallet.keystores, restored_wallet.keystores):
         assert org_keystore.is_equal(restored_keystore)
+
+
+def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
+    wallet_id = "bacon wallet"
+    expected_descriptor = "wpkh([9a6a2580/84h/0h/0h]xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K/<0;1>/*)#fkxd7j3k"
+
+    keystore = create_keystore(
+        seed_str=bacon_seed, key_origin="m/84h/0h/0h", label=wallet_id, network=bdk.Network.BITCOIN
+    )
+
+    wallet = Wallet(
+        id=wallet_id,
+        descriptor_str=expected_descriptor,
+        keystores=[keystore],
+        network=test_config_main_chain.network,
+        config=test_config_main_chain,
+    )
+
+    assert not wallet.is_multisig()
+
+    assert wallet.get_addresses()[0] == "bc1qyngkwkslw5ng4v7m42s8t9j6zldmhyvrnnn9k5"
+    wallet.sync()
+
+    tx_list = wallet.sorted_delta_list_transactions()
+    assert len(tx_list) >= 28
+    assert tx_list[0].txid == "5d321554674865dffb7a5406002ba5d68d4819d0eff805393d4917921d68f3c5"

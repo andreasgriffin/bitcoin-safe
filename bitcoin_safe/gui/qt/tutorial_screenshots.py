@@ -28,13 +28,11 @@
 
 
 import logging
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
-from bitcoin_qr_tools.qr_widgets import EnlargableImageWidget
+from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
 
-from bitcoin_safe.gui.qt.qr_types import QrType, QrTypes
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
 from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
 
@@ -42,44 +40,8 @@ logger = logging.getLogger(__name__)
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
+from ...hardware_signers import HardwareSigners
 from .util import screenshot_path
-
-
-@dataclass
-class HardwareSigner:
-    name: str
-    display_name: str
-    usb_preferred: bool
-    qr_type: Optional[QrType] = None
-
-    @property
-    def generate_seed_png(self):
-        return f"{self.name}-generate-seed.png"
-
-    @property
-    def wallet_export_png(self):
-        return f"{self.name}-wallet-export.png"
-
-    @property
-    def view_seed_png(self):
-        return f"{self.name}-view-seed.png"
-
-    @property
-    def register_multisig_decriptor_png(self):
-        return f"{self.name}-register-multisig-decriptor.png"
-
-
-class HardwareSigners:
-    coldcard = HardwareSigner("coldcard", "Coldcard - Mk4", usb_preferred=False)
-    q = HardwareSigner("q", "Coldcard - Q", usb_preferred=False, qr_type=QrTypes.bbqr)
-    bitbox02 = HardwareSigner("bitbox02", "Bitbox02", usb_preferred=True)
-    specterdiy = HardwareSigner(
-        "specterdiy", "Specter DIY", usb_preferred=False, qr_type=QrTypes.specterdiy_descriptor_export
-    )
-    jade = HardwareSigner("jade", "Jade", usb_preferred=True)
-    foundation_passport = HardwareSigner(
-        "passport", "Foundation - Passport", usb_preferred=False, qr_type=QrTypes.ur
-    )
 
 
 class ScreenshotsTutorial(QWidget):
@@ -88,6 +50,7 @@ class ScreenshotsTutorial(QWidget):
         HardwareSigners.coldcard,
         HardwareSigners.bitbox02,
         HardwareSigners.jade,
+        HardwareSigners.passport,
         HardwareSigners.specterdiy,
     ]
 
@@ -113,7 +76,7 @@ class ScreenshotsTutorial(QWidget):
 
     def add_image_tab(
         self, image_path: str, tab_title: str, size_hint: Tuple[int, int]
-    ) -> Optional[Tuple[EnlargableImageWidget, QWidget]]:
+    ) -> Optional[Tuple[EnlargableImageWidgetWithButton, QWidget]]:
         if not Path(screenshot_path(image_path)).exists():
             logger.warning(
                 f"{self.__class__.__name__}:  {screenshot_path(image_path)} doesnt exist. Cannot load the image tab"
@@ -121,7 +84,7 @@ class ScreenshotsTutorial(QWidget):
             return None
         tab = QWidget()
         tab_layout = QVBoxLayout(tab)
-        image_widget = EnlargableImageWidget(size_hint=size_hint)
+        image_widget = EnlargableImageWidgetWithButton(size_hint=size_hint)
         image_widget.load_from_file(screenshot_path(image_path))
         tab_layout.addWidget(image_widget)
         self.sync_tab.addTab(tab, tab_title)
@@ -135,7 +98,7 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
         super().__init__(group, parent)
 
-        self.image_widgets: Dict[str, EnlargableImageWidget] = {}
+        self.image_widgets: Dict[str, EnlargableImageWidgetWithButton] = {}
         self.tabs: Dict[str, QWidget] = {}
 
         for hardware_signer in self.enabled_hardware_signers:

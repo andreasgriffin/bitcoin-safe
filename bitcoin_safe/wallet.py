@@ -55,7 +55,7 @@ from .config import MIN_RELAY_FEE, UserConfig
 from .descriptors import AddressType, MultipathDescriptor, get_default_address_type
 from .i18n import translate
 from .keystore import KeyStore
-from .labels import Labels
+from .labels import Labels, LabelType
 from .pythonbdk_types import *
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos
@@ -188,14 +188,12 @@ class ProtoWallet(BaseSaveableClass):
         address_type: Optional[AddressType] = None,
         gap=20,
         gap_change=5,
-        tutorial_index=None,
     ) -> None:
         super().__init__()
 
         self.id = wallet_id
         self.threshold = threshold
         self.network = network
-        self.tutorial_index = tutorial_index
 
         self.gap = gap
         self.gap_change = gap_change
@@ -211,7 +209,7 @@ class ProtoWallet(BaseSaveableClass):
         return self.threshold, len(self.keystores)
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None) -> "ProtoWallet":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "ProtoWallet":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**filtered_for_init(dct, cls))
@@ -349,7 +347,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
         bdk.Wallet.__init__(self, descriptor, change_descriptor, network, database_config)
         CacheManager.__init__(self)
         self._delta_cache: Dict[str, DeltaCacheListTransactions] = {}
-        logger.info("Created bdk.Wallet for network {network} and database_config {database_config} ")
+        logger.info(f"Created bdk.Wallet for network {network} and database_config {database_config}")
 
     @instance_lru_cache(always_keep=True)
     def peek_addressinfo(
@@ -470,13 +468,14 @@ class Wallet(BaseSaveableClass, CacheManager):
     """If any bitcoin logic (ontop of bdk) has to be done, then here is the
     place."""
 
-    VERSION = "0.2.0"
+    VERSION = "0.2.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "KeyStore": KeyStore,
         "UserConfig": UserConfig,
         "Labels": Labels,
         "Balance": Balance,
+        "LabelType": LabelType,
     }
 
     def __init__(
@@ -488,13 +487,12 @@ class Wallet(BaseSaveableClass, CacheManager):
         config: UserConfig,
         gap=20,
         gap_change=5,
-        data_dump: Dict | None = None,
         labels: Labels | None = None,
         _blockchain_height: int | None = None,
         _tips: List[int] | None = None,
         refresh_wallet=False,
-        tutorial_index: Optional[int] | None = None,
         default_category="default",
+        auto_opportunistic_coin_select=True,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -512,12 +510,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.keystores = keystores
         self.config: UserConfig = config
         self.write_lock = Lock()
-        self.data_dump: Dict = data_dump if data_dump else {}
+        self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
         # refresh dependent values
         self._tips = _tips if _tips and not refresh_wallet else [0, 0]
         self._blockchain_height = _blockchain_height if _blockchain_height and not refresh_wallet else 0
-        self.tutorial_index = tutorial_index
 
         if refresh_wallet and os.path.isfile(self._db_file()):
             os.remove(self._db_file())
@@ -606,7 +603,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
         protowallet.gap = self.gap
         protowallet.gap_change = self.gap_change
-        protowallet.tutorial_index = self.tutorial_index
         protowallet.keystores = [keystore.clone() for keystore in self.keystores]
 
         return protowallet
@@ -616,7 +612,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         cls,
         protowallet: ProtoWallet,
         config: UserConfig,
-        data_dump: Dict | None = None,
         labels: Labels | None = None,
         _blockchain_height: int | None = None,
         _tips: List[int] | None = None,
@@ -647,8 +642,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             gap_change=protowallet.gap_change,
             network=protowallet.network,
             config=config,
-            tutorial_index=protowallet.tutorial_index,
-            data_dump=data_dump,
             labels=labels,
             _blockchain_height=_blockchain_height,
             _tips=_tips,
@@ -706,8 +699,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             "_blockchain_height",
             "_tips",
             "refresh_wallet",
-            "tutorial_index",
-            "data_dump",
+            "auto_opportunistic_coin_select",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
@@ -752,13 +744,17 @@ class Wallet(BaseSaveableClass, CacheManager):
                 if "SyncTab" in dct["data_dump"]:
                     del dct["data_dump"]["SyncTab"]
 
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.2.0"):
+            if dct.get("data_dump"):
+                del dct["data_dump"]
+
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:
             del dct["VERSION"]
         return dct
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None) -> "Wallet":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "Wallet":
         super()._from_dump(dct, class_kwargs=class_kwargs)
         if class_kwargs:
             # must contain "Wallet":{"config": ... }
@@ -1303,16 +1299,17 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
 
     def get_input_and_output_txo_dict(self, txid: str) -> Dict[TxoType, List[PythonUtxo]]:
+        result: Dict[TxoType, List[PythonUtxo]] = {TxoType.OutputTxo: [], TxoType.InputTxo: []}
+
         fulltxdetail = self.get_dict_fulltxdetail().get(txid)
         if not fulltxdetail:
-            return {}
+            return result
 
-        d = {TxoType.OutputTxo: [python_utxo for python_utxo in fulltxdetail.outputs.values()]}
-        input_dict = {
-            TxoType.InputTxo: [python_utxo for python_utxo in fulltxdetail.inputs.values() if python_utxo]
-        }
-        d.update(input_dict)
-        return d
+        result[TxoType.OutputTxo] = [python_utxo for python_utxo in fulltxdetail.outputs.values()]
+        result[TxoType.InputTxo] = [
+            python_utxo for python_utxo in fulltxdetail.inputs.values() if python_utxo
+        ]
+        return result
 
     def get_output_txos(self, txid: str) -> List[PythonUtxo]:
         return self.get_input_and_output_txo_dict(txid)[TxoType.OutputTxo]
@@ -1326,9 +1323,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         if not python_txos:
             return []
 
-        categories = np.unique(
+        categories: List[str] = np.unique(
             clean_list([self.labels.get_category_raw(python_utxo.address) for python_utxo in python_txos])
-        ).tolist()
+        ).tolist()  # type: ignore
 
         if not categories:
             categories = [self.labels.get_default_category()]
@@ -1811,32 +1808,29 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return result
 
-    def get_ema_fee_rate(self, alpha=0.2, default=MIN_RELAY_FEE) -> float:
+    def get_ema_fee_rate(self, n: int = 10, default=MIN_RELAY_FEE) -> float:
         """
         Calculate Exponential Moving Average (EMA) of the fee_rate of all transactions.
 
-        This is not ideal, because it also takes incoming transactions (from exchanges)
-        into account, which typically use a very high fee-rate.
-        However, given that without any outgoing tx, it is not possible to determine any
-        reasonable average fee-rate, this is better than nothing.
-
-        Assuming, that in a high fee environment , the exchanges are more careful,
-        then this calculation will be close to the optimal fee-rate.
+        It weights the outgoing transactions heavier than the incoming transactions,
+        because Exchanges typically overpay fees.
         """
-        fee_rates = [
-            FeeInfo.from_txdetails(txdetail).fee_rate() for txdetail in self.sorted_delta_list_transactions()
-        ]
+        all_txs = self.sorted_delta_list_transactions()
+        weight_sent = 10
+        weight_incoming = 1
+        all_weights = [(weight_sent if tx.sent else weight_incoming) for tx in all_txs]
+
+        fee_rates: List[float] = []
+        weights: List[float] = []
+        for weight, txdetail in zip(all_weights, all_txs):
+            if fee_info := FeeInfo.from_txdetails(txdetail):
+                fee_rates.append(fee_info.fee_rate())
+                weights.append(weight)
+
         if not fee_rates:
             return default
-        ema_fee_rate = calculate_ema(fee_rates, alpha=alpha)
-        return ema_fee_rate
 
-
-class DescriptorExportTools:
-    @staticmethod
-    def get_coldcard_str(wallet_id: str, descriptor: MultipathDescriptor) -> str:
-        return f"""# Coldcard descriptor export of wallet: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
-{ descriptor.bdk_descriptors[0].as_string() }"""
+        return calculate_ema(fee_rates, n=n, weights=weights)
 
 
 ###########
@@ -1878,17 +1872,26 @@ def get_wallet_of_outpoints(outpoints: List[OutPoint], signals: Signals) -> Opti
 
 
 def get_label_from_any_wallet(
-    address: str,
+    label_type: LabelType,
+    ref: str,
     signals: Signals,
     autofill_from_txs: bool,
+    autofill_from_addresses: bool = False,
     wallets: List[Wallet] | None = None,
     verbose_label=False,
 ) -> Optional[str]:
     wallets = wallets if wallets is not None else get_wallets(signals)
     for wallet in wallets:
-        label = wallet.get_label_for_address(
-            address, autofill_from_txs=autofill_from_txs, verbose_label=verbose_label
-        )
+        label = None
+        if label_type == LabelType.addr:
+            label = wallet.get_label_for_address(
+                ref, autofill_from_txs=autofill_from_txs, verbose_label=verbose_label
+            )
+        elif label_type == LabelType.tx:
+            label = wallet.get_label_for_txid(
+                ref, autofill_from_addresses=autofill_from_addresses, verbose_label=verbose_label
+            )
+
         if label:
             return label
     return None

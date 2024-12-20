@@ -33,10 +33,11 @@
       "request": "launch",
       "module": "pytest",
       "args": [ 
-        "-vvv", 
+        // "-vvv", 
         "tests/gui",
         "--ignore=coding_tests",
-        "-s",  // Disable all capturing of outputs        
+        "--ignore=tools",
+        // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
        "justMyCode": false
@@ -49,7 +50,7 @@
       "args": [ 
         "-vvv", 
         "--ignore=tests/gui",
-        "--ignore=coding_tests",
+        "--ignore=tools",
         "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
@@ -63,6 +64,7 @@
         "-vvv", 
         "${file}",
         "-s",  // Disable all capturing of outputs        
+        "--ignore=tools",
       ], 
       "console": "integratedTerminal",
        "justMyCode": false
@@ -113,6 +115,26 @@
   "program": "tools/build.py",
   "args": [
       "--targets",   "appimage", "windows", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build windows",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets",    "windows", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build linux",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets",    "appimage", 
 ],
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task

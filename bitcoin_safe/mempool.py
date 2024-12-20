@@ -38,6 +38,7 @@ from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from .config import MIN_RELAY_FEE
+from .signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -220,7 +221,7 @@ class TxPrio(enum.Enum):
 
 
 class MempoolData(ThreadingManager, QObject):
-    signal_data_updated = pyqtSignal()
+    signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self,

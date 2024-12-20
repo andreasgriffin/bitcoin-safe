@@ -185,7 +185,7 @@ class TxSigningSteps(StepProgressContainer):
             )
 
         export_widget = ExportDataSimple(
-            data=Data.from_psbt(self.psbt),
+            data=Data.from_psbt(self.psbt, network=self.network),
             sync_tabs={
                 wallet_id: qt_wallet.sync_tab
                 for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()

@@ -30,15 +30,16 @@
 import logging
 import typing
 
-from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
+from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
-from bitcoin_safe.gui.qt.register_multisig import USBValidateAddressWidget
+from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.util import serialized_to_hex
 
 logger = logging.getLogger(__name__)
@@ -56,9 +57,14 @@ from .util import Buttons, CloseButton, read_QIcon
 
 class AddressDetailsAdvanced(QWidget):
     def __init__(
-        self, bdk_address: bdk.Address, address_path_str: str, parent: typing.Optional["QWidget"]
+        self,
+        bdk_address: bdk.Address,
+        address_path_str: str,
+        close_all_video_widgets: TypedPyQtSignalNo,
+        parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
+        self.setWindowIcon(read_QIcon("logo.svg"))
 
         form_layout = QFormLayout(self)
         form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
@@ -68,7 +74,7 @@ class AddressDetailsAdvanced(QWidget):
         except BaseException:
             script_pubkey = None
         if script_pubkey:
-            pubkey_e = ButtonEdit(script_pubkey)
+            pubkey_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=script_pubkey)
             pubkey_e.button_container.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
             pubkey_e.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
@@ -78,7 +84,7 @@ class AddressDetailsAdvanced(QWidget):
             form_layout.addRow(self.tr("Script Pubkey"), pubkey_e)
 
         if address_path_str:
-            der_path_e = ButtonEdit(address_path_str)
+            der_path_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=address_path_str)
             der_path_e.add_copy_button()
             der_path_e.setFixedHeight(50)
             der_path_e.setReadOnly(True)
@@ -98,6 +104,7 @@ class AddressValidateTab(QWidget):
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
+        self.setWindowIcon(read_QIcon("logo.svg"))
 
         self._layout = QHBoxLayout(self)
 
@@ -135,6 +142,8 @@ class AddressDialog(QWidget):
     ) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle(self.tr("Address"))
+        self.setWindowIcon(read_QIcon("logo.svg"))
+
         self.mempool_data = mempool_data
         self.address = address
         self.bdk_address = bdk.Address(address, network=wallet.network)
@@ -173,6 +182,7 @@ class AddressDialog(QWidget):
             bdk_address=self.bdk_address,
             address_path_str=self.wallet.get_address_path_str(address),
             parent=self,
+            close_all_video_widgets=self.signals.close_all_video_widgets,
         )
         self.recipient_tabs.addTab(self.tab_advanced, "")
 

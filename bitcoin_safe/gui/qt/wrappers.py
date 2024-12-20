@@ -27,7 +27,7 @@
 # SOFTWARE.
 
 
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction, QIcon
@@ -38,7 +38,7 @@ class Menu(QMenu):
     def add_action(
         self,
         text="",
-        slot: Optional[Union[Callable[[], Any], pyqtBoundSignal]] = None,
+        slot: Optional[Callable[[], Any] | pyqtBoundSignal] = None,
         icon: QIcon | None = None,
     ) -> QAction:
         action = QAction(text=text, parent=self)

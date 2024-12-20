@@ -39,10 +39,10 @@ from bitcoin_safe.gui.qt.custom_edits import (
 
 logger = logging.getLogger(__name__)
 
-from typing import Callable
+from typing import Callable, Tuple
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import convert_slip132_to_bip32, is_slip132
+from bitcoin_qr_tools.data import ConverterXpub
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
@@ -96,19 +96,21 @@ class XpubAnalyzer(BaseAnalyzer, QObject):
 
         self.network = network
 
-    def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
-        if not input:
-            return AnalyzerMessage(self.tr("Missing xPub"), AnalyzerState.Invalid)
-
-        if is_slip132(input):
+    def normalize(self, input: str, pos: int = 0) -> Tuple[str, int]:
+        if ConverterXpub.is_slip132(input):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
                 title=self.tr("Converting format"),
             )
             try:
-                input = convert_slip132_to_bip32(input)
+                input = ConverterXpub.convert_slip132_to_bip32(input)
             except:
                 pass
+        return input, pos
+
+    def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        if not input:
+            return AnalyzerMessage(self.tr("Missing xPub"), AnalyzerState.Invalid)
 
         if KeyStore.is_xpub_valid(input, network=self.network):
             return AnalyzerMessage("Valid xpub", AnalyzerState.Valid)

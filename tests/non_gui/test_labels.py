@@ -104,7 +104,7 @@ def test_preservebip329_keys_for_single_label():
 
     assert (
         serialized_labels
-        == '{"__class__": "Label", "VERSION": "0.0.2", "type": "addr", "ref": "some_address", "label": null, "category": "category 0", "timestamp": 0}'
+        == '{"__class__": "Label", "VERSION": "0.0.3", "type": "addr", "ref": "some_address", "label": null, "category": "category 0", "timestamp": 0}'
     )
 
 

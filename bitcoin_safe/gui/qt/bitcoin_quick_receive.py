@@ -33,7 +33,7 @@ from typing import List
 import bdkpython as bdk
 from PyQt6.QtGui import QShowEvent
 
-from ...signals import UpdateFilter, UpdateFilterReason, WalletSignals
+from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...wallet import Wallet
 from .qr_components.quick_receive import QuickReceive, ReceiveGroup
 from .taglist.main import hash_color
@@ -46,15 +46,20 @@ class BitcoinQuickReceive(QuickReceive):
         self,
         wallet_signals: WalletSignals,
         wallet: Wallet,
+        signals_min: SignalsMin,
         limit_to_categories=None,
+        parent=None,
     ) -> None:
-        super().__init__(self.tr("Quick Receive"))
+        super().__init__(self.tr("Quick Receive"), parent=parent)
         self.wallet_signals = wallet_signals
         self.wallet = wallet
+        self.signals_min = signals_min
         self.limit_to_categories = limit_to_categories
         self._pending_update = False
 
         self.setFixedHeight(250)
+
+        # signals
         self.wallet_signals.updated.connect(self.update_content)
         self.wallet_signals.language_switch.connect(
             lambda: self.update_content(UpdateFilter(refresh_all=True))
@@ -65,7 +70,12 @@ class BitcoinQuickReceive(QuickReceive):
 
         self.add_box(
             ReceiveGroup(
-                category, hash_color(category).name(), address, address_info.address.to_qr_uri(), parent=self
+                category,
+                hash_color(category).name(),
+                address,
+                address_info.address.to_qr_uri(),
+                parent=self,
+                close_all_video_widgets=self.signals_min.close_all_video_widgets,
             )
         )
 

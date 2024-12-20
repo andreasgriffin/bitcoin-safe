@@ -1,0 +1,39 @@
+<svg width="480" height="300" viewBox="0 0 480 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="1" y="1" width="478" height="298" rx="9" stroke="black" stroke-width="2"/>
+<g opacity="0.25">
+<line y1="39" x2="480" y2="39" stroke="black" stroke-width="2"/>
+<line y1="59" x2="480" y2="59" stroke="black" stroke-width="2"/>
+<line y1="79" x2="480" y2="79" stroke="black" stroke-width="2"/>
+<line y1="99" x2="480" y2="99" stroke="black" stroke-width="2"/>
+<line y1="119" x2="480" y2="119" stroke="black" stroke-width="2"/>
+<line y1="139" x2="480" y2="139" stroke="black" stroke-width="2"/>
+<line y1="159" x2="480" y2="159" stroke="black" stroke-width="2"/>
+<line y1="179" x2="480" y2="179" stroke="black" stroke-width="2"/>
+<line y1="199" x2="480" y2="199" stroke="black" stroke-width="2"/>
+<line y1="219" x2="480" y2="219" stroke="black" stroke-width="2"/>
+<line y1="239" x2="480" y2="239" stroke="black" stroke-width="2"/>
+<line y1="259" x2="480" y2="259" stroke="black" stroke-width="2"/>
+<line y1="279" x2="480" y2="279" stroke="black" stroke-width="2"/>
+<line x1="61" y1="4.37114e-08" x2="61" y2="300" stroke="black" stroke-width="2"/>
+<line x1="81" y1="40" x2="81" y2="300" stroke="black" stroke-width="2"/>
+<line x1="101" y1="40" x2="101" y2="300" stroke="black" stroke-width="2"/>
+<line x1="121" y1="4.37114e-08" x2="121" y2="300" stroke="black" stroke-width="2"/>
+<line x1="141" y1="40" x2="141" y2="300" stroke="black" stroke-width="2"/>
+<line x1="161" y1="40" x2="161" y2="300" stroke="black" stroke-width="2"/>
+<line x1="181" y1="4.37114e-08" x2="181" y2="300" stroke="black" stroke-width="2"/>
+<line x1="201" y1="40" x2="201" y2="300" stroke="black" stroke-width="2"/>
+<line x1="221" y1="40" x2="221" y2="300" stroke="black" stroke-width="2"/>
+<line x1="241" y1="4.37114e-08" x2="241" y2="300" stroke="black" stroke-width="2"/>
+<line x1="261" y1="40" x2="261" y2="300" stroke="black" stroke-width="2"/>
+<line x1="281" y1="40" x2="281" y2="300" stroke="black" stroke-width="2"/>
+<line x1="301" y1="4.37114e-08" x2="301" y2="300" stroke="black" stroke-width="2"/>
+<line x1="321" y1="40" x2="321" y2="300" stroke="black" stroke-width="2"/>
+<line x1="341" y1="40" x2="341" y2="300" stroke="black" stroke-width="2"/>
+<line x1="361" y1="4.37114e-08" x2="361" y2="300" stroke="black" stroke-width="2"/>
+<line x1="381" y1="40" x2="381" y2="300" stroke="black" stroke-width="2"/>
+<line x1="401" y1="40" x2="401" y2="300" stroke="black" stroke-width="2"/>
+<line x1="421" y1="4.37114e-08" x2="421" y2="300" stroke="black" stroke-width="2"/>
+<line x1="441" y1="40" x2="441" y2="300" stroke="black" stroke-width="2"/>
+<line x1="461" y1="40" x2="461" y2="300" stroke="black" stroke-width="2"/>
+</g>
+</svg>

@@ -37,6 +37,7 @@ from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ from .util import Message, MessageType
 
 
 class OrderTrackingTabBar(QTabBar):
-    signal_new_tab_order = pyqtSignal(list)
+    signal_new_tab_order: TypedPyQtSignal[List[int]] = pyqtSignal(list)  # type: ignore
 
     def __init__(self, parent=None):
         super().__init__(parent)

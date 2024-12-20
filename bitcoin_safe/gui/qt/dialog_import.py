@@ -31,7 +31,7 @@ import logging
 from typing import Callable, Optional
 
 import bdkpython as bdk
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
@@ -45,6 +45,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -128,11 +129,12 @@ class DragAndDropTextEdit(AnalyzerTextEdit):
 
 
 class DragAndDropButtonEdit(ButtonEdit):
-    signal_drop_file = pyqtSignal(str)
+    signal_drop_file: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         parent=None,
         callback_enter=None,
         callback_esc=None,
@@ -146,12 +148,11 @@ class DragAndDropButtonEdit(ButtonEdit):
                 callback_esc=callback_esc,
                 process_filepath=self.process_filepath,
             ),
+            close_all_video_widgets=close_all_video_widgets,
         )
         self.network = network
 
-        self.add_qr_input_from_camera_button(
-            network=self.network,
-        )
+        self.add_qr_input_from_camera_button(network=self.network, set_data_as_string=True)
         self.button_open_file = self.add_open_file_button(self.process_filepath, filter=file_filter)
 
     def process_filepath(self, file_path: str) -> None:
@@ -164,6 +165,7 @@ class ImportDialog(QDialog):
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         window_title="Open Transaction or PSBT",
         on_open=None,
         parent=None,
@@ -183,6 +185,7 @@ class ImportDialog(QDialog):
             network=network,
             callback_enter=self.process_input,
             callback_esc=self.close,
+            close_all_video_widgets=close_all_video_widgets,
         )
         self.text_edit.setPlaceholderText(text_placeholder)
 
@@ -230,9 +233,16 @@ if __name__ == "__main__":
 
     from PyQt6.QtWidgets import QApplication
 
+    class My(QObject):
+        close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
+    my = My()
+
     app = QApplication(sys.argv)
 
-    dialog = ImportDialog(network=bdk.Network.REGTEST, on_open=print)
+    dialog = ImportDialog(
+        network=bdk.Network.REGTEST, on_open=print, close_all_video_widgets=my.close_all_video_widgets
+    )
     dialog.show()
 
     sys.exit(app.exec())

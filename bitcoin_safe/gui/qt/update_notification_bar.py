@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 from packaging import version
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QStyle, QWidget
 
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
@@ -44,7 +45,7 @@ from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
 from ...html_utils import html_f
-from ...signals import SignalsMin
+from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...signature_manager import (
     Asset,
     GitHubAssetDownloader,
@@ -57,6 +58,8 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar, ThreadingManager):
+    signal_on_success: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
     key = KnownGPGKeys.andreasgriffin
 
     def __init__(
@@ -213,6 +216,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
 
             self.assets = self.get_filtered_assets(assets)
             self.refresh()
+            self.signal_on_success.emit()
 
         def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")

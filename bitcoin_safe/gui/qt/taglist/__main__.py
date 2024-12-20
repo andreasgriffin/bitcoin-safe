@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget
 
-from .main import CustomListWidget, TagEditor
+from bitcoin_safe.gui.qt.taglist.main import CustomListWidget, TagEditor
 
 if __name__ == "__main__":
     import sys
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     main_layout.addWidget(widget)
 
-    l = CustomListWidget(main)
+    l = CustomListWidget(main, immediate_release=False, editable=False, allow_no_selection=False)
     l.add("jgud", sub_text="876349 Sats")
     l.add("jgu3d", sub_text="876349 Sats")
     l.add("jg235ud", sub_text="876349 Sats")

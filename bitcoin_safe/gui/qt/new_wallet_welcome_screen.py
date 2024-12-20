@@ -30,14 +30,15 @@
 import logging
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.signals import Signals
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
 from bdkpython import Network
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -49,18 +50,25 @@ from PyQt6.QtWidgets import (
 )
 
 from ...util import call_call_functions
-from .util import add_centered_icons, icon_path, qresize, read_QIcon
+from .util import read_QIcon, svg_widgets_hardware_signers
 
 
 class NewWalletWelcomeScreen(QObject):
-    signal_onclick_multisig_signature = pyqtSignal()
-    signal_onclick_single_signature = pyqtSignal()
-    signal_onclick_custom_signature = pyqtSignal()
+    signal_onclick_multisig_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_onclick_single_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_onclick_custom_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
-    def __init__(self, main_tabs: DataTabWidget[object], network: Network, signals: Signals) -> None:
+    def __init__(
+        self,
+        main_tabs: DataTabWidget[object],
+        network: Network,
+        signals: Signals,
+        signal_recently_open_wallet_changed: TypedPyQtSignal,
+    ) -> None:
         super().__init__()
         self.main_tabs = main_tabs
         self.signals = signals
+        self.signal_recently_open_wallet_changed = signal_recently_open_wallet_changed
 
         self.name = "New wallet tab"
         self.network = network
@@ -89,7 +97,14 @@ class NewWalletWelcomeScreen(QObject):
 
     def create_ui(self) -> None:
         self.tab = QWidget()
-        self.horizontalLayout_2 = QHBoxLayout(self.tab)
+        self.tab_layout = QHBoxLayout(self.tab)
+
+        self.groupbox_recently_opened_wallets = RecentlyOpenedWalletsGroup(
+            signal_open_wallet=self.signals.open_wallet,
+            signal_recently_open_wallet_changed=self.signal_recently_open_wallet_changed,
+        )
+        self.tab_layout.addWidget(self.groupbox_recently_opened_wallets)
+
         self.groupBox_singlesig = QGroupBox(self.tab)
         self.verticalLayout = QVBoxLayout(self.groupBox_singlesig)
         self.label_singlesig = QLabel(self.groupBox_singlesig)
@@ -104,10 +119,11 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_1signingdevice.setEnabled(True)
         self.horizontalLayout_4 = QHBoxLayout(self.groupBox_1signingdevice)
 
-        self.svg_widget = QSvgWidget(icon_path("coldcard-only.svg"))
-        self.svg_widget.setMinimumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
-        self.svg_widget.setMaximumSize(qresize(self.svg_widget.sizeHint(), (60, 80)))
-        self.horizontalLayout_4.addWidget(self.svg_widget)
+        svg_widgets = svg_widgets_hardware_signers(
+            1, parent=self.groupBox_1signingdevice, max_height=100, max_width=100
+        )
+        for svg_widget in svg_widgets:
+            self.horizontalLayout_4.addWidget(svg_widget)
 
         # set size of groupbox according to svg
         self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -118,7 +134,7 @@ class NewWalletWelcomeScreen(QObject):
 
         self.verticalLayout.addWidget(self.pushButton_singlesig)
 
-        self.horizontalLayout_2.addWidget(self.groupBox_singlesig)
+        self.tab_layout.addWidget(self.groupBox_singlesig)
 
         self.groupBox_multisig = QGroupBox(self.tab)
         self.verticalLayout_multisig = QVBoxLayout(self.groupBox_multisig)
@@ -138,11 +154,11 @@ class NewWalletWelcomeScreen(QObject):
         self.groupBox_3signingdevices.setEnabled(True)
         self.groupBox_3signingdevices_layout = QHBoxLayout(self.groupBox_3signingdevices)
 
-        add_centered_icons(
-            ["coldcard-only.svg"] * 2 + ["bitbox02.svg"],
-            self.groupBox_3signingdevices_layout,
-            max_sizes=[(60, 80), (60, 80), (60, 50)],
+        svg_widgets = svg_widgets_hardware_signers(
+            3, parent=self.groupBox_3signingdevices, max_height=100, max_width=100
         )
+        for i, svg_widget in enumerate(svg_widgets):
+            self.groupBox_3signingdevices_layout.addWidget(svg_widget)
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
         # set size of groupbox according to svg
@@ -152,7 +168,7 @@ class NewWalletWelcomeScreen(QObject):
 
         self.verticalLayout_multisig.addWidget(self.pushButton_multisig)
 
-        self.horizontalLayout_2.addWidget(self.groupBox_multisig)
+        self.tab_layout.addWidget(self.groupBox_multisig)
 
         self.groupBox_3 = QGroupBox(self.tab)
         self.verticalLayout_2 = QVBoxLayout(self.groupBox_3)
@@ -166,7 +182,7 @@ class NewWalletWelcomeScreen(QObject):
 
         self.verticalLayout_2.addWidget(self.pushButton_custom_wallet)
 
-        self.horizontalLayout_2.addWidget(self.groupBox_3)
+        self.tab_layout.addWidget(self.groupBox_3)
 
         self.label_singlesig.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.label_multisig.setAlignment(Qt.AlignmentFlag.AlignTop)

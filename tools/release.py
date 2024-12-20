@@ -315,7 +315,9 @@ def main() -> None:
         print(f"Asset {file_path.name} uploaded successfully.")
 
     if get_input_with_default("Publish pypi package? (y/n): ", "y").lower() == "y":
-        publish_pypi_wheel(dist_dir=directory)
+        publish_pypi_wheel(dist_dir=str(directory))
+
+    print("Update features in \n    https://github.com/thebitcoinhole/software-wallets")
 
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from bitcoin_safe.util import remove_duplicates_keep_order
 
-from .pythonbdk_types import OutPoint, TxOut
+from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_script
 
 
 def parse_redeem_script(script_hex: str) -> Tuple[int, List[str]]:
@@ -182,10 +182,13 @@ class FeeInfo:
         return self.fee_amount / self.vsize
 
     @classmethod
-    def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo":
+    def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo|None":
         fee = tx_details.fee
-        # coinbase transaction have fee=None
-        fee = fee if fee is not None else 0
+        if fee is None:
+            # coinbase transaction have fee=None
+            # it is also possible that the blockchain client (rpc) doesnt provide this
+            # info for an incoming tx, so the field is also None
+            return None
         return FeeInfo(fee, tx_details.transaction.vsize(), is_estimated=False)
 
     @classmethod
@@ -407,12 +410,13 @@ class SimpleOutput:
 
 @dataclass
 class SimplePSBT:
+    txid: str
     inputs: List[SimpleInput] = field(default_factory=list)
     outputs: List[SimpleOutput] = field(default_factory=list)
 
     @classmethod
     def from_psbt(cls, psbt: bdk.PartiallySignedTransaction) -> "SimplePSBT":
-        instance = cls()
+        instance = cls(txid=psbt.txid())
         psbt_json = json.loads(psbt.json_serialize())
         instance.inputs = [
             SimpleInput.from_input(input_data, txin)
@@ -463,3 +467,18 @@ class SimplePSBT:
             d.update(inp.get_prev_txouts())
 
         return d
+
+    def outpoints_as_python_utxo_dict(self, network: bdk.Network) -> Dict[str, PythonUtxo]:
+        "Returns {str(outpoint) : python_utxo}  for all outpoints"
+        txout_dict = self.get_prev_txouts()
+
+        python_txos = [
+            PythonUtxo(
+                address=robust_address_str_from_script(script_pubkey=txout.script_pubkey, network=network),
+                txout=txout,
+                outpoint=OutPoint(vout=vout, txid=self.txid),
+            )
+            for vout, txout in enumerate(txout_dict.values())
+        ]
+
+        return {str(python_txo.outpoint): python_txo for python_txo in python_txos}

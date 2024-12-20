@@ -54,6 +54,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
 logger = logging.getLogger(__name__)
 
 
@@ -72,7 +74,7 @@ class FlowIndex:
 
 
 class SankeyWidget(QWidget):
-    signal_on_label_click = pyqtSignal(FlowIndex)
+    signal_on_label_click: TypedPyQtSignal[FlowIndex] = pyqtSignal(FlowIndex)  # type: ignore
 
     center_color = QColor("#7616ff")
     border_color = QColor("#7616ff")
@@ -379,9 +381,10 @@ class SankeyWidget(QWidget):
             if rect.contains(event.position()):
                 # Convert widget-relative position to global position for the tooltip
                 globalPos = self.mapToGlobal(event.position().toPoint())
-                QToolTip.showText(globalPos, self.tooltips[flow_index], self)
+                QToolTip.showText(globalPos, self.tooltips[flow_index], None, msecShowTime=5000)
                 return  # Exit after showing one tooltip
-        QToolTip.hideText()  # Hide tooltip if no text is hovered
+        # QToolTip.hideText()  # Hide tooltip if no text is hovered, this leads to flickering
+        super().mouseMoveEvent(event)
 
     def mousePressEvent(self, event: QMouseEvent | None) -> None:
         if not event:

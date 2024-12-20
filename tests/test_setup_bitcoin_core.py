@@ -44,6 +44,8 @@ import bdkpython as bdk
 import pytest
 import requests
 
+from tests.test_util import make_psbt
+
 logger = logging.getLogger(__name__)
 
 BITCOIN_HOST = "127.0.0.1"
@@ -284,7 +286,11 @@ def mine_blocks(
 
 
 class Faucet:
-    def __init__(self, bitcoin_core: Path) -> None:
+    def __init__(
+        self,
+        bitcoin_core: Path,
+        mnemonic="romance slush habit speed type also grace coffee grape inquiry receive filter",
+    ) -> None:
         self.bitcoin_core = bitcoin_core
 
         self.seed = "romance slush habit speed type also grace coffee grape inquiry receive filter"
@@ -296,7 +302,7 @@ class Faucet:
                 f"{BITCOIN_HOST}:{BITCOIN_PORT}",
                 bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
                 self.network,
-                "new0-51117772c02f89651e192a79b2deac8d332cc1a5b67bb21e931d2395e5455c1a9b7c",
+                f"new-{hash(mnemonic)}",
                 bdk.RpcSyncParams(0, 0, False, 10),
             )
         )
@@ -308,7 +314,7 @@ class Faucet:
             network=self.network,
         )
 
-        self.wallet = bdk.Wallet(
+        self.bdk_wallet = bdk.Wallet(
             descriptor=self.descriptor,
             change_descriptor=None,
             network=self.network,
@@ -316,24 +322,15 @@ class Faucet:
         )
         self.initial_mine()
 
-    def send(self, destination_address: str, amount=100_000_000):
-
-        txbuilder = bdk.TxBuilder()
-
-        txbuilder = txbuilder.add_recipient(
-            bdk.Address(destination_address, self.network).script_pubkey(), int(amount)
+    def send(self, destination_address: str, amount=100_000_000, fee_rate=1):
+        psbt_for_signing = make_psbt(
+            bdk_wallet=self.bdk_wallet,
+            network=self.network,
+            destination_address=destination_address,
+            amount=amount,
+            fee_rate=fee_rate,
         )
-
-        txbuilder = txbuilder.fee_rate(1)
-        txbuilder = txbuilder.enable_rbf()
-
-        txbuilder_result = txbuilder.finish(self.wallet)
-
-        psbt = txbuilder_result.psbt
-        logger.debug(f"psbt to {destination_address}: {psbt.serialize()}\n")
-
-        psbt_for_signing = bdk.PartiallySignedTransaction(txbuilder_result.psbt.serialize())
-        self.wallet.sign(psbt_for_signing, None)
+        self.bdk_wallet.sign(psbt_for_signing, None)
 
         tx = psbt_for_signing.extract_tx()
         self.blockchain.broadcast(tx)
@@ -346,13 +343,13 @@ class Faucet:
         progress = bdk.Progress()
         progress.update = update  # type: ignore
 
-        self.wallet.sync(self.blockchain, progress)
+        self.bdk_wallet.sync(self.blockchain, progress)
 
     def mine(self, blocks=1, address=None):
         address = (
             address
             if address
-            else self.wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
+            else self.bdk_wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
         )
         block_hashes = mine_blocks(
             self.bitcoin_core,
@@ -360,12 +357,13 @@ class Faucet:
             address=address,
         )
         self.sync()
-        balance = self.wallet.get_balance()
+        balance = self.bdk_wallet.get_balance()
         logger.debug(f"Faucet Wallet balance is: {balance.total}")
 
     def initial_mine(self):
         self.mine(
-            blocks=200, address=self.wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string()
+            blocks=200,
+            address=self.bdk_wallet.get_address(bdk.AddressIndex.LAST_UNUSED()).address.as_string(),
         )
 
 

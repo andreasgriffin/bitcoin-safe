@@ -37,8 +37,10 @@ import bdkpython as bdk
 import pytest
 from _pytest.logging import LogCaptureFixture
 from bitcoin_qr_tools.data import Data
+from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.signals import TypedPyQtSignalNo
 from bitcoin_safe.signer import SignatureImporterClipboard
 from bitcoin_safe.util import hex_to_serialized, serialized_to_hex
 
@@ -55,6 +57,7 @@ from ..test_setup_bitcoin_core import (  # type: ignore
     faucet,
 )
 
+bacon_seed = ("bacon " * 24).strip()
 test_seeds = """peanut all ghost appear daring exotic choose disease bird ready love salad
 chair useful hammer word edge hat title drastic priority chalk city gentle
 expand text improve perfect sponsor gesture flush wolf poem blouse kangaroo lesson
@@ -155,6 +158,15 @@ evil resemble crush tenant ridge elder castle cloth cereal start sweet empower
 resource frequent color unknown sibling oxygen grocery fiction foil over awkward shallow
 music problem march blind power train found shadow ostrich raven brain injury
 romance slush habit speed type also grace coffee grape inquiry receive filter""".splitlines()
+
+
+class My(QObject):
+    close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
+
+@pytest.fixture()
+def dummy_instance_with_close_all_video_widgets() -> My:
+    return My()
 
 
 @dataclass
@@ -280,11 +292,15 @@ def pytest_siglesig_wallet(bitcoin_core: Path) -> PyTestBDKSetup:
 
 
 def test_signer_finalizes_ofn_final_sig_receive(
-    pytest_siglesig_wallet: PyTestBDKSetup, caplog: LogCaptureFixture, qtbot: QtBot
+    pytest_siglesig_wallet: PyTestBDKSetup,
+    dummy_instance_with_close_all_video_widgets: My,
+    caplog: LogCaptureFixture,
+    qtbot: QtBot,
 ):
 
     signer = SignatureImporterClipboard(
         network=pytest_siglesig_wallet.network,
+        close_all_video_widgets=dummy_instance_with_close_all_video_widgets.close_all_video_widgets,
     )
 
     psbt_1_sig_2_of_3 = "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"
@@ -293,7 +309,9 @@ def test_signer_finalizes_ofn_final_sig_receive(
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.scan_result_callback(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
-            data=Data.from_psbt(bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3)),
+            data=Data.from_psbt(
+                bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3), network=bdk.Network.REGTEST
+            ),
         )
 
     # Now check the argument with which the signal was emitted
@@ -306,11 +324,15 @@ def test_signer_finalizes_ofn_final_sig_receive(
 
 
 def test_signer_recognizes_finalized_tx_received(
-    pytest_siglesig_wallet: PyTestBDKSetup, caplog: LogCaptureFixture, qtbot: QtBot
+    pytest_siglesig_wallet: PyTestBDKSetup,
+    dummy_instance_with_close_all_video_widgets: My,
+    caplog: LogCaptureFixture,
+    qtbot: QtBot,
 ):
 
     signer = SignatureImporterClipboard(
         network=pytest_siglesig_wallet.network,
+        close_all_video_widgets=dummy_instance_with_close_all_video_widgets.close_all_video_widgets,
     )
 
     psbt_1_sig_2_of_3 = "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"
@@ -319,7 +341,9 @@ def test_signer_recognizes_finalized_tx_received(
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.scan_result_callback(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
-            data=Data.from_tx(bdk.Transaction(hex_to_serialized(fully_signed_tx))),
+            data=Data.from_tx(
+                bdk.Transaction(hex_to_serialized(fully_signed_tx)), network=bdk.Network.REGTEST
+            ),
         )
 
     # Now check the argument with which the signal was emitted

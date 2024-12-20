@@ -32,9 +32,11 @@ from typing import Dict
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
 
 class SignalEmitter(QObject):
-    change_tab = pyqtSignal(int)
+    change_tab: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
 
 
 class GroupSignalManager:

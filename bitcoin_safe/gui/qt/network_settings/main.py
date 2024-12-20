@@ -30,6 +30,7 @@
 import logging
 from typing import Optional, Tuple
 
+import bdkpython as bdk
 import numpy as np
 import requests
 
@@ -41,6 +42,7 @@ from bitcoin_safe.gui.qt.util import (
     get_host_and_port,
     read_QIcon,
     remove_scheme,
+    webopen,
 )
 from bitcoin_safe.network_config import (
     NetworkConfig,
@@ -51,8 +53,11 @@ from bitcoin_safe.network_config import (
     get_esplora_urls,
     get_mempool_url,
 )
-from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType, bdk
+from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.signals import Signals
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
+from ....signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +74,9 @@ from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QFormLayout,
     QGroupBox,
+    QHBoxLayout,
     QLabel,
+    QPushButton,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
@@ -176,9 +183,9 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
 
 
 class NetworkSettingsUI(QDialog):
-    signal_apply_and_restart = pyqtSignal(bdk.Network)
-    signal_apply_and_shutdown = pyqtSignal(bdk.Network)
-    signal_cancel = pyqtSignal()
+    signal_apply_and_restart: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
+    signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
+    signal_cancel: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self, network: bdk.Network, network_configs: NetworkConfigs, signals: Optional[Signals], parent=None
@@ -342,11 +349,15 @@ class NetworkSettingsUI(QDialog):
         self.stackedWidget.addWidget(self.rpcTab)
 
         self.groupbox_blockexplorer = QGroupBox()
-        self.groupbox_blockexplorer_layout = QVBoxLayout(self.groupbox_blockexplorer)
+        self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
+        button_mempool = QPushButton(self)
+        button_mempool.setIcon(read_QIcon("block-explorer.svg"))
+        button_mempool.clicked.connect(lambda: webopen(self.edit_mempool_url.text()))
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
         )
+        self.groupbox_blockexplorer_layout.addWidget(button_mempool)
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self._layout.addWidget(self.groupbox_blockexplorer)
 

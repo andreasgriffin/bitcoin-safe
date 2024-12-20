@@ -1,0 +1,38 @@
+name: Build Test DMG 
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test Build DMG'
+        required: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+
+
+
+      - name: Run build script
+        run: tools/build-mac/make_osx.sh 
+
+
+      - name: Check for DMG file
+        run: |
+          if [ -z "$(find dist -type f -name '*.dmg')" ]; then
+            echo "dmg file is missing"
+            exit 1
+          fi
+
+
+      - name: Upload DMG Files from dist/
+        uses: actions/upload-artifact@v2
+        with:
+          name: dmgs
+          path: dist/*.dmg

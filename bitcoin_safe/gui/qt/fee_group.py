@@ -34,12 +34,13 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import icon_path
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 
 logger = logging.getLogger(__name__)
 
-from typing import Optional
+from typing import List, Optional
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -47,7 +48,6 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QGroupBox,
-    QHBoxLayout,
     QLabel,
     QSizePolicy,
     QVBoxLayout,
@@ -55,7 +55,6 @@ from PyQt6.QtWidgets import (
 )
 
 from ...mempool import MempoolData, TxPrio
-from ...signals import pyqtSignal
 from ...util import Satoshis, format_fee_rate, unit_fee_str
 from .block_buttons import (
     BaseBlock,
@@ -84,7 +83,7 @@ class FeeWarningBar(NotificationBar):
 
 
 class FeeGroup(QObject):
-    signal_set_fee_rate = pyqtSignal(float)
+    signal_set_fee_rate: TypedPyQtSignal[float] = pyqtSignal(float)  # type: ignore
 
     def __init__(
         self,
@@ -99,7 +98,7 @@ class FeeGroup(QObject):
         fee_rate: float | None = None,
     ) -> None:
         super().__init__()
-
+        self.is_viewer = is_viewer
         self.fx = fx
         self.allow_edit = allow_edit
         self.config = config
@@ -113,11 +112,10 @@ class FeeGroup(QObject):
         self.groupBox_Fee.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
         self.groupBox_Fee.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.groupBox_Fee_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        self.groupBox_Fee_layout.setContentsMargins(0, 0, 0, 0)
-
-        self._confirmed_block = None
-        self._mempool_projected_block = None
-        self._mempool_buttons = None
+        current_margins = self.groupBox_Fee_layout.contentsMargins()
+        self.groupBox_Fee_layout.setContentsMargins(
+            0, 0, 0, current_margins.bottom()
+        )  # Left, Top, Right, Bottom margins
 
         self.high_fee_rate_warning_label = FeeWarningBar()
         self.high_fee_rate_warning_label.setHidden(True)
@@ -131,25 +129,29 @@ class FeeGroup(QObject):
             self.high_fee_warning_label, alignment=Qt.AlignmentFlag.AlignHCenter
         )
 
-        if confirmation_time:
-            self._confirmed_block = ConfirmedBlock(
-                mempool_data=mempool_data,
-                url=url,
-                confirmation_time=confirmation_time,
-                fee_rate=fee_rate,
-            )
-        elif is_viewer:
-            self._mempool_projected_block = MempoolProjectedBlock(
-                mempool_data, config=self.config, fee_rate=fee_rate
-            )
-        else:
-            self._mempool_buttons = MempoolButtons(mempool_data, max_button_count=3)
-
-        if allow_edit:
-            self.mempool().signal_click.connect(self.set_fee_rate)
-        self.groupBox_Fee_layout.addWidget(
-            self.mempool().button_group, alignment=Qt.AlignmentFlag.AlignHCenter
+        self._confirmed_block = ConfirmedBlock(
+            mempool_data=mempool_data,
+            url=url,
+            confirmation_time=confirmation_time,
+            fee_rate=fee_rate,
         )
+        self._mempool_projected_block = MempoolProjectedBlock(
+            mempool_data, config=self.config, fee_rate=fee_rate
+        )
+        self._mempool_buttons = MempoolButtons(
+            fee_rate=fee_rate, mempool_data=mempool_data, max_button_count=5
+        )
+
+        self._all_mempool_buttons: List[BaseBlock] = [
+            self._confirmed_block,
+            self._mempool_projected_block,
+            self._mempool_buttons,
+        ]
+        for button_group in self._all_mempool_buttons:
+            self.groupBox_Fee_layout.addWidget(
+                button_group.button_group, alignment=Qt.AlignmentFlag.AlignHCenter
+            )
+        self.set_mempool_visibility()
 
         self.approximate_fee_label = QLabel()
         self.approximate_fee_label.setVisible(False)
@@ -163,7 +165,7 @@ class FeeGroup(QObject):
         self.groupBox_Fee_layout.addWidget(self.rbf_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         self.widget_around_spin_box = QWidget()
-        self.widget_around_spin_box_layout = QHBoxLayout(self.widget_around_spin_box)
+        self.widget_around_spin_box_layout = QVBoxLayout(self.widget_around_spin_box)
         self.widget_around_spin_box_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
         self.groupBox_Fee_layout.addWidget(
             self.widget_around_spin_box, alignment=Qt.AlignmentFlag.AlignHCenter
@@ -173,16 +175,18 @@ class FeeGroup(QObject):
         self.spin_fee_rate.setReadOnly(not allow_edit)
         self.spin_fee_rate.setSingleStep(1)  # Set the step size
         self.spin_fee_rate.setDecimals(1)  # Set the number of decimal places
-        self.spin_fee_rate.setMaximumWidth(55)
+        # self.spin_fee_rate.setMaximumWidth(55)
         if fee_rate:
             self.spin_fee_rate.setValue(fee_rate)
         self.update_spin_fee_range()
 
-        self.widget_around_spin_box_layout.addWidget(self.spin_fee_rate)
+        self.widget_around_spin_box_layout.addWidget(
+            self.spin_fee_rate, alignment=Qt.AlignmentFlag.AlignHCenter
+        )
 
         self.spin_label = QLabel()
         self.spin_label.setText(unit_fee_str(self.config.network))
-        self.widget_around_spin_box_layout.addWidget(self.spin_label)
+        self.widget_around_spin_box_layout.addWidget(self.spin_label, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         self.fee_amount_label = QLabel()
         self.fee_amount_label.setHidden(True)
@@ -198,21 +202,33 @@ class FeeGroup(QObject):
         self.label_block_number.setHidden(True)
         self.groupBox_Fee_layout.addWidget(self.label_block_number, alignment=Qt.AlignmentFlag.AlignHCenter)
 
+        # signals
         if allow_edit:
+            self.visible_mempool_buttons.signal_click.connect(self.set_fee_rate)
             # self.spin_fee_rate.editingFinished.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
             self.spin_fee_rate.valueChanged.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
-        self.mempool().mempool_data.signal_data_updated.connect(self.updateUi)
-        self.mempool().refresh()
+        self.visible_mempool_buttons.mempool_data.signal_data_updated.connect(self.updateUi)
+
+        # refresh
+        self.visible_mempool_buttons.refresh()
         self.updateUi()
 
-    def mempool(self) -> BaseBlock:
-        if self._confirmed_block:
-            return self._confirmed_block
-        if self._mempool_projected_block:
-            return self._mempool_projected_block
-        if self._mempool_buttons:
-            return self._mempool_buttons
-        raise Exception(f"{self.__class__.__name__} wasnt initialized correctly")
+    def set_confirmation_time(self, confirmation_time: bdk.BlockTime | None = None):
+        self._confirmed_block.confirmation_time = confirmation_time
+        self.set_mempool_visibility()
+
+    def set_mempool_visibility(self):
+        self.visible_mempool_buttons: BaseBlock
+
+        if self._confirmed_block.confirmation_time:
+            self.visible_mempool_buttons = self._confirmed_block
+        elif self.is_viewer:
+            self.visible_mempool_buttons = self._mempool_projected_block
+        else:
+            self.visible_mempool_buttons = self._mempool_buttons
+
+        for mempool_buttons in self._all_mempool_buttons:
+            mempool_buttons.button_group.setVisible(self.visible_mempool_buttons == mempool_buttons)
 
     def updateUi(self) -> None:
         self.groupBox_Fee.setTitle(self.tr("Fee"))
@@ -222,11 +238,11 @@ class FeeGroup(QObject):
         self.approximate_fee_label.setText(html_f(self.tr("Approximate fee rate"), bf=True))
 
         # only in editor mode
-        self.label_block_number.setHidden(self.spin_fee_rate.isReadOnly())
+        self.label_block_number.setHidden(True)
         if self.spin_fee_rate.value():
             self.label_block_number.setText(
                 self.tr("in ~{n}. Block").format(
-                    n=self.mempool().mempool_data.fee_rate_to_projected_block_index(
+                    n=self.visible_mempool_buttons.mempool_data.fee_rate_to_projected_block_index(
                         self.spin_fee_rate.value()
                     )
                     + 1
@@ -242,7 +258,7 @@ class FeeGroup(QObject):
         self.set_fiat_fee_label()
         self.set_fee_amount_label()
         self.update_fee_rate_warning()
-        self.mempool().refresh()
+        self.visible_mempool_buttons.refresh()
 
     def set_fiat_fee_label(self) -> None:
         self.fiat_fee_label.setHidden(self.fee_info is None)
@@ -278,7 +294,7 @@ class FeeGroup(QObject):
     def update_fee_rate_warning(self) -> None:
         fee_rate = self.spin_fee_rate.value()
 
-        too_high = fee_rate > self.mempool().mempool_data.max_reasonable_fee_rate()
+        too_high = fee_rate > self.visible_mempool_buttons.mempool_data.max_reasonable_fee_rate()
         if fee_rate <= NO_FEE_WARNING_BELOW:
             too_high = False
 
@@ -288,7 +304,8 @@ class FeeGroup(QObject):
             self.high_fee_rate_warning_label.setToolTip(
                 self.tr("The high prio mempool fee rate is {rate}").format(
                     rate=format_fee_rate(
-                        self.mempool().mempool_data.max_reasonable_fee_rate(), self.config.network
+                        self.visible_mempool_buttons.mempool_data.max_reasonable_fee_rate(),
+                        self.config.network,
                     )
                 )
             )
@@ -320,7 +337,9 @@ class FeeGroup(QObject):
             return
 
         too_high = fee_info.fee_amount / total_non_change_output_amount > FEE_RATIO_HIGH_WARNING
-        self.high_fee_warning_label.setVisible(too_high and not self.mempool().confirmation_time)
+        self.high_fee_warning_label.setVisible(
+            too_high and not self.visible_mempool_buttons.confirmation_time
+        )
         if too_high:
             self.high_fee_warning_label.setText(
                 html_f(
@@ -363,17 +382,19 @@ class FeeGroup(QObject):
         self._set_spin_fee_value(fee_rate)
         self.fee_info = fee_info
 
+        self.set_confirmation_time(confirmation_time)
+
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
-        self.mempool().refresh(
+        self.visible_mempool_buttons.refresh(
             fee_rate=fee_rate,
             confirmation_time=confirmation_time,
             chain_height=chain_height,
         )
 
         if url:
-            self.mempool().set_url(url)
+            self.visible_mempool_buttons.set_url(url)
 
         self.updateUi()
         self.signal_set_fee_rate.emit(fee_rate)
@@ -396,6 +417,6 @@ class FeeGroup(QObject):
             fee_range[1],
             value,
             self.spin_fee_rate.value(),
-            max(self.mempool().mempool_data.fee_rates_min_max(0)),
+            max(self.visible_mempool_buttons.mempool_data.fee_rates_min_max(0)),
         )
         self.spin_fee_rate.setRange(*fee_range)

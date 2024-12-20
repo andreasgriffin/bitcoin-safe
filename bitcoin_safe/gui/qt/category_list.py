@@ -29,6 +29,8 @@
 
 import logging
 
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
 logger = logging.getLogger(__name__)
 
 from typing import Callable, List
@@ -49,7 +51,13 @@ class CategoryList(CustomListWidget):
         parent=None,
         immediate_release=True,
     ) -> None:
-        super().__init__(parent, enable_drag=False, immediate_release=immediate_release)
+        super().__init__(
+            parent,
+            enable_drag=False,
+            allow_no_selection=False,
+            editable=False,
+            immediate_release=immediate_release,
+        )
 
         self.categories = categories
         self.get_sub_texts = get_sub_texts
@@ -59,10 +67,6 @@ class CategoryList(CustomListWidget):
 
         # signals
         self.wallet_signals.updated.connect(self.refresh)
-        self.wallet_signals.import_labels.connect(self.refresh)
-        self.wallet_signals.import_bip329_labels.connect(self.refresh)
-        self.wallet_signals.import_electrum_wallet_labels.connect(self.refresh)
-
         self.wallet_signals.language_switch.connect(self.refresh)
 
     def select_category(self, category: str):
@@ -103,7 +107,7 @@ class CategoryList(CustomListWidget):
 
 
 class CategoryEditor(TagEditor):
-    signal_category_added = pyqtSignal(str)
+    signal_category_added: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
@@ -123,9 +127,6 @@ class CategoryEditor(TagEditor):
         self.updateUi()
         # signals
         self.wallet_signals.updated.connect(self.refresh)
-        self.wallet_signals.import_labels.connect(self.refresh)
-        self.wallet_signals.import_bip329_labels.connect(self.refresh)
-        self.wallet_signals.import_electrum_wallet_labels.connect(self.refresh)
 
         self.list_widget.signal_tag_deleted.connect(self.on_delete)
         self.list_widget.signal_tag_added.connect(self.on_added)

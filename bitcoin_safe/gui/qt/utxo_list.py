@@ -238,7 +238,7 @@ class UTXOList(MyTreeView):
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
                     lambda: webopen(txid_URL),
-                    icon=read_QIcon("link.svg"),
+                    icon=read_QIcon("block-explorer.svg"),
                 )
 
             wallet_ids: List[str] = clean_list(
@@ -346,8 +346,6 @@ class UTXOList(MyTreeView):
             return str(v) if v else "Unknown"
 
         self._before_update_content()
-
-        current_key = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
 
         # build dicts to look up the outpoints later (fast)
 
@@ -490,7 +488,10 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
         self.utxo_list.signal_selection_changed.connect(self.update_labels)
         self.create_layout()
         self.utxo_list.signals.language_switch.connect(self.updateUi)
-        self.utxo_list.signals.any_wallet_updated.connect(self.updateUi)
+        self.utxo_list.signals.any_wallet_updated.connect(self.update_with_filter)
+
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        self.updateUi()
 
     def updateUi(self):
         super().updateUi()

@@ -30,30 +30,18 @@
 import enum
 import logging
 import platform
-import shlex
-import subprocess
 import sys
 import traceback
 import webbrowser
-import xml.etree.ElementTree as ET
 from functools import lru_cache
-from io import BytesIO
-from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import bdkpython as bdk
+import numpy as np
 import PIL.Image as PilImage
-from bitcoin_qr_tools.data import is_bitcoin_address
-from PyQt6.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QSize,
-    Qt,
-    QTimer,
-    QUrl,
-    pyqtBoundSignal,
-)
+from bitcoin_qr_tools.data import ConverterAddress
+from PyQt6.QtCore import QByteArray, QCoreApplication, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -80,15 +68,17 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
+    QToolButton,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-
-from ...i18n import translate
-from ...util import register_cache, resource_path
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+from bitcoin_safe.util import register_cache, resource_path
 
 logger = logging.getLogger(__name__)
 
@@ -126,16 +116,6 @@ TX_ICONS: List[str] = [
 
 class QtWalletBase(QWidget):
     pass
-
-
-def xdg_open_file(filename: Path):
-    system_name = platform.system()
-    if system_name == "Windows":
-        subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
-    elif system_name == "Darwin":  # macOS
-        subprocess.call(shlex.split(f'open "{filename}"'))
-    elif system_name == "Linux":  # Linux
-        subprocess.call(shlex.split(f'xdg-open "{filename}"'))
 
 
 def sort_id_to_icon(sort_id: int) -> str:
@@ -216,41 +196,22 @@ class AspectRatioSvgWidget(QSvgWidget):
         self._max_height = max_height
         # self.setMinimumSize(max_width, max_height)
 
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setFixedSize(self.calculate_proportional_size())
 
     def calculate_proportional_size(self):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
         return qsize
 
-    def modify_svg_text(self, old_text: str, new_text: str):
-
+    def modify_svg_text(self, *replace_tuples: Tuple[str, str]):
         # Load the original SVG content
         with open(self.svg_path, "r", encoding="utf-8") as file:
             original_svg_content = file.read()
 
-        # Register namespaces if needed (for saving purposes)
-        namespaces = {
-            "": "http://www.w3.org/2000/svg",
-            "ns0": "http://www.w3.org/2000/svg",
-            "ns1": "http://www.w3.org/2000/svg",
-        }
+        for old_text, new_text in replace_tuples:
+            original_svg_content = original_svg_content.replace(old_text, new_text)
 
-        # Parse the SVG content
-        tree = ET.ElementTree(ET.fromstring(original_svg_content))
-        root = tree.getroot()
-
-        # Find all text elements in the SVG
-        for tspan in root.findall(".//{http://www.w3.org/2000/svg}tspan"):
-            if tspan.text == old_text:
-                tspan.text = new_text
-
-        # Convert the modified SVG tree back to a bytes representation
-        fake_file = BytesIO()
-        tree.write(fake_file, encoding="utf-8", xml_declaration=True)
-
-        byte_data = fake_file.getvalue()
-        modified_svg_content = QByteArray(byte_data)  # type: ignore[call-overload]
+        modified_svg_content = QByteArray(original_svg_content.encode())  # type: ignore[call-overload]
         self.load(modified_svg_content)
 
 
@@ -280,13 +241,16 @@ def add_centered_icons(
 def add_to_buttonbox(
     buttonBox: QDialogButtonBox,
     text: str,
-    icon_name: str | None = None,
+    icon_name: str | QIcon | None = None,
     on_clicked=None,
     role=QDialogButtonBox.ButtonRole.ActionRole,
+    button=None,
 ):
     # Create a custom QPushButton with an icon
-    button = QPushButton(text)
-    if icon_name:
+    button = button if button else QPushButton(text)
+    if isinstance(icon_name, QIcon):
+        button.setIcon(icon_name)
+    elif icon_name:
         button.setIcon(QIcon(icon_path(icon_name)))
 
     # Add the button to the QDialogButtonBox
@@ -422,7 +386,7 @@ class Message:
             return False
         return False
 
-    def emit_with(self, notification_signal: pyqtBoundSignal):
+    def emit_with(self, notification_signal: "TypedPyQtSignal[Message]"):
         logger.debug(str(self.__dict__))
         return notification_signal.emit(self)
 
@@ -477,7 +441,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
         )
 
 
-def caught_exception_message(e: Exception, title=None, log_traceback=False) -> Message:
+def caught_exception_message(e: Exception, title=None, log_traceback=True) -> Message:
     exception_text = str(e).replace("\\", "")
 
     logger.error(exception_text, exc_info=sys.exc_info() if log_traceback else None)
@@ -573,32 +537,12 @@ class BlockingWaitingDialog(WindowModalDialog):
             self.accept()
 
 
-def one_time_signal_connection(signal: pyqtBoundSignal, f: Callable):
+def one_time_signal_connection(signal: TypedPyQtSignalNo | TypedPyQtSignal, f: Callable):
     def f_wrapper(*args, **kwargs):
         signal.disconnect(f_wrapper)
         return f(*args, **kwargs)
 
     signal.connect(f_wrapper)
-
-
-def chained_one_time_signal_connections(
-    signals: List[pyqtBoundSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
-):
-    "If after the i. f is called, it connects the i+1. signal"
-
-    signal, remaining_signals = signals[0], signals[1:]
-    f, remaining_fs = fs[0], fs[1:]
-
-    def f_wrapper(*args, **kwargs):
-        res = f(*args, **kwargs)
-        if disconnect_only_if_f_true and not res:
-            # reconnect
-            one_time_signal_connection(signal, f_wrapper)
-        elif remaining_signals and remaining_fs:
-            chained_one_time_signal_connections(remaining_signals, remaining_fs)
-        return res
-
-    one_time_signal_connection(signal, f_wrapper)
 
 
 def create_button_box(
@@ -679,8 +623,16 @@ class ColorScheme:
         ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
 
 
-def icon_path(icon_basename: str):
+def icon_path(icon_basename: str) -> str:
     return resource_path("gui", "icons", icon_basename)
+
+
+def hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", signer_basename)
+
+
+def generated_hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", "generated", signer_basename)
 
 
 def screenshot_path(basename: str):
@@ -712,7 +664,7 @@ def clipboard_contains_address(network: bdk.Network) -> bool:
     clipboard = QApplication.clipboard()
     if not clipboard:
         return False
-    return is_bitcoin_address(clipboard.text(), network)
+    return ConverterAddress.is_bitcoin_address(clipboard.text(), network)
 
 
 def do_copy(text: str, *, title: str | None = None) -> None:
@@ -757,9 +709,11 @@ def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
     return pil_image
 
 
-def save_file_dialog(name_filters=None, default_suffix=None, default_filename=None) -> Optional[str]:
+def save_file_dialog(
+    name_filters=None, default_suffix=None, default_filename=None, window_title="Save File"
+) -> Optional[str]:
     file_dialog = QFileDialog()
-    file_dialog.setWindowTitle("Save File")
+    file_dialog.setWindowTitle(window_title)
     if default_suffix:
         file_dialog.setDefaultSuffix(default_suffix)
 
@@ -822,3 +776,58 @@ def clear_layout(layout: QLayout) -> None:
             layout.removeWidget(widget)
             widget.setParent(None)  # Remove widget from parent to fully disconnect it
             widget.deleteLater()
+
+
+def svg_widgets_hardware_signers(
+    num_keystores: int, parent: QWidget, sticker=False, max_width=200, max_height=200
+) -> List[AspectRatioSvgWidget]:
+    def stretch(l: List) -> List:
+        new = [l[0]] * int(np.ceil(num_keystores / len(l))) + l[1:] * int(np.ceil(num_keystores / len(l)))
+        return new[:num_keystores]
+
+    hardware_signers = [
+        {
+            "path": hardware_signer_path("coldcard-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("jade-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("bitbox02-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+        {
+            "path": hardware_signer_path("passport-sticker.svg"),
+            "max_width": max_width,
+            "max_height": max_height,
+        },
+    ]
+
+    widgets = [
+        AspectRatioSvgWidget(
+            hardware_signer["path"],
+            max_width=hardware_signer["max_width"],
+            max_height=hardware_signer["max_height"],
+            parent=parent,
+        )
+        for hardware_signer in stretch(hardware_signers)
+    ]
+
+    if not sticker:
+        for widget in widgets:
+            widget.modify_svg_text(('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", ""))
+    return widgets
+
+
+def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
+    button = QToolButton()
+    button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+    menu = Menu(parent)
+    button.setMenu(menu)
+    button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+    return button, menu

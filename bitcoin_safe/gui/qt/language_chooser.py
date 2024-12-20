@@ -31,20 +31,14 @@ import logging
 
 from bitcoin_safe.gui.qt.util import read_QIcon
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
 import os
 from typing import Dict, List, Optional
 
-from PyQt6.QtCore import (
-    QLibraryInfo,
-    QLocale,
-    QObject,
-    Qt,
-    QTranslator,
-    pyqtBoundSignal,
-)
+from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, Qt, QTranslator
 from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
@@ -160,7 +154,7 @@ class LanguageDialog(QDialog):
 
 class LanguageChooser(QObject):
     def __init__(
-        self, parent: QWidget, config: UserConfig, signals_language_switch: List[pyqtBoundSignal]
+        self, parent: QWidget, config: UserConfig, signals_language_switch: List[TypedPyQtSignalNo]
     ) -> None:
         super().__init__(parent)
         self.config = config
@@ -283,5 +277,5 @@ class LanguageChooser(QObject):
             signal.emit()  # Emit the signal when the language is switched
         self.config.language_code = langCode
 
-    def add_signal_language_switch(self, signal_language_switch: pyqtBoundSignal):
+    def add_signal_language_switch(self, signal_language_switch: TypedPyQtSignalNo):
         self.signals_language_switch.append(signal_language_switch)

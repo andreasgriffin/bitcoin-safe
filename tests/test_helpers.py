@@ -63,3 +63,11 @@ def test_config() -> TestConfig:
     config.network_config.rpc_password = RPC_PASSWORD
 
     return config
+
+
+@pytest.fixture(scope="session")
+def test_config_main_chain() -> TestConfig:
+    config = TestConfig()
+    logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
+
+    return config

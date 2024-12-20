@@ -28,9 +28,6 @@
 
 
 import logging
-import os
-import platform
-import subprocess
 import sys
 from pathlib import Path
 
@@ -45,13 +42,18 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.util_os import show_file_in_explorer
+
+from ...signals import TypedPyQtSignalNo
+
 logger = logging.getLogger(__name__)
 
 
 class DownloadThread(QThread):
-    progress = pyqtSignal(int)
-    finished = pyqtSignal()
-    aborted = pyqtSignal()
+    progress: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    finished: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    aborted: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(self, url, destination_dir) -> None:
         super().__init__()
@@ -81,7 +83,7 @@ class DownloadThread(QThread):
 
 
 class Downloader(QWidget):
-    finished = pyqtSignal(DownloadThread)
+    finished: TypedPyQtSignal[DownloadThread] = pyqtSignal(DownloadThread)  # type: ignore
 
     def __init__(self, url, destination_dir) -> None:
         super().__init__()
@@ -138,22 +140,7 @@ class Downloader(QWidget):
         # self.finished.emit(self.mythread)
 
     def showFile(self) -> None:
-        filename = self.mythread.filename
-        try:
-            if platform.system() == "Windows":
-                subprocess.Popen(["explorer", "/select,", filename])
-            elif platform.system() == "Darwin":
-                subprocess.Popen(["open", "-R", filename])
-            else:  # Linux
-                desktop_session = os.environ.get("XDG_CURRENT_DESKTOP")
-                if desktop_session and "KDE" in desktop_session:
-                    # Attempt to use Dolphin to select the file
-                    subprocess.Popen(["dolphin", "--select", filename])
-                else:
-                    # Fallback for other environments or if the detection is uncertain
-                    subprocess.Popen(["xdg-open", filename.parent])
-        except Exception as e:
-            print(f"Error opening file: {e}")
+        show_file_in_explorer(filename=self.mythread.filename)
 
 
 if __name__ == "__main__":

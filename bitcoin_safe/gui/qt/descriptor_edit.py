@@ -42,17 +42,17 @@ from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from PyQt6.QtCore import Qt, pyqtBoundSignal, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialog, QVBoxLayout
 
 from ...pdfrecovery import make_and_open_pdf
-from ...wallet import DescriptorExportTools
 from .util import Message, MessageType, icon_path
 
 
@@ -64,14 +64,14 @@ class DescriptorExport(QDialog):
         network: bdk.Network,
         parent=None,
         threading_parent: ThreadingManager | None = None,
+        wallet_id: str = "MultiSig",
     ):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Export Descriptor"))
         self.setModal(True)
 
         self.descriptor = descriptor
-        self.data = Data.from_multipath_descriptor(descriptor)
-        self.setMinimumSize(500, 250)
+        self.data = Data.from_multipath_descriptor(descriptor, network=network)
 
         self.export_widget = ExportDataSimple(
             data=self.data,
@@ -80,17 +80,16 @@ class DescriptorExport(QDialog):
             enable_usb=False,
             network=network,
             threading_parent=threading_parent,
+            wallet_name=wallet_id,
         )
+        self.export_widget.set_minimum_size_as_floating_window()
 
         self._layout = QVBoxLayout(self)
         self._layout.addWidget(self.export_widget)
 
-    def get_coldcard_str(self, wallet_id: str) -> str:
-        return DescriptorExportTools.get_coldcard_str(wallet_id=wallet_id, descriptor=self.descriptor)
-
 
 class DescriptorEdit(ButtonEdit):
-    signal_descriptor_change = pyqtSignal(str)
+    signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
@@ -98,7 +97,7 @@ class DescriptorEdit(ButtonEdit):
         signals_min: SignalsMin,
         get_lang_code: Callable[[], str],
         get_wallet: Optional[Callable[[], Wallet]] = None,
-        signal_update: pyqtBoundSignal | None = None,
+        signal_update: TypedPyQtSignalNo | None = None,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
@@ -107,11 +106,13 @@ class DescriptorEdit(ButtonEdit):
             signal_update=signal_update,
             signals_min=signals_min,
             threading_parent=threading_parent,
+            close_all_video_widgets=signals_min.close_all_video_widgets,
         )  # type: ignore
         self.threading_parent = threading_parent
         self.signals_min = signals_min
         self.network = network
         self.input_field
+        self.get_wallet = get_wallet
 
         def do_pdf() -> None:
             if not get_wallet:
@@ -153,6 +154,7 @@ class DescriptorEdit(ButtonEdit):
                 parent=self,
                 network=self.network,
                 threading_parent=self.threading_parent,
+                wallet_id=self.get_wallet().id if self.get_wallet is not None else "Multisig",
             )
             dialog.show()
         except:

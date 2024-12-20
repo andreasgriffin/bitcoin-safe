@@ -153,11 +153,12 @@ def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
             "nigiri": "http://127.0.0.1:3000",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": "https://blockstream.info/testnet//api/",
+            "default": "https://blockstream.info/testnet/api/",
             "blockstream": "https://blockstream.info/testnet/api/",
         },
         bdk.Network.SIGNET: {
-            "default": "http://127.0.0.1:3000",
+            "default": "https://mutinynet.com/api",
+            "mutinynet": "https://mutinynet.com/api",
             "localhost": "http://127.0.0.1:3000",
         },
     }
@@ -200,16 +201,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                     explorer=link("https://blockstream.info/testnet"),
                 )
             ),
-            bdk.Network.SIGNET: (
-                translate(
-                    "net_conf",
-                    "A good option is {link} and a block explorer on {explorer}. There is a {faucet}.",
-                ).format(
-                    link=link(get_electrum_configs(bdk.Network.SIGNET)["mutinynet"].url),
-                    explorer=link("https://mutinynet.com/"),
-                    faucet=link("https://faucet.mutinynet.com", "faucet"),
-                )
-            ),
+            bdk.Network.SIGNET: "",
         }
         return d[network]
     elif server_type == BlockchainType.Esplora:
@@ -232,7 +224,16 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                 )
             ),  # nigiri default
             bdk.Network.TESTNET: "",
-            bdk.Network.SIGNET: "",
+            bdk.Network.SIGNET: (
+                translate(
+                    "net_conf",
+                    "A good option is {link} and a block explorer on {explorer}. There is a {faucet}.",
+                ).format(
+                    link=link(get_esplora_urls(bdk.Network.SIGNET)["mutinynet"]),
+                    explorer=link("https://mutinynet.com/"),
+                    faucet=link("https://faucet.mutinynet.com", "faucet"),
+                )
+            ),
         }
         return d[network]
     elif server_type == BlockchainType.RPC:
@@ -286,7 +287,7 @@ class NetworkConfig(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfig":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         u = cls(**filtered_for_init(dct, cls))
@@ -346,7 +347,7 @@ class NetworkConfigs(BaseSaveableClass):
         )
 
     @classmethod
-    def from_dump(cls, dct, class_kwargs=None) -> "NetworkConfigs":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfigs":
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**filtered_for_init(dct, cls))

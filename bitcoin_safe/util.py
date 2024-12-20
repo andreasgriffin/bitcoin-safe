@@ -560,8 +560,25 @@ class Satoshis:
         assert self.network == other.network
         return Satoshis(self.value + other.value, self.network)
 
-    def str_with_unit(self, color_formatting: Literal["html", "rich", "bash"] = "rich"):
-        return f"{format_number(self.value, color_formatting=color_formatting, include_decimal_spaces=True, unicode_space_character=True )} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
+    def format(
+        self,
+        color_formatting: Optional[Literal["html", "rich", "bash"]] = "rich",
+        show_unit=False,
+        unicode_space_character=True,
+    ):
+        number = format_number(
+            self.value,
+            color_formatting=color_formatting,
+            include_decimal_spaces=True,
+            unicode_space_character=unicode_space_character,
+        )
+        if show_unit:
+            return f"{number} {color_format_str( unit_str(self.network), color_formatting=color_formatting)}"
+        else:
+            return number
+
+    def str_with_unit(self, color_formatting: Optional[Literal["html", "rich", "bash"]] = "rich"):
+        return self.format(color_formatting=color_formatting, show_unit=True)
 
     def str_as_change(self, color_formatting: Optional[Literal["html", "rich", "bash"]] = None, unit=False):
 
@@ -803,17 +820,29 @@ def remove_duplicates_keep_order(seq):
     return result
 
 
-def calculate_ema(data, alpha=0.1):
+def calculate_ema(
+    values: Iterable[Union[float, int]], n: int = 10, weights: List[Union[float, int]] | None = None
+) -> float:
     """
-    Calculate Exponential Moving Average (EMA) for a list of numbers.
+    Calculate the Exponential Moving Average (EMA) of a list of values, with an option to apply custom weights to each data point.
 
-    :param data: List of numbers.
-    :param alpha: Smoothing factor within (0, 1), where higher value gives more weight to recent data.
-    :return: EMA value.
+    :param values: List of data points (prices, measurements, etc.)
+    :param n: The period of the EMA
+    :param weights: Optional list of weights to apply to each data point. If not provided, all points are weighted equally.
+    :return: The calculated EMA as a float
     """
-    ema = data[0]
-    for i in range(1, len(data)):
-        ema = alpha * data[i] + (1 - alpha) * ema
+    values = list(values)
+
+    alpha = 2 / (n + 1)
+    adjusted_weights = weights if weights else [1] * len(values)
+    adjusted_weights = np.array(adjusted_weights) / np.max(
+        adjusted_weights
+    )  # Adjust weights to ensure alpha * w <= 1
+
+    ema = values[0]  # Initialize EMA with the first data point
+    for weight, value in zip(adjusted_weights, values):
+        weighted_alpha = min(1, alpha * weight)
+        ema = value * weighted_alpha + (ema * (1 - weighted_alpha))
     return ema
 
 

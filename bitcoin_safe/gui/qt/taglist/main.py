@@ -29,6 +29,8 @@
 
 import logging
 
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
 from ....i18n import translate
 from ....util import qbytearray_to_str, register_cache, str_to_qbytearray
 
@@ -129,10 +131,11 @@ class CustomListWidgetItem(QListWidgetItem):
 
 
 class CustomDelegate(QStyledItemDelegate):
-    signal_tag_renamed = pyqtSignal(str, str)
+    signal_tag_renamed: TypedPyQtSignal[str, str] = pyqtSignal(str, str)  # type: ignore
 
-    def __init__(self, parent) -> None:
+    def __init__(self, editable=True, parent=None) -> None:
         super().__init__(parent)
+        self.editable = editable
         self.currentlyEditingIndex = QModelIndex()
         self.imageCache: Dict[Tuple[QModelIndex, QStyle.StateFlag, str, str, int, int], QImage] = (
             {}
@@ -166,16 +169,18 @@ class CustomDelegate(QStyledItemDelegate):
 
         # Mock-up style option for button rendering
         buttion_option = QStyleOptionButton()
+        buttion_option.features = QStyleOptionButton.ButtonFeature.DefaultButton
         buttion_option.rect = QRect(0, 0, rectSize.width(), rectSize.height())
-        buttion_option.state = QStyle.StateFlag.State_Enabled
+        buttion_option.state = QStyle.StateFlag.State_Raised
 
         if option.state & QStyle.StateFlag.State_Selected:
-            buttion_option.state |= QStyle.StateFlag.State_Sunken
+            buttion_option.state |= QStyle.StateFlag.State_Active
+            color = QColor(
+                index.data(Qt.ItemDataRole.UserRole + 1)
+            )  # Assuming color is stored in UserRole + 1
+            buttion_option.palette.setColor(QPalette.ColorRole.Button, color)
         else:
-            buttion_option.state |= QStyle.StateFlag.State_Raised
-
-        color = QColor(index.data(Qt.ItemDataRole.UserRole + 1))  # Assuming color is stored in UserRole + 1
-        buttion_option.palette.setColor(QPalette.ColorRole.Button, color)
+            pass
 
         # Draw button-like background
         (QApplication.style() or QStyle()).drawControl(
@@ -201,8 +206,8 @@ class CustomDelegate(QStyledItemDelegate):
         subtextPadding = 2  # Adjust subtext padding
 
         # Height allocation (tweak these ratios as needed)
-        textHeightRatio = 0.6  # Allocate 60% of the rect height to the main text
-        subtextHeightRatio = 0.4  # Remaining 40% for the subtext
+        textHeightRatio = 0.55  # Allocate 55% of the rect height to the main text
+        subtextHeightRatio = 0.45  # Remaining 45% for the subtext
 
         # Main text area
         rectText = QRect(
@@ -296,7 +301,9 @@ class CustomDelegate(QStyledItemDelegate):
         """
         self.imageCache.clear()
 
-    def createEditor(self, parent, option: QStyleOptionViewItem, index: QModelIndex):
+    def createEditor(self, parent, option: QStyleOptionViewItem, index: QModelIndex) -> Optional[QWidget]:
+        if not self.editable:
+            return None
         self.currentlyEditingIndex = index
         editor = QLineEdit(parent)
         editor.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -328,8 +335,8 @@ class CustomDelegate(QStyledItemDelegate):
 
 
 class DeleteButton(QPushButton):
-    signal_delete_item = pyqtSignal(str)
-    signal_addresses_dropped = pyqtSignal(AddressDragInfo)
+    signal_delete_item: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_addresses_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
 
     def __init__(self, *args, **kwargs):
         super(DeleteButton, self).__init__(*args, **kwargs)
@@ -384,20 +391,23 @@ class DeleteButton(QPushButton):
 
 
 class CustomListWidget(QListWidget):
-    signal_tag_added = pyqtSignal(str)
-    signal_tag_clicked = pyqtSignal(str)
-    signal_tag_deleted = pyqtSignal(str)
-    signal_tag_renamed = pyqtSignal(str, str)
-    signal_addresses_dropped = pyqtSignal(AddressDragInfo)
-    signal_start_drag = pyqtSignal(object)
-    signal_stop_drag = pyqtSignal(object)
+    signal_tag_added: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_tag_clicked: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_tag_deleted: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_tag_renamed: TypedPyQtSignal[str, str] = pyqtSignal(str, str)  # type: ignore
+    signal_addresses_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
+    signal_start_drag: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_stop_drag: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
-    def __init__(self, parent=None, enable_drag=True, immediate_release=True):
+    def __init__(
+        self, parent=None, editable=True, allow_no_selection=False, enable_drag=True, immediate_release=True
+    ):
         super().__init__(parent)
-
+        self.editable = editable
+        self.allow_no_selection = allow_no_selection
         self.immediate_release = immediate_release
 
-        delegate = CustomDelegate(self)
+        delegate = CustomDelegate(editable=editable, parent=self)
         delegate.signal_tag_renamed.connect(self.signal_tag_renamed)
         self.setItemDelegate(delegate)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -476,12 +486,14 @@ class CustomListWidget(QListWidget):
         item = self.itemAt(event.pos())
         if item and event.button() == Qt.MouseButton.LeftButton:
             self._drag_start_position = event.pos()
-            if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
+            if self.allow_no_selection and not (
+                QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier
+            ):
                 if item.isSelected():
                     self.setAllSelection(False)
                     return
 
-        super().mousePressEvent(event)
+            super().mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event: QMouseEvent | None):
         if event and event.button() == Qt.MouseButton.LeftButton:
@@ -537,11 +549,11 @@ class CustomListWidget(QListWidget):
         drag.setPixmap(pixmap)
         drag.setHotSpot(hotspot_pos)
 
-        self.signal_start_drag.emit(action)
+        self.signal_start_drag.emit()
 
         drag.exec(action)
 
-        self.signal_stop_drag.emit(action)
+        self.signal_stop_drag.emit()
 
     def dragEnterEvent(self, event: QDragEnterEvent | None):
         if not event:

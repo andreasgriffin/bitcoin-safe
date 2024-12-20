@@ -32,11 +32,8 @@ from datetime import datetime
 from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.connected_devices.connected_devices import (
-    TrustedDevice,
-    short_key,
-)
 from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.ui.ui import TrustedDevice, short_key
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
@@ -59,7 +56,9 @@ class LabelSyncer(QObject):
 
         self.apply_own_labels = True
 
-        self.nostr_sync.signal_label_bip329_received.connect(self.on_nostr_label_bip329_received)
+        self.nostr_sync.label_connector.signal_label_bip329_received.connect(
+            self.on_nostr_label_bip329_received
+        )
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
         self.wallet_signals.updated.connect(self.on_labels_updated)
 
@@ -95,7 +94,10 @@ class LabelSyncer(QObject):
     def get_chunked_bitcoin_data(self, refs: List[str]) -> List[Data]:
         lines = self.labels.dumps_data_jsonline_list(refs=refs)
         chunks = self.chunk_lines(lines, max_len=60_000)
-        return [Data(data="\n".join(chunk), data_type=DataType.LabelsBip329) for chunk in chunks]
+        return [
+            Data(data="\n".join(chunk), data_type=DataType.LabelsBip329, network=self.sync_tab.network)
+            for chunk in chunks
+        ]
 
     def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():

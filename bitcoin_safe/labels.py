@@ -60,7 +60,7 @@ class Key(enum.Enum):
     timestamp = enum.auto()
 
 
-class LabelType:
+class LabelType(enum.Enum):
     tx = "tx"
     addr = "addr"
     pubkey = "pubkey"
@@ -70,15 +70,14 @@ class LabelType:
 
 
 class Label(SaveAllClass):
-    VERSION = "0.0.2"
-    known_classes = {
-        **BaseSaveableClass.known_classes,
-    }
+    VERSION = "0.0.3"
+    known_classes = {**BaseSaveableClass.known_classes, "LabelType": LabelType}
     bip329_keys = ["type", "ref", "label"]
+    separator = " #"
 
     def __init__(
         self,
-        type: str,
+        type: LabelType,
         ref: str,
         timestamp: float,
         label: Optional[str] = None,
@@ -95,8 +94,47 @@ class Label(SaveAllClass):
         self.category = category
         self.timestamp = timestamp
 
+    def to_bip329(self) -> Dict[str, Any]:
+        d: Dict[str, Any] = {}
+
+        d["type"] = self.type.name
+        d["ref"] = self.ref
+        d["label"] = (
+            f'{self.label if self.label else ""}{self.separator}{self.category}'
+            if self.category
+            else self.label
+        )
+
+        if self.origin is not None:
+            d["origin"] = self.origin
+        if self.spendable is not None:
+            d["spendable"] = self.spendable
+        return d
+
+    @classmethod
+    def from_bip329(cls, d: Dict[str, Any], timestamp: Union[Literal["now"], float] = "now") -> "Label":
+        d["timestamp"] = datetime.now().timestamp() if timestamp == "now" else timestamp
+        d["type"] = LabelType[d["type"]]
+        label = Label(**filtered_for_init(d, cls=cls))
+
+        if label.label and (not label.category) and cls.separator in label.label:
+            label.label, *categories = label.label.split(cls.separator)
+            if categories:
+                if len(categories) > 1:
+                    logger.warning(f"categories = {categories}. Dropping all but the first non-empty.")
+
+                for category in categories:
+                    # clean category
+                    category = category.replace(cls.separator.strip(), "").strip()
+                    if not category:
+                        continue
+                    label.category = category
+                    break
+        return label
+
     def dump(self, preserve_bip329_keys=True) -> Dict:
         d = super().dump()
+        d["type"] = self.type.name
 
         # remove the  key:value with value==none
         for key in list(d.keys()):
@@ -106,6 +144,14 @@ class Label(SaveAllClass):
                 del d[key]
 
         return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        dct["type"] = LabelType[dct["type"]]
+
+        return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
@@ -143,8 +189,6 @@ class Labels(BaseSaveableClass):
         # "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f":{ "type": "addr", "ref": "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f", "label": "Address" }
         self.data: Dict[str, Label] = data if data else {}
         self.categories: List[str] = categories if categories else []
-
-        self.separator = " #"
         self.default_category = default_category
 
     def add_category(self, value: str) -> None:
@@ -183,7 +227,7 @@ class Labels(BaseSaveableClass):
         return item.timestamp
 
     def set_label(
-        self, type: str, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now"
+        self, type: LabelType, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now"
     ) -> None:
         label = self.data.get(ref)
         timestamp = datetime.now().timestamp() if timestamp == "now" else timestamp
@@ -197,7 +241,7 @@ class Labels(BaseSaveableClass):
             del self.data[ref]
 
     def set_category(
-        self, type: str, ref: str, category, timestamp: Union[Literal["now"], float] = "now"
+        self, type: LabelType, ref: str, category, timestamp: Union[Literal["now"], float] = "now"
     ) -> None:
         label = self.data.get(ref)
         timestamp = datetime.now().timestamp() if timestamp == "now" else timestamp
@@ -256,8 +300,18 @@ class Labels(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None) -> "Labels":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "Labels":
         super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        # handle a case of incorrectly saved labels
+        # (only ever happend when there was a savings bug in a development version)
+        if "data" in dct:
+            for key, value in list(dct["data"].items()):
+                # it should be Label
+                if isinstance(value, dict):
+                    # but if it is just a dict, then convert it to a label
+                    dct["data"][key] = Label(**value)
+                    logger.debug(f"Incorrect saved label data. Converting {value} to Label")
 
         return cls(**filtered_for_init(dct, cls))
 
@@ -284,52 +338,15 @@ class Labels(BaseSaveableClass):
             del dct["VERSION"]
         return dct
 
-    def _convert_item_to_bip329(self, label: Label) -> Dict:
-
-        new_label: Label = label.clone()
-
-        if new_label.category:
-            new_label.label = (
-                f'{new_label.label if new_label.label else ""}{self.separator}{new_label.category}'
-            )
-            new_label.category = None
-
-        dct = new_label.dump()
-        del dct["__class__"]
-        del dct["VERSION"]
-        del dct["timestamp"]
-        return dct
-
-    def _bip329_dict_to_label(
-        self, d: Dict[str, Any], timestamp: Union[Literal["now"], float] = "now"
-    ) -> Label:
-        d["timestamp"] = datetime.now().timestamp() if timestamp == "now" else timestamp
-        label = Label(**d)
-
-        if label.label and (not label.category) and self.separator in label.label:
-            label.label, *categories = label.label.split(self.separator)
-            if categories:
-                if len(categories) > 1:
-                    logger.warning(f"categories = {categories}. Dropping all but the first non-empty.")
-
-                for category in categories:
-                    # clean category
-                    category = category.replace(self.separator.strip(), "").strip()
-                    if not category:
-                        continue
-                    label.category = category
-                    break
-        return label
-
     def export_bip329_jsonlines(self) -> str:
-        list_of_dict = [self._convert_item_to_bip329(item) for item in self.data.values()]
+        list_of_dict = [item.to_bip329() for item in self.data.values()]
         return list_of_dict_to_jsonlines(list_of_dict)
 
     def import_bip329_jsonlines(
         self, jsonlines: str, fill_categories=True, timestamp: Union[Literal["now"], float] = "now"
     ) -> Dict[str, Label]:
         list_of_dict = jsonlines_to_list_of_dict(jsonlines)
-        labels = [self._bip329_dict_to_label(d, timestamp=timestamp) for d in list_of_dict]
+        labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
     def import_electrum_wallet_json(
@@ -348,7 +365,7 @@ class Labels(BaseSaveableClass):
                 data_type = "tx"
             list_of_dict.append({"type": data_type, "ref": key, "label": label})
 
-        labels = [self._bip329_dict_to_label(d, timestamp=timestamp) for d in list_of_dict]
+        labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
     def _should_overwrite(self, new_label: Label, old_label: Optional[Label]) -> bool:

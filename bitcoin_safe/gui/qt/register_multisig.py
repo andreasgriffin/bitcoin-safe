@@ -28,161 +28,105 @@
 
 
 import logging
-from typing import List, Optional
 
-from bitcoin_safe.descriptors import MultipathDescriptor
-from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
-from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
-from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.gui.qt.export_data import (
+    ExportDataSimple,
+    FileToolButton,
+    QrToolButton,
+)
+from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
+from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
+from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from bitcoin_usb.gui import USBGui
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (
-    QDialogButtonBox,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QSizePolicy,
-    QVBoxLayout,
-    QWidget,
-)
+from bitcoin_qr_tools.data import Data, DataType
+from PyQt6.QtWidgets import QWidget
 
-from ...signals import Signals
-from .util import Message, MessageType, generate_help_button, read_QIcon
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 
 
-class USBValidateAddressWidget(QWidget):
+class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     def __init__(
-        self,
-        network: bdk.Network,
-        signals: Signals,
+        self, qt_wallet: QTWallet | None, threading_parent: ThreadingManager, parent: QWidget | None = None
     ) -> None:
-        super().__init__()
-        self.signals = signals
-        self.network = network
-        self.descriptor: Optional[MultipathDescriptor] = None
-        self.expected_address = ""
-        self.address_index = 0
-        self.kind = bdk.KeychainKind.EXTERNAL
-        self.usb = USBGui(self.network, allow_emulators_only_for_testnet_works=True)
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        self._layout = QVBoxLayout(self)
-        self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        super().__init__(parent=parent)
+        self.setWindowTitle(self.tr("Register Multisig"))
+        self.qt_wallet = qt_wallet
+        self.threading_parent = threading_parent
 
-        self.label_expected_address = QLabel()
-        self._layout.addWidget(self.label_expected_address)
-
-        self.edit_address = AddressEdit(network=network, allow_edit=False, parent=self, signals=self.signals)
-        self._layout.addWidget(self.edit_address)
-
-        # Create buttons and layout
-        self.button_box = QDialogButtonBox()
-        self._layout.addWidget(self.button_box)
-        self._layout.setAlignment(self.button_box, Qt.AlignmentFlag.AlignCenter)
-
-        self.button_validate_address = QPushButton()
-        self.button_validate_address.setIcon(read_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
-        self.button_validate_address.clicked.connect(self.on_button_click)
-        self.button_box.addButton(self.button_validate_address, QDialogButtonBox.ButtonRole.AcceptRole)
-
-        self.updateUi()
-        self.signals.language_switch.connect(self.updateUi)
-
-    def updateUi(self) -> None:
-        self.button_validate_address.setText(self.tr("Validate address"))
-        self.label_expected_address.setText(self.tr("Validate receive address:"))
-
-    def set_descriptor(
-        self,
-        descriptor: MultipathDescriptor,
-        expected_address: str,
-        kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
-        address_index: int = 0,
-    ) -> None:
-        self.descriptor = descriptor
-        self.expected_address = expected_address
-        self.kind = kind
-        self.address_index = address_index
-        self.edit_address.setText(self.expected_address)
-
-        self.updateUi()
-
-    def on_button_click(
-        self,
-    ) -> bool:
-        if not self.descriptor:
-            logger.error("descriptor not set")
-            return False
-
-        address_descriptor = self.descriptor.address_descriptor(
-            kind=self.kind, address_index=self.address_index
-        )
-        try:
-            address = self.usb.display_address(address_descriptor)
-        except Exception as e:
-            Message(str(e), type=MessageType.Error)
-            return False
-
-        return bool(address)
-
-
-class USBRegisterMultisigWidget(USBValidateAddressWidget):
-    def __init__(self, network: bdk.Network, signals: Signals) -> None:
-        screenshots = ScreenshotsRegisterMultisig()
-        self.button_help = generate_help_button(screenshots, title="Help")
-
-        super().__init__(network, signals)
-
-        self.button_box.addButton(self.button_help, QDialogButtonBox.ButtonRole.HelpRole)
-
-        self.xpubs_widget = QWidget()
-        self.xpubs_widget_layout = QHBoxLayout(self.xpubs_widget)
-        self.label_title_keystore = QLabel()
-        self.label_xpubs_keystore = ElidedLabel(elide_mode=Qt.TextElideMode.ElideMiddle)
-        self.xpubs_widget_layout.addWidget(self.label_title_keystore)
-        self.xpubs_widget_layout.addWidget(self.label_xpubs_keystore)
-
-        self._layout.insertWidget(0, self.xpubs_widget)
-
-    def updateUi(self) -> None:
-        super().updateUi()
-        self.setWindowTitle(self.tr("Register Multisig wallet on hardware signer"))
-        self.button_validate_address.setText(self.tr("Register Multisig"))
-        self.button_help.setText(self.tr("Help"))
-
-    def on_button_click(
-        self,
-    ) -> bool:
-        result = super().on_button_click()
-
-        if result:
-            self.close()
-            Message(
-                self.tr("Successfully registered multisig wallet on hardware signer"),
-                type=MessageType.Info,
-                icon=read_QIcon("checkmark.svg"),
+        # export widgets
+        self.export_qr_widget = None
+        if self.qt_wallet:
+            self.export_qr_widget = ExportDataSimple(
+                data=Data.from_str(
+                    self.qt_wallet.wallet.multipath_descriptor.as_string(),
+                    network=self.qt_wallet.wallet.network,
+                ),
+                signals_min=self.qt_wallet.signals,
+                enable_clipboard=False,
+                enable_usb=False,
+                enable_file=False,
+                enable_qr=True,
+                network=self.qt_wallet.config.network,
+                threading_parent=self.threading_parent,
+                wallet_name=self.qt_wallet.wallet.id,
             )
-        return result
+            self.export_qr_widget.set_minimum_size_as_floating_window()
 
-    def set_descriptor(  # type: ignore
-        self,
-        keystores: List[KeyStore],
-        descriptor: MultipathDescriptor,
-        expected_address: str,
-        kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
-        address_index: int = 0,
-    ) -> None:
-        super().set_descriptor(
-            descriptor=descriptor, expected_address=expected_address, kind=kind, address_index=address_index
-        )
+        ## help
+        screenshots = ScreenshotsRegisterMultisig()
+        self.add_help_button(screenshots)
 
-        text_titles = "\n".join([f"{keystore.label}:" for keystore in keystores])
-        text_xpubs = "\n".join([keystore.xpub for keystore in keystores])
-        self.label_title_keystore.setText(text_titles)
-        self.label_xpubs_keystore.setText(text_xpubs)
+        if self.export_qr_widget and self.qt_wallet:
+            data = Data(
+                data=self.qt_wallet.wallet.multipath_descriptor,
+                data_type=DataType.MultiPathDescriptor,
+                network=self.qt_wallet.wallet.network,
+            )
+
+            # qr
+            self.export_qr_button = QrToolButton(
+                data=data,
+                signals_min=self.qt_wallet.signals,
+                network=self.qt_wallet.wallet.network,
+                threading_parent=self.threading_parent,
+                parent=self,
+            )
+            self.add_button(self.export_qr_button)
+
+            ## file
+            self.button_export_file = FileToolButton(
+                data=data,
+                wallet_id=self.qt_wallet.wallet.id,
+                network=self.qt_wallet.wallet.network,
+                parent=self,
+            )
+            self.add_button(self.button_export_file)
+
+            ## hwi
+
+            addresses = self.qt_wallet.wallet.get_addresses()
+            index = 0
+            address = addresses[index] if len(addresses) > index else ""
+            usb_widget = USBRegisterMultisigWidget(
+                network=self.qt_wallet.wallet.network,
+                signals=self.qt_wallet.signals,
+            )
+            usb_widget.set_descriptor(
+                keystores=self.qt_wallet.wallet.keystores,
+                descriptor=self.qt_wallet.wallet.multipath_descriptor,
+                expected_address=address,
+                kind=bdk.KeychainKind.EXTERNAL,
+                address_index=index,
+            )
+            button_hwi = self.add_hwi_button(signal_end_hwi_blocker=usb_widget.usb_gui.signal_end_hwi_blocker)
+            button_hwi.clicked.connect(lambda: usb_widget.show())
+
+        self.updateUi()
+
+    def set_minimum_size_as_floating_window(self):
+        self.setMinimumSize(500, 200)
