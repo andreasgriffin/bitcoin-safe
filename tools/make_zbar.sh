@@ -41,6 +41,7 @@ info "Building $pkgname..."
     if [ "$BUILD_TYPE" = "wine" ] ; then
         echo "libzbar_la_LDFLAGS += -Wc,-static" >> zbar/Makefile.am
         echo "LDFLAGS += -Wc,-static" >> Makefile.am
+        LDFLAGS="-L/usr/local/lib -liconv" # Example for adding libiconv
     fi
     if ! [ -x configure ] ; then
         autoreconf -vfi || fail "Could not run autoreconf for $pkgname. Please make sure you have automake and libtool installed, and try again."
@@ -56,17 +57,20 @@ info "Building $pkgname..."
                 --disable-dependency-tracking"
         elif [ $(uname) == "Darwin" ]; then
             # macos target
+            LDFLAGS="-L/opt/local/lib -liconv" # Adjust for macOS specific libiconv path if needed
             AUTOCONF_FLAGS="$AUTOCONF_FLAGS \
                 --with-x=no \
                 --enable-video=no \
                 --with-jpeg=no"
         else
             # linux target
+            LDFLAGS="-L/usr/lib/x86_64-linux-gnu -liconv" # Adjust based on your distro
             AUTOCONF_FLAGS="$AUTOCONF_FLAGS \
                 --with-x=yes \
                 --enable-video=yes \
                 --with-jpeg=yes"
         fi
+        export LDFLAGS
         ./configure \
             $AUTOCONF_FLAGS \
             --prefix="$here/$pkgname/dist" \
