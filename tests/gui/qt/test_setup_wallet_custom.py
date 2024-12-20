@@ -182,10 +182,8 @@ def test_custom_wallet_setup_custom_single_sig(
             shutter.save(main_window)
 
             save_wallet(
-                shutter=shutter,
                 test_config=test_config,
                 wallet_name=wallet_name,
-                qtbot=qtbot,
                 save_button=qt_proto_wallet.wallet_descriptor_ui.button_box.button(
                     QDialogButtonBox.StandardButton.Apply
                 ),

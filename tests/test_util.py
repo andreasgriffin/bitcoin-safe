@@ -28,26 +28,49 @@
 
 
 import logging
+from typing import Callable, List
+
+from bitcoin_safe.gui.qt.util import one_time_signal_connection
 
 logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from unittest.mock import patch
 
+import bdkpython as bdk
 from _pytest.logging import LogCaptureFixture
-from PyQt6.QtCore import QObject, pyqtSignal
-
-from bitcoin_safe.gui.qt.util import chained_one_time_signal_connections
+from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
 # import the __main__ because it setsup the logging
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
+from bitcoin_safe.signals import TypedPyQtSignalNo
 
 # from bitcoin_safe.logging_setup import setup_logging
 from bitcoin_safe.util import path_to_rel_home_path, rel_home_path_to_abs_path
 
 
 class MySignalclass(QObject):
-    signal = pyqtSignal()
+    signal: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
+
+def chained_one_time_signal_connections(
+    signals: List[pyqtBoundSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
+):
+    "If after the i. f is called, it connects the i+1. signal"
+
+    signal, remaining_signals = signals[0], signals[1:]
+    f, remaining_fs = fs[0], fs[1:]
+
+    def f_wrapper(*args, **kwargs):
+        res = f(*args, **kwargs)
+        if disconnect_only_if_f_true and not res:
+            # reconnect
+            one_time_signal_connection(signal, f_wrapper)
+        elif remaining_signals and remaining_fs:
+            chained_one_time_signal_connections(remaining_signals, remaining_fs)
+        return res
+
+    one_time_signal_connection(signal, f_wrapper)
 
 
 @patch("pathlib.Path.home")
@@ -164,3 +187,24 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
 
         # since f(0) == None, the 1. signal simply reconnects
         assert [record.msg for record in caplog.records] == ["0", "0"]
+
+
+def make_psbt(
+    bdk_wallet: bdk.Wallet, network: bdk.Network, destination_address: str, amount=100_000_000, fee_rate=1
+):
+    txbuilder = bdk.TxBuilder()
+
+    txbuilder = txbuilder.add_recipient(
+        bdk.Address(destination_address, network).script_pubkey(), int(amount)
+    )
+
+    txbuilder = txbuilder.fee_rate(fee_rate)
+    txbuilder = txbuilder.enable_rbf()
+
+    txbuilder_result = txbuilder.finish(bdk_wallet)
+
+    psbt = txbuilder_result.psbt
+    logger.debug(f"psbt to {destination_address}: {psbt.serialize()}\n")
+
+    psbt_for_signing = bdk.PartiallySignedTransaction(txbuilder_result.psbt.serialize())
+    return psbt_for_signing

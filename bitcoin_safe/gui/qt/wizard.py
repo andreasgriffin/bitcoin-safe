@@ -32,7 +32,7 @@ import xml.etree.ElementTree as ET
 from abc import abstractmethod
 
 from bitcoin_usb.address_types import AddressTypes
-from bitcoin_usb.gui import USBGui
+from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtWidgets import QCheckBox
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
@@ -50,7 +50,10 @@ from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import ProtoWallet, Wallet
+
+from ...signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -506,6 +509,7 @@ class StickerTheHardware(BaseTab):
 
 class GenerateSeed(BaseTab):
     def create(self) -> TutorialWidget:
+        self.usb_gui = USBGui(self.refs.qtwalletbase.config.network)
 
         widget = QWidget()
         widget_layout = QHBoxLayout(widget)
@@ -525,7 +529,10 @@ class GenerateSeed(BaseTab):
 
                 hardware_signer_interaction = HardwareSignerInteractionWidget()
                 self.hardware_signer_interactions[usb_device_name] = hardware_signer_interaction
-                button_hwi = hardware_signer_interaction.add_hwi_button()
+                signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
+                button_hwi = hardware_signer_interaction.add_hwi_button(
+                    signal_end_hwi_blocker=signal_end_hwi_blocker
+                )
                 button_hwi.clicked.connect(self.on_hwi_click)
 
                 tab = self.screenshot.tabs[usb_device_name]
@@ -568,11 +575,11 @@ class GenerateSeed(BaseTab):
             Message("Aborted setup.")
             return
 
+        self.usb_gui.set_initalization_label(initalization_label)
         address_type = AddressTypes.p2wpkh  # any address type is OK, since we wont use it
-        usb = USBGui(self.refs.qtwalletbase.config.network, initalization_label=initalization_label)
         key_origin = address_type.key_origin(self.refs.qtwalletbase.config.network)
         try:
-            result = usb.get_fingerprint_and_xpub(key_origin=key_origin)
+            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as e:
             Message(
                 str(e)
@@ -674,9 +681,7 @@ class ImportXpubs(BaseTab):
 
                 try:
                     self.keystore_uis.set_protowallet_from_keystore_ui()
-                    self.refs.qtwalletbase.get_editable_protowallet().tutorial_index = (
-                        self.refs.container.current_index() + 1
-                    )
+                    self.refs.qtwalletbase.tutorial_index = self.refs.container.current_index() + 1
                     self.refs.signal_create_wallet.emit()
                 except Exception as e:
                     caught_exception_message(e)
@@ -874,6 +879,8 @@ class ReceiveTest(BaseTab):
             self.quick_receive = BitcoinQuickReceive(
                 wallet_signals=self.refs.qt_wallet.wallet_signals,
                 wallet=self.refs.qt_wallet.wallet,
+                parent=widget,
+                signals_min=self.refs.qt_wallet.signals,
             )
             self.quick_receive.setMaximumWidth(300)
             widget_layout.addWidget(self.quick_receive)
@@ -1371,7 +1378,7 @@ class LabelBackup(BaseTab):
     </ul>   
 <li>{self.tr('Multi-computer synchronization and chat')}</li> 
     <ul>
-    <li>{self.tr('Choose trusted computers in SyncTalk tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
+    <li>{self.tr('Choose trusted computers in SyncChat tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
     </ul>
 </ul>   
  """,
@@ -1492,7 +1499,8 @@ class SendTest(BaseTab):
 
 
 class Wizard(WizardBase):
-    signal_create_wallet = pyqtSignal()
+    signal_create_wallet: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_step_change: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
 
     def __init__(
         self,
@@ -1573,9 +1581,8 @@ class Wizard(WizardBase):
         for i, widget in enumerate(self.widgets.values()):
             self.set_custom_widget(i, widget)
 
-        if self.qt_wallet:
-            if self.qt_wallet.wallet.tutorial_index is not None:
-                self.set_current_index(self.qt_wallet.wallet.tutorial_index)
+        if self.qtwalletbase.tutorial_index is not None:
+            self.set_current_index(self.qtwalletbase.tutorial_index)
             # save after every step
 
         def save(widget):
@@ -1583,6 +1590,7 @@ class Wizard(WizardBase):
                 self.qt_wallet.save()
 
         self.signal_set_current_widget.connect(save)
+        self.signal_step_change.connect(self.qtwalletbase.set_tutorial_index)
 
         self.updateUi()
         self.set_visibilities()
@@ -1592,6 +1600,15 @@ class Wizard(WizardBase):
             self.qtwalletbase.signals.wallet_signals[self.qt_wallet.wallet.id].updated.connect(
                 self.on_utxo_update
             )
+
+    def toggle_tutorial(self) -> None:
+
+        if self.get_wallet_tutorial_index() is None:
+            self.qtwalletbase.tutorial_index = self.step_bar.number_of_steps - 1
+        else:
+            self.qtwalletbase.tutorial_index = None
+
+        self.set_visibilities()
 
     def get_latest_send_test_in_tx_history(
         self, steps: List[TutorialStep], wallet: Wallet
@@ -1656,17 +1673,13 @@ class Wizard(WizardBase):
         return members[index]
 
     def get_wallet_tutorial_index(self) -> Optional[int]:
-        return (
-            (self.qt_wallet.wallet.tutorial_index)
-            if self.qt_wallet
-            else self.qtwalletbase.get_editable_protowallet().tutorial_index
-        )
+        return (self.qt_wallet.tutorial_index) if self.qt_wallet else self.qtwalletbase.tutorial_index
 
     def set_wallet_tutorial_index(self, value: Optional[int]) -> None:
         if self.qt_wallet:
-            self.qt_wallet.wallet.tutorial_index = value
+            self.qt_wallet.tutorial_index = value
         else:
-            self.qtwalletbase.get_editable_protowallet().tutorial_index = value
+            self.qtwalletbase.tutorial_index = value
 
     @property
     def should_be_visible(self) -> bool:
@@ -1686,12 +1699,13 @@ class Wizard(WizardBase):
     def num_keystores(self) -> int:
         return self.qtwalletbase.get_mn_tuple()[1]
 
-    def change_index(self, index: int) -> None:
-        self.set_current_index(index)
+    def set_current_index(self, index: int) -> None:
+        super().set_current_index(index)
+        self.signal_step_change.emit(index)
 
     def go_to_previous_index(self) -> None:
         logger.info(f"go_to_previous_index: Old index {self.current_index()} = {self.current_step()}")
-        self.change_index(max(self.current_index() - 1, 0))
+        self.set_current_index(max(self.current_index() - 1, 0))
         logger.info(f"go_to_previous_index: Switched index {self.current_index()} = {self.current_step()}")
 
     def go_to_next_index(self) -> None:
@@ -1701,7 +1715,7 @@ class Wizard(WizardBase):
 
             return
         logger.info(f"go_to_next_index: Old index {self.current_index()} = {self.current_step()}")
-        self.change_index(min(self.step_bar.current_index + 1, self.step_bar.number_of_steps - 1))
+        self.set_current_index(min(self.step_bar.current_index + 1, self.step_bar.number_of_steps - 1))
         logger.info(f"go_to_next_index: Switched index {self.current_index()} = {self.current_step()}")
 
     def get_send_tests_steps(self) -> List[TutorialStep]:
@@ -1826,7 +1840,7 @@ class Wizard(WizardBase):
             TutorialStep.receive: self.tr("Receive Test"),
             TutorialStep.distribute: self.tr("Put in secure locations"),
             TutorialStep.register: self.tr("Register multisig on signers"),
-            TutorialStep.sync: self.tr("SyncTalk"),
+            TutorialStep.sync: self.tr("SyncChat"),
         }
         for i, tutoral_step in enumerate(self.get_send_tests_steps()):
             labels[tutoral_step] = (

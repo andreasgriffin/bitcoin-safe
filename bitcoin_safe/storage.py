@@ -202,7 +202,7 @@ class BaseSaveableClass:
         return dct
 
     @classmethod
-    def _from_dump(cls, dct, class_kwargs=None):
+    def _from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
         assert dct.get("__class__") == cls.__name__
         del dct["__class__"]
 
@@ -214,10 +214,10 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump(cls, dct, class_kwargs=None):
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
         raise NotImplementedError()
 
-    def clone(self, class_kwargs=None):
+    def clone(self, class_kwargs: Dict | None = None):
         return self.from_dump(self.dump(), class_kwargs=class_kwargs)
 
     def save(self, filename: Union[Path, str], password: Optional[str] = None):
@@ -261,7 +261,7 @@ class BaseSaveableClass:
         return BaseSaveableClass._flatten_known_classes({cls.__name__: cls})
 
     @classmethod
-    def _from_file(cls, filename: str, password: Optional[str] = None, class_kwargs=None):
+    def _from_file(cls, filename: str, password: Optional[str] = None, class_kwargs: Dict | None = None):
         """Loads the class from a file. This offers the option of add class_kwargs args
 
         Args:
@@ -275,13 +275,18 @@ class BaseSaveableClass:
         class_kwargs = class_kwargs if class_kwargs else {}
         storage = Storage()
 
-        json_string = storage.load(filename, password=password)
+        json_string = cls.file_migration(storage.load(filename, password=password))
 
         instance = json.loads(
             json_string,
             object_hook=ClassSerializer.general_deserializer(cls.get_known_classes(), class_kwargs),
         )
         return instance
+
+    @classmethod
+    def file_migration(cls, file_content: str):
+        "this class can be overwritten in child classes"
+        return file_content
 
 
 class SaveAllClass(BaseSaveableClass):
@@ -291,6 +296,6 @@ class SaveAllClass(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None):
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))

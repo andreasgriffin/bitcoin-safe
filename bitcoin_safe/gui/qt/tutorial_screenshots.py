@@ -31,7 +31,7 @@ import logging
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
-from bitcoin_qr_tools.qr_widgets import EnlargableImageWidgetWithButton
+from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
 
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
 from bitcoin_safe.pdfrecovery import TEXT_24_WORDS

@@ -387,7 +387,7 @@ class GPGSignatureVerifyer:
             except FileNotFoundError:
                 pass
             except OSError as e:
-                print(f"Error accessing registry: {e}")
+                logger.error(f"Error accessing registry: {e}")
             return None
         return None
 

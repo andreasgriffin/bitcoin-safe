@@ -35,7 +35,13 @@ import sys
 import numpy as np
 from PyQt6.QtCharts import QChart, QChartView, QDateTimeAxis, QLineSeries, QValueAxis
 from PyQt6.QtCore import QDateTime, QMargins, Qt, QTimer
-from PyQt6.QtWidgets import QApplication, QFrame, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QApplication,
+    QGraphicsLayout,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+)
 
 from bitcoin_safe.util import unit_str
 
@@ -46,8 +52,8 @@ logger = logging.getLogger(__name__)
 
 
 class BalanceChart(QWidget):
-    def __init__(self, y_axis_text="Balance") -> None:
-        super().__init__()
+    def __init__(self, y_axis_text="Balance", parent: QWidget | None = None) -> None:
+        super().__init__(parent)
         self.y_axis_text = y_axis_text
 
         # Layout
@@ -60,7 +66,6 @@ class BalanceChart(QWidget):
             legend.hide()
 
         # Reduce the overall chart margins
-        layout.setContentsMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
         self.chart.setMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
 
         # Create DateTime axis for X
@@ -77,8 +82,10 @@ class BalanceChart(QWidget):
         self.chart_view = QChartView(self.chart)
         layout.addWidget(self.chart_view)
 
-        self.chart_view.setFrameStyle(QFrame.Shape.NoFrame)
-        self.chart_view.setBackgroundBrush(self.chart.backgroundBrush())
+        if isinstance(chart_layout := self.chart.layout(), QGraphicsLayout):
+            # chart_layout has its own margin and it is difficult to set its color
+            # to match the widget color.  So disabling is easiest here
+            chart_layout.setContentsMargins(0, 0, 0, 0)
 
         # Set layout
         self.setLayout(layout)
@@ -218,8 +225,8 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    def __init__(self, wallet: Wallet, wallet_signals: WalletSignals) -> None:
-        super().__init__(y_axis_text="")
+    def __init__(self, wallet: Wallet, wallet_signals: WalletSignals, parent: QWidget | None = None) -> None:
+        super().__init__(y_axis_text="", parent=parent)
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
         self.wallet_signals = wallet_signals

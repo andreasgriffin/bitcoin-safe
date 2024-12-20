@@ -55,10 +55,10 @@ def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Netw
 
 
 def create_test_seed_keystores(
-    signers: int, key_origins: List[str], network=bdk.Network.REGTEST
+    signers: int, key_origins: List[str], network=bdk.Network.REGTEST, test_seed_offset=0
 ) -> List[KeyStore]:
     keystores: List[KeyStore] = []
-    for i, seed_str in enumerate(test_seeds[:signers]):
+    for i, seed_str in enumerate(test_seeds[test_seed_offset : test_seed_offset + signers]):
         keystores.append(
             create_keystore(seed_str=seed_str, key_origin=key_origins[i], label=f"{i}", network=network)
         )

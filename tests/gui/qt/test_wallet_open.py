@@ -29,6 +29,8 @@
 
 import inspect
 import logging
+import shutil
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from time import sleep
@@ -42,6 +44,7 @@ from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore
+from ...test_helpers import test_config_main_chain  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
     Shutter,
@@ -78,8 +81,12 @@ def test_open_wallet_and_address_is_consistent(
 
         shutter.save(main_window)
 
+        temp_dir = Path(tempfile.mkdtemp()) / wallet_file
+
         wallet_path = Path("tests") / "data" / wallet_file
-        qt_wallet = main_window.open_wallet(str(wallet_path.absolute()))
+        shutil.copy(str(wallet_path), str(temp_dir))
+
+        qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
         qt_wallet.tabs.setCurrentWidget(qt_wallet.addresses_tab)

@@ -60,6 +60,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu
 
 from ...config import UserConfig
 from ...network_config import BlockchainType
+from ...signals import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -114,15 +115,15 @@ class ImportLabelMenu:
 
         self.action_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_labels.emit(self.wallet.id),
+            lambda: self.wallet_signals.import_labels.emit(),
         )
         self.action_bip329_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_bip329_labels.emit(self.wallet.id),
+            lambda: self.wallet_signals.import_bip329_labels.emit(),
         )
         self.action_electrum_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_electrum_wallet_labels.emit(self.wallet.id),
+            lambda: self.wallet_signals.import_electrum_wallet_labels.emit(),
         )
         self.action_nostr_import = self.import_label_menu.add_action(
             "",
@@ -159,11 +160,11 @@ class ExportLabelMenu:
 
         self.action_export_full = self.export_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.export_labels.emit(self.wallet.id),
+            lambda: self.wallet_signals.export_labels.emit(),
         )
         self.action_bip329 = self.export_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.export_bip329_labels.emit(self.wallet.id),
+            lambda: self.wallet_signals.export_bip329_labels.emit(),
         )
         self.updateUi()
 
@@ -204,7 +205,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class AddressList(MyTreeView):
-    signal_tag_dropped = pyqtSignal(AddressDragInfo)
+    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
 
     class Columns(MyTreeView.BaseColumnsEnum):
         NUM_TXS = enum.auto()
@@ -595,7 +596,9 @@ class AddressList(MyTreeView):
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "addr", addr)
             if addr_URL:
                 menu.add_action(
-                    self.tr("View on block explorer"), lambda: webopen(addr_URL), icon=read_QIcon("link.svg")
+                    self.tr("View on block explorer"),
+                    lambda: webopen(addr_URL),
+                    icon=read_QIcon("block-explorer.svg"),
                 )
 
             menu.addSeparator()
@@ -673,7 +676,10 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.updateUi()
 
         self.address_list.wallet_signals.language_switch.connect(self.updateUi)
-        self.address_list.wallet_signals.updated.connect(self.updateUi)
+        self.address_list.wallet_signals.updated.connect(self.update_with_filter)
+
+    def update_with_filter(self, update_filter: UpdateFilter):
+        self.updateUi()
 
     def updateUi(self) -> None:
         super().updateUi()

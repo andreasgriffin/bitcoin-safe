@@ -29,24 +29,22 @@
 
 import csv
 import logging
+from pathlib import Path
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.labeledit import LabelAndCategoryEdit
+from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.wallet import (
-    Wallet,
-    get_label_from_any_wallet,
-    get_wallet_of_address,
-    get_wallets,
-)
+from bitcoin_safe.labels import LabelType
+from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.wallet import get_wallet_of_address
 
 from ...pythonbdk_types import Recipient, is_address
 from .invisible_scroll_area import InvisibleScrollArea
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, List, Set
+from typing import Any, List
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -69,7 +67,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...signals import Signals
 from ...util import is_int, unit_sat_str, unit_str
 from .spinbox import BTCSpinBox
 
@@ -113,7 +111,13 @@ class RecipientWidget(QWidget):
         self.address_edit = AddressEdit(
             network=network, allow_edit=allow_edit, parent=self, signals=self.signals
         )
-        self.label_line_edit = LabelAndCategoryEdit()
+        self.label_line_edit = WalletLabelAndCategoryEdit(
+            signals=self.signals,
+            get_label_ref=self._get_label_ref,
+            label_type=LabelType.addr,
+            parent=self,
+            dismiss_label_on_focus_loss=False,
+        )
 
         self.amount_layout = QHBoxLayout()
         self.amount_spin_box = BTCSpinBox(self.signals.get_network())
@@ -144,14 +148,15 @@ class RecipientWidget(QWidget):
 
         # signals
         self.signals.language_switch.connect(self.updateUi)
-        self.address_edit.signal_text_change.connect(self.on_text_change)
-        self.address_edit.signal_bip21_input.connect(self.on_handle_input)
-        self.label_line_edit.label_edit.signal_enterPressed.connect(self.on_label_edited)
-        self.label_line_edit.label_edit.signal_textEditedAndFocusLost.connect(self.on_label_edited)
-        self.signals.any_wallet_updated.connect(self.autofill_label_and_category)
+        self.address_edit.signal_text_change.connect(self.on_address_change)
+        self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
 
-    def on_text_change(self, value: str):
-        self.autofill_category()
+    def _get_label_ref(self):
+        return self.address_edit.address
+
+    def on_address_change(self, value: str):
+        self.label_line_edit.updateUi()
+        self.label_line_edit.autofill_label_and_category()
 
     def set_max(self, value: bool):
         self.send_max_button.setChecked(value)
@@ -167,63 +172,13 @@ class RecipientWidget(QWidget):
         self.amount_spin_box.setReadOnly(not allow_edit)
         self.address_edit.set_allow_edit(allow_edit)
 
-    def get_wallets_to_store_label(self, edit_address) -> Set[Wallet]:
-        """
-        Will return wallets where it occurs in ANY transaction
-
-        The address doesnt have to belong to any wallet, but might be a recipient
-        """
-
-        result = set()
-        if not self.signals:
-            return set()
-
-        for wallet in get_wallets(self.signals):
-            if wallet.is_my_address(edit_address):
-                result.add(wallet)
-                continue
-            if wallet.get_label_for_address(edit_address):
-                result.add(wallet)
-                continue
-            if wallet.get_involved_txids(edit_address):
-                result.add(wallet)
-                continue
-        return result
-
-    def on_label_edited(self) -> None:
-        address = self.address_edit.address
-        wallets = self.get_wallets_to_store_label(address)
-        if not wallets:
-            return
-
-        new_labeltext = self.label_line_edit.label()
-        self.label_line_edit.set(new_labeltext, self.label_line_edit.category())
-        for wallet in wallets:
-            wallet.labels.set_addr_label(address, new_labeltext, timestamp="now")
-
-            categories = []
-            if not wallet.labels.get_category_raw(address):
-                # also fix the category to have consitency across wallets via the labelsyncer
-                category = wallet.labels.get_category(address)
-                categories += [category]
-                wallet.labels.set_addr_category(address, category, timestamp="now")
-
-            self.signals.wallet_signals[wallet.id].updated.emit(
-                UpdateFilter(
-                    addresses=[address],
-                    categories=categories,
-                    txids=wallet.get_involved_txids(address),
-                    reason=UpdateFilterReason.UserInput,
-                )
-            )
-
     def set_category(self, category: str):
         self.label_line_edit.set_category(category if category else "")
 
     def set_category_visible(self, value: bool):
         self.label_line_edit.set_category_visible(value)
 
-    def on_handle_input(self, data: Data) -> None:
+    def on_address_bip21_input(self, data: Data) -> None:
         if data.data_type == DataType.Bip21:
             if data.data.get("address"):
                 self.address_edit.address = data.data.get("address")
@@ -243,7 +198,7 @@ class RecipientWidget(QWidget):
         self.amount_spin_box.set_max(self.send_max_button.isChecked())
 
         self.address_edit.updateUi()
-        self.autofill_label_and_category()
+        self.label_line_edit.updateUi()
 
     def showEvent(self, event) -> None:
         # this is necessary, otherwise the background color of the
@@ -298,55 +253,9 @@ class RecipientWidget(QWidget):
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_button.setEnabled(state)
 
-    def autofill_category(self, update_filter: UpdateFilter | None = None):
-        if update_filter and not (
-            self.address_edit.address in update_filter.addresses
-            or self.category in update_filter.categories
-            or update_filter.refresh_all
-        ):
-            return
-
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-
-        wallet = get_wallet_of_address(self.address_edit.address, self.signals)
-        if wallet:
-            category = wallet.labels.get_category(self.address_edit.address)
-            self.set_category_visible(True)
-            self.set_category(category if category else "")
-        else:
-            self.set_category_visible(False)
-            self.set_category("")
-
-    def autofill_label(self, update_filter: UpdateFilter | None = None):
-        if update_filter and not (
-            self.address_edit.address in update_filter.addresses or update_filter.refresh_all
-        ):
-            return
-
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-
-        label = get_label_from_any_wallet(
-            self.address_edit.address, signals=self.signals, autofill_from_txs=False
-        )
-        if label:
-            self.label_line_edit.set_placeholder(label)
-            if not self.allow_edit:
-                self.label_line_edit.set_label(label)
-        else:
-            self.label_line_edit.set_placeholder(self.tr("Enter label for recipient address"))
-
-            completer_label = get_label_from_any_wallet(
-                self.address_edit.address, signals=self.signals, autofill_from_txs=True
-            )
-            self.label_line_edit.label_edit.set_completer_list([completer_label] if completer_label else [])
-
-    def autofill_label_and_category(self, update_filter: UpdateFilter | None = None):
-        self.autofill_label(update_filter)
-        self.autofill_category(update_filter)
-
 
 class RecipientTabWidget(QTabWidget):
-    signal_close = pyqtSignal(QTabWidget)
+    signal_close: "TypedPyQtSignal[RecipientTabWidget]" = pyqtSignal(QTabWidget)  # type: ignore
 
     def __init__(
         self,
@@ -443,10 +352,10 @@ class RecipientTabWidget(QTabWidget):
 
 
 class Recipients(QWidget):
-    signal_added_recipient = pyqtSignal(RecipientTabWidget)
-    signal_removed_recipient = pyqtSignal(RecipientTabWidget)
-    signal_clicked_send_max_button = pyqtSignal(RecipientTabWidget)
-    signal_amount_changed = pyqtSignal(RecipientTabWidget)
+    signal_added_recipient: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
+    signal_removed_recipient: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
+    signal_clicked_send_max_button: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
+    signal_amount_changed: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
 
     def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True) -> None:
         super().__init__()
@@ -532,7 +441,7 @@ class Recipients(QWidget):
             self.tr("Label"),
         ]
 
-    def export_csv(self, recipients: List[Recipient], file_path: str | None = None):
+    def export_csv(self, recipients: List[Recipient], file_path: str | Path | None = None) -> Path | None:
 
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
@@ -543,15 +452,15 @@ class Recipients(QWidget):
             )
             if not file_path:
                 logger.info("No file selected")
-                return
+                return None
 
         table = self.as_list(recipients)
-        with open(file_path, "w") as file:
+        with open(str(file_path), "w") as file:
             writer = csv.writer(file)
             writer.writerows(table)
 
         logger.debug(f"CSV Table saved to {file_path}")
-        return file_path
+        return Path(file_path)
 
     def import_csv(self, file_path: str | None = None):
 
@@ -611,7 +520,7 @@ class Recipients(QWidget):
         self.action_export_csv.setText(self.tr("Export as CSV file"))
 
     def add_recipient(self, recipient: Recipient | None = None) -> RecipientTabWidget:
-        if recipient is None:
+        if not recipient:
             recipient = Recipient("", 0)
         recipient_box = RecipientTabWidget(
             self.signals,
@@ -622,7 +531,7 @@ class Recipients(QWidget):
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
         recipient_box.recipient_widget.set_max(recipient.checked_max_amount)
-        if recipient.label:
+        if recipient.label is not None:
             recipient_box.label = recipient.label
         recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
         recipient_box.recipient_widget.amount_spin_box.valueChanged.connect(
@@ -652,10 +561,10 @@ class Recipients(QWidget):
             self.add_recipient()
 
     def remove_recipient_widget(self, recipient_box: RecipientTabWidget) -> None:
-        recipient_box.close()
-        recipient_box.setParent(None)  # type: ignore[call-overload]
+        self.recipient_list_content_layout.removeWidget(recipient_box)
+        recipient_box.hide()
+        recipient_box.setParent(None)
         self.signal_removed_recipient.emit(recipient_box)
-        recipient_box.deleteLater()
 
     @property
     def recipients(self) -> List[Recipient]:

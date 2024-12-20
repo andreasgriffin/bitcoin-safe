@@ -55,7 +55,8 @@ from reportlab.platypus import (
 
 from bitcoin_safe.i18n import translate
 
-from .gui.qt.util import qicon_to_pil, read_QIcon, xdg_open_file
+from .gui.qt.util import qicon_to_pil, read_QIcon
+from .util_os import xdg_open_file
 from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -400,7 +401,7 @@ class BitcoinWalletRecoveryPDF:
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" Bitcoin Safe: {white_space*5} https://github.com/andreasgriffin/bitcoin-safe",
+                + f" Bitcoin Safe: {white_space*5} www.bitcoin-safe.org",
                 self.style_paragraph,
             )
         )

@@ -288,20 +288,23 @@ def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
 
 
 def save_wallet(
-    shutter: Shutter, test_config: UserConfig, wallet_name: str, qtbot: QtBot, save_button: QPushButton
+    test_config: UserConfig,
+    wallet_name: str,
+    save_button: QPushButton,
 ) -> Path:
-
-    # check that you cannot go further without import xpub
-    def password_creation(dialog: PasswordCreation) -> None:
-        shutter.save(dialog)
-        dialog.submit_button.click()
 
     wallet_file = Path(test_config.config_dir) / f"{wallet_name}.wallet"
     with patch.object(
         QFileDialog, "getSaveFileName", return_value=(str(wallet_file), "All Files (*)")
     ) as mock_open:
-        do_modal_click(save_button, password_creation, qtbot, cls=PasswordCreation)
-        QApplication.processEvents()
+
+        with patch.object(PasswordCreation, "get_password", return_value="") as mock_password:
+
+            save_button.click()
+
+            QApplication.processEvents()
+            mock_password.assert_called_once()
+
         mock_open.assert_called_once()
     return wallet_file
 

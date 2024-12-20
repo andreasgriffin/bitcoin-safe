@@ -33,6 +33,7 @@ from typing import List, Optional
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
+from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.signals import Signals
@@ -41,13 +42,12 @@ logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from bitcoin_usb.gui import USBGui
+from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
-    QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
@@ -70,7 +70,7 @@ class USBValidateAddressWidget(QWidget):
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
-        self.usb = USBGui(self.network, allow_emulators_only_for_testnet_works=True)
+        self.usb_gui = USBGui(self.network, allow_emulators_only_for_testnet_works=True)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._layout = QVBoxLayout(self)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
@@ -86,8 +86,13 @@ class USBValidateAddressWidget(QWidget):
         self._layout.addWidget(self.button_box)
         self._layout.setAlignment(self.button_box, Qt.AlignmentFlag.AlignCenter)
 
-        self.button_validate_address = QPushButton()
-        self.button_validate_address.setIcon(read_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
+        self.button_validate_address = SpinningButton(
+            text="",
+            enable_signal=self.usb_gui.signal_end_hwi_blocker,
+            enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            timeout=60,
+            parent=self,
+        )
         self.button_validate_address.clicked.connect(self.on_button_click)
         self.button_box.addButton(self.button_validate_address, QDialogButtonBox.ButtonRole.AcceptRole)
 
@@ -124,7 +129,7 @@ class USBValidateAddressWidget(QWidget):
             kind=self.kind, address_index=self.address_index
         )
         try:
-            address = self.usb.display_address(address_descriptor)
+            address = self.usb_gui.display_address(address_descriptor)
         except Exception as e:
             Message(str(e), type=MessageType.Error)
             return False

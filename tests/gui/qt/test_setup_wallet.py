@@ -298,10 +298,8 @@ def test_wizard(
                 assert keystore.edit_xpub.input_field.styleSheet() == ""
 
             save_wallet(
-                shutter=shutter,
                 test_config=test_config,
                 wallet_name=wallet_name,
-                qtbot=qtbot,
                 save_button=step.button_create_wallet,
             )
 

@@ -38,7 +38,7 @@ if __name__ == "__main__":
             self.network_settings_ui.signal_apply_and_restart.connect(self.save_and_close)
             self.network_settings_ui.signal_cancel.connect(self.close)
 
-        def save_and_close(self):
+        def save_and_close(self, network: bdk.Network):
             self.network_settings_ui.network_configs.save("network_configs.json")
             self.close()
 

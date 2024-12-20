@@ -51,6 +51,7 @@ class DescriptorExportType:
 class DescriptorExportTypes:
     coldcard = DescriptorExportType("coldcard", "Coldcard")
     passport = DescriptorExportType("passport_descriptor_export", "Foundation")
+    keystone = DescriptorExportType("keystone_descriptor_export", "Keystone")
     specterdiy = DescriptorExportType("specterdiy_descriptor_export", "Specter")
     text = DescriptorExportType("text", "Text")
 
@@ -66,6 +67,7 @@ class DescriptorExportTypes:
 class DescriptorQrExportTypes:
     bbqr = QrExportTypes.bbqr
     passport = QrExportType("passport_descriptor_export", "Foundation")
+    keystone = QrExportType("keystone_descriptor_export", "Keystone")
     specterdiy = QrExportType("specterdiy_descriptor_export", "Specter")
     text = QrExportTypes.text
 
@@ -135,13 +137,6 @@ class HardwareSigners:
         qr_types=[],
         descriptor_export_types=[],
     )
-    specterdiy = HardwareSigner(
-        "specterdiy",
-        "Specter-DIY",
-        usb_preferred=False,
-        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.specterdiy],
-        descriptor_export_types=[DescriptorExportTypes.specterdiy],
-    )
     jade = HardwareSigner(
         "jade",
         "Jade",
@@ -155,6 +150,20 @@ class HardwareSigners:
         usb_preferred=False,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport],
         descriptor_export_types=[DescriptorExportTypes.passport],
+    )
+    keystone = HardwareSigner(
+        "keystone",
+        "Keystone",
+        usb_preferred=False,
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.keystone],
+        descriptor_export_types=[DescriptorExportTypes.keystone],
+    )
+    specterdiy = HardwareSigner(
+        "specterdiy",
+        "Specter-DIY",
+        usb_preferred=False,
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.specterdiy],
+        descriptor_export_types=[DescriptorExportTypes.specterdiy],
     )
 
     @classmethod

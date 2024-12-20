@@ -38,8 +38,10 @@ from bitcoin_safe.gui.qt.analyzers import (
     XpubAnalyzer,
 )
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...dynamic_lib_load import setup_libsecp256k1
 
@@ -58,17 +60,11 @@ logger = logging.getLogger(__name__)
 from typing import Callable, List
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import (
-    Data,
-    DataType,
-    SignerInfo,
-    convert_slip132_to_bip32,
-    is_slip132,
-)
+from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_usb.address_types import AddressType
-from bitcoin_usb.gui import USBGui
 from bitcoin_usb.seed_tools import get_network_index
 from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -79,7 +75,6 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QSizePolicy,
-    QStyle,
     QTabWidget,
     QTextEdit,
     QToolButton,
@@ -88,13 +83,14 @@ from PyQt6.QtWidgets import (
 )
 
 from ...keystore import KeyStore, KeyStoreImporterTypes
-from ...signals import SignalsMin, pyqtSignal
-from ...signer import AbstractSignatureImporter
+from ...signals import SignalsMin
+from ...signer import AbstractSignatureImporter, SignatureImporterUSB
 from .block_change_signals import BlockChangesSignals
 from .util import (
     Message,
     MessageType,
     add_to_buttonbox,
+    create_tool_button,
     generate_help_button,
     icon_path,
     read_QIcon,
@@ -107,19 +103,49 @@ def icon_for_label(label: str) -> QIcon:
     )
 
 
-class HardwareSignerInteractionWidget(QWidget):
+class BaseHardwareSignerInteractionWidget(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self.setWindowIcon(read_QIcon("logo.svg"))
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # add the buttons
         self.buttonBox = QDialogButtonBox()
+        self.help_button: Optional[QPushButton] = None
+
+        self._layout.addWidget(self.buttonBox)
+        self._layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._layout.setAlignment(self.buttonBox, Qt.AlignmentFlag.AlignCenter)
+
+    def add_button(self, button: QPushButton | QToolButton):
+        self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
+
+    def add_help_button(self, help_widget: QWidget) -> QPushButton:
+        self.buttonBoxHelp = QDialogButtonBox()
+        help_button = generate_help_button(help_widget)
+
+        self.buttonBoxHelp.addButton(help_button, QDialogButtonBox.ButtonRole.ActionRole)
+        self._layout.addWidget(self.buttonBoxHelp)
+        self._layout.setAlignment(self.buttonBoxHelp, Qt.AlignmentFlag.AlignCenter)
+
+        self.help_button = help_button
+        return help_button
+
+    def updateUi(self) -> None:
+        if self.help_button:
+            self.help_button.setText(self.tr("Help"))
+
+
+class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        # add the buttons
         self.button_import_file: Optional[QPushButton] = None
         self.button_import_qr: Optional[QPushButton] = None
         self.button_export_qr: Optional[QToolButton] = None
         self.button_hwi: Optional[QPushButton] = None
-        self.help_button: Optional[QPushButton] = None
         self.button_export_file: Optional[QToolButton] = None
 
         self._layout.addWidget(self.buttonBox)
@@ -134,18 +160,13 @@ class HardwareSignerInteractionWidget(QWidget):
         )
         return button_import_file
 
-    def add_export_file_button(self) -> Tuple[QToolButton, Menu]:
-        # Create a custom QPushButton with an icon
-        button = QToolButton(self)
-        button.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
-        button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+    def add_copy_button(self) -> Tuple[QToolButton, Menu]:
+        button, menu = create_tool_button(parent=self)
+
+        button.setIcon(read_QIcon("copy.png"))
 
         # Add the button to the QDialogButtonBox
         self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
-
-        menu = Menu(self)
-        button.setMenu(menu)
-        button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
         self.button_export_file = button
         return self.button_export_file, menu
@@ -156,40 +177,20 @@ class HardwareSignerInteractionWidget(QWidget):
         )
         return button_import_qr
 
-    def add_export_qr_button(self) -> Tuple[QToolButton, Menu]:
-
-        # Create a custom QPushButton with an icon
-        button = QToolButton(self)
-        button.setIcon(QIcon(icon_path(KeyStoreImporterTypes.qr.icon_filename)))
-        button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-
-        # Add the button to the QDialogButtonBox
-        self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
-
-        menu = Menu(self)
-        button.setMenu(menu)
-        button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-
-        self.button_export_qr = button
-        return self.button_export_qr, menu
-
-    def add_hwi_button(self) -> QPushButton:
-        button_hwi = add_to_buttonbox(self.buttonBox, (""), KeyStoreImporterTypes.hwi.icon_filename)
+    def add_hwi_button(self, signal_end_hwi_blocker: TypedPyQtSignalNo) -> QPushButton:
+        button_hwi = SpinningButton(
+            text="",
+            enable_signal=signal_end_hwi_blocker,
+            enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            timeout=60,
+            parent=self,
+        )
+        self.buttonBox.addButton(button_hwi, QDialogButtonBox.ButtonRole.ActionRole)
         self.button_hwi = button_hwi
         return button_hwi
 
-    def add_help_button(self, help_widget: QWidget) -> QPushButton:
-        self.buttonBoxHelp = QDialogButtonBox()
-        help_button = generate_help_button(help_widget)
-
-        self.buttonBoxHelp.addButton(help_button, QDialogButtonBox.ButtonRole.ActionRole)
-        self._layout.addWidget(self.buttonBoxHelp)
-        self._layout.setAlignment(self.buttonBoxHelp, Qt.AlignmentFlag.AlignCenter)
-
-        self.help_button = help_button
-        return help_button
-
     def updateUi(self) -> None:
+        super().updateUi()
         if self.button_import_file:
             self.button_import_file.setText(self.tr("Import File or Text"))
         if self.button_export_file:
@@ -200,12 +201,10 @@ class HardwareSignerInteractionWidget(QWidget):
             self.button_export_qr.setText(self.tr("QR Code"))
         if self.button_hwi:
             self.button_hwi.setText(self.tr("USB"))
-        if self.help_button:
-            self.help_button.setText(self.tr("Help"))
 
 
 class KeyStoreUI(QObject):
-    signal_signer_infos = pyqtSignal(list)
+    signal_signer_infos: TypedPyQtSignal[List[SignerInfo]] = pyqtSignal(list)  # type: ignore
 
     def __init__(
         self,
@@ -240,6 +239,7 @@ class KeyStoreUI(QObject):
         self.label_fingerprint = QLabel()
         self.edit_fingerprint = ButtonEdit(
             signal_update=self.signals_min.language_switch,
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_fingerprint.add_qr_input_from_camera_button(
             network=self.network,
@@ -253,6 +253,7 @@ class KeyStoreUI(QObject):
         self.edit_key_origin = ButtonEdit(
             input_field=self.edit_key_origin_input,
             signal_update=self.signals_min.language_switch,
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_key_origin.add_qr_input_from_camera_button(
             network=self.network,
@@ -267,6 +268,7 @@ class KeyStoreUI(QObject):
         self.edit_xpub = ButtonEdit(
             input_field=AnalyzerTextEdit(),
             signal_update=self.signals_min.language_switch,
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_xpub.setFixedHeight(50)
         self.edit_xpub.add_qr_input_from_camera_button(
@@ -276,7 +278,7 @@ class KeyStoreUI(QObject):
 
         self.edit_xpub.input_field.setAnalyzer(XpubAnalyzer(self.network, parent=self))
         self.label_seed = QLabel()
-        self.edit_seed = ButtonEdit()
+        self.edit_seed = ButtonEdit(close_all_video_widgets=self.signals_min.close_all_video_widgets)
 
         self.edit_seed.add_random_mnemonic_button(callback_seed=self.on_edit_seed_changed)
         self.edit_seed.input_field.setAnalyzer(SeedAnalyzer(parent=self))
@@ -304,11 +306,15 @@ class KeyStoreUI(QObject):
 
         button_qr.clicked.connect(lambda: self.edit_xpub.button_container.buttons[0].click())
 
-        button_hwi = self.hardware_signer_interaction.add_hwi_button()
+        self.usb_gui = USBGui(self.network, initalization_label=self.hardware_signer_label)
+        signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
+        button_hwi = self.hardware_signer_interaction.add_hwi_button(
+            signal_end_hwi_blocker=signal_end_hwi_blocker
+        )
         button_hwi.clicked.connect(lambda: self.on_hwi_click())
 
         def process_input(s: str) -> None:
-            res = Data.from_str(s, self.network)
+            res = Data.from_str(s, network=self.network)
             self._on_handle_input(res)
 
         def import_dialog():
@@ -319,6 +325,7 @@ class KeyStoreUI(QObject):
                 text_button_ok=self.tr("OK"),
                 text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
                 text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
+                close_all_video_widgets=self.signals_min.close_all_video_widgets,
             ).exec()
 
         button_file.clicked.connect(import_dialog)
@@ -510,13 +517,13 @@ class KeyStoreUI(QObject):
     def xpub_validator(self) -> bool:
         xpub = self.edit_xpub.text()
         # automatically convert slip132
-        if is_slip132(xpub):
+        if ConverterXpub.is_slip132(xpub):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
                 title="Converting format",
             )
             try:
-                self.edit_xpub.setText(convert_slip132_to_bip32(xpub))
+                self.edit_xpub.setText(ConverterXpub.convert_slip132_to_bip32(xpub))
             except:
                 return False
 
@@ -554,10 +561,9 @@ class KeyStoreUI(QObject):
 
     def on_hwi_click(self) -> None:
         address_type = self.get_address_type()
-        usb = USBGui(self.network, initalization_label=self.hardware_signer_label)
         key_origin = address_type.key_origin(self.network)
         try:
-            result = usb.get_fingerprint_and_xpub(key_origin=key_origin)
+            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as e:
             Message(
                 str(e)
@@ -655,8 +661,8 @@ class SignedUI(QWidget):
 
 
 class SignerUI(QWidget):
-    signal_signature_added = pyqtSignal(bdk.PartiallySignedTransaction)
-    signal_tx_received = pyqtSignal(bdk.Transaction)
+    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,
@@ -677,10 +683,23 @@ class SignerUI(QWidget):
 
             return f
 
+        self.buttons: List[QPushButton] = []
         for signer in self.signature_importers:
-            button = QPushButton(signer.label)
+            button: QPushButton
+            if isinstance(signer, SignatureImporterUSB):
+                signal_end_hwi_blocker: TypedPyQtSignalNo = signer.usb_gui.signal_end_hwi_blocker  # type: ignore
+                button = SpinningButton(
+                    text=signer.label,
+                    enable_signal=signal_end_hwi_blocker,
+                    enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+                    timeout=60,
+                    parent=self,
+                )
+            else:
+                button = QPushButton(signer.label)
+                button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
+            self.buttons.append(button)
             button.setMinimumHeight(30)
-            button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             button.clicked.connect(callback_generator(signer))
             self.layout_keystore_buttons.addWidget(button)
 
@@ -690,8 +709,8 @@ class SignerUI(QWidget):
 
 
 class SignerUIHorizontal(QWidget):
-    signal_signature_added = pyqtSignal(bdk.PartiallySignedTransaction)
-    signal_tx_received = pyqtSignal(bdk.Transaction)
+    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,

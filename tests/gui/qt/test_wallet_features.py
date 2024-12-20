@@ -37,7 +37,7 @@ from time import sleep
 from unittest.mock import patch
 
 import bdkpython as bdk
-from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtTest import QTest
@@ -197,10 +197,8 @@ def test_wallet_features_multisig(
             set_mnemonic(1)
 
             wallet_file = save_wallet(
-                shutter=shutter,
                 test_config=test_config,
                 wallet_name=wallet_name,
-                qtbot=qtbot,
                 save_button=qt_proto_wallet.wallet_descriptor_ui.button_box.button(
                     QDialogButtonBox.StandardButton.Apply
                 ),
@@ -293,7 +291,7 @@ def test_wallet_features_multisig(
 
                 with tempfile.TemporaryDirectory() as temp_dir:
                     # export qr gifs
-                    for action in dialog.export_qr_widget.button_file_menu.actions():
+                    for action in dialog.export_qr_widget.button_file._menu.actions():
                         # export as file
                         filename = (
                             Path(temp_dir) / f"file_{action.text()}.t"
@@ -307,13 +305,14 @@ def test_wallet_features_multisig(
 
                     # export qr gifs
                     assert dialog.export_qr_widget
-                    for action in reversed(
-                        dialog.export_qr_menu.actions()
+                    for i in reversed(
+                        range(dialog.export_qr_widget.combo_qr_type.count())
                     ):  # reversed to it always has to set the widget to trigger signal_set_qr_images
+                        text = dialog.export_qr_widget.combo_qr_type.itemText(i)
                         basename = (
-                            f"file_{action.text()}.png"
-                            if action.text().startswith(DescriptorQrExportTypes.text.display_name)
-                            else f"file_{action.text()}.gif"
+                            f"file_{text}.png"
+                            if text.startswith(DescriptorQrExportTypes.text.display_name)
+                            else f"file_{text}.gif"
                         )
                         filename = Path(temp_dir) / basename
                         with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
@@ -322,7 +321,7 @@ def test_wallet_features_multisig(
                             with qtbot.waitSignal(
                                 dialog.export_qr_widget.signal_set_qr_images, timeout=5000
                             ) as blocker:
-                                action.trigger()
+                                dialog.export_qr_widget.combo_qr_type.setCurrentIndex(i)
                             dialog.export_qr_widget.button_save_qr.click()
 
                             mock_dialog.assert_called_once()

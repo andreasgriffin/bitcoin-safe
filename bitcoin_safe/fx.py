@@ -34,14 +34,14 @@ from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
-
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
 from .mempool import threaded_fetch
+from .signals import TypedPyQtSignalNo
 
 
 class FX(QObject, ThreadingManager):
-    signal_data_updated = pyqtSignal()
+    signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(self, threading_parent: ThreadingManager | None = None) -> None:
         super().__init__(threading_parent=threading_parent)  # type: ignore

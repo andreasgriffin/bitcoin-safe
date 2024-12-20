@@ -39,6 +39,8 @@ from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 
 from bitcoin_safe.execute_config import ENABLE_THREADING
 
+from .signals import TypedPyQtSignal
+
 logger = logging.getLogger(__name__)
 
 
@@ -55,8 +57,8 @@ class Task(NamedTuple):
 class Worker(QObject):
     """Worker object to perform tasks in a separate thread."""
 
-    finished: pyqtSignal = pyqtSignal(object, object, object)  # Result, cb_done, cb_success/error
-    error: pyqtSignal = pyqtSignal(object, object)
+    finished: "TypedPyQtSignal[Any, Callable[[Any], None], Callable[[Any], None]]" = pyqtSignal(object, object, object)  # type: ignore  # Result, cb_done, cb_success/error
+    error: "TypedPyQtSignal[Any, Callable[[Tuple[Any, ...]], None]]" = pyqtSignal(object, object)  # type: ignore
 
     def __init__(self, task: Task) -> None:
         super().__init__()
@@ -84,7 +86,7 @@ class Worker(QObject):
 class TaskThread(QThread):
     """Manages execution of tasks in separate threads."""
 
-    signal_stop_threat = pyqtSignal(str)
+    signal_stop_threat: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(self, enable_threading: bool = ENABLE_THREADING) -> None:
         super().__init__()
@@ -168,7 +170,7 @@ class TaskThread(QThread):
             self.cancelled = True
             self.quit()
             self.wait()
-            self.signal_stop_threat.emit(self.thread_name)
+            self.signal_stop_threat.emit(self.thread_name if self.thread_name else "")
         except:
             logger.error(f"An error during the shutdown of {self.thread_name}")
 

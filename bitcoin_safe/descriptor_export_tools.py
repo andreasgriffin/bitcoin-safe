@@ -38,6 +38,8 @@ logger = logging.getLogger(__name__)
 from typing import Optional
 
 import bdkpython as bdk
+from bitcoin_qr_tools.data import ConverterMultisigWalletExport
+from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import DescriptorInfo
 
 from .descriptors import MultipathDescriptor
@@ -45,35 +47,45 @@ from .descriptors import MultipathDescriptor
 
 class DescriptorExportTools:
 
-    @staticmethod
-    def _get_coldcard_str(wallet_id: str, multipath_descriptor: MultipathDescriptor) -> str:
+    @classmethod
+    def _get_coldcard_str(cls, wallet_id: str, multipath_descriptor: MultipathDescriptor) -> str:
         return f"""# Coldcard descriptor export of wallet: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
 { multipath_descriptor.bdk_descriptors[0].as_string() }"""
 
     @staticmethod
-    def _get_passport_str(wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
+    def _get_passport_str(wallet_id: str, descriptor_str: str, hardware_signer_name="Passport") -> str:
         infos = DescriptorInfo.from_str(descriptor_str)
-        key_origin = infos.address_type.key_origin(network)
-        return f"""# Passport Multisig setup file (created by Bitcoin Safe)
-#
-Name: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
-Policy: {infos.threshold} of {len(infos.spk_providers)}
-Derivation: {key_origin}
-Format: {infos.address_type.short_name.upper()}
+        signer_infos = [
+            SignerInfo(
+                xpub=spk_provider.xpub,
+                fingerprint=spk_provider.fingerprint,
+                key_origin=spk_provider.key_origin,
+                derivation_path=spk_provider.derivation_path,
+            )
+            for spk_provider in infos.spk_providers
+        ]
+        return ConverterMultisigWalletExport(
+            name=filename_clean(wallet_id, file_extension="", replace_spaces_by="_"),
+            threshold=infos.threshold,
+            address_type_short_name=infos.address_type.short_name.upper(),
+            signer_infos=signer_infos,
+        ).to_custom_str(hardware_signer_name=hardware_signer_name)
 
-""" + "\n".join(
-            [f"{spk_provider.fingerprint}: {spk_provider.xpub}" for spk_provider in infos.spk_providers]
+    @classmethod
+    def _get_keystone_str(cls, wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
+        return cls._get_passport_str(
+            wallet_id=wallet_id, descriptor_str=descriptor_str, hardware_signer_name="Keystone"
         )
 
-    @staticmethod
-    def _get_specter_diy_str(wallet_id: str, descriptor_str: str) -> str:
+    @classmethod
+    def _get_specter_diy_str(cls, wallet_id: str, descriptor_str: str) -> str:
         simplified_descriptor = (
             descriptor_str.split("#")[0].replace("/<0;1>/*", "").replace("0/*", "").replace("1/*", "")
         )
         return f"addwallet {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}&{simplified_descriptor}"
 
-    @staticmethod
-    def _export_wallet(wallet_id: str, s: str, descripor_type: DescriptorExportType) -> Optional[str]:
+    @classmethod
+    def _export_wallet(cls, wallet_id: str, s: str, descripor_type: DescriptorExportType) -> Optional[str]:
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
@@ -101,6 +113,11 @@ Format: {infos.address_type.short_name.upper()}
             return cls._get_coldcard_str(wallet_id=wallet_id, multipath_descriptor=multipath_descriptor)
         elif descriptor_export_type.name == DescriptorExportTypes.passport.name:
             return cls._get_passport_str(
+                wallet_id=wallet_id,
+                descriptor_str=multipath_descriptor.as_string(),
+            )
+        elif descriptor_export_type.name == DescriptorExportTypes.keystone.name:
+            return cls._get_keystone_str(
                 wallet_id=wallet_id, descriptor_str=multipath_descriptor.as_string(), network=network
             )
         elif descriptor_export_type.name == DescriptorExportTypes.specterdiy.name:

@@ -191,6 +191,13 @@
     </message>
 </context>
 <context>
+    <name>BaseHardwareSignerInteractionWidget</name>
+    <message>
+        <source>Help</source>
+        <translation>مساعدة  </translation>
+    </message>
+</context>
+<context>
     <name>BaseNostrSync</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
@@ -229,6 +236,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Please wait</source>
         <translation>الرجاء الانتظار</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonList</name>
+    <message>
+        <source>Open containing folder</source>
+        <translation>فتح المجلد الحاوي  </translation>
     </message>
 </context>
 <context>
@@ -321,6 +335,29 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>البلوك {n}</translation>
+    </message>
+</context>
+<context>
+    <name>CopyToolButton</name>
+    <message>
+        <source>Not available</source>
+        <translation>غير متوفر</translation>
+    </message>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation>نسخ إلى الحافظة</translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>نسخ {name}</translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>نسخ معرف المعاملة</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>نسخ JSON</translation>
     </message>
 </context>
 <context>
@@ -473,46 +510,6 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Export to file</source>
-        <translation>تصدير إلى ملف  </translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>مشاركة مع جهاز واحد</translation>
-    </message>
-    <message>
-        <source>Export {data_type} to hardware signer</source>
-        <translation>تصدير {data_type} إلى الموقّع الأجهزة  </translation>
-    </message>
-    <message>
-        <source>PSBT</source>
-        <translation>PSBT</translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>معاملة</translation>
-    </message>
-    <message>
-        <source>Not available</source>
-        <translation>غير متوفر</translation>
-    </message>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>يرجى تمكين علامة المزامنة أولاً</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
-    </message>
-    <message>
-        <source>Image (*.{image_format})</source>
-        <translation>الصورة (*.{image_format})  </translation>
-    </message>
-    <message>
         <source>Enlarge {} QR</source>
         <translation>تكبير رمز الاستجابة السريعة {}</translation>
     </message>
@@ -521,28 +518,12 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>حفظ كصورة</translation>
     </message>
     <message>
-        <source>Export file</source>
-        <translation>تصدير ملف</translation>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>تصدير {data_type} إلى الموقّع الأجهزة  </translation>
     </message>
     <message>
-        <source>Copy to clipboard</source>
-        <translation>نسخ إلى الحافظة</translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>نسخ {name}</translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>نسخ معرف المعاملة</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>نسخ JSON</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>مشاركة مع الأجهزة الموثوق بها</translation>
+        <source>Image (*.{image_format})</source>
+        <translation>الصورة (*.{image_format})  </translation>
     </message>
 </context>
 <context>
@@ -599,6 +580,17 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>رسوم المعاملة هي: {fee}، وتم إرسال {sent}!  </translation>
+    </message>
+</context>
+<context>
+    <name>FileToolButton</name>
+    <message>
+        <source>Export file</source>
+        <translation>تصدير ملف</translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation>تصدير إلى ملف  </translation>
     </message>
 </context>
 <context>
@@ -741,10 +733,6 @@ the sending value {sent}</source>
     <message>
         <source>USB</source>
         <translation>يو إس بي  </translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>مساعدة  </translation>
     </message>
 </context>
 <context>
@@ -999,8 +987,8 @@ Location of signing device: .....</source>
         <translation>{caterory} (في محفظة {wallet_ids})  </translation>
     </message>
     <message>
-        <source>This transaction combines the coin categories {categories} and makes both categories linkable!</source>
-        <translation>تجمع هذه المعاملة بين فئات العملات {categories} وتجعل كلا الفئتين قابلة للربط!  </translation>
+        <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
+        <translation>تجمع هذه المعاملة فئات العملات {categories} وتجعل هذه الفئات قابلة للربط!  </translation>
     </message>
 </context>
 <context>
@@ -1025,8 +1013,12 @@ Location of signing device: .....</source>
         <translation>&amp;تصدير ملف PDF للمحفظة  </translation>
     </message>
     <message>
-        <source>&amp;Export Descriptor/Wallet to hardware signers</source>
-        <translation>&amp;تصدير الوصف/المحفظة إلى الموقعين بالأجهزة  </translation>
+        <source>&amp;Generate PDF balance Statement</source>
+        <translation>&amp;إنشاء كشف حساب الرصيد PDF  </translation>
+    </message>
+    <message>
+        <source>Export &amp;Descriptor for hardware signers</source>
+        <translation>تصدير &amp;الوصف للموقعين بالأجهزة  </translation>
     </message>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
@@ -1053,12 +1045,16 @@ Location of signing device: .....</source>
         <translation>من &amp;ملف</translation>
     </message>
     <message>
-        <source>From &amp;text</source>
-        <translation>من &amp;نص</translation>
-    </message>
-    <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;محفظة جديدة</translation>
+    </message>
+    <message>
+        <source>QR &amp;Scanner</source>
+        <translation>QR &amp;ماسح ضوئي  </translation>
+    </message>
+    <message>
+        <source>From &amp;text</source>
+        <translation>من &amp;نص</translation>
     </message>
     <message>
         <source>From &amp;QR Code</source>
@@ -1093,16 +1089,20 @@ Location of signing device: .....</source>
         <translation>&amp;التحقق من التحديث</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <message>
         <source>&amp;License</source>
         <translation>&amp;رخصة الاستخدام</translation>
     </message>
     <message>
-        <source>Please select the wallet</source>
-        <translation>يرجى تحديد المحفظة</translation>
+        <source>&amp;Show Logs</source>
+        <translation>&amp;عرض السجلات  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;فتح المحفظة</translation>
+        <source>Please select the wallet</source>
+        <translation>يرجى تحديد المحفظة</translation>
     </message>
     <message>
         <source>Please select the wallet first.</source>
@@ -1133,6 +1133,10 @@ Location of signing device: .....</source>
         <translation> يرجى فتح محفظة الإرسال لتعديل هذه الصفقة.</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>فتح &amp;الأخيرة</translation>
+    </message>
+    <message>
         <source>Could not decode this string</source>
         <translation>لا يمكن فك تشفير هذه السلسلة  </translation>
     </message>
@@ -1143,10 +1147,6 @@ Location of signing device: .....</source>
     <message>
         <source>OK</source>
         <translation>موافق</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>فتح &amp;الأخيرة</translation>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
@@ -1177,6 +1177,10 @@ Location of signing device: .....</source>
         <translation>المحفظة {مسار_الملف} مفتوحة بالفعل.</translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;حفظ المحفظة الحالية</translation>
+    </message>
+    <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
         <translation>المحفظة {مسار_الملف} مفتوحة بالفعل. هل تريد فتح المحفظة على أي حال؟</translation>
     </message>
@@ -1187,10 +1191,6 @@ Location of signing device: .....</source>
     <message>
         <source>There is no such file: {file_path}</source>
         <translation>لا يوجد ملف بهذا الاسم: {مسار_الملف}</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
         <source>Please enter the password for {filename}:</source>
@@ -1221,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>إغلاق المحفظة</translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;بحث  </translation>
+    </message>
+    <message>
         <source>Closing wallet {id}</source>
         <translation>جارٍ إغلاق المحفظة {id}</translation>
     </message>
@@ -1231,10 +1235,6 @@ Location of signing device: .....</source>
     <message>
         <source>MainWindow</source>
         <translation>النافذة الرئيسية  </translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation>&amp;بحث  </translation>
     </message>
     <message>
         <source>Connected devices</source>
@@ -1265,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>تغيير الخيارات المستخدمة لـ getkeypool  </translation>
     </message>
     <message>
+        <source>&amp;Change</source>
+        <translation>&amp;تغيير  </translation>
+    </message>
+    <message>
         <source>Change getkeypool options</source>
         <translation>تغيير خيارات getkeypool  </translation>
     </message>
@@ -1275,10 +1279,6 @@ Location of signing device: .....</source>
     <message>
         <source>Toggle Passphrase</source>
         <translation>تبديل عبارة المرور  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;تغيير  </translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -1749,6 +1749,13 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>QrToolButton</name>
+    <message>
+        <source>QR Code</source>
+        <translation>رمز الاستجابة السريعة  </translation>
+    </message>
+</context>
+<context>
     <name>ReceiveTest</name>
     <message>
         <source>Balance = {amount}</source>
@@ -1782,6 +1789,13 @@ Location of signing device: .....</source>
     <message>
         <source>Previous Step</source>
         <translation>الخطوة السابقة</translation>
+    </message>
+</context>
+<context>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>Recently Opened Wallets</source>
+        <translation>المحافظ المفتوحة مؤخرا  </translation>
     </message>
 </context>
 <context>
@@ -2211,6 +2225,29 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
+    <name>SyncTalkToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>يرجى تمكين علامة المزامنة أولاً</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>مشاركة مع الأجهزة الموثوق بها</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>مشاركة مع جهاز واحد</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
+    </message>
+</context>
+<context>
     <name>ToolGui</name>
     <message>
         <source>USB Signer Tools</source>
@@ -2278,6 +2315,13 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Can share Transactions</source>
         <translation>يمكن مشاركة المعاملات  </translation>
+    </message>
+</context>
+<context>
+    <name>TxExport</name>
+    <message>
+        <source>Export Transaction</source>
+        <translation>تصدير المعاملة  </translation>
     </message>
 </context>
 <context>
@@ -2461,6 +2505,13 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>التوقيعات غير صالحة</translation>
+    </message>
+</context>
+<context>
+    <name>USBDevice</name>
+    <message>
+        <source>Do you want to restore an existing seed onto the device?</source>
+        <translation>هل تريد استعادة بذور موجودة على الجهاز؟  </translation>
     </message>
 </context>
 <context>
@@ -2779,12 +2830,60 @@ below {rate}</source>
 <context>
     <name>bitcoin_usb</name>
     <message>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>لم يتم العثور على نوع عنوان HWI لـ {name}  </translation>
+    </message>
+    <message>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h  </translation>
+    </message>
+    <message>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>نوع شبكة/عملة غير معروف {network_str} في {key_origin}  </translation>
+    </message>
+    <message>
         <source>No USB devices found</source>
         <translation>لم يتم العثور على أجهزة USB  </translation>
     </message>
     <message>
+        <source>USB Devices</source>
+        <translation>أجهزة USB  </translation>
+    </message>
+    <message>
+        <source>No device selected</source>
+        <translation>لم يتم اختيار جهاز  </translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>تثبيت ملفات udev  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>إعادة تشغيل الكمبيوتر  </translation>
+    </message>
+    <message>
         <source>derivation_path {value} must start with a /</source>
         <translation>يجب أن يبدأ مسار التحويل {value} بـ /  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>تنفيذ البرنامج النصي  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>لم يتم العثور على محاكي طرفية مناسب.  </translation>
     </message>
     <message>
         <source>h cannot appear twice in a index</source>
@@ -2813,54 +2912,6 @@ below {rate}</source>
     <message>
         <source>{value} is not a valid fingerprint</source>
         <translation>{value} ليس بصمة صالحة  </translation>
-    </message>
-    <message>
-        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h  </translation>
-    </message>
-    <message>
-        <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>نوع شبكة/عملة غير معروف {network_str} في {key_origin}  </translation>
-    </message>
-    <message>
-        <source>USB Devices</source>
-        <translation>أجهزة USB  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>تنفيذ البرنامج النصي  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>لم يتم العثور على محاكي طرفية مناسب.  </translation>
-    </message>
-    <message>
-        <source>No device selected</source>
-        <translation>لم يتم اختيار جهاز  </translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>خطأ</translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>تثبيت ملفات udev  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>إعادة تشغيل الكمبيوتر  </translation>
-    </message>
-    <message>
-        <source>No HWI AddressType could be found for {name}</source>
-        <translation>لم يتم العثور على نوع عنوان HWI لـ {name}  </translation>
     </message>
 </context>
 <context>
@@ -2934,6 +2985,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>data</name>
+    <message>
+        <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
+        <translation>البصمات مختلفة. يتم دعم البصمات المتطابقة فقط، مما يضمن أن جميع المفاتيح المشتقة تنتمي إلى نفس الموقع!  </translation>
+    </message>
+</context>
+<context>
     <name>descriptor</name>
     <message>
         <source>Wallet Properties</source>
@@ -2957,6 +3015,17 @@ below {rate}</source>
     <message>
         <source>Export Labels for other wallets (BIP329)</source>
         <translation>تصدير العلامات لمحافظ أخرى (BIP329)  </translation>
+    </message>
+</context>
+<context>
+    <name>general</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <message>
+        <source>Transaction</source>
+        <translation>معاملة</translation>
     </message>
 </context>
 <context>
@@ -3157,6 +3226,18 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>نسخة احتياطية لبذور {id}  </translation>
+    </message>
+    <message>
+        <source>Created at {date} with</source>
+        <translation>أُنشئ في {date} مع  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>كشف حساب الرصيد لـ{id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>كشف حساب الرصيد لـ&quot;{id}&quot;  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

@@ -45,7 +45,7 @@ from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
 from ...html_utils import html_f
-from ...signals import SignalsMin
+from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...signature_manager import (
     Asset,
     GitHubAssetDownloader,
@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar, ThreadingManager):
-    signal_on_success = pyqtSignal()
+    signal_on_success: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     key = KnownGPGKeys.andreasgriffin
 

@@ -191,6 +191,13 @@
     </message>
 </context>
 <context>
+    <name>BaseHardwareSignerInteractionWidget</name>
+    <message>
+        <source>Help</source>
+        <translation>ヘルプ  </translation>
+    </message>
+</context>
+<context>
     <name>BaseNostrSync</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
@@ -229,6 +236,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Please wait</source>
         <translation>お待ちください</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonList</name>
+    <message>
+        <source>Open containing folder</source>
+        <translation>含まれるフォルダを開く  </translation>
     </message>
 </context>
 <context>
@@ -321,6 +335,29 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>ブロック {n}</translation>
+    </message>
+</context>
+<context>
+    <name>CopyToolButton</name>
+    <message>
+        <source>Not available</source>
+        <translation>利用不可</translation>
+    </message>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation>クリップボードにコピー</translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>{name}をコピー</translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>トランザクションIDをコピー</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>JSONをコピー</translation>
     </message>
 </context>
 <context>
@@ -473,46 +510,6 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Export to file</source>
-        <translation>ファイルにエクスポート  </translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>単一のデバイスと共有</translation>
-    </message>
-    <message>
-        <source>Export {data_type} to hardware signer</source>
-        <translation>{data_type}をハードウェア署名者にエクスポートする  </translation>
-    </message>
-    <message>
-        <source>PSBT</source>
-        <translation>PSBT</translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>トランザクション</translation>
-    </message>
-    <message>
-        <source>Not available</source>
-        <translation>利用不可</translation>
-    </message>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>まず同期タブを有効にしてください</translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>まず{wallet_id}で同期を有効にしてください</translation>
-    </message>
-    <message>
-        <source>Image (*.{image_format})</source>
-        <translation>画像 (*.{image_format})  </translation>
-    </message>
-    <message>
         <source>Enlarge {} QR</source>
         <translation>{} QRを拡大する</translation>
     </message>
@@ -521,28 +518,12 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>画像として保存</translation>
     </message>
     <message>
-        <source>Export file</source>
-        <translation>ファイルをエクスポート</translation>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>{data_type}をハードウェア署名者にエクスポートする  </translation>
     </message>
     <message>
-        <source>Copy to clipboard</source>
-        <translation>クリップボードにコピー</translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>{name}をコピー</translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>トランザクションIDをコピー</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>JSONをコピー</translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>信頼できるデバイスと共有</translation>
+        <source>Image (*.{image_format})</source>
+        <translation>画像 (*.{image_format})  </translation>
     </message>
 </context>
 <context>
@@ -599,6 +580,17 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>取引手数料は{fee}で、{sent}が送信されました！  </translation>
+    </message>
+</context>
+<context>
+    <name>FileToolButton</name>
+    <message>
+        <source>Export file</source>
+        <translation>ファイルをエクスポート</translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation>ファイルにエクスポート  </translation>
     </message>
 </context>
 <context>
@@ -741,10 +733,6 @@ the sending value {sent}</source>
     <message>
         <source>USB</source>
         <translation>USB  </translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>ヘルプ  </translation>
     </message>
 </context>
 <context>
@@ -999,8 +987,8 @@ Location of signing device: .....</source>
         <translation>{caterory}（ウォレット{wallet_ids}内）  </translation>
     </message>
     <message>
-        <source>This transaction combines the coin categories {categories} and makes both categories linkable!</source>
-        <translation>この取引はコインのカテゴリ{categories}を組み合わせ、両方のカテゴリをリンク可能にします！  </translation>
+        <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
+        <translation>この取引はコインカテゴリー {categories} を組み合わせ、これらのカテゴリーをリンク可能にします！  </translation>
     </message>
 </context>
 <context>
@@ -1025,8 +1013,12 @@ Location of signing device: .....</source>
         <translation>&amp;ウォレットPDFをエクスポート  </translation>
     </message>
     <message>
-        <source>&amp;Export Descriptor/Wallet to hardware signers</source>
-        <translation>&amp;ハードウェア署名者へのデスクリプター/ウォレットのエクスポート  </translation>
+        <source>&amp;Generate PDF balance Statement</source>
+        <translation>&amp;PDF残高明細書を生成  </translation>
+    </message>
+    <message>
+        <source>Export &amp;Descriptor for hardware signers</source>
+        <translation>ハードウェア署名者用に&amp;ディスクリプタをエクスポート  </translation>
     </message>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
@@ -1053,12 +1045,16 @@ Location of signing device: .....</source>
         <translation>テキスト&amp;から</translation>
     </message>
     <message>
-        <source>From &amp;text</source>
-        <translation>QRコード&amp;から</translation>
-    </message>
-    <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;ウォレットを開く</translation>
+    </message>
+    <message>
+        <source>QR &amp;Scanner</source>
+        <translation>QR &amp;スキャナ  </translation>
+    </message>
+    <message>
+        <source>From &amp;text</source>
+        <translation>QRコード&amp;から</translation>
     </message>
     <message>
         <source>From &amp;QR Code</source>
@@ -1093,16 +1089,20 @@ Location of signing device: .....</source>
         <translation>&amp;ライセンス</translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
         <source>&amp;License</source>
         <translation>ウォレットを選んでください</translation>
     </message>
     <message>
-        <source>Please select the wallet</source>
-        <translation>テスト</translation>
+        <source>&amp;Show Logs</source>
+        <translation>&amp;ログを表示  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>最近開いた&amp;ウォレット</translation>
+        <source>Please select the wallet</source>
+        <translation>テスト</translation>
     </message>
     <message>
         <source>Please select the wallet first.</source>
@@ -1133,6 +1133,10 @@ Location of signing device: .....</source>
         <translation>OK</translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>現在のウォレットを&amp;保存</translation>
+    </message>
+    <message>
         <source>Could not decode this string</source>
         <translation>この文字列をデコードできませんでした  </translation>
     </message>
@@ -1143,10 +1147,6 @@ Location of signing device: .....</source>
     <message>
         <source>OK</source>
         <translation>BitcoinトランザクションまたはPSBTをここに貼り付けるか、ファイルをドロップしてください</translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>現在のウォレットを&amp;保存</translation>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
@@ -1177,6 +1177,10 @@ Location of signing device: .....</source>
         <translation>ウォレットはすでに開いています</translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;変更/エクスポート</translation>
+    </message>
+    <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
         <translation>そのようなファイルはありません：{file_path}</translation>
     </message>
@@ -1187,10 +1191,6 @@ Location of signing device: .....</source>
     <message>
         <source>There is no such file: {file_path}</source>
         <translation>ラベルをエクスポート</translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
         <source>Please enter the password for {filename}:</source>
@@ -1221,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>タブ {name} を閉じる</translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>&amp;検索  </translation>
+    </message>
+    <message>
         <source>Closing wallet {id}</source>
         <translation>次のブロック</translation>
     </message>
@@ -1231,10 +1235,6 @@ Location of signing device: .....</source>
     <message>
         <source>MainWindow</source>
         <translation>メインウィンドウ  </translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation>&amp;検索  </translation>
     </message>
     <message>
         <source>Connected devices</source>
@@ -1265,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>getkeypool用のオプションを変更する  </translation>
     </message>
     <message>
+        <source>&amp;Change</source>
+        <translation>&amp;変更  </translation>
+    </message>
+    <message>
         <source>Change getkeypool options</source>
         <translation>getkeypoolのオプションを変更する  </translation>
     </message>
@@ -1275,10 +1279,6 @@ Location of signing device: .....</source>
     <message>
         <source>Toggle Passphrase</source>
         <translation>パスフレーズを切り替える  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>&amp;変更  </translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -1749,6 +1749,13 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>QrToolButton</name>
+    <message>
+        <source>QR Code</source>
+        <translation>QRコード  </translation>
+    </message>
+</context>
+<context>
     <name>ReceiveTest</name>
     <message>
         <source>Balance = {amount}</source>
@@ -1782,6 +1789,13 @@ Location of signing device: .....</source>
     <message>
         <source>Previous Step</source>
         <translation>ラベル</translation>
+    </message>
+</context>
+<context>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>Recently Opened Wallets</source>
+        <translation>最近開いたウォレット  </translation>
     </message>
 </context>
 <context>
@@ -2211,6 +2225,29 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
+    <name>SyncTalkToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>まず同期タブを有効にしてください</translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>信頼できるデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>{wallet_id}内のすべてのデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>単一のデバイスと共有</translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>まず{wallet_id}で同期を有効にしてください</translation>
+    </message>
+</context>
+<context>
     <name>ToolGui</name>
     <message>
         <source>USB Signer Tools</source>
@@ -2278,6 +2315,13 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Can share Transactions</source>
         <translation>トランザクションを共有することができます  </translation>
+    </message>
+</context>
+<context>
+    <name>TxExport</name>
+    <message>
+        <source>Export Transaction</source>
+        <translation>トランザクションをエクスポート  </translation>
     </message>
 </context>
 <context>
@@ -2461,6 +2505,13 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>無効な署名</translation>
+    </message>
+</context>
+<context>
+    <name>USBDevice</name>
+    <message>
+        <source>Do you want to restore an existing seed onto the device?</source>
+        <translation>デバイスに既存のシードを復元しますか？  </translation>
     </message>
 </context>
 <context>
@@ -2779,12 +2830,60 @@ below {rate}</source>
 <context>
     <name>bitcoin_usb</name>
     <message>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>{name}のHWIアドレスタイプが見つかりませんでした  </translation>
+    </message>
+    <message>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>キーの起源{key_origin}のネットワーク部分{network_str}はhで硬化する必要があります  </translation>
+    </message>
+    <message>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>{key_origin}の未知のネットワーク/コインタイプ{network_str}  </translation>
+    </message>
+    <message>
         <source>No USB devices found</source>
         <translation>USBデバイスが見つかりません  </translation>
     </message>
     <message>
+        <source>USB Devices</source>
+        <translation>USBデバイス  </translation>
+    </message>
+    <message>
+        <source>No device selected</source>
+        <translation>デバイスが選択されていません  </translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>udevファイルが不足しているため、USBエラーが発生する可能性があります。今すぐudevファイルをインストールしますか？  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udevファイルをインストールする  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>変更が有効になるようにコンピュータを再起動してください。  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>コンピュータを再起動する  </translation>
+    </message>
+    <message>
         <source>derivation_path {value} must start with a /</source>
         <translation>導出パス{value}は/で始まる必要があります  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>スクリプトを実行する  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>適切なターミナルエミュレータが見つかりませんでした。  </translation>
     </message>
     <message>
         <source>h cannot appear twice in a index</source>
@@ -2813,54 +2912,6 @@ below {rate}</source>
     <message>
         <source>{value} is not a valid fingerprint</source>
         <translation>{value}は有効な指紋ではありません  </translation>
-    </message>
-    <message>
-        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>キーの起源{key_origin}のネットワーク部分{network_str}はhで硬化する必要があります  </translation>
-    </message>
-    <message>
-        <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>{key_origin}の未知のネットワーク/コインタイプ{network_str}  </translation>
-    </message>
-    <message>
-        <source>USB Devices</source>
-        <translation>USBデバイス  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>スクリプトを実行する  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>適切なターミナルエミュレータが見つかりませんでした。  </translation>
-    </message>
-    <message>
-        <source>No device selected</source>
-        <translation>デバイスが選択されていません  </translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>エラー</translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>udevファイルが不足しているため、USBエラーが発生する可能性があります。今すぐudevファイルをインストールしますか？  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udevファイルをインストールする  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>変更が有効になるようにコンピュータを再起動してください。  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>コンピュータを再起動する  </translation>
-    </message>
-    <message>
-        <source>No HWI AddressType could be found for {name}</source>
-        <translation>{name}のHWIアドレスタイプが見つかりませんでした  </translation>
     </message>
 </context>
 <context>
@@ -2934,6 +2985,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>data</name>
+    <message>
+        <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
+        <translation>指紋が異なります。同じ指紋のみがサポートされ、すべての派生キーが同じ署名者に属することが保証されます！  </translation>
+    </message>
+</context>
+<context>
     <name>descriptor</name>
     <message>
         <source>Wallet Properties</source>
@@ -2957,6 +3015,17 @@ below {rate}</source>
     <message>
         <source>Export Labels for other wallets (BIP329)</source>
         <translation>他のウォレット用のラベルをエクスポートする（BIP329）  </translation>
+    </message>
+</context>
+<context>
+    <name>general</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <message>
+        <source>Transaction</source>
+        <translation>トランザクション</translation>
     </message>
 </context>
 <context>
@@ -3157,6 +3226,18 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>{id}のシードバックアップ  </translation>
+    </message>
+    <message>
+        <source>Created at {date} with</source>
+        <translation>{date}に作成された  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>{id}の残高明細書  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>&quot;{id}&quot;の残高明細書  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

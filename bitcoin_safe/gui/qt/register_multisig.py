@@ -29,18 +29,20 @@
 
 import logging
 
-from bitcoin_safe.gui.qt.export_data import ExportDataSimple
+from bitcoin_safe.gui.qt.export_data import (
+    ExportDataSimple,
+    FileToolButton,
+    QrToolButton,
+)
 from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
-from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, QrExportType
 from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data
-from bitcoin_qr_tools.unified_encoder import QrExportType
+from bitcoin_qr_tools.data import Data, DataType
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
@@ -78,36 +80,32 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         ## help
         screenshots = ScreenshotsRegisterMultisig()
         self.add_help_button(screenshots)
-        button_export_file, export_file_menu = self.add_export_file_button()
-        export_qr_button, self.export_qr_menu = self.add_export_qr_button()
-        button_hwi = self.add_hwi_button()
 
         if self.export_qr_widget and self.qt_wallet:
-            ## file
-
-            ExportDataSimple.fill_file_menu_descriptor_export_actions(
-                menu=export_file_menu,
-                wallet_id=self.qt_wallet.wallet.id,
-                multipath_descriptor=self.qt_wallet.wallet.multipath_descriptor,
+            data = Data(
+                data=self.qt_wallet.wallet.multipath_descriptor,
+                data_type=DataType.MultiPathDescriptor,
                 network=self.qt_wallet.wallet.network,
             )
 
-            ## qr
-            def factory_show_export_widget(export_type: QrExportType):
-                def show_export_widget(export_type: QrExportType = export_type):
-                    if not self.export_qr_widget:
-                        return
-                    self.export_qr_widget.setCurrentQrType(value=export_type)
-                    self.export_qr_widget.show()
+            # qr
+            self.export_qr_button = QrToolButton(
+                data=data,
+                signals_min=self.qt_wallet.signals,
+                network=self.qt_wallet.wallet.network,
+                threading_parent=self.threading_parent,
+                parent=self,
+            )
+            self.add_button(self.export_qr_button)
 
-                return show_export_widget
-
-            for descripor_type in DescriptorQrExportTypes.as_list():
-                self.export_qr_menu.add_action(
-                    ExportDataSimple.get_export_display_name(descripor_type),
-                    factory_show_export_widget(descripor_type),
-                    icon=ExportDataSimple.get_export_icon(descripor_type),
-                )
+            ## file
+            self.button_export_file = FileToolButton(
+                data=data,
+                wallet_id=self.qt_wallet.wallet.id,
+                network=self.qt_wallet.wallet.network,
+                parent=self,
+            )
+            self.add_button(self.button_export_file)
 
             ## hwi
 
@@ -125,6 +123,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 kind=bdk.KeychainKind.EXTERNAL,
                 address_index=index,
             )
+            button_hwi = self.add_hwi_button(signal_end_hwi_blocker=usb_widget.usb_gui.signal_end_hwi_blocker)
             button_hwi.clicked.connect(lambda: usb_widget.show())
 
         self.updateUi()

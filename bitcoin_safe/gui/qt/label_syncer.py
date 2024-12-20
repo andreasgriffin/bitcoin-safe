@@ -94,7 +94,10 @@ class LabelSyncer(QObject):
     def get_chunked_bitcoin_data(self, refs: List[str]) -> List[Data]:
         lines = self.labels.dumps_data_jsonline_list(refs=refs)
         chunks = self.chunk_lines(lines, max_len=60_000)
-        return [Data(data="\n".join(chunk), data_type=DataType.LabelsBip329) for chunk in chunks]
+        return [
+            Data(data="\n".join(chunk), data_type=DataType.LabelsBip329, network=self.sync_tab.network)
+            for chunk in chunks
+        ]
 
     def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
         if not self.sync_tab.enabled():

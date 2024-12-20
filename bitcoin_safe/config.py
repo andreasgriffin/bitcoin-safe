@@ -88,7 +88,15 @@ class UserConfig(BaseSaveableClass):
         }
         self.language_code: Optional[str] = None
 
+    def clean_recently_open_wallet(self):
+        this_deque = self.recently_open_wallets[self.network]
+        # clean deleted paths
+        for deque_item in list(this_deque):
+            if not Path(deque_item).exists():
+                this_deque.remove(deque_item)
+
     def add_recently_open_wallet(self, file_path: str) -> None:
+        self.clean_recently_open_wallet()
         self.recently_open_wallets[self.network].append(file_path)
 
     @property
@@ -119,7 +127,7 @@ class UserConfig(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs=None) -> "UserConfig":
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "UserConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
         dct["recently_open_wallets"] = {
             bdk.Network._member_map_[k]: UniqueDeque(v, maxlen=RECENT_WALLET_MAXLEN)
@@ -133,12 +141,14 @@ class UserConfig(BaseSaveableClass):
         # dct["config_dir"] = rel_home_path_to_abs_path(dct["config_dir"])
         # dct["config_file"] = rel_home_path_to_abs_path(dct["config_file"])
 
-        u = cls()
+        instance = cls()
 
         for k, v in dct.items():
             if v is not None:  # only overwrite the default value, if there is a value
-                setattr(u, k, v)
-        return u
+                setattr(instance, k, v)
+
+        instance.clean_recently_open_wallet()
+        return instance
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:

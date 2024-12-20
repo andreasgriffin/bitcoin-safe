@@ -104,7 +104,8 @@ class OutPoint(bdk.OutPoint):
         return OutPoint(txid, int(vout))
 
 
-def get_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
+def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
+    "Returns the list of prev_outpoints"
     return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
 
 
@@ -201,7 +202,7 @@ class FullTxDetail:
         self,
         lookup_dict_fulltxdetail: Dict[str, "FullTxDetail"],
     ) -> None:
-        for prev_outpoint in get_outpoints(self.tx.transaction):
+        for prev_outpoint in get_prev_outpoints(self.tx.transaction):
             prev_outpoint_str = str(prev_outpoint)
 
             # check if I have the prev_outpoint fulltxdetail

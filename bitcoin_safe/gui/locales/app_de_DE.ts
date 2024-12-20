@@ -191,6 +191,13 @@
     </message>
 </context>
 <context>
+    <name>BaseHardwareSignerInteractionWidget</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe  </translation>
+    </message>
+</context>
+<context>
     <name>BaseNostrSync</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
@@ -229,6 +236,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Please wait</source>
         <translation>Bitte warten  </translation>
+    </message>
+</context>
+<context>
+    <name>ButtonList</name>
+    <message>
+        <source>Open containing folder</source>
+        <translation>Öffnen des enthaltenden Ordners  </translation>
     </message>
 </context>
 <context>
@@ -321,6 +335,29 @@ shown on your BitBox02.</source>
     <message>
         <source>Block {n}</source>
         <translation>Block {n}  </translation>
+    </message>
+</context>
+<context>
+    <name>CopyToolButton</name>
+    <message>
+        <source>Not available</source>
+        <translation>Nicht verfügbar  </translation>
+    </message>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation>In die Zwischenablage kopieren  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>{name} kopieren  </translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>TxId kopieren  </translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>JSON kopieren  </translation>
     </message>
 </context>
 <context>
@@ -473,46 +510,6 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>ExportDataSimple</name>
     <message>
-        <source>Export to file</source>
-        <translation>In Datei exportieren  </translation>
-    </message>
-    <message>
-        <source>Share with all devices in {wallet_id}</source>
-        <translation>Mit allen Geräten in {wallet_id} teilen  </translation>
-    </message>
-    <message>
-        <source>Share with single device</source>
-        <translation>Mit einem einzelnen Gerät teilen  </translation>
-    </message>
-    <message>
-        <source>Export {data_type} to hardware signer</source>
-        <translation>Export {data_type} an Hardware-Signer  </translation>
-    </message>
-    <message>
-        <source>PSBT</source>
-        <translation>PSBT  </translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>Transaktion  </translation>
-    </message>
-    <message>
-        <source>Not available</source>
-        <translation>Nicht verfügbar  </translation>
-    </message>
-    <message>
-        <source>Please enable the sync tab first</source>
-        <translation>Bitte aktivieren Sie zuerst die Sync-Registerkarte  </translation>
-    </message>
-    <message>
-        <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Bitte aktivieren Sie zuerst die Synchronisierung im Wallet {wallet_id}  </translation>
-    </message>
-    <message>
-        <source>Image (*.{image_format})</source>
-        <translation>Bild (*.{image_format})  </translation>
-    </message>
-    <message>
         <source>Enlarge {} QR</source>
         <translation>Vergrößern {} QR  </translation>
     </message>
@@ -521,28 +518,12 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Als Bild speichern  </translation>
     </message>
     <message>
-        <source>Export file</source>
-        <translation>Datei exportieren  </translation>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>Export {data_type} an Hardware-Signer  </translation>
     </message>
     <message>
-        <source>Copy to clipboard</source>
-        <translation>In die Zwischenablage kopieren  </translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>{name} kopieren  </translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>TxId kopieren  </translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>JSON kopieren  </translation>
-    </message>
-    <message>
-        <source>Share with trusted devices</source>
-        <translation>Mit vertrauenswürdigen Geräten teilen  </translation>
+        <source>Image (*.{image_format})</source>
+        <translation>Bild (*.{image_format})  </translation>
     </message>
 </context>
 <context>
@@ -599,6 +580,17 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>Die Transaktionsgebühr beträgt: {fee}, und {sent} ist gesendet!  </translation>
+    </message>
+</context>
+<context>
+    <name>FileToolButton</name>
+    <message>
+        <source>Export file</source>
+        <translation>Datei exportieren  </translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation>In Datei exportieren  </translation>
     </message>
 </context>
 <context>
@@ -741,10 +733,6 @@ the sending value {sent}</source>
     <message>
         <source>USB</source>
         <translation>USB  </translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>Hilfe  </translation>
     </message>
 </context>
 <context>
@@ -999,8 +987,8 @@ Location of signing device: .....</source>
         <translation>{category} (im Wallet {wallet_ids})  </translation>
     </message>
     <message>
-        <source>This transaction combines the coin categories {categories} and makes both categories linkable!</source>
-        <translation>Diese Transaktion kombiniert die Münzkategorien {categories} und macht beide Kategorien verknüpfbar!  </translation>
+        <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
+        <translation>Diese Transaktion kombiniert die Münzkategorien {categories} und macht diese Kategorien verlinkbar!  </translation>
     </message>
 </context>
 <context>
@@ -1025,8 +1013,12 @@ Location of signing device: .....</source>
         <translation>&amp;Export Wallet PDF  </translation>
     </message>
     <message>
-        <source>&amp;Export Descriptor/Wallet to hardware signers</source>
-        <translation>&amp;Exportieren des Deskriptors/Wallets an Hardware-Signierer  </translation>
+        <source>&amp;Generate PDF balance Statement</source>
+        <translation>&amp;PDF-Kontostandsauszug generieren  </translation>
+    </message>
+    <message>
+        <source>Export &amp;Descriptor for hardware signers</source>
+        <translation>&amp;Deskriptor für Hardware-Signierer exportieren  </translation>
     </message>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
@@ -1053,12 +1045,16 @@ Location of signing device: .....</source>
         <translation>Von Datei  </translation>
     </message>
     <message>
-        <source>From &amp;text</source>
-        <translation>Von Text  </translation>
-    </message>
-    <message>
         <source>&amp;New Wallet</source>
         <translation>Neues Wallet  </translation>
+    </message>
+    <message>
+        <source>QR &amp;Scanner</source>
+        <translation>QR &amp;Scanner  </translation>
+    </message>
+    <message>
+        <source>From &amp;text</source>
+        <translation>Von Text  </translation>
     </message>
     <message>
         <source>From &amp;QR Code</source>
@@ -1093,16 +1089,20 @@ Location of signing device: .....</source>
         <translation>Auf Updates überprüfen  </translation>
     </message>
     <message>
+        <source>&amp;Open Wallet</source>
+        <translation>Wallet öffnen  </translation>
+    </message>
+    <message>
         <source>&amp;License</source>
         <translation>Lizenz  </translation>
     </message>
     <message>
-        <source>Please select the wallet</source>
-        <translation>Bitte wählen Sie das Wallet  </translation>
+        <source>&amp;Show Logs</source>
+        <translation>&amp;Protokolle anzeigen  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>Wallet öffnen  </translation>
+        <source>Please select the wallet</source>
+        <translation>Bitte wählen Sie das Wallet  </translation>
     </message>
     <message>
         <source>Please select the wallet first.</source>
@@ -1133,6 +1133,10 @@ Location of signing device: .....</source>
         <translation>Bitte öffnen Sie das Sender-Wallet, um diese Transaktion zu bearbeiten.  </translation>
     </message>
     <message>
+        <source>Open &amp;Recent</source>
+        <translation>Kürzlich öffnen  </translation>
+    </message>
+    <message>
         <source>Could not decode this string</source>
         <translation>Diese Zeichenfolge konnte nicht dekodiert werden  </translation>
     </message>
@@ -1143,10 +1147,6 @@ Location of signing device: .....</source>
     <message>
         <source>OK</source>
         <translation>OK  </translation>
-    </message>
-    <message>
-        <source>Open &amp;Recent</source>
-        <translation>Kürzlich öffnen  </translation>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
@@ -1177,6 +1177,10 @@ Location of signing device: .....</source>
         <translation>Das Wallet {file_path} ist bereits geöffnet.  </translation>
     </message>
     <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>Aktuelles Wallet speichern  </translation>
+    </message>
+    <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
         <translation>Das Wallet {file_path} ist bereits geöffnet. Möchten Sie das Wallet trotzdem öffnen?  </translation>
     </message>
@@ -1187,10 +1191,6 @@ Location of signing device: .....</source>
     <message>
         <source>There is no such file: {file_path}</source>
         <translation>Es gibt keine solche Datei: {file_path}  </translation>
-    </message>
-    <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>Aktuelles Wallet speichern  </translation>
     </message>
     <message>
         <source>Please enter the password for {filename}:</source>
@@ -1221,6 +1221,10 @@ Location of signing device: .....</source>
         <translation>Wallet schließen  </translation>
     </message>
     <message>
+        <source>&amp;Search</source>
+        <translation>Suchen  </translation>
+    </message>
+    <message>
         <source>Closing wallet {id}</source>
         <translation>Wallet {id} schließen  </translation>
     </message>
@@ -1231,10 +1235,6 @@ Location of signing device: .....</source>
     <message>
         <source>MainWindow</source>
         <translation>Hauptfenster  </translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation>Suchen  </translation>
     </message>
     <message>
         <source>Connected devices</source>
@@ -1265,6 +1265,10 @@ Location of signing device: .....</source>
         <translation>Optionen für getkeypool ändern  </translation>
     </message>
     <message>
+        <source>&amp;Change</source>
+        <translation>Ändern  </translation>
+    </message>
+    <message>
         <source>Change getkeypool options</source>
         <translation>Optionen für getkeypool ändern  </translation>
     </message>
@@ -1275,10 +1279,6 @@ Location of signing device: .....</source>
     <message>
         <source>Toggle Passphrase</source>
         <translation>Passphrase umschalten  </translation>
-    </message>
-    <message>
-        <source>&amp;Change</source>
-        <translation>Ändern  </translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -1746,6 +1746,13 @@ Location of signing device: .....</source>
     </message>
 </context>
 <context>
+    <name>QrToolButton</name>
+    <message>
+        <source>QR Code</source>
+        <translation>QR-Code  </translation>
+    </message>
+</context>
+<context>
     <name>ReceiveTest</name>
     <message>
         <source>Balance = {amount}</source>
@@ -1779,6 +1786,13 @@ Location of signing device: .....</source>
     <message>
         <source>Previous Step</source>
         <translation>Vorheriger Schritt  </translation>
+    </message>
+</context>
+<context>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>Recently Opened Wallets</source>
+        <translation>Kürzlich geöffnete Wallets  </translation>
     </message>
 </context>
 <context>
@@ -2208,6 +2222,29 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
+    <name>SyncTalkToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>Bitte aktivieren Sie zuerst die Sync-Registerkarte  </translation>
+    </message>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>Mit vertrauenswürdigen Geräten teilen  </translation>
+    </message>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Mit allen Geräten in {wallet_id} teilen  </translation>
+    </message>
+    <message>
+        <source>Share with single device</source>
+        <translation>Mit einem einzelnen Gerät teilen  </translation>
+    </message>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>Bitte aktivieren Sie zuerst die Synchronisierung im Wallet {wallet_id}  </translation>
+    </message>
+</context>
+<context>
     <name>ToolGui</name>
     <message>
         <source>USB Signer Tools</source>
@@ -2275,6 +2312,13 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Can share Transactions</source>
         <translation>Kann Transaktionen teilen  </translation>
+    </message>
+</context>
+<context>
+    <name>TxExport</name>
+    <message>
+        <source>Export Transaction</source>
+        <translation>Transaktion exportieren  </translation>
     </message>
 </context>
 <context>
@@ -2458,6 +2502,13 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>Ungültige Signaturen  </translation>
+    </message>
+</context>
+<context>
+    <name>USBDevice</name>
+    <message>
+        <source>Do you want to restore an existing seed onto the device?</source>
+        <translation>Möchten Sie einen vorhandenen Seed auf das Gerät wiederherstellen?  </translation>
     </message>
 </context>
 <context>
@@ -2776,12 +2827,60 @@ below {rate}</source>
 <context>
     <name>bitcoin_usb</name>
     <message>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>Für {name} konnte kein HWI AddressType gefunden werden.  </translation>
+    </message>
+    <message>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>Der Netzwerkteil {network_str} des Schlüsselursprungs {key_origin} muss mit einem h gehärtet werden  </translation>
+    </message>
+    <message>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>Unbekannter Netzwerk-/Münztyp {network_str} in {key_origin}  </translation>
+    </message>
+    <message>
         <source>No USB devices found</source>
         <translation>Keine USB-Geräte gefunden  </translation>
     </message>
     <message>
+        <source>USB Devices</source>
+        <translation>USB-Geräte  </translation>
+    </message>
+    <message>
+        <source>No device selected</source>
+        <translation>Kein Gerät ausgewählt  </translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler  </translation>
+    </message>
+    <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>USB-Fehler können aufgrund fehlender udev-Dateien auftreten. Möchten Sie jetzt udev-Dateien installieren?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev-Dateien installieren  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>Computer neu starten  </translation>
+    </message>
+    <message>
         <source>derivation_path {value} must start with a /</source>
         <translation>Ableitungspfad {value} muss mit einem / beginnen  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>Skript ausführen  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>Kein geeigneter Terminal-Emulator gefunden.  </translation>
     </message>
     <message>
         <source>h cannot appear twice in a index</source>
@@ -2810,54 +2909,6 @@ below {rate}</source>
     <message>
         <source>{value} is not a valid fingerprint</source>
         <translation>{value} ist kein gültiger Fingerabdruck  </translation>
-    </message>
-    <message>
-        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>Der Netzwerkteil {network_str} des Schlüsselursprungs {key_origin} muss mit einem h gehärtet werden  </translation>
-    </message>
-    <message>
-        <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>Unbekannter Netzwerk-/Münztyp {network_str} in {key_origin}  </translation>
-    </message>
-    <message>
-        <source>USB Devices</source>
-        <translation>USB-Geräte  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>Skript ausführen  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>Kein geeigneter Terminal-Emulator gefunden.  </translation>
-    </message>
-    <message>
-        <source>No device selected</source>
-        <translation>Kein Gerät ausgewählt  </translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fehler  </translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>USB-Fehler können aufgrund fehlender udev-Dateien auftreten. Möchten Sie jetzt udev-Dateien installieren?  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udev-Dateien installieren  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>Computer neu starten  </translation>
-    </message>
-    <message>
-        <source>No HWI AddressType could be found for {name}</source>
-        <translation>Für {name} konnte kein HWI AddressType gefunden werden.  </translation>
     </message>
 </context>
 <context>
@@ -2931,6 +2982,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>data</name>
+    <message>
+        <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
+        <translation>Die Fingerabdrücke unterscheiden sich. Es werden nur gleiche Fingerabdrücke unterstützt, um sicherzustellen, dass alle abgeleiteten Schlüssel demselben Unterzeichner gehören!</translation>
+    </message>
+</context>
+<context>
     <name>descriptor</name>
     <message>
         <source>Wallet Properties</source>
@@ -2954,6 +3012,17 @@ below {rate}</source>
     <message>
         <source>Export Labels for other wallets (BIP329)</source>
         <translation>Etiketten für andere Wallets exportieren (BIP329)  </translation>
+    </message>
+</context>
+<context>
+    <name>general</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT  </translation>
+    </message>
+    <message>
+        <source>Transaction</source>
+        <translation>Transaktion  </translation>
     </message>
 </context>
 <context>
@@ -3154,6 +3223,18 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>Seed-Backup von {id}  </translation>
+    </message>
+    <message>
+        <source>Created at {date} with</source>
+        <translation>Erstellt am {date} mit  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>Kontostandsauszug von {id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>Kontostandsauszug von &quot;{id}&quot;  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

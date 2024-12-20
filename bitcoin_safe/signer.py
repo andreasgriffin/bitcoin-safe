@@ -34,6 +34,7 @@ from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PubKeyInfo
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .dynamic_lib_load import setup_libsecp256k1
 from .gui.qt.dialog_import import ImportDialog
@@ -44,11 +45,11 @@ setup_libsecp256k1()
 logger = logging.getLogger(__name__)
 
 import bdkpython as bdk
-from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_usb.gui import USBGui
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_usb.psbt_tools import PSBTTools
 from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from .keystore import KeyStoreImporterTypes
@@ -57,8 +58,8 @@ from .wallet import Wallet
 
 
 class AbstractSignatureImporter(QObject):
-    signal_signature_added = pyqtSignal(bdk.PartiallySignedTransaction)
-    signal_final_tx_received = pyqtSignal(bdk.Transaction)
+    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
     keystore_type = KeyStoreImporterTypes.watch_only
 
     def __init__(
@@ -154,6 +155,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -167,6 +169,13 @@ class SignatureImporterQR(AbstractSignatureImporter):
         )
         self._label = label if label else self.tr("Scan QR code")
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+        self.close_all_video_widgets = close_all_video_widgets
+
+        self.close_all_video_widgets.connect(self.close_video_widget)
+
+    def close_video_widget(self):
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
 
     def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
         logger.debug(str(data.data))
@@ -230,8 +239,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
             logger.warning(f"Datatype {data.data_type} is not valid for importing signatures")
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
-        if self._temp_bitcoin_video_widget:
-            self._temp_bitcoin_video_widget.close()
+        self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network)
         self._temp_bitcoin_video_widget.signal_data.connect(
             lambda data: self.scan_result_callback(psbt, data)
@@ -249,6 +257,7 @@ class SignatureImporterFile(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -260,6 +269,7 @@ class SignatureImporterFile(SignatureImporterQR):
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
             label=label,
+            close_all_video_widgets=close_all_video_widgets,
         )
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
@@ -270,6 +280,7 @@ class SignatureImporterFile(SignatureImporterQR):
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
+            close_all_video_widgets=self.close_all_video_widgets,
         )
         tx_dialog.show()
         # tx_dialog.text_edit.button_open_file.click()
@@ -285,6 +296,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -296,6 +308,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
             label=label,
+            close_all_video_widgets=close_all_video_widgets,
         )
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
@@ -306,6 +319,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
+            close_all_video_widgets=self.close_all_video_widgets,
         )
         tx_dialog.show()
 
@@ -320,6 +334,7 @@ class SignatureImporterUSB(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
         key_label: str = "",
         pub_keys_without_signature=None,
@@ -332,14 +347,15 @@ class SignatureImporterUSB(SignatureImporterQR):
             key_label=key_label,
             pub_keys_without_signature=pub_keys_without_signature,
             label=label,
+            close_all_video_widgets=close_all_video_widgets,
         )
-        self.usb = USBGui(self.network)
+        self.usb_gui = USBGui(self.network)
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         try:
-            signed_psbt = self.usb.sign(psbt)
+            signed_psbt = self.usb_gui.sign(psbt)
             if signed_psbt:
-                self.scan_result_callback(psbt, Data.from_psbt(signed_psbt))
+                self.scan_result_callback(psbt, Data.from_psbt(signed_psbt, network=self.network))
         except Exception as e:
             if "multisig" in str(e).lower():
                 question_dialog(

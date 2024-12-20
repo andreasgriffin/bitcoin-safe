@@ -30,29 +30,18 @@
 import enum
 import logging
 import platform
-import shlex
-import subprocess
 import sys
 import traceback
 import webbrowser
 from functools import lru_cache
-from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import bdkpython as bdk
 import numpy as np
 import PIL.Image as PilImage
-from bitcoin_qr_tools.data import is_bitcoin_address
-from PyQt6.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QSize,
-    Qt,
-    QTimer,
-    QUrl,
-    pyqtBoundSignal,
-)
+from bitcoin_qr_tools.data import ConverterAddress
+from PyQt6.QtCore import QByteArray, QCoreApplication, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -79,13 +68,16 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
+    QToolButton,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
+from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import register_cache, resource_path
 
 logger = logging.getLogger(__name__)
@@ -124,16 +116,6 @@ TX_ICONS: List[str] = [
 
 class QtWalletBase(QWidget):
     pass
-
-
-def xdg_open_file(filename: Path):
-    system_name = platform.system()
-    if system_name == "Windows":
-        subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
-    elif system_name == "Darwin":  # macOS
-        subprocess.call(shlex.split(f'open "{filename}"'))
-    elif system_name == "Linux":  # Linux
-        subprocess.call(shlex.split(f'xdg-open "{filename}"'))
 
 
 def sort_id_to_icon(sort_id: int) -> str:
@@ -262,9 +244,10 @@ def add_to_buttonbox(
     icon_name: str | QIcon | None = None,
     on_clicked=None,
     role=QDialogButtonBox.ButtonRole.ActionRole,
+    button=None,
 ):
     # Create a custom QPushButton with an icon
-    button = QPushButton(text)
+    button = button if button else QPushButton(text)
     if isinstance(icon_name, QIcon):
         button.setIcon(icon_name)
     elif icon_name:
@@ -403,7 +386,7 @@ class Message:
             return False
         return False
 
-    def emit_with(self, notification_signal: pyqtBoundSignal):
+    def emit_with(self, notification_signal: "TypedPyQtSignal[Message]"):
         logger.debug(str(self.__dict__))
         return notification_signal.emit(self)
 
@@ -458,7 +441,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
         )
 
 
-def caught_exception_message(e: Exception, title=None, log_traceback=False) -> Message:
+def caught_exception_message(e: Exception, title=None, log_traceback=True) -> Message:
     exception_text = str(e).replace("\\", "")
 
     logger.error(exception_text, exc_info=sys.exc_info() if log_traceback else None)
@@ -554,32 +537,12 @@ class BlockingWaitingDialog(WindowModalDialog):
             self.accept()
 
 
-def one_time_signal_connection(signal: pyqtBoundSignal, f: Callable):
+def one_time_signal_connection(signal: TypedPyQtSignalNo | TypedPyQtSignal, f: Callable):
     def f_wrapper(*args, **kwargs):
         signal.disconnect(f_wrapper)
         return f(*args, **kwargs)
 
     signal.connect(f_wrapper)
-
-
-def chained_one_time_signal_connections(
-    signals: List[pyqtBoundSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
-):
-    "If after the i. f is called, it connects the i+1. signal"
-
-    signal, remaining_signals = signals[0], signals[1:]
-    f, remaining_fs = fs[0], fs[1:]
-
-    def f_wrapper(*args, **kwargs):
-        res = f(*args, **kwargs)
-        if disconnect_only_if_f_true and not res:
-            # reconnect
-            one_time_signal_connection(signal, f_wrapper)
-        elif remaining_signals and remaining_fs:
-            chained_one_time_signal_connections(remaining_signals, remaining_fs)
-        return res
-
-    one_time_signal_connection(signal, f_wrapper)
 
 
 def create_button_box(
@@ -701,7 +664,7 @@ def clipboard_contains_address(network: bdk.Network) -> bool:
     clipboard = QApplication.clipboard()
     if not clipboard:
         return False
-    return is_bitcoin_address(clipboard.text(), network)
+    return ConverterAddress.is_bitcoin_address(clipboard.text(), network)
 
 
 def do_copy(text: str, *, title: str | None = None) -> None:
@@ -859,3 +822,12 @@ def svg_widgets_hardware_signers(
         for widget in widgets:
             widget.modify_svg_text(('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", ""))
     return widgets
+
+
+def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
+    button = QToolButton()
+    button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+    menu = Menu(parent)
+    button.setMenu(menu)
+    button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+    return button, menu

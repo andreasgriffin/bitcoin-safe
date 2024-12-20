@@ -62,6 +62,7 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
+from ...signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -328,8 +329,8 @@ class ElectrumItemDelegate(QStyledItemDelegate):
 
 
 class MyTreeView(QTreeView):
-    signal_selection_changed = pyqtSignal()
-    signal_update = pyqtSignal()
+    signal_selection_changed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_update: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     filter_columns: Iterable[int]
     column_alignments: Dict[int, Qt.AlignmentFlag] = {}
@@ -975,7 +976,7 @@ class MyTreeView(QTreeView):
                     logger.debug(file_path)
                     event.accept()
 
-                    data = Data.from_str(file_to_str(file_path), self.config.network)
+                    data = Data.from_str(file_to_str(file_path), network=self.config.network)
                     self.signals.open_tx_like.emit(data.data)
 
         if not event.isAccepted():

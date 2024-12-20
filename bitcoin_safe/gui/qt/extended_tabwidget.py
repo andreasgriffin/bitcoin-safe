@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Type
+from typing import Callable, Type
 
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QMouseEvent, QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
@@ -43,15 +43,18 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget, T
 from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 
 class ExtendedTabWidget(DataTabWidget):
-    signal_tab_bar_visibility = pyqtSignal(bool)
+    signal_tab_bar_visibility: TypedPyQtSignal[bool] = pyqtSignal(bool)  # type: ignore
 
-    def __init__(self, data_class: Type[T], parent=None) -> None:
+    def __init__(
+        self, data_class: Type[T], show_ContextMenu: Callable[[QPoint, int], None] | None = None, parent=None
+    ) -> None:
         super().__init__(data_class, parent=parent)
         self.set_top_right_widget()
-
+        self.show_ContextMenu = show_ContextMenu
         self.tabBar().installEventFilter(self)  # type: ignore
 
         self.tabCloseRequested.connect(self.updateLineEditPosition)
@@ -100,6 +103,22 @@ class ExtendedTabWidget(DataTabWidget):
     def resizeEvent(self, event: QResizeEvent | None) -> None:
         self.updateLineEditPosition()
         super().resizeEvent(event)
+
+    def mousePressEvent(self, event: QMouseEvent | None):
+        super().mousePressEvent(event)
+
+        if not event:
+            return
+        if event.button() == Qt.MouseButton.RightButton:
+            # Get the index of the tab under the cursor
+            if tab_bar := self.tabBar():
+                index = tab_bar.tabAt(event.pos())
+                if index != -1:
+                    self.showContextMenu(event.globalPosition().toPoint(), index)
+
+    def showContextMenu(self, position: QPoint, index: int) -> None:
+        if self.show_ContextMenu:
+            self.show_ContextMenu(position, index)
 
 
 class LoadingWalletTab(QWidget):

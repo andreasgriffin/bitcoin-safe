@@ -42,13 +42,14 @@ from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
 import bdkpython as bdk
-from PyQt6.QtCore import Qt, pyqtBoundSignal, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialog, QVBoxLayout
 
 from ...pdfrecovery import make_and_open_pdf
@@ -70,7 +71,7 @@ class DescriptorExport(QDialog):
         self.setModal(True)
 
         self.descriptor = descriptor
-        self.data = Data.from_multipath_descriptor(descriptor)
+        self.data = Data.from_multipath_descriptor(descriptor, network=network)
 
         self.export_widget = ExportDataSimple(
             data=self.data,
@@ -88,7 +89,7 @@ class DescriptorExport(QDialog):
 
 
 class DescriptorEdit(ButtonEdit):
-    signal_descriptor_change = pyqtSignal(str)
+    signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
@@ -96,7 +97,7 @@ class DescriptorEdit(ButtonEdit):
         signals_min: SignalsMin,
         get_lang_code: Callable[[], str],
         get_wallet: Optional[Callable[[], Wallet]] = None,
-        signal_update: pyqtBoundSignal | None = None,
+        signal_update: TypedPyQtSignalNo | None = None,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
@@ -105,6 +106,7 @@ class DescriptorEdit(ButtonEdit):
             signal_update=signal_update,
             signals_min=signals_min,
             threading_parent=threading_parent,
+            close_all_video_widgets=signals_min.close_all_video_widgets,
         )  # type: ignore
         self.threading_parent = threading_parent
         self.signals_min = signals_min

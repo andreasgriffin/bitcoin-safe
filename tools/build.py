@@ -241,6 +241,12 @@ class Builder:
                     / (file.name.replace(self.module_name, self.app_name_formatter(self.module_name))),
                 )
 
+    def build_dmg(
+        self,
+    ):
+        PROJECT_ROOT = Path(".").resolve().absolute()
+        run_local(PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh")
+
     def briefcase_appimage(self, **kwargs):
         # briefcase appimage building works on some systems, but not on others... unknown why.
         # so we build using the bitcoin_safe docker by default
@@ -272,7 +278,7 @@ class Builder:
         f_map = {
             "appimage": self.build_appimage_docker,
             "windows": self.build_windows_exe_and_installer_docker,
-            "mac": self.briefcase_mac,
+            "mac": self.build_dmg,
             "deb": self.briefcase_deb,
             "flatpak": self.briefcase_flatpak,
             "snap": self.build_snap,

@@ -39,6 +39,7 @@ from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.signal_carrying_object import SignalCarryingObject
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import UserConfig
 from ...signals import Signals
@@ -56,7 +57,7 @@ class SyncStatus(enum.Enum):
 
 
 class QtWalletBase(SignalCarryingObject, ThreadingManager):
-    signal_after_sync = pyqtSignal(SyncStatus)  # SyncStatus
+    signal_after_sync: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
     wizard: WizardBase
     wallet_descriptor_tab: QWidget
 
@@ -66,17 +67,24 @@ class QtWalletBase(SignalCarryingObject, ThreadingManager):
         signals: Signals,
         get_lang_code: Callable[[], str],
         threading_parent: ThreadingManager | None = None,
+        tutorial_index: int | None = None,
         **kwargs
     ) -> None:
         super().__init__(threading_parent=threading_parent, **kwargs)
         self.get_lang_code = get_lang_code
-        self.threading_parent = threading_parent
+        if threading_parent:
+            self.threading_parent = threading_parent
         self.config = config
         self.signals = signals
+        self.tutorial_index = tutorial_index
 
         self.tab = QWidget()
 
         self.outer_layout = QVBoxLayout(self.tab)
+        current_margins = self.outer_layout.contentsMargins()
+        self.outer_layout.setContentsMargins(
+            0, current_margins.top() // 2, 0, 0
+        )  # Left, Top, Right, Bottom margins
 
         # add the tab_widget for  history, utx, send tabs
         self.tabs = ExtendedTabWidget(object, parent=self.tab)
@@ -94,3 +102,7 @@ class QtWalletBase(SignalCarryingObject, ThreadingManager):
     @abstractmethod
     def get_editable_protowallet(self) -> ProtoWallet:
         pass
+
+    def set_tutorial_index(self, value: int | None):
+        self.tutorial_index = value
+        self.wizard.set_visibilities()

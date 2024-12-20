@@ -29,8 +29,8 @@
 
 from typing import List
 
-from bitcoin_qr_tools.qr_widgets import QRCodeWidgetSVG
-from PyQt6.QtCore import QMargins, Qt
+from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import (
     QGraphicsDropShadowEffect,
@@ -44,11 +44,14 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 
 class TitledComponent(QWidget):
     def __init__(self, title, hex_color, parent=None) -> None:
-        super().__init__(parent)
+        super().__init__(parent=parent)
+        self._layout = QVBoxLayout(self)
+        self._layout.setSpacing(3)
 
         self.title = QLabel(title, self)
 
@@ -63,26 +66,32 @@ class TitledComponent(QWidget):
         self.setPalette(palette)
         self.setAutoFillBackground(True)
 
-        self._layout = QVBoxLayout(self)
-        self._layout.setSpacing(3)
-
         self._layout.addWidget(self.title)
 
 
 class ReceiveGroup(TitledComponent):
     def __init__(
-        self, category: str, hex_color: str, address: str, qr_uri: str, width=170, parent=None
+        self,
+        category: str,
+        hex_color: str,
+        address: str,
+        qr_uri: str,
+        close_all_video_widgets: TypedPyQtSignalNo,
+        width=170,
+        parent=None,
     ) -> None:
         super().__init__(title=category, hex_color=hex_color, parent=parent)
         self.setFixedWidth(width)
 
         # QR Code
-        self.qr_code = QRCodeWidgetSVG(always_animate=True)
+        self.qr_code = QRCodeWidgetSVG(always_animate=True, parent=self)
         self.qr_code.set_data_list([qr_uri])
         self._layout.addWidget(self.qr_code)
 
-        input_field = AnalyzerTextEdit(address)
-        self.text_edit = ButtonEdit(input_field=input_field)
+        input_field = AnalyzerTextEdit(address, parent=self)
+        self.text_edit = ButtonEdit(
+            input_field=input_field, parent=self, close_all_video_widgets=close_all_video_widgets
+        )
         input_field.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.text_edit.setReadOnly(True)
         self.text_edit.add_copy_button()
@@ -93,7 +102,7 @@ class ReceiveGroup(TitledComponent):
             """
         )
 
-        glow_effect = QGraphicsDropShadowEffect()
+        glow_effect = QGraphicsDropShadowEffect(parent)
         glow_effect.setOffset(3)
         glow_effect.setBlurRadius(10)
         glow_effect.setColor(QColor(hex_color))
@@ -136,7 +145,7 @@ class NoVerticalScrollArea(QScrollArea):
 
 class QuickReceive(QWidget):
     def __init__(self, title="Quick Receive", parent=None) -> None:
-        super().__init__(parent=parent)
+        super().__init__(parent)
 
         self.setSizePolicy(
             QSizePolicy.Policy.Preferred,  # Horizontal size policy
@@ -146,13 +155,14 @@ class QuickReceive(QWidget):
         # Horizontal Layout for Scroll Area content
 
         # Content Widget for the Scroll Area
-        self.content_widget = QWidget()
+        self.content_widget = QWidget(parent)
         self.content_widget_layout = QHBoxLayout(self.content_widget)
+        # self.content_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # Scroll Area
         self.scroll_area = NoVerticalScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scroll_area.setWidget(self.content_widget)
 
         # Main Layout
@@ -167,19 +177,23 @@ class QuickReceive(QWidget):
         # Group Box Management
         self.group_boxes: List[ReceiveGroup] = []
 
-    def _qmargins_to_tuple(self, margins: QMargins) -> tuple[int, int, int, int]:
-        return margins.left(), margins.top(), margins.right(), margins.bottom()
+    # def _qmargins_to_tuple(self, margins: QMargins) -> tuple[int, int, int, int]:
+    #     return margins.left(), margins.top(), margins.right(), margins.bottom()
 
-    def resizeEvent(self, event: QResizeEvent | None) -> None:
-        for group_box in self.group_boxes:
-            margins = self.content_widget_layout.getContentsMargins()
-            scrollbar = self.scroll_area.horizontalScrollBar()
-            group_box.setFixedHeight(
-                self.height()
-                - sum([m for m in margins if m])
-                - sum(self._qmargins_to_tuple(self.scroll_area.contentsMargins()))
-                - (scrollbar.height() if scrollbar else 0)
-            )
+    # def resizeEvent(self, event: QResizeEvent | None) -> None:
+    #     for group_box in self.group_boxes:
+    #         margins = self.content_widget_layout.getContentsMargins()
+    #         scrollbar = self.scroll_area.horizontalScrollBar()
+    #         group_box.setFixedHeight(
+    #             self.height()
+    #             - sum([m for m in margins if m])
+    #             - sum(self._qmargins_to_tuple(self.scroll_area.contentsMargins()))
+    #             - (scrollbar.height() if scrollbar else 0)
+    #         )
+
+    # def showEvent(self, e: QShowEvent | None) -> None:
+    #     super().showEvent(e)
+    #     self.resizeEvent(None)
 
     def add_box(self, receive_group: ReceiveGroup) -> None:
         self.group_boxes.append(receive_group)

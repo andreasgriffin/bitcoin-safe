@@ -31,15 +31,16 @@ import enum
 import logging
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional
-
-logger = logging.getLogger(__name__)
-
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent
 from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit, QWidget
+
+from ...signals import TypedPyQtSignalNo
+
+logger = logging.getLogger(__name__)
 
 
 class AnalyzerState(enum.IntEnum):
@@ -66,6 +67,9 @@ class BaseAnalyzer:
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
         raise NotImplementedError()
 
+    def normalize(self, input: str, pos: int = 0) -> Tuple[str, int]:
+        return input, pos
+
     @staticmethod
     def worst_message(l: List[AnalyzerMessage]):
         if not l:
@@ -86,6 +90,21 @@ class AnalyzerLineEdit(QLineEdit):
 
     def analyzer(self) -> Optional[BaseAnalyzer]:
         return self._smart_state
+
+    def normalize(self):
+        analyzer = self.analyzer()
+        if not analyzer:
+            return
+        old_input = self.text()
+        old_pos = self.cursorPosition()
+        new_input, new_pos = analyzer.normalize(old_input, old_pos)
+
+        if new_input != old_input:
+            self.setText(new_input)
+
+        new_pos = min(new_pos, len(new_input))
+        if new_pos != old_pos:
+            self.setCursorPosition(new_pos)
 
 
 class AnalyzerTextEdit(QTextEdit):
@@ -113,9 +132,24 @@ class AnalyzerTextEdit(QTextEdit):
         cursor.setPosition(position)
         self.setTextCursor(cursor)
 
+    def normalize(self):
+        analyzer = self.analyzer()
+        if not analyzer:
+            return
+        old_input = self.text()
+        old_pos = self.cursorPosition()
+        new_input, new_pos = analyzer.normalize(old_input, old_pos)
+
+        if new_input != old_input:
+            self.setText(new_input)
+
+        new_pos = min(new_pos, len(new_input))
+        if new_pos != old_pos:
+            self.setCursorPosition(new_pos)
+
 
 class QCompleterLineEdit(AnalyzerLineEdit):
-    signal_focus_out = pyqtSignal()
+    signal_focus_out: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] | None = None, parent=None

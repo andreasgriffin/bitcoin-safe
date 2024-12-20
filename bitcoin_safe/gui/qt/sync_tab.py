@@ -56,9 +56,9 @@ import bdkpython as bdk
 class SyncTab(QObject):
     def __init__(
         self,
-        nostr_sync_dump: Dict,
         network: bdk.Network,
         signals: Signals,
+        nostr_sync_dump: Dict,
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,

@@ -36,18 +36,23 @@ from bitcoin_usb.psbt_tools import PSBTTools
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
+from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
+from bitcoin_safe.labels import LabelType
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import MIN_RELAY_FEE, UserConfig
+from ...signals import TypedPyQtSignalNo
 from .dialog_import import ImportDialog
 from .my_treeview import MyItemDataRole, SearchableTab
 from .nLockTimePicker import nLocktimePicker
@@ -81,11 +86,11 @@ from ...pythonbdk_types import (
     PythonUtxo,
     Recipient,
     UtxosForInputs,
-    get_outpoints,
+    get_prev_outpoints,
     python_utxo_balance,
     robust_address_str_from_script,
 )
-from ...signals import Signals, SignalsMin, UpdateFilter, UpdateFilterReason, pyqtSignal
+from ...signals import Signals, SignalsMin, UpdateFilter, UpdateFilterReason
 from ...signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -152,9 +157,9 @@ class LinkingWarningBar(NotificationBar):
         self.updateUi()
 
     @classmethod
-    def format_category_and_wallet_ids(cls, caterory: str, wallet_ids: Set[str]):
-        return cls.tr("{caterory} (in wallet {wallet_ids})").format(
-            caterory=html_f(caterory, bf=True),
+    def format_category_and_wallet_ids(cls, category: str, wallet_ids: Set[str]):
+        return cls.tr("{category} (in wallet {wallet_ids})").format(
+            category=html_f(category, bf=True),
             wallet_ids=", ".join([html_f(wallet_id, bf=True) for wallet_id in wallet_ids]),
         )
 
@@ -167,7 +172,7 @@ class LinkingWarningBar(NotificationBar):
             ]
         )
         return cls.tr(
-            "This transaction combines the coin categories {categories} and makes both categories linkable!"
+            "This transaction combines the coin categories {categories} and makes these categories linkable!"
         ).format(categories=s)
 
     def updateUi(self) -> None:
@@ -226,8 +231,7 @@ class UITx_ViewerTab(SearchableTab):
 
 
 class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
-    signal_edit_tx = pyqtSignal()
-    signal_save_psbt = pyqtSignal()
+    signal_edit_tx: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
@@ -243,6 +247,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         confirmation_time: bdk.BlockTime | None = None,
         parent=None,
         threading_parent: ThreadingManager | None = None,
+        focus_ui_element: UiElements = UiElements.none,
     ) -> None:
         super().__init__(
             serialize=lambda: self.do_serialize(),
@@ -252,6 +257,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             mempool_data=mempool_data,
             threading_parent=threading_parent,
         )
+        self.focus_ui_element = focus_ui_element
         self.data = data
         self.network = network
         self.fee_info = fee_info
@@ -266,6 +272,22 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         # category_linking_warning_bar
         self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
         self._layout.addWidget(self.category_linking_warning_bar)
+
+        # tx label
+        self.container_label = QWidget(self)
+        container_label_layout = QHBoxLayout(self.container_label)
+        container_label_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.label_label = QLabel("")
+        self.label_line_edit = WalletLabelAndCategoryEdit(
+            signals=self.signals,
+            get_label_ref=self.txid,
+            label_type=LabelType.tx,
+            parent=self,
+            dismiss_label_on_focus_loss=False,
+        )
+        container_label_layout.addWidget(self.label_label)
+        container_label_layout.addWidget(self.label_line_edit)
+        self._layout.addWidget(self.container_label)
 
         # upper widget
         self.upper_widget = QWidget()
@@ -349,6 +371,15 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.export_widget_container_layout = QVBoxLayout(self.export_widget_container)
         self.export_widget_container_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         self.export_widget_container.setMaximumHeight(220)
+        self.export_data_simple = TxExport(
+            data=self.data,
+            network=self.network,
+            signals_min=self.signals,
+            threading_parent=self,
+            parent=self,
+            sync_tabs=self.get_synctabs(),
+        )
+        self.export_widget_container_layout.addWidget(self.export_data_simple)
         self._layout.addWidget(self.export_widget_container)
 
         # buttons
@@ -405,14 +436,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.updateUi()
         self.reload(UpdateFilter(refresh_all=True))
         self.utxo_list.update_content()
-        self.signals.finished_open_wallet.connect(self.on_finished_open_wallet)
         self.signals.language_switch.connect(self.updateUi)
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signals.any_wallet_updated.connect(self.reload)
-
-    def on_finished_open_wallet(self, wallet_id: str):
-        self.reload(UpdateFilter(refresh_all=True))
 
     def updateUi(self) -> None:
         self.tabs_inputs_outputs.setTabText(
@@ -432,6 +459,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.button_next.setText(self.tr("Next step"))
         self.button_send.setText(self.tr("Send"))
         self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
+        self.label_label.setText(self.tr("Label: "))
 
     def extract_tx(self) -> bdk.Transaction:
         if self.data.data_type == DataType.Tx:
@@ -627,84 +655,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         return simple_psbt
 
-    def get_signature_importers_for_each_signers(
-        self, psbt: bdk.PartiallySignedTransaction
-    ) -> Dict[str, List[AbstractSignatureImporter]]:
-        signature_importers: Dict[str, List[AbstractSignatureImporter]] = {}
-
-        def get_signing_fingerprints_of_wallet(wallet: Wallet) -> Set[str]:
-            # check which keys the wallet can sign
-
-            wallet_signing_fingerprints = set(
-                [keystore.fingerprint for keystore in wallet.keystores if keystore.mnemonic]
-            )
-            return wallet_signing_fingerprints
-
-        def get_wallets_with_seed(fingerprint: str) -> List[Wallet]:
-            result = []
-            for wallet in wallets:
-                if fingerprint in get_signing_fingerprints_of_wallet(wallet):
-                    result.append(wallet)
-            return result
-
-        simple_psbt = SimplePSBT.from_psbt(psbt)
-        simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
-
-        wallets: List[Wallet] = get_wallets(self.signals)
-
-        # {bool_signed: [fingerprint0, .....]}
-        shown_fingerprints: Dict[bool, List[str]] = {True: [], False: []}
-        for input in simple_psbt.inputs:
-            for pubkey in input.pubkeys:
-                has_signature = input.fingerprint_has_signature(pubkey.fingerprint)
-                if pubkey.fingerprint in shown_fingerprints[has_signature]:
-                    # no need to add the same signer multiple times  (which will happen for multiple input utxos)
-                    continue
-                shown_fingerprints[has_signature].append(pubkey.fingerprint)
-
-                # sets signature_importers[fingerprint] = []  if key doesn't exists
-                l = signature_importers.setdefault(pubkey.fingerprint, [])
-
-                # check if any wallet has keys for this fingerprint
-                wallets_with_seed = get_wallets_with_seed(pubkey.fingerprint)
-                if wallets_with_seed:
-                    l.append(
-                        SignatureImporterWallet(
-                            wallets_with_seed[0],
-                            self.network,
-                            signature_available=has_signature,
-                            key_label=pubkey.label,
-                        )
-                    )
-
-                # always offer the qr option
-                l.append(
-                    SignatureImporterQR(
-                        self.network,
-                        signature_available=has_signature,
-                        key_label=pubkey.label,
-                    )
-                )
-
-                # always offer the file option
-                l.append(
-                    SignatureImporterFile(
-                        self.network,
-                        signature_available=has_signature,
-                        key_label=pubkey.label,
-                        label=self.tr("Import file"),
-                    )
-                )
-                # always offer the usb option
-                l.append(
-                    SignatureImporterUSB(
-                        self.network,
-                        signature_available=has_signature,
-                        key_label=pubkey.label,
-                    )
-                )
-        return signature_importers
-
     def get_wallet_inputs(self, simple_psbt: SimplePSBT) -> Dict[str, List[SimpleInput]]:
         "structures the inputs into categories, usually wallet_ids, such that all the inputs are sure to belong to 1 wallet"
         wallet_inputs: Dict[str, List[SimpleInput]] = {}
@@ -775,6 +725,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                             signature_available=True,
                             key_label=pubkeys_with_signature[i].fingerprint,
                             label=self.tr("Import file"),
+                            close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
                     )
                 else:
@@ -805,6 +756,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                                 signature_available=False,
                                 key_label=wallet_id,
                                 pub_keys_without_signature=pub_keys_without_signature,
+                                close_all_video_widgets=self.signals.close_all_video_widgets,
                             )
                         )
         # connect signals
@@ -838,28 +790,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         self.tx_singning_steps_container_layout.addWidget(tx_singning_steps)
         return tx_singning_steps
-
-    def create_tx_export(self) -> ExportDataSimple:
-
-        # this approach to clearning the layout
-        # and then recreating the ui object is prone
-        # to problems with multithreading.
-        clear_layout(self.export_widget_container_layout)
-
-        widget = ExportDataSimple(
-            data=self.data,
-            sync_tabs={
-                wallet_id: qt_wallet.sync_tab
-                for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
-            },
-            signals_min=self.signals,
-            network=self.network,
-            threading_parent=self,
-        )
-
-        widget.qr_label.set_always_animate(True)
-        self.export_widget_container_layout.addWidget(widget)
-        return widget
 
     def tx_received(self, tx: bdk.Transaction) -> None:
         if self.data.data_type != DataType.PSBT:
@@ -930,12 +860,20 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.category_linking_warning_bar.set_category_dict(category_dict)
 
     def calc_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
+        wallets = get_wallets(self.signals)
+        # try via tx details
+        for wallet_ in wallets:
+            txdetails = wallet_.get_tx(tx.txid())
+            if txdetails:
+                return FeeInfo(fee_amount=txdetails.fee, vsize=tx.vsize(), is_estimated=False)
+
+        #  try via utxos
         pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
-        for wallet_ in get_wallets(self.signals):
+        for wallet_ in wallets:
             pythonutxo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
 
         total_input_value = 0
-        for outpoint in get_outpoints(tx):
+        for outpoint in get_prev_outpoints(tx):
             python_txo = pythonutxo_dict.get(str(outpoint))
             if not python_txo:
                 # ALL inputs must be known with value! Otherwise no fee can be calculated
@@ -948,16 +886,27 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         fee_amount = total_input_value - total_output_value
         return FeeInfo(fee_amount=fee_amount, vsize=tx.vsize(), is_estimated=not tx_has_final_size)
 
+    def get_confirmation_time(self, txid: str) -> bdk.BlockTime | None:
+        for wallet in get_wallets(self.signals):
+            tx_details = wallet.get_tx(txid)
+            if tx_details:
+                return tx_details.confirmation_time
+        return None
+
     def set_tx(
         self,
         tx: bdk.Transaction,
         fee_info: FeeInfo | None = None,
         confirmation_time: bdk.BlockTime | None = None,
     ) -> None:
-        self.data = Data.from_tx(tx)
+        self.data = Data.from_tx(tx, network=self.network)
         if fee_info is None:
             fee_info = self.calc_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
+
+        if confirmation_time is None:
+            confirmation_time = self.get_confirmation_time(tx.txid())
+        self.confirmation_time = confirmation_time
 
         # no Fee is unknown if no fee_info was given
         self.fee_group.groupBox_Fee.setVisible(fee_info is not None)
@@ -987,14 +936,33 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             for output in outputs
         ]
         self.set_visibility(confirmation_time)
-        self.export_data_simple = self.create_tx_export()
+        self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
 
         self.set_category_warning_bar(
             tx.input(), recipient_addresses=[recipient.address for recipient in self.recipients.recipients]
         )
-        self.set_sankey(tx, fee_info=fee_info)
+        self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
+        self.label_line_edit.updateUi()
+        self.label_line_edit.autofill_label_and_category()
+        self.container_label.setHidden(False)
 
-    def set_sankey(self, tx: bdk.Transaction, fee_info: FeeInfo | None = None):
+    def _get_python_txos(self):
+        txo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
+        for wallet_ in get_wallets(self.signals):
+            txo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
+        return txo_dict
+
+    def get_synctabs(self):
+        return {
+            wallet_id: qt_wallet.sync_tab for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
+        }
+
+    def set_sankey(
+        self,
+        tx: bdk.Transaction,
+        fee_info: FeeInfo | None = None,
+        txo_dict: Dict[str, PythonUtxo] | None = None,
+    ):
 
         # remove old tab_sankey
         tab_index = self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin)
@@ -1002,9 +970,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             self.tabs_inputs_outputs.removeTab(tab_index)
 
         def do() -> bool:
-
             try:
-                return self.sankey_bitcoin.set_tx(tx, fee_info=fee_info)
+                return self.sankey_bitcoin.set_tx(tx, fee_info=fee_info, txo_dict=txo_dict)
             except Exception as e:
                 logger.warning(str(e))
             return False
@@ -1017,11 +984,23 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 self.tabs_inputs_outputs.addTab(
                     self.sankey_bitcoin, icon=read_QIcon("flows.svg"), description=self.tr("Diagram")
                 )
+                self.set_tab_focus(self.focus_ui_element)
 
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        self.append_thread(
+            TaskThread(enable_threading=False).add_and_start(do, on_success, on_done, on_error)
+        )
+
+    def set_tab_focus(self, focus_ui_element: UiElements):
+        self.focus_ui_element = focus_ui_element
+        if self.focus_ui_element == UiElements.default:
+            self.tabs_inputs_outputs.setCurrentWidget(self.tab_inputs)
+        if self.focus_ui_element == UiElements.diagram:
+            self.tabs_inputs_outputs.setCurrentWidget(self.sankey_bitcoin)
+
+        self.focus_ui_element = UiElements.none
 
     def set_visibility(self, confirmation_time: bdk.BlockTime | None) -> None:
         is_psbt = self.data.data_type == DataType.PSBT
@@ -1059,7 +1038,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         """
         # check if any new signatures were added. If not tell the user
 
-        self.data = Data.from_psbt(psbt)
+        self.data = Data.from_psbt(psbt, network=self.network)
 
         # if calc_fee_info can improve the fee_info , then do it
         if fee_info is None or fee_info.is_estimated:
@@ -1102,7 +1081,11 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             psbt.extract_tx().input(),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
         )
-        self.set_sankey(psbt.extract_tx(), fee_info=fee_info)
+
+        txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
+        txo_dict.update(self._get_python_txos())
+        self.set_sankey(psbt.extract_tx(), fee_info=fee_info, txo_dict=txo_dict)
+        self.container_label.setHidden(True)
 
     def get_total_non_change_output_amount(self, tx: bdk.Transaction) -> int:
         out_flows: List[Tuple[str, int]] = [
@@ -1123,7 +1106,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
 
 class UITx_Creator(UITx_Base, SearchableTab):
-    signal_create_tx = pyqtSignal(TxUiInfos)
+    signal_create_tx: TypedPyQtSignal[TxUiInfos] = pyqtSignal(TxUiInfos)  # type: ignore
 
     def __init__(
         self,
@@ -1183,7 +1166,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
             self.widget_middle_layout,
         )
 
-        self.recipients.signal_clicked_send_max_button.connect(self.update_amounts)
+        self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
         self.recipients.add_recipient()
 
         self.fee_group = FeeGroup(mempool_data, fx, self.config)
@@ -1192,7 +1175,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         )
 
         self.signals.language_switch.connect(self.fee_group.updateUi)
-        self.fee_group.signal_set_fee_rate.connect(self.update_amounts)
+        self.fee_group.signal_set_fee_rate.connect(self.on_signal_set_fee_rate)
 
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
@@ -1224,10 +1207,10 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.tabs_inputs.currentChanged.connect(self.tab_changed)
         self.mempool_data.signal_data_updated.connect(self.update_fee_rate_to_mempool)
         self.utxo_list.signal_selection_changed.connect(self.update_amounts_and_categories)
-        self.recipients.signal_amount_changed.connect(self.update_amounts)
-        self.recipients.signal_added_recipient.connect(self.update_amounts_and_categories)
-        self.recipients.signal_removed_recipient.connect(self.update_amounts_and_categories)
-        self.category_list.signal_tag_clicked.connect(self.update_amounts_and_categories)
+        self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
+        self.recipients.signal_added_recipient.connect(self.on_recipients_changed)
+        self.recipients.signal_removed_recipient.connect(self.on_recipients_changed)
+        self.category_list.signal_tag_clicked.connect(self.on_category_list_clicked)
         self.signals.language_switch.connect(self.updateUi)
         self.signals.wallet_signals[self.wallet.id].updated.connect(self.update_with_filter)
 
@@ -1258,18 +1241,23 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.button_ok.setText(self.tr("Create"))
 
         # infos and warnings
-        fee_rate = self.fee_group.spin_fee_rate.value()
+        self.update_balance_label()
 
         # non-output dependent  values
+        self.update_opportunistic_checkbox()
+
+    def update_opportunistic_checkbox(self):
+        fee_rate = self.fee_group.spin_fee_rate.value()
+
         opportunistic_merging_threshold = self.opportunistic_merging_threshold()
-        self.checkBox_reduce_future_fees.setChecked(fee_rate <= opportunistic_merging_threshold)
+        self.checkBox_reduce_future_fees.setChecked(
+            self.wallet.auto_opportunistic_coin_select and (fee_rate <= opportunistic_merging_threshold)
+        )
         self.checkBox_reduce_future_fees.setToolTip(
             self.tr("This checkbox automatically checks \nbelow {rate}").format(
                 rate=format_fee_rate(opportunistic_merging_threshold, self.config.network)
             )
         )
-
-        self.update_balance_label()
 
     def update_balance_label(self):
         balance = self.wallet.get_balance()
@@ -1282,6 +1270,9 @@ class UITx_Creator(UITx_Base, SearchableTab):
         # balance label
         self.balance_label.setText(balance.format_short(network=self.config.network))
 
+    def on_signal_set_fee_rate(self, fee_rate: float):
+        self.update_amounts()
+
     def update_amounts(self):
         fee_rate = self.fee_group.spin_fee_rate.value()
 
@@ -1291,6 +1282,16 @@ class UITx_Creator(UITx_Base, SearchableTab):
 
         # update fee infos (dependent on output amounts)
         self.set_label_fee_to_send_ratio()
+        self.update_opportunistic_checkbox()
+
+    def on_category_list_clicked(self, tag: str):
+        self.update_amounts_and_categories()
+
+    def on_recipients_changed(self, recipient_tab_widget: RecipientTabWidget):
+        self.update_amounts_and_categories()
+
+    def on_signal_amount_changed(self, recipient_tab_widget: RecipientTabWidget):
+        self.update_amounts()
 
     def update_amounts_and_categories(self):
         self.update_amounts()
@@ -1436,6 +1437,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.label_select_input_categories = QLabel()
         self.label_select_input_categories.setWordWrap(True)
         self.checkBox_reduce_future_fees = QCheckBox(self.tab_inputs_categories)
+        self.checkBox_reduce_future_fees.clicked.connect(self.on_checkBox_reduce_future_fees)
         self.checkBox_reduce_future_fees.setChecked(True)
 
         # Taglist
@@ -1489,6 +1491,15 @@ class UITx_Creator(UITx_Base, SearchableTab):
         ):
             _item.setSelected(True)
 
+    def on_checkBox_reduce_future_fees(self):
+        if self.checkBox_reduce_future_fees.isChecked():
+            self.wallet.auto_opportunistic_coin_select = True
+        else:
+            if question_dialog("Do you want to permanently deactivate this?", title="Always deactivate?"):
+                self.wallet.auto_opportunistic_coin_select = False
+            else:
+                pass
+
     def add_outpoints(self, outpoints: List[OutPoint]) -> None:
         old_outpoints = self.get_outpoints()
         for outpoint in outpoints:
@@ -1512,6 +1523,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
                 "Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint"
             ),
             text_placeholder=self.tr("Please paste UTXO here"),
+            close_all_video_widgets=self.signals.close_all_video_widgets,
         ).show()
 
     def opportunistic_merging_threshold(self) -> float:

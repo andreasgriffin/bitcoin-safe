@@ -58,11 +58,12 @@ import tempfile
 
 from PyQt6.QtGui import QFont, QFontMetrics
 
-from bitcoin_safe.config import UserConfig
+from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Balance, Recipient
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +146,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class HistList(MyTreeView):
-    signal_tag_dropped = pyqtSignal(AddressDragInfo)
+    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -240,7 +241,7 @@ class HistList(MyTreeView):
         for wallet in get_wallets(self.signals):
             txdetails = wallet.get_tx(txid)
             if txdetails:
-                return Data.from_tx(txdetails.transaction)
+                return Data.from_tx(txdetails.transaction, network=wallet.network)
         return None
 
     def drag_keys_to_file_paths(
@@ -518,8 +519,9 @@ class HistList(MyTreeView):
         status = TxStatus.from_wallet(tx.txid, wallet)
 
         fee_info = FeeInfo.from_txdetails(tx)
+        fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
         estimated_duration_str = confirmation_wait_formatted(
-            self.mempool_data.fee_rate_to_projected_block_index(fee_info.fee_rate())
+            self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
         )
         status_text = (
             datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime("%Y-%m-%d %H:%M")
@@ -577,7 +579,7 @@ class HistList(MyTreeView):
                 menu.add_action(
                     translate("hist_list", "View on block explorer"),
                     lambda: webopen(addr_URL),
-                    icon=read_QIcon("link.svg"),
+                    icon=read_QIcon("block-explorer.svg"),
                 )
             menu.addSeparator()
 
@@ -745,7 +747,12 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.sync_button.clicked.connect(self.hist_list.signals.request_manual_sync.emit)
         self.toolbar.insertWidget(0, self.sync_button)
         self.hist_list.signals.language_switch.connect(self.updateUi)
-        self.hist_list.signals.wallet_signals[self.hist_list.wallet_id].updated.connect(self.updateUi)
+        self.hist_list.signals.wallet_signals[self.hist_list.wallet_id].updated.connect(
+            self.update_with_filter
+        )
+
+    def update_with_filter(self, update_filter: UpdateFilter):
+        self.updateUi()
 
     def updateUi(self) -> None:
         super().updateUi()

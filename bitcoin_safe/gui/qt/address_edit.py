@@ -44,24 +44,24 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QSizePolicy, QStyle
 
 from ...i18n import translate
-from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
 from ...wallet import Wallet, get_wallet_of_address
 from .dialogs import question_dialog
 from .util import ColorScheme, icon_path, webopen
 
 
 class AddressEdit(ButtonEdit):
-    signal_text_change = pyqtSignal(str)
-    signal_bip21_input = pyqtSignal(Data)
+    signal_text_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_bip21_input: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
 
     def __init__(
         self,
         network: bdk.Network,
+        signals: Signals,
         text="",
         allow_edit: bool = True,
         button_vertical_align: Optional[QtCore.Qt.AlignmentFlag] = None,
         parent=None,
-        signals: Signals | None = None,
     ) -> None:
         self.signals = signals
         self.network = network
@@ -71,6 +71,7 @@ class AddressEdit(ButtonEdit):
             button_vertical_align=button_vertical_align,
             parent=parent,
             signal_update=signals.language_switch if signals else None,
+            close_all_video_widgets=signals.close_all_video_widgets,
         )
 
         self.setPlaceholderText(self.tr("Enter address here"))
@@ -113,13 +114,15 @@ class AddressEdit(ButtonEdit):
 
     def _add_mempool_button(self, signals: Signals) -> SquareButton:
         def on_click() -> None:
-            mempool_url: str = signals.get_mempool_url()
+            mempool_url = signals.get_mempool_url()
+            if mempool_url is None:
+                return
             addr_URL = block_explorer_URL(mempool_url, "addr", self.address)
             if addr_URL:
                 webopen(addr_URL)
 
         copy_button = self.add_button(
-            icon_path("link.svg"), on_click, tooltip=translate("d", "View on block explorer")
+            icon_path("block-explorer.svg"), on_click, tooltip=translate("d", "View on block explorer")
         )
         return copy_button
 

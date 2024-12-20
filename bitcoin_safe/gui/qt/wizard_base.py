@@ -38,3 +38,6 @@ from .step_progress_bar import StepProgressContainer
 class WizardBase(StepProgressContainer):
     def set_visibilities(self) -> None:
         pass
+
+    def toggle_tutorial(self) -> None:
+        pass

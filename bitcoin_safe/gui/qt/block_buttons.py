@@ -27,15 +27,13 @@
 # SOFTWARE.
 
 
-import logging
-
-logger = logging.getLogger(__name__)
 import enum
+import logging
 from typing import Callable, List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-from PyQt6.QtCore import QLocale, QObject, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import QDateTime, QLocale, QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QApplication,
@@ -50,8 +48,11 @@ from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_st
 
 from ...html_utils import html_f
 from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
+from ...signals import TypedPyQtSignal
 from .invisible_scroll_area import InvisibleScrollArea
-from .util import center_in_widget, open_website
+from .util import AspectRatioSvgWidget, center_in_widget, icon_path, open_website
+
+logger = logging.getLogger(__name__)
 
 
 def format_block_number(block_number) -> str:
@@ -129,6 +130,13 @@ class LabelTimeEstimation(BaseBlockLabel):
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
+class LabelConfirmationTime(BaseBlockLabel):
+    def set(self, timestamp: int, block_type: BlockType) -> None:
+        s = QLocale().toString(QDateTime.fromSecsSinceEpoch(timestamp), QLocale.FormatType.ShortFormat)
+
+        self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
+
+
 class LabelExplorer(BaseBlockLabel):
 
     @staticmethod
@@ -151,6 +159,12 @@ class LabelExplorer(BaseBlockLabel):
         self.setText(html_f(s, color="white" if block_type else "black", size="10px"))
 
 
+class ButtonExplorerIcon(AspectRatioSvgWidget):
+    def __init__(self, parent=None) -> None:
+        super().__init__(svg_path=icon_path("block-explorer.svg"), max_height=20, max_width=20, parent=parent)
+        self.setVisible(False)
+
+
 class BlockButton(QPushButton):
     def __init__(self, network: bdk.Network, size=100, glow_color="#fab30d", parent=None) -> None:
         super().__init__(parent=parent)
@@ -169,7 +183,8 @@ class BlockButton(QPushButton):
         self.label_fee_range = LabelFeeRange(network)
         self.label_title = LabelTitle(network)
         self.label_time_estimation = LabelTimeEstimation(network)
-        self.label_explorer = LabelExplorer(network)
+        self.label_confirmation_time = LabelConfirmationTime(network)
+        self.explorer_explorer_icon = ButtonExplorerIcon()
 
         # define the order:
         self.labels: List[BaseBlockLabel] = [
@@ -180,10 +195,11 @@ class BlockButton(QPushButton):
             self.label_fee_range,
             self.label_title,
             self.label_time_estimation,
-            self.label_explorer,
+            self.label_confirmation_time,
         ]
 
         layout = center_in_widget(self.labels, self, direction="v")
+        layout.addWidget(self.explorer_explorer_icon, alignment=Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # Ensure buttons are square
@@ -248,7 +264,7 @@ class BlockButton(QPushButton):
 
 
 class VerticalButtonGroup(InvisibleScrollArea):
-    signal_button_click = pyqtSignal(int)
+    signal_button_click: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
 
     def __init__(self, network: bdk.Network, button_count=3, parent=None, size=100) -> None:
         super().__init__(parent)
@@ -298,7 +314,7 @@ class ObjectRequiringMempool(QObject):
 
 
 class BaseBlock(QObject):
-    signal_click = pyqtSignal(float)
+    signal_click: TypedPyQtSignal[float] = pyqtSignal(float)  # type: ignore
 
     def __init__(
         self,
@@ -410,9 +426,7 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         for button in self.button_group.buttons:
             button.clear_labels()
             button.label_title.set(self.tr("Unconfirmed"), BlockType.projected)
-            button.label_explorer.set(
-                mempool_url=self.mempool_data.network_config.mempool_url, block_type=BlockType.projected
-            )
+            button.explorer_explorer_icon.setVisible(True)
             button.set_background_gradient(
                 active=False, min_fee=MIN_RELAY_FEE, max_fee=MIN_RELAY_FEE, block_type=BlockType.projected
             )
@@ -500,10 +514,11 @@ class ConfirmedBlock(BaseBlock):
                     BlockType.confirmed,
                 )
             button.label_block_height.setText("")
-
-            button.label_explorer.set(
-                mempool_url=self.mempool_data.network_config.mempool_url, block_type=BlockType.confirmed
+            button.label_confirmation_time.set(
+                self.confirmation_time.timestamp, block_type=BlockType.confirmed
             )
+
+            button.explorer_explorer_icon.setVisible(True)
             if self.fee_rate:
                 button.set_background_gradient(
                     active=True, min_fee=self.fee_rate, max_fee=self.fee_rate, block_type=BlockType.confirmed
@@ -518,7 +533,9 @@ class ConfirmedBlock(BaseBlock):
     def _on_button_click(self, i: int) -> None:
         if self.url:
             open_website(self.url)
-        self.signal_click.emit(self.fee_rate)
+
+        # do not set fee_rate, because it is a confirmed block.
+        # self.signal_click.emit(self.fee_rate)
 
 
 if __name__ == "__main__":

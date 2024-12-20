@@ -31,9 +31,9 @@ import logging
 from typing import Callable, List, Optional, Union
 
 from bdkpython import bdk
-from bitcoin_qr_tools.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.data import Data, DecodingException
-from PyQt6.QtCore import QSize, Qt, pyqtBoundSignal, pyqtSignal
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -55,6 +55,9 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 from bitcoin_safe.gui.qt.util import Message, clear_layout, do_copy, icon_path
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+from ...signals import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -170,15 +173,16 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    signal_data = pyqtSignal(Data)
+    signal_data: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
 
     def __init__(
         self,
+        close_all_video_widgets: TypedPyQtSignalNo,
         text="",
         button_vertical_align: Optional[Qt.AlignmentFlag] = None,
         parent=None,
         input_field: Union[AnalyzerTextEdit, AnalyzerLineEdit] | None = None,
-        signal_update: pyqtBoundSignal | None = None,
+        signal_update: TypedPyQtSignalNo | None = None,
         **kwargs,
     ) -> None:
         super().__init__(parent=parent)
@@ -205,6 +209,7 @@ class ButtonEdit(QWidget):
         self.mnemonic_button: Optional[SquareButton] = None
         self.open_file_button: Optional[SquareButton] = None
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+        self.close_all_video_widgets = close_all_video_widgets
 
         self.main_layout = QHBoxLayout(
             self
@@ -218,9 +223,17 @@ class ButtonEdit(QWidget):
         # Ensure there's no spacing that could affect the alignment
         self.main_layout.setSpacing(0)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
+
+        # signals
         if signal_update:
             signal_update.connect(self.updateUi)
+        self.close_all_video_widgets.connect(self.close_video_widget)
+
         self.updateUi()
+
+    def close_video_widget(self):
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
 
     def updateUi(self) -> None:
         if self.button_camera:
@@ -287,28 +300,37 @@ class ButtonEdit(QWidget):
     def setReadOnly(self, value: bool) -> None:
         self.input_field.setReadOnly(value)
 
-    def add_qr_input_from_camera_button(self, network: bdk.Network, set_data_as_string=False) -> SquareButton:
+    def input_qr_from_camera(
+        self, network: bdk.Network, set_data_as_string=True, close_camera_on_result=True
+    ) -> None:
+        def exception_callback(e: Exception) -> None:
+            if isinstance(e, DecodingException):
+                Message("Could not recognize the input.")
+            else:
+                Message(str(e))
 
-        def input_qr_from_camera() -> None:
-            def exception_callback(e: Exception) -> None:
-                if isinstance(e, DecodingException):
-                    Message("Could not recognize the input.")
-                else:
-                    Message(str(e))
+        def result_callback(data: Data) -> None:
+            if set_data_as_string and hasattr(self, "setText"):
+                self.setText(str(data.data_as_string()))
 
-            def result_callback(data: Data) -> None:
-                if set_data_as_string and hasattr(self, "setText"):
-                    self.setText(str(data.data_as_string()))
+        self.close_all_video_widgets.emit()
+        self._temp_bitcoin_video_widget = BitcoinVideoWidget(
+            network=network, close_on_result=close_camera_on_result
+        )
+        self._temp_bitcoin_video_widget.signal_data.connect(result_callback)
+        self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
+        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(exception_callback)
+        self._temp_bitcoin_video_widget.show()
 
-            if self._temp_bitcoin_video_widget:
-                self._temp_bitcoin_video_widget.close()
-            self._temp_bitcoin_video_widget = BitcoinVideoWidget(
+    def add_qr_input_from_camera_button(
+        self, network: bdk.Network, set_data_as_string=False, close_camera_on_result=True
+    ) -> SquareButton:
+        def input_qr_from_camera():
+            self.input_qr_from_camera(
                 network=network,
+                set_data_as_string=set_data_as_string,
+                close_camera_on_result=close_camera_on_result,
             )
-            self._temp_bitcoin_video_widget.signal_data.connect(result_callback)
-            self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
-            self._temp_bitcoin_video_widget.signal_recognize_exception.connect(exception_callback)
-            self._temp_bitcoin_video_widget.show()
 
         self.button_camera = self.add_button(
             icon_path("camera.svg"), input_qr_from_camera, translate("d", "Read QR code from camera")
@@ -391,6 +413,7 @@ class ButtonEdit(QWidget):
             self.format_as_error(False)
             return
 
+        self.input_field.normalize()
         analysis = analyzer.analyze(self.input_field.text(), self.input_field.cursorPosition())
         error = bool(self.input_field.text()) and (analysis.state != AnalyzerState.Valid)
         self.format_as_error(error)
@@ -401,24 +424,31 @@ class ButtonEdit(QWidget):
 if __name__ == "__main__":
     import sys
 
+    class My(QObject):
+        close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
     def example_callback() -> None:
         print("Button clicked!")
 
     app = QApplication(sys.argv)
+    my = My()
     widget = QWidget()
     widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
     layout = QVBoxLayout(widget)
     layout.setContentsMargins(0, 0, 0, 0)
     layout.setSpacing(0)
     for i in range(4):
-        edit = ButtonEdit(button_vertical_align=Qt.AlignmentFlag.AlignVCenter)
+        edit = ButtonEdit(
+            button_vertical_align=Qt.AlignmentFlag.AlignVCenter,
+            close_all_video_widgets=my.close_all_video_widgets,
+        )
         # window.add_button("../icons/copy.png", example_callback)  # Add buttons as needed
         edit.add_copy_button()
         # Replace QLineEdit with QTextEdit or any other widget if required
         # window.set_input_field(QTextEdit())
         layout.addWidget(edit)
 
-    text_edit = ButtonEdit()
+    text_edit = ButtonEdit(close_all_video_widgets=my.close_all_video_widgets)
     text_edit.add_copy_button()
     text_edit.add_qr_input_from_camera_button(bdk.Network.TESTNET)
     text_edit.add_pdf_buttton(lambda: 0)

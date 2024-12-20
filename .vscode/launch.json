@@ -119,6 +119,26 @@
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task
 },{
+  "name": "Build windows",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets",    "windows", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build linux",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets",    "appimage", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
   "name": "Build Linux (Current Files)",
   "type": "python",
   "request": "launch",

@@ -45,6 +45,17 @@ from bitcoin_safe.logging_handlers import (
 )
 
 
+def get_config_dir() -> Path:
+    app_name = "bitcoin_safe"
+    config_dir = Path(appdirs.user_config_dir(app_name))
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return config_dir
+
+
+def get_log_file() -> Path:
+    return get_config_dir() / ".bitcoin_safe.log"
+
+
 def setup_logging() -> None:
 
     # Configuring formatters
@@ -57,11 +68,7 @@ def setup_logging() -> None:
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(relative_path_formatter)
 
-    app_name = "bitcoin_safe"
-    config_dir = Path(appdirs.user_config_dir(app_name))
-    config_dir.mkdir(parents=True, exist_ok=True)
-
-    log_file = config_dir / ".bitcoin_safe.log"
+    log_file = get_log_file()
     file_handler = logging.handlers.RotatingFileHandler(filename=log_file, maxBytes=1000000, backupCount=3)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(relative_path_formatter)

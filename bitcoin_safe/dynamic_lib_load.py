@@ -71,7 +71,7 @@ def get_packaged_libsecp256k1_path() -> str | None:
 
         for name in ["libsecp256k1.so.0.0.0", "libsecp256k1.so.0"]:
             lib_path = Path(__file__).parent.parent.parent.parent / name
-            logger.info(f"Searching for {name} in {lib_path.absolute()}")
+            logger.debug(f"Searching for {name} in {lib_path.absolute()}")
             if lib_path.exists():
                 return str(lib_path)
 
@@ -80,6 +80,17 @@ def get_packaged_libsecp256k1_path() -> str | None:
         # packaged in setup:  __file__ = C:/Program Files/Bitcoin Safe/_internals/bitcoin_safe/dynamic_lib_load.pyc
         # the dll is in: C:/Program Files/Bitcoin Safe/_internals/libsecp256k1-2.dll
         for name in ["libsecp256k1-2.dll"]:
+            # logger.info(f"file in  {Path(__file__).absolute()}")
+            lib_path = Path(__file__).parent.parent / name
+            logger.info(f"Searching for {name} in {lib_path.absolute()}")
+            if lib_path.exists():
+                return str(lib_path)
+
+    elif platform.system() == "Darwin":
+        # for exe the dlls are packages in the same folder as dynamic_lib_load.py
+        # packaged in setup:  __file__ = bitcoin_safe/dynamic_lib_load.pyc
+        # the dll is in: C:/Program Files/Bitcoin Safe/_internals/libsecp256k1.2.dylib
+        for name in ["libsecp256k1.2.dylib"]:
             # logger.info(f"file in  {Path(__file__).absolute()}")
             lib_path = Path(__file__).parent.parent / name
             logger.info(f"Searching for {name} in {lib_path.absolute()}")
