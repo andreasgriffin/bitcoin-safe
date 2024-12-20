@@ -8,9 +8,15 @@ on:
         required: false
         type: boolean
 
+
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
 jobs:
   build:
-    runs-on: macos-14  # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+    runs-on: macos-15  # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

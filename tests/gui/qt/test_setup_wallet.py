@@ -101,7 +101,7 @@ def enter_text(text: str, widget: QWidget) -> None:
         QTest.keyClick(widget, char)
 
 
-@pytest.mark.marker_qt_1
+@pytest.mark.marker_qt_1  # repeated gui tests let the RAM usage increase (unclear why the memory isnt freed), and to stay under the github VM limit, we split the tests
 def test_wizard(
     qapp: QApplication,
     qtbot: QtBot,
