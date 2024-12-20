@@ -67,8 +67,15 @@ jobs:
         pip install poetry
         poetry install  
 
-    - name: Run tests
+
+    - name: Run General Tests
       run: |
         poetry run pytest -m 'not marker_qt_1 and not marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+
+    - name: Run Tests for marker_qt_1
+      run: |
         poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+
+    - name: Run Tests for marker_qt_2
+      run: |
         poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
