@@ -67,6 +67,12 @@ jobs:
           fi
 
 
+      - name: Upload AppImage Files from dist/
+        uses: actions/upload-artifact@v4
+        with:
+          name: appimages
+          path: dist/*.appimage
+
       # - name: Install Dependencies for gui test
       #   run: |
       #     sudo apt-get update
