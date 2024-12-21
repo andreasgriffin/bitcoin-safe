@@ -139,12 +139,33 @@
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task
 },{
+  "name": "Build mac",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+      "--targets",    "mac", 
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
   "name": "Build Linux (Current Files)",
   "type": "python",
   "request": "launch",
   "program": "tools/build.py",
   "args": [
     "--targets",  "appimage",  
+    "--commit",  "None",  
+],
+  "console": "integratedTerminal",
+  "preLaunchTask": "Poetry Install" // label of the task
+},{
+  "name": "Build Mac (Current Files)",
+  "type": "python",
+  "request": "launch",
+  "program": "tools/build.py",
+  "args": [
+    "--targets",  "mac",  
     "--commit",  "None",  
 ],
   "console": "integratedTerminal",
