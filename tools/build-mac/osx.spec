@@ -1,11 +1,27 @@
 # -*- mode: python -*-
 
+import platform
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
 from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 from PyInstaller.building.osx import BUNDLE
 
 import sys, os
+
+
+
+# Function to determine target architecture based on Python's running architecture
+def get_target_arch():
+    arch = platform.machine()
+    if arch == 'x86_64':
+        return 'x86_64'
+    elif arch in ('arm', 'arm64', 'aarch64'):
+        return 'arm64'
+    else:
+        return 'universal2'  # Defaulting to universal for other cases (as a fallback)
+target_arch = get_target_arch()
+print(f"Building for {target_arch=}")
+
 
 PACKAGE_NAME='Bitcoin_Safe.app'
 PYPKG='bitcoin_safe'
@@ -112,7 +128,7 @@ exe = EXE(
     upx=True,
     icon=ICONS_FILE,
     console=False,
-    target_arch='x86_64',  # TODO investigate building 'universal2'
+    target_arch=target_arch,  # TODO investigate building 'universal2'
 )
 
 app = BUNDLE(

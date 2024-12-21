@@ -44,6 +44,7 @@ info "Building $pkgname..."
             LDFLAGS=""
         fi
         LDFLAGS="$LDFLAGS" ./configure \
+            --prefix="$HOME/local" \
             $AUTOCONF_FLAGS \
             || fail "Could not configure $pkgname. Please make sure you have a C compiler installed and try again."
     fi

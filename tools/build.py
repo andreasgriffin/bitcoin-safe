@@ -243,9 +243,60 @@ class Builder:
 
     def build_dmg(
         self,
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
     ):
-        PROJECT_ROOT = Path(".").resolve().absolute()
-        run_local(PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh")
+        PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT = Path(".").resolve().absolute()
+        DISTDIR = PROJECT_ROOT / "dist"
+
+        if build_commit == "current_commit":
+            # Get the current git HEAD commit
+            result = subprocess.run(
+                ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True
+            )
+            build_commit = result.stdout.strip()
+
+        if not build_commit:
+            # Local development build
+            logger.info(f"Building within current project")
+
+        # Possibly do a fresh clone
+        FRESH_CLONE = False
+        if build_commit:
+            logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
+            FRESH_CLONE = Path(f"/tmp/{build_commit.replace(' ','')}/fresh_clone/bitcoin_safe")
+            try:
+                run_local(f'rm -rf "{FRESH_CLONE}"')
+            except subprocess.CalledProcessError:
+                logger.info("We need sudo to remove previous FRESH_CLONE.")
+                run_local(f'sudo rm -rf "{FRESH_CLONE}"')
+            os.umask(0o022)
+            run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
+            os.chdir(str(FRESH_CLONE))
+            run_local(f'git checkout "{build_commit}"')
+            PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
+        else:
+            logger.info("Not doing fresh clone.")
+
+        Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / "dist"
+
+        os.chdir(str(PROJECT_ROOT_OR_FRESHCLONE_ROOT))
+        run_local(f'bash {PROJECT_ROOT_OR_FRESHCLONE_ROOT / "tools" / "build-mac" / "make_osx.sh"}')
+
+        os.chdir(str(PROJECT_ROOT))
+
+        # Ensure the resulting binary location is independent of fresh_clone
+        if Source_Dist_dir != DISTDIR:
+            os.makedirs(DISTDIR, exist_ok=True)
+            for file in Source_Dist_dir.iterdir():
+                # only move the .app directory  (no need for the unsigned dmg)
+                if file.is_dir() and file.name.endswith(".app"):
+                    logger.info(f"Moving {file} --> {DISTDIR / file.name}")
+                    # Replace module name with formatted app name in the directory name
+                    new_dir_name = file.name.replace(
+                        self.module_name, self.app_name_formatter(self.module_name)
+                    )
+                    # Perform the move
+                    shutil.move(str(file), str(DISTDIR / new_dir_name))
 
     def briefcase_appimage(self, **kwargs):
         # briefcase appimage building works on some systems, but not on others... unknown why.

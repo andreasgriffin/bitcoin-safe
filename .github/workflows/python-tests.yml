@@ -79,3 +79,12 @@ jobs:
     - name: Run Tests for marker_qt_2
       run: |
         poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+
+
+
+
+    - name: Upload output Files from tests/output
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-output
+        path: tests/output

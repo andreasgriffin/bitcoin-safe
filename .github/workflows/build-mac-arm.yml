@@ -1,12 +1,20 @@
 name: Build Test DMG 
-
 on:
   workflow_dispatch:
     inputs:
-      tags:
-        description: 'Test Build DMG'
+      commitHash:
+        description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
+        required: false
+        type: string
+      buildDMG:
+        description: 'Test Build DMG (Arm64)'
         required: false
         type: boolean
+
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 jobs:
   build:
@@ -16,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
-
+          ref: ${{ github.event.inputs.commitHash || github.sha }}
 
 
       - name: Run build script
