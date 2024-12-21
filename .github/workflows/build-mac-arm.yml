@@ -1,4 +1,4 @@
-name: Build Test DMG 
+name: Build MacOsX  dmg Arm64
 on:
   workflow_dispatch:
     inputs:
