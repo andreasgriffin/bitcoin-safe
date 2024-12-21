@@ -1,4 +1,4 @@
-name: Build Test AppImage 
+name: Build AppImage 
 
 
 
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: appimages
-          path: dist/*.appimage
+          path: dist/*.AppImage
 
       # - name: Install Dependencies for gui test
       #   run: |
