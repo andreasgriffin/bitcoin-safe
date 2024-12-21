@@ -3,14 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       commitHash:
-        description: 'Enter the commit hash to build (leave empty for the latest commit)'
+        description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
         type: string
       buildDMG:
         description: 'Test Build DMG'
         required: false
         type: boolean
-
 
   push:
     branches: [ "main" ]
@@ -25,8 +24,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
-          # Checkout the provided commit hash or the latest commit from the default branch
-          ref: ${{ github.event.inputs.commitHash || 'refs/heads/main' }}
+          ref: ${{ github.event.inputs.commitHash || github.sha }}
 
 
       - name: Run build script
