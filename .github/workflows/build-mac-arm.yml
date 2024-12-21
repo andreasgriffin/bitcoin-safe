@@ -7,7 +7,7 @@ on:
         required: false
         type: string
       buildDMG:
-        description: 'Test Build DMG'
+        description: 'Test Build DMG (Arm64)'
         required: false
         type: boolean
 
