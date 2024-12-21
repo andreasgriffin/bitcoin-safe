@@ -195,7 +195,7 @@ $python3 -m pip uninstall -y pip
 
 
 info "Faking timestamps..."
-find . -exec touch -t '200101220000' {} + || true
+find . -exec sudo touch -t '200101220000' {} + || true
 
 VERSION=$(git describe --tags --dirty --always)
 
