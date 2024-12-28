@@ -1378,7 +1378,7 @@ class LabelBackup(BaseTab):
     </ul>   
 <li>{self.tr('Multi-computer synchronization and chat')}</li> 
     <ul>
-    <li>{self.tr('Choose trusted computers in SyncChat tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
+    <li>{self.tr('Choose trusted computers in Sync & Chat tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
     </ul>
 </ul>   
  """,
@@ -1840,7 +1840,7 @@ class Wizard(WizardBase):
             TutorialStep.receive: self.tr("Receive Test"),
             TutorialStep.distribute: self.tr("Put in secure locations"),
             TutorialStep.register: self.tr("Register multisig on signers"),
-            TutorialStep.sync: self.tr("SyncChat"),
+            TutorialStep.sync: self.tr("Sync & Chat"),
         }
         for i, tutoral_step in enumerate(self.get_send_tests_steps()):
             labels[tutoral_step] = (

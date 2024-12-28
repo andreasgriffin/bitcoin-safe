@@ -128,6 +128,17 @@
     </message>
 </context>
 <context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>金額が小さすぎます  </translation>
+    </message>
+    <message>
+        <source>Amount too large</source>
+        <translation>金額が大きすぎます  </translation>
+    </message>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
@@ -946,8 +957,8 @@ Location of signing device: .....</source>
         <translation>マルチコンピュータ同期とチャット  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncChat tab on each computer.</source>
-        <translation>各コンピューターのSyncChatタブで信頼できるコンピューターを選択してください。  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>各コンピューターの同期＆チャットタブで信頼できるコンピューターを選択してください。  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -1720,8 +1731,8 @@ Location of signing device: .....</source>
         <translation>ラベルのインポート</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同期 &amp;&amp; チャット  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2742,8 +2753,8 @@ below {rate}</source>
         <translation>マルチシグをサイナーに登録</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp; Chat</source>
+        <translation>同期 &amp; チャット  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -3253,6 +3264,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>{id}のシードバックアップ  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>合計  </translation>
     </message>
     <message>
         <source>Created at {date} with</source>

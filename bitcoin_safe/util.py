@@ -846,7 +846,7 @@ def calculate_ema(
     return ema
 
 
-def briefcase_project_dir() -> Path:
+def current_project_dir() -> Path:
     # __file__ == /tmp/.mount_Bitcoix7tQIZ/usr/app/bitcoin_safe/util.py
     return Path(__file__).parent
 

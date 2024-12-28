@@ -137,6 +137,8 @@ class PdfStatement:
                 ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Default alignment to center
                 ("GRID", (0, 0), (-1, -1), 0.5, colors.black),  # Grid color and size
                 ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),  # Font style for header
+                ("BACKGROUND", (0, -1), (-1, -1), colors.lightgrey),  # Header background color
+                ("TEXTCOLOR", (0, -1), (-1, -1), colors.whitesmoke),  # Header text color
             ]
         )
 
@@ -176,11 +178,11 @@ class PdfStatement:
     def add_page_break(self) -> None:
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _address_table(self, address_info: List[Tuple[str, str]]) -> None:
+    def _address_table(self, address_info: List[Tuple[str, str]], total_amount: str) -> None:
 
         self.elements.append(
             self.create_balance_table(
-                table=np.array(address_info),
+                table=np.array(address_info + [(translate("pdf", "Total"), total_amount)]),
                 widths=[400, 120],
                 header=["Address", f"Balance [{unit_str(self.network)}]"],
                 styles=[self.style_paragraph_left, self.style_paragraph_right],
@@ -221,6 +223,7 @@ class PdfStatement:
         wallet_descriptor_string: str,
         address_info: List[Tuple[str, str]],
         threshold: int,
+        total_amount: str,
     ) -> None:
         self.elements.append(Paragraph(title, style=self.style_heading))
 
@@ -239,7 +242,7 @@ class PdfStatement:
 
         self._descriptor_part(wallet_descriptor_string, threshold)
 
-        self._address_table(address_info=address_info)
+        self._address_table(address_info=address_info, total_amount=total_amount)
 
     def save_pdf(self, filename: str) -> None:
 
@@ -270,9 +273,11 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
     info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
 
     address_info: List[Tuple[str, str]] = []
+    total_amount = 0
     for address in wallet.get_addresses():
         balance = wallet.get_addr_balance(address).total
         if balance:
+            total_amount += balance
             address_info.append(
                 (
                     address,
@@ -300,6 +305,9 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
         wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
         address_info=address_info,
         threshold=info.threshold,
+        total_amount=Satoshis(value=total_amount, network=wallet.network).format(
+            color_formatting="rich", show_unit=False, unicode_space_character=False
+        ),
     )
 
     temp_file = os.path.join(Path.home(), f"{file_title}.pdf")

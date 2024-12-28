@@ -158,6 +158,20 @@ class HardwareSigners:
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.keystone],
         descriptor_export_types=[DescriptorExportTypes.keystone],
     )
+    trezor = HardwareSigner(
+        "trezor",
+        "Trezor",
+        usb_preferred=True,
+        qr_types=[],
+        descriptor_export_types=[],
+    )
+    ledger = HardwareSigner(
+        "ledger",
+        "Ledger",
+        usb_preferred=True,
+        qr_types=[],
+        descriptor_export_types=[],
+    )
     specterdiy = HardwareSigner(
         "specterdiy",
         "Specter-DIY",

@@ -79,6 +79,23 @@ class BaseAnalyzer:
         return l[states.index(worst_state)]
 
 
+class BaseIntAnalyzer:
+    @abstractmethod
+    def analyze(self, input: int) -> AnalyzerMessage:
+        raise NotImplementedError()
+
+    def normalize(self, input: int) -> int:
+        return input
+
+    @staticmethod
+    def worst_message(l: List[AnalyzerMessage]):
+        if not l:
+            return AnalyzerMessage("", AnalyzerState.Valid)
+        states = [message.state for message in l]
+        worst_state = max(states)
+        return l[states.index(worst_state)]
+
+
 class AnalyzerLineEdit(QLineEdit):
     def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
