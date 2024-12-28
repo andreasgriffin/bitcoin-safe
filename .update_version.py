@@ -39,9 +39,9 @@ def update_poetry_version(file_path, new_version):
     # Update the version under tool.poetry
     if "tool" in data and "poetry" in data["tool"] and "version" in data["tool"]["poetry"]:
         data["tool"]["poetry"]["version"] = new_version
-        data["tool"]["briefcase"]["version"] = new_version
-        data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["flatpak"]["version"] = new_version
-        data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["appimage"]["version"] = new_version
+        # data["tool"]["briefcase"]["version"] = new_version
+        # data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["flatpak"]["version"] = new_version
+        # data["tool"]["briefcase"]["app"]["bitcoin-safe"]["linux"]["appimage"]["version"] = new_version
 
         # Write the updated data back to pyproject.toml
         with open(file_path, "w") as file:

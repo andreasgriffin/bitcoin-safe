@@ -128,6 +128,17 @@
     </message>
 </context>
 <context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>المبلغ صغير جدًا  </translation>
+    </message>
+    <message>
+        <source>Amount too large</source>
+        <translation>المبلغ كبير جدًا  </translation>
+    </message>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
@@ -946,8 +957,8 @@ Location of signing device: .....</source>
         <translation>مزامنة متعددة الأجهزة والدردشة  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncChat tab on each computer.</source>
-        <translation>اختر الحواسيب الموثوقة في تبويب SyncChat على كل جهاز.  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>اختر الحواسيب الموثوقة في تبويب المزامنة والدردشة على كل جهاز.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -1720,8 +1731,8 @@ Location of signing device: .....</source>
         <translation>استيراد التسميات</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>المزامنة &amp;&amp; الدردشة  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2742,8 +2753,8 @@ below {rate}</source>
         <translation>تسجيل multisig على الموقعين</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp; Chat</source>
+        <translation>المزامنة &amp; الدردشة  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -3253,6 +3264,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>نسخة احتياطية لبذور {id}  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>الإجمالي  </translation>
     </message>
     <message>
         <source>Created at {date} with</source>

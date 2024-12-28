@@ -1597,14 +1597,16 @@ class UITx_Creator(UITx_Base, SearchableTab):
     def reapply_max_amounts(self, fee_amount: int) -> None:
         recipient_group_boxes = self.recipients.get_recipient_group_boxes()
         for recipient_group_box in recipient_group_boxes:
-            recipient_group_box.recipient_widget.amount_spin_box.setMaximum(self.get_total_input_value())
+            recipient_group_box.recipient_widget.amount_spin_box.set_warning_maximum(
+                self.get_total_input_value()
+            )
 
         recipient_group_boxes_max_checked = [
             recipient_group_box
             for recipient_group_box in recipient_group_boxes
             if recipient_group_box.recipient_widget.send_max_button.isChecked()
         ]
-        total_change_amount = self.get_total_change_amount(include_max_checked=False) - fee_amount
+        total_change_amount = max(0, self.get_total_change_amount(include_max_checked=False) - fee_amount)
         for recipient_group_box in recipient_group_boxes_max_checked:
             self.set_max_amount(
                 recipient_group_box, total_change_amount // len(recipient_group_boxes_max_checked)

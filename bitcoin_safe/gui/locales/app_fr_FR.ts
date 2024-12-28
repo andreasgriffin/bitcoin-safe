@@ -128,6 +128,17 @@
     </message>
 </context>
 <context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>Montant trop petit  </translation>
+    </message>
+    <message>
+        <source>Amount too large</source>
+        <translation>Montant trop grand  </translation>
+    </message>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
@@ -946,8 +957,8 @@ Location of signing device: .....</source>
         <translation>Synchronisation multi-ordinateur et chat  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncChat tab on each computer.</source>
-        <translation>Choisissez des ordinateurs de confiance dans l&apos;onglet SyncChat sur chaque ordinateur.  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>Choisissez des ordinateurs de confiance dans l&apos;onglet Synchroniser &amp; Discuter sur chaque ordinateur.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -1720,8 +1731,8 @@ Voulez-vous continuer malgré tout ?</translation>
         <translation>Importer les étiquettes  </translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Synchroniser &amp;&amp; Discuter  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2742,8 +2753,8 @@ below {rate}</source>
         <translation>Enregistrer le multisig sur les signataires  </translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat </translation>
+        <source>Sync &amp; Chat</source>
+        <translation>Synchroniser &amp; Discuter  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -3253,6 +3264,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>Sauvegarde de graine de {id}  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Total  </translation>
     </message>
     <message>
         <source>Created at {date} with</source>

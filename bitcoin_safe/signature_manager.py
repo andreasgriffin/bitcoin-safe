@@ -31,11 +31,12 @@ import hashlib
 import logging
 import os
 import platform
+import re
 import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pgpy  # Python-native OpenPGP library
 import requests
@@ -45,36 +46,72 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class FilenameInfo:
+    app_name: str
+    extension: str
+    version: str
+    architecture: Optional[str] = None
+    extra_info: Optional[str] = None
+
+    @classmethod
+    def modify_filename_remove_architecture(cls, filename: str) -> Optional[Tuple[str, str]]:
+        # Capture architecture specifically
+        arch_regex = r"(.*?)([-_.](x86_64|arm64|aarch64|amd64))(.*)"
+        match = re.match(arch_regex, filename)
+        if match:
+            # Reconstruct the filename without the architecture part
+            parts_without_arch = match.group(1) + match.group(4)
+            architecture = match.group(3)  # Capture the architecture
+            return (parts_without_arch, architecture)
+        return None  # Return None if no architecture or matching issue
+
+    @classmethod
+    def from_filename(cls, filename: str) -> Optional["FilenameInfo"]:
+        architecture = None
+        if res := cls.modify_filename_remove_architecture(filename=filename):
+            filename, architecture = res
+
+        # try with 4 digit version numbering
+        regex = (
+            r"(?P<app_name>.+?)"  # Capture app name up to the version, non-greedy
+            r"[-_.](?P<version>\d+\.\d+\.\d+\.\d+[a-zA-Z0-9]*)?"  # Capture version number, potentially including additional alphanumeric characters
+            r"(?:[-_.](?P<extra_info>[^-]+))?"  # Optionally capture extra info with generalized separator
+            r"\.(?P<extension>[^._-]+)$"  # Capture the extension, ensure no inclusion of '-' or '_'
+        )
+
+        match = re.match(regex, filename)
+        if match:
+            return FilenameInfo(**match.groupdict(), architecture=architecture)
+
+        # try with 3 digit version numbering
+        regex = (
+            r"(?P<app_name>.+?)"  # Capture app name up to the version, non-greedy
+            r"[-_.](?P<version>\d+\.\d+\.\d+[a-zA-Z0-9]*)?"  # Capture version number, potentially including additional alphanumeric characters
+            r"(?:[-_.](?P<extra_info>[^-]+))?"  # Optionally capture extra info with generalized separator
+            r"\.(?P<extension>[^._-]+)$"  # Capture the extension, ensure no inclusion of '-' or '_'
+        )
+
+        match = re.match(regex, filename)
+        if match:
+            return FilenameInfo(**match.groupdict(), architecture=architecture)
+
+        return None
+
+
+@dataclass
 class SimpleGPGKey:
     key: str
     repository: str  # org/repo_name
     prefix: str
     manifest_ending: Optional[str] = None
 
-    @staticmethod
-    def extract_prefix_and_version(filename: str) -> tuple[Optional[str], Optional[str]]:
-        import re
-
-        if filename.endswith(".deb"):
-            match = re.search(r"(.+)_(.+?)(?:-.+)?_.*\.deb", filename)
-            if match:
-                return (match.group(1), match.group(2))
-
-        # try with - separator
-        match = re.search(r"(.*?)-([\d\.]+[a-zA-Z0-9]*)", filename)
-        if match:
-            return (match.group(1), match.group(2))
-
-        # try with _ separator
-        match = re.search(r"(.*?)_([\d\.]+[a-zA-Z0-9]*)", filename)
-        if match:
-            return (match.group(1), match.group(2))
-        return (None, None)
-
     def get_tag_if_mine(self, filename: str) -> Optional[str]:
-        prefix, version = self.extract_prefix_and_version(filename)
-        if prefix and prefix.lower() == self.prefix.lower():
-            return version
+        info = FilenameInfo.from_filename(filename)
+        if not info or not info.app_name or not info.version:
+            return None
+
+        if info.app_name.lower() == self.prefix.lower():
+            return info.version
         return None
 
 

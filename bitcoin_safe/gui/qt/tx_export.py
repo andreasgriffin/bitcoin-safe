@@ -84,7 +84,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.button_copy = CopyToolButton(data=self.data, network=network, parent=self)
         self.add_button(self.button_copy)
 
-        # SyncChat
+        # Sync & Chat
         self.button_sync_share = SyncChatToolButton(
             data=self.data, network=network, sync_tabs=sync_tabs, parent=self
         )

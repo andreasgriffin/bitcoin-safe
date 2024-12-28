@@ -128,6 +128,17 @@
     </message>
 </context>
 <context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>राशि बहुत छोटी है  </translation>
+    </message>
+    <message>
+        <source>Amount too large</source>
+        <translation>राशि बहुत बड़ी है  </translation>
+    </message>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
@@ -946,8 +957,8 @@ Location of signing device: .....</source>
         <translation>मल्टी-कंप्यूटर सिंक्रोनाइजेशन और चैट  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncChat tab on each computer.</source>
-        <translation>प्रत्येक कंप्यूटर पर SyncChat टैब में विश्वसनीय कंप्यूटरों का चयन करें।  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>प्रत्येक कंप्यूटर पर सिंक और चैट टैब में विश्वसनीय कंप्यूटरों का चयन करें।  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -1720,8 +1731,8 @@ Location of signing device: .....</source>
         <translation>लेबल आयात करें</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2742,8 +2753,8 @@ below {rate}</source>
         <translation>साइनर्स पर मल्टीसिग पंजीकृत करें</translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp; Chat</source>
+        <translation>सिंक &amp; चैट  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -3253,6 +3264,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>{id} का सीड बैकअप  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>कुल  </translation>
     </message>
     <message>
         <source>Created at {date} with</source>

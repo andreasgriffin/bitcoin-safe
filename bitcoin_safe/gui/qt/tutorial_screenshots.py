@@ -45,14 +45,7 @@ from .util import screenshot_path
 
 
 class ScreenshotsTutorial(QWidget):
-    enabled_hardware_signers = [
-        HardwareSigners.q,
-        HardwareSigners.coldcard,
-        HardwareSigners.bitbox02,
-        HardwareSigners.jade,
-        HardwareSigners.passport,
-        HardwareSigners.specterdiy,
-    ]
+    enabled_hardware_signers = HardwareSigners.as_list()  # activate all of them
 
     def __init__(
         self,

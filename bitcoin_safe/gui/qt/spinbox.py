@@ -27,15 +27,50 @@
 # SOFTWARE.
 
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 import bdkpython as bdk
 from PyQt6 import QtGui, QtWidgets
+from PyQt6.QtWidgets import QWidget
+
+from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 
 from ...util import Satoshis
 
 
-class BTCSpinBox(QtWidgets.QDoubleSpinBox):
+class AnalyzerSpinBox(QtWidgets.QDoubleSpinBox):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._smart_state: Optional[AmountAnalyzer] = None
+        self.valueChanged.connect(self.format_and_apply_validator)
+
+    def setAnalyzer(self, smart_state: AmountAnalyzer):
+        """Set a custom validator."""
+        self._smart_state = smart_state
+
+    def analyzer(self) -> Optional[AmountAnalyzer]:
+        return self._smart_state
+
+    def format_as_error(self, value: bool) -> None:
+        if value:
+            self.setStyleSheet(f"{self.__class__.__name__}" + " { background-color: #ff6c54; }")
+        else:
+            self.setStyleSheet("")
+
+    def format_and_apply_validator(self) -> None:
+        analyzer = self.analyzer()
+        if not analyzer:
+            self.format_as_error(False)
+            return
+
+        analysis = analyzer.analyze(self.value())
+        error = bool(self.text()) and (analysis.state != AnalyzerState.Valid)
+        self.format_as_error(error)
+        self.setToolTip(analysis.msg if error else "")
+
+
+class BTCSpinBox(AnalyzerSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
 
     def __init__(self, network: bdk.Network, parent=None) -> None:
@@ -44,6 +79,10 @@ class BTCSpinBox(QtWidgets.QDoubleSpinBox):
         self._is_max = False
         self.setDecimals(0)  # Set the number of decimal places
         self.setRange(0, 21e6 * 1e8)  # Define range as required
+
+    def setValue(self, val: float) -> None:
+        super().setValue(val)
+        self.format_and_apply_validator()
 
     def set_max(self, value: bool) -> None:
         self.setDisabled(value)
@@ -74,3 +113,9 @@ class BTCSpinBox(QtWidgets.QDoubleSpinBox):
         except ValueError:
             # If it fails, the text is not valid
             return QtGui.QValidator.State.Invalid, text, pos
+
+    def set_warning_maximum(self, value: int) -> None:
+        if not self._smart_state:
+            return
+        self._smart_state.max_amount = value
+        self.format_and_apply_validator()

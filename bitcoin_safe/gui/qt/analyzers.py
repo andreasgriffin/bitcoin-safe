@@ -168,3 +168,18 @@ class AddressAnalyzer(BaseAnalyzer, QObject):
             return AnalyzerMessage(self.tr("Valid Address"), AnalyzerState.Valid)
         else:
             return AnalyzerMessage(self.tr("Invalid Address"), AnalyzerState.Invalid)
+
+
+class AmountAnalyzer(QObject):
+    def __init__(self, parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        self.max_amount = 0
+        self.min_amount = 0
+
+    def analyze(self, input: float) -> AnalyzerMessage:  # type: ignore
+        if input < self.min_amount:
+            return AnalyzerMessage(self.tr("Amount too small"), AnalyzerState.Invalid)
+        if input > self.max_amount:
+            return AnalyzerMessage(self.tr("Amount too large"), AnalyzerState.Invalid)
+
+        return AnalyzerMessage("Amount within allowed range", AnalyzerState.Valid)

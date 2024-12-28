@@ -32,6 +32,7 @@ import logging
 from pathlib import Path
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
+from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -121,6 +122,10 @@ class RecipientWidget(QWidget):
 
         self.amount_layout = QHBoxLayout()
         self.amount_spin_box = BTCSpinBox(self.signals.get_network())
+        amount_analyzer = AmountAnalyzer()
+        amount_analyzer.min_amount = 0
+        amount_analyzer.max_amount = int(21e6 * 1e8)
+        self.amount_spin_box.setAnalyzer(amount_analyzer)
         self.label_unit = QLabel(unit_str(self.signals.get_network()))
         self.send_max_button = QPushButton()
         self.send_max_button.setCheckable(True)

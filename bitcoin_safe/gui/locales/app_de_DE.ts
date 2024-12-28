@@ -128,6 +128,17 @@
     </message>
 </context>
 <context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>Betrag zu klein  </translation>
+    </message>
+    <message>
+        <source>Amount too large</source>
+        <translation>Betrag zu groß  </translation>
+    </message>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
@@ -946,8 +957,8 @@ Location of signing device: .....</source>
         <translation>Mehr-Computer-Synchronisation und Chat  </translation>
     </message>
     <message>
-        <source>Choose trusted computers in SyncChat tab on each computer.</source>
-        <translation>Wählen Sie vertrauenswürdige Computer im SyncChat-Tab auf jedem Computer aus.  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>Wählen Sie vertrauenswürdige Computer im Synchronisieren &amp; Chatten-Tab auf jedem Computer aus.  </translation>
     </message>
     <message>
         <source>See video</source>
@@ -1717,8 +1728,8 @@ Location of signing device: .....</source>
         <translation>Etiketten importieren  </translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Synchronisieren &amp;&amp; Chatten  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2739,8 +2750,8 @@ below {rate}</source>
         <translation>Multisig auf Signern registrieren  </translation>
     </message>
     <message>
-        <source>SyncChat</source>
-        <translation>SyncChat  </translation>
+        <source>Sync &amp; Chat</source>
+        <translation>Synchronisieren &amp; Chatten  </translation>
     </message>
     <message>
         <source>Send test {j}</source>
@@ -3250,6 +3261,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>Seed backup of {id}</source>
         <translation>Seed-Backup von {id}  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Gesamt  </translation>
     </message>
     <message>
         <source>Created at {date} with</source>
