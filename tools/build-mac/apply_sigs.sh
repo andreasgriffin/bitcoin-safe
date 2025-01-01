@@ -17,7 +17,7 @@ CP=gcp
 
 UNSIGNED="$1"
 SIGNATURE="$2"
-ARCH=x86_64
+ARCH=$(uname -m)
 OUTDIR="/tmp/bitcoin_safe_compare_dmg/signed_app"
 
 if [ -z "$UNSIGNED" ]; then
