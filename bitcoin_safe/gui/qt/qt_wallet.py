@@ -177,6 +177,14 @@ class QTProtoWallet(QtWalletBase):
         return self.protowallet
 
 
+class ProgressSignal:
+    def __init__(self, signal_settext_balance_label: TypedPyQtSignal[str]) -> None:
+        self.signal_settext_balance_label = signal_settext_balance_label
+
+    def update(self, progress: "float", message: "Optional[str]"):
+        self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
+
+
 class QTWallet(QtWalletBase, BaseSaveableClass):
     VERSION = "0.1.1"
     known_classes = {
@@ -1117,11 +1125,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             logger.info(f"Syncing already in progress")
             return
 
-        def progress_function_threadsafe(progress: float, message: str) -> None:
-            self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
-
         def do() -> Any:
-            self.wallet.sync(progress_function_threadsafe=progress_function_threadsafe)
+            self.wallet.sync(progress=ProgressSignal(self.signal_settext_balance_label))
 
         def on_done(result) -> None:
             self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
@@ -1144,14 +1149,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             logger.info(f"success syncing wallet '{self.wallet.id}'")
 
             logger.info("start updating lists")
+            new_chain_height = self.wallet.get_height_no_cache()
             # self.wallet.clear_cache()
             self.refresh_caches_and_ui_lists(
                 force_ui_refresh=False,
-                chain_height_advanced=self.wallet.get_height() != self._last_sync_chain_height,
+                chain_height_advanced=new_chain_height != self._last_sync_chain_height,
             )
             # self.update_tabs()
             logger.info("finished updating lists")
-            self._last_sync_chain_height = self.wallet.get_height()
+            self._last_sync_chain_height = new_chain_height
 
             self.fx.update_if_needed()
             self.signal_after_sync.emit(self.sync_status)

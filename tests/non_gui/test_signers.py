@@ -180,11 +180,13 @@ class PyTestBDKSetup:
 def get_blockchain_config(bitcoin_core: Path, network: bdk.Network) -> bdk.BlockchainConfig.RPC:
     return bdk.BlockchainConfig.RPC(
         bdk.RpcConfig(
-            f"127.0.0.1:{BITCOIN_PORT}",
-            bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
-            network,
-            str(uuid4()),
-            bdk.RpcSyncParams(0, 0, False, 10),
+            url=f"127.0.0.1:{BITCOIN_PORT}",
+            auth=bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
+            network=network,
+            wallet_name=str(uuid4()),
+            sync_params=bdk.RpcSyncParams(
+                start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
+            ),
         )
     )
 
@@ -342,7 +344,7 @@ def test_signer_recognizes_finalized_tx_received(
         signer.scan_result_callback(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
             data=Data.from_tx(
-                bdk.Transaction(hex_to_serialized(fully_signed_tx)), network=bdk.Network.REGTEST
+                bdk.Transaction(list(hex_to_serialized(fully_signed_tx))), network=bdk.Network.REGTEST
             ),
         )
 

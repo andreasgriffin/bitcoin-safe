@@ -44,6 +44,7 @@ import bdkpython as bdk
 import pytest
 import requests
 
+from bitcoin_safe.wallet import ProgressLogger
 from tests.test_util import make_psbt
 
 logger = logging.getLogger(__name__)
@@ -299,11 +300,13 @@ class Faucet:
         self.network = bdk.Network.REGTEST
         self.blockchain_config = bdk.BlockchainConfig.RPC(
             bdk.RpcConfig(
-                f"{BITCOIN_HOST}:{BITCOIN_PORT}",
-                bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
-                self.network,
-                f"new-{hash(mnemonic)}",
-                bdk.RpcSyncParams(0, 0, False, 10),
+                url=f"{BITCOIN_HOST}:{BITCOIN_PORT}",
+                auth=bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
+                network=self.network,
+                wallet_name=f"new-{hash(mnemonic)}",
+                sync_params=bdk.RpcSyncParams(
+                    start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
+                ),
             )
         )
         self.blockchain = bdk.Blockchain(self.blockchain_config)
@@ -337,13 +340,7 @@ class Faucet:
         self.sync()
 
     def sync(self):
-        def update(progress: float, message: str):
-            logger.debug(f"faucet syncing {progress, message}")
-
-        progress = bdk.Progress()
-        progress.update = update  # type: ignore
-
-        self.bdk_wallet.sync(self.blockchain, progress)
+        self.bdk_wallet.sync(self.blockchain, progress=ProgressLogger())
 
     def mine(self, blocks=1, address=None):
         address = (

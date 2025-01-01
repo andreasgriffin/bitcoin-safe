@@ -325,7 +325,7 @@ class SankeyBitcoin(SankeyWidget):
             # output
             # careful, the last flow_index.i is the fee, so
             # outflow indexes go 1 larger than the actual vout index
-            outpoint = OutPoint(self.tx.txid(), flow_index.i)
+            outpoint = OutPoint(txid=self.tx.txid(), vout=flow_index.i)
             txo = self.txo_dict.get(str(outpoint)) or self.get_python_txo(str(outpoint))
             if not txo:
                 return

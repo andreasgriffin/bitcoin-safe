@@ -846,8 +846,8 @@ the sending value {sent}</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <source>Manual</source>
-        <translation>Manual</translation>
+        <source>Advanced</source>
+        <translation>Avançado</translation>
     </message>
     <message>
         <source>Description</source>
@@ -1383,8 +1383,8 @@ Location of signing device: .....</source>
 <context>
     <name>NetworkSettingsUI</name>
     <message>
-        <source>Manual</source>
-        <translation>Manual</translation>
+        <source>Advanced</source>
+        <translation>Avançado</translation>
     </message>
     <message>
         <source>Mode:</source>

@@ -846,8 +846,8 @@ the sending value {sent}</source>
         <translation>आयात करें</translation>
     </message>
     <message>
-        <source>Manual</source>
-        <translation>मैनुअल</translation>
+        <source>Advanced</source>
+        <translation>उन्नत</translation>
     </message>
     <message>
         <source>Description</source>
@@ -1383,8 +1383,8 @@ Location of signing device: .....</source>
 <context>
     <name>NetworkSettingsUI</name>
     <message>
-        <source>Manual</source>
-        <translation>मैनुअल</translation>
+        <source>Advanced</source>
+        <translation>उन्नत</translation>
     </message>
     <message>
         <source>Mode:</source>

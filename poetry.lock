@@ -38,23 +38,31 @@ tests = ["PyHamcrest (>=2.0.2)", "mypy", "pytest (>=4.6)", "pytest-benchmark", "
 
 [[package]]
 name = "bdkpython"
-version = "0.31.0"
+version = "0.32.0"
 description = "The Python language bindings for the Bitcoin Development Kit"
 optional = false
 python-versions = "*"
 files = [
-    {file = "bdkpython-0.31.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:5cafbe87f49fd45b298eb0cff43b3b97e69ffdc6ea51fcec2fdc943ff4f84c00"},
-    {file = "bdkpython-0.31.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:e7766044bccb6d9d84865bde13725e958730bc2052dc74d665adaf222bdbec31"},
-    {file = "bdkpython-0.31.0-cp310-cp310-manylinux_2_17_x86_64.whl", hash = "sha256:0cc98896ab86686c5f090356b2d25549feb843c38ca09a2fedbd67b9092a6432"},
-    {file = "bdkpython-0.31.0-cp310-cp310-win_amd64.whl", hash = "sha256:f374edf9f33d9a80e8f830295a1d7986ede9605df325df99fd885c549f203a6b"},
-    {file = "bdkpython-0.31.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:c116ac94fe5db6200f2db528ccd79304a0659d84cd3ceef008e0a6f1d4289b8e"},
-    {file = "bdkpython-0.31.0-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:b64fab6b563664d7a263d13acc4c4e27a699b803bccd899a641bcccc83a2b0d2"},
-    {file = "bdkpython-0.31.0-cp38-cp38-manylinux_2_17_x86_64.whl", hash = "sha256:70dd4fc87fc1397adabcfb7a1f1c523fed21ebb324cc28d171eecb24e27c8bc7"},
-    {file = "bdkpython-0.31.0-cp38-cp38-win_amd64.whl", hash = "sha256:75b4b388a19ea517d076b2343147ba3b38881bac429173ac4c801f11c17eabde"},
-    {file = "bdkpython-0.31.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:51bbdce21740fec0e418b4c3ffa041f317ff679c90075a3c3b587a4c6d0d5075"},
-    {file = "bdkpython-0.31.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:939f378a040509bc2a64d5bf1fc6de73c922494ccf9860777dba905fbd8a619e"},
-    {file = "bdkpython-0.31.0-cp39-cp39-manylinux_2_17_x86_64.whl", hash = "sha256:6e711010941c02b058cbd8bb71eb5cbe39740b219f2d1440f118d573c809bb70"},
-    {file = "bdkpython-0.31.0-cp39-cp39-win_amd64.whl", hash = "sha256:6d6d844a62fcf758ac5ebcdffe263c1fed4f5add9287400bc50a110f39d93476"},
+    {file = "bdkpython-0.32.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:815312aac4117b339af5e96512ef4a07fdb98840a12083f2f1974009a354c18a"},
+    {file = "bdkpython-0.32.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:d64d5d0fe0924cf61c726e3883399895ffb5287f96b631f9409c4a43e60d2334"},
+    {file = "bdkpython-0.32.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:337818f3109110609ca43d2bb98ba18eba2d039248bda6bc0bca4a99ed98bc1e"},
+    {file = "bdkpython-0.32.0-cp310-cp310-win_amd64.whl", hash = "sha256:2a1a68bb7cf4dbfb82f1e52346a7209d8d86e7b1317ba9fa3189490819669f87"},
+    {file = "bdkpython-0.32.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:8dca201aa0374336246e1ad480213b7753feda969256c9670e1378b475cc2892"},
+    {file = "bdkpython-0.32.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:57e9db4337642c89cf03af82f05d81b97c89297f46839790dc11fd6939534f1b"},
+    {file = "bdkpython-0.32.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:71b32c5a7d1383277fec2bb5b4ecc7c72f4ae60c437b4a09e5608466b123b5fd"},
+    {file = "bdkpython-0.32.0-cp311-cp311-win_amd64.whl", hash = "sha256:d3648977a33fdb0c7839024d7523def4d7b4f1f1cae9bd6391b2ebcc8a016f00"},
+    {file = "bdkpython-0.32.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:459a71d1df4cd11e7ad743bf51feea75ca5187492521d07b2495d1452c173c58"},
+    {file = "bdkpython-0.32.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:9c462c38e88dda4d4978fd07a685da8e1dde424f1fd9160f188f6587cbce7648"},
+    {file = "bdkpython-0.32.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:03a4dc11b945b5a7a9c6e4a2c5eb4d89760549e6b40999311adfab44dd6e3fa9"},
+    {file = "bdkpython-0.32.0-cp312-cp312-win_amd64.whl", hash = "sha256:7197d2bdceb9ea4aafe3043ce9ba8aa06a9b634a85ab17b531b2e2472f49e718"},
+    {file = "bdkpython-0.32.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:396c7cef22ed86b6558df629e59b50359ab5567df061db746ee8bfd941a6587f"},
+    {file = "bdkpython-0.32.0-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:d94fd061eabeb7b8ed87960e2ff5d64eae644a15d297c1f6abce783971ca8737"},
+    {file = "bdkpython-0.32.0-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:950f976fe107cc96da9e7e17a2611e8deba53e8a4f56170933e960a0902a957d"},
+    {file = "bdkpython-0.32.0-cp38-cp38-win_amd64.whl", hash = "sha256:8da9d242d0f25ca9c152546d040d5ef656da8ddb2b9670a82926c3393baffd1b"},
+    {file = "bdkpython-0.32.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:d295af510067b29bf0f8b3e45e56df8e643a939418c9396bf7522fd77343f22b"},
+    {file = "bdkpython-0.32.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:503502575a96044b36ca80b7eef58ece65d4052a54c4fd4390eaf298f8b85919"},
+    {file = "bdkpython-0.32.0-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:9ca0050d8c52a529a195119264bdd128ee71deee598f457594f47bc6a07e9181"},
+    {file = "bdkpython-0.32.0-cp39-cp39-win_amd64.whl", hash = "sha256:b525acba952e9f768a6db09e35d9b9361b1123a1d0807fbebc56f6c19175dd76"},
 ]
 
 [[package]]
@@ -77,18 +85,18 @@ requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "1.0.1"
+version = "1.0.3"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = "<3.13,>=3.9"
 files = [
-    {file = "bitcoin_qr_tools-1.0.1-py3-none-any.whl", hash = "sha256:873077fc385566200d640b181edec8f026f08579ad3c5450bd4a37116e6b5fa3"},
-    {file = "bitcoin_qr_tools-1.0.1.tar.gz", hash = "sha256:f0ef6c0d3e78b4b06c6654c4982efb283616bd7248164cbb93e613dfc9be3d03"},
+    {file = "bitcoin_qr_tools-1.0.3-py3-none-any.whl", hash = "sha256:b87d840a677e63ef96e9ceb7bef08c8187b300a59321180aae42697c043add3d"},
+    {file = "bitcoin_qr_tools-1.0.3.tar.gz", hash = "sha256:efc305beb2d6b77b2b25888d8d96e5e6a7cc960c037edb9138bdb170aa875260"},
 ]
 
 [package.dependencies]
 base58 = ">=2.1.1,<3.0.0"
-bdkpython = ">=0.31.0,<0.32.0"
+bdkpython = ">=0.32.0,<0.33.0"
 hwi = ">=3.0.0,<4.0.0"
 mss = ">=9.0.1,<10.0.0"
 numpy = ">=2.0.1,<3.0.0"
@@ -102,17 +110,17 @@ segno = "1.6.1"
 
 [[package]]
 name = "bitcoin-usb"
-version = "0.7.0"
+version = "0.7.2"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = "<3.13,>=3.8.1"
 files = [
-    {file = "bitcoin_usb-0.7.0-py3-none-any.whl", hash = "sha256:15e95246aeb262862c3974e852589f834b20767a05cf911b247555ea9e2ea86d"},
-    {file = "bitcoin_usb-0.7.0.tar.gz", hash = "sha256:ed6dfe954de9cb494327523e6f0b922dbc5526374e09f24f3f2ee10a1d06b09d"},
+    {file = "bitcoin_usb-0.7.2-py3-none-any.whl", hash = "sha256:3df1387a7622e885f5fc3ba08e4c791d7450c8401bab5139fd6ff1f3b4878b25"},
+    {file = "bitcoin_usb-0.7.2.tar.gz", hash = "sha256:efc0c43274522852caa782306327c69b4c94fd049942610dfebc58005c0458b5"},
 ]
 
 [package.dependencies]
-bdkpython = ">=0.31.0,<0.32.0"
+bdkpython = ">=0.32.0,<0.33.0"
 hwi = ">=3.0.0,<4.0.0"
 mnemonic = ">=0.21,<0.22"
 pyqt6 = ">=6.6.1,<7.0.0"
@@ -990,13 +998,13 @@ qt = ["pyside2 (>=5.14.0,<6.0.0)"]
 
 [[package]]
 name = "identify"
-version = "2.6.3"
+version = "2.6.4"
 description = "File identification library for Python"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "identify-2.6.3-py2.py3-none-any.whl", hash = "sha256:9edba65473324c2ea9684b1f944fe3191db3345e50b6d04571d10ed164f8d7bd"},
-    {file = "identify-2.6.3.tar.gz", hash = "sha256:62f5dae9b5fef52c84cc188514e9ea4f3f636b1d8799ab5ebc475471f9e47a02"},
+    {file = "identify-2.6.4-py2.py3-none-any.whl", hash = "sha256:993b0f01b97e0568c179bb9196391ff391bfb88a99099dbf5ce392b68f42d0af"},
+    {file = "identify-2.6.4.tar.gz", hash = "sha256:285a7d27e397652e8cafe537a6cc97dd470a970f48fb2e9d979aa38eae5513ac"},
 ]
 
 [package.extras]
@@ -1119,15 +1127,15 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-ena
 
 [[package]]
 name = "libusb1"
-version = "3.1.0"
+version = "3.2.0"
 description = "Pure-python wrapper for libusb-1.0"
 optional = false
 python-versions = "*"
 files = [
-    {file = "libusb1-3.1.0-py3-none-any.whl", hash = "sha256:9d9f16e2c199cab91f48ead585d3f5ec7e8e4be428a25ddfed22abf786fa9b3a"},
-    {file = "libusb1-3.1.0-py3-none-win32.whl", hash = "sha256:bc7874302565721f443a27d8182fcc7152e5b560523f12f1377b130f473e4a0c"},
-    {file = "libusb1-3.1.0-py3-none-win_amd64.whl", hash = "sha256:77a06ecfb3d002d7c2ce369e28d0138b292fe8db8a3d102b73fda231a716dd35"},
-    {file = "libusb1-3.1.0.tar.gz", hash = "sha256:4ee9b0a55f8bd0b3ea7017ae919a6c1f439af742c4a4b04543c5fd7af89b828c"},
+    {file = "libusb1-3.2.0-py3-none-any.whl", hash = "sha256:048d4fb79021ec05af667a32e51a911578fc63ab3ed48a4f4fe0f67da797f416"},
+    {file = "libusb1-3.2.0-py3-none-win32.whl", hash = "sha256:5dc48d6f5207e184cb53278527e7d8e5f4051d8bc419bd15b564c37dc5cca268"},
+    {file = "libusb1-3.2.0-py3-none-win_amd64.whl", hash = "sha256:b13acc618263348c91bc4476fadada47be98b7924d6f60e79e3f1da67ac39ddc"},
+    {file = "libusb1-3.2.0.tar.gz", hash = "sha256:a11a6095e718cd49418a96329314da271cca6be7b4317a142724523371ac8961"},
 ]
 
 [[package]]
@@ -1544,8 +1552,10 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
-    {version = ">=1.21.2", markers = "platform_system != \"Darwin\" and python_version >= \"3.10\""},
+    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
+    {version = ">=1.23.5", markers = "python_version >= \"3.11\" and python_version < \"3.12\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\" and python_version < \"3.11\""},
+    {version = ">=1.21.2", markers = "platform_system != \"Darwin\" and python_version >= \"3.10\" and python_version < \"3.11\""},
 ]
 
 [[package]]
@@ -2044,6 +2054,7 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:8c5c05f5fdff31a5887dbc29b27615b09df467631238d7b449283809ffca6228"},
+    {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:3a4354816f11e812b727206a9ea6e79ff3774f1bb7228ad4b9318442d2c64ff9"},
     {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:452bae5840077bf0f146c798d7777f70d7bdd0c7dcfa9ee7a415c1daf2d10038"},
     {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:cf7123caea14e7ecf10bd12cae48e8d9970ef7caf627bc7d7988b0baa209adb3"},
     {file = "PyQt6-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:a9913d479f1ffee804bf7f232079baea4fb4b221a8f4890117588917a54ea30d"},
@@ -2063,6 +2074,7 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:1b992688f97deea99d025913408acc48f6d554563a91b72adbdd2991ba2b0b35"},
+    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:f8cbe7005f836f156e09f57b1916ce824931421f9f25e37b0b6c09fae4e4508f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:2ce660031db9eb572d5c65c34d9fc4a75bc0e21093abfe3b1d0fccc47d95550a"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:3984b7995d8eda5587d893f8fbabde5647bc64a2c27e6f01a3a2758ae12a353f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:535e699dace20fc9f8f516e67ca9ff529a79351145d9000ef1a0c61c3bd35858"},
@@ -2864,5 +2876,5 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<3.11"
-content-hash = "0b1c9204be3f7985e7789121c49a25d09522107987582d1d3b6ae39afd22e7cb"
+python-versions = ">=3.10,<3.13"
+content-hash = "c374611c0dff27174f53a99601d810ee49b7a8c1a2a850d844407c1fd93639fd"
