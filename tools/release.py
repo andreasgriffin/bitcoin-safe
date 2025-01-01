@@ -274,13 +274,6 @@ def main() -> None:
     from bitcoin_safe import __version__
 
     git_tag: Optional[str] = get_git_tag()
-    if git_tag == __version__ and (
-        get_input_with_default(
-            f"The tag {git_tag} exists already. Do you want to continue? (y/n): ", "n"
-        ).lower()
-        != "y"
-    ):
-        return
 
     if get_input_with_default(f"Is this version {__version__} correct? (y/n): ", "y").lower() != "y":
         return

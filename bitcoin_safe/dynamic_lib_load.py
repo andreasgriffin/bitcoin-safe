@@ -125,8 +125,9 @@ def setup_libsecp256k1() -> None:
         msg = translate(
             "dynamic_lib_load", "libsecp256k1 could not be found. Please install libsecp256k1 in your OS."
         )
-        logger.info(msg)
-        show_warning_before_failiure(msg)
+        logger.warning(msg)
+        # cannot show a gui message here, because otherwise
+        # pyinstaller (which goes through all module inits)  halts
 
 
 def ensure_pyzbar_works() -> None:
