@@ -76,7 +76,8 @@ export CFLAGS="-g0"
 
 # Do not build universal binaries. The default on macos 11+ and xcode 12+ is "-arch arm64 -arch x86_64"
 # but with that e.g. "hid.cpython-310-darwin.so" is not reproducible as built by clang.
-export ARCHFLAGS="-arch x86_64"
+arch=$(uname -m)
+export ARCHFLAGS="-arch $arch"
 
 info "Installing build dependencies"
 # note: re pip installing from PyPI,
@@ -149,7 +150,7 @@ if [ ! -f "$DLL_TARGET_DIR/libsecp256k1.2.dylib" ]; then
 else
     info "Skipping libsecp256k1 build: reusing already built dylib."
 fi
-#cp -f "$DLL_TARGET_DIR"/libsecp256k1.*.dylib "$PROJECT_ROOT/bitcoin_safe" || fail "Could not copy libsecp256k1 dylib"
+cp -f "$DLL_TARGET_DIR"/libsecp256k1.*.dylib "$PROJECT_ROOT/bitcoin_safe" || fail "Could not copy libsecp256k1 dylib"
 
 if [ ! -f "$DLL_TARGET_DIR/libzbar.0.dylib" ]; then
     info "Building ZBar dylib..."
