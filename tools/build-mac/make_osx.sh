@@ -100,8 +100,7 @@ brew install autoconf automake libtool gettext coreutils pkgconfig
 
 info "Building PyInstaller."
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="5d7a0449ecea400eccbbb30d5fcef27d72f8f75d"
-# ^ tag "v6.6.0"
+PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
 (
     if [ -f "$CACHEDIR/pyinstaller/PyInstaller/bootloader/Darwin-64bit/runw" ]; then
         info "pyinstaller already built, skipping"
