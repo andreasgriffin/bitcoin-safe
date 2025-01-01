@@ -425,13 +425,14 @@ def test_wallet_features_multisig(
 
         menu_action_license()
 
-        def switch_language() -> None:
-            main_window.language_chooser.switchLanguage("zh_CN")
-            shutter.save(main_window)
+        def switch_languages() -> None:
+            for lang in main_window.language_chooser.availableLanguages.keys():
+                main_window.language_chooser.switchLanguage(lang)
+                shutter.save(main_window)
             main_window.language_chooser.switchLanguage("en_US")
             shutter.save(main_window)
 
-        switch_language()
+        switch_languages()
 
         # end
         shutter.save(main_window)

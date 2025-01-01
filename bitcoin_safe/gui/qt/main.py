@@ -70,7 +70,6 @@ from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
     QMainWindow,
-    QScrollArea,
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
@@ -142,7 +141,7 @@ class MainWindow(QMainWindow):
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network)
         self.hwi_tool_gui.setWindowIcon(read_QIcon("logo.svg"))
-        self.setupUi(self)
+        self.setupUi()
 
         self.mempool_data = MempoolData(
             network_config=self.config.network_config,
@@ -247,17 +246,17 @@ class MainWindow(QMainWindow):
             title += f" - {qt_wallet.wallet.id}"
         self.setWindowTitle(title)
 
-    def setupUi(self, MainWindow: QWidget) -> None:
+    def setupUi(self) -> None:
         logger.debug(f"start setupUi")
         # sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         # sizePolicy.setHorizontalStretch(0)
         # sizePolicy.setVerticalStretch(0)
         # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         # MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(read_QIcon("logo.svg"))
         w, h = 900, 600
-        MainWindow.resize(w, h)
-        MainWindow.setMinimumSize(w, h)
+        self.resize(w, h)
+        self.setMinimumSize(w, h)
 
         #####
         self.tab_wallets = ExtendedTabWidget(
@@ -274,7 +273,7 @@ class MainWindow(QMainWindow):
         self.tab_wallets.currentChanged.connect(self.set_title)
 
         # central_widget
-        central_widget = QScrollArea()
+        central_widget = QWidget(self)
         vbox = QVBoxLayout(central_widget)
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins

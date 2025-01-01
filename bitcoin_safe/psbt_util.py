@@ -46,7 +46,7 @@ setup_libsecp256k1()
 
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
-from bitcoin_safe.util import remove_duplicates_keep_order
+from bitcoin_safe.util import hex_to_script, remove_duplicates_keep_order
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_script
 
@@ -368,7 +368,7 @@ class SimpleInput:
         prev_out = OutPoint.from_bdk(self.txin.previous_output)
         output = self.non_witness_utxo.get("output", [])[prev_out.vout]
         non_witness_utxo_prev_out = TxOut(
-            value=output["value"], script_pubkey=bdk.Script(bytes.fromhex(output["script_pubkey"]))
+            value=output["value"], script_pubkey=hex_to_script(output["script_pubkey"])
         )
         return {str(prev_out): non_witness_utxo_prev_out}
 
@@ -405,7 +405,7 @@ class SimpleOutput:
         return instance
 
     def to_txout(self) -> TxOut:
-        return TxOut(self.value, self.script_pubkey)
+        return TxOut(value=self.value, script_pubkey=hex_to_script(self.script_pubkey))
 
 
 @dataclass

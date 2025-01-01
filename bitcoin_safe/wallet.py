@@ -464,6 +464,11 @@ class WalletInputsInconsistentError(Exception):
     pass
 
 
+class ProgressLogger:
+    def update(self, progress: "float", message: "Optional[str]"):
+        logger.info(str((progress, message)))
+
+
 class Wallet(BaseSaveableClass, CacheManager):
     """If any bitcoin logic (ontop of bdk) has to be done, then here is the
     place."""
@@ -807,22 +812,22 @@ class Wallet(BaseSaveableClass, CacheManager):
             ) + self.config.network_config.electrum_url
             blockchain_config = bdk.BlockchainConfig.ELECTRUM(
                 bdk.ElectrumConfig(
-                    full_url,
-                    None,
-                    2,
-                    10,
-                    max(self.gap, self.gap_change),
-                    self.config.network_config.electrum_use_ssl,
+                    url=full_url,
+                    socks5=None,
+                    retry=2,
+                    timeout=10,
+                    stop_gap=max(self.gap, self.gap_change),
+                    validate_domain=self.config.network_config.electrum_use_ssl,
                 )
             )
         elif self.config.network_config.server_type == BlockchainType.Esplora:
             blockchain_config = bdk.BlockchainConfig.ESPLORA(
                 bdk.EsploraConfig(
-                    self.config.network_config.esplora_url,
-                    None,
-                    1,
-                    max(self.gap, self.gap_change),
-                    10,
+                    base_url=self.config.network_config.esplora_url,
+                    proxy=None,
+                    concurrency=1,
+                    stop_gap=max(self.gap, self.gap_change),
+                    timeout=10,
                 )
             )
         # elif self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
@@ -841,37 +846,36 @@ class Wallet(BaseSaveableClass, CacheManager):
         elif self.config.network_config.server_type == BlockchainType.RPC:
             blockchain_config = bdk.BlockchainConfig.RPC(
                 bdk.RpcConfig(
-                    f"{self.config.network_config.rpc_ip}:{self.config.network_config.rpc_port}",
-                    bdk.Auth.USER_PASS(
-                        self.config.network_config.rpc_username,
-                        self.config.network_config.rpc_password,
+                    url=f"{self.config.network_config.rpc_ip}:{self.config.network_config.rpc_port}",
+                    auth=bdk.Auth.USER_PASS(
+                        username=self.config.network_config.rpc_username,
+                        password=self.config.network_config.rpc_password,
                     ),
-                    self.config.network,
-                    self._get_uniquie_wallet_id(),
-                    bdk.RpcSyncParams(0, 0, False, 10),
+                    network=self.config.network,
+                    wallet_name=self._get_uniquie_wallet_id(),
+                    sync_params=bdk.RpcSyncParams(
+                        start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
+                    ),
                 )
             )
         if not blockchain_config:
             raise Exception("Could not find a blockchain_config.")
-        self.blockchain = bdk.Blockchain(blockchain_config)
+        self.blockchain = bdk.Blockchain(config=blockchain_config)
         return self.blockchain
 
     def _get_uniquie_wallet_id(self) -> str:
         return f"{replace_non_alphanumeric(self.id)}-{hash_string(self.multipath_descriptor.as_string())}"
 
-    def sync(self, progress_function_threadsafe: Callable[[float, str], None] | None = None) -> None:
+    def sync(self, progress: Optional[bdk.Progress] | None = None) -> None:
         if self.blockchain is None:
             self.init_blockchain()
 
-        def default_progress_function_threadsafe(progress: float, message: str) -> None:
-            logger.info((progress, message))
-
-        progress = bdk.Progress()
-        progress.update = progress_function_threadsafe if progress_function_threadsafe else default_progress_function_threadsafe  # type: ignore
+        if self.blockchain is None:
+            return
 
         try:
             start_time = time()
-            self.bdkwallet.sync(self.blockchain, progress)
+            self.bdkwallet.sync(self.blockchain, progress if progress else ProgressLogger())
             logger.debug(f"{self.id} self.bdkwallet.sync in { time()-start_time}s")
             logger.info(f"Wallet balance is: { self.bdkwallet.get_balance().__dict__ }")
         except Exception as e:
@@ -1399,8 +1403,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         txid = tx.txid if tx else translate("wallet", "Unknown")
         return f"{txid}:{utxo.outpoint.vout}"
 
-    @instance_lru_cache()
-    def get_height(self) -> int:
+    def get_height_no_cache(self) -> int:
         if self.blockchain:
             # update the cached height
             try:
@@ -1408,6 +1411,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             except:
                 logger.error(f"Could not fetch self.blockchain.get_height()")
         return self._blockchain_height
+
+    @instance_lru_cache()
+    def get_height(self) -> int:
+        return self.get_height_no_cache()
 
     def opportunistic_coin_select(
         self, utxos: List[PythonUtxo], total_sent_value: int, opportunistic_merge_utxos: bool
@@ -1605,7 +1612,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
 
         logger.info(json.loads(builder_result.psbt.json_serialize()))
-        logger.info(f"psbt fee after finalized {builder_result.psbt.fee_rate().as_sat_per_vb()}")
+        fee_rate = builder_result.psbt.fee_rate()
+        if fee_rate is not None:
+            logger.info(f"psbt fee after finalized {fee_rate.as_sat_per_vb()}")
 
         recipient_category = self.determine_recipient_category(utxos_for_input.utxos)
 
@@ -1685,7 +1694,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def get_txout_of_outpoint(self, outpoint: OutPoint) -> Optional[TxOut]:
         tx_details = self.get_tx(outpoint.txid)
-        if not tx_details:
+        if not tx_details or not tx_details.transaction:
             return None
 
         txouts = list(tx_details.transaction.output())

@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "setuptools>=40.6.0", "wheel", "poetry-core", "poetry-version-plugin",]
+requires = [ "setuptools>=70.0.0", "wheel", "poetry-core", "poetry-version-plugin",]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -23,11 +23,11 @@ homepage = "https://www.bitcoin-safe.org"
 source = "init"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.13"
 fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
-bdkpython = "^0.31.0"
+bdkpython = "^0.32.0"
 cryptography = "^43.0.1"
 hwi = ">=2.3.1"
 appdirs = "^1.4.4"
@@ -39,9 +39,9 @@ python-gnupg = "^0.5.2"
 # bitcoin-qr-tools =   {path="../bitcoin-qr-tools"} #  "^0.10.15"
 # bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
 # bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
-bitcoin-qr-tools =    "^1.0.1"
+bitcoin-qr-tools =    "^1.0.3"
 bitcoin-nostr-chat =    "^0.5.1"
-bitcoin-usb =  "^0.7.0"
+bitcoin-usb =  "^0.7.2"
 numpy = "^2.0.1" 
 pgpy = "^0.6.0"
 

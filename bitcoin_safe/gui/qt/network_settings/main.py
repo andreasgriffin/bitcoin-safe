@@ -224,7 +224,7 @@ class NetworkSettingsUI(QDialog):
         )
 
         self.cbf_server_typeComboBox = QComboBox(self.compactBlockFiltersTab)
-        self.cbf_server_typeComboBox.addItem(self.tr("Manual"), CBFServerType.Manual)
+        self.cbf_server_typeComboBox.addItem(self.tr("Advanced"), CBFServerType.Manual)
         self.cbf_server_typeComboBox.addItem(self.tr("Automatic"), CBFServerType.Automatic)
         self.cbf_server_typeComboBox.setCurrentIndex(1)
 

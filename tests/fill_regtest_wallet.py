@@ -31,11 +31,16 @@ import argparse
 import json
 import time
 from random import randint
-from typing import List, Union
+from typing import List, Optional, Union
 
 import bdkpython as bdk
 import numpy as np
 import requests
+
+
+class ProgressPrint:
+    def update(self, progress: "float", message: "Optional[str]"):
+        print(str((progress, message)))
 
 
 def send_rpc_command(ip: str, port: Union[str, int], username: str, password: str, method: str, params=None):
@@ -184,18 +189,22 @@ def main():
     # RPC Blockchain Configuration
     blockchain_config = bdk.BlockchainConfig.RPC(
         bdk.RpcConfig(
-            rpc_ip,
-            bdk.Auth.USER_PASS(rpc_username, rpc_password),
-            network,
-            "new0-51117772c02f89651e192a79b2deac8d332cc1a5b67bb21e931d2395e5455c1a9b7c",
-            bdk.RpcSyncParams(0, 0, False, 10),
+            url=rpc_ip,
+            auth=bdk.Auth.USER_PASS(username=rpc_username, password=rpc_password),
+            network=network,
+            wallet_name="new0-51117772c02f89651e192a79b2deac8d332cc1a5b67bb21e931d2395e5455c1a9b7c",
+            sync_params=bdk.RpcSyncParams(
+                start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
+            ),
         )
     )
     blockchain_config = bdk.BlockchainConfig.ESPLORA(
-        bdk.EsploraConfig("http://127.0.0.1:3000", None, 1, gap * 2, 20)
+        bdk.EsploraConfig(
+            base_url="http://127.0.0.1:3000", proxy=None, concurrency=1, stop_gap=gap * 2, timeout=20
+        )
     )
 
-    blockchain = bdk.Blockchain(blockchain_config)
+    blockchain = bdk.Blockchain(config=blockchain_config)
 
     # Create Wallet
     if args.descriptor:
@@ -246,9 +255,7 @@ def main():
         time.sleep(5)
 
     # Synchronize the wallet
-    progress = bdk.Progress()
-    progress.update = update
-    wallet.sync(blockchain, progress)
+    wallet.sync(blockchain, progress=ProgressPrint())
 
     print(wallet.get_balance())
 

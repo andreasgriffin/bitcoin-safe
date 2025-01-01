@@ -94,14 +94,14 @@ class OutPoint(bdk.OutPoint):
             return bdk_outpoint
         if isinstance(bdk_outpoint, str):
             return cls.from_str(bdk_outpoint)
-        return OutPoint(bdk_outpoint.txid, bdk_outpoint.vout)
+        return OutPoint(txid=bdk_outpoint.txid, vout=bdk_outpoint.vout)
 
     @classmethod
     def from_str(cls, outpoint_str: str) -> "OutPoint":
         if isinstance(outpoint_str, OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
-        return OutPoint(txid, int(vout))
+        return OutPoint(txid=txid, vout=int(vout))
 
 
 def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
@@ -127,7 +127,7 @@ class TxOut(bdk.TxOut):
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
         if isinstance(tx_out, TxOut):
             return tx_out
-        return TxOut(tx_out.value, tx_out.script_pubkey)
+        return TxOut(value=tx_out.value, script_pubkey=tx_out.script_pubkey)
 
     def __eq__(self, other) -> bool:
         if isinstance(other, TxOut):
@@ -192,8 +192,8 @@ class FullTxDetail:
                     f"Could not calculate the address of {TxOut.from_bdk(txout)}. This should not happen, unless it is a mining input."
                 )
                 continue
-            out_point = OutPoint(txid, vout)
-            python_utxo = PythonUtxo(address, out_point, txout)
+            out_point = OutPoint(txid=txid, vout=vout)
+            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=txout)
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
         return res
@@ -405,5 +405,5 @@ if __name__ == "__main__":
         testdict[v] = v.__hash__()
         print(testdict[v])
 
-    test_hashing(OutPoint("txid", 0))
+    test_hashing(OutPoint(txid="txid", vout=0))
     test_hashing(AddressInfoMin("ssss", 4, bdk.KeychainKind.EXTERNAL))

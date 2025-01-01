@@ -41,6 +41,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import (
     PageBreak,
     Paragraph,
@@ -57,6 +58,62 @@ from bitcoin_safe.util_os import xdg_open_file
 from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
+
+
+class NumberedPageCanvas(Canvas):
+    """
+    http://code.activestate.com/recipes/546511-page-x-of-y-with-reportlab/
+    http://code.activestate.com/recipes/576832/
+    http://www.blog.pythonlibrary.org/2013/08/12/reportlab-how-to-add-page-numbers/
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Constructor"""
+        super().__init__(*args, **kwargs)
+        self.pages = []
+
+    def showPage(self):
+        """
+        On a page break, add information to the list
+        """
+        self.pages.append(dict(self.__dict__))
+        self._startPage()  # type: ignore
+
+    def save(self):
+        """
+        Add the page number to each page (page x of y)
+        """
+        page_count = len(self.pages)
+
+        for page in self.pages:
+            self.__dict__.update(page)
+            self.draw_page_number(page_count)
+            super().showPage()
+
+        super().save()
+
+    def draw_page_number(self, page_count):
+        """
+        Draw "Page X of Y" in bottom-right corner.
+        """
+        # Format the text
+        page_label = f"{self._pageNumber}/{page_count}"  # type: ignore
+
+        # Set font (or any styling you'd like)
+        self.setFont("Helvetica", 9)
+
+        # Get the current page size (width, height) in points
+        width, height = self._pagesize  # type: ignore
+
+        # Convert how far from the edges you want it to appear
+        # For example: 20 mm from the bottom, 20 mm from the right
+        from reportlab.lib.units import mm
+
+        x_position = width - 20 * mm  # 20 mm from the right edge
+        y_position = 10 * mm  # 10 mm from the bottom edge
+
+        # Use drawRightString to align the text to the right
+        self.drawRightString(x_position, y_position, page_label)
 
 
 class PdfStatement:
@@ -260,7 +317,7 @@ class PdfStatement:
             topMargin=TOP_MARGIN,
             bottomMargin=BOTTOM_MARGIN,
         )
-        document.build(self.elements)
+        document.build(self.elements, canvasmaker=NumberedPageCanvas)
 
     def open_pdf(self, filename: str) -> None:
         if os.path.exists(filename):
@@ -272,21 +329,19 @@ class PdfStatement:
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
     info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
 
-    address_info: List[Tuple[str, str]] = []
+    addresses_and_balances: List[Tuple[str, int]] = []  # address, amount
     total_amount = 0
     for address in wallet.get_addresses():
         balance = wallet.get_addr_balance(address).total
         if balance:
             total_amount += balance
-            address_info.append(
+            addresses_and_balances.append(
                 (
                     address,
-                    Satoshis(value=balance, network=wallet.network).format(
-                        color_formatting="rich", show_unit=False, unicode_space_character=False
-                    ),
+                    balance,
                 )
             )
-    address_info = sorted(address_info, key=lambda row: row[1], reverse=True)
+    addresses_and_balances = sorted(addresses_and_balances, key=lambda row: row[1], reverse=True)
 
     pdf_statement = PdfStatement(lang_code=lang_code, network=wallet.network)
 
@@ -303,7 +358,15 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
     pdf_statement.create_pdf(
         title=title,
         wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
-        address_info=address_info,
+        address_info=[
+            (
+                address,
+                Satoshis(value=amount, network=wallet.network).format(
+                    color_formatting="rich", show_unit=False, unicode_space_character=False
+                ),
+            )
+            for address, amount in addresses_and_balances
+        ],
         threshold=info.threshold,
         total_amount=Satoshis(value=total_amount, network=wallet.network).format(
             color_formatting="rich", show_unit=False, unicode_space_character=False

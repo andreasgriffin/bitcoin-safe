@@ -536,7 +536,7 @@ class KeyStoreUI(QObject):
         )
 
         self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_import), self.tr("Import"))
-        self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_manual), self.tr("Manual"))
+        self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_manual), self.tr("Advanced"))
         self.label_description.setText(self.tr("Description"))
 
         self.label_fingerprint.setText(self.tr("Fingerprint"))

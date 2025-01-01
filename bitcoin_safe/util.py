@@ -129,8 +129,12 @@ def serialized_to_hex(serialized: Union[Iterable[SupportsIndex], SupportsIndex, 
     return bytes(serialized).hex()
 
 
-def hex_to_serialized(hex_string: str):
+def hex_to_serialized(hex_string: str) -> bytes:
     return bytes.fromhex(hex_string)
+
+
+def hex_to_script(hex_string: str) -> bdk.Script:
+    return bdk.Script(list(bytes.fromhex(hex_string)))
 
 
 def tx_of_psbt_to_hex(psbt: bdk.PartiallySignedTransaction):

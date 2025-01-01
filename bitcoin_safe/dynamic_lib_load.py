@@ -31,9 +31,7 @@ import logging
 import platform
 import sys
 from ctypes.util import find_library
-from importlib.metadata import PackageMetadata
 from pathlib import Path
-from typing import Optional
 
 import bitcoin_usb
 import bitcointx
@@ -48,12 +46,14 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 
 
 # Function to show the warning dialog before starting the QApplication
-def show_message_before_quit(msg: str) -> None:
-    # Initialize QApplication first
-    app = QApplication(sys.argv)
-    # Without an application instance, some features might not work as expected
-    QMessageBox.warning(None, "Warning", msg, QMessageBox.StandardButton.Ok)  # type: ignore[arg-type]
-    sys.exit(app.exec())
+def show_warning_before_failiure(msg: str) -> None:
+    # Initialize QApplication if not already running
+    # the variable app, MUST be here, otherwise the QApplication will not be created
+    app = QApplication.instance() or QApplication(sys.argv)
+
+    # Show the warning dialog
+    QMessageBox().warning(None, "Warning", msg, QMessageBox.StandardButton.Ok)
+    app.quit()
 
 
 def get_libsecp256k1_os_path() -> str | None:
@@ -122,7 +122,11 @@ def setup_libsecp256k1() -> None:
     elif get_libsecp256k1_os_path():
         logger.info(f"libsecp256k1 was found in the OS")
     else:
-        logger.info(f"libsecp256k1 could not be found.")
+        msg = translate(
+            "dynamic_lib_load", "libsecp256k1 could not be found. Please install libsecp256k1 in your OS."
+        )
+        logger.info(msg)
+        show_warning_before_failiure(msg)
 
 
 def ensure_pyzbar_works() -> None:
@@ -138,7 +142,7 @@ def ensure_pyzbar_works() -> None:
             logger.info(f"pyzbar successfully loaded ")
         except:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
             logger.info(f"pyzbar not loaded ")
-            show_message_before_quit(
+            show_warning_before_failiure(
                 translate("lib_load", """You are missing the {link}\nPlease install it.""").format(
                     link=link(
                         "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
@@ -150,17 +154,3 @@ def ensure_pyzbar_works() -> None:
     else:
         # On Linux this shoudn't be a problem, because I include libzar in the package
         pass
-
-
-def get_briefcase_meta_data() -> Optional[PackageMetadata]:
-    import sys
-    from importlib import metadata as importlib_metadata
-
-    # Find the name of the module that was used to start the app
-    app_module = sys.modules["__main__"].__package__
-    if not app_module:
-        return None
-    # Retrieve the app's metadata
-    metadata = importlib_metadata.metadata(app_module)
-
-    return metadata

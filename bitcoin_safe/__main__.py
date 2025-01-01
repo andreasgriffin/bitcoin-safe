@@ -3,7 +3,7 @@ import sys
 # all import must be absolute, because this is the entry script for pyinstaller
 from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works
 
-# this setsup the logging
+# setup the logging
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 
 ensure_pyzbar_works()

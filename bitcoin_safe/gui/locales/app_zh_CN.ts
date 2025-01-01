@@ -846,8 +846,8 @@ the sending value {sent}</source>
         <translation>导入</translation>
     </message>
     <message>
-        <source>Manual</source>
-        <translation>手动</translation>
+        <source>Advanced</source>
+        <translation>高级</translation>
     </message>
     <message>
         <source>Description</source>
@@ -1384,8 +1384,8 @@ Location of signing device: .....</source>
 <context>
     <name>NetworkSettingsUI</name>
     <message>
-        <source>Manual</source>
-        <translation>手动</translation>
+        <source>Advanced</source>
+        <translation>高级</translation>
     </message>
     <message>
         <source>Mode:</source>
