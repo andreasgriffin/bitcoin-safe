@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "setuptools>=70.0.0", "wheel", "poetry-core", "poetry-version-plugin",]
+requires = [ "setuptools>=65.0.0", "wheel", "poetry-core", "poetry-version-plugin", "packaging>=20.0", "pyinstaller-hooks-contrib>=2024.11"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -62,6 +62,29 @@ tomlkit = "^0.13.2"
 poetry = "^1.8.4"
 pyinstaller = "^6.11.0"
 poetry-plugin-export = "^1.8.0"
+
+
+
+[tool.poetry.group.build_mac.dependencies]
+altgraph =  "0.17.4"  
+Cython =   "0.29.37" 
+importlib-metadata =  "7.0.1" 
+macholib =  "1.16.3" 
+packaging =  "23.2" 
+wheel =  "0.38.4" 
+zipp="3.20.2"
+more-itertools =  "10.5.0" 
+pyinstaller-hooks-contrib =  "2024.11" 
+
+[tool.poetry.group.build_wine.dependencies]
+altgraph="0.17.4"
+importlib-metadata="7.0.1"
+packaging="23.2"
+pefile="2023.2.7"
+pywin32-ctypes="0.2.2"
+zipp="3.20.2"
+pyinstaller-hooks-contrib="2024.11"
+
 
 
 [tool.pytest.ini_options]

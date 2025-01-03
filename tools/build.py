@@ -75,6 +75,16 @@ class Builder:
         Path(self.build_dir).mkdir(parents=True, exist_ok=True)
 
     @staticmethod
+    def get_target_arch():
+        arch = platform.machine()
+        if arch == "x86_64":
+            return "x86_64"
+        elif arch in ("arm", "arm64", "aarch64"):
+            return "arm64"
+        else:
+            return "universal2"  # Defaulting to universal for other cases (as a fallback)
+
+    @staticmethod
     def app_name_formatter(module_name: str) -> str:
         parts = [s.capitalize() for s in module_name.split("_")]
 
@@ -287,15 +297,14 @@ class Builder:
         if Source_Dist_dir != DISTDIR:
             os.makedirs(DISTDIR, exist_ok=True)
             for file in Source_Dist_dir.iterdir():
-                # only move the .app directory  (no need for the unsigned dmg)
-                if file.is_dir() and file.name.endswith(".app"):
+                if file.name.endswith(".dmg"):
                     logger.info(f"Moving {file} --> {DISTDIR / file.name}")
                     # Replace module name with formatted app name in the directory name
-                    new_dir_name = file.name.replace(
-                        self.module_name, self.app_name_formatter(self.module_name)
-                    )
+                    new_name = file.name.replace(self.module_name, self.app_name_formatter(self.module_name))
+                    if new_name.endswith("-unsigned.dmg"):
+                        new_name = new_name.replace("-unsigned.dmg", f"_{self.get_target_arch()}.dmg")
                     # Perform the move
-                    shutil.move(str(file), str(DISTDIR / new_dir_name))
+                    shutil.move(str(file), str(DISTDIR / new_name))
 
     # def briefcase_appimage(self, **kwargs):
     #     # briefcase appimage building works on some systems, but not on others... unknown why.
