@@ -23,6 +23,7 @@ target_arch = get_target_arch()
 print(f"Building for {target_arch=}")
 
 
+
 PACKAGE_NAME='Bitcoin_Safe.app'
 PYPKG='bitcoin_safe'
 PROJECT_ROOT = os.path.abspath(".")
@@ -36,7 +37,7 @@ if not VERSION:
 block_cipher = None
 
 # see https://github.com/pyinstaller/pyinstaller/issues/2005
-hiddenimports = []
+hiddenimports = [] 
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
 
 packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs", "cv2"]

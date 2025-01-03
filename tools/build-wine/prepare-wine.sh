@@ -4,7 +4,6 @@ PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
 PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
 
 PYTHON_VERSION=3.10.4
-WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
 
 
 # Let's begin!
@@ -13,6 +12,9 @@ set -e
 here="$(dirname "$(readlink -e "$0")")"
 
 . "$CONTRIB"/build_tools_util.sh
+
+WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
+
 
 info "Booting wine."
 wine 'wineboot'
@@ -45,11 +47,24 @@ done
 
 break_legacy_easy_install
 
-info "Installing build dependencies."
-$WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
-    --cache-dir "$WINE_PIP_CACHE_DIR" -r "$CONTRIB"/deterministic-build/requirements-build-base.txt
-$WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-binary :all: --no-warn-script-location \
-    --cache-dir "$WINE_PIP_CACHE_DIR" -r "$CONTRIB"/deterministic-build/requirements-build-wine.txt
+info "Installing build dependencies"
+$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location \
+    -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt" \
+    || fail "Could not install build dependencies (base)"
+$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location \
+    -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt" \
+    || fail "Could not install build dependencies (poetry)"
+
+
+info "Installing build dependencies using poetry"
+# Installing via poetry directly would be better, but it seems not possible to 
+# overwrite the poetry.toml config to prevent local venv
+export PATH="$APPDIR/usr/bin:$PATH"
+export POETRY_CACHE_DIR
+$WINE_PYTHON -m poetry export --with main,build_wine --output requirements.txt  
+$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location -r requirements.txt 
+
+
 
 
 # copy already built DLLs

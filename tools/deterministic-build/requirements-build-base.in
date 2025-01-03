@@ -1,0 +1,14 @@
+pip==23.3.1
+# pyinstaller cannot handle the newest version of setuptools
+# itwith 75  it gives the jacaro.text dependency error of the packaged dmg
+# https://github.com/pyinstaller/pyinstaller/issues/6564
+setuptools==65.5.1  
+setuptools-scm==8.0.4
+flit-core==3.9.0
+packaging==23.2
+poetry-core==1.9.1
+tomli==2.0.1
+typing-extensions==4.9.0
+wheel==0.38.4
+
+

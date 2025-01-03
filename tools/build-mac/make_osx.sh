@@ -6,7 +6,7 @@ set -e
 PYTHON_VERSION=3.10.11
 PY_VER_MAJOR="3.10"  # as it appears in fs paths
 PACKAGE=Bitcoin_Safe
-GIT_REPO=https://github.com/spesmilo/bitcoin_safe
+GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
 export GCC_STRIP_BINARIES="1"
 export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ folders with .pyc files
@@ -80,20 +80,23 @@ arch=$(uname -m)
 export ARCHFLAGS="-arch $arch"
 
 info "Installing build dependencies"
-# note: re pip installing from PyPI,
-#       we prefer compiling C extensions ourselves, instead of using binary wheels,
-#       hence "--no-binary :all:" flags. However, we specifically allow
-#       - PyQt6, as it's harder to build from source
-#       - cryptography, as it's harder to build from source
-#       - the whole of "requirements-build-base.txt", which includes pip and friends, as it also includes "wheel",
-#         and I am not quite sure how to break the circular dependence there (I guess we could introduce
-#         "requirements-build-base-base.txt" with just wheel in it...)
-$python3 -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+$python3 -m pip install --no-build-isolation --no-warn-script-location \
     -Ir ./tools/deterministic-build/requirements-build-base.txt \
     || fail "Could not install build dependencies (base)"
-$python3 -m pip install --no-build-isolation --no-dependencies --no-binary :all: --no-warn-script-location \
-    -Ir ./tools/deterministic-build/requirements-build-mac.txt \
-    || fail "Could not install build dependencies (mac)"
+$python3 -m pip install --no-build-isolation --no-warn-script-location \
+    -Ir ./tools/deterministic-build/requirements-poetry.txt \
+    || fail "Could not install build dependencies (poetry)"
+
+
+info "Installing build dependencies using poetry"
+# Installing via poetry directly would be better, but it seems not possible to 
+# overwrite the poetry.toml config to prevent local venv
+export PATH="$APPDIR/usr/bin:$PATH"
+export POETRY_CACHE_DIR
+$python3 -m poetry export --with main,build_mac --output requirements.txt  
+$python3 -m pip install --no-build-isolation --no-warn-script-location -r requirements.txt 
+
+
 
 info "Installing some build-time deps for compilation..."
 brew install autoconf automake libtool gettext coreutils pkgconfig
@@ -138,7 +141,8 @@ echo -n "Pyinstaller "
 pyinstaller="/Library/Frameworks/Python.framework/Versions/$PY_VER_MAJOR/bin/pyinstaller"
 $pyinstaller --version
 
-rm -rf ./dist
+rm ./dist/*   || true
+
 
 git submodule update --init
 
@@ -169,21 +173,11 @@ cp -f "$DLL_TARGET_DIR/libusb-1.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "
 
 
 
-
-info "Installing poetry"
-$python3 -m pip install --no-build-isolation --no-warn-script-location \
-    --cache-dir "$PIP_CACHE_DIR" poetry==1.8.5
-
-
-info "Installing build dependencies using poetry"
-
-export PATH="$APPDIR/usr/bin:$PATH"
-export POETRY_CACHE_DIR
-$python3 -m poetry install --no-interaction
-$python3 -m poetry export --output requirements.txt  
-$python3 -m pip install -r requirements.txt
+ 
 
 info "now install the root package"
+sudo rm -Rf "$POETRY_WHEEL_DIR"
+$python3 -m poetry install --no-interaction
 $python3 -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
 $python3 -m pip install --no-dependencies --no-warn-script-location \
     --cache-dir "$PIP_CACHE_DIR" "$POETRY_WHEEL_DIR"/*.whl
@@ -200,7 +194,7 @@ find . -exec sudo touch -t '200101220000' {} + || true
 VERSION=$(git describe --tags --dirty --always)
 
 info "Building binary"
-BITCOIN_SAFE_VERSION=$VERSION $pyinstaller    --noconfirm --clean tools/build-mac/osx.spec || fail "Could not build binary"
+BITCOIN_SAFE_VERSION=$VERSION $pyinstaller   --noconfirm --clean tools/build-mac/osx.spec || fail "Could not build binary"
 
 info "Finished building unsigned dist/${PACKAGE}.app. This hash should be reproducible:"
 find "dist/${PACKAGE}.app" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
