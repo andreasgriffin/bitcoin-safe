@@ -304,6 +304,8 @@ def main() -> None:
     print("Release created successfully:", json.dumps(release_result, indent=2))
 
     for file_path, _, _ in files:
+        if __version__ not in file_path.name:
+            continue
         upload_release_asset(token, owner, repo, release_result["id"], file_path)
         print(f"Asset {file_path.name} uploaded successfully.")
 
