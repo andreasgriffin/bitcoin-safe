@@ -28,6 +28,7 @@
 
 
 import logging
+import platform
 from typing import Dict, List, Optional
 
 import bdkpython as bdk
@@ -119,8 +120,12 @@ class SankeyBitcoin(SankeyWidget):
             display_label = ""
             tooltip = ""
 
+            system_name = platform.system()  # macOS
+            left_arrow = "◁" if system_name == "Darwin" else "⮜"
+            right_arrow = "▷" if system_name == "Darwin" else "⮞"
+
             if connect_left:
-                display_label += "⮜ "
+                display_label += f"{left_arrow} "
 
             if label:
                 display_label += label + "\n"
@@ -135,7 +140,7 @@ class SankeyBitcoin(SankeyWidget):
                 tooltip += Satoshis(value, self.network).str_with_unit()
 
             if connect_right:
-                display_label += " ➤"
+                display_label += f" {right_arrow}"
             return display_label.strip("\n"), ""  # html_f(tooltip,add_html_and_body=True,)
 
         self.fee_info = fee_info

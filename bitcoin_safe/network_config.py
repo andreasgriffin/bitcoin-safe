@@ -83,8 +83,9 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
             "nigiri": ElectrumConfig("127.0.0.1:50000", False),
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": ElectrumConfig("electrum.blockstream.info:60002", True),
-            "blockstream": ElectrumConfig("electrum.blockstream.info:60002", True),
+            "default": ElectrumConfig("blockstream.info:993", True),
+            "blockstream": ElectrumConfig("blockstream.info:993", True),
+            "electrum.blockstream.info": ElectrumConfig("electrum.blockstream.info:60002", True),
         },
         bdk.Network.SIGNET: {
             "default": ElectrumConfig("mutinynet.com:50001", False),

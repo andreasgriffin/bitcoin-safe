@@ -3042,6 +3042,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>libsecp256k1 konnte nicht gefunden werden. Bitte installieren Sie libsecp256k1 in Ihrem Betriebssystem.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3267,16 +3274,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>Gesamt  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>Kategorie  </translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Adresse  </translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Saldo  </translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>Erstellt am {date} mit  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>Kontostandsauszug von {id}  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>Beim erneuten Scannen dieses Wallets scannen Sie mindestens bis zum Adressindex {max_tip}, um alle finanzierten Adressen zu entdecken.  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>Kontostandsauszug von &quot;{id}&quot;  </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>Label-Synchronisations-Backup-Schlüssel: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3285,6 +3304,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. Kleben oder kleben Sie das &apos;Recovery sheet&apos; ({number} Wörter) über die Tabelle unten&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Signer entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) aufbewahren  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>Kontostandsauszug von {id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>Kontostandsauszug von &quot;{id}&quot;  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

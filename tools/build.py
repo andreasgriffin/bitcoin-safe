@@ -302,7 +302,7 @@ class Builder:
                     # Replace module name with formatted app name in the directory name
                     new_name = file.name.replace(self.module_name, self.app_name_formatter(self.module_name))
                     if new_name.endswith("-unsigned.dmg"):
-                        new_name = new_name.replace("-unsigned.dmg", f"_{self.get_target_arch()}.dmg")
+                        new_name = new_name.replace("-unsigned.dmg", f"-{self.get_target_arch()}.dmg")
                     # Perform the move
                     shutil.move(str(file), str(DISTDIR / new_name))
 

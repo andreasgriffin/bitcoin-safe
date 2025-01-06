@@ -3045,6 +3045,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>لم يتم العثور على libsecp256k1. يرجى تثبيت libsecp256k1 في نظام التشغيل الخاص بك.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3270,16 +3277,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>الإجمالي  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>أُنشئ في {date} مع  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>كشف حساب الرصيد لـ{id}  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>كشف حساب الرصيد لـ&quot;{id}&quot;  </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3288,6 +3307,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. الصق أو ثبّت &apos;ورقة الاسترداد&apos; ({number} كلمات) فوق الجدول أدناه&lt;br/&gt;2. طوِّ هذه الورقة عند الخط أدناه&lt;br/&gt;3. ضع هذه الورقة في مكان آمن حيث يمكنك الوصول إليها فقط&lt;br/&gt;4. يمكنك وضع الموقع الجهاز إما أ) مع النسخة الاحتياطية لبذور الورق، أو ب) في موقع آمن آخر (إذا كان متوفرًا)</translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>كشف حساب الرصيد لـ{id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>كشف حساب الرصيد لـ&quot;{id}&quot;  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

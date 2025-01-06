@@ -1,10 +1,6 @@
 # Bitcoin Safe
 
-#### Long-term Bitcoin savings made Easy
-
-#### BETA Version -- Use with Caution
-
-## Features
+#### A bitcoin savings wallet for the entire family
 
 - **Easy** Multisig-Wallet Setup
   - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
@@ -29,34 +25,28 @@
   - Electrum server syncing
   - planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release
 
-## Preview
 
 
-##### Setup a multisig wallet
 
-![screenshot1](docs/multisig-setup.gif)
+### Fully featured - Easy and Powerful
 
-##### Transaction exploring via the money flow diagram 
+| **Multisig setup wizard**          | **Create a PSBT and broadcast**                     |
+|--------------------------------|----------------------------|
+| ![](docs/multisig-setup.gif) |  ![](docs/send.gif) |
+| **Transaction exploring via a diagram**          | **Search in all open wallets**                    |
+| ![](docs/explorer.gif) |  ![](docs/global-search.gif) |
+|   **Automatic Label Synchronization of the same wallet**      | **Multiparty Multisig collaboration**                  |
+| ![](docs/label-sync.gif)  |   ![](docs/psbt-share.gif) |
 
-![diagram](docs/explorer.gif)
 
-##### Sending
 
-![screenshot0](docs/send.gif)
+### Available on all platforms
+| ![Windows](docs/tx-win.png) | ![Mac OS X](docs/tx-mac.png) | ![Linux](docs/tx-linux.png) |
+|-----------------------------|-----------------------------|----------------------------|
+| Windows                    | Mac OS X                   | Linux                     |
 
-##### PSBT sharing with trusted devices
 
-![psbt-share.gif](docs/psbt-share.gif)
-
-##### Label Synchronization with trusted devices
-
-![label-sync.gif](docs/label-sync.gif)
-
-##### Easy search across wallets
-
-![screenshot0](docs/global-search.gif)
-
-## Full Features List
+## Comprehensive Feature List
 
 - **Import and Export Capabilities**
   

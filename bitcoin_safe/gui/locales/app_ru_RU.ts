@@ -3045,6 +3045,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>libsecp256k1 не найдена. Пожалуйста, установите libsecp256k1 в вашей операционной системе.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3270,16 +3277,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>Итого  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>Категория</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Баланс</translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>Создано {date} с  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>Выписка по балансу {id}  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>При повторном сканировании этого кошелька сканируйте как минимум до индекса адреса {max_tip}, чтобы обнаружить все финансируемые адреса.  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>Выписка по балансу &quot;{id}&quot; </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>Ключ резервного копирования синхронизации меток: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3288,6 +3307,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. Наклейте или приклейте &apos;Лист восстановления&apos; ({number} слов) на таблицу ниже&lt;br/&gt;2. Сложите эту бумагу по линии ниже&lt;br/&gt;3. Поместите эту бумагу в безопасное место, доступное только вам&lt;br/&gt;4. Вы можете поместить аппаратного подписанта либо a) вместе с бумажным резервным копированием семян, либо b) в другом безопасном месте (если таковое имеется)  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>Выписка по балансу {id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>Выписка по балансу &quot;{id}&quot; </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
