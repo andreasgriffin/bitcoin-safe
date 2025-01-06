@@ -3051,6 +3051,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>找不到 libsecp256k1。请在您的操作系统中安装 libsecp256k1。  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3277,16 +3284,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>总计  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>类别</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>地址</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>余额</translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>在 {date} 创建的  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>{id} 的余额报表  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>重新扫描此钱包时，请至少扫描到地址索引 {max_tip}，以发现所有资金地址。  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>&quot;{id}&quot; 的余额报表  </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>标签同步备份密钥：{label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3295,6 +3314,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. 将&apos;恢复表&apos;（{number}词）粘贴或胶带在下面的表格上&lt;br/&gt;2. 在下面的线处折叠这张纸&lt;br/&gt;3. 将这张纸放在只有您能访问的安全位置&lt;br/&gt;4. 您可以将硬件签名器放在与纸质助记词种子备份一起的地方，或者b) 在另一个安全位置（如果有的话）</translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>{id} 的余额报表  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>&quot;{id}&quot; 的余额报表  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

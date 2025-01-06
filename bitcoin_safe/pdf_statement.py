@@ -235,14 +235,18 @@ class PdfStatement:
     def add_page_break(self) -> None:
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _address_table(self, address_info: List[Tuple[str, str]], total_amount: str) -> None:
+    def _address_table(self, address_info: List[Tuple[str, str, str]], total_amount: str) -> None:
 
         self.elements.append(
             self.create_balance_table(
-                table=np.array(address_info + [(translate("pdf", "Total"), total_amount)]),
-                widths=[400, 120],
-                header=["Address", f"Balance [{unit_str(self.network)}]"],
-                styles=[self.style_paragraph_left, self.style_paragraph_right],
+                table=np.array(address_info + [(translate("pdf", "Total"), "", total_amount)]),
+                widths=[120, 340, 100],
+                header=[
+                    translate("pdf", "Category"),
+                    translate("pdf", "Address"),
+                    translate("pdf", "Balance") + f" [{unit_str(self.network)}]",
+                ],
+                styles=[self.style_paragraph_left, self.style_paragraph_left, self.style_paragraph_right],
             )
         )
 
@@ -278,9 +282,11 @@ class PdfStatement:
         self,
         title: str,
         wallet_descriptor_string: str,
-        address_info: List[Tuple[str, str]],
+        address_info: List[Tuple[str, str, str]],
         threshold: int,
         total_amount: str,
+        max_tip: int,
+        label_sync_nsec: str | None = None,
     ) -> None:
         self.elements.append(Paragraph(title, style=self.style_heading))
 
@@ -300,6 +306,30 @@ class PdfStatement:
         self._descriptor_part(wallet_descriptor_string, threshold)
 
         self._address_table(address_info=address_info, total_amount=total_amount)
+
+        # max_tip
+        if max_tip > 20:
+            self.elements.append(
+                Paragraph(
+                    translate(
+                        "pdf",
+                        "On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.",
+                        no_translate=self.no_translate,
+                    ).format(max_tip=max_tip),
+                    self.style_paragraph,
+                )
+            )
+        if label_sync_nsec:
+            self.elements.append(
+                Paragraph(
+                    translate(
+                        "pdf",
+                        "Label syncronization backup key: {label_sync_nsec}",
+                        no_translate=self.no_translate,
+                    ).format(label_sync_nsec=label_sync_nsec),
+                    self.style_paragraph,
+                )
+            )
 
     def save_pdf(self, filename: str) -> None:
 
@@ -326,10 +356,10 @@ class PdfStatement:
             logger.info("File not found!")
 
 
-def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
+def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
     info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
 
-    addresses_and_balances: List[Tuple[str, int]] = []  # address, amount
+    addresses_and_balances: List[Tuple[str, str, int]] = []  # category, address, amount
     total_amount = 0
     for address in wallet.get_addresses():
         balance = wallet.get_addr_balance(address).total
@@ -337,11 +367,19 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
             total_amount += balance
             addresses_and_balances.append(
                 (
+                    wallet.labels.get_category(address),
                     address,
                     balance,
                 )
             )
-    addresses_and_balances = sorted(addresses_and_balances, key=lambda row: row[1], reverse=True)
+
+    address_infos = [
+        wallet.get_address_info_min(address) for category, address, balance in addresses_and_balances
+    ]
+    address_infos_nonempty = [address_info.index for address_info in address_infos if address_info]
+    max_tip = max(address_infos_nonempty) if address_infos_nonempty else 0
+
+    addresses_and_balances = sorted(addresses_and_balances, key=lambda row: (row[0], -row[2]))
 
     pdf_statement = PdfStatement(lang_code=lang_code, network=wallet.network)
 
@@ -360,17 +398,20 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str) -> None:
         wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
         address_info=[
             (
+                category,
                 address,
                 Satoshis(value=amount, network=wallet.network).format(
                     color_formatting="rich", show_unit=False, unicode_space_character=False
                 ),
             )
-            for address, amount in addresses_and_balances
+            for category, address, amount in addresses_and_balances
         ],
         threshold=info.threshold,
         total_amount=Satoshis(value=total_amount, network=wallet.network).format(
             color_formatting="rich", show_unit=False, unicode_space_character=False
         ),
+        max_tip=max_tip,
+        label_sync_nsec=label_sync_nsec,
     )
 
     temp_file = os.path.join(Path.home(), f"{file_title}.pdf")

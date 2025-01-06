@@ -669,7 +669,15 @@ class MainWindow(QMainWindow):
             Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
             return
 
-        make_and_open_pdf_statement(qt_wallet.wallet, lang_code=self.language_chooser.get_current_lang_code())
+        make_and_open_pdf_statement(
+            qt_wallet.wallet,
+            lang_code=self.language_chooser.get_current_lang_code(),
+            label_sync_nsec=(
+                qt_wallet.sync_tab.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
+                if qt_wallet.sync_tab.enabled()
+                else None
+            ),
+        )
 
     def export_wallet_pdf(self, wallet: Wallet | None = None) -> None:
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)

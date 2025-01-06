@@ -3045,6 +3045,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>libsecp256k1 नहीं मिला। कृपया अपने ओएस में libsecp256k1 स्थापित करें।  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3270,16 +3277,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>कुल  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>श्रेणी</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>पता</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>बैलेंस</translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>{date} को बनाया गया  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>{id} का बैलेंस स्टेटमेंट  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>इस वॉलेट को फिर से स्कैन करते समय, कम से कम पते के सूचकांक {max_tip} तक स्कैन करें ताकि सभी वित्तपोषित पते पता चल सकें।  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>&quot;{id}&quot; का बैलेंस स्टेटमेंट  </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>लेबल सिंक्रोनाइजेशन बैकअप कुंजी: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3288,6 +3307,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्दों) को नीचे दी गई तालिका पर गोंद या टेप करें&lt;br/&gt;2. नीचे दी गई लाइन पर इस कागज को मोड़ें&lt;br/&gt;3. इस कागज को केवल आपके पास पहुँचने वाली सुरक्षित जगह में रखें&lt;br/&gt;4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ रख सकते हैं, या b) दूसरी सुरक्षित जगह में (अगर उपलब्ध है)  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>{id} का बैलेंस स्टेटमेंट  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>&quot;{id}&quot; का बैलेंस स्टेटमेंट  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;

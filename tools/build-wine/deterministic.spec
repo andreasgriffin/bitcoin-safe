@@ -1,9 +1,10 @@
 # -*- mode: python -*-
 
+from pathlib import Path
+import site
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
 from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
-
 import sys, os
 
 PYPKG="bitcoin_safe"
@@ -34,14 +35,26 @@ datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/screenshots/*", f"{PYPKG}/gui/screenshots"),
-    (f"{PROJECT_ROOT}/{PYPKG}/gui/locales/*", f"{PYPKG}/gui/locales"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/lnwire/*.csv", f"{PYPKG}/lnwire"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/wordlist/english.txt", f"{PYPKG}/wordlist"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/wordlist/slip39.txt", f"{PYPKG}/wordlist"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/locale", f"{PYPKG}/locale"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/plugins", f"{PYPKG}/plugins"),
-    # (f"{PROJECT_ROOT}/{PYPKG}/gui/icons", f"{PYPKG}/gui/icons"),
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/locales/*", f"{PYPKG}/gui/locales"), 
 ]
+
+##### data of included modules 
+# Get the site-packages directory
+site_packages_dir = Path([s for s in site.getsitepackages() if "site-packages" in s][0])
+print(f"{site_packages_dir=}")
+
+# Example: Collect all SVG files from a module in site-packages 
+icon_paths = [Path("bitcoin_qr_tools/gui/icons"),
+              Path("bitcoin_usb/icons"),
+              Path("bitcoin_nostr_chat/ui/icons")
+              ]
+for icon_path in icon_paths:
+    datas += [(f"{site_packages_dir/icon_path / '*'}", f"{icon_path}"),] 
+
+print(f"{datas=}")
+
+
+
 
 # We don't put these files in to actually include them in the script but to make the Analysis method scan them for imports
 a = Analysis([f"../../{PYPKG}/__main__.py" ],

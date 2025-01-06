@@ -3045,6 +3045,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>dynamic_lib_load</name>
+    <message>
+        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
+        <translation>libsecp256k1が見つかりませんでした。OSにlibsecp256k1をインストールしてください。  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3270,16 +3277,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>合計  </translation>
     </message>
     <message>
+        <source>Category</source>
+        <translation>カテゴリ</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>アドレス</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>残高</translation>
+    </message>
+    <message>
         <source>Created at {date} with</source>
         <translation>{date}に作成された  </translation>
     </message>
     <message>
-        <source>Balance Statement of {id}</source>
-        <translation>{id}の残高明細書  </translation>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。  </translation>
     </message>
     <message>
-        <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>&quot;{id}&quot;の残高明細書  </translation>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>ラベル同期バックアップキー：{label_sync_nsec}  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
@@ -3288,6 +3307,14 @@ It is best to use your own server, such as {link}.</source>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. 回復シート（{number}語）を以下の表に貼り付けるかテープで固定する&lt;br/&gt;2. 以下の線でこの紙を折りたたむ&lt;br/&gt;3. この紙をあなただけがアクセスできる安全な場所に保管する&lt;br/&gt;4. ハードウェア署名者をa) 紙のシードバックアップと一緒に、またはb) 利用可能な場合は別の安全な場所に置くことができます  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>{id}の残高明細書  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>&quot;{id}&quot;の残高明細書  </translation>
     </message>
     <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
