@@ -1,4 +1,4 @@
-name: Build Windows Signed
+name: Build Windows Test Sign
 # this file needs to be manually synchronized with build-windows.yml
 
 on:
@@ -93,7 +93,7 @@ jobs:
         if: ${{ github.event.inputs.signing-policy-slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
-          api-token: '${{   .SIGNPATH_API_TOKEN }}'
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
           project-slug: 'bitcoin-safe'
           #   'signing-policy-slug  ("test-signing", "release-signing" for valid signing)'
