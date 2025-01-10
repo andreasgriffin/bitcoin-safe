@@ -99,6 +99,10 @@ def test_ema_fee_rate_weights_recent_heavier(
     test_funded_seed_wallet: Wallet,
     faucet: Faucet,
 ) -> Wallet:
+    """
+    Test that the EMA fee rate for an incoming wallet is weighted more heavily towards recent transactions.
+    """
+
     wallet = test_funded_seed_wallet
 
     def send_tx(fee_rate=100):

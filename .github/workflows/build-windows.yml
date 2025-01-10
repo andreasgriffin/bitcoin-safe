@@ -4,11 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       commitHash:
-        description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
+        description: 'Enter the commit hash to build (empty = the main branch or the branch that triggered the workflow)'
         required: false
         type: string
-      buildDMG:
-        description: 'Test Build Exe'
+      signing-policy-slug:
+        description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
+        required: false
+        default: 'test-signing'  
+      build:
+        description: 'Build Exe'
         required: false
         type: boolean
 
@@ -79,7 +83,31 @@ jobs:
           fi
 
       - name: Upload EXE Files from dist/
+        id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: exes
-          path: dist/*.exe
+          name: dist
+          path: dist/*  # zip everything in the folder
+
+      - id: signpath.io
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
+          project-slug: 'bitcoin-safe'
+          signing-policy-slug: '${{ github.event.inputs.signing-policy-slug }}'
+          github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
+          artifact-configuration-slug: 'Win'
+          wait-for-completion: true
+          output-artifact-directory: 'signpath-signed'
+
+
+      - name: Upload Signed EXE Files from signpath-signed/
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        id: upload-signed-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signpath-signed
+          path: signpath-signed/*  # zip everything in the folder
+
