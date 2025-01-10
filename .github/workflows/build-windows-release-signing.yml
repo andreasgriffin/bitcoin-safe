@@ -1,16 +1,15 @@
-name: Build Windows 
+name: Build Windows Signed
+# this file needs to be manually synchronized with build-windows.yml
 
 on:
-  workflow_dispatch:
-    inputs:
-      commitHash:
-        description: 'Enter the commit hash to build (empty = the main branch or the branch that triggered the workflow)'
-        required: false
-        type: string
-
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
 
 #####################
-####### Ensure changes here are copied to build-windows-signed.yml
+####### Below must be identical to build-windows.yml
 #####################
 jobs:
   build:
@@ -84,4 +83,32 @@ jobs:
         with:
           name: dist
           path: dist/*  # zip everything in the folder
+
+#####################
+####### End of build-windows.yml
+#####################
+
+      - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
+        id: signpath-io
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: '${{   .SIGNPATH_API_TOKEN }}'
+          organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
+          project-slug: 'bitcoin-safe'
+          #   'signing-policy-slug  ("test-signing", "release-signing" for valid signing)'
+          signing-policy-slug: 'release-signing'  
+          github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
+          artifact-configuration-slug: 'Win'
+          wait-for-completion: true
+          output-artifact-directory: 'signpath-signed'
+
+
+      - name: Upload Signed EXE Files from signpath-signed/
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        id: upload-signed-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signpath-signed
+          path: signpath-signed/*  # zip everything in the folder
 
