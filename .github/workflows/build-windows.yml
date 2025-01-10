@@ -11,10 +11,6 @@ on:
         description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
         required: false
         default: 'test-signing'  
-      build:
-        description: 'Build Exe'
-        required: false
-        type: boolean
 
 jobs:
   build:
@@ -89,7 +85,8 @@ jobs:
           name: dist
           path: dist/*  # zip everything in the folder
 
-      - id: signpath.io
+      - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
+        id: signpath-io
         if: ${{ github.event.inputs.signing-policy-slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
