@@ -88,9 +88,8 @@ jobs:
 ####### End of build-windows.yml
 #####################
 
-      - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
+      - name: 'signing with Test Sign'
         id: signpath-io
-        if: ${{ github.event.inputs.signing-policy-slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -105,7 +104,6 @@ jobs:
 
 
       - name: Upload Signed EXE Files from signpath-signed/
-        if: ${{ github.event.inputs.signing-policy-slug != '' }}
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
