@@ -1,4 +1,4 @@
-name: Build MacOsX  dmg Arm64
+name: Build MacOsX Arm64 dmg
 on:
   workflow_dispatch:
     inputs:
@@ -6,8 +6,8 @@ on:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
         type: string
-      buildDMG:
-        description: 'Test Build DMG (Arm64)'
+      build:
+        description: 'Build DMG (Arm64)'
         required: false
         type: boolean
 

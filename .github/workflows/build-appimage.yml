@@ -9,8 +9,8 @@ on:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
         type: string
-      buildDMG:
-        description: 'Test Build AppImage'
+      build:
+        description: 'Build AppImage'
         required: false
         type: boolean
 
