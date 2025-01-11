@@ -111,5 +111,5 @@ jobs:
       - name: Compare signed and unsigned files
         if: ${{ github.event.inputs.signing-policy-slug != '' }}
         run: |          
-          python tools/build-wine/ensure-signed-file-integrity.py  dist/  signpath-signed/
+          poetry run python tools/build-wine/ensure-signed-file-integrity.py  dist/  signpath-signed/
           
