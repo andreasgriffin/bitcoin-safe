@@ -27,7 +27,6 @@ jobs:
 
       - name: 'signing with $signing_policy_slug'
         id: signpath-io
-        if: ${{ signing_policy_slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -41,7 +40,6 @@ jobs:
 
 
       - name: Upload Signed EXE Files from signpath-signed/
-        if: ${{ signing_policy_slug != '' }}
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
