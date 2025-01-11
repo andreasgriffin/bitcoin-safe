@@ -29,8 +29,7 @@ VERSION=$(git describe --tags --dirty --always)
 APPIMAGE="$DISTDIR/bitcoin_safe-$VERSION-x86_64.AppImage"
 
 rm -rf "$BUILDDIR"
-rm -rf "$POETRY_WHEEL_DIR" # delete whl
-mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DIR" "$POETRY_WHEEL_DIR"
+mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DIR"
 
 # potential leftover from setuptools that might make pip put garbage in binary
 rm -rf "$PROJECT_ROOT/build"
@@ -89,17 +88,22 @@ appdir_python() {
         LD_LIBRARY_PATH="$APPDIR/usr/lib:$APPDIR/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}" \
         "$APPDIR/usr/bin/python${PY_VER_MAJOR}" "$@"
 }
-python='appdir_python'
 
 info "installing pip."
-"$python" -m ensurepip
+appdir_python -m ensurepip
 
 break_legacy_easy_install
 
 
-info "Installing poetry"
-"$python" -m pip install --no-build-isolation --no-warn-script-location \
-    --cache-dir "$PIP_CACHE_DIR" poetry==1.8.4
+info "Installing build dependencies"
+function do_pip() {
+    info "Installing pip $@"
+    appdir_python -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
+do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt  
+do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt 
 
 
 info "Installing build dependencies using poetry"
@@ -112,16 +116,16 @@ export POETRY_VIRTUALENVS_CREATE=false
 export POETRY_CACHE_DIR
 mkdir -p "$PROJECT_ROOT/.venv"
 mv "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.original.venv" # moving this out of the may so poetry doesnt detect it
-"$python" -m poetry install --only main --no-interaction
+appdir_python -m poetry install --only main --no-interaction
 
 info "now install the root package"
-"$python" -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
-"$python" -m pip install --no-dependencies --no-warn-script-location \
-    --cache-dir "$PIP_CACHE_DIR" "$POETRY_WHEEL_DIR"/*.whl
+rm -rf "$POETRY_WHEEL_DIR" # delete whl
+appdir_python -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
+do_pip "$POETRY_WHEEL_DIR"/*.whl
 
 
 # # was only needed during build time, not runtime
-"$python" -m pip uninstall -y poetry pip 
+appdir_python -m pip uninstall -y poetry pip 
 
 
 mv "$PROJECT_ROOT/.original.venv" "$PROJECT_ROOT/.venv" # moving the .venv back

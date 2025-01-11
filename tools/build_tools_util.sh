@@ -7,15 +7,20 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
-function info {
-    printf "\r💬 ${BLUE}INFO:${NC}  ${1}\n"
+function info() {
+    # Combine all arguments into one string for printf
+    local message="$*"
+    # Use printf to print the combined message
+    printf "\r💬 ${BLUE}INFO:${NC} %s\n" "$message"
 }
-function fail {
-    printf "\r🗯 ${RED}ERROR:${NC} ${1}\n"
+function fail() {
+    local message="$*"
+    printf "\r🗯 ${RED}ERROR:${NC} %s\n" "$message"
     exit 1
 }
-function warn {
-    printf "\r⚠️  ${YELLOW}WARNING:${NC}  ${1}\n"
+function warn() {
+    local message="$*"
+    printf "\r⚠️  ${YELLOW}WARNING:${NC} %s\n" "$message"
 }
 
 
@@ -210,3 +215,15 @@ function win_path() {
     echo $(replace_once "$text" "$search_path" "c:")
 }
 
+
+
+
+
+
+function do_wine_pip() {
+    info "Installing pip $@"
+    WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
+    $WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$WINE_PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
