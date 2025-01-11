@@ -99,7 +99,6 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'signpath-signed'
 
-
       - name: Upload Signed EXE Files from signpath-signed/
         if: ${{ github.event.inputs.signing-policy-slug != '' }}
         id: upload-signed-artifact
