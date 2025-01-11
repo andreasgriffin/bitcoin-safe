@@ -104,11 +104,17 @@ def test_wallet_send(
             # to be able to import a recipient list with amounts
             # i need to fund the wallet first
             faucet.send(qt_wallet.wallet.get_address().address.as_string(), amount=10000000)
+            counter = 0
             while qt_wallet.wallet.get_balance().total == 0:
                 with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
                     qt_wallet.sync()
 
                 shutter.save(main_window)
+                counter += 1
+                if counter > 20:
+                    raise Exception(
+                        f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
+                    )
 
         fund_wallet()
 
