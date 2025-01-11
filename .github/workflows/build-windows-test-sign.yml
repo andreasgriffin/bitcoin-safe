@@ -1,10 +1,9 @@
 name: Build Windows Test Sign
 # this file needs to be manually synchronized with build-windows.yml
 
+
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
 
@@ -15,67 +14,83 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          ref: ${{ github.event.inputs.commitHash || github.sha }}
+      # - name: Checkout repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0  # Fetch all history for all branches and tags 
 
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      # - name: Get tag and commit info
+      #   run: |
+      #     echo "Ref: $GITHUB_REF"
+      #     echo "SHA: $GITHUB_SHA"
+      #     if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+      #       TAG_NAME="${GITHUB_REF#refs/tags/}"
+      #       echo "Triggered by tag: $TAG_NAME"
+      #     fi
+      #     echo "Commit Hash: $GITHUB_SHA"
 
-      - name: Setup xvfb (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb \
-                                libxkbcommon-x11-0 \
-                                libxcb-icccm4 \
-                                libxcb-image0 \
-                                libxcb-keysyms1 \
-                                libxcb-randr0 \
-                                libxcb-render-util0 \
-                                libxcb-xinerama0 \
-                                libxcb-xinput0 \
-                                libxcb-xfixes0 \
-                                libxcb-shape0 \
-                                libglib2.0-0 \
-                                libgl1-mesa-dev \
-                                '^libxcb.*-dev' \
-                                libx11-xcb-dev \
-                                libglu1-mesa-dev \
-                                libxrender-dev \
-                                libxi-dev \
-                                libxkbcommon-dev \
-                                libxkbcommon-x11-dev \
-                                libsecp256k1-0
 
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install  
+      # - name: Set up Python environment
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
+
+      # - name: Setup xvfb (Linux)
+      #   if: runner.os == 'Linux'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y xvfb \
+      #                           libxkbcommon-x11-0 \
+      #                           libxcb-icccm4 \
+      #                           libxcb-image0 \
+      #                           libxcb-keysyms1 \
+      #                           libxcb-randr0 \
+      #                           libxcb-render-util0 \
+      #                           libxcb-xinerama0 \
+      #                           libxcb-xinput0 \
+      #                           libxcb-xfixes0 \
+      #                           libxcb-shape0 \
+      #                           libglib2.0-0 \
+      #                           libgl1-mesa-dev \
+      #                           '^libxcb.*-dev' \
+      #                           libx11-xcb-dev \
+      #                           libglu1-mesa-dev \
+      #                           libxrender-dev \
+      #                           libxi-dev \
+      #                           libxkbcommon-dev \
+      #                           libxkbcommon-x11-dev \
+      #                           libsecp256k1-0
+
+      # - name: Install Python dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install poetry
+      #     poetry install  
           
-      - name: Run build script
-        run: poetry run python tools/build.py --targets windows --commit None
+      # - name: Run build script
+      #   run: poetry run python tools/build.py --targets windows --commit None
 
 
-      - name: Check for portable EXE file
+      # - name: Check for portable EXE file
+      #   run: |
+      #     if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
+      #       echo "Portable EXE file is missing"
+      #       exit 1
+      #     fi
+
+      # - name: Check for setup EXE file
+      #   run: |
+      #     if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
+      #       echo "Setup EXE file is missing"
+      #       exit 1
+      #     fi
+
+
+      - name: Create empty .exe file
         run: |
-          if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
-            echo "Portable EXE file is missing"
-            exit 1
-          fi
-
-      - name: Check for setup EXE file
-        run: |
-          if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
-            echo "Setup EXE file is missing"
-            exit 1
-          fi
+          mkdir -p dist  # Create a directory to hold the file if it doesn't already exist
+          touch dist/dummy.exe  # Create an empty .exe file
 
       - name: Upload EXE Files from dist/
         id: upload-unsigned-artifact

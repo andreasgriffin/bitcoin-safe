@@ -1,10 +1,9 @@
 name: Build Windows Release Sign
 # this file needs to be manually synchronized with build-windows.yml
 
+
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
 
@@ -18,8 +17,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          ref: ${{ github.event.inputs.commitHash || github.sha }}
+          fetch-depth: 0  # Fetch all history for all branches and tags 
+
+
+      - name: Get tag and commit info
+        run: |
+          echo "Ref: $GITHUB_REF"
+          echo "SHA: $GITHUB_SHA"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            echo "Triggered by tag: $TAG_NAME"
+          fi
+          echo "Commit Hash: $GITHUB_SHA"
 
 
       - name: Set up Python environment
