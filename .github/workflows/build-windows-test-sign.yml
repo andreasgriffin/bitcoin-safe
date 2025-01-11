@@ -1,8 +1,8 @@
 name: Build Windows Test Signing
 
 env:
-  signing_policy_slug: "test-signing"  
-  commitHash: "" 
+  signing_policy_slug: test-signing
+  commitHash: ''
 
 on:
   push:
