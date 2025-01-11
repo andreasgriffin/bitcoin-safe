@@ -32,7 +32,7 @@ jobs:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
           project-slug: 'bitcoin-safe'
-          signing_policy_slug: '$signing_policy_slug'
+          signing-policy-slug: '$signing_policy_slug'
           github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
           artifact-configuration-slug: 'Win'
           wait-for-completion: true
