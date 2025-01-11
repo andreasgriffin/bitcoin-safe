@@ -30,12 +30,12 @@
 
 ### Fully featured - Easy and Powerful
 
-| **Multisig setup wizard**          | **Create a PSBT and broadcast**                     |
+| **Multisig setup wizard**          | **Create a PSBT, sign and broadcast**                     |
 |--------------------------------|----------------------------|
 | ![](docs/multisig-setup.gif) |  ![](docs/send.gif) |
-| **Transaction exploring via a diagram**          | **Search in all open wallets**                    |
+| **Transaction exploring via a diagram**          | **Type-to-search in all wallets**                    |
 | ![](docs/explorer.gif) |  ![](docs/global-search.gif) |
-|   **Automatic Label Synchronization of the same wallet**      | **Multiparty Multisig collaboration**                  |
+|   **Automatic Label Synchronization**      | **Multiparty Multisig collaboration**                  |
 | ![](docs/label-sync.gif)  |   ![](docs/psbt-share.gif) |
 
 
