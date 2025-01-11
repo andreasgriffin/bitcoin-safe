@@ -15,7 +15,9 @@ jobs:
       - name: Create empty .exe file
         run: |
           mkdir -p dist  # Create a directory to hold the file if it doesn't already exist
-          touch dist/dummy.exe  # Create an empty .exe file
+          touch dist/Bitcoin-Safe-0-portable.exe  # Create an empty .exe file
+          touch dist/Bitcoin-Safe-0-setup.exe  # Create an empty .exe file
+
 
       - name: Upload EXE Files from dist/
         id: upload-unsigned-artifact
