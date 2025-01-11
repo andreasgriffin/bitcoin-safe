@@ -1,7 +1,7 @@
 name: Build Windows Test Signing
 
 env:
-  signing-policy-slug: "test-signing"  
+  signing_policy_slug: "test-signing"  
   commitHash: "" 
 
 on:
@@ -25,15 +25,15 @@ jobs:
           name: dist
           path: dist/*  # zip everything in the folder
 
-      - name: 'signing with ${{ signing-policy-slug }}'
+      - name: 'signing with $signing_policy_slug'
         id: signpath-io
-        if: ${{ signing-policy-slug != '' }}
+        if: ${{ signing_policy_slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
           project-slug: 'bitcoin-safe'
-          signing-policy-slug: '${{ signing-policy-slug }}'
+          signing_policy_slug: '$signing_policy_slug'
           github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
           artifact-configuration-slug: 'Win'
           wait-for-completion: true
@@ -41,7 +41,7 @@ jobs:
 
 
       - name: Upload Signed EXE Files from signpath-signed/
-        if: ${{ signing-policy-slug != '' }}
+        if: ${{ signing_policy_slug != '' }}
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
