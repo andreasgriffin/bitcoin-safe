@@ -10,7 +10,7 @@ on:
       signing-policy-slug:
         description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
         required: false
-        default: 'test-signing'
+        default: ''
 
 jobs:
   build:
