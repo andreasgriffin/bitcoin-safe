@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.10']
-        os: [  ubuntu-latest  ]  # [macos-latest, ubuntu-latest, windows-latest]
+        os: [  ubuntu-22.04  ]  # [macos-latest, ubuntu-22.04, windows-latest]
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
