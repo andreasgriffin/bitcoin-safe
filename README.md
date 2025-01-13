@@ -238,7 +238,7 @@ This program uses by default
 - the electrum/esplora server of [blockstream.com](https://blockstream.com/) to fetch blockchain data
 - fetches mempool fee information from [mempool.space](https://mempool.space/)
 
-You can specify your own (personal) server in "Network settings".
+You can specify your own (personal) server for both in "Network settings".
 
 When enabeling the Sync&Chat feature [default relays](https://github.com/andreasgriffin/bitcoin-nostr-chat/blob/main/bitcoin_nostr_chat/default_relays.py) are used to transmit encrypted data to your approved trusted devices. You can specify your own relay(s) in the Sync&Chat settings.
 
