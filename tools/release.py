@@ -52,16 +52,26 @@ def get_default_description(latest_tag: str):
 - 
 
 
+### 🔋Batteries included🔋
+Lots of existing features were not mentioned above, so please check out:
+
+- [Why choose Bitcoin Safe?](https://bitcoin-safe.org/en/page/usps/)
+- www.bitcoin-safe.org
+- [Readme](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#bitcoin-safe) and [Comprehensive Feature List](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#comprehensive-feature-list)
+- Follow me on [nostr](https://primal.net/p/npub1q67f4d7qdja237us384ryeekxsz88lz5kaawrcynwe4hqsnufr6s27up0e)
+
+
 ####  Verify signature
 
 Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and verify the signature with:
-```
+```bash
 gpg import 2759AA7148568ECCB03B76301D82124B440F612D.asc
 gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 ```
 
-#### Install and run on Mac, Linux, or Windows 
-```
+#### Install and run on Mac, Linux, or Windows
+using the [python package ](https://pypi.org/project/bitcoin-safe/)  
+```bash
 python3 -m pip install bitcoin-safe
 python3 -m bitcoin_safe
 ```
