@@ -41,7 +41,7 @@ python-gnupg = "^0.5.2"
 # bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
 bitcoin-qr-tools =    "^1.0.3"
 bitcoin-nostr-chat =    "^0.5.1"
-bitcoin-usb =  "^0.7.2"
+bitcoin-usb =  "^0.7.3"
 numpy = "^2.0.1" 
 pgpy = "^0.6.0"
 

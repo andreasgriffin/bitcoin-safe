@@ -36,6 +36,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
+from bitcoin_safe.gui.qt.util import Message, MessageType
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.threading_manager import ThreadingManager
 
@@ -174,8 +175,8 @@ class DescriptorUI(QObject):
             self.set_wallet_ui_from_protowallet()
             self.keystore_uis.set_keystore_ui_from_protowallet()
             self.disable_fields()
-        except:
-            logger.info(f"Invalid descriptor {new_value}")
+        except Exception as e:
+            Message(str(e), title="Error", type=MessageType.Error)
             return
 
     def on_spin_threshold_changed(self, new_value: int) -> None:
