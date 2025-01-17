@@ -110,13 +110,13 @@ segno = "1.6.1"
 
 [[package]]
 name = "bitcoin-usb"
-version = "0.7.2"
+version = "0.7.3"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = "<3.13,>=3.8.1"
 files = [
-    {file = "bitcoin_usb-0.7.2-py3-none-any.whl", hash = "sha256:3df1387a7622e885f5fc3ba08e4c791d7450c8401bab5139fd6ff1f3b4878b25"},
-    {file = "bitcoin_usb-0.7.2.tar.gz", hash = "sha256:efc0c43274522852caa782306327c69b4c94fd049942610dfebc58005c0458b5"},
+    {file = "bitcoin_usb-0.7.3-py3-none-any.whl", hash = "sha256:521933cf085afc6cbb1c217cd61077fb2a18ebe9cce8ddf3503ace1af6c1cd04"},
+    {file = "bitcoin_usb-0.7.3.tar.gz", hash = "sha256:3bef78c9126b3a4a1cf0cbe353fa6f0bde1a6ab4f8eb9591de11a6d5a91c770d"},
 ]
 
 [package.dependencies]
@@ -2936,4 +2936,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "f42f224d8acf49d835c31bc5dfe5e5fc23ae2f6fc0495e92523631b70d4942e6"
+content-hash = "b482a59a9b8efb4de4b9d192366a32c8ae3e97abc73a66bbc5ff005e07944150"
