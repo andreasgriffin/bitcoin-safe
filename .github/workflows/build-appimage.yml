@@ -8,11 +8,7 @@ on:
       commitHash:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
-        type: string
-      build:
-        description: 'Build AppImage'
-        required: false
-        type: boolean
+        type: string 
 
 
 jobs:
@@ -20,14 +16,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
           ref: ${{ github.event.inputs.commitHash || github.sha }}
 
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 

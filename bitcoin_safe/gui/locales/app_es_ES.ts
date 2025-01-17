@@ -134,8 +134,8 @@
         <translation>Cantidad demasiado pequeña  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>Cantidad demasiado grande  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>Cantidad demasiado grande. Por favor, haga clic en una categoría con fondos suficientes a la izquierda, o seleccione las monedas en la pestaña avanzada  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>Copiar JSON</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>Eliminar categoría  </translation>
     </message>
 </context>
 <context>

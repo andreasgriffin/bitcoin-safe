@@ -268,6 +268,7 @@ class AddressList(MyTreeView):
         self.proxy = MySortModel(
             self, source_model=self._source_model, sort_role=MyItemDataRole.ROLE_SORT_ORDER
         )
+        ColorScheme.update_from_widget(self)
         self.setModel(self.proxy)
         self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
         self.updateUi()
@@ -554,7 +555,9 @@ class AddressList(MyTreeView):
         item[self.Columns.CATEGORY].setData(category, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
         item[self.Columns.COIN_BALANCE].setText(balance_text)
-        color = QColor(0, 0, 0) if balance else QColor(255 // 2, 255 // 2, 255 // 2)
+        color = (
+            self.palette().color(self.foregroundRole()) if balance else QColor(255 // 2, 255 // 2, 255 // 2)
+        )
         item[self.Columns.COIN_BALANCE].setForeground(QBrush(color))
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)

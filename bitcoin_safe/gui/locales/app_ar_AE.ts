@@ -134,8 +134,8 @@
         <translation>المبلغ صغير جدًا  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>المبلغ كبير جدًا  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>المبلغ كبير جدًا. يرجى النقر على فئة ممولة بشكل كافٍ على اليسار، أو اختيار العملات في علامة التبويب المتقدمة  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>نسخ JSON</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>حذف الفئة  </translation>
     </message>
 </context>
 <context>

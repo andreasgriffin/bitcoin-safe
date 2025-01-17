@@ -80,12 +80,14 @@ arch=$(uname -m)
 export ARCHFLAGS="-arch $arch"
 
 info "Installing build dependencies"
-$python3 -m pip install --no-build-isolation --no-warn-script-location \
-    -Ir ./tools/deterministic-build/requirements-build-base.txt \
-    || fail "Could not install build dependencies (base)"
-$python3 -m pip install --no-build-isolation --no-warn-script-location \
-    -Ir ./tools/deterministic-build/requirements-poetry.txt \
-    || fail "Could not install build dependencies (poetry)"
+function do_pip() {
+    info "Installing pip $@"
+    $python3 -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
+do_pip -Ir ./tools/deterministic-build/requirements-build-base.txt  
+do_pip -Ir ./tools/deterministic-build/requirements-poetry.txt 
 
 
 info "Installing build dependencies using poetry"
@@ -94,7 +96,7 @@ info "Installing build dependencies using poetry"
 export PATH="$APPDIR/usr/bin:$PATH"
 export POETRY_CACHE_DIR
 $python3 -m poetry export --with main,build_mac --output requirements.txt  
-$python3 -m pip install --no-build-isolation --no-warn-script-location -r requirements.txt 
+do_pip -r requirements.txt 
 
 
 
@@ -132,7 +134,7 @@ PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
     [[ -e "PyInstaller/bootloader/Darwin-64bit/runw" ]] || fail "Could not find runw in target dir!"
 ) || fail "PyInstaller build failed"
 info "Installing PyInstaller."
-$python3 -m pip install --no-build-isolation --no-dependencies --no-warn-script-location "$CACHEDIR/pyinstaller"
+do_pip "$CACHEDIR/pyinstaller"
 
 info "Using these versions for building $PACKAGE:"
 sw_vers
@@ -176,11 +178,10 @@ cp -f "$DLL_TARGET_DIR/libusb-1.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "
  
 
 info "now install the root package"
-sudo rm -Rf "$POETRY_WHEEL_DIR"
+sudo rm -Rf "$POETRY_WHEEL_DIR" || true 
 $python3 -m poetry install --no-interaction
 $python3 -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
-$python3 -m pip install --no-dependencies --no-warn-script-location \
-    --cache-dir "$PIP_CACHE_DIR" "$POETRY_WHEEL_DIR"/*.whl
+do_pip "$POETRY_WHEEL_DIR"/*.whl
 
 
 

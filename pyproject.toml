@@ -12,7 +12,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.0.0"
+version = "1.0.1"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -67,23 +67,13 @@ poetry-plugin-export = "^1.8.0"
 
 [tool.poetry.group.build_mac.dependencies]
 altgraph =  "0.17.4"  
-Cython =   "0.29.37" 
-importlib-metadata =  "7.0.1" 
 macholib =  "1.16.3" 
-packaging =  "23.2" 
-wheel =  "0.38.4" 
-zipp="3.20.2"
-more-itertools =  "10.5.0" 
 pyinstaller-hooks-contrib =  "2024.11" 
 
 [tool.poetry.group.build_wine.dependencies]
 altgraph="0.17.4"
-importlib-metadata="7.0.1"
-packaging="23.2"
 pefile="2023.2.7" # needed for  ensure-signed-file-integrity
-pywin32-ctypes="0.2.2"
-zipp="3.20.2"
-pyinstaller-hooks-contrib="2024.11"
+pyinstaller-hooks-contrib="2024.11" # necessary to discover all submodules like jaraco
 
 
 

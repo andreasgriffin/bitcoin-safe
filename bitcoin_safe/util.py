@@ -83,6 +83,8 @@ from typing import (
 )
 
 from PyQt6.QtCore import QByteArray, QLocale
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication
 
 from .i18n import translate
 
@@ -476,6 +478,53 @@ def color_format_str(
     return s
 
 
+def is_dark_mode() -> bool:
+    app = QApplication.instance()
+    if not isinstance(app, QApplication):
+        return False
+
+    palette = app.palette()
+    background_color = palette.color(QPalette.ColorRole.Window)
+    text_color = palette.color(QPalette.ColorRole.WindowText)
+
+    # Check if the background color is darker than the text color
+    return background_color.lightness() < text_color.lightness()
+
+
+def adjust_brightness(color: QColor, value: float) -> QColor:
+    """
+    Adjust the brightness of a QColor.
+
+    Parameters:
+        color (QColor): The original color to adjust.
+        value (float): The brightness adjustment factor, ranging from -1.0 to 1.0.
+                       -1.0 makes the color completely black,
+                        1.0 makes the color completely white,
+                        0.0 leaves the color unchanged.
+
+    Returns:
+        QColor: A new QColor with the adjusted brightness.
+    """
+    if not -1.0 <= value <= 1.0:
+        raise ValueError("The value must be between -1.0 and 1.0.")
+
+    # Get the current RGB values
+    r, g, b, a = color.red(), color.green(), color.blue(), color.alpha()
+
+    # Convert RGB to HSV (Hue, Saturation, Value)
+    hsv_color = color.toHsv()
+    h, s, v = hsv_color.hue(), hsv_color.saturation(), hsv_color.value()
+
+    # Adjust the value (brightness)
+    new_v = max(0, min(255, v + value * 255))
+
+    # Create a new QColor with the adjusted brightness
+    new_color = QColor()
+    new_color.setHsv(h, s, int(new_v), a)
+
+    return new_color
+
+
 # Main formatting function
 @register_cache(always_keep=True)
 def format_number(
@@ -503,8 +552,8 @@ def format_number(
 
     # Apply color formatting to decimal groups
     if color_formatting:
-        lighter_color = lighten_color(overall_color, 0.3)
-        lightest_color = lighten_color(overall_color, 0.5)
+        lighter_color = adjust_brightness(QColor(overall_color), 0.3 * (-1 if is_dark_mode() else 1)).name()
+        lightest_color = adjust_brightness(QColor(overall_color), 0.5 * (-1 if is_dark_mode() else 1)).name()
 
         for i in range(len(decimal_groups)):
             if i == len(decimal_groups) - 1:

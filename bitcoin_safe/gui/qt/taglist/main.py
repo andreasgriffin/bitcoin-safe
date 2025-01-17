@@ -33,14 +33,23 @@ from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ....i18n import translate
 from ....util import qbytearray_to_str, register_cache, str_to_qbytearray
+from ..util import category_color
 
 logger = logging.getLogger(__name__)
 
-import hashlib
 import json
 from typing import Dict, Generator, Iterable, List, Optional, Tuple
 
-from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QRect, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import (
+    QMimeData,
+    QModelIndex,
+    QPoint,
+    QPointF,
+    QRect,
+    QSize,
+    Qt,
+    pyqtSignal,
+)
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -53,6 +62,8 @@ from PyQt6.QtGui import (
     QMouseEvent,
     QPainter,
     QPalette,
+    QTextCharFormat,
+    QTextCursor,
     QTextDocument,
     QTextOption,
 )
@@ -62,6 +73,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QMenu,
     QPushButton,
     QStyle,
     QStyledItemDelegate,
@@ -85,26 +97,9 @@ class AddressDragInfo:
         return f"AddressDragInfo({self.tags}, {self.addresses})"
 
 
-def hash_string(text: str) -> str:
-    return hashlib.sha256(str(text).encode()).hexdigest()
-
-
-def rescale(value: float, old_min: float, old_max: float, new_min: float, new_max: float):
-    return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
-
-
 @register_cache(always_keep=True)
-def hash_color(text) -> QColor:
-    hash_value = int(hash_string(text), 16) & 0xFFFFFF
-    r = (hash_value & 0xFF0000) >> 16
-    g = (hash_value & 0x00FF00) >> 8
-    b = hash_value & 0x0000FF
-
-    r = int(rescale(r, 0, 255, 100, 255))
-    g = int(rescale(g, 0, 255, 100, 255))
-    b = int(rescale(b, 0, 255, 100, 255))
-
-    return QColor(r, g, b)
+def cached_category_color(text: str) -> QColor:
+    return category_color(text)
 
 
 class CustomListWidgetItem(QListWidgetItem):
@@ -112,12 +107,12 @@ class CustomListWidgetItem(QListWidgetItem):
         super(CustomListWidgetItem, self).__init__(parent)
         self.setText(item_text)
         self.subtext = sub_text
-        self.color = self.hash_color()
+        self.color = self.category_color()
         self.setData(Qt.ItemDataRole.UserRole + 1, self.color)
         self.setData(Qt.ItemDataRole.UserRole + 2, self.subtext)  # UserRole for subtext
 
-    def hash_color(self):
-        return hash_color(self.text())
+    def category_color(self):
+        return cached_category_color(self.text())
 
     def mimeData(self):
         mime_data = QMimeData()
@@ -193,6 +188,18 @@ class CustomDelegate(QStyledItemDelegate):
         painter.end()
         return image
 
+    @classmethod
+    def set_text_color(cls, doc: QTextDocument, color: QColor):
+
+        # Use a QTextCursor to select and format the entire document
+        cursor = QTextCursor(doc)
+        cursor.select(QTextCursor.SelectionType.Document)
+
+        # set the color to default black (because the background can be bright)
+        charFormat = QTextCharFormat()
+        charFormat.setForeground(color)  # Set the text color explicitly
+        cursor.mergeCharFormat(charFormat)
+
     def draw_html_text(self, painter: QPainter, text: str, subtext: str, rect: QRect, scale: float):
         # Base font size adjustments (these are scale factors, adjust as needed)
         baseFontSize = 1.0  # Adjust this factor to scale the default font size for main text
@@ -228,10 +235,12 @@ class CustomDelegate(QStyledItemDelegate):
         # Draw main text
         if text:
             doc = QTextDocument()
+
             doc.setHtml(text)
             font = QFont(defaultFont)  # Use the default system font
             font.setPointSizeF(defaultFont.pointSizeF() * baseFontSize)  # Apply scaling factor
             doc.setDefaultFont(font)
+            # self.set_text_color(doc,color= QColor("black"))
             textOption = QTextOption()
             textOption.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center text horizontally
             doc.setDefaultTextOption(textOption)
@@ -251,6 +260,7 @@ class CustomDelegate(QStyledItemDelegate):
             font = QFont(defaultFont)  # Use the default system font for subtext
             font.setPointSizeF(defaultFont.pointSizeF() * subtextFontSize)  # Apply scaling factor for subtext
             doc.setDefaultFont(font)
+            # self.set_text_color(doc,color= QColor("black"))
             textOption = QTextOption()
             textOption.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center text horizontally
             doc.setDefaultTextOption(textOption)
@@ -456,7 +466,7 @@ class CustomListWidget(QListWidget):
 
     def on_item_changed(self, item: CustomListWidgetItem):  # new
 
-        item.color = item.hash_color()
+        item.color = item.category_color()
         item.setData(Qt.ItemDataRole.UserRole + 1, item.color)
 
         # Here you can handle the renaming event
@@ -513,8 +523,18 @@ class CustomListWidget(QListWidget):
                     if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
                         self.setAllSelection(False)
                         return
+        if event and event.button() == Qt.MouseButton.RightButton:
+            # Get the item at the mouse position
+            item = self.itemAt(event.pos())
+            if item:
+                self.show_context_menu(event.globalPosition(), item=item)
 
         super().mouseReleaseEvent(event)
+
+    def show_context_menu(self, position: QPointF, item: QListWidgetItem):
+        context_menu = QMenu(self)
+        context_menu.addAction(self.tr("Delete Category"), lambda: self.delete_item(item.text()))
+        context_menu.exec(position.toPoint())
 
     def mouseMoveEvent(self, event: QMouseEvent | None):
         if not event:

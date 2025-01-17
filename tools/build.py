@@ -28,13 +28,14 @@
 
 
 import argparse
+import hashlib
 import logging
 import os
 import platform
 import shutil
 import subprocess
 from pathlib import Path
-from typing import List, Literal
+from typing import Dict, List, Literal
 
 from translation_handler import TranslationHandler, run_local
 
@@ -51,6 +52,26 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
+
+
+def calc_hashes_of_files(folder: Path) -> Dict[Path, str]:
+    """
+    Calculates SHA-256 hashes for all files in a specified directory and returns a dictionary
+    where the keys are the file paths and the values are the SHA-256 hashes.
+
+    :param folder: Path object representing the directory to scan
+    :return: Dictionary mapping file paths to their hashes
+    """
+    hashes = {}
+    for file_path in folder.glob("*"):
+        if file_path.is_file():  # Ensure it's a file
+            # Open the file in binary read mode
+            with open(file_path, "rb") as file:
+                file_data = file.read()
+                # Calculate SHA-256 hash
+                hash_sha256 = hashlib.sha256(file_data).hexdigest()
+                hashes[file_path] = hash_sha256
+    return hashes
 
 
 class Builder:
@@ -345,6 +366,12 @@ class Builder:
 
         for target in targets:
             f_map[target](build_commit=build_commit)
+
+        # calc hashes
+        hashes = calc_hashes_of_files(Path(".") / "dist")
+        print(f"Resulting hashes:")
+        for file, hash in hashes.items():
+            print(f"{file.name}: {hash}")
 
         # if "linux" in targets:
         #     self.create_briefcase_binaries_in_docker(target_platform="linux")

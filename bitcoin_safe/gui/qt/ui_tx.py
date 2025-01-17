@@ -56,6 +56,7 @@ from ...signals import TypedPyQtSignalNo
 from .dialog_import import ImportDialog
 from .my_treeview import MyItemDataRole, SearchableTab
 from .nLockTimePicker import nLocktimePicker
+from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtGui import QColor, QFont, QIcon
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -138,7 +139,7 @@ class LinkingWarningBar(NotificationBar):
         )
         self.category_dict: Dict[str, Set[str]] = {}
         self.signals_min = signals_min
-        self.set_background_color("#FFDF00")
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(QIcon(icon_path("warning.png")))
 
         self.optionalButton.setVisible(False)

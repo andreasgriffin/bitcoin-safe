@@ -134,8 +134,8 @@
         <translation>Сумма слишком мала  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>Сумма слишком велика  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>Сумма слишком велика. Пожалуйста, выберите на левой панели категорию с достаточным финансированием или выберите монеты на вкладке &quot;Расширенные&quot;  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>Копировать JSON</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>Удалить категорию  </translation>
     </message>
 </context>
 <context>
