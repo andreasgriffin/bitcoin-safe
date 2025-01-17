@@ -30,7 +30,7 @@ import logging
 import sys
 from typing import Callable, Optional, Tuple
 
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QColor, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -44,6 +44,7 @@ from PyQt6.QtWidgets import (
 )
 
 from .recipients import CloseButton
+from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
 
@@ -106,11 +107,13 @@ class NotificationBar(QWidget):
         self.closeButton.setFixedSize(self.sizeHint().height(), self.sizeHint().height())
         logger.debug(f"initialized {self}")
 
-    def set_background_color(self, color: str) -> None:
-        self.setStyleSheet(f"background-color: {color};")  # Set the background color for the notification bar
+    def set_background_color(self, color: QColor) -> None:
+        self.setStyleSheet(
+            f"background-color: {color.name()};"
+        )  # Set the background color for the notification bar
 
         # Set the background color for all child widgets, including the spacer
-        self.textLabel.setStyleSheet(f"background-color: {color};")
+        self.textLabel.setStyleSheet(f"background-color: {color.name()};")
         # self.optionalButton.setStyleSheet(f"background-color: {color};")
         # self.closeButton.setStyleSheet(f"background-color: {color};")
 
@@ -133,7 +136,7 @@ if __name__ == "__main__":
             layout.setSpacing(0)
 
             self.notificationBar = NotificationBar(text="my notification")
-            self.notificationBar.set_background_color("lightblue")
+            self.notificationBar.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
             self.notificationBar.set_icon(QIcon("../icons/bitcoin-testnet.svg"))
             layout.addWidget(self.notificationBar)
             layout.addWidget(QTextEdit("some text"))

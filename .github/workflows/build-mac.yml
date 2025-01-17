@@ -5,20 +5,16 @@ on:
       commitHash:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
-        type: string
-      build:
-        description: 'Build DMG (Arm64)'
-        required: false
-        type: boolean
+        type: string 
 
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
+
 
 jobs:
   build:
-    runs-on: macos-14  # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-14, macos-14-large]  # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,8 +23,19 @@ jobs:
           ref: ${{ github.event.inputs.commitHash || github.sha }}
 
 
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+          
       - name: Run build script
-        run: tools/build-mac/make_osx.sh 
+        run: poetry run python tools/build.py --targets mac --commit None
 
 
       - name: Check for DMG file
@@ -42,5 +49,5 @@ jobs:
       - name: Upload DMG Files from dist/
         uses: actions/upload-artifact@v4
         with:
-          name: dmgs
+          name: dmgs-${{ matrix.os }}
           path: dist/*.dmg

@@ -39,7 +39,8 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QColor
 
 from ...signals import UpdateFilter, UpdateFilterReason, WalletSignals
-from .taglist import CustomListWidget, TagEditor, hash_color
+from .taglist import CustomListWidget, TagEditor
+from .util import category_color
 
 
 class CategoryList(CustomListWidget):
@@ -103,7 +104,7 @@ class CategoryList(CustomListWidget):
     def color(cls, category) -> QColor:
         if not category:
             return QColor(255, 255, 255, 255)
-        return hash_color(category)
+        return category_color(category)
 
 
 class CategoryEditor(TagEditor):
@@ -178,4 +179,4 @@ class CategoryEditor(TagEditor):
     def color(cls, category) -> QColor:
         if not category:
             return QColor(255, 255, 255, 255)
-        return hash_color(category)
+        return category_color(category)

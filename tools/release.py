@@ -65,7 +65,7 @@ Lots of existing features were not mentioned above, so please check out:
 
 Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and verify the signature with:
 ```bash
-gpg import 2759AA7148568ECCB03B76301D82124B440F612D.asc
+gpg --import 2759AA7148568ECCB03B76301D82124B440F612D.asc
 gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 ```
 

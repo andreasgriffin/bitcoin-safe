@@ -249,7 +249,7 @@ class StepProgressBar(QWidget):
                 )
 
             # Draw step text below circles
-            painter.setPen(QPen(text_color))
+            painter.setPen(QPen(self.palette().color(self.foregroundRole())))
             painter.setFont(QFont("Arial", 10))
             painter.drawText(self._label_rect(i), self.labels[i], text_option)
 

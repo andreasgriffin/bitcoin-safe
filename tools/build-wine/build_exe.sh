@@ -37,14 +37,9 @@ PIP_CACHE_DIR="$BUILD_CACHEDIR/pip"
 WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR") 
 
 
-rm -rf "$POETRY_WHEEL_DIR" # delete whl
 mkdir -p "$POETRY_WHEEL_DIR" "$APPDIR"   "$PIP_CACHE_DIR"   "$L_POETRY_CACHE_DIR"
 
 info "Installing requirements..."
-
-info "Installing poetry"
-$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location \
-    --cache-dir "$WINE_PIP_CACHE_DIR" poetry==1.8.4
 
 
 info "Installing build dependencies using poetry" 
@@ -60,10 +55,10 @@ mv "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.original.venv" # moving this out of the
 $WINE_PYTHON -m poetry install --only main --no-interaction  
 
 info "now install the root package"
+rm -Rf "$POETRY_WHEEL_DIR" || true 
 $WINE_PYTHON -m poetry build -f wheel --output="$WINE_POETRY_WHEEL_DIR"
 info "ls of output directory: {$POETRY_WHEEL_DIR}  $(ls $POETRY_WHEEL_DIR)"
-$WINE_PYTHON -m pip install --no-dependencies --no-warn-script-location \
-    --cache-dir "$WINE_PIP_CACHE_DIR" "$POETRY_WHEEL_DIR/"*.whl
+do_wine_pip "$POETRY_WHEEL_DIR/"*.whl
 
 
 # # was only needed during build time, not runtime

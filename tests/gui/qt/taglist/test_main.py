@@ -41,12 +41,11 @@ from bitcoin_safe.gui.qt.taglist.main import (
     DeleteButton,
     TagEditor,
     clean_tag,
-    hash_color,
-    hash_string,
     qbytearray_to_str,
-    rescale,
     str_to_qbytearray,
 )
+from bitcoin_safe.gui.qt.util import hash_color, rescale
+from bitcoin_safe.util import hash_string
 
 logger = logging.getLogger(__name__)
 

@@ -134,8 +134,8 @@
         <translation>Importo troppo piccolo  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>Importo troppo grande  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>Importo troppo grande. Si prega di cliccare su una categoria sufficientemente finanziata sulla sinistra, oppure selezionare le monete nella scheda avanzata  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>Copia JSON</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>Elimina categoria  </translation>
     </message>
 </context>
 <context>

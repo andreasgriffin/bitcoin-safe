@@ -134,8 +134,8 @@
         <translation>राशि बहुत छोटी है  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>राशि बहुत बड़ी है  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>राशि बहुत बड़ी है। कृपया बाएं ओर पर्याप्त वित्तपोषित श्रेणी पर क्लिक करें, या उन्नत टैब में सिक्के चुनें  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>JSON कॉपी करें</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>श्रेणी हटाएं  </translation>
     </message>
 </context>
 <context>

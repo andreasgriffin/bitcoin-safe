@@ -18,6 +18,8 @@ if not cmdline_name:
 # see https://github.com/pyinstaller/pyinstaller/issues/2005
 hiddenimports = []
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
+hiddenimports += collect_submodules('hwilib') # otherwise hwilib doesnt get packaged
+
 
 packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs", "cv2"]
 

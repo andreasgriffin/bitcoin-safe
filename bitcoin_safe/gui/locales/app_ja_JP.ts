@@ -134,8 +134,8 @@
         <translation>金額が小さすぎます  </translation>
     </message>
     <message>
-        <source>Amount too large</source>
-        <translation>金額が大きすぎます  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>金額が大きすぎます。左側の十分に資金があるカテゴリをクリックするか、または高度なタブでコインを選択してください  </translation>
     </message>
 </context>
 <context>
@@ -369,6 +369,13 @@ shown on your BitBox02.</source>
     <message>
         <source>Copy JSON</source>
         <translation>JSONをコピー</translation>
+    </message>
+</context>
+<context>
+    <name>CustomListWidget</name>
+    <message>
+        <source>Delete Category</source>
+        <translation>カテゴリを削除  </translation>
     </message>
 </context>
 <context>

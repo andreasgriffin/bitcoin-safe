@@ -13,11 +13,11 @@ here="$(dirname "$(readlink -e "$0")")"
 
 . "$CONTRIB"/build_tools_util.sh
 
-WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
 
 
 info "Booting wine."
 wine 'wineboot'
+
 
 
 cd "$BUILD_CACHEDIR"
@@ -48,12 +48,8 @@ done
 break_legacy_easy_install
 
 info "Installing build dependencies"
-$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location \
-    -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt" \
-    || fail "Could not install build dependencies (base)"
-$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location \
-    -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt" \
-    || fail "Could not install build dependencies (poetry)"
+do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt"  
+do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt"  
 
 
 info "Installing build dependencies using poetry"
@@ -62,8 +58,7 @@ info "Installing build dependencies using poetry"
 export PATH="$APPDIR/usr/bin:$PATH"
 export POETRY_CACHE_DIR
 $WINE_PYTHON -m poetry export --with main,build_wine --output requirements.txt  
-$WINE_PYTHON -m pip install --no-build-isolation --no-warn-script-location -r requirements.txt 
-
+do_wine_pip -r requirements.txt  
 
 
 
@@ -112,6 +107,6 @@ info "Building PyInstaller."
     [[ -e "PyInstaller/bootloader/Windows-$PYINST_ARCH-intel/runw.exe" ]] || fail "Could not find runw.exe in target dir!"
 ) || fail "PyInstaller build failed"
 info "Installing PyInstaller."
-$WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-warn-script-location ./pyinstaller
+do_wine_pip ./pyinstaller
 
 info "Wine is configured."

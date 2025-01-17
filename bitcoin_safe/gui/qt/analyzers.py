@@ -180,6 +180,11 @@ class AmountAnalyzer(QObject):
         if input < self.min_amount:
             return AnalyzerMessage(self.tr("Amount too small"), AnalyzerState.Invalid)
         if input > self.max_amount:
-            return AnalyzerMessage(self.tr("Amount too large"), AnalyzerState.Invalid)
+            return AnalyzerMessage(
+                self.tr(
+                    "Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab"
+                ),
+                AnalyzerState.Invalid,
+            )
 
         return AnalyzerMessage("Amount within allowed range", AnalyzerState.Valid)

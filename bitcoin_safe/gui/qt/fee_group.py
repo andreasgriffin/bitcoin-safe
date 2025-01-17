@@ -37,6 +37,7 @@ from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
+from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ from typing import List, Optional
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QColor, QIcon
 from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QGroupBox,
@@ -71,7 +72,7 @@ class FeeWarningBar(NotificationBar):
             optional_button_text="",
             has_close_button=False,
         )
-        self.set_background_color("#FFDF00")
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(QIcon(icon_path("warning.png")))
 
         self.optionalButton.setVisible(False)

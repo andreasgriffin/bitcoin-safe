@@ -33,10 +33,11 @@ from typing import List
 import bdkpython as bdk
 from PyQt6.QtGui import QShowEvent
 
+from bitcoin_safe.gui.qt.util import category_color
+
 from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...wallet import Wallet
 from .qr_components.quick_receive import QuickReceive, ReceiveGroup
-from .taglist.main import hash_color
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +72,7 @@ class BitcoinQuickReceive(QuickReceive):
         self.add_box(
             ReceiveGroup(
                 category,
-                hash_color(category).name(),
+                category_color(category).name(),
                 address,
                 address_info.address.to_qr_uri(),
                 parent=self,

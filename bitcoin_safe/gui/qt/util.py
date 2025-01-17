@@ -28,6 +28,7 @@
 
 
 import enum
+import hashlib
 import logging
 import platform
 import sys
@@ -78,7 +79,12 @@ from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe.util import register_cache, resource_path
+from bitcoin_safe.util import (
+    adjust_brightness,
+    is_dark_mode,
+    register_cache,
+    resource_path,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -831,3 +837,34 @@ def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
     button.setMenu(menu)
     button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
     return button, menu
+
+
+def adjust_bg_color_for_darkmode(
+    color: QColor,
+) -> QColor:
+    return adjust_brightness(color, -0.4) if is_dark_mode() else color
+
+
+def hash_string(text: str) -> str:
+    return hashlib.sha256(str(text).encode()).hexdigest()
+
+
+def rescale(value: float, old_min: float, old_max: float, new_min: float, new_max: float):
+    return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
+
+
+def hash_color(text: str) -> QColor:
+    hash_value = int(hash_string(text), 16) & 0xFFFFFF
+    r = (hash_value & 0xFF0000) >> 16
+    g = (hash_value & 0x00FF00) >> 8
+    b = hash_value & 0x0000FF
+
+    r = int(rescale(r, 0, 255, 100, 255))
+    g = int(rescale(g, 0, 255, 100, 255))
+    b = int(rescale(b, 0, 255, 100, 255))
+
+    return QColor(r, g, b)
+
+
+def category_color(text: str) -> QColor:
+    return adjust_bg_color_for_darkmode(hash_color(text))
