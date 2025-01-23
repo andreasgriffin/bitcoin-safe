@@ -42,6 +42,7 @@ python_path="/Library/Frameworks/Python.framework/Versions/$PY_VER_MAJOR"
 python3="$python_path/bin/python$PY_VER_MAJOR"
 
 info "Removing old Python installation:  $python_path"
+# repeating this script without removal of the python installation leads to python not bein able to find pip
 sudo rm -rf "$python_path"
 
 info "Installing Python $PYTHON_VERSION"
@@ -54,6 +55,7 @@ echo "767ed35ad688d28ea4494081ae96408a0318d0d5bb9ca0139d74d6247b231cfc  $CACHEDI
 sudo installer -pkg "$CACHEDIR/$PKG_FILE" -target / \
     || fail "failed to install python"
 
+# sanity check "python3" has the version we just installed.
 FOUND_PY_VERSION=$($python3 -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
 if [[ "$FOUND_PY_VERSION" != "$PYTHON_VERSION" ]]; then
     fail "python version mismatch: $FOUND_PY_VERSION != $PYTHON_VERSION"
@@ -149,7 +151,8 @@ PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ~ v6.11.1
     git remote add origin $PYINSTALLER_REPO
     git fetch --depth 1 origin $PYINSTALLER_COMMIT
     git checkout -b pinned "${PYINSTALLER_COMMIT}^{commit}"
-    # Tag the bootloader for reproducible builds
+    # add reproducible randomness. this ensures we build a different bootloader for each commit.
+    # if we built the same one for all releases, that might also get anti-virus false positives
     echo "const char *bitcoin_safe_tag = \"tagged by Bitcoin_Safe@$BITCOIN_SAFE_COMMIT_HASH\";" >> ./bootloader/src/pyi_main.c
     pushd bootloader
     # compile bootloader
@@ -220,7 +223,7 @@ info "Running PyInstaller to create macOS .app"
 BITCOIN_SAFE_VERSION=$VERSION \
   pyinstaller --noconfirm --clean tools/build-mac/osx.spec || fail "PyInstaller failed."
 
-info "Finished building unsigned dist/${PACKAGE}.app"
+info "Finished building unsigned dist/${PACKAGE}.app. This hash should be reproducible:"
 find "dist/${PACKAGE}.app" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
 info "Creating unsigned .DMG"
