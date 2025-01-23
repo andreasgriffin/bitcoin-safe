@@ -31,7 +31,7 @@ import hashlib
 import logging
 
 import nostr_sdk
-from bitcoin_nostr_chat.nostr import BitcoinDM
+from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_nostr_chat.ui.ui import short_key
@@ -199,7 +199,7 @@ class SyncTab(QObject):
         xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
 
         protocol_keys = nostr_sdk.Keys(
-            secret_key=nostr_sdk.SecretKey.from_hex(
+            secret_key=nostr_sdk.SecretKey.parse(
                 hashlib.sha256(
                     cls.generate_hash_hex(descriptor_info.address_type, xpubs, network).encode("utf-8")
                 ).hexdigest()

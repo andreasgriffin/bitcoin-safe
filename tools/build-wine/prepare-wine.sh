@@ -55,10 +55,12 @@ do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt
 info "Installing build dependencies using poetry"
 # Installing via poetry directly would be better, but it seems not possible to 
 # overwrite the poetry.toml config to prevent local venv
-export PATH="$APPDIR/usr/bin:$PATH"
 export POETRY_CACHE_DIR
-$WINE_PYTHON -m poetry export --with main,build_wine --output requirements.txt  
-do_wine_pip -r requirements.txt  
+export POETRY_VIRTUALENVS_CREATE=false
+$WINE_PYTHON -m poetry config virtualenvs.create false
+move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
+$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction
+move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 
 

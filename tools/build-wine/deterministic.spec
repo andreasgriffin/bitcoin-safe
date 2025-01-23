@@ -48,6 +48,7 @@ print(f"{site_packages_dir=}")
 # Example: Collect all SVG files from a module in site-packages 
 icon_paths = [Path("bitcoin_qr_tools/gui/icons"),
               Path("bitcoin_usb/icons"),
+              Path("bitcoin_usb/device_scripts"),  # for the python files that are not directly imported, but used via manual python execution 
               Path("bitcoin_nostr_chat/ui/icons")
               ]
 for icon_path in icon_paths:

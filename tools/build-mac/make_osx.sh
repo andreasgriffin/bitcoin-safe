@@ -2,18 +2,19 @@
 
 set -e
 
-# Parameterize
+# ======================
+# Parameters
+# ======================
 PYTHON_VERSION=3.10.11
 PY_VER_MAJOR="3.10"  # as it appears in fs paths
 PACKAGE=Bitcoin_Safe
 GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
 export GCC_STRIP_BINARIES="1"
-export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ folders with .pyc files
+export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ with .pyc
 
-
+# Helper/utility functions
 . "$(dirname "$0")/../build_tools_util.sh"
-
 
 CONTRIB_OSX="$(dirname "$(realpath "$0")")"
 CONTRIB="$CONTRIB_OSX/.."
@@ -30,18 +31,19 @@ cd "$PROJECT_ROOT"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
 
-
 which brew > /dev/null 2>&1 || fail "Please install brew from https://brew.sh/ to continue"
 which xcodebuild > /dev/null 2>&1 || fail "Please install xcode command line tools to continue"
 
 
+# ======================
+# Install System Python
+# ======================
 python_path="/Library/Frameworks/Python.framework/Versions/$PY_VER_MAJOR"
 python3="$python_path/bin/python$PY_VER_MAJOR"
 
-info "Removing old Python installation:  $python_path "
+info "Removing old Python installation:  $python_path"
 # repeating this script without removal of the python installation leads to python not bein able to find pip
 sudo rm -rf "$python_path"
-
 
 info "Installing Python $PYTHON_VERSION"
 PKG_FILE="python-${PYTHON_VERSION}-macos11.pkg"
@@ -59,14 +61,64 @@ if [[ "$FOUND_PY_VERSION" != "$PYTHON_VERSION" ]]; then
     fail "python version mismatch: $FOUND_PY_VERSION != $PYTHON_VERSION"
 fi
 
+# Update certificates for python.org Pythons
+/Applications/Python\ $PY_VER_MAJOR/Install\ Certificates.command
+
 break_legacy_easy_install
 
-# create a fresh virtualenv
-# This helps to avoid older versions of pip-installed dependencies interfering with the build.
-VENV_DIR="$CONTRIB_OSX/build-venv"
+
+# ======================
+# Create and Use venv
+# ======================
+info "Creating fresh Python virtual environment"
+VENV_DIR="$CONTRIB_OSX/venv-mac"
 rm -rf "$VENV_DIR"
-$python3 -m venv $VENV_DIR
-source $VENV_DIR/bin/activate
+$python3 -m venv "$VENV_DIR"
+# shellcheck disable=SC1091
+source "$VENV_DIR/bin/activate"
+
+# Double-check we are using the correct Python in the venv:
+which python
+python --version
+
+
+# ======================
+# Install build-time dependencies
+# ======================
+info "Installing build dependencies"
+function do_pip() {
+    info "Installing pip $@"
+    pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
+
+info "Installing required pip packages for building..."
+do_pip -Ir ./tools/deterministic-build/requirements-build-base.txt  
+do_pip -Ir ./tools/deterministic-build/requirements-poetry.txt 
+
+info "Installing some Brew tools for compilation"
+brew install autoconf automake libtool gettext coreutils pkgconfig
+
+
+# ======================
+# Install Dependencies via Poetry in the same venv
+# ======================
+info "Using Poetry to install local project dependencies"
+# Optionally ensure Poetry does not create its own .venv:
+poetry config virtualenvs.create false --local
+# ...But we are already inside a venv, so Poetry *should* install into this environment:
+poetry install --with main,build_mac
+
+# or, if you prefer an in-project .venv:
+# poetry config virtualenvs.in-project true
+# poetry env use python
+# poetry install --with main,build_mac
+
+
+# ======================
+# Build PyInstaller from a pinned commit
+# ======================
 
 # don't add debug info to compiled C files (e.g. when pip calls setuptools/wheel calls gcc)
 # see https://github.com/pypa/pip/issues/6505#issuecomment-526613584
@@ -79,33 +131,11 @@ export CFLAGS="-g0"
 arch=$(uname -m)
 export ARCHFLAGS="-arch $arch"
 
-info "Installing build dependencies"
-function do_pip() {
-    info "Installing pip $@"
-    $python3 -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
-        --cache-dir "$PIP_CACHE_DIR" "$@" \
-        || fail "Could not install the specified packages due to a failure in: $@"
-}
-do_pip -Ir ./tools/deterministic-build/requirements-build-base.txt  
-do_pip -Ir ./tools/deterministic-build/requirements-poetry.txt 
 
-
-info "Installing build dependencies using poetry"
-# Installing via poetry directly would be better, but it seems not possible to 
-# overwrite the poetry.toml config to prevent local venv
-export PATH="$APPDIR/usr/bin:$PATH"
-export POETRY_CACHE_DIR
-$python3 -m poetry export --with main,build_mac --output requirements.txt  
-do_pip -r requirements.txt 
-
-
-
-info "Installing some build-time deps for compilation..."
-brew install autoconf automake libtool gettext coreutils pkgconfig
-
-info "Building PyInstaller."
+info "Building PyInstaller"
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
+PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ~ v6.11.1
+
 (
     if [ -f "$CACHEDIR/pyinstaller/PyInstaller/bootloader/Darwin-64bit/runw" ]; then
         info "pyinstaller already built, skipping"
@@ -117,37 +147,35 @@ PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
     rm -rf pyinstaller
     mkdir pyinstaller
     cd pyinstaller
-    # Shallow clone
     git init
     git remote add origin $PYINSTALLER_REPO
     git fetch --depth 1 origin $PYINSTALLER_COMMIT
     git checkout -b pinned "${PYINSTALLER_COMMIT}^{commit}"
-    rm -fv PyInstaller/bootloader/Darwin-*/run* || true
     # add reproducible randomness. this ensures we build a different bootloader for each commit.
     # if we built the same one for all releases, that might also get anti-virus false positives
     echo "const char *bitcoin_safe_tag = \"tagged by Bitcoin_Safe@$BITCOIN_SAFE_COMMIT_HASH\";" >> ./bootloader/src/pyi_main.c
     pushd bootloader
     # compile bootloader
-    $python3 ./waf all CFLAGS="-static"
+    python ./waf all CFLAGS="-static"
     popd
-    # sanity check bootloader is there:
     [[ -e "PyInstaller/bootloader/Darwin-64bit/runw" ]] || fail "Could not find runw in target dir!"
-) || fail "PyInstaller build failed"
-info "Installing PyInstaller."
-do_pip "$CACHEDIR/pyinstaller"
+)
+
+info "Installing local build of PyInstaller"
+pip install "$CACHEDIR/pyinstaller"
+
 
 info "Using these versions for building $PACKAGE:"
 sw_vers
-$python3 --version
-echo -n "Pyinstaller "
-pyinstaller="/Library/Frameworks/Python.framework/Versions/$PY_VER_MAJOR/bin/pyinstaller"
-$pyinstaller --version
-
-rm ./dist/*   || true
+python --version
+echo -n "PyInstaller "
+pyinstaller --version
 
 
+# ======================
+# Build .dylibs (libsecp256k1, zbar, libusb)
+# ======================
 git submodule update --init
-
 
 if [ ! -f "$DLL_TARGET_DIR/libsecp256k1.2.dylib" ]; then
     info "Building libsecp256k1 dylib..."
@@ -155,7 +183,7 @@ if [ ! -f "$DLL_TARGET_DIR/libsecp256k1.2.dylib" ]; then
 else
     info "Skipping libsecp256k1 build: reusing already built dylib."
 fi
-cp -f "$DLL_TARGET_DIR"/libsecp256k1.*.dylib "$PROJECT_ROOT/bitcoin_safe" || fail "Could not copy libsecp256k1 dylib"
+cp -f "$DLL_TARGET_DIR"/libsecp256k1.*.dylib "$PROJECT_ROOT/bitcoin_safe" || fail "copying libsecp256k1 failed"
 
 if [ ! -f "$DLL_TARGET_DIR/libzbar.0.dylib" ]; then
     info "Building ZBar dylib..."
@@ -163,7 +191,7 @@ if [ ! -f "$DLL_TARGET_DIR/libzbar.0.dylib" ]; then
 else
     info "Skipping ZBar build: reusing already built dylib."
 fi
-cp -f "$DLL_TARGET_DIR/libzbar.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "Could not copy ZBar dylib"
+cp -f "$DLL_TARGET_DIR/libzbar.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "copying zbar failed"
 
 if [ ! -f "$DLL_TARGET_DIR/libusb-1.0.dylib" ]; then
     info "Building libusb dylib..."
@@ -171,37 +199,40 @@ if [ ! -f "$DLL_TARGET_DIR/libusb-1.0.dylib" ]; then
 else
     info "Skipping libusb build: reusing already built dylib."
 fi
-cp -f "$DLL_TARGET_DIR/libusb-1.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "Could not copy libusb dylib"
+cp -f "$DLL_TARGET_DIR/libusb-1.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "copying libusb failed"
 
 
-
- 
-
-info "now install the root package"
-sudo rm -Rf "$POETRY_WHEEL_DIR" || true 
-$python3 -m poetry install --no-interaction
-$python3 -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
-do_pip "$POETRY_WHEEL_DIR"/*.whl
+# ======================
+# Install the root package (Wheel)
+# ======================
+sudo rm -Rf "$POETRY_WHEEL_DIR" || true
+poetry build -f wheel --output="$POETRY_WHEEL_DIR"
+pip install "$POETRY_WHEEL_DIR"/*.whl
 
 
-
-# # was only needed during build time, not runtime
-$python3 -m pip uninstall -y pip 
-
-
+# ======================
+# Build the final binary
+# ======================
+rm ./dist/*   || true
 info "Faking timestamps..."
 find . -exec sudo touch -t '200101220000' {} + || true
 
 VERSION=$(git describe --tags --dirty --always)
 
-info "Building binary"
-BITCOIN_SAFE_VERSION=$VERSION $pyinstaller   --noconfirm --clean tools/build-mac/osx.spec || fail "Could not build binary"
+info "Running PyInstaller to create macOS .app"
+BITCOIN_SAFE_VERSION=$VERSION \
+  pyinstaller --noconfirm --clean tools/build-mac/osx.spec || fail "PyInstaller failed."
 
 info "Finished building unsigned dist/${PACKAGE}.app. This hash should be reproducible:"
 find "dist/${PACKAGE}.app" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
 info "Creating unsigned .DMG"
-hdiutil create -fs HFS+ -volname $PACKAGE -srcfolder dist/$PACKAGE.app dist/bitcoin_safe-$VERSION-unsigned.dmg || fail "Could not create .DMG"
+hdiutil create \
+        -fs HFS+ \
+        -volname "$PACKAGE" \
+        -srcfolder "dist/$PACKAGE.app" \
+        "dist/bitcoin_safe-$VERSION-unsigned.dmg" \
+  || fail "Could not create .DMG"
 
-info "App was built successfully but was not code signed. Users may get security warnings from macOS."
-info "Now you also need to run sign_osx.sh to codesign/notarize the binary."
+info "Done. The .app and .dmg are *unsigned* and will trigger macOS Gatekeeper warnings."
+info "To ship, you’ll need to sign and notarize. See: sign_osx.sh"

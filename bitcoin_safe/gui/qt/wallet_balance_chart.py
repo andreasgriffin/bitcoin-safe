@@ -35,6 +35,7 @@ import sys
 import numpy as np
 from PyQt6.QtCharts import QChart, QChartView, QDateTimeAxis, QLineSeries, QValueAxis
 from PyQt6.QtCore import QDateTime, QMargins, Qt, QTimer
+from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsLayout,
@@ -43,10 +44,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.signals import UpdateFilter, WalletSignals
 from bitcoin_safe.util import unit_str
-
-from ...signals import UpdateFilter, WalletSignals
-from ...wallet import Wallet
+from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class BalanceChart(QWidget):
 
         # Create chart
         self.chart = QChart()
-        self.chart.setBackgroundBrush(Qt.GlobalColor.white)
+        self.chart.setBackgroundBrush(self.palette().color(QPalette.ColorRole.Base))
         if legend := self.chart.legend():
             legend.hide()
 
@@ -70,9 +70,14 @@ class BalanceChart(QWidget):
 
         # Create DateTime axis for X
         self.datetime_axis = QDateTimeAxis()
+        text_color = self.palette().color(QPalette.ColorRole.WindowText)
+        self.datetime_axis.setLabelsColor(text_color)
+        self.datetime_axis.setTitleBrush(text_color)
 
         # Create Value axis for Y
         self.value_axis = QValueAxis()
+        self.value_axis.setLabelsColor(text_color)
+        self.value_axis.setTitleBrush(text_color)
 
         self.chart.addAxis(self.datetime_axis, Qt.AlignmentFlag.AlignBottom)
         self.chart.addAxis(self.value_axis, Qt.AlignmentFlag.AlignLeft)

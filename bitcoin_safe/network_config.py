@@ -57,8 +57,17 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
         bdk.Network.REGTEST: {
             "default": "http://localhost:8080/"
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
-        bdk.Network.TESTNET: {"default": "https://mempool.space/testnet/"},
-        bdk.Network.SIGNET: {"default": "https://mutinynet.com"},
+        bdk.Network.TESTNET: {
+            "default": "https://mempool.space/testnet4",
+            "mempool.space": "https://mempool.space/testnet/",
+            "blockstream": "https://blockstream.info/testnet",
+            "testnet4:mempool.space": "https://mempool.space/testnet4",
+        },
+        bdk.Network.SIGNET: {
+            "default": "https://mempool.space/signet",
+            "mempool.space": "https://mempool.space/signet",
+            "mutinynet": "https://mutinynet.com",
+        },
     }
     return d[network]
 
@@ -83,14 +92,15 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
             "nigiri": ElectrumConfig("127.0.0.1:50000", False),
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": ElectrumConfig("blockstream.info:993", True),
-            "blockstream": ElectrumConfig("blockstream.info:993", True),
-            "electrum.blockstream.info": ElectrumConfig("electrum.blockstream.info:60002", True),
+            "default": ElectrumConfig("mempool.space:40002", True),  # Testnet4
+            "blockstream": ElectrumConfig("blockstream.info:993", True),  # testnet3
+            "electrum.blockstream.info": ElectrumConfig("electrum.blockstream.info:60002", True),  # testnet3
+            "testnet4:mempool.space": ElectrumConfig("mempool.space:40002", True),  # Testnet4
         },
         bdk.Network.SIGNET: {
-            "default": ElectrumConfig("mutinynet.com:50001", False),
+            "default": ElectrumConfig("mempool.space:60602", True),
             "mutinynet": ElectrumConfig("mutinynet.com:50001", False),
-            "mempool": ElectrumConfig("mempool.space:60602", True),
+            "mempool.space": ElectrumConfig("mempool.space:60602", True),
         },
     }
     return d[network]
@@ -154,8 +164,8 @@ def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
             "nigiri": "http://127.0.0.1:3000",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": "https://blockstream.info/testnet/api/",
-            "blockstream": "https://blockstream.info/testnet/api/",
+            "default": "https://blockstream.info/testnet/api/",  # testnet3
+            "blockstream": "https://blockstream.info/testnet/api/",  # testnet3
         },
         bdk.Network.SIGNET: {
             "default": "https://mutinynet.com/api",
@@ -189,20 +199,30 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.REGTEST: (
                 translate(
                     "net_conf",
-                    "You can setup {link} with an electrum server on {server} and a block explorer on {explorer}",
+                    "You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}",
                 ).format(
-                    link=link("https://nigiri.vulpem.com/", "nigiri"),
+                    electrum=link("https://nigiri.vulpem.com/", "nigiri"),
                     server=link("http://localhost:50000", "localhost:50000"),
                     explorer=link("http://localhost:5000", "localhost:5000"),
                 )
             ),
             bdk.Network.TESTNET: (
-                translate("net_conf", "A good option is {link} and a block explorer on {explorer}.").format(
-                    link=link(get_electrum_configs(bdk.Network.TESTNET)["blockstream"].url),
-                    explorer=link("https://blockstream.info/testnet"),
+                translate(
+                    "net_conf",
+                    "A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}",
+                ).format(
+                    electrum_testnet4=link(
+                        get_electrum_configs(bdk.Network.TESTNET)["testnet4:mempool.space"].url
+                    ),
+                    explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET)["testnet4:mempool.space"]),
                 )
             ),
-            bdk.Network.SIGNET: "",
+            bdk.Network.SIGNET: translate(
+                "net_conf", "Signet choose {electrum} and a block explorer on {mempool_url}."
+            ).format(
+                electrum=link(get_electrum_configs(bdk.Network.SIGNET)["mempool.space"].url),
+                mempool_url=link(get_mempool_url(bdk.Network.SIGNET)["mempool.space"]),
+            ),
         }
         return d[network]
     elif server_type == BlockchainType.Esplora:
@@ -228,7 +248,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.SIGNET: (
                 translate(
                     "net_conf",
-                    "A good option is {link} and a block explorer on {explorer}. There is a {faucet}.",
+                    "A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.",
                 ).format(
                     link=link(get_esplora_urls(bdk.Network.SIGNET)["mutinynet"]),
                     explorer=link("https://mutinynet.com/"),

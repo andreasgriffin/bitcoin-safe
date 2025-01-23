@@ -47,11 +47,11 @@ info "Installing build dependencies using poetry"
 # export PATH="$APPDIR/usr/bin:$PATH"
 # for poetry to install into the system python environment 
 # we have to also remove the .venv folder. Otherwise it will use it
-export POETRY_VIRTUALENVS_CREATE=false
 export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
-mkdir -p "$PROJECT_ROOT/.venv"
-rm -rf "$PROJECT_ROOT/.original.venv" # delete old moved directory if exists
-mv "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.original.venv" # moving this out of the may so poetry doesnt detect it
+export POETRY_VIRTUALENVS_CREATE=false
+$WINE_PYTHON -m poetry config virtualenvs.create false
+
+move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
 $WINE_PYTHON -m poetry install --only main --no-interaction  
 
 info "now install the root package"
@@ -64,10 +64,7 @@ do_wine_pip "$POETRY_WHEEL_DIR/"*.whl
 # # was only needed during build time, not runtime
 $WINE_PYTHON -m pip uninstall -y poetry pip 
 
-
-mv "$PROJECT_ROOT/.original.venv" "$PROJECT_ROOT/.venv" # moving the .venv back
-
-
+move_and_overwrite $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 
 cp "$PROJECT_ROOT/bitcoin_safe/"libsecp256k1-*.dll "$WINE_ROOT_PACKAGE"
