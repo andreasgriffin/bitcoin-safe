@@ -30,11 +30,13 @@
 import enum
 import hashlib
 import logging
+import os
 import platform
 import sys
 import traceback
 import webbrowser
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
@@ -629,16 +631,28 @@ class ColorScheme:
         ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
 
 
+def resource_path_auto_darkmode(*parts: str):
+    if is_dark_mode():
+        filename = parts[-1]
+        name, extension = os.path.splitext(filename)
+        modified_parts = list(parts)[:-1] + [f"{name}_darkmode{extension}"]
+        combined_path = resource_path(*modified_parts)
+        if Path(combined_path).exists():
+            return combined_path
+
+    return resource_path(*parts)
+
+
 def icon_path(icon_basename: str) -> str:
-    return resource_path("gui", "icons", icon_basename)
+    return resource_path_auto_darkmode("gui", "icons", icon_basename)
 
 
 def hardware_signer_path(signer_basename: str) -> str:
-    return resource_path("gui", "icons", "hardware_signers", signer_basename)
+    return resource_path_auto_darkmode("gui", "icons", "hardware_signers", signer_basename)
 
 
 def generated_hardware_signer_path(signer_basename: str) -> str:
-    return resource_path("gui", "icons", "hardware_signers", "generated", signer_basename)
+    return resource_path_auto_darkmode("gui", "icons", "hardware_signers", "generated", signer_basename)
 
 
 def screenshot_path(basename: str):

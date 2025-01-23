@@ -227,3 +227,34 @@ function do_wine_pip() {
         --cache-dir "$WINE_PIP_CACHE_DIR" "$@" \
         || fail "Could not install the specified packages due to a failure in: $@"
 }
+
+
+
+move_and_overwrite() {
+    local source_dir="$1"
+    local dest_dir="$2"
+
+    # Check if source directory is not provided or does not exist
+    if [[ -z "$source_dir" || ! -d "$source_dir" ]]; then
+        echo "Notice: Source directory '$source_dir' does not exist or is not provided. Skipping."
+        return 0  # Consider using 'return 0' to indicate skipping as non-critical.
+    fi
+
+    # Check if destination directory is provided
+    if [[ -z "$dest_dir" ]]; then
+        echo "Error: Destination directory is not provided."
+        return 1
+    fi
+
+    # Remove the destination directory if it exists
+    if [[ -d "$dest_dir" ]]; then
+        echo "Removing existing destination directory '$dest_dir'."
+        rm -rf "$dest_dir"
+    fi
+
+    # Move the source directory to the destination
+    mv "$source_dir" "$dest_dir" && echo "Successfully moved '$source_dir' to '$dest_dir'." || {
+        echo "Error: Failed to move '$source_dir' to '$dest_dir'."
+        return 1
+    }
+}

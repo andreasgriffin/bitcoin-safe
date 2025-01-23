@@ -32,8 +32,8 @@ from datetime import datetime
 from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
-from bitcoin_nostr_chat.ui.ui import TrustedDevice, short_key
+from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.ui.ui import short_key
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
@@ -99,7 +99,7 @@ class LabelSyncer(QObject):
             for chunk in chunks
         ]
 
-    def on_add_trusted_device(self, trusted_device: TrustedDevice) -> None:
+    def on_add_trusted_device(self, pub_key_bech32: str) -> None:
         if not self.sync_tab.enabled():
             return
         logger.debug(f"on_add_trusted_device")
@@ -116,9 +116,9 @@ class LabelSyncer(QObject):
                     data=bitcoin_data,
                     created_at=datetime.now(),
                 ),
-                PublicKey.from_bech32(trusted_device.pub_key_bech32),
+                PublicKey.parse(pub_key_bech32),
             )
-        logger.info(f"Sent all labels to trusted device {short_key( trusted_device.pub_key_bech32)}")
+        logger.info(f"Sent all labels to trusted device {short_key( pub_key_bech32)}")
 
     def on_nostr_label_bip329_received(self, data: Data, author: PublicKey) -> None:
         if not self.sync_tab.enabled():

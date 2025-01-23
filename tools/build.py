@@ -315,17 +315,16 @@ class Builder:
         os.chdir(str(PROJECT_ROOT))
 
         # Ensure the resulting binary location is independent of fresh_clone
-        if Source_Dist_dir != DISTDIR:
-            os.makedirs(DISTDIR, exist_ok=True)
-            for file in Source_Dist_dir.iterdir():
-                if file.name.endswith(".dmg"):
-                    logger.info(f"Moving {file} --> {DISTDIR / file.name}")
-                    # Replace module name with formatted app name in the directory name
-                    new_name = file.name.replace(self.module_name, self.app_name_formatter(self.module_name))
-                    if new_name.endswith("-unsigned.dmg"):
-                        new_name = new_name.replace("-unsigned.dmg", f"-{self.get_target_arch()}.dmg")
-                    # Perform the move
-                    shutil.move(str(file), str(DISTDIR / new_name))
+        os.makedirs(DISTDIR, exist_ok=True)
+        for file in Source_Dist_dir.iterdir():
+            if file.name.endswith(".dmg"):
+                logger.info(f"Moving {file} --> {DISTDIR / file.name}")
+                # Replace module name with formatted app name in the directory name
+                new_name = file.name.replace(self.module_name, self.app_name_formatter(self.module_name))
+                if new_name.endswith("-unsigned.dmg"):
+                    new_name = new_name.replace("-unsigned.dmg", f"-{self.get_target_arch()}.dmg")
+                # Perform the move
+                shutil.move(str(file), str(DISTDIR / new_name))
 
     # def briefcase_appimage(self, **kwargs):
     #     # briefcase appimage building works on some systems, but not on others... unknown why.

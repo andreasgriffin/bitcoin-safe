@@ -32,7 +32,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from bitcoin_nostr_chat.nostr import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
 from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
@@ -383,7 +383,7 @@ class SyncChatToolButton(QToolButton):
                     return
                 if receiver_public_key_bech32:
                     self.on_nostr_share_with_member(
-                        PublicKey.from_bech32(receiver_public_key_bech32), wallet_id, sync_tab
+                        PublicKey.parse(receiver_public_key_bech32), wallet_id, sync_tab
                     )
                 else:
                     self.on_nostr_share_in_group(wallet_id, sync_tab)
@@ -602,7 +602,6 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.group_qr_buttons_layout.addWidget(self.button_enlarge_qr)
 
         self.button_save_qr = QPushButton()
-        # self.button_save_qr.setIcon(read_QIcon("download.png"))
         self.button_save_qr.setIcon(
             (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
         )
