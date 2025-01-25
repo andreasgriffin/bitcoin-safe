@@ -35,7 +35,7 @@ import platform
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Literal
+from typing import Callable, Dict, List, Literal
 
 from translation_handler import TranslationHandler, run_local
 
@@ -227,21 +227,21 @@ class Builder:
         run_local(f'docker build {DOCKER_BUILD_FLAGS} -t {docker_image} "{path_build}"')
 
         # Possibly do a fresh clone
-        FRESH_CLONE = False
+        cloned_path: Path | None = None
         if build_commit:
             logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            FRESH_CLONE = Path(f"/tmp/{docker_image.replace(' ','')}/fresh_clone/bitcoin_safe")
+            cloned_path = Path(f"/tmp/{docker_image.replace(' ','')}/fresh_clone/bitcoin_safe")
             try:
-                run_local(f'rm -rf "{FRESH_CLONE}"')
+                run_local(f'rm -rf "{cloned_path}"')
             except subprocess.CalledProcessError:
                 logger.info("We need sudo to remove previous FRESH_CLONE.")
-                run_local(f'sudo rm -rf "{FRESH_CLONE}"')
+                run_local(f'sudo rm -rf "{cloned_path}"')
             os.umask(0o022)
-            run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
-            os.chdir(str(FRESH_CLONE))
+            run_local(f'git clone "{PROJECT_ROOT}" "{cloned_path}"')
+            os.chdir(str(cloned_path))
             run_local(f'git checkout "{build_commit}"')
             os.chdir(original_dir)
-            PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
+            PROJECT_ROOT_OR_FRESHCLONE_ROOT = cloned_path
         else:
             logger.info("Not doing fresh clone.")
 
@@ -290,20 +290,20 @@ class Builder:
             logger.info(f"Building within current project")
 
         # Possibly do a fresh clone
-        FRESH_CLONE = False
+        cloned_path: Path | None = None
         if build_commit:
             logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            FRESH_CLONE = Path(f"/tmp/{build_commit.replace(' ','')}/fresh_clone/bitcoin_safe")
+            cloned_path = Path(f"/tmp/{build_commit.replace(' ','')}/fresh_clone/bitcoin_safe")
             try:
-                run_local(f'rm -rf "{FRESH_CLONE}"')
+                run_local(f'rm -rf "{cloned_path}"')
             except subprocess.CalledProcessError:
                 logger.info("We need sudo to remove previous FRESH_CLONE.")
-                run_local(f'sudo rm -rf "{FRESH_CLONE}"')
+                run_local(f'sudo rm -rf "{cloned_path}"')
             os.umask(0o022)
-            run_local(f'git clone "{PROJECT_ROOT}" "{FRESH_CLONE}"')
-            os.chdir(str(FRESH_CLONE))
+            run_local(f'git clone "{PROJECT_ROOT}" "{cloned_path}"')
+            os.chdir(str(cloned_path))
             run_local(f'git checkout "{build_commit}"')
-            PROJECT_ROOT_OR_FRESHCLONE_ROOT = FRESH_CLONE
+            PROJECT_ROOT_OR_FRESHCLONE_ROOT = cloned_path
         else:
             logger.info("Not doing fresh clone.")
 
@@ -354,7 +354,7 @@ class Builder:
     ):
         # self.update_briefcase_requires()
 
-        f_map = {
+        f_map: Dict[str, Callable[..., None]] = {
             "appimage": self.build_appimage_docker,
             "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.build_dmg,
@@ -398,9 +398,7 @@ class Builder:
         run_local("poetry lock --no-cache --no-update")
 
     def verify(self, signed_files: List[Path]):
-        manager = SignatureVerifyer(
-            list_of_known_keys=[KnownGPGKeys.andreasgriffin],
-        )
+        manager = SignatureVerifyer(list_of_known_keys=[KnownGPGKeys.andreasgriffin], proxies=None)
 
         assert signed_files
         for filepath in signed_files:
@@ -576,7 +574,7 @@ if __name__ == "__main__":
             targets = get_default_targets()
         else:
             print(f"--targets was given with the values: {args.targets}")
-            targets = [t.replace(",", "") for t in targets]
+            targets = [t.replace(",", "") for t in targets]  # type: ignore
 
         builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
         builder.package_application(targets=targets, build_commit=args.commit)
