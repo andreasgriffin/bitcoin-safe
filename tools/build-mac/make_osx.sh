@@ -228,12 +228,21 @@ info "Finished building unsigned dist/${PACKAGE}.app. This hash should be reprod
 find "dist/${PACKAGE}.app" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
 info "Creating unsigned .DMG"
-hdiutil create \
-        -fs HFS+ \
-        -volname "$PACKAGE" \
-        -srcfolder "dist/$PACKAGE.app" \
-        "dist/bitcoin_safe-$VERSION-unsigned.dmg" \
-  || fail "Could not create .DMG"
+# Workaround resource busy bug on github on MacOS 13
+# https://github.com/actions/runner-images/issues/7522
+i=0
+until     hdiutil create \
+            -fs HFS+ \
+            -volname "$PACKAGE" \
+            -srcfolder "dist/$PACKAGE.app" \
+            "dist/bitcoin_safe-$VERSION-unsigned.dmg"     
+do
+    if [ $i -eq 10 ]; then  
+        fail "Could not create .DMG"; 
+    fi
+    i=$((i+1))
+    sleep 1
+done
 
 info "Done. The .app and .dmg are *unsigned* and will trigger macOS Gatekeeper warnings."
 info "To ship, you’ll need to sign and notarize. See: sign_osx.sh"

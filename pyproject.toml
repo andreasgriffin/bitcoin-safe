@@ -12,7 +12,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.0.3"
+version = "1.0.4"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -42,7 +42,7 @@ numpy = "2.2.1" # error in wine/pyinstaller when increased
 # bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
 # bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
 bitcoin-qr-tools =    "^1.0.3"
-bitcoin-nostr-chat = "^0.6.1"  # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "1707c7479d9de4c1915f2b0d907b27f58703e7c0" }
+bitcoin-nostr-chat = "^0.6.2" # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "fda38f7c4879fbced753a8d3466d50c571c06769" }
 bitcoin-usb =  "^0.7.4"
 pysocks = "^1.7.1"
 

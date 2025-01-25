@@ -38,7 +38,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Un
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtBoundSignal, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QApplication,
@@ -287,15 +287,17 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.quick_receive.update_content(UpdateFilter(refresh_all=True))
 
         #### connect signals
-        self.signal_on_change_sync_status.connect(self.update_status_visualization)
-        self.signals.language_switch.connect(self.updateUi)
-        self.wallet_signals.updated.connect(self.signals.any_wallet_updated.emit)
-        self.wallet_signals.export_labels.connect(self.export_labels)
-        self.wallet_signals.export_bip329_labels.connect(self.export_bip329_labels)
-        self.wallet_signals.import_labels.connect(self.import_labels)
-        self.wallet_signals.import_bip329_labels.connect(self.import_bip329_labels)
-        self.wallet_signals.import_electrum_wallet_labels.connect(self.import_electrum_wallet_labels)
-        self.signal_on_change_sync_status.connect(self.update_display_balance)
+        self.connect_signal(self.signal_on_change_sync_status, self.update_status_visualization)
+        self.connect_signal(self.signals.language_switch, self.updateUi)
+        self.connect_signal(self.wallet_signals.updated, self.signals.any_wallet_updated.emit)
+        self.connect_signal(self.wallet_signals.export_labels, self.export_labels)
+        self.connect_signal(self.wallet_signals.export_bip329_labels, self.export_bip329_labels)
+        self.connect_signal(self.wallet_signals.import_labels, self.import_labels)
+        self.connect_signal(self.wallet_signals.import_bip329_labels, self.import_bip329_labels)
+        self.connect_signal(
+            self.wallet_signals.import_electrum_wallet_labels, self.import_electrum_wallet_labels
+        )
+        self.connect_signal(self.signal_on_change_sync_status, self.update_display_balance)
 
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
@@ -426,6 +428,27 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def stop_sync_timer(self) -> None:
         self.timer_sync_retry.stop()
         self.timer_sync_regularly.stop()
+
+    def disconnect_signals(self) -> None:
+        def discon_sig(signal: pyqtBoundSignal):
+            """
+            Disconnect only breaks one connection at a time,
+            so loop to be safe.
+            """
+            while True:
+                try:
+                    signal.disconnect()
+                except TypeError:
+                    break
+            return
+
+        super().disconnect_signals()
+        signals = self.wallet_signals
+        for signal_name in dir(signals):
+            signal = getattr(signals, signal_name)
+            if not isinstance(signal, pyqtBoundSignal):
+                continue
+            discon_sig(signal)
 
     def close(self) -> None:
         self.disconnect_signals()
