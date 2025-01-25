@@ -29,14 +29,16 @@
 
 import logging
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from packaging import version
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, Dict
+from typing import Any, Dict, Literal
 
 import bdkpython as bdk
+import socks
 
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
@@ -46,6 +48,38 @@ from .i18n import translate
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
+
+
+@dataclass
+class ProxyInfo:
+    host: str | None
+    port: int | None
+    scheme: str = "socks5"
+
+    def get_socks_scheme(self) -> Literal[1] | Literal[2]:
+        if self.scheme == "socks4":
+            return socks.SOCKS4
+        return socks.SOCKS5
+
+    def get_url(self):
+        return f"{self.scheme}://{self.host}:{self.port}"
+
+    def get_requests_proxy_dist(self):
+        return {"http": self.get_url(), "https": self.get_url()}
+
+    @classmethod
+    def parse(cls, proxy_url: str):
+        # Prepend "socks5h://" if the proxy string does not contain a scheme
+        if "://" not in proxy_url:
+            proxy_url = f"{cls.scheme}://{proxy_url}"  # Default to SOCKS5 with remote DNS
+        parsed_proxy = urlparse(proxy_url)
+        return cls(host=parsed_proxy.hostname, port=parsed_proxy.port, scheme=parsed_proxy.scheme)
+
+
+def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:
+    if electrum_use_ssl and not url.startswith("ssl://"):
+        url = "ssl://" + url
+    return url
 
 
 def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
@@ -76,6 +110,7 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
 class ElectrumConfig:
     url: str
     use_ssl: bool
+    proxy_url: str | None = None
 
 
 def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
@@ -300,6 +335,25 @@ class NetworkConfig(BaseSaveableClass):
         self.esplora_url: str = get_esplora_urls(network)["default"]
 
         self.mempool_url: str = get_mempool_url(network)["default"]
+        self.proxy_url: str | None = None
+
+    def description_short(self):
+        server_name = ""
+        if self.server_type == BlockchainType.Electrum:
+            server_name = f"{self.electrum_url}"
+        elif self.server_type == BlockchainType.Esplora:
+            server_name = f"{self.esplora_url}"
+        elif self.server_type == BlockchainType.CompactBlockFilter:
+            server_name = f"{self.server_type.name}"
+        elif self.server_type == BlockchainType.RPC:
+            server_name = f"{self.server_type.name}"
+
+        if self.proxy_url:
+            return translate("network_config", "{server_name} via the proxy {proxy}").format(
+                server_name=server_name, proxy=self.proxy_url
+            )
+        else:
+            return translate("network_config", "{server_name}").format(server_name=server_name)
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()

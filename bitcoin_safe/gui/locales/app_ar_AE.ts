@@ -84,6 +84,10 @@
         <translation>نسخ كملف csv</translation>
     </message>
     <message>
+        <source>Set category</source>
+        <translation>تعيين الفئة</translation>
+    </message>
+    <message>
         <source>Tx</source>
         <translation>تحويلة</translation>
     </message>
@@ -436,6 +440,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Select the detected device</source>
         <translation>اختر الجهاز المكتشف  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>موثوق  </translation>
+    </message>
+    <message>
+        <source>Untrusted</source>
+        <translation>غير موثوق  </translation>
     </message>
 </context>
 <context>
@@ -1414,6 +1429,14 @@ Location of signing device: .....</source>
         <translation>عنوان Mempool Instance</translation>
     </message>
     <message>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>الوكيل لا ينطبق على ميزة المزامنة والدردشة!  </translation>
+    </message>
+    <message>
+        <source>Proxy:</source>
+        <translation>بروكسي:  </translation>
+    </message>
+    <message>
         <source>Apply &amp;&amp; Shutdown</source>
         <translation>تطبيق &amp;&amp; إيقاف  </translation>
     </message>
@@ -1722,8 +1745,24 @@ Location of signing device: .....</source>
         <translation>اختر اسمًا جديدًا، أو اسمًا موجودًا للدمج:</translation>
     </message>
     <message>
+        <source>Syncing with {server}</source>
+        <translation>مزامنة مع {server}  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>متصل بـ {server}  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>منفصل عن {server}  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>انقر للحصول على عنوان جديد</translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>المزامنة &amp;&amp; الدردشة  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1736,10 +1775,6 @@ Location of signing device: .....</source>
     <message>
         <source>Import labels</source>
         <translation>استيراد التسميات</translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>المزامنة &amp;&amp; الدردشة  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2333,18 +2368,10 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
+    <name>TrustedDeviceItem</name>
     <message>
-        <source>Connected to {id}</source>
-        <translation>متصل ب{id}  </translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>مزامنة تسميات العناوين  </translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>يمكن مشاركة المعاملات  </translation>
+        <source>Untrust device</source>
+        <translation>جهاز غير موثوق  </translation>
     </message>
 </context>
 <context>
@@ -2402,14 +2429,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Set custom Relay list</source>
         <translation>تعيين قائمة تتابع مخصصة  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>موثوق  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>غير موثوق  </translation>
     </message>
     <message>
         <source>My Device: {id}</source>
@@ -2625,14 +2644,14 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>UnTrustedDevice</name>
+    <name>UntrustedDeviceItem</name>
     <message>
-        <source>Trust {id}</source>
-        <translation>ثق {id}  </translation>
+        <source>Trust</source>
+        <translation>ثقة  </translation>
     </message>
     <message>
-        <source>Accept trust request from {other}</source>
-        <translation>قبول طلب الثقة من {other}  </translation>
+        <source>Trust this device</source>
+        <translation>ثق بهذا الجهاز  </translation>
     </message>
 </context>
 <context>
@@ -3213,6 +3232,10 @@ Please install it.</source>
         <translation>هذه طريقة خاصة وسريعة للاتصال بشبكة البيتكوين.</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
         <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=signet&quot; ومع ذلك، فإن هذا التوقيع مختلف عن mutinynet.com.</translation>
     </message>
@@ -3222,20 +3245,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>يمكن للخادم ربط عنوان IP الخاص بك بعناوين المحفظة. من الأفضل استخدام خادمك الخاص، مثل {link}.</translation>
     </message>
     <message>
-        <source>You can setup {link} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>يمكنك إعداد {link} مع خادم إليكتروم على {server} ومستكشف الكتل على {explorer}</translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>يمكنك إعداد {electrum} بخادم إلكتروم على {server} ومستكشف البلوك على {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}.</source>
-        <translation>الخيار الجيد هو {link} ومستكشف الكتل على {explorer}.</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
+        <translation>خيار جيد هو {electrum_testnet4} وكمستكشف بلوك {explorer_testnet4}  </translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
+        <translation>اختر Signet {electrum} ومستكشف بلوك على {mempool_url}.  </translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>يمكنك إعداد {setup} باستخدام خادم esplora على {server} ومستكشف الكتل على {explorer}</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>الخيار الجيد هو {link} ومستكشف الكتل على {explorer}. هناك {faucet}.</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>خادم (يعمل أحياناً) هو {link} ومستكشف بلوك على {explorer}. هناك {faucet}.  </translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
@@ -3245,9 +3272,16 @@ It is best to use your own server, such as {link}.</source>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
+</context>
+<context>
+    <name>network_config</name>
     <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=test&quot;</translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>{server_name} عبر البروكسي {proxy}  </translation>
+    </message>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name}  </translation>
     </message>
 </context>
 <context>

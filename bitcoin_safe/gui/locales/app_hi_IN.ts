@@ -84,6 +84,10 @@
         <translation>सीएसवी के रूप में कॉपी करें</translation>
     </message>
     <message>
+        <source>Set category</source>
+        <translation>श्रेणी सेट करें</translation>
+    </message>
+    <message>
         <source>Tx</source>
         <translation>टीएक्स</translation>
     </message>
@@ -436,6 +440,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Select the detected device</source>
         <translation>पता लगाए गए उपकरण का चयन करें  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>विश्वसनीय  </translation>
+    </message>
+    <message>
+        <source>Untrusted</source>
+        <translation>अविश्वसनीय  </translation>
     </message>
 </context>
 <context>
@@ -1414,6 +1429,14 @@ Location of signing device: .....</source>
         <translation>मेमपूल इंस्टेंस URL</translation>
     </message>
     <message>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>प्रॉक्सी सिंक और चैट सुविधा पर लागू नहीं होती!  </translation>
+    </message>
+    <message>
+        <source>Proxy:</source>
+        <translation>प्रॉक्सी:  </translation>
+    </message>
+    <message>
         <source>Apply &amp;&amp; Shutdown</source>
         <translation>लागू करें &amp;&amp; बंद करें  </translation>
     </message>
@@ -1722,8 +1745,24 @@ Location of signing device: .....</source>
         <translation>नया नाम चुनें, या विलय के लिए मौजूदा नाम चुनें:</translation>
     </message>
     <message>
+        <source>Syncing with {server}</source>
+        <translation>{server} के साथ सिंकिंग  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server} से जुड़ा हुआ  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server} से डिस्कनेक्टेड  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>नया पता के लिए क्लिक करें</translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1736,10 +1775,6 @@ Location of signing device: .....</source>
     <message>
         <source>Import labels</source>
         <translation>लेबल आयात करें</translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2333,18 +2368,10 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
+    <name>TrustedDeviceItem</name>
     <message>
-        <source>Connected to {id}</source>
-        <translation>{id} से जुड़ा हुआ  </translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>पता लेबल सिंक करना  </translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>लेन-देन साझा कर सकते हैं  </translation>
+        <source>Untrust device</source>
+        <translation>डिवाइस पर भरोसा नहीं  </translation>
     </message>
 </context>
 <context>
@@ -2402,14 +2429,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Set custom Relay list</source>
         <translation>कस्टम रिले सूची सेट करें  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>विश्वसनीय  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>अविश्वसनीय  </translation>
     </message>
     <message>
         <source>My Device: {id}</source>
@@ -2625,14 +2644,14 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>UnTrustedDevice</name>
+    <name>UntrustedDeviceItem</name>
     <message>
-        <source>Trust {id}</source>
-        <translation>{id} पर भरोसा करें  </translation>
+        <source>Trust</source>
+        <translation>भरोसा  </translation>
     </message>
     <message>
-        <source>Accept trust request from {other}</source>
-        <translation>{other} से भरोसा अनुरोध स्वीकार करें  </translation>
+        <source>Trust this device</source>
+        <translation>इस डिवाइस पर भरोसा करें  </translation>
     </message>
 </context>
 <context>
@@ -3213,6 +3232,10 @@ Please install it.</source>
         <translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>&quot;bitcoind -chain=test&quot; के साथ अपना bitcoind चलाएं</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
         <translation>&quot;bitcoind -chain=signet&quot; के साथ अपना bitcoind चलाएं  यह हालांकि mutinynet.com के अलग signet है।</translation>
     </message>
@@ -3222,20 +3245,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>सर्वर आपके IP पते को वॉलेट पतों के साथ जोड़ सकता है। अपना खुद का सर्वर उपयोग करना सबसे अच्छा है, जैसे कि {link}।</translation>
     </message>
     <message>
-        <source>You can setup {link} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>आप {link} के साथ एक इलेक्ट्रम सर्वर पर {server} और एक ब्लॉक एक्सप्लोरर पर {explorer} के साथ सेटअप कर सकते हैं</translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>आप {server} पर एक इलेक्ट्रम सर्वर के साथ {electrum} सेटअप कर सकते हैं और एक ब्लॉक एक्सप्लोरर {explorer} पर  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}.</source>
-        <translation>एक अच्छा विकल्प है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}।</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
+        <translation>एक अच्छा विकल्प है {electrum_testnet4} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet4}  </translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
+        <translation>Signet चुनें {electrum} और एक ब्लॉक एक्सप्लोरर पर {mempool_url}।  </translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>आप {setup} के साथ एक esplora सर्वर पर {server} और एक ब्लॉक एक्सप्लोरर पर {explorer} के साथ सेटअप कर सकते हैं</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>एक अच्छा विकल्प है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। वहाँ एक {faucet} है।</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>एक (कभी-कभी काम करने वाला) सर्वर है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। एक {faucet} है।  </translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
@@ -3245,9 +3272,16 @@ It is best to use your own server, such as {link}.</source>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
     </message>
+</context>
+<context>
+    <name>network_config</name>
     <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>&quot;bitcoind -chain=test&quot; के साथ अपना bitcoind चलाएं</translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>प्रॉक्सी {proxy} के माध्यम से {server_name}  </translation>
+    </message>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name}  </translation>
     </message>
 </context>
 <context>

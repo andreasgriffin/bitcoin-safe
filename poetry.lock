@@ -2054,7 +2054,6 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:8c5c05f5fdff31a5887dbc29b27615b09df467631238d7b449283809ffca6228"},
-    {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:3a4354816f11e812b727206a9ea6e79ff3774f1bb7228ad4b9318442d2c64ff9"},
     {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:452bae5840077bf0f146c798d7777f70d7bdd0c7dcfa9ee7a415c1daf2d10038"},
     {file = "PyQt6-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:cf7123caea14e7ecf10bd12cae48e8d9970ef7caf627bc7d7988b0baa209adb3"},
     {file = "PyQt6-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:a9913d479f1ffee804bf7f232079baea4fb4b221a8f4890117588917a54ea30d"},
@@ -2074,7 +2073,6 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:1b992688f97deea99d025913408acc48f6d554563a91b72adbdd2991ba2b0b35"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:f8cbe7005f836f156e09f57b1916ce824931421f9f25e37b0b6c09fae4e4508f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:2ce660031db9eb572d5c65c34d9fc4a75bc0e21093abfe3b1d0fccc47d95550a"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:3984b7995d8eda5587d893f8fbabde5647bc64a2c27e6f01a3a2758ae12a353f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:535e699dace20fc9f8f516e67ca9ff529a79351145d9000ef1a0c61c3bd35858"},
@@ -2110,8 +2108,6 @@ description = "The subset of a Qt installation needed by PyQt6."
 optional = false
 python-versions = "*"
 files = [
-    {file = "PyQt6_Qt6-6.8.1-1-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:2f4b8b55b1414b93f340f22e8c88d25550efcdebc4b65a3927dd947b73bd4358"},
-    {file = "PyQt6_Qt6-6.8.1-1-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:98aa99fe38ae68c5318284cd28f3479ba538c40bf6ece293980abae0925c1b24"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:1eb8460a1fdb38d0b2458c2974c01d471c1e59e4eb19ea63fc447aaba3ad530e"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:9f3790c4ce4dc576e48b8718d55fb8743057e6cbd53a6ca1dd253ffbac9b7287"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:d6ca5d2b9d2ec0ee4a814b2175f641a5c4299cb80b45e0f5f8356632663f89b3"},
@@ -2167,6 +2163,18 @@ files = [
 
 [package.extras]
 cp2110 = ["hidapi"]
+
+[[package]]
+name = "pysocks"
+version = "1.7.1"
+description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "PySocks-1.7.1-py27-none-any.whl", hash = "sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299"},
+    {file = "PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},
+    {file = "PySocks-1.7.1.tar.gz", hash = "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"},
+]
 
 [[package]]
 name = "pytest"
@@ -2891,4 +2899,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "076f4a1421554bb518a174588ec5cf8ae92191bb4ffdcf56b3a2590f6ce93784"
+content-hash = "a6b00c64503f23653b582636a2bff1fc014ab339bb36683b4823469f03f460af"

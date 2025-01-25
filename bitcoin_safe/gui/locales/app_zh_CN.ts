@@ -84,6 +84,10 @@
         <translation>复制为csv</translation>
     </message>
     <message>
+        <source>Set category</source>
+        <translation>设置类别</translation>
+    </message>
+    <message>
         <source>Tx</source>
         <translation>交易</translation>
     </message>
@@ -436,6 +440,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Select the detected device</source>
         <translation>选择检测到的设备  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>信任  </translation>
+    </message>
+    <message>
+        <source>Untrusted</source>
+        <translation>不受信任  </translation>
     </message>
 </context>
 <context>
@@ -1415,6 +1430,14 @@ Location of signing device: .....</source>
         <translation>Mempool实例URL</translation>
     </message>
     <message>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>代理不适用于同步和聊天功能！  </translation>
+    </message>
+    <message>
+        <source>Proxy:</source>
+        <translation>代理：  </translation>
+    </message>
+    <message>
         <source>Apply &amp;&amp; Shutdown</source>
         <translation>应用&amp;&amp;关闭  </translation>
     </message>
@@ -1725,8 +1748,24 @@ Location of signing device: .....</source>
         <translation>选择一个新名称，或一个已有名称以进行合并：</translation>
     </message>
     <message>
+        <source>Syncing with {server}</source>
+        <translation>与 {server} 同步  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>已连接到 {server}  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>已从 {server} 断开  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>点击获取新地址</translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同步 &amp;&amp; 聊天  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1739,10 +1778,6 @@ Location of signing device: .....</source>
     <message>
         <source>Import labels</source>
         <translation>导入标签</translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同步 &amp;&amp; 聊天  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2336,18 +2371,10 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
+    <name>TrustedDeviceItem</name>
     <message>
-        <source>Connected to {id}</source>
-        <translation>已连接至{id}  </translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>同步地址标签  </translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>可以分享交易  </translation>
+        <source>Untrust device</source>
+        <translation>不信任设备  </translation>
     </message>
 </context>
 <context>
@@ -2405,14 +2432,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Set custom Relay list</source>
         <translation>设置自定义中继列表  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>信任  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>未受信任  </translation>
     </message>
     <message>
         <source>My Device: {id}</source>
@@ -2631,14 +2650,14 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>UnTrustedDevice</name>
+    <name>UntrustedDeviceItem</name>
     <message>
-        <source>Trust {id}</source>
-        <translation>信任{id}  </translation>
+        <source>Trust</source>
+        <translation>信任  </translation>
     </message>
     <message>
-        <source>Accept trust request from {other}</source>
-        <translation>接受{other}的信任请求  </translation>
+        <source>Trust this device</source>
+        <translation>信任此设备  </translation>
     </message>
 </context>
 <context>
@@ -3220,6 +3239,10 @@ Please install it.</source>
         <translation>这是一种私密且快速的连接到比特币网络的方式。</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>使用 &quot;bitcoind -chain=test&quot; 运行您的bitcoind</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
         <translation>使用 &quot;bitcoind -chain=signet&quot; 运行您的bitcoind，但这和mutinynet.com的signet不同。</translation>
     </message>
@@ -3229,20 +3252,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>服务器可以将您的IP地址与钱包地址关联。最好使用您自己的服务器，如 {link}。</translation>
     </message>
     <message>
-        <source>You can setup {link} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>您可以在 {server} 上设置 {link}，并在 {explorer} 上设置一个区块浏览器</translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>你可以在 {server} 上设置 {electrum} 与一个区块浏览器在 {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}.</source>
-        <translation>一个好选择是 {link} 和一个在 {explorer} 上的区块浏览器。</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
+        <translation>一个好的选择是 {electrum_testnet4} 和作为区块浏览器的 {explorer_testnet4}  </translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
+        <translation>Signet 选择 {electrum} 和一个区块浏览器在 {mempool_url}。  </translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>您可以在 {server} 上设置 {setup}，并在 {explorer} 上设置一个esplora服务器</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>一个好选择是 {link} 和一个在 {explorer} 上的区块浏览器。这里有一个 {faucet}。</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>一个（有时有效的）服务器是 {link} 和一个区块浏览器在 {explorer}。这里有一个 {faucet}。  </translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
@@ -3252,9 +3279,16 @@ It is best to use your own server, such as {link}.</source>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>使用 &quot;bitcoind -chain=regtest&quot; 运行您的bitcoind</translation>
     </message>
+</context>
+<context>
+    <name>network_config</name>
     <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>使用 &quot;bitcoind -chain=test&quot; 运行您的bitcoind</translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>通过代理 {proxy} 的 {server_name}  </translation>
+    </message>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name}  </translation>
     </message>
 </context>
 <context>

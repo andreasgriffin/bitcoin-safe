@@ -205,7 +205,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         fx: FX,
         get_lang_code: Callable[[], str],
         sync_tab: SyncTab | None = None,
-        set_tab_widget_icon: Optional[Callable[[QWidget, QIcon], None]] = None,
+        set_tab_widget_icon: Optional[Callable[[QWidget, QIcon, str | None], None]] = None,
         password: str | None = None,
         file_path: str | None = None,
         threading_parent: ThreadingManager | None = None,
@@ -320,7 +320,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         mempool_data: MempoolData,
         fx: FX,
         get_lang_code: Callable[[], str],
-        set_tab_widget_icon: Optional[Callable[[QWidget, QIcon], None]] = None,
+        set_tab_widget_icon: Optional[Callable[[QWidget, QIcon, str | None], None]] = None,
         password: str | None = None,
         threading_parent: ThreadingManager | None = None,
     ) -> "QTWallet":
@@ -976,18 +976,34 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             return
 
         icon = None
+        tooltip = None
         if sync_status == SyncStatus.syncing:
             icon = read_QIcon("status_waiting.svg")
             self.history_tab_with_toolbar.sync_button.set_icon_is_syncing()
+            tooltip = self.tr("Syncing with {server}").format(
+                server=self.config.network_config.description_short()
+            )
         elif self.wallet.get_height() and sync_status in [SyncStatus.synced]:
-            icon = read_QIcon("status_connected.svg")
+            using_proxy = self.config.network_config.proxy_url
+            icon = (
+                read_QIcon("status_connected_proxy.svg")
+                if using_proxy
+                else read_QIcon("status_connected.svg")
+            )
+            tooltip = self.config.network_config.description_short()
+            tooltip = self.tr("Connected to {server}").format(
+                server=self.config.network_config.description_short()
+            )
             self.history_tab_with_toolbar.sync_button.set_icon_allow_refresh()
         else:
             icon = read_QIcon("status_disconnected.svg")
+            tooltip = self.tr("Disconnected from {server}").format(
+                server=self.config.network_config.description_short()
+            )
             self.history_tab_with_toolbar.sync_button.set_icon_allow_refresh()
 
         if self.set_tab_widget_icon:
-            self.set_tab_widget_icon(self.tab, icon)
+            self.set_tab_widget_icon(self.tab, icon, tooltip)
 
     def create_list_tab(
         self,

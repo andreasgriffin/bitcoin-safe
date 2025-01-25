@@ -182,11 +182,11 @@ def fee_to_color(fee, colors=chartColors) -> str:
     return colors[indizes[-1]]
 
 
-def fetch_from_url(url: str, is_json=True) -> Optional[Any]:
+def fetch_from_url(url: str, proxies: Dict | None, is_json=True) -> Optional[Any]:
     logger.debug(f"fetch_json_from_url requests.get({url}, timeout=10)")
 
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=10, proxies=proxies)
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
             # Parse the JSON response
@@ -201,9 +201,9 @@ def fetch_from_url(url: str, is_json=True) -> Optional[Any]:
         return None
 
 
-def threaded_fetch(url: str, on_success, is_json=True) -> TaskThread:
+def threaded_fetch(url: str, on_success, proxies: Dict | None, is_json=True) -> TaskThread:
     def do() -> Any:
-        return fetch_from_url(url, is_json=is_json)
+        return fetch_from_url(url, is_json=is_json, proxies=proxies)
 
     def on_error(packed_error_info) -> None:
         custom_exception_handler(*packed_error_info)
@@ -296,7 +296,7 @@ class MempoolData(ThreadingManager, QObject):
 
         return average_fee_rate * (1 + slack)
 
-    def set_data_from_mempoolspace(self, force=False) -> None:
+    def set_data_from_mempoolspace(self, proxies: Dict | None, force=False) -> None:
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
             logger.debug(
                 f"Do not fetch data from {self.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
@@ -314,6 +314,7 @@ class MempoolData(ThreadingManager, QObject):
             threaded_fetch(
                 f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
                 on_mempool_blocks,
+                proxies=proxies,
             )
         )
         logger.debug(f"started on_mempool_blocks")
@@ -325,8 +326,7 @@ class MempoolData(ThreadingManager, QObject):
 
         self.append_thread(
             threaded_fetch(
-                f"{self.network_config.mempool_url}api/v1/fees/recommended",
-                on_recommended,
+                f"{self.network_config.mempool_url}api/v1/fees/recommended", on_recommended, proxies=proxies
             )
         )
         logger.debug(f"started on_recommended")
@@ -338,15 +338,12 @@ class MempoolData(ThreadingManager, QObject):
             self.signal_data_updated.emit()
 
         self.append_thread(
-            threaded_fetch(
-                f"{self.network_config.mempool_url}api/mempool",
-                on_mempool_dict,
-            )
+            threaded_fetch(f"{self.network_config.mempool_url}api/mempool", on_mempool_dict, proxies=proxies)
         )
         logger.debug(f"started on_mempool_dict")
 
-    def fetch_block_tip_height(self) -> int:
-        response = fetch_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height")
+    def fetch_block_tip_height(self, proxies: Dict | None) -> int:
+        response = fetch_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height", proxies=proxies)
         return response if response else 0
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:

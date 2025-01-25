@@ -47,6 +47,7 @@ from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.logging_setup import get_log_file
+from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.threading_manager import ThreadingManager
@@ -134,7 +135,14 @@ class MainWindow(QMainWindow):
         self.qt_wallets: Dict[str, QTWallet] = {}
         self.threading_manager = ThreadingManager(threading_manager_name=self.__class__.__name__)
 
-        self.fx = FX(threading_parent=self.threading_manager)
+        self.fx = FX(
+            threading_parent=self.threading_manager,
+            proxies=(
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                if self.config.network_config.proxy_url
+                else None
+            ),
+        )
         self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
         if not config_present:
             self.config.language_code = self.language_chooser.dialog_choose_language(self)
@@ -148,7 +156,13 @@ class MainWindow(QMainWindow):
             signals_min=self.signals,
             threading_parent=self.threading_manager,
         )
-        self.mempool_data.set_data_from_mempoolspace()
+        self.mempool_data.set_data_from_mempoolspace(
+            proxies=(
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                if self.config.network_config.proxy_url
+                else None
+            )
+        )
 
         self.last_qtwallet: Optional[QTWallet] = None
         # connect the listeners
@@ -287,7 +301,13 @@ class MainWindow(QMainWindow):
             vbox.addWidget(self.notification_bar_testnet)
 
         self.update_notification_bar = UpdateNotificationBar(
-            signals_min=self.signals, threading_parent=self.threading_manager
+            signals_min=self.signals,
+            threading_parent=self.threading_manager,
+            proxies=(
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                if self.config.network_config.proxy_url
+                else None
+            ),
         )
         self.update_notification_bar.check()  # TODO: disable this, after it got more stable
         vbox.addWidget(self.update_notification_bar)
@@ -1311,10 +1331,11 @@ class MainWindow(QMainWindow):
 
         return qtprotowallet
 
-    def set_tab_widget_icon(self, tab: QWidget, icon: QIcon) -> None:
+    def set_tab_widget_icon(self, tab: QWidget, icon: QIcon, tooltip: str | None) -> None:
         idx = self.tab_wallets.indexOf(tab)
         if idx != -1:
             self.tab_wallets.setTabIcon(idx, icon)
+            self.tab_wallets.setTabToolTip(idx, tooltip if tooltip else "")
 
     def add_qt_wallet(
         self, qt_wallet: QTWallet, file_path: str | None = None, password: str | None = None

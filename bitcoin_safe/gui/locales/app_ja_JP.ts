@@ -84,6 +84,10 @@
         <translation>CSVとしてコピー</translation>
     </message>
     <message>
+        <source>Set category</source>
+        <translation>カテゴリを設定</translation>
+    </message>
+    <message>
         <source>Tx</source>
         <translation>トランザクション</translation>
     </message>
@@ -436,6 +440,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Select the detected device</source>
         <translation>検出されたデバイスを選択する  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>信頼済み  </translation>
+    </message>
+    <message>
+        <source>Untrusted</source>
+        <translation>信頼されていない  </translation>
     </message>
 </context>
 <context>
@@ -1414,6 +1429,14 @@ Location of signing device: .....</source>
         <translation>新しいウォレットを作成</translation>
     </message>
     <message>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>プロキシは同期＆チャット機能には適用されません！  </translation>
+    </message>
+    <message>
+        <source>Proxy:</source>
+        <translation>プロキシ：  </translation>
+    </message>
+    <message>
         <source>Apply &amp;&amp; Shutdown</source>
         <translation>適用 &amp;&amp; シャットダウン  </translation>
     </message>
@@ -1722,8 +1745,24 @@ Location of signing device: .....</source>
         <translation>新しい名前、またはマージするための既存の名前を選択してください：</translation>
     </message>
     <message>
+        <source>Syncing with {server}</source>
+        <translation>{server} と同期中  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server} に接続しました  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server} から切断しました  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>ウォレットの設定がまだありません</translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同期 &amp;&amp; チャット  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1736,10 +1775,6 @@ Location of signing device: .....</source>
     <message>
         <source>Import labels</source>
         <translation>ラベルのインポート</translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同期 &amp;&amp; チャット  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2333,18 +2368,10 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
+    <name>TrustedDeviceItem</name>
     <message>
-        <source>Connected to {id}</source>
-        <translation>{id}に接続済み  </translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>アドレスラベルを同期する  </translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>トランザクションを共有することができます  </translation>
+        <source>Untrust device</source>
+        <translation>デバイスを信頼しない  </translation>
     </message>
 </context>
 <context>
@@ -2402,14 +2429,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Set custom Relay list</source>
         <translation>カスタムリレーリストを設定する  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>信頼済み  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>信頼されていない  </translation>
     </message>
     <message>
         <source>My Device: {id}</source>
@@ -2625,14 +2644,14 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>UnTrustedDevice</name>
+    <name>UntrustedDeviceItem</name>
     <message>
-        <source>Trust {id}</source>
-        <translation>{id}を信頼する  </translation>
+        <source>Trust</source>
+        <translation>信頼  </translation>
     </message>
     <message>
-        <source>Accept trust request from {other}</source>
-        <translation>{other}からの信頼リクエストを受け入れる  </translation>
+        <source>Trust this device</source>
+        <translation>このデバイスを信頼する  </translation>
     </message>
 </context>
 <context>
@@ -3213,6 +3232,10 @@ Please install it.</source>
         <translation>これはビットコインネットワークに接続するためのプライベートかつ高速な方法です。</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>&quot;bitcoind -chain=test&quot;でbitcoindを実行してください</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
         <translation>&quot;bitcoind -chain=signet&quot;でbitcoindを実行してください。ただし、これはmutinynet.comの別のsignetです。</translation>
     </message>
@@ -3222,20 +3245,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>サーバーはIPアドレスをウォレットアドレスに関連付けることができます。{link}など、独自のサーバーを使用するのが最適です。</translation>
     </message>
     <message>
-        <source>You can setup {link} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>{link}を{server}上のElectrumサーバーと{explorer}上のブロックエクスプローラーに設定できます。</translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>{server} でエレクトラムサーバーを使用して {electrum} を設定し、{explorer} でブロックエクスプローラーを使用することができます  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}.</source>
-        <translation>良いオプションは{link}と{explorer}上のブロックエクスプローラーです。</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
+        <translation>良い選択肢は {electrum_testnet4} としてブロックエクスプローラー {explorer_testnet4}  </translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
+        <translation>Signet は {electrum} と {mempool_url} でブロックエクスプローラーを選択します。  </translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>{setup}を{server}上のEsploraサーバーと{explorer}上のブロックエクスプローラーに設定できます。</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>良いオプションは{link}と{explorer}上のブロックエクスプローラーです。蛇口があります。</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>（時々動作する）サーバーは {link} と {explorer} でブロックエクスプローラーです。{faucet} があります。</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
@@ -3245,9 +3272,16 @@ It is best to use your own server, such as {link}.</source>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot;でbitcoindを実行してください</translation>
     </message>
+</context>
+<context>
+    <name>network_config</name>
     <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>&quot;bitcoind -chain=test&quot;でbitcoindを実行してください</translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>プロキシ {proxy} 経由の {server_name}  </translation>
+    </message>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name}  </translation>
     </message>
 </context>
 <context>

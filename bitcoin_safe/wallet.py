@@ -33,6 +33,7 @@ import os
 import random
 from time import time
 
+from bitcoin_safe.network_config import ProxyInfo, clean_electrum_url
 from bitcoin_safe.psbt_util import FeeInfo
 
 from .signals import Signals, UpdateFilter
@@ -807,13 +808,16 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         blockchain_config = None
         if self.config.network_config.server_type == BlockchainType.Electrum:
-            full_url = (
-                "ssl://" if self.config.network_config.electrum_use_ssl else ""
-            ) + self.config.network_config.electrum_url
             blockchain_config = bdk.BlockchainConfig.ELECTRUM(
                 bdk.ElectrumConfig(
-                    url=full_url,
-                    socks5=None,
+                    url=clean_electrum_url(
+                        self.config.network_config.electrum_url, self.config.network_config.electrum_use_ssl
+                    ),
+                    socks5=(
+                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url()
+                        if self.config.network_config.proxy_url
+                        else None
+                    ),
                     retry=2,
                     timeout=10,
                     stop_gap=max(self.gap, self.gap_change),
@@ -824,7 +828,11 @@ class Wallet(BaseSaveableClass, CacheManager):
             blockchain_config = bdk.BlockchainConfig.ESPLORA(
                 bdk.EsploraConfig(
                     base_url=self.config.network_config.esplora_url,
-                    proxy=None,
+                    proxy=(
+                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url()
+                        if self.config.network_config.proxy_url
+                        else None
+                    ),
                     concurrency=1,
                     stop_gap=max(self.gap, self.gap_change),
                     timeout=10,

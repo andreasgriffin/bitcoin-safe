@@ -43,9 +43,9 @@ from .signals import TypedPyQtSignalNo
 class FX(QObject, ThreadingManager):
     signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
-    def __init__(self, threading_parent: ThreadingManager | None = None) -> None:
+    def __init__(self, proxies: Dict | None, threading_parent: ThreadingManager | None = None) -> None:
         super().__init__(threading_parent=threading_parent)  # type: ignore
-
+        self.proxies = proxies
         self.rates: Dict[str, Dict] = {}
         self.update()
         logger.debug(f"initialized {self}")
@@ -89,7 +89,6 @@ class FX(QObject, ThreadingManager):
 
         self.append_thread(
             threaded_fetch(
-                "https://api.coingecko.com/api/v3/exchange_rates",
-                on_success,
+                "https://api.coingecko.com/api/v3/exchange_rates", on_success, proxies=self.proxies
             )
         )
