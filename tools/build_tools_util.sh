@@ -258,3 +258,21 @@ move_and_overwrite() {
         return 1
     }
 }
+
+
+
+list_dirty_files() {
+    # Retrieve the current git version including tags and state
+    local temp_version=$(git describe --tags --dirty --always)
+
+    # Check if the string 'dirty' is in the version
+    if [[ "$temp_version" == *dirty* ]]; then
+        warn "Repository is dirty. Listing modified files:"
+        # List files that are modified but not yet staged for commit
+        git diff --name-only
+        # List files that are staged but not yet committed
+        git diff --name-only --cached
+    else
+        info "Repository is clean version: $temp_version"
+    fi
+}

@@ -13,6 +13,7 @@ set -e
 pushd "$WINEPREFIX/drive_c/$NAME_ROOT"
 
 VERSION=$(git describe --tags --dirty --always)
+list_dirty_files
 info "Last commit: $VERSION"
 
 find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
