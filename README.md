@@ -37,6 +37,8 @@
 | ![](docs/explorer.gif) |  ![](docs/global-search.gif) |
 |   **Automatic Label Synchronization**      | **Multiparty Multisig collaboration**                  |
 | ![](docs/label-sync.gif)  |   ![](docs/psbt-share.gif) |
+|   **Coin Categories**      |                 |
+| ![](docs/category-drag-and-drop.gif)  |   |
 
 
 
