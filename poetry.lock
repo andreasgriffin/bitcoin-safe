@@ -67,13 +67,13 @@ files = [
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "0.6.1"
+version = "0.6.2"
 description = "A Nostr Chat with participant discovery"
 optional = false
 python-versions = "<3.13,>=3.9"
 files = [
-    {file = "bitcoin_nostr_chat-0.6.1-py3-none-any.whl", hash = "sha256:7e58bcf7c6285c0d84cb20496a8223a71cbb8d3a7dab22921d501f639c50316a"},
-    {file = "bitcoin_nostr_chat-0.6.1.tar.gz", hash = "sha256:f82e3ad2787be5abc6c47281348205f4a1384a984db0382c48dcfae8c7293138"},
+    {file = "bitcoin_nostr_chat-0.6.2-py3-none-any.whl", hash = "sha256:f578dc29cf4e694414be3903a6f941c81b7793df2b0a20e01ce31e08aa1b697d"},
+    {file = "bitcoin_nostr_chat-0.6.2.tar.gz", hash = "sha256:f2da5eda38be9c2ac0ed7c5dd8b17aa0a8a28dad70aeda40bb0e2947a690453d"},
 ]
 
 [package.dependencies]
@@ -2903,4 +2903,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "a6b00c64503f23653b582636a2bff1fc014ab339bb36683b4823469f03f460af"
+content-hash = "b22908aa5e308fc1caf720c70e2321e5d934f2bb0f253eebae2c3c4ac0578892"
