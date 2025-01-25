@@ -106,7 +106,7 @@ brew install autoconf automake libtool gettext coreutils pkgconfig
 # ======================
 info "Using Poetry to install local project dependencies"
 # Optionally ensure Poetry does not create its own .venv:
-poetry config virtualenvs.create false --local
+poetry config virtualenvs.create false
 # ...But we are already inside a venv, so Poetry *should* install into this environment:
 poetry install --with main,build_mac
 
@@ -218,6 +218,7 @@ info "Faking timestamps..."
 find . -exec sudo touch -t '200101220000' {} + || true
 
 VERSION=$(git describe --tags --dirty --always)
+list_dirty_files
 
 info "Running PyInstaller to create macOS .app"
 BITCOIN_SAFE_VERSION=$VERSION \

@@ -60,6 +60,7 @@ function DoCodeSignMaybe { # ARGS: infoName fileOrDirName
 }
 
 VERSION=$(git describe --tags --dirty --always)
+list_dirty_files
 
 DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"
 
