@@ -110,7 +110,6 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
 class ElectrumConfig:
     url: str
     use_ssl: bool
-    proxy_url: str | None = None
 
 
 def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
