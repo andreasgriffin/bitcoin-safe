@@ -29,7 +29,7 @@
 
 import enum
 import logging
-from typing import Callable, List
+from typing import Callable, Dict, List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -44,6 +44,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
 from ...html_utils import html_f
@@ -300,17 +301,21 @@ class VerticalButtonGroup(InvisibleScrollArea):
 
 
 class ObjectRequiringMempool(QObject):
-    def __init__(self, mempool_data: MempoolData, parent=None) -> None:
+    def __init__(self, proxies: Dict | None, mempool_data: MempoolData, parent=None) -> None:
         super().__init__(parent=parent)
+        self.proxies = proxies
 
         self.mempool_data = mempool_data
 
         self.timer = QTimer()
-        self.timer.timeout.connect(self.mempool_data.set_data_from_mempoolspace)
+        self.timer.timeout.connect(self.set_data_from_mempoolspace)
         self.timer.start(10 * 60 * 1000)  # 10 minutes in milliseconds
 
     def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime | None = None) -> None:
         logger.error("This should not be called")
+
+    def set_data_from_mempoolspace(self):
+        self.mempool_data.set_data_from_mempoolspace(proxies=self.proxies)
 
 
 class BaseBlock(QObject):
@@ -346,7 +351,12 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
 
     def __init__(
-        self, mempool_data: MempoolData, fee_rate: float = 1, max_button_count=3, parent=None
+        self,
+        mempool_data: MempoolData,
+        proxies: Dict | None,
+        fee_rate: float = 1,
+        max_button_count=3,
+        parent=None,
     ) -> None:
         button_group = VerticalButtonGroup(
             network=mempool_data.network_config.network, button_count=max_button_count, parent=parent
@@ -354,7 +364,7 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
         BaseBlock.__init__(
             self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
         )
-        ObjectRequiringMempool.__init__(self, mempool_data=mempool_data, parent=parent)
+        ObjectRequiringMempool.__init__(self, proxies=proxies, mempool_data=mempool_data, parent=parent)
         self.fee_rate = fee_rate
 
         self.refresh()
@@ -411,7 +421,16 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         BaseBlock.__init__(
             self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
         )
-        ObjectRequiringMempool.__init__(self, mempool_data=mempool_data, parent=parent)
+        ObjectRequiringMempool.__init__(
+            self,
+            proxies=(
+                ProxyInfo.parse(config.network_config.proxy_url).get_requests_proxy_dict()
+                if config.network_config.proxy_url
+                else None
+            ),
+            mempool_data=mempool_data,
+            parent=parent,
+        )
 
         self.config = config
         self.fee_rate = fee_rate

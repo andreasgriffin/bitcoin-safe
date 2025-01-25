@@ -99,7 +99,7 @@ class TxStatus:
         self,
         tx: bdk.Transaction | None,
         confirmation_time: bdk.BlockTime | None,
-        get_height: Callable,
+        get_height: Callable[[], int],
         is_in_mempool: bool,
         confirmation_status: Optional[TxConfirmationStatus] = None,
     ) -> None:

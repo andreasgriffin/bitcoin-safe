@@ -161,7 +161,7 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
                 f"{network_config.esplora_url}/blocks/tip/height",
                 timeout=2,
                 proxies=(
-                    ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dist()
+                    ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dict()
                     if network_config.proxy_url
                     else None
                 ),
@@ -473,7 +473,7 @@ class NetworkSettingsUI(QDialog):
         mempool_server = test_mempool_space_server(
             url=network_config.mempool_url,
             proxies=(
-                ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dist()
+                ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dict()
                 if network_config.proxy_url
                 else None
             ),

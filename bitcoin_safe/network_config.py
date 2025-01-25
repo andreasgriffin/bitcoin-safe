@@ -64,7 +64,7 @@ class ProxyInfo:
     def get_url(self):
         return f"{self.scheme}://{self.host}:{self.port}"
 
-    def get_requests_proxy_dist(self):
+    def get_requests_proxy_dict(self):
         return {"http": self.get_url(), "https": self.get_url()}
 
     @classmethod

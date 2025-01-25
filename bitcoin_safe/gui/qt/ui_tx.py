@@ -48,6 +48,7 @@ from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
+from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -1002,6 +1003,15 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         self.focus_ui_element = UiElements.none
 
+    def _get_height_from_mempool(self):
+        return self.mempool_data.fetch_block_tip_height(
+            proxies=(
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
+                if self.config.network_config.proxy_url
+                else None
+            )
+        )
+
     def set_visibility(self, confirmation_time: bdk.BlockTime | None) -> None:
         is_psbt = self.data.data_type == DataType.PSBT
         self.export_widget_container.setVisible(not is_psbt)
@@ -1011,10 +1021,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         if not tx:
             return
         tx_status = TxStatus(
-            tx,
-            confirmation_time,
-            self.mempool_data.fetch_block_tip_height,
-            self.is_in_mempool(tx.txid()),
+            tx=tx,
+            confirmation_time=confirmation_time,
+            get_height=self._get_height_from_mempool,
+            is_in_mempool=self.is_in_mempool(tx.txid()),
         )
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
@@ -1169,7 +1179,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(mempool_data, fx, self.config)
+        self.fee_group = FeeGroup(mempool_data=mempool_data, fx=fx, config=self.config)
         self.widget_right_top_layout.addWidget(
             self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter
         )

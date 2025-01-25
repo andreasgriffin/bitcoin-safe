@@ -33,6 +33,7 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import icon_path
 from bitcoin_safe.html_utils import html_f, link
+from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -137,10 +138,17 @@ class FeeGroup(QObject):
             fee_rate=fee_rate,
         )
         self._mempool_projected_block = MempoolProjectedBlock(
-            mempool_data, config=self.config, fee_rate=fee_rate
+            mempool_data=mempool_data, config=self.config, fee_rate=fee_rate
         )
         self._mempool_buttons = MempoolButtons(
-            fee_rate=fee_rate, mempool_data=mempool_data, max_button_count=5
+            fee_rate=fee_rate,
+            mempool_data=mempool_data,
+            max_button_count=5,
+            proxies=(
+                ProxyInfo.parse(config.network_config.proxy_url).get_requests_proxy_dict()
+                if config.network_config.proxy_url
+                else None
+            ),
         )
 
         self._all_mempool_buttons: List[BaseBlock] = [
