@@ -44,6 +44,7 @@ numpy = "2.2.1" # error in wine/pyinstaller when increased
 bitcoin-qr-tools =    "^1.0.3"
 bitcoin-nostr-chat = "^0.6.1"  # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "1707c7479d9de4c1915f2b0d907b27f58703e7c0" }
 bitcoin-usb =  "^0.7.4"
+pysocks = "^1.7.1"
 
 
 [tool.poetry.group.dev.dependencies]

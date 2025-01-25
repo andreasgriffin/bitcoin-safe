@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 def test_download_manifest_and_verify() -> None:
-    manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all())
+    manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
         logger.debug(f"tempdir {tempdir}")
@@ -53,7 +53,7 @@ def test_download_manifest_and_verify() -> None:
 
 
 def test_download_manifest_and_verify_wrong_signature() -> None:
-    manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all())
+    manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
         logger.debug(f"tempdir {tempdir}")

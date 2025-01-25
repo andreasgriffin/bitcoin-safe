@@ -64,7 +64,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QFont, QIcon
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -124,7 +124,6 @@ from .util import (
     add_to_buttonbox,
     caught_exception_message,
     clear_layout,
-    icon_path,
     read_QIcon,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
@@ -140,7 +139,7 @@ class LinkingWarningBar(NotificationBar):
         self.category_dict: Dict[str, Set[str]] = {}
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(QIcon(icon_path("warning.png")))
+        self.set_icon(read_QIcon("warning.png"))
 
         self.optionalButton.setVisible(False)
         self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

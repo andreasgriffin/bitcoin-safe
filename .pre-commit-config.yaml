@@ -34,7 +34,7 @@ repos:
     rev: v1.11.2   # Use the latest MyPy version
     hooks:
       - id: mypy
-        files: ^bitcoin_safe/ 
+        files: ^bitcoin_safe/|^tools/
         args: 
           - --check-untyped-defs
           # - --disallow-untyped-defs

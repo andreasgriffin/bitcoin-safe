@@ -882,3 +882,17 @@ def hash_color(text: str) -> QColor:
 
 def category_color(text: str) -> QColor:
     return adjust_bg_color_for_darkmode(hash_color(text))
+
+
+def create_color_square(color: QColor, length=24) -> QIcon:
+    # Define the size of the square icon
+    size = QSize(length, length)
+
+    # Create a QPixmap of defined size
+    pixmap = QPixmap(size)
+
+    # Fill the QPixmap with the provided color
+    pixmap.fill(color)
+
+    # Create and return a QIcon from the QPixmap
+    return QIcon(pixmap)

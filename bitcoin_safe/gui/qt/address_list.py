@@ -102,7 +102,15 @@ from .my_treeview import (
     needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
-from .util import ColorScheme, Message, do_copy, read_QIcon, sort_id_to_icon, webopen
+from .util import (
+    ColorScheme,
+    Message,
+    create_color_square,
+    do_copy,
+    read_QIcon,
+    sort_id_to_icon,
+    webopen,
+)
 
 
 class ImportLabelMenu:
@@ -605,6 +613,8 @@ class AddressList(MyTreeView):
                 )
 
             menu.addSeparator()
+            self._add_category_menu(menu, idx)
+            menu.addSeparator()
 
             self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.key_column])
 
@@ -622,6 +632,34 @@ class AddressList(MyTreeView):
             menu.exec(viewport.mapToGlobal(position))
 
         return menu
+
+    def _add_category_menu(self, menu: Menu, idx: QModelIndex):
+        copy_menu = menu.add_menu(self.tr("Set category"))
+
+        def factory(category, address):
+            def f(category=category, address=address):
+                drag_info = AddressDragInfo([category], [address])
+                logger.debug(f"_add_category_menu set {drag_info}")
+                self.signal_tag_dropped.emit(drag_info)
+
+            return f
+
+        for category in self.wallet.labels.categories:
+            item = self.sourceModel().horizontalHeaderItem(self.Columns.ADDRESS)
+            if not item:
+                continue
+            item_col = self.item_from_index(idx.sibling(idx.row(), self.Columns.ADDRESS))
+            if not item_col:
+                continue
+            address = item_col.data(MyItemDataRole.ROLE_CLIPBOARD_DATA)
+            if address is None:
+                address = item_col.text().strip()
+
+            copy_menu.add_action(
+                category,
+                factory(category=category, address=address),
+                icon=create_color_square(CategoryEditor.color(category)),
+            )
 
     # def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
     #     if bdk.Address(text):

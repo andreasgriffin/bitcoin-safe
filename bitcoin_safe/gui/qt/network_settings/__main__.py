@@ -4,9 +4,8 @@ import bdkpython as bdk
 import numpy as np
 from PyQt6.QtWidgets import QApplication
 
+from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
 from bitcoin_safe.network_config import NetworkConfigs
-
-from .main import NetworkSettingsUI
 
 logging.basicConfig(level=logging.DEBUG)
 

@@ -30,6 +30,7 @@
 import logging
 import sys
 from pathlib import Path
+from typing import Dict
 
 import requests
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -55,15 +56,16 @@ class DownloadThread(QThread):
     finished: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     aborted: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
-    def __init__(self, url, destination_dir) -> None:
+    def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
+        self.proxies = proxies
         self.filename: Path = self.destination_dir / Path(url).name
 
     def run(self) -> None:
         try:
-            response = requests.get(self.url, stream=True, timeout=10)
+            response = requests.get(self.url, stream=True, timeout=10, proxies=self.proxies)
             content_length = response.headers.get("content-length")
 
             if content_length is None:  # no content length header
@@ -85,11 +87,12 @@ class DownloadThread(QThread):
 class Downloader(QWidget):
     finished: TypedPyQtSignal[DownloadThread] = pyqtSignal(DownloadThread)  # type: ignore
 
-    def __init__(self, url, destination_dir) -> None:
+    def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
         self.filename = Path(url).name  # Extract filename from URL
+        self.proxies = proxies
         self.initUI()
 
     def initUI(self) -> None:
@@ -121,7 +124,7 @@ class Downloader(QWidget):
     def startDownload(self) -> None:
         self.startButton.hide()
         self.progress.show()
-        self.mythread = DownloadThread(self.url, str(self.destination_dir))
+        self.mythread = DownloadThread(self.url, str(self.destination_dir), proxies=self.proxies)
         self.mythread.progress.connect(self.progress.setValue)
         self.mythread.finished.connect(self.downloadFinished)
         self.mythread.aborted.connect(self.download_aborted)
@@ -147,7 +150,9 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     # Example usage
     downloader = Downloader(
-        "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow_1.8.4-1_amd64.deb", "/tmp"
+        "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow_1.8.4-1_amd64.deb",
+        "/tmp",
+        proxies=None,
     )
     downloader.show()
     sys.exit(app.exec())

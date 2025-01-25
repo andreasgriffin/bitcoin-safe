@@ -84,6 +84,10 @@
         <translation>Copia come csv</translation>
     </message>
     <message>
+        <source>Set category</source>
+        <translation>Imposta categoria</translation>
+    </message>
+    <message>
         <source>Tx</source>
         <translation>Tx</translation>
     </message>
@@ -436,6 +440,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <message>
         <source>Select the detected device</source>
         <translation>Seleziona il dispositivo rilevato  </translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>Fidato  </translation>
+    </message>
+    <message>
+        <source>Untrusted</source>
+        <translation>Non fidato  </translation>
     </message>
 </context>
 <context>
@@ -1414,6 +1429,14 @@ Location of signing device: .....</source>
         <translation>URL dell&apos;istanza Mempool</translation>
     </message>
     <message>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>Il proxy non si applica alla funzione di Sincronizzazione e Chat!  </translation>
+    </message>
+    <message>
+        <source>Proxy:</source>
+        <translation>Proxy:  </translation>
+    </message>
+    <message>
         <source>Apply &amp;&amp; Shutdown</source>
         <translation>Applica &amp;&amp; Spegni  </translation>
     </message>
@@ -1722,8 +1745,24 @@ Vuoi procedere comunque?</translation>
         <translation>Scegli un nuovo nome, o un nome esistente per la fusione:</translation>
     </message>
     <message>
+        <source>Syncing with {server}</source>
+        <translation>Sincronizzazione con {server}  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>Connesso a {server}  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>Disconnesso da {server}  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Clicca per un nuovo indirizzo</translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sincronizza &amp;&amp; Chatta  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1736,10 +1775,6 @@ Vuoi procedere comunque?</translation>
     <message>
         <source>Import labels</source>
         <translation>Importa etichette</translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sincronizza &amp;&amp; Chatta  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -2333,18 +2368,10 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
 </context>
 <context>
-    <name>TrustedDevice</name>
+    <name>TrustedDeviceItem</name>
     <message>
-        <source>Connected to {id}</source>
-        <translation>Connesso a {id}  </translation>
-    </message>
-    <message>
-        <source>Syncing Address labels</source>
-        <translation>Sincronizzazione etichette indirizzi  </translation>
-    </message>
-    <message>
-        <source>Can share Transactions</source>
-        <translation>Può condividere transazioni  </translation>
+        <source>Untrust device</source>
+        <translation>Dispositivo non fidato  </translation>
     </message>
 </context>
 <context>
@@ -2402,14 +2429,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Set custom Relay list</source>
         <translation>Imposta l&apos;elenco dei Relay personalizzati  </translation>
-    </message>
-    <message>
-        <source>Trusted</source>
-        <translation>Fidato  </translation>
-    </message>
-    <message>
-        <source>UnTrusted</source>
-        <translation>Non fidato  </translation>
     </message>
     <message>
         <source>My Device: {id}</source>
@@ -2625,14 +2644,14 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>UnTrustedDevice</name>
+    <name>UntrustedDeviceItem</name>
     <message>
-        <source>Trust {id}</source>
-        <translation>Fidati di {id}  </translation>
+        <source>Trust</source>
+        <translation>Fiducia  </translation>
     </message>
     <message>
-        <source>Accept trust request from {other}</source>
-        <translation>Accetta la richiesta di fiducia da {other}  </translation>
+        <source>Trust this device</source>
+        <translation>Fidati di questo dispositivo  </translation>
     </message>
 </context>
 <context>
@@ -3213,6 +3232,10 @@ Please install it.</source>
         <translation>Questo è un modo privato e veloce per connettersi alla rete bitcoin.</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
         <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=signet&quot;  Questo tuttavia è un signet diverso da mutinynet.com.</translation>
     </message>
@@ -3222,20 +3245,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>Il server può associare il tuo indirizzo IP agli indirizzi del portafoglio. È meglio usare il proprio server, come {link}.</translation>
     </message>
     <message>
-        <source>You can setup {link} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>Puoi configurare {link} con un server electrum su {server} e un block explorer su {explorer}</translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>Puoi impostare {electrum} con un server electrum su {server} e un esploratore di blocchi su {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}.</source>
-        <translation>Una buona opzione è {link} e un block explorer su {explorer}.</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
+        <translation>Una buona opzione è {electrum_testnet4} e come esploratore di blocchi {explorer_testnet4}  </translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
+        <translation>Signet sceglie {electrum} e un esploratore di blocchi su {mempool_url}.  </translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Puoi configurare {setup} con un server esplora su {server} e un block explorer su {explorer}</translation>
     </message>
     <message>
-        <source>A good option is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>Una buona opzione è {link} e un block explorer su {explorer}. C&apos;è un {faucet}.</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Un server (a volte funzionante) è {link} e un esploratore di blocchi su {explorer}. C&apos;è un {faucet}. </translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
@@ -3245,9 +3272,16 @@ It is best to use your own server, such as {link}.</source>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
+</context>
+<context>
+    <name>network_config</name>
     <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=test&quot;</translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>{server_name} tramite il proxy {proxy}  </translation>
+    </message>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name} </translation>
     </message>
 </context>
 <context>

@@ -123,14 +123,15 @@ class Asset:
 
 
 class GitHubAssetDownloader:
-    def __init__(self, repository: str) -> None:
+    def __init__(self, repository: str, proxies: Dict | None) -> None:
         self.repository = repository
+        self.proxies = proxies
         logger.debug(f"initialized {self}")
 
     def _get_assets(self, api_url) -> List[Asset]:
         try:
             logger.debug(f"Get assets from {api_url}")
-            response = requests.get(api_url, timeout=2)
+            response = requests.get(api_url, timeout=2, proxies=self.proxies)
             response.raise_for_status()
             assets = response.json().get("assets", [])
 
@@ -154,12 +155,10 @@ class GitHubAssetDownloader:
 
 
 class SignatureVerifyer:
-    def __init__(
-        self,
-        list_of_known_keys: Optional[List[SimpleGPGKey]],
-    ) -> None:
+    def __init__(self, list_of_known_keys: Optional[List[SimpleGPGKey]], proxies: Dict | None) -> None:
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
         self.public_keys: Dict[str, pgpy.PGPKey] = {}
+        self.proxies = proxies
         self.import_known_keys()
 
     def import_public_key_file(self, path: Path) -> pgpy.PGPKey:
@@ -300,8 +299,8 @@ class SignatureVerifyer:
         return None
 
     @staticmethod
-    def _download_file(download_url: str, filename: Path) -> Path:
-        sig_response = requests.get(download_url, timeout=2)
+    def _download_file(download_url: str, filename: Path, proxies: Dict | None) -> Path:
+        sig_response = requests.get(download_url, timeout=2, proxies=proxies)
         sig_response.raise_for_status()
         with open(filename, "wb") as f:
             f.write(sig_response.content)
@@ -309,12 +308,12 @@ class SignatureVerifyer:
 
     @staticmethod
     def _download_asset_file(
-        assets: List[Asset], target_directory: Path, asset_ending: str
+        assets: List[Asset], target_directory: Path, asset_ending: str, proxies: Dict | None
     ) -> Optional[Path]:
         if url := SignatureVerifyer._get_asset_url(assets, asset_ending):
             url_filename = Path(url).name
             filename = target_directory / url_filename
-            SignatureVerifyer._download_file(url, filename)
+            SignatureVerifyer._download_file(url, filename, proxies=proxies)
             return filename
         return None
 
@@ -350,22 +349,27 @@ class SignatureVerifyer:
         if not tag:
             return None
 
-        assets = GitHubAssetDownloader(repository=key.repository).get_assets_by_tag(tag)
+        assets = GitHubAssetDownloader(repository=key.repository, proxies=self.proxies).get_assets_by_tag(tag)
         if assets:
             if key.manifest_ending:
                 self._download_asset_file(
-                    assets, target_directory=binary_filename.parent, asset_ending=key.manifest_ending
+                    assets,
+                    target_directory=binary_filename.parent,
+                    asset_ending=key.manifest_ending,
+                    proxies=self.proxies,
                 )
                 sig_filename = self._download_asset_file(
                     assets,
                     target_directory=binary_filename.parent,
                     asset_ending=f"{key.manifest_ending}.asc",
+                    proxies=self.proxies,
                 )
             else:
                 sig_filename = self._download_asset_file(
                     assets,
                     target_directory=binary_filename.parent,
                     asset_ending=f"{binary_filename.name}.asc",
+                    proxies=self.proxies,
                 )
         return sig_filename
 
