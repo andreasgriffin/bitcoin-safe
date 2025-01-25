@@ -138,7 +138,7 @@ class MainWindow(QMainWindow):
         self.fx = FX(
             threading_parent=self.threading_manager,
             proxies=(
-                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
                 if self.config.network_config.proxy_url
                 else None
             ),
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         )
         self.mempool_data.set_data_from_mempoolspace(
             proxies=(
-                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
                 if self.config.network_config.proxy_url
                 else None
             )
@@ -304,7 +304,7 @@ class MainWindow(QMainWindow):
             signals_min=self.signals,
             threading_parent=self.threading_manager,
             proxies=(
-                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dist()
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
                 if self.config.network_config.proxy_url
                 else None
             ),
