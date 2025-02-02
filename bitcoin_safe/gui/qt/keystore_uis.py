@@ -81,12 +81,14 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         get_editable_protowallet: Callable[[], ProtoWallet],
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
+        slow_hwi_listing=False,
     ) -> None:
         super().__init__()
         self.tab_bar = OrderTrackingTabBar()
         self.setTabBar(self.tab_bar)
         self.setMovable(True)
         self.signals_min = signals_min
+        self.slow_hwi_listing = slow_hwi_listing
 
         self.get_editable_protowallet = get_editable_protowallet
         self.get_address_type = get_address_type
@@ -99,6 +101,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 label=self.protowallet.signer_name(i),
                 signals_min=signals_min,
                 hardware_signer_label=self.protowallet.sticker_name(i),
+                slow_hwi_listing=self.slow_hwi_listing,
             )
             keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
             self.addTab(
@@ -281,6 +284,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     label=self.protowallet.signer_name(i),
                     signals_min=self.signals_min,
                     hardware_signer_label=self.protowallet.sticker_name(i),
+                    slow_hwi_listing=self.slow_hwi_listing,
                 )
                 keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
                 self.addTab(

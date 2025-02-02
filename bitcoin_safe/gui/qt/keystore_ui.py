@@ -211,6 +211,7 @@ class KeyStoreUI(QObject):
         signals_min: SignalsMin,
         label: str = "",
         hardware_signer_label="",
+        slow_hwi_listing=False,
     ) -> None:
         super().__init__()
         self.signals_min = signals_min
@@ -220,6 +221,7 @@ class KeyStoreUI(QObject):
         self.tabs = tabs
         self.network = network
         self.get_address_type = get_address_type
+        self.slow_hwi_listing = slow_hwi_listing
 
         self.tab = QWidget()
         self.tab_layout = QHBoxLayout(self.tab)
@@ -563,7 +565,9 @@ class KeyStoreUI(QObject):
         address_type = self.get_address_type()
         key_origin = address_type.key_origin(self.network)
         try:
-            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
+            result = self.usb_gui.get_fingerprint_and_xpub(
+                key_origin=key_origin, slow_hwi_listing=self.slow_hwi_listing
+            )
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             Message(

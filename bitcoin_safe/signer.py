@@ -348,7 +348,7 @@ class SignatureImporterUSB(SignatureImporterQR):
 
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         try:
-            signed_psbt = self.usb_gui.sign(psbt)
+            signed_psbt = self.usb_gui.sign(psbt, slow_hwi_listing=False)
             if signed_psbt:
                 self.scan_result_callback(psbt, Data.from_psbt(signed_psbt, network=self.network))
         except Exception as e:

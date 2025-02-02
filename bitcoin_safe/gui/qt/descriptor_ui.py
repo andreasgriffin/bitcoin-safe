@@ -97,6 +97,7 @@ class DescriptorUI(QWidget):
             get_editable_protowallet=self.get_editable_protowallet,
             get_address_type=self.get_address_type_from_ui,
             signals_min=signals_min,
+            slow_hwi_listing=True,
         )
         self._layout.addWidget(self.keystore_uis)
 

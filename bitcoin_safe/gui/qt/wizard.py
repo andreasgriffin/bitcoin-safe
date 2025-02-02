@@ -578,7 +578,7 @@ class GenerateSeed(BaseTab):
         address_type = AddressTypes.p2wpkh  # any address type is OK, since we wont use it
         key_origin = address_type.key_origin(self.refs.qtwalletbase.config.network)
         try:
-            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
+            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin, slow_hwi_listing=True)
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             Message(
@@ -679,7 +679,6 @@ class ImportXpubs(BaseTab):
         if self.refs.qt_wallet:
             # show the full walet descriptor tab below
             self.keystore_uis = None
-
         else:
             # integrater the KeyStoreUIs into the tutorials, hide wallet_tabs
 
@@ -688,6 +687,7 @@ class ImportXpubs(BaseTab):
                 get_editable_protowallet=self.refs.qtwalletbase.get_editable_protowallet,
                 get_address_type=self.get_address_type,
                 signals_min=self.refs.qtwalletbase.signals,
+                slow_hwi_listing=True,
             )
             self.set_current_signer(0)
             self.keystore_uis.setMovable(False)
