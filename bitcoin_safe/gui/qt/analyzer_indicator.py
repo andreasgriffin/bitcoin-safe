@@ -28,12 +28,6 @@
 
 
 import logging
-
-from bitcoin_safe.gui.qt.analyzers import AnalyzerMessage, AnalyzerState, BaseAnalyzer
-from bitcoin_safe.gui.qt.custom_edits import AnalyzerLineEdit, AnalyzerTextEdit
-
-logger = logging.getLogger(__name__)
-
 from typing import List, Optional, Union
 
 from PyQt6.QtCore import QSize, Qt
@@ -48,6 +42,11 @@ from PyQt6.QtWidgets import (
     QStyle,
     QWidget,
 )
+
+from bitcoin_safe.gui.qt.analyzers import AnalyzerMessage, AnalyzerState, BaseAnalyzer
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerLineEdit, AnalyzerTextEdit
+
+logger = logging.getLogger(__name__)
 
 
 class ElidedLabel(QLabel):
@@ -184,7 +183,8 @@ if __name__ == "__main__":
     class CustomIntAnalyzer(BaseAnalyzer):
         """Custom validator that allows any input but validates numeric input."""
 
-        def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        @staticmethod
+        def analyze(input: str, pos: int = 0) -> AnalyzerMessage:
             if input.isdigit():
                 return AnalyzerMessage("ok", AnalyzerState.Valid)
             elif not input:
@@ -195,7 +195,6 @@ if __name__ == "__main__":
         """Set up a QLineEdit with a custom validator that allows all inputs and styles the QLineEdit based on validity."""
         analyzer = CustomIntAnalyzer()
         line_edit.setAnalyzer(analyzer)
-        # line_edit.textChanged.connect(lambda text, le=line_edit, val=validator: validate_input(le, val))
 
     def validate_input(line_edit: Union[AnalyzerLineEdit, AnalyzerTextEdit], analyzer: CustomIntAnalyzer):
         """Update the line edit style based on validation."""

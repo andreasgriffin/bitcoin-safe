@@ -28,9 +28,6 @@
 
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import sys
 from datetime import datetime, timezone
 
@@ -44,6 +41,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class DateTimePicker(QWidget):

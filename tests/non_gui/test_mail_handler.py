@@ -35,6 +35,7 @@ from _pytest.logging import LogCaptureFixture
 
 from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 
+setup_logging()
 logger = logging.getLogger(__name__)
 
 

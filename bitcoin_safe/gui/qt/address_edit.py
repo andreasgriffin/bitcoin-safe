@@ -28,26 +28,25 @@
 
 
 import logging
-
-from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
-from bitcoin_safe.util import block_explorer_URL
-
-logger = logging.getLogger(__name__)
-
 from typing import Optional
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QSizePolicy, QStyle
+from PyQt6.QtWidgets import QMessageBox, QSizePolicy
+
+from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
+from bitcoin_safe.util import block_explorer_URL
 
 from ...i18n import translate
 from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
 from ...wallet import Wallet, get_wallet_of_address
 from .dialogs import question_dialog
 from .util import ColorScheme, icon_path, webopen
+
+logger = logging.getLogger(__name__)
 
 
 class AddressEdit(ButtonEdit):
@@ -76,18 +75,12 @@ class AddressEdit(ButtonEdit):
 
         self.setPlaceholderText(self.tr("Enter address here"))
 
-        def on_handle_input(data: Data) -> None:
-            if data.data_type == DataType.Bip21:
-                if data.data.get("address"):
-                    self.setText(data.data.get("address"))
-                self.signal_bip21_input.emit(data)
-
         self.camera_button = self.add_qr_input_from_camera_button(
             network=network,
         )
-        self.signal_data.connect(on_handle_input)
+        self.signal_data.connect(self._on_handle_input)
         self.copy_button = self.add_copy_button()
-        self.mempool_button = self._add_mempool_button(self.signals) if self.signals else None
+        self.mempool_button = self._add_mempool_button()
 
         self.input_field.setAnalyzer(AddressAnalyzer(self.network, parent=self))
 
@@ -99,6 +92,12 @@ class AddressEdit(ButtonEdit):
 
         # signals
         self.input_field.textChanged.connect(self.on_text_changed)
+
+    def _on_handle_input(self, data: Data) -> None:
+        if data.data_type == DataType.Bip21:
+            if data.data.get("address"):
+                self.setText(data.data.get("address"))
+            self.signal_bip21_input.emit(data)
 
     def set_allow_edit(self, allow_edit: bool):
         self.allow_edit = allow_edit
@@ -112,17 +111,18 @@ class AddressEdit(ButtonEdit):
         if self.mempool_button:
             self.mempool_button.setHidden(allow_edit)
 
-    def _add_mempool_button(self, signals: Signals) -> SquareButton:
-        def on_click() -> None:
-            mempool_url = signals.get_mempool_url()
-            if mempool_url is None:
-                return
-            addr_URL = block_explorer_URL(mempool_url, "addr", self.address)
-            if addr_URL:
-                webopen(addr_URL)
+    def _on_click(self) -> None:
+        mempool_url = self.signals.get_mempool_url()
+        if mempool_url is None:
+            return
+        addr_URL = block_explorer_URL(mempool_url, "addr", self.address)
+        if addr_URL:
+            webopen(addr_URL)
+
+    def _add_mempool_button(self) -> SquareButton:
 
         copy_button = self.add_button(
-            icon_path("block-explorer.svg"), on_click, tooltip=translate("d", "View on block explorer")
+            icon_path("block-explorer.svg"), self._on_click, tooltip=translate("d", "View on block explorer")
         )
         return copy_button
 
@@ -173,8 +173,6 @@ class AddressEdit(ButtonEdit):
 
         if background_color:
             palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
-        else:
-            palette = (self.input_field.style() or QStyle()).standardPalette()
 
         self.input_field.setPalette(palette)
         self.input_field.update()

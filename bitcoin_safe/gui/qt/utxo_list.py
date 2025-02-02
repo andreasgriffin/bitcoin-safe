@@ -53,6 +53,7 @@
 # SOFTWARE.
 
 import logging
+from functools import partial
 
 from bitcoin_safe.gui.qt.wrappers import Menu
 
@@ -147,7 +148,7 @@ class UTXOList(MyTreeView):
         self,
         config: UserConfig,
         signals: Signals,
-        get_outpoints,
+        outpoints: List[OutPoint],
         hidden_columns: List[int] | None = None,
         txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] | None = None,
         keep_outpoint_order=False,
@@ -159,7 +160,7 @@ class UTXOList(MyTreeView):
         Args:
             config (UserConfig): _description_
             signals (Signals): _description_
-            get_outpoints (_type_): _description_
+            outpoints (List[OutPoint]): _description_
             hidden_columns (_type_, optional): _description_. Defaults to None.
             txout_dict (Dict[str, bdk.TxOut], optional): Can be used to augment the list with infos, if the utxo is not from the own wallet. Defaults to None.
             keep_outpoint_order (bool, optional): _description_. Defaults to False.
@@ -173,19 +174,27 @@ class UTXOList(MyTreeView):
             sort_column=sort_column if sort_column is not None else UTXOList.Columns.ADDRESS,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
         )
+        self.outpoints = outpoints
         self.config: UserConfig = config
         self.keep_outpoint_order = keep_outpoint_order
         self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
-        self.get_outpoints = get_outpoints
         self.txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] = txout_dict if txout_dict else {}
         self._pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[str, Wallet] = {}  # outpoint --> wallet
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
-        self._source_model = MyStandardItemModel(self, drag_key="outpoints")
+        self._source_model = MyStandardItemModel(
+            key_column=self.key_column,
+            parent=self,
+        )
         self.proxy = MySortModel(
-            self, source_model=self._source_model, sort_role=MyItemDataRole.ROLE_SORT_ORDER
+            Columns=self.Columns,
+            drag_key="outpoints",
+            key_column=self.key_column,
+            parent=self,
+            source_model=self._source_model,
+            sort_role=MyItemDataRole.ROLE_SORT_ORDER,
         )
         self.setModel(self.proxy)
 
@@ -205,16 +214,26 @@ class UTXOList(MyTreeView):
         # self.setDragDropMode(QAbstractItemView.InternalMove)
         # self.setDefaultDropAction(Qt.MoveAction)
 
+    def set_outpoints(self, outpoints: List[OutPoint]):
+        self.outpoints = outpoints
+        self.update_content()
+
     def create_menu(self, position: QPoint) -> Menu:
-        selected: List[QModelIndex] = self.selected_in_column(self.Columns.OUTPOINT)
+        menu = Menu()
+        # is_multisig = isinstance(self.wallet, Multisig_Wallet)
+        selected = self.selected_in_column(self.key_column)
+        if not selected:
+            return menu
+        multi_select = len(selected) > 1
+
+        _selected_items = [self.item_from_index(item) for item in selected]
+        selected_items = [item for item in _selected_items if item]
+
         if not selected:
             current_row = self.current_row_in_column(self.Columns.OUTPOINT)
             if current_row:
                 selected = [current_row]
 
-        menu = Menu()
-
-        multi_select = len(selected) > 1
         outpoints: List[OutPoint] = [
             self.model().data(item, role=MyItemDataRole.ROLE_KEY) for item in selected
         ]
@@ -230,14 +249,14 @@ class UTXOList(MyTreeView):
             if str(outpoints[0]) in self._wallet_dict:
                 menu.add_action(
                     translate("utxo_list", "Open transaction"),
-                    lambda: self.signals.open_tx_like.emit(outpoints[0].txid),
+                    partial(self.signals.open_tx_like.emit, outpoints[0].txid),
                 )
 
             txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
             if txid_URL:
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
-                    lambda: webopen(txid_URL),
+                    partial(webopen, txid_URL),
                     icon=read_QIcon("block-explorer.svg"),
                 )
 
@@ -256,8 +275,10 @@ class UTXOList(MyTreeView):
             if wallet_ids and addresses:
                 menu.add_action(
                     translate("utxo_list", "Open Address Details"),
-                    lambda: self.signals.wallet_signals[wallet_ids[0]].show_address.emit(
-                        addresses[0], wallet_ids[0]
+                    partial(
+                        self.signals.wallet_signals[wallet_ids[0]].show_address.emit,
+                        addresses[0],
+                        wallet_ids[0],
                     ),
                 )
 
@@ -265,7 +286,10 @@ class UTXOList(MyTreeView):
 
         menu.add_action(
             translate("utxo_list", "Copy as csv"),
-            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+            partial(
+                self.copyRowsToClipboardAsCSV,
+                [item.data(MySortModel.role_drag_key) for item in selected_items if item],
+            ),
             icon=read_QIcon("csv-file.svg"),
         )
 
@@ -358,7 +382,7 @@ class UTXOList(MyTreeView):
 
         self._source_model.clear()
         self.update_headers(self.get_headers())
-        for i, outpoint in enumerate(self.get_outpoints()):
+        for i, outpoint in enumerate(self.outpoints):
             outpoint = OutPoint.from_bdk(outpoint)
             wallet, python_utxo, address, satoshis = self.get_wallet_address_satoshis(outpoint)
 
@@ -508,7 +532,8 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
                     number=len(selected_values),
                 )
             )
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             self.uxto_selected_label.setText(f"")
 
     def create_toolbar_with_menu(self, title):

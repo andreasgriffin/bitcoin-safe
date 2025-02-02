@@ -29,7 +29,9 @@
 
 import hashlib
 import logging
+from typing import Any, Dict, List
 
+import bdkpython as bdk
 import nostr_sdk
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
@@ -47,10 +49,6 @@ from bitcoin_safe.signals import Signals
 from bitcoin_safe.storage import filtered_for_init
 
 logger = logging.getLogger(__name__)
-
-from typing import Any, Dict, List
-
-import bdkpython as bdk
 
 
 class SyncTab(QObject):

@@ -35,7 +35,7 @@ import platform
 import sys
 import traceback
 import webbrowser
-from functools import lru_cache
+from functools import lru_cache, partial
 from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
@@ -77,6 +77,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
@@ -139,20 +140,32 @@ def open_website(url: str):
     QDesktopServices.openUrl(QUrl(url))
 
 
-def resize(x, y, x_max, y_max):
-    def resize_one_side(a, b, amax):
-        a_new = min(amax, a)
-        return a_new, b * a_new / a
+def proportional_fit_into_max(x, y, x_max, y_max):
+    """
+    Scales (x, y) proportionally to fit within (x_max, y_max) while maintaining aspect ratio.
 
-    # resize according to xmax
-    x, y = resize_one_side(x, y, x_max)
-    # resize according to ymax
-    y, x = resize_one_side(y, x, y_max)
-    return x, y
+    :param x: Original width
+    :param y: Original height
+    :param x_max: Maximum allowed width
+    :param y_max: Maximum allowed height
+    :return: (new_x, new_y) scaled dimensions
+    """
+    # Calculate scaling factors for width and height
+    scale_x = x_max / x
+    scale_y = y_max / y
+
+    # Choose the smaller scale factor to maintain aspect ratio
+    scale = min(scale_x, scale_y)
+
+    # Compute new dimensions
+    new_x = int(x * scale)
+    new_y = int(y * scale)
+
+    return new_x, new_y
 
 
 def qresize(qsize: QSize, max_sizes: Tuple[int, int]):
-    x, y = resize(qsize.width(), qsize.height(), *max_sizes)
+    x, y = proportional_fit_into_max(qsize.width(), qsize.height(), *max_sizes)
     return QSize(int(x), int(y))
 
 
@@ -439,7 +452,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
             f"{error_message}\n\nPlease send the error report via email, so the bug can be fixed.",
         )
 
-    except:
+    except Exception:
         error_message = str([exc_type, exc_value, exc_traceback])
         logger.critical(error_message)
         QMessageBox.critical(
@@ -531,7 +544,7 @@ class BlockingWaitingDialog(WindowModalDialog):
         self.message_label = QLabel(message)
         vbox = QVBoxLayout(self)
         vbox.addWidget(self.message_label)
-        self.finished.connect(self.deleteLater)  # see #3956
+        self.finished.connect(self.close)  # see #3956
         # show popup
         self.show()
         # refresh GUI; needed for popup to appear and for message_label to get drawn
@@ -703,8 +716,10 @@ def do_copy(text: str, *, title: str | None = None) -> None:
 
 def show_tooltip_after_delay(message):
     timer = QTimer()
+    if not ENABLE_TIMERS:
+        return
     # tooltip cannot be displayed immediately when called from a menu; wait 200ms
-    timer.singleShot(200, lambda: QToolTip.showText(QCursor.pos(), message))
+    timer.singleShot(200, partial(QToolTip.showText, QCursor.pos(), message))
 
 
 def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
@@ -779,6 +794,9 @@ def get_host_and_port(url) -> Tuple[str | None, int | None]:
 
 
 def delayed_execution(f, parent, delay=10):
+    if not ENABLE_TIMERS:
+        f()
+        return
     timer = QTimer(parent)
     timer.setSingleShot(True)  # Make sure the timer runs only once
     timer.timeout.connect(f)  # Connect the timeout signal to the function
@@ -795,7 +813,6 @@ def clear_layout(layout: QLayout) -> None:
         if widget:
             layout.removeWidget(widget)
             widget.setParent(None)  # Remove widget from parent to fully disconnect it
-            widget.deleteLater()
 
 
 def svg_widgets_hardware_signers(

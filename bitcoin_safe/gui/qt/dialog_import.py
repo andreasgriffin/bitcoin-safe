@@ -28,11 +28,19 @@
 
 
 import logging
+from functools import partial
 from typing import Callable, Optional
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QKeySequence, QShortcut
+from PyQt6.QtGui import (
+    QCloseEvent,
+    QDragEnterEvent,
+    QDropEvent,
+    QKeyEvent,
+    QKeySequence,
+    QShortcut,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -57,7 +65,7 @@ def is_binary(file_path) -> bool:
     """
     try:
         with open(file_path, "r") as f:
-            for chunk in iter(lambda: f.read(1024), ""):
+            for chunk in iter(partial(f.read, 1024), ""):
                 if "\0" in chunk:  # found null byte
                     return True
     except UnicodeDecodeError:
@@ -124,6 +132,7 @@ class DragAndDropTextEdit(AnalyzerTextEdit):
             file_path = mime_data.urls()[0].toLocalFile()
             if self.process_filepath:
                 self.process_filepath(file_path)
+                return  # prevent         super().dropEvent(event)
 
         super().dropEvent(event)
 
@@ -162,6 +171,8 @@ class DragAndDropButtonEdit(ButtonEdit):
 
 
 class ImportDialog(QDialog):
+    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+
     def __init__(
         self,
         network: bdk.Network,
@@ -183,7 +194,7 @@ class ImportDialog(QDialog):
         self.instruction_label = QLabel(text_instruction_label)
         self.text_edit = DragAndDropButtonEdit(
             network=network,
-            callback_enter=self.process_input,
+            callback_enter=self.on_ok_button,
             callback_esc=self.close,
             close_all_video_widgets=close_all_video_widgets,
         )
@@ -206,26 +217,32 @@ class ImportDialog(QDialog):
         if self.button_ok:
             self.button_ok.setDefault(True)
             self.button_ok.setText(text_button_ok)
-            self.button_ok.clicked.connect(lambda: self.process_input(self.text_edit.text()))
+            self.button_ok.clicked.connect(self.on_button_ok_clicked)
 
         layout.addWidget(self.buttonBox)
 
-        # connect signals
-        self.text_edit.signal_drop_file.connect(self.process_input)
-
         shortcut = QShortcut(QKeySequence("Return"), self)
-        shortcut.activated.connect(self.process_input)
+        shortcut.activated.connect(self.on_ok_button)
+        self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
+        self.shortcut_close.activated.connect(self.close)
+        self.shortcut_close = QShortcut(QKeySequence("ESC"), self)
+        self.shortcut_close.activated.connect(self.close)
+
+    def on_button_ok_clicked(self):
+        self.on_ok_button(self.text_edit.text())
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         if event and event.key() == Qt.Key.Key_Escape:
             self.close()
 
-    def process_input(self, s: str) -> None:
+    def on_ok_button(self, s: str) -> None:
         if self.on_open:
+            self.close()
             self.on_open(s)
 
-        # close lets the entire application crash
-        self.deleteLater()
+    def closeEvent(self, event: QCloseEvent | None):
+        self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
+        super().closeEvent(event)
 
 
 if __name__ == "__main__":

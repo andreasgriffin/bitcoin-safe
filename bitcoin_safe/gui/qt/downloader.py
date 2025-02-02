@@ -80,6 +80,7 @@ class DownloadThread(QThread):
                         self.progress.emit(int(100 * dl / int(content_length)))
             self.finished.emit()
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             self.aborted.emit()
             logger.warning(str(e))
 

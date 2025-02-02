@@ -33,10 +33,11 @@ from typing import Generic, MutableSequence, TypeVar
 
 _T = TypeVar("_T")
 
-logger = logging.getLogger(__name__)
 
 from collections import deque
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class UniqueDeque(

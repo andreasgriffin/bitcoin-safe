@@ -53,7 +53,8 @@
 # SOFTWARE.
 
 import logging
-from typing import Any, Dict, Tuple
+from functools import partial
+from typing import Any, Dict
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -114,24 +115,23 @@ from .util import (
 
 
 class ImportLabelMenu:
-    def __init__(self, upper_menu: Menu, wallet: Wallet, wallet_signals: WalletSignals) -> None:
+    def __init__(self, upper_menu: Menu, wallet_signals: WalletSignals) -> None:
         self.wallet_signals = wallet_signals
-        self.wallet = wallet
         self.import_label_menu = upper_menu.add_menu(
             "",
         )
 
         self.action_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_labels.emit(),
+            self.wallet_signals.import_labels.emit,
         )
         self.action_bip329_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_bip329_labels.emit(),
+            self.wallet_signals.import_bip329_labels.emit,
         )
         self.action_electrum_import = self.import_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.import_electrum_wallet_labels.emit(),
+            self.wallet_signals.import_electrum_wallet_labels.emit,
         )
         self.action_nostr_import = self.import_label_menu.add_action(
             "",
@@ -159,20 +159,19 @@ class ImportLabelMenu:
 
 
 class ExportLabelMenu:
-    def __init__(self, upper_menu: Menu, wallet: Wallet, wallet_signals: WalletSignals) -> None:
+    def __init__(self, upper_menu: Menu, wallet_signals: WalletSignals) -> None:
         self.wallet_signals = wallet_signals
-        self.wallet = wallet
         self.export_label_menu = upper_menu.add_menu(
             "",
         )
 
         self.action_export_full = self.export_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.export_labels.emit(),
+            self.wallet_signals.export_labels.emit,
         )
         self.action_bip329 = self.export_label_menu.add_action(
             "",
-            lambda: self.wallet_signals.export_bip329_labels.emit(),
+            self.wallet_signals.export_bip329_labels.emit,
         )
         self.updateUi()
 
@@ -272,9 +271,17 @@ class AddressList(MyTreeView):
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
-        self._source_model = MyStandardItemModel(self, drag_key="addresses")
+        self._source_model = MyStandardItemModel(
+            key_column=self.key_column,
+            parent=self,
+        )
         self.proxy = MySortModel(
-            self, source_model=self._source_model, sort_role=MyItemDataRole.ROLE_SORT_ORDER
+            key_column=self.key_column,
+            Columns=self.Columns,
+            drag_key="addresses",
+            parent=self,
+            source_model=self._source_model,
+            sort_role=MyItemDataRole.ROLE_SORT_ORDER,
         )
         ColorScheme.update_from_widget(self)
         self.setModel(self.proxy)
@@ -601,14 +608,14 @@ class AddressList(MyTreeView):
                 return menu
             addr = addrs[0]
             menu.add_action(
-                self.tr("Details"), lambda: self.wallet_signals.show_address.emit(addr, self.wallet.id)
+                self.tr("Details"), partial(self.wallet_signals.show_address.emit, addr, self.wallet.id)
             )
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "addr", addr)
             if addr_URL:
                 menu.add_action(
                     self.tr("View on block explorer"),
-                    lambda: webopen(addr_URL),
+                    partial(webopen, addr_URL),
                     icon=read_QIcon("block-explorer.svg"),
                 )
 
@@ -620,12 +627,15 @@ class AddressList(MyTreeView):
 
         menu.add_action(
             self.tr("Copy as csv"),
-            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+            partial(
+                self.copyRowsToClipboardAsCSV,
+                [item.data(MySortModel.role_drag_key) for item in selected_items if item],
+            ),
             icon=read_QIcon("csv-file.svg"),
         )
         menu.addSeparator()
-        self.export_label_menu = ExportLabelMenu(menu, wallet=self.wallet, wallet_signals=self.wallet_signals)
-        self.import_label_menu = ImportLabelMenu(menu, wallet=self.wallet, wallet_signals=self.wallet_signals)
+        self.export_label_menu = ExportLabelMenu(menu, wallet_signals=self.wallet_signals)
+        self.import_label_menu = ImportLabelMenu(menu, wallet_signals=self.wallet_signals)
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
         if viewport := self.viewport():
@@ -635,14 +645,6 @@ class AddressList(MyTreeView):
 
     def _add_category_menu(self, menu: Menu, idx: QModelIndex):
         copy_menu = menu.add_menu(self.tr("Set category"))
-
-        def factory(category, address):
-            def f(category=category, address=address):
-                drag_info = AddressDragInfo([category], [address])
-                logger.debug(f"_add_category_menu set {drag_info}")
-                self.signal_tag_dropped.emit(drag_info)
-
-            return f
 
         for category in self.wallet.labels.categories:
             item = self.sourceModel().horizontalHeaderItem(self.Columns.ADDRESS)
@@ -655,9 +657,10 @@ class AddressList(MyTreeView):
             if address is None:
                 address = item_col.text().strip()
 
+            action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], [address]))
             copy_menu.add_action(
                 category,
-                factory(category=category, address=address),
+                action,
                 icon=create_color_square(CategoryEditor.color(category)),
             )
 
@@ -732,16 +735,37 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         if self.balance_label:
             balance = self.address_list.wallet.get_balance()
             if self.signals:
-                display_balance = (
-                    self.signals.wallet_signals[self.address_list.wallet.id]
-                    .get_display_balance.emit()
-                    .get(self.address_list.wallet.id)
-                )
+                display_balance = self.signals.wallet_signals[
+                    self.address_list.wallet.id
+                ].get_display_balance.emit()
                 if display_balance:
                     balance = display_balance
 
             self.balance_label.setText(balance.format_short(self.address_list.wallet.network))
             self.balance_label.setToolTip(balance.format_long(self.address_list.wallet.network))
+
+    def toggle_toolbar(self, config=None) -> None:
+        super().toggle_toolbar(config=config if config else self.config)
+
+    def _mine_to_selected_addresses(self) -> None:
+        selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
+        if not selected:
+            return
+        selected_items = [self.address_list.item_from_index(item) for item in selected]
+        addresses = [item.text() for item in selected_items if item]
+
+        for address in addresses:
+            response = send_rpc_command(
+                self.config.network_config.rpc_ip,
+                str(self.config.network_config.rpc_port),
+                self.config.network_config.rpc_username,
+                self.config.network_config.rpc_password,
+                "generatetoaddress",
+                params=[1, address],
+            )
+            logger.info(f"{response}")
+        if self.signals:
+            self.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
 
     def create_toolbar_with_menu(self, title) -> None:
         super().create_toolbar_with_menu(title=title)
@@ -750,13 +774,9 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         font.setPointSize(12)
         self.balance_label.setFont(font)
 
-        self.action_show_filter = self.menu.addToggle("", lambda: self.toggle_toolbar(self.config))
-        self.menu_export_labels = ExportLabelMenu(
-            self.menu, wallet=self.address_list.wallet, wallet_signals=self.address_list.wallet_signals
-        )
-        self.menu_import_labels = ImportLabelMenu(
-            self.menu, wallet=self.address_list.wallet, wallet_signals=self.address_list.wallet_signals
-        )
+        self.action_show_filter = self.menu.addToggle("", self.toggle_toolbar)
+        self.menu_export_labels = ExportLabelMenu(self.menu, wallet_signals=self.address_list.wallet_signals)
+        self.menu_import_labels = ImportLabelMenu(self.menu, wallet_signals=self.address_list.wallet_signals)
 
         if (
             self.config
@@ -764,39 +784,17 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             and self.config.network != bdk.Network.BITCOIN
         ):
 
-            def mine_to_selected_addresses() -> None:
-                selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
-                if not selected:
-                    return
-                selected_items = [self.address_list.item_from_index(item) for item in selected]
-                addresses = [item.text() for item in selected_items if item]
-
-                for address in addresses:
-                    response = send_rpc_command(
-                        self.config.network_config.rpc_ip,
-                        str(self.config.network_config.rpc_port),
-                        self.config.network_config.rpc_username,
-                        self.config.network_config.rpc_password,
-                        "generatetoaddress",
-                        params=[1, address],
-                    )
-                    logger.info(f"{response}")
-                if self.signals:
-                    self.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
-
             b = QPushButton(self.tr("Generate to selected adddresses"))
-            b.clicked.connect(mine_to_selected_addresses)
+            b.clicked.connect(self._mine_to_selected_addresses)
             self.toolbar.insertWidget(self.toolbar.count() - 2, b)
 
         hbox = self.create_toolbar_buttons()
         self.toolbar.insertLayout(self.toolbar.count() - 1, hbox)
 
     def create_toolbar_buttons(self) -> QHBoxLayout:
-        def get_toolbar_buttons() -> Tuple[QComboBox, QComboBox]:
-            return self.change_button, self.used_button
 
         hbox = QHBoxLayout()
-        buttons = get_toolbar_buttons()
+        buttons = [self.change_button, self.used_button]
         for b in buttons:
             b.setVisible(False)
             hbox.addWidget(b)

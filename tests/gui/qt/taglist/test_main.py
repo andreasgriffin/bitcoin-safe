@@ -33,26 +33,26 @@ from PyQt6.QtCore import QMimeData, QPoint, QPointF, Qt
 from PyQt6.QtGui import QDragEnterEvent
 from PyQt6.QtWidgets import QApplication
 
-from bitcoin_safe.gui.qt.taglist.main import (
+from bitcoin_safe.category_info import CategoryInfo, SubtextType
+from bitcoin_safe.gui.qt.taglist.custom_list_widget import CustomDelegate
+from bitcoin_safe.gui.qt.taglist.tag_editor import (
     AddressDragInfo,
-    CustomDelegate,
     CustomListWidget,
     CustomListWidgetItem,
     DeleteButton,
     TagEditor,
     clean_tag,
     qbytearray_to_str,
-    str_to_qbytearray,
 )
 from bitcoin_safe.gui.qt.util import hash_color, rescale
-from bitcoin_safe.util import hash_string
+from bitcoin_safe.util import hash_string, str_to_qbytearray
 
 logger = logging.getLogger(__name__)
 
 
 import hashlib
 
-from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QPointF, Qt
+from PyQt6.QtCore import QMimeData, QPoint, QPointF, Qt
 from PyQt6.QtGui import QColor, QDragEnterEvent, QDropEvent
 from PyQt6.QtWidgets import QApplication
 
@@ -110,13 +110,6 @@ def test_custom_list_widget_item(qapp: QApplication):
     assert stored_subtext == sub_text
 
 
-def test_custom_delegate(qapp: QApplication):
-    parent = None
-    delegate = CustomDelegate(parent)
-    assert delegate.currentlyEditingIndex == QModelIndex()
-    assert isinstance(delegate.imageCache, dict)
-
-
 def test_delete_button(qapp: QApplication):
     button = DeleteButton()
     assert button.acceptDrops()
@@ -135,15 +128,17 @@ def test_custom_list_widget(qapp: QApplication):
     assert item.text() == "TestItem"
     assert item.subtext == "SubText"
     # Test get_selected
-    widget.setAllSelection(True)
+    widget.clearSelection()
     selected = widget.get_selected()
-    assert selected == ["TestItem"]
+    assert not selected
 
 
 def test_tag_editor(qapp: QApplication):
-    tags = ["Tag1", "Tag2"]
-    sub_texts = ["Sub1", "Sub2"]
-    editor = TagEditor(tags=tags, sub_texts=sub_texts)
+    category_infos = [
+        CategoryInfo("Tag1", text_click_new_address="Sub1"),
+        CategoryInfo("Tag2", text_click_new_address="Sub2"),
+    ]
+    editor = TagEditor(category_infos=category_infos, subtext_type=SubtextType.click_new_address)
     # Test that the editor initializes properly
     assert editor.list_widget.count() == 2
     item1 = editor.list_widget.item(0)
@@ -184,17 +179,20 @@ def test_list_widget_delete_item(qapp: QApplication):
 
 
 def test_list_widget_recreate(qapp: QApplication):
-    widget = CustomListWidget()
-    tags = ["Tag1", "Tag2", "Tag3"]
-    sub_texts = ["Sub1", "Sub2", "Sub3"]
-    widget.recreate(tags, sub_texts)
+    widget = CustomListWidget(subtext_type=SubtextType.click_new_address)
+    category_infos = [
+        CategoryInfo("Tag1", text_click_new_address="Sub1"),
+        CategoryInfo("Tag2", text_click_new_address="Sub2"),
+        CategoryInfo("Tag3", text_click_new_address="Sub3"),
+    ]
+    widget.recreate(category_infos)
     assert widget.count() == 3
-    for i, (tag, sub_text) in enumerate(zip(tags, sub_texts)):
+    for i, category_info in enumerate(category_infos):
         item = widget.item(i)
         assert item
-        assert item.text() == tag
+        assert item.text() == category_info.category
         assert isinstance(item, CustomListWidgetItem)
-        assert item.subtext == sub_text
+        assert item.subtext == category_info.text_click_new_address
 
 
 def test_custom_list_widget_item_mime_data(qapp: QApplication):
@@ -459,19 +457,6 @@ def test_tag_editor_signals(qapp: QApplication, qtbot):
     editor.list_widget.delete_item(new_text)
     assert deleted_tags == [new_text]
     assert editor.list_widget.count() == 0
-
-
-def test_delegate_cache_eviction(qapp: QApplication):
-    delegate = CustomDelegate(None)
-    # Set a small cache size for testing
-    delegate.cache_size = 5
-    # Simulate adding items to the cache
-    for i in range(10):
-        key = ("index", i)
-        value = f"image_{i}"
-        delegate.add_to_cache(key, value)
-    # Cache size should not exceed cache_size
-    assert len(delegate.imageCache) <= delegate.cache_size
 
 
 def test_custom_list_widget_drag_enter_event_invalid_mime(qapp: QApplication):

@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Этот &quot;дескриптор&quot; содержит всю информацию для воссоздания кошелька. Пожалуйста, сделайте резервную копию этого дескриптора, чтобы иметь возможность восстановить средства!</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>Дескриптор не изменен  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>Введен новый дескриптор  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>Создать транзакцию</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>Предварительно заполнить поля транзакции снова  </translation>
+        <source>Retry</source>
+        <translation>Повторить  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1162,12 +1166,16 @@ Location of signing device: .....</source>
         <translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>Выбранный файл: {file_path}</translation>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;Новый кошелек</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>Выбранный файл: {file_path}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1206,12 +1214,12 @@ Location of signing device: .....</source>
         <translation>PSBT {txid}</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>Открыть кошелек</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;Открыть кошелек</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>Открыть кошелек</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1250,12 +1258,12 @@ Location of signing device: .....</source>
         <translation>Кошелек с идентификатором {name} уже открыт.</translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>Пожалуйста, завершите настройку кошелька.</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>Открыть &amp;Недавние</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>Пожалуйста, завершите настройку кошелька.</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1294,12 +1302,12 @@ Location of signing device: .....</source>
         <translation>Обновить  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>Установить пароль  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;Сохранить текущий кошелек</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>Установить пароль  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1338,12 +1346,12 @@ Location of signing device: .....</source>
         <translation>Действия  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Поиск  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1400,6 +1408,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>Все файлы (*);;Текстовые файлы (*.csv)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
     </message>
 </context>
 <context>
@@ -1693,6 +1705,10 @@ Location of signing device: .....</source>
         <translation>Удалить кошелек  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>Неверный пароль</translation>
     </message>
@@ -1709,12 +1725,12 @@ Location of signing device: .....</source>
         <translation>Кошелек сохранен</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} в {shortid}</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Дескриптор</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} в {shortid}</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1757,12 +1773,24 @@ Location of signing device: .....</source>
         <translation>Отключено от {server}  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Синхронизация &amp;&amp; Чат  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Нажмите для нового адреса</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Синхронизация &amp;&amp; Чат  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} Входы: {inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>начать обновление списков  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>списки обновлены  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1789,12 +1817,12 @@ Location of signing device: .....</source>
         <translation>Импортировать метки кошелька Electrum</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>Все файлы (*);;Файлы JSON (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>История</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>Все файлы (*);;Файлы JSON (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1904,6 +1932,10 @@ Location of signing device: .....</source>
         <translation>Адрес</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>Строки не распознаны  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} не является действительным адресом!  </translation>
     </message>
@@ -1952,6 +1984,10 @@ Location of signing device: .....</source>
         <translation>Все файлы (*);;Файлы кошельков (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>Открыть CSV  </translation>
     </message>
@@ -1962,10 +1998,6 @@ Location of signing device: .....</source>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>Пожалуйста, используйте шаблон CSV и включите строку заголовка.  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>Строки не распознаны  </translation>
     </message>
 </context>
 <context>
@@ -2029,6 +2061,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>Все файлы (*);;Текстовые файлы (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
     </message>
 </context>
 <context>
@@ -2440,10 +2476,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>Выберите категорию, которая лучше всего подходит получателю</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} Входы: {inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3078,6 +3110,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>Попытка импорта pyzbar для проверки установки Visual C++ Redistributable.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3287,12 +3326,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>Открыть транзакцию/PSBT</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3304,6 +3343,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}: Отпечаток: {keystore_fingerprint}, Происхождение ключа: {keystore_key_origin}, {keystore_xpub}  </translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>Файл не найден!  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3338,16 +3381,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>При повторном сканировании этого кошелька сканируйте как минимум до индекса адреса {max_tip}, чтобы обнаружить все финансируемые адреса.  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>Ключ резервного копирования синхронизации меток: {label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. Наклейте или приклейте &apos;Лист восстановления&apos; ({number} слов) на таблицу ниже&lt;br/&gt;2. Сложите эту бумагу по линии ниже&lt;br/&gt;3. Поместите эту бумагу в безопасное место, доступное только вам&lt;br/&gt;4. Вы можете поместить аппаратного подписанта либо a) вместе с бумажным резервным копированием семян, либо b) в другом безопасном месте (если таковое имеется)  </translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>Ключ резервного копирования синхронизации меток: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

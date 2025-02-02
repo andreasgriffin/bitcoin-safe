@@ -205,7 +205,7 @@ screenshots*/
 profile.html
 
 docs/org
-
+tests/output
 
 
 # build results
@@ -221,3 +221,5 @@ bitcoin_safe
 version
 tools/libusb/
 *.dll
+
+

@@ -33,7 +33,6 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 
 import pytest
 from PyQt6.QtTest import QTest
@@ -41,13 +40,13 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore
 from ...test_helpers import test_config_main_chain  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
+    CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
@@ -62,13 +61,14 @@ logger = logging.getLogger(__name__)
 
 
 @pytest.mark.marker_qt_2
-def test_open_wallet_and_address_is_consistent(
+def test_open_wallet_and_address_is_consistent_and_destruction_ok(
     qapp: QApplication,
     qtbot: QtBot,
     test_start_time: datetime,
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
     wallet_file: str = "0.2.0.wallet",
     amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
@@ -91,7 +91,7 @@ def test_open_wallet_and_address_is_consistent(
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
-        qt_wallet.tabs.setCurrentWidget(qt_wallet.addresses_tab)
+        qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
         shutter.save(main_window)
         # check wallet address
@@ -100,19 +100,20 @@ def test_open_wallet_and_address_is_consistent(
             == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
         )
 
-        def do_close_wallet() -> None:
-
+        # if True:
+        with CheckedDeletionContext(
+            qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
+        ):
+            wallet_id = qt_wallet.wallet.id
+            del qt_wallet
             close_wallet(
                 shutter=shutter,
                 test_config=test_config,
-                wallet_name=qt_wallet.wallet.id,
+                wallet_name=wallet_id,
                 qtbot=qtbot,
                 main_window=main_window,
             )
-
             shutter.save(main_window)
-
-        do_close_wallet()
 
         def check_that_it_is_in_recent_wallets() -> None:
             assert any(
@@ -128,4 +129,3 @@ def test_open_wallet_and_address_is_consistent(
 
         # end
         shutter.save(main_window)
-        sleep(2)

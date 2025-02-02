@@ -44,7 +44,8 @@ logger = logging.getLogger(__name__)
 def is_address(a: str, network: bdk.Network) -> bool:
     try:
         bdk.Address(a, network=network)
-    except:
+    except Exception as e:
+        logger.debug(str(e))
         return False
     return True
 
@@ -391,7 +392,8 @@ class Balance(QObject, SaveAllClass):
 def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=True) -> str:
     try:
         return bdk.Address.from_script(script_pubkey, network).as_string()
-    except:
+    except Exception as e:
+        logger.debug(str(e))
         if on_error_return_hex:
             return serialized_to_hex(script_pubkey.to_bytes())
         else:

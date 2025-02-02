@@ -28,6 +28,7 @@
 
 
 import os
+from functools import partial
 from pathlib import Path
 from typing import Iterable, List
 
@@ -108,7 +109,7 @@ class ButtonList(QListWidget):
 
         menu = QMenu()
         openFolderAction = QAction(self.tr("Open containing folder"), self)
-        openFolderAction.triggered.connect(lambda: self.openContainingFolder(item.toolTip()))
+        openFolderAction.triggered.connect(partial(self.openContainingFolder, item.toolTip()))
         menu.addAction(openFolderAction)
         menu.exec(self.mapToGlobal(position))
 

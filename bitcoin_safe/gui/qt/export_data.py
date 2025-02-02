@@ -27,36 +27,21 @@
 # SOFTWARE.
 
 
+import json
 import logging
+import os
 from datetime import datetime
+from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
+import bdkpython as bdk
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
 from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
-from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
-
-from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
-from bitcoin_safe.descriptors import MultipathDescriptor
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
-from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.i18n import translate
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
-from bitcoin_safe.tx import short_tx_id, transaction_to_dict
-from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.wallet import filename_clean
-
-from .sync_tab import SyncTab
-
-logger = logging.getLogger(__name__)
-
-import json
-import os
-
-import bdkpython as bdk
 from bitcoin_qr_tools.qr_generator import QRGenerator
+from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QIcon
@@ -73,6 +58,16 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
+from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
+from bitcoin_safe.tx import short_tx_id, transaction_to_dict
+from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.wallet import filename_clean
+
 from ...hardware_signers import (
     DescriptorExportType,
     DescriptorExportTypes,
@@ -81,7 +76,10 @@ from ...hardware_signers import (
     HardwareSigners,
 )
 from ...signals import SignalsMin
+from .sync_tab import SyncTab
 from .util import Message, MessageType, do_copy, read_QIcon, save_file_dialog
+
+logger = logging.getLogger(__name__)
 
 
 class DataGroupBox(QGroupBox):
@@ -178,19 +176,27 @@ class CopyToolButton(QToolButton):
         self._menu.clear()
         self._menu.blockSignals(True)
 
-        # Create a menu for the button
-        def copy_if_available(s: Optional[str]) -> None:
-            if s:
-                do_copy(s)
-            else:
-                Message(self.tr("Not available"))
-
-        self.action_copy_data = self._menu.add_action("", lambda: copy_if_available(self.serialized))
+        self.action_copy_data = self._menu.add_action("", self.on_action_copy_data)
         self._menu.addSeparator()
-        self.action_copy_txid = self._menu.add_action("", lambda: copy_if_available(self.txid))
-        self.action_json = self._menu.add_action("", lambda: copy_if_available(self.json_data))
+        self.action_copy_txid = self._menu.add_action("", self.on_action_copy_txid)
+        self.action_json = self._menu.add_action("", self.on_action_json)
 
         self._menu.blockSignals(False)
+
+    def copy_if_available(self, s: Optional[str]) -> None:
+        if s:
+            do_copy(s)
+        else:
+            Message(self.tr("Not available"))
+
+    def on_action_copy_data(self):
+        return self.copy_if_available(self.serialized)
+
+    def on_action_copy_txid(self):
+        return self.copy_if_available(self.txid)
+
+    def on_action_json(self):
+        return self.copy_if_available(self.json_data)
 
     def _set_data(self, data: Data) -> None:
         self.data = data
@@ -295,8 +301,24 @@ class FileToolButton(QToolButton):
         self._fill_menu()
         self.updateUi()
 
-    @staticmethod
+    @classmethod
+    def _save_file(
+        cls,
+        wallet_id: str,
+        multipath_descriptor: MultipathDescriptor,
+        network: bdk.Network,
+        descripor_type: DescriptorExportType,
+    ):
+        return DescriptorExportTools.export(
+            wallet_id=wallet_id,
+            multipath_descriptor=multipath_descriptor,
+            network=network,
+            descripor_type=descripor_type,
+        )
+
+    @classmethod
     def fill_file_menu_descriptor_export_actions(
+        cls,
         menu: Menu,
         wallet_id: str,
         multipath_descriptor: MultipathDescriptor,
@@ -305,21 +327,16 @@ class FileToolButton(QToolButton):
         menu.blockSignals(True)
         menu.clear()
 
-        def factory_save_file(descripor_type: DescriptorExportType):
-            def save_descriptor(descripor_type: DescriptorExportType = descripor_type):
-                return DescriptorExportTools.export(
-                    wallet_id=wallet_id,
-                    multipath_descriptor=multipath_descriptor,
-                    network=network,
-                    descripor_type=descripor_type,
-                )
-
-            return save_descriptor
-
         for export_type in DescriptorExportTypes.as_list():
             menu.add_action(
                 get_export_display_name(export_type=export_type),
-                factory_save_file(export_type),
+                partial(
+                    cls._save_file,
+                    wallet_id=wallet_id,
+                    multipath_descriptor=multipath_descriptor,
+                    network=network,
+                    descripor_type=export_type,
+                ),
                 icon=get_export_icon(export_type=export_type),
             )
         menu.blockSignals(False)
@@ -364,6 +381,17 @@ class SyncChatToolButton(QToolButton):
         self._fill_menu()
         self.updateUi()
 
+    def _share_with_device(
+        self, wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str | None = None
+    ) -> None:
+        if not sync_tab.enabled():
+            Message(self.tr("Please enable the sync tab first"))
+            return
+        if receiver_public_key_bech32:
+            self.on_nostr_share_with_member(PublicKey.parse(receiver_public_key_bech32), wallet_id, sync_tab)
+        else:
+            self.on_nostr_share_in_group(wallet_id, sync_tab)
+
     def _fill_menu(self):
         menu = self._menu
         menu.clear()
@@ -372,34 +400,28 @@ class SyncChatToolButton(QToolButton):
 
         self._menu.blockSignals(True)
 
-        def factory(
-            wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str | None = None
-        ) -> Callable:
-            def f(
-                wallet_id=wallet_id, sync_tab=sync_tab, receiver_public_key_bech32=receiver_public_key_bech32
-            ) -> None:
-                if not sync_tab.enabled():
-                    Message(self.tr("Please enable the sync tab first"))
-                    return
-                if receiver_public_key_bech32:
-                    self.on_nostr_share_with_member(
-                        PublicKey.parse(receiver_public_key_bech32), wallet_id, sync_tab
-                    )
-                else:
-                    self.on_nostr_share_in_group(wallet_id, sync_tab)
-
-            return f
-
         # Create a menu for the button
         self.action_share_with_all_devices.clear()
         self.menu_share_with_single_devices.clear()
         for wallet_id, sync_tab in self.sync_tabs.items():
-            self.action_share_with_all_devices[wallet_id] = menu.add_action("", factory(wallet_id, sync_tab))
+            action_alldevices = partial(
+                self._share_with_device,
+                wallet_id=wallet_id,
+                sync_tab=sync_tab,
+                receiver_public_key_bech32=None,
+            )
+            self.action_share_with_all_devices[wallet_id] = menu.add_action("", action_alldevices)
 
             self.menu_share_with_single_devices[wallet_id] = menu.add_menu("")
             for member in sync_tab.nostr_sync.group_chat.members:
+                action = partial(
+                    self._share_with_device,
+                    wallet_id=wallet_id,
+                    sync_tab=sync_tab,
+                    receiver_public_key_bech32=member.to_bech32(),
+                )
                 self.menu_share_with_single_devices[wallet_id].add_action(
-                    f"{short_key(member.to_bech32())}", factory(wallet_id, sync_tab, member.to_bech32())
+                    f"{short_key(member.to_bech32())}", action
                 )
             menu.addSeparator()
 
@@ -831,23 +853,20 @@ class QrToolButton(QToolButton):
         self._fill_menu()
         self.updateUi()
 
+    def _show_export_widget(self, export_type: QrExportType):
+        if not self.export_qr_widget:
+            return
+        self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
+        self.export_qr_widget.show()
+
     def _fill_menu(self):
         self._menu.clear()
         self._menu.blockSignals(True)
 
-        def factory_show_export_widget(export_type: QrExportType):
-            def show_export_widget(export_type: QrExportType = export_type):
-                if not self.export_qr_widget:
-                    return
-                self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
-                self.export_qr_widget.show()
-
-            return show_export_widget
-
         for qr_type in self.export_qr_widget.qr_types:
             self._menu.add_action(
                 get_export_display_name(qr_type),
-                factory_show_export_widget(qr_type),
+                partial(self._show_export_widget, qr_type),
                 icon=get_export_icon(qr_type),
             )
 

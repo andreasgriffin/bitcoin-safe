@@ -28,6 +28,7 @@
 
 
 import logging
+from functools import partial
 from typing import Callable, List, Optional, Union
 
 from bdkpython import bdk
@@ -55,6 +56,7 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 from bitcoin_safe.gui.qt.util import Message, clear_layout, do_copy, icon_path
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import TypedPyQtSignal
@@ -186,6 +188,7 @@ class ButtonEdit(QWidget):
         **kwargs,
     ) -> None:
         super().__init__(parent=parent)
+        self.signal_tracker = SignalTracker()
         self.input_field: Union[AnalyzerTextEdit, AnalyzerLineEdit] = (
             input_field if input_field else AnalyzerLineEdit(parent=self)
         )
@@ -260,21 +263,21 @@ class ButtonEdit(QWidget):
         self.button_container.append_button(button)
         return button
 
+    def _on_copy(self) -> None:
+        do_copy(self.text())
+
     def add_copy_button(
         self,
     ) -> SquareButton:
-        def on_copy() -> None:
-            do_copy(self.text())
 
         self.copy_button = self.add_button(
-            icon_path("copy.png"), on_copy, tooltip=translate("d", "Copy to clipboard")
+            icon_path("copy.png"), self._on_copy, tooltip=translate("d", "Copy to clipboard")
         )
         return self.copy_button
 
     def set_input_field(self, input_widget: Union[AnalyzerTextEdit, AnalyzerLineEdit]) -> None:
         # Remove the current input field from the layout and delete it
         self.input_field.setParent(None)  # type: ignore[call-overload]
-        self.input_field.deleteLater()
 
         # Set the new input field and add it to the layout
         self.input_field = input_widget
@@ -300,44 +303,44 @@ class ButtonEdit(QWidget):
     def setReadOnly(self, value: bool) -> None:
         self.input_field.setReadOnly(value)
 
+    def _exception_callback(self, e: Exception) -> None:
+        if isinstance(e, DecodingException):
+            Message("Could not recognize the input.")
+        else:
+            Message(str(e))
+
+    def _result_callback_input_qr_from_camera(self, data: Data) -> None:
+        if hasattr(self, "setText"):
+            self.setText(str(data.data_as_string()))
+
     def input_qr_from_camera(
         self, network: bdk.Network, set_data_as_string=True, close_camera_on_result=True
     ) -> None:
-        def exception_callback(e: Exception) -> None:
-            if isinstance(e, DecodingException):
-                Message("Could not recognize the input.")
-            else:
-                Message(str(e))
-
-        def result_callback(data: Data) -> None:
-            if set_data_as_string and hasattr(self, "setText"):
-                self.setText(str(data.data_as_string()))
 
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(
             network=network, close_on_result=close_camera_on_result
         )
-        self._temp_bitcoin_video_widget.signal_data.connect(result_callback)
+        if set_data_as_string:
+            self._temp_bitcoin_video_widget.signal_data.connect(self._result_callback_input_qr_from_camera)
         self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
-        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(exception_callback)
+        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(self._exception_callback)
         self._temp_bitcoin_video_widget.show()
 
     def add_qr_input_from_camera_button(
         self, network: bdk.Network, set_data_as_string=False, close_camera_on_result=True
     ) -> SquareButton:
-        def input_qr_from_camera():
-            self.input_qr_from_camera(
+
+        self.button_camera = self.add_button(
+            icon_path("camera.svg"),
+            partial(
+                self.input_qr_from_camera,
                 network=network,
                 set_data_as_string=set_data_as_string,
                 close_camera_on_result=close_camera_on_result,
-            )
-
-        self.button_camera = self.add_button(
-            icon_path("camera.svg"), input_qr_from_camera, translate("d", "Read QR code from camera")
+            ),
+            translate("d", "Read QR code from camera"),
         )
-
-        # side-effect: we export these methods:
-        self.on_qr_from_camera_input_btn = input_qr_from_camera
 
         return self.button_camera
 
@@ -351,48 +354,60 @@ class ButtonEdit(QWidget):
         )
         return self.pdf_button
 
+    def _on_click_add_random_mnemonic_button(self, callback_seed: Callable | None = None) -> None:
+        seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
+        self.setText(seed)
+        if callback_seed:
+            callback_seed(seed)
+
     def add_random_mnemonic_button(
         self,
-        callback_seed=None,
+        callback_seed: Callable | None = None,
     ) -> SquareButton:
-        def on_click() -> None:
-            seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
-            self.setText(seed)
-            if callback_seed:
-                callback_seed(seed)
 
         self.mnemonic_button = self.add_button(
-            icon_path("dice.svg"), on_click, tooltip=translate("d", "Create random mnemonic")
+            icon_path("dice.svg"),
+            partial(self._on_click_add_random_mnemonic_button, callback_seed=callback_seed),
+            tooltip=translate("d", "Create random mnemonic"),
         )
         return self.mnemonic_button
 
     def addResetButton(self, get_reset_text) -> SquareButton:
-        def on_click() -> None:
-            self.setText(get_reset_text())
-
-        return self.add_button("reset-update.svg", on_click, "Reset")
+        return self.add_button("reset-update.svg", partial(self.setText, get_reset_text()), "Reset")
         # button.setStyleSheet("background-color: white;")
+
+    def _on_click_add_open_file_button(
+        self, callback_open_filepath: Callable | None = None, filter=None
+    ) -> None:
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            translate("open_file", "Open Transaction/PSBT"),
+            "",
+            filter,
+        )
+        if not file_path:
+            logger.debug("No file selected")
+            return
+
+        logger.info(f"Selected file: {file_path}")
+        if callback_open_filepath:
+            callback_open_filepath(file_path)
 
     def add_open_file_button(
         self,
-        callback_open_filepath,
+        callback_open_filepath: Callable | None = None,
         filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
     ) -> QPushButton:
-        def on_click() -> None:
-            file_path, _ = QFileDialog.getOpenFileName(
-                self,
-                translate("open_file", "Open Transaction/PSBT"),
-                "",
-                filter,
-            )
-            if not file_path:
-                logger.debug("No file selected")
-                return
 
-            logger.info(f"Selected file: {file_path}")
-            callback_open_filepath(file_path)
-
-        button = self.add_button(None, on_click, translate("d", "Open file"))
+        button = self.add_button(
+            None,
+            partial(
+                self._on_click_add_open_file_button,
+                callback_open_filepath=callback_open_filepath,
+                filter=filter,
+            ),
+            translate("d", "Open file"),
+        )
         icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
         button.setIcon(icon)
 
@@ -418,6 +433,12 @@ class ButtonEdit(QWidget):
         error = bool(self.input_field.text()) and (analysis.state != AnalyzerState.Valid)
         self.format_as_error(error)
         self.setToolTip(analysis.msg if error else "")
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+        self.setParent(None)
+        super().close()
 
 
 # Example usage

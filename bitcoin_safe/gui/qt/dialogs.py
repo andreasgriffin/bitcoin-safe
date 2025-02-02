@@ -164,7 +164,7 @@ class PasswordCreation(QDialog):
         self.show_password_action1.setFont(
             QFont("Arial", 12)
         )  # Set the font to Arial to ensure Unicode support
-        self.show_password_action1.triggered.connect(lambda: self.toggle_password_visibility())
+        self.show_password_action1.triggered.connect(self.toggle_password_visibility)
         self.password_input1.addAction(self.show_password_action1, QLineEdit.ActionPosition.TrailingPosition)
 
         # Second password input

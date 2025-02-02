@@ -61,7 +61,6 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         super().__init__(parent=parent)
         self.setWindowTitle(self.tr("Export Transaction"))
         self.data = data
-        self.threading_parent = threading_parent
 
         if not self.data:
             return
@@ -71,7 +70,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
             data=self.data,
             signals_min=signals_min,
             network=network,
-            threading_parent=self.threading_parent,
+            threading_parent=threading_parent,
             parent=self,
         )
         self.add_button(self.export_qr_button)

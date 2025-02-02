@@ -28,17 +28,6 @@
 
 
 import logging
-
-from bitcoin_usb.address_types import SimplePubKeyProvider
-
-from bitcoin_safe.gui.qt.custom_edits import (
-    AnalyzerMessage,
-    AnalyzerState,
-    BaseAnalyzer,
-)
-
-logger = logging.getLogger(__name__)
-
 from typing import Callable, Tuple
 
 import bdkpython as bdk
@@ -46,10 +35,19 @@ from bitcoin_qr_tools.data import ConverterXpub
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
+from bitcoin_usb.address_types import SimplePubKeyProvider
 from PyQt6.QtCore import QObject
+
+from bitcoin_safe.gui.qt.custom_edits import (
+    AnalyzerMessage,
+    AnalyzerState,
+    BaseAnalyzer,
+)
 
 from ...keystore import KeyStore
 from .util import Message
+
+logger = logging.getLogger(__name__)
 
 
 class KeyOriginAnalyzer(BaseAnalyzer, QObject):
@@ -65,6 +63,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
         try:
             input = SimplePubKeyProvider.format_key_origin(input)
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             return AnalyzerMessage(str(e), AnalyzerState.Invalid)
 
         if input == self.get_expected_key_origin():
@@ -81,6 +80,7 @@ class FingerprintAnalyzer(BaseAnalyzer, QObject):
         try:
             input = SimplePubKeyProvider.format_fingerprint(input)
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             return AnalyzerMessage(str(e), AnalyzerState.Invalid)
 
         if KeyStore.is_fingerprint_valid(input):
@@ -104,8 +104,8 @@ class XpubAnalyzer(BaseAnalyzer, QObject):
             )
             try:
                 input = ConverterXpub.convert_slip132_to_bip32(input)
-            except:
-                pass
+            except Exception as e:
+                logger.debug(f"{self.__class__.__name__}: {e}")
         return input, pos
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
@@ -161,7 +161,8 @@ class AddressAnalyzer(BaseAnalyzer, QObject):
         try:
             bdk_address = bdk.Address(input, network=self.network)
             is_valid = bool(bdk_address)
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             is_valid = False
 
         if is_valid:

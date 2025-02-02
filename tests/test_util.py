@@ -28,25 +28,24 @@
 
 
 import logging
-from typing import Callable, List
-
-from bitcoin_safe.gui.qt.util import one_time_signal_connection
-
-logger = logging.getLogger(__name__)
-
 from pathlib import Path
+from typing import Callable, List
 from unittest.mock import patch
 
 import bdkpython as bdk
 from _pytest.logging import LogCaptureFixture
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
-# import the __main__ because it setsup the logging
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
+from bitcoin_safe.gui.qt.util import one_time_signal_connection
 from bitcoin_safe.signals import TypedPyQtSignalNo
 
 # from bitcoin_safe.logging_setup import setup_logging
 from bitcoin_safe.util import path_to_rel_home_path, rel_home_path_to_abs_path
+
+# import the __main__ because it setsup the logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class MySignalclass(QObject):

@@ -33,7 +33,6 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 
 import pytest
 from PyQt6.QtTest import QTest
@@ -45,12 +44,12 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
 from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
+    CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
@@ -72,6 +71,7 @@ def test_wallet_send(
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
     amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
@@ -94,165 +94,172 @@ def test_wallet_send(
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
-        qt_wallet.tabs.setCurrentWidget(qt_wallet.addresses_tab)
+        def do_all(qt_wallet: QTWallet):
+            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
-        shutter.save(main_window)
-        # check wallet address
-        assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
+            qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
-        def fund_wallet() -> None:
-            # to be able to import a recipient list with amounts
-            # i need to fund the wallet first
-            faucet.send(qt_wallet.wallet.get_address().address.as_string(), amount=10000000)
-            counter = 0
-            while qt_wallet.wallet.get_balance().total == 0:
-                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-                    qt_wallet.sync()
+            shutter.save(main_window)
+            # check wallet address
+            assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
+
+            def fund_wallet() -> None:
+                # to be able to import a recipient list with amounts
+                # i need to fund the wallet first
+                faucet.send(qt_wallet.wallet.get_address().address.as_string(), amount=10000000)
+                counter = 0
+                while qt_wallet.wallet.get_balance().total == 0:
+                    with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+                        qt_wallet.sync()
+
+                    shutter.save(main_window)
+                    counter += 1
+                    if counter > 20:
+                        raise Exception(
+                            f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
+                        )
+
+            fund_wallet()
+
+            def import_recipients() -> None:
+                qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
+                shutter.save(main_window)
+                qt_wallet.uitx_creator.recipients.add_recipient_button.click()
+                shutter.save(main_window)
+
+                test_file_path = "tests/data/recipients.csv"
+                with open(str(test_file_path), "r") as file:
+                    test_file_content = file.read()
+
+                qt_wallet.uitx_creator.recipients.import_csv(test_file_path)
+                shutter.save(main_window)
+
+                assert len(qt_wallet.uitx_creator.recipients.recipients) == 2
+                r = qt_wallet.uitx_creator.recipients.recipients[0]
+                assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
+                assert r.amount == 1000
+                assert r.label == "1"
+
+                r = qt_wallet.uitx_creator.recipients.recipients[1]
+                assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
+                assert r.amount == 2000
+                assert r.label == "2"
 
                 shutter.save(main_window)
-                counter += 1
-                if counter > 20:
-                    raise Exception(
-                        f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
+
+                with tempfile.TemporaryDirectory() as tempdir:
+                    file_path = Path(tempdir) / "test.csv"
+                    qt_wallet.uitx_creator.recipients.export_csv(
+                        qt_wallet.uitx_creator.recipients.recipients, file_path=file_path
                     )
 
-        fund_wallet()
+                    assert file_path.exists()
 
-        def import_recipients() -> None:
-            qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
-            shutter.save(main_window)
-            qt_wallet.uitx_creator.recipients.add_recipient_button.click()
-            shutter.save(main_window)
+                    with open(str(file_path), "r") as file:
+                        output_file_content = file.read()
 
-            test_file_path = "tests/data/recipients.csv"
-            with open(str(test_file_path), "r") as file:
-                test_file_content = file.read()
+                    assert test_file_content == output_file_content
 
-            qt_wallet.uitx_creator.recipients.import_csv(test_file_path)
-            shutter.save(main_window)
+            import_recipients()
 
-            assert len(qt_wallet.uitx_creator.recipients.recipients) == 2
-            r = qt_wallet.uitx_creator.recipients.recipients[0]
-            assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
-            assert r.amount == 1000
-            assert r.label == "1"
+            def create_signed_tx() -> None:
+                with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+                    qt_wallet.uitx_creator.button_ok.click()
+                shutter.save(main_window)
 
-            r = qt_wallet.uitx_creator.recipients.recipients[1]
-            assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
-            assert r.amount == 2000
-            assert r.label == "2"
+                ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
+                assert isinstance(ui_tx_viewer, UITx_Viewer)
+                assert len(ui_tx_viewer.recipients.recipients) == 3
 
-            shutter.save(main_window)
-
-            with tempfile.TemporaryDirectory() as tempdir:
-                file_path = Path(tempdir) / "test.csv"
-                qt_wallet.uitx_creator.recipients.export_csv(
-                    qt_wallet.uitx_creator.recipients.recipients, file_path=file_path
+                sorted_recipients = sorted(
+                    ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
                 )
 
-                assert file_path.exists()
+                r = sorted_recipients[1]
+                assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
+                assert r.amount == 1000
+                assert r.label == "1"
 
-                with open(str(file_path), "r") as file:
-                    output_file_content = file.read()
+                r = sorted_recipients[0]
+                assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
+                assert r.amount == 2000
+                assert r.label == "2"
 
-                assert test_file_content == output_file_content
+                r = sorted_recipients[2]
+                assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
+                assert r.address == qt_wallet.wallet.get_change_addresses()[0]
+                assert r.amount == 9996804
+                assert r.label == "Change of: 1, 2"
 
-        import_recipients()
+                ui_tx_viewer.button_next.click()
 
-        def create_signed_tx() -> None:
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
-                qt_wallet.uitx_creator.button_ok.click()
-            shutter.save(main_window)
+                horizontal_importer = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(1)
+                assert isinstance(horizontal_importer, HorizontalImporters)
+                signer_ui = horizontal_importer.group_seed.data
+                assert isinstance(signer_ui, SignerUI)
+                assert signer_ui.buttons[0].text() == "Sign with mnemonic seed"
 
-            ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
-            assert isinstance(ui_tx_viewer, UITx_Viewer)
-            assert len(ui_tx_viewer.recipients.recipients) == 3
+                with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
+                    signer_ui.buttons[0].click()
 
-            sorted_recipients = sorted(
-                ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
-            )
+                shutter.save(main_window)
 
-            r = sorted_recipients[1]
-            assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
-            assert r.amount == 1000
-            assert r.label == "1"
+            create_signed_tx()
 
-            r = sorted_recipients[0]
-            assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
-            assert r.amount == 2000
-            assert r.label == "2"
+            def send_tx() -> None:
+                shutter.save(main_window)
 
-            r = sorted_recipients[2]
-            assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
-            assert r.address == qt_wallet.wallet.get_change_addresses()[0]
-            assert r.amount == 9996804
-            assert r.label == "Change of: 1, 2"
+                ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
+                assert isinstance(ui_tx_viewer, UITx_Viewer)
+                assert len(ui_tx_viewer.recipients.recipients) == 3
 
-            ui_tx_viewer.button_next.click()
+                sorted_recipients = sorted(
+                    ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
+                )
 
-            horizontal_importer = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(1)
-            assert isinstance(horizontal_importer, HorizontalImporters)
-            signer_ui = horizontal_importer.group_seed.data
-            assert isinstance(signer_ui, SignerUI)
-            assert signer_ui.buttons[0].text() == "Sign with mnemonic seed"
+                r = sorted_recipients[1]
+                assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
+                assert r.amount == 1000
+                assert r.label == "1"
 
-            with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
-                signer_ui.buttons[0].click()
+                r = sorted_recipients[0]
+                assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
+                assert r.amount == 2000
+                assert r.label == "2"
 
-            shutter.save(main_window)
+                r = sorted_recipients[2]
+                assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
+                assert r.address == qt_wallet.wallet.get_change_addresses()[0]
+                assert r.amount == 9996804
+                assert r.label == "Change of: 1, 2"
 
-        create_signed_tx()
+                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+                    ui_tx_viewer.button_send.click()
 
-        def send_tx() -> None:
-            shutter.save(main_window)
+                shutter.save(main_window)
+                qt_wallet_tab = main_window.tab_wallets.getCurrentTabData()
+                assert isinstance(qt_wallet_tab, QTWallet)
+                assert qt_wallet_tab.history_list._source_model.rowCount() == 1
 
-            ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
-            assert isinstance(ui_tx_viewer, UITx_Viewer)
-            assert len(ui_tx_viewer.recipients.recipients) == 3
+            send_tx()
 
-            sorted_recipients = sorted(
-                ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
-            )
+        do_all(qt_wallet)
 
-            r = sorted_recipients[1]
-            assert r.address == "bcrt1q8tzpytutwlxpqjyhku3c4pyzz62sx5dv9ly67cx4qvran7stwlgqvmvhrw"
-            assert r.amount == 1000
-            assert r.label == "1"
-
-            r = sorted_recipients[0]
-            assert r.address == "bcrt1q6dqexpz2rp3r08nm6w8l5h3tgvqgn3c96jl6jt9vv3heylvmr8lskchhzn"
-            assert r.amount == 2000
-            assert r.label == "2"
-
-            r = sorted_recipients[2]
-            assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
-            assert r.address == qt_wallet.wallet.get_change_addresses()[0]
-            assert r.amount == 9996804
-            assert r.label == "Change of: 1, 2"
-
-            with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-                ui_tx_viewer.button_send.click()
-
-            shutter.save(main_window)
-            qt_wallet_tab = main_window.tab_wallets.getCurrentTabData()
-            assert isinstance(qt_wallet_tab, QTWallet)
-            assert qt_wallet_tab.history_list._source_model.rowCount() == 1
-
-        send_tx()
-
-        def do_close_wallet() -> None:
+        with CheckedDeletionContext(
+            qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
+        ):
+            wallet_id = qt_wallet.wallet.id
+            del qt_wallet
 
             close_wallet(
                 shutter=shutter,
                 test_config=test_config,
-                wallet_name=qt_wallet.wallet.id,
+                wallet_name=wallet_id,
                 qtbot=qtbot,
                 main_window=main_window,
             )
 
             shutter.save(main_window)
-
-        do_close_wallet()
 
         def check_that_it_is_in_recent_wallets() -> None:
             assert any(
@@ -268,4 +275,3 @@ def test_wallet_send(
 
         # end
         shutter.save(main_window)
-        sleep(2)

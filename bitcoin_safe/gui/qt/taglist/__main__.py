@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget
 
-from bitcoin_safe.gui.qt.taglist.main import CustomListWidget, TagEditor
+from bitcoin_safe.gui.qt.taglist.tag_editor import CustomListWidget, TagEditor
 
 if __name__ == "__main__":
     import sys

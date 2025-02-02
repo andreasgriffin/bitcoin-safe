@@ -38,12 +38,6 @@ from math import ceil
 from typing import Any, Dict, List, Tuple
 
 import bdkpython as bdk
-
-from .dynamic_lib_load import setup_libsecp256k1
-
-setup_libsecp256k1()
-
-
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from bitcoin_safe.util import hex_to_script, remove_duplicates_keep_order

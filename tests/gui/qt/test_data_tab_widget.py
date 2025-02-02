@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import QApplication, QWidget
 @pytest.fixture
 def data_tab_widget(qapp: QApplication) -> DataTabWidget:
     """Fixture to create a DataTabWidget instance with string data."""
-    widget = DataTabWidget(str)
+    widget = DataTabWidget[str]()
     return widget
 
 
@@ -109,8 +109,7 @@ def test_clear_tab_data(data_tab_widget: DataTabWidget):
     widget.clearTabData()
     assert len(widget._tab_data) == 0
     assert widget.count() == 2
-    with pytest.raises(KeyError):
-        widget.tabData(0)
+    assert widget.tabData(0) is None
 
 
 def test_get_current_tab_data(data_tab_widget: DataTabWidget):
@@ -172,8 +171,8 @@ def test_add_tab_without_data(data_tab_widget: DataTabWidget):
     tab = QWidget()
     index = widget.addTab(tab, description="No Data Tab")
     assert len(widget._tab_data) == 0
-    with pytest.raises(KeyError):
-        widget.tabData(index)
+
+    assert widget.tabData(index) is None
 
 
 def test_insert_tab_without_data(data_tab_widget: DataTabWidget):
@@ -182,8 +181,7 @@ def test_insert_tab_without_data(data_tab_widget: DataTabWidget):
     tab = QWidget()
     index = widget.insertTab(0, tab, data=None, description="Inserted No Data Tab")
     assert len(widget._tab_data) == 0
-    with pytest.raises(KeyError):
-        widget.tabData(index)
+    assert widget.tabData(index) is None
 
 
 def test_remove_tab_updates_indices(data_tab_widget: DataTabWidget):

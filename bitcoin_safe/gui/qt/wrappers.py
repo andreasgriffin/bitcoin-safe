@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+from functools import partial
 from typing import Any, Callable, Optional
 
 from PyQt6.QtCore import pyqtBoundSignal
@@ -44,7 +45,11 @@ class Menu(QMenu):
         action = QAction(text=text, parent=self)
         if slot:
             if callable(slot):
-                action.triggered.connect(lambda: slot())
+                action.triggered.connect(
+                    partial(
+                        slot,
+                    )
+                )
             else:
                 action.triggered.connect(slot)
         self.addAction(action)

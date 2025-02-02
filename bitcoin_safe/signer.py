@@ -30,20 +30,6 @@
 import logging
 from typing import List
 
-from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
-from bitcoin_safe.i18n import translate
-from bitcoin_safe.psbt_util import PubKeyInfo
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
-from .dynamic_lib_load import setup_libsecp256k1
-from .gui.qt.dialog_import import ImportDialog
-
-setup_libsecp256k1()
-
-
-logger = logging.getLogger(__name__)
-
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
@@ -52,9 +38,18 @@ from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from bitcoin_safe.gui.qt.dialogs import question_dialog
+from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.psbt_util import PubKeyInfo
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+from .gui.qt.dialog_import import ImportDialog
 from .keystore import KeyStoreImporterTypes
 from .util import tx_of_psbt_to_hex, tx_to_hex
 from .wallet import Wallet
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractSignatureImporter(QObject):
@@ -357,6 +352,7 @@ class SignatureImporterUSB(SignatureImporterQR):
             if signed_psbt:
                 self.scan_result_callback(psbt, Data.from_psbt(signed_psbt, network=self.network))
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             if "multisig" in str(e).lower():
                 question_dialog(
                     self.tr(

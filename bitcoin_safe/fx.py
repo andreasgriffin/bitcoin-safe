@@ -30,14 +30,14 @@
 import logging
 from typing import Dict
 
-from bitcoin_safe.threading_manager import ThreadingManager
-
-logger = logging.getLogger(__name__)
-
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
+
+from bitcoin_safe.threading_manager import ThreadingManager
 
 from .mempool import threaded_fetch
 from .signals import TypedPyQtSignalNo
+
+logger = logging.getLogger(__name__)
 
 
 class FX(QObject, ThreadingManager):
@@ -48,7 +48,7 @@ class FX(QObject, ThreadingManager):
         self.proxies = proxies
         self.rates: Dict[str, Dict] = {}
         self.update()
-        logger.debug(f"initialized {self}")
+        logger.debug(f"initialized {self.__class__.__name__}")
 
     def update_if_needed(self) -> None:
         if self.rates:

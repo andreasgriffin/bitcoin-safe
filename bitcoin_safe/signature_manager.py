@@ -35,6 +35,7 @@ import re
 import shutil
 import subprocess
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -126,7 +127,7 @@ class GitHubAssetDownloader:
     def __init__(self, repository: str, proxies: Dict | None) -> None:
         self.repository = repository
         self.proxies = proxies
-        logger.debug(f"initialized {self}")
+        logger.debug(f"initialized {self.__class__.__name__}")
 
     def _get_assets(self, api_url) -> List[Asset]:
         try:
@@ -222,7 +223,7 @@ class SignatureVerifyer:
                 # Compute the file's SHA-256 hash
                 file_hash = hashlib.sha256()
                 with open(file_path, "rb") as f:
-                    for chunk in iter(lambda: f.read(4096), b""):
+                    for chunk in iter(partial(f.read, 4096), b""):
                         file_hash.update(chunk)
 
                 # Compare the computed hash with the expected hash
@@ -288,6 +289,7 @@ class SignatureVerifyer:
             # 1 single bad signature creates a False result
             return bool(good_signatures) and not bool(bad_signatures)
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"Verification failed: {e}")
             return False
 

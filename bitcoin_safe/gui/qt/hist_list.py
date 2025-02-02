@@ -52,24 +52,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
+import enum
 import logging
 import os
 import tempfile
-
-from PyQt6.QtGui import QFont, QFontMetrics
-
-from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
-from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.mempool import MempoolData
-from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import Balance, Recipient
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-logger = logging.getLogger(__name__)
-
-import datetime
-import enum
 from enum import IntEnum
+from functools import partial
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
@@ -82,9 +71,17 @@ from PyQt6.QtGui import (
     QDragMoveEvent,
     QDropEvent,
     QFont,
+    QFontMetrics,
     QStandardItem,
 )
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QStyle, QWidget
+
+from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.pythonbdk_types import Balance, Recipient
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
@@ -113,6 +110,8 @@ from .my_treeview import (
 )
 from .taglist import AddressDragInfo
 from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
+
+logger = logging.getLogger(__name__)
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -225,12 +224,17 @@ class HistList(MyTreeView):
         # ):  # type: AddressUsageStateFilter
         #     self.used_button.addItem(addr_usage_state.ui_text())
         self._source_model = MyStandardItemModel(
-            self,
-            drag_key="txids",
-            drag_keys_to_file_paths=self.drag_keys_to_file_paths,
+            key_column=self.key_column,
+            parent=self,
         )
         self.proxy = MySortModel(
-            self, source_model=self._source_model, sort_role=MyItemDataRole.ROLE_SORT_ORDER
+            drag_key="txids",
+            Columns=self.Columns,
+            key_column=self.key_column,
+            parent=self,
+            source_model=self._source_model,
+            sort_role=MyItemDataRole.ROLE_SORT_ORDER,
+            custom_drag_keys_to_file_paths=self.drag_keys_to_file_paths,
         )
         self.setModel(self.proxy)
         self.update_content()
@@ -572,13 +576,13 @@ class HistList(MyTreeView):
             if not item:
                 return menu
             txid = txids[0]
-            menu.add_action(translate("hist_list", "Details"), lambda: self.signals.open_tx_like.emit(txid))
+            menu.add_action(translate("hist_list", "Details"), partial(self.signals.open_tx_like.emit, txid))
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", txid)
             if addr_URL:
                 menu.add_action(
                     translate("hist_list", "View on block explorer"),
-                    lambda: webopen(addr_URL),
+                    partial(webopen, addr_URL),
                     icon=read_QIcon("block-explorer.svg"),
                 )
             menu.addSeparator()
@@ -600,13 +604,16 @@ class HistList(MyTreeView):
 
         menu.add_action(
             translate("hist_list", "Copy as csv"),
-            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+            partial(
+                self.copyRowsToClipboardAsCSV,
+                [item.data(MySortModel.role_drag_key) for item in selected_items if item],
+            ),
             icon=read_QIcon("csv-file.svg"),
         )
 
         menu.add_action(
             translate("hist_list", "Save as file"),
-            lambda: self.export_raw_transactions(selected_items),
+            partial(self.export_raw_transactions, selected_items),
             icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton),
         )
 
@@ -624,11 +631,12 @@ class HistList(MyTreeView):
             if tx_status and tx_status.can_rbf():
                 menu.addSeparator()
                 menu.add_action(
-                    translate("hist_list", "Edit with higher fee (RBF)"), lambda: self.edit_tx(tx_details)
+                    translate("hist_list", "Edit with higher fee (RBF)"), partial(self.edit_tx, tx_details)
                 )
 
                 menu.add_action(
-                    translate("hist_list", "Try cancel transaction (RBF)"), lambda: self.cancel_tx(tx_details)
+                    translate("hist_list", "Try cancel transaction (RBF)"),
+                    partial(self.cancel_tx, tx_details),
                 )
 
         # run_hook('receive_menu', menu, txids, self.wallet)
@@ -692,7 +700,7 @@ class HistList(MyTreeView):
 
         file_paths = self.drag_keys_to_file_paths(keys, save_directory=folder)
 
-        logger.info(f"Saved {len(file_paths)} {self._source_model.drag_key} saved to {folder}")
+        logger.info(f"Saved {len(file_paths)} {self.proxy.drag_key} saved to {folder}")
 
     def get_edit_key_from_coordinate(self, row: int, col: int) -> Any:
         if col != self.Columns.LABEL:
@@ -717,6 +725,11 @@ class HistList(MyTreeView):
                 reason=UpdateFilterReason.UserInput,
             )
         )
+
+    def close(self):
+        self._tx_dict.clear()
+        self.setParent(None)
+        super().close()
 
 
 class RefreshButton(QPushButton):
@@ -761,11 +774,9 @@ class HistListWithToolbar(TreeViewWithToolbar):
 
             if self.hist_list.signals and not self.hist_list.address_domain:
                 if self.hist_list.signals:
-                    display_balance = (
-                        self.hist_list.signals.wallet_signals[self.hist_list.wallet_id]
-                        .get_display_balance.emit()
-                        .get(self.hist_list.wallet_id)
-                    )
+                    display_balance = self.hist_list.signals.wallet_signals[
+                        self.hist_list.wallet_id
+                    ].get_display_balance.emit()
                     if isinstance(display_balance, Balance):
                         balance_total = Satoshis(display_balance.total, self.config.network)
 

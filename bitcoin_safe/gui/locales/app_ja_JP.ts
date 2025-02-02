@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>この「ディスクリプター」にはウォレットを再構築するためのすべての情報が含まれています。資金を回復するためにこのディスクリプターのバックアップを取ってください！</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>記述子は変更されていません  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>新しいデスクリプターが入力されました  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>トランザクションを作成</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>再度トランザクションフィールドを事前に入力する  </translation>
+        <source>Retry</source>
+        <translation>再試行  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1162,12 +1166,16 @@ Location of signing device: .....</source>
         <translation>選択されたファイル：{file_path}</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;ウォレットを開く</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1206,12 +1214,12 @@ Location of signing device: .....</source>
         <translation>ウォレットファイル (.wallet)</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>ウォレット {file_path} はすでに開いています。</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>ウォレット {file_path} はすでに開いています。</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1250,12 +1258,12 @@ Location of signing device: .....</source>
         <translation>ウォレット {id} を閉じますか？</translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>ウォレットを閉じる</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>現在のウォレットを&amp;保存</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>ウォレットを閉じる</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1294,12 +1302,12 @@ Location of signing device: .....</source>
         <translation>更新  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>パスフレーズを設定する  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;変更/エクスポート</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>パスフレーズを設定する  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1338,12 +1346,12 @@ Location of signing device: .....</source>
         <translation>アクション  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;検索  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1400,6 +1408,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>すべてのファイル (*);;テキストファイル (*.csv)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
     </message>
 </context>
 <context>
@@ -1693,6 +1705,10 @@ Location of signing device: .....</source>
         <translation>ウォレットを削除  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>新しいパスワード：</translation>
     </message>
@@ -1709,12 +1725,12 @@ Location of signing device: .....</source>
         <translation>{amount}を受け取りました</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} が {shortid} に</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>履歴</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} が {shortid} に</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1757,12 +1773,24 @@ Location of signing device: .....</source>
         <translation>{server} から切断しました  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同期 &amp;&amp; チャット  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>ウォレットの設定がまだありません</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同期 &amp;&amp; チャット  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs}入力：{inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>リストの更新を開始  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>リストの更新完了  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1789,12 +1817,12 @@ Location of signing device: .....</source>
         <translation>Electrum ウォレットラベルのインポート</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>すべてのファイル (*);;JSON ファイル (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>変更が適用されるものはありません。</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>すべてのファイル (*);;JSON ファイル (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1904,6 +1932,10 @@ Location of signing device: .....</source>
         <translation>アドレス</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>行が認識されませんでした  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} は有効なアドレスではありません！  </translation>
     </message>
@@ -1952,6 +1984,10 @@ Location of signing device: .....</source>
         <translation>すべてのファイル (*);;ウォレットファイル (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>CSVを開く  </translation>
     </message>
@@ -1962,10 +1998,6 @@ Location of signing device: .....</source>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>CSVテンプレートを使用し、ヘッダ行を含めてください。  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>行が認識されませんでした  </translation>
     </message>
 </context>
 <context>
@@ -2029,6 +2061,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>すべてのファイル (*);;テキストファイル (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
     </message>
 </context>
 <context>
@@ -2440,10 +2476,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>受取人に最適なカテゴリを選択</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs}入力：{inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3078,6 +3110,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>pyzbar をインポートして Visual C++ 再頒布可能パッケージがインストールされているか確認しようとしています。  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3287,12 +3326,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>選択されたファイル：{file_path}</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>トランザクション/PSBTを開く</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>選択されたファイル：{file_path}</translation>
     </message>
 </context>
 <context>
@@ -3304,6 +3343,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}：フィンガープリント：{keystore_fingerprint}, キー起源：{keystore_key_origin}, {keystore_xpub}</translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>ファイルが見つかりません！  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3338,16 +3381,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>ラベル同期バックアップキー：{label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. 回復シート（{number}語）を以下の表に貼り付けるかテープで固定する&lt;br/&gt;2. 以下の線でこの紙を折りたたむ&lt;br/&gt;3. この紙をあなただけがアクセスできる安全な場所に保管する&lt;br/&gt;4. ハードウェア署名者をa) 紙のシードバックアップと一緒に、またはb) 利用可能な場合は別の安全な場所に置くことができます  </translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>ラベル同期バックアップキー：{label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

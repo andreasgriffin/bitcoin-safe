@@ -28,12 +28,16 @@
 
 
 import logging
-from typing import Callable, Optional
+from typing import Optional
 
+import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QWidget
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.analyzers import DescriptorAnalyzer
@@ -45,18 +49,15 @@ from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
-logger = logging.getLogger(__name__)
-
-
-import bdkpython as bdk
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QDialog, QVBoxLayout
-
 from ...pdfrecovery import make_and_open_pdf
 from .util import Message, MessageType, icon_path
 
+logger = logging.getLogger(__name__)
+
 
 class DescriptorExport(QDialog):
+    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+
     def __init__(
         self,
         descriptor: MultipathDescriptor,
@@ -87,16 +88,19 @@ class DescriptorExport(QDialog):
         self._layout = QVBoxLayout(self)
         self._layout.addWidget(self.export_widget)
 
+    def closeEvent(self, event: QCloseEvent | None):
+        self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
+        super().closeEvent(event)
 
-class DescriptorEdit(ButtonEdit):
+
+class DescriptorEdit(ButtonEdit, ThreadingManager):
     signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
         network: bdk.Network,
         signals_min: SignalsMin,
-        get_lang_code: Callable[[], str],
-        get_wallet: Optional[Callable[[], Wallet]] = None,
+        wallet: Optional[Wallet] = None,
         signal_update: TypedPyQtSignalNo | None = None,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
@@ -108,32 +112,33 @@ class DescriptorEdit(ButtonEdit):
             threading_parent=threading_parent,
             close_all_video_widgets=signals_min.close_all_video_widgets,
         )  # type: ignore
-        self.threading_parent = threading_parent
         self.signals_min = signals_min
         self.network = network
         self.input_field
-        self.get_wallet = get_wallet
-
-        def do_pdf() -> None:
-            if not get_wallet:
-                Message(
-                    self.tr("Wallet setup not finished. Please finish before creating a Backup pdf."),
-                    type=MessageType.Error,
-                )
-                return
-
-            make_and_open_pdf(get_wallet(), lang_code=get_lang_code())
+        self.wallet = wallet
 
         self.add_copy_button()
         self.add_button(icon_path("qr-code.svg"), self.show_export_widget, tooltip="Show QR code")
-        if get_wallet is not None:
-            self.add_pdf_buttton(do_pdf)
+        if wallet is not None:
+            self.add_pdf_buttton(self._do_pdf)
         self.add_qr_input_from_camera_button(
             network=self.network,
         )
-        self.signal_data.connect(self._custom_handle_camera_input)
         self.input_field.setAnalyzer(DescriptorAnalyzer(self.network, parent=self))
-        self.input_field.textChanged.connect(self.on_input_field_textChanged)
+
+        # signals
+        self.signal_tracker.connect(self.signal_data, self._custom_handle_camera_input)
+        self.signal_tracker.connect(self.input_field.textChanged, self.on_input_field_textChanged)
+
+    def _do_pdf(self) -> None:
+        if not self.wallet:
+            Message(
+                self.tr("Wallet setup not finished. Please finish before creating a Backup pdf."),
+                type=MessageType.Error,
+            )
+            return
+
+        make_and_open_pdf(self.wallet, lang_code=self.signals_min.get_current_lang_code.emit() or "en_US")
 
     def on_input_field_textChanged(self):
         self.signal_descriptor_change.emit(self.text_cleaned())
@@ -153,11 +158,12 @@ class DescriptorEdit(ButtonEdit):
                 signals_min=self.signals_min,
                 parent=self,
                 network=self.network,
-                threading_parent=self.threading_parent,
-                wallet_id=self.get_wallet().id if self.get_wallet is not None else "Multisig",
+                threading_parent=self,
+                wallet_id=self.wallet.id if self.wallet is not None else "Multisig",
             )
             dialog.show()
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(
                 f"Could not create a DescriptorExport for {self.__class__.__name__} with text {self.text()}"
             )

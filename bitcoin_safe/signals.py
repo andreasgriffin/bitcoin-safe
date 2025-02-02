@@ -50,6 +50,7 @@ import bdkpython as bdk
 from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
 from PyQt6.QtCore import pyqtSignal
 
+from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.pythonbdk_types import Balance, OutPoint
 
 from .typestubs import TypedPyQtSignal, TypedPyQtSignalNo
@@ -151,7 +152,8 @@ class SignalFunction(Generic[T]):
                 name += f" with key={key}" if key else ""
                 try:
                     responses[key] = slot(*args, **kwargs)
-                except:
+                except Exception as e:
+                    logger.debug(f"{self.__class__.__name__}: {e}")
                     logger.warning(
                         f"{slot} with key {key} caused an exception. {slot} with key {key} could not be called, perhaps because the object doesnt exisst anymore. The slot will be deleted."
                     )
@@ -177,6 +179,12 @@ class SingularSignalFunction(Generic[T]):
         else:
             raise Exception("Not allowed to add a second listener to this signal.")
 
+    def disconnect(self, slot: Callable[[], T]) -> None:
+        if not self.signal_f.slots:
+            return
+        else:
+            self.signal_f.disconnect(slot)
+
     def emit(self, *args, **kwargs) -> T | None:
         responses = self.signal_f.emit(*args, **kwargs)
         if not responses:
@@ -189,6 +197,10 @@ class SingularSignalFunction(Generic[T]):
 
 class SignalsMin(NostrSignalsMin):
     close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.get_current_lang_code = SingularSignalFunction[str](name="get_lang_code")
 
 
 class WalletSignals(SignalsMin):
@@ -208,7 +220,8 @@ class WalletSignals(SignalsMin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.get_display_balance = SignalFunction[Balance](name="get_display_balance")
+        self.get_display_balance = SingularSignalFunction[Balance](name="get_display_balance")
+        self.get_category_infos = SingularSignalFunction[list[CategoryInfo]](name="get_category_infos")
 
 
 class Signals(SignalsMin):
@@ -241,6 +254,7 @@ class Signals(SignalsMin):
     open_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore   # str= filepath
     add_qt_wallet: "TypedPyQtSignal[QTWallet, str | None, str | None]" = pyqtSignal(object, object, object)  # type: ignore # object = qt_wallet, file_path, password
     close_qt_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore # str = wallet_id
+    signal_set_tab_properties: TypedPyQtSignal[str, str, str] = pyqtSignal(str, str, str)  # type: ignore  # wallet_id, icon: icon_name, tooltip: str | None
 
     request_manual_sync: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore

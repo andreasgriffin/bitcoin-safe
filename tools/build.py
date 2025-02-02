@@ -40,6 +40,7 @@ from typing import Callable, Dict, List, Literal
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
+from bitcoin_safe.execute_config import ENABLE_THREADING, ENABLE_TIMERS, IS_PRODUCTION
 from bitcoin_safe.signature_manager import (
     KnownGPGKeys,
     SignatureSigner,
@@ -50,6 +51,10 @@ from tools.release import get_git_tag
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
+
+assert IS_PRODUCTION
+assert ENABLE_THREADING
+assert ENABLE_TIMERS
 
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 

@@ -56,7 +56,6 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         super().__init__(parent=parent)
         self.setWindowTitle(self.tr("Register Multisig"))
         self.qt_wallet = qt_wallet
-        self.threading_parent = threading_parent
 
         # export widgets
         self.export_qr_widget = None
@@ -72,7 +71,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 enable_file=False,
                 enable_qr=True,
                 network=self.qt_wallet.config.network,
-                threading_parent=self.threading_parent,
+                threading_parent=threading_parent,
                 wallet_name=self.qt_wallet.wallet.id,
             )
             self.export_qr_widget.set_minimum_size_as_floating_window()
@@ -93,7 +92,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 data=data,
                 signals_min=self.qt_wallet.signals,
                 network=self.qt_wallet.wallet.network,
-                threading_parent=self.threading_parent,
+                threading_parent=threading_parent,
                 parent=self,
             )
             self.add_button(self.export_qr_button)
@@ -112,19 +111,21 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             addresses = self.qt_wallet.wallet.get_addresses()
             index = 0
             address = addresses[index] if len(addresses) > index else ""
-            usb_widget = USBRegisterMultisigWidget(
+            self.usb_widget = USBRegisterMultisigWidget(
                 network=self.qt_wallet.wallet.network,
                 signals=self.qt_wallet.signals,
             )
-            usb_widget.set_descriptor(
+            self.usb_widget.set_descriptor(
                 keystores=self.qt_wallet.wallet.keystores,
                 descriptor=self.qt_wallet.wallet.multipath_descriptor,
                 expected_address=address,
                 kind=bdk.KeychainKind.EXTERNAL,
                 address_index=index,
             )
-            button_hwi = self.add_hwi_button(signal_end_hwi_blocker=usb_widget.usb_gui.signal_end_hwi_blocker)
-            button_hwi.clicked.connect(lambda: usb_widget.show())
+            button_hwi = self.add_hwi_button(
+                signal_end_hwi_blocker=self.usb_widget.usb_gui.signal_end_hwi_blocker
+            )
+            button_hwi.clicked.connect(self.usb_widget.show)
 
         self.updateUi()
 

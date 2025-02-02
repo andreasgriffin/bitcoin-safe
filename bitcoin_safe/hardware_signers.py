@@ -29,6 +29,9 @@
 
 import logging
 from dataclasses import dataclass
+from typing import List, Union
+
+from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 
 from bitcoin_safe.gui.qt.util import (
     generated_hardware_signer_path,
@@ -36,10 +39,6 @@ from bitcoin_safe.gui.qt.util import (
 )
 
 logger = logging.getLogger(__name__)
-
-from typing import List, Union
-
-from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 
 
 @dataclass

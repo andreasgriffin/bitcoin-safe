@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>يحتوي &quot;الوصف&quot; هذا على جميع المعلومات لإعادة بناء المحفظة. يرجى عمل نسخة احتياطية من هذا الوصف لتكون قادرًا على استعادة الأموال!</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>الوصف غير متغير  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>تم إدخال وصف جديد  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>إنشاء معاملة</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>املأ حقول المعاملة مسبقًا مرة أخرى  </translation>
+        <source>Retry</source>
+        <translation>إعادة المحاولة  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1162,12 +1166,16 @@ Location of signing device: .....</source>
         <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>الملف المحدد: {مسار_الملف}</translation>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;محفظة جديدة</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>الملف المحدد: {مسار_الملف}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1206,12 +1214,12 @@ Location of signing device: .....</source>
         <translation>PSBT {txid}</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>فتح المحفظة</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>فتح المحفظة</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1250,12 +1258,12 @@ Location of signing device: .....</source>
         <translation>هناك محفظة برقم {اسم} مفتوحة بالفعل.  </translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>يرجى استكمال إعداد المحفظة.</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>فتح &amp;الأخيرة</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>يرجى استكمال إعداد المحفظة.</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1294,12 +1302,12 @@ Location of signing device: .....</source>
         <translation>تحديث  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>تعيين عبارة المرور  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;حفظ المحفظة الحالية</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>تعيين عبارة المرور  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1338,12 +1346,12 @@ Location of signing device: .....</source>
         <translation>الإجراءات  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;بحث  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1400,6 +1408,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>كل الملفات (*);;ملفات نصية (*.csv)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
     </message>
 </context>
 <context>
@@ -1693,6 +1705,10 @@ Location of signing device: .....</source>
         <translation>حذف المحفظة  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>كلمة المرور غير صحيحة</translation>
     </message>
@@ -1709,12 +1725,12 @@ Location of signing device: .....</source>
         <translation>تم حفظ المحفظة</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} في {shortid}</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>وصف</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} في {shortid}</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1757,12 +1773,24 @@ Location of signing device: .....</source>
         <translation>منفصل عن {server}  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>المزامنة &amp;&amp; الدردشة  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>انقر للحصول على عنوان جديد</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>المزامنة &amp;&amp; الدردشة  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} المدخلات: {inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>بدء تحديث القوائم  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>انتهاء تحديث القوائم  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1789,12 +1817,12 @@ Location of signing device: .....</source>
         <translation>استيراد تسميات محفظة إلكتروم</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>جميع الملفات (*);;ملفات JSON (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>التاريخ</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>جميع الملفات (*);;ملفات JSON (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1904,6 +1932,10 @@ Location of signing device: .....</source>
         <translation>عنوان</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>لم يتم التعرف على أي صفوف  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} ليس عنوانًا صالحًا!  </translation>
     </message>
@@ -1952,6 +1984,10 @@ Location of signing device: .....</source>
         <translation>كل الملفات (*);;ملفات المحفظة (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>فتح CSV  </translation>
     </message>
@@ -1962,10 +1998,6 @@ Location of signing device: .....</source>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>يرجى استخدام نموذج CSV وتضمين صف العنوان.  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>لم يتم التعرف على أي صفوف  </translation>
     </message>
 </context>
 <context>
@@ -2029,6 +2061,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>جميع الملفات (*);;ملفات نصية (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
     </message>
 </context>
 <context>
@@ -2440,10 +2476,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>حدد الفئة التي تناسب المستلم بشكل أفضل</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} المدخلات: {inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3078,6 +3110,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>جارٍ محاولة استيراد pyzbar لمعرفة ما إذا كان Visual C++ قابل لإعادة التوزيع مثبتًا.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3287,12 +3326,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>فتح المعاملة/PSBT</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3304,6 +3343,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}: بصمة: {keystore_fingerprint}, أصل المفتاح: {keystore_key_origin}, {keystore_xpub}</translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>لم يتم العثور على الملف!  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3338,16 +3381,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. الصق أو ثبّت &apos;ورقة الاسترداد&apos; ({number} كلمات) فوق الجدول أدناه&lt;br/&gt;2. طوِّ هذه الورقة عند الخط أدناه&lt;br/&gt;3. ضع هذه الورقة في مكان آمن حيث يمكنك الوصول إليها فقط&lt;br/&gt;4. يمكنك وضع الموقع الجهاز إما أ) مع النسخة الاحتياطية لبذور الورق، أو ب) في موقع آمن آخر (إذا كان متوفرًا)</translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

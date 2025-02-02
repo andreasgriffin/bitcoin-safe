@@ -411,7 +411,7 @@ class SankeyWidget(QWidget):
             self, self.tr("Export svg"), "", self.tr("All Files (*);;Text Files (*.svg)")
         )
         if not file_path:
-            logger.info("No file selected")
+            logger.info(self.tr("No file selected"))
             return
         self._export_to_svg(Path(file_path))
 

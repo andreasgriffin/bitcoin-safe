@@ -234,8 +234,8 @@ class BaseSaveableClass:
             password=password,
         )
 
-    def __str__(self) -> str:
-        return self.dumps()
+    # def __str__(self) -> str:
+    #     return self.dumps()
 
     def dumps(self, indent=None) -> str:
         "Returns the json representation (recursively)"

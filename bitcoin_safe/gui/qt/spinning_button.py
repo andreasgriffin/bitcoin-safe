@@ -34,6 +34,7 @@ from PyQt6.QtGui import QIcon, QPainter, QPaintEvent
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
+from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .util import icon_path
@@ -75,7 +76,8 @@ class SpinningButton(QPushButton):
         self.setIcon(QIcon())
         self.start_spin()
         self.setDisabled(True)
-        self.timeout_timer.start(self.timeout * 1000)
+        if ENABLE_TIMERS:
+            self.timeout_timer.start(self.timeout * 1000)
 
     def enable_button(self, *args, **kwargs) -> None:
         self.stop_spin()
@@ -90,7 +92,8 @@ class SpinningButton(QPushButton):
     def start_spin(self) -> None:
         # Timer to update rotation
         self.timer.timeout.connect(self.rotate_svg)
-        self.timer.start(100)  # Update rotation every 100 ms
+        if ENABLE_TIMERS:
+            self.timer.start(100)  # Update rotation every 100 ms
 
     def stop_spin(self) -> None:
         self.timer.stop()

@@ -42,7 +42,9 @@ from .qr_components.quick_receive import QuickReceive, ReceiveGroup
 logger = logging.getLogger(__name__)
 
 
-class BitcoinQuickReceive(QuickReceive):
+class BitcoinQuickReceive(
+    QuickReceive,
+):
     def __init__(
         self,
         wallet_signals: WalletSignals,
@@ -62,9 +64,10 @@ class BitcoinQuickReceive(QuickReceive):
 
         # signals
         self.wallet_signals.updated.connect(self.update_content)
-        self.wallet_signals.language_switch.connect(
-            lambda: self.update_content(UpdateFilter(refresh_all=True))
-        )
+        self.wallet_signals.language_switch.connect(self.refresh_all)
+
+    def refresh_all(self):
+        self.update_content(UpdateFilter(refresh_all=True))
 
     def set_address(self, category: str, address_info: bdk.AddressInfo):
         address = address_info.address.as_string()

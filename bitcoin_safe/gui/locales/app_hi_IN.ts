@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>यह &quot;वर्णनकर्ता&quot; वॉलेट को पुनर्निर्माण करने के लिए सभी जानकारी रखता है। कृपया धन की पुनर्प्राप्ति के लिए इस वर्णनकर्ता का बैकअप लें!</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>विवरणक अपरिवर्तित  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>नया विवरणक दर्ज किया गया  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>लेन-देन बनाएं</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>फिर से लेन-देन पूर्व भरें  </translation>
+        <source>Retry</source>
+        <translation>पुन: प्रयास करें  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1162,12 +1166,16 @@ Location of signing device: .....</source>
         <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>चयनित फ़ाइल: {file_path}</translation>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;नया वॉलेट</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>चयनित फ़ाइल: {file_path}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1206,12 +1214,12 @@ Location of signing device: .....</source>
         <translation>PSBT {txid}</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>वॉलेट खोलें</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;वॉलेट खोलें</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>वॉलेट खोलें</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1250,12 +1258,12 @@ Location of signing device: .....</source>
         <translation>वॉलेट के साथ id {name} पहले से खुला है।</translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>कृपया वॉलेट सेटअप पूरा करें।</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>हाल का खोलें</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>कृपया वॉलेट सेटअप पूरा करें।</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1294,12 +1302,12 @@ Location of signing device: .....</source>
         <translation>ताज़ा करें  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>पासफ़्रेज़ सेट करें  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>पासफ़्रेज़ सेट करें  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1338,12 +1346,12 @@ Location of signing device: .....</source>
         <translation>क्रियाएँ  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;खोजें  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1400,6 +1408,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>सभी फ़ाइलें (*);;टेक्स्ट फ़ाइलें (*.csv)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
     </message>
 </context>
 <context>
@@ -1693,6 +1705,10 @@ Location of signing device: .....</source>
         <translation>वॉलेट हटाएं  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>पासवर्ड गलत है</translation>
     </message>
@@ -1709,12 +1725,12 @@ Location of signing device: .....</source>
         <translation>वॉलेट सहेजा गया</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} में {shortid}</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>वर्णनकर्ता</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} में {shortid}</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1757,12 +1773,24 @@ Location of signing device: .....</source>
         <translation>{server} से डिस्कनेक्टेड  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>सिंक &amp;&amp; चैट  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>नया पता के लिए क्लिक करें</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>सिंक &amp;&amp; चैट  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} इनपुट: {inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>सूचियाँ अपडेट करना शुरू  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>सूचियों का अपडेट समाप्त  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1789,12 +1817,12 @@ Location of signing device: .....</source>
         <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>सभी फ़ाइलें (*);;JSON फ़ाइलें (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>इतिहास</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>सभी फ़ाइलें (*);;JSON फ़ाइलें (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1904,6 +1932,10 @@ Location of signing device: .....</source>
         <translation>पता</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>कोई पंक्तियाँ पहचानी नहीं गईं  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} एक मान्य पता नहीं है!  </translation>
     </message>
@@ -1952,6 +1984,10 @@ Location of signing device: .....</source>
         <translation>सभी फ़ाइलें (*);;वॉलेट फ़ाइलें (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>CSV खोलें  </translation>
     </message>
@@ -1962,10 +1998,6 @@ Location of signing device: .....</source>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>कृपया CSV टेम्पलेट का उपयोग करें और हैडर रो शामिल करें।  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>कोई पंक्तियाँ पहचानी नहीं गईं  </translation>
     </message>
 </context>
 <context>
@@ -2029,6 +2061,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>सभी फाइलें (*);;टेक्स्ट फाइलें (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
     </message>
 </context>
 <context>
@@ -2440,10 +2476,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>प्राप्तकर्ता के लिए सबसे उपयुक्त श्रेणी चुनें</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} इनपुट: {inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3078,6 +3110,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>pyzbar को आयात करने का प्रयास कर रहा हूँ ताकि देख सकूं कि Visual C++ Redistributable स्थापित है या नहीं।  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3287,12 +3326,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>लेन-देन/PSBT खोलें</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3304,6 +3343,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}: फिंगरप्रिंट: {keystore_fingerprint}, की ओरिजिन: {keystore_key_origin}, {keystore_xpub}  </translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>फ़ाइल नहीं मिली!  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3338,16 +3381,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>इस वॉलेट को फिर से स्कैन करते समय, कम से कम पते के सूचकांक {max_tip} तक स्कैन करें ताकि सभी वित्तपोषित पते पता चल सकें।  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>लेबल सिंक्रोनाइजेशन बैकअप कुंजी: {label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्दों) को नीचे दी गई तालिका पर गोंद या टेप करें&lt;br/&gt;2. नीचे दी गई लाइन पर इस कागज को मोड़ें&lt;br/&gt;3. इस कागज को केवल आपके पास पहुँचने वाली सुरक्षित जगह में रखें&lt;br/&gt;4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ रख सकते हैं, या b) दूसरी सुरक्षित जगह में (अगर उपलब्ध है)  </translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>लेबल सिंक्रोनाइजेशन बैकअप कुंजी: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

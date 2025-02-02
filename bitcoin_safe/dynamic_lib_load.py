@@ -120,7 +120,7 @@ def setup_libsecp256k1() -> None:
         bitcoin_usb.set_custom_secp256k1_path(lib_path)
         bitcointx.set_custom_secp256k1_path(lib_path)
     elif get_libsecp256k1_os_path():
-        logger.info(f"libsecp256k1 was found in the OS")
+        logger.info(translate("setup_libsecp256k1", f"libsecp256k1 was found in the OS"))
     else:
         msg = translate(
             "dynamic_lib_load", "libsecp256k1 could not be found. Please install libsecp256k1 in your OS."
@@ -135,14 +135,22 @@ def ensure_pyzbar_works() -> None:
     # Get the platform-specific path to the binary library
     logger.info(f"Platform: {platform.system()}")
     if platform.system() == "Windows":
-        logger.info("Trying to import pyzbar to see if Visual C++ Redistributable is installed. ")
+        logger.info(
+            translate(
+                "ensure_pyzbar_works",
+                "Trying to import pyzbar to see if Visual C++ Redistributable is installed. ",
+            )
+        )
         try:
             from pyzbar import pyzbar
 
             pyzbar.__name__
-            logger.info(f"pyzbar successfully loaded ")
-        except:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
-            logger.info(f"pyzbar not loaded ")
+            logger.info(translate("ensure_pyzbar_works", f"pyzbar successfully loaded "))
+        except (
+            Exception
+        ) as e:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
+            logger.debug(str(e))
+            logger.info(translate("ensure_pyzbar_works", f"pyzbar not loaded "))
             show_warning_before_failiure(
                 translate("lib_load", """You are missing the {link}\nPlease install it.""").format(
                     link=link(

@@ -35,10 +35,17 @@ import json
 import os
 import subprocess
 import sys
+from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
+
+from bitcoin_safe.execute_config import ENABLE_THREADING, ENABLE_TIMERS, IS_PRODUCTION
+
+assert IS_PRODUCTION
+assert ENABLE_THREADING
+assert ENABLE_TIMERS
 
 
 def get_default_description(latest_tag: str):
@@ -164,7 +171,7 @@ def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
         # Calculate the SHA-256 hash of the file
         sha256_hash = hashlib.sha256()
         with open(file_path, "rb") as f:
-            for byte_block in iter(lambda: f.read(4096), b""):
+            for byte_block in iter(partial(f.read, 4096), b""):
                 sha256_hash.update(byte_block)
         return sha256_hash.hexdigest()
 
