@@ -28,16 +28,10 @@
 
 
 import logging
-from dataclasses import dataclass
-
-from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import ThreadingManager
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-logger = logging.getLogger(__name__)
-
 import os
 import sys
+from dataclasses import dataclass
+from functools import partial
 from math import ceil
 from typing import Callable, List, Optional, Union
 
@@ -69,6 +63,11 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.util import create_button_box
+from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
+logger = logging.getLogger(__name__)
 
 
 def height_of_str(text, widget: QWidget, max_width: float) -> float:
@@ -414,7 +413,8 @@ class AutoResizingStackedWidget(QWidget):
     def setCurrentIndex(self, index: int) -> None:
         if 0 <= index < len(self.widgets):
             if self._currentIndex != -1:
-                self.widgets[self._currentIndex].setVisible(False)
+                if 0 <= self._currentIndex < len(self.widgets):
+                    self.widgets[self._currentIndex].setVisible(False)
             self.widgets[index].setVisible(True)
 
             self._currentIndex = index
@@ -437,7 +437,6 @@ class AutoResizingStackedWidget(QWidget):
         if widget in self.widgets:
             self.widgets.remove(widget)
             widget.setParent(None)  # type: ignore[call-overload]
-            widget.deleteLater()  # This is important to fully remove the widget
             if self._currentIndex >= len(self.widgets):
                 self.setCurrentIndex(len(self.widgets) - 1)
 
@@ -473,10 +472,8 @@ class StepProgressContainer(ThreadingManager, QWidget):
         use_resizing_stacked_widget=True,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
-        super().__init__(parent=parent, threading_parent=threading_parent)  # type: ignore
+        super().__init__(parent=parent, threading_parent=threading_parent)
         self.signals_min = signals_min
-        if threading_parent:
-            self.threading_parent = threading_parent
         self.step_bar = StepProgressBar(
             len(step_labels),
             current_index=current_index,
@@ -596,6 +593,13 @@ class StepProgressContainer(ThreadingManager, QWidget):
             # visiblities. So it is critical to do the set_current_widget at the end.
             self.signal_set_current_widget.emit(new_widget)
 
+    def clear_widgets(self):
+        while self.stacked_widget.count():
+            widget = self.stacked_widget.widget(0)
+            if widget:
+                widget.setParent(None)
+                self.stacked_widget.removeWidget(widget)
+
     def set_custom_widget(self, index: int, widget: QWidget) -> None:
         """Sets the custom widget for the specified step.
 
@@ -621,6 +625,11 @@ class StepProgressContainer(ThreadingManager, QWidget):
         if index == current_idx:
             self.signal_set_current_widget.emit(widget)
             self.signal_widget_focus.emit(widget)
+
+    def close(self):
+        self.end_threading_manager()
+        self.clear_widgets()
+        super().close()
 
 
 @dataclass
@@ -666,7 +675,6 @@ class TutorialWidget(QWidget):
                 w = item.widget()
                 if w is not None:  # Check if the item is a widget
                     w.setParent(None)  # type: ignore[call-overload]
-                    w.deleteLater()  # Ensure the widget is deleted
 
         # Insert the new widget at position 0 in the layout
         self._layout.insertWidget(0, widget)
@@ -814,17 +822,12 @@ if __name__ == "__main__":
                 ]
             )
 
-            def factory(i) -> Callable:
-                def f(i=i) -> None:
-                    print(f"callback action for {i}")
-
-                return f
-
             for i in range(self.step_progress_container.count()):
                 widget = self.step_progress_container.stacked_widget.widget(i)
                 if not isinstance(widget, TutorialWidget):
                     continue
-                widget.set_callback(factory(i))
+                callback = partial(print, f"callback action for {i}")
+                widget.set_callback(callback)
                 self.step_progress_container.set_custom_widget(i, QTextEdit(f"{i}"))
 
             self.init_ui()

@@ -33,7 +33,6 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 from unittest.mock import patch
 
 import bdkpython as bdk
@@ -55,13 +54,13 @@ from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...non_gui.test_signers import test_seeds
 from ...test_helpers import test_config  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
+    CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
@@ -83,6 +82,7 @@ def test_wallet_features_multisig(
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig2",
     amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
@@ -110,49 +110,52 @@ def test_wallet_features_multisig(
 
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
+        assert len(main_window.qt_protowallets) == 1
+
         w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        qt_proto_wallet = main_window.tab_wallets.get_data_for_tab(w)
-        assert isinstance(qt_proto_wallet, QTProtoWallet)
+        qt_protowallet = main_window.tab_wallets.get_data_for_tab(w)
+        assert isinstance(qt_protowallet, QTProtoWallet)
+        assert qt_protowallet == list(main_window.qt_protowallets.values())[0]
 
         def test_block_change_signals() -> None:
-            with BlockChangesSignals([qt_proto_wallet.wallet_descriptor_ui.tab]):
-                assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
-            with BlockChangesSignals([qt_proto_wallet.wallet_descriptor_ui.tab]):
-                with BlockChangesSignals([qt_proto_wallet.wallet_descriptor_ui.tab]):
-                    assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
-                assert qt_proto_wallet.wallet_descriptor_ui.spin_req.signalsBlocked()
+            with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
+                assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
+            with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
+                with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
+                    assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
+                assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
 
         def check_consistent() -> None:
-            signers = qt_proto_wallet.wallet_descriptor_ui.spin_signers.value()
-            qt_proto_wallet.wallet_descriptor_ui.spin_req.value()
+            signers = qt_protowallet.wallet_descriptor_ui.spin_signers.value()
+            qt_protowallet.wallet_descriptor_ui.spin_req.value()
 
-            assert signers == qt_proto_wallet.wallet_descriptor_ui.keystore_uis.count()
+            assert signers == qt_protowallet.wallet_descriptor_ui.keystore_uis.count()
             for i in range(signers):
-                assert qt_proto_wallet.wallet_descriptor_ui.keystore_uis.tabText(
+                assert qt_protowallet.wallet_descriptor_ui.keystore_uis.tabText(
                     i
-                ) == qt_proto_wallet.protowallet.signer_name(i)
+                ) == qt_protowallet.protowallet.signer_name(i)
 
-            if qt_proto_wallet.protowallet.is_multisig():
+            if qt_protowallet.protowallet.is_multisig():
                 assert AddressTypes.p2wsh in [
-                    qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
-                    for i in range(qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.count())
+                    qt_protowallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
+                    for i in range(qt_protowallet.wallet_descriptor_ui.comboBox_address_type.count())
                 ]
             else:
                 assert AddressTypes.p2pkh in [
-                    qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
-                    for i in range(qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.count())
+                    qt_protowallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
+                    for i in range(qt_protowallet.wallet_descriptor_ui.comboBox_address_type.count())
                 ]
 
         def page1() -> None:
             shutter.save(main_window)
 
-            assert qt_proto_wallet.wallet_descriptor_ui.spin_req.value() == 3
-            assert qt_proto_wallet.wallet_descriptor_ui.spin_signers.value() == 5
+            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
+            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 5
             assert (
-                qt_proto_wallet.wallet_descriptor_ui.comboBox_address_type.currentData() == AddressTypes.p2wsh
+                qt_protowallet.wallet_descriptor_ui.comboBox_address_type.currentData() == AddressTypes.p2wsh
             )
-            assert qt_proto_wallet.wallet_descriptor_ui.spin_gap.value() == 20
-            assert qt_proto_wallet.wallet_descriptor_ui.keystore_uis.count() == 5
+            assert qt_protowallet.wallet_descriptor_ui.spin_gap.value() == 20
+            assert qt_protowallet.wallet_descriptor_ui.keystore_uis.count() == 5
 
             shutter.save(main_window)
             check_consistent()
@@ -161,15 +164,15 @@ def test_wallet_features_multisig(
         page1()
 
         def set_simple_multisig() -> None:
-            assert qt_proto_wallet.protowallet.is_multisig()
-            qt_proto_wallet.wallet_descriptor_ui.spin_req.setValue(1)
-            assert qt_proto_wallet.wallet_descriptor_ui.spin_req.value() == 1
+            assert qt_protowallet.protowallet.is_multisig()
+            qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
+            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 1
 
             # change to single sig
-            qt_proto_wallet.wallet_descriptor_ui.spin_signers.setValue(2)
-            assert qt_proto_wallet.wallet_descriptor_ui.spin_signers.value() == 2
+            qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(2)
+            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 2
 
-            assert qt_proto_wallet.protowallet.is_multisig()
+            assert qt_protowallet.protowallet.is_multisig()
 
             shutter.save(main_window)
             check_consistent()
@@ -177,7 +180,7 @@ def test_wallet_features_multisig(
         set_simple_multisig()
 
         def set_mnemonic(index: int) -> None:
-            key = list(qt_proto_wallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[index]
+            key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[index]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
             shutter.save(main_window)
@@ -201,7 +204,7 @@ def test_wallet_features_multisig(
             wallet_file = save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
-                save_button=qt_proto_wallet.wallet_descriptor_ui.button_box.button(
+                save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
                     QDialogButtonBox.StandardButton.Apply
                 ),
             )
@@ -216,224 +219,248 @@ def test_wallet_features_multisig(
             get_tab_with_title(main_window.tab_wallets, title=wallet_name)
         )
         assert isinstance(qt_wallet, QTWallet)
+        assert len(main_window.qt_wallets) == 1
+        assert qt_wallet == list(main_window.qt_wallets.values())[0]
 
-        shutter.save(main_window)
-        # check wallet address
-        assert (
-            qt_wallet.wallet.get_addresses()[0]
-            == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
-        )
+        def do_all(qt_wallet: QTWallet):
+            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
+            shutter.save(main_window)
+            # check wallet address
+            assert (
+                qt_wallet.wallet.get_addresses()[0]
+                == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
+            )
 
-        ##  from here starts testing features
+            ##  from here starts testing features
 
-        wallet_name = wallet_name + " new"
+            wallet_name = qt_wallet.wallet.id + " new"
 
-        def menu_action_rename_wallet() -> None:
-            def callback(dialog: WalletIdDialog) -> None:
-                shutter.save(dialog)
-                dialog.name_input.setText(wallet_name)
-                shutter.save(dialog)
-
-                dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
-                shutter.save(main_window)
-
-            do_modal_click(main_window.menu_action_rename_wallet, callback, qtbot, cls=WalletIdDialog)
-
-        menu_action_rename_wallet()
-
-        def menu_action_change_password() -> None:
-            with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
-
-                def callback(dialog: PasswordCreation) -> None:
+            def menu_action_rename_wallet() -> None:
+                def callback(dialog: WalletIdDialog) -> None:
                     shutter.save(dialog)
-                    dialog.password_input1.setText("new password")
-                    dialog.password_input2.setText("new password")
+                    dialog.name_input.setText(wallet_name)
                     shutter.save(dialog)
 
+                    dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
                     shutter.save(main_window)
-                    dialog.submit_button.click()
 
-                do_modal_click(main_window.menu_action_change_password, callback, qtbot, cls=PasswordCreation)
+                do_modal_click(main_window.menu_action_rename_wallet, callback, qtbot, cls=WalletIdDialog)
 
-                QTest.qWait(200)
+            menu_action_rename_wallet()
 
-                # Inspect the call arguments for each call
-                calls = mock_message.call_args_list
+            def menu_action_change_password() -> None:
+                with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
 
-                first_call_args = calls[0][0]  # args of the first call
-                assert first_call_args == ("Wallet saved",)
+                    def callback(dialog: PasswordCreation) -> None:
+                        shutter.save(dialog)
+                        dialog.password_input1.setText("new password")
+                        dialog.password_input2.setText("new password")
+                        shutter.save(dialog)
 
-        menu_action_change_password()
+                        shutter.save(main_window)
+                        dialog.submit_button.click()
 
-        def menu_action_export_pdf() -> None:
-            with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
-                main_window.menu_action_export_pdf.trigger()
+                    do_modal_click(
+                        main_window.menu_action_change_password, callback, qtbot, cls=PasswordCreation
+                    )
 
-                mock_open.assert_called_once()
+                    QTest.qWait(200)
 
-                temp_file = os.path.join(Path.home(), f"Seed backup of {wallet_name}.pdf")
-                assert Path(temp_file).exists()
-                # remove the file again
-                Path(temp_file).unlink()
+                    # Inspect the call arguments for each call
+                    calls = mock_message.call_args_list
 
-        menu_action_export_pdf()
+                    first_call_args = calls[0][0]  # args of the first call
+                    assert first_call_args == ("Wallet saved",)
 
-        def menu_action_export_descriptor() -> None:
-            def callback(dialog: DescriptorExport) -> None:
-                shutter.save(dialog)
-                dialog.close()
+            menu_action_change_password()
 
-            do_modal_click(main_window.menu_action_export_descriptor, callback, qtbot, cls=DescriptorExport)
+            def menu_action_export_pdf() -> None:
+                with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
+                    main_window.menu_action_export_pdf.trigger()
 
-        menu_action_export_descriptor()
+                    mock_open.assert_called_once()
 
-        def menu_action_register_multisig() -> None:
-            def callback(dialog: RegisterMultisigInteractionWidget) -> None:
-                shutter.save(dialog)
+                    temp_file = os.path.join(Path.home(), f"Seed backup of {wallet_name}.pdf")
+                    assert Path(temp_file).exists()
+                    # remove the file again
+                    Path(temp_file).unlink()
 
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    # export qr gifs
-                    for action in dialog.export_qr_widget.button_file._menu.actions():
-                        # export as file
-                        filename = (
-                            Path(temp_dir) / f"file_{action.text()}.t"
-                        )  # check that it also works with incomplete extensions
-                        with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
-                            mock_dialog.return_value = str(filename)
-                            action.trigger()
+            menu_action_export_pdf()
 
-                            mock_dialog.assert_called_once()
-                        assert filename.exists()
+            def menu_action_export_descriptor() -> None:
+                def callback(dialog: DescriptorExport) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
 
-                    # export qr gifs
-                    assert dialog.export_qr_widget
-                    for i in reversed(
-                        range(dialog.export_qr_widget.combo_qr_type.count())
-                    ):  # reversed to it always has to set the widget to trigger signal_set_qr_images
-                        text = dialog.export_qr_widget.combo_qr_type.itemText(i)
-                        basename = (
-                            f"file_{text}.png"
-                            if text.startswith(DescriptorQrExportTypes.text.display_name)
-                            else f"file_{text}.gif"
-                        )
-                        filename = Path(temp_dir) / basename
-                        with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
-                            mock_dialog.return_value = str(filename)
-                            # set the qr code
-                            with qtbot.waitSignal(
-                                dialog.export_qr_widget.signal_set_qr_images, timeout=5000
-                            ) as blocker:
-                                dialog.export_qr_widget.combo_qr_type.setCurrentIndex(i)
-                            dialog.export_qr_widget.button_save_qr.click()
+                do_modal_click(
+                    main_window.menu_action_export_descriptor, callback, qtbot, cls=DescriptorExport
+                )
 
-                            mock_dialog.assert_called_once()
-                        assert filename.exists()
+            menu_action_export_descriptor()
 
-                dialog.export_qr_widget.close()
-                dialog.close()
+            def menu_action_register_multisig() -> None:
+                def callback(dialog: RegisterMultisigInteractionWidget) -> None:
+                    shutter.save(dialog)
 
-            do_modal_click(
-                main_window.menu_action_register_multisig,
-                callback,
-                qtbot,
-                cls=RegisterMultisigInteractionWidget,
-            )
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        # export qr gifs
+                        for action in dialog.export_qr_widget.button_file._menu.actions():
+                            # export as file
+                            filename = (
+                                Path(temp_dir) / f"file_{action.text()}.t"
+                            )  # check that it also works with incomplete extensions
+                            with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
+                                mock_dialog.return_value = str(filename)
+                                action.trigger()
 
-        menu_action_register_multisig()
+                                mock_dialog.assert_called_once()
+                            assert filename.exists()
 
-        def menu_action_open_hwi_manager() -> None:
-            def callback(dialog: ToolGui) -> None:
-                shutter.save(dialog)
-                dialog.close()
+                        # export qr gifs
+                        assert dialog.export_qr_widget
+                        for i in reversed(
+                            range(dialog.export_qr_widget.combo_qr_type.count())
+                        ):  # reversed to it always has to set the widget to trigger signal_set_qr_images
+                            text = dialog.export_qr_widget.combo_qr_type.itemText(i)
+                            basename = (
+                                f"file_{text}.png"
+                                if text.startswith(DescriptorQrExportTypes.text.display_name)
+                                else f"file_{text}.gif"
+                            )
+                            filename = Path(temp_dir) / basename
+                            with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
+                                mock_dialog.return_value = str(filename)
+                                # set the qr code
+                                with qtbot.waitSignal(
+                                    dialog.export_qr_widget.signal_set_qr_images, timeout=5000
+                                ) as blocker:
+                                    dialog.export_qr_widget.combo_qr_type.setCurrentIndex(i)
+                                dialog.export_qr_widget.button_save_qr.click()
 
-            do_modal_click(
-                main_window.menu_action_open_hwi_manager,
-                callback,
-                qtbot,
-                cls=ToolGui,
-            )
+                                mock_dialog.assert_called_once()
+                            assert filename.exists()
 
-        menu_action_open_hwi_manager()
+                    dialog.export_qr_widget.close()
+                    dialog.close()
 
-        def menu_action_open_tx_from_str() -> None:
-            def callback(dialog: ImportDialog) -> None:
-                shutter.save(dialog)
-                dialog.close()
+                do_modal_click(
+                    main_window.menu_action_register_multisig,
+                    callback,
+                    qtbot,
+                    cls=RegisterMultisigInteractionWidget,
+                )
 
-            do_modal_click(
-                main_window.menu_action_open_tx_from_str,
-                callback,
-                qtbot,
-                cls=ImportDialog,
-            )
+            menu_action_register_multisig()
 
-        menu_action_open_tx_from_str()
+            def menu_action_open_hwi_manager() -> None:
+                def callback(dialog: ToolGui) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
 
-        def menu_action_load_tx_from_qr() -> None:
-            def callback(dialog: BitcoinVideoWidget) -> None:
-                shutter.save(dialog)
-                dialog.close()
+                do_modal_click(
+                    main_window.menu_action_open_hwi_manager,
+                    callback,
+                    qtbot,
+                    cls=ToolGui,
+                )
 
-            do_modal_click(
-                main_window.menu_action_load_tx_from_qr,
-                callback,
-                qtbot,
-                cls=BitcoinVideoWidget,
-            )
+            menu_action_open_hwi_manager()
 
-        menu_action_load_tx_from_qr()
+            def menu_action_open_tx_from_str() -> None:
+                def callback(dialog: ImportDialog) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
 
-        def menu_action_network_settings() -> None:
-            def callback(dialog: NetworkSettingsUI) -> None:
-                shutter.save(dialog)
-                dialog.close()
+                do_modal_click(
+                    main_window.menu_action_open_tx_from_str,
+                    callback,
+                    qtbot,
+                    cls=ImportDialog,
+                )
 
-            do_modal_click(
-                main_window.menu_action_network_settings,
-                callback,
-                qtbot,
-                cls=NetworkSettingsUI,
-            )
+            menu_action_open_tx_from_str()
 
-        menu_action_network_settings()
+            def menu_action_load_tx_from_qr() -> None:
+                def callback(dialog: BitcoinVideoWidget) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
 
-        def menu_action_check_update() -> None:
-            main_window.menu_action_check_update.trigger()
-            shutter.save(main_window)
-            assert main_window.update_notification_bar.isVisible()
+                do_modal_click(
+                    main_window.menu_action_load_tx_from_qr,
+                    callback,
+                    qtbot,
+                    cls=BitcoinVideoWidget,
+                )
 
-            with qtbot.waitSignal(
-                main_window.update_notification_bar.signal_on_success, timeout=10000
-            ):  # Timeout after 10 seconds
-                main_window.update_notification_bar.check()
+            menu_action_load_tx_from_qr()
 
-            assert main_window.update_notification_bar.assets
+            def menu_action_network_settings() -> None:
+                def callback(dialog: NetworkSettingsUI) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
 
-        menu_action_check_update()
+                do_modal_click(
+                    main_window.menu_action_network_settings,
+                    callback,
+                    qtbot,
+                    cls=NetworkSettingsUI,
+                )
 
-        def menu_action_license() -> None:
-            def callback(dialog: LicenseDialog) -> None:
-                shutter.save(dialog)
-                dialog.close()
+            menu_action_network_settings()
 
-            do_modal_click(
-                main_window.menu_action_license,
-                callback,
-                qtbot,
-                cls=LicenseDialog,
-            )
-
-        menu_action_license()
-
-        def switch_languages() -> None:
-            for lang in main_window.language_chooser.availableLanguages.keys():
-                main_window.language_chooser.switchLanguage(lang)
+            def menu_action_check_update() -> None:
+                main_window.menu_action_check_update.trigger()
                 shutter.save(main_window)
-            main_window.language_chooser.switchLanguage("en_US")
-            shutter.save(main_window)
+                assert main_window.update_notification_bar.isVisible()
 
-        switch_languages()
+                with qtbot.waitSignal(
+                    main_window.update_notification_bar.signal_on_success, timeout=10000
+                ):  # Timeout after 10 seconds
+                    main_window.update_notification_bar.check()
+
+                assert main_window.update_notification_bar.assets
+
+            menu_action_check_update()
+
+            def menu_action_license() -> None:
+                def callback(dialog: LicenseDialog) -> None:
+                    shutter.save(dialog)
+                    dialog.close()
+
+                do_modal_click(
+                    main_window.menu_action_license,
+                    callback,
+                    qtbot,
+                    cls=LicenseDialog,
+                )
+
+            menu_action_license()
+
+            def switch_languages() -> None:
+                for lang in main_window.language_chooser.availableLanguages.keys():
+                    main_window.language_chooser.switchLanguage(lang)
+                    shutter.save(main_window)
+                main_window.language_chooser.switchLanguage("en_US")
+                shutter.save(main_window)
+
+            switch_languages()
+
+        do_all(qt_wallet)
+
+        with CheckedDeletionContext(
+            qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
+        ):
+            wallet_id = qt_wallet.wallet.id
+
+            close_wallet(
+                shutter=shutter,
+                test_config=test_config,
+                wallet_name=wallet_id,
+                qtbot=qtbot,
+                main_window=main_window,
+            )
+            del qt_wallet
+            shutter.save(main_window)
 
         # end
         shutter.save(main_window)
-        sleep(2)

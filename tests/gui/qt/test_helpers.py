@@ -26,11 +26,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import gc
 import inspect
+import json
 import logging
 import os
 import platform
+import re
 import shutil
 from contextlib import contextmanager
 from datetime import datetime
@@ -39,6 +41,7 @@ from time import sleep
 from typing import Any, Callable, Generator, List, Optional, Type, TypeVar, Union
 from unittest.mock import patch
 
+import objgraph
 import pytest
 from PyQt6 import QtCore
 from PyQt6.QtGui import QAction
@@ -59,6 +62,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation
 from bitcoin_safe.gui.qt.main import MainWindow
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +117,9 @@ class Shutter:
         screenshots_dir = Path("tests") / "output" / f"screenshots_{name}"
         screenshots_dir.mkdir(exist_ok=True, parents=True)
         return screenshots_dir
+
+    def used_directory(self) -> Path:
+        return Shutter.directory(self.name)
 
     @staticmethod
     def save_screenshot(widget: QMainWindow, qtbot: QtBot, name: str) -> Path:
@@ -318,6 +325,117 @@ def close_wallet(
         shutter.save(dialog)
         dialog.button(QMessageBox.StandardButton.Yes).click()
 
-    index = main_window.tab_wallets.indexOf(main_window.qt_wallets[wallet_name].tab)
+    index = main_window.tab_wallets.indexOf(main_window.qt_wallets[wallet_name])
 
     do_modal_click(lambda: main_window.close_tab(index), password_creation, qtbot, cls=QMessageBox)
+
+
+def clean_and_shorten(input_string, max_filename_len=50):
+    # Remove characters problematic for filenames
+    cleaned_string = re.sub(r'[\/:*?"<>|]', "", input_string)
+
+    # Truncate the string to a maximum of 30 characters
+    shortened_string = cleaned_string[:max_filename_len]
+
+    return shortened_string
+
+
+class CheckedDeletionContext:
+    def __init__(
+        self,
+        qt_wallet: QTWallet,
+        qtbot: QtBot,
+        caplog: pytest.LogCaptureFixture,
+        graph_directory: Path | None = None,
+        list_references=None,
+    ):
+        self.graph_directory = graph_directory
+        self.caplog = caplog
+        self.qtbot = qtbot
+        self.d = list_references
+        self.check_for_destruction: List[QtCore.QObject] = [
+            qt_wallet,
+            # qt_wallet.address_list,
+            # qt_wallet.address_list_with_toolbar,
+            # qt_wallet.history_list,
+            # qt_wallet.uitx_creator,
+            # qt_wallet.uitx_creator.category_list,
+            # qt_wallet.address_tab_category_editor,
+        ]
+
+    @classmethod
+    def serialize_referrers(cls, obj: Any):
+        referrers = gc.get_referrers(obj)
+
+        # Simplify referrers to a list of strings or simple dicts
+        simple_referrers = []
+        for ref in referrers:
+            if isinstance(ref, dict):
+                # Provide a simple representation for dictionaries
+                simple_referrers.append({str(k): str(v) for k, v in ref.items()})
+            elif isinstance(ref, list):
+                # Simplify lists by providing the type of elements or simple str representation
+                simple_referrers.append([str(item) for item in ref])
+            else:
+                # Use a string representation for other types
+                simple_referrers.append(str(ref))
+
+        return simple_referrers
+
+    @classmethod
+    def save_single_referrers_to_json(cls, obj: Any, path: Path):
+        filename = str(path / f"{cls.__name__}_{clean_and_shorten(str(obj))}.json")
+        simplified_data = cls.serialize_referrers(obj)
+        with open(filename, "w") as f:
+            json.dump(simplified_data, f, indent=4)
+
+    @classmethod
+    def save_referrers_to_json(cls, objects: List[Any], path: Path):
+        for o in objects:
+            cls.save_single_referrers_to_json(o, path=path)
+
+    @classmethod
+    def show_backrefs(cls, objects: List[Any], path: Path):
+        for o in objects:
+            objgraph.show_backrefs(
+                [o],
+                shortnames=False,
+                refcounts=True,
+                max_depth=2,
+                too_many=30,
+                filename=str(path / f"{cls.__name__}_{clean_and_shorten(str(o))}.png"),
+            )
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+
+        with self.qtbot.waitSignals([q.destroyed for q in self.check_for_destruction], timeout=1000):
+            if self.graph_directory:
+                self.show_backrefs(self.check_for_destruction, self.graph_directory)
+                self.save_referrers_to_json(self.check_for_destruction, self.graph_directory)
+
+            self.check_for_destruction.clear()
+            gc.collect()
+
+        ##### for_debug_only
+        if self.d:
+            # with qtbot.waitSignal(d, timeout=1000):
+            gc.collect()
+            logger.warning(str(gc.get_referrers(self.d)))
+            del self.d
+            gc.collect()
+            # import gc
+            # import types
+            # # the function gets cell (lambda function) references
+            # gx.collect()
+            # def get_cell_referrers(obj):
+            #     # Get all objects that refer to 'obj'
+            #     referrers = gc.get_referrers(obj)
+            #     # Filter to retain only cell objects
+            #     cell_referrers = [ref for ref in referrers if isinstance(ref, types.CellType)]
+            #     return cell_referrers
+            # runt eh line below separately
+            # len(get_cell_referrers(self))
+        ##### for_debug_only

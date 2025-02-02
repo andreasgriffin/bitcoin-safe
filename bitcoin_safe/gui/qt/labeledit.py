@@ -144,9 +144,10 @@ class LabelAndCategoryEdit(QWidget):
 
         # signals
         if dismiss_label_on_focus_loss:
-            self.label_edit.signal_textEditedAndFocusLost.connect(
-                lambda: self.label_edit.setText(self.label_edit.originalText)
-            )
+            self.label_edit.signal_textEditedAndFocusLost.connect(self.on_signal_textEditedAndFocusLost)
+
+    def on_signal_textEditedAndFocusLost(self):
+        return self.label_edit.setText(self.label_edit.originalText)
 
     def _format_category_edit(self) -> None:
         palette = QtGui.QPalette()

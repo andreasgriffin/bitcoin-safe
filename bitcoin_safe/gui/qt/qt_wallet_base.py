@@ -30,14 +30,13 @@
 import enum
 import logging
 from abc import abstractmethod
-from typing import Callable, List, Tuple
+from typing import List, Tuple
 
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
-from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
-from bitcoin_safe.gui.qt.signal_carrying_object import SignalCarryingObject
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -56,38 +55,40 @@ class SyncStatus(enum.Enum):
     error = enum.auto()
 
 
-class QtWalletBase(SignalCarryingObject, ThreadingManager):
+class WrapperQWidget(QWidget):
+    def __init__(self, parent=None, **kwargs) -> None:
+        super().__init__(parent, **kwargs)
+
+
+class QtWalletBase(WrapperQWidget, ThreadingManager):
     signal_after_sync: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
-    wizard: WizardBase
+    wizard: WizardBase | None = None
     wallet_descriptor_tab: QWidget
 
     def __init__(
         self,
         config: UserConfig,
         signals: Signals,
-        get_lang_code: Callable[[], str],
         threading_parent: ThreadingManager | None = None,
         tutorial_index: int | None = None,
-        **kwargs
+        parent=None,
+        **kwargs,
     ) -> None:
-        super().__init__(threading_parent=threading_parent, **kwargs)
-        self.get_lang_code = get_lang_code
-        if threading_parent:
-            self.threading_parent = threading_parent
+        super().__init__(threading_parent=threading_parent, parent=parent, **kwargs)
+        self.signal_tracker = SignalTracker()
+
         self.config = config
         self.signals = signals
         self.tutorial_index = tutorial_index
 
-        self.tab = QWidget()
-
-        self.outer_layout = QVBoxLayout(self.tab)
+        self.outer_layout = QVBoxLayout(self)
         current_margins = self.outer_layout.contentsMargins()
         self.outer_layout.setContentsMargins(
             0, current_margins.top() // 2, 0, 0
         )  # Left, Top, Right, Bottom margins
 
         # add the tab_widget for  history, utx, send tabs
-        self.tabs = ExtendedTabWidget(object, parent=self.tab)
+        self.tabs = QTabWidget(self)
 
         self.outer_layout.addWidget(self.tabs)
 
@@ -105,4 +106,15 @@ class QtWalletBase(SignalCarryingObject, ThreadingManager):
 
     def set_tutorial_index(self, value: int | None):
         self.tutorial_index = value
-        self.wizard.set_visibilities()
+        if self.wizard:
+            self.wizard.set_visibilities()
+
+    def close(self) -> bool:
+        SignalTools.disconnect_all_signals_from(self)
+        self.signal_tracker.disconnect_all()
+        self.end_threading_manager()
+        if self.wizard:
+            self.wizard.close()
+            self.wizard = None
+        self.setParent(None)
+        return super().close()

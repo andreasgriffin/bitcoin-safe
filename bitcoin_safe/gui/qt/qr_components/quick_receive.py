@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import logging
 from typing import List
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
@@ -44,7 +45,10 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+logger = logging.getLogger(__name__)
 
 
 class TitledComponent(QWidget):
@@ -146,6 +150,7 @@ class NoVerticalScrollArea(QScrollArea):
 class QuickReceive(QWidget):
     def __init__(self, title="Quick Receive", parent=None) -> None:
         super().__init__(parent)
+        self.signal_tracker = SignalTracker()
 
         self.setSizePolicy(
             QSizePolicy.Policy.Preferred,  # Horizontal size policy
@@ -204,9 +209,16 @@ class QuickReceive(QWidget):
         if self.group_boxes:
             group_box = self.group_boxes.pop()
             group_box.setParent(None)  # type: ignore[call-overload]
-            group_box.deleteLater()
             self.content_widget.adjustSize()
 
     def clear_boxes(self) -> None:
         while self.group_boxes:
             self.remove_box()
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+
+        self.clear_boxes()
+        self.setParent(None)
+        super().close()

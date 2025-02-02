@@ -102,7 +102,7 @@ class TaskThread(QThread):
 
     @thread_name.setter
     def thread_name(self, value: str | None):
-        logger.debug(f"setting thread_name of {self} to {value}")
+        logger.debug(f"setting thread_name of {self.__class__.__name__} to {value}")
         self._thread_name = value
 
     def __str__(self) -> str:
@@ -171,7 +171,8 @@ class TaskThread(QThread):
             self.quit()
             self.wait()
             self.signal_stop_threat.emit(self.thread_name if self.thread_name else "")
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"An error during the shutdown of {self.thread_name}")
 
 
@@ -203,7 +204,7 @@ class NoThread:
 
 class ThreadingManager:
     def __init__(
-        self, threading_parent: "ThreadingManager" = None, threading_manager_name=None, **kwargs  # type: ignore
+        self, threading_parent: "ThreadingManager|None" = None, threading_manager_name=None, **kwargs
     ) -> None:
         super().__init__(**kwargs)
         self._taskthreads: deque[TaskThread] = deque()
@@ -250,7 +251,7 @@ class ThreadingManager:
             taskthread.stop()
 
     def end_threading_manager(self):
-        logger.debug(f"end_threading_manager of {self}")
+        logger.debug(f"end_threading_manager of {self.__class__.__name__}")
         self.stop_and_wait_all()
 
         if self.threading_parent and self in self.threading_parent.threading_manager_children:

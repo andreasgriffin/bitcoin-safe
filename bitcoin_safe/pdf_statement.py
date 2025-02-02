@@ -353,7 +353,7 @@ class PdfStatement:
         if os.path.exists(filename):
             xdg_open_file(Path(filename))
         else:
-            logger.info("File not found!")
+            logger.info(translate("pdf", "File not found!"))
 
 
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:

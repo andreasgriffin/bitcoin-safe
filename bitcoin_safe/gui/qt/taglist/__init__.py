@@ -1,1 +1,1 @@
-from .main import *
+from .tag_editor import *

@@ -27,12 +27,9 @@
 # SOFTWARE.
 
 
+import copy
 import logging
 from typing import Any, Dict, List, Literal, Optional, Set
-
-logger = logging.getLogger(__name__)
-
-import copy
 
 import bdkpython as bdk
 from bitcoin_usb.address_types import (
@@ -43,6 +40,8 @@ from bitcoin_usb.address_types import (
 from packaging import version
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+
+logger = logging.getLogger(__name__)
 
 
 class KeyStoreImporterType(SaveAllClass):
@@ -183,7 +182,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         try:
             bdk.Mnemonic.from_string(mnemonic)
             return True
-        except:
+        except Exception as e:
+            logger.debug(f"{cls.__name__}: {e}")
             return False
 
     @classmethod
@@ -199,7 +199,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             )
 
             return True
-        except:
+        except Exception as e:
+            logger.debug(f"{cls.__name__}: {e}")
             return False
 
     def clone(self, class_kwargs: Dict | None = None) -> "KeyStore":

@@ -39,7 +39,6 @@ from bitcoin_usb.address_types import DescriptorInfo
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
 from bitcoin_safe.pythonbdk_types import Recipient
 from bitcoin_safe.tx import TxUiInfos, transaction_to_dict
 from bitcoin_safe.wallet import Wallet

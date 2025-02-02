@@ -28,6 +28,9 @@
 
 
 import logging
+from typing import Any, Dict, List, Optional, Tuple
+
+import bdkpython as bdk
 
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
@@ -42,10 +45,6 @@ from .pythonbdk_types import (
 )
 
 logger = logging.getLogger(__name__)
-
-from typing import Any, Dict, List, Optional, Tuple
-
-import bdkpython as bdk
 
 
 def short_tx_id(txid: str) -> str:

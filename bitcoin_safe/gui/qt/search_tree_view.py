@@ -28,13 +28,6 @@
 
 
 import logging
-
-from bitcoin_safe.html_utils import html_f
-from bitcoin_safe.i18n import translate
-from bitcoin_safe.signals import SignalsMin
-
-logger = logging.getLogger(__name__)
-
 import sys
 from typing import Callable, List, Optional
 
@@ -65,6 +58,11 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx import UITx_Creator
+from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.signals import Signals
+
+logger = logging.getLogger(__name__)
 
 
 class SearchHTMLDelegate(QStyledItemDelegate):
@@ -355,8 +353,7 @@ class SearchTreeView(QWidget):
 class SearchWallets(SearchTreeView):
     def __init__(
         self,
-        get_qt_wallets: Callable[[], List[QTWallet]],
-        signal_min: SignalsMin,
+        signals: Signals,
         parent=None,
         result_height=300,
         result_width=500,
@@ -369,10 +366,8 @@ class SearchWallets(SearchTreeView):
             result_height=result_height,
             result_width=result_width,
         )
-        self.signal_min = signal_min
-
-        self.get_qt_wallets = get_qt_wallets
-        self.signal_min.language_switch.connect(self.updateUi)
+        self.signals = signals
+        self.signals.language_switch.connect(self.updateUi)
 
     def search_result_on_click(self, result_item: ResultItem) -> None:
         # call the parent action first
@@ -395,11 +390,11 @@ class SearchWallets(SearchTreeView):
                     these_tabs.setCurrentWidget(result_item.obj)
             result_item.obj.tabs_inputs.setCurrentWidget(result_item.obj.tab_inputs_utxos)
         elif isinstance(result_item.obj, QTWallet):
-            parent = result_item.obj.tab.parent()
+            parent = result_item.obj.parent()
             if parent:
                 wallet_tabs = parent.parent()
                 if isinstance(wallet_tabs, QTabWidget):
-                    wallet_tabs.setCurrentWidget(result_item.obj.tab)
+                    wallet_tabs.setCurrentWidget(result_item.obj)
 
     def do_search(self, search_text: str) -> ResultItem:
         def format_result_text(matching_string: str) -> str:
@@ -409,10 +404,11 @@ class SearchWallets(SearchTreeView):
 
         search_text = search_text.strip()
         root = ResultItem("")
-        for qt_wallet in self.get_qt_wallets():
+        qt_wallets: List[QTWallet] = list(self.signals.get_qt_wallets.emit().values())
+        for qt_wallet in qt_wallets:
             wallet_item = ResultItem(html_f(qt_wallet.wallet.id, bf=True), obj=qt_wallet)
 
-            wallet_addresses = ResultItem(html_f(self.tr("Addresses"), bf=True), obj=qt_wallet.addresses_tab)
+            wallet_addresses = ResultItem(html_f(self.tr("Addresses"), bf=True), obj=qt_wallet.address_tab)
             for address in qt_wallet.wallet.get_addresses():
                 if search_text in address:
                     ResultItem(

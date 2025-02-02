@@ -110,7 +110,7 @@ import bdkpython as bdk
 def is_int(a: Any) -> bool:
     try:
         int(a)
-    except:
+    except Exception:
         return False
     return True
 
@@ -119,7 +119,8 @@ def path_to_rel_home_path(path: Union[Path, str]) -> Path:
     try:
 
         return Path(path).relative_to(Path.home())
-    except:
+    except Exception as e:
+        logger.debug(str(e))
         return Path(path)
 
 
@@ -910,3 +911,7 @@ def qbytearray_to_str(a: QByteArray) -> str:
 
 def str_to_qbytearray(s: str) -> QByteArray:
     return QByteArray(s.encode())  # type: ignore[call-overload]
+
+
+def unique_elements(iterable: Iterable):
+    return list(dict.fromkeys(iterable))

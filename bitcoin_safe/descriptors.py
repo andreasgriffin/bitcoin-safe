@@ -28,9 +28,6 @@
 
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from typing import Sequence
 
 import bdkpython as bdk
@@ -44,6 +41,8 @@ from bitcoin_usb.address_types import (
     DescriptorInfo,
     SimplePubKeyProvider,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_default_address_type(is_multisig) -> AddressType:

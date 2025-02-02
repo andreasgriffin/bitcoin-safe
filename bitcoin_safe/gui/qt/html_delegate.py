@@ -29,11 +29,11 @@
 
 import logging
 
-logger = logging.getLogger(__name__)
-
 from PyQt6.QtCore import QModelIndex, QPoint, QSize
 from PyQt6.QtGui import QHelpEvent, QPainter, QTextDocument
 from PyQt6.QtWidgets import QStyle, QStyleOptionViewItem
+
+logger = logging.getLogger(__name__)
 
 
 class HTMLDelegate:

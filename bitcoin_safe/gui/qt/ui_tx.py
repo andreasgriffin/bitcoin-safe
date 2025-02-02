@@ -29,41 +29,11 @@
 
 import logging
 from collections import defaultdict
-
-from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_usb.psbt_tools import PSBTTools
-
-from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
-from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
-from bitcoin_safe.gui.qt.fee_group import FeeGroup
-from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
-from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
-from bitcoin_safe.gui.qt.tx_export import TxExport
-from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
-from bitcoin_safe.html_utils import html_f
-from bitcoin_safe.keystore import KeyStore
-from bitcoin_safe.labels import LabelType
-from bitcoin_safe.network_config import ProxyInfo
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-from ...config import MIN_RELAY_FEE, UserConfig
-from ...signals import TypedPyQtSignalNo
-from .dialog_import import ImportDialog
-from .my_treeview import MyItemDataRole, SearchableTab
-from .nLockTimePicker import nLocktimePicker
-from .util import adjust_bg_color_for_darkmode
-
-logger = logging.getLogger(__name__)
-
-from typing import Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
+from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_usb.psbt_tools import PSBTTools
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
@@ -81,6 +51,27 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
+from bitcoin_safe.gui.qt.dialogs import question_dialog
+from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
+from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
+from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
+from bitcoin_safe.gui.qt.spinning_button import SpinningButton
+from bitcoin_safe.gui.qt.tx_export import TxExport
+from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
+from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.keystore import KeyStore
+from bitcoin_safe.labels import LabelType
+from bitcoin_safe.network_config import ProxyInfo
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
+from ...config import MIN_RELAY_FEE, UserConfig
 from ...mempool import MempoolData, TxPrio
 from ...psbt_util import FeeInfo, PubKeyInfo, SimpleInput, SimplePSBT
 from ...pythonbdk_types import (
@@ -92,7 +83,13 @@ from ...pythonbdk_types import (
     python_utxo_balance,
     robust_address_str_from_script,
 )
-from ...signals import Signals, SignalsMin, UpdateFilter, UpdateFilterReason
+from ...signals import (
+    Signals,
+    SignalsMin,
+    TypedPyQtSignalNo,
+    UpdateFilter,
+    UpdateFilterReason,
+)
 from ...signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -103,7 +100,6 @@ from ...signer import (
 )
 from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
 from ...util import (
-    Satoshis,
     block_explorer_URL,
     clean_list,
     format_fee_rate,
@@ -118,16 +114,22 @@ from ...wallet import (
     get_wallets,
 )
 from .category_list import CategoryList
-from .recipients import Recipients, RecipientTabWidget
+from .dialog_import import ImportDialog
+from .my_treeview import MyItemDataRole, SearchableTab
+from .nLockTimePicker import nLocktimePicker
+from .recipients import Recipients, RecipientTabWidget, RecipientWidget
 from .util import (
     Message,
     MessageType,
     add_to_buttonbox,
+    adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
     read_QIcon,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
+
+logger = logging.getLogger(__name__)
 
 
 class LinkingWarningBar(NotificationBar):
@@ -183,6 +185,7 @@ class LinkingWarningBar(NotificationBar):
 class UITx_Base:
     def __init__(self, config: UserConfig, signals: Signals, mempool_data: MempoolData, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.signal_tracker = SignalTracker()
         self.signals = signals
         self.mempool_data = mempool_data
         self.config = config
@@ -251,7 +254,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         focus_ui_element: UiElements = UiElements.none,
     ) -> None:
         super().__init__(
-            serialize=lambda: self.do_serialize(),
+            serialize=self.do_serialize,
             parent=parent,
             config=config,
             signals=signals,
@@ -297,7 +300,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self._layout.addWidget(self.upper_widget)
 
         # in out
-        self.tabs_inputs_outputs = ExtendedTabWidget(object)
+        self.tabs_inputs_outputs = ExtendedTabWidget[object](parent=self)
+        self.tabs_inputs_outputs.setObjectName(f"member of {self.__class__.__name__}")
         # button = QPushButton("Edit")
         # button.setFixedHeight(button.sizeHint().height())
         # button.setIcon(QIcon(icon_path("pen.svg")))
@@ -424,7 +428,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             self.buttonBox,
             "",
             "send.svg",
-            on_clicked=lambda: self.broadcast(),
+            on_clicked=self.broadcast,
             role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
 
@@ -437,10 +441,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.updateUi()
         self.reload(UpdateFilter(refresh_all=True))
         self.utxo_list.update_content()
-        self.signals.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
-        self.signals.any_wallet_updated.connect(self.reload)
+        self.signal_tracker.connect(self.signals.any_wallet_updated, self.reload)
 
     def updateUi(self) -> None:
         self.tabs_inputs_outputs.setTabText(
@@ -1114,6 +1118,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 total_non_change_output_amount += value
         return total_non_change_output_amount
 
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+        self.setParent(None)
+        super().close()
+
 
 class UITx_Creator(UITx_Base, SearchableTab):
     signal_create_tx: TypedPyQtSignal[TxUiInfos] = pyqtSignal(TxUiInfos)  # type: ignore
@@ -1137,7 +1147,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.widget_utxo_with_toolbar = widget_utxo_with_toolbar
 
         self.additional_outpoints: List[OutPoint] = []
-        utxo_list.get_outpoints = self.get_outpoints
+        utxo_list.outpoints = self.get_outpoints()
 
         self.searchable_list = utxo_list
         self._layout = QVBoxLayout(self)
@@ -1199,11 +1209,11 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
             self.button_ok.setDefault(True)
-            self.button_ok.clicked.connect(lambda: self.create_tx())
+            self.button_ok.clicked.connect(self.create_tx)
 
         self.button_clear = self.button_box.addButton(QDialogButtonBox.StandardButton.Reset)
         if self.button_clear:
-            self.button_clear.clicked.connect(lambda: self.clear_ui())
+            self.button_clear.clicked.connect(self.clear_ui)
 
         self._layout.addWidget(self.button_box)
 
@@ -1218,8 +1228,8 @@ class UITx_Creator(UITx_Base, SearchableTab):
         self.mempool_data.signal_data_updated.connect(self.update_fee_rate_to_mempool)
         self.utxo_list.signal_selection_changed.connect(self.update_amounts_and_categories)
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
-        self.recipients.signal_added_recipient.connect(self.on_recipients_changed)
-        self.recipients.signal_removed_recipient.connect(self.on_recipients_changed)
+        self.recipients.signal_added_recipient.connect(self.on_recipients_added)
+        self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
         self.category_list.signal_tag_clicked.connect(self.on_category_list_clicked)
         self.signals.language_switch.connect(self.updateUi)
         self.signals.wallet_signals[self.wallet.id].updated.connect(self.update_with_filter)
@@ -1238,6 +1248,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
         self.update_balance_label()
         self.update_amounts_and_categories()
+        self.utxo_list.set_outpoints(self.get_outpoints())
 
     def updateUi(self) -> None:
         # translations
@@ -1271,9 +1282,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
 
     def update_balance_label(self):
         balance = self.wallet.get_balance()
-        display_balance = (
-            self.signals.wallet_signals[self.wallet.id].get_display_balance.emit().get(self.wallet.id)
-        )
+        display_balance = self.signals.wallet_signals[self.wallet.id].get_display_balance.emit()
         if display_balance:
             balance = display_balance
 
@@ -1297,10 +1306,17 @@ class UITx_Creator(UITx_Base, SearchableTab):
     def on_category_list_clicked(self, tag: str):
         self.update_amounts_and_categories()
 
-    def on_recipients_changed(self, recipient_tab_widget: RecipientTabWidget):
+    def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
+        self.update_amounts()
+
+    def on_recipients_added(self, recipient_tab_widget: RecipientTabWidget):
+        recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
         self.update_amounts_and_categories()
 
-    def on_signal_amount_changed(self, recipient_tab_widget: RecipientTabWidget):
+    def on_recipients_removed(self, recipient_tab_widget: RecipientTabWidget):
+        self.update_amounts_and_categories()
+
+    def on_signal_amount_changed(self, recipient_widget: Any):
         self.update_amounts()
 
     def update_amounts_and_categories(self):
@@ -1407,34 +1423,6 @@ class UITx_Creator(UITx_Base, SearchableTab):
     def get_outpoints(self) -> List[OutPoint]:
         return [utxo.outpoint for utxo in self.wallet.get_all_utxos()] + self.additional_outpoints
 
-    def _get_category_python_utxo_dict(self) -> Dict[str, List[PythonUtxo]]:
-        category_python_utxo_dict: Dict[str, List[PythonUtxo]] = {}
-        for outpoint in self.get_outpoints():
-            python_utxo = self.wallet.get_python_txo(str(outpoint))
-            if not python_utxo:
-                continue
-
-            category = self.wallet.labels.get_category(python_utxo.address)
-            if not category:
-                continue
-            if category not in category_python_utxo_dict:
-                category_python_utxo_dict[category] = []
-            category_python_utxo_dict[category].append(python_utxo)
-        return category_python_utxo_dict
-
-    def _get_sub_texts_for_uitx(self) -> List[str]:
-        category_python_utxo_dict = self._get_category_python_utxo_dict()
-
-        return [
-            self.tr("{num_inputs} Inputs: {inputs}").format(
-                num_inputs=len(category_python_utxo_dict.get(category, [])),
-                inputs=Satoshis(
-                    python_utxo_balance(category_python_utxo_dict.get(category, [])), self.wallet.network
-                ).str_with_unit(),
-            )
-            for category in self.wallet.labels.categories
-        ]
-
     def create_inputs_selector(self, splitter: QSplitter) -> None:
 
         self.tabs_inputs = QTabWidget(self)
@@ -1452,9 +1440,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
 
         # Taglist
         self.category_list = CategoryList(
-            self.categories,
             self.signals.wallet_signals[self.wallet.id],
-            self._get_sub_texts_for_uitx,
             immediate_release=False,
         )
         first_entry = self.category_list.item(0)
@@ -1488,10 +1474,10 @@ class UITx_Creator(UITx_Base, SearchableTab):
 
         # select the first one with !=0 balance
         # TODO:  this doesnt work however, because the wallet sync happens after this creation
-        category_utxo_dict = self._get_category_python_utxo_dict()
+        category_utxo_dict = self.wallet.get_category_python_utxo_dict()
 
         def get_idx_non_zero_category() -> Optional[int]:
-            for i, category in enumerate(self.category_list.categories):
+            for i, category in enumerate(self.wallet.labels.categories):
                 if python_utxo_balance(category_utxo_dict.get(category, [])) > 0:
                     return i
             return None
@@ -1768,3 +1754,12 @@ class UITx_Creator(UITx_Base, SearchableTab):
             self.recipients.add_recipient()
 
         self.recipients.set_allow_edit(not txinfos.recipient_read_only)
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+
+        self.category_list.close()
+        self.widget_utxo_with_toolbar.close()
+        self.setParent(None)
+        super().close()

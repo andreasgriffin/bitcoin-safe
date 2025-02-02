@@ -29,12 +29,11 @@
 
 import logging
 from collections import deque
-
-logger = logging.getLogger(__name__)
-
 from typing import Type
 
 from PyQt6.QtWidgets import QWidget
+
+logger = logging.getLogger(__name__)
 
 
 class AttachedWidgets(deque):

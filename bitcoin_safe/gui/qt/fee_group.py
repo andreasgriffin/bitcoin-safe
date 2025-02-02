@@ -28,20 +28,6 @@
 
 
 import logging
-
-from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import icon_path
-from bitcoin_safe.html_utils import html_f, link
-from bitcoin_safe.network_config import ProxyInfo
-from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
-from .util import adjust_bg_color_for_darkmode
-
-logger = logging.getLogger(__name__)
-
 from typing import List, Optional
 
 import bdkpython as bdk
@@ -56,6 +42,15 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.util import icon_path
+from bitcoin_safe.html_utils import html_f, link
+from bitcoin_safe.network_config import ProxyInfo
+from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
+from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 from ...mempool import MempoolData, TxPrio
 from ...util import Satoshis, format_fee_rate, unit_fee_str
 from .block_buttons import (
@@ -64,6 +59,9 @@ from .block_buttons import (
     MempoolButtons,
     MempoolProjectedBlock,
 )
+from .util import adjust_bg_color_for_darkmode
+
+logger = logging.getLogger(__name__)
 
 
 class FeeWarningBar(NotificationBar):
@@ -157,9 +155,7 @@ class FeeGroup(QObject):
             self._mempool_buttons,
         ]
         for button_group in self._all_mempool_buttons:
-            self.groupBox_Fee_layout.addWidget(
-                button_group.button_group, alignment=Qt.AlignmentFlag.AlignHCenter
-            )
+            self.groupBox_Fee_layout.addWidget(button_group, alignment=Qt.AlignmentFlag.AlignHCenter)
         self.set_mempool_visibility()
 
         self.approximate_fee_label = QLabel()
@@ -215,12 +211,15 @@ class FeeGroup(QObject):
         if allow_edit:
             self.visible_mempool_buttons.signal_click.connect(self.set_fee_rate)
             # self.spin_fee_rate.editingFinished.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
-            self.spin_fee_rate.valueChanged.connect(lambda: self.set_fee_rate(self.spin_fee_rate.value()))
+            self.spin_fee_rate.valueChanged.connect(self.on_spin_fee_rate_changed)
         self.visible_mempool_buttons.mempool_data.signal_data_updated.connect(self.updateUi)
 
         # refresh
         self.visible_mempool_buttons.refresh()
         self.updateUi()
+
+    def on_spin_fee_rate_changed(self):
+        self.set_fee_rate(self.spin_fee_rate.value())
 
     def set_confirmation_time(self, confirmation_time: bdk.BlockTime | None = None):
         self._confirmed_block.confirmation_time = confirmation_time
@@ -237,7 +236,7 @@ class FeeGroup(QObject):
             self.visible_mempool_buttons = self._mempool_buttons
 
         for mempool_buttons in self._all_mempool_buttons:
-            mempool_buttons.button_group.setVisible(self.visible_mempool_buttons == mempool_buttons)
+            mempool_buttons.setVisible(self.visible_mempool_buttons == mempool_buttons)
 
     def updateUi(self) -> None:
         self.groupBox_Fee.setTitle(self.tr("Fee"))

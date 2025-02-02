@@ -44,6 +44,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.execute_config import ENABLE_TIMERS
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
 from bitcoin_safe.util import unit_str
 from bitcoin_safe.wallet import Wallet
@@ -54,6 +56,7 @@ logger = logging.getLogger(__name__)
 class BalanceChart(QWidget):
     def __init__(self, y_axis_text="Balance", parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self.signal_tracker = SignalTracker()
         self.y_axis_text = y_axis_text
 
         # Layout
@@ -228,6 +231,12 @@ class BalanceChart(QWidget):
         # scatter_series.attachAxis(self.datetime_axis)
         # scatter_series.attachAxis(self.value_axis)
 
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+        self.setParent(None)
+        super().close()
+
 
 class WalletBalanceChart(BalanceChart):
     def __init__(self, wallet: Wallet, wallet_signals: WalletSignals, parent: QWidget | None = None) -> None:
@@ -239,8 +248,8 @@ class WalletBalanceChart(BalanceChart):
         self.updateUi()
 
         # signals
-        self.wallet_signals.updated.connect(self.update_balances)
-        self.wallet_signals.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.wallet_signals.updated, self.update_balances)
+        self.signal_tracker.connect(self.wallet_signals.language_switch, self.updateUi)
 
     def updateUi(self) -> None:
         self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
@@ -296,7 +305,8 @@ class TransactionSimulator(QMainWindow):
         # QTimer to simulate incoming transactions
         self.timer = QTimer()
         self.timer.timeout.connect(self.add_transaction)
-        self.timer.start(3000)
+        if ENABLE_TIMERS:
+            self.timer.start(3000)
 
         # Initial chart update
         self.update_chart()

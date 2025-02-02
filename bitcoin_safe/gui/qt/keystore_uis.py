@@ -28,6 +28,7 @@
 
 
 import logging
+from typing import Callable, List
 
 from bitcoin_qr_tools.data import SignerInfo
 from PyQt6.QtCore import pyqtSignal
@@ -39,14 +40,12 @@ from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
-logger = logging.getLogger(__name__)
-
-from typing import Callable, List
-
 from ...descriptors import AddressType
 from ...wallet import ProtoWallet
 from .keystore_ui import KeyStoreUI, icon_for_label
 from .util import Message, MessageType
+
+logger = logging.getLogger(__name__)
 
 
 class OrderTrackingTabBar(QTabBar):
@@ -83,7 +82,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
     ) -> None:
-        super().__init__(KeyStoreUI)
+        super().__init__()
         self.tab_bar = OrderTrackingTabBar()
         self.setTabBar(self.tab_bar)
         self.setMovable(True)
@@ -248,7 +247,8 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         try:
             self.set_protowallet_from_keystore_ui()
             self.set_keystore_ui_from_protowallet()
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             logger.warning("ui_keystore_ui_change: Invalid input")
 
     def set_protowallet_from_keystore_ui(self) -> None:

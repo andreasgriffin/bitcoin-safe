@@ -373,7 +373,7 @@ class NetworkSettingsUI(QDialog):
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
         button_mempool = QPushButton(self)
         button_mempool.setIcon(read_QIcon("block-explorer.svg"))
-        button_mempool.clicked.connect(lambda: webopen(self.edit_mempool_url.text()))
+        button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
@@ -427,6 +427,9 @@ class NetworkSettingsUI(QDialog):
         if self.signals:
             self.signals.language_switch.connect(self.updateUi)
         self.updateUi()
+
+    def on_button_mempool_clicked(self):
+        return webopen(self.edit_mempool_url.text())
 
     def updateUi(self):
         self.setWindowTitle(self.tr("Network Settings"))
@@ -660,7 +663,8 @@ class NetworkSettingsUI(QDialog):
     def compactblockfilters_port(self) -> int:
         try:
             return int(self.compactblockfilters_port_edit.text())
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             return self.network_configs.configs[self.network.name].compactblockfilters_port
 
     @compactblockfilters_port.setter
@@ -707,7 +711,8 @@ class NetworkSettingsUI(QDialog):
     def rpc_port(self) -> int:
         try:
             return int(self.rpc_port_edit.text())
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             return self.network_configs.configs[self.network.name].rpc_port
 
     @rpc_port.setter

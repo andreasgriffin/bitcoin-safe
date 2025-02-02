@@ -33,20 +33,21 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 
+import pytest
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.logging_setup import setup_logging  # type: ignore
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore
 from ...test_helpers import test_config_main_chain  # type: ignore
 from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
 from .test_helpers import (  # type: ignore
+    CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
@@ -67,6 +68,7 @@ def test_default_network_config_works(
     test_config_main_chain: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
     wallet_file: str = "bacon.wallet",
     amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
@@ -89,35 +91,41 @@ def test_default_network_config_works(
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
-        qt_wallet.tabs.setCurrentWidget(qt_wallet.addresses_tab)
+        qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
         shutter.save(main_window)
         # check wallet address
         assert qt_wallet.wallet.get_addresses()[0] == "bc1qyngkwkslw5ng4v7m42s8t9j6zldmhyvrnnn9k5"
 
-        def sync():
-            with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-                qt_wallet.sync()
+        def do_all(qt_wallet: QTWallet):
+            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
-            shutter.save(main_window)
+            def sync():
+                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+                    qt_wallet.sync()
 
-            assert len(qt_wallet.wallet.sorted_delta_list_transactions()) >= 28
+                shutter.save(main_window)
 
-        sync()
+                assert len(qt_wallet.wallet.sorted_delta_list_transactions()) >= 28
 
-        def do_close_wallet() -> None:
+            sync()
+
+        do_all(qt_wallet)
+
+        with CheckedDeletionContext(
+            qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
+        ):
+            wallet_id = qt_wallet.wallet.id
 
             close_wallet(
                 shutter=shutter,
                 test_config=test_config_main_chain,
-                wallet_name=qt_wallet.wallet.id,
+                wallet_name=wallet_id,
                 qtbot=qtbot,
                 main_window=main_window,
             )
-
+            del qt_wallet
             shutter.save(main_window)
-
-        do_close_wallet()
 
         def check_that_it_is_in_recent_wallets() -> None:
             assert any(
@@ -133,4 +141,3 @@ def test_default_network_config_works(
 
         # end
         shutter.save(main_window)
-        sleep(2)

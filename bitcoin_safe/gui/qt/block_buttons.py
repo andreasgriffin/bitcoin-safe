@@ -29,7 +29,8 @@
 
 import enum
 import logging
-from typing import Callable, Dict, List
+from functools import partial
+from typing import Dict, List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -44,6 +45,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.execute_config import ENABLE_TIMERS, MEMPOOL_SCHEDULE_TIMER
 from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
@@ -281,14 +283,7 @@ class VerticalButtonGroup(InvisibleScrollArea):
         # Create buttons
         for i in range(button_count):
             button = BlockButton(network=network, size=size)
-
-            def create_signal_handler(index) -> Callable:
-                def send_signal() -> None:
-                    return self.signal_button_click.emit(index)
-
-                return send_signal
-
-            button.clicked.connect(create_signal_handler(i))
+            button.clicked.connect(partial(self.signal_button_click.emit, i))
 
             self.buttons.append(button)
             layout.addWidget(button)
@@ -300,7 +295,7 @@ class VerticalButtonGroup(InvisibleScrollArea):
                 button.set_active(i == index)
 
 
-class ObjectRequiringMempool(QObject):
+class MempoolScheduler(QObject):
     def __init__(self, proxies: Dict | None, mempool_data: MempoolData, parent=None) -> None:
         super().__init__(parent=parent)
         self.proxies = proxies
@@ -309,7 +304,8 @@ class ObjectRequiringMempool(QObject):
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.set_data_from_mempoolspace)
-        self.timer.start(10 * 60 * 1000)  # 10 minutes in milliseconds
+        if ENABLE_TIMERS:
+            self.timer.start(MEMPOOL_SCHEDULE_TIMER)
 
     def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime | None = None) -> None:
         logger.error("This should not be called")
@@ -318,23 +314,24 @@ class ObjectRequiringMempool(QObject):
         self.mempool_data.set_data_from_mempoolspace(proxies=self.proxies)
 
 
-class BaseBlock(QObject):
+class BaseBlock(VerticalButtonGroup):
     signal_click: TypedPyQtSignal[float] = pyqtSignal(float)  # type: ignore
 
     def __init__(
         self,
         mempool_data: MempoolData,
-        button_group: VerticalButtonGroup,
+        network: bdk.Network,
         confirmation_time: bdk.BlockTime | None = None,
+        button_count=3,
         parent=None,
+        size=100,
     ) -> None:
-        QObject.__init__(self, parent=parent)
+        super().__init__(network=network, button_count=button_count, parent=parent, size=size)
         self.confirmation_time = confirmation_time
         self.mempool_data = mempool_data
-        self.button_group = button_group
 
         # signals
-        self.button_group.signal_button_click.connect(self._on_button_click)
+        self.signal_button_click.connect(self._on_button_click)
         self.mempool_data.signal_data_updated.connect(self.refresh)
 
     def refresh(self, **kwargs) -> None:
@@ -347,7 +344,7 @@ class BaseBlock(QObject):
         pass
 
 
-class MempoolButtons(BaseBlock, ObjectRequiringMempool):
+class MempoolButtons(BaseBlock):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
 
     def __init__(
@@ -358,13 +355,18 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
         max_button_count=3,
         parent=None,
     ) -> None:
-        button_group = VerticalButtonGroup(
-            network=mempool_data.network_config.network, button_count=max_button_count, parent=parent
+        super().__init__(
+            mempool_data=mempool_data,
+            confirmation_time=None,
+            network=mempool_data.network_config.network,
+            button_count=max_button_count,
+            parent=parent,
         )
-        BaseBlock.__init__(
-            self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
+        self.mempool_scheduler = MempoolScheduler(
+            proxies=proxies,
+            mempool_data=mempool_data,
+            parent=parent,
         )
-        ObjectRequiringMempool.__init__(self, proxies=proxies, mempool_data=mempool_data, parent=parent)
         self.fee_rate = fee_rate
 
         self.refresh()
@@ -377,7 +379,7 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
 
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
 
-        for i, button in enumerate(self.button_group.buttons):
+        for i, button in enumerate(self.buttons):
             block_number = i + 1
             button.setVisible(i < max(1, self.mempool_data.num_mempool_blocks()))
             button.label_title.set(
@@ -400,11 +402,11 @@ class MempoolButtons(BaseBlock, ObjectRequiringMempool):
 
     def _on_button_click(self, i: int) -> None:
         logger.debug(f"Clicked button {i}: {self.mempool_data.median_block_fee_rate(i)}")
-        self.button_group.set_active(i)
+        self.set_active(i)
         self.signal_click.emit(self.mempool_data.median_block_fee_rate(i))
 
 
-class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
+class MempoolProjectedBlock(BaseBlock):
     "The Button showing the block in which the fee_rate fits"
 
     def __init__(
@@ -414,21 +416,21 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         fee_rate: float = 1,
         parent=None,
     ) -> None:
-        button_group = VerticalButtonGroup(
-            network=mempool_data.network_config.network, size=100, button_count=1, parent=parent
+        super().__init__(
+            mempool_data=mempool_data,
+            confirmation_time=None,
+            network=mempool_data.network_config.network,
+            button_count=1,
+            parent=parent,
+            size=100,
         )
-
-        BaseBlock.__init__(
-            self, mempool_data=mempool_data, button_group=button_group, confirmation_time=None, parent=parent
-        )
-        ObjectRequiringMempool.__init__(
-            self,
-            proxies=(
+        self.mempool_scheduler = MempoolScheduler(
+            (
                 ProxyInfo.parse(config.network_config.proxy_url).get_requests_proxy_dict()
                 if config.network_config.proxy_url
                 else None
             ),
-            mempool_data=mempool_data,
+            mempool_data,
             parent=parent,
         )
 
@@ -442,7 +444,7 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
         self.url = url
 
     def set_unknown_fee_rate(self) -> None:
-        for button in self.button_group.buttons:
+        for button in self.buttons:
             button.clear_labels()
             button.label_title.set(self.tr("Unconfirmed"), BlockType.projected)
             button.explorer_explorer_icon.setVisible(True)
@@ -458,7 +460,7 @@ class MempoolProjectedBlock(BaseBlock, ObjectRequiringMempool):
 
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
 
-        for button in self.button_group.buttons:
+        for button in self.buttons:
 
             button.label_title.set(
                 self.tr("~{n}. Block").format(n=format_block_number(block_index + 1)), BlockType.projected
@@ -495,15 +497,13 @@ class ConfirmedBlock(BaseBlock):
         fee_rate: float | None = None,
         parent=None,
     ) -> None:
-        button_group = VerticalButtonGroup(
-            network=mempool_data.network_config.network, button_count=1, parent=parent, size=120
-        )
-
         super().__init__(
-            parent=parent,
             mempool_data=mempool_data,
-            button_group=button_group,
             confirmation_time=confirmation_time,
+            network=mempool_data.network_config.network,
+            button_count=1,
+            parent=parent,
+            size=120,
         )
 
         self.fee_rate = fee_rate
@@ -520,7 +520,7 @@ class ConfirmedBlock(BaseBlock):
         if not self.confirmation_time:
             return
 
-        for i, button in enumerate(self.button_group.buttons):
+        for i, button in enumerate(self.buttons):
             button.label_title.set(
                 self.tr("Block {n}").format(n=format_block_number(self.confirmation_time.height)),
                 BlockType.confirmed,

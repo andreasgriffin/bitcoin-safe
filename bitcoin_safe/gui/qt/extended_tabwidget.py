@@ -26,7 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Callable, Type
+import logging
+from typing import Callable
 
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent, QResizeEvent
@@ -45,14 +46,14 @@ from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget, T
 from bitcoin_safe.gui.qt.util import read_QIcon
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
+logger = logging.getLogger(__name__)
 
-class ExtendedTabWidget(DataTabWidget):
+
+class ExtendedTabWidget(DataTabWidget[T]):
     signal_tab_bar_visibility: TypedPyQtSignal[bool] = pyqtSignal(bool)  # type: ignore
 
-    def __init__(
-        self, data_class: Type[T], show_ContextMenu: Callable[[QPoint, int], None] | None = None, parent=None
-    ) -> None:
-        super().__init__(data_class, parent=parent)
+    def __init__(self, show_ContextMenu: Callable[[QPoint, int], None] | None = None, parent=None) -> None:
+        super().__init__(parent=parent)
         self.set_top_right_widget()
         self.show_ContextMenu = show_ContextMenu
         self.tabBar().installEventFilter(self)  # type: ignore
@@ -168,7 +169,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     edit = QLineEdit(f"Ciiiiii")
-    tabWidget = ExtendedTabWidget(object)
+    tabWidget = ExtendedTabWidget[object]()
 
     # Add tabs with larger widgets
     for i in range(3):

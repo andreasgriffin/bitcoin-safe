@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>这个“描述”包含重建钱包所需的所有信息。请备份此描述以便能够恢复资金！</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>描述符未更改  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>输入了新的描述符  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>创建交易</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>再次预填交易  </translation>
+        <source>Retry</source>
+        <translation>重试  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1163,12 +1167,16 @@ Location of signing device: .....</source>
         <translation>所有文件 (*);;PSBT (*.psbt);;交易 (*.tx)</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>选中的文件：{file_path}</translation>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;新建钱包</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>选中的文件：{file_path}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1207,12 +1215,12 @@ Location of signing device: .....</source>
         <translation>PSBT {txid}</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>打开钱包</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;打开钱包</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>打开钱包</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1251,12 +1259,12 @@ Location of signing device: .....</source>
         <translation>一个ID为 {name} 的钱包已经打开。</translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>请完成钱包设置。</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>打开&amp;最近</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>请完成钱包设置。</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1295,12 +1303,12 @@ Location of signing device: .....</source>
         <translation>刷新  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>设置密码短语  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;保存当前钱包</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>设置密码短语  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1339,12 +1347,12 @@ Location of signing device: .....</source>
         <translation>操作  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>密钥池 </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;搜索  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>密钥池 </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1401,6 +1409,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>所有文件 (*);;文本文件 (*.csv)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
     </message>
 </context>
 <context>
@@ -1696,6 +1708,10 @@ Location of signing device: .....</source>
         <translation>删除钱包  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>密码错误</translation>
     </message>
@@ -1712,12 +1728,12 @@ Location of signing device: .....</source>
         <translation>钱包已保存</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} 在 {shortid}</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>描述</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} 在 {shortid}</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1760,12 +1776,24 @@ Location of signing device: .....</source>
         <translation>已从 {server} 断开  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同步 &amp;&amp; 聊天  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>点击获取新地址</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同步 &amp;&amp; 聊天  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} 输入：{inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>开始更新列表  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>完成列表更新  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1792,12 +1820,12 @@ Location of signing device: .....</source>
         <translation>导入 Electrum 钱包标签</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>所有文件 (*);;JSON 文件 (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>历史记录</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>所有文件 (*);;JSON 文件 (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1907,6 +1935,10 @@ Location of signing device: .....</source>
         <translation>地址</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>未识别到行  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} 不是一个有效的地址！  </translation>
     </message>
@@ -1955,6 +1987,10 @@ Location of signing device: .....</source>
         <translation>所有文件 (*);;钱包文件 (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>打开 CSV  </translation>
     </message>
@@ -1965,10 +2001,6 @@ Location of signing device: .....</source>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>请使用 CSV 模板，并包含标题行。  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>未识别到行  </translation>
     </message>
 </context>
 <context>
@@ -2032,6 +2064,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>所有文件 (*);;文本文件 (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
     </message>
 </context>
 <context>
@@ -2443,10 +2479,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>选择最适合接收者的类别</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} 输入：{inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3084,6 +3116,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>尝试导入 pyzbar 以查看是否安装了 Visual C++ 可再发行组件。  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3294,12 +3333,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>所有文件 (*);;PSBT (*.psbt);;交易 (*.tx)</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>打开交易/PSBT</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>所有文件 (*);;PSBT (*.psbt);;交易 (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3311,6 +3350,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}：指纹：{keystore_fingerprint}，密钥起源：{keystore_key_origin}，{keystore_xpub}</translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>文件未找到！  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3345,16 +3388,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>重新扫描此钱包时，请至少扫描到地址索引 {max_tip}，以发现所有资金地址。  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>标签同步备份密钥：{label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. 将&apos;恢复表&apos;（{number}词）粘贴或胶带在下面的表格上&lt;br/&gt;2. 在下面的线处折叠这张纸&lt;br/&gt;3. 将这张纸放在只有您能访问的安全位置&lt;br/&gt;4. 您可以将硬件签名器放在与纸质助记词种子备份一起的地方，或者b) 在另一个安全位置（如果有的话）</translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>标签同步备份密钥：{label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

@@ -123,6 +123,3 @@ def setup_logging() -> None:
 
 def describe_os_version() -> str:
     return platform.platform()
-
-
-setup_logging()

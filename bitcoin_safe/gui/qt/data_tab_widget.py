@@ -28,25 +28,22 @@
 
 
 import logging
-from typing import Dict, Generic, Type, TypeVar
+from typing import Dict, Generic, TypeVar
+
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QWidget
 
 from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
 
 logger = logging.getLogger(__name__)
 
-from typing import Dict, Generic, Type, TypeVar
-
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QWidget
-
 T = TypeVar("T")
 T2 = TypeVar("T2")
 
 
-class DataTabWidget(Generic[T], HistTabWidget):
-    def __init__(self, data_class: Type[T], parent=None) -> None:
-        super().__init__(parent)
-        self._data_class = data_class
+class DataTabWidget(HistTabWidget, Generic[T]):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent=parent)
         self._tab_data: Dict[QWidget, T] = {}
 
     def setTabData(self, widget: QWidget, data: T) -> None:
@@ -56,7 +53,7 @@ class DataTabWidget(Generic[T], HistTabWidget):
         tab = self.widget(index)
         if not tab:
             return None
-        return self._tab_data[tab]
+        return self._tab_data.get(tab)
 
     def get_data_for_tab(self, tab: QWidget) -> T:
         return self._tab_data[tab]
@@ -68,9 +65,7 @@ class DataTabWidget(Generic[T], HistTabWidget):
         return self._tab_data[current_widget]
 
     def getAllTabData(self) -> Dict[QWidget, T]:
-        widgets_raw = [self.widget(i) for i in range(self.count())]
-        widgets = [w for w in widgets_raw if w]
-        return {widget: self.get_data_for_tab(widget) for widget in widgets}
+        return self._tab_data
 
     def clearTabData(self) -> None:
         self._tab_data.clear()
@@ -122,9 +117,11 @@ class DataTabWidget(Generic[T], HistTabWidget):
 
     def removeTab(self, index: int) -> None:
         widget = self.widget(index)
-        super().removeTab(index)
         if widget in self._tab_data:
             del self._tab_data[widget]
+        super().removeTab(index)
+        if widget:
+            widget.setParent(None)  # Detach it from the parent
 
 
 if __name__ == "__main__":
@@ -134,7 +131,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    tab_widget = DataTabWidget(str)
+    tab_widget = DataTabWidget[str]()
     tab_widget.setMovable(True)
     tab1 = QWidget()
     tab2 = QWidget()

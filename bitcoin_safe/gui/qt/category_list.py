@@ -28,27 +28,25 @@
 
 
 import logging
-
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-logger = logging.getLogger(__name__)
-
-from typing import Callable, List
+from typing import List
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QColor
+
+from bitcoin_safe.category_info import SubtextType
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...signals import UpdateFilter, UpdateFilterReason, WalletSignals
 from .taglist import CustomListWidget, TagEditor
 from .util import category_color
 
+logger = logging.getLogger(__name__)
+
 
 class CategoryList(CustomListWidget):
     def __init__(
         self,
-        categories: List[str],
         wallet_signals: WalletSignals,
-        get_sub_texts: Callable[[], List[str]],
         parent=None,
         immediate_release=True,
     ) -> None:
@@ -60,8 +58,6 @@ class CategoryList(CustomListWidget):
             immediate_release=immediate_release,
         )
 
-        self.categories = categories
-        self.get_sub_texts = get_sub_texts
         self.wallet_signals = wallet_signals
         self.wallet_signals.updated.connect(self.refresh)
         self.refresh(UpdateFilter(refresh_all=True))
@@ -98,7 +94,7 @@ class CategoryList(CustomListWidget):
             return
 
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-        self.recreate(self.categories, sub_texts=self.get_sub_texts())
+        self.recreate(self.wallet_signals.get_category_infos() or list())
 
     @classmethod
     def color(cls, category) -> QColor:
@@ -112,16 +108,14 @@ class CategoryEditor(TagEditor):
 
     def __init__(
         self,
-        get_categories: Callable[[], List[str]],
         wallet_signals: WalletSignals,
-        get_sub_texts: Callable[[], List[str]],
         parent=None,
         prevent_empty_categories=True,
+        subtext_type: SubtextType = SubtextType.balance,
     ) -> None:
-        super().__init__(parent, get_categories(), sub_texts=get_sub_texts())
+        category_infos = wallet_signals.get_category_infos.emit() or list()
+        super().__init__(parent=parent, category_infos=category_infos, subtext_type=subtext_type)
 
-        self.get_categories = get_categories
-        self.get_sub_texts = get_sub_texts
         self.wallet_signals = wallet_signals
         self.prevent_empty_categories = prevent_empty_categories
 
@@ -147,7 +141,9 @@ class CategoryEditor(TagEditor):
         self.refresh(UpdateFilter(refresh_all=True))
 
     def on_added(self, category) -> None:
-        if not category or category in self.get_categories():
+        category_infos = self.wallet_signals.get_category_infos.emit() or []
+        categories = [category_info.category for category_info in category_infos]
+        if not category or category in categories:
             return
         self.signal_category_added.emit(category)
 
@@ -156,13 +152,15 @@ class CategoryEditor(TagEditor):
         )
 
     def on_delete(self, category: str) -> None:
-        if category not in self.get_categories():
+        category_infos = self.wallet_signals.get_category_infos() or list()
+        categories = [category_info.category for category_info in category_infos]
+        if category not in categories:
             return
         self.wallet_signals.updated.emit(
             UpdateFilter(categories=[category], reason=UpdateFilterReason.CategoryDeleted)
         )
 
-        if not self.get_categories() and self.prevent_empty_categories:
+        if not categories and self.prevent_empty_categories:
             self.list_widget.add("Default")
             self.wallet_signals.updated.emit(
                 UpdateFilter(refresh_all=True, reason=UpdateFilterReason.CategoryDeleted)
@@ -173,7 +171,7 @@ class CategoryEditor(TagEditor):
             return
 
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
-        self.list_widget.recreate(self.get_categories(), sub_texts=self.get_sub_texts())
+        self.list_widget.recreate(self.wallet_signals.get_category_infos() or list())
 
     @classmethod
     def color(cls, category) -> QColor:

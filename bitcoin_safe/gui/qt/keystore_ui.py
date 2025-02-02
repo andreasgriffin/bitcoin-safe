@@ -28,45 +28,17 @@
 
 
 import logging
-from typing import Iterable, Optional, Tuple, Union
-
-from bitcoin_safe.gui.qt.analyzer_indicator import AnalyzerIndicator
-from bitcoin_safe.gui.qt.analyzers import (
-    FingerprintAnalyzer,
-    KeyOriginAnalyzer,
-    SeedAnalyzer,
-    XpubAnalyzer,
-)
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
-from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.i18n import translate
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
-from ...dynamic_lib_load import setup_libsecp256k1
-
-setup_libsecp256k1()
-
-from bitcoin_usb.address_types import SimplePubKeyProvider
-
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit, QCompleterLineEdit
-from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
-
-from .dialog_import import ImportDialog
-
-logger = logging.getLogger(__name__)
-
-from typing import Callable, List
+from functools import partial
+from typing import Callable, Iterable, List, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
-from bitcoin_usb.address_types import AddressType
+from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import get_network_index
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QCloseEvent, QIcon
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QFormLayout,
@@ -82,10 +54,27 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.analyzer_indicator import AnalyzerIndicator
+from bitcoin_safe.gui.qt.analyzers import (
+    FingerprintAnalyzer,
+    KeyOriginAnalyzer,
+    SeedAnalyzer,
+    XpubAnalyzer,
+)
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit, QCompleterLineEdit
+from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.spinning_button import SpinningButton
+from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
 from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
 from ...signer import AbstractSignatureImporter, SignatureImporterUSB
 from .block_change_signals import BlockChangesSignals
+from .dialog_import import ImportDialog
 from .util import (
     Message,
     MessageType,
@@ -96,6 +85,8 @@ from .util import (
     read_QIcon,
 )
 
+logger = logging.getLogger(__name__)
+
 
 def icon_for_label(label: str) -> QIcon:
     return (
@@ -104,6 +95,8 @@ def icon_for_label(label: str) -> QIcon:
 
 
 class BaseHardwareSignerInteractionWidget(QWidget):
+    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowIcon(read_QIcon("logo.svg"))
@@ -135,6 +128,10 @@ class BaseHardwareSignerInteractionWidget(QWidget):
     def updateUi(self) -> None:
         if self.help_button:
             self.help_button.setText(self.tr("Help"))
+
+    def closeEvent(self, event: QCloseEvent | None):
+        self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
+        super().closeEvent(event)
 
 
 class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
@@ -304,31 +301,16 @@ class KeyStoreUI(QObject):
         button_qr = self.hardware_signer_interaction.add_qr_import_buttonn()
         self.hardware_signer_interaction.add_help_button(ScreenshotsExportXpub())
 
-        button_qr.clicked.connect(lambda: self.edit_xpub.button_container.buttons[0].click())
+        button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
 
         self.usb_gui = USBGui(self.network, initalization_label=self.hardware_signer_label)
         signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
         button_hwi = self.hardware_signer_interaction.add_hwi_button(
             signal_end_hwi_blocker=signal_end_hwi_blocker
         )
-        button_hwi.clicked.connect(lambda: self.on_hwi_click())
+        button_hwi.clicked.connect(self.on_hwi_click)
 
-        def process_input(s: str) -> None:
-            res = Data.from_str(s, network=self.network)
-            self._on_handle_input(res)
-
-        def import_dialog():
-            ImportDialog(
-                self.network,
-                on_open=process_input,
-                window_title=self.tr("Import fingerprint and xpub"),
-                text_button_ok=self.tr("OK"),
-                text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
-                text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
-                close_all_video_widgets=self.signals_min.close_all_video_widgets,
-            ).exec()
-
-        button_file.clicked.connect(import_dialog)
+        button_file.clicked.connect(self._import_dialog)
 
         # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         self.tab_import_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -369,10 +351,26 @@ class KeyStoreUI(QObject):
         self.edit_key_origin_input.textChanged.connect(self.format_all_fields)
         self.signals_min.language_switch.connect(self.updateUi)
 
+    def _process_input(self, s: str) -> None:
+        res = Data.from_str(s, network=self.network)
+        self._on_handle_input(res)
+
+    def _import_dialog(self):
+        ImportDialog(
+            self.network,
+            on_open=self._process_input,
+            window_title=self.tr("Import fingerprint and xpub"),
+            text_button_ok=self.tr("OK"),
+            text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
+            text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
+        ).exec()
+
     def on_edit_seed_changed(self, text: str):
         try:
             keystore = self.get_ui_values_as_keystore()
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             Message(str(e), type=MessageType.Error)
             return
         self.edit_fingerprint.setText(keystore.fingerprint)
@@ -393,7 +391,8 @@ class KeyStoreUI(QObject):
     def key_origin(self) -> str:
         try:
             standardized = SimplePubKeyProvider.format_key_origin(self.edit_key_origin.text().strip())
-        except:
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             return ""
 
         return standardized
@@ -524,7 +523,8 @@ class KeyStoreUI(QObject):
             )
             try:
                 self.edit_xpub.setText(ConverterXpub.convert_slip132_to_bip32(xpub))
-            except:
+            except Exception as e:
+                logger.debug(f"{self.__class__.__name__}: {e}")
                 return False
 
         return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
@@ -565,6 +565,7 @@ class KeyStoreUI(QObject):
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             Message(
                 str(e)
                 + "\n\n"
@@ -677,12 +678,6 @@ class SignerUI(QWidget):
 
         self.layout_keystore_buttons = QVBoxLayout(self)
 
-        def callback_generator(signer: AbstractSignatureImporter) -> Callable:
-            def f() -> None:
-                signer.sign(self.psbt)
-
-            return f
-
         self.buttons: List[QPushButton] = []
         for signer in self.signature_importers:
             button: QPushButton
@@ -700,7 +695,8 @@ class SignerUI(QWidget):
                 button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             self.buttons.append(button)
             button.setMinimumHeight(30)
-            button.clicked.connect(callback_generator(signer))
+            callback = partial(signer.sign, self.psbt)
+            button.clicked.connect(callback)
             self.layout_keystore_buttons.addWidget(button)
 
             # forward the signal_signature_added from each signer to self.signal_signature_added
@@ -727,16 +723,11 @@ class SignerUIHorizontal(QWidget):
 
         for signer in self.signature_importers:
 
-            def callback_generator(signer: AbstractSignatureImporter) -> Callable:
-                def f() -> None:
-                    signer.sign(self.psbt)
-
-                return f
-
             button = QPushButton(signer.label)
             button.setMinimumHeight(30)
             button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
-            button.clicked.connect(callback_generator(signer))
+            action = partial(signer.sign, self.psbt)
+            button.clicked.connect(action)
             self.layout_keystore_buttons.addWidget(button)
 
             # forward the signal_signature_added from each signer to self.signal_signature_added

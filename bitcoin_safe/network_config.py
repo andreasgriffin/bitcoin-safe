@@ -29,22 +29,20 @@
 
 import logging
 from dataclasses import dataclass
-from urllib.parse import urlparse
-
-from packaging import version
-
-logger = logging.getLogger(__name__)
-
 from typing import Any, Dict, Literal
+from urllib.parse import urlparse
 
 import bdkpython as bdk
 import socks
+from packaging import version
 
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .html_utils import link
 from .i18n import translate
+
+logger = logging.getLogger(__name__)
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this

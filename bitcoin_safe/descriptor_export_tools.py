@@ -28,13 +28,6 @@
 
 
 import logging
-
-from bitcoin_safe.gui.qt.util import save_file_dialog
-from bitcoin_safe.hardware_signers import DescriptorExportType, DescriptorExportTypes
-from bitcoin_safe.wallet import filename_clean
-
-logger = logging.getLogger(__name__)
-
 from typing import Optional
 
 import bdkpython as bdk
@@ -42,7 +35,13 @@ from bitcoin_qr_tools.data import ConverterMultisigWalletExport
 from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import DescriptorInfo
 
+from bitcoin_safe.gui.qt.util import save_file_dialog
+from bitcoin_safe.hardware_signers import DescriptorExportType, DescriptorExportTypes
+from bitcoin_safe.wallet import filename_clean
+
 from .descriptors import MultipathDescriptor
+
+logger = logging.getLogger(__name__)
 
 
 class DescriptorExportTools:

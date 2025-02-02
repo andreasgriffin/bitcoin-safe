@@ -30,21 +30,6 @@
 import csv
 import logging
 from pathlib import Path
-
-from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
-from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
-from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.labels import LabelType
-from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.wallet import get_wallet_of_address
-
-from ...pythonbdk_types import Recipient, is_address
-from .invisible_scroll_area import InvisibleScrollArea
-
-logger = logging.getLogger(__name__)
-
 from typing import Any, List
 
 import bdkpython as bdk
@@ -68,9 +53,22 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.address_edit import AddressEdit
+from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
+from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
+from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.labels import LabelType
+from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.wallet import get_wallet_of_address
+
+from ...pythonbdk_types import Recipient, is_address
 from ...signals import Signals
 from ...util import is_int, unit_sat_str, unit_str
+from .invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox
+
+logger = logging.getLogger(__name__)
 
 
 class CloseButton(QPushButton):
@@ -261,6 +259,8 @@ class RecipientWidget(QWidget):
 
 class RecipientTabWidget(QTabWidget):
     signal_close: "TypedPyQtSignal[RecipientTabWidget]" = pyqtSignal(QTabWidget)  # type: ignore
+    signal_clicked_send_max_button: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
+    signal_amount_changed: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
 
     def __init__(
         self,
@@ -281,11 +281,24 @@ class RecipientTabWidget(QTabWidget):
             allow_edit=allow_edit,
             parent=self,
         )
+
         self.addTab(self.recipient_widget, read_QIcon("person.svg"), title)
 
-        self.tabCloseRequested.connect(lambda: self.signal_close.emit(self))
+        # connect signals
+        self.tabCloseRequested.connect(self.on_tabCloseRequested)
+        self.recipient_widget.amount_spin_box.valueChanged.connect(self.on_amount_spin_box_changed)
+        self.recipient_widget.send_max_button.clicked.connect(self.on_send_max_button)
 
         self.recipient_widget.address_edit.signal_text_change.connect(self.autofill_tab_text)
+
+    def on_tabCloseRequested(self):
+        self.signal_close.emit(self)
+
+    def on_send_max_button(self):
+        self.signal_clicked_send_max_button.emit(self.recipient_widget)
+
+    def on_amount_spin_box_changed(self):
+        self.signal_amount_changed.emit(self.recipient_widget)
 
     def set_allow_edit(self, allow_edit: bool):
         self.recipient_widget.set_allow_edit(allow_edit)
@@ -359,8 +372,8 @@ class RecipientTabWidget(QTabWidget):
 class Recipients(QWidget):
     signal_added_recipient: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
     signal_removed_recipient: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
-    signal_clicked_send_max_button: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
-    signal_amount_changed: TypedPyQtSignal[RecipientTabWidget] = pyqtSignal(RecipientTabWidget)  # type: ignore
+    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = pyqtSignal(RecipientWidget)  # type: ignore
+    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = pyqtSignal(RecipientWidget)  # type: ignore
 
     def __init__(self, signals: Signals, network: bdk.Network, allow_edit=True) -> None:
         super().__init__()
@@ -393,12 +406,12 @@ class Recipients(QWidget):
 
         menu = Menu(self)
         self.action_export_csv_template = menu.add_action(
-            "", lambda: self.export_csv([]), icon=read_QIcon("csv-file.svg")
+            "", self.on_action_export_csv_template, icon=read_QIcon("csv-file.svg")
         )
         self.action_import_csv = menu.add_action("", self.import_csv, icon=read_QIcon("csv-file.svg"))
         menu.addSeparator()
         self.action_export_csv = menu.add_action(
-            "", lambda: self.export_csv(self.recipients), icon=read_QIcon("csv-file.svg")
+            "", self.on_action_export_csv, icon=read_QIcon("csv-file.svg")
         )
 
         self.toolbutton_csv.setMenu(menu)
@@ -446,6 +459,12 @@ class Recipients(QWidget):
             self.tr("Label"),
         ]
 
+    def on_action_export_csv_template(self):
+        self.export_csv([])
+
+    def on_action_export_csv(self):
+        self.export_csv(self.recipients)
+
     def export_csv(self, recipients: List[Recipient], file_path: str | Path | None = None) -> Path | None:
 
         if not file_path:
@@ -456,7 +475,7 @@ class Recipients(QWidget):
                 self.tr("All Files (*);;Wallet Files (*.csv)"),
             )
             if not file_path:
-                logger.info("No file selected")
+                logger.info(self.tr("No file selected"))
                 return None
 
         table = self.as_list(recipients)
@@ -477,7 +496,7 @@ class Recipients(QWidget):
                 self.tr("All Files (*);;CSV (*.csv)"),
             )
             if not file_path:
-                logger.info("No file selected")
+                logger.info(self.tr("No file selected"))
                 return
 
         with open(file_path, "r") as file:
@@ -538,10 +557,6 @@ class Recipients(QWidget):
         recipient_box.recipient_widget.set_max(recipient.checked_max_amount)
         if recipient.label is not None:
             recipient_box.label = recipient.label
-        recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
-        recipient_box.recipient_widget.amount_spin_box.valueChanged.connect(
-            lambda *args: self.signal_amount_changed.emit(recipient_box)
-        )
 
         # insert before the button position
         def insert_before_button(new_widget: QWidget) -> None:
@@ -553,9 +568,8 @@ class Recipients(QWidget):
 
         insert_before_button(recipient_box)
 
-        recipient_box.recipient_widget.send_max_button.clicked.connect(
-            lambda: self.signal_clicked_send_max_button.emit(recipient_box)
-        )
+        recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
+        recipient_box.signal_clicked_send_max_button.connect(self.signal_amount_changed.emit)
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 

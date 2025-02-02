@@ -28,6 +28,11 @@
 
 
 import logging
+from typing import List
+
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +41,47 @@ from .step_progress_bar import StepProgressContainer
 
 
 class WizardBase(StepProgressContainer):
+    def __init__(
+        self,
+        step_labels: List[str],
+        signals_min: SignalsMin,
+        current_index: int = 0,
+        collapsible_current_active=False,
+        clickable=True,
+        use_checkmark_icon=True,
+        parent=None,
+        sub_indices: List[int] | None = None,
+        use_resizing_stacked_widget=True,
+        threading_parent: ThreadingManager | None = None,
+    ) -> None:
+        super().__init__(
+            step_labels,
+            signals_min,
+            current_index,
+            collapsible_current_active,
+            clickable,
+            use_checkmark_icon,
+            parent,
+            sub_indices,
+            use_resizing_stacked_widget,
+            threading_parent,
+        )
+
+        self.signal_tracker = SignalTracker()
+
     def set_visibilities(self) -> None:
         pass
 
     def toggle_tutorial(self) -> None:
         pass
+
+    def deleterefrences(self):
+        pass
+
+    def close(self):
+
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+
+        self.setParent(None)
+        super().close()

@@ -431,6 +431,10 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Questo &quot;descrittore&quot; contiene tutte le informazioni per ricostruire il portafoglio. Si prega di fare il backup di questo descrittore per poter recuperare i fondi!</translation>
     </message>
     <message>
+        <source>Descriptor unchanged</source>
+        <translation>Descrittore invariato  </translation>
+    </message>
+    <message>
         <source>New descriptor entered</source>
         <translation>Nuovo descrittore inserito  </translation>
     </message>
@@ -648,8 +652,8 @@ the sending value {sent}</source>
         <translation>Crea Transazione</translation>
     </message>
     <message>
-        <source>Prefill Transaction again</source>
-        <translation>Riprecompila i campi della transazione  </translation>
+        <source>Retry</source>
+        <translation>Riprova  </translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
@@ -1162,12 +1166,16 @@ Location of signing device: .....</source>
         <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
     <message>
-        <source>Selected file: {file_path}</source>
-        <translation>File selezionato: {file_path}</translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
         <translation>&amp;Nuovo Portafoglio</translation>
+    </message>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>File selezionato: {file_path}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
@@ -1206,12 +1214,12 @@ Location of signing device: .....</source>
         <translation>PSBT {txid}</translation>
     </message>
     <message>
-        <source>Open Wallet</source>
-        <translation>Apri Portafoglio</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;Apri Portafoglio</translation>
+    </message>
+    <message>
+        <source>Open Wallet</source>
+        <translation>Apri Portafoglio</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
@@ -1250,12 +1258,12 @@ Location of signing device: .....</source>
         <translation>Un portafoglio con id {name} è già aperto.</translation>
     </message>
     <message>
-        <source>Please complete the wallet setup.</source>
-        <translation>Si prega di completare la configurazione del portafoglio.</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>Apri &amp;Recente</translation>
+    </message>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>Si prega di completare la configurazione del portafoglio.</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
@@ -1294,12 +1302,12 @@ Location of signing device: .....</source>
         <translation>Aggiorna  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>Imposta Passphrase  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;Salva Portafoglio Corrente</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation>Imposta Passphrase  </translation>
     </message>
     <message>
         <source>Get an xpub</source>
@@ -1338,12 +1346,12 @@ Location of signing device: .....</source>
         <translation>Azioni  </translation>
     </message>
     <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Ricerca  </translation>
+    </message>
+    <message>
+        <source>Keypool</source>
+        <translation>Keypool  </translation>
     </message>
     <message>
         <source>Descriptors</source>
@@ -1400,6 +1408,10 @@ Location of signing device: .....</source>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
         <translation>Tutti i File (*);;File di Testo (*.csv)</translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
 </context>
 <context>
@@ -1693,6 +1705,10 @@ Vuoi procedere comunque?</translation>
         <translation>Elimina portafoglio</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
+    </message>
+    <message>
         <source>Password incorrect</source>
         <translation>Password errata</translation>
     </message>
@@ -1709,12 +1725,12 @@ Vuoi procedere comunque?</translation>
         <translation>Portafoglio salvato</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} in {shortid}</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Descrittore</translation>
+    </message>
+    <message>
+        <source>  {amount} in {shortid}</source>
+        <translation>  {amount} in {shortid}</translation>
     </message>
     <message>
         <source>The transactions 
@@ -1757,12 +1773,24 @@ Vuoi procedere comunque?</translation>
         <translation>Disconnesso da {server}  </translation>
     </message>
     <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sincronizza &amp;&amp; Chatta  </translation>
+    </message>
+    <message>
         <source>Click for new address</source>
         <translation>Clicca per un nuovo indirizzo</translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sincronizza &amp;&amp; Chatta  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} Input: {inputs}</translation>
+    </message>
+    <message>
+        <source>start updating lists</source>
+        <translation>inizio aggiornamento liste  </translation>
+    </message>
+    <message>
+        <source>finished updating lists</source>
+        <translation>aggiornamento liste completato  </translation>
     </message>
     <message>
         <source>Export labels</source>
@@ -1789,12 +1817,12 @@ Vuoi procedere comunque?</translation>
         <translation>Importa etichette del portafoglio Electrum</translation>
     </message>
     <message>
-        <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>Tutti i File (*);;File JSON (*.json)</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>Cronologia</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>Tutti i File (*);;File JSON (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
@@ -1904,6 +1932,10 @@ Vuoi procedere comunque?</translation>
         <translation>Indirizzo</translation>
     </message>
     <message>
+        <source>No rows recognized</source>
+        <translation>Nessuna riga riconosciuta  </translation>
+    </message>
+    <message>
         <source>{address} is not a valid address!</source>
         <translation>{address} non è un indirizzo valido!  </translation>
     </message>
@@ -1952,6 +1984,10 @@ Vuoi procedere comunque?</translation>
         <translation>Tutti i File (*);;File di Portafoglio (*.csv)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
+    </message>
+    <message>
         <source>Open CSV</source>
         <translation>Apri CSV  </translation>
     </message>
@@ -1962,10 +1998,6 @@ Vuoi procedere comunque?</translation>
     <message>
         <source>Please use the CSV template and include the header row.</source>
         <translation>Si prega di utilizzare il modello CSV e includere la riga di intestazione.  </translation>
-    </message>
-    <message>
-        <source>No rows recognized</source>
-        <translation>Nessuna riga riconosciuta  </translation>
     </message>
 </context>
 <context>
@@ -2029,6 +2061,10 @@ Vuoi procedere comunque?</translation>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
         <translation>Tutti i File (*);;File di Testo (*.svg)  </translation>
+    </message>
+    <message>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
 </context>
 <context>
@@ -2440,10 +2476,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Select a category that fits the recipient best</source>
         <translation>Seleziona una categoria che si adatti meglio al destinatario</translation>
-    </message>
-    <message>
-        <source>{num_inputs} Inputs: {inputs}</source>
-        <translation>{num_inputs} Input: {inputs}</translation>
     </message>
     <message>
         <source>Adding outpoints {outpoints}</source>
@@ -3078,6 +3110,13 @@ below {rate}</source>
     </message>
 </context>
 <context>
+    <name>ensure_pyzbar_works</name>
+    <message>
+        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
+        <translation>Tentativo di importare pyzbar per vedere se il Visual C++ Redistributable è installato.  </translation>
+    </message>
+</context>
+<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3287,12 +3326,12 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>open_file</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
-    </message>
-    <message>
         <source>Open Transaction/PSBT</source>
         <translation>Apri Transazione/PSBT</translation>
+    </message>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3304,6 +3343,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
         <translation>{keystore_label}: Impronta: {keystore_fingerprint}, Origine chiave: {keystore_key_origin}, {keystore_xpub}</translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>File non trovato!  </translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
@@ -3338,16 +3381,16 @@ It is best to use your own server, such as {link}.</source>
         <translation>Riscansionando questo portafoglio, scansionare almeno fino all&apos;indice di indirizzo {max_tip} per scoprire tutti gli indirizzi finanziati.  </translation>
     </message>
     <message>
-        <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>Chiave di backup per la sincronizzazione delle etichette: {label_sync_nsec}  </translation>
-    </message>
-    <message>
         <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
         <translation>1. Incolla o fissa il &apos;Foglio di recupero&apos; ({number} parole) sulla tabella sotto&lt;br/&gt;2. Piega questo foglio sulla linea sotto&lt;br/&gt;3. Metti questo foglio in un luogo sicuro, dove solo tu hai accesso&lt;br/&gt;4. Puoi mettere il firmatario hardware sia a) insieme al backup del seme di carta, o b) in un altro luogo sicuro (se disponibile)  </translation>
+    </message>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>Chiave di backup per la sincronizzazione delle etichette: {label_sync_nsec}  </translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>

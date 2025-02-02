@@ -105,7 +105,7 @@ class NotificationBar(QWidget):
         if has_close_button:
             main_widget_layout.addWidget(self.closeButton)
         self.closeButton.setFixedSize(self.sizeHint().height(), self.sizeHint().height())
-        logger.debug(f"initialized {self}")
+        logger.debug(f"initialized {self.__class__.__name__}")
 
     def set_background_color(self, color: QColor) -> None:
         self.setStyleSheet(

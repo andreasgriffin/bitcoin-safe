@@ -120,7 +120,7 @@ class ExpandableWidget(QWidget):
             if not child_widget:
                 break
             if child_widget is not self.toggleButton:
-                child_widget.deleteLater()
+                child_widget.close()
 
         # Add the new widget before the toggle button
         self.header._layout.insertWidget(0, widget, 1)
@@ -134,7 +134,7 @@ class ExpandableWidget(QWidget):
                 break
             child_widget = layout_item.widget()
             if child_widget:
-                child_widget.deleteLater()
+                child_widget.close()
 
         self.expandableWidget_layout.addWidget(widget)
 

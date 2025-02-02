@@ -49,6 +49,7 @@ def compose_email(
         # Attempt to use the native OS command to open the email client
         open_mailto_link(mailto_link)
     except Exception as e:
+        logger.debug(str(e))
         logger.debug(f"Failed to open the default email client using the OS native command: {e}")
         logger.debug("Attempting to open using webbrowser module...")
         # If the native OS command fails, fall back to using the webbrowser module

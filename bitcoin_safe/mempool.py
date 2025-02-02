@@ -27,10 +27,15 @@
 # SOFTWARE.
 
 
+import datetime
 import enum
 import logging
 from math import ceil
 from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
+import requests
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 from bitcoin_safe.network_config import NetworkConfig
@@ -41,12 +46,6 @@ from .config import MIN_RELAY_FEE
 from .signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
-
-import datetime
-
-import numpy as np
-import requests
-from PyQt6.QtCore import QObject, pyqtSignal
 
 feeLevels = [
     1,
@@ -196,7 +195,8 @@ def fetch_from_url(url: str, proxies: Dict | None, is_json=True) -> Optional[Any
             # If the request was unsuccessful, print the status code
             logger.error(f"Request failed with status code: {response.status_code}")
             return None
-    except:
+    except Exception as e:
+        logger.debug(str(e))
         logger.error(f"fetch_json_from_url {url} failed")
         return None
 
@@ -248,7 +248,7 @@ class MempoolData(ThreadingManager, QObject):
             "total_fee": 0,
             "fee_histogram": [],
         }
-        logger.debug(f"initialized {self}")
+        logger.debug(f"initialized {self.__class__.__name__}")
 
     def _empty_mempool_blocks(self) -> List[Dict[str, Any]]:
         return [

@@ -30,7 +30,11 @@
 import logging
 import typing
 
+import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
+from PyQt6.QtWidgets import QFormLayout, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.descriptors import MultipathDescriptor
@@ -39,20 +43,15 @@ from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool import MempoolData
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import serialized_to_hex
-
-logger = logging.getLogger(__name__)
-
-import bdkpython as bdk
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent
-from PyQt6.QtWidgets import QFormLayout, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
 
 from ...signals import Signals
 from ...wallet import Wallet
 from .hist_list import HistList
 from .util import Buttons, CloseButton, read_QIcon
+
+logger = logging.getLogger(__name__)
 
 
 class AddressDetailsAdvanced(QWidget):
@@ -130,6 +129,8 @@ class QRAddress(QRCodeWidgetSVG):
 
 
 class AddressDialog(QWidget):
+    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+
     def __init__(
         self,
         fx,
@@ -223,6 +224,11 @@ class AddressDialog(QWidget):
         vbox.addLayout(Buttons(CloseButton(self)))
         self.setupUi()
 
+        self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
+        self.shortcut_close.activated.connect(self.close)
+        self.shortcut_close2 = QShortcut(QKeySequence("ESC"), self)
+        self.shortcut_close2.activated.connect(self.close)
+
     # Override keyPressEvent method
     def keyPressEvent(self, event: QKeyEvent) -> None:  # type: ignore[override]
         # Check if the pressed key is 'Esc'
@@ -234,3 +240,7 @@ class AddressDialog(QWidget):
         self.recipient_tabs.updateUi()
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))
+
+    def closeEvent(self, event: QCloseEvent | None):
+        self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
+        super().closeEvent(event)

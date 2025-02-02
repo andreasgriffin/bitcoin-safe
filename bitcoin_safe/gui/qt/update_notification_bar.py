@@ -81,7 +81,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         super().__init__(
             text="",
             optional_button_text="",
-            callback_optional_button=lambda: self.check(),
+            callback_optional_button=self.check,
             additional_widget=self.download_container,
             has_close_button=True,
             parent=parent,
@@ -119,7 +119,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             if (layout_item := self.download_container_layout.takeAt(0)) and (
                 _widget := layout_item.widget()
             ):
-                _widget.deleteLater()
+                _widget.close()
 
         self.download_container.setVisible(bool(self.assets))
         if self.assets:

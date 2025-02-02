@@ -51,29 +51,16 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
-
-from bitcoin_safe.gui.qt.dialog_import import file_to_str
-from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
-from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.signals import Signals
-from bitcoin_safe.util import str_to_qbytearray
-from bitcoin_safe.wallet import TxStatus
-
-from ...config import UserConfig
-from ...i18n import translate
-from ...signals import TypedPyQtSignalNo
-
-logger = logging.getLogger(__name__)
-
 import csv
 import enum
 import io
 import json
+import logging
 import os
 import os.path
 import tempfile
 from decimal import Decimal
+from functools import partial
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from bitcoin_qr_tools.data import Data
@@ -127,7 +114,19 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.dialog_import import file_to_str
+from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
+from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.signals import Signals
+from bitcoin_safe.util import str_to_qbytearray, unique_elements
+from bitcoin_safe.wallet import TxStatus
+
+from ...config import UserConfig
+from ...i18n import translate
+from ...signals import TypedPyQtSignalNo
 from .util import do_copy, read_QIcon
+
+logger = logging.getLogger(__name__)
 
 
 def needs_frequent_flag(status: TxStatus | None) -> bool:
@@ -163,69 +162,48 @@ class MyMenu(Menu):
 
 
 class MyStandardItemModel(QStandardItemModel):
+
     def __init__(
         self,
-        parent,
-        drag_key: str = "item",
-        drag_keys_to_file_paths=None,
+        key_column: int,
+        parent=None,
     ) -> None:
         super().__init__(parent)
-        self.mytreeview: MyTreeView = parent
-        self.drag_key = drag_key
-        self.drag_keys_to_file_paths = self.csv_drag_keys_to_file_paths
-        if drag_keys_to_file_paths:
-            self.drag_keys_to_file_paths = drag_keys_to_file_paths
-
-    def csv_drag_keys_to_file_paths(
-        self, drag_keys: Iterable[str], save_directory: Optional[str] = None
-    ) -> List[str]:
-        """Writes the selected rows in a csv file (the directory is )"""
-        file_path = os.path.join(save_directory, f"export.csv") if save_directory else None
-        return [self.mytreeview.csv_drag_keys_to_file_path(drag_keys=drag_keys, file_path=file_path)]
+        self.key_column = key_column
 
     def flags(self, index: QtCore.QModelIndex) -> QtCore.Qt.ItemFlag:
-        if index.column() == self.mytreeview.key_column:  # only enable dragging for column 1
+        if index.column() == self.key_column:  # only enable dragging for column 1
             return super().flags(index) | Qt.ItemFlag.ItemIsDragEnabled
         else:
             return super().flags(index)
 
-    def mimeData(self, indexes: Iterable[QtCore.QModelIndex]) -> QMimeData:
-        mime_data = QMimeData()
-        keys = set()
-        for index in indexes:
-            if index.isValid():
-                item = self.item(index.row(), self.mytreeview.key_column)
-                if not item:
-                    continue
-                key = item.data(role=MyItemDataRole.ROLE_KEY)
-                keys.add(key)
-
-        # set the key data for internal drags
-        d = {
-            "type": f"drag_{self.drag_key}",
-            self.drag_key: list(keys),
-        }
-
-        mime_data.setData("application/json", str_to_qbytearray(json.dumps(d)))
-
-        # set the key data for files
-
-        file_urls = []
-        for file_path in self.drag_keys_to_file_paths(keys):
-            # Add the file URL to the list
-            file_urls.append(QUrl.fromLocalFile(file_path))
-
-        # Set the URLs of the files in the mime data
-        mime_data.setUrls(file_urls)
-
-        return mime_data
-
 
 class MySortModel(QSortFilterProxyModel):
-    def __init__(self, parent, source_model: MyStandardItemModel, sort_role: int) -> None:
+    role_drag_key = MyItemDataRole.ROLE_CLIPBOARD_DATA
+
+    class CSVOrderTpye(enum.Enum):
+        proxy_order = enum.auto()
+        source_order = enum.auto()
+        selection_order = enum.auto()
+        sorted_drag_key = enum.auto()
+
+    def __init__(
+        self,
+        key_column: int,
+        parent,
+        source_model: MyStandardItemModel,
+        sort_role: int,
+        Columns: Iterable[int],
+        drag_key: str = "item",
+        custom_drag_keys_to_file_paths=None,
+    ) -> None:
         super().__init__(parent)
+        self.key_column = key_column
         self._sort_role = sort_role
         self._source_model = source_model
+        self.Columns = Columns
+        self.drag_key = drag_key
+        self.custom_drag_keys_to_file_paths = custom_drag_keys_to_file_paths
         self.setSourceModel(source_model)
         self.setSortRole(sort_role)
 
@@ -234,9 +212,7 @@ class MySortModel(QSortFilterProxyModel):
         super().setSourceModel(sourceModel)
 
     def sourceModel(self) -> MyStandardItemModel:
-        if self._source_model:
-            return self._source_model
-        return MyStandardItemModel(parent=self)
+        return self._source_model
 
     def lessThan(self, source_left: QModelIndex, source_right: QModelIndex) -> bool:
         item1 = self.sourceModel().itemFromIndex(source_left)
@@ -253,8 +229,150 @@ class MySortModel(QSortFilterProxyModel):
         v2 = item2.text()
         try:
             return Decimal(v1) < Decimal(v2)
-        except:
+        except Exception:
             return v1 < v2
+
+    def close(self):
+        self._source_model.clear()
+        # super().close()
+
+    def item_from_index(self, idx: QModelIndex) -> Optional[QStandardItem]:
+        return self.sourceModel().itemFromIndex(self.mapToSource(idx))
+
+    def get_rows_as_list(
+        self, drag_keys: List[str] | None, order: CSVOrderTpye = CSVOrderTpye.proxy_order
+    ) -> Any:
+        "if drag_keys is None, then all rows"
+
+        def get_data(
+            row, col, role=MyItemDataRole.ROLE_CLIPBOARD_DATA, model: MyStandardItemModel | MySortModel = self
+        ) -> Any:
+            index = model.index(row, col)
+            item = self.item_from_index(index)
+            if item:
+                return item.data(role)
+
+        # collect data
+        proxy_ordered_dict: Dict[str, List[str]] = {}
+        for row in range(self.rowCount()):
+            drag_key = get_data(row, self.key_column, role=self.role_drag_key)
+            if drag_keys is None or get_data(row, self.key_column, role=self.role_drag_key) in drag_keys:
+                row_data = []
+                for column in self.Columns:
+                    row_data.append(get_data(row, column))
+                proxy_ordered_dict[drag_key] = row_data
+
+        ordered_drag_keys: Iterable[str] = []
+        if order == self.CSVOrderTpye.proxy_order:
+            ordered_drag_keys = proxy_ordered_dict.keys()
+        elif order == self.CSVOrderTpye.selection_order:
+            ordered_drag_keys = unique_elements(drag_keys) if drag_keys else proxy_ordered_dict.keys()
+        elif order == self.CSVOrderTpye.sorted_drag_key:
+            ordered_drag_keys = (
+                sorted(unique_elements(drag_keys)) if drag_keys else sorted(proxy_ordered_dict.keys())
+            )
+        elif order == self.CSVOrderTpye.source_order:
+            ordered_drag_keys = []
+            for row in range(self._source_model.rowCount()):
+                drag_key = get_data(row, self.key_column, role=self.role_drag_key, model=self._source_model)
+                if drag_key:
+                    ordered_drag_keys.append(drag_key)
+
+        # assemble the table
+        table = []
+        headers = [
+            self.headerData(i, QtCore.Qt.Orientation.Horizontal) for i in range(self.columnCount())
+        ]  # retrieve headers
+        table.append(headers)  # write headers to table
+        for drag_key in ordered_drag_keys:
+            if _row_data := proxy_ordered_dict.get(drag_key):
+                table.append(_row_data)
+        return table
+
+    def as_csv_string(self, drag_keys: List[str] | None) -> str:
+        table = self.get_rows_as_list(drag_keys=drag_keys)
+
+        stream = io.StringIO()
+        writer = csv.writer(stream)
+        writer.writerows(table)
+
+        return stream.getvalue()
+
+    def csv_drag_keys_to_file_paths(
+        self, drag_keys: List[str], save_directory: Optional[str] = None
+    ) -> List[str]:
+        """Writes the selected rows in a csv file (the directory is )"""
+        file_path = os.path.join(save_directory, f"export.csv") if save_directory else None
+        return [self.csv_drag_keys_to_file_path(drag_keys=drag_keys, file_path=file_path)]
+
+    def csv_drag_keys_to_file_path(
+        self, drag_keys: List[str] | None = None, file_path: str | None = None
+    ) -> str:
+        "if drag_keys is None, then export all"
+
+        # Fetch the serialized data using the drag_keys
+        csv_string = self.as_csv_string(drag_keys=drag_keys)
+
+        if file_path:
+            file_descriptor = os.open(file_path, os.O_CREAT | os.O_WRONLY)
+        else:
+            # Create a temporary file
+            file_descriptor, file_path = tempfile.mkstemp(
+                suffix=f".csv",
+                prefix=f"{self.drag_key} ",
+            )
+
+        with os.fdopen(file_descriptor, "w") as file:
+            file.write(csv_string)
+
+        logger.debug(f"CSV Table saved to {file_path}")
+        return file_path
+
+    def mimeData(self, indexes: Iterable[QtCore.QModelIndex]) -> QMimeData:
+        """_summary_
+
+        Args:
+            indexes (Iterable[QtCore.QModelIndex]):
+            these are in the order of how they were selected
+
+        Returns:
+            QMimeData: _description_
+        """
+        mime_data = QMimeData()
+        keys = list()
+        for index in indexes:
+            if index.isValid():
+                item = self.item_from_index(index.sibling(index.row(), self.key_column))
+                if not item:
+                    continue
+                key = item.data(role=self.role_drag_key)
+                keys.append(key)
+        keys = unique_elements(keys)
+
+        # set the key data for internal drags
+        d = {
+            "type": f"drag_{self.drag_key}",
+            self.drag_key: list(keys),
+        }
+
+        mime_data.setData("application/json", str_to_qbytearray(json.dumps(d)))
+
+        # set the key data for files
+
+        file_urls = []
+        file_paths = (
+            self.custom_drag_keys_to_file_paths(keys)
+            if self.custom_drag_keys_to_file_paths
+            else self.csv_drag_keys_to_file_paths(keys)
+        )
+        for file_path in file_paths:
+            # Add the file URL to the list
+            file_urls.append(QUrl.fromLocalFile(file_path))
+
+        # Set the URLs of the files in the mime data
+        mime_data.setUrls(file_urls)
+
+        return mime_data
 
 
 class ElectrumItemDelegate(QStyledItemDelegate):
@@ -358,10 +476,9 @@ class MyTreeView(QTreeView):
         sort_column: int | None = None,
         sort_order: Qt.SortOrder = Qt.SortOrder.AscendingOrder,
     ) -> None:
-        parent = parent
         super().__init__(parent)
         self.signals = signals
-        self._source_model = MyStandardItemModel(parent)
+        self._source_model = MyStandardItemModel(key_column=self.key_column, parent=self)
         self.config = config
         self.stretch_column = stretch_column
         self.column_widths = column_widths if column_widths else {}
@@ -392,7 +509,13 @@ class MyTreeView(QTreeView):
         self._forced_update = False
 
         self._default_bg_brush = QStandardItem().background()
-        self.proxy = QSortFilterProxyModel()
+        self.proxy = MySortModel(
+            key_column=self.key_column,
+            Columns=self.Columns,
+            parent=self,
+            source_model=self._source_model,
+            sort_role=MyItemDataRole.ROLE_SORT_ORDER,
+        )
 
         # Here's where we set the font globally for the view
         font = QFont("Arial", 10)
@@ -455,7 +578,15 @@ class MyTreeView(QTreeView):
 
     def create_menu(self, position: QPoint) -> Menu:
         menu = Menu()
-        selected: List[QModelIndex] = self.selected_in_column(self.key_column)
+        # is_multisig = isinstance(self.wallet, Multisig_Wallet)
+        selected = self.selected_in_column(self.key_column)
+        if not selected:
+            return menu
+        multi_select = len(selected) > 1
+
+        _selected_items = [self.item_from_index(item) for item in selected]
+        selected_items = [item for item in _selected_items if item]
+
         if not selected:
             current_row = self.current_row_in_column(self.key_column)
             if current_row:
@@ -474,7 +605,10 @@ class MyTreeView(QTreeView):
 
         menu.add_action(
             self.tr("Copy as csv"),
-            lambda: self.copyRowsToClipboardAsCSV([r.row() for r in selected]),
+            partial(
+                self.copyRowsToClipboardAsCSV,
+                [item.data(MySortModel.role_drag_key) for item in selected_items if item],
+            ),
             icon=read_QIcon("csv-file.svg"),
         )
 
@@ -487,12 +621,6 @@ class MyTreeView(QTreeView):
     def add_copy_menu(self, menu: Menu, idx: QModelIndex, include_columns_even_if_hidden=None) -> Menu:
         copy_menu = menu.add_menu(self.tr("Copy"))
         copy_menu.setIcon(read_QIcon("copy.png"))
-
-        def factory(text, title):
-            def f(text=text, title=title):
-                self.place_text_on_clipboard(text=text, title=title)
-
-            return f
 
         for column in self.Columns:
             if self.isColumnHidden(column) and (
@@ -514,7 +642,8 @@ class MyTreeView(QTreeView):
             if not clipboard_data:
                 continue
 
-            copy_menu.add_action(column_title, factory(text=clipboard_data, title=column_title))
+            action = partial(self.place_text_on_clipboard, text=clipboard_data, title=column_title)
+            copy_menu.add_action(column_title, action)
         return copy_menu
 
     def set_editability(self, items: List[QStandardItem]) -> None:
@@ -705,42 +834,16 @@ class MyTreeView(QTreeView):
             )  # append newline character after each row
         do_copy(stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text")
 
-    def get_rows_as_list(self, row_numbers) -> Any:
-        def get_data(row, col) -> Any:
-            model = self.model()  # assuming this is a QAbstractItemModel or subclass
-            index = model.index(row, col)
-
-            if hasattr(model, "data"):
-                return model.data(index, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-            else:
-                item = self.item_from_index(index)
-                if item:
-                    return item.data(MyItemDataRole.ROLE_CLIPBOARD_DATA)
-
-        row_numbers = sorted(row_numbers)
-
-        table = []
-        headers = [
-            self.model().headerData(i, QtCore.Qt.Orientation.Horizontal)
-            for i in range(self.model().columnCount())
-        ]  # retrieve headers
-        table.append(headers)  # write headers to table
-
-        for row in row_numbers:
-            row_data = []
-            for column in self.Columns:
-                row_data.append(get_data(row, column))
-            table.append(row_data)
-
-        return table
-
-    def copyRowsToClipboardAsCSV(self, row_numbers) -> None:
-        table = self.get_rows_as_list(row_numbers)
+    def copyRowsToClipboardAsCSV(self, drag_keys: List[str] | None) -> None:
+        table = self.proxy.get_rows_as_list(drag_keys)
 
         stream = io.StringIO()
         writer = csv.writer(stream)
         writer.writerows(table)
-        do_copy(stream.getvalue(), title=f"{len(row_numbers)} rows have ben copied as csv")
+        do_copy(
+            stream.getvalue(),
+            title=f"{len(list(drag_keys) ) if drag_keys else self.model().rowCount()  } rows have ben copied as csv",
+        )
 
     def mouseDoubleClickEvent(self, event: QMouseEvent | None) -> None:
         if not event:
@@ -831,55 +934,16 @@ class MyTreeView(QTreeView):
         "Returns a [row0_is_now_hidden, row1_is_now_hidden, ...]"
         return [self.hide_row(row) for row in range(self.model().rowCount())]
 
-    def as_csv_string(self, row_numbers: Optional[List[int]] = None, export_all=False) -> str:
-        table = self.get_rows_as_list(
-            row_numbers=list(range(self.model().rowCount())) if export_all else row_numbers
-        )
-
-        stream = io.StringIO()
-        writer = csv.writer(stream)
-        writer.writerows(table)
-
-        return stream.getvalue()
-
     def export_as_csv(self, file_path=None) -> None:
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
                 self, self.tr("Export csv"), "", self.tr("All Files (*);;Text Files (*.csv)")
             )
             if not file_path:
-                logger.info("No file selected")
+                logger.info(self.tr("No file selected"))
                 return
 
-        self.csv_drag_keys_to_file_path(file_path=file_path, export_all=True)
-
-    def csv_drag_keys_to_file_path(
-        self, drag_keys: Optional[Iterable[str]] = None, file_path: str | None = None, export_all=False
-    ) -> str:
-        row_numbers: List[int] = []
-        if drag_keys and not export_all:
-            for row_number in range(0, self._source_model.rowCount()):
-                item = self._source_model.item(row_number, self.key_column)
-                if item and item.data(MyItemDataRole.ROLE_KEY) in drag_keys:
-                    row_numbers.append(row_number)
-
-        # Fetch the serialized data using the drag_keys
-        csv_string = self.as_csv_string(row_numbers=row_numbers, export_all=export_all)
-
-        if file_path:
-            file_descriptor = os.open(file_path, os.O_CREAT | os.O_WRONLY)
-        else:
-            # Create a temporary file
-            file_descriptor, file_path = tempfile.mkstemp(
-                suffix=f".csv",
-                prefix=f"{self._source_model.drag_key} ",
-            )
-
-        with os.fdopen(file_descriptor, "w") as file:
-            file.write(csv_string)
-
-        logger.debug(f"CSV Table saved to {file_path}")
-        return file_path
+        self.proxy.csv_drag_keys_to_file_path(file_path=file_path)
 
     def place_text_on_clipboard(self, text: str, *, title: str | None = None) -> None:
         do_copy(text, title=title)
@@ -1059,8 +1123,8 @@ class MyTreeView(QTreeView):
         # sort again just as before
         self.signal_update.emit()
 
-    @staticmethod
-    def get_json_mime_data(mime_data: QMimeData) -> Optional[Dict]:
+    @classmethod
+    def get_json_mime_data(cls, mime_data: QMimeData) -> Optional[Dict]:
         if mime_data.hasFormat("application/json"):
             data_bytes = mime_data.data("application/json")
             try:
@@ -1068,10 +1132,17 @@ class MyTreeView(QTreeView):
                 logger.debug(f"dragEnterEvent: {json_string}")
                 d = json.loads(json_string)
                 return d
-            except:
+            except Exception as e:
+                logger.debug(f"{cls.__name__}: {e}")
                 return None
 
         return None
+
+    def close(self):
+        self.proxy.close()
+        self._source_model.clear()
+        self.setParent(None)
+        super().close()
 
 
 class SearchableTab(QWidget):
@@ -1079,7 +1150,14 @@ class SearchableTab(QWidget):
     def __init__(self, parent=None, **kwargs) -> None:
         super().__init__(parent=parent)
 
-        self.searchable_list: MyTreeView
+        self.searchable_list: MyTreeView | None = None
+
+    def close(self):
+        if self.searchable_list:
+            self.searchable_list.close()
+        self.searchable_list = None
+        self.setParent(None)
+        super().close()
 
 
 class TreeViewWithToolbar(SearchableTab):
@@ -1096,7 +1174,6 @@ class TreeViewWithToolbar(SearchableTab):
         # in searchable_list signal_update will be sent after the update. and since this
         # is relevant for the balance to show, i need to update also the balance label
         # which is done in updateUi
-        self.searchable_list.signal_update.connect(self.updateUi)
 
     def create_layout(self) -> None:
         layout = QVBoxLayout(self)
@@ -1106,18 +1183,19 @@ class TreeViewWithToolbar(SearchableTab):
         layout.addLayout(self.toolbar)
         layout.addWidget(self.searchable_list)
 
+    def _searchable_list_export_as_csv(self):
+        if self.searchable_list:
+            self.searchable_list.export_as_csv()
+
     def create_toolbar_with_menu(self, title):
         self.menu = MyMenu(self.config)
         self.action_export_as_csv = self.menu.add_action(
-            "", self.searchable_list.export_as_csv, icon=read_QIcon("csv-file.svg")
+            "", self._searchable_list_export_as_csv, icon=read_QIcon("csv-file.svg")
         )
 
         toolbar_button = QToolButton()
 
-        def create_menu():
-            self.menu.exec(QCursor.pos())
-
-        toolbar_button.clicked.connect(create_menu)
+        toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
         toolbar_button.setIcon(read_QIcon("preferences.svg"))
         toolbar_button.setMenu(self.menu)
         toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -1128,7 +1206,8 @@ class TreeViewWithToolbar(SearchableTab):
 
         self.search_edit = QLineEdit()
         self.search_edit.setClearButtonEnabled(True)
-        self.search_edit.textChanged.connect(self.searchable_list.filter)
+        if self.searchable_list:
+            self.search_edit.textChanged.connect(self.searchable_list.filter)
 
         self.toolbar.addWidget(self.balance_label)
         self.toolbar.addStretch()
@@ -1152,3 +1231,10 @@ class TreeViewWithToolbar(SearchableTab):
     def updateUi(self) -> None:
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))
+
+    def close(self):
+        if self.searchable_list:
+            self.searchable_list.close()
+            self.searchable_list = None
+        self.setParent(None)
+        super().close()

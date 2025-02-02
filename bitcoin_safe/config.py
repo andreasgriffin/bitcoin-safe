@@ -28,25 +28,22 @@
 
 
 import logging
+import os
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+import appdirs
+import bdkpython as bdk
 from packaging import version
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 
 from .execute_config import DEFAULT_MAINNET
-
-logger = logging.getLogger(__name__)
-
-import os
-from typing import Any, Dict, List, Optional
-
-import appdirs
-import bdkpython as bdk
-
 from .network_config import NetworkConfig, NetworkConfigs
 from .storage import BaseSaveableClass
 from .util import current_project_dir, path_to_rel_home_path, rel_home_path_to_abs_path
+
+logger = logging.getLogger(__name__)
 
 MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this

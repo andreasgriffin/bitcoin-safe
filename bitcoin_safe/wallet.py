@@ -28,21 +28,13 @@
 
 
 import functools
+import json
 import logging
 import os
 import random
-from time import time
-
-from bitcoin_safe.network_config import ProxyInfo, clean_electrum_url
-from bitcoin_safe.psbt_util import FeeInfo
-
-from .signals import Signals, UpdateFilter
-
-logger = logging.getLogger(__name__)
-
-import json
 from collections import defaultdict
 from threading import Lock
+from time import time
 from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
@@ -52,12 +44,16 @@ from bitcoin_usb.psbt_tools import PSBTTools
 from bitcoin_usb.software_signer import derive as software_signer_derive
 from packaging import version
 
+from bitcoin_safe.network_config import ProxyInfo, clean_electrum_url
+from bitcoin_safe.psbt_util import FeeInfo
+
 from .config import MIN_RELAY_FEE, UserConfig
 from .descriptors import AddressType, MultipathDescriptor, get_default_address_type
 from .i18n import translate
 from .keystore import KeyStore
 from .labels import Labels, LabelType
 from .pythonbdk_types import *
+from .signals import Signals, UpdateFilter
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos
 from .util import (
@@ -70,6 +66,8 @@ from .util import (
     replace_non_alphanumeric,
     time_logger,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class InconsistentBDKState(Exception):
@@ -208,6 +206,37 @@ class ProtoWallet(BaseSaveableClass):
 
     def get_mn_tuple(self) -> Tuple[int, int]:
         return self.threshold, len(self.keystores)
+
+    def get_relevant_differences(self, other_wallet: "ProtoWallet") -> Set[str]:
+        "Compares the relevant entries like keystores"
+        differences = set()
+
+        if self.id != other_wallet.id:
+            differences.add("id")
+        if self.network != other_wallet.network:
+            differences.add("network")
+
+        if len(self.keystores) != len(other_wallet.keystores):
+            differences.add("keystores")
+
+        for keystore, other_keystore in zip(self.keystores, other_wallet.keystores):
+            if not keystore:
+                if not other_keystore:
+                    continue
+                elif not keystore and other_keystore:
+                    differences.add("keystores")
+                    continue
+            if keystore:
+                if not other_keystore:
+                    differences.add("keystores")
+                    continue
+                elif not keystore.is_equal(other_keystore):
+                    differences.add("keystores")
+
+        return differences
+
+    def is_essentially_equal(self, other_wallet: "ProtoWallet") -> bool:
+        return not self.get_relevant_differences(other_wallet)
 
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "ProtoWallet":
@@ -455,7 +484,8 @@ class BdkWallet(bdk.Wallet, CacheManager):
             # this can happen if it is an input of a coinbase TX
             try:
                 return bdk.Address.from_script(txout.script_pubkey, self.network()).as_string()
-            except:
+            except Exception as e:
+                logger.debug(f"{self.__class__.__name__}: {e}")
                 return None
         else:
             return bdk.Address.from_script(txout.script_pubkey, self.network()).as_string()
@@ -887,6 +917,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             logger.debug(f"{self.id} self.bdkwallet.sync in { time()-start_time}s")
             logger.info(f"Wallet balance is: { self.bdkwallet.get_balance().__dict__ }")
         except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"{self.id} error syncing wallet {self.id}")
             raise e
 
@@ -1416,7 +1447,8 @@ class Wallet(BaseSaveableClass, CacheManager):
             # update the cached height
             try:
                 self._blockchain_height = self.blockchain.get_height()
-            except:
+            except Exception as e:
+                logger.debug(f"{self.__class__.__name__}: {e}")
                 logger.error(f"Could not fetch self.blockchain.get_height()")
         return self._blockchain_height
 
@@ -1848,6 +1880,21 @@ class Wallet(BaseSaveableClass, CacheManager):
             return default
 
         return calculate_ema(fee_rates, n=n, weights=weights)
+
+    def get_category_python_utxo_dict(self) -> Dict[str, List[PythonUtxo]]:
+        category_python_utxo_dict: Dict[str, List[PythonUtxo]] = {}
+
+        for python_utxo in self.get_all_utxos():
+            category = self.labels.get_category(python_utxo.address)
+            if not category:
+                continue
+            if category not in category_python_utxo_dict:
+                category_python_utxo_dict[category] = []
+            category_python_utxo_dict[category].append(python_utxo)
+        return category_python_utxo_dict
+
+    def close(self) -> None:
+        pass
 
 
 ###########
