@@ -522,6 +522,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         ):
             return
 
+        # i have to close it first, to ensure the wallet is shut down completely
+        self.signals.close_qt_wallet.emit(self.wallet.id)
+
         qt_wallet = QTWallet(
             new_wallet,
             self.config,
@@ -534,7 +537,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             parent=self,
         )
 
-        self.signals.close_qt_wallet.emit(self.wallet.id)
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)
 
     def add_sync_tab(self) -> Tuple[SyncTab, QWidget, LabelSyncer]:
