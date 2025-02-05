@@ -180,7 +180,7 @@ class QCompleterLineEdit(AnalyzerLineEdit):
         self._completer.setFilterMode(Qt.MatchFlag.MatchContains)
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self._model = QStringListModel()
-        # self.setCompleter(self._completer)
+        self.setCompleter(self._completer)
 
     def set_completer_list(self, words: Iterable[str]):
         self._model.setStringList(words)
