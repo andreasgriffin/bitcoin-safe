@@ -28,7 +28,7 @@ fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
 bdkpython = "^0.32.0"
-cryptography = "^43.0.1"
+cryptography = "^44.0.1"
 hwi = ">=2.3.1"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
@@ -38,12 +38,12 @@ pyqt6-charts = "^6.6.0"
 pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
-# bitcoin-qr-tools =   {path="../bitcoin-qr-tools"} #  "^0.10.15"
+bitcoin-qr-tools =   { git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "978dc3cfca895603aac29790ef609709a568c3b9" } #  {path="../bitcoin-qr-tools"} #  "^0.10.15"
 # bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
 # bitcoin-usb =   {path="../bitcoin-usb"} #  "^0.3.3"
-bitcoin-qr-tools =    "^1.0.4"
-bitcoin-nostr-chat = "^0.6.2" # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "fda38f7c4879fbced753a8d3466d50c571c06769" }
-bitcoin-usb =  "^0.7.8"
+# bitcoin-qr-tools =    "^1.0.4"
+bitcoin-nostr-chat = "^0.6.3" # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "fda38f7c4879fbced753a8d3466d50c571c06769" }
+bitcoin-usb =  "^0.7.9"
 pysocks = "^1.7.1"
 
 

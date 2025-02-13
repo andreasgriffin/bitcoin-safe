@@ -32,16 +32,18 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple
 
 from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
-
-from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
-from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
-
-logger = logging.getLogger(__name__)
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QColor, QFont, QIcon
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
+from bitcoin_safe.i18n import translate
+from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
+
 from ...hardware_signers import HardwareSigners
-from .util import screenshot_path
+from .util import adjust_bg_color_for_darkmode, icon_path, screenshot_path
+
+logger = logging.getLogger(__name__)
 
 
 class ScreenshotsTutorial(QWidget):
@@ -87,12 +89,31 @@ class ScreenshotsTutorial(QWidget):
         self.title.setText(text)
 
 
+class SeedWarningBar(NotificationBar):
+    def __init__(self) -> None:
+        super().__init__(
+            text="",
+            optional_button_text="",
+            has_close_button=False,
+        )
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
+        self.set_icon(QIcon(icon_path("warning.png")))
+
+        self.optionalButton.setVisible(False)
+
+    def setText(self, value: Optional[str]):
+        self.textLabel.setText(value if value else "")
+
+
 class ScreenshotsGenerateSeed(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
         super().__init__(group, parent)
 
         self.image_widgets: Dict[str, EnlargableImageWidgetWithButton] = {}
         self.tabs: Dict[str, QWidget] = {}
+
+        self.never_label = SeedWarningBar()
+        self._layout.insertWidget(1, self.never_label)
 
         for hardware_signer in self.enabled_hardware_signers:
             result = self.add_image_tab(
@@ -109,6 +130,16 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
             self.tr(
                 "Generate {number} secret seed words on each hardware signer and write them on the recovery sheet"
             ).format(number=TEXT_24_WORDS)
+        )
+
+        self.never_label.setText(
+            translate("tutorial", "Never share the {number} secret words with anyone!").format(
+                number=TEXT_24_WORDS
+            )
+            + "\n"
+            + translate("tutorial", "Never type them into any computer or cellphone!")
+            + "\n"
+            + translate("tutorial", "Never make a picture of them!")
         )
 
 

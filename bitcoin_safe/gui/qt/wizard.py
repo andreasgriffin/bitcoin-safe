@@ -511,7 +511,7 @@ class GenerateSeed(BaseTab):
         self.usb_gui = USBGui(self.refs.qtwalletbase.config.network)
 
         widget = QWidget()
-        widget_layout = QHBoxLayout(widget)
+        widget_layout = QVBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         self.screenshot = ScreenshotsGenerateSeed()
@@ -537,11 +537,6 @@ class GenerateSeed(BaseTab):
                 tab = self.screenshot.tabs[usb_device_name]
                 tab.layout().addWidget(hardware_signer_interaction)  # type: ignore
 
-        self.never_label = QLabel()
-        self.never_label.setWordWrap(True)
-        self.never_label.setMinimumWidth(300)
-        widget_layout.addWidget(self.never_label)
-
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
@@ -558,7 +553,6 @@ class GenerateSeed(BaseTab):
     def updateUi(self) -> None:
         super().updateUi()
         self.screenshot.updateUi()
-        self.never_label.setText(self.get_never_label_text())
 
         for hardware_signer_interaction in self.hardware_signer_interactions.values():
             hardware_signer_interaction.updateUi()
