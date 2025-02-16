@@ -1375,6 +1375,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
     def clear_ui(self) -> None:
         with BlockChangesSignals([self.utxo_list]):
             self.additional_outpoints.clear()
+            self.utxo_list.set_outpoints(self.get_outpoints())
             self.set_ui(TxUiInfos())
             self.reset_fee_rate()
             self.utxo_list.update_content()
@@ -1501,6 +1502,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
         for outpoint in outpoints:
             if outpoint not in old_outpoints:
                 self.additional_outpoints.append(outpoint)
+        self.utxo_list.set_outpoints(self.get_outpoints())
 
     def click_add_utxo(self) -> None:
         def process_input(s: str) -> None:
@@ -1723,9 +1725,7 @@ class UITx_Creator(UITx_Base, SearchableTab):
             self.fee_group.set_rbf_label(txinfos.fee_rate)
             self.fee_group.set_fee_rate(fee_rate=fee_info.fee_rate(), fee_info=fee_info)
 
-            for python_utxo in txinfos.utxo_dict.values():
-                if python_utxo.outpoint not in self.get_outpoints():
-                    self.additional_outpoints.append(python_utxo.outpoint)
+            self.add_outpoints([python_utxo.outpoint for python_utxo in txinfos.utxo_dict.values()])
         else:
             self.fee_group.set_rbf_label(None)
 

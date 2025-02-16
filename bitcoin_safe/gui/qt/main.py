@@ -186,7 +186,7 @@ class MainWindow(QMainWindow):
             signal_recently_open_wallet_changed=self.signal_recently_open_wallet_changed,
             parent=self.tab_wallets,
         )
-        self.welcome_screen.signal_remove_me.connect(self.tab_wallets.remove_tab)
+        self.welcome_screen.signal_remove_me.connect(self.on_new_wallet_welcome_screen_remove_me)
 
         # signals
         self.welcome_screen.signal_onclick_single_signature.connect(self.click_create_single_signature_wallet)
@@ -242,6 +242,11 @@ class MainWindow(QMainWindow):
             if isinstance(tab_data, QTProtoWallet):
                 res[tab_data.protowallet.id] = tab_data
         return res
+
+    def on_new_wallet_welcome_screen_remove_me(self, tab: QWidget):
+        if self.tab_wallets.count() > 1:
+            # remove only if there is 1 additional tab besides the new_wallet_welcome_screen
+            self.tab_wallets.remove_tab(tab)
 
     def close_video_widget(self):
         self.attached_widgets.remove_all_of_type(BitcoinVideoWidget)
