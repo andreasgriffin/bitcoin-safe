@@ -88,29 +88,25 @@ name = "bitcoin-qr-tools"
 version = "1.0.5"
 description = "Python bitcoin qr reader and generator"
 optional = false
-python-versions = ">=3.9,<3.13"
-files = []
-develop = false
+python-versions = "<3.13,>=3.9"
+files = [
+    {file = "bitcoin_qr_tools-1.0.5-py3-none-any.whl", hash = "sha256:a987dbe05e43e3513dac64d26228514f9fbafa164356a377372f68c1f36ff0af"},
+    {file = "bitcoin_qr_tools-1.0.5.tar.gz", hash = "sha256:794d2f10cb2d0547e9161494fc1e54c97129e7edf3e8f176865734950926cd6c"},
+]
 
 [package.dependencies]
-base58 = "^2.1.1"
-bdkpython = "^0.32.0"
-hwi = "^3.0.0"
-mss = "^9.0.1"
-numpy = "^2.0.1"
-opencv-python-headless = "^4.10.0.84"
-pillow = "^10.4.0"
-pygame = "^2.6.1"
-pyqrcode = "^1.2.1"
-pyqt6 = "^6.7.0"
-pyzbar = "^0.1.9"
+base58 = ">=2.1.1,<3.0.0"
+bdkpython = ">=0.32.0,<0.33.0"
+hwi = ">=3.0.0,<4.0.0"
+mss = ">=9.0.1,<10.0.0"
+numpy = ">=2.0.1,<3.0.0"
+opencv-python-headless = ">=4.10.0.84,<5.0.0.0"
+pillow = ">=10.4.0,<11.0.0"
+pygame = ">=2.6.1,<3.0.0"
+pyqrcode = ">=1.2.1,<2.0.0"
+pyqt6 = ">=6.7.0,<7.0.0"
+pyzbar = ">=0.1.9,<0.2.0"
 segno = "1.6.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
-reference = "978dc3cfca895603aac29790ef609709a568c3b9"
-resolved_reference = "978dc3cfca895603aac29790ef609709a568c3b9"
 
 [[package]]
 name = "bitcoin-usb"
@@ -2952,4 +2948,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "8236bfcc864d1c7e53970f8554c5e4e24bccb6903ba4a8e2374b25e88bf95313"
+content-hash = "8c6fe0fb278c4fc5a451b46ceb46eafa6347243332e7248330e5fb4d520309a8"
