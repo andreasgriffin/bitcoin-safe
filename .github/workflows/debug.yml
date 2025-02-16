@@ -1,0 +1,20 @@
+name: Spin up a machine
+on:
+  workflow_dispatch:
+    inputs: 
+      runner-id:
+        description: 'runner-id  (e.g. mac-13 mac-14 ubuntu-22.04 )  see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images' 
+        required: true
+        default: 'mac-13'
+
+jobs:
+  debug:
+    runs-on: '${{ github.event.inputs.runner-id }}'
+    steps:
+      - name: Install tmate
+        run: |
+          brew install tmate
+
+      - name: Start SSH session
+        run: |
+          tmate -F

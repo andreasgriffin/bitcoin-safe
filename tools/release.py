@@ -76,13 +76,16 @@ gpg --import 2759AA7148568ECCB03B76301D82124B440F612D.asc
 gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 ```
 
-#### Install and run on Mac, Linux, or Windows
-using the [python package ](https://pypi.org/project/bitcoin-safe/)  
-```bash
-python3 -m pip install bitcoin-safe
-python3 -m bitcoin_safe
-```
 """
+
+
+# the following is taken out from the release notes, since the pip package still requires installing system libraries
+# #### Install and run on Mac, Linux, or Windows
+# using the [python package ](https://pypi.org/project/bitcoin-safe/)
+# ```bash
+# python3 -m pip install bitcoin-safe
+# python3 -m bitcoin_safe
+# ```
 
 
 def run_pytest() -> None:

@@ -60,6 +60,9 @@ class LabelSyncer(QObject):
             self.on_nostr_label_bip329_received
         )
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
+        self.nostr_sync.signal_trusted_device_published_trust_me_back.connect(
+            self.on_trusted_device_published_trust_me_back
+        )
         self.wallet_signals.updated.connect(self.on_labels_updated)
 
     @staticmethod
@@ -99,10 +102,10 @@ class LabelSyncer(QObject):
             for chunk in chunks
         ]
 
-    def on_add_trusted_device(self, pub_key_bech32: str) -> None:
+    def send_all_labels(self, pub_key_bech32: str) -> None:
         if not self.sync_tab.enabled():
             return
-        logger.debug(f"on_add_trusted_device")
+        logger.debug(f"send_all_labels")
 
         # send entire label data
         refs = list(self.labels.data.keys())
@@ -119,6 +122,32 @@ class LabelSyncer(QObject):
                 PublicKey.parse(pub_key_bech32),
             )
         logger.info(f"Sent all labels to trusted device {short_key( pub_key_bech32)}")
+
+    def send_all_labels_to_myself(self):
+        if not self.sync_tab.enabled():
+            return
+        logger.debug(f"send_all_labels_to_myself")
+
+        my_key = self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key()
+        self.send_all_labels(my_key.to_bech32())
+        # sleep here to give the relays time to receive the message
+        # but if the relays fail, then better fail sending the messages,
+        # than blocking the wallet from closing
+        sleep(0.2)
+
+    def on_trusted_device_published_trust_me_back(self, pub_key_bech32: str) -> None:
+        if not self.sync_tab.enabled():
+            return
+        logger.debug(f"on_add_trusted_device")
+
+        self.send_all_labels(pub_key_bech32)
+
+    def on_add_trusted_device(self, pub_key_bech32: str) -> None:
+        if not self.sync_tab.enabled():
+            return
+        logger.debug(f"on_add_trusted_device")
+
+        self.send_all_labels(pub_key_bech32)
 
     def on_nostr_label_bip329_received(self, data: Data, author: PublicKey) -> None:
         if not self.sync_tab.enabled():
@@ -199,28 +228,3 @@ class LabelSyncer(QObject):
         logger.info(
             f"{self.__class__.__name__}: Sent {len(update_filter.addresses)} addresses, {len(update_filter.txids)} txids to {[short_key(m.to_bech32()) for m in  self.nostr_sync.group_chat.members]}"
         )
-
-    def send_all_labels_to_myself(self):
-        if not self.sync_tab.enabled():
-            return
-        logger.debug(f"send_all_labels_to_myself")
-
-        # send entire label data
-        refs = list(self.labels.data.keys())
-
-        my_key = self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key()
-        for bitcoin_data in self.get_chunked_bitcoin_data(refs):
-            self.nostr_sync.group_chat.dm_connection.send(
-                BitcoinDM(
-                    event=None,
-                    label=ChatLabel.SingleRecipient,
-                    description="",
-                    data=bitcoin_data,
-                    created_at=datetime.now(),
-                ),
-                my_key,
-            )
-        # sleep here to give the relays time to receive the message
-        # but if the relays fail, then better fail sending the messages,
-        # than blocking the wallet from closing
-        sleep(0.2)
