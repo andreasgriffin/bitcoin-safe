@@ -154,7 +154,7 @@
   "request": "launch",
   "program": "tools/build.py",
   "args": [
-    "--targets",  "appimage",  "deb"
+    "--targets",  "appimage",  "deb",
     "--commit",  "None",  
 ],
   "console": "integratedTerminal",
