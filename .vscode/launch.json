@@ -134,7 +134,7 @@
   "request": "launch",
   "program": "tools/build.py",
   "args": [
-      "--targets",    "appimage", 
+      "--targets",    "appimage", "deb",
 ],
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task
@@ -154,7 +154,7 @@
   "request": "launch",
   "program": "tools/build.py",
   "args": [
-    "--targets",  "appimage",  
+    "--targets",  "appimage",  "deb"
     "--commit",  "None",  
 ],
   "console": "integratedTerminal",

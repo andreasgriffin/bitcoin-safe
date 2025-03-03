@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>请验证配对代码与您的BitBox02上显示的是否匹配。  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH（一种比特币地址类型）</translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH(一种比特币地址类型)</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>地址</translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>前往  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>推导路径  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>路径  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>开始  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>结束  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>内部  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>keypool  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH（一种比特币地址类型）</translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH(一种比特币地址类型)</translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>账户  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>推导路径  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>获取xpub  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>缺失关键来源  </translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>提供的信息是针对 {key_origin_network} 的。请提供 {network} 网络的 xPub  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>提供的账户是 {provided_account}，与默认账户 {default_account} 不同。  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>意外的关键来源  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>导入指纹和xpub</translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>请将描述粘贴到右上角的描述字段中。</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,18 +791,22 @@ the sending value {sent}</source>
         <translation>助记词种子</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>确定</translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>签名设备名称：...... 
 签名设备位置：......</translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>请确保没有其他程序访问硬件签名器</translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>请输入有效的密钥来源。  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -926,24 +825,25 @@ Location of signing device: .....</source>
         <translation>请粘贴导出的文件（如sparrow-export.json）  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>选定地址类型 {type} 的标准是 {expected_key_origin}。如果您不确定，请进行更正。</translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>选定的地址类型 {type} 的标准是 {expected_key_origin}。如果不确定，请更正。  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>xPub来源 {key_origin} 与xPub属于一对，请选择正确的xPub来源配对。</translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>提供的信息是针对 {key_origin_network} 的。请提供 {network} 网络的 xPub  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>xPub起源{key_origin}不是{address_type}的预期{expected_key_origin}</translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} 无论如何您还想继续吗？  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>没有找到期望的关键来源 {expected_key_origin} 的签名数据。</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>请将描述粘贴到右上角的描述字段中。</translation>
     </message>
 </context>
 <context>
@@ -1291,72 +1191,12 @@ Location of signing device: .....</source>
         <translation>正在关闭标签页 {name}</translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>主窗口  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>已连接设备  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>刷新  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;保存当前钱包</translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>设置密码短语  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>获取一个xpub  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>签名消息  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>签署PSBT  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>更改用于getkeypool的选项  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>更改getkeypool选项  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>发送Pin  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>切换密码短语  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>显示地址  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>操作  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;搜索  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>密钥池 </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>描述符  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2130,17 +1970,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>？  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2153,63 +1982,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>完成发送测试以确保硬件签名器工作正常！</translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>签名  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>消息  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>签名消息  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>推导路径  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>对话  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>要签名的PSBT  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>导入PSBT  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>PSBT结果  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>导出PSBT  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>签署PSBT  </translation>
     </message>
 </context>
 <context>
@@ -2358,6 +2130,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>USB签名工具  </translation>
     </message>
     <message>
+        <source>Address index</source>
+        <translation>地址索引  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>签名消息  </translation>
+    </message>
+    <message>
         <source>Paste your descriptor to be signed</source>
         <translation>粘贴您要签名的描述符  </translation>
     </message>
@@ -2372,6 +2152,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Show Seed</source>
         <translation>显示种子  </translation>
+    </message>
+    <message>
+        <source>Unlock Devices</source>
+        <translation>解锁设备  </translation>
+    </message>
+    <message>
+        <source>Unlock</source>
+        <translation>解锁  </translation>
     </message>
     <message>
         <source>Get xpubs</source>
@@ -2396,14 +2184,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Paste your text to be signed</source>
         <translation>粘贴要签名的文本  </translation>
-    </message>
-    <message>
-        <source>Address index</source>
-        <translation>地址索引  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>签名消息  </translation>
     </message>
 </context>
 <context>
@@ -2770,6 +2550,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>钱包 {filename} 已经存在。  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>请选择一个钱包名称  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2936,6 +2720,38 @@ below {rate}</source>
         <translation>找不到{name}的HWI地址类型  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>由于缺失udev文件，可能会出现USB错误。您现在想安装udev文件吗？  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>安装udev文件  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>请重启计算机以使更改生效。  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>重启计算机  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>执行脚本  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>未找到合适的终端仿真器。  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>推导路径{value}必须以/开始  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value}不是有效的指纹  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>密钥起源{key_origin}的网络部分{network_str}必须用h强化  </translation>
     </message>
@@ -2958,62 +2774,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>错误</translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>由于缺失udev文件，可能会出现USB错误。您现在想安装udev文件吗？  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>安装udev文件  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>请重启计算机以使更改生效。  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>重启计算机  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>推导路径{value}必须以/开始  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>执行脚本  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>未找到合适的终端仿真器。  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>索引中不能出现两次h  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>{value}必须以m/开始  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>{value}不能包含//  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>{value}不能包含/h  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>{value}不能包含hh  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>{value}不能以/结束  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value}不是有效的指纹  </translation>
     </message>
 </context>
 <context>
@@ -3048,6 +2808,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>从相机读取二维码</translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>连接到USB签名器</translation>
     </message>
     <message>
         <source>Recovery</source>

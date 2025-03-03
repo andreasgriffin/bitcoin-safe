@@ -242,9 +242,9 @@ class DescriptorUI(QWidget):
         - descriptor ui
         """
         with BlockChangesSignals([self]):
-            self.keystore_uis.set_keystore_ui_from_protowallet()
             self.set_wallet_ui_from_protowallet()
             self.set_ui_descriptor()
+            self.keystore_uis.set_keystore_ui_from_protowallet()
 
     def set_protowallet_from_ui(self) -> None:
         logger.debug("set_protowallet_from_keystore_ui")
@@ -258,11 +258,9 @@ class DescriptorUI(QWidget):
 
         self.keystore_uis.set_protowallet_from_keystore_ui()
 
-    def set_combo_box_address_type_default(self) -> None:
+    def set_combo_box_address_type_from_protowallet(self) -> None:
         address_types = get_address_types(self.protowallet.is_multisig())
-        self.comboBox_address_type.setCurrentIndex(
-            address_types.index(get_default_address_type(self.protowallet.is_multisig()))
-        )
+        self.comboBox_address_type.setCurrentIndex(address_types.index(self.protowallet.address_type))
 
     def get_address_type_from_ui(self) -> AddressType:
         address_types = get_address_types(self.protowallet.is_multisig())
@@ -308,7 +306,7 @@ class DescriptorUI(QWidget):
         self.label_of.setHidden(self.no_edit_mode)
 
         with BlockChangesSignals([self]):
-            self.set_combo_box_address_type_default()
+            self.set_combo_box_address_type_from_protowallet()
             self.spin_signers.setValue(len(self.protowallet.keystores))
 
         if self.protowallet.is_multisig():

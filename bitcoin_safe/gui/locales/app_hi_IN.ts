@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>कृपया सत्यापित करें कि जोड़ने का कोड वही है जो आपके BitBox02 पर दिखाया गया है।  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>पता</translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>जाओ  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>व्युत्पन्न पथ  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>पथ  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>शुरू  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>अंत  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>आंतरिक  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>keypool  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>खाता  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>व्युत्पन्न पथ  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>एक्सपब प्राप्त करें  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>मिसिंग की उत्पत्ति  </translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>प्रदान की गई जानकारी {key_origin_network} के लिए है। कृपया {network} नेटवर्क के लिए xPub प्रदान करें  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>प्रदान किया गया खाता {provided_account} मूल खाते {default_account} से भिन्न है।  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>अप्रत्याशित की उत्पत्ति  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>फिंगरप्रिंट और xpub आयात करें</translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>कृपया शीर्ष दाएं में वर्णनकर्ता फ़ील्ड में वर्णनकर्ता पेस्ट करें।</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,17 +791,21 @@ the sending value {sent}</source>
         <translation>बीज</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>ठीक है</translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>हस्ताक्षर डिवाइस का नाम: ...... हस्ताक्षर डिवाइस का स्थान: .....</translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>ठीक है</translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>कृपया एक मान्य कुंजी मूल दर्ज करें।  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -925,24 +824,25 @@ Location of signing device: .....</source>
         <translation>कृपया निर्यातित फ़ाइल (जैसे कि sparrow-export.json) पेस्ट करें  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>चयनित पते के प्रकार {type} के लिए स्टैंडर्ट {expected_key_origin} है। कृपया सही करें अगर आपको यकीन नहीं है।</translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>चयनित पते के प्रकार {type} के लिए मानक {expected_key_origin} है। कृपया सही करें यदि आप सुनिश्चित नहीं हैं।  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>xPub उत्पत्ति {key_origin} और xPub एक साथ होते हैं। कृपया सही xPub उत्पत्ति जोड़ी चुनें।</translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>प्रदान की गई जानकारी {key_origin_network} के लिए है। कृपया {network} नेटवर्क के लिए xPub प्रदान करें  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>xPub मूल {key_origin} {address_type} के लिए अपेक्षित {expected_key_origin} नहीं है</translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} क्या आप फिर भी आगे बढ़ना चाहेंगे?  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>उम्मीद की गई की-उत्पत्ति {expected_key_origin} के लिए कोई साइनर डेटा नहीं मिला।</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>कृपया शीर्ष दाएं में वर्णनकर्ता फ़ील्ड में वर्णनकर्ता पेस्ट करें।</translation>
     </message>
 </context>
 <context>
@@ -1290,72 +1190,12 @@ Location of signing device: .....</source>
         <translation>टैब {name} बंद करना</translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>मुख्य विंडो  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>जुड़े हुए उपकरण  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>ताज़ा करें  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>पासफ़्रेज़ सेट करें  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>एक एक्सपब प्राप्त करें  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>संदेश हस्ताक्षर करें  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT हस्ताक्षर करें  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>getkeypool के लिए प्रयुक्त विकल्पों में परिवर्तन करें  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>getkeypool विकल्पों में परिवर्तन करें  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>पिन भेजें  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>पासफ़्रेज़ टॉगल करें  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>पता प्रदर्शित करें  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>क्रियाएँ  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;खोजें  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>विवरणक  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2127,17 +1967,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>?  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2150,63 +1979,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>हार्डवेयर साइनर काम कर रहा है, इसे सुनिश्चित करने के लिए भेज परीक्षण पूरा करें!</translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>हस्ताक्षर  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>संदेश  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>संदेश हस्ताक्षर करें  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>व्युत्पन्न पथ  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>संवाद  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>हस्ताक्षर करने के लिए PSBT  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>PSBT आयात करें  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>PSBT परिणाम  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>PSBT निर्यात करें  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT हस्ताक्षर करें  </translation>
     </message>
 </context>
 <context>
@@ -2355,6 +2127,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>USB साइनर टूल्स  </translation>
     </message>
     <message>
+        <source>Address index</source>
+        <translation>पता सूची  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>संदेश हस्ताक्षर करें  </translation>
+    </message>
+    <message>
         <source>Paste your descriptor to be signed</source>
         <translation>अपना विवरणक पेस्ट करें जिसे साइन किया जाना है  </translation>
     </message>
@@ -2369,6 +2149,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Show Seed</source>
         <translation>बीज दिखाएँ  </translation>
+    </message>
+    <message>
+        <source>Unlock Devices</source>
+        <translation>उपकरणों को अनलॉक करें  </translation>
+    </message>
+    <message>
+        <source>Unlock</source>
+        <translation>अनलॉक करें  </translation>
     </message>
     <message>
         <source>Get xpubs</source>
@@ -2393,14 +2181,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Paste your text to be signed</source>
         <translation>हस्ताक्षर करने के लिए अपना टेक्स्ट पेस्ट करें  </translation>
-    </message>
-    <message>
-        <source>Address index</source>
-        <translation>पता सूची  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>संदेश हस्ताक्षर करें  </translation>
     </message>
 </context>
 <context>
@@ -2764,6 +2544,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>वॉलेट {filename} पहले से मौजूद है।  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>कृपया एक वॉलेट नाम चुनें  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2930,6 +2714,38 @@ below {rate}</source>
         <translation>{name} के लिए कोई HWI एड्रेसटाइप नहीं मिल सका  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>udev फ़ाइलें गायब होने के कारण USB त्रुटियाँ उत्पन्न हो सकती हैं। क्या आप अब udev फ़ाइलें स्थापित करना चाहते हैं?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev फ़ाइलें स्थापित करें  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>कृपया परिवर्तनों को लागू करने के लिए अपने कंप्यूटर को पुनरारंभ करें।  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>कंप्यूटर पुनरारंभ करें  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>स्क्रिप्ट निष्पादित करना  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>व्युत्पन्न_पथ {value} को / से शुरू होना चाहिए  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} एक वैध फिंगरप्रिंट नहीं है  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>कुंजी मूल {key_origin} के नेटवर्क भाग {network_str} को h के साथ कठोर किया जाना चाहिए  </translation>
     </message>
@@ -2952,62 +2768,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>त्रुटि</translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>udev फ़ाइलें गायब होने के कारण USB त्रुटियाँ उत्पन्न हो सकती हैं। क्या आप अब udev फ़ाइलें स्थापित करना चाहते हैं?  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udev फ़ाइलें स्थापित करें  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>कृपया परिवर्तनों को लागू करने के लिए अपने कंप्यूटर को पुनरारंभ करें।  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>कंप्यूटर पुनरारंभ करें  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>व्युत्पन्न_पथ {value} को / से शुरू होना चाहिए  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>स्क्रिप्ट निष्पादित करना  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>एक अनुक्रमणिका में h दो बार नहीं आ सकता  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>{value} को m/ से शुरू होना चाहिए  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>{value} में // नहीं हो सकता  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>{value} में /h नहीं हो सकता  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>{value} में hh नहीं हो सकता  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>{value} / से खत्म नहीं हो सकता  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value} एक वैध फिंगरप्रिंट नहीं है  </translation>
     </message>
 </context>
 <context>
@@ -3042,6 +2802,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>कैमरा से QR कोड पढ़ें</translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>USB हस्ताक्षरकर्ता से जुड़ें</translation>
     </message>
     <message>
         <source>Recovery</source>

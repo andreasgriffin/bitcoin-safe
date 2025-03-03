@@ -310,6 +310,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             index = keystore_ui.tabs.indexOf(keystore_ui.tab)
             self.setTabText(index, keystore_ui.label)
             self.setTabIcon(index, icon_for_label(keystore_ui.label))
+            keystore_ui.format_all_fields()
 
     def set_keystore_ui_from_protowallet(self) -> None:
         logger.debug(f"set_keystore_ui_from_protowallet")

@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>Bitte überprüfen Sie, ob der Pairing-Code mit dem auf Ihrer BitBox02 angezeigten übereinstimmt.  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Adresse  </translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>Los  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>Ableitungspfad  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>Pfad  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>Start  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>Ende  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>Intern  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>keypool  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>Konto  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>Ableitungspfad  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>Holen Sie xpub  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>Fehlender Schlüsselursprung  </translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>Die bereitgestellten Informationen sind für {key_origin_network}. Bitte geben Sie xPub für Netzwerk {network} an  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>Das angegebene Konto ist {provided_account}, unterscheidet sich vom Standardkonto {default_account}.  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>Unerwarteter Schlüsselursprung  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>Fingerabdruck und xpub importieren  </translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>Bitte fügen Sie Deskriptoren in das Deskriptorenfeld oben rechts ein.  </translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,17 +791,21 @@ the sending value {sent}</source>
         <translation>Seed  </translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK  </translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>Name des Signiergeräts: ...... Standort des Signiergeräts: .....  </translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>OK  </translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>Bitte stellen Sie sicher, dass keine anderen Programme auf den Hardware-Signer zugreifen  </translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>Bitte geben Sie einen gültigen Schlüsselursprung ein.  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -925,24 +824,25 @@ Location of signing device: .....</source>
         <translation>Bitte fügen Sie die exportierte Datei ein (wie sparrow-export.json)  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>Standard für den ausgewählten Adresstyp {type} ist {expected_key_origin}. Bitte korrigieren Sie, wenn Sie sich nicht sicher sind.  </translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>Standard für den gewählten Adresstyp {type} ist {expected_key_origin}. Bitte korrigieren, wenn Sie sich nicht sicher sind.  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>Der xPub-Ursprung {key_origin} und der xPub gehören zusammen. Bitte wählen Sie das richtige xPub-Ursprungspaar.  </translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>Die bereitgestellten Informationen sind für {key_origin_network}. Bitte geben Sie xPub für Netzwerk {network} an  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>Der xPub-Ursprung {key_origin} ist nicht der erwartete {expected_key_origin} für {address_type}  </translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} Möchten Sie trotzdem fortfahren?  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>Keine Signer-Daten für den erwarteten Schlüsselursprung {expected_key_origin} gefunden.  </translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>Bitte fügen Sie Deskriptoren in das Deskriptorenfeld oben rechts ein.  </translation>
     </message>
 </context>
 <context>
@@ -1290,72 +1190,12 @@ Location of signing device: .....</source>
         <translation>Tab {name} schließen  </translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>Hauptfenster  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>Verbundene Geräte  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>Aktualisieren  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>Aktuelles Wallet speichern  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>Passphrase festlegen  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>Einen xpub erhalten  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>Nachricht signieren  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT signieren  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>Optionen für getkeypool ändern  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>Optionen für getkeypool ändern  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>Pin senden  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>Passphrase umschalten  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>Adresse anzeigen  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>Aktionen  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>Suchen  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>Deskriptoren  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2124,17 +1964,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>?  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2147,63 +1976,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>Vollenden Sie den Sendetest, um sicherzustellen, dass der Hardware-Unterzeichner funktioniert!  </translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>Signatur  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Nachricht  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>Nachricht signieren  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>Ableitungspfad  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialog  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>PSBT zum Signieren  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>PSBT importieren  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>PSBT-Ergebnis  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>PSBT exportieren  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT signieren  </translation>
     </message>
 </context>
 <context>
@@ -2352,6 +2124,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>USB-Signer-Werkzeuge  </translation>
     </message>
     <message>
+        <source>Address index</source>
+        <translation>Adressindex  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>Nachricht signieren  </translation>
+    </message>
+    <message>
         <source>Paste your descriptor to be signed</source>
         <translation>Fügen Sie Ihren Deskriptor zum Signieren ein  </translation>
     </message>
@@ -2366,6 +2146,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Show Seed</source>
         <translation>Seed anzeigen  </translation>
+    </message>
+    <message>
+        <source>Unlock Devices</source>
+        <translation>Geräte entsperren  </translation>
+    </message>
+    <message>
+        <source>Unlock</source>
+        <translation>Entsperren  </translation>
     </message>
     <message>
         <source>Get xpubs</source>
@@ -2390,14 +2178,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Paste your text to be signed</source>
         <translation>Fügen Sie Ihren zu signierenden Text ein  </translation>
-    </message>
-    <message>
-        <source>Address index</source>
-        <translation>Adressindex  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>Nachricht signieren  </translation>
     </message>
 </context>
 <context>
@@ -2761,6 +2541,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>Das Wallet {filename} existiert bereits.  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>Bitte wählen Sie einen Wallet-Namen  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2927,6 +2711,38 @@ below {rate}</source>
         <translation>Für {name} konnte kein HWI AddressType gefunden werden.  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>USB-Fehler können aufgrund fehlender udev-Dateien auftreten. Möchten Sie jetzt udev-Dateien installieren?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev-Dateien installieren  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>Computer neu starten  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>Skript ausführen  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>Kein geeigneter Terminal-Emulator gefunden.  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>Ableitungspfad {value} muss mit einem / beginnen  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} ist kein gültiger Fingerabdruck  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>Der Netzwerkteil {network_str} des Schlüsselursprungs {key_origin} muss mit einem h gehärtet werden  </translation>
     </message>
@@ -2949,62 +2765,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>Fehler  </translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>USB-Fehler können aufgrund fehlender udev-Dateien auftreten. Möchten Sie jetzt udev-Dateien installieren?  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udev-Dateien installieren  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>Computer neu starten  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>Ableitungspfad {value} muss mit einem / beginnen  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>Skript ausführen  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>Kein geeigneter Terminal-Emulator gefunden.  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>h darf nicht zweimal in einem Index erscheinen  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>{value} muss mit m/ beginnen  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>{value} darf nicht // enthalten  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>{value} darf nicht /h enthalten  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>{value} darf nicht hh enthalten  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>{value} darf nicht mit / enden  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value} ist kein gültiger Fingerabdruck  </translation>
     </message>
 </context>
 <context>
@@ -3039,6 +2799,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>QR-Code von der Kamera lesen  </translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>Mit dem USB-Signer verbinden</translation>
     </message>
     <message>
         <source>Recovery</source>
