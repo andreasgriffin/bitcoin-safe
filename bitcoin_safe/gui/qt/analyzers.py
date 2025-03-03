@@ -51,10 +51,13 @@ logger = logging.getLogger(__name__)
 
 
 class KeyOriginAnalyzer(BaseAnalyzer, QObject):
-    def __init__(self, get_expected_key_origin: Callable[[], str], parent: QObject | None) -> None:
+    def __init__(
+        self, get_expected_key_origin: Callable[[], str], network: bdk.Network, parent: QObject | None
+    ) -> None:
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
         self.get_expected_key_origin = get_expected_key_origin
+        self.network = network
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
         if not input:
@@ -66,10 +69,38 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
             logger.debug(f"{self.__class__.__name__}: {e}")
             return AnalyzerMessage(str(e), AnalyzerState.Invalid)
 
-        if input == self.get_expected_key_origin():
+        expected_key_origin = self.get_expected_key_origin()
+        if input == expected_key_origin:
             return AnalyzerMessage("Expected Key Origin", AnalyzerState.Valid)
         else:
-            return AnalyzerMessage(self.tr("Unexpected key origin"), AnalyzerState.Warning)
+            network_index_input = SimplePubKeyProvider.get_network_index(input)
+            network_index_expected = SimplePubKeyProvider.get_network_index(input)
+            if (network_index_input is not None) and network_index_input != network_index_expected:
+                return AnalyzerMessage(
+                    self.tr(
+                        "The provided information is for {key_origin_network}. Please provide xPub for network {network}"
+                    ).format(
+                        key_origin_network=(
+                            bdk.Network.BITCOIN.name
+                            if SimplePubKeyProvider.get_network_index(input) == 0
+                            else bdk.Network.TESTNET.name
+                        ),
+                        network=self.network,
+                    ),
+                    AnalyzerState.Invalid,
+                )
+            elif SimplePubKeyProvider.key_origin_identical_disregarding_account(input, expected_key_origin):
+                return AnalyzerMessage(
+                    self.tr(
+                        "The provided account is {provided_account} differs from the default account {default_account}."
+                    ).format(
+                        provided_account=SimplePubKeyProvider.get_account_index(input),
+                        default_account=SimplePubKeyProvider.get_account_index(expected_key_origin),
+                    ),
+                    AnalyzerState.Warning,
+                )
+            else:
+                return AnalyzerMessage(self.tr("Unexpected key origin"), AnalyzerState.Warning)
 
 
 class FingerprintAnalyzer(BaseAnalyzer, QObject):

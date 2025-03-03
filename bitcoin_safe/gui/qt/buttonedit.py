@@ -354,6 +354,16 @@ class ButtonEdit(QWidget):
         )
         return self.pdf_button
 
+    def add_usb_buttton(
+        self,
+        on_click: Callable,
+    ) -> SquareButton:
+
+        self.pdf_button = self.add_button(
+            icon_path("usb.svg"), on_click, tooltip=translate("d", "Connect to USB signer")
+        )
+        return self.pdf_button
+
     def _on_click_add_random_mnemonic_button(self, callback_seed: Callable | None = None) -> None:
         seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
         self.setText(seed)

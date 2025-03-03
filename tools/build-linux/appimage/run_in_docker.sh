@@ -234,6 +234,7 @@ rm -rf "$PYDIR"/site-packages/*.dist-info/
 rm -rf "$PYDIR"/site-packages/*.egg-info/
 
 
+export TZ=UTC
 find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
 
 

@@ -1,4 +1,4 @@
-name: Build AppImage 
+name: Build AppImage and Deb
 
 
 
@@ -60,7 +60,7 @@ jobs:
           poetry install  
           
       - name: Run build script
-        run: poetry run python tools/build.py --targets appimage --commit None
+        run: poetry run python tools/build.py --targets appimage deb --commit None
 
 
       - name: Check for AppImage file
@@ -70,12 +70,19 @@ jobs:
             exit 1
           fi
 
+      - name: Check for deb file
+        run: |
+          if [ -z "$(find dist -type f -name '*.deb')" ]; then
+            echo "deb file is missing"
+            exit 1
+          fi
+
 
       - name: Upload AppImage Files from dist/
         uses: actions/upload-artifact@v4
         with:
           name: appimages
-          path: dist/*.AppImage
+          path: dist/*
 
       # - name: Install Dependencies for gui test
       #   run: |

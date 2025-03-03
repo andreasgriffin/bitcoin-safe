@@ -235,42 +235,25 @@ def test_wizard(
                 keystore.edit_key_origin.input_field,
                 "m/0h00",
                 "m/84h/1h/0h",
-                "Signer 1: Unexpected key origin",
+                "Signer 1: ('Invalid BIP32 path', 'm/0h00')",
             )
             type_text_in_edit(wrong_text, edit)
             shutter.save(main_window)
             assert "{ background-color: #ff6c54; }" in edit.styleSheet()
 
-            with patch("bitcoin_safe.gui.qt.keystore_uis.question_dialog") as mock_question:
-                with patch("bitcoin_safe.gui.qt.main.Message") as mock_message:
+            with patch("bitcoin_safe.gui.qt.main.Message") as mock_message:
 
-                    # check that you cannot go further without import xpub
-                    def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
-                        shutter.save(dialog)
-                        assert dialog.text() == error_message
-                        dialog.button(QMessageBox.StandardButton.Ignore).click()
+                # check that you cannot go further without import xpub
+                def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                    shutter.save(dialog)
+                    assert dialog.text() == error_message
+                    dialog.button(QMessageBox.StandardButton.Ok).click()
 
-                    do_modal_click(
-                        step.button_create_wallet, wrong_entry_xpub_try_to_proceed, qtbot, cls=QMessageBox
-                    )
+                do_modal_click(
+                    step.button_create_wallet, wrong_entry_xpub_try_to_proceed, qtbot, cls=QMessageBox
+                )
 
-                    QTest.qWait(200)
-
-                    # Inspect the call arguments for each call
-                    calls = mock_question.call_args_list
-
-                    first_call_args = calls[0][0]  # args of the first call
-                    assert first_call_args == (
-                        "The key derivation path m/0h00 of Signer 1 is not the default m/84h/1h/0h for the address type Single Sig (SegWit/p2wpkh). Do you want to proceed anyway?",
-                    )
-
-                    QTest.qWait(200)
-
-                    # Inspect the call arguments for each call
-                    calls = mock_message.call_args_list
-
-                    first_call_args = calls[0][0]  # args of the first call
-                    assert first_call_args == ("('Invalid BIP32 path', '0h00')",)
+                QTest.qWait(200)
 
             shutter.save(main_window)
             edit.clear()

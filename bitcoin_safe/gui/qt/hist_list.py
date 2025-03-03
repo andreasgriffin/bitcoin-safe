@@ -91,14 +91,7 @@ from ...util import (
     confirmation_wait_formatted,
     time_logger,
 )
-from ...wallet import (
-    ToolsTxUiInfo,
-    TxConfirmationStatus,
-    TxStatus,
-    Wallet,
-    get_wallet,
-    get_wallets,
-)
+from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
     MyItemDataRole,
@@ -532,11 +525,6 @@ class HistList(MyTreeView):
             if tx.confirmation_time
             else estimated_duration_str
         )
-        status_data = (
-            datetime.datetime.fromtimestamp(tx.confirmation_time.height).strftime("%Y-%m-%d %H:%M")
-            if tx.confirmation_time
-            else TxConfirmationStatus.to_str(status.confirmation_status)
-        )
         status_tooltip = (
             self.tr("{number} Confirmations").format(number=status.confirmations())
             if 1 <= status.confirmations() <= 6
@@ -548,7 +536,7 @@ class HistList(MyTreeView):
         if needs_frequent_flag(status=status):
             item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.STATUS].setText(status_text)
-        item[self.Columns.STATUS].setData(status_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.STATUS].setData(status_text, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
         item[self.Columns.STATUS].setToolTip(status_tooltip)
         item[self.Columns.LABEL].setText(label)

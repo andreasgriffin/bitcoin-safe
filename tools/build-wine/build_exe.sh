@@ -16,6 +16,7 @@ VERSION=$(git describe --tags --dirty --always)
 list_dirty_files
 info "Last commit: $VERSION"
 
+export TZ=UTC
 find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
 popd
 
@@ -80,6 +81,7 @@ bitcoin_safe_CMDLINE_NAME="$NAME_ROOT-$VERSION" wine "$WINE_PYHOME/scripts/pyins
 
 # set timestamps in dist, in order to make the installer reproducible
 pushd dist
+export TZ=UTC
 find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
 popd
 

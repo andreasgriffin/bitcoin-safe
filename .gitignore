@@ -181,6 +181,7 @@ test-seed
 .bitcoin_safe.config
 *.wallet
 bitcoin_core
+fulcrum
 tools-my/
 
 

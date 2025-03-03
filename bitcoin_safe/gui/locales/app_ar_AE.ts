@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>يرجى التحقق من تطابق رمز الاقتران مع ما يظهر على BitBox02 الخاص بك.  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>عنوان</translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>اذهب  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>مسار الاشتقاق  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>مسار  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>ابدأ  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>انتهاء  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>داخلي  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>keypool  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>الحساب  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>مسار الاشتقاق  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>احصل على xpub  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>أصل المفتاح مفقود  </translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>المعلومات المقدمة هي لـ {key_origin_network}. الرجاء تقديم xPub للشبكة {network}  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>الحساب المقدم {provided_account} يختلف عن الحساب الافتراضي {default_account}.  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>أصل المفتاح غير المتوقع  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>استيراد بصمة الإصبع و xpub</translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>يرجى لصق الوصفات في حقل الوصفات في الزاوية اليمنى العلوية.</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,17 +791,21 @@ the sending value {sent}</source>
         <translation>بذرة</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>موافق</translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>اسم الجهاز الموقع: ...... موقع جهاز التوقيع: .....</translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>موافق</translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>يرجى التأكد من عدم وجود برامج أخرى تستخدم الموقع الإلكتروني للتوقيع الأجهزة</translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>يرجى إدخال أصل مفتاح صالح.  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -925,24 +824,25 @@ Location of signing device: .....</source>
         <translation>الرجاء لصق الملف المُصدر (مثل sparrow-export.json)  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>المعيار لنوع العنوان المحدد {type} هو {expected_key_origin}. يرجى تصحيحه إذا كنت غير متأكد.</translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>المعيار لنوع العنوان المختار {type} هو {expected_key_origin}. الرجاء التصحيح إذا لم تكن متأكدًا.  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>أصل xPub {key_origin} و xPub ينتميان معًا. يرجى اختيار زوج أصل xPub الصحيح.</translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>المعلومات المقدمة هي لـ {key_origin_network}. الرجاء تقديم xPub للشبكة {network}  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>أصل xPub {key_origin} ليس {expected_key_origin} المتوقع لـ {address_type}</translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} هل ترغب في المتابعة على أي حال؟  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>لا توجد بيانات موقع للموقع المتوقع {expected_key_origin}.</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>يرجى لصق الوصفات في حقل الوصفات في الزاوية اليمنى العلوية.</translation>
     </message>
 </context>
 <context>
@@ -1290,72 +1190,12 @@ Location of signing device: .....</source>
         <translation>جارٍ إغلاق التبويب {name}</translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>النافذة الرئيسية  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>الأجهزة المتصلة  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>تحديث  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>تعيين عبارة المرور  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>احصل على xpub  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>وقع الرسالة  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>وقع PSBT  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>تغيير الخيارات المستخدمة لـ getkeypool  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>تغيير خيارات getkeypool  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>إرسال الرقم السري  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>تبديل عبارة المرور  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>عرض العنوان  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>الإجراءات  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;بحث  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>الموصوفات  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2127,17 +1967,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>؟  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2150,63 +1979,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>أكمل اختبار الإرسال للتأكد من عمل مُوقع الأجهزة!</translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>توقيع  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>رسالة  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>توقيع رسالة  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>مسار الاشتقاق  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>حوار  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>PSBT للتوقيع  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>استيراد PSBT  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>نتيجة PSBT  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>تصدير PSBT  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>توقيع PSBT  </translation>
     </message>
 </context>
 <context>
@@ -2355,6 +2127,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>أدوات موقع USB  </translation>
     </message>
     <message>
+        <source>Address index</source>
+        <translation>مؤشر العنوان  </translation>
+    </message>
+    <message>
+        <source>Sign Message</source>
+        <translation>توقيع رسالة  </translation>
+    </message>
+    <message>
         <source>Paste your descriptor to be signed</source>
         <translation>الصق مُعرّفك ليتم التوقيع عليه  </translation>
     </message>
@@ -2369,6 +2149,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Show Seed</source>
         <translation>عرض البذور  </translation>
+    </message>
+    <message>
+        <source>Unlock Devices</source>
+        <translation>فتح الأجهزة  </translation>
+    </message>
+    <message>
+        <source>Unlock</source>
+        <translation>فك القفل  </translation>
     </message>
     <message>
         <source>Get xpubs</source>
@@ -2393,14 +2181,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Paste your text to be signed</source>
         <translation>الصق نصك للتوقيع  </translation>
-    </message>
-    <message>
-        <source>Address index</source>
-        <translation>مؤشر العنوان  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>توقيع رسالة  </translation>
     </message>
 </context>
 <context>
@@ -2764,6 +2544,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>المحفظة {filename} موجودة بالفعل.  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>يرجى اختيار اسم محفظة  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2930,6 +2714,38 @@ below {rate}</source>
         <translation>لم يتم العثور على نوع عنوان HWI لـ {name}  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>تثبيت ملفات udev  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>إعادة تشغيل الكمبيوتر  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>تنفيذ البرنامج النصي  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>لم يتم العثور على محاكي طرفية مناسب.  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>يجب أن يبدأ مسار التحويل {value} بـ /  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} ليس بصمة صالحة  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h  </translation>
     </message>
@@ -2952,62 +2768,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>خطأ</translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>تثبيت ملفات udev  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>إعادة تشغيل الكمبيوتر  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>يجب أن يبدأ مسار التحويل {value} بـ /  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>تنفيذ البرنامج النصي  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>لم يتم العثور على محاكي طرفية مناسب.  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>لا يمكن أن يظهر h مرتين في فهرس  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>يجب أن يبدأ {value} بـ m/  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>لا يمكن أن يحتوي {value} على //  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>لا يمكن أن يحتوي {value} على /h  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>لا يمكن أن يحتوي {value} على hh  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>لا يمكن أن ينتهي {value} بـ /  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value} ليس بصمة صالحة  </translation>
     </message>
 </context>
 <context>
@@ -3042,6 +2802,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>قراءة رمز الاستجابة السريعة من الكاميرا</translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>الاتصال بموقِّع USB</translation>
     </message>
     <message>
         <source>Recovery</source>
