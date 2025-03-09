@@ -34,7 +34,6 @@ from typing import Callable, Iterable, List, Optional, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
-from bitcoin_usb.seed_tools import get_network_index
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
@@ -62,8 +61,13 @@ from bitcoin_safe.gui.qt.analyzers import (
     XpubAnalyzer,
 )
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit, QCompleterLineEdit
+from bitcoin_safe.gui.qt.custom_edits import (
+    AnalyzerState,
+    AnalyzerTextEdit,
+    QCompleterLineEdit,
+)
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -259,7 +263,9 @@ class KeyStoreUI(QObject):
         )
         self.edit_key_origin.signal_data.connect(self._on_handle_input)
         self.edit_key_origin_input.setAnalyzer(
-            KeyOriginAnalyzer(get_expected_key_origin=self.get_expected_key_origin, parent=self)
+            KeyOriginAnalyzer(
+                get_expected_key_origin=self.get_expected_key_origin, network=self.network, parent=self
+            )
         )
 
         # xpub
@@ -273,6 +279,7 @@ class KeyStoreUI(QObject):
         self.edit_xpub.add_qr_input_from_camera_button(
             network=self.network,
         )
+        self.edit_xpub.add_usb_buttton(on_click=self.on_xpub_usb_click)
         self.edit_xpub.signal_data.connect(self._on_handle_input)
 
         self.edit_xpub.input_field.setAnalyzer(XpubAnalyzer(self.network, parent=self))
@@ -409,9 +416,12 @@ class KeyStoreUI(QObject):
         expected_key_origin = self.get_expected_key_origin()
         if expected_key_origin != self.key_origin:
             self.edit_key_origin.format_as_error(True)
+            analyzer = self.edit_key_origin_input.analyzer()
+            analyzer_message = analyzer.analyze(self.key_origin).msg + "\n" if analyzer else ""
             self.edit_key_origin.setToolTip(
-                self.tr(
-                    "Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure."
+                analyzer_message
+                + self.tr(
+                    "Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure."
                 ).format(expected_key_origin=expected_key_origin, type=self.get_address_type().name)
             )
             self.edit_xpub.format_as_error(True)
@@ -434,39 +444,22 @@ class KeyStoreUI(QObject):
         return self.get_address_type().key_origin(self.network)
 
     def set_using_signer_info(self, signer_info: SignerInfo) -> None:
-        def check_key_origin(signer_info: SignerInfo) -> bool:
-            expected_key_origin = self.get_expected_key_origin()
-            if signer_info.key_origin != expected_key_origin:
-                if get_network_index(signer_info.key_origin) != get_network_index(expected_key_origin):
-                    Message(
-                        self.tr(
-                            "The provided information is for {key_origin_network}. Please provide xPub for network {network}"
-                        ).format(
-                            key_origin_network=(
-                                bdk.Network.BITCOIN
-                                if get_network_index(signer_info.key_origin) == 1
-                                else bdk.Network.REGTEST
-                            ),
-                            network=self.network,
-                        ),
-                        type=MessageType.Error,
-                    )
-                else:
-                    Message(
-                        self.tr(
-                            "The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}"
-                        ).format(
-                            key_origin=signer_info.key_origin,
-                            expected_key_origin=expected_key_origin,
-                            address_type=self.get_address_type().name,
-                        ),
-                        type=MessageType.Error,
-                    )
-                return False
-            return True
 
-        if not check_key_origin(signer_info):
+        key_origin_input_analyzer = self.edit_key_origin_input.analyzer()
+        assert key_origin_input_analyzer
+        analyzer_message = key_origin_input_analyzer.analyze(signer_info.key_origin)
+        if analyzer_message.state == AnalyzerState.Invalid:
+            Message(
+                analyzer_message.msg,
+                type=MessageType.Error,
+            )
             return
+        elif analyzer_message.state == AnalyzerState.Warning:
+            if not question_dialog(
+                self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
+            ):
+                return
+
         self.edit_xpub.setText(signer_info.xpub)
         self.key_origin = signer_info.key_origin
         self.edit_fingerprint.setText(signer_info.fingerprint)
@@ -475,6 +468,9 @@ class KeyStoreUI(QObject):
 
         if data.data_type == DataType.SignerInfo:
             self.set_using_signer_info(data.data)
+        elif data.data_type == DataType.SignerInfos and len(data.data) == 1:
+            # this case is relevant if a single SignerInfo is contains an account>0
+            self.set_using_signer_info(data.data[0])
         elif data.data_type == DataType.SignerInfos:
             expected_key_origin = self.get_expected_key_origin()
 
@@ -561,9 +557,7 @@ class KeyStoreUI(QObject):
         self.analyzer_indicator.updateUi()
         self.hardware_signer_interaction.updateUi()
 
-    def on_hwi_click(self) -> None:
-        address_type = self.get_address_type()
-        key_origin = address_type.key_origin(self.network)
+    def _on_hwi_click(self, key_origin: str) -> None:
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(
                 key_origin=key_origin, slow_hwi_listing=self.slow_hwi_listing
@@ -584,6 +578,18 @@ class KeyStoreUI(QObject):
         self.set_using_signer_info(SignerInfo(fingerprint=fingerprint, key_origin=key_origin, xpub=xpub))
         if not self.textEdit_description.text():
             self.textEdit_description.setText(f"{device.get('type', '')} - {device.get('model', '')}")
+
+    def on_hwi_click(self) -> None:
+        address_type = self.get_address_type()
+        key_origin = address_type.key_origin(self.network)
+        self._on_hwi_click(key_origin=key_origin)
+
+    def on_xpub_usb_click(self) -> None:
+        key_origin = self.key_origin
+        if not key_origin:
+            Message(self.tr("Please enter a valid key origin."))
+            return
+        self._on_hwi_click(key_origin=key_origin)
 
     def get_ui_values_as_keystore(self) -> KeyStore:
         seed_str = self.edit_seed.text().strip()

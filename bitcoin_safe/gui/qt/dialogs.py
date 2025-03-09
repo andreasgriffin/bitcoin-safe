@@ -264,6 +264,12 @@ class WalletIdDialog(QDialog):
                 self.tr("Error"),
                 self.tr("The wallet {filename} exists already.").format(filename=wallet_file),
             )
+        elif not self.wallet_id:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr("Please choose a wallet name"),
+            )
         else:
             self.accept()  # Accept the dialog if wallet does not exist
 

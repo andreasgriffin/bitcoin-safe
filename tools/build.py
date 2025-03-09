@@ -37,6 +37,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable, Dict, List, Literal
 
+from appimage_to_deb_converter import Appimage2debConverter
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
@@ -111,10 +112,10 @@ class Builder:
             return "universal2"  # Defaulting to universal for other cases (as a fallback)
 
     @staticmethod
-    def app_name_formatter(module_name: str) -> str:
+    def app_name_formatter(module_name: str, join_character="-") -> str:
         parts = [s.capitalize() for s in module_name.split("_")]
 
-        return "-".join(parts)
+        return join_character.join(parts)
 
     # def update_briefcase_requires(
     #     self,
@@ -159,6 +160,39 @@ class Builder:
     #     # Write updated pyproject.toml
     #     with open(pyproject_path, "w") as file:
     #         tomlkit.dump(pyproject_data, file)
+
+    @staticmethod
+    def list_files(directory: str, extension: str) -> List[Path]:
+        """
+        List all files in the given directory with the specified extension.
+
+        Args:
+            directory (str): The directory to search.
+            extension (str): The file extension to filter by (e.g., '.txt', '.py').
+
+        Returns:
+            List[Path]: A list of Path objects for files matching the extension.
+        """
+        dir_path = Path(directory)
+        if not dir_path.is_dir():
+            raise ValueError(f"{directory} is not a valid directory.")
+        return list(dir_path.glob(f"*{extension}"))
+
+    def appimage2deb(self, **kwargs):
+        for filename in self.list_files(f"dist/", extension=".AppImage"):
+            converter = Appimage2debConverter(
+                appimage=filename,
+                output_deb=filename.with_suffix(".deb"),
+                package_name=self.app_name_formatter(self.module_name).lower(),
+                version=self.version,
+                maintainer="Andreas Griffin <andreasgriffin@proton.me>",
+                description="A bitcoin savings wallet for the entire family.",
+                homepage="https://www.bitcoin-safe.org",
+                desktop_name=self.app_name_formatter(self.module_name, join_character=" "),
+                desktop_icon_name=self.app_name_formatter(self.module_name).lower() + ".svg",
+                desktop_categories="Utility",
+            )
+            converter.convert()
 
     def build_appimage_docker(
         self, no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
@@ -363,7 +397,7 @@ class Builder:
             "appimage": self.build_appimage_docker,
             "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.build_dmg,
-            # "deb": self.briefcase_deb,
+            "deb": self.appimage2deb,
             # "flatpak": self.briefcase_flatpak,
             "snap": self.build_snap,
         }
@@ -528,7 +562,7 @@ def get_default_targets() -> List[TARGET_LITERAL]:
         return [
             "appimage",
             # "flatpak",
-            # "deb",
+            "deb",
         ]
     elif platform.system() == "Darwin":
         return ["mac"]

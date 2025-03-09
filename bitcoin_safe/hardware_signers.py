@@ -140,7 +140,7 @@ class HardwareSigners:
         "jade",
         "Jade",
         usb_preferred=True,
-        qr_types=[],
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport],
         descriptor_export_types=[],
     )
     passport = HardwareSigner(

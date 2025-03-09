@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>သင့်ရဲ့ BitBox02 တွင်ပြသထားသည့်ပါးစပ်ကုဒ်နှင့်ကိုက်ညီနေသည်ကိုစစ်ဆေးပါ။  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>လိပ်စာ  </translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>သွားပါ  </translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>ဆင့်ကဲဖော်မြူလာ  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>လုံခြုံရာနေရာတိုင်းတွင် မျိုးစေ့အရန်နှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သားတို့ကိုတင်ပါ။  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>လမ်းကြောင်း  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>စတင်  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>အဆုံး  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>အတွင်းသုံး  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>keypool  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH  </translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>အကောင့်  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>ဆင့်ကဲဖော်မြူလာ  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>xpub ရယူပါ  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>သော့ချက်အမူလအမူလမပြည့်စုံပါ  </translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>ပေးထားသောအချက်အလက်သည် {key_origin_network} အတွက်ဖြစ်သည်။ ကွန်ယက် {network} အတွက် xPub ကိုပေးပါ။  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>ပေးအပ်ထားသောအကောင့်သည် {provided_account} သည်မူရင်းအကောင့် {default_account} နှင့်ကွဲပြားနေသည်။  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>မထင်မှတ်သောသော့ချက်အမူလ  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>လက်ဗွေရာနှင့် xpub တင်သွင်းပါ  </translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>ညာဘက်ထိပ်ဆုံးရှိဖော်ပြချက်ကွက်တွင် ဖော်ပြချက်များကိုကပ်ရောက်ပါ။  </translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,17 +791,21 @@ the sending value {sent}</source>
         <translation>မျိုးစေ့  </translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>အိုကေ  </translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>လက်မှတ်သားစက်အမည်: ...... လက်မှတ်သားစက်တည်နေရာ: .....  </translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>အိုကေ  </translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။  </translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>တရားဝင်သောသော့ချက်မူလအစီအမံကိုရိုက်ထည့်ပါ။  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -925,24 +824,25 @@ Location of signing device: .....</source>
         <translation>တင်သွင်းထားသောဖိုင်ကို (ဥပမာ sparrow-export.json) ကပ်ရောက်ပါ  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>ရွေးထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းသည် {expected_key_origin} ဖြစ်သည်။  သေချာမရှိပါက ပြင်ဆင်ပါ။  </translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>ရွေးချယ်ထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းမှာ {expected_key_origin} ဖြစ်သည်။ သေချာမရှိပါကပြင်ဆင်ပါ။  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>xPub မူလ {key_origin} နှင့် xPub သည် အတူတူဖြစ်သည်။ မှန်ကန်သော xPub မူလစုံတွဲကိုရွေးပါ။  </translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>ပေးထားသောအချက်အလက်သည် {key_origin_network} အတွက်ဖြစ်သည်။ ကွန်ယက် {network} အတွက် xPub ကိုပေးပါ။  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>xPub မူလ {key_origin} သည် {address_type} အတွက်မျှော်လင့်ထားသော {expected_key_origin} မဟုတ်ပါ  </translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} ခေါင်းပါပဲဆက်လုပ်မလား။  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>မျှော်လင့်ထားသော key_origin {expected_key_origin} အတွက်လက်မှတ်သားဒေတာမရှိပါ  </translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>ညာဘက်ထိပ်ဆုံးရှိဖော်ပြချက်ကွက်တွင် ဖော်ပြချက်များကိုကပ်ရောက်ပါ။  </translation>
     </message>
 </context>
 <context>
@@ -1290,72 +1190,12 @@ Location of signing device: .....</source>
         <translation>{name} တက်ဘ်ကိုပိတ်ပါ  </translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>MainWindow  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>ချိတ်ဆက်ထားသောကိရိယာများ  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>အသစ်တက်လှိုင်းပါ  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>လက်ရှိပိုက်ဆံအိတ်ကိုသိမ်းပါ  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>လျှို့ဝှက်နံပါတ်သတ်မှတ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>xpub ရယူပါ  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>စာတိုက်ပို့ပါ  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT လက်မှတ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>getkeypool သုံးစွဲမှုများကိုပြောင်းပါ  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>getkeypool ရွေးချယ်မှုများကိုပြောင်းပါ  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>ပင်နည်းစနစ်သို့ပို့ပါ  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>လျှို့ဝှက်နံပါတ်လဲပါ  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>လိပ်စာပြသပါ  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>လုပ်ဆောင်မှုများ  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;ရှာဖွေပါ  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>Keypool  </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>ဖော်ပြချက်များ  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2124,17 +1964,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>?  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2147,63 +1976,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အလုပ်လုပ်နေအောင် ပေးပို့မှုစမ်းသပ်မှုကိုပြီးဆုံးပါ။  </translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>လက်မှတ်  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>စာတို  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>စာတိုလက်မှတ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>ဆွဲယူပါလမ်း  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>ဒိုင်ယာလော့  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>PSBT လက်မှတ်ရန်  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>PSBT တင်သွင်းပါ  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>PSBT ရလဒ်  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>PSBT ထုတ်ပို့ပါ  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT လက်မှတ်ပါ  </translation>
     </message>
 </context>
 <context>
@@ -2769,6 +2541,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>ပိုက်ဆံအိတ် {filename} ရှိပြီးသားဖြစ်ပါသည်။  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2935,6 +2711,38 @@ below {rate}</source>
         <translation>{name} အတွက် HWI AddressType မတွေ့ပါ။  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>udev ဖိုင်များပျောက်နေသဖြင့် USB အမှားများဖြစ်နိုင်သည်။ ယခု udev ဖိုင်များတပ်ဆင်ချင်ပါသလား?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev ဖိုင်များတပ်ဆင်ပါ  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>စာရိုက်ထုတ်ခြင်း  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>{value} ဖွဲ့စည်းပုံသည် / နှင့်စတင်ရမည်။  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} သည်တရားဝင်လက်ဗွေမဟုတ်ပါ။  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>{key_origin} ၏ ကွန်ယက်ပိုင်း {network_str} သည် h ဖြင့်မာကျောခိုင်မြဲစေရမည်။  </translation>
     </message>
@@ -2957,62 +2765,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>အမှား  </translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>udev ဖိုင်များပျောက်နေသဖြင့် USB အမှားများဖြစ်နိုင်သည်။ ယခု udev ဖိုင်များတပ်ဆင်ချင်ပါသလား?  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udev ဖိုင်များတပ်ဆင်ပါ  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>{value} ဖွဲ့စည်းပုံသည် / နှင့်စတင်ရမည်။  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>စာရိုက်ထုတ်ခြင်း  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>h သည် index တွင်နှစ်ခါမပါသင့်ပါ။  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>{value} သည် m/ ဖြင့်စတင်ရမည်။  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>{value} တွင် // မပါသင့်ပါ။  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>{value} တွင် /h မပါသင့်ပါ။  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>{value} တွင် hh မပါသင့်ပါ။  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>{value} သည် / ဖြင့်ဆုံးရှုံးမသင့်ပါ။  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value} သည်တရားဝင်လက်ဗွေမဟုတ်ပါ။  </translation>
     </message>
 </context>
 <context>
@@ -3047,6 +2799,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>ကင်မရာမှ QR ကုဒ်ဖတ်ပါ  </translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>USB လက်မှတ်ထိုးသူနှင့်ချိတ်ဆက်ပါ။</translation>
     </message>
     <message>
         <source>Recovery</source>

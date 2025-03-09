@@ -36,6 +36,7 @@ from pathlib import Path
 from subprocess import CompletedProcess
 from typing import List, Tuple, Union
 
+from bitcoin_safe.gui.qt.language_chooser import FLAGS
 from bitcoin_safe.util import threadtable
 
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class TranslationHandler:
             "de_DE",
             "my_MM",
             "ko_KR",
-            "lo_LA",
+            # "lo_LA",
         ],
         prefix="app",
     ) -> None:
@@ -88,6 +89,9 @@ Content to translate:
 """
         )
         logger.info("=" * 20)
+
+        for language in languages:
+            assert language in FLAGS
 
     def delete_po_files(self):
         for file in self.ts_folder.glob("*.po"):

@@ -228,18 +228,6 @@
     </message>
 </context>
 <context>
-    <name>BitBox02PairingDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>Please verify the pairing code matches what is
-shown on your BitBox02.</source>
-        <translation>BitBox02에 표시된 페어링 코드가 일치하는지 확인하세요.  </translation>
-    </message>
-</context>
-<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -458,37 +446,6 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
 </context>
 <context>
-    <name>DisplayAddressDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH(세그윗)</translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH(레거시)</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>주소  </translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>진행</translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>파생 경로  </translation>
-    </message>
-</context>
-<context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
@@ -688,72 +645,6 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
-    <name>GetKeypoolOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation>경로  </translation>
-    </message>
-    <message>
-        <source>m/0&apos;/0&apos;/*</source>
-        <translation>m/0&apos;/0&apos;/*  </translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>시작  </translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>종료  </translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>내부  </translation>
-    </message>
-    <message>
-        <source>keypool</source>
-        <translation>키풀  </translation>
-    </message>
-    <message>
-        <source>P2SH-P2WPKH</source>
-        <translation>P2SH-P2WPKH  </translation>
-    </message>
-    <message>
-        <source>P2WPKH</source>
-        <translation>P2WPKH(세그윗)</translation>
-    </message>
-    <message>
-        <source>P2PKH</source>
-        <translation>P2PKH(레거시)</translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>계정  </translation>
-    </message>
-</context>
-<context>
-    <name>GetXpubDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>파생 경로  </translation>
-    </message>
-    <message>
-        <source>Get xpub</source>
-        <translation>xpub 가져오기  </translation>
-    </message>
-    <message>
-        <source>xpub</source>
-        <translation>xpub  </translation>
-    </message>
-</context>
-<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
@@ -845,6 +736,14 @@ the sending value {sent}</source>
         <translation>누락된 키 출처</translation>
     </message>
     <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>제공된 정보는 {key_origin_network}용입니다. 네트워크 {network}용 xPub을 제공해주세요.  </translation>
+    </message>
+    <message>
+        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <translation>제공된 계정은 {provided_account}로, 기본 계정 {default_account}과 다릅니다.  </translation>
+    </message>
+    <message>
         <source>Unexpected key origin</source>
         <translation>예상치 못한 키 출처  </translation>
     </message>
@@ -854,10 +753,6 @@ the sending value {sent}</source>
     <message>
         <source>Import fingerprint and xpub</source>
         <translation>지문(MFP)과 xpub 가져오기</translation>
-    </message>
-    <message>
-        <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>오른쪽 상단의 디스크립트 영역에 디스크립트를 붙여넣어주세요.</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -896,17 +791,21 @@ the sending value {sent}</source>
         <translation>시드  </translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>확인  </translation>
-    </message>
-    <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>서명 장치 이름: ...... 서명 장치 위치: .....  </translation>
     </message>
     <message>
+        <source>OK</source>
+        <translation>확인  </translation>
+    </message>
+    <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
         <translation>다른 프로그램이 하드웨어 서명 기계에 접근하지 않도록 해주세요</translation>
+    </message>
+    <message>
+        <source>Please enter a valid key origin.</source>
+        <translation>유효한 키 원점을 입력해 주세요.  </translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
@@ -925,24 +824,25 @@ Location of signing device: .....</source>
         <translation>내보낸 파일(예: sparrow-export.json)을 붙여넣어주세요  </translation>
     </message>
     <message>
-        <source>Standart for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>선택한 주소 유형 {type}에 대한 표준은 {expected_key_origin}입니다. 확실하지 않으면 수정하세요.  </translation>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>선택된 주소 유형 {type}에 대한 표준은 {expected_key_origin}입니다. 확실하지 않으면 수정해 주세요.  </translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
         <translation>xPub 출처 {key_origin}와 xPub이 함께 속합니다. 올바른 xPub 출처 쌍을 선택하세요.  </translation>
     </message>
     <message>
-        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>제공된 정보는 {key_origin_network}용입니다. 네트워크 {network}용 xPub을 제공해주세요.  </translation>
-    </message>
-    <message>
-        <source>The xPub Origin {key_origin} is not the expected {expected_key_origin} for {address_type}</source>
-        <translation>xPub 출처 {key_origin}이 예상 {expected_key_origin}에 맞지 않습니다 {address_type}  </translation>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} 그래도 계속하시겠습니까?  </translation>
     </message>
     <message>
         <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
         <translation>예상 키 출처 {expected_key_origin}에 대한 서명 기계 데이터가 없습니다.</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>오른쪽 상단의 디스크립트 영역에 디스크립트를 붙여넣어주세요.</translation>
     </message>
 </context>
 <context>
@@ -1290,72 +1190,12 @@ Location of signing device: .....</source>
         <translation>탭 {name} 닫기  </translation>
     </message>
     <message>
-        <source>MainWindow</source>
-        <translation>MainWindow  </translation>
-    </message>
-    <message>
-        <source>Connected devices</source>
-        <translation>연결된 장치들  </translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>새로 고침  </translation>
-    </message>
-    <message>
         <source>&amp;Save Current Wallet</source>
         <translation>&amp;현재 지갑 저장  </translation>
     </message>
     <message>
-        <source>Set Passphrase</source>
-        <translation>암호 구문 설정  </translation>
-    </message>
-    <message>
-        <source>Get an xpub</source>
-        <translation>xpub 가져오기  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>메시지 서명  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT 서명  </translation>
-    </message>
-    <message>
-        <source>Change the options used for getkeypool</source>
-        <translation>getkeypool에 사용되는 옵션 변경  </translation>
-    </message>
-    <message>
-        <source>Change getkeypool options</source>
-        <translation>getkeypool 옵션 변경  </translation>
-    </message>
-    <message>
-        <source>Send Pin</source>
-        <translation>핀 보내기  </translation>
-    </message>
-    <message>
-        <source>Toggle Passphrase</source>
-        <translation>암호 구문 전환  </translation>
-    </message>
-    <message>
-        <source>Display Address</source>
-        <translation>주소 표시  </translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>액션  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;검색  </translation>
-    </message>
-    <message>
-        <source>Keypool</source>
-        <translation>키풀  </translation>
-    </message>
-    <message>
-        <source>Descriptors</source>
-        <translation>디스크립터  </translation>
     </message>
     <message>
         <source>&amp;Change</source>
@@ -2124,17 +1964,6 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
-    <name>SendPinDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>?  </translation>
-    </message>
-</context>
-<context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
@@ -2147,63 +1976,6 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
         <translation>하드웨어 서명 기계가 작동하는지 확인하기 위해 전송 테스트를 완료하세요!  </translation>
-    </message>
-</context>
-<context>
-    <name>SetPassphraseDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-</context>
-<context>
-    <name>SignMessageDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation>서명  </translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>메시지  </translation>
-    </message>
-    <message>
-        <source>Sign Message</source>
-        <translation>메시지 서명  </translation>
-    </message>
-    <message>
-        <source>Derivation Path</source>
-        <translation>파생 경로  </translation>
-    </message>
-</context>
-<context>
-    <name>SignPSBTDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation>대화 상자  </translation>
-    </message>
-    <message>
-        <source>PSBT To Sign</source>
-        <translation>서명할 PSBT  </translation>
-    </message>
-    <message>
-        <source>Import PSBT</source>
-        <translation>PSBT 가져오기  </translation>
-    </message>
-    <message>
-        <source>PSBT Result</source>
-        <translation>PSBT 결과  </translation>
-    </message>
-    <message>
-        <source>Export PSBT</source>
-        <translation>PSBT 내보내기  </translation>
-    </message>
-    <message>
-        <source>Sign PSBT</source>
-        <translation>PSBT 서명  </translation>
     </message>
 </context>
 <context>
@@ -2769,6 +2541,10 @@ below {rate}</source>
         <source>The wallet {filename} exists already.</source>
         <translation>지갑 {filename}이(가) 이미 있습니다.  </translation>
     </message>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>지갑 이름을 선택해 주세요.  </translation>
+    </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
@@ -2935,6 +2711,38 @@ below {rate}</source>
         <translation>{name}에 대한 HWI AddressType을 찾을 수 없습니다  </translation>
     </message>
     <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>udev 파일이 누락되어 USB 오류가 발생할 수 있습니다. 지금 udev 파일을 설치하시겠습니까?  </translation>
+    </message>
+    <message>
+        <source>Install udev files</source>
+        <translation>udev 파일 설치  </translation>
+    </message>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>변경 사항이 적용되도록 컴퓨터를 다시 시작하세요.  </translation>
+    </message>
+    <message>
+        <source>Restart computer</source>
+        <translation>컴퓨터 재시작  </translation>
+    </message>
+    <message>
+        <source>Executing the script</source>
+        <translation>스크립트 실행  </translation>
+    </message>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>적합한 터미널 에뮬레이터를 찾을 수 없음.  </translation>
+    </message>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>파생 경로 {value}는 /로 시작해야 합니다  </translation>
+    </message>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value}는 유효한 지문이 아닙니다  </translation>
+    </message>
+    <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
         <translation>키 출처 {key_origin}의 네트워크 부분 {network_str}은 h로 강화되어야 합니다  </translation>
     </message>
@@ -2957,62 +2765,6 @@ below {rate}</source>
     <message>
         <source>Error</source>
         <translation>오류  </translation>
-    </message>
-    <message>
-        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>udev 파일이 누락되어 USB 오류가 발생할 수 있습니다. 지금 udev 파일을 설치하시겠습니까?  </translation>
-    </message>
-    <message>
-        <source>Install udev files</source>
-        <translation>udev 파일 설치  </translation>
-    </message>
-    <message>
-        <source>Please restart your computer for the changes to take effect.</source>
-        <translation>변경 사항이 적용되도록 컴퓨터를 다시 시작하세요.  </translation>
-    </message>
-    <message>
-        <source>Restart computer</source>
-        <translation>컴퓨터 재시작  </translation>
-    </message>
-    <message>
-        <source>derivation_path {value} must start with a /</source>
-        <translation>파생 경로 {value}는 /로 시작해야 합니다  </translation>
-    </message>
-    <message>
-        <source>Executing the script</source>
-        <translation>스크립트 실행  </translation>
-    </message>
-    <message>
-        <source>No suitable terminal emulator found.</source>
-        <translation>적합한 터미널 에뮬레이터를 찾을 수 없음.  </translation>
-    </message>
-    <message>
-        <source>h cannot appear twice in a index</source>
-        <translation>h는 인덱스에 두 번 나타날 수 없습니다  </translation>
-    </message>
-    <message>
-        <source>{value} must start with m/</source>
-        <translation>{value}는 m/로 시작해야 합니다  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain //</source>
-        <translation>{value}는 //를 포함할 수 없습니다  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain /h</source>
-        <translation>{value}는 /h를 포함할 수 없습니다  </translation>
-    </message>
-    <message>
-        <source>{value} cannot contain hh</source>
-        <translation>{value}는 hh를 포함할 수 없습니다  </translation>
-    </message>
-    <message>
-        <source>{value} cannot end with /</source>
-        <translation>{value}는 /로 끝날 수 없습니다  </translation>
-    </message>
-    <message>
-        <source>{value} is not a valid fingerprint</source>
-        <translation>{value}는 유효한 지문이 아닙니다  </translation>
     </message>
 </context>
 <context>
@@ -3047,6 +2799,10 @@ below {rate}</source>
     <message>
         <source>Read QR code from camera</source>
         <translation>카메라에서 QR 코드 읽기  </translation>
+    </message>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>USB 서명자에 연결하세요.  </translation>
     </message>
     <message>
         <source>Recovery</source>
