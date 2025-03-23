@@ -340,11 +340,11 @@ def test_wallet_features_multisig(
                                 assert filename.exists()
 
                         # export qr gifs
-                        assert dialog.export_qr_widget
+                        assert dialog.export_qr_button.export_qr_widget
                         for i in reversed(
-                            range(dialog.export_qr_widget.combo_qr_type.count())
+                            range(dialog.export_qr_button.export_qr_widget.combo_qr_type.count())
                         ):  # reversed to it always has to set the widget to trigger signal_set_qr_images
-                            text = dialog.export_qr_widget.combo_qr_type.itemText(i)
+                            text = dialog.export_qr_button.export_qr_widget.combo_qr_type.itemText(i)
                             basename = (
                                 f"file_{text}.png"
                                 if text.startswith(DescriptorQrExportTypes.text.display_name)
@@ -355,15 +355,16 @@ def test_wallet_features_multisig(
                                 mock_dialog.return_value = str(filename)
                                 # set the qr code
                                 with qtbot.waitSignal(
-                                    dialog.export_qr_widget.signal_set_qr_images, timeout=5000
+                                    dialog.export_qr_button.export_qr_widget.signal_set_qr_images,
+                                    timeout=5000,
                                 ) as blocker:
-                                    dialog.export_qr_widget.combo_qr_type.setCurrentIndex(i)
-                                dialog.export_qr_widget.button_save_qr.click()
+                                    dialog.export_qr_button.export_qr_widget.combo_qr_type.setCurrentIndex(i)
+                                dialog.export_qr_button.export_qr_widget.button_save_qr.click()
 
                                 mock_dialog.assert_called_once()
                             assert filename.exists()
 
-                    dialog.export_qr_widget.close()
+                    dialog.export_qr_button.export_qr_widget.close()
                     dialog.close()
 
                 do_modal_click(
