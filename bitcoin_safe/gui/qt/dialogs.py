@@ -33,10 +33,19 @@ from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction, QFont, QIcon, QPainter, QPixmap
+from PyQt6.QtGui import (
+    QAction,
+    QFont,
+    QIcon,
+    QKeySequence,
+    QPainter,
+    QPixmap,
+    QShortcut,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
+    QDialogButtonBox,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -314,10 +323,19 @@ def show_textedit_message(text: str, label_description: str, title: str):
     text_edit.setPlainText(text)
     layout.addWidget(text_edit)
 
-    # Add an OK button that closes the dialog
-    ok_button = QPushButton("OK")
-    ok_button.clicked.connect(dialog.accept)
-    layout.addWidget(ok_button)
+    # Create a button bar with an OK button
+    button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+    ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+    if ok_button:
+        ok_button.setDefault(True)  # Preselect the OK button
+
+    # Connect the OK button to close the dialog
+    button_box.accepted.connect(dialog.accept)
+    layout.addWidget(button_box)
+
+    # Add a shortcut for the ESC key to close the dialog
+    shortcut_close = QShortcut(QKeySequence("ESC"), dialog)
+    shortcut_close.activated.connect(dialog.close)
 
     # Execute the dialog modally
     dialog.exec()

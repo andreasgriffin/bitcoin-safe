@@ -857,14 +857,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             return
         else:
             logger.warning("Cannot update the psbt. Unclear if more signatures were added")
-            # self.set_psbt(
-            #     import_psbt,
-            #     fee_info=FeeInfo(
-            #         import_psbt.fee(),
-            #         import_psbt.extract_tx().weight() / 4,
-            #         is_estimated=False,
-            #     ),
-            # )
 
     def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here

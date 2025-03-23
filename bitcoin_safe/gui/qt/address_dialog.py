@@ -236,18 +236,6 @@ class AddressDialog(QWidget):
                 self.tab_validate, read_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
             )
 
-        # self.tab_sign_message = SignMessageTab(
-        #     network=config.network,
-        #     wallet_descriptor=self.wallet.multipath_descriptor,
-        #     kind=address_info.keychain,
-        #     address_index=address_info.index,
-        #     parent=self,
-        # ) if     address_info and  not self.wallet.is_multisig()  else None
-        # if self.tab_sign_message:
-        #     self.recipient_tabs.addTab(
-        #     self.tab_sign_message , read_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
-        # )
-
         self.qr_code = QRAddress()
         self.qr_code.set_address(self.bdk_address)
         self.upper_widget_layout.addWidget(self.qr_code)
@@ -286,7 +274,6 @@ class AddressDialog(QWidget):
         self.recipient_tabs.updateUi()
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))
-        # self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_sign_message), self.tr("Sign Message"))
 
     def closeEvent(self, event: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close

@@ -60,6 +60,21 @@ p2sh_2_2of3 = bdk.PartiallySignedTransaction(
 )
 
 
+tr_psbt_singlesig = bdk.PartiallySignedTransaction(
+    "cHNidP8BAHECAAAAAfc8OTZ1lwGfdsQYtGNkagaQickWG4BKHmZG11z6jENVAAAAAAD9////AuNumAAAAAAAFgAULBPZmpWliCJvS9JfRjU1xY4/a+0QJwAAAAAAABYAFA7vht2KmTsl9kHbl+qMDvIicelk6AsAAE8BBDWHzwPgd1yRgAAAALcdj3ToaudlDTGslwRJvm7g8bEn34xNlZ5c3yWnEs8PAqvQsA03r8jZ4FETWO4vALJ/v6Rvyuk/OTqMIB79yvRdEOU8gIlUAACAAQAAgAAAAIAAAQDDAgAAAAPbVtMGYFQSsEm5Nz2qvUjMPMkoMAamoM32u5UMvpXBMAAAAAAA/f///1QZoiAuQ/zWu6Vc3Eqo4RWVzE7VL5DVBMnmzzBBSsbTAAAAAAD9////rhbVAngHB4XGoKTYkFPV5paz+M8D5nfpSF88aRjMVygAAAAAAP3///8CgJaYAAAAAAAWABQO74bdipk7JfZB25fqjA7yInHpZI9qAwAAAAAAFgAUUbwvrjZUlnjlSl2c8FE6v4a8b+cAAAAAAQEfgJaYAAAAAAAWABQO74bdipk7JfZB25fqjA7yInHpZAEDBAEAAAAiBgN8MoL8601Pb/4y5uJJv/4xEkrn6XzFmsoAcT7vC5nC+hjlPICJVAAAgAEAAIAAAACAAAAAAAAAAAAAIgIDcQeSZ26vzpWz9YzgAjr4ht0Qaqsp8cbgNq9VOpd4wWQY5TyAiVQAAIABAACAAAAAgAEAAAAAAAAAACICA3wygvzrTU9v/jLm4km//jESSufpfMWaygBxPu8LmcL6GOU8gIlUAACAAQAAgAAAAIAAAAAAAAAAAAA="
+)
+
+
+electrum_psbt = bdk.PartiallySignedTransaction(
+    "cHNidP8BAHECAAAAAbR3JvzWV6Qu24KGIZSgovQ4xl8T2n0fckKwrfF/+9MJAQAAAAD9////AiBOAAAAAAAAFgAUqQ0J0HaqDjSnSFAc0SzKaMuSyAkoBDYMAAAAABYAFM30QO9i8Pj8HI4iRZPJeWUH9/eX6AsAAAABAR8YpTYMAAAAABYAFE5GnvIzBc0VknXjslcFDo7v5miBAQD9wgMCAAAAAAEGCWOu6fiL4k2tGorpy0wqp3Y1o/v+snxYtNVU/AWZTwAAAAAAAP3///9EixQ6G7DDCT60U0nvqQODFdkcksWcSK1NBGQt70xVHgEAAAAA/f///+66/Ctqc0iWCrEAxcMrIktSZGTbKJe1zYDImEKF+t88AAAAAAD9////qW4Ainy19qgyXQYspp8heWQlIf+00JYV9N7d5PziHlsAAAAAAP3///8R5StPYjPwsxtZbNPHvL1PcVm9fdzTSIpw5XM3l5GtrgEAAAAA/f///7wN4RujVuNYq7oUtz57uH4wMk9BehhDoBAYUICddL7OAAAAAAD9////AiBOAAAAAAAAFgAUqQ0J0HaqDjSnSFAc0SzKaMuSyAkYpTYMAAAAABYAFE5GnvIzBc0VknXjslcFDo7v5miBAkcwRAIgJWHrjLjYzDlhbROVDl4ekJqvv80zg5nbvn7BxfBkm1ACICgcZEMoWb89mC4NEfdgzIH6zZc3MLx4DgkXl2aERhe5ASECuFImsEr/pCkJErET2JAchodWFZRBH8I23TOntlJc11oCRzBEAiAf8crm9Q+iyUxL6qkhQdPY+6aJltWdLBjg+2jPMIrwgQIgDewDjT5bQLqJxoHccafX0YlelaLmIAQlMtNxAv1tPSIBIQK4UiawSv+kKQkSsRPYkByGh1YVlEEfwjbdM6e2UlzXWgJHMEQCIFrLXIJSRF+ooc0caxGJG6JnQK+Cn4STeO3/ElEgE37nAiA41Ua4h2drax5SWFTNIJ23urWnC4FJ/fJCIYBW+PqW/wEhArhSJrBK/6QpCRKxE9iQHIaHVhWUQR/CNt0zp7ZSXNdaAkcwRAIgRO/D6E4xynDsaQw/yU2lH5FOAInJY3onvEyJTWfnSwwCIG1+SG00Z+pSFB4IHyQxz2GlXfhTzZ67HhSpaFJK+leSASECuFImsEr/pCkJErET2JAchodWFZRBH8I23TOntlJc11oCRzBEAiB4O0scb0jwRltI1r1E34NE2KKoUVauO1FmGI+Ihsdv8wIgWlGKQ6vG1NCLUVQgF9rY5QFK+Xq0ak1uHwdgXg8yDwIBIQK4UiawSv+kKQkSsRPYkByGh1YVlEEfwjbdM6e2UlzXWgJHMEQCIBCTFZGuFKwAiBOhIVQPbuQxxRaM1hqbCuhiV/ymvaUbAiBcDikzrE0fhSN+Z0YS/Mq3V29MMz7j8s7vcoxfZNIIywEhArhSJrBK/6QpCRKxE9iQHIaHVhWUQR/CNt0zp7ZSXNda6AsAACIGAvg25tqE9Wjq2wvoAKW6r0JIbeTtmBLmWvPESClHcBumEEojTUsAAACAAQAAAAIAAAAAIgIDgWMExpTSoTs71aOwvTI4vICY9GQjmVux3QMJowCkuucQSiNNSwAAAIAAAAAACQAAAAAiAgJSh3QNd8hanCPh2tLKJmW1yvPGCJVnuOVE95avOo3ofRBKI01LAAAAgAEAAAADAAAAAA=="
+)
+
+
+psbt_sparrow_2of2 = bdk.PartiallySignedTransaction(
+    "cHNidP8BAH0CAAAAAZ0svZmYG5wsZxEU/H9qh4jtOh1SQERW+jTPtFlmm18TAAAAAAD9////AgUNAAAAAAAAFgAUxUc/gQnm4G76KZFQRpotQDqnnoDYdh4AAAAAACIAIE/0cBumoGFdRHYX6ev3qxCjq+MHev/0Q8MnkYoGsho/6AsAAE8BBDWHzwQIv+2ngAAAAiYdMCe7wldm/tBEMMzLWVLSHUoyDXZDtgQCb8c8r4hFA/o6EJKPhteiNUaNyuk1sgO54DBjpUuk2wYjFMOE7vIDFFqjmkMwAACAAQAAgAAAAIACAACATwEENYfPBJ97aqOAAAACvikbY87UxZQn9pq4CZOFgtSewK/vcwgkQB5eJCgM30EDOOW2H6SP2KlBJVd+uJ4wCNyLV4zhSvL9niR2oQM1tucUVFnyOzAAAIABAACAAAAAgAIAAIAAAQD9BAECAAAABKz+txQqsOQ7IGP+sHP7haqvG7sKQiqEzmgiX68/7F4mAAAAAAD9////+Vjfjei7t8XmPDPan8MTKqPMNoA3QX4oGQxxFMMT8wYAAAAAAP3///8VMLboKLbXv/TI46383rieq8uMixGM3ei8EYWIaftL+AAAAAAA/f///988NE7/uoqwHPRn9BaM+gZBdvqdaRTFYVLkXHoDlYOUAAAAAAD9////AoCEHgAAAAAAIgAgt/fiEYTiusqmNGZ0vZ9hnrdhnzFoZNjIJWT95nNeejyW4A0AAAAAACJRIGFrbwwu8JR/Yk6Ix/ZRButHQ4cuIbUFPunmDsq7jNDoiQsAAAEBK4CEHgAAAAAAIgAgt/fiEYTiusqmNGZ0vZ9hnrdhnzFoZNjIJWT95nNeejwBAwQBAAAAAQVHUSECX+zucCZBa4tPZlGduTxxCaJboosgPUftQcA6uxP6OJ0hA6065kV7Aghs9U3UPkupXP8V+/DPL9lOkQQzIwodrm2IUq4iBgOtOuZFewIIbPVN1D5LqVz/Ffvwzy/ZTpEEMyMKHa5tiBxao5pDMAAAgAEAAIAAAACAAgAAgAAAAAAAAAAAIgYCX+zucCZBa4tPZlGduTxxCaJboosgPUftQcA6uxP6OJ0cVFnyOzAAAIABAACAAAAAgAIAAIAAAAAAAAAAAAAAAQFHUSEC4kV4iWPk9lNftM8IpW23BImiGvtRzB22rCusIktjayghA/BF5sl5K8rhmUUwoy9P3+wlGeXrjtrhnjZJVLxxD++WUq4iAgLiRXiJY+T2U1+0zwilbbcEiaIa+1HMHbasK6wiS2NrKBxao5pDMAAAgAEAAIAAAACAAgAAgAEAAAAAAAAAIgID8EXmyXkryuGZRTCjL0/f7CUZ5euO2uGeNklUvHEP75YcVFnyOzAAAIABAACAAAAAgAIAAIABAAAAAAAAAAA="
+)
+
+
 # Test function for psbt_0_1of1
 def test_psbt_0_1of1():
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_1of1)
@@ -133,7 +148,9 @@ def test_psbt_optional_fields():
 
 def test_p2sh():
     psbt = SimplePSBT.from_psbt(p2sh_0_2of3)
-    psbt
+    assert len(psbt.inputs) == 1
+    assert len(psbt.inputs[0].pubkeys) == 3
+    assert len(psbt.outputs) == 2
 
 
 def test_to_txout():
@@ -145,3 +162,27 @@ def test_to_txout():
     txout = simple_output.to_txout()
 
     assert isinstance(txout, TxOut)  # Should return a TxOut object
+
+
+def test_electrum_psbt():
+
+    psbt = SimplePSBT.from_psbt(electrum_psbt)
+    assert len(psbt.inputs) == 1
+    assert len(psbt.inputs[0].pubkeys) == 1
+    assert len(psbt.outputs) == 2
+
+
+def test_psbt_sparrow_2of2():
+
+    psbt = SimplePSBT.from_psbt(psbt_sparrow_2of2)
+    assert len(psbt.inputs) == 1
+    assert len(psbt.inputs[0].pubkeys) == 2
+    assert len(psbt.outputs) == 2
+
+
+def test_tr_psbt():
+
+    psbt = SimplePSBT.from_psbt(tr_psbt_singlesig)
+    assert len(psbt.inputs) == 1
+    assert len(psbt.inputs[0].pubkeys) == 1
+    assert len(psbt.outputs) == 2

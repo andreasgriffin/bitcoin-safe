@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Iterable, Union
+from typing import Iterable
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -54,20 +54,6 @@ from ...signals import SignalsMin
 from .sync_tab import SyncTab
 
 logger = logging.getLogger(__name__)
-
-
-class Box(QWidget):
-    def __init__(self, title: str | None = None, parent=None, data=None) -> None:
-        super().__init__(parent)
-        self.data = data
-        self._layout: Union[QVBoxLayout, QHBoxLayout] = QVBoxLayout()
-
-    def set_layout(self, layout_cls: Union[QVBoxLayout, QHBoxLayout]):
-        self._layout = layout_cls
-        self.setLayout(self._layout)
-
-    def setData(self, data) -> None:
-        self.data = data
 
 
 class HorizontalImportExportQR(QGroupBox):
