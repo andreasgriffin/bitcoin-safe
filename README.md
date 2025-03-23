@@ -66,6 +66,7 @@
   - Bump fee on transactions (via Replace-by-Fee)
   - Encrypted wallet storage
   - Backup PDF with Descriptor (Text and QR code)
+  - Message signing via USB and QR
 
 - **Hardware Signer Connectivity**
   
