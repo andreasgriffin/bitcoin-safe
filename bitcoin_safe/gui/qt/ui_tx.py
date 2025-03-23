@@ -771,7 +771,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         # connect signals
         for importers in signature_importers.values():
             for importer in importers:
-                importer.signal_signature_added.connect(self.signature_added)
+                importer.signal_signature_added.connect(self.import_trusted_psbt)
                 importer.signal_final_tx_received.connect(self.tx_received)
         return signature_importers
 
@@ -829,34 +829,40 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
                 return signature_importer
         return None
 
-    def signature_added(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
-        simple_psbt = SimplePSBT.from_psbt(import_psbt)
-
-        if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
-            tx = import_psbt.extract_tx()
-            fee_amount = import_psbt.fee_amount()
-            self.set_tx(
-                tx,
-                fee_info=(
-                    FeeInfo(
-                        fee_amount,
-                        tx.weight() // 4,
-                    )
-                    if fee_amount is not None
-                    else None
-                ),
-            )
-        elif isinstance(self.data.data, bdk.PartiallySignedTransaction) and (
+    def import_untrusted_psbt(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
+        if isinstance(self.data.data, bdk.PartiallySignedTransaction) and (
             signature_importer := self._get_any_signature_importer()
         ):
             signature_importer.handle_data_input(
                 original_psbt=self.data.data, data=Data.from_psbt(psbt=import_psbt, network=self.network)
             )
         elif isinstance(self.data.data, bdk.Transaction):
-            logger.info(f"Will not open the psbt if the transaction with the same txid is opened already")
-            return
+            logger.info(
+                f"Will not open the tx if the transaction, since we cannot verify if all signatures are present"
+            )
         else:
             logger.warning("Cannot update the psbt. Unclear if more signatures were added")
+
+    def import_trusted_psbt(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
+        simple_psbt = SimplePSBT.from_psbt(import_psbt)
+
+        fee_amount = import_psbt.fee_amount()
+        tx = import_psbt.extract_tx()
+        fee_info = (
+            FeeInfo(
+                fee_amount,
+                tx.weight() // 4,
+            )
+            if fee_amount is not None
+            else None
+        )
+        if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
+            self.set_tx(
+                tx,
+                fee_info=fee_info,
+            )
+        else:
+            self.set_psbt(import_psbt, fee_info=fee_info)
 
     def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here

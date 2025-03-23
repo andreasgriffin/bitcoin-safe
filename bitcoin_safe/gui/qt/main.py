@@ -1038,7 +1038,7 @@ class MainWindow(QMainWindow):
                 return None
             # if tab_data is a psbt, then add the signature from data
             if tab_data.data.data_type == DataType.PSBT:
-                tab_data.signature_added(psbt)
+                tab_data.import_untrusted_psbt(psbt)
                 self.tab_wallets.setCurrentIndex(tab_idx)
                 return None
 

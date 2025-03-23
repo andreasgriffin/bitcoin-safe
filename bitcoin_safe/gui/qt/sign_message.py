@@ -133,6 +133,7 @@ class SignMessage(QWidget):
         msg = self.sign_edit.text()
         if len(msg) < 2:
             Message(self.tr("Message too short."))
+            self.usb_gui.signal_end_hwi_blocker.emit()
             return
 
         signed_message = self.usb_gui.sign_message(
