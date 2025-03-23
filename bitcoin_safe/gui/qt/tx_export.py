@@ -30,7 +30,6 @@
 import logging
 
 from bitcoin_safe.gui.qt.export_data import (
-    CopyToolButton,
     FileToolButton,
     QrToolButton,
     SyncChatToolButton,
@@ -79,10 +78,6 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.button_export_file = FileToolButton(data=self.data, network=network, parent=self)
         self.add_button(self.button_export_file)
 
-        ## copy
-        self.button_copy = CopyToolButton(data=self.data, network=network, parent=self)
-        self.add_button(self.button_copy)
-
         # Sync & Chat
         self.button_sync_share = SyncChatToolButton(
             data=self.data, network=network, sync_tabs=sync_tabs, parent=self
@@ -94,7 +89,6 @@ class TxExport(BaseHardwareSignerInteractionWidget):
     def set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None = None):
         self.export_qr_button.set_data(data=data)
         self.button_export_file.set_data(data=data)
-        self.button_copy.set_data(data=data)
         self.button_sync_share.set_data(data=data, sync_tabs=sync_tabs)
 
         self.updateUi()

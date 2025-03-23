@@ -436,7 +436,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         ##################
 
         self.button_save_tx.setVisible(False)
-        self.button_send.setVisible(self.data.data_type == DataType.Tx)
+        self.button_send.setEnabled(self.data.data_type == DataType.Tx)
 
         self.updateUi()
         self.reload(UpdateFilter(refresh_all=True))
@@ -494,8 +494,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
     def set_next_prev_button_enabledness(self):
         if not self.tx_singning_steps:
             return
-        self.button_next.setEnabled(self._step_allows_forward(self.tx_singning_steps.current_index()))
-        self.button_previous.setEnabled(self._step_allows_backward(self.tx_singning_steps.current_index()))
+        next_enabled = self._step_allows_forward(self.tx_singning_steps.current_index())
+        prev_enabled = self._step_allows_backward(self.tx_singning_steps.current_index())
+        self.button_next.setEnabled(next_enabled)
+        self.button_previous.setEnabled(prev_enabled)
+        self.button_next.setHidden(not next_enabled and not prev_enabled)
+        self.button_previous.setHidden(not next_enabled and not prev_enabled)
 
     def go_to_next_index(self) -> None:
         if not self.tx_singning_steps:
@@ -817,26 +821,50 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             ),
         )
 
-    def signature_added(self, psbt_with_signatures: bdk.PartiallySignedTransaction) -> None:
-        simple_psbt = SimplePSBT.from_psbt(psbt_with_signatures)
+    def _get_any_signature_importer(self) -> AbstractSignatureImporter | None:
+        if not self.tx_singning_steps:
+            return None
+        for signature_importers in self.tx_singning_steps.signature_importer_dict.values():
+            for signature_importer in signature_importers:
+                return signature_importer
+        return None
+
+    def signature_added(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
+        simple_psbt = SimplePSBT.from_psbt(import_psbt)
 
         if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
+            tx = import_psbt.extract_tx()
+            fee_amount = import_psbt.fee_amount()
             self.set_tx(
-                psbt_with_signatures.extract_tx(),
-                fee_info=FeeInfo(
-                    psbt_with_signatures.fee_amount(),
-                    psbt_with_signatures.extract_tx().weight() / 4,
+                tx,
+                fee_info=(
+                    FeeInfo(
+                        fee_amount,
+                        tx.weight() // 4,
+                    )
+                    if fee_amount is not None
+                    else None
                 ),
             )
+        elif isinstance(self.data.data, bdk.PartiallySignedTransaction) and (
+            signature_importer := self._get_any_signature_importer()
+        ):
+            signature_importer.handle_data_input(
+                original_psbt=self.data.data, data=Data.from_psbt(psbt=import_psbt, network=self.network)
+            )
+        elif isinstance(self.data.data, bdk.Transaction):
+            logger.info(f"Will not open the psbt if the transaction with the same txid is opened already")
+            return
         else:
-            self.set_psbt(
-                psbt_with_signatures,
-                fee_info=FeeInfo(
-                    psbt_with_signatures.fee_amount(),
-                    psbt_with_signatures.extract_tx().weight() / 4,
-                    is_estimated=False,
-                ),
-            )
+            logger.warning("Cannot update the psbt. Unclear if more signatures were added")
+            # self.set_psbt(
+            #     import_psbt,
+            #     fee_info=FeeInfo(
+            #         import_psbt.fee(),
+            #         import_psbt.extract_tx().weight() / 4,
+            #         is_estimated=False,
+            #     ),
+            # )
 
     def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here
@@ -1032,7 +1060,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         )
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
-        self.button_send.setVisible(show_send)
+        self.button_send.setEnabled(show_send)
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
         # if is_unconfirmed then it makes sense to also edit it before

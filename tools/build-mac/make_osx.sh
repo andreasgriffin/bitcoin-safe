@@ -244,5 +244,8 @@ do
     sleep 1
 done
 
+# reset poetry config
+poetry config virtualenvs.create true
+
 info "Done. The .app and .dmg are *unsigned* and will trigger macOS Gatekeeper warnings."
 info "To ship, you’ll need to sign and notarize. See: sign_osx.sh"

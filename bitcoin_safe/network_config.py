@@ -87,7 +87,8 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
             "umbrel": "http://umbrel.local:3006",
         },
         bdk.Network.REGTEST: {
-            "default": "http://localhost:8080/"
+            "default": "http://localhost:8080/",
+            "nigiri": "http://localhost:5000/",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
             "default": "https://mempool.space/testnet4",
@@ -146,6 +147,14 @@ def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
         bdk.Network.SIGNET: False,
     }
     return d[network]
+
+
+def get_default_rpc_hosts(network: bdk.Network) -> Dict[str, str]:
+    return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
+
+
+def get_default_cbf_hosts(network: bdk.Network) -> Dict[str, str]:
+    return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
 
 
 def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
@@ -319,12 +328,12 @@ class NetworkConfig(BaseSaveableClass):
         self.network = network
         self.server_type: BlockchainType = BlockchainType.Electrum
         self.cbf_server_type: CBFServerType = CBFServerType.Automatic
-        self.compactblockfilters_ip: str = "127.0.0.1"
+        self.compactblockfilters_ip: str = get_default_cbf_hosts(network=network)["default"]
         self.compactblockfilters_port: int = get_default_port(network, BlockchainType.CompactBlockFilter)
         electrum_config = get_electrum_configs(network)["default"]
         self.electrum_url: str = electrum_config.url
         self.electrum_use_ssl: bool = electrum_config.use_ssl
-        self.rpc_ip: str = "127.0.0.1"
+        self.rpc_ip: str = get_default_rpc_hosts(network=network)["default"]
         self.rpc_port: int = get_default_port(network, BlockchainType.RPC)
         self.rpc_username: str = ""
         self.rpc_password: str = ""

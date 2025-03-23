@@ -194,7 +194,7 @@ class LanguageChooser(QObject):
     def default_lang(self) -> str:
         return list(self.availableLanguages.keys())[0]
 
-    def dialog_choose_language(self, parent) -> str:
+    def dialog_choose_language(self, parent: QWidget) -> str:
         logger.debug(f"dialog_choose_language")
         dialog = LanguageDialog(self.get_languages(), parent)
         lang = dialog.choose_language()
@@ -241,6 +241,13 @@ class LanguageChooser(QObject):
         if translator_qt.load(name, path) and instance:
             instance.installTranslator(translator_qt)
             self.installed_translators.append(translator_qt)
+
+    def get_os_language_code(self) -> str:
+        # Retrieve the system locale
+        locale = QLocale.system()
+        # get the locale code (e.g., "en_US")
+        locale_code = locale.name()
+        return locale_code
 
     def set_language(self, langCode: Optional[str]) -> None:
         langCode = langCode if langCode else DEFAULT_LANG_CODE

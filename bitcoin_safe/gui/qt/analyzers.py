@@ -92,7 +92,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
             elif SimplePubKeyProvider.key_origin_identical_disregarding_account(input, expected_key_origin):
                 return AnalyzerMessage(
                     self.tr(
-                        "The provided account is {provided_account} differs from the default account {default_account}."
+                        "The provided account {provided_account} differs from the default account {default_account}."
                     ).format(
                         provided_account=SimplePubKeyProvider.get_account_index(input),
                         default_account=SimplePubKeyProvider.get_account_index(expected_key_origin),

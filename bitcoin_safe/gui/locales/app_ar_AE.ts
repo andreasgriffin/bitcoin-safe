@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
+    </message>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>لم يتم إضافة توقيعات إضافية  </translation>
+    </message>
+    <message>
+        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
+        <translation>خطأ في مكتبة bitcoin_tx. لا ينبغي تغيير txid أثناء الإنهاء</translation>
+    </message>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
@@ -18,10 +33,6 @@
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
-    <message>
-        <source>Script Pubkey</source>
-        <translation>سكريبت ببلكي</translation>
-    </message>
     <message>
         <source>Address descriptor</source>
         <translation>وصف العنوان</translation>
@@ -251,13 +262,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers.                            
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
-                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
-                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>اشترِ {number} موقعين للأجهزة. من الأفضل شراء من بائعين موثوقين مختلفين. الاختيارات الرائعة هي:  </translation>
+        <translation>شراء {number} من الموقعين على الأجهزة                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe يدعم جميع الموقعين الرئيسيين على الأجهزة: &lt;a href=&quot;{url}&quot;&gt;اعرض القائمة الكاملة&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
     <message>
         <source>Buy a {name}</source>
@@ -272,9 +283,8 @@
         <translation>اشترِ Coldcard Q  </translation>
     </message>
     <message>
-        <source>Buy a Blockstream Jade
-10% off</source>
-        <translation>اشترِ Blockstream Jade بخصم 10٪  </translation>
+        <source>Buy a Blockstream Jade</source>
+        <translation>شراء Blockstream Jade  </translation>
     </message>
 </context>
 <context>
@@ -338,29 +348,6 @@
     <message>
         <source>Block {n}</source>
         <translation>البلوك {n}</translation>
-    </message>
-</context>
-<context>
-    <name>CopyToolButton</name>
-    <message>
-        <source>Not available</source>
-        <translation>غير متوفر</translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>نسخ إلى الحافظة</translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>نسخ {name}</translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>نسخ معرف المعاملة</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>نسخ JSON</translation>
     </message>
 </context>
 <context>
@@ -579,12 +566,28 @@ the sending value {sent}</source>
 <context>
     <name>FileToolButton</name>
     <message>
-        <source>Export file</source>
-        <translation>تصدير ملف</translation>
+        <source>Export</source>
+        <translation>تصدير  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>نسخ {name}</translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>نسخ معرف المعاملة</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>نسخ JSON</translation>
     </message>
     <message>
         <source>Export to file</source>
         <translation>تصدير إلى ملف  </translation>
+    </message>
+    <message>
+        <source>Not available</source>
+        <translation>غير متوفر</translation>
     </message>
 </context>
 <context>
@@ -703,6 +706,41 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
+    <name>HorizontalImportExportClipboard</name>
+    <message>
+        <source>Share</source>
+        <translation>مشاركة  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportFile</name>
+    <message>
+        <source>File</source>
+        <translation>ملف  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportQR</name>
+    <message>
+        <source>QR</source>
+        <translation>QR  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportUSB</name>
+    <message>
+        <source>USB</source>
+        <translation>يو إس بي  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportWallet</name>
+    <message>
+        <source>Seed</source>
+        <translation>بذرة</translation>
+    </message>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
@@ -740,7 +778,7 @@ the sending value {sent}</source>
         <translation>المعلومات المقدمة هي لـ {key_origin_network}. الرجاء تقديم xPub للشبكة {network}  </translation>
     </message>
     <message>
-        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
         <translation>الحساب المقدم {provided_account} يختلف عن الحساب الافتراضي {default_account}.  </translation>
     </message>
     <message>
@@ -1078,16 +1116,20 @@ Do you want to proceed anyway?</source>
         <translation>الملف المحدد: {مسار_الملف}</translation>
     </message>
     <message>
-        <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
-        <translation>لا توجد محفظة مفتوحة. يرجى فتح محفظة الإرسال لتعديل هذه الصفقة.</translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>لا توجد محفظة مفتوحة. من فضلك افتح محفظة المرسل لتحرير هذه العملية.  </translation>
     </message>
     <message>
-        <source> Please open the sender wallet to edit this thransaction.</source>
-        <translation> يرجى فتح محفظة الإرسال لتعديل هذه الصفقة.</translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>من فضلك افتح محفظة المرسل لتحرير هذه العملية.  </translation>
     </message>
     <message>
         <source>Could not decode this string</source>
         <translation>لا يمكن فك تشفير هذه السلسلة  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>رسالة موقعة  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1110,12 +1152,12 @@ Do you want to proceed anyway?</source>
         <translation>معاملة {txid}</translation>
     </message>
     <message>
-        <source>PSBT {txid}</source>
-        <translation>PSBT {txid}</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -1154,12 +1196,12 @@ Do you want to proceed anyway?</source>
         <translation>جديد</translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open.  </source>
-        <translation>هناك محفظة برقم {اسم} مفتوحة بالفعل.  </translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>فتح &amp;الأخيرة</translation>
+    </message>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>هناك محفظة برقم {اسم} مفتوحة بالفعل.  </translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
@@ -1261,6 +1303,10 @@ Do you want to proceed anyway?</source>
         <translation>متقدم</translation>
     </message>
     <message>
+        <source>Port:</source>
+        <translation>المنفذ:</translation>
+    </message>
+    <message>
         <source>Mode:</source>
         <translation>الوضع:</translation>
     </message>
@@ -1299,6 +1345,10 @@ Do you want to proceed anyway?</source>
         <translation>الردود: {name}: {status}     Mempool Instance: {server}</translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>تلقائي</translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1307,10 +1357,6 @@ Do you want to proceed anyway?</source>
 {responses}
 
 هل تريد المتابعة على أي حال؟ </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>تلقائي</translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1325,20 +1371,20 @@ Do you want to proceed anyway?</source>
         <translation>مصدر بيانات البلوكتشين</translation>
     </message>
     <message>
-        <source>Enable SSL</source>
-        <translation>تمكين SSL</translation>
-    </message>
-    <message>
         <source>URL:</source>
         <translation>الرابط:</translation>
     </message>
     <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>اضغط على مفتاح السهم ⬇ للاقتراحات  </translation>
     </message>
     <message>
-        <source>Port:</source>
-        <translation>المنفذ:</translation>
+        <source>Enable SSL</source>
+        <translation>تمكين SSL</translation>
+    </message>
+    <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1982,6 +2028,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>أدخل الرسالة للتوقيع عند {bip32_path}  </translation>
+    </message>
+    <message>
+        <source>Sign message</source>
+        <translation>توقيع الرسالة  </translation>
+    </message>
+    <message>
+        <source>Sign</source>
+        <translation>توقيع  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>رسالة موقعة  </translation>
+    </message>
+    <message>
+        <source>Message too short.</source>
+        <translation>الرسالة قصيرة جداً.  </translation>
+    </message>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
@@ -2025,18 +2094,6 @@ If you make a mistake here, your money is lost!</source>
         <source>Scan QR code</source>
         <translation>مسح رمز الاستجابة السريعة</translation>
     </message>
-    <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
-    </message>
-    <message>
-        <source>No additional signatures were added</source>
-        <translation>لم يتم إضافة توقيعات إضافية  </translation>
-    </message>
-    <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>خطأ في مكتبة bitcoin_tx. لا ينبغي تغيير txid أثناء الإنهاء</translation>
-    </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
@@ -2056,8 +2113,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي. الإجهاض</translation>
     </message>
     <message>
-        <source>Sign with mnemonic seed</source>
-        <translation>التوقيع ببذور المنون  </translation>
+        <source>Sign with seed</source>
+        <translation>التوقيع بالبذور  </translation>
     </message>
 </context>
 <context>
@@ -2200,16 +2257,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>TxSigningSteps</name>
     <message>
-        <source>Export transaction to any hardware signer</source>
-        <translation>تصدير المعاملة إلى أي موقع على الأجهزة</translation>
-    </message>
-    <message>
-        <source>Sign with a different hardware signer</source>
-        <translation>قم بالتوقيع مع موقّع أجهزة مختلف</translation>
-    </message>
-    <message>
-        <source>Import signature</source>
-        <translation>استيراد التوقيع</translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>إنشاء وجمع التوقيع {n}.  </translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>

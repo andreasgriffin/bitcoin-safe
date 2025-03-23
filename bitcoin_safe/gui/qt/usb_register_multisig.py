@@ -30,20 +30,10 @@
 import logging
 from typing import List, Optional
 
-from bitcoin_safe.descriptors import MultipathDescriptor
-from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
-from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
-from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.signals import Signals
-
-logger = logging.getLogger(__name__)
-
-
 import bdkpython as bdk
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
@@ -53,8 +43,19 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.gui.qt.address_edit import AddressEdit
+from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
+from bitcoin_safe.gui.qt.spinning_button import SpinningButton
+from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
+from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
+from bitcoin_safe.signals import Signals
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
 from ...signals import Signals
 from .util import Message, MessageType, generate_help_button, read_QIcon
+
+logger = logging.getLogger(__name__)
 
 
 class USBValidateAddressWidget(QWidget):
@@ -139,6 +140,8 @@ class USBValidateAddressWidget(QWidget):
 
 
 class USBRegisterMultisigWidget(USBValidateAddressWidget):
+    signal_end_hwi_blocker: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+
     def __init__(self, network: bdk.Network, signals: Signals) -> None:
         screenshots = ScreenshotsRegisterMultisig()
         self.button_help = generate_help_button(screenshots, title="Help")
@@ -155,6 +158,13 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
         self.xpubs_widget_layout.addWidget(self.label_xpubs_keystore)
 
         self._layout.insertWidget(0, self.xpubs_widget)
+
+        # signals
+        self.usb_gui.signal_end_hwi_blocker.connect(self.signal_end_hwi_blocker)
+
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
+        self.signal_end_hwi_blocker.emit()
+        return super().closeEvent(a0)
 
     def updateUi(self) -> None:
         super().updateUi()

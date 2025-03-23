@@ -1651,6 +1651,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
 
+        self.clear_cache()
         logger.info(json.loads(builder_result.psbt.json_serialize()))
         fee_rate = builder_result.psbt.fee_rate()
         if fee_rate is not None:

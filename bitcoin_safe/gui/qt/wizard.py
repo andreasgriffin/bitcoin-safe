@@ -36,7 +36,6 @@ from math import ceil
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
@@ -60,7 +59,6 @@ from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.keystore_ui import (
     HardwareSignerInteractionWidget,
     icon_for_label,
@@ -70,11 +68,9 @@ from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWid
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.gui.qt.tutorial_screenshots import (
     ScreenshotsGenerateSeed,
-    ScreenshotsTutorial,
     ScreenshotsViewSeed,
 )
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
-from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
@@ -341,36 +337,37 @@ class BuyHardware(BaseTab):
         widget_layout.addWidget(right_widget)
 
         self.label_buy = QLabel(widget)
+        self.label_buy.setOpenExternalLinks(True)  # This makes the link clickable
         self.label_buy.setWordWrap(True)
         right_widget_layout.addWidget(self.label_buy)
 
         self.button_buy_q = QPushButton()
         self.button_buy_q.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
         self.button_buy_q.clicked.connect(self.website_open_coinkite)
-        if HardwareSigners.q in ScreenshotsTutorial.enabled_hardware_signers:
-            right_widget_layout.addWidget(self.button_buy_q)
+        # if HardwareSigners.q in ScreenshotsTutorial.enabled_hardware_signers:
+        #     right_widget_layout.addWidget(self.button_buy_q)
         self.button_buy_q.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
         self.button_buycoldcard = QPushButton()
         self.button_buycoldcard.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
         self.button_buycoldcard.clicked.connect(self.website_open_coinkite)
-        if HardwareSigners.coldcard in ScreenshotsTutorial.enabled_hardware_signers:
-            right_widget_layout.addWidget(self.button_buycoldcard)
+        # if HardwareSigners.coldcard in ScreenshotsTutorial.enabled_hardware_signers:
+        #     right_widget_layout.addWidget(self.button_buycoldcard)
         self.button_buycoldcard.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
         self.button_buybitbox = QPushButton()
         self.button_buybitbox.setIcon(QIcon(generated_hardware_signer_path("bitbox02.svg")))
         self.button_buybitbox.clicked.connect(self.website_open_bitbox)
         self.button_buybitbox.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
-        if HardwareSigners.bitbox02 in ScreenshotsTutorial.enabled_hardware_signers:
-            right_widget_layout.addWidget(self.button_buybitbox)
+        # if HardwareSigners.bitbox02 in ScreenshotsTutorial.enabled_hardware_signers:
+        #     right_widget_layout.addWidget(self.button_buybitbox)
 
         self.button_buyjade = QPushButton()
         self.button_buyjade.setIcon(QIcon(generated_hardware_signer_path("jade.svg")))
         self.button_buyjade.clicked.connect(self.website_open_jade)
         self.button_buyjade.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
-        if HardwareSigners.jade in ScreenshotsTutorial.enabled_hardware_signers:
-            right_widget_layout.addWidget(self.button_buyjade)
+        # if HardwareSigners.jade in ScreenshotsTutorial.enabled_hardware_signers:
+        #     right_widget_layout.addWidget(self.button_buyjade)
 
         right_widget_layout.addItem(QSpacerItem(1, 40))
 
@@ -392,7 +389,7 @@ class BuyHardware(BaseTab):
         open_website("https://store.coinkite.com/promo/8BFF877000C34A86F410")
 
     def website_open_bitbox(self):
-        open_website("https://shiftcrypto.ch/bitbox02/?ref=MOB4dk7gpm")
+        open_website("https://shop.bitbox.swiss/?ref=MOB4dk7gpm")
 
     def website_open_jade(self):
         open_website("https://store.blockstream.com/?code=XEocg5boS77D")
@@ -402,13 +399,21 @@ class BuyHardware(BaseTab):
         self.label_buy.setText(
             html_f(
                 self.tr(
-                    """Buy {number} hardware signers.                            
+                    """Buy {number} hardware signers                         
                         <ul>
-                            <li>Most secure is to buy from different reputable vendors</li> 
-                            <li>Great choices are:</li> 
+                            {different_hint} 
+                            <li>Bitcoin Safe supports all major hardware signers: <a href="{url}">See full list</a></li>                             
                         </ul>
                            """
-                ).format(number=self.num_keystores()),
+                ).format(
+                    number=self.num_keystores(),
+                    different_hint=(
+                        "<li>Most secure is to buy from different reputable vendors</li>"
+                        if self.num_keystores() > 1
+                        else ""
+                    ),
+                    url="https://bitcoin-safe.org/en/knowledge/supported-hardware-signers",
+                ),
                 add_html_and_body=True,
                 p=True,
                 size=12,
@@ -418,7 +423,7 @@ class BuyHardware(BaseTab):
         self.button_buybitbox.setText(self.tr("Buy a {name}").format(name="Bitbox02\nBitcoin Only Edition"))
         self.button_buycoldcard.setText(self.tr("Buy a Coldcard Mk4"))
         self.button_buy_q.setText(self.tr("Buy a Coldcard Q"))
-        self.button_buyjade.setText(self.tr("Buy a Blockstream Jade\n10% off"))
+        self.button_buyjade.setText(self.tr("Buy a Blockstream Jade"))
         # self.label_turn_on.setText(
         #     html_f(
         #         self.tr("Buy {n} hardware signers").format(n=self.num_keystores())
@@ -1114,25 +1119,6 @@ class RegisterMultisig(BaseTab):
         self.custom_yes_button = QPushButton("")
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         self.buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
-
-        # export widgets
-        self.export_qr_widget = None
-        if self.refs.qt_wallet:
-            self.export_qr_widget = ExportDataSimple(
-                data=Data.from_str(
-                    self.refs.qt_wallet.wallet.multipath_descriptor.as_string(),
-                    network=self.refs.qt_wallet.wallet.network,
-                ),
-                signals_min=self.refs.qt_wallet.signals,
-                enable_clipboard=False,
-                enable_usb=False,
-                enable_file=False,
-                enable_qr=True,
-                network=self.refs.qtwalletbase.config.network,
-                threading_parent=self.threading_parent,
-                wallet_name=self.refs.qt_wallet.wallet.id,
-            )
-            self.export_qr_widget.set_minimum_size_as_floating_window()
 
         # ui hardware_signer_interactions
         self.hardware_signer_tabs = DataTabWidget[HardwareSignerInteractionWidget]()

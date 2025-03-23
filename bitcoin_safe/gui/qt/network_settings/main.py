@@ -70,7 +70,9 @@ from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
     ProxyInfo,
+    get_default_cbf_hosts,
     get_default_port,
+    get_default_rpc_hosts,
     get_description,
     get_electrum_configs,
     get_esplora_urls,
@@ -253,7 +255,12 @@ class NetworkSettingsUI(QDialog):
             self.cbf_server_typeComboBox_label, self.cbf_server_typeComboBox
         )
 
-        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(network=network)
+        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: list(get_default_cbf_hosts(network=network).values()) for network in bdk.Network
+            },
+        )
         self.compactblockfilters_ip_address_edit.setEnabled(False)
         self.compactblockfilters_ip_address_edit_label = QLabel()
         self.compactBlockFiltersLayout.addRow(
@@ -340,7 +347,12 @@ class NetworkSettingsUI(QDialog):
         self.rpcTabLayout = QFormLayout(self.rpcTab)
         self.rpcTabLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
-        self.rpc_ip_address_edit = QCompleterLineEdit(network=network)
+        self.rpc_ip_address_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: list(get_default_rpc_hosts(network=network).values()) for network in bdk.Network
+            },
+        )
         self.rpc_port_edit = QCompleterLineEdit(
             network=network,
             suggestions={
@@ -434,18 +446,33 @@ class NetworkSettingsUI(QDialog):
     def updateUi(self):
         self.setWindowTitle(self.tr("Network Settings"))
         self.groupbox_connection.setTitle(self.tr("Blockchain data source"))
-        self.electrum_use_ssl_checkbox.setText(self.tr("Enable SSL"))
+
         self.esplora_url_edit_label.setText(self.tr("URL:"))
+        self.esplora_url_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
+
+        self.electrum_use_ssl_checkbox.setText(self.tr("Enable SSL"))
         self.electrum_url_edit_url_label.setText(self.tr("URL:"))
+        self.electrum_url_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
         self.electrum_use_ssl_checkbox_label.setText(self.tr("SSL:"))
+
         self.compactblockfilters_port_edit_label.setText(self.tr("Port:"))
+        self.compactblockfilters_port_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
         self.cbf_server_typeComboBox_label.setText(self.tr("Mode:"))
         self.compactblockfilters_ip_address_edit_label.setText(self.tr("IP Address:"))
+        self.compactblockfilters_ip_address_edit.setPlaceholderText(
+            self.tr("Press ⬇ arrow key for suggestions")
+        )
+
         self.rpc_ip_address_edit_label.setText(self.tr("IP Address:"))
+        self.rpc_ip_address_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
         self.rpc_port_edit_label.setText(self.tr("Port:"))
+        self.rpc_port_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
         self.rpc_username_edit_label.setText(self.tr("Username:"))
         self.rpc_password_edit_label.setText(self.tr("Password:"))
+
         self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance URL"))
+        self.edit_mempool_url.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
+
         self.proxy_warning_label.textLabel.setText(
             self.tr("The proxy does not apply to the Sync&Chat feature!")
         )

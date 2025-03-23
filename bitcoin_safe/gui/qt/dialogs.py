@@ -28,16 +28,12 @@
 
 
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
-
-from .util import create_button_box, read_QIcon
-
-logger = logging.getLogger(__name__)
-from PyQt6.QtGui import QAction, QFont, QIcon
+from PyQt6.QtGui import QAction, QFont, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -45,10 +41,14 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QTextEdit,
     QVBoxLayout,
 )
 
 from ...wallet import filename_clean
+from .util import create_button_box, read_QIcon
+
+logger = logging.getLogger(__name__)
 
 
 def question_dialog(
@@ -294,3 +294,30 @@ if __name__ == "__main__":
         print("Password created successfully.")
     sys.exit(app.exec())
     quit()
+
+
+def show_textedit_message(text: str, label_description: str, title: str):
+    # Create a modal dialog
+    dialog = QDialog()
+    dialog.setWindowTitle(title)
+
+    # Set up the layout
+    layout = QVBoxLayout(dialog)
+
+    # Add a descriptive label
+    label = QLabel(label_description)
+    layout.addWidget(label)
+
+    # Add a read-only text edit and populate it with text
+    text_edit = QTextEdit()
+    text_edit.setReadOnly(True)
+    text_edit.setPlainText(text)
+    layout.addWidget(text_edit)
+
+    # Add an OK button that closes the dialog
+    ok_button = QPushButton("OK")
+    ok_button.clicked.connect(dialog.accept)
+    layout.addWidget(ok_button)
+
+    # Execute the dialog modally
+    dialog.exec()

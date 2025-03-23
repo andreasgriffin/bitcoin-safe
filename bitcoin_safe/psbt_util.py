@@ -271,7 +271,7 @@ class SimpleInput:
     tap_key_sig: Optional[str] = None
     tap_script_sigs: Dict[str, str] = field(default_factory=dict)
     tap_scripts: List[Tuple[str, str, str]] = field(default_factory=list)
-    tap_key_origins: List[Tuple[str, List[str]]] = field(default_factory=list)
+    tap_key_origins: List[Tuple[str, Tuple[str, List[str]]]] = field(default_factory=list)
     tap_internal_key: Optional[str] = None
     tap_merkle_root: Optional[str] = None
 
@@ -302,6 +302,12 @@ class SimpleInput:
         bip32_derivation = input_data.get("bip32_derivation", [])
         for pubkey_info in bip32_derivation:
             pubkey, (fingerprint, derivation_path) = pubkey_info
+            self.pubkeys.append(
+                PubKeyInfo(pubkey=pubkey, fingerprint=fingerprint, derivation_path=derivation_path)
+            )
+
+        for tap_key_origin in self.tap_key_origins:
+            pubkey, (unknown, (fingerprint, derivation_path)) = tap_key_origin
             self.pubkeys.append(
                 PubKeyInfo(pubkey=pubkey, fingerprint=fingerprint, derivation_path=derivation_path)
             )

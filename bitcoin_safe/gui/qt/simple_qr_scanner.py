@@ -30,37 +30,42 @@
 import logging
 
 import bdkpython as bdk
-from PyQt6.QtGui import QColor, QIcon
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 
-from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import icon_path
-from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.gui.qt.dialogs import show_textedit_message
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
-from .util import adjust_bg_color_for_darkmode
+from .util import do_copy
 
 logger = logging.getLogger(__name__)
 
 
-class NotificationBarRegtest(NotificationBar):
-    def __init__(self, open_network_settings, network: bdk.Network, signals_min: SignalsMin) -> None:
-        super().__init__(
-            text="",
-            optional_button_text="",
-            callback_optional_button=open_network_settings,
-            has_close_button=True,
-        )
-        self.network = network
-        self.signals_min = signals_min
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
-        self.set_icon(QIcon(icon_path(f"bitcoin-{network.name.lower()}.svg")))
+class SimpleQrScanner(BitcoinVideoWidget):
+    def __init__(
+        self,
+        network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
+        title: str,
+        label_description: str = "",
+    ) -> None:
+        super().__init__(network=network, close_on_result=True)
 
-        self.updateUi()
-        self.signals_min.language_switch.connect(self.updateUi)
+        self.close_all_video_widgets = close_all_video_widgets
+        self.title = title
+        self.label_description = label_description
 
-    def updateUi(self) -> None:
-        self.optionalButton.setText(self.tr("Change Network"))
-        self.textLabel.setText(
-            self.tr("Network = {network}. The coins are worthless!").format(
-                network=self.network.name.capitalize()
-            )
-        )
+        self.close_all_video_widgets.emit()
+        self.signal_raw_content.connect(self.on_raw_decoded)
+        self.setWindowTitle(self.title)
+        self.show()
+
+    def _show_result(self, o: object) -> None:
+        do_copy(str(o), title=self.title)
+        show_textedit_message(text=str(o), label_description=self.label_description, title=self.title)
+
+    def on_raw_decoded(self, o: object) -> None:
+        try:
+            data = self.meta_data_handler.get_complete_data()
+            self._show_result(data)
+        except:
+            self._show_result(o)
