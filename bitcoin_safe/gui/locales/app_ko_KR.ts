@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다  </translation>
+    </message>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>추가 서명이 없습니다  </translation>
+    </message>
+    <message>
+        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
+        <translation>bitcoin_tx 라이브러리 오류. 최종화하는 동안 txid가 변경되어서는 안 됩니다  </translation>
+    </message>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
@@ -18,10 +33,6 @@
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
-    <message>
-        <source>Script Pubkey</source>
-        <translation>스크립트 Pubkey  </translation>
-    </message>
     <message>
         <source>Address descriptor</source>
         <translation>주소 설명자  </translation>
@@ -251,13 +262,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers.                            
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
-                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
-                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>다른 신뢰할 수 있는 공급업체에서 {number} 하드웨어 서명 기계를 구입하세요.</translation>
+        <translation>{number}개 하드웨어 서명자 구입&lt;ul&gt; {different_hint} &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href=&quot;{url}&quot;&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Buy a {name}</source>
@@ -272,9 +283,8 @@
         <translation>Coldcard Q 구매</translation>
     </message>
     <message>
-        <source>Buy a Blockstream Jade
-10% off</source>
-        <translation>Blockstream Jade 10% 할인 구매</translation>
+        <source>Buy a Blockstream Jade</source>
+        <translation>Blockstream Jade 구입</translation>
     </message>
 </context>
 <context>
@@ -338,29 +348,6 @@
     <message>
         <source>Block {n}</source>
         <translation>블록 {n}  </translation>
-    </message>
-</context>
-<context>
-    <name>CopyToolButton</name>
-    <message>
-        <source>Not available</source>
-        <translation>사용할 수 없음  </translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>클립보드에 복사  </translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>{name} 복사  </translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>Txid 복사</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>JSON 복사  </translation>
     </message>
 </context>
 <context>
@@ -579,12 +566,28 @@ the sending value {sent}</source>
 <context>
     <name>FileToolButton</name>
     <message>
-        <source>Export file</source>
-        <translation>파일 내보내기  </translation>
+        <source>Export</source>
+        <translation>내보내기  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>{name} 복사  </translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>Txid 복사</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>JSON 복사  </translation>
     </message>
     <message>
         <source>Export to file</source>
         <translation>파일로 내보내기  </translation>
+    </message>
+    <message>
+        <source>Not available</source>
+        <translation>사용할 수 없음  </translation>
     </message>
 </context>
 <context>
@@ -703,6 +706,41 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
+    <name>HorizontalImportExportClipboard</name>
+    <message>
+        <source>Share</source>
+        <translation>공유  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportFile</name>
+    <message>
+        <source>File</source>
+        <translation>파일  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportQR</name>
+    <message>
+        <source>QR</source>
+        <translation>QR  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportUSB</name>
+    <message>
+        <source>USB</source>
+        <translation>USB  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportWallet</name>
+    <message>
+        <source>Seed</source>
+        <translation>시드  </translation>
+    </message>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
@@ -740,8 +778,8 @@ the sending value {sent}</source>
         <translation>제공된 정보는 {key_origin_network}용입니다. 네트워크 {network}용 xPub을 제공해주세요.  </translation>
     </message>
     <message>
-        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
-        <translation>제공된 계정은 {provided_account}로, 기본 계정 {default_account}과 다릅니다.  </translation>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>제공된 계정 {provided_account}이(가) 기본 계정 {default_account}과 다릅니다.</translation>
     </message>
     <message>
         <source>Unexpected key origin</source>
@@ -1078,16 +1116,20 @@ Do you want to proceed anyway?</source>
         <translation>선택된 파일: {file_path}  </translation>
     </message>
     <message>
-        <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
-        <translation>지갑이 열려 있지 않습니다. 이 트랜잭션을 수정하려면 발신자 지갑을 열어주세요.  </translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>지갑이 열려 있지 않습니다. 이 거래를 편집하려면 발신자 지갑을 열어 주세요.</translation>
     </message>
     <message>
-        <source> Please open the sender wallet to edit this thransaction.</source>
-        <translation>발신자 지갑을 열어 이 트랜잭션을 수정해주세요.  </translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>이 거래를 편집하려면 발신자 지갑을 열어 주세요.</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
         <translation>이 문자열을 해석 할 수 없습니다</translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>서명된 메시지  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1110,12 +1152,12 @@ Do you want to proceed anyway?</source>
         <translation>트랜잭션 {txid}  </translation>
     </message>
     <message>
-        <source>PSBT {txid}</source>
-        <translation>PSBT {txid}  </translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;지갑 열기  </translation>
+    </message>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}  </translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -1154,12 +1196,12 @@ Do you want to proceed anyway?</source>
         <translation>새로운  </translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open.  </source>
-        <translation>id {name}인 지갑이 이미 열려 있습니다.  </translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>최근 열기  </translation>
+    </message>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>id {name}인 지갑이 이미 열려 있습니다.  </translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
@@ -1261,6 +1303,10 @@ Do you want to proceed anyway?</source>
         <translation>고급  </translation>
     </message>
     <message>
+        <source>Port:</source>
+        <translation>포트:  </translation>
+    </message>
+    <message>
         <source>Mode:</source>
         <translation>모드:  </translation>
     </message>
@@ -1299,15 +1345,15 @@ Do you want to proceed anyway?</source>
         <translation>응답:     {name}: {status}     Mempool 인스턴스: {server}  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>자동  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
  Do you want to proceed anyway?</source>
         <translation>서버 연결 오류. {responses}   그래도 진행하시겠습니까?  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>자동  </translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1322,20 +1368,20 @@ Do you want to proceed anyway?</source>
         <translation>블록체인 데이터 소스  </translation>
     </message>
     <message>
-        <source>Enable SSL</source>
-        <translation>SSL 활성화  </translation>
-    </message>
-    <message>
         <source>URL:</source>
         <translation>URL:  </translation>
     </message>
     <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>제안을 보려면 ⬇ 화살표 키를 누르세요.</translation>
     </message>
     <message>
-        <source>Port:</source>
-        <translation>포트:  </translation>
+        <source>Enable SSL</source>
+        <translation>SSL 활성화  </translation>
+    </message>
+    <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1377,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>멀티 서명 선택  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>사용자 지정 또는 기존 지갑 복원  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>사용자 정의 또는 기존 지갑 가져오기</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
@@ -1979,6 +2025,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>{bip32_path}에서 서명할 메시지 입력  </translation>
+    </message>
+    <message>
+        <source>Sign message</source>
+        <translation>메시지 서명  </translation>
+    </message>
+    <message>
+        <source>Sign</source>
+        <translation>서명</translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>서명된 메시지  </translation>
+    </message>
+    <message>
+        <source>Message too short.</source>
+        <translation>메시지가 너무 짧습니다.</translation>
+    </message>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
@@ -2022,18 +2091,6 @@ If you make a mistake here, your money is lost!</source>
         <source>Scan QR code</source>
         <translation>QR 코드 스캔  </translation>
     </message>
-    <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다  </translation>
-    </message>
-    <message>
-        <source>No additional signatures were added</source>
-        <translation>추가 서명이 없습니다  </translation>
-    </message>
-    <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx 라이브러리 오류. 최종화하는 동안 txid가 변경되어서는 안 됩니다  </translation>
-    </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
@@ -2053,8 +2110,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다. 중단  </translation>
     </message>
     <message>
-        <source>Sign with mnemonic seed</source>
-        <translation>니모닉 시드로 서명  </translation>
+        <source>Sign with seed</source>
+        <translation>씨드로 서명  </translation>
     </message>
 </context>
 <context>
@@ -2197,16 +2254,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>TxSigningSteps</name>
     <message>
-        <source>Export transaction to any hardware signer</source>
-        <translation>하드웨어 서명 기계로 트랜잭션 내보내기  </translation>
-    </message>
-    <message>
-        <source>Sign with a different hardware signer</source>
-        <translation>다른 하드웨어 서명 기계로 서명  </translation>
-    </message>
-    <message>
-        <source>Import signature</source>
-        <translation>서명 가져오기  </translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>{n}번째 서명 생성 및 수집  </translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>

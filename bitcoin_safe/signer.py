@@ -90,89 +90,7 @@ class AbstractSignatureImporter(QObject):
     ) -> bool:
         return bool(psbt1.txid() == psbt2.txid())
 
-
-class SignatureImporterWallet(AbstractSignatureImporter):
-    keystore_type = KeyStoreImporterTypes.seed
-
-    def __init__(
-        self, wallet: Wallet, network: bdk.Network, signature_available: bool = False, key_label: str = ""
-    ) -> None:
-        super().__init__(
-            network=network,
-            signature_available=signature_available,
-            key_label=key_label,
-            pub_keys_without_signature=[
-                PubKeyInfo(keystore.fingerprint, label=keystore.label)
-                for keystore in wallet.keystores
-                if keystore.mnemonic
-            ],
-        )
-
-        self.software_signers = [
-            SoftwareSigner(keystore.mnemonic, self.network)
-            for keystore in wallet.keystores
-            if keystore.mnemonic
-        ]
-
-    def can_sign(self) -> bool:
-        return bool(self.software_signers)
-
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
-        original_psbt = psbt
-        original_serialized_tx = tx_of_psbt_to_hex(psbt)
-        for software_signer in self.software_signers:
-            psbt = software_signer.sign_psbt(psbt)
-
-        if not self.txids_match(original_psbt, psbt):
-            Message(self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"))
-            return
-
-        logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)}")
-
-        signing_was_successful: bool = original_serialized_tx != tx_of_psbt_to_hex(psbt)
-
-        if signing_was_successful:
-            logger.debug(f"psbt after signing: {tx_of_psbt_to_hex(psbt)}")
-            logger.debug(f"psbt after signing: fee  {psbt.fee_rate().as_sat_per_vb()}")
-
-        else:
-            logger.debug(f"signign not completed")
-        self.signal_signature_added.emit(psbt)
-
-    @property
-    def label(self) -> str:
-        return self.tr("Sign with mnemonic seed")
-
-
-class SignatureImporterQR(AbstractSignatureImporter):
-    keystore_type = KeyStoreImporterTypes.qr
-
-    def __init__(
-        self,
-        network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
-        signature_available: bool = False,
-        key_label: str = "",
-        pub_keys_without_signature=None,
-        label: str | None = None,
-    ) -> None:
-        super().__init__(
-            network=network,
-            signature_available=signature_available,
-            key_label=key_label,
-            pub_keys_without_signature=pub_keys_without_signature,
-        )
-        self._label = label if label else self.tr("Scan QR code")
-        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
-        self.close_all_video_widgets = close_all_video_widgets
-
-        self.close_all_video_widgets.connect(self.close_video_widget)
-
-    def close_video_widget(self):
-        if self._temp_bitcoin_video_widget:
-            self._temp_bitcoin_video_widget.close()
-
-    def scan_result_callback(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
+    def handle_data_input(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
         logger.debug(str(data.data))
         if data.data_type == DataType.PSBT:
             scanned_psbt: bdk.PartiallySignedTransaction = data.data
@@ -233,12 +151,92 @@ class SignatureImporterQR(AbstractSignatureImporter):
         else:
             logger.warning(f"Datatype {data.data_type} is not valid for importing signatures")
 
+
+class SignatureImporterWallet(AbstractSignatureImporter):
+    keystore_type = KeyStoreImporterTypes.seed
+
+    def __init__(
+        self, wallet: Wallet, network: bdk.Network, signature_available: bool = False, key_label: str = ""
+    ) -> None:
+        super().__init__(
+            network=network,
+            signature_available=signature_available,
+            key_label=key_label,
+            pub_keys_without_signature=[
+                PubKeyInfo(keystore.fingerprint, label=keystore.label)
+                for keystore in wallet.keystores
+                if keystore.mnemonic
+            ],
+        )
+
+        self.software_signers = [
+            SoftwareSigner(keystore.mnemonic, self.network)
+            for keystore in wallet.keystores
+            if keystore.mnemonic
+        ]
+
+    def can_sign(self) -> bool:
+        return bool(self.software_signers)
+
+    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+        original_psbt = psbt
+        original_serialized_tx = tx_of_psbt_to_hex(psbt)
+        for software_signer in self.software_signers:
+            psbt = software_signer.sign_psbt(psbt)
+
+        if not self.txids_match(original_psbt, psbt):
+            Message(self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"))
+            return
+
+        logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)}")
+
+        signing_was_successful: bool = original_serialized_tx != tx_of_psbt_to_hex(psbt)
+
+        if signing_was_successful:
+            logger.debug(f"psbt after signing: {tx_of_psbt_to_hex(psbt)}")
+            logger.debug(f"psbt after signing: fee  {psbt.fee_rate().as_sat_per_vb()}")
+
+        else:
+            logger.debug(f"signing not completed")
+        self.signal_signature_added.emit(psbt)
+
+    @property
+    def label(self) -> str:
+        return self.tr("Sign with seed")
+
+
+class SignatureImporterQR(AbstractSignatureImporter):
+    keystore_type = KeyStoreImporterTypes.qr
+
+    def __init__(
+        self,
+        network: bdk.Network,
+        close_all_video_widgets: TypedPyQtSignalNo,
+        signature_available: bool = False,
+        key_label: str = "",
+        pub_keys_without_signature=None,
+        label: str | None = None,
+    ) -> None:
+        super().__init__(
+            network=network,
+            signature_available=signature_available,
+            key_label=key_label,
+            pub_keys_without_signature=pub_keys_without_signature,
+        )
+        self._label = label if label else self.tr("Scan QR code")
+        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+        self.close_all_video_widgets = close_all_video_widgets
+
+        self.close_all_video_widgets.connect(self.close_video_widget)
+
+    def close_video_widget(self):
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
+
     def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network)
-        self._temp_bitcoin_video_widget.signal_data.connect(
-            lambda data: self.scan_result_callback(psbt, data)
-        )
+        self._temp_bitcoin_video_widget.signal_data.connect(lambda data: self.handle_data_input(psbt, data))
         self._temp_bitcoin_video_widget.show()
 
     @property
@@ -271,7 +269,7 @@ class SignatureImporterFile(SignatureImporterQR):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
-            on_open=lambda s: self.scan_result_callback(psbt, Data.from_str(s, network=self.network)),
+            on_open=lambda s: self.handle_data_input(psbt, Data.from_str(s, network=self.network)),
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
@@ -310,7 +308,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
-            on_open=lambda s: self.scan_result_callback(psbt, Data.from_str(s, network=self.network)),
+            on_open=lambda s: self.handle_data_input(psbt, Data.from_str(s, network=self.network)),
             text_button_ok=self.tr("OK"),
             text_instruction_label=self.tr("Please paste your PSBT in here, or drop a file"),
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
@@ -350,7 +348,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         try:
             signed_psbt = self.usb_gui.sign(psbt, slow_hwi_listing=False)
             if signed_psbt:
-                self.scan_result_callback(psbt, Data.from_psbt(signed_psbt, network=self.network))
+                self.handle_data_input(psbt, Data.from_psbt(signed_psbt, network=self.network))
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             if "multisig" in str(e).lower():

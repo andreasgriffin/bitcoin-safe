@@ -53,7 +53,7 @@ def get_config_dir() -> Path:
 
 
 def get_log_file() -> Path:
-    return get_config_dir() / ".bitcoin_safe.log"
+    return get_config_dir() / "bitcoin_safe.log"
 
 
 def setup_logging() -> None:

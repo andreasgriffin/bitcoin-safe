@@ -471,6 +471,7 @@ class StepProgressContainer(ThreadingManager, QWidget):
         sub_indices: List[int] | None = None,
         use_resizing_stacked_widget=True,
         threading_parent: ThreadingManager | None = None,
+        hide_steps_if_only_1=True,
     ) -> None:
         super().__init__(parent=parent, threading_parent=threading_parent)
         self.signals_min = signals_min
@@ -485,7 +486,6 @@ class StepProgressContainer(ThreadingManager, QWidget):
                 else [12 if i in sub_indices else 20 for i in range(len(step_labels))]
             ),
         )
-
         self.horizontal_indicator = HorizontalIndicator(len(step_labels), current_index)
         self.stacked_widget: Union[AutoResizingStackedWidget, QStackedWidget] = (
             AutoResizingStackedWidget() if use_resizing_stacked_widget else QStackedWidget()
@@ -494,6 +494,10 @@ class StepProgressContainer(ThreadingManager, QWidget):
         self.clickable = clickable
 
         self.set_labels(step_labels)
+
+        if len(step_labels) <= 1 and hide_steps_if_only_1:
+            self.step_bar.setVisible(False)
+            self.horizontal_indicator.setVisible(False)
 
         self._layout = QVBoxLayout(self)
         self._layout.addWidget(self.step_bar)

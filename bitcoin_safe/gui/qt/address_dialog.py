@@ -34,19 +34,20 @@ import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QFormLayout, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
+from bitcoin_safe.gui.qt.sign_message import SignMessage
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe.util import serialized_to_hex
 
-from ...signals import Signals
+from ...signals import Signals, SignalsMin
 from ...wallet import Wallet
 from .hist_list import HistList
 from .util import Buttons, CloseButton, read_QIcon
@@ -57,38 +58,56 @@ logger = logging.getLogger(__name__)
 class AddressDetailsAdvanced(QWidget):
     def __init__(
         self,
-        bdk_address: bdk.Address,
+        wallet_descriptor: MultipathDescriptor,
+        kind: bdk.KeychainKind,
+        address_index: int,
+        network: bdk.Network,
         address_path_str: str,
         close_all_video_widgets: TypedPyQtSignalNo,
+        signals_min: SignalsMin,
+        threading_parent: ThreadingManager | None,
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
         self.setWindowIcon(read_QIcon("logo.svg"))
 
-        form_layout = QFormLayout(self)
-        form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        form_layout = QGridLayout(self)
+        # form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
-        try:
-            script_pubkey = serialized_to_hex(bdk_address.script_pubkey().to_bytes())
-        except BaseException:
-            script_pubkey = None
-        if script_pubkey:
-            pubkey_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=script_pubkey)
-            pubkey_e.button_container.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-            pubkey_e.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        # try:
+        #     script_pubkey = serialized_to_hex(bdk_address.script_pubkey().to_bytes())
+        # except BaseException:
+        #     script_pubkey = None
+        # if script_pubkey:
+        #     pubkey_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=script_pubkey)
+        #     pubkey_e.button_container.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        #     pubkey_e.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-            pubkey_e.add_copy_button()
-            pubkey_e.setReadOnly(True)
+        #     pubkey_e.add_copy_button()
+        #     pubkey_e.setReadOnly(True)
 
-            form_layout.addRow(self.tr("Script Pubkey"), pubkey_e)
+        #     form_layout.addRow(self.tr("Script Pubkey"), pubkey_e)
 
-        if address_path_str:
-            der_path_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=address_path_str)
-            der_path_e.add_copy_button()
-            der_path_e.setFixedHeight(50)
-            der_path_e.setReadOnly(True)
+        der_path_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=address_path_str)
+        der_path_e.add_copy_button()
+        der_path_e.setFixedHeight(50)
+        der_path_e.setReadOnly(True)
 
-            form_layout.addRow(self.tr("Address descriptor"), der_path_e)
+        form_layout.addWidget(QLabel(self.tr("Address descriptor")), 0, 0)
+        form_layout.addWidget(der_path_e, 0, 1, 1, 3)
+
+        # sign message row
+        self.sign_message = SignMessage(
+            wallet_descriptor=wallet_descriptor,
+            kind=kind,
+            address_index=address_index,
+            network=network,
+            close_all_video_widgets=close_all_video_widgets,
+            parent=self,
+            grid_layout=form_layout,
+            threading_parent=threading_parent,
+            signals_min=signals_min,
+        )
 
 
 class AddressValidateTab(QWidget):
@@ -139,6 +158,7 @@ class AddressDialog(QWidget):
         wallet: Wallet,
         address: str,
         mempool_data: MempoolData,
+        threading_parent: ThreadingManager | None,
         parent=None,
     ) -> None:
         super().__init__(parent, Qt.WindowType.Window)
@@ -179,17 +199,27 @@ class AddressDialog(QWidget):
 
         self.upper_widget_layout.addWidget(self.recipient_tabs)
 
-        self.tab_advanced = AddressDetailsAdvanced(
-            bdk_address=self.bdk_address,
-            address_path_str=self.wallet.get_address_path_str(address),
-            parent=self,
-            close_all_video_widgets=self.signals.close_all_video_widgets,
-        )
-        self.recipient_tabs.addTab(self.tab_advanced, "")
-
         address_info = self.wallet.get_address_info_min(address)
-        if address_info:
-            self.tab_validate = AddressValidateTab(
+        self.tab_advanced = (
+            AddressDetailsAdvanced(
+                address_path_str=self.wallet.get_address_path_str(address),
+                parent=self,
+                close_all_video_widgets=self.signals.close_all_video_widgets,
+                network=config.network,
+                wallet_descriptor=self.wallet.multipath_descriptor,
+                kind=address_info.keychain,
+                address_index=address_info.index,
+                signals_min=self.signals,
+                threading_parent=threading_parent,
+            )
+            if address_info
+            else None
+        )
+        if self.tab_advanced:
+            self.recipient_tabs.addTab(self.tab_advanced, "")
+
+        self.tab_validate = (
+            AddressValidateTab(
                 bdk_address=self.bdk_address,
                 network=config.network,
                 signals=self.signals,
@@ -198,6 +228,10 @@ class AddressDialog(QWidget):
                 address_index=address_info.index,
                 parent=self,
             )
+            if address_info
+            else None
+        )
+        if self.tab_validate:
             self.recipient_tabs.addTab(
                 self.tab_validate, read_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
             )

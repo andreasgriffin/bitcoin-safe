@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>署名されたpsbtのtxidが元のtxidと一致しません</translation>
+    </message>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>追加の署名は追加されませんでした  </translation>
+    </message>
+    <message>
+        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
+        <translation>bitcoin_txライブラリエラー。txidは最終確定中に変更されるべきではありません</translation>
+    </message>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
@@ -18,10 +33,6 @@
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
-    <message>
-        <source>Script Pubkey</source>
-        <translation>スクリプトパブキー</translation>
-    </message>
     <message>
         <source>Address descriptor</source>
         <translation>アドレス記述子</translation>
@@ -251,13 +262,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers.                            
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
-                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
-                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>{number}台のハードウェア署名者を購入してください。異なる信頼できるベンダーから購入することが最も安全です。素晴らしい選択肢は以下の通りです：  </translation>
+        <translation>{number} 個のハードウェア署名者を購入する                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe はすべての主要なハードウェア署名者をサポートしています：&lt;a href=&quot;{url}&quot;&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
     <message>
         <source>Buy a {name}</source>
@@ -272,9 +283,8 @@
         <translation>Coldcard Qを購入する  </translation>
     </message>
     <message>
-        <source>Buy a Blockstream Jade
-10% off</source>
-        <translation>Blockstream Jadeを10％オフで購入する  </translation>
+        <source>Buy a Blockstream Jade</source>
+        <translation>Blockstream Jade を購入する  </translation>
     </message>
 </context>
 <context>
@@ -338,29 +348,6 @@
     <message>
         <source>Block {n}</source>
         <translation>ブロック {n}</translation>
-    </message>
-</context>
-<context>
-    <name>CopyToolButton</name>
-    <message>
-        <source>Not available</source>
-        <translation>利用不可</translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>クリップボードにコピー</translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>{name}をコピー</translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>トランザクションIDをコピー</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>JSONをコピー</translation>
     </message>
 </context>
 <context>
@@ -579,12 +566,28 @@ the sending value {sent}</source>
 <context>
     <name>FileToolButton</name>
     <message>
-        <source>Export file</source>
-        <translation>ファイルをエクスポート</translation>
+        <source>Export</source>
+        <translation>エクスポート  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>{name}をコピー</translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>トランザクションIDをコピー</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>JSONをコピー</translation>
     </message>
     <message>
         <source>Export to file</source>
         <translation>ファイルにエクスポート  </translation>
+    </message>
+    <message>
+        <source>Not available</source>
+        <translation>利用不可</translation>
     </message>
 </context>
 <context>
@@ -703,6 +706,41 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
+    <name>HorizontalImportExportClipboard</name>
+    <message>
+        <source>Share</source>
+        <translation>共有  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportFile</name>
+    <message>
+        <source>File</source>
+        <translation>ファイル  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportQR</name>
+    <message>
+        <source>QR</source>
+        <translation>QR  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportUSB</name>
+    <message>
+        <source>USB</source>
+        <translation>USB  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportWallet</name>
+    <message>
+        <source>Seed</source>
+        <translation>署名デバイスの名前：...... 署名デバイスの場所：.....</translation>
+    </message>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
@@ -740,8 +778,8 @@ the sending value {sent}</source>
         <translation>提供された情報は{key_origin_network}用です。{network}ネットワークのxPubを提供してください  </translation>
     </message>
     <message>
-        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
-        <translation>提供されたアカウントは{provided_account}で、デフォルトのアカウント{default_account}と異なります。  </translation>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>提供されたアカウント {provided_account} はデフォルトのアカウント {default_account} と異なります。  </translation>
     </message>
     <message>
         <source>Unexpected key origin</source>
@@ -1078,16 +1116,20 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
     </message>
     <message>
-        <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
-        <translation>トランザクションまたはPSBTを開く</translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>ウォレットが開かれていません。この取引を編集するために送信者のウォレットを開いてください。  </translation>
     </message>
     <message>
-        <source> Please open the sender wallet to edit this thransaction.</source>
-        <translation>OK</translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>この取引を編集するために送信者のウォレットを開いてください。  </translation>
     </message>
     <message>
         <source>Could not decode this string</source>
         <translation>この文字列をデコードできませんでした  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>署名されたメッセージ  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1110,12 +1152,12 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットを開く</translation>
     </message>
     <message>
-        <source>PSBT {txid}</source>
-        <translation>ウォレットファイル (.wallet)</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>ウォレットファイル (.wallet)</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -1154,12 +1196,12 @@ Do you want to proceed anyway?</source>
         <translation>KYC-Exchange</translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open.  </source>
-        <translation>ウォレット {id} を閉じますか？</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>現在のウォレットを&amp;保存</translation>
+    </message>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>ウォレット {id} を閉じますか？</translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
@@ -1261,6 +1303,10 @@ Do you want to proceed anyway?</source>
         <translation>詳細</translation>
     </message>
     <message>
+        <source>Port:</source>
+        <translation>IPアドレス：</translation>
+    </message>
+    <message>
         <source>Mode:</source>
         <translation>ユーザ名：</translation>
     </message>
@@ -1299,6 +1345,10 @@ Do you want to proceed anyway?</source>
         <translation>シングルシグネチャーウォレット</translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>接続をテスト</translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1307,10 +1357,6 @@ Do you want to proceed anyway?</source>
 {responses}
 
 それでも進みますか？</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>接続をテスト</translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1325,20 +1371,20 @@ Do you want to proceed anyway?</source>
         <translation>URL：</translation>
     </message>
     <message>
-        <source>Enable SSL</source>
-        <translation>SSL：</translation>
-    </message>
-    <message>
         <source>URL:</source>
         <translation>ポート：</translation>
     </message>
     <message>
-        <source>SSL:</source>
-        <translation>モード：</translation>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>提案のために⬇矢印キーを押してください  </translation>
     </message>
     <message>
-        <source>Port:</source>
-        <translation>IPアドレス：</translation>
+        <source>Enable SSL</source>
+        <translation>SSL：</translation>
+    </message>
+    <message>
+        <source>SSL:</source>
+        <translation>モード：</translation>
     </message>
 </context>
 <context>
@@ -1380,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットをあなたのニーズに合わせてカスタマイズ</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>回復の場合、オンラインでのサポート資料が少ない</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>カスタムまたは既存のウォレットをインポートする</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
@@ -1982,6 +2028,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>{bip32_path} で署名するメッセージを入力  </translation>
+    </message>
+    <message>
+        <source>Sign message</source>
+        <translation>メッセージを署名する  </translation>
+    </message>
+    <message>
+        <source>Sign</source>
+        <translation>署名  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>署名されたメッセージ  </translation>
+    </message>
+    <message>
+        <source>Message too short.</source>
+        <translation>メッセージが短すぎます。  </translation>
+    </message>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
@@ -2025,18 +2094,6 @@ If you make a mistake here, your money is lost!</source>
         <source>Scan QR code</source>
         <translation>QRコードをスキャン</translation>
     </message>
-    <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>署名されたpsbtのtxidが元のtxidと一致しません</translation>
-    </message>
-    <message>
-        <source>No additional signatures were added</source>
-        <translation>追加の署名は追加されませんでした  </translation>
-    </message>
-    <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_txライブラリエラー。txidは最終確定中に変更されるべきではありません</translation>
-    </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
@@ -2056,8 +2113,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>署名されたpsbtのtxidが元のTransaction Identifierと一致しない。中止</translation>
     </message>
     <message>
-        <source>Sign with mnemonic seed</source>
-        <translation>ニーモニックシードで署名  </translation>
+        <source>Sign with seed</source>
+        <translation>種で署名する  </translation>
     </message>
 </context>
 <context>
@@ -2200,16 +2257,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>TxSigningSteps</name>
     <message>
-        <source>Export transaction to any hardware signer</source>
-        <translation>任意のハードウェアサイナーへのトランザクションのエクスポート</translation>
-    </message>
-    <message>
-        <source>Sign with a different hardware signer</source>
-        <translation>別のハードウェアサイナーで署名</translation>
-    </message>
-    <message>
-        <source>Import signature</source>
-        <translation>署名のインポート</translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>{n} 番目の署名を作成し収集する  </translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>

@@ -7,6 +7,8 @@ set -e
 # ======================
 PYTHON_VERSION=3.10.11
 PY_VER_MAJOR="3.10"  # as it appears in fs paths
+EXECUTABLE_NAME="run_Bitcoin_Safe"
+PACKAGE_NAME='Bitcoin_Safe.app'
 PACKAGE=Bitcoin_Safe
 GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
@@ -191,7 +193,9 @@ if [ ! -f "$DLL_TARGET_DIR/libzbar.0.dylib" ]; then
 else
     info "Skipping ZBar build: reusing already built dylib."
 fi
+# on Mac libzbar.0.dylib is not found. However libzbar.dylib works.
 cp -f "$DLL_TARGET_DIR/libzbar.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "copying zbar failed"
+cp -f "$DLL_TARGET_DIR/libzbar.0.dylib" "$PROJECT_ROOT/bitcoin_safe/libzbar.dylib" || fail "copying zbar failed"
 
 if [ ! -f "$DLL_TARGET_DIR/libusb-1.0.dylib" ]; then
     info "Building libusb dylib..."
@@ -213,7 +217,7 @@ pip install "$POETRY_WHEEL_DIR"/*.whl
 # ======================
 # Build the final binary
 # ======================
-rm ./dist/*   || true
+rm -rf ./dist/*   || true
 info "Faking timestamps..."
 find . -exec sudo touch -t '200101220000' {} + || true
 
@@ -224,8 +228,13 @@ info "Running PyInstaller to create macOS .app"
 BITCOIN_SAFE_VERSION=$VERSION \
   pyinstaller --noconfirm --clean tools/build-mac/osx.spec || fail "PyInstaller failed."
 
-info "Finished building unsigned dist/${PACKAGE}.app. This hash should be reproducible:"
-find "dist/${PACKAGE}.app" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
+
+install_name_tool -id @rpath/libzbar.dylib "dist/${PACKAGE_NAME}/Contents/Frameworks/libzbar.dylib"
+install_name_tool -add_rpath "@executable_path/../Frameworks" "dist/${PACKAGE_NAME}/Contents/MacOS/${EXECUTABLE_NAME}"
+
+
+info "Finished building unsigned dist/${PACKAGE_NAME}. This hash should be reproducible:"
+find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
 info "Creating unsigned .DMG"
 # Workaround resource busy bug on github on MacOS 13
@@ -234,7 +243,7 @@ i=0
 until     hdiutil create \
             -fs HFS+ \
             -volname "$PACKAGE" \
-            -srcfolder "dist/$PACKAGE.app" \
+            -srcfolder "dist/$PACKAGE_NAME" \
             "dist/bitcoin_safe-$VERSION-unsigned.dmg"     
 do
     if [ $i -eq 10 ]; then  
@@ -243,6 +252,9 @@ do
     i=$((i+1))
     sleep 1
 done
+
+# reset poetry config
+poetry config virtualenvs.create true
 
 info "Done. The .app and .dmg are *unsigned* and will trigger macOS Gatekeeper warnings."
 info "To ship, you’ll need to sign and notarize. See: sign_osx.sh"

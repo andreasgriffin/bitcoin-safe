@@ -49,9 +49,9 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
+from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
 from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.gui.qt.wizard import (
@@ -395,8 +395,9 @@ def test_wizard(
                 assert viewer.fee_group.spin_fee_rate.value() == 1.3
                 assert viewer.fee_group.approximate_fee_label.isVisible()
 
-                assert viewer.button_next.isVisible()
-                viewer.button_next.click()
+                assert not viewer.button_next.isVisible()
+                assert viewer.button_send.isVisible()
+                assert not viewer.button_send.isEnabled()
                 shutter.save(main_window)
 
                 assert viewer.tx_singning_steps
@@ -410,10 +411,10 @@ def test_wizard(
                 ]
                 assert viewer.tx_singning_steps
                 widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
-                assert isinstance(widget, HorizontalImporters)
-                assert isinstance(widget.group_seed.data, SignerUI)
-                for button in widget.group_seed.data.findChildren(QPushButton):
-                    assert button.text() == "Sign with mnemonic seed"
+                assert isinstance(widget, HorizontalImportExportAll)
+                assert isinstance(widget.wallet_importers.signer_ui, SignerUI)
+                for button in widget.wallet_importers.signer_ui.findChildren(QPushButton):
+                    assert button.text() == "Sign with seed"
                     assert button.isVisible()
                     button.click()
 

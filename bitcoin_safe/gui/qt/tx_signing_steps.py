@@ -31,13 +31,10 @@ import logging
 from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data
+from PyQt6.QtWidgets import QWidget
 
-from bitcoin_safe.gui.qt.export_data import (
-    DataGroupBox,
-    ExportDataSimple,
-    HorizontalImportExportGroups,
-)
+from bitcoin_safe.gui.qt.export_data import DataGroupBox, HorizontalImportExportGroups
+from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignedUI, SignerUI
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.signals import Signals
@@ -52,7 +49,6 @@ from bitcoin_safe.signer import (
 from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
-from PyQt6.QtWidgets import QWidget
 
 
 class HorizontalImporters(HorizontalImportExportGroups):
@@ -103,23 +99,10 @@ class TxSigningSteps(StepProgressContainer):
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         step_labels = []
-        self.sub_indices = []
-        enumeration_alphabet = []
+        self.sub_indices: List[int] = []
         for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
             # export
-            step_labels.append(
-                (
-                    self.tr("Export transaction to any hardware signer")
-                    if i == 0
-                    else self.tr("Sign with a different hardware signer")
-                )
-            )
-            self.sub_indices.append(self._get_idx(i, 0))
-            enumeration_alphabet.append(self._get_name(i, 0))
-
-            # import
-            step_labels.append(self.tr("Import signature"))
-            enumeration_alphabet.append(self._get_name(i, 1))
+            step_labels.append((self.tr("Create and collect {n}. signature").format(n=i + 1)))
 
         super().__init__(
             step_labels=step_labels,
@@ -128,8 +111,6 @@ class TxSigningSteps(StepProgressContainer):
             signals_min=signals,
             threading_parent=threading_parent,
         )
-        self.step_bar.set_enumeration_alphabet(enumeration_alphabet)
-        self.set_sub_indices(self.sub_indices)
 
         self.psbt = psbt
         self.network = network
@@ -139,15 +120,16 @@ class TxSigningSteps(StepProgressContainer):
         first_non_signed_index = None
         # fill ui
         for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
-            self.set_custom_widget(self._get_idx(i, 0), self.create_export_widget(signature_importer_list))
-            self.set_custom_widget(self._get_idx(i, 1), self.create_import_widget(signature_importer_list))
+            self.set_custom_widget(
+                self._get_idx(i, 0), self.create_export_import_widget(signature_importer_list)
+            )
             # set the index, to the first unsigned step
             if first_non_signed_index is None and (not signature_importer_list[0].signature_available):
                 first_non_signed_index = i
                 self.set_current_index(self._get_idx(i, 0))
 
     def _get_idx(self, i: int, j: int) -> int:
-        return 2 * i + j
+        return i
 
     def _get_name(self, i: int, j: int) -> str:
         alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -170,35 +152,19 @@ class TxSigningSteps(StepProgressContainer):
         if self.current_index() - 1 >= 0:
             self.set_current_index(self.current_index() - 1)
 
-    def create_export_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
-        usb_signers = [
-            signature_importer
-            for signature_importer in signature_importers
-            if isinstance(signature_importer, SignatureImporterUSB)
-        ]
-        usb_signer_ui = None
-        if usb_signers:
-            usb_signer_ui = SignerUI(
-                usb_signers,
-                self.psbt,
-                self.network,
-            )
-
-        export_widget = ExportDataSimple(
-            data=Data.from_psbt(self.psbt, network=self.network),
+    def create_export_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
+        widget = HorizontalImportExportAll(
+            psbt=self.psbt,
+            network=self.network,
+            signals_min=self.signals_min,
+            threading_parent=self.threading_parent,
+            signature_importers=signature_importers,
             sync_tabs={
                 wallet_id: qt_wallet.sync_tab
                 for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
             },
-            usb_signer_ui=usb_signer_ui,
-            signals_min=self.signals,
-            network=self.network,
-            threading_parent=self.threading_parent,
         )
-
-        export_widget.qr_label.set_always_animate(True)
-
-        return export_widget
+        return widget
 
     def create_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
         if signature_importers[0].signature_available:

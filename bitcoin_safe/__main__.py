@@ -1,6 +1,8 @@
 import argparse
 import sys
 
+from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette
+
 # all import must be absolute, because this is the entry script for pyinstaller
 from bitcoin_safe.logging_setup import setup_logging
 
@@ -42,6 +44,10 @@ def main() -> None:
 
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
+
+    if is_gnome_dark_mode():
+        set_dark_palette(app)
+
     window = MainWindow(**vars(args))
     window.show()
     app.exec()

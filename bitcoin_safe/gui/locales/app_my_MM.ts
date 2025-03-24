@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်  </translation>
+    </message>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>အပိုဆောင်းလက်မှတ်များမထည့်ထားပါ။  </translation>
+    </message>
+    <message>
+        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
+        <translation>bitcoin_tx ကိုင်တာရီအမှား။ txid သည်အဆုံးသတ်ရာတွင်ပြောင်းလဲမှုမဖြစ်ရပါ။  </translation>
+    </message>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
@@ -18,10 +33,6 @@
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
-    <message>
-        <source>Script Pubkey</source>
-        <translation>စာရွက် Pubkey  </translation>
-    </message>
     <message>
         <source>Address descriptor</source>
         <translation>လိပ်စာဖော်ပြချက်  </translation>
@@ -251,13 +262,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers.                            
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
-                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
-                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>{number} ဟာ့ဒ်ဝဲလ်အမှတ်သားများဝယ်ပါ။  </translation>
+        <translation>{number} ခုအား ဝယ်ယူပါ။&lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲလ်လက်မှတ်ထိုးသူများကို ထောက်ခံသည်။ &lt;a href=&quot;{url}&quot;&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
     <message>
         <source>Buy a {name}</source>
@@ -272,9 +283,8 @@
         <translation>Coldcard Q ဝယ်ပါ  </translation>
     </message>
     <message>
-        <source>Buy a Blockstream Jade
-10% off</source>
-        <translation>Blockstream Jade 10% လျှော့စျေးနှင့်ဝယ်ပါ  </translation>
+        <source>Buy a Blockstream Jade</source>
+        <translation>Blockstream Jade ကို ဝယ်ပါ။  </translation>
     </message>
 </context>
 <context>
@@ -338,29 +348,6 @@
     <message>
         <source>Block {n}</source>
         <translation>ဘလော့ခ် {n}  </translation>
-    </message>
-</context>
-<context>
-    <name>CopyToolButton</name>
-    <message>
-        <source>Not available</source>
-        <translation>မရရှိနိုင်  </translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>ကလစ်ဘုတ်ကိုကော်ပီကူးပါ  </translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>{name} ကူးယူပါ  </translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>TxId ကူးယူပါ  </translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>JSON ကူးယူပါ  </translation>
     </message>
 </context>
 <context>
@@ -579,12 +566,28 @@ the sending value {sent}</source>
 <context>
     <name>FileToolButton</name>
     <message>
-        <source>Export file</source>
-        <translation>ဖိုင်ထုတ်ပို့ပါ  </translation>
+        <source>Export</source>
+        <translation>တင်ပို့ပါ  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>{name} ကူးယူပါ  </translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>TxId ကူးယူပါ  </translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>JSON ကူးယူပါ  </translation>
     </message>
     <message>
         <source>Export to file</source>
         <translation>ဖိုင်ထုတ်ပို့ပါ  </translation>
+    </message>
+    <message>
+        <source>Not available</source>
+        <translation>မရရှိနိုင်  </translation>
     </message>
 </context>
 <context>
@@ -703,6 +706,41 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
+    <name>HorizontalImportExportClipboard</name>
+    <message>
+        <source>Share</source>
+        <translation>မျှဝေပါ  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportFile</name>
+    <message>
+        <source>File</source>
+        <translation>ဖိုင်  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportQR</name>
+    <message>
+        <source>QR</source>
+        <translation>QR  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportUSB</name>
+    <message>
+        <source>USB</source>
+        <translation>USB  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportWallet</name>
+    <message>
+        <source>Seed</source>
+        <translation>မျိုးစေ့  </translation>
+    </message>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
@@ -740,8 +778,8 @@ the sending value {sent}</source>
         <translation>ပေးထားသောအချက်အလက်သည် {key_origin_network} အတွက်ဖြစ်သည်။ ကွန်ယက် {network} အတွက် xPub ကိုပေးပါ။  </translation>
     </message>
     <message>
-        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
-        <translation>ပေးအပ်ထားသောအကောင့်သည် {provided_account} သည်မူရင်းအကောင့် {default_account} နှင့်ကွဲပြားနေသည်။  </translation>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>ပေးထားသောအကောင့် {provided_account} သည် ပုံမှန်အကောင့် {default_account} မှ ကွဲပြားနေသည်။  </translation>
     </message>
     <message>
         <source>Unexpected key origin</source>
@@ -1078,16 +1116,20 @@ Do you want to proceed anyway?</source>
         <translation>ရွေးထားသောဖိုင်: {file_path}  </translation>
     </message>
     <message>
-        <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
-        <translation>ပိုက်ဆံအိတ်မဖွင့်ရသေးပါ။ ဤငွေလွှဲကိုတည်းဖြတ်ရန်ပေးသွင်းသူပိုက်ဆံအိတ်ကိုဖွင့်ပါ။  </translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>ပိုက်ဆံအိတ်မရှိပါ။ ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။  </translation>
     </message>
     <message>
-        <source> Please open the sender wallet to edit this thransaction.</source>
-        <translation>ဤငွေလွှဲကိုတည်းဖြတ်ရန်ပေးသွင်းသူပိုက်ဆံအိတ်ကိုဖွင့်ပါ။  </translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။  </translation>
     </message>
     <message>
         <source>Could not decode this string</source>
         <translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1110,12 +1152,12 @@ Do you want to proceed anyway?</source>
         <translation>ငွေလွှဲ {txid}  </translation>
     </message>
     <message>
-        <source>PSBT {txid}</source>
-        <translation>PSBT {txid}  </translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
+    </message>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}  </translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -1154,12 +1196,12 @@ Do you want to proceed anyway?</source>
         <translation>အသစ်  </translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open.  </source>
-        <translation>{id} ဖြင့်ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>လတ်တလောများကိုဖွင့်ပါ  </translation>
+    </message>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>{id} ဖြင့်ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
@@ -1261,6 +1303,10 @@ Do you want to proceed anyway?</source>
         <translation>အဆင့်မြင့်  </translation>
     </message>
     <message>
+        <source>Port:</source>
+        <translation>ဆိပ်ကမ်း:  </translation>
+    </message>
+    <message>
         <source>Mode:</source>
         <translation>အော်ပရေတာအမျိုးအစား:  </translation>
     </message>
@@ -1299,15 +1345,15 @@ Do you want to proceed anyway?</source>
         <translation>တုံ့ပြန်ချက်: {name}: {status}     Mempool Instance: {server}  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>အော်တို  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
  Do you want to proceed anyway?</source>
         <translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။ {responses}   သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>အော်တို  </translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1322,20 +1368,20 @@ Do you want to proceed anyway?</source>
         <translation>Blockchain ဒေတာရင်းမြစ်  </translation>
     </message>
     <message>
-        <source>Enable SSL</source>
-        <translation>SSL ဖွင့်ပါ  </translation>
-    </message>
-    <message>
         <source>URL:</source>
         <translation>URL:  </translation>
     </message>
     <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>အကြံပြုချက်များအတွက် မြှားခလုတ် ⬇ ကိုနှိပ်ပါ  </translation>
     </message>
     <message>
-        <source>Port:</source>
-        <translation>ဆိပ်ကမ်း:  </translation>
+        <source>Enable SSL</source>
+        <translation>SSL ဖွင့်ပါ  </translation>
+    </message>
+    <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1377,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>Multi-Signature ရွေးပါ  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>ပုံမှန်သို့မဟုတ်ရှိပြီးသားပိုက်ဆံအိတ်ပြန်ဖန်တီးပါ  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>စိတ်ကြိုက်သို့မဟုတ်ရှိပြီးသားပိုက်ဆံအိတ်တစ်ခုကိုတင်သွင်းပါ</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
@@ -1979,6 +2025,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>{bip32_path} မှာလက်မှတ်ထိုးရန်စာတစ်စောင်ရိုက်ထည့်ပါ  </translation>
+    </message>
+    <message>
+        <source>Sign message</source>
+        <translation>စာတစ်စောင်လက်မှတ်ထိုးပါ  </translation>
+    </message>
+    <message>
+        <source>Sign</source>
+        <translation>လက်မှတ်ထိုးပါ  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+    </message>
+    <message>
+        <source>Message too short.</source>
+        <translation>စာကြောင့်ရှုပ်ထွေးနေသည်။  </translation>
+    </message>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
@@ -2022,18 +2091,6 @@ If you make a mistake here, your money is lost!</source>
         <source>Scan QR code</source>
         <translation>QR ကုဒ်စကင်နာ  </translation>
     </message>
-    <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားနေပါသည်။  </translation>
-    </message>
-    <message>
-        <source>No additional signatures were added</source>
-        <translation>အပိုဆောင်းလက်မှတ်များမထည့်ထားပါ။  </translation>
-    </message>
-    <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx ကိုင်တာရီအမှား။ txid သည်အဆုံးသတ်ရာတွင်ပြောင်းလဲမှုမဖြစ်ရပါ။  </translation>
-    </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
@@ -2053,8 +2110,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်မကိုက်ညီပါ။ ဖျက်သိမ်းပါ။  </translation>
     </message>
     <message>
-        <source>Sign with mnemonic seed</source>
-        <translation>မှတ်ဉာဏ်စေ့ဖြင့်လက်မှတ်ပါ  </translation>
+        <source>Sign with seed</source>
+        <translation>မျိုးစေ့ဖြင့်လက်မှတ်ထိုးပါ  </translation>
     </message>
 </context>
 <context>
@@ -2197,16 +2254,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>TxSigningSteps</name>
     <message>
-        <source>Export transaction to any hardware signer</source>
-        <translation>မည်သည့်ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်မှမဆိုငွေလွှဲထုတ်ပို့ပါ  </translation>
-    </message>
-    <message>
-        <source>Sign with a different hardware signer</source>
-        <translation>လက်မှတ်ဖြင့်မဟုတ်သောဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ဖြင့်လက်မှတ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Import signature</source>
-        <translation>လက်မှတ်တင်သွင်းပါ  </translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>{n} လက်မှတ်လုပ်ပြီးစုဆောင်းပါ  </translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>

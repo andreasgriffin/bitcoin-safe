@@ -590,6 +590,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--update_translations", action="store_true", help="Updates the translation locales files"
     )
+    parser.add_argument(
+        "--insert_chatgpt_translations",
+        action="store_true",
+        help="Pastes the chatgpt translations into the csv files",
+    )
     parser.add_argument("--csv_to_ts", action="store_true", help="Overwrites the ts files with csv as source")
     parser.add_argument(
         "--lock",
@@ -624,6 +629,9 @@ if __name__ == "__main__":
     if args.csv_to_ts:
         translation_handler = TranslationHandler(module_name="bitcoin_safe")
         translation_handler.csv_to_ts()
+    if args.insert_chatgpt_translations:
+        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler.insert_chatgpt_translations()
 
     if args.sign:
         builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)

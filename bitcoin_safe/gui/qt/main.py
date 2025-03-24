@@ -66,6 +66,7 @@ from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
+from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
@@ -148,7 +149,12 @@ class MainWindow(QMainWindow):
         )
         self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
         if not config_present:
-            self.config.language_code = self.language_chooser.dialog_choose_language(self)
+            os_language_code = self.language_chooser.get_os_language_code()
+            self.config.language_code = (
+                os_language_code
+                if os_language_code in self.language_chooser.get_languages()
+                else self.language_chooser.dialog_choose_language(self)
+            )
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network)
         self.hwi_tool_gui.setWindowIcon(read_QIcon("logo.svg"))
@@ -472,6 +478,7 @@ class MainWindow(QMainWindow):
         self.menu_action_network_settings.setShortcut(QKeySequence("CTRL+P"))
         self.menu_action_toggle_tutorial = self.menu_settings.add_action("", self.toggle_tutorial)
         self.language_menu = self.menu_settings.add_menu("")
+        self.language_menu.setIcon(read_QIcon("earth.svg"))
 
         # menu about
         self.menu_about = self.menubar.add_menu("")
@@ -793,12 +800,12 @@ class MainWindow(QMainWindow):
                 current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
                 wallet = current_qt_wallet.wallet if current_qt_wallet else None
             if not wallet:
-                Message(self.tr("No wallet open. Please open the sender wallet to edit this thransaction."))
+                Message(self.tr("No wallet open. Please open the sender wallet to edit this transaction."))
                 return None
 
             qt_wallet = self.qt_wallets.get(wallet.id)
             if not qt_wallet:
-                Message(self.tr(" Please open the sender wallet to edit this thransaction."))
+                Message(self.tr(" Please open the sender wallet to edit this transaction."))
                 return None
             self.tab_wallets.setCurrentWidget(qt_wallet)
             qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
@@ -861,10 +868,13 @@ class MainWindow(QMainWindow):
         return None
 
     def dialog_open_qr_scanner(self) -> None:
-        tx_dialog = self.dialog_open_tx_from_str()
-        tx_dialog.text_edit.input_qr_from_camera(
-            network=self.config.network, set_data_as_string=True, close_camera_on_result=False
+        self._qr_scanner = SimpleQrScanner(
+            network=self.config.network,
+            close_all_video_widgets=self.signals.close_all_video_widgets,
+            title=self.tr("Signed Message"),
         )
+        self.attached_widgets.append(self._qr_scanner)
+        self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
 
     def dialog_open_tx_from_str(self) -> ImportDialog:
 
@@ -1028,7 +1038,7 @@ class MainWindow(QMainWindow):
                 return None
             # if tab_data is a psbt, then add the signature from data
             if tab_data.data.data_type == DataType.PSBT:
-                tab_data.signature_added(psbt)
+                tab_data.import_untrusted_psbt(psbt)
                 self.tab_wallets.setCurrentIndex(tab_idx)
                 return None
 
@@ -1489,13 +1499,14 @@ class MainWindow(QMainWindow):
             return
 
         d = address_dialog.AddressDialog(
-            self.fx,
-            self.config,
-            self.signals,
-            qt_wallet.wallet,
-            addr,
-            self.mempool_data,
+            fx=self.fx,
+            config=self.config,
+            signals=self.signals,
+            wallet=qt_wallet.wallet,
+            address=addr,
+            mempool_data=self.mempool_data,
             parent=parent,
+            threading_parent=self.threading_manager,
         )
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         self.attached_widgets.append(d)

@@ -90,17 +90,26 @@
       "module": "bitcoin_safe.gui.qt.step_progress_bar",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
+      },{
+        "name": "Translation update",
+        "type": "python",
+        "request": "launch",
+        "program": "tools/build.py",
+        "args": [
+            "--update_translations" 
+      ],
+        "console": "integratedTerminal"
     },{
-      "name": "Translation update",
+      "name": "insert_chatgpt_translations",
       "type": "python",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
-          "--update_translations" 
+          "--insert_chatgpt_translations" 
     ],
       "console": "integratedTerminal"
   },{
-    "name": "Translation csv to ts",
+      "name": "Translation csv to ts",
     "type": "python",
     "request": "launch",
     "program": "tools/build.py",
@@ -114,7 +123,7 @@
   "request": "launch",
   "program": "tools/build.py",
   "args": [
-      "--targets",   "appimage", "windows", 
+      "--targets",   "appimage","deb", "windows", 
 ],
   "console": "integratedTerminal",
   "preLaunchTask": "Poetry Install" // label of the task

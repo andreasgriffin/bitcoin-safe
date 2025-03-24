@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS>
 <context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>Идентификатор транзакции подписанного psbt не совпадает с оригинальным txid</translation>
+    </message>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>Дополнительные подписи не добавлены  </translation>
+    </message>
+    <message>
+        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
+        <translation>Ошибка библиотеки bitcoin_tx. Идентификатор транзакции не должен быть изменен во время финализации</translation>
+    </message>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
@@ -18,10 +33,6 @@
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
-    <message>
-        <source>Script Pubkey</source>
-        <translation>Скрипт публичного ключа</translation>
-    </message>
     <message>
         <source>Address descriptor</source>
         <translation>Описание адреса</translation>
@@ -251,13 +262,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers.                            
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
-                            &lt;li&gt;Most secure is to buy from different reputable vendors&lt;/li&gt; 
-                            &lt;li&gt;Great choices are:&lt;/li&gt; 
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>Купите {number} аппаратных подписантов. Самый надежный способ покупки — у разных репутационных поставщиков. Отличные варианты:  </translation>
+        <translation>Купить {number} аппаратных подписантов                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe поддерживает все основные аппаратные подписанты: &lt;a href=&quot;{url}&quot;&gt;Смотреть полный список&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
     <message>
         <source>Buy a {name}</source>
@@ -272,9 +283,8 @@
         <translation>Купить Coldcard Q  </translation>
     </message>
     <message>
-        <source>Buy a Blockstream Jade
-10% off</source>
-        <translation>Купите Blockstream Jade со скидкой 10%  </translation>
+        <source>Buy a Blockstream Jade</source>
+        <translation>Купить Blockstream Jade  </translation>
     </message>
 </context>
 <context>
@@ -338,29 +348,6 @@
     <message>
         <source>Block {n}</source>
         <translation>Блок {n}</translation>
-    </message>
-</context>
-<context>
-    <name>CopyToolButton</name>
-    <message>
-        <source>Not available</source>
-        <translation>Недоступно</translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>Копировать в буфер обмена</translation>
-    </message>
-    <message>
-        <source>Copy {name}</source>
-        <translation>Копировать {name}</translation>
-    </message>
-    <message>
-        <source>Copy TxId</source>
-        <translation>Копировать идентификатор транзакции</translation>
-    </message>
-    <message>
-        <source>Copy JSON</source>
-        <translation>Копировать JSON</translation>
     </message>
 </context>
 <context>
@@ -579,12 +566,28 @@ the sending value {sent}</source>
 <context>
     <name>FileToolButton</name>
     <message>
-        <source>Export file</source>
-        <translation>Экспортировать файл</translation>
+        <source>Export</source>
+        <translation>Экспорт  </translation>
+    </message>
+    <message>
+        <source>Copy {name}</source>
+        <translation>Копировать {name}</translation>
+    </message>
+    <message>
+        <source>Copy TxId</source>
+        <translation>Копировать идентификатор транзакции</translation>
+    </message>
+    <message>
+        <source>Copy JSON</source>
+        <translation>Копировать JSON</translation>
     </message>
     <message>
         <source>Export to file</source>
         <translation>Экспорт в файл  </translation>
+    </message>
+    <message>
+        <source>Not available</source>
+        <translation>Недоступно</translation>
     </message>
 </context>
 <context>
@@ -703,6 +706,41 @@ the sending value {sent}</source>
     </message>
 </context>
 <context>
+    <name>HorizontalImportExportClipboard</name>
+    <message>
+        <source>Share</source>
+        <translation>Поделиться  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportFile</name>
+    <message>
+        <source>File</source>
+        <translation>Файл  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportQR</name>
+    <message>
+        <source>QR</source>
+        <translation>QR  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportUSB</name>
+    <message>
+        <source>USB</source>
+        <translation>USB  </translation>
+    </message>
+</context>
+<context>
+    <name>HorizontalImportExportWallet</name>
+    <message>
+        <source>Seed</source>
+        <translation>Семя</translation>
+    </message>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
@@ -740,8 +778,8 @@ the sending value {sent}</source>
         <translation>Предоставленная информация предназначена для {key_origin_network}. Пожалуйста, предоставьте xPub для сети {network}  </translation>
     </message>
     <message>
-        <source>The provided account is {provided_account} differs from the default account {default_account}.</source>
-        <translation>Указанный аккаунт {provided_account} отличается от аккаунта по умолчанию {default_account}.  </translation>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>Предоставленный аккаунт {provided_account} отличается от стандартного аккаунта {default_account}.  </translation>
     </message>
     <message>
         <source>Unexpected key origin</source>
@@ -1078,16 +1116,20 @@ Do you want to proceed anyway?</source>
         <translation>Выбранный файл: {file_path}</translation>
     </message>
     <message>
-        <source>No wallet open. Please open the sender wallet to edit this thransaction.</source>
-        <translation>Кошелек не открыт. Пожалуйста, откройте отправляющий кошелек для редактирования этой транзакции.</translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>Кошелек не открыт. Пожалуйста, откройте кошелек отправителя для редактирования этой транзакции.  </translation>
     </message>
     <message>
-        <source> Please open the sender wallet to edit this thransaction.</source>
-        <translation>Откройте отправляющий кошелек для редактирования этой транзакции.</translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>Пожалуйста, откройте кошелек отправителя для редактирования этой транзакции.  </translation>
     </message>
     <message>
         <source>Could not decode this string</source>
         <translation>Не удалось декодировать эту строку  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>Подписанное сообщение  </translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1110,12 +1152,12 @@ Do you want to proceed anyway?</source>
         <translation>Транзакция {txid}</translation>
     </message>
     <message>
-        <source>PSBT {txid}</source>
-        <translation>PSBT {txid}</translation>
-    </message>
-    <message>
         <source>&amp;Open Wallet</source>
         <translation>&amp;Открыть кошелек</translation>
+    </message>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -1154,12 +1196,12 @@ Do you want to proceed anyway?</source>
         <translation>новый</translation>
     </message>
     <message>
-        <source>A wallet with id {name} is already open.  </source>
-        <translation>Кошелек с идентификатором {name} уже открыт.</translation>
-    </message>
-    <message>
         <source>Open &amp;Recent</source>
         <translation>Открыть &amp;Недавние</translation>
+    </message>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>Кошелек с идентификатором {name} уже открыт.</translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
@@ -1261,6 +1303,10 @@ Do you want to proceed anyway?</source>
         <translation>Расширенные</translation>
     </message>
     <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
         <source>Mode:</source>
         <translation>Режим:</translation>
     </message>
@@ -1299,6 +1345,10 @@ Do you want to proceed anyway?</source>
         <translation>Ответы:     {name}: {status}     Экземпляр Mempool: {server}</translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>Автоматический</translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1307,10 +1357,6 @@ Do you want to proceed anyway?</source>
 {responses}
 
 Вы хотите продолжить?</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>Автоматический</translation>
     </message>
     <message>
         <source>Test Connection</source>
@@ -1325,20 +1371,20 @@ Do you want to proceed anyway?</source>
         <translation>Источник данных блокчейна</translation>
     </message>
     <message>
-        <source>Enable SSL</source>
-        <translation>Включить SSL</translation>
-    </message>
-    <message>
         <source>URL:</source>
         <translation>URL:</translation>
     </message>
     <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>Нажмите клавишу со стрелкой ⬇ для предложений  </translation>
     </message>
     <message>
-        <source>Port:</source>
-        <translation>Порт:</translation>
+        <source>Enable SSL</source>
+        <translation>Включить SSL</translation>
+    </message>
+    <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1380,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>Выбрать мульти-подписной кошелек</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Пользовательский или восстановить существующий кошелек</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Создать или импортировать существующий кошелек</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
@@ -1982,6 +2028,29 @@ If you make a mistake here, your money is lost!</source>
     </message>
 </context>
 <context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>Введите сообщение для подписи на {bip32_path}  </translation>
+    </message>
+    <message>
+        <source>Sign message</source>
+        <translation>Подписать сообщение  </translation>
+    </message>
+    <message>
+        <source>Sign</source>
+        <translation>Подписать  </translation>
+    </message>
+    <message>
+        <source>Signed Message</source>
+        <translation>Подписанное сообщение  </translation>
+    </message>
+    <message>
+        <source>Message too short.</source>
+        <translation>Сообщение слишком короткое.  </translation>
+    </message>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
@@ -2025,18 +2094,6 @@ If you make a mistake here, your money is lost!</source>
         <source>Scan QR code</source>
         <translation>Сканировать QR-код</translation>
     </message>
-    <message>
-        <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation>Идентификатор транзакции подписанного psbt не совпадает с оригинальным txid</translation>
-    </message>
-    <message>
-        <source>No additional signatures were added</source>
-        <translation>Дополнительные подписи не добавлены  </translation>
-    </message>
-    <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>Ошибка библиотеки bitcoin_tx. Идентификатор транзакции не должен быть изменен во время финализации</translation>
-    </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
@@ -2056,8 +2113,8 @@ If you make a mistake here, your money is lost!</source>
         <translation>Идентификатор транзакции подписанного psbt не совпадает с оригинальным Идентификатором транзакции. Прерывание</translation>
     </message>
     <message>
-        <source>Sign with mnemonic seed</source>
-        <translation>Подписать с помощью мнемонической семени  </translation>
+        <source>Sign with seed</source>
+        <translation>Подписать с помощью семени  </translation>
     </message>
 </context>
 <context>
@@ -2200,16 +2257,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>TxSigningSteps</name>
     <message>
-        <source>Export transaction to any hardware signer</source>
-        <translation>Экспортировать транзакцию на любое аппаратное подписывающее устройство</translation>
-    </message>
-    <message>
-        <source>Sign with a different hardware signer</source>
-        <translation>Подписать другим аппаратным подписывающим устройством</translation>
-    </message>
-    <message>
-        <source>Import signature</source>
-        <translation>Импортировать подпись</translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>Создать и собрать {n}. подпись  </translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>

@@ -44,7 +44,7 @@ from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
     QComboBox,
@@ -74,6 +74,7 @@ from ...hardware_signers import (
     DescriptorQrExportTypes,
     HardwareSigner,
     HardwareSigners,
+    SignMessageRequestQrExportTypes,
 )
 from ...signals import SignalsMin
 from .sync_tab import SyncTab
@@ -153,89 +154,28 @@ def get_export_icon(export_type: Union[DescriptorExportType, QrExportType]) -> Q
         return QIcon()
 
 
-class CopyToolButton(QToolButton):
-    def __init__(self, data: Data, network: bdk.Network, parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-        self.network = network
-        self.serialized: str | None = None
-        self.txid: str | None = None
-        self.json_data: str | None = None
-        self._set_data(data=data)
-
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self._menu = Menu(self)
-        self.setMenu(self._menu)
-        self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-
-        self.setIcon(read_QIcon("copy.png"))
-
-        self._fill_menu()
-        self.updateUi()
-
-    def _fill_menu(self):
-        self._menu.clear()
-        self._menu.blockSignals(True)
-
-        self.action_copy_data = self._menu.add_action("", self.on_action_copy_data)
-        self._menu.addSeparator()
-        self.action_copy_txid = self._menu.add_action("", self.on_action_copy_txid)
-        self.action_json = self._menu.add_action("", self.on_action_json)
-
-        self._menu.blockSignals(False)
-
-    def copy_if_available(self, s: Optional[str]) -> None:
-        if s:
-            do_copy(s)
-        else:
-            Message(self.tr("Not available"))
-
-    def on_action_copy_data(self):
-        return self.copy_if_available(self.serialized)
-
-    def on_action_copy_txid(self):
-        return self.copy_if_available(self.txid)
-
-    def on_action_json(self):
-        return self.copy_if_available(self.json_data)
-
-    def _set_data(self, data: Data) -> None:
-        self.data = data
-        self.serialized = data.data_as_string()
-        self.txid = get_txid(data)
-        self.json_data = get_json_data(data, network=self.network)
-
-    def set_data(self, data: Data):
-        self._set_data(data=data)
-        self._fill_menu()
-        self.updateUi()
-
-    def updateUi(self) -> None:
-        # copy button
-        self.setText(self.tr("Copy to clipboard"))
-        self.action_copy_data.setText(
-            self.tr("Copy {name}").format(name=pretty_name(data_type=self.data.data_type))
-        )
-        self.action_copy_txid.setText(self.tr("Copy TxId"))
-        self.action_json.setText(self.tr("Copy JSON"))
-
-
 class FileToolButton(QToolButton):
     def __init__(
-        self, data: Data, network: bdk.Network, wallet_id: str | None = None, parent: QWidget | None = None
+        self,
+        data: Data,
+        network: bdk.Network,
+        wallet_id: str | None = None,
+        parent: QWidget | None = None,
+        button_prefix: str = "",
     ) -> None:
         super().__init__(parent)
         self.wallet_id = wallet_id
         self.network = network
-        self.data = data
+        self.button_prefix = button_prefix
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
         self.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
 
-        self._fill_menu()
+        self.set_data(data=data)
         self.updateUi()
 
     def _fill_menu(self):
@@ -294,10 +234,18 @@ class FileToolButton(QToolButton):
         return filename
 
     def updateUi(self) -> None:
-        self.setText(self.tr("Export file"))
+        self.setText(self.button_prefix + self.tr("Export"))
+        self.action_copy_data.setText(
+            self.tr("Copy {name}").format(name=pretty_name(data_type=self.data.data_type))
+        )
+        self.action_copy_txid.setText(self.tr("Copy TxId"))
+        self.action_json.setText(self.tr("Copy JSON"))
 
     def set_data(self, data: Data):
         self.data = data
+        self.serialized = data.data_as_string()
+        self.txid = get_txid(data)
+        self.json_data = get_json_data(data, network=self.network)
         self._fill_menu()
         self.updateUi()
 
@@ -316,9 +264,8 @@ class FileToolButton(QToolButton):
             descripor_type=descripor_type,
         )
 
-    @classmethod
     def fill_file_menu_descriptor_export_actions(
-        cls,
+        self,
         menu: Menu,
         wallet_id: str,
         multipath_descriptor: MultipathDescriptor,
@@ -331,7 +278,7 @@ class FileToolButton(QToolButton):
             menu.add_action(
                 get_export_display_name(export_type=export_type),
                 partial(
-                    cls._save_file,
+                    self._save_file,
                     wallet_id=wallet_id,
                     multipath_descriptor=multipath_descriptor,
                     network=network,
@@ -339,6 +286,13 @@ class FileToolButton(QToolButton):
                 ),
                 icon=get_export_icon(export_type=export_type),
             )
+        menu.addSeparator()
+        self.action_copy_data = menu.add_action("", self.on_action_copy_data, icon=read_QIcon("copy.png"))
+        self.action_copy_txid = menu.add_action("", self.on_action_copy_txid, icon=read_QIcon("copy.png"))
+        self.action_copy_txid.setVisible(False)
+        self.action_json = menu.add_action("", self.on_action_json, icon=read_QIcon("copy.png"))
+        self.action_json.setVisible(False)
+
         menu.blockSignals(False)
 
     def fill_file_menu_export_actions(
@@ -353,7 +307,29 @@ class FileToolButton(QToolButton):
             self.export_to_file,
             icon=file_icon,
         )
+
+        menu.addSeparator()
+
+        self.action_copy_data = menu.add_action("", self.on_action_copy_data, icon=read_QIcon("copy.png"))
+        self.action_copy_txid = menu.add_action("", self.on_action_copy_txid, icon=read_QIcon("copy.png"))
+        self.action_json = menu.add_action("", self.on_action_json, icon=read_QIcon("copy.png"))
+
         menu.blockSignals(False)
+
+    def copy_if_available(self, s: Optional[str]) -> None:
+        if s:
+            do_copy(s)
+        else:
+            Message(self.tr("Not available"))
+
+    def on_action_copy_data(self):
+        return self.copy_if_available(self.serialized)
+
+    def on_action_copy_txid(self):
+        return self.copy_if_available(self.txid)
+
+    def on_action_json(self):
+        return self.copy_if_available(self.json_data)
 
 
 class SyncChatToolButton(QToolButton):
@@ -363,15 +339,17 @@ class SyncChatToolButton(QToolButton):
         network: bdk.Network,
         sync_tabs: dict[str, SyncTab] | None = None,
         parent: QWidget | None = None,
+        button_prefix: str = "",
     ) -> None:
         super().__init__(parent)
         self.sync_tabs = sync_tabs
         self.network = network
         self.action_share_with_all_devices: Dict[str, QAction] = {}
         self.menu_share_with_single_devices: Dict[str, Menu] = {}
+        self.button_prefix = button_prefix
         self._set_data(data=data, sync_tabs=sync_tabs)
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -437,7 +415,7 @@ class SyncChatToolButton(QToolButton):
         self.updateUi()
 
     def updateUi(self) -> None:
-        self.setText(self.tr("Share with trusted devices"))
+        self.setText(self.button_prefix + self.tr("Share with trusted devices"))
 
         for wallet_id, action in self.action_share_with_all_devices.items():
             action.setText(self.tr("Share with all devices in {wallet_id}").format(wallet_id=wallet_id))
@@ -578,6 +556,8 @@ class HorizontalImportExportGroups(QWidget):
 
 class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
     signal_set_qr_images: TypedPyQtSignal[List[str]] = pyqtSignal(list)  # type: ignore
+    signal_close = pyqtSignal()
+    signal_show = pyqtSignal()
 
     def __init__(
         self,
@@ -610,7 +590,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.serialized = None
         self.qr_types = QrExportTypes.as_list()
         self.wallet_id = wallet_name
-        self.set_data(data)
+        self._set_data(data)
 
         # qr
         self.qr_label = QRCodeWidgetSVG(always_animate=True)
@@ -632,14 +612,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         self.combo_qr_type = QrComboBox(data=self.data, network=network, parent=self)
         self.group_qr_buttons_layout.addWidget(self.combo_qr_type)
-        self.combo_qr_type.currentIndexChanged.connect(self.switch_qr_type)
-
-        # file
-        self.button_file = FileToolButton(data=data, wallet_id=wallet_name, network=network, parent=self)
-        self.group_file._layout.addWidget(self.button_file)
-
-        # qr
-        self.refresh_qr_and_file_menus_if_needed()
+        self.combo_qr_type.currentIndexChanged.connect(self.refresh_qr)
 
         # usb
         show_usb = bool(usb_signer_ui and self.data.data_type == DataType.PSBT)
@@ -647,14 +620,18 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         if show_usb and usb_signer_ui:
             self.group_usb._layout.addWidget(usb_signer_ui)
 
-        # clipboard
-        self.copy_toolbutton = CopyToolButton(data=data, network=network, parent=self)
-        self.group_share._layout.addWidget(self.wrap_in_widget(self.copy_toolbutton))
+        # file
+        self.button_file = FileToolButton(data=data, wallet_id=wallet_name, network=network, parent=self)
+        self.group_file._layout.addWidget(self.button_file)
 
+        # sync
         self.button_sync_share = SyncChatToolButton(
             data=data, network=network, sync_tabs=sync_tabs, parent=self
         )
         self.group_share._layout.addWidget(self.wrap_in_widget(self.button_sync_share))
+
+        # refresh
+        self.refresh_qr_and_file_menus_if_needed()
 
         self.updateUi()
         self.lazy_load_qr(data)
@@ -684,10 +661,6 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         self.refresh_qr_and_file_menus_if_needed()
 
-        # copy button
-        self.copy_toolbutton.updateUi()
-        self.copy_toolbutton.updateUi()
-
         # sync share
         self.button_sync_share.updateUi()
 
@@ -695,12 +668,12 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             self.tr("Export {data_type} to hardware signer").format(data_type=self.data.data_type.name)
         )
 
-    def switch_qr_type(self) -> None:
+    def refresh_qr(self) -> None:
         self.clear_qr()
         self.lazy_load_qr(self.data)
         self.updateUi()
 
-    def set_data(self, data: Data) -> None:
+    def _set_data(self, data: Data) -> None:
         self.data = data
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
@@ -718,8 +691,14 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         if data.data_type in [DataType.Descriptor, DataType.MultiPathDescriptor]:
             self.qr_types = DescriptorQrExportTypes.as_list()
+        elif data.data_type in [DataType.SignMessageRequest]:
+            self.qr_types = SignMessageRequestQrExportTypes.as_list()
         else:
             self.qr_types = QrExportTypes.as_list()
+
+    def set_data(self, data: Data) -> None:
+        self._set_data(data=data)
+        self.refresh_qr()
 
     @staticmethod
     def wrap_in_widget(widget: QWidget) -> QWidget:
@@ -819,6 +798,14 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             file.write(s)
         return filename
 
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
+        self.signal_close.emit()
+        return super().closeEvent(a0)
+
+    def showEvent(self, event: QShowEvent | None) -> None:
+        super().showEvent(event)
+        self.signal_show.emit()  # Emit custom signal when the widget is shown.
+
 
 class QrToolButton(QToolButton):
     def __init__(
@@ -826,10 +813,12 @@ class QrToolButton(QToolButton):
         data: Data,
         network: bdk.Network,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager,
+        threading_parent: ThreadingManager | None,
         parent: QWidget | None = None,
+        button_prefix: str = "",
     ) -> None:
         super().__init__(parent)
+        self.button_prefix = button_prefix
 
         self.export_qr_widget = ExportDataSimple(
             data=data,
@@ -843,7 +832,7 @@ class QrToolButton(QToolButton):
         )
         self.export_qr_widget.set_minimum_size_as_floating_window()
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -878,5 +867,5 @@ class QrToolButton(QToolButton):
         self.updateUi()
 
     def updateUi(self) -> None:
-        self.setText(self.tr("QR Code"))
+        self.setText(self.button_prefix + self.tr("QR Code"))
         self.export_qr_widget.updateUi()

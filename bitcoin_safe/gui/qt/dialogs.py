@@ -28,27 +28,36 @@
 
 
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
-
-from .util import create_button_box, read_QIcon
-
-logger = logging.getLogger(__name__)
-from PyQt6.QtGui import QAction, QFont, QIcon
+from PyQt6.QtGui import (
+    QAction,
+    QFont,
+    QIcon,
+    QKeySequence,
+    QPainter,
+    QPixmap,
+    QShortcut,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
+    QDialogButtonBox,
     QLabel,
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QTextEdit,
     QVBoxLayout,
 )
 
 from ...wallet import filename_clean
+from .util import create_button_box, read_QIcon
+
+logger = logging.getLogger(__name__)
 
 
 def question_dialog(
@@ -294,3 +303,39 @@ if __name__ == "__main__":
         print("Password created successfully.")
     sys.exit(app.exec())
     quit()
+
+
+def show_textedit_message(text: str, label_description: str, title: str):
+    # Create a modal dialog
+    dialog = QDialog()
+    dialog.setWindowTitle(title)
+
+    # Set up the layout
+    layout = QVBoxLayout(dialog)
+
+    # Add a descriptive label
+    label = QLabel(label_description)
+    layout.addWidget(label)
+
+    # Add a read-only text edit and populate it with text
+    text_edit = QTextEdit()
+    text_edit.setReadOnly(True)
+    text_edit.setPlainText(text)
+    layout.addWidget(text_edit)
+
+    # Create a button bar with an OK button
+    button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+    ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+    if ok_button:
+        ok_button.setDefault(True)  # Preselect the OK button
+
+    # Connect the OK button to close the dialog
+    button_box.accepted.connect(dialog.accept)
+    layout.addWidget(button_box)
+
+    # Add a shortcut for the ESC key to close the dialog
+    shortcut_close = QShortcut(QKeySequence("ESC"), dialog)
+    shortcut_close.activated.connect(dialog.close)
+
+    # Execute the dialog modally
+    dialog.exec()
