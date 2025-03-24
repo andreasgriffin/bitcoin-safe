@@ -66,7 +66,8 @@ move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 # copy already built DLLs
 cp "$DLL_TARGET_DIR"/libsecp256k1-*.dll $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libsecp to its destination"
-cp "$DLL_TARGET_DIR/libzbar-0.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libzbar to its destination"
+cp "$DLL_TARGET_DIR/libiconv.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libiconv to its destination"
+cp "$DLL_TARGET_DIR/libzbar-0.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/libzbar-64.dll || fail "Could not copy libzbar to its destination"
 cp "$DLL_TARGET_DIR/libusb-1.0.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libusb to its destination"
 
 
@@ -86,7 +87,7 @@ info "Building PyInstaller."
         exit 0
     fi
     cd "$WINEPREFIX/drive_c/bitcoin_safe"
-    ELECTRUM_COMMIT_HASH=$(git rev-parse HEAD)
+    BITCOIN_SAFE_COMMIT_HASH=$(git rev-parse HEAD)
     cd "$BUILD_CACHEDIR"
     rm -rf pyinstaller
     mkdir pyinstaller
@@ -99,7 +100,7 @@ info "Building PyInstaller."
     rm -fv PyInstaller/bootloader/Windows-*/run*.exe || true
     # add reproducible randomness. this ensures we build a different bootloader for each commit.
     # if we built the same one for all releases, that might also get anti-virus false positives
-    echo "const char *bitcoin_safe_tag = \"tagged by Bitcoin_Safe@$ELECTRUM_COMMIT_HASH\";" >> ./bootloader/src/pyi_main.c
+    echo "const char *bitcoin_safe_tag = \"tagged by Bitcoin_Safe@$BITCOIN_SAFE_COMMIT_HASH\";" >> ./bootloader/src/pyi_main.c
     pushd bootloader
     # cross-compile to Windows using host python
     python3 ./waf all CC="${GCC_TRIPLET_HOST}-gcc" \

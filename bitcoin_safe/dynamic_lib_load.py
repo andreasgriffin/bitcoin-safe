@@ -38,7 +38,6 @@ import bitcoin_usb
 import bitcointx
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
-from .html_utils import link
 from .i18n import translate
 
 logger = logging.getLogger(__name__)
@@ -130,35 +129,35 @@ def setup_libsecp256k1() -> None:
 
 
 def ensure_pyzbar_works() -> None:
-    "Ensure Visual C++ Redistributable Packages for Visual Studio 2013"
     # Get the platform-specific path to the binary library
     logger.info(f"Platform: {platform.system()}")
     if platform.system() == "Windows":
-        logger.info(
-            translate(
-                "ensure_pyzbar_works",
-                "Trying to import pyzbar to see if Visual C++ Redistributable is installed. ",
-            )
-        )
+
+        # Determine the base path:
+        if hasattr(sys, "_MEIPASS"):
+            # Running as a PyInstaller bundle; _MEIPASS is the temporary folder
+            base_path = sys._MEIPASS
+        else:
+            # Otherwise, use the directory of this script
+            base_path = os.path.dirname(os.path.abspath(__file__))
+
+        # Construct the path to the libzbar-0.dll in the base_path=_internal subfolder
+        libzbar_dll_path = os.path.join(base_path, "libzbar-64.dll")
+
+        # Set the PYZBAR_LIBRARY environment variable for pyzbar to load the DLL
+        os.environ["PYZBAR_LIBRARY"] = os.path.abspath(libzbar_dll_path)
+        logger.debug(f'set PYZBAR_LIBRARY={os.environ["PYZBAR_LIBRARY"]}')
+
         try:
             from pyzbar import pyzbar
 
             pyzbar.__name__
-            logger.info(translate("ensure_pyzbar_works", f"pyzbar successfully loaded "))
+            logger.info(f"pyzbar successfully loaded ")
         except (
             Exception
         ) as e:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
             logger.debug(str(e))
-            logger.warning(translate("ensure_pyzbar_works", f"pyzbar could not be loaded "))
-            show_warning_before_failiure(
-                translate("lib_load", """You are missing the {link}\nPlease install it.""").format(
-                    link=link(
-                        "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
-                        "Visual C++ Redistributable Packages for Visual Studio 2013",
-                    )
-                ),
-            )
-            sys.exit()
+            logger.warning(f"pyzbar could not be loaded ")
     elif platform.system() == "Darwin":
         # Compute the absolute path of the current file
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -173,7 +172,7 @@ def ensure_pyzbar_works() -> None:
         logger.debug(f'set PYZBAR_LIBRARY={os.environ["PYZBAR_LIBRARY"]}')
 
     elif platform.system() == "Linux":
-        # On Linux this shoudn't be a problem, because I include libzar in the package
+        # On Linux it seems to find the lib
         pass
     else:
         logger.warning(f"Unknown OS")
