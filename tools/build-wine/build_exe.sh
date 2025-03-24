@@ -69,10 +69,6 @@ $WINE_PYTHON -m pip uninstall -y poetry pip
 move_and_overwrite $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 
-cp "$PROJECT_ROOT/bitcoin_safe/"libsecp256k1-*.dll "$WINE_ROOT_PACKAGE"
-
-
-
 rm -rf dist/
 
 # build standalone and portable versions

@@ -59,7 +59,7 @@ else
     "$CONTRIB"/make_libsecp256k1.sh || fail "Could not build libsecp"
 fi
 
-if [ -f "$DLL_TARGET_DIR/libzbar-0.dll" ]; then
+if [ -f "$DLL_TARGET_DIR/libiconv.dll" ]; then
     info "libzbar already built, skipping"
 else
     (
@@ -86,8 +86,15 @@ else
         # FIXME avoid using sudo
         sudo make install prefix="/usr/${GCC_TRIPLET_HOST}"  || fail "Could not install win-iconv"
     )
+    cp /usr/x86_64-w64-mingw32/bin/iconv.dll "$DLL_TARGET_DIR/libiconv.dll"
+fi 
+
+if [ -f "$DLL_TARGET_DIR/libzbar-0.dll" ]; then
+    info "libzbar already built, skipping"
+else
     "$CONTRIB"/make_zbar.sh || fail "Could not build zbar"
 fi
+
 
 if [ -f "$DLL_TARGET_DIR/libusb-1.0.dll" ]; then
     info "libusb already built, skipping"
