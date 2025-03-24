@@ -239,7 +239,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.pushButton_multisig.setText(self.tr("Choose Multi-Signature"))
         self.label_custom.setText(
             html_f(
-                f"""<h1>{self.tr('Custom or restore existing Wallet')}</h1>
+                f"""<h1>{self.tr('Custom or import existing Wallet')}</h1>
                 <p><b>{self.tr('Pros:')}</b></p><p>{self.tr('Customize the wallet to your needs')}</p>
                 <p><b>{self.tr('Cons:')}</b></p><p>{self.tr('Less support material online in case of recovery')}</p>""",
                 add_html_and_body=True,

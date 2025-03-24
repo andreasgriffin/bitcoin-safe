@@ -680,6 +680,7 @@ class SignerUI(QWidget):
         signature_importers: Iterable[AbstractSignatureImporter],
         psbt: bdk.PartiallySignedTransaction,
         network: bdk.Network,
+        button_prefix: str = "",
     ) -> None:
         super().__init__()
         self.signature_importers = signature_importers
@@ -694,14 +695,14 @@ class SignerUI(QWidget):
             if isinstance(signer, SignatureImporterUSB):
                 signal_end_hwi_blocker: TypedPyQtSignalNo = signer.usb_gui.signal_end_hwi_blocker  # type: ignore
                 button = SpinningButton(
-                    text=signer.label,
+                    text=button_prefix + signer.label,
                     enable_signal=signal_end_hwi_blocker,
                     enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
                     timeout=60,
                     parent=self,
                 )
             else:
-                button = QPushButton(signer.label)
+                button = QPushButton(button_prefix + signer.label)
                 button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             self.buttons.append(button)
             button.setMinimumHeight(30)

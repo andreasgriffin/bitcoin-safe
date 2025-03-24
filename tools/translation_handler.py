@@ -66,6 +66,7 @@ class TranslationHandler:
             "my_MM",
             "ko_KR",
             # "lo_LA",
+            "th_TH",
         ],
         prefix="app",
     ) -> None:
@@ -192,3 +193,107 @@ Content to translate:
 
     def compile(self):
         run_local(f"/usr/lib/qt6/bin/lrelease   {' '.join(self.get_all_ts_files())}")
+
+    def insert_chatgpt_translations(
+        self,
+    ):
+        """
+        Reads translations for each language from 'translation_file' and pastes them
+        into corresponding CSV files under 'csv_files_directory'. Each CSV is
+        assumed to have columns: location, source, target.
+
+        This version handles partially filled CSV files (e.g., 'app_de_DE.csv') by only
+        filling blank targets. It also:
+        - Raises ValueError if we try to overwrite a non-empty target cell,
+        - Raises ValueError if the number of translation lines for a language
+            doesn't match the number of empty target cells in that CSV file.
+        - Finds CSV files by searching for filenames that end with '_{lang}.csv'.
+        """
+        csv_files_directory = self.ts_folder
+        translation_file = self.ts_folder / "chatgpt.txt"
+
+        # --- STEP 1: Read and parse the translation file ---
+        translations = {}
+        current_lang = None
+        current_lines: List[str] = []
+
+        with open(translation_file, "r", encoding="utf-8") as f:
+            for raw_line in f:
+                line = raw_line.rstrip("\n")
+                if not line:
+                    continue
+                if line in self.languages:
+                    # Store the previous language block if it exists
+                    if current_lang is not None:
+                        translations[current_lang] = current_lines  # type: ignore
+                    current_lang = line
+                    current_lines = []
+                else:
+                    # Collect translation lines for the current_lang
+                    if current_lang is not None:
+                        current_lines.append(line)
+
+        # Store the final language block if any
+        if current_lang is not None:
+            translations[current_lang] = current_lines
+
+        # --- STEP 2: For each language, find matching CSV and fill it ---
+        for lang in self.languages:
+            # We'll search for any file whose name ends with _{lang}.csv
+            # For example, 'app_de_DE.csv' for lang='de_DE'
+            pattern = f"*_{lang}.csv"
+            matching_files = list(csv_files_directory.glob(pattern))
+
+            if not matching_files:
+                print(f"No CSV found for language {lang} matching pattern '{pattern}', skipping...")
+                continue
+            if len(matching_files) > 1:
+                raise ValueError(
+                    f"Ambiguous: found multiple CSVs for language '{lang}' matching pattern '{pattern}':\n"
+                    f"{matching_files}\n"
+                    "Please ensure there's exactly one matching CSV."
+                )
+
+            csv_path = matching_files[0]
+            lang_lines = translations.get(lang, [])
+
+            # Read all rows from the CSV
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+
+            # Gather indices of rows where target is empty
+            empty_target_indices = []
+            for i, row in enumerate(rows):
+                # If 'target' is already populated, we won't overwrite it, so just skip it.
+                # We'll only fill blank targets.
+                if not row["target"].strip():
+                    empty_target_indices.append(i)
+
+            # Check count
+            if len(lang_lines) != len(empty_target_indices):
+                raise ValueError(
+                    f"For language '{lang}' in file '{csv_path.name}':\n"
+                    f" - The CSV has {len(empty_target_indices)} empty targets.\n"
+                    f" - The translation file has {len(lang_lines)} lines.\n"
+                    "They must match to paste correctly."
+                )
+
+            # Fill the empty targets
+            for i_empty, translation_line in zip(empty_target_indices, lang_lines):
+                # Extra safety check: ensure no content was put in after we counted
+                if rows[i_empty]["target"].strip():
+                    raise ValueError(
+                        f"Cannot overwrite target in '{csv_path.name}' at row {i_empty+1}. "
+                        f"Existing value: '{rows[i_empty]['target']}'"
+                    )
+                rows[i_empty]["target"] = translation_line
+
+            # Write updated rows back to CSV
+            with open(csv_path, "w", newline="", encoding="utf-8") as f:
+                fieldnames = ["location", "source", "target"]
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+
+            print(f"Successfully pasted {len(lang_lines)} translations into '{csv_path}'")

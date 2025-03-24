@@ -28,6 +28,7 @@
 
 
 import logging
+import os
 import platform
 import sys
 from ctypes.util import find_library
@@ -35,14 +36,12 @@ from pathlib import Path
 
 import bitcoin_usb
 import bitcointx
+from PyQt6.QtWidgets import QApplication, QMessageBox
 
 from .html_utils import link
 from .i18n import translate
 
 logger = logging.getLogger(__name__)
-
-
-from PyQt6.QtWidgets import QApplication, QMessageBox
 
 
 # Function to show the warning dialog before starting the QApplication
@@ -150,7 +149,7 @@ def ensure_pyzbar_works() -> None:
             Exception
         ) as e:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
             logger.debug(str(e))
-            logger.info(translate("ensure_pyzbar_works", f"pyzbar not loaded "))
+            logger.warning(translate("ensure_pyzbar_works", f"pyzbar could not be loaded "))
             show_warning_before_failiure(
                 translate("lib_load", """You are missing the {link}\nPlease install it.""").format(
                     link=link(
@@ -160,6 +159,29 @@ def ensure_pyzbar_works() -> None:
                 ),
             )
             sys.exit()
-    else:
+    elif platform.system() == "Darwin":
+        # Compute the absolute path of the current file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Construct the path to libzbar.dylib relative to the current file.
+        # This goes one directory up (to Contents) and then into Frameworks.
+        libzbar_path = os.path.join(current_dir, "..", "Frameworks", "libzbar.dylib")
+
+        # Set the environment variable
+        os.environ["PYZBAR_LIBRARY"] = os.path.abspath(libzbar_path)
+
+        logger.debug(f'set PYZBAR_LIBRARY={os.environ["PYZBAR_LIBRARY"]}')
+
+    elif platform.system() == "Linux":
         # On Linux this shoudn't be a problem, because I include libzar in the package
         pass
+    else:
+        logger.warning(f"Unknown OS")
+
+    # check pyzbar no matter what
+    try:
+        from pyzbar import pyzbar
+
+        logger.info(f"pyzbar could be loaded successfully")
+    except:
+        logger.warning(f"failed to load pyzbar")

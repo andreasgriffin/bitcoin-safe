@@ -61,11 +61,23 @@ from pathlib import Path
 # do not import logging, because has this a dependency for setup_logging
 
 
+def linux_env():
+    # Create a copy of the current environment variables.
+    env = os.environ.copy()
+
+    # Set LD_LIBRARY_PATH to prefer system libraries.
+    paths = ["/usr/lib", "/usr/lib/x86_64-linux-gnu"]
+    if env["LD_LIBRARY_PATH"]:
+        paths += env["LD_LIBRARY_PATH"]
+    env["LD_LIBRARY_PATH"] = ":".join(paths)
+    return env
+
+
 def open_mailto_link(mailto_link: str) -> None:
     "Attempt opening the mailto link with the OS's default email client"
     if sys.platform.startswith("linux"):
         # Linux: Use xdg-open to handle the mailto link
-        subprocess.run(["xdg-open", mailto_link], check=True)
+        subprocess.run(["xdg-open", mailto_link], check=True, env=linux_env())
     elif sys.platform.startswith("darwin"):
         # macOS: Use open command to handle the mailto link
         subprocess.run(["open", mailto_link], check=True)
@@ -84,7 +96,7 @@ def xdg_open_file(filename: Path, is_text_file=False):
     elif system_name == "Darwin":  # macOS
         subprocess.call(shlex.split(f'open "{filename}"'))
     elif system_name == "Linux":  # Linux
-        subprocess.call(shlex.split(f'xdg-open "{filename}"'))
+        subprocess.call(shlex.split(f'xdg-open "{filename}"'), env=linux_env())
 
 
 def show_file_in_explorer(filename: Path) -> None:
@@ -97,9 +109,9 @@ def show_file_in_explorer(filename: Path) -> None:
             desktop_session = os.environ.get("XDG_CURRENT_DESKTOP")
             if desktop_session and "KDE" in desktop_session:
                 # Attempt to use Dolphin to select the file
-                subprocess.Popen(["dolphin", "--select", filename])
+                subprocess.Popen(["dolphin", "--select", filename], env=linux_env())
             else:
                 # Fallback for other environments or if the detection is uncertain
-                subprocess.Popen(["xdg-open", filename.parent])
+                subprocess.Popen(["xdg-open", filename.parent], env=linux_env())
     except Exception as e:
         print(f"Error opening file: {e}")

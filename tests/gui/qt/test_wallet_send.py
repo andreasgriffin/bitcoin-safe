@@ -36,13 +36,13 @@ from pathlib import Path
 
 import pytest
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.tx_signing_steps import HorizontalImporters
 from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
@@ -193,14 +193,17 @@ def test_wallet_send(
 
                 ui_tx_viewer.button_next.click()
 
-                horizontal_importer = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(1)
-                assert isinstance(horizontal_importer, HorizontalImporters)
-                signer_ui = horizontal_importer.group_seed.data
+                widget = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(0)
+                assert isinstance(widget, HorizontalImportExportAll)
+                signer_ui = widget.wallet_importers.signer_ui
                 assert isinstance(signer_ui, SignerUI)
-                assert signer_ui.buttons[0].text() == "Sign with mnemonic seed"
+                for button in signer_ui.findChildren(QPushButton):
+                    assert button.text() == "Sign with seed"
+                    assert button.isVisible()
+                    button.click()
 
-                with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
-                    signer_ui.buttons[0].click()
+                    with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
+                        button.click()
 
                 shutter.save(main_window)
 

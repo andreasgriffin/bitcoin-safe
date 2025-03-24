@@ -50,6 +50,7 @@ from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
+from bitcoin_safe.gui.qt.export_data import FileToolButton
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
@@ -304,24 +305,46 @@ def test_wallet_features_multisig(
 
                     with tempfile.TemporaryDirectory() as temp_dir:
                         # export qr gifs
-                        for action in dialog.export_qr_widget.button_file._menu.actions():
-                            # export as file
-                            filename = (
-                                Path(temp_dir) / f"file_{action.text()}.t"
-                            )  # check that it also works with incomplete extensions
-                            with patch("bitcoin_safe.gui.qt.export_data.save_file_dialog") as mock_dialog:
-                                mock_dialog.return_value = str(filename)
+                        tool_button = dialog.button_export_file
+                        assert isinstance(tool_button, FileToolButton)
+                        for action in tool_button._menu.actions():
+                            if (
+                                action
+                                in [
+                                    tool_button.action_copy_txid,
+                                    tool_button.action_json,
+                                ]
+                                or action.isSeparator()
+                            ):
+                                pass
+                            elif action in [tool_button.action_copy_data]:
                                 action.trigger()
 
-                                mock_dialog.assert_called_once()
-                            assert filename.exists()
+                                clipboard = QApplication.clipboard()
+                                assert (
+                                    clipboard.text()
+                                    == "wsh(sortedmulti(1,[5aa39a43/48'/1'/0'/2']tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD/<0;1>/*,[5459f23b/48'/1'/0'/2']tpubDF5XHNeYNBkmPio8Zkw8zz6hBFoQ5BgXthUENZ7x51nbgNeC7exH6ZR8ZHSLEkLrKLxL1ELarJoDcZ1ZCAVCGALKA2V2KrNfegb2dPvdY5K/<0;1>/*))#4e59znyp"
+                                )
+                            else:
+                                # export as file
+                                filename = (
+                                    Path(temp_dir) / f"file_{action.text()}.t"
+                                )  # check that it also works with incomplete extensions
+                                with patch(
+                                    "bitcoin_safe.descriptor_export_tools.save_file_dialog"
+                                ) as mock_dialog:
+                                    mock_dialog.return_value = str(filename)
+                                    action.trigger()
+
+                                    mock_dialog.assert_called_once()
+                                assert filename.exists()
 
                         # export qr gifs
-                        assert dialog.export_qr_widget
+                        assert dialog.export_qr_button.export_qr_widget
                         for i in reversed(
-                            range(dialog.export_qr_widget.combo_qr_type.count())
+                            range(dialog.export_qr_button.export_qr_widget.combo_qr_type.count())
                         ):  # reversed to it always has to set the widget to trigger signal_set_qr_images
-                            text = dialog.export_qr_widget.combo_qr_type.itemText(i)
+                            text = dialog.export_qr_button.export_qr_widget.combo_qr_type.itemText(i)
                             basename = (
                                 f"file_{text}.png"
                                 if text.startswith(DescriptorQrExportTypes.text.display_name)
@@ -332,15 +355,16 @@ def test_wallet_features_multisig(
                                 mock_dialog.return_value = str(filename)
                                 # set the qr code
                                 with qtbot.waitSignal(
-                                    dialog.export_qr_widget.signal_set_qr_images, timeout=5000
+                                    dialog.export_qr_button.export_qr_widget.signal_set_qr_images,
+                                    timeout=5000,
                                 ) as blocker:
-                                    dialog.export_qr_widget.combo_qr_type.setCurrentIndex(i)
-                                dialog.export_qr_widget.button_save_qr.click()
+                                    dialog.export_qr_button.export_qr_widget.combo_qr_type.setCurrentIndex(i)
+                                dialog.export_qr_button.export_qr_widget.button_save_qr.click()
 
                                 mock_dialog.assert_called_once()
                             assert filename.exists()
 
-                    dialog.export_qr_widget.close()
+                    dialog.export_qr_button.export_qr_widget.close()
                     dialog.close()
 
                 do_modal_click(

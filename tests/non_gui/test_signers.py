@@ -309,7 +309,7 @@ def test_signer_finalizes_ofn_final_sig_receive(
     psbt_second_signature_2_of_3 = "cHNidP8BAIkBAAAAATuuOwH+YN3lM9CHZuaxhXU+P/xWQQUpwldxTxng2/NWAAAAAAD9////AhAnAAAAAAAAIgAgbnxIFWJ84RPQEHQJIBWYVALEGgr6e99xVLT2DDykpha+kQ0AAAAAACIAIH+2seEetNM9J6mtfXwz2EwP7E1gqjpvr0HHI97D3b5IcwAAAAABASuYuQ0AAAAAACIAIKteOph2G5lDpTD98oWJkrif3i6FX/eHTr2kmU4KN1w1IgICov3eEPPwwA+7S2NpB1FCBk3wZDu+EXBOrtIJi8IgI1lHMEQCIFuO9cKoLEM1v3juKeV+D9yotGzHONOlHdmXaA4qsa7PAiBNN4i+JleuHBXl3NFV8rQIgwCmTJkx4yykF5qnkvtJvAEBBWlSIQKi/d4Q8/DAD7tLY2kHUUIGTfBkO74RcE6u0gmLwiAjWSEDFMD9m9xxfSIcwmc3SXiciTV6v10693MSc79LQ15SBZEhA1yfr6rS8pPMIosS+UxZXBtL8+7OVVVuwZ8xyhC3o6NSU64AAAA="
 
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
-        signer.scan_result_callback(
+        signer.handle_data_input(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
             data=Data.from_psbt(
                 bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3), network=bdk.Network.REGTEST
@@ -341,7 +341,7 @@ def test_signer_recognizes_finalized_tx_received(
     fully_signed_tx = "010000000001013bae3b01fe60dde533d08766e6b185753e3ffc56410529c257714f19e0dbf3560000000000fdffffff0210270000000000002200206e7c4815627ce113d01074092015985402c41a0afa7bdf7154b4f60c3ca4a616be910d00000000002200207fb6b1e11eb4d33d27a9ad7d7c33d84c0fec4d60aa3a6faf41c723dec3ddbe48040047304402205b8ef5c2a82c4335bf78ee29e57e0fdca8b46cc738d3a51dd997680e2ab1aecf02204d3788be2657ae1c15e5dcd155f2b4088300a64c9931e32ca4179aa792fb49bc0147304402207442239fc7278fbfd61f3de747dc69311cdc7d3090ab3cc26012a1c18298968d02202769a6c4fe6d09b592dad10090a973c7a77c672371a4bdda631b443bc23a8e6a0169522102a2fdde10f3f0c00fbb4b6369075142064df0643bbe11704eaed2098bc2202359210314c0fd9bdc717d221cc2673749789c89357abf5d3af7731273bf4b435e52059121035c9fafaad2f293cc228b12f94c595c1b4bf3eece55556ec19f31ca10b7a3a35253ae73000000"
 
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
-        signer.scan_result_callback(
+        signer.handle_data_input(
             original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
             data=Data.from_tx(
                 bdk.Transaction(list(hex_to_serialized(fully_signed_tx))), network=bdk.Network.REGTEST

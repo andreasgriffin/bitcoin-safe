@@ -34,6 +34,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
+from bitcoin_qr_tools.multipath_descriptor import get_all_pubkey_providers
 from bitcoin_usb.address_types import (
     AddressType,
     AddressTypes,
@@ -41,12 +42,26 @@ from bitcoin_usb.address_types import (
     DescriptorInfo,
     SimplePubKeyProvider,
 )
+from hwilib.descriptor import parse_descriptor
 
 logger = logging.getLogger(__name__)
 
 
 def get_default_address_type(is_multisig) -> AddressType:
     return AddressTypes.p2wsh if is_multisig else AddressTypes.p2wpkh
+
+
+def get_address_bip32_path(descriptor_str: str, kind: bdk.KeychainKind, index: int):
+
+    hwi_descriptor = parse_descriptor(descriptor_str)
+    pubkey_providers = get_all_pubkey_providers(hwi_descriptor)
+
+    if not len((pubkey_providers)) > 1:
+        logger.warning(f"Multiple pubkey_providers present. Choosing 1. one")
+
+    spkp = SimplePubKeyProvider.from_hwi(pubkey_provider=pubkey_providers[0])
+
+    return spkp.get_address_bip32_path(kind=kind, index=index)
 
 
 class MultipathDescriptor(BitcoinQRMultipathDescriptor):

@@ -135,6 +135,7 @@ mv "$PROJECT_ROOT/.original.venv" "$PROJECT_ROOT/.venv" # moving the .venv back
 info "copying zbar"
 mkdir -p "$APPDIR/usr/lib/"
 cp /usr/lib/x86_64-linux-gnu/libzbar* "$APPDIR/usr/lib/"
+cp /usr/lib/x86_64-linux-gnu/libzbar.so.0 "$APPDIR/usr/lib/libzbar.so"  # otherwise it is not detected
 
 info "copying libsecp256k1"
 cp -f /usr/lib/x86_64-linux-gnu/libsecp256k1.so* "$APPDIR/usr/lib/" || fail "Could not copy libsecp to its destination"

@@ -224,3 +224,5 @@ tools/libusb/
 *.dll
 
 
+
+bitcoin_safe/gui/locales/chatgpt.txt

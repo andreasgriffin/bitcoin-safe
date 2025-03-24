@@ -77,6 +77,17 @@ class DescriptorQrExportTypes:
         ]
 
 
+class SignMessageRequestQrExportTypes:
+    bbqr = QrExportTypes.bbqr
+    text = QrExportTypes.text
+
+    @classmethod
+    def as_list(cls) -> List[QrExportType]:
+        return [
+            export_type for name, export_type in cls.__dict__.items() if isinstance(export_type, QrExportType)
+        ]
+
+
 @dataclass
 class HardwareSigner:
     name: str
