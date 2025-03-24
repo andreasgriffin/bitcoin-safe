@@ -1423,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>Multi-Signature ရွေးပါ  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>ပုံမှန်သို့မဟုတ်ရှိပြီးသားပိုက်ဆံအိတ်ပြန်ဖန်တီးပါ  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>စိတ်ကြိုက်သို့မဟုတ်ရှိပြီးသားပိုက်ဆံအိတ်တစ်ခုကိုတင်သွင်းပါ</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

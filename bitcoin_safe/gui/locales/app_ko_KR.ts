@@ -1423,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>멀티 서명 선택  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>사용자 지정 또는 기존 지갑 복원  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>사용자 정의 또는 기존 지갑 가져오기</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

@@ -1423,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>Multi-Signatur wählen  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Benutzerdefiniertes oder bestehendes Wallet wiederherstellen  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Benutzerdefinierte oder vorhandene Wallet importieren</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

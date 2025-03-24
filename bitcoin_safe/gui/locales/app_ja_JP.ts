@@ -1426,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットをあなたのニーズに合わせてカスタマイズ</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>回復の場合、オンラインでのサポート資料が少ない</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>カスタムまたは既存のウォレットをインポートする</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

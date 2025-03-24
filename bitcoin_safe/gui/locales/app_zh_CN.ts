@@ -1429,8 +1429,8 @@ Do you want to proceed anyway?</source>
         <translation>选择多重签名</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>自定义或恢复现有钱包</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>自定义或导入现有钱包</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

@@ -1426,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>मल्टी-हस्ताक्षर चुनें</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>कस्टम या मौजूदा वॉलेट पुनर्स्थापित करें</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>अपनी मर्ज़ी का वॉलेट बनाएं या मौजूदा वॉलेट आयात करें</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

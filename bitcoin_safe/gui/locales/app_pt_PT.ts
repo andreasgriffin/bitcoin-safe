@@ -1426,8 +1426,8 @@ Deseja prosseguir mesmo assim?</translation>
         <translation>Escolha Multi-Assinatura</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Carteira personalizada ou restaurar existente</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Personalizar ou importar uma carteira existente</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

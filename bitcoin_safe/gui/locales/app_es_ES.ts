@@ -1426,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>Elegir Multifirma</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Personalizar o restaurar Cartera existente</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Personalizar o importar una cartera existente</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

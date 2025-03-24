@@ -1426,8 +1426,8 @@ Do you want to proceed anyway?</source>
         <translation>Выбрать мульти-подписной кошелек</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Пользовательский или восстановить существующий кошелек</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Создать или импортировать существующий кошелек</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

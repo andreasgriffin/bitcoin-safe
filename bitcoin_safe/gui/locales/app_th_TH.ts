@@ -1423,8 +1423,8 @@ Do you want to proceed anyway?</source>
         <translation>เลือก Multi-Signature  </translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>ปรับแต่งหรือคืนค่ากระเป๋าเงินที่มีอยู่  </translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>กำหนดเองหรือนำเข้ากระเป๋าเงินที่มีอยู่</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>

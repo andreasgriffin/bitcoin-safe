@@ -26,6 +26,7 @@ print(f"Building for {target_arch=}")
 
 
 
+EXECUTABLE_NAME=f"run_Bitcoin_Safe"
 PACKAGE_NAME='Bitcoin_Safe.app'
 PYPKG='bitcoin_safe'
 PROJECT_ROOT = os.path.abspath(".")
@@ -138,7 +139,7 @@ exe = EXE(
     pyz,
     a.scripts,
     exclude_binaries=True,
-    name=f"run_{PACKAGE_NAME}",
+    name=EXECUTABLE_NAME,
     debug=True,
     strip=False,
     upx=True,
@@ -146,6 +147,7 @@ exe = EXE(
     console=False,
     target_arch=target_arch,  # TODO investigate building 'universal2'
 )
+
 
 app = BUNDLE(
     exe,
@@ -159,12 +161,14 @@ app = BUNDLE(
     info_plist={
         'NSHighResolutionCapable': 'True',
         'NSSupportsAutomaticGraphicsSwitching': 'True',
-        'CFBundleURLTypes':
-            [{
+        'CFBundleExecutable': EXECUTABLE_NAME,
+        'CFBundleURLTypes': [
+            {
                 'CFBundleURLName': 'bitcoin',
-                'CFBundleURLSchemes': ['bitcoin', ],
-            }],
+                'CFBundleURLSchemes': ['bitcoin'],
+            }
+        ],
         'LSMinimumSystemVersion': '11',
-        'NSCameraUsageDescription': 'Bitcoin_Safe would like to access the camera to scan for QR codes',
+        'NSCameraUsageDescription': 'Bitcoin Safe would like to access the camera to scan for QR codes',
     },
 )

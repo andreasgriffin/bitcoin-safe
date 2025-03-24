@@ -88,25 +88,29 @@ name = "bitcoin-qr-tools"
 version = "1.2.0"
 description = "Python bitcoin qr reader and generator"
 optional = false
-python-versions = "<3.13,>=3.9"
-files = [
-    {file = "bitcoin_qr_tools-1.2.0-py3-none-any.whl", hash = "sha256:be7f237474c21358c4b6212c5405dbbf610e062b21f5856ae071eb430947521d"},
-    {file = "bitcoin_qr_tools-1.2.0.tar.gz", hash = "sha256:3a36d8b3a63825458dccf9835b9c0e82078c32931c114c85f1c16f87506d73cd"},
-]
+python-versions = ">=3.9,<3.13"
+files = []
+develop = false
 
 [package.dependencies]
-base58 = ">=2.1.1,<3.0.0"
-bdkpython = ">=0.32.0,<0.33.0"
-hwi = ">=3.0.0,<4.0.0"
-mss = ">=9.0.1,<10.0.0"
-numpy = ">=2.0.1,<3.0.0"
-opencv-python-headless = ">=4.10.0.84,<5.0.0.0"
-pillow = ">=10.4.0,<11.0.0"
-pygame = ">=2.6.1,<3.0.0"
-pyqrcode = ">=1.2.1,<2.0.0"
-pyqt6 = ">=6.7.0,<7.0.0"
-pyzbar = ">=0.1.9,<0.2.0"
+base58 = "^2.1.1"
+bdkpython = "^0.32.0"
+hwi = "^3.0.0"
+mss = "^9.0.1"
+numpy = "^2.0.1"
+opencv-python-headless = "^4.10.0.84"
+pillow = "^10.4.0"
+pygame = "^2.6.1"
+pyqrcode = "^1.2.1"
+pyqt6 = "^6.7.0"
+pyzbar = {git = "https://github.com/andreasgriffin/pyzbar.git", branch = "mac-fix"}
 segno = "1.6.1"
+
+[package.source]
+type = "git"
+url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
+reference = "c3ed144037b3cbb09fb42e942e8147eb7cbdc42a"
+resolved_reference = "c3ed144037b3cbb09fb42e942e8147eb7cbdc42a"
 
 [[package]]
 name = "bitcoin-usb"
@@ -1143,15 +1147,15 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-ena
 
 [[package]]
 name = "libusb1"
-version = "3.3.0"
+version = "3.3.1"
 description = "Pure-python wrapper for libusb-1.0"
 optional = false
 python-versions = "*"
 files = [
-    {file = "libusb1-3.3.0-py3-none-any.whl", hash = "sha256:7923ff2bbe43878e1c7cf733fde49cca844ecada29dbc436033bca6171cda41f"},
-    {file = "libusb1-3.3.0-py3-none-win32.whl", hash = "sha256:270f35b3a8faddd63d78de9b2341e49f6aed6083dceb4b04f47b95fd944e8d00"},
-    {file = "libusb1-3.3.0-py3-none-win_amd64.whl", hash = "sha256:61e2b4efdbacdd689bf4eab6b9afa2d6ee8a4bae20ffbf7c5785024d25fa3258"},
-    {file = "libusb1-3.3.0.tar.gz", hash = "sha256:b642aa518689f8e053f61955cba274e72bc8d0794c65d7990745aaae90dfc8a1"},
+    {file = "libusb1-3.3.1-py3-none-any.whl", hash = "sha256:808c9362299dcee01651aa87e71e9d681ccedb27fc4dbd70aaf14e245fb855f1"},
+    {file = "libusb1-3.3.1-py3-none-win32.whl", hash = "sha256:0ef69825173ce74af34444754c081cc324233edc6acc405658b3ad784833e076"},
+    {file = "libusb1-3.3.1-py3-none-win_amd64.whl", hash = "sha256:6e21b772d80d6487fbb55d3d2141218536db302da82f1983754e96c72781c102"},
+    {file = "libusb1-3.3.1.tar.gz", hash = "sha256:3951d360f2daf0e0eacf839e15d2d1d2f4f5e7830231eb3188eeffef2dd17bad"},
 ]
 
 [[package]]
@@ -2372,14 +2376,17 @@ version = "0.1.9"
 description = "Read one-dimensional barcodes and QR codes from Python 2 and 3."
 optional = false
 python-versions = "*"
-files = [
-    {file = "pyzbar-0.1.9-py2.py3-none-any.whl", hash = "sha256:4559628b8192feb25766d954b36a3753baaf5c97c03135aec7e4a026036b475d"},
-    {file = "pyzbar-0.1.9-py2.py3-none-win32.whl", hash = "sha256:8f4c5264c9c7c6b9f20d01efc52a4eba1ded47d9ba857a94130afe33703eb518"},
-    {file = "pyzbar-0.1.9-py2.py3-none-win_amd64.whl", hash = "sha256:13e3ee5a2f3a545204a285f41814d5c0db571967e8d4af8699a03afc55182a9c"},
-]
+files = []
+develop = false
 
 [package.extras]
 scripts = ["Pillow (>=3.2.0)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/andreasgriffin/pyzbar.git"
+reference = "mac-fix"
+resolved_reference = "4858f3b4fd92223c46416e77aa4114959f3fe4cf"
 
 [[package]]
 name = "rapidfuzz"
@@ -2581,13 +2588,13 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "77.0.3"
+version = "78.0.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "setuptools-77.0.3-py3-none-any.whl", hash = "sha256:67122e78221da5cf550ddd04cf8742c8fe12094483749a792d56cd669d6cf58c"},
-    {file = "setuptools-77.0.3.tar.gz", hash = "sha256:583b361c8da8de57403743e756609670de6fb2345920e36dc5c2d914c319c945"},
+    {file = "setuptools-78.0.1-py3-none-any.whl", hash = "sha256:1cc9b32ee94f93224d6c80193cbb768004667aa2f2732a473d6949b0236c1d4e"},
+    {file = "setuptools-78.0.1.tar.gz", hash = "sha256:4321d2dc2157b976dee03e1037c9f2bc5fea503c0c47d3c9458e0e8e49e659ce"},
 ]
 
 [package.extras]
@@ -2966,4 +2973,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "6013b001ada31d8f851d2eff65107f231a9e6c7fa9941ca696500fc1901d90b7"
+content-hash = "e78a70f395f731db5509e7f108314a1f8caf8c55bccbb867ed4bb225010a63ff"

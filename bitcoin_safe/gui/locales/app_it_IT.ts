@@ -1426,8 +1426,8 @@ Vuoi procedere comunque?</translation>
         <translation>Scegli Multi-Firma</translation>
     </message>
     <message>
-        <source>Custom or restore existing Wallet</source>
-        <translation>Personalizza o ripristina il portafoglio esistente</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Personalizzare o importare un portafoglio esistente</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
