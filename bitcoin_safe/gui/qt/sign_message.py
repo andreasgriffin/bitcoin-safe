@@ -38,6 +38,7 @@ from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QWidget
 
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.export_data import QrToolButton
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.keystore import KeyStoreImporterTypes
@@ -45,7 +46,7 @@ from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import SignalsMin, TypedPyQtSignal
-from .util import Message, do_copy, read_QIcon
+from .util import Message, do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class SignMessage(QWidget):
         super().__init__(parent)
         self.network = network
         self.close_all_video_widgets = close_all_video_widgets
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
 
         self.grid_layout = grid_layout if grid_layout else QGridLayout(self)
 
@@ -84,11 +85,11 @@ class SignMessage(QWidget):
         self.sign_usb_button = SpinningButton(
             self.tr("Sign"),
             enable_signal=signal_end_hwi_blocker,
-            enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
         )
-        self.sign_usb_button.setIcon(read_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
+        self.sign_usb_button.setIcon(SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
         self.sign_usb_button.clicked.connect(self.on_sign_usb_message_button)
 
         # qr

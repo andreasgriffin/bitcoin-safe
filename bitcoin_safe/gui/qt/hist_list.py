@@ -77,6 +77,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QStyle, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
@@ -102,7 +103,7 @@ from .my_treeview import (
     needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
-from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
+from .util import Message, MessageType, sort_id_to_icon, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -537,7 +538,7 @@ class HistList(MyTreeView):
             item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.STATUS].setText(status_text)
         item[self.Columns.STATUS].setData(status_text, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
+        item[self.Columns.STATUS].setIcon(SvgTools.get_QIcon(sort_id_to_icon(status.sort_id())))
         item[self.Columns.STATUS].setToolTip(status_tooltip)
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -571,7 +572,7 @@ class HistList(MyTreeView):
                 menu.add_action(
                     translate("hist_list", "View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=read_QIcon("block-explorer.svg"),
+                    icon=SvgTools.get_QIcon("block-explorer.svg"),
                 )
             menu.addSeparator()
 
@@ -596,7 +597,7 @@ class HistList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=SvgTools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         menu.add_action(
@@ -734,7 +735,7 @@ class RefreshButton(QPushButton):
 
     def set_icon_is_syncing(self) -> None:
 
-        icon = read_QIcon("status_waiting.svg")
+        icon = SvgTools.get_QIcon("status_waiting.svg")
         self.setIcon(icon)
 
 

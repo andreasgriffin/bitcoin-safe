@@ -55,8 +55,9 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
+from bitcoin_safe.gui.qt.util import Message, MessageType
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -282,7 +283,7 @@ class RecipientTabWidget(QTabWidget):
             parent=self,
         )
 
-        self.addTab(self.recipient_widget, read_QIcon("person.svg"), title)
+        self.addTab(self.recipient_widget, SvgTools.get_QIcon("bi--person.svg"), title)
 
         # connect signals
         self.tabCloseRequested.connect(self.on_tabCloseRequested)
@@ -396,22 +397,24 @@ class Recipients(QWidget):
 
         self.add_recipient_button = QPushButton("")
         self.add_recipient_button.setMaximumWidth(150)
-        self.add_recipient_button.setIcon(read_QIcon("add-person.svg"))
+        self.add_recipient_button.setIcon(SvgTools.get_QIcon("bi--person-add.svg"))
         self.add_recipient_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.add_recipient_button.clicked.connect(self.add_recipient)
 
         self.toolbutton_csv = QToolButton()
         self.toolbutton_csv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.toolbutton_csv.setIcon(read_QIcon("csv-file.svg"))
+        self.toolbutton_csv.setIcon(SvgTools.get_QIcon("bi--filetype-csv.svg"))
 
         menu = Menu(self)
-        self.action_export_csv_template = menu.add_action(
-            "", self.on_action_export_csv_template, icon=read_QIcon("csv-file.svg")
+        self.action_import_csv = menu.add_action(
+            "", self.import_csv, icon=SvgTools.get_QIcon("bi--upload.svg")
         )
-        self.action_import_csv = menu.add_action("", self.import_csv, icon=read_QIcon("csv-file.svg"))
-        menu.addSeparator()
         self.action_export_csv = menu.add_action(
-            "", self.on_action_export_csv, icon=read_QIcon("csv-file.svg")
+            "", self.on_action_export_csv, icon=SvgTools.get_QIcon("bi--download.svg")
+        )
+        menu.addSeparator()
+        self.action_export_csv_template = menu.add_action(
+            "", self.on_action_export_csv_template, icon=SvgTools.get_QIcon("bi--layout-three-columns.svg")
         )
 
         self.toolbutton_csv.setMenu(menu)

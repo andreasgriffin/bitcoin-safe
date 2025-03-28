@@ -53,9 +53,10 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.i18n import translate
 
-from .gui.qt.util import qicon_to_pil, read_QIcon
+from .gui.qt.util import qicon_to_pil
 from .util_os import xdg_open_file
 from .wallet import Wallet
 
@@ -268,8 +269,8 @@ class BitcoinWalletRecoveryPDF:
             )
 
         # No photography icon
-        icon = read_QIcon("no-typing-icon.svg")
-        icon2 = read_QIcon("no-photography-icon.svg")
+        icon = SvgTools.get_QIcon("no-typing-icon.svg")
+        icon2 = SvgTools.get_QIcon("no-photography-icon.svg")
         reportlab_icon = pilimage_to_reportlab(qicon_to_pil(icon), width=50, height=50)
         reportlab_icon2 = pilimage_to_reportlab(qicon_to_pil(icon2), width=50, height=50)
 

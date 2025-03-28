@@ -44,7 +44,7 @@ from PyQt6.QtGui import QAction
 
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
-from bitcoin_safe.gui.qt.util import Message, icon_path
+from bitcoin_safe.gui.qt.util import Message
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.storage import filtered_for_init
 
@@ -93,8 +93,8 @@ class SyncTab(QObject):
         self.signals.language_switch.connect(self.updateUi)
 
     @staticmethod
-    def get_icon_path(enabled: bool) -> str:
-        return icon_path("cloud-sync.svg") if enabled else icon_path("cloud-sync-off.svg")
+    def get_icon_basename(enabled: bool) -> str:
+        return "bi--cloud.svg" if enabled else "bi--cloud-slash.svg"
 
     def publish_key_if_clicked(self):
         # just in case the relay lost the publish key message. I republish here

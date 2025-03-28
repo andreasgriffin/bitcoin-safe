@@ -60,6 +60,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
 from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
@@ -78,7 +79,7 @@ from ...hardware_signers import (
 )
 from ...signals import SignalsMin
 from .sync_tab import SyncTab
-from .util import Message, MessageType, do_copy, read_QIcon, save_file_dialog
+from .util import Message, MessageType, do_copy, save_file_dialog
 
 logger = logging.getLogger(__name__)
 
@@ -287,10 +288,14 @@ class FileToolButton(QToolButton):
                 icon=get_export_icon(export_type=export_type),
             )
         menu.addSeparator()
-        self.action_copy_data = menu.add_action("", self.on_action_copy_data, icon=read_QIcon("copy.png"))
-        self.action_copy_txid = menu.add_action("", self.on_action_copy_txid, icon=read_QIcon("copy.png"))
+        self.action_copy_data = menu.add_action(
+            "", self.on_action_copy_data, icon=SvgTools.get_QIcon("bi--copy.svg")
+        )
+        self.action_copy_txid = menu.add_action(
+            "", self.on_action_copy_txid, icon=SvgTools.get_QIcon("bi--copy.svg")
+        )
         self.action_copy_txid.setVisible(False)
-        self.action_json = menu.add_action("", self.on_action_json, icon=read_QIcon("copy.png"))
+        self.action_json = menu.add_action("", self.on_action_json, icon=SvgTools.get_QIcon("bi--copy.svg"))
         self.action_json.setVisible(False)
 
         menu.blockSignals(False)
@@ -310,9 +315,13 @@ class FileToolButton(QToolButton):
 
         menu.addSeparator()
 
-        self.action_copy_data = menu.add_action("", self.on_action_copy_data, icon=read_QIcon("copy.png"))
-        self.action_copy_txid = menu.add_action("", self.on_action_copy_txid, icon=read_QIcon("copy.png"))
-        self.action_json = menu.add_action("", self.on_action_json, icon=read_QIcon("copy.png"))
+        self.action_copy_data = menu.add_action(
+            "", self.on_action_copy_data, icon=SvgTools.get_QIcon("bi--copy.svg")
+        )
+        self.action_copy_txid = menu.add_action(
+            "", self.on_action_copy_txid, icon=SvgTools.get_QIcon("bi--copy.svg")
+        )
+        self.action_json = menu.add_action("", self.on_action_json, icon=SvgTools.get_QIcon("bi--copy.svg"))
 
         menu.blockSignals(False)
 
@@ -354,7 +363,7 @@ class SyncChatToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(QIcon(read_QIcon("cloud-sync.svg")))
+        self.setIcon(SvgTools.get_QIcon("bi--cloud.svg"))
 
         self._fill_menu()
         self.updateUi()
@@ -598,7 +607,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.group_qr._layout.insertWidget(0, self.qr_label)
 
         self.button_enlarge_qr = QPushButton()
-        self.button_enlarge_qr.setIcon(read_QIcon("zoom.png"))
+        self.button_enlarge_qr.setIcon(SvgTools.get_QIcon("bi--zoom-in.svg"))
         # self.button_enlarge_qr.setIconSize(QSize(30, 30))  # 24x24 pixels
         self.button_enlarge_qr.clicked.connect(self.qr_label.enlarge_image)
         self.group_qr_buttons_layout.addWidget(self.button_enlarge_qr)
@@ -837,7 +846,7 @@ class QrToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(read_QIcon("qr-code.svg"))
+        self.setIcon(SvgTools.get_QIcon("bi--qr-code.svg"))
 
         self._fill_menu()
         self.updateUi()

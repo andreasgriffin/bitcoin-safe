@@ -55,6 +55,7 @@
 import logging
 from functools import partial
 
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 from ...config import UserConfig
@@ -85,7 +86,7 @@ from .my_treeview import (
     TreeViewWithToolbar,
     needs_frequent_flag,
 )
-from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
+from .util import ColorScheme, sort_id_to_icon, webopen
 
 
 def icon_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime, sort_id: int) -> str:
@@ -257,7 +258,7 @@ class UTXOList(MyTreeView):
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
                     partial(webopen, txid_URL),
-                    icon=read_QIcon("block-explorer.svg"),
+                    icon=SvgTools.get_QIcon("block-explorer.svg"),
                 )
 
             wallet_ids: List[str] = clean_list(
@@ -290,7 +291,7 @@ class UTXOList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=SvgTools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
@@ -438,7 +439,7 @@ class UTXOList(MyTreeView):
             # unconfirmed txos might be confirmed, and need to be updated more often
             items[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         items[self.Columns.STATUS].setIcon(
-            read_QIcon(
+            SvgTools.get_QIcon(
                 icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.confirmation_time, sort_id)
                 if txdetails
                 else None

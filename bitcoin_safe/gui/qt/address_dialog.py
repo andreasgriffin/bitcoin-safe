@@ -39,6 +39,7 @@ from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidg
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.descriptors import MultipathDescriptor, get_address_bip32_path
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
 from bitcoin_safe.gui.qt.sign_message import SignMessage
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
@@ -50,7 +51,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from ...signals import Signals, SignalsMin
 from ...wallet import Wallet
 from .hist_list import HistList
-from .util import Buttons, CloseButton, read_QIcon
+from .util import Buttons, CloseButton
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class AddressDetailsAdvanced(QWidget):
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
 
         form_layout = QGridLayout(self)
         # form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
@@ -122,7 +123,7 @@ class AddressValidateTab(QWidget):
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
 
         self._layout = QHBoxLayout(self)
 
@@ -163,7 +164,7 @@ class AddressDialog(QWidget):
     ) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle(self.tr("Address"))
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
 
         self.mempool_data = mempool_data
         self.address = address
@@ -233,7 +234,7 @@ class AddressDialog(QWidget):
         )
         if self.tab_validate:
             self.recipient_tabs.addTab(
-                self.tab_validate, read_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
+                self.tab_validate, SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
             )
 
         self.qr_code = QRAddress()

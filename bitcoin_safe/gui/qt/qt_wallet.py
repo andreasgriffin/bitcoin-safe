@@ -39,7 +39,6 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -54,6 +53,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.category_info import CategoryInfo, SubtextType
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab, TreeViewWithToolbar
 from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
@@ -90,7 +90,6 @@ from .util import (
     MessageType,
     caught_exception_message,
     custom_exception_handler,
-    read_QIcon,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
 from .wallet_balance_chart import WalletBalanceChart
@@ -149,7 +148,7 @@ class QTProtoWallet(QtWalletBase):
         )
         self.tabs.addTab(
             wallet_descriptor_ui,
-            read_QIcon("preferences.svg"),
+            SvgTools.get_QIcon("bi--text-left.svg"),
             self.tr("Setup wallet"),
         )
 
@@ -483,7 +482,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         self.tabs.addTab(
             wallet_descriptor_ui,
-            read_QIcon("preferences.svg"),
+            SvgTools.get_QIcon("bi--text-left.svg"),
             "",
         )
 
@@ -542,8 +541,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def add_sync_tab(self) -> Tuple[SyncTab, QWidget, LabelSyncer]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
 
-        icon_path = SyncTab.get_icon_path(enabled=self.sync_tab.enabled())
-        self.tabs.addTab(self.sync_tab.main_widget, QIcon(icon_path), "")
+        icon_basename = SyncTab.get_icon_basename(enabled=self.sync_tab.enabled())
+        self.tabs.addTab(self.sync_tab.main_widget, SvgTools.get_QIcon(icon_basename), "")
         self.sync_tab.main_widget.checkbox.stateChanged.connect(self._set_sync_tab_icon)
 
         label_syncer = LabelSyncer(self.wallet.labels, self.sync_tab, self.wallet_signals)
@@ -554,8 +553,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         index = self.tabs.indexOf(self.sync_tab.main_widget)
         if index < 0:
             return
-        icon_path = SyncTab.get_icon_path(enabled=enabled)
-        self.tabs.setTabIcon(index, QIcon(icon_path))
+        icon_basename = SyncTab.get_icon_basename(enabled=enabled)
+        self.tabs.setTabIcon(index, SvgTools.get_QIcon(icon_basename))
 
     def save_backup(self) -> str:
         """_summary_
@@ -834,7 +833,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             signals=self.signals,
             parent=self,
         )
-        self.tabs.addTab(uitx_creator, read_QIcon("send.svg"), "")
+        self.tabs.addTab(uitx_creator, SvgTools.get_QIcon("bi--send.svg"), "")
 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
 
@@ -1075,7 +1074,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         tabs.insertTab(
             2,
             tab,
-            read_QIcon("history.svg"),
+            SvgTools.get_QIcon("ic--sharp-timeline.svg"),
             "",
         )
 
@@ -1124,7 +1123,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             treeview_with_toolbar, tabs, horizontal_widgets_left=[address_tab_category_editor]
         )
 
-        tabs.insertTab(1, tab, read_QIcon("receive.svg"), "")
+        tabs.insertTab(1, tab, SvgTools.get_QIcon("ic--baseline-call-received.svg"), "")
         return tab, l, address_tab_category_editor, treeview_with_toolbar
 
     def create_new_address(self, category) -> None:
