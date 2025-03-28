@@ -67,21 +67,25 @@ files = [
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "0.6.3"
+version = "0.6.4"
 description = "A Nostr Chat with participant discovery"
 optional = false
-python-versions = "<3.13,>=3.9"
-files = [
-    {file = "bitcoin_nostr_chat-0.6.3-py3-none-any.whl", hash = "sha256:6def1d70ae85706e50c9622e5d3b1a47cc12f1707ceb01bfaac033a6950dca4a"},
-    {file = "bitcoin_nostr_chat-0.6.3.tar.gz", hash = "sha256:e6f2f0172ee95c556138176f5bfac22c76250d53f7e744a25a1650d5b0743e5f"},
-]
+python-versions = ">=3.9,<3.13"
+files = []
+develop = false
 
 [package.dependencies]
-bitcoin-qr-tools = ">=1.0.0,<2.0.0"
-cbor2 = ">=5.6.3,<6.0.0"
-nostr-sdk = ">=0.38.0,<0.39.0"
-pyqt6 = ">=6.6.1,<7.0.0"
-requests = ">=2.31.0,<3.0.0"
+bitcoin-qr-tools = "^1.0.0"
+cbor2 = "^5.6.3"
+nostr-sdk = "^0.38.0"
+pyqt6 = "^6.6.1"
+requests = "^2.31.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
+reference = "32a166929d036bc3f826f38c7783c5639f6ee4c9"
+resolved_reference = "32a166929d036bc3f826f38c7783c5639f6ee4c9"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -133,8 +137,8 @@ trezor = "^0.13.9"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-usb.git"
-reference = "fe0dc55381cbcd8a334886afd7c4e0d25307aaa1"
-resolved_reference = "fe0dc55381cbcd8a334886afd7c4e0d25307aaa1"
+reference = "17b57484f4be633b182636b82c7e7d9e3ccf3eb1"
+resolved_reference = "17b57484f4be633b182636b82c7e7d9e3ccf3eb1"
 
 [[package]]
 name = "build"
@@ -2107,7 +2111,6 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:1b992688f97deea99d025913408acc48f6d554563a91b72adbdd2991ba2b0b35"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:f8cbe7005f836f156e09f57b1916ce824931421f9f25e37b0b6c09fae4e4508f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:2ce660031db9eb572d5c65c34d9fc4a75bc0e21093abfe3b1d0fccc47d95550a"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:3984b7995d8eda5587d893f8fbabde5647bc64a2c27e6f01a3a2758ae12a353f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:535e699dace20fc9f8f516e67ca9ff529a79351145d9000ef1a0c61c3bd35858"},
@@ -2588,13 +2591,13 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "78.0.1"
+version = "78.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "setuptools-78.0.1-py3-none-any.whl", hash = "sha256:1cc9b32ee94f93224d6c80193cbb768004667aa2f2732a473d6949b0236c1d4e"},
-    {file = "setuptools-78.0.1.tar.gz", hash = "sha256:4321d2dc2157b976dee03e1037c9f2bc5fea503c0c47d3c9458e0e8e49e659ce"},
+    {file = "setuptools-78.1.0-py3-none-any.whl", hash = "sha256:3e386e96793c8702ae83d17b853fb93d3e09ef82ec62722e61da5cd22376dcd8"},
+    {file = "setuptools-78.1.0.tar.gz", hash = "sha256:18fd474d4a82a5f83dac888df697af65afa82dec7323d09c3e37d1f14288da54"},
 ]
 
 [package.extras]
@@ -2820,13 +2823,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.12.2"
+version = "4.13.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
-    {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
+    {file = "typing_extensions-4.13.0-py3-none-any.whl", hash = "sha256:c8dd92cc0d6425a97c18fbb9d1954e5ff92c1ca881a309c45f06ebc0b79058e5"},
+    {file = "typing_extensions-4.13.0.tar.gz", hash = "sha256:0a4ac55a5820789d87e297727d229866c9650f6521b64206413c4fbada24d95b"},
 ]
 
 [[package]]
@@ -2973,4 +2976,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "e78a70f395f731db5509e7f108314a1f8caf8c55bccbb867ed4bb225010a63ff"
+content-hash = "a2be9b84ec1371d4dd966f906dbb69ef426b6627f4cd975e4de0154fd58262c7"

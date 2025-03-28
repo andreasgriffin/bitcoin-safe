@@ -52,7 +52,7 @@ FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is high
 class ProxyInfo:
     host: str | None
     port: int | None
-    scheme: str = "socks5"
+    scheme: str = "socks5h"
 
     def get_socks_scheme(self) -> Literal[1] | Literal[2]:
         if self.scheme == "socks4":
@@ -61,6 +61,9 @@ class ProxyInfo:
 
     def get_url(self):
         return f"{self.scheme}://{self.host}:{self.port}"
+
+    def get_url_no_h(self):
+        return f"{self.scheme[:-1] if self.scheme.endswith('h') else self.scheme}://{self.host}:{self.port}"
 
     def get_requests_proxy_dict(self):
         return {"http": self.get_url(), "https": self.get_url()}

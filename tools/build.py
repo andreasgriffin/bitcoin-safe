@@ -117,50 +117,6 @@ class Builder:
 
         return join_character.join(parts)
 
-    # def update_briefcase_requires(
-    #     self,
-    #     pyproject_path="pyproject.toml",
-    #     poetry_lock_path="poetry.lock",
-    #     additional_requires=[],
-    # ):
-
-    #     # Load pyproject.toml
-    #     with open(pyproject_path, "r") as file:
-    #         pyproject_data = tomlkit.load(file)
-
-    #     # Load and parse poetry lock file
-    #     with open(poetry_lock_path, "r") as file:
-    #         poetry_lock_data = tomlkit.load(file)
-
-    #     briefcase_requires = []
-    #     # Extract packages from the lock file
-    #     for package in poetry_lock_data["package"]:
-    #         name = package["name"]
-    #         if name in ["xattr", "poetry"]:
-    #             continue
-    #         version = package["version"]
-    #         if package.get("source"):
-    #             briefcase_requires.append(package.get("source", {}).get("url"))
-    #         else:
-    #             briefcase_requires.append(f"{name}=={version}")
-
-    #     # Append any additional requires
-    #     briefcase_requires.extend(additional_requires)
-
-    #     # Ensure the structure exists before updating it
-    #     pyproject_data.setdefault("tool", {}).setdefault("briefcase", {}).setdefault("app", {}).setdefault(
-    #         "bitcoin-safe", {}
-    #     )["requires"] = briefcase_requires
-
-    #     # update version
-    #     pyproject_data.setdefault("tool", {}).setdefault("briefcase", {})["version"] = self.version
-    #     # update version
-    #     pyproject_data.setdefault("tool", {}).setdefault("poetry", {})["version"] = self.version
-
-    #     # Write updated pyproject.toml
-    #     with open(pyproject_path, "w") as file:
-    #         tomlkit.dump(pyproject_data, file)
-
     @staticmethod
     def list_files(directory: str, extension: str) -> List[Path]:
         """
@@ -365,40 +321,17 @@ class Builder:
                 # Perform the move
                 shutil.move(str(file), str(DISTDIR / new_name))
 
-    # def briefcase_appimage(self, **kwargs):
-    #     # briefcase appimage building works on some systems, but not on others... unknown why.
-    #     # so we build using the bitcoin_safe docker by default
-    #     run_local("poetry run briefcase -u  package    linux  appimage")
-
-    # def briefcase_windows(self, **kwargs):
-    #     run_local("poetry run briefcase -u  package    windows")
-
-    # def briefcase_mac(self, **kwargs):
-    #     run_local("python3 -m poetry run   briefcase -u  package    macOS  app --no-notarize")
-
-    # def briefcase_deb(self, **kwargs):
-    #     # _run_local(" briefcase -u  package --target ubuntu:23.10") # no bdkpython for python3.11
-    #     # _run_local(" briefcase -u  package --target ubuntu:23.04") # no bdkpython for python3.11
-    #     run_local("poetry run briefcase -u  package --target ubuntu:22.04 -p deb")
-
-    # def briefcase_flatpak(self, **kwargs):
-    #     run_local("poetry run briefcase   package linux flatpak")
-
-    #     shutil.rmtree("build")
-
     def package_application(
         self,
         targets: List[TARGET_LITERAL],
         build_commit: None | str | Literal["current_commit"] = None,
     ):
-        # self.update_briefcase_requires()
 
         f_map: Dict[str, Callable[..., None]] = {
             "appimage": self.build_appimage_docker,
             "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.build_dmg,
             "deb": self.appimage2deb,
-            # "flatpak": self.briefcase_flatpak,
             "snap": self.build_snap,
         }
 
@@ -410,16 +343,6 @@ class Builder:
         print(f"Resulting hashes:")
         for file, hash in hashes.items():
             print(f"{file.name}: {hash}")
-
-        # if "linux" in targets:
-        #     self.create_briefcase_binaries_in_docker(target_platform="linux")
-        # if "windows" in targets:
-        #     self.create_pyinstaller_binaries_in_docker(target_platform="windows")
-        # # if "macos" in targets:
-        # #     self.create_pyinstaller_binaries_in_docker(target_platform="macos")
-
-        # if "appimage" in targets:
-        #     self.create_appimage_with_appimage_tool()
 
         print(f"Packaging completed for version {self.version}.")
 

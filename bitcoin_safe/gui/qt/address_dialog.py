@@ -37,7 +37,7 @@ from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
 from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.descriptors import MultipathDescriptor, get_address_bip32_path
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
 from bitcoin_safe.gui.qt.sign_message import SignMessage
@@ -98,9 +98,9 @@ class AddressDetailsAdvanced(QWidget):
 
         # sign message row
         self.sign_message = SignMessage(
-            wallet_descriptor=wallet_descriptor,
-            kind=kind,
-            address_index=address_index,
+            bip32_path=get_address_bip32_path(
+                descriptor_str=wallet_descriptor.as_string(), kind=kind, index=address_index
+            ),
             network=network,
             close_all_video_widgets=close_all_video_widgets,
             parent=self,

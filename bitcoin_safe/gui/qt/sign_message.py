@@ -33,10 +33,9 @@ import typing
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QWidget
 
-from bitcoin_safe.descriptors import MultipathDescriptor, get_address_bip32_path
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.export_data import QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
@@ -45,18 +44,18 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
-from ...signals import SignalsMin
+from ...signals import SignalsMin, TypedPyQtSignal
 from .util import Message, do_copy, read_QIcon
 
 logger = logging.getLogger(__name__)
 
 
 class SignMessage(QWidget):
+    signal_signed_message: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+
     def __init__(
         self,
-        wallet_descriptor: MultipathDescriptor,
-        kind: bdk.KeychainKind,
-        address_index: int,
+        bip32_path: str,
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: TypedPyQtSignalNo,
@@ -72,9 +71,7 @@ class SignMessage(QWidget):
         self.grid_layout = grid_layout if grid_layout else QGridLayout(self)
 
         # sign message row
-        self.bip32_path = get_address_bip32_path(
-            descriptor_str=wallet_descriptor.as_string(), kind=kind, index=address_index
-        )
+        self.bip32_path = bip32_path
         self.usb_gui = USBGui(network, allow_emulators_only_for_testnet_works=True)
         self.sign_edit = QLineEdit()
         self.sign_edit.setPlaceholderText(
@@ -142,5 +139,6 @@ class SignMessage(QWidget):
 
         if signed_message:
             title = self.tr("Signed Message")
+            self.signal_signed_message.emit(signed_message)
             do_copy(signed_message, title=title)
             show_textedit_message(text=signed_message, label_description="", title=title)

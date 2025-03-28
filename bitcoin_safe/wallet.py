@@ -844,12 +844,12 @@ class Wallet(BaseSaveableClass, CacheManager):
                         self.config.network_config.electrum_url, self.config.network_config.electrum_use_ssl
                     ),
                     socks5=(
-                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url()
+                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url_no_h()
                         if self.config.network_config.proxy_url
                         else None
                     ),
-                    retry=2,
-                    timeout=10,
+                    retry=1,
+                    timeout=20,
                     stop_gap=max(self.gap, self.gap_change),
                     validate_domain=self.config.network_config.electrum_use_ssl,
                 )
@@ -859,7 +859,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                 bdk.EsploraConfig(
                     base_url=self.config.network_config.esplora_url,
                     proxy=(
-                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url()
+                        ProxyInfo.parse(self.config.network_config.proxy_url).get_url_no_h()
                         if self.config.network_config.proxy_url
                         else None
                     ),
