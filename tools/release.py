@@ -62,7 +62,7 @@ def get_default_description(latest_tag: str):
 ### 🔋Batteries included🔋
 Lots of existing features were not mentioned above, so please check out:
 
-- [Why choose Bitcoin Safe?](https://bitcoin-safe.org/en/page/usps/)
+- [Why choose Bitcoin Safe?](https://bitcoin-safe.org/en/features/usps/)
 - www.bitcoin-safe.org
 - [Readme](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#bitcoin-safe) and [Comprehensive Feature List](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#comprehensive-feature-list)
 - Follow me on [nostr](https://primal.net/p/npub1q67f4d7qdja237us384ryeekxsz88lz5kaawrcynwe4hqsnufr6s27up0e)

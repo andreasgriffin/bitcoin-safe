@@ -69,7 +69,7 @@ def setup_logging() -> None:
     console_handler.setFormatter(relative_path_formatter)
 
     log_file = get_log_file()
-    file_handler = logging.handlers.RotatingFileHandler(filename=log_file, maxBytes=1000000, backupCount=3)
+    file_handler = logging.handlers.RotatingFileHandler(filename=log_file, maxBytes=3000000, backupCount=3)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(relative_path_formatter)
 

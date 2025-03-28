@@ -97,46 +97,69 @@ def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
 
 
 def get_electrum_server_version(
-    host: str, port: int, use_ssl: bool = True, timeout: int = 2, proxy_info: Optional[ProxyInfo] = None
+    host: str, port: int, use_ssl: bool = True, timeout: int = 10, proxy_info: Optional[ProxyInfo] = None
 ) -> Optional[str]:
+    sock = None
+    ssock = None
     try:
         if proxy_info:
-            socks.set_default_proxy(proxy_info.get_socks_scheme(), proxy_info.host, proxy_info.port)
-            socket.socket = socks.socksocket  # type: ignore
+            # Set the default proxy with remote DNS resolution enabled.
+            socks.set_default_proxy(
+                proxy_info.get_socks_scheme(),
+                proxy_info.host,
+                proxy_info.port,
+                rdns=(proxy_info.scheme == "socks5h"),
+            )
+            # Instead of monkey-patching socket.socket and using create_connection,
+            # create a socks socket instance directly.
+            sock = socks.socksocket()
+            sock.settimeout(timeout)
+            sock.connect((host, port))
+        else:
+            sock = socket.create_connection((host, port), timeout=timeout)
 
-        # Connect to the server
-        with socket.create_connection((host, port), timeout=timeout) as sock:
-            # Wrap the socket with SSL if required
-            ssock: Optional[socket.socket] = None
-            if use_ssl:
-                context = ssl.create_default_context()
-                context.minimum_version = ssl.TLSVersion.TLSv1_2
-                ssock = context.wrap_socket(sock, server_hostname=host)
-            else:
-                ssock = sock
+        # Wrap the socket with SSL if required.
+        if use_ssl:
+            context = ssl.create_default_context()
+            context.minimum_version = ssl.TLSVersion.TLSv1_2
+            ssock = context.wrap_socket(sock, server_hostname=host)
+        else:
+            ssock = sock
 
-            # Prepare and send the JSON-RPC request
-            request = json.dumps({"id": 1, "method": "server.version", "params": ["1.4", "1.4"]}) + "\n"
-            ssock.sendall(request.encode())
+        if not ssock:
+            return None
 
-            # Receive the response
-            response = ssock.recv(4096).decode()  # Assuming the response won't exceed 4096 bytes
-            response_json = json.loads(response.split("\n")[0])  # Handling potential extra newlines
+        # Prepare and send the JSON-RPC request.
+        request = json.dumps({"id": 1, "method": "server.version", "params": ["1.4", "1.4"]}) + "\n"
+        ssock.sendall(request.encode())
 
-            # Close the SSL socket if used
-            if use_ssl:
-                ssock.close()
+        # Receive the response.
+        response = ssock.recv(4096).decode()  # Assuming the response won't exceed 4096 bytes.
+        response_json = json.loads(response.split("\n")[0])  # Handling potential extra newlines.
 
-            # Check and return the server version
-            if "result" in response_json:
-                logger.debug(f"Server version: {response_json['result']}")
-                return response_json["result"]
-            else:
-                logger.debug(f"Failed to retrieve server version of {host, port, use_ssl}.")
-                return None
+        # Check and return the server version.
+        if "result" in response_json:
+            logger.debug(f"Server version: {response_json['result']}")
+            return response_json["result"]
+        else:
+            logger.debug(f"Failed to retrieve server version of {host, port, use_ssl}.")
+            return None
     except Exception as e:
         logger.debug(f"Connection or communication error: {e}")
         return None
+    finally:
+        # Ensure the SSL socket is closed if it was created.
+        if ssock is not None:
+            try:
+                ssock.close()
+            except Exception as close_err:
+                logger.debug(f"Error closing SSL socket: {close_err}")
+        # If ssock was never set, try closing the plain socket.
+        elif sock is not None:
+            try:
+                sock.close()
+            except Exception as close_err:
+                logger.debug(f"Error closing socket: {close_err}")
 
 
 def test_connection(network_config: NetworkConfig) -> Optional[str]:
@@ -161,7 +184,7 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
             # Assuming Esplora's REST API for testing connection
             response = requests.get(
                 f"{network_config.esplora_url}/blocks/tip/height",
-                timeout=2,
+                timeout=5,
                 proxies=(
                     ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dict()
                     if network_config.proxy_url
@@ -516,11 +539,41 @@ class NetworkSettingsUI(QDialog):
         def format_status(response):
             return "Success" if response else "Failed"
 
-        return self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
+        response = self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
             name=network_config.server_type.name,
             status=format_status(server_connection),
             server=format_status(mempool_server),
         )
+
+        if not server_connection and network_config.server_type == BlockchainType.Electrum:
+            if network_config.electrum_url.startswith("https://"):
+                response += "\n\n" + self.tr("Please remove the '{scheme}' from the electrum url").format(
+                    scheme="https://"
+                )
+            if network_config.electrum_url.startswith("http://"):
+                response += "\n\n" + self.tr("Please remove the '{scheme}' from the electrum url").format(
+                    scheme="http://"
+                )
+
+        if not server_connection and network_config.server_type == BlockchainType.Esplora:
+            if network_config.esplora_url.startswith("https://"):
+                response += "\n\n" + self.tr("Are you sure '{scheme}' is correct in the esplora url?").format(
+                    scheme="https://"
+                )
+
+        if network_config.proxy_url:
+            if not server_connection:
+                response += "\n\n" + self.tr("The format for tor addresses should be '{scheme}'").format(
+                    scheme="xxxxxxx.onion:80"
+                )
+
+            if not mempool_server:
+                if network_config.mempool_url.startswith("https://"):
+                    response += "\n\n" + self.tr(
+                        "Please try '{scheme}' at the beginning of the mempool url"
+                    ).format(scheme="http://")
+
+        return response
 
     def test_connection(self):
         new_network_config = self.get_network_settings_from_ui()
@@ -718,9 +771,7 @@ class NetworkSettingsUI(QDialog):
     @property
     def esplora_url(self) -> str:
         url = self.esplora_url_edit.text()
-        if "//" not in url:
-            url = "http://" + url
-        return url
+        return ensure_scheme(url)
 
     @esplora_url.setter
     def esplora_url(self, url: str):
