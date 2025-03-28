@@ -56,6 +56,7 @@ from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
@@ -125,7 +126,6 @@ from .util import (
     adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
-    read_QIcon,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
 
@@ -142,7 +142,7 @@ class LinkingWarningBar(NotificationBar):
         self.category_dict: Dict[str, Set[str]] = {}
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(read_QIcon("warning.png"))
+        self.set_icon(SvgTools.get_QIcon("warning.png"))
 
         self.optionalButton.setVisible(False)
         self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -409,7 +409,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "sd-card.svg")
+        self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "bi--sd-card.svg")
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -427,7 +427,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.button_send = add_to_buttonbox(
             self.buttonBox,
             "",
-            "send.svg",
+            "bi--send.svg",
             on_clicked=self.broadcast,
             role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
@@ -1013,7 +1013,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         def on_success(success) -> None:
             if success:
                 self.tabs_inputs_outputs.addTab(
-                    self.sankey_bitcoin, icon=read_QIcon("flows.svg"), description=self.tr("Diagram")
+                    self.sankey_bitcoin, icon=SvgTools.get_QIcon("flows.svg"), description=self.tr("Diagram")
                 )
                 self.set_tab_focus(self.focus_ui_element)
 

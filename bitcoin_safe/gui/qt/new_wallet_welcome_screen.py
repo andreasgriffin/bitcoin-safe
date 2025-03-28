@@ -42,12 +42,13 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
-from .util import read_QIcon, svg_widgets_hardware_signers
+from .util import svg_widgets_hardware_signers
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +99,7 @@ class NewWalletWelcomeScreen(QWidget):
     def add_new_wallet_welcome_tab(self, main_tabs: DataTabWidget[object]) -> None:
         main_tabs.add_tab(
             tab=self,
-            icon=read_QIcon("file.png"),
+            icon=SvgTools.get_QIcon("file.png"),
             description=self.tr("Create new wallet"),
             focus=True,
             data=self,

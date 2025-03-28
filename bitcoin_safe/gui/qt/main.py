@@ -61,6 +61,7 @@ from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_list import CategoryEditor
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike
@@ -104,7 +105,6 @@ from .util import (
     MessageType,
     caught_exception_message,
     delayed_execution,
-    read_QIcon,
     webopen,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
             )
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network)
-        self.hwi_tool_gui.setWindowIcon(read_QIcon("logo.svg"))
+        self.hwi_tool_gui.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
         self.setupUi()
 
         self.mempool_data = MempoolData(
@@ -295,7 +295,7 @@ class MainWindow(QMainWindow):
         # sizePolicy.setVerticalStretch(0)
         # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         # MainWindow.setSizePolicy(sizePolicy)
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
         w, h = 900, 600
         self.resize(w, h)
         self.setMinimumSize(w, h)
@@ -349,7 +349,7 @@ class MainWindow(QMainWindow):
         if self.config.is_maximized:
             self.showMaximized()
 
-        # self.setWindowIcon(read_QIcon("electrum.png"))
+        # self.setWindowIcon(SvgTools.get_QIcon("electrum.png"))
         self.init_menubar()
         self.set_title()
         logger.debug(f"done setupUi")
@@ -406,19 +406,20 @@ class MainWindow(QMainWindow):
 
         self.menu_action_search = self.menu_wallet.add_action("", self.focus_search_box)
         self.menu_action_search.setShortcut(QKeySequence("CTRL+F"))
-        self.menu_action_search.setIcon(read_QIcon("search.svg"))
+        self.menu_action_search.setIcon(SvgTools.get_QIcon("bi--search.svg"))
 
         # change wallet
         self.menu_wallet_change = self.menu_wallet.add_menu("")
-        self.menu_wallet_change.setIcon(read_QIcon("password.svg"))
+        self.menu_wallet_change.setIcon(SvgTools.get_QIcon("bi--input-cursor-text.svg"))
         self.menu_action_rename_wallet = self.menu_wallet_change.add_action("", self.change_wallet_id)
+        self.menu_action_rename_wallet.setIcon(SvgTools.get_QIcon("bi--input-cursor-text.svg"))
         self.menu_action_change_password = self.menu_wallet_change.add_action("", self.change_wallet_password)
-        self.menu_action_change_password.setIcon(read_QIcon("password.svg"))
+        self.menu_action_change_password.setIcon(SvgTools.get_QIcon("ic--outline-password.svg"))
 
         # export wallet
         self.menu_wallet_export = self.menu_wallet.add_menu("")
         self.menu_action_export_pdf = self.menu_wallet_export.add_action(
-            "", self.export_wallet_pdf, icon=read_QIcon("descriptor-backup.svg")
+            "", self.export_wallet_pdf, icon=SvgTools.get_QIcon("descriptor-backup.svg")
         )
         self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
             "", self.show_descriptor_export_window
@@ -443,12 +444,12 @@ class MainWindow(QMainWindow):
         self.menu_action_open_hwi_manager = self.menu_tools.add_action(
             "",
             self.hwi_tool_gui.show,
-            icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            icon=SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
         )
         self.menu_action_open_qr_scanner = self.menu_tools.add_action(
             "",
             self.dialog_open_qr_scanner,
-            icon=read_QIcon(KeyStoreImporterTypes.qr.icon_filename),
+            icon=SvgTools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename),
         )
 
         self.menu_load_transaction = self.menu_tools.add_menu("")
@@ -465,7 +466,7 @@ class MainWindow(QMainWindow):
         self.menu_action_open_tx_from_str.setShortcut(QKeySequence("CTRL+L"))
 
         self.menu_action_load_tx_from_qr = self.menu_load_transaction.add_action(
-            "", self.load_tx_like_from_qr, icon=read_QIcon("qr-code.svg")
+            "", self.load_tx_like_from_qr, icon=SvgTools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename)
         )
 
         # menu settings
@@ -478,7 +479,7 @@ class MainWindow(QMainWindow):
         self.menu_action_network_settings.setShortcut(QKeySequence("CTRL+P"))
         self.menu_action_toggle_tutorial = self.menu_settings.add_action("", self.toggle_tutorial)
         self.language_menu = self.menu_settings.add_menu("")
-        self.language_menu.setIcon(read_QIcon("earth.svg"))
+        self.language_menu.setIcon(SvgTools.get_QIcon("earth.svg"))
 
         # menu about
         self.menu_about = self.menubar.add_menu("")
@@ -641,7 +642,7 @@ class MainWindow(QMainWindow):
             self.last_qtwallet = qt_wallet
 
     def _init_tray(self) -> None:
-        self.tray = QSystemTrayIcon(read_QIcon("logo.svg"), self)
+        self.tray = QSystemTrayIcon(SvgTools.get_QIcon("logo.svg"), self)
         self.tray.setToolTip("Bitcoin Safe")
 
         menu = Menu(self)
@@ -979,7 +980,7 @@ class MainWindow(QMainWindow):
 
         self.tab_wallets.add_tab(
             tab=viewer,
-            icon=read_QIcon("send.svg"),
+            icon=SvgTools.get_QIcon("bi--send.svg"),
             description=title,
             focus=True,
             data=viewer,
@@ -1075,7 +1076,7 @@ class MainWindow(QMainWindow):
 
         self.tab_wallets.add_tab(
             tab=viewer,
-            icon=read_QIcon("qr-code.svg"),
+            icon=SvgTools.get_QIcon("bi--qr-code.svg"),
             description=title,
             focus=True,
             data=viewer,
@@ -1332,7 +1333,7 @@ class MainWindow(QMainWindow):
         # add to tabs
         self.tab_wallets.add_tab(
             tab=qt_protowallet,
-            icon=read_QIcon("file.png"),
+            icon=SvgTools.get_QIcon("file.png"),
             description=qt_protowallet.protowallet.id,
             focus=True,
             data=qt_protowallet,
@@ -1400,7 +1401,7 @@ class MainWindow(QMainWindow):
 
         idx = self.tab_wallets.indexOf(qt_wallet)
         if idx != -1:
-            self.tab_wallets.setTabIcon(idx, read_QIcon(icon_name))
+            self.tab_wallets.setTabIcon(idx, SvgTools.get_QIcon(icon_name))
             self.tab_wallets.setTabToolTip(idx, tooltip if tooltip else "")
 
     def add_qt_wallet(
@@ -1430,7 +1431,7 @@ class MainWindow(QMainWindow):
         # add to tabs
         self.tab_wallets.add_tab(
             tab=qt_wallet,
-            icon=read_QIcon("status_waiting.svg"),
+            icon=SvgTools.get_QIcon("status_waiting.svg"),
             description=qt_wallet.wallet.id,
             focus=True,
             data=qt_wallet,

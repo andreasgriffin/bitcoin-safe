@@ -917,7 +917,7 @@ class ReceiveTest(BaseTab):
             self.quick_receive.setMaximumWidth(300)
             widget_layout.addWidget(self.quick_receive)
         else:
-            add_centered_icons(["receive.svg"], widget_layout, max_sizes=[(50, 80)])
+            add_centered_icons(["ic--baseline-call-received.svg"], widget_layout, max_sizes=[(50, 80)])
             if (_layout_item := widget_layout.itemAt(0)) and (_widget := _layout_item.widget()):
                 _widget.setMaximumWidth(150)
 
@@ -1315,7 +1315,7 @@ class LabelBackup(BaseTab):
         left_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         widget_layout.addWidget(left_widget)
 
-        self.icon = AspectRatioSvgWidget(icon_path("cloud-sync-off.svg"), 300, 300)
+        self.icon = AspectRatioSvgWidget(icon_path("bi--cloud-slash.svg"), 300, 300)
         left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
 
         left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
@@ -1379,10 +1379,10 @@ class LabelBackup(BaseTab):
         )
         self.button_next.setText(self.tr("Finish"))
         self.checkbox.setText(self.tr("Enable"))
-        icon_path = SyncTab.get_icon_path(
+        icon_basename = SyncTab.get_icon_basename(
             enabled=bool(self.refs.qt_wallet and self.refs.qt_wallet.sync_tab.enabled())
         )
-        self.icon.load(icon_path)
+        self.icon.load(icon_path(icon_basename))
         self.checkbox.setChecked(self.refs.qt_wallet.sync_tab.enabled() if self.refs.qt_wallet else False)
 
 
@@ -1439,7 +1439,7 @@ class SendTest(BaseTab):
         widget_layout = QHBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        add_centered_icons(["send.svg"], widget_layout, max_sizes=[(50, 80)])
+        add_centered_icons(["bi--send.svg"], widget_layout, max_sizes=[(50, 80)])
         if (layout_item := widget_layout.itemAt(0)) and (sub_widget := layout_item.widget()):
             sub_widget.setMaximumWidth(150)
 
