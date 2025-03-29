@@ -120,7 +120,7 @@
 Install dependencies: 
 
   ```sh
-  sudo apt install  qt6-tools-dev-tools libqt6*
+  sudo apt install  qt6-tools-dev-tools libqt6* libsecp256k1-0 libxcb-cursor0
   ```
 
 - Install `poetry` and run `bitcoin_safe`
