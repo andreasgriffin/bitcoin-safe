@@ -115,7 +115,7 @@
 ## Installation from Git repository
 
 
-### Ubuntu, Debian, Windows
+### Ubuntu, Debian
 
 Install dependencies: 
 
@@ -141,13 +141,18 @@ Install dependencies:
   python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
   ```
 
+- `libsecp256k1`
+  ```sh
+  /bin/bash ./tools/make_libsecp256k1.sh
+  ```
+
 - *Optional*: dependency `zbar`
   
   ```sh
   xcode-select --install
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   brew install zbar 
-  ```
+  ``` 
 
 ## Development
 
