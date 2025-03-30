@@ -117,7 +117,7 @@
 
 ### Ubuntu, Debian
 
-Install dependencies: 
+- Install dependencies: 
 
   ```sh
   sudo apt-get install qt6-tools-dev-tools libxcb-cursor0 '^libsecp256k1-.*$' '^libqt6.*$'
