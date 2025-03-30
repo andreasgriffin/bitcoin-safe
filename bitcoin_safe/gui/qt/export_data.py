@@ -37,7 +37,6 @@ from typing import Any, Dict, List, Optional, Union
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
-from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
@@ -399,7 +398,7 @@ class SyncChatToolButton(QToolButton):
                     receiver_public_key_bech32=member.to_bech32(),
                 )
                 self.menu_share_with_single_devices[wallet_id].add_action(
-                    f"{short_key(member.to_bech32())}", action
+                    f"{ sync_tab.nostr_sync.chat.get_alias(member)  }", action
                 )
             menu.addSeparator()
 
