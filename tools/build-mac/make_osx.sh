@@ -228,11 +228,6 @@ info "Running PyInstaller to create macOS .app"
 BITCOIN_SAFE_VERSION=$VERSION \
   pyinstaller --noconfirm --clean tools/build-mac/osx.spec || fail "PyInstaller failed."
 
-
-install_name_tool -id @rpath/libzbar.dylib "dist/${PACKAGE_NAME}/Contents/Frameworks/libzbar.dylib"
-install_name_tool -add_rpath "@executable_path/../Frameworks" "dist/${PACKAGE_NAME}/Contents/MacOS/${EXECUTABLE_NAME}"
-
-
 info "Finished building unsigned dist/${PACKAGE_NAME}. This hash should be reproducible:"
 find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
