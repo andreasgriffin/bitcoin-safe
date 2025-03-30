@@ -184,3 +184,4 @@ def ensure_pyzbar_works() -> None:
         logger.info(f"pyzbar could be loaded successfully")
     except:
         logger.warning(f"failed to load pyzbar")
+        raise Exception("For development only: failed to load pyzbar")
