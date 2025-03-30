@@ -67,29 +67,25 @@ files = [
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "0.6.4"
+version = "0.6.5"
 description = "A Nostr Chat with participant discovery"
 optional = false
-python-versions = ">=3.9,<3.13"
-files = []
-develop = false
+python-versions = "<3.13,>=3.9"
+files = [
+    {file = "bitcoin_nostr_chat-0.6.5-py3-none-any.whl", hash = "sha256:f4f9dc1c3d0824e1c0dd72cc5169952d77458a92d27a242323899197f1e2ea1f"},
+    {file = "bitcoin_nostr_chat-0.6.5.tar.gz", hash = "sha256:f721bdd77a419f384cfede96347c53047e2c435ef8668ddd9b9f21420299f002"},
+]
 
 [package.dependencies]
-bitcoin-qr-tools = "^1.0.0"
-cbor2 = "^5.6.3"
-nostr-sdk = "^0.38.0"
-pyqt6 = "^6.6.1"
-requests = "^2.31.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "32a166929d036bc3f826f38c7783c5639f6ee4c9"
-resolved_reference = "32a166929d036bc3f826f38c7783c5639f6ee4c9"
+bitcoin-qr-tools = ">=1.0.0,<2.0.0"
+cbor2 = ">=5.6.3,<6.0.0"
+nostr-sdk = ">=0.38.0,<0.39.0"
+pyqt6 = ">=6.6.1,<7.0.0"
+requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "1.2.0"
+version = "1.2.1"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = ">=3.9,<3.13"
@@ -113,8 +109,8 @@ segno = "1.6.1"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
-reference = "c3ed144037b3cbb09fb42e942e8147eb7cbdc42a"
-resolved_reference = "c3ed144037b3cbb09fb42e942e8147eb7cbdc42a"
+reference = "944902c5cc88b24fcdd44d4ae4d92baecfab2805"
+resolved_reference = "944902c5cc88b24fcdd44d4ae4d92baecfab2805"
 
 [[package]]
 name = "bitcoin-usb"
@@ -2111,6 +2107,7 @@ optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:1b992688f97deea99d025913408acc48f6d554563a91b72adbdd2991ba2b0b35"},
+    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:f8cbe7005f836f156e09f57b1916ce824931421f9f25e37b0b6c09fae4e4508f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:2ce660031db9eb572d5c65c34d9fc4a75bc0e21093abfe3b1d0fccc47d95550a"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:3984b7995d8eda5587d893f8fbabde5647bc64a2c27e6f01a3a2758ae12a353f"},
     {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:535e699dace20fc9f8f516e67ca9ff529a79351145d9000ef1a0c61c3bd35858"},
@@ -2976,4 +2973,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "a2be9b84ec1371d4dd966f906dbb69ef426b6627f4cd975e4de0154fd58262c7"
+content-hash = "41c59ef2418a4521c3acda803ebf32300172a1f993ed0ffdddd8851c3c9caa9f"
