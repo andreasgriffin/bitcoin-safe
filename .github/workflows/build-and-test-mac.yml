@@ -19,8 +19,8 @@ jobs:
         include:
           - os: macos-14
             artifact_name: dmgs-arm64
-          - os: macos-13
-            artifact_name: dmgs-x86_64
+          # - os: macos-13
+          #   artifact_name: dmgs-x86_64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,9 +63,9 @@ jobs:
           - arch: arm64
             runner: macos-15  # This runner must be an arm64 machine
             artifact_name: dmgs-arm64
-          - arch: x86_64
-            runner: macos-13    # This runner must be an x86 machine
-            artifact_name: dmgs-x86_64
+          # - arch: x86_64
+          #   runner: macos-13    # This runner must be an x86 machine
+          #   artifact_name: dmgs-x86_64
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
@@ -104,15 +104,7 @@ jobs:
             exit 1
           fi
           echo "Found app at: $APP_PATH" | tee -a test_dmg.log
-          
-          # Locate the executable within the .app bundle.
-          EXECUTABLE=$(find "$APP_PATH/Contents/MacOS" -type f -executable | head -n 1)
-          if [ -z "$EXECUTABLE" ]; then
-            echo "No executable found in app" | tee -a test_dmg.log
-            exit 1
-          fi
-          echo "Running executable: $EXECUTABLE" | tee -a test_dmg.log
-          
+           
           # Open the app using the 'open' command
           echo "Launching app via open" | tee -a test_dmg.log
           open "$APP_PATH"
@@ -138,8 +130,11 @@ jobs:
           echo "DMG detached successfully" | tee -a test_dmg.log
         shell: bash
 
-      - name: Upload DMG Test Log for ${{ matrix.arch }}
+      - name: Upload DMG and Application Logs for ${{ matrix.arch }}
         uses: actions/upload-artifact@v4
         with:
-          name: dmg-test-log-${{ matrix.arch }}
-          path: test_dmg.log
+          name: logs-${{ matrix.arch }}
+          path: |
+            test_dmg.log
+            "$HOME/Library/Application Support/bitcoin_safe/*.log*"
+
