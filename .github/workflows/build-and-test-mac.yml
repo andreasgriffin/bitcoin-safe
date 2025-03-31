@@ -118,33 +118,26 @@ jobs:
           echo "Launching app via open" | tee -a test_dmg.log
           open "$APP_PATH"
 
-          # Wait 10 seconds for the app to run
-          echo "Waiting 10 seconds..." | tee -a test_dmg.log
-          sleep 10
+          echo "Starting screenshot capture for 60 seconds..."
+          for i in $(seq 1 60); do
+            echo "Taking screenshot $i"
+            screencapture -x "screenshot_$i.png"
+            sleep 1
+          done
+          echo "Screenshot capture complete."
 
           # Terminate the app.
           # Using 'killall' will kill all processes with the given app name.
           # Replace "Bitcoin_Safe" with the exact process name if different.
           echo "Terminating the app using killall" | tee -a test_dmg.log
+          echo "Listing running processes with 'Bitcoin_Safe':" | tee -a test_dmg.log
+          ps aux | grep 'Bitcoin_Safe' | grep -v grep | tee -a test_dmg.log
           killall "Bitcoin_Safe" || true
-          echo "Application terminated" | tee -a test_dmg.log
-
-          
+          echo "Application terminated" | tee -a test_dmg.log          
           
           # Optionally, you can run further tests against the application.
           
-          # Detach the DMG.
-          echo "Detaching DMG..." | tee -a test_dmg.log
-          i=0
-          until hdiutil detach "$MOUNT_POINT" | tee -a test_dmg.log; do
-            if [ $i -eq 10 ]; then
-              echo "Could not detach DMG" | tee -a test_dmg.log
-              exit 1
-            fi
-            i=$((i+1))
-            sleep 1
-          done
-          echo "DMG detached successfully" | tee -a test_dmg.log
+          
         shell: bash
 
       - name: Upload DMG and Application Logs for ${{ matrix.arch }}
@@ -153,6 +146,7 @@ jobs:
         with:
           name: logs-${{ matrix.arch }}
           path: |
-            test_dmg.log
+            *.png
+            *.log
             "$HOME/Library/Application Support/bitcoin_safe/*.log*"
 
