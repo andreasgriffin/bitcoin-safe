@@ -19,8 +19,8 @@ jobs:
         include:
           - os: macos-14
             artifact_name: dmgs-arm64
-          # - os: macos-13
-          #   artifact_name: dmgs-x86_64
+          - os: macos-13
+            artifact_name: dmgs-x86_64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,9 +63,9 @@ jobs:
           - arch: arm64
             runner: macos-15  # This runner must be an arm64 machine
             artifact_name: dmgs-arm64
-          # - arch: x86_64
-          #   runner: macos-13    # This runner must be an x86 machine
-          #   artifact_name: dmgs-x86_64
+          - arch: x86_64
+            runner: macos-13    # This runner must be an x86 machine
+            artifact_name: dmgs-x86_64
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
@@ -135,25 +135,6 @@ jobs:
             echo "Bitcoin_Safe is running." | tee -a test_dmg.log
           fi
 
-          # Terminate the app.
-          # Using 'killall' will kill all processes with the given app name.
-          # Replace "Bitcoin_Safe" with the exact process name if different.
-          echo "Terminating the app using killall" | tee -a test_dmg.log
-          echo "Listing running processes with 'Bitcoin_Safe':" | tee -a test_dmg.log
-          killall "Bitcoin_Safe" || true
-          echo "Application terminated" | tee -a test_dmg.log          
-          
-
-          echo "Starting screenshot capture ..."
-          for i in $(seq 1 10); do
-            echo "Taking screenshot $i"
-            screencapture -x "screenshot_terminate_$i.png"
-            sleep 1
-          done
-
-
-
-
 
           # Optionally, you can run further tests against the application.
           
@@ -169,6 +150,3 @@ jobs:
             *.png
             *.log
             /Users/runner/Library/Application Support/bitcoin_safe/*
-            /Users/runner/Library/Application Support/bitcoin_safe/*.log
-            /Users/runner/Library/Application Support/bitcoin_safe/*.log*
-
