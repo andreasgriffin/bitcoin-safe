@@ -19,8 +19,8 @@ jobs:
         include:
           - os: macos-14
             artifact_name: dmgs-arm64
-          - os: macos-13
-            artifact_name: dmgs-x86_64
+          # - os: macos-13
+          #   artifact_name: dmgs-x86_64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,9 +63,9 @@ jobs:
           - arch: arm64
             runner: macos-15  # This runner must be an arm64 machine
             artifact_name: dmgs-arm64
-          - arch: x86_64
-            runner: macos-13    # This runner must be an x86 machine
-            artifact_name: dmgs-x86_64
+          # - arch: x86_64
+          #   runner: macos-13    # This runner must be an x86 machine
+          #   artifact_name: dmgs-x86_64
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
@@ -74,7 +74,9 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: dmgs
 
-      - name: Test DMG file on ${{ matrix.arch }}
+
+
+      - name: Start DMG file on ${{ matrix.arch }}
         run: |
           # Find the DMG file from the downloaded artifacts.
           DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
@@ -140,6 +142,83 @@ jobs:
           
           
         shell: bash
+
+
+
+      - name: Gatekeeper tests on ${{ matrix.arch }}
+        run: |
+          echo "Starting DMG tests..." | tee test_dmg.log
+
+          # Locate the DMG
+          DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
+          if [ -z "$DMG_FILE" ]; then
+            echo "No DMG file found to test." | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Found DMG file: $DMG_FILE" | tee -a test_dmg.log
+
+          #######################################################
+          # 1) Gatekeeper check on the DMG
+          #######################################################
+          echo "Running Gatekeeper check on DMG..." | tee -a test_dmg.log
+          OUTPUT=$(spctl --assess --verbose "$DMG_FILE" 2>&1)
+          echo "$OUTPUT" | tee -a test_dmg.log
+
+          if echo "$OUTPUT" | grep -Eq "(invalid signature)"; then
+            echo "DMG is has invalid signature" | tee -a test_dmg.log
+            exit 1
+          fi
+
+          #######################################################
+          # 2) Attach the DMG (with retry)
+          #######################################################
+          echo "Mounting DMG file with retry logic..." | tee -a test_dmg.log
+          i=0
+          until MOUNT_OUTPUT=$(hdiutil attach "$DMG_FILE" 2>&1); do
+            if [ $i -eq 10 ]; then
+              echo "Could not attach DMG" | tee -a test_dmg.log
+              exit 1
+            fi
+            i=$((i+1))
+            sleep 1
+          done
+          echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
+
+          # Extract the mount point (assuming the output contains a /Volumes entry).
+          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          if [ -z "$MOUNT_POINT" ]; then
+            echo "Failed to identify DMG mount point" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "DMG mounted at: $MOUNT_POINT" | tee -a test_dmg.log
+
+          #######################################################
+          # 3) Copy .app out of the DMG
+          #######################################################
+          APP_PATH=$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app found in mounted DMG" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Found app at: $APP_PATH" | tee -a test_dmg.log
+
+          # Copy the .app bundle to current working directory so we can run spctl on it
+          cp -R "$APP_PATH" ./
+          APP_BASENAME=$(basename "$APP_PATH")
+          echo "Copied $APP_BASENAME to local directory" | tee -a test_dmg.log
+
+          #######################################################
+          # 4) Gatekeeper check on the .app
+          #######################################################
+          echo "Running Gatekeeper check on .app..." | tee -a test_dmg.log
+          OUTPUT=$(spctl --assess --verbose "$APP_BASENAME" 2>&1)
+          echo "$OUTPUT" | tee -a test_dmg.log
+
+          if echo "$OUTPUT" | grep -Eq "(invalid signature)"; then
+            echo "App has invalid signature" | tee -a test_dmg.log
+            exit 1
+          fi
+
 
       - name: Upload DMG and Application Logs for ${{ matrix.arch }}
         if: always()  # This ensures the step runs regardless of previous failures    
