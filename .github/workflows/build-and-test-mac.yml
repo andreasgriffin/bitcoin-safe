@@ -118,23 +118,43 @@ jobs:
           echo "Launching app via open" | tee -a test_dmg.log
           open "$APP_PATH"
 
-          echo "Starting screenshot capture for 60 seconds..."
-          for i in $(seq 1 60); do
+          echo "Starting screenshot capture..."
+          for i in $(seq 1 30); do
             echo "Taking screenshot $i"
             screencapture -x "screenshot_$i.png"
             sleep 1
           done
-          echo "Screenshot capture complete."
+
+
+          echo "Checking if Bitcoin_Safe is running..." | tee -a test_dmg.log
+          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin_Safe" | wc -l)
+          if [ "$PROCESS_COUNT" -eq 0 ]; then
+            echo "Error: Bitcoin_Safe is not running!" | tee -a test_dmg.log
+            exit 1
+          else
+            echo "Bitcoin_Safe is running." | tee -a test_dmg.log
+          fi
 
           # Terminate the app.
           # Using 'killall' will kill all processes with the given app name.
           # Replace "Bitcoin_Safe" with the exact process name if different.
           echo "Terminating the app using killall" | tee -a test_dmg.log
           echo "Listing running processes with 'Bitcoin_Safe':" | tee -a test_dmg.log
-          ps aux | grep 'Bitcoin_Safe' | grep -v grep | tee -a test_dmg.log
           killall "Bitcoin_Safe" || true
           echo "Application terminated" | tee -a test_dmg.log          
           
+
+          echo "Starting screenshot capture ..."
+          for i in $(seq 1 6); do
+            echo "Taking screenshot $i"
+            screencapture -x "screenshot_$i.png"
+            sleep 1
+          done
+
+
+
+
+
           # Optionally, you can run further tests against the application.
           
           
@@ -148,5 +168,5 @@ jobs:
           path: |
             *.png
             *.log
-            "$HOME/Library/Application Support/bitcoin_safe/*.log*"
+            "${HOME}/Library/Application Support/bitcoin_safe/"*.log*
 
