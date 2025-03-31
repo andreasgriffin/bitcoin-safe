@@ -113,22 +113,21 @@ jobs:
           fi
           echo "Running executable: $EXECUTABLE" | tee -a test_dmg.log
           
-          # Run the executable in the background and capture its PID
-          echo "Running executable in background" | tee -a test_dmg.log
-          export QT_QPA_PLATFORM=offscreen
-          "$EXECUTABLE" >> test_dmg.log 2>&1 &
-          APP_PID=$!
-          echo "Application started with PID $APP_PID" | tee -a test_dmg.log
+          # Open the app using the 'open' command
+          echo "Launching app via open" | tee -a test_dmg.log
+          open "$APP_PATH"
 
-          # Wait 10 seconds
+          # Wait 10 seconds for the app to run
           echo "Waiting 10 seconds..." | tee -a test_dmg.log
           sleep 10
 
-          # Terminate the application
-          echo "Terminating application..." | tee -a test_dmg.log
-          kill $APP_PID
-          wait $APP_PID 2>/dev/null
+          # Terminate the app.
+          # Using 'killall' will kill all processes with the given app name.
+          # Replace "Bitcoin_Safe" with the exact process name if different.
+          echo "Terminating the app using killall" | tee -a test_dmg.log
+          killall "Bitcoin_Safe" || true
           echo "Application terminated" | tee -a test_dmg.log
+
           
           
           # Optionally, you can run further tests against the application.
