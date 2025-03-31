@@ -115,6 +115,7 @@ jobs:
           
           # Run the executable in the background and capture its PID
           echo "Running executable in background" | tee -a test_dmg.log
+          export QT_QPA_PLATFORM=offscreen
           "$EXECUTABLE" >> test_dmg.log 2>&1 &
           APP_PID=$!
           echo "Application started with PID $APP_PID" | tee -a test_dmg.log
