@@ -86,8 +86,17 @@ jobs:
           
           # Mount the DMG.
           echo "Mounting DMG file..." | tee -a test_dmg.log
-          MOUNT_OUTPUT=$(hdiutil attach "$DMG_FILE")
+          i=0
+          until MOUNT_OUTPUT=$(hdiutil attach "$DMG_FILE" 2>&1); do
+            if [ $i -eq 10 ]; then
+              echo "Could not attach DMG" | tee -a test_dmg.log
+              exit 1
+            fi
+            i=$((i+1))
+            sleep 1
+          done
           echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
+
           
           # Extract the mount point (assuming the output contains a /Volumes entry).
           MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
@@ -126,11 +135,20 @@ jobs:
           
           # Detach the DMG.
           echo "Detaching DMG..." | tee -a test_dmg.log
-          hdiutil detach "$MOUNT_POINT" | tee -a test_dmg.log
+          i=0
+          until hdiutil detach "$MOUNT_POINT" | tee -a test_dmg.log; do
+            if [ $i -eq 10 ]; then
+              echo "Could not detach DMG" | tee -a test_dmg.log
+              exit 1
+            fi
+            i=$((i+1))
+            sleep 1
+          done
           echo "DMG detached successfully" | tee -a test_dmg.log
         shell: bash
 
       - name: Upload DMG and Application Logs for ${{ matrix.arch }}
+        if: always()  # This ensures the step runs regardless of previous failures    
         uses: actions/upload-artifact@v4
         with:
           name: logs-${{ matrix.arch }}
