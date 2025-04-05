@@ -56,13 +56,13 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import (
     Message,
     adjust_bg_color_for_darkmode,
     ensure_scheme,
     get_host_and_port,
-    read_QIcon,
     remove_scheme,
     webopen,
 )
@@ -240,11 +240,11 @@ class NetworkSettingsUI(QDialog):
         self.network_configs = network_configs
         self._layout = QVBoxLayout(self)
 
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
         self.network_combobox = QComboBox(self)
         for _network in bdk.Network:
             self.network_combobox.addItem(
-                read_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
+                SvgTools.get_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
             )
         self._layout.addWidget(self.network_combobox)
 
@@ -407,7 +407,7 @@ class NetworkSettingsUI(QDialog):
         self.groupbox_blockexplorer = QGroupBox()
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
         button_mempool = QPushButton(self)
-        button_mempool.setIcon(read_QIcon("block-explorer.svg"))
+        button_mempool.setIcon(SvgTools.get_QIcon("block-explorer.svg"))
         button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
@@ -432,7 +432,7 @@ class NetworkSettingsUI(QDialog):
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
         self.proxy_warning_label.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.proxy_warning_label.set_icon(read_QIcon("warning.png"))
+        self.proxy_warning_label.set_icon(SvgTools.get_QIcon("warning.png"))
         self._layout.addWidget(self.proxy_warning_label)
 
         # Create buttons and layout

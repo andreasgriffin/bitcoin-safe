@@ -54,6 +54,7 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.util import Message, clear_layout, do_copy, icon_path
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
@@ -253,7 +254,7 @@ class ButtonEdit(QWidget):
     def add_button(
         self, icon_path: Optional[str], button_callback: Callable, tooltip: str = ""
     ) -> SquareButton:
-        button = SquareButton(QIcon(icon_path), parent=self)  # Create the button with the icon
+        button = SquareButton(SvgTools.get_QIcon(icon_path), parent=self)  # Create the button with the icon
         if tooltip:
             button.setToolTip(tooltip)
         button.clicked.connect(button_callback)  # Connect the button's clicked signal to the callback
@@ -271,7 +272,7 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.copy_button = self.add_button(
-            icon_path("copy.png"), self._on_copy, tooltip=translate("d", "Copy to clipboard")
+            "bi--copy.svg", self._on_copy, tooltip=translate("d", "Copy to clipboard")
         )
         return self.copy_button
 
@@ -332,7 +333,7 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.button_camera = self.add_button(
-            icon_path("camera.svg"),
+            "bi--qr-code-scan.svg",
             partial(
                 self.input_qr_from_camera,
                 network=network,
@@ -350,7 +351,7 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.pdf_button = self.add_button(
-            icon_path("pdf-file.svg"), on_click, tooltip=translate("d", "Create PDF")
+            "bi--filetype-pdf.svg", on_click, tooltip=translate("d", "Create PDF")
         )
         return self.pdf_button
 
@@ -360,7 +361,7 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.pdf_button = self.add_button(
-            icon_path("usb.svg"), on_click, tooltip=translate("d", "Connect to USB signer")
+            "bi--usb-symbol.svg", on_click, tooltip=translate("d", "Connect to USB signer")
         )
         return self.pdf_button
 
@@ -376,14 +377,14 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.mnemonic_button = self.add_button(
-            icon_path("dice.svg"),
+            icon_path("bi--dice-5.svg"),
             partial(self._on_click_add_random_mnemonic_button, callback_seed=callback_seed),
             tooltip=translate("d", "Create random mnemonic"),
         )
         return self.mnemonic_button
 
     def addResetButton(self, get_reset_text) -> SquareButton:
-        return self.add_button("reset-update.svg", partial(self.setText, get_reset_text()), "Reset")
+        return self.add_button("bi--arrow-clockwise.svg", partial(self.setText, get_reset_text()), "Reset")
         # button.setStyleSheet("background-color: white;")
 
     def _on_click_add_open_file_button(
@@ -473,7 +474,7 @@ if __name__ == "__main__":
             button_vertical_align=Qt.AlignmentFlag.AlignVCenter,
             close_all_video_widgets=my.close_all_video_widgets,
         )
-        # window.add_button("../icons/copy.png", example_callback)  # Add buttons as needed
+        # window.add_button("../icons/bi--copy.svg", example_callback)  # Add buttons as needed
         edit.add_copy_button()
         # Replace QLineEdit with QTextEdit or any other widget if required
         # window.set_input_field(QTextEdit())

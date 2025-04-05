@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 class AbstractSignatureImporter(QObject):
     signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
     signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
-    keystore_type = KeyStoreImporterTypes.watch_only
+    keystore_type = KeyStoreImporterTypes.clipboard
 
     def __init__(
         self,
