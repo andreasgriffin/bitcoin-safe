@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>이름 변경  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}가 포함된 장치의 이름을 입력하세요  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>장치 이름  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,10 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>연결을 완료하려면 다른 장치 {other}에서 내 {id} 요청을 수락하세요.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}가 포함된 장치의 이름을 입력하세요  </translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1368,22 @@ Do you want to proceed anyway?</source>
         <translation>자동  </translation>
     </message>
     <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>electrum URL에서 &apos;{scheme}&apos;를 제거하세요  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>esplora URL에서 &apos;{scheme}&apos;가 정확한지 확실합니까?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>tor 주소의 형식은 &apos;{scheme}&apos;이어야 합니다  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>mempool URL의 시작 부분에서 &apos;{scheme}&apos;을(를) 시도해보세요  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1754,9 +1789,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>이 지갑의 1개 주소에 {test_amount} 미만의 &lt;b&gt;소액&lt;/b&gt;을 받습니다. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 알기 위해서는 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 지갑에 상당한 금액의 비트코인을 보내기 전에 반드시 지갑에서 지출을 테스트하고 모든 서명 기계를 테스트해야 합니다. &lt;br&gt; &lt;br&gt; &lt;b&gt;모든 전송 테스트를 완료하기 전에는 지갑에 큰 금액을 보내지 마십시오!&lt;/b&gt;  </translation>
+        <translation>이 지갑의 주소 하나로 &lt;b&gt;소량&lt;/b&gt; ( {test_amount} 미만)을 받으세요.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하고 있는지 알아보기 위해서는 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑으로 상당한 양의 비트코인을 보내기 전에 지갑에서 지출을 하고 모든 서명자를 테스트하는 것이 &lt;b&gt;필수적&lt;/b&gt;입니다.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 큰 자금을 지갑으로 보내지 마세요. 모든 송금 테스트를 먼저 완료해주세요!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2170,8 +2205,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{name}을 {author}로부터 열기</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author}로부터 받은 메시지 &apos;{description}&apos;  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2920,13 +2955,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Visual C++ Redistributable이 설치되어 있는지 확인하기 위해 pyzbar를 가져오려고 합니다.  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3030,14 +3058,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>서명 가져오기  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>{link}가 누락되었습니다. 설치하세요.</translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3211,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>이 지갑을 다시 스캔할 때는 모든 자금이 조달된 주소를 발견하기 위해 적어도 주소 인덱스 {max_tip}까지 스캔하세요.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. &apos;복구 시트&apos; ({number} 단어)를 아래 표 위에 붙이거나 테이프로 붙입니다.&lt;br/&gt; 2. 아래 선에서 이 종이를 접습니다.&lt;br/&gt; 3. 당신만 접근할 수 있는 안전한 장소에 이 종이를 두세요.&lt;br/&gt; 4. 하드웨어 서명 기계를 a) 종이 시드 백업과 함께 또는 b) 가능한 경우 다른 안전한 위치에 둘 수 있습니다.  </translation>
+        <translation>1. 이 종이에 &apos;복구 시트&apos; ({number} 단어)를 붙이거나 12/24 단어를 이 종이에 복사하세요.&lt;br/&gt;                 2. 아래 줄에서 이 종이를 접으세요&lt;br/&gt;                 3. 이 종이를 당신만 접근할 수 있는 안전한 장소에 두세요&lt;br/&gt;                 4. 하드웨어 서명자를 a) 종이 씨드 백업과 함께 또는 b) 다른 안전한 장소에 둘 수 있습니다 (가능한 경우)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3231,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot;의 잔액</translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. &apos;복구 시트&apos; ({number} 단어)를 아래 표 위에 붙이거나 테이프로 붙입니다.&lt;br/&gt; 2. 아래 선에서 이 종이를 접습니다.&lt;br/&gt; 3. 각 종이를 다른 안전한 위치에 두세요, 여기에는 당신만 접근할 수 있습니다.&lt;br/&gt; 4. 하드웨어 서명을 a) 해당 종이 시드 백업과 함께 또는 b) 가능한 경우 또 다른 안전한 위치에 각각 둘 수 있습니다.</translation>
+        <translation>1. 이 종이에 &apos;복구 시트&apos; ({number} 단어)를 붙이거나 12/24 단어를 이 종이에 복사하세요.&lt;br/&gt;                 2. 아래 줄에서 이 종이를 접으세요&lt;br/&gt;                 3. 각 종이를 당신만 접근할 수 있는 다른 안전한 장소에 두세요&lt;br/&gt;                 4. 하드웨어 서명자를 a) 해당 종이 씨드 백업과 함께 또는 b) 각각 다른 안전한 장소에 둘 수 있습니다 (가능한 경우)  </translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

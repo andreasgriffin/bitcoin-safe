@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>名前を変更  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}を持つデバイスの名前を入力してください  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>デバイス名  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,10 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}を持つデバイスの名前を入力してください  </translation>
     </message>
 </context>
 <context>
@@ -291,7 +310,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>KYC 取引所  </translation>
+        <translation>KYC 取引所</translation>
     </message>
     <message>
         <source>Private</source>
@@ -1349,6 +1368,22 @@ Do you want to proceed anyway?</source>
         <translation>接続をテスト</translation>
     </message>
     <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>electrumのURLから&apos;{scheme}&apos;を削除してください  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>esploraのURLの&apos;{scheme}&apos;が正しいことを確認していますか？  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>torアドレスの形式は&apos;{scheme}&apos;である必要があります  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>mempoolのURLの始めに&apos;{scheme}&apos;を試してください  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1757,9 +1792,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ります。&lt;br&gt;&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt;&lt;br&gt;資金を管理しているか確認するために、ウォレットからの支出をテストする必要があります。&lt;br&gt;したがって、ウォレットに多額のビットコインを送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。&lt;br&gt;&lt;br&gt;&lt;b&gt;すべての送信テストを完了するまで、ウォレットに多額の資金を送らないでください！&lt;/b&gt;</translation>
+        <translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金をコントロールしているかどうかを知るためには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、大量のビットコインをウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだ大きな資金をウォレットに送らないでください。すべての送金テストを最初に完了してください！&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2173,8 +2208,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{author}からの{name}を開く</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author}からのメッセージ &apos;{description}&apos; を受け取った</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2923,13 +2958,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>pyzbar をインポートして Visual C++ 再頒布可能パッケージがインストールされているか確認しようとしています。  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3033,14 +3061,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>署名をインポート</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>{link}が見つかりません。インストールしてください。</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3214,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. 回復シート（{number}語）を以下の表に貼り付けるかテープで固定する&lt;br/&gt;2. 以下の線でこの紙を折りたたむ&lt;br/&gt;3. この紙をあなただけがアクセスできる安全な場所に保管する&lt;br/&gt;4. ハードウェア署名者をa) 紙のシードバックアップと一緒に、またはb) 利用可能な場合は別の安全な場所に置くことができます  </translation>
+        <translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. この紙を自分だけがアクセスできる安全な場所に置きます&lt;br/&gt;                 4. ハードウェア署名者を a) 紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3234,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot;の残高明細書  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. 下の表に「リカバリーシート」（{number}語）を糊やテープで貼り付ける&lt;br/&gt;2. 下の線でこの紙を折りたたむ&lt;br/&gt;3. 各紙をあなたのみがアクセスできる別々の安全な場所に置く&lt;br/&gt;4. ハードウェア署名者をa)対応する紙のシードバックアップと一緒に、またはb)それぞれ別の安全な場所に置くことができます（可能な場合）</translation>
+        <translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. 各紙を別々の安全な場所に置きます。アクセスできるのはあなただけです&lt;br/&gt;                 4. ハードウェア署名者を a) 対応する紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

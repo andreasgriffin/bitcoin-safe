@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>เปลี่ยนชื่อ  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>ใส่ชื่ออุปกรณ์ที่มี {npub}  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>ชื่ออุปกรณ์  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,10 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>เพื่อทำการเชื่อมต่อให้เสร็จสมบูรณ์ ยอมรับคำขอ {id} ของฉันบนอุปกรณ์อื่น {other}  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>ใส่ชื่ออุปกรณ์ที่มี {npub}  </translation>
     </message>
 </context>
 <context>
@@ -291,7 +310,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>กระดานเทรดที่ต้องยืนยันตัวตน</translation>
+        <translation>แลกเปลี่ยน KYC</translation>
     </message>
     <message>
         <source>Private</source>
@@ -1349,6 +1368,22 @@ Do you want to proceed anyway?</source>
         <translation>อัตโนมัติ  </translation>
     </message>
     <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>โปรดลบ &apos;{scheme}&apos; ออกจาก URL ของ electrum  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>คุณแน่ใจหรือว่า &apos;{scheme}&apos; ถูกต้องใน URL ของ esplora?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>รูปแบบสำหรับที่อยู่ tor ควรเป็น &apos;{scheme}&apos;  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>กรุณาลอง &apos;{scheme}&apos; ที่ต้น URL ของ mempool  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1754,9 +1789,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>รับจำนวนเงินที่ &lt;b&gt;น้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้&lt;br&gt;&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt;&lt;br&gt;เพื่อทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดลองใช้จ่ายจากกระเป๋าเงิน&lt;br&gt;ดังนั้นก่อนที่คุณจะส่งจำนวนเงิน Bitcoin ที่มากเข้าไปในกระเป๋าเงิน จึง&lt;b&gt;สำคัญมาก&lt;/b&gt;ที่จะใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด&lt;br&gt;&lt;br&gt;&lt;b&gt;อย่าส่งเงินจำนวนมากเข้ากระเป๋าเงินก่อนที่คุณจะทำการทดสอบการส่งทั้งหมดเสร็จสิ้น!&lt;/b&gt;  </translation>
+        <translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยังหนึ่งในที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                     &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่งจำนวน Bitcoin ที่มากไปยังกระเป๋าเงิน มันเป็นเรื่อง&lt;b&gt;สำคัญ&lt;/b&gt;ที่จะต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด                         &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;โปรดอย่าส่งเงินจำนวนมากเข้ากระเป๋าเงินก่อนที่คุณจะทำการทดสอบการส่งเสร็จสิ้น!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2170,8 +2205,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>กำลังเปิด {name} จาก {author}  </translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>ได้รับข้อความ &apos;{description}&apos; จาก {author}  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2920,13 +2955,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>กำลังพยายามนำเข้า pyzbar เพื่อดูว่ามีการติดตั้ง Visual C++ Redistributable หรือไม่  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3030,14 +3058,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>นำเข้าลายเซ็น  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>คุณขาด {link} โปรดติดตั้งมัน  </translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3211,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>เมื่อสแกนกระเป๋าเงินนี้ใหม่ สแกนไปยังอย่างน้อยดัชนีที่อยู่ {max_tip} เพื่อค้นหาที่อยู่ที่ได้รับเงินทุนทั้งหมด  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. ติดกาวหรือเทป &apos;ใบเรียกคืน&apos; ({number} คำ) บนตารางด้านล่าง&lt;br/&gt;                 2. พับกระดาษนี้ตามเส้นด้านล่าง &lt;br/&gt;                 3. ใส่กระดาษนี้ไว้ในสถานที่ปลอดภัยที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ แบบ a) รวมกับการสำรองข้อมูลเมล็ดพันธุ์กระดาษ หรือ b) ในสถานที่ปลอดภัยอื่นๆ (หากมี)  </translation>
+        <translation>1. แนบ &apos;แผ่นกู้คืน&apos; ({number} คำ) กับกระดาษนี้หรือทำซ้ำคำ 12/24 บนกระดาษนี้&lt;br/&gt;                 2. พับกระดาษนี้ที่เส้นด้านล่าง&lt;br/&gt;                 3. วางกระดาษนี้ในที่ที่ปลอดภัยที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ a) ร่วมกับการสำรองข้อมูลเมล็ดกระดาษ หรือ b) ในที่ที่ปลอดภัยอื่น ๆ (ถ้ามี)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3231,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>คำแถลงยอดเงินของ &quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. ติดกาวหรือเทป &apos;ใบเรียกคืน&apos; ({number} คำ) บนตารางด้านล่าง&lt;br/&gt;                 2. พับกระดาษนี้ตามเส้นด้านล่าง &lt;br/&gt;                 3. ใส่แต่ละกระดาษไว้ในสถานที่ปลอดภัยที่แตกต่างกัน ซึ่งคุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ แบบ a) รวมกับการสำรองข้อมูลเมล็ดพันธุ์กระดาษที่เกี่ยวข้อง หรือ b) ในอีกสถานที่ปลอดภัยหนึ่ง (หากมี)  </translation>
+        <translation>1. แนบ &apos;แผ่นกู้คืน&apos; ({number} คำ) กับกระดาษนี้หรือทำซ้ำคำ 12/24 บนกระดาษนี้&lt;br/&gt;                 2. พับกระดาษนี้ที่เส้นด้านล่าง&lt;br/&gt;                 3. วางแต่ละกระดาษในที่ที่ปลอดภัยแตกต่างกันที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ a) ร่วมกับการสำรองข้อมูลเมล็ดกระดาษที่เกี่ยวข้อง หรือ b) แต่ละในที่ที่ปลอดภัยอื่น ๆ (ถ้ามี)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>အမည်ပြောင်းရန်  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>စက်အမည်  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,10 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>ချိတ်ဆက်မှုပြီးဆုံးရန် {other} စက်တွင် {id} တောင်းခံချက်ကိုလက်ခံပါ။  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။  </translation>
     </message>
 </context>
 <context>
@@ -291,7 +310,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>KYC လဲလှယ်ရေး  </translation>
+        <translation>KYC လဲလှယ်ရေး</translation>
     </message>
     <message>
         <source>Private</source>
@@ -1349,6 +1368,22 @@ Do you want to proceed anyway?</source>
         <translation>အော်တို  </translation>
     </message>
     <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>electrum URL မှ &apos;{scheme}&apos; ကိုဖယ်ရှားပါ။  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>esplora URL တွင် &apos;{scheme}&apos; ဟုသေချာပါသလား။  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>tor လိပ်စာများ၏ပုံစံသည် &apos;{scheme}&apos; ဖြစ်ရမည်။  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>mempool URL အစမှာ &apos;{scheme}&apos; ကိုစမ်းသပ်ပါ။  </translation>
+    </message>
+    <message>
         <source>Error in server connection.
 {responses}
 
@@ -1754,9 +1789,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>ဤပိုက်ဆံအိတ်၏ 1 လိပ်စာသို့ {test_amount} ထက်နည်းသော &lt;b&gt;ငွေသေးငယ်&lt;/b&gt; ငွေပမာဏကိုလက်ခံပါ။&lt;br&gt;&lt;br&gt;&lt;b&gt;အဘယ်ကြောင့်လဲ?&lt;/b&gt;&lt;br&gt;သင့်အားငွေကြေးများကိုထိန်းချုပ်နိုင်မှုကိုသိရန် ပိုက်ဆံအိတ်မှငွေလွှဲကိုစမ်းသပ်ရမည်။&lt;br&gt;ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ကြီးမားသောပမာဏကိုပေးပို့မီ အားလုံးလက်မှတ်သားများကိုစမ်းသပ်ရန်နှင့် ပိုက်ဆံအိတ်မှငွေလွှဲရန်အရေးကြီးသည်။&lt;br&gt;&lt;br&gt;&lt;b&gt;ပေးပို့မှုစမ်းသပ်မှုများအားလုံးမပြီးမီ ပိုက်ဆံအိတ်ထဲသို့ငွေကြီးမားများကိုမပို့ပါနှင့်!&lt;/b&gt;  </translation>
+        <translation>ဒီပိုက်ဆံအိတ်ရဲ့လိပ်စာတစ်ခုသို့ &lt;b&gt;ငွေနည်းနည်း&lt;/b&gt; (စမ်းသပ်ပမာဏထက်နည်းသော) ကိုလက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ။&lt;/b&gt; &lt;br&gt;                     သင့်ငွေကိုထိန်းချုပ်နေသည်ဟုသိရန်အတွက်သင်သည်ပိုက်ဆံအိတ်မှအသုံးစရိအားစမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ဒါကြောင့် ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ကြီးမားသောငွေပမာဏကိုပေးပို့မည်မတိုင်ခင် ပိုက်ဆံအိတ်မှငွေသုံးစွဲခြင်းနှင့် လက်မှတ်ပေးသူအားလုံးစမ်းသပ်ရန် &lt;b&gt;အရေးကြီးသည်။&lt;/b&gt;                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;လက်ရှိတွင်ပိုက်ဆံအိတ်သို့ကြီးမားသောငွေကိုပေးပို့မည်မဟုတ်ပါ။ အရင်ဆုံးအားလုံးပေးပို့စမ်းသပ်မှုများပြီးစီးပါစေ!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2170,8 +2205,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{name} ကို {author} မှဖွင့်ပါ  </translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author} မှပေးပို့သောစာတို &apos;{description}&apos;  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2920,13 +2955,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Visual C++ Redistributable သွင်းထားမှုကိုစစ်ဆေးရန် pyzbar ကိုတင်သွင်းနေပါသည်။  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3030,14 +3058,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>လက်မှတ်တင်သွင်းပါ  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>{link} မပါပါ။ ကျေးဇူးပြု၍ တပ်ဆင်ပါ။  </translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3211,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>ဤပိုက်ဆံအိတ်ကိုပြန်ရွေးစစ်ပါက အနည်းဆုံးလိပ်စာအိန်ဒက် {max_tip} အထိရှာဖွေပြီးအားလုံးငွေဖြည့်ထားသောလိပ်စာများကိုရှာဖွေပါ။  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. အောက်ပါစားပွဲပေါ်တွင် &apos;ပြန်လည်အရန်စာရွက်&apos; ({number} စကားလုံး) ကို ကော်ဖြင့်ကပ်ပါ။&lt;br/&gt; 2. ဤစာရွက်ကိုအောက်ပါလိုင်းအောက်မှာခေါက်ပါ။&lt;br/&gt; 3. ဤစာရွက်ကိုသင့်တစ်ယောက်တည်းဝင်ရောက်နိုင်သောလုံခြံုရာနေရာတွင်ထားပါ။&lt;br/&gt; 4. သင့်ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ကို a) စက္ကူမျိုးစေ့အရန်ဖြင့်အတူတူထားပါ သို့မဟုတ် b) အခြားလုံခြံုရာနေရာတစ်ခုတွင်ထားပါ။</translation>
+        <translation>1. ဒီစာရွက်မှာ &apos;ပြန်ယူပါ&apos; ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်ကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောလုံခြုံသောနေရာတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) စက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3231,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot; ၏လက်ကျန်ငွေတင်ပြချက်</translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. အောက်ပါစားပွဲပေါ်တွင် &apos;ပြန်လည်အရန်စာရွက်&apos; ({number} စကားလုံး) ကို ကော်ဖြင့်ကပ်ပါ။&lt;br/&gt; 2. ဤစာရွက်ကိုအောက်ပါလိုင်းအောက်မှာခေါက်ပါ။&lt;br/&gt; 3. စာရွက်တိုင်းကိုသင့်တစ်ယောက်တည်းဝင်ရောက်နိုင်သောလုံခြံုရာနေရာတစ်ခုခုတွင်ထားပါ။&lt;br/&gt; 4. သင်သည်ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်များကို a) စက္ကူမျိုးစေ့အရန်ဖြင့်အတူတူထားနိုင်သည် သို့မဟုတ် b) အခြားလုံခြံုရာနေရာတစ်ခုတစ်ခုတွင်ထားပါ။</translation>
+        <translation>1. ဒီစာရွက်မှာ &apos;ပြန်ယူပါ&apos; ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်တွေကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောကွဲပြားသောလုံခြုံသောနေရာများတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) ကိုက်ညီသောစက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။  </translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

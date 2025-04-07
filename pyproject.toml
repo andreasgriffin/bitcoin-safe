@@ -12,7 +12,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.2.1"
+version = "1.2.2"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -37,13 +37,10 @@ pyqt6 = "^6.6.1"
 pyqt6-charts = "^6.6.0"
 pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
-numpy = "2.2.1" # error in wine/pyinstaller when increased
-# bitcoin-qr-tools =    {path="../bitcoin-qr-tools"} #  "^0.10.15"
-# bitcoin-nostr-chat =   {path="../bitcoin-nostr-chat"} #  "^0.2.6"
-# bitcoin-usb = { git = "file://../bitcoin-usb", rev = "cc55f2b4de3221ee3a95e52695204816dc913af6" }  #  "^0.3.3"
+numpy = "2.2.1" # error in wine/pyinstaller when increased 
 bitcoin-qr-tools =    { git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "944902c5cc88b24fcdd44d4ae4d92baecfab2805" }   
-bitcoin-nostr-chat = "^0.6.5" # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "32a166929d036bc3f826f38c7783c5639f6ee4c9" } # "^0.6.3" # { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "fda38f7c4879fbced753a8d3466d50c571c06769" }
-bitcoin-usb =  { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "17b57484f4be633b182636b82c7e7d9e3ccf3eb1" }   # "^0.7.9"
+bitcoin-nostr-chat =   { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "bcdeb0659c3bb9dfeec4987d9b228460338fa0f2" } # "^0.6.3"  
+bitcoin-usb =  { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "a5f10a02d5b007630b308231c570bcb2558b4a1a" }   # "^0.7.9"
 pysocks = "^1.7.1"
 
 

@@ -244,7 +244,7 @@ class BitcoinWalletRecoveryPDF:
             instructions1 = Paragraph(
                 translate(
                     "pdf",
-                    """1. Glue or tape the 'Recovery sheet' ({number} words) over the table below<br/>
+                    """1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.<br/>
                 2. Fold this  paper at the line below <br/>
                 3. Put this paper in a secure location, where only you have access<br/>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
@@ -257,7 +257,7 @@ class BitcoinWalletRecoveryPDF:
             instructions1 = Paragraph(
                 translate(
                     "pdf",
-                    """1. Glue or tape the 'Recovery sheet' ({number} words) over the table below<br/>
+                    """1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.<br/>
                 2. Fold this  paper at the line below <br/>
                 3. Put each paper in a different secure location, where only you have access<br/>
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   

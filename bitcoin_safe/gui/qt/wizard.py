@@ -965,11 +965,7 @@ class ReceiveTest(BaseTab):
 
     def updateUi(self) -> None:
         super().updateUi()
-        test_amount = (
-            Satoshis(self.refs.max_test_fund, self.refs.qt_wallet.wallet.network).str_with_unit()
-            if self.refs.qt_wallet
-            else ""
-        )
+        test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit()
         self.label_receive_description.setText(
             html_f(
                 self.tr(
@@ -981,7 +977,7 @@ class ReceiveTest(BaseTab):
                     So before you send a substantial amount of Bitcoin into the wallet, it is <b>crucial</b> to spend from the wallet and test all signers.     
                     <br>
                     <br>
-                    <b>Do NOT send in large funds into the wallet before you didn't complete all send tests!</b>   
+                    <b>Do NOT send large funds into the wallet, yet. Please complete all send tests first!</b>   
                     """
                 ).format(test_amount=test_amount),
                 add_html_and_body=True,
