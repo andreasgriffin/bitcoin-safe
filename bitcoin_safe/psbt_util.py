@@ -176,6 +176,11 @@ class FeeInfo:
         return self.fee_amount / self.vsize
 
     @classmethod
+    def from_fee_rate(cls, fee_amount: int, fee_rate: float) -> "FeeInfo|None":
+        vsize = int(fee_amount / fee_rate)
+        return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=False)
+
+    @classmethod
     def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo|None":
         fee = tx_details.fee
         if fee is None:

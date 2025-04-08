@@ -35,7 +35,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_usb.psbt_tools import PSBTTools
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -51,19 +51,19 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
-from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarningBar
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.network_config import ProxyInfo
@@ -83,13 +83,7 @@ from ...pythonbdk_types import (
     python_utxo_balance,
     robust_address_str_from_script,
 )
-from ...signals import (
-    Signals,
-    SignalsMin,
-    TypedPyQtSignalNo,
-    UpdateFilter,
-    UpdateFilterReason,
-)
+from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
 from ...signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -122,7 +116,6 @@ from .util import (
     Message,
     MessageType,
     add_to_buttonbox,
-    adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
     read_QIcon,
@@ -130,56 +123,6 @@ from .util import (
 from .utxo_list import UTXOList, UtxoListWithToolbar
 
 logger = logging.getLogger(__name__)
-
-
-class LinkingWarningBar(NotificationBar):
-    def __init__(self, signals_min: SignalsMin) -> None:
-        super().__init__(
-            text="",
-            optional_button_text="",
-            has_close_button=True,
-        )
-        self.category_dict: Dict[str, Set[str]] = {}
-        self.signals_min = signals_min
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(read_QIcon("warning.png"))
-
-        self.optionalButton.setVisible(False)
-        self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.setVisible(False)
-        self.updateUi()
-        self.signals_min.language_switch.connect(self.updateUi)
-
-    def set_category_dict(
-        self,
-        category_dict: Dict[str, Set[str]],
-    ):
-        self.category_dict = category_dict
-        self.setVisible(len(self.category_dict) > 1)
-        self.updateUi()
-
-    @classmethod
-    def format_category_and_wallet_ids(cls, category: str, wallet_ids: Set[str]):
-        return cls.tr("{category} (in wallet {wallet_ids})").format(
-            category=html_f(category, bf=True),
-            wallet_ids=", ".join([html_f(wallet_id, bf=True) for wallet_id in wallet_ids]),
-        )
-
-    @classmethod
-    def get_warning_text(cls, category_dict: Dict[str, Set[str]]) -> str:
-        s = ",<br>and ".join(
-            [
-                cls.format_category_and_wallet_ids(category, wallet_ids)
-                for category, wallet_ids in category_dict.items()
-            ]
-        )
-        return cls.tr(
-            "This transaction combines the coin categories {categories} and makes these categories linkable!"
-        ).format(categories=s)
-
-    def updateUi(self) -> None:
-        self.textLabel.setText(self.get_warning_text(self.category_dict))
 
 
 class UITx_Base:
@@ -276,6 +219,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         # category_linking_warning_bar
         self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
         self._layout.addWidget(self.category_linking_warning_bar)
+
+        # address_poisoning
+        self.address_poisoning_warning_bar = PoisoningWarningBar(signals_min=self.signals)
+        self._layout.addWidget(self.address_poisoning_warning_bar)
 
         # tx label
         self.container_label = QWidget(self)
@@ -815,10 +762,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         self.set_tx(
             tx,
-            fee_info=FeeInfo(
-                self.data.data.fee_amount(),
-                self.data.data.extract_tx().weight() / 4,
-            ),
         )
 
     def _get_any_signature_importer(self) -> AbstractSignatureImporter | None:
@@ -846,23 +789,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
     def import_trusted_psbt(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
         simple_psbt = SimplePSBT.from_psbt(import_psbt)
 
-        fee_amount = import_psbt.fee_amount()
         tx = import_psbt.extract_tx()
-        fee_info = (
-            FeeInfo(
-                fee_amount,
-                tx.weight() // 4,
-            )
-            if fee_amount is not None
-            else None
-        )
+
         if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
             self.set_tx(
                 tx,
-                fee_info=fee_info,
             )
         else:
-            self.set_psbt(import_psbt, fee_info=fee_info)
+            self.set_psbt(import_psbt)
 
     def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here
@@ -871,6 +805,26 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
             if wallet.is_in_mempool(txid):
                 return True
         return False
+
+    def _set_warning_bars(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
+        self.set_poisoning_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
+        self.set_category_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
+
+    def set_poisoning_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
+        # warn if multiple categories are combined
+        outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in txins]
+        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
+
+        all_addresses = set(recipient_addresses)
+        for wallet in wallets:
+
+            addresses = [wallet.get_address_of_outpoint(outpoint) for outpoint in outpoints]
+            for address in addresses:
+                if not address:
+                    continue
+                all_addresses.add(address)
+        poisonous_matches = AddressComparer.poisonous(all_addresses)
+        self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
 
     def set_category_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
         # warn if multiple categories are combined
@@ -931,6 +885,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         confirmation_time: bdk.BlockTime | None = None,
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.txid())
         if fee_info is None:
             fee_info = self.calc_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
@@ -969,7 +924,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.set_visibility(confirmation_time)
         self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
 
-        self.set_category_warning_bar(
+        self._set_warning_bars(
             tx.input(), recipient_addresses=[recipient.address for recipient in self.recipients.recipients]
         )
         self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
@@ -1068,6 +1023,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.button_rbf.setVisible(tx_status.can_rbf())
         self.set_next_prev_button_enabledness()
 
+    def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
+        if isinstance(self.data.data, bdk.PartiallySignedTransaction) and self.data.data.txid() == txid:
+            return self.fee_info
+        elif isinstance(self.data.data, bdk.Transaction) and self.data.data.txid() == txid:
+            return self.fee_info
+        return None
+
     def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_info: FeeInfo | None = None) -> None:
         """_summary_
 
@@ -1079,8 +1041,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         # check if any new signatures were added. If not tell the user
 
         self.data = Data.from_psbt(psbt, network=self.network)
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(psbt.txid())
 
-        # if calc_fee_info can improve the fee_info , then do it
         if fee_info is None or fee_info.is_estimated:
             new_fee_info = self.calc_fee_info(psbt.extract_tx(), tx_has_final_size=False)
             if new_fee_info:
@@ -1117,11 +1079,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)
-        self.set_category_warning_bar(
+        self._set_warning_bars(
             psbt.extract_tx().input(),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
         )
-
         txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(psbt.extract_tx(), fee_info=fee_info, txo_dict=txo_dict)

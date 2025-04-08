@@ -26,13 +26,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
 from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
-from PyQt6.QtGui import QColor, QFont, QIcon
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QFont, QIcon, QKeyEvent
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -87,6 +87,16 @@ class ScreenshotsTutorial(QWidget):
 
     def set_title(self, text: str) -> None:
         self.title.setText(text)
+
+    def keyPressEvent(self, event: QKeyEvent | None):
+        if not event:
+            return super().keyPressEvent(event)
+
+        if event.key() == Qt.Key.Key_Escape:
+            self.close()
+            return
+
+        super().keyPressEvent(event)
 
 
 class SeedWarningBar(NotificationBar):

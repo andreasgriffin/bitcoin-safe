@@ -113,8 +113,9 @@ class TxBuilderInfos:
         utxos_for_input: UtxosForInputs,
         builder_result: bdk.TxBuilderResult,
         recipient_category: Optional[str] = None,
+        fee_rate: Optional[float] = None,
     ):
-        self.fee_rate: Optional[float] = None
+        self.fee_rate = fee_rate
 
         self.recipients = recipients
 

@@ -1000,23 +1000,34 @@ class MainWindow(QMainWindow):
 
         # converting to TxBuilderResult
         if isinstance(tx, TxBuilderInfos):
+            if (
+                not fee_info
+                and (tx.fee_rate is not None)
+                and (tx.builder_result.transaction_details.fee is not None)
+            ):
+                fee_info = FeeInfo.from_fee_rate(
+                    fee_amount=tx.builder_result.transaction_details.fee, fee_rate=tx.fee_rate
+                )
             tx = tx.builder_result  # then it is processed in the next if stament
             logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
 
         if isinstance(tx, bdk.TxBuilderResult):
             psbt = tx.psbt
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+            if not fee_info:
+                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
             logger.debug(f"Converted TxBuilderResult --> {type(psbt)}")
 
         if isinstance(tx, bdk.PartiallySignedTransaction):
             logger.debug(f"Got a PartiallySignedTransaction")
             psbt = tx
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+            if not fee_info:
+                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
         if isinstance(tx, str):
             psbt = bdk.PartiallySignedTransaction(tx)
             logger.debug(f"Converted str to {type(tx)}")
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+            if not fee_info:
+                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
         if isinstance(tx, bdk.TransactionDetails):
             logger.debug("is bdk.TransactionDetails")
