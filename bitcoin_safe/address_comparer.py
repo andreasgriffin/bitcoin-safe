@@ -101,19 +101,38 @@ class AddressComparer:
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Extract overlapping 3-character sequences (trigrams) from the stripped address
-        and assign weights. The first n_begin and last m_end trigrams get higher weights.
+        and assign weights. The first `n_begin` and last `m_end` trigrams receive higher weights.
+
+        For example, if the stripped address is "ABCDEFG", then the trigrams produced are:
+            ["ABC", "BCD", "CDE", "DEF", "EFG"]
+        And if n_begin and m_end are set to 2, then:
+            - The first two trigrams ("ABC", "BCD") get weight_begin (e.g. 5.0),
+            - The last two trigrams ("DEF", "EFG") get weight_end (e.g. 5.0),
+            - The remaining trigrams (if any) get default_weight (e.g. 1.0).
         """
+        # Strip the address of its network-specific prefix (e.g. remove "1" for base58 addresses)
         s: str = cls.strip_prefix(address)
+        # Convert the stripped string into an array of individual characters
         chars: np.ndarray = np.array(list(s))
         L: int = len(chars)
+        # If the address (after stripping) is too short to form a trigram, return empty arrays.
         if L < 3:
             return np.empty(0, dtype="<U3"), np.empty(0, dtype=float)
+        # Generate an array of trigrams by sliding a window of 3 characters across the string.
+        # For example, if s = "ABCDEFG", then trigrams will be:
+        # ["ABC", "BCD", "CDE", "DEF", "EFG"]
         trigrams: np.ndarray = np.array(["".join(chars[i : i + 3]) for i in range(L - 2)], dtype="<U3")
+        # Create an array of weights with the default weight for each trigram.
         weights: np.ndarray = np.full(L - 2, default_weight, dtype=float)
+        # For the first n_begin trigrams, assign the higher weight (weight_begin).
+        # E.g., if n_begin = 2, then the first 2 trigrams get weight_begin.
         if n_begin > 0:
             weights[: min(n_begin, L - 2)] = weight_begin
+        # For the last m_end trigrams, assign the higher weight (weight_end).
+        # E.g., if m_end = 2, then the last 2 trigrams get weight_end.
         if m_end > 0:
             weights[-min(m_end, L - 2) :] = weight_end
+        # Return the arrays of trigrams and their corresponding weights.
         return trigrams, weights
 
     @classmethod
@@ -180,26 +199,48 @@ class AddressComparer:
         Returns:
             A dictionary mapping each address to a list of tuples (neighbor_address, candidate_score).
         """
+        # Precompute the trigram dictionaries for all addresses.
+        # For each address, build a dictionary mapping trigrams (e.g., "ABC") to a cumulative weight.
+        # Example: For address "ABCDEF", after stripping, the trigrams might be:
+        #           "ABC": weight 5.0, "BCD": weight 1.0, "CDE": weight 1.0, "DEF": weight 5.0.
         precomputed: Dict[str, Dict[str, float]] = cls.precompute_trigram_dicts(
             addresses, n_begin, m_end, weight_begin, weight_end, default_weight
         )
+
+        # Build an inverted index that maps each trigram to the set of addresses containing that trigram.
+        # This allows us to quickly find candidates that share a given trigram.
+        # For example, if "ABC" appears in addresses "addr1" and "addr2", then
+        # inverted_index["ABC"] = { "addr1", "addr2" }.
         inverted_index: Dict[str, Set[str]] = {}
         for addr, tg_dict in precomputed.items():
             for trigram in tg_dict.keys():
                 inverted_index.setdefault(trigram, set()).add(addr)
 
+        # Initialize a dictionary to hold neighbor candidate scores for each address.
+        # Here, "neighbors" will map an address to a list of (candidate_address, candidate_score) tuples.
         neighbors: Dict[str, List[Tuple[str, float]]] = {}
         for addr in addresses:
             candidate_scores: Dict[str, float] = {}
+            # Get the trigram dictionary for the current address.
+            # Example: For "addr1", tg_dict might be {"ABC": 5.0, "BCD": 1.0, "CDE": 1.0, "DEF": 5.0}.
             tg_dict = precomputed[addr]
+            # Process each trigram of the current address.
             for trigram, weight_a in tg_dict.items():
+                # Look up all addresses that also contain this trigram.
                 for candidate in inverted_index.get(trigram, set()):
                     if candidate == addr:
-                        continue
+                        continue  # Skip comparing the address with itself.
+                    # Get the candidate's weight for the same trigram.
+                    # Example: For candidate "addr2", if the weight for "ABC" is 5.0 too, then:
+                    # min(weight_a, weight_candidate) = min(5.0, 5.0) = 5.0.
                     weight_candidate = precomputed[candidate].get(trigram, 0.0)
+                    # Increment the candidate's score by the minimum weight (reflecting the shared feature strength).
                     candidate_scores[candidate] = candidate_scores.get(candidate, 0.0) + min(
                         weight_a, weight_candidate
                     )
+            # After processing all trigrams for the current address,
+            # filter candidates that have a cumulative score above candidate_threshold.
+            # Example: Only if candidate_scores for a candidate is >= candidate_threshold, it is kept.
             neighbors[addr] = [
                 (cand, score) for cand, score in candidate_scores.items() if score >= candidate_threshold
             ]
@@ -209,54 +250,89 @@ class AddressComparer:
     @classmethod
     def fuzzy_prefix_match(cls, a: str, b: str, rtl: bool = False) -> FuzzyMatch:
         """
-        Performs a fuzzy prefix match between strings a and b, allowing one gap.
-        Returns a dict containing:
-          - "score": the number of matching characters (int),
-          - "matchA": matched segment from a,
-          - "matchB": matched segment from b.
+        Performs a fuzzy prefix match between two strings, a and b, allowing one gap (i.e. skipping a mismatch once).
+
+        Returns a FuzzyMatch object with:
+          - score: the total count of matching characters,
+          - matches: a list of tuples; each tuple contains the matching segments extracted from a and b,
+          - identical: a boolean indicating whether a and b are identical (after any reversals, if used).
+
+        Example:
+          Given a = "abcdef" and b = "abcxef":
+            - Characters at positions 0,1,2 match ("abc").
+            - At position 3, 'd' vs 'x' do not match, so the algorithm allows one gap.
+            - Then positions 4 and 5 match ("ef").
+            - The final score would be 3 (for "abc") + 2 (for "ef") = 5.
+          The method would return a FuzzyMatch with score=5 and matches=[("abcdef", "abcxef")].
         """
+        # Initialize the match score, a flag for whether the gap has been used, and a done flag.
         score: int = 0
         gap: bool = False
         done: bool = False
+
+        # Pointers for iterating over string a and b.
         ai: int = 0
         bi: int = 0
+
+        # These strings will accumulate the matched segments of a and b.
         prefixA: str = ""
         prefixB: str = ""
+
+        # If rtl (right-to-left) is True, reverse the strings.
+        # This allows matching starting from the end of the strings.
         if rtl:
             a = a[::-1]
             b = b[::-1]
+
+        # Loop until we reach the end of either string or we decide to stop.
         while ai < len(a) and bi < len(b) and not done:
+            # If current characters match, record them and increase the score.
             if a[ai] == b[bi]:
                 prefixA += a[ai]
                 prefixB += b[bi]
                 score += 1
                 ai += 1
                 bi += 1
+            # If current characters differ but we have not yet used our gap allowance:
             elif not gap:
+                # Check if by skipping a character in one string we can restore alignment.
                 next_match_a: bool = (ai + 1 < len(a)) and (a[ai + 1] == b[bi])
                 next_match_b: bool = (bi + 1 < len(b)) and (a[ai] == b[bi + 1])
                 next_match_both: bool = (ai + 1 < len(a)) and (bi + 1 < len(b)) and (a[ai + 1] == b[bi + 1])
+
+                # If both strings could realign by skipping one character in each (i.e. both look ahead match),
+                # assume a single-character discrepancy and treat the current characters as matched.
                 if next_match_both:
                     prefixA += a[ai]
                     prefixB += b[bi]
                     ai += 1
                     bi += 1
+                # Else if skipping a character in a realigns the match, then skip in a.
                 elif next_match_a:
                     prefixA += a[ai]
                     ai += 1
+                # Else if skipping a character in b realigns the match, then skip in b.
                 elif next_match_b:
                     prefixB += b[bi]
                     bi += 1
                 else:
+                    # If no lookahead match is found, skip one character in both.
                     ai += 1
                     bi += 1
+                # Mark that the allowed gap has been used.
                 gap = True
             else:
+                # If a mismatch occurs and we've already used our gap, stop matching.
                 done = True
+
+        # If we were matching right-to-left, reverse the matched segments to restore original order.
         if rtl:
             prefixA = prefixA[::-1]
             prefixB = prefixB[::-1]
-        return FuzzyMatch(score=score, matches=[(prefixA, prefixB)], identical=a == b)
+
+        # Return a FuzzyMatch instance with the computed score, matched segments, and an identical flag.
+        # The identical flag checks if the strings are exactly the same (if reversed, this is after reversal).
+        return FuzzyMatch(score=score, matches=[(prefixA, prefixB)], identical=(a == b))
 
     @classmethod
     def compare_address_info(cls, a: str, b: str) -> FuzzyMatch:
