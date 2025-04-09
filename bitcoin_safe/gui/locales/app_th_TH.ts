@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>ฉัน</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>ไฟล์ทั้งหมด (*);;PSBT (*.psbt);;ธุรกรรม (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>ฉัน: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>ลบข้อความทั้งหมด  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1587,6 +1583,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>ซ่อนรหัสผ่าน  </translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>คำเตือน! ธุรกรรมนี้เกี่ยวข้องกับที่อยู่ที่คล้ายกันอย่างหลอกลวง อาจเป็นการโจมตีด้วยการปลอมที่อยู่ ที่อยู่ที่คล้ายกันคือ &lt;br&gt;{addresses}.&lt;br&gt; ตรวจสอบรายละเอียดการทำธุรกรรมทั้งหมดอย่างระมัดระวัง!</translation>
     </message>
 </context>
 <context>

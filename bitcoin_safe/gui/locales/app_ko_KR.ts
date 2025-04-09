@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>나</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>모든 파일 (*);;PSBT (*.psbt);;트랜잭션 (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>나: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>모든 메시지 삭제  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1587,6 +1583,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>비밀번호 숨기기  </translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>경고! 이 거래는 속이는 듯 비슷한 주소를 포함하고 있습니다. 이는 주소 독살 공격일 수 있습니다. 비슷한 주소는 &lt;br&gt;{addresses}.&lt;br&gt; 모든 거래 세부사항을 주의 깊게 다시 확인하십시오!</translation>
     </message>
 </context>
 <context>

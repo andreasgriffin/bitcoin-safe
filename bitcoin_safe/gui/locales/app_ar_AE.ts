@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>أنا</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>أنا: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>احذف جميع الرسائل  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1590,6 +1586,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>إخفاء كلمة المرور</translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>تحذير! تتضمن هذه المعاملة عناوين مشابهة بشكل مضلل. قد تكون هجوم تسميم العنوان. العناوين المشابهة هي &lt;br&gt;{addresses}.&lt;br&gt; تحقق بعناية من جميع تفاصيل المعاملة!</translation>
     </message>
 </context>
 <context>

@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>ငါ</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>ဖိုင်များအားလုံး (*);;PSBT (*.psbt);;Transation (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>ငါ: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>စာတိုအားလုံးဖျက်ပါ  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1587,6 +1583,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲပါ  </translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>သတိပေးချက်! ဤလဲလှယ်မှုသည် လှည့်စားစွာတူညီသော လိပ်စာများကို ပါဝင်သည်။ လိပ်စာအဆိပ်သင့်ခြင်းအ</translation>
     </message>
 </context>
 <context>

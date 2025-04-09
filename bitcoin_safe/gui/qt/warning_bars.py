@@ -145,7 +145,7 @@ class PoisoningWarningBar(NotificationBar):
 
         s = "<br>".join([f"{a1} != {a2}" for a1, a2 in formatted_addresses])
         return cls.tr(
-            "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  <br>{addresses}.<br> Do not copy any of the addresses in this transaction and be extra careful to double-check the entire recipient address next time you create a PSBT."
+            "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  <br>{addresses}.<br> Double-check all transaction details carefully!"
         ).format(addresses=s)
 
     def updateUi(self) -> None:

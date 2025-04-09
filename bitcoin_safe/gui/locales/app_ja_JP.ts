@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>私</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>選択されたファイル：{file_path}</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>私：{text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>すべてのメッセージを削除する  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1590,6 +1586,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>エラー</translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>警告！この取引は騙しやすい類似のアドレスを含んでいます。これはアドレスポイズニング攻撃である可能性があります。類似のアドレスは &lt;br&gt;{addresses}.&lt;br&gt; すべての取引の詳細を慎重に確認してください！</translation>
     </message>
 </context>
 <context>

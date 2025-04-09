@@ -258,6 +258,13 @@
     </message>
 </context>
 <context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>मैं</translation>
+    </message>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
@@ -349,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>मैं: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1286,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>सभी संदेश हटाएं  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1590,6 +1586,13 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Hide Password</source>
         <translation>पासवर्ड छुपाएं</translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>चेतावनी! इस लेन-देन में धोखाधड़ी से समान पते शामिल हैं। यह पते का जहरीला हमला हो सकता है। समान पते हैं &lt;br&gt;{addresses}.&lt;br&gt; सभी लेन-देन विवरणों की सावधानी से जांच करें!</translation>
     </message>
 </context>
 <context>
