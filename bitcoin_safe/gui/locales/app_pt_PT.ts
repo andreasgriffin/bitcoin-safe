@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>Assinaturas Inválidas</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Falha ao transmitir {txid}. Considere transmitir através de {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Importar ficheiro  </translation>
     </message>

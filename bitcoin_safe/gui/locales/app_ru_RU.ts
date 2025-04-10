@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>Недействительные подписи</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Не удалось транслировать {txid}. Попробуйте транслировать через {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Импортировать файл  </translation>
     </message>

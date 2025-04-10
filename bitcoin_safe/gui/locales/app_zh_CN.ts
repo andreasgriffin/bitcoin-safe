@@ -2425,6 +2425,10 @@ below {rate}</source>
         <translation>签名无效</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>广播{txid}失败。请考虑通过{url}广播。</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>导入文件  </translation>
     </message>

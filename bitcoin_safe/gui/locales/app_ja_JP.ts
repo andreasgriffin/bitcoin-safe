@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>無効な署名</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} のブロードキャストに失敗しました。{url} を介してブロードキャストを試みてください。</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>ファイルをインポート  </translation>
     </message>

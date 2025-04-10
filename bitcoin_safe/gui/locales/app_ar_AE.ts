@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>التوقيعات غير صالحة</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>فشل في بث {txid}. يرجى محاولة البث عبر {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>استيراد ملف  </translation>
     </message>

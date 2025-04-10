@@ -2416,6 +2416,10 @@ below {rate}</source>
         <translation>ลายเซ็นไม่ถูกต้อง  </translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>ไม่สามารถเผยแพร่ {txid} ได้ โปรดลองเผยแพร่ผ่าน {url}</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>นำเข้าไฟล์  </translation>
     </message>

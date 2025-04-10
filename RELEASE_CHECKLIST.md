@@ -1,3 +1,4 @@
+* Update all translations
 * Check is dependencies can be published on pypi if possible (not possible for git commit hash dependencies)
 * Build for all platforms
 * Test for all platforms
