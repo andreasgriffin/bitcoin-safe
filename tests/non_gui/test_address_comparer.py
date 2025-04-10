@@ -45,6 +45,10 @@ def test_similar_poisonous_base58():
     # With a high enough similarity, this pair should be flagged as poisonous.
     assert AddressComparer.poisonous({addr1, addr2})
 
+    addr1 = "1DonatePLeaseSenderAddressXVXCmAY"
+    addr2 = "1DonatePLease5btcToSenderXXWBoKhB"
+    assert AddressComparer.poisonous({addr1, addr2})
+
 
 def test_different_addresses():
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
@@ -111,7 +115,7 @@ def test_non_poisonous_bech32():
         return "1" + "".join(random.choices(base58_chars, k=33))
 
     # Generate addresses  (increasing this a little more WILL generate fals positives)
-    addresses = {generate_address() for _ in range(2000)}
+    addresses = {generate_address() for _ in range(2500)}
 
     print("Starting compare_of_tx with:")
     print(f"  {len(addresses)}   addresses")
@@ -136,7 +140,7 @@ def test_compare_all_similar():
     addresses = {addr1, addr2}
     all_results = AddressComparer.compare_all(addresses)
     # There should be exactly one candidate pair.
-    pair = frozenset(addresses)
+    pair = tuple(sorted(addresses))
     sim_all = all_results[pair]
     sim_info = AddressComparer.compare_address_info(addr1, addr2)
     # The two similarity scores should match (or be extremely close).

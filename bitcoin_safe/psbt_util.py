@@ -160,7 +160,7 @@ def estimate_tx_weight(
 
 
 class FeeInfo:
-    def __init__(self, fee_amount: int, vsize: int, is_estimated=False) -> None:
+    def __init__(self, fee_amount: int, vsize: int, is_estimated: bool) -> None:
         """_summary_
 
         Args:
@@ -176,9 +176,9 @@ class FeeInfo:
         return self.fee_amount / self.vsize
 
     @classmethod
-    def from_fee_rate(cls, fee_amount: int, fee_rate: float) -> "FeeInfo|None":
+    def from_fee_rate(cls, fee_amount: int, fee_rate: float, is_estimated: bool) -> "FeeInfo|None":
         vsize = int(fee_amount / fee_rate)
-        return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=False)
+        return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=is_estimated)
 
     @classmethod
     def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo|None":

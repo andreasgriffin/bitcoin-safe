@@ -178,6 +178,7 @@ class UITx_ViewerTab(SearchableTab):
 
 
 class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
+    signal_updated_content: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
     signal_edit_tx: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
@@ -568,7 +569,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         if success:
             logger.info(f"Successfully broadcasted {serialized_to_hex( self.data.data.serialize())}")
         else:
-            logger.error(f"Failed to broadcast {serialized_to_hex( self.data.data.serialize())}")
+            Message(
+                self.tr("Failed to broadcast {txid}. Consider broadcasting via {url}").format(
+                    txid=self.data.data.txid(), url="https://blockstream.info/tx/push"
+                ),
+                type=MessageType.Error,
+            )
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
@@ -844,7 +850,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
 
         self.category_linking_warning_bar.set_category_dict(category_dict)
 
-    def calc_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
+    def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
+        "This only should be done for tx, not psbt, since the PSBT.extract_tx size is too low"
         wallets = get_wallets(self.signals)
         # try via tx details
         for wallet_ in wallets:
@@ -886,8 +893,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.txid())
-        if fee_info is None:
-            fee_info = self.calc_fee_info(tx, tx_has_final_size=True)
+        if fee_info is None or fee_info.is_estimated:
+            fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
         if confirmation_time is None:
@@ -931,6 +938,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.label_line_edit.updateUi()
         self.label_line_edit.autofill_label_and_category()
         self.container_label.setHidden(False)
+        self.signal_updated_content.emit(self.data)
 
     def _get_python_txos(self):
         txo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
@@ -1043,10 +1051,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         self.data = Data.from_psbt(psbt, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(psbt.txid())
 
-        if fee_info is None or fee_info.is_estimated:
-            new_fee_info = self.calc_fee_info(psbt.extract_tx(), tx_has_final_size=False)
-            if new_fee_info:
-                fee_info = new_fee_info
+        # do not use calc_fee_info here, because calc_fee_info is for final tx only.
+
         # if still no fee_info  available, then estimate it
         if fee_info is None:
             fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
@@ -1087,6 +1093,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager, UITx_ViewerTab):
         txo_dict.update(self._get_python_txos())
         self.set_sankey(psbt.extract_tx(), fee_info=fee_info, txo_dict=txo_dict)
         self.container_label.setHidden(True)
+        self.signal_updated_content.emit(self.data)
 
     def get_total_non_change_output_amount(self, tx: bdk.Transaction) -> int:
         out_flows: List[Tuple[str, int]] = [

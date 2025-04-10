@@ -976,6 +976,7 @@ class MainWindow(QMainWindow):
             threading_parent=self.threading_manager,
             focus_ui_element=focus_ui_element,
         )
+        viewer.signal_updated_content.connect(self.on_tab_updated_content)
 
         self.tab_wallets.add_tab(
             tab=viewer,
@@ -986,6 +987,21 @@ class MainWindow(QMainWindow):
         )
 
         return viewer, viewer
+
+    def on_tab_updated_content(self, data: Data):
+        "Update the icons of the tx tabs"
+
+        for index in range(self.tab_wallets.count()):
+            # Get the widget for the current tab
+            tab = self.tab_wallets.widget(index)
+            if isinstance(tab, UITx_Viewer):
+                if tab.data != data:
+                    continue
+
+                if tab.data.data_type == DataType.PSBT:
+                    self.tab_wallets.setTabIcon(index, read_QIcon("qr-code.svg"))
+                elif tab.data.data_type == DataType.Tx:
+                    self.tab_wallets.setTabIcon(index, read_QIcon("send.svg"))
 
     def open_psbt_in_tab(
         self,
@@ -1006,7 +1022,9 @@ class MainWindow(QMainWindow):
                 and (tx.builder_result.transaction_details.fee is not None)
             ):
                 fee_info = FeeInfo.from_fee_rate(
-                    fee_amount=tx.builder_result.transaction_details.fee, fee_rate=tx.fee_rate
+                    fee_amount=tx.builder_result.transaction_details.fee,
+                    fee_rate=tx.fee_rate,
+                    is_estimated=False,
                 )
             tx = tx.builder_result  # then it is processed in the next if stament
             logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
@@ -1083,6 +1101,7 @@ class MainWindow(QMainWindow):
             parent=self,
             threading_parent=self.threading_manager,
         )
+        viewer.signal_updated_content.connect(self.on_tab_updated_content)
 
         self.tab_wallets.add_tab(
             tab=viewer,

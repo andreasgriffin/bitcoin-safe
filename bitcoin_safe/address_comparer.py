@@ -28,7 +28,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, FrozenSet, List, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 import numpy as np
 
@@ -380,33 +380,37 @@ class AddressComparer:
         weight_end: float = 5.0,
         default_weight: float = 1.0,
         candidate_threshold: float = 2.0,
-    ) -> Dict[FrozenSet[str], FuzzyMatch]:
+    ) -> Dict[Tuple[str, str], FuzzyMatch]:
         """
-        Precomputes the trigram dictionaries and uses find_neighbors to restrict full comparisons
+        Precomputes the trigram dictionaries and uses find_neighbors to restrict the full similarity comparisons
         only to candidate pairs (neighbors). For each candidate pair, computes the similarity using
         compare_address_info.
 
-        Returns a dictionary mapping each candidate pair (as a frozenset of two addresses) to a similarity float.
+        Returns a dictionary mapping each candidate pair (an ordered tuple (a, b), where a < b lexicographically)
+        to a FuzzyMatch.
         """
+        # Use find_neighbors to get candidate addresses.
         neighbor_dict: Dict[str, List[Tuple[str, float]]] = cls.find_neighbors(
             addresses, n_begin, m_end, weight_begin, weight_end, default_weight, candidate_threshold
         )
-        results: Dict[FrozenSet[str], FuzzyMatch] = {}
+        # Use an ordered tuple as key, so that the comparison order is consistent.
+        results: Dict[Tuple[str, str], FuzzyMatch] = {}
         for addr, cand_list in neighbor_dict.items():
             for candidate, _ in cand_list:
-                pair = frozenset({addr, candidate})
-                if len(pair) <= 1:
-                    # do not allow identical ones
+                # If the addresses are the same, skip.
+                if addr == candidate:
                     continue
-                if pair not in results:
-                    # Use the updated compare_address_info for the candidate pair.
-                    sim = cls.compare_address_info(addr, candidate)
-                    results[pair] = sim
+                # Create an ordered tuple based on lexicographical order.
+                ordered_pair: Tuple[str, str] = tuple(sorted([addr, candidate]))  # type: ignore
+                if ordered_pair not in results:
+                    # Always compare in the same order using compare_address_info.
+                    sim = cls.compare_address_info(ordered_pair[0], ordered_pair[1])
+                    results[ordered_pair] = sim
         return results
 
     @classmethod
     def _list_poisonous_pairs(
-        cls, results: Dict[FrozenSet[str], FuzzyMatch]
+        cls, results: Dict[Tuple[str, str], FuzzyMatch]
     ) -> List[Tuple[str, str, FuzzyMatch]]:
         """
         Given a results dictionary (mapping frozenset({address1, address2}) to a similarity float),
