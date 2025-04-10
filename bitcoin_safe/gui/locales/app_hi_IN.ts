@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>नाम बदलें</translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} के साथ डिवाइस का नाम दर्ज करें</translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>डिवाइस का नाम</translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>अन्य उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करके कनेक्शन पूरा करें।  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} के साथ डिवाइस का नाम दर्ज करें</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>मैं</translation>
     </message>
 </context>
 <context>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>मैं: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1267,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>सभी संदेश हटाएं  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1347,6 +1362,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>स्वचालित</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>कृपया इलेक्ट्रम यूआरएल से &apos;{scheme}&apos; को हटा दें</translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>क्या आप सुनिश्चित हैं कि एस्प्लोरा यूआरएल में &apos;{scheme}&apos; सही है?</translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>टोर पतों का प्रारूप &apos;{scheme}&apos; होना चाहिए</translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>कृपया मेमपूल यूआरएल की शुरुआत में &apos;{scheme}&apos; का प्रयास करें</translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1589,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>चेतावनी! इस लेन-देन में धोखाधड़ी से समान पते शामिल हैं। यह पते का जहरीला हमला हो सकता है। समान पते हैं &lt;br&gt;{addresses}.&lt;br&gt; सभी लेन-देन विवरणों की सावधानी से जांच करें!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1795,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (जो {test_amount} से कम है) प्राप्त करें।&lt;br&gt;&lt;br&gt;&lt;b&gt;क्यों?&lt;/b&gt;&lt;br&gt;यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा।&lt;br&gt;तो वॉलेट में बड़ी मात्रा में बिटकॉइन भेजने से पहले, वॉलेट से खर्च करना और सभी साइनर्स का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।&lt;br&gt;&lt;br&gt;&lt;b&gt;जब तक आप सभी भेजने के परीक्षण पूरे नहीं कर लेते, वॉलेट में बड़ी धनराशि न भेजें!&lt;/b&gt;</translation>
+        <translation>इस वॉलेट के एक पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (कम से कम {test_amount}) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए इससे पहले कि आप वॉलेट में बड़ी मात्रा में बिटकॉइन भेजें, वॉलेट से खर्च करना और सभी हस्ताक्षरकर्ताओं का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है। &lt;br&gt; &lt;br&gt; &lt;b&gt;कृपया सभी भेजने के परीक्षण पूरे होने तक बड़ी राशि वॉलेट में न भेजें!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2173,8 +2211,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{author} से {name} खोलना</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author} से प्राप्त संदेश &apos;{description}&apos;</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}</translation>
     </message>
 </context>
 <context>
@@ -2923,13 +2961,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>pyzbar को आयात करने का प्रयास कर रहा हूँ ताकि देख सकूं कि Visual C++ Redistributable स्थापित है या नहीं।  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3033,14 +3064,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>हस्ताक्षर आयात करें</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>आपके पास {link} नहीं है। कृपया इसे स्थापित करें।</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3217,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>इस वॉलेट को फिर से स्कैन करते समय, कम से कम पते के सूचकांक {max_tip} तक स्कैन करें ताकि सभी वित्तपोषित पते पता चल सकें।  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्दों) को नीचे दी गई तालिका पर गोंद या टेप करें&lt;br/&gt;2. नीचे दी गई लाइन पर इस कागज को मोड़ें&lt;br/&gt;3. इस कागज को केवल आपके पास पहुँचने वाली सुरक्षित जगह में रखें&lt;br/&gt;4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ रख सकते हैं, या b) दूसरी सुरक्षित जगह में (अगर उपलब्ध है)  </translation>
+        <translation>1. इस कागज पर &apos;रिकवरी शीट&apos; ({number} शब्द) लगाएं या 12/24 शब्दों को इस कागज पर डुप्लिकेट करें।&lt;br/&gt; 2. नीचे की लाइन पर इस कागज को मोड़ें&lt;br/&gt; 3. इस कागज को एक सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो&lt;br/&gt; 4. आप हार्डवेयर साइनर को या तो a) कागजी बीज बैकअप के साथ मिलाकर, या b) किसी अन्य सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3237,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot; का बैलेंस स्टेटमेंट  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्द) को नीचे दी गई तालिका पर चिपकाएं या टेप करें&lt;br/&gt;2. इस कागज को नीचे की रेखा पर मोड़ें&lt;br/&gt;3. प्रत्येक कागज को अलग सुरक्षित स्थान पर रखें, जहां केवल आपकी पहुंच हो&lt;br/&gt;4. आप हार्डवेयर साइनर्स को a) संबंधित पेपर सीड बैकअप के साथ रख सकते हैं, या b) प्रत्येक को एक और सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
+        <translation>1. इस कागज पर &apos;रिकवरी शीट&apos; ({number} शब्द) लगाएं या 12/24 शब्दों को इस कागज पर डुप्लिकेट करें।&lt;br/&gt; 2. नीचे की लाइन पर इस कागज को मोड़ें&lt;br/&gt; 3. प्रत्येक कागज को एक अलग सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो&lt;br/&gt; 4. आप हार्डवेयर साइनर को या तो a) संबंधित कागजी बीज बैकअप के साथ मिलाकर, या b) प्रत्येक को किसी अन्य सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

@@ -36,7 +36,6 @@ import nostr_sdk
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
-from bitcoin_nostr_chat.ui.ui import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
@@ -157,15 +156,15 @@ class SyncTab(QObject):
             ):
                 Message(
                     self.tr("Opening {name} from {author}").format(
-                        name=dm.data.data_type.name, author=short_key(dm.author.to_bech32())
+                        name=dm.data.data_type.name, author=self.nostr_sync.chat.get_alias(dm.author)
                     ),
                     no_show=True,
                 ).emit_with(self.signals.notification)
                 self.signals.open_tx_like.emit(dm.data.data)
             elif not dm.data:
                 Message(
-                    self.tr("Received message '{description}' from {author}").format(
-                        description=dm.description, author=short_key(dm.author.to_bech32())
+                    self.tr("{author}: {description}").format(
+                        description=dm.description, author=self.nostr_sync.chat.get_alias(dm.author)
                     ),
                     no_show=True,
                 ).emit_with(self.signals.notification)

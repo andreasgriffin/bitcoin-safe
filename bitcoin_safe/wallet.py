@@ -1664,6 +1664,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             utxos_for_input=utxos_for_input,
             builder_result=builder_result,
             recipient_category=recipient_category,
+            fee_rate=txinfos.fee_rate,
         )
 
         self.set_psbt_output_categories(

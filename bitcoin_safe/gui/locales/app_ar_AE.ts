@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>إعادة تسمية  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>أدخل اسم جهاز مع {npub}  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>اسم الجهاز  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>لإكمال الاتصال، قبل طلب {id} الخاص بي على الجهاز الآخر {other}.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>أدخل اسم جهاز مع {npub}  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>أنا</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>تبادل KYC  </translation>
+        <translation>تبادل KYC</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>أنا: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1267,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>احذف جميع الرسائل  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1347,6 +1362,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>تلقائي</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>الرجاء إزالة &apos;{scheme}&apos; من عنوان URL الخاص بـ electrum  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>هل أنت متأكد من صحة &apos;{scheme}&apos; في عنوان URL الخاص بـ esplora؟  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>يجب أن يكون تنسيق عناوين tor &apos;{scheme}&apos;  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>الرجاء تجربة &apos;{scheme}&apos; في بداية عنوان URL الخاص بـ mempool  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1589,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>تحذير! تتضمن هذه المعاملة عناوين مشابهة بشكل مضلل. قد تكون هجوم تسميم العنوان. العناوين المشابهة هي &lt;br&gt;{addresses}.&lt;br&gt; تحقق بعناية من جميع تفاصيل المعاملة!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1795,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.&lt;br&gt;&lt;br&gt;&lt;b&gt;لماذا؟&lt;/b&gt;&lt;br&gt;لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.&lt;br&gt;لذلك قبل أن ترسل مبلغًا كبيرًا من البيتكوين إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; أن تنفق من المحفظة وتختبر جميع الموقعين.&lt;br&gt;&lt;br&gt;&lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة قبل أن تكمل جميع اختبارات الإرسال!&lt;/b&gt;</translation>
+        <translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذا قبل أن ترسل كمية كبيرة من البيتكوين إلى المحفظة، من ال&lt;b&gt;ضروري&lt;/b&gt; أن تنفق من المحفظة وتختبر جميع الموقعين.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل أموالًا كبيرة إلى المحفظة بعد. الرجاء إكمال جميع اختبارات الإرسال أولاً!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2173,8 +2211,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>فتح {name} من {author}</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>تم استلام الرسالة &quot;{description}&quot; من {author}</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2923,13 +2961,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>جارٍ محاولة استيراد pyzbar لمعرفة ما إذا كان Visual C++ قابل لإعادة التوزيع مثبتًا.  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3033,14 +3064,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>استيراد التوقيع</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>أنت تفتقد {link} الرجاء تثبيته.</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3217,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. الصق أو ثبّت &apos;ورقة الاسترداد&apos; ({number} كلمات) فوق الجدول أدناه&lt;br/&gt;2. طوِّ هذه الورقة عند الخط أدناه&lt;br/&gt;3. ضع هذه الورقة في مكان آمن حيث يمكنك الوصول إليها فقط&lt;br/&gt;4. يمكنك وضع الموقع الجهاز إما أ) مع النسخة الاحتياطية لبذور الورق، أو ب) في موقع آمن آخر (إذا كان متوفرًا)</translation>
+        <translation>1. ضع ورقة &apos;الاسترداد&apos; ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع هذه الورقة في مكان آمن، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقع الصلب إما a) مع النسخة الاحتياطية للبذور الورقية، أو b) في مكان آمن آخر (إذا كان متاحًا)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3237,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>كشف حساب الرصيد لـ&quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. قم بلصق أو تثبيت &quot;ورقة الاستعادة&quot; ({number} كلمة) فوق الجدول أدناه&lt;br/&gt;2. اطوِ هذه الورقة عند الخط أدناه&lt;br/&gt;3. ضع كل ورقة في مكان آمن مختلف، حيث يمكنك الوصول إليه فقط&lt;br/&gt;4. يمكنك وضع الموقعين الماديين إما a) مع النسخة الاحتياطية الورقية للبذرة المقابلة، أو b) كل واحد في موقع آمن آخر (إذا كان متاحًا)</translation>
+        <translation>1. ضع ورقة &apos;الاسترداد&apos; ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع كل ورقة في مكان آمن مختلف، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقعين الصلبين إما a) مع النسخة الاحتياطية المقابلة للبذور الورقية، أو b) كل في مكان آمن آخر (إذا كان متاحًا)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

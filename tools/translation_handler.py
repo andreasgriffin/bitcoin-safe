@@ -80,6 +80,7 @@ class TranslationHandler:
             f"""
 Translate all following lines   to the following languages
  {languages}
+Information context:  A bitcoin only bitcoin wallet.   So a term like "KYC Exchange"  means a trading place, that requires KYC. A wallet is a software that shows the balances on bitcoin addresses that belong to the user.  An address is a bitcoin address. 
 Formatting instructions:
 - no bullets points.  
 - preserve the linebreaks of each line perfectly! keep the newline after each translated line.

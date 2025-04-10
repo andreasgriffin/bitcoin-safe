@@ -306,7 +306,6 @@ class KeyStoreUI(QObject):
         # tab_import
 
         self.hardware_signer_interaction = HardwareSignerInteractionWidget()
-        button_file = self.hardware_signer_interaction.add_import_file_button()
         button_qr = self.hardware_signer_interaction.add_qr_import_buttonn()
         self.hardware_signer_interaction.add_help_button(ScreenshotsExportXpub())
 
@@ -319,6 +318,7 @@ class KeyStoreUI(QObject):
         )
         button_hwi.clicked.connect(self.on_hwi_click)
 
+        button_file = self.hardware_signer_interaction.add_import_file_button()
         button_file.clicked.connect(self._import_dialog)
 
         # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))

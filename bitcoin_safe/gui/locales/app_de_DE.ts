@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>Umbenennen  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Geben Sie einen Namen für das Gerät mit {npub} ein  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>Gerätename  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>Um die Verbindung abzuschließen, akzeptieren Sie meine {id}-Anfrage auf dem anderen Gerät {other}.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Geben Sie einen Namen für das Gerät mit {npub} ein  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>Ich</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>KYC-Austausch  </translation>
+        <translation>KYC Börse</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>Alle Dateien (*);;PSBT (*.psbt);;Transaktion (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>Ich: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1267,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>Alle Nachrichten löschen  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1347,6 +1362,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>Automatisch  </translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>Bitte entfernen Sie &apos;{scheme}&apos; aus der electrum URL  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>Sind Sie sicher, dass &apos;{scheme}&apos; in der esplora URL korrekt ist?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>Das Format für tor Adressen sollte &apos;{scheme}&apos; sein  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>Bitte versuchen Sie &apos;{scheme}&apos; am Anfang der mempool URL  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1555,6 +1586,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>Warnung! Diese Transaktion beinhaltet täuschend ähnliche Adressen. Es könnte sich um einen Adressen-Poisoning-Angriff handeln. Ähnliche Adressen sind &lt;br&gt;{addresses}.&lt;br&gt; Überprüfen Sie alle Transaktionsdetails sorgfältig!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1754,9 +1792,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) auf eine Adresse dieses Wallets.                      &lt;br&gt;&lt;br&gt;                      &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                      Um zu wissen, ob Sie die Mittel kontrollieren, müssen Sie das Ausgeben aus dem Wallet testen.                       &lt;br&gt;                      Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet auszugeben und alle Unterzeichner zu testen.                           &lt;br&gt;                      &lt;b&gt;Senden Sie KEINE großen Geldbeträge in das Wallet, bevor Sie nicht alle Sendetests abgeschlossen haben!&lt;/b&gt;       </translation>
+        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2170,8 +2208,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Öffnung {name} von {author}  </translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>Empfangene Nachricht &apos;{description}&apos; von {author}  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author} : {description}  </translation>
     </message>
 </context>
 <context>
@@ -2920,13 +2958,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Versuch, pyzbar zu importieren, um zu sehen, ob Visual C++ Redistributable installiert ist.  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3030,14 +3061,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>Signatur importieren  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>Es fehlt Ihnen der {link}. Bitte installieren Sie ihn.  </translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3214,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Beim erneuten Scannen dieses Wallets scannen Sie mindestens bis zum Adressindex {max_tip}, um alle finanzierten Adressen zu entdecken.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Kleben oder kleben Sie das &apos;Recovery sheet&apos; ({number} Wörter) über die Tabelle unten&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Signer entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) aufbewahren  </translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3234,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Kontostandsauszug von &quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Kleben oder kleben Sie das &apos;Recovery sheet&apos; ({number} Wörter) über die Tabelle unten&lt;br/&gt;                 2. Falten Sie jedes Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können die Hardware-Signer entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeweils an einem weiteren sicheren Ort (falls verfügbar) aufbewahren  </translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können die Hardware-Unterzeichner entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeden an einem anderen sicheren Ort (falls verfügbar) platzieren</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

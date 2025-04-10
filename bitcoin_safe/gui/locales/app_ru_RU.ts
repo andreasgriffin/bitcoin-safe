@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>Переименовать</translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Введите имя устройства с {npub}</translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>Название устройства</translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>Чтобы завершить подключение, примите мой запрос {id} на другом устройстве {other}.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Введите имя устройства с {npub}</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>Я</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>Биржа KYC  </translation>
+        <translation>KYC Биржа</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>Я: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1267,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>Удалить все сообщения  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1347,6 +1362,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>Автоматический</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>Пожалуйста, удалите &apos;{scheme}&apos; из URL electrum</translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>Вы уверены, что &apos;{scheme}&apos; правильно в URL esplora?</translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>Формат адресов tor должен быть &apos;{scheme}&apos;</translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>Пожалуйста, попробуйте &apos;{scheme}&apos; в начале URL mempool</translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1589,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>Внимание! Эта транзакция включает в себя обманчиво похожие адреса. Это может быть атака с подменой адресов. Похожие адреса: &lt;br&gt;{addresses}.&lt;br&gt; Тщательно проверьте все детали транзакции!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1795,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Получите на один адрес этого кошелька &lt;b&gt;небольшую&lt;/b&gt; сумму (менее {test_amount}).&lt;br&gt;&lt;br&gt;&lt;b&gt;Почему?&lt;/b&gt;&lt;br&gt;Чтобы узнать, контролируете ли вы средства, вам нужно протестировать расходование из кошелька.&lt;br&gt;Поэтому перед тем как отправить значительную сумму биткоинов в кошелек, &lt;b&gt;крайне важно&lt;/b&gt; совершить расходование из кошелька и протестировать всех подписантов.&lt;br&gt;&lt;br&gt;&lt;b&gt;Не отправляйте большие суммы в кошелек, пока не завершите все тесты отправки!&lt;/b&gt;</translation>
+        <translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (менее {test_amount}) на один адрес этого кошелька. &lt;br&gt;&lt;br&gt; &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt; Чтобы узнать, контролируете ли вы средства, вы должны тестировать расходы из кошелька. &lt;br&gt; Поэтому, прежде чем отправлять значительную сумму биткойнов в кошелек, &lt;b&gt;жизненно важно&lt;/b&gt; тратить из кошелька и тестировать всех подписантов. &lt;br&gt; &lt;br&gt; &lt;b&gt;Не отправляйте крупные суммы в кошелек, пока не завершите все тесты отправки!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2173,8 +2211,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Открываю {name} от {author}</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>Получено сообщение &apos;{description}&apos; от {author}</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}</translation>
     </message>
 </context>
 <context>
@@ -2923,13 +2961,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Попытка импорта pyzbar для проверки установки Visual C++ Redistributable.  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3033,14 +3064,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>Импортировать подпись</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>У вас отсутствует {link}. Пожалуйста, установите его.</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3217,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>При повторном сканировании этого кошелька сканируйте как минимум до индекса адреса {max_tip}, чтобы обнаружить все финансируемые адреса.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Наклейте или приклейте &apos;Лист восстановления&apos; ({number} слов) на таблицу ниже&lt;br/&gt;2. Сложите эту бумагу по линии ниже&lt;br/&gt;3. Поместите эту бумагу в безопасное место, доступное только вам&lt;br/&gt;4. Вы можете поместить аппаратного подписанта либо a) вместе с бумажным резервным копированием семян, либо b) в другом безопасном месте (если таковое имеется)  </translation>
+        <translation>1. Прикрепите &quot;Лист восстановления&quot; ({number} слов) к этой бумаге или скопируйте 12/24 слова на эту бумагу.&lt;br/&gt; 2. Сложите эту бумагу по линии ниже &lt;br/&gt; 3. Поместите эту бумагу в безопасное место, куда только вы имеете доступ&lt;br/&gt; 4. Вы можете поместить аппаратного подписанта либо a) вместе с бумажным резервным копированием семян, либо b) в другое безопасное место (если доступно)</translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3237,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Выписка по балансу &quot;{id}&quot; </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Приклейте или прикрепите «Лист восстановления» ({number} слов) поверх таблицы ниже&lt;br/&gt;2. Сложите эту бумагу по нижней линии&lt;br/&gt;3. Поместите каждый лист в отдельное безопасное место, доступное только вам&lt;br/&gt;4. Вы можете разместить аппаратные подписанты a) вместе с соответствующей бумажной резервной копией seed-фразы, или b) каждый в другом безопасном месте (если доступно)</translation>
+        <translation>1. Прикрепите &quot;Лист восстановления&quot; ({number} слов) к этой бумаге или скопируйте 12/24 слова на эту бумагу.&lt;br/&gt; 2. Сложите эту бумагу по линии ниже &lt;br/&gt; 3. Поместите каждую бумагу в разное безопасное место, куда только вы имеете доступ&lt;br/&gt; 4. Вы можете поместить аппаратных подписантов либо a) вместе с соответствующей бумажной резервной копией семян, либо b) каждый в другое безопасное место (если доступно)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

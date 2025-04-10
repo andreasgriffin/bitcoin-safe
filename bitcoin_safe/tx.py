@@ -70,7 +70,7 @@ def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_size: int, mempool_data: M
     new_absolute_fee += fee_amount
     # 4.
     new_absolute_fee += new_tx_size * mempool_data.get_min_relay_fee_rate()
-    return FeeInfo(int(new_absolute_fee), new_tx_size)
+    return FeeInfo(int(new_absolute_fee), new_tx_size, is_estimated=True)
 
 
 class TxUiInfos:
@@ -113,8 +113,9 @@ class TxBuilderInfos:
         utxos_for_input: UtxosForInputs,
         builder_result: bdk.TxBuilderResult,
         recipient_category: Optional[str] = None,
+        fee_rate: Optional[float] = None,
     ):
-        self.fee_rate: Optional[float] = None
+        self.fee_rate = fee_rate
 
         self.recipients = recipients
 

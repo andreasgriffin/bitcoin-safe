@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>Rinomina  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>Nome del dispositivo  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>Per completare la connessione, accetta la mia richiesta {id} sull&apos;altro dispositivo {other}.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>Io</translation>
     </message>
 </context>
 <context>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>Io: {text}  </translation>
     </message>
 </context>
 <context>
@@ -1267,13 +1289,6 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>Elimina tutti i messaggi  </translation>
-    </message>
-</context>
-<context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
@@ -1347,6 +1362,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>Automatico</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>Rimuovi &apos;{scheme}&apos; dall&apos;URL di electrum  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>Sei sicuro che &apos;{scheme}&apos; sia corretto nell&apos;URL di esplora?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>Il formato per gli indirizzi tor dovrebbe essere &apos;{scheme}&apos;  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>Prova &apos;{scheme}&apos; all&apos;inizio dell&apos;URL di mempool  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1589,13 @@ Vuoi procedere comunque?</translation>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>Attenzione! Questa transazione coinvolge indirizzi ingannevolmente simili. Potrebbe essere un attacco di avvelenamento dell&apos;indirizzo. Gli indirizzi simili sono &lt;br&gt;{addresses}.&lt;br&gt; Controlla attentamente tutti i dettagli della transazione!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1795,9 @@ Vuoi procedere comunque?</translation>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Ricevi una quantità &lt;b&gt;piccola&lt;/b&gt; (meno di {test_amount}) su 1 indirizzo di questo wallet.&lt;br&gt;&lt;br&gt;&lt;b&gt;Perché?&lt;/b&gt;&lt;br&gt;Per sapere se controlli i fondi, devi testare la spesa dal wallet.&lt;br&gt;Quindi, prima di inviare una quantità sostanziale di Bitcoin al wallet, è &lt;b&gt;cruciale&lt;/b&gt; spendere dal wallet e testare tutti i firmatari.&lt;br&gt;&lt;br&gt;&lt;b&gt;Non inviare grandi fondi al wallet prima di aver completato tutti i test di invio!&lt;/b&gt;</translation>
+        <translation>Ricevi un &lt;b&gt;piccolo&lt;/b&gt; importo (meno di {test_amount}) a un indirizzo di questo portafoglio.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt;                     Per sapere se controlli i fondi, devi testare la spesa dal portafoglio.                      &lt;br&gt;                     Quindi, prima di inviare una quantità sostanziale di Bitcoin al portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Non inviare grandi fondi al portafoglio, ancora. Per favore, completa prima tutti i test di invio!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2173,8 +2211,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Apertura di {name} da {author}</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>Messaggio ricevuto &apos;{description}&apos; da {author}</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2923,13 +2961,6 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Tentativo di importare pyzbar per vedere se il Visual C++ Redistributable è installato.  </translation>
-    </message>
-</context>
-<context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
@@ -3033,14 +3064,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>Importa Firma</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>Manca il {link} Si prega di installarlo.</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3217,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Riscansionando questo portafoglio, scansionare almeno fino all&apos;indice di indirizzo {max_tip} per scoprire tutti gli indirizzi finanziati.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Incolla o fissa il &apos;Foglio di recupero&apos; ({number} parole) sulla tabella sotto&lt;br/&gt;2. Piega questo foglio sulla linea sotto&lt;br/&gt;3. Metti questo foglio in un luogo sicuro, dove solo tu hai accesso&lt;br/&gt;4. Puoi mettere il firmatario hardware sia a) insieme al backup del seme di carta, o b) in un altro luogo sicuro (se disponibile)  </translation>
+        <translation>1. Attacca il &apos;Foglio di recupero&apos; ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti questo foglio in un luogo sicuro, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere il firmatario hardware o a) insieme al backup di semi cartaceo, o b) in un altro luogo sicuro (se disponibile)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3237,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Estratto conto di &quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Incolla o fissa il &apos;Foglio di recupero&apos; ({number} parole) sopra la tabella sottostante&lt;br/&gt;2. Piega questo foglio sulla linea sottostante&lt;br/&gt;3. Metti ogni foglio in un luogo sicuro diverso, accessibile solo da te&lt;br/&gt;4. Puoi mettere i firmatari hardware a) insieme al corrispondente backup cartaceo del seed, oppure b) ciascuno in un altro luogo sicuro (se disponibile)</translation>
+        <translation>1. Attacca il &apos;Foglio di recupero&apos; ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti ogni foglio in un luogo sicuro diverso, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere i firmatari hardware o a) insieme al backup di semi cartaceo corrispondente, o b) ciascuno in un altro luogo sicuro (se disponibile)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
