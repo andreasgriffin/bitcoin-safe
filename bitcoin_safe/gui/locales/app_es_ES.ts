@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>Firmas Inválidas</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Error al transmitir {txid}. Considere transmitir a través de {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Importar archivo  </translation>
     </message>

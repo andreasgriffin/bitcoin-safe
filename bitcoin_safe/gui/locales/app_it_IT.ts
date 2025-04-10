@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>Firme non valide</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Trasmissione di {txid} non riuscita. Considera la trasmissione tramite {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Importa file  </translation>
     </message>

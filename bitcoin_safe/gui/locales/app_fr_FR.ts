@@ -2416,6 +2416,10 @@ below {rate}</source>
         <translation>Signatures invalides  </translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Échec de la diffusion de {txid}. Envisagez de diffuser via {url}.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>Importer un fichier  </translation>
     </message>

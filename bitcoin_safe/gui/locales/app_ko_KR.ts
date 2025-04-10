@@ -2416,6 +2416,10 @@ below {rate}</source>
         <translation>잘못된 서명  </translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} 전송 실패했습니다. {url}을 통해 전송해 보십시오.</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>파일 가져오기  </translation>
     </message>

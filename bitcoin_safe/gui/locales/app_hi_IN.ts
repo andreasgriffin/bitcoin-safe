@@ -2419,6 +2419,10 @@ below {rate}</source>
         <translation>अमान्य हस्ताक्षर</translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} प्रसारित करने में विफल। कृपया {url} के माध्यम से प्रसारित करने का प्रयास करें।</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>फाइल आयात करें  </translation>
     </message>

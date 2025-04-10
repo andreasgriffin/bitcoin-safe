@@ -2416,6 +2416,10 @@ below {rate}</source>
         <translation>မှားယွင်းသောလက်မှတ်များ  </translation>
     </message>
     <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} ကို ထုတ်လွှင့်မှု မအောင်မြင်ပါ။ {url} မှတဆင့် ထုတ်လွှင့်ကြည့်ပါ။</translation>
+    </message>
+    <message>
         <source>Import file</source>
         <translation>ဖိုင်တင်သွင်းပါ  </translation>
     </message>
