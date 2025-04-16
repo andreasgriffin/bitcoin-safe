@@ -100,7 +100,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
                     AnalyzerState.Warning,
                 )
             else:
-                return AnalyzerMessage(self.tr("Unexpected key origin"), AnalyzerState.Warning)
+                return AnalyzerMessage(self.tr("Unexpected xpub origin"), AnalyzerState.Warning)
 
 
 class FingerprintAnalyzer(BaseAnalyzer, QObject):

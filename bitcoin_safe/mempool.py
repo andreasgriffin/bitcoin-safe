@@ -38,7 +38,7 @@ import requests
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import custom_exception_handler
-from bitcoin_safe.network_config import NetworkConfig
+from bitcoin_safe.network_config import NetworkConfig, ProxyInfo
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
@@ -267,9 +267,17 @@ class MempoolData(ThreadingManager, QObject):
         fee_rates = self.mempool_blocks[block_index]["feeRange"]
         return min(fee_rates), max(fee_rates)
 
-    def median_block_fee_rate(self, block_index: int) -> float:
+    def median_block_fee_rate(self, block_index: int, decimal_precision=1) -> float:
         block_index = min(block_index, len(self.mempool_blocks) - 1)
-        return self.mempool_blocks[block_index]["medianFee"]
+        # mempool returns media fee of 0, even though the minimum feein feeRange is 1
+        median = round(self.mempool_blocks[block_index]["medianFee"], decimal_precision)
+        min_in_feerange = round(min(self.mempool_blocks[block_index]["feeRange"]), decimal_precision)
+        max_in_feerange = round(max(self.mempool_blocks[block_index]["feeRange"]), decimal_precision)
+        if median < min_in_feerange:
+            median = min_in_feerange
+        if median > max_in_feerange:
+            median = max_in_feerange
+        return median
 
     def num_mempool_blocks(self) -> int:
         vBytes_per_block = 1e6
@@ -296,7 +304,7 @@ class MempoolData(ThreadingManager, QObject):
 
         return average_fee_rate * (1 + slack)
 
-    def set_data_from_mempoolspace(self, proxies: Dict | None, force=False) -> None:
+    def set_data_from_mempoolspace(self, force=False) -> None:
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
             logger.debug(
                 f"Do not fetch data from {self.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
@@ -314,7 +322,11 @@ class MempoolData(ThreadingManager, QObject):
             threaded_fetch(
                 f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
                 on_mempool_blocks,
-                proxies=proxies,
+                proxies=(
+                    ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
+                    if self.network_config.proxy_url
+                    else None
+                ),
             )
         )
         logger.debug(f"started on_mempool_blocks")
@@ -326,7 +338,13 @@ class MempoolData(ThreadingManager, QObject):
 
         self.append_thread(
             threaded_fetch(
-                f"{self.network_config.mempool_url}api/v1/fees/recommended", on_recommended, proxies=proxies
+                f"{self.network_config.mempool_url}api/v1/fees/recommended",
+                on_recommended,
+                proxies=(
+                    ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
+                    if self.network_config.proxy_url
+                    else None
+                ),
             )
         )
         logger.debug(f"started on_recommended")
@@ -338,12 +356,27 @@ class MempoolData(ThreadingManager, QObject):
             self.signal_data_updated.emit()
 
         self.append_thread(
-            threaded_fetch(f"{self.network_config.mempool_url}api/mempool", on_mempool_dict, proxies=proxies)
+            threaded_fetch(
+                f"{self.network_config.mempool_url}api/mempool",
+                on_mempool_dict,
+                proxies=(
+                    ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
+                    if self.network_config.proxy_url
+                    else None
+                ),
+            )
         )
         logger.debug(f"started on_mempool_dict")
 
-    def fetch_block_tip_height(self, proxies: Dict | None) -> int:
-        response = fetch_from_url(f"{self.network_config.mempool_url}api/blocks/tip/height", proxies=proxies)
+    def fetch_block_tip_height(self) -> int:
+        response = fetch_from_url(
+            f"{self.network_config.mempool_url}api/blocks/tip/height",
+            proxies=(
+                ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
+                if self.network_config.proxy_url
+                else None
+            ),
+        )
         return response if response else 0
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:

@@ -415,6 +415,22 @@
         <translation>所需的签名</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>从剪贴板导入</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>输入已修正</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>描述符未更改  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>输入了新的描述符  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>预先扫描地址  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>这个“描述”包含重建钱包所需的所有信息。请备份此描述以便能够恢复资金！</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>描述符未更改  </translation>
+        <source>Wallet Properties</source>
+        <translation>钱包属性  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>输入了新的描述符  </translation>
+        <source>Address Type</source>
+        <translation>地址类型</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>钱包描述</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>读取二维码</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>费用</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>高费用比率：{ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>预估的交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>...是取代现有交易的最低限度。</translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}是{rbf}的最低费率</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>高费率！</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>高优先级内存池费率为{rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>高优先级内存池费率为 {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent}已发送！  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>交易费用是：{fee}，且{sent}已发送！  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>预估的交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>费用比例过高：{ratio}%。</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>提供的账户 {provided_account} 与默认账户 {default_account} 不同。  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>意外的关键来源  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>意外的 xpub 来源</translation>
     </message>
 </context>
 <context>
@@ -1107,6 +1141,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;显示日志  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>反馈 / 联系</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>通过 Nostr 联系</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>在 github 提交问题</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>邮件反馈</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>文档</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>知识库</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;新建钱包</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>请选择钱包</translation>
     </message>
@@ -1131,10 +1193,6 @@ Do you want to proceed anyway?</source>
         <translation>未选择文件  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;新建钱包</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>选中的文件：{file_path}</translation>
     </message>
@@ -1151,8 +1209,12 @@ Do you want to proceed anyway?</source>
         <translation>无法解码此字符串  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>已签名消息  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;打开钱包</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>二维码扫描器</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1175,10 +1237,6 @@ Do you want to proceed anyway?</source>
         <translation>交易 {txid}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;打开钱包</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}</translation>
     </message>
@@ -1193,6 +1251,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>钱包 {file_path} 已经打开。</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>打开&amp;最近</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1219,10 +1281,6 @@ Do you want to proceed anyway?</source>
         <translation>新的</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>打开&amp;最近</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>一个ID为 {name} 的钱包已经打开。</translation>
     </message>
@@ -1237,6 +1295,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>关闭钱包</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;保存当前钱包</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1255,10 +1317,6 @@ Do you want to proceed anyway?</source>
         <translation>正在关闭标签页 {name}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;保存当前钱包</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;搜索  </translation>
     </message>
@@ -1269,6 +1327,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>获取新的内存池数据</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>下一个区块</translation>
@@ -1961,8 +2023,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>注册多重签名  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>注册 {wallet_name}</translation>
     </message>
 </context>
 <context>
@@ -2946,21 +3008,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>指纹不同。只支持相同的指纹，确保所有派生的密钥属于同一签名者！  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>钱包属性  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>地址类型</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>钱包描述</translation>
     </message>
 </context>
 <context>

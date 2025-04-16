@@ -46,6 +46,7 @@ from packaging import version
 
 from bitcoin_safe.network_config import ProxyInfo, clean_electrum_url
 from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.wallet_util import signer_name
 
 from .config import MIN_RELAY_FEE, UserConfig
 from .descriptors import AddressType, MultipathDescriptor, get_default_address_type
@@ -273,7 +274,7 @@ class ProtoWallet(BaseSaveableClass):
         keystores: List[Optional[KeyStore]] = [
             KeyStore(
                 **spk_provider.__dict__,
-                label=cls.signer_names(i=i, threshold=info.threshold),
+                label=signer_name(i=i, threshold=info.threshold),
                 network=network,
             )
             for i, spk_provider in enumerate(info.spk_providers)
@@ -289,16 +290,8 @@ class ProtoWallet(BaseSaveableClass):
     def set_address_type(self, address_type: AddressType) -> None:
         self.address_type = address_type
 
-    @staticmethod
-    def signer_names(threshold: int, i: int) -> str:
-        i += 1
-        if i <= threshold:
-            return translate("d", "Signer {i}").format(i=i)
-        else:
-            return translate("d", "Recovery Signer {i}").format(i=i)
-
     def signer_name(self, i: int) -> str:
-        return self.signer_names(self.threshold, i)
+        return signer_name(self.threshold, i)
 
     def sticker_name(self, i: int | str) -> str:
         number = i if isinstance(i, str) else f"{i+1}"

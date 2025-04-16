@@ -569,7 +569,8 @@ class Recipients(QWidget):
         insert_before_button(recipient_box)
 
         recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
-        recipient_box.signal_clicked_send_max_button.connect(self.signal_amount_changed.emit)
+        recipient_box.signal_clicked_send_max_button.connect(self.signal_amount_changed)
+        recipient_box.signal_amount_changed.connect(self.signal_amount_changed)
         self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 

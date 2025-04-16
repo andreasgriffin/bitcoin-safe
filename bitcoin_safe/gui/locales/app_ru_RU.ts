@@ -415,6 +415,22 @@
         <translation>Необходимые подписывающие устройства</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>Импортировать из буфера обмена</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>Ввод исправлен</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>Дескриптор не изменен  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>Введен новый дескриптор  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>Сканирование адресов вперед  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Этот &quot;дескриптор&quot; содержит всю информацию для воссоздания кошелька. Пожалуйста, сделайте резервную копию этого дескриптора, чтобы иметь возможность восстановить средства!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>Дескриптор не изменен  </translation>
+        <source>Wallet Properties</source>
+        <translation>Свойства кошелька  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>Введен новый дескриптор  </translation>
+        <source>Address Type</source>
+        <translation>Тип адреса</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>Дескриптор кошелька</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>Импорт</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>Считать QR-код</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Комиссия</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>Высокое соотношение комиссии: {ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Приблизительная комиссия за транзакцию составляет: {fee}, что составляет {percent}% от отправленной суммы {sent}</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Комиссия за транзакцию составляет: {fee}, что составляет {percent}% от отправленной суммы {sent}</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... это минимум для замены существующих транзакций.</translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} это минимум для {rbf}</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>Высокая ставка комиссии!</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>Ставка комиссии в высокоприоритетном мемпуле составляет {rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>Высокий приоритет комиссии мемпула: {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} отправлено!  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>Комиссия за транзакцию составляет: {fee}, и {sent} отправлено!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Приблизительная комиссия за транзакцию составляет: {fee}, что составляет {percent}% от отправленной суммы {sent}</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Комиссия за транзакцию составляет: {fee}, что составляет {percent}% от отправленной суммы {sent}</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>Высокое соотношение комиссии: {ratio}%.</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>Предоставленный аккаунт {provided_account} отличается от стандартного аккаунта {default_account}.  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>Неожиданный ключ происхождения  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>Неожиданное происхождение xpub</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Показать логи  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>Обратная связь / Контакты</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Связаться через Nostr</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>Открыть проблему на github</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>Отправить отзыв по почте</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>Документация</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>База знаний</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;Новый кошелек</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>Пожалуйста, выберите кошелек</translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>Файл не выбран  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;Новый кошелек</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>Выбранный файл: {file_path}</translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>Не удалось декодировать эту строку  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>Подписанное сообщение  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;Открыть кошелек</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR-сканер</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>Транзакция {txid}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;Открыть кошелек</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}</translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>Кошелек {file_path} уже открыт.</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Открыть &amp;Недавние</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>новый</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Открыть &amp;Недавние</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>Кошелек с идентификатором {name} уже открыт.</translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>Закрыть кошелек</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Сохранить текущий кошелек</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>Закрытие вкладки {name}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Сохранить текущий кошелек</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Поиск  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>Получить новые данные из мемпула</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>Следующий блок</translation>
@@ -1958,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>Регистрация Multisig  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>Зарегистрировать {wallet_name}</translation>
     </message>
 </context>
 <context>
@@ -2940,21 +3002,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>Отпечатки пальцев различаются. Поддерживаются только одинаковые отпечатки, что гарантирует, что все производные ключи принадлежат одному подписанту!  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>Свойства кошелька  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>Тип адреса</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>Дескриптор кошелька</translation>
     </message>
 </context>
 <context>

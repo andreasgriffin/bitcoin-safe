@@ -213,6 +213,8 @@ class TagEditor(QWidget):
 
     def add_new_tag_from_input_field(self):
         new_tag = clean_tag(self.input_field.text())
+        if not new_tag:
+            return
         item = self.add(new_tag)
         if item:
             self.input_field.setPlaceholderText(self.default_placeholder_text())

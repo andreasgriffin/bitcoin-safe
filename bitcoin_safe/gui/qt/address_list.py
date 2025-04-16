@@ -106,7 +106,8 @@ from .taglist import AddressDragInfo
 from .util import (
     ColorScheme,
     Message,
-    create_color_square,
+    category_color,
+    create_color_circle,
     do_copy,
     read_QIcon,
     sort_id_to_icon,
@@ -657,21 +658,13 @@ class AddressList(MyTreeView):
             if address is None:
                 address = item_col.text().strip()
 
+            # When the user selects the action, emit the drop signal with the category and address.
             action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], [address]))
             copy_menu.add_action(
                 category,
                 action,
-                icon=create_color_square(CategoryEditor.color(category)),
+                icon=create_color_circle(category_color(category)),
             )
-
-    # def place_text_on_clipboard(self, text: str, *, title: str = None) -> None:
-    #     if bdk.Address(text):
-    #         try:
-    #             self.wallet.check_address_for_corruption(text)
-    #         except InternalAddressCorruption as e:
-    #             self.show_error(str(e))
-    #             raise
-    #     super().place_text_on_clipboard(text, title=title)
 
     def get_edit_key_from_coordinate(self, row, col) -> Any:
         if col != self.Columns.LABEL:

@@ -43,7 +43,7 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config  # type: ignore

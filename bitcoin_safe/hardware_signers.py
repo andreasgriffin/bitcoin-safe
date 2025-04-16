@@ -64,7 +64,7 @@ class DescriptorExportTypes:
 
 
 class DescriptorQrExportTypes:
-    bbqr = QrExportTypes.bbqr
+    coldcard_legacy = QrExportType("coldcard_legacy", "Coldcard")
     passport = QrExportType("passport_descriptor_export", "Foundation")
     keystone = QrExportType("keystone_descriptor_export", "Keystone")
     specterdiy = QrExportType("specterdiy_descriptor_export", "Specter")
@@ -78,8 +78,8 @@ class DescriptorQrExportTypes:
 
 
 class SignMessageRequestQrExportTypes:
-    bbqr = QrExportTypes.bbqr
-    text = QrExportTypes.text
+    bbqr = QrExportType("bbqr_sign_message_request", "BBQr")
+    text = QrExportType("text_sign_message_request", "Text")
 
     @classmethod
     def as_list(cls) -> List[QrExportType]:
@@ -137,7 +137,12 @@ class HardwareSigners:
         "q",
         "Q",
         usb_preferred=False,
-        qr_types=[QrExportTypes.bbqr, DescriptorQrExportTypes.bbqr],
+        qr_types=[
+            QrExportTypes.bbqr,
+            DescriptorQrExportTypes.coldcard_legacy,
+            SignMessageRequestQrExportTypes.bbqr,
+            SignMessageRequestQrExportTypes.text,
+        ],
         descriptor_export_types=[DescriptorExportTypes.coldcard],
     )
     bitbox02 = HardwareSigner(
@@ -151,21 +156,21 @@ class HardwareSigners:
         "jade",
         "Jade",
         usb_preferred=True,
-        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport],
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[],
     )
     passport = HardwareSigner(
         "passport",
         "Passport",
         usb_preferred=False,
-        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport],
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.passport, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.passport],
     )
     keystone = HardwareSigner(
         "keystone",
         "Keystone",
         usb_preferred=False,
-        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.keystone],
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.keystone, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.keystone],
     )
     trezor = HardwareSigner(
@@ -186,7 +191,7 @@ class HardwareSigners:
         "specterdiy",
         "Specter-DIY",
         usb_preferred=False,
-        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.specterdiy],
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.specterdiy, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.specterdiy],
     )
 

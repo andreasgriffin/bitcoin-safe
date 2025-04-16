@@ -52,6 +52,7 @@ from PyQt6.QtGui import (
     QFontMetrics,
     QIcon,
     QImage,
+    QPainter,
     QPalette,
     QPixmap,
 )
@@ -901,15 +902,14 @@ def category_color(text: str) -> QColor:
     return adjust_bg_color_for_darkmode(hash_color(text))
 
 
-def create_color_square(color: QColor, length=24) -> QIcon:
-    # Define the size of the square icon
-    size = QSize(length, length)
-
-    # Create a QPixmap of defined size
-    pixmap = QPixmap(size)
-
-    # Fill the QPixmap with the provided color
-    pixmap.fill(color)
-
-    # Create and return a QIcon from the QPixmap
+def create_color_circle(color: QColor, size=24, margin=1):
+    pixmap = QPixmap(size, size)
+    pixmap.fill(Qt.GlobalColor.transparent)  # use a transparent background
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    painter.setBrush(color)
+    painter.setPen(Qt.PenStyle.NoPen)
+    # Draw the circle centered in the pixmap
+    painter.drawEllipse(margin, margin, size - 2 * margin, size - 2 * margin)
+    painter.end()
     return QIcon(pixmap)
