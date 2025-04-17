@@ -279,26 +279,6 @@ class BlockButton(QPushButton):
         self.setStyleSheet(css)
         self._set_glow(active)
 
-    # # Override mousePressEvent to avoid the depressed visualization.
-    # def mousePressEvent(self, event: QMouseEvent) -> None:
-    #     if event.button() == Qt.MouseButton.LeftButton:
-    #         # Accept the event to prevent propagation, but do not call the parent method.
-    #         # This stops the button from entering a "pressed" (down) visual state.
-    #         event.accept()
-    #     else:
-    #         # For other buttons, preserve default behavior.
-    #         super().mousePressEvent(event)
-
-    # # Override mouseReleaseEvent to emit clicked normally without the pressed visual feedback.
-    # def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-    #     if event.button() == Qt.MouseButton.LeftButton:
-    #         if self.rect().contains(event.position().toPoint()):
-    #             # Emit the clicked signal manually.
-    #             self.clicked.emit()
-    #         event.accept()
-    #     else:
-    #         super().mouseReleaseEvent(event)
-
 
 class VerticalButtonGroup(InvisibleScrollArea):
     signal_button_click: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore

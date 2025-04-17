@@ -486,9 +486,20 @@ class UITx_Creator(UITx_Base):
 
     def opportunistic_merging_threshold(self) -> float:
         """Calculates the ema fee rate from past transactions.
-        Then it lowers this to the low prio mempool fee rate.
+        Then it lowers this to the low prio mempool fee rate
+        (if the high prio fee rate it is 10x higher than the min relay fee).
         """
-        return min(self.wallet.get_ema_fee_rate(), self.mempool_data.get_prio_fee_rates()[TxPrio.low])
+        fee_rate = self.wallet.get_ema_fee_rate()
+
+        if self.mempool_data.get_prio_fee_rates()[TxPrio.high] >= 10 * MIN_RELAY_FEE:
+            # assume, fee_rate = 5 sat/vb.
+            # And the mempool is empty. Then enevn the high prio fee rate is 1 sat/vb.
+            # the opportunistic_merging_threshold should remain at 5 sat/vB.
+            #
+            # However if we are in a high fee environment,
+            # then the opportunistic_merging should only occur if we are <=  low prio fee rate
+            fee_rate = min(fee_rate, self.mempool_data.get_prio_fee_rates()[TxPrio.low])
+        return fee_rate
 
     def _select_minimum_number_utxos_no_fee(
         self, utxos_for_input: UtxosForInputs, send_value: int
