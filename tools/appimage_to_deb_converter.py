@@ -125,22 +125,20 @@ class Appimage2debConverter:
 
     def _create_preinst_script(self, debian_dir: Path) -> None:
         """
-        Creates a pre-installation script that purges /opt/{package_name}.
+        Creates a pre-installation script that purges /opt/{package_name},
+        but never fails (errors are ignored).
         """
         preinst_path = debian_dir / "preinst"
-        preinst_content = "#!/bin/sh\n" "set -e\n" f"rm -rf /opt/{self.package_name}\n" "exit 0\n"
+        preinst_content = f"""\
+#!/bin/sh
+# purge any old install; ignore all errors
+if [ -d "/opt/{self.package_name}" ]; then
+    rm -rf "/opt/{self.package_name}" 2>/dev/null || true
+fi
+exit 0
+"""
         preinst_path.write_text(preinst_content)
-        # Mark the script as executable.
         os.chmod(preinst_path, 0o755)
-
-    def _create_postrm_script(self, debian_dir: Path) -> None:
-        """
-        Creates a post-removal script that removes all files in /opt/{package_name}.
-        """
-        postrm_path = debian_dir / "postrm"
-        postrm_content = "#!/bin/sh\n" "set -e\n" f"rm -rf /opt/{self.package_name}\n" "exit 0\n"
-        postrm_path.write_text(postrm_content)
-        os.chmod(postrm_path, 0o755)
 
     def _create_desktop_file(self, package_root: Path) -> None:
         # Create the directory for desktop entries.
@@ -191,11 +189,8 @@ class Appimage2debConverter:
             debian_dir = package_root / "DEBIAN"
             self._create_control_file(debian_dir)
 
-            print("Creating preinst script...")
+            # print("Creating preinst script...")
             self._create_preinst_script(debian_dir)
-
-            print("Creating postrm script...")
-            self._create_postrm_script(debian_dir)
 
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
