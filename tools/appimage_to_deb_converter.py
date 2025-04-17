@@ -125,20 +125,35 @@ class Appimage2debConverter:
 
     def _create_preinst_script(self, debian_dir: Path) -> None:
         """
-        Creates a pre-installation script that purges /opt/{package_name}.
+        Creates a pre-installation script that purges /opt/{package_name},
+        but never fails (errors are ignored).
         """
         preinst_path = debian_dir / "preinst"
-        preinst_content = "#!/bin/sh\n" "set -e\n" f"rm -rf /opt/{self.package_name}\n" "exit 0\n"
+        preinst_content = f"""\
+#!/bin/sh
+# purge any old install; ignore all errors
+if [ -d "/opt/{self.package_name}" ]; then
+    rm -rf "/opt/{self.package_name}" 2>/dev/null || true
+fi
+exit 0
+"""
         preinst_path.write_text(preinst_content)
-        # Mark the script as executable.
         os.chmod(preinst_path, 0o755)
 
     def _create_postrm_script(self, debian_dir: Path) -> None:
         """
-        Creates a post-removal script that removes all files in /opt/{package_name}.
+        Creates a post-removal script that removes /opt/{package_name},
+        but never fails (errors are ignored).
         """
         postrm_path = debian_dir / "postrm"
-        postrm_content = "#!/bin/sh\n" "set -e\n" f"rm -rf /opt/{self.package_name}\n" "exit 0\n"
+        postrm_content = f"""\
+#!/bin/sh
+# clean up install dir; ignore all errors
+if [ -d "/opt/{self.package_name}" ]; then
+    rm -rf "/opt/{self.package_name}" 2>/dev/null || true
+fi
+exit 0
+"""
         postrm_path.write_text(postrm_content)
         os.chmod(postrm_path, 0o755)
 
