@@ -39,7 +39,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...test_helpers import test_config, test_config_main_chain  # type: ignore

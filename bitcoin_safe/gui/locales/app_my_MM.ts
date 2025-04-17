@@ -415,6 +415,22 @@
         <translation>လိုအပ်သောလက်မှတ်သားများ  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>clipboard မှတင်သွင်းပါ</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>ထည့်သွင်းမှု ပြင်ဆင်ပြီး</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>ရှာဖွေထားသောကိရိယာကိုရွေးပါ  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>လိပ်စာများကိုတိုင်းတာပါ  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Descriptor ကိုမပြောင်းလဲပါ  </translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်  </translation>
+        <source>Wallet Properties</source>
+        <translation>ပိုက်ဆံအိတ်ပုံရိပ်  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>ရှာဖွေထားသောကိရိယာကိုရွေးပါ  </translation>
+        <source>Address Type</source>
+        <translation>လိပ်စာအမျိုးအစား  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>ပိုက်ဆံအိတ်ဖော်ပြချက်  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>တင်သွင်းပါ  </translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR Code ဖတ်ပါ</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>ကြေးနန်း  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>ကြေးနန်းအမြင့်မှု: {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>ခန့်မှန်းထားသောငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>ငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... သည် ရှိရှိသမျှငွေလွှဲများအားဖြည့်ဆည်းရန်အနည်းဆုံးဖြစ်သည်။  </translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} သည် {rbf} အတွက်အနည်းဆုံးဖြစ်သည်  </translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>ကြေးနန်းအမြင့်!  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>အမြင့်ပြည့် mempool ကြေးနန်းမှာ {rate} ဖြစ်သည်  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>မြင့်မားသော ဦးစားပေး mempool အခကြေးငွေ နှုန်းမှာ {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} ပေးပို့ခဲ့သည်!  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>ငွေလွှဲခကြေးမှာ: {fee} ဖြစ်ပြီး {sent} ကိုပေးပို့ခဲ့သည်!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>ခန့်မှန်းထားသောငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>ငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>အခကြေးငွေ အချိုးအစားမြင့်မား: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>ပေးထားသောအကောင့် {provided_account} သည် ပုံမှန်အကောင့် {default_account} မှ ကွဲပြားနေသည်။  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>မထင်မှတ်သောသော့ချက်အမူလ  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>မမျှော်လင့်သော xpub ရင်းမြစ်</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;ယာယီမှတ်တမ်းများကိုပြသပါ  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>တုံ့ပြန်ချက် / ဆက်သွယ်ရန်</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostr မှတဆင့် ဆက်သွယ်ရန်</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>github တွင် ပြဿနာဖွင့်ပါ</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>အီးမေးလ်ဖြင့် တုံ့ပြန်ချက်ပေးရန်</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>စာရွက်စာတမ်း</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>အသိပညာအချက်အလက်</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>ပိုက်ဆံအိတ်အသစ်  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>ပိုက်ဆံအိတ်ရွေးပါ  </translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>ဖိုင်မရှိပါ  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>ပိုက်ဆံအိတ်အသစ်  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>ရွေးထားသောဖိုင်: {file_path}  </translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR Scanner</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>ငွေလွှဲ {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>လတ်တလောများကိုဖွင့်ပါ  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>အသစ်  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>လတ်တလောများကိုဖွင့်ပါ  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>{id} ဖြင့်ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>ပိုက်ဆံအိတ်ပိတ်ပါ  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>လက်ရှိပိုက်ဆံအိတ်ကိုသိမ်းပါ  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>{name} တက်ဘ်ကိုပိတ်ပါ  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>လက်ရှိပိုက်ဆံအိတ်ကိုသိမ်းပါ  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;ရှာဖွေပါ  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>mempool ဒေတာအသစ်ရယူပါ</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>နောက်တစ်ခုဘလော့ခ်  </translation>
@@ -1955,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>Multisig မှတ်ပုံတင်ပါ  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} ကို စာရင်းသွင်းပါ</translation>
     </message>
 </context>
 <context>
@@ -2937,21 +2999,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>လက်ဗွေများသည်ကွဲပြားနေသည်။ တူညီသောလက်ဗွေများသာထောက်ပံ့ပါ၊ ဤအရာသည်အားလုံးလက်မှတ်သားများသည်တူညီသောလက်မှတ်သားမှလာသည်ဟုအာမခံပါသည်။  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>ပိုက်ဆံအိတ်ပုံရိပ်  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>လိပ်စာအမျိုးအစား  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>ပိုက်ဆံအိတ်ဖော်ပြချက်  </translation>
     </message>
 </context>
 <context>

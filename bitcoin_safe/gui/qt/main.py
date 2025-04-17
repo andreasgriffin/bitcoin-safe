@@ -47,6 +47,7 @@ from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
     QMainWindow,
+    QMessageBox,
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
@@ -62,6 +63,7 @@ from bitcoin_safe.gui.qt.category_list import CategoryEditor
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
+from bitcoin_safe.gui.qt.my_treeview import SearchableTab
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
@@ -71,6 +73,7 @@ from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
+from bitcoin_safe.logging_handlers import mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
@@ -98,7 +101,7 @@ from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
 from .network_settings.main import NetworkSettingsUI
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
-from .ui_tx import UiElements, UITx_Viewer, UITx_ViewerTab
+from .ui_tx_viewer import UiElements, UITx_Viewer
 from .util import (
     Message,
     MessageType,
@@ -165,13 +168,7 @@ class MainWindow(QMainWindow):
             signals_min=self.signals,
             threading_parent=self.threading_manager,
         )
-        self.mempool_data.set_data_from_mempoolspace(
-            proxies=(
-                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
-                if self.config.network_config.proxy_url
-                else None
-            )
-        )
+        self.mempool_data.set_data_from_mempoolspace()
 
         self.last_qtwallet: Optional[QTWallet] = None
         # connect the listeners
@@ -482,21 +479,20 @@ class MainWindow(QMainWindow):
 
         # menu about
         self.menu_about = self.menubar.add_menu("")
-        self.menu_action_version = self.menu_about.add_action("", self.on_menu_action_version)
+        self.menu_action_version = self.menu_about.add_action(
+            "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/releases")
+        )
         self.menu_action_check_update = self.menu_about.add_action(
             "", self.update_notification_bar.check_and_make_visible
         )
+        self.menu_show_logs = self.menu_about.add_action("", self.menu_action_show_log)
+        self.menu_action_license = self.menu_about.add_action("", LicenseDialog().exec)
         self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
 
-        def menu_action_license():
-            LicenseDialog().exec()
-
-        self.menu_action_license = self.menu_about.add_action("", menu_action_license)
-
-        def menu_action_show_log():
-            xdg_open_file(get_log_file(), is_text_file=True)
-
-        self.menu_show_logs = self.menu_about.add_action("", menu_action_show_log)
+        self.menu_knowledge = self.menu_about.add_menu("")
+        self.add_menu_knowledge_items(self.menu_knowledge)
+        self.menu_feedback = self.menu_about.add_menu("")
+        self.add_feedback_menu_items(self.menu_feedback)
 
         # assigning menu bar
         self.setMenuBar(self.menubar)
@@ -505,11 +501,29 @@ class MainWindow(QMainWindow):
         self.shortcut_close_tab = QShortcut(QKeySequence("Ctrl+W"), self)
         self.shortcut_close_tab.activated.connect(self.close_current_tab)
 
+    def menu_action_show_log(self):
+        xdg_open_file(get_log_file(), is_text_file=True)
+
+    def add_menu_knowledge_items(self, menu_knowledge: Menu):
+        self.action_knowledge_website = menu_knowledge.add_action(
+            "", partial(webopen, "https://bitcoin-safe.org/en/knowledge/")
+        )
+
+    def add_feedback_menu_items(self, menu_feedback: Menu):
+        self.action_mail_feedback = menu_feedback.add_action("", mail_feedback)
+        self.action_open_issue_github = menu_feedback.add_action(
+            "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/issues/new")
+        )
+        self.action_contact_via_nostr = menu_feedback.add_action(
+            "",
+            partial(
+                webopen,
+                "https://primal.net/p/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g",
+            ),
+        )
+
     def close_current_tab(self):
         self.close_tab(self.tab_wallets.currentIndex())
-
-    def on_menu_action_version(self):
-        webopen("https://github.com/andreasgriffin/bitcoin-safe/releases")
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
@@ -557,6 +571,14 @@ class MainWindow(QMainWindow):
         self.menu_action_check_update.setText(self.tr("&Check for update"))
         self.menu_action_license.setText(self.tr("&License"))
         self.menu_show_logs.setText(self.tr("&Show Logs"))
+
+        self.menu_feedback.setTitle(self.tr("&Feedback / Contact"))
+        self.action_contact_via_nostr.setText(self.tr("&Contact via Nostr"))
+        self.action_open_issue_github.setText(self.tr("&Open issue in github"))
+        self.action_mail_feedback.setText(self.tr("&Mail feedback"))
+
+        self.menu_knowledge.setTitle(self.tr("&Documentation"))
+        self.action_knowledge_website.setText(self.tr("&Knowledge"))
 
         # the search fields
         # for qt_wallet in self.qt_wallets.values():
@@ -700,7 +722,7 @@ class MainWindow(QMainWindow):
             return
 
         hardware_signer_interaction = RegisterMultisigInteractionWidget(
-            qt_wallet=qt_wallet, threading_parent=self.threading_manager
+            qt_wallet=qt_wallet, threading_parent=self.threading_manager, wallet_name=qt_wallet.wallet.id
         )
         hardware_signer_interaction.aboutToClose.connect(self.signal_remove_attached_widget)
         hardware_signer_interaction.set_minimum_size_as_floating_window()
@@ -871,7 +893,7 @@ class MainWindow(QMainWindow):
         self._qr_scanner = SimpleQrScanner(
             network=self.config.network,
             close_all_video_widgets=self.signals.close_all_video_widgets,
-            title=self.tr("Signed Message"),
+            title=self.tr("QR Scanner"),
         )
         self.attached_widgets.append(self._qr_scanner)
         self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
@@ -902,7 +924,7 @@ class MainWindow(QMainWindow):
 
     def open_tx_in_tab(
         self, txlike: Union[bdk.Transaction, bdk.TransactionDetails], focus_ui_element=UiElements.none
-    ) -> Optional[Tuple[UITx_ViewerTab, UITx_Viewer]]:
+    ) -> Optional[Tuple[SearchableTab, UITx_Viewer]]:
         tx: bdk.Transaction | None = None
         fee = None
         confirmation_time = None
@@ -917,7 +939,7 @@ class MainWindow(QMainWindow):
             logger.debug(f"Got a PartiallySignedTransaction")
             tx = txlike.transaction
             fee = txlike.fee
-            if fee is None and txlike.transaction.is_coin_base():
+            if fee is None and txlike.transaction and txlike.transaction.is_coin_base():
                 fee = 0
             confirmation_time = txlike.confirmation_time
         elif isinstance(txlike, bdk.Transaction):
@@ -1008,7 +1030,7 @@ class MainWindow(QMainWindow):
         tx: Union[
             bdk.PartiallySignedTransaction, TxBuilderInfos, bdk.TxBuilderResult, str, bdk.TransactionDetails
         ],
-    ) -> Optional[Tuple[UITx_ViewerTab, UITx_Viewer]]:
+    ) -> Optional[Tuple[SearchableTab, UITx_Viewer]]:
         psbt: bdk.PartiallySignedTransaction | None = None
         fee_info: Optional[FeeInfo] = None
 
@@ -1228,9 +1250,9 @@ class MainWindow(QMainWindow):
 
         for index in range(self.tab_wallets.count()):
             # Get the widget for the current tab
-            tab = self.tab_wallets.widget(index)
-            if isinstance(tab, UITx_ViewerTab):
-                l.append(tab.serialize())
+            tab = self.tab_wallets.tabData(index)
+            if isinstance(tab, UITx_Viewer):
+                l.append(tab.data.data_as_string())
 
         self.config.opened_txlike[str(self.config.network)] = l
 
@@ -1617,6 +1639,7 @@ class MainWindow(QMainWindow):
                     id=short_tx_id(tab_data.data.data.extract_tx().txid())
                 ),
                 self.tr("Save PSBT?"),
+                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
             ):
                 tab_data.export_data_simple.button_export_file.export_to_file()
             logger.info(self.tr("Closing tab {name}").format(name=self.tab_wallets.tabText(index)))

@@ -52,7 +52,7 @@ from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.ui_tx import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.gui.qt.wizard import (
     BackupSeed,

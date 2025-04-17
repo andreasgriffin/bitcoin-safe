@@ -76,13 +76,14 @@ from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.wallet import ProtoWallet, Wallet
+from bitcoin_safe.wallet import Wallet
 
 from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...signals import TypedPyQtSignalNo
 from ...tx import TxUiInfos
 from ...util import Satoshis
+from ...wallet_util import signer_name
 from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
@@ -487,7 +488,7 @@ class StickerTheHardware(BaseTab):
     def device_name(self, i) -> str:
         protowallet = self.refs.qtwalletbase.get_editable_protowallet()
         threshold, n = protowallet.get_mn_tuple()
-        return ProtoWallet.signer_names(threshold=threshold, i=i)
+        return signer_name(threshold=threshold, i=i)
 
     def updateUi(self) -> None:
         super().updateUi()
@@ -1122,7 +1123,10 @@ class RegisterMultisig(BaseTab):
         for label in self.refs.qtwalletbase.get_keystore_labels():
 
             hardware_signer_interaction = RegisterMultisigInteractionWidget(
-                qt_wallet=self.refs.qt_wallet, threading_parent=self, parent=widget
+                qt_wallet=self.refs.qt_wallet,
+                threading_parent=self,
+                parent=widget,
+                wallet_name=self.refs.qt_wallet.wallet.id if self.refs.qt_wallet else "Multisig",
             )
             self.hardware_signer_tabs.addTab(
                 hardware_signer_interaction,

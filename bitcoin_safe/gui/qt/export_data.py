@@ -37,7 +37,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
-from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
@@ -735,26 +735,42 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             return []
 
         # only handle the DescriptorExportTypes, everything else is handles in  generate_fragments_for_qr
-        if qr_export_type.name == DescriptorExportTypes.specterdiy.name:
+
+        ## descriptors
+        if qr_export_type.name == DescriptorQrExportTypes.specterdiy.name:
             assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
             return [
                 DescriptorExportTools._get_specter_diy_str(
                     wallet_id=self.wallet_id, descriptor_str=data.data_as_string()
                 )
             ]
-        elif qr_export_type.name == DescriptorExportTypes.passport.name:
+        elif qr_export_type.name == DescriptorQrExportTypes.passport.name:
             assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_passport_str(
                 wallet_id=self.wallet_id,
                 descriptor_str=data.data_as_string(),
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
-        elif qr_export_type.name == DescriptorExportTypes.keystone.name:
+        elif qr_export_type.name == DescriptorQrExportTypes.keystone.name:
             assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_keystone_str(
                 wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
+        elif qr_export_type.name == DescriptorQrExportTypes.coldcard_legacy.name:
+            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            coldcard_str = DescriptorExportTools._get_coldcard_str_legacy(
+                wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
+            )
+            return UnifiedEncoder.raw_generate_fragments_for_bbqr(raw=coldcard_str.encode(), file_type="U")
+        ## SignMessageRequest
+        elif qr_export_type.name in [SignMessageRequestQrExportTypes.text.name]:
+            assert data.data_type in [DataType.SignMessageRequest], "Wrong datatype"
+            return [ConverterSignMessageRequest(data.data).to_text_str()]
+        elif qr_export_type.name in [SignMessageRequestQrExportTypes.bbqr.name]:
+            # this is necessary, because SignMessageRequestQrExportTypes.bbqr != QrExportTypes.bbqr
+            assert data.data_type in [DataType.SignMessageRequest], "Wrong datatype"
+            return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=QrExportTypes.bbqr)
         else:
             return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
 
@@ -815,6 +831,7 @@ class QrToolButton(QToolButton):
         threading_parent: ThreadingManager | None,
         parent: QWidget | None = None,
         button_prefix: str = "",
+        wallet_name: str = "MultiSig",
     ) -> None:
         super().__init__(parent)
         self.button_prefix = button_prefix
@@ -828,6 +845,7 @@ class QrToolButton(QToolButton):
             enable_qr=True,
             network=network,
             threading_parent=threading_parent,
+            wallet_name=wallet_name,
         )
         self.export_qr_widget.set_minimum_size_as_floating_window()
 
@@ -844,6 +862,7 @@ class QrToolButton(QToolButton):
     def _show_export_widget(self, export_type: QrExportType):
         if not self.export_qr_widget:
             return
+
         self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
         self.export_qr_widget.show()
 

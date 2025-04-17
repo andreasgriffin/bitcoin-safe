@@ -31,6 +31,7 @@ import logging
 from typing import Sequence
 
 import bdkpython as bdk
+from bitcoin_qr_tools.data import ConverterMultisigWalletExport
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
@@ -41,8 +42,13 @@ from bitcoin_usb.address_types import (
     ConstDerivationPaths,
     DescriptorInfo,
     SimplePubKeyProvider,
+    get_all_address_types,
 )
 from hwilib.descriptor import parse_descriptor
+
+from bitcoin_safe.wallet_util import signer_name
+
+from .keystore import KeyStore
 
 logger = logging.getLogger(__name__)
 
@@ -101,3 +107,35 @@ class MultipathDescriptor(BitcoinQRMultipathDescriptor):
 
     def __str__(self) -> str:
         return self.as_string()
+
+    @classmethod
+    def from_multisig_wallet_export(
+        cls,
+        multisig_wallet_export: ConverterMultisigWalletExport,
+        network: bdk.Network,
+    ) -> "MultipathDescriptor":
+        matching_address_type: AddressType | None = None
+        for address_type in get_all_address_types():
+            if address_type.short_name == multisig_wallet_export.address_type_short_name:
+                matching_address_type = address_type
+        if not matching_address_type:
+            raise Exception(
+                f"Could not match address type {multisig_wallet_export.address_type_short_name} to {get_all_address_types()}"
+            )
+
+        keystores = [
+            KeyStore.from_signer_info(
+                signer_info=signer_info,
+                network=network,
+                default_label=signer_name(threshold=multisig_wallet_export.threshold, i=i),
+                default_derivation_path=ConstDerivationPaths.multipath,
+            )
+            for i, signer_info in enumerate(multisig_wallet_export.signer_infos)
+        ]
+
+        return MultipathDescriptor.from_keystores(
+            multisig_wallet_export.threshold,
+            spk_providers=keystores,
+            address_type=matching_address_type,
+            network=network,
+        )

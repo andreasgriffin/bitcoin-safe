@@ -415,6 +415,22 @@
         <translation>التوقيعات المطلوبة</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>استيراد من الحافظة</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>تم تصحيح الإدخال</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>الوصف غير متغير  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>تم إدخال وصف جديد  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>مسح العناوين مقدما  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>يحتوي &quot;الوصف&quot; هذا على جميع المعلومات لإعادة بناء المحفظة. يرجى عمل نسخة احتياطية من هذا الوصف لتكون قادرًا على استعادة الأموال!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>الوصف غير متغير  </translation>
+        <source>Wallet Properties</source>
+        <translation>خصائص المحفظة  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>تم إدخال وصف جديد  </translation>
+        <source>Address Type</source>
+        <translation>نوع العنوان</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>واصف المحفظة</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>استيراد</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>قراءة رمز QR</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>رسوم</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>نسبة رسوم عالية: {ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>تم تقدير رسوم المعاملة بمقدار: {fee}، والتي تمثل {percent}% من قيمة الإرسال {sent}</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>رسوم المعاملة هي: {fee}، والتي تمثل {percent}% من قيمة الإرسال {sent}</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... هو الحد الأدنى لاستبدال المعاملات الحالية.</translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} هو الحد الأدنى لـ {rbf}</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>معدل رسوم عال!</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>معدل الرسوم عالية الأولوية في مجموعة الذاكرة الرئيسية هو {rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>معدل رسوم الميمبول ذو الأولوية العالية هو {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>تم إرسال {sent}!  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>رسوم المعاملة هي: {fee}، وتم إرسال {sent}!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>تم تقدير رسوم المعاملة بمقدار: {fee}، والتي تمثل {percent}% من قيمة الإرسال {sent}</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>رسوم المعاملة هي: {fee}، والتي تمثل {percent}% من قيمة الإرسال {sent}</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>نسبة الرسوم مرتفعة: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>الحساب المقدم {provided_account} يختلف عن الحساب الافتراضي {default_account}.  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>أصل المفتاح غير المتوقع  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>مصدر xpub غير متوقع</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;عرض السجلات  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>ملاحظات / تواصل</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>التواصل عبر Nostr</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>فتح مشكلة في github</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>إرسال ملاحظات عبر البريد</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>الوثائق</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>قاعدة المعرفة</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;محفظة جديدة</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>يرجى تحديد المحفظة</translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>لم يتم اختيار ملف  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;محفظة جديدة</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>الملف المحدد: {مسار_الملف}</translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>لا يمكن فك تشفير هذه السلسلة  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>رسالة موقعة  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>ماسح QR</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>معاملة {txid}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;فتح المحفظة</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}</translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>المحفظة {مسار_الملف} مفتوحة بالفعل.</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>فتح &amp;الأخيرة</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>جديد</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>فتح &amp;الأخيرة</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>هناك محفظة برقم {اسم} مفتوحة بالفعل.  </translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>إغلاق المحفظة</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>جارٍ إغلاق التبويب {name}</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;حفظ المحفظة الحالية</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;بحث  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>جلب بيانات ميمبول جديدة</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>الكتلة التالية</translation>
@@ -1958,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>تسجيل Multisig  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>تسجيل {wallet_name}</translation>
     </message>
 </context>
 <context>
@@ -2940,21 +3002,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>البصمات مختلفة. يتم دعم البصمات المتطابقة فقط، مما يضمن أن جميع المفاتيح المشتقة تنتمي إلى نفس الموقع!  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>خصائص المحفظة  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>نوع العنوان</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>واصف المحفظة</translation>
     </message>
 </context>
 <context>

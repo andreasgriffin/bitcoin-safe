@@ -32,6 +32,7 @@ import datetime
 import getpass
 import hashlib
 import json
+import logging
 import os
 import subprocess
 import sys
@@ -42,6 +43,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import requests
 
 from bitcoin_safe.execute_config import ENABLE_THREADING, ENABLE_TIMERS, IS_PRODUCTION
+
+logger = logging.getLogger(__name__)
+
 
 assert IS_PRODUCTION
 assert ENABLE_THREADING
@@ -88,6 +92,50 @@ gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 # ```
 
 
+def run_command(command, cwd=None):
+    """
+    Runs a shell command, logs its stdout and stderr, and raises an exception on failure.
+
+    :param command: The command to run (string).
+    :param cwd: The working directory for the command (string or None).
+    :return: The stdout from the command.
+    """
+    logger.debug(f"Running command: {command} (cwd={cwd})")
+    result = subprocess.run(command, cwd=cwd, shell=True, capture_output=True, text=True)
+
+    # Log the command output
+    if result.stdout:
+        logger.debug(f"Output:\n{result.stdout}")
+    if result.stderr:
+        logger.debug(f"Error output:\n{result.stderr}")
+
+    # Raise an error if the command did not complete successfully
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode, command, output=result.stdout, stderr=result.stderr
+        )
+
+    return result.stdout
+
+
+def update_website(website_dir, version):
+    # Pull the latest changes from git.
+    run_command("git pull", cwd=website_dir)
+
+    # Run the fetch_release.sh script.
+    run_command("bash fetch_release.sh", cwd=website_dir)
+
+    # Add the updated file to git.
+    run_command("git add data/latest_release.json", cwd=website_dir)
+
+    # Commit the change with the version.
+    commit_message = f"Update to {version}"
+    run_command(f'git commit -m "{commit_message}"', cwd=website_dir)
+
+    # Finally, push the changes back to the repository.
+    run_command("git push", cwd=website_dir)
+
+
 def run_pytest() -> None:
     """
     Run pytest to execute all unit tests in the project.
@@ -131,25 +179,6 @@ def get_default_remote():
     except subprocess.CalledProcessError as e:
         print(f"Failed to retrieve remote information: {e}")
         return None
-
-
-def add_and_publish_git_tag(tag):
-    try:
-
-        # Add the tag
-        subprocess.run(["git", "tag", tag], check=True)
-
-        # Get the default remote name
-        remote_name = get_default_remote()
-        if remote_name:
-            # Push the tag to the default remote
-            print(f"Tag '{tag}' pushing to remote '{remote_name}'")
-            subprocess.run(["git", "push", remote_name, tag], check=True)
-            print(f"Tag '{tag}' successfully pushed to remote '{remote_name}'")
-        else:
-            print("Could not determine default remote.")
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to push tag '{tag}': {e}")
 
 
 def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
@@ -260,33 +289,22 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
     return user_input if user_input else default
 
 
-RELEASE_INSTRUCTIONS = """
-1. Manually create a git tag
-2. Build all artifacts
-3. Sign all artifacts (build.py --sign)
-4. release.py (will also create and publish a pypi package)
-5. Manually update the description of the release and click publish
-"""
-
-
 def parse_args() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description="Release Bitcoin Safe")
-    parser.add_argument("--more_help", action="store_true", help=RELEASE_INSTRUCTIONS)
+    parser.add_argument("--skip_test", action="store_true")
 
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    if args.more_help:
-        print(RELEASE_INSTRUCTIONS)
-        return
 
     get_checkout_main()
 
-    print("Running tests before proceeding...")
-    run_pytest()
+    if not args.skip_test:
+        print("Running tests before proceeding...")
+        run_pytest()
 
     owner = "andreasgriffin"
     repo = "bitcoin-safe"
@@ -301,7 +319,6 @@ def main() -> None:
     if git_tag != __version__:
         print(f"Error: Git tag {git_tag} != {__version__}")
         return
-        # add_and_publish_git_tag(__version__)
 
     directory = Path("dist")
     files = list_directory_files(directory)
@@ -317,19 +334,29 @@ def main() -> None:
     body = get_default_description(latest_tag=__version__)
     draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
     prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"
-    token = getpass.getpass("Enter your GitHub token: ")
+    token: str | None = None
+    while not token:
+        token = getpass.getpass("Enter your GitHub token: ")
     release_result = create_github_release(
         token, owner, repo, __version__, release_name, body, draft, prerelease
     )
     print("Release created successfully:", json.dumps(release_result, indent=2))
 
-    for file_path, _, _ in files:
+    for i, (file_path, _, _) in enumerate(files):
         if __version__ not in file_path.name:
             continue
         upload_release_asset(token, owner, repo, release_result["id"], file_path)
-        print(f"Asset {file_path.name} uploaded successfully.")
+        print(f"Asset {file_path.name} uploaded successfully. ({round(i/len(files)*100)}%)")
 
-    if get_input_with_default("Publish pypi package? (y/n): ", "y").lower() == "y":
+    if (
+        get_input_with_default(
+            "Do you want to update the website now (publish release first): (y/n) ", "y"
+        ).lower()
+        == "y"
+    ):
+        update_website(website_dir="../andreasgriffin.github.io", version=__version__)
+
+    if get_input_with_default("Publish pypi package? (y/n): ", "n").lower() == "y":
         publish_pypi_wheel(dist_dir=str(directory))
 
     print("Update features in \n    https://github.com/thebitcoinhole/software-wallets")

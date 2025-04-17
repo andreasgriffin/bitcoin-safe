@@ -84,7 +84,7 @@ from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion, question_dialog
 from .hist_list import HistList, HistListWithToolbar
 from .taglist import AddressDragInfo
-from .ui_tx import UITx_Creator
+from .ui_tx_creator import UITx_Creator
 from .util import (
     Message,
     MessageType,

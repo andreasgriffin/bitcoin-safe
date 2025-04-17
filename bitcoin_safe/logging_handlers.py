@@ -99,6 +99,15 @@ def mail_error_repot(error_report: str) -> None:
     return compose_email(email, subject, body)
 
 
+def mail_feedback() -> None:
+    email = "andreasgriffin@proton.me"
+    subject = f"Feedback - Bitcoin Safe Version: {__version__}"
+    body = ""
+
+    body += get_system_info_as_text()
+    return compose_email(email, subject, body)
+
+
 class RelativePathFormatter(logging.Formatter):
     def formatException(self, exc_info) -> str:
         return remove_absolute_paths(super().formatException(exc_info))

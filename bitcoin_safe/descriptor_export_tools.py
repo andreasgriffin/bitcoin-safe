@@ -77,6 +77,12 @@ class DescriptorExportTools:
         )
 
     @classmethod
+    def _get_coldcard_str_legacy(cls, wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
+        return cls._get_passport_str(
+            wallet_id=wallet_id, descriptor_str=descriptor_str, hardware_signer_name="Coldcard"
+        )
+
+    @classmethod
     def _get_specter_diy_str(cls, wallet_id: str, descriptor_str: str) -> str:
         simplified_descriptor = (
             descriptor_str.split("#")[0].replace("/<0;1>/*", "").replace("0/*", "").replace("1/*", "")

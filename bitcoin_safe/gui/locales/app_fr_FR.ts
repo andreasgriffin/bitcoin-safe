@@ -415,6 +415,22 @@
         <translation>Signataires requis  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>Importer depuis le presse-papiers</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>Entrée corrigée</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>Descripteur inchangé  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>Nouveau descripteur entré  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>Scanner les adresses à l&apos;avance  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Ce &quot;descripteur&quot; contient toutes les informations pour reconstruire le portefeuille. Veuillez sauvegarder ce descripteur pour pouvoir récupérer les fonds !  </translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>Descripteur inchangé  </translation>
+        <source>Wallet Properties</source>
+        <translation>Propriétés du portefeuille  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>Nouveau descripteur entré  </translation>
+        <source>Address Type</source>
+        <translation>Type d&apos;adresse  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>Descripteur de portefeuille  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>Importer  </translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>Lire le QR Code</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Frais  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>Ratio de frais élevé : {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Le frais de transaction estimé est : {fee}, ce qui représente {percent}% de la valeur envoyée {sent}  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Le frais de transaction est : {fee}, ce qui représente {percent}% de la valeur envoyée {sent}  </translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... est le minimum pour remplacer les transactions existantes.  </translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} est le minimum pour {rbf}  </translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>Taux de frais élevé !  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>Le taux de frais de la mémoire tampon haute priorité est {rate}  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>Le taux prioritaire du mempool est {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} est envoyé !  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>Le frais de transaction est : {fee}, et {sent} est envoyé !  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Le frais de transaction estimé est : {fee}, ce qui représente {percent}% de la valeur envoyée {sent}  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Le frais de transaction est : {fee}, ce qui représente {percent}% de la valeur envoyée {sent}  </translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>Ratio de frais élevé : {ratio}%.</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>Le compte fourni {provided_account} diffère du compte par défaut {default_account}.  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>Origine de clé inattendue  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>Origine xpub inattendue</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Afficher les journaux  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>Retour / Contact</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Contacter via Nostr</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>Ouvrir un problème sur github</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>Envoyer un retour par mail</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>Documentation</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>Base de connaissances</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;Nouveau Portefeuille  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>Veuillez sélectionner le portefeuille  </translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>Aucun fichier sélectionné  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;Nouveau Portefeuille  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>Fichier sélectionné : {file_path}  </translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>Je ne peux pas décoder cette chaîne</translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>Message signé  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;Ouvrir Portefeuille  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>Scanner QR</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>Transaction {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;Ouvrir Portefeuille  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>Le portefeuille {file_path} est déjà ouvert.  </translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Ouvrir &amp;Récemment  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>nouveau  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Ouvrir &amp;Récemment  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>Un portefeuille avec l&apos;identifiant {name} est déjà ouvert.  </translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>Fermer le portefeuille  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Sauvegarder le Portefeuille Actuel  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>Fermeture de l&apos;onglet {name}  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;Sauvegarder le Portefeuille Actuel  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Rechercher  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>Récupérer de nouvelles données du mempool</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>Bloc Suivant  </translation>
@@ -1955,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>Enregistrer Multisig  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>Enregistrer {wallet_name}</translation>
     </message>
 </context>
 <context>
@@ -2937,21 +2999,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>Les empreintes diffèrent. Seules les mêmes empreintes sont prises en charge, garantissant que toutes les clés dérivées appartiennent au même signataire !  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>Propriétés du portefeuille  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>Type d&apos;adresse  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>Descripteur de portefeuille  </translation>
     </message>
 </context>
 <context>

@@ -26,11 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import enum
 import logging
 from functools import partial
-from typing import Dict, List
+from typing import List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -40,13 +39,13 @@ from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsDropShadowEffect,
     QLabel,
+    QMenu,
     QPushButton,
     QVBoxLayout,
 )
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import ENABLE_TIMERS, MEMPOOL_SCHEDULE_TIMER
-from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
 from ...html_utils import html_f
@@ -117,8 +116,14 @@ class LabelBlockHeight(BaseBlockLabel):
 
 
 class LabelFeeRange(BaseBlockLabel):
+    def format_fee(self, fee: float, decimal_precision_below=5 * MIN_RELAY_FEE) -> str:
+        if fee > decimal_precision_below:
+            return f"{fee:.0f}"
+        else:
+            return f"{fee:.1f}"
+
     def set(self, min_fee: float, max_fee: float) -> None:
-        s = f"{int(min_fee)} - {int(max_fee)} {unit_fee_str(self.network)}"
+        s = f"{self.format_fee(min_fee)} - {self.format_fee(max_fee)} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="#eee002", size="10px"))
 
@@ -235,9 +240,18 @@ class BlockButton(QPushButton):
                 background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
                                     stop:0 {color_bottom},
                                     stop:1 {color_top});
-                color: white; /* Change this to set the text color */
+                border: none;
+                color: white;
+            }}
+            QPushButton:pressed {{
+                border: none;
+            }}
+            QPushButton:focus {{
+                border: none;
+                outline: none;
             }}
         """
+
         if active:
             css += f""" 
                 QPushButton:active {{
@@ -296,9 +310,8 @@ class VerticalButtonGroup(InvisibleScrollArea):
 
 
 class MempoolScheduler(QObject):
-    def __init__(self, proxies: Dict | None, mempool_data: MempoolData, parent=None) -> None:
+    def __init__(self, mempool_data: MempoolData, parent=None) -> None:
         super().__init__(parent=parent)
-        self.proxies = proxies
 
         self.mempool_data = mempool_data
 
@@ -311,7 +324,7 @@ class MempoolScheduler(QObject):
         logger.error("This should not be called")
 
     def set_data_from_mempoolspace(self):
-        self.mempool_data.set_data_from_mempoolspace(proxies=self.proxies)
+        self.mempool_data.set_data_from_mempoolspace()
 
 
 class BaseBlock(VerticalButtonGroup):
@@ -350,7 +363,7 @@ class MempoolButtons(BaseBlock):
     def __init__(
         self,
         mempool_data: MempoolData,
-        proxies: Dict | None,
+        decimal_precision: int,
         fee_rate: float = 1,
         max_button_count=3,
         parent=None,
@@ -363,13 +376,27 @@ class MempoolButtons(BaseBlock):
             parent=parent,
         )
         self.mempool_scheduler = MempoolScheduler(
-            proxies=proxies,
             mempool_data=mempool_data,
             parent=parent,
         )
+        self.decimal_precision = decimal_precision
         self.fee_rate = fee_rate
 
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.open_context_menu)
+
         self.refresh()
+
+    def open_context_menu(self, pos):
+        menu = QMenu(self)
+        action_refresh = menu.addAction(self.tr("Fetch new mempool data"))
+
+        # Convert the local position to global coordinates.
+        global_pos = self.mapToGlobal(pos)
+        action = menu.exec(global_pos)
+
+        if action == action_refresh:
+            self.mempool_data.set_data_from_mempoolspace(force=True)
 
     def refresh(self, fee_rate=None, **kwargs) -> None:
         self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
@@ -392,7 +419,8 @@ class MempoolButtons(BaseBlock):
             )
             button.label_time_estimation.set(block_number, block_type=BlockType.projected)
             button.label_approximate_median_fee.set(
-                self.mempool_data.median_block_fee_rate(i), block_type=BlockType.projected
+                self.mempool_data.median_block_fee_rate(i, decimal_precision=self.decimal_precision),
+                block_type=BlockType.projected,
             )
             button.label_fee_range.set(*self.mempool_data.fee_rates_min_max(i))
             min_fee, max_fee = self.mempool_data.fee_rates_min_max(i)
@@ -401,9 +429,13 @@ class MempoolButtons(BaseBlock):
             )
 
     def _on_button_click(self, i: int) -> None:
-        logger.debug(f"Clicked button {i}: {self.mempool_data.median_block_fee_rate(i)}")
+        logger.debug(
+            f"Clicked button {i}: {self.mempool_data.median_block_fee_rate(i,decimal_precision=self.decimal_precision)}"
+        )
         self.set_active(i)
-        self.signal_click.emit(self.mempool_data.median_block_fee_rate(i))
+        self.signal_click.emit(
+            self.mempool_data.median_block_fee_rate(i, decimal_precision=self.decimal_precision)
+        )
 
 
 class MempoolProjectedBlock(BaseBlock):
@@ -425,12 +457,7 @@ class MempoolProjectedBlock(BaseBlock):
             size=100,
         )
         self.mempool_scheduler = MempoolScheduler(
-            (
-                ProxyInfo.parse(config.network_config.proxy_url).get_requests_proxy_dict()
-                if config.network_config.proxy_url
-                else None
-            ),
-            mempool_data,
+            mempool_data=mempool_data,
             parent=parent,
         )
 

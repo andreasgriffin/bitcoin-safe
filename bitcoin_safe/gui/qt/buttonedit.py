@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from functools import partial
 from typing import Callable, List, Optional, Union
@@ -35,7 +34,7 @@ from bdkpython import bdk
 from bitcoin_qr_tools.data import Data, DecodingException
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QResizeEvent
+from PyQt6.QtGui import QIcon, QResizeEvent, QTextCharFormat
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -45,6 +44,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QStyle,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -233,6 +233,10 @@ class ButtonEdit(QWidget):
         self.close_all_video_widgets.connect(self.close_video_widget)
 
         self.updateUi()
+
+    def reset_formatting(self):
+        if isinstance(self.input_field, QTextEdit):
+            self.input_field.setCurrentCharFormat(QTextCharFormat())
 
     def close_video_widget(self):
         if self._temp_bitcoin_video_widget:

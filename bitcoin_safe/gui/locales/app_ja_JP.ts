@@ -415,6 +415,22 @@
         <translation>必要な署名者</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>クリップボードからインポート</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>入力が修正されました</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>記述子は変更されていません  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>新しいデスクリプターが入力されました  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>先にアドレスをスキャン  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>この「ディスクリプター」にはウォレットを再構築するためのすべての情報が含まれています。資金を回復するためにこのディスクリプターのバックアップを取ってください！</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>記述子は変更されていません  </translation>
+        <source>Wallet Properties</source>
+        <translation>ウォレットのプロパティ  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>新しいデスクリプターが入力されました  </translation>
+        <source>Address Type</source>
+        <translation>アドレスタイプ</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>ウォレットディスクリプタ</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>手動</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QRコードを読み取る</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>手数料</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>高い手数料比率：{ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>推定トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>...は既存のトランザクションを置き換える最小限です。</translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}は{rbf}のための最小限です</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>高い手数料率！</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>高優先メンプール手数料率は{rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>高優先度メンプール手数料率は {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent}が送信されました！  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>取引手数料は{fee}で、{sent}が送信されました！  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>推定トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>手数料の割合が高いです: {ratio}%。</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>提供されたアカウント {provided_account} はデフォルトのアカウント {default_account} と異なります。  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>予期せぬキーの起源  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>予期しない xpub の元情報</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;ログを表示  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>フィードバック / お問い合わせ</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostrで連絡する</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>githubで問題を開く</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>メールでフィードバックする</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>ドキュメント</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>ナレッジベース</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;ウォレットを開く</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>テスト</translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>ファイルが選択されていません  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;ウォレットを開く</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>この文字列をデコードできませんでした  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>署名されたメッセージ  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QRスキャナー</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットを開く</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>最近開いた&amp;ウォレット</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>ウォレットファイル (.wallet)</translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>ウォレットはすでに開いています</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>現在のウォレットを&amp;保存</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>KYC-Exchange</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>現在のウォレットを&amp;保存</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>ウォレット {id} を閉じますか？</translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>タブ {name} を閉じる</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>{n} ブロック</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;変更/エクスポート</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;検索  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>新しいメンプールデータを取得</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>未確認</translation>
@@ -1958,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>マルチシグを登録する  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} を登録する</translation>
     </message>
 </context>
 <context>
@@ -2940,21 +3002,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>指紋が異なります。同じ指紋のみがサポートされ、すべての派生キーが同じ署名者に属することが保証されます！  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>ウォレットのプロパティ  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>アドレスタイプ</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>ウォレットディスクリプタ</translation>
     </message>
 </context>
 <context>

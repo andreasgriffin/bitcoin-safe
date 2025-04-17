@@ -42,6 +42,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...descriptors import AddressType
 from ...wallet import ProtoWallet
+from ...wallet_util import signer_name
 from .keystore_ui import KeyStoreUI, icon_for_label
 from .util import Message, MessageType
 
@@ -271,7 +272,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         for i, keystore in enumerate(self.protowallet.keystores):
             if keystore is None:
                 continue
-            keystore.label = self.protowallet.signer_names(self.protowallet.threshold, i)
+            keystore.label = signer_name(self.protowallet.threshold, i)
 
     def _set_keystore_tabs(self) -> None:
         # add keystore_ui if necessary

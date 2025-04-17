@@ -32,6 +32,7 @@ import logging
 from typing import Any, Dict, List, Literal, Optional, Set
 
 import bdkpython as bdk
+from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import (
     AddressTypes,
     ConstDerivationPaths,
@@ -252,4 +253,19 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             self.fingerprint == spk_provider.fingerprint
             and self.xpub == spk_provider.xpub
             and self.key_origin == spk_provider.key_origin
+        )
+
+    @classmethod
+    def from_signer_info(
+        cls, signer_info: SignerInfo, network: bdk.Network, default_label: str, default_derivation_path: str
+    ) -> "KeyStore":
+        return KeyStore(
+            xpub=signer_info.xpub,
+            fingerprint=signer_info.fingerprint,
+            key_origin=signer_info.key_origin,
+            label=signer_info.name if signer_info.name else default_label,
+            network=network,
+            derivation_path=(
+                signer_info.derivation_path if signer_info.derivation_path else default_derivation_path
+            ),
         )

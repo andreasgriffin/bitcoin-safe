@@ -415,6 +415,22 @@
         <translation>आवश्यक साइनर्स</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>क्लिपबोर्ड से आयात करें</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>इनपुट सुधारा गया</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>विवरणक अपरिवर्तित  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>नया विवरणक दर्ज किया गया  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>पते स्कैन करें आगे  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>यह &quot;वर्णनकर्ता&quot; वॉलेट को पुनर्निर्माण करने के लिए सभी जानकारी रखता है। कृपया धन की पुनर्प्राप्ति के लिए इस वर्णनकर्ता का बैकअप लें!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>विवरणक अपरिवर्तित  </translation>
+        <source>Wallet Properties</source>
+        <translation>वॉलेट गुण  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>नया विवरणक दर्ज किया गया  </translation>
+        <source>Address Type</source>
+        <translation>पता प्रकार</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>वॉलेट वर्णनकर्ता</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>आयात करें</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR कोड पढ़ें</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>शुल्क</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>उच्च शुल्क अनुपात: {ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... मौजूदा लेन-देनों को बदलने के लिए न्यूनतम है।</translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} {rbf} के लिए न्यूनतम है</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>उच्च शुल्क दर!</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर है {rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर {rate} है</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} भेजा गया है!  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>लेनदेन शुल्क है: {fee}, और {sent} भेजा गया है!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>उच्च शुल्क अनुपात: {ratio}%।</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>प्रदान किया गया खाता {provided_account} डिफ़ॉल्ट खाता {default_account} से भिन्न है।  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>अप्रत्याशित की उत्पत्ति  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>अप्रत्याशित xpub स्रोत</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;लॉग दिखाएं  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>प्रतिक्रिया / संपर्क करें</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostr के माध्यम से संपर्क करें</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>github पर समस्या खोलें</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>मेल द्वारा प्रतिक्रिया दें</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>प्रलेखन</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>ज्ञानकोष</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;नया वॉलेट</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>कृपया वॉलेट चुनें</translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;नया वॉलेट</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>चयनित फ़ाइल: {file_path}</translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>इस स्ट्रिंग को डिकोड नहीं कर सका  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>हस्ताक्षरित संदेश  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;वॉलेट खोलें</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR स्कैनर</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>लेन-देन {txid}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;वॉलेट खोलें</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}</translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>वॉलेट {file_path} पहले से खुला है।</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>हाल का खोलें</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>नया</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>हाल का खोलें</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>वॉलेट के साथ id {name} पहले से खुला है।</translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>वॉलेट बंद करें</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>टैब {name} बंद करना</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;खोजें  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>नए मेमपूल डेटा प्राप्त करें</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>अगला ब्लॉक</translation>
@@ -1958,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>मल्टीसिग पंजीकरण  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} पंजीकृत करें</translation>
     </message>
 </context>
 <context>
@@ -2940,21 +3002,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>फिंगरप्रिंट अलग हैं। केवल समान फिंगरप्रिंट समर्थित हैं, यह सुनिश्चित करते हैं कि सभी व्युत्पन्न कुंजियाँ एक ही हस्ताक्षरकर्ता के हैं!  </translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>वॉलेट गुण  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>पता प्रकार</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>वॉलेट वर्णनकर्ता</translation>
     </message>
 </context>
 <context>

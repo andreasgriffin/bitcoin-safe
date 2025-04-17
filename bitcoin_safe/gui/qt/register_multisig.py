@@ -47,10 +47,14 @@ from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 
 class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     def __init__(
-        self, qt_wallet: QTWallet | None, threading_parent: ThreadingManager, parent: QWidget | None = None
+        self,
+        qt_wallet: QTWallet | None,
+        threading_parent: ThreadingManager,
+        parent: QWidget | None = None,
+        wallet_name: str = "MultiSig",
     ) -> None:
         super().__init__(parent=parent)
-        self.setWindowTitle(self.tr("Register Multisig"))
+        self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
         self.qt_wallet = qt_wallet
 
         ## help
@@ -71,6 +75,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 network=self.qt_wallet.wallet.network,
                 threading_parent=threading_parent,
                 parent=self,
+                wallet_name=wallet_name,
             )
             self.add_button(self.export_qr_button)
 

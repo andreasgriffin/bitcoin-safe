@@ -415,6 +415,22 @@
         <translation>필요한 서명 기계  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>클립보드에서 가져오기</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>입력이 수정되었습니다</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>디스크립터 변경 없음</translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>새로 입력된 설명자  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>앞으로 주소 검색  </translation>
     </message>
@@ -428,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>이 &quot;디스크립트&quot;에는 지갑을 재구성하는 모든 정보가 포함되어 있습니다. 자금을 복구할 수 있도록 이 디스크립트를 백업하세요!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>디스크립터 변경 없음</translation>
+        <source>Wallet Properties</source>
+        <translation>지갑 속성  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>새로 입력된 설명자  </translation>
+        <source>Address Type</source>
+        <translation>주소 유형  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>지갑 디스크립터  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>가져오기  </translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR 코드 읽기</translation>
     </message>
 </context>
 <context>
@@ -536,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>수수료  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>높은 수수료 비율: {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>예상되는 거래 수수료는: {fee}, 이는 보내는 금액 {sent}의 {percent}%입니다  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>거래 수수료는: {fee}, 이는 전송 금액 {sent}의 {percent}%입니다</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>...는 기존 트랜잭션을 대체하기 위한 최소 금액입니다.  </translation>
     </message>
@@ -567,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}은 {rbf}를 위한 최소 비율입니다.</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>높은 수수료율!  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>높은 우선순위의 mempool 수수료율은 {rate}입니다  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>높은 우선순위 멤풀 수수료율은 {rate}입니다</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent}가 전송되었습니다!  </translation>
@@ -583,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>거래 수수료는: {fee}, 그리고 {sent}가 전송되었습니다!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>예상되는 거래 수수료는: {fee}, 이는 보내는 금액 {sent}의 {percent}%입니다  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>거래 수수료는: {fee}, 이는 전송 금액 {sent}의 {percent}%입니다</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>높은 수수료 비율: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -804,8 +838,8 @@ the sending value {sent}</source>
         <translation>제공된 계정 {provided_account}이(가) 기본 계정 {default_account}과 다릅니다.</translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>예상치 못한 키 출처  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>예상치 못한 xpub 출처</translation>
     </message>
 </context>
 <context>
@@ -1106,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;로그 보기  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>피드백 / 연락처</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostr로 연락하기</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>github에서 이슈 열기</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>이메일로 피드백 보내기</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>문서</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>지식 베이스</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;새 지갑  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>지갑을 선택하세요  </translation>
     </message>
@@ -1130,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>파일이 선택되지 않았습니다  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;새 지갑  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>선택된 파일: {file_path}  </translation>
     </message>
@@ -1150,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>이 문자열을 해석 할 수 없습니다</translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>서명된 메시지  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;지갑 열기  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR 스캐너</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1174,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>트랜잭션 {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;지갑 열기  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1192,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>지갑 {file_path}이 이미 열려 있습니다.</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>최근 열기  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1218,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>새로운  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>최근 열기  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>id {name}인 지갑이 이미 열려 있습니다.  </translation>
     </message>
@@ -1236,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>지갑 닫기  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;현재 지갑 저장  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1254,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>탭 {name} 닫기  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;현재 지갑 저장  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;검색  </translation>
     </message>
@@ -1268,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>새 멤풀 데이터 가져오기</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>다음 블록  </translation>
@@ -1955,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>멀티시그 등록  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} 등록하기</translation>
     </message>
 </context>
 <context>
@@ -2937,21 +2999,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>지문이 다릅니다. 동일한 지문만 지원되므로 모든 파생 키가 동일한 서명 기계에 속함을 보장합니다!</translation>
-    </message>
-</context>
-<context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>지갑 속성  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>주소 유형  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>지갑 디스크립터  </translation>
     </message>
 </context>
 <context>

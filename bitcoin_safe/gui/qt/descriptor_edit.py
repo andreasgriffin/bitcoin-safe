@@ -121,13 +121,9 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
         self.add_button(icon_path("qr-code.svg"), self.show_export_widget, tooltip="Show QR code")
         if wallet is not None:
             self.add_pdf_buttton(self._do_pdf)
-        self.add_qr_input_from_camera_button(
-            network=self.network,
-        )
         self.input_field.setAnalyzer(DescriptorAnalyzer(self.network, parent=self))
 
         # signals
-        self.signal_tracker.connect(self.signal_data, self._custom_handle_camera_input)
         self.signal_tracker.connect(self.input_field.textChanged, self.on_input_field_textChanged)
 
     def _do_pdf(self) -> None:
@@ -141,11 +137,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
         make_and_open_pdf(self.wallet, lang_code=self.signals_min.get_current_lang_code.emit() or "en_US")
 
     def on_input_field_textChanged(self):
-        self.signal_descriptor_change.emit(self.text_cleaned())
-
-    def _custom_handle_camera_input(self, data: Data) -> None:
-        self.setText(str(data.data_as_string()))
-        self.signal_descriptor_change.emit(self._clean_text(str(data.data_as_string())))
+        self.signal_descriptor_change.emit(self.text())
 
     def show_export_widget(self):
         if not self._check_if_valid():
@@ -169,14 +161,8 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
             )
             return
 
-    def _clean_text(self, text: str) -> str:
-        return text.strip().replace("\n", "")
-
-    def text_cleaned(self) -> str:
-        return self._clean_text(self.text())
-
     def _check_if_valid(self) -> bool:
         if not self.text():
             return True
 
-        return BitcoinQRMultipathDescriptor.is_valid(self.text_cleaned(), network=self.network)
+        return BitcoinQRMultipathDescriptor.is_valid(self.text(), network=self.network)

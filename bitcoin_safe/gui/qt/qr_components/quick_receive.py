@@ -32,7 +32,7 @@ from typing import List
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFont, QPalette, QResizeEvent, QWheelEvent
+from PyQt6.QtGui import QColor, QFont, QPalette
 from PyQt6.QtWidgets import (
     QGraphicsDropShadowEffect,
     QHBoxLayout,
@@ -124,29 +124,6 @@ class ReceiveGroup(TitledComponent):
         return self.title.text()
 
 
-class NoVerticalScrollArea(QScrollArea):
-    def __init__(self) -> None:
-        super().__init__()
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        if scroll_bar := self.horizontalScrollBar():
-            scroll_bar.valueChanged.connect(self.recenterVerticalScroll)
-
-    def wheelEvent(self, event: QWheelEvent | None) -> None:
-        # Override to do nothing, preventing vertical scrolling
-        pass
-
-    def recenterVerticalScroll(self) -> None:
-        # Recenter the vertical scroll position when horizontal scrollbar state changes
-        if self.widget() and (scroll_bar := self.verticalScrollBar()):
-            max_scroll = scroll_bar.maximum()
-            scroll_bar.setValue(max_scroll // 2)
-
-    # Override resizeEvent to handle window resizing
-    def resizeEvent(self, event: QResizeEvent | None) -> None:
-        super().resizeEvent(event)
-        self.recenterVerticalScroll()
-
-
 class QuickReceive(QWidget):
     def __init__(self, title="Quick Receive", parent=None) -> None:
         super().__init__(parent)
@@ -165,9 +142,8 @@ class QuickReceive(QWidget):
         # self.content_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         # Scroll Area
-        self.scroll_area = NoVerticalScrollArea()
+        self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scroll_area.setWidget(self.content_widget)
 
         # Main Layout
@@ -181,24 +157,6 @@ class QuickReceive(QWidget):
 
         # Group Box Management
         self.group_boxes: List[ReceiveGroup] = []
-
-    # def _qmargins_to_tuple(self, margins: QMargins) -> tuple[int, int, int, int]:
-    #     return margins.left(), margins.top(), margins.right(), margins.bottom()
-
-    # def resizeEvent(self, event: QResizeEvent | None) -> None:
-    #     for group_box in self.group_boxes:
-    #         margins = self.content_widget_layout.getContentsMargins()
-    #         scrollbar = self.scroll_area.horizontalScrollBar()
-    #         group_box.setFixedHeight(
-    #             self.height()
-    #             - sum([m for m in margins if m])
-    #             - sum(self._qmargins_to_tuple(self.scroll_area.contentsMargins()))
-    #             - (scrollbar.height() if scrollbar else 0)
-    #         )
-
-    # def showEvent(self, e: QShowEvent | None) -> None:
-    #     super().showEvent(e)
-    #     self.resizeEvent(None)
 
     def add_box(self, receive_group: ReceiveGroup) -> None:
         self.group_boxes.append(receive_group)

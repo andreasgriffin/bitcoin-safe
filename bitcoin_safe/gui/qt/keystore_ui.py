@@ -499,6 +499,7 @@ class KeyStoreUI(QObject):
         elif data.data_type in [
             DataType.Descriptor,
             DataType.MultiPathDescriptor,
+            DataType.MultisigWalletExport,
         ]:
             Message(self.tr("Please paste descriptors into the descriptor field in the top right."))
         elif isinstance(data.data, str) and parent:

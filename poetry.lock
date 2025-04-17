@@ -89,7 +89,7 @@ resolved_reference = "bcdeb0659c3bb9dfeec4987d9b228460338fa0f2"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "1.2.1"
+version = "1.2.4"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = ">=3.9,<3.13"
@@ -113,8 +113,8 @@ segno = "1.6.1"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
-reference = "944902c5cc88b24fcdd44d4ae4d92baecfab2805"
-resolved_reference = "944902c5cc88b24fcdd44d4ae4d92baecfab2805"
+reference = "afc9d6c552838d02e48f02abe69905116d372a5d"
+resolved_reference = "afc9d6c552838d02e48f02abe69905116d372a5d"
 
 [[package]]
 name = "bitcoin-usb"
@@ -2086,71 +2086,71 @@ png = ["pypng (>=0.0.13)"]
 
 [[package]]
 name = "pyqt6"
-version = "6.8.1"
+version = "6.9.0"
 description = "Python bindings for the Qt cross platform application toolkit"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "PyQt6-6.8.1-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:0425f9eebdd5d4e57ab36424c9382f2ea06670c3c550fa0028c2b19bd0a1d7bd"},
-    {file = "PyQt6-6.8.1-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:36bf48e3df3a6ff536e703315d155480ef4e260396eb5469eb7a875bc5bb7ab4"},
-    {file = "PyQt6-6.8.1-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:2eac2267a34828b8db7660dd3cc3b3b5fd76a92e61ad45471565b01221cb558b"},
-    {file = "PyQt6-6.8.1-cp39-abi3-win_amd64.whl", hash = "sha256:70bad7b890a8f9e9e5fb9598c544b832d9d9d99a9519e0009cb29c1e15e96632"},
-    {file = "PyQt6-6.8.1-cp39-abi3-win_arm64.whl", hash = "sha256:a40f878e8e5eeeb0bba995152d07eeef9375ea0116df0f4aad0a6b97c8ad1175"},
-    {file = "pyqt6-6.8.1.tar.gz", hash = "sha256:91d937d6166274fafd70f4dee11a8da6dbfdb0da53de05f5d62361ddf775e256"},
+    {file = "PyQt6-6.9.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:5344240747e81bde1a4e0e98d4e6e2d96ad56a985d8f36b69cd529c1ca9ff760"},
+    {file = "PyQt6-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:e344868228c71fc89a0edeb325497df4ff731a89cfa5fe57a9a4e9baecc9512b"},
+    {file = "PyQt6-6.9.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:1cbc5a282454cf19691be09eadbde019783f1ae0523e269b211b0173b67373f6"},
+    {file = "PyQt6-6.9.0-cp39-abi3-win_amd64.whl", hash = "sha256:d36482000f0cd7ce84a35863766f88a5e671233d5f1024656b600cd8915b3752"},
+    {file = "PyQt6-6.9.0-cp39-abi3-win_arm64.whl", hash = "sha256:0c8b7251608e05b479cfe731f95857e853067459f7cbbcfe90f89de1bcf04280"},
+    {file = "pyqt6-6.9.0.tar.gz", hash = "sha256:6a8ff8e3cd18311bb7d937f7d741e787040ae7ff47ce751c28a94c5cddc1b4e6"},
 ]
 
 [package.dependencies]
-PyQt6-Qt6 = ">=6.8.0,<6.9.0"
+PyQt6-Qt6 = ">=6.9.0,<6.10.0"
 PyQt6-sip = ">=13.8,<14"
 
 [[package]]
 name = "pyqt6-charts"
-version = "6.8.0"
+version = "6.9.0"
 description = "Python bindings for the Qt Charts library"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:1b992688f97deea99d025913408acc48f6d554563a91b72adbdd2991ba2b0b35"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:2ce660031db9eb572d5c65c34d9fc4a75bc0e21093abfe3b1d0fccc47d95550a"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:3984b7995d8eda5587d893f8fbabde5647bc64a2c27e6f01a3a2758ae12a353f"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_amd64.whl", hash = "sha256:535e699dace20fc9f8f516e67ca9ff529a79351145d9000ef1a0c61c3bd35858"},
-    {file = "PyQt6_Charts-6.8.0-cp39-abi3-win_arm64.whl", hash = "sha256:e633101d1ac82144674c0d12e9d1b08276afab5762f0e4a65587ccbeebf4eeaa"},
-    {file = "PyQt6_Charts-6.8.0.tar.gz", hash = "sha256:f86705b8740e3041667ce211aeaa205b750eb6baf4c908f4e3f6dc8c720d10f1"},
+    {file = "PyQt6_Charts-6.9.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:90cb37a39384ff25bba6fa1fb16d7be5b76771e5de2462779302dbfcc896ebb9"},
+    {file = "PyQt6_Charts-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:01b3a354e59d3dc2aa6b330aaa9e5a83a17b8d381f6f3a96fac1e09f3d405e9b"},
+    {file = "PyQt6_Charts-6.9.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:f9dd7dc599db766f647e1a9e37c6b905aac0b3b793a3c448c7034228bf49fe9a"},
+    {file = "PyQt6_Charts-6.9.0-cp39-abi3-win_amd64.whl", hash = "sha256:763ca6bbcb24133768e4d601944f9a8ff7acd9ac37b82fb646b5605d9fe14964"},
+    {file = "PyQt6_Charts-6.9.0-cp39-abi3-win_arm64.whl", hash = "sha256:77a572c222848c39c7fafd265a9e1435b163ce871bd174efe87e938de14fe526"},
+    {file = "pyqt6_charts-6.9.0.tar.gz", hash = "sha256:7efbe9bb7e6ad4f9845211a0efe0f91ca5e14f9362ed1ba84d55f2b8515091f7"},
 ]
 
 [package.dependencies]
 PyQt6 = ">=6.2.0"
-PyQt6-Charts-Qt6 = ">=6.8.0,<6.9.0"
-PyQt6-sip = ">=13.6,<14"
+PyQt6-Charts-Qt6 = ">=6.9.0,<6.10.0"
+PyQt6-sip = ">=13.8,<14"
 
 [[package]]
 name = "pyqt6-charts-qt6"
-version = "6.8.2"
+version = "6.9.0"
 description = "The subset of a Qt installation needed by PyQt6-Charts."
 optional = false
 python-versions = "*"
 files = [
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:69c693162fad1a9e7f4b831feecede95ced58ba105c6eb6f234d804d48b579d0"},
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:5c7bcea011315d82d86b131af8f8790d291cb95278854f4a9baaa159d8992cb8"},
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:886013b7a6af6a67fefbc7dcb0797a5bc1afbe1bc83c33121c4ea58b99e2aac9"},
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:70037859000802ce8648d9515177e7c3c7e92acd31ca910ae5319f0cae0c50eb"},
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-win_amd64.whl", hash = "sha256:0489243fb65e5e091003372035f5f8a7935b70fb19837df4e751f85da10e58f4"},
-    {file = "PyQt6_Charts_Qt6-6.8.2-py3-none-win_arm64.whl", hash = "sha256:229017ffa0defb0855bba0687b3bb4b63f241046b6ca60e12cf9f9282dbffd2c"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:91da435cebc22241c068269ddd18e19a107234a41c37531c4106f762d6649389"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:fbdee178b9497ea925ebf9765a2f7471e8aa6b6e57a56c34d01988d5ccaebdeb"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:2bc954af4d527ae9c4e30f57c3a81f4d4257d83a979797a3973b4b75348efd07"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:b29b63c664710c80ce47a486ce220b655e6245e0b22a270931224c0d2bf3b1b5"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-win_amd64.whl", hash = "sha256:1184cbafb7f045b33458ebc07f8330b6870c88f55094f9e32f31ece0eaec4e70"},
+    {file = "PyQt6_Charts_Qt6-6.9.0-py3-none-win_arm64.whl", hash = "sha256:52b930002252fcb0927ba99b017b40c33ceea0e486c8bf9e0f0aad4000d36b38"},
 ]
 
 [[package]]
 name = "pyqt6-qt6"
-version = "6.8.2"
+version = "6.9.0"
 description = "The subset of a Qt installation needed by PyQt6."
 optional = false
 python-versions = "*"
 files = [
-    {file = "PyQt6_Qt6-6.8.2-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:470dd4211fe5a67b0565e0202e7aa67816e5dcf7d713528b88327adaebd0934e"},
-    {file = "PyQt6_Qt6-6.8.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:40cda901a3e1617e79225c354fe9d89b80249f0a6c6aaa18b40938e05bbf7d1f"},
-    {file = "PyQt6_Qt6-6.8.2-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:fb6d0acdd7d43c33fb8b9d2dd7922d381cdedd00da316049fbe01fc1973e6f05"},
-    {file = "PyQt6_Qt6-6.8.2-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:5970c85d22cbe5c476418994549161b23ed938e25b04fc4ca8fabf6dcac7b03f"},
-    {file = "PyQt6_Qt6-6.8.2-py3-none-win_amd64.whl", hash = "sha256:28e2bb641f05b01e498503c3ef01c8a919d6e0e96b50230301c0baac2b7d1433"},
-    {file = "PyQt6_Qt6-6.8.2-py3-none-win_arm64.whl", hash = "sha256:912afdddd0dfc666ce1c16bc4695e2acd680db72343e4f7a2b7c053a0146b4bc"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:b1c4e4a78f0f22fbf88556e3d07c99e5ce93032feae5c1e575958d914612e0f9"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:6d3875119dec6bf5f799facea362aa0ad39bb23aa9654112faa92477abccb5ff"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:9c0e603c934e4f130c110190fbf2c482ff1221a58317266570678bc02db6b152"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:cf840e8ae20a0704e0343810cf0e485552db28bf09ea976e58ec0e9b7bb27fcd"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-win_amd64.whl", hash = "sha256:c825a6f5a9875ef04ef6681eda16aa3a9e9ad71847aa78dfafcf388c8007aa0a"},
+    {file = "PyQt6_Qt6-6.9.0-py3-none-win_arm64.whl", hash = "sha256:1188f118d1c570d27fba39707e3d8a48525f979816e73de0da55b9e6fa9ad0a1"},
 ]
 
 [[package]]
@@ -2812,35 +2812,35 @@ stellar = ["stellar-sdk (>=6)"]
 
 [[package]]
 name = "trove-classifiers"
-version = "2025.3.19.19"
+version = "2025.4.11.15"
 description = "Canonical source for classifiers on PyPI (pypi.org)."
 optional = false
 python-versions = "*"
 files = [
-    {file = "trove_classifiers-2025.3.19.19-py3-none-any.whl", hash = "sha256:5fc02770ecd81588a605ac98b9d85d50a5a3f9daa30af2a6b1361a1999d75d07"},
-    {file = "trove_classifiers-2025.3.19.19.tar.gz", hash = "sha256:98e9d396fe908d5f43b7454fa4c43d17cd0fdadf046f45fb38a5e3af8d959ecd"},
+    {file = "trove_classifiers-2025.4.11.15-py3-none-any.whl", hash = "sha256:e7d98983f004df35293caf954bdfe944b139eb402677a97115450e320f0bd855"},
+    {file = "trove_classifiers-2025.4.11.15.tar.gz", hash = "sha256:634728aa6698dc1ae3db161da94d9e4c7597a9a5da2c4410211b36f15fed60fc"},
 ]
 
 [[package]]
 name = "typing-extensions"
-version = "4.13.1"
+version = "4.13.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.13.1-py3-none-any.whl", hash = "sha256:4b6cf02909eb5495cfbc3f6e8fd49217e6cc7944e145cdda8caa3734777f9e69"},
-    {file = "typing_extensions-4.13.1.tar.gz", hash = "sha256:98795af00fb9640edec5b8e31fc647597b4691f099ad75f469a2616be1a76dff"},
+    {file = "typing_extensions-4.13.2-py3-none-any.whl", hash = "sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c"},
+    {file = "typing_extensions-4.13.2.tar.gz", hash = "sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef"},
 ]
 
 [[package]]
 name = "urllib3"
-version = "2.3.0"
+version = "2.4.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "urllib3-2.3.0-py3-none-any.whl", hash = "sha256:1cee9ad369867bfdbbb48b7dd50374c0967a0bb7710050facf0dd6911440e3df"},
-    {file = "urllib3-2.3.0.tar.gz", hash = "sha256:f8c5449b3cf0861679ce7e0503c7b44b5ec981bec0d1d3795a07f1ba96f0204d"},
+    {file = "urllib3-2.4.0-py3-none-any.whl", hash = "sha256:4e16665048960a0900c702d4a66415956a584919c03361cac9f1df5c5dd7e813"},
+    {file = "urllib3-2.4.0.tar.gz", hash = "sha256:414bc6535b787febd7567804cc015fee39daab8ad86268f1310a9250697de466"},
 ]
 
 [package.extras]
@@ -2976,4 +2976,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "c08bef52446288131e0866a0f5c454faa5b406aae87fca44820a382460de9995"
+content-hash = "84f4f229395fdb37b26302ab3fc5925d65cd8b9c2797ff2b9ca806ed3c656be7"
