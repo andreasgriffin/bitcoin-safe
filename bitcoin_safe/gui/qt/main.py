@@ -47,6 +47,7 @@ from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
     QMainWindow,
+    QMessageBox,
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
@@ -1638,6 +1639,7 @@ class MainWindow(QMainWindow):
                     id=short_tx_id(tab_data.data.data.extract_tx().txid())
                 ),
                 self.tr("Save PSBT?"),
+                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
             ):
                 tab_data.export_data_simple.button_export_file.export_to_file()
             logger.info(self.tr("Closing tab {name}").format(name=self.tab_wallets.tabText(index)))
