@@ -100,7 +100,7 @@ class BTCSpinBox(AnalyzerSpinBox):
     def valueFromText(self, text: str | None) -> int:
         if self._is_max:
             return 0
-        return Satoshis(text if text else 0, self.network).value
+        return Satoshis.from_btc_str(text if text else "0", self.network).value
 
     def validate(self, text: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
         if text is None:

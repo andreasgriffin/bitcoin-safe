@@ -32,13 +32,13 @@ from PyQt6.QtWidgets import QApplication, QCheckBox, QGroupBox, QVBoxLayout, QWi
 
 
 class ControlledGroupbox(QWidget):
-    def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True) -> None:
-        super().__init__()
+    def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True, parent=None) -> None:
+        super().__init__(parent=parent)
 
         self._layout = QVBoxLayout(self)
 
         # Create the checkbox and add it to the layout
-        self.checkbox = QCheckBox(checkbox_text, self)
+        self.checkbox = QCheckBox(checkbox_text, parent=self)
         self.checkbox.setChecked(enabled)  # Set the initial state based on the 'enabled' argument
         self._layout.addWidget(self.checkbox)
 

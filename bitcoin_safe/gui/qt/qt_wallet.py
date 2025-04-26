@@ -543,15 +543,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
 
         icon_path = SyncTab.get_icon_path(enabled=self.sync_tab.enabled())
-        self.tabs.addTab(self.sync_tab.main_widget, QIcon(icon_path), "")
-        self.sync_tab.main_widget.checkbox.stateChanged.connect(self._set_sync_tab_icon)
+        self.tabs.addTab(self.sync_tab, QIcon(icon_path), "")
+        self.sync_tab.checkbox.stateChanged.connect(self._set_sync_tab_icon)
 
         label_syncer = LabelSyncer(self.wallet.labels, self.sync_tab, self.wallet_signals)
         self.sync_tab.finish_init_after_signal_connection()
-        return self.sync_tab, self.sync_tab.main_widget, label_syncer
+        return self.sync_tab, self.sync_tab, label_syncer
 
     def _set_sync_tab_icon(self, enabled: bool):
-        index = self.tabs.indexOf(self.sync_tab.main_widget)
+        index = self.tabs.indexOf(self.sync_tab)
         if index < 0:
             return
         icon_path = SyncTab.get_icon_path(enabled=enabled)
@@ -922,7 +922,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=affected_keys,
-                categories=([old_category]),
+                categories=([old_category, new_category]),
                 txids=affected_keys,
                 reason=UpdateFilterReason.CategoryRenamed,
             )
@@ -953,17 +953,31 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
 
     def set_category(self, address_drag_info: AddressDragInfo) -> None:
-        for address in address_drag_info.addresses:
+        apply_addresses = address_drag_info.addresses
+        used_addresses = [
+            address for address in address_drag_info.addresses if self.wallet.address_is_used(address=address)
+        ]
+        if used_addresses:
+            if question_dialog(
+                text=self.tr(
+                    "The addresses {used_addresses}\nhave transactions linking to other addresses already. Are you sure you want to change the category?"
+                ).format(used_addresses="\n   " + "\n   ".join(used_addresses))
+            ):
+                apply_addresses = address_drag_info.addresses
+            else:
+                return
+
+        for address in apply_addresses:
             for category in address_drag_info.tags:
                 self.wallet.labels.set_addr_category(address, category, timestamp="now")
 
         txids: Set[str] = set()
-        for address in address_drag_info.addresses:
+        for address in apply_addresses:
             txids = txids.union(self.wallet.get_involved_txids(address))
 
         self.wallet_signals.updated.emit(
             UpdateFilter(
-                addresses=address_drag_info.addresses,
+                addresses=apply_addresses,
                 categories=address_drag_info.tags,
                 txids=txids,
                 reason=UpdateFilterReason.UserInput,
@@ -1327,6 +1341,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.label_syncer.send_all_labels_to_myself()
         self.sync_tab.unsubscribe_all()
         self.sync_tab.nostr_sync.stop()
+        self.sync_tab.close()
         self.tabs.clear()
         self.tabs.close()
         self.wallet.close()

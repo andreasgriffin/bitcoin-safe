@@ -81,7 +81,7 @@ class CloseButton(QPushButton):
         option = QStyleOptionButton()
         option.initFrom(self)
         option.features = QStyleOptionButton.ButtonFeature.None_
-        option.icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_TabCloseButton)  # type: ignore[attr-defined]
+        option.icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogCloseButton)  # type: ignore[attr-defined]
         option.iconSize = QSize(14, 14)  # Adjust icon size as needed
         painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 
@@ -171,7 +171,6 @@ class RecipientWidget(QWidget):
 
         self.send_max_button.setVisible(allow_edit)
 
-        self.address_edit.setReadOnly(not allow_edit)
         self.amount_spin_box.setReadOnly(not allow_edit)
         self.address_edit.set_allow_edit(allow_edit)
 

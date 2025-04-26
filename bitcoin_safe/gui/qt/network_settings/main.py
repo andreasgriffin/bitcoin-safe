@@ -61,6 +61,7 @@ from bitcoin_safe.gui.qt.util import (
     Message,
     adjust_bg_color_for_darkmode,
     ensure_scheme,
+    generate_help_website_open,
     get_host_and_port,
     read_QIcon,
     remove_scheme,
@@ -429,6 +430,13 @@ class NetworkSettingsUI(QDialog):
         self.proxy_url_edit_label = QLabel()
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit_label)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit)
+        self.proxy_help_button = generate_help_website_open(
+            "https://bitcoin-safe.org/en/knowledge/tor-config/",
+            title="",
+            tooltip=self.tr("Open Tor proxy configuration cocumentation"),
+        )
+        self.groupbox_proxy_layout.addWidget(self.proxy_help_button)
+
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
         self.proxy_warning_label.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))

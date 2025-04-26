@@ -54,7 +54,7 @@
 
 import logging
 from functools import partial
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -621,10 +621,10 @@ class AddressList(MyTreeView):
                 )
 
             menu.addSeparator()
-            self._add_category_menu(menu, idx)
-            menu.addSeparator()
-
             self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.key_column])
+
+        self._add_category_menu(menu, addrs)
+        menu.addSeparator()
 
         menu.add_action(
             self.tr("Copy as csv"),
@@ -644,23 +644,13 @@ class AddressList(MyTreeView):
 
         return menu
 
-    def _add_category_menu(self, menu: Menu, idx: QModelIndex):
-        copy_menu = menu.add_menu(self.tr("Set category"))
+    def _add_category_menu(self, menu: Menu, addresses: List[str]):
+        category_menu = menu.add_menu(self.tr("Set category"))
 
         for category in self.wallet.labels.categories:
-            item = self.sourceModel().horizontalHeaderItem(self.Columns.ADDRESS)
-            if not item:
-                continue
-            item_col = self.item_from_index(idx.sibling(idx.row(), self.Columns.ADDRESS))
-            if not item_col:
-                continue
-            address = item_col.data(MyItemDataRole.ROLE_CLIPBOARD_DATA)
-            if address is None:
-                address = item_col.text().strip()
-
             # When the user selects the action, emit the drop signal with the category and address.
-            action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], [address]))
-            copy_menu.add_action(
+            action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], addresses))
+            category_menu.add_action(
                 category,
                 action,
                 icon=create_color_circle(category_color(category)),

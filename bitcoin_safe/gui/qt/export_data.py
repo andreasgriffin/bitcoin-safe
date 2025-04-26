@@ -57,7 +57,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
+from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -803,7 +803,9 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
-            default_filename=filename_clean(self.wallet_id, file_extension=".txt")[:24],
+            default_filename=shorten_filename(
+                filename_clean(self.wallet_id, file_extension=".txt"), max_total_length=20
+            ),
             window_title=f"Save {hardware_signer.display_name} file",
         )
         if not filename:

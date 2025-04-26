@@ -1305,10 +1305,8 @@ class LabelBackup(BaseTab):
         self.checkbox = QCheckBox()
         self.checkbox.setEnabled(bool(self.refs.qt_wallet))
         if self.refs.qt_wallet:
-            self.refs.qt_wallet.sync_tab.main_widget.checkbox.stateChanged.connect(
-                self.checkbox_state_changed
-            )
-            self.checkbox.stateChanged.connect(self.refs.qt_wallet.sync_tab.main_widget.checkbox.setChecked)
+            self.refs.qt_wallet.sync_tab.checkbox.stateChanged.connect(self.checkbox_state_changed)
+            self.checkbox.stateChanged.connect(self.refs.qt_wallet.sync_tab.checkbox.setChecked)
 
         left_widget = QWidget()
         left_widget_layout = QVBoxLayout(left_widget)

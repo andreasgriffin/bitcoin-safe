@@ -141,7 +141,9 @@ class UITx_Creator(UITx_Base):
         self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(mempool_data=mempool_data, fx=fx, config=self.config)
+        self.fee_group = FeeGroup(
+            mempool_data=mempool_data, fx=fx, config=self.config, enable_approximate_fee_label=False
+        )
         self.widget_right_top_layout.addWidget(
             self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter
         )
@@ -747,11 +749,10 @@ class UITx_Creator(UITx_Base):
 
         # do the recipients after the utxo list setting. otherwise setting the uxtos,
         # will reduce the sent amount to what is maximally possible, by the selected utxos
+        self.recipients.set_allow_edit(not txinfos.recipient_read_only)
         self.recipients.recipients = txinfos.recipients
         if not self.recipients.recipients:
             self.recipients.add_recipient()
-
-        self.recipients.set_allow_edit(not txinfos.recipient_read_only)
 
     def close(self):
         self.signal_tracker.disconnect_all()

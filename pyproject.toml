@@ -39,7 +39,7 @@ pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased 
 bitcoin-qr-tools =    { git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "afc9d6c552838d02e48f02abe69905116d372a5d" }   
-bitcoin-nostr-chat =   { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "bcdeb0659c3bb9dfeec4987d9b228460338fa0f2" } # "^0.6.3"  
+bitcoin-nostr-chat =   { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "a0e16671308822442f313f686174d2c46b6231e2" } # "^0.6.3"  
 bitcoin-usb =  { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "a5f10a02d5b007630b308231c570bcb2558b4a1a" }   # "^0.7.9"
 pysocks = "^1.7.1"
 
