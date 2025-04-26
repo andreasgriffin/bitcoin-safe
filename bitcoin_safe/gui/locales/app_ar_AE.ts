@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>متقدم</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>المنفذ:</translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>تطبيق &amp;&amp; إيقاف  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>تلقائي</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>الردود: {name}: {status}     Mempool Instance: {server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>تلقائي</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1456,10 @@ Do you want to proceed anyway?</source>
 هل تريد المتابعة على أي حال؟ </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>فتح وثائق تكوين وكيل Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>اختبار الاتصال</translation>
     </message>
@@ -1474,10 +1482,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>تمكين SSL</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1751,11 @@ Do you want to proceed anyway?</source>
         <translation>اختر اسمًا جديدًا، أو اسمًا موجودًا للدمج:</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>العناوين {used_addresses} لديها معاملات مرتبطة بعناوين أخرى بالفعل. هل أنت متأكد من أنك تريد تغيير الفئة؟  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>مزامنة مع {server}  </translation>
     </message>
@@ -1755,12 +1764,12 @@ Do you want to proceed anyway?</source>
         <translation>متصل بـ {server}  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>منفصل عن {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>المزامنة &amp;&amp; الدردشة  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>منفصل عن {server}  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1799,12 +1808,12 @@ Do you want to proceed anyway?</source>
         <translation>تم تحديث {number} من العلامات بنجاح  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>استيراد تسميات محفظة إلكتروم</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>التاريخ</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>استيراد تسميات محفظة إلكتروم</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

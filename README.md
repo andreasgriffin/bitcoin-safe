@@ -120,7 +120,7 @@
 - Install dependencies: 
 
   ```sh
-  sudo apt-get install qt6-tools-dev-tools libxcb-cursor0 '^libsecp256k1-.*$' '^libqt6.*$'
+  sudo apt-get install qt6-tools-dev-tools libzbar-dev libxcb-cursor0 '^libsecp256k1-.*$' '^libqt6.*$' 
   ```
 
 - Install `poetry` and run `bitcoin_safe`
@@ -133,26 +133,35 @@
 
 ### Mac
 
-- Run `bitcoin_safe`
+- Clone `bitcoin_safe`
   
   ```sh
+  export SSL_CERT_FILE=$(python3 -m certifi) # to fix ssl errors
   git clone https://github.com/andreasgriffin/bitcoin-safe.git
   cd bitcoin-safe
-  python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
   ```
 
-- `libsecp256k1`
-  ```sh
-  /bin/bash ./tools/make_libsecp256k1.sh
-  ```
+- `libsecp256k1` 
 
-- *Optional*: dependency `zbar`
-  
   ```sh
   xcode-select --install
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  brew install zbar 
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
+  brew install automake libtool
+  /bin/bash ./tools/make_libsecp256k1.sh
+  mv bitcoin_safe/libsecp256k1.* .
   ``` 
+
+
+- *Optional*: dependency `zbar`
+  ```sh 
+  brew install zbar  
+  ``` 
+  
+- Run `bitcoin_safe`
+  
+  ```sh 
+  python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
+  ```
 
 ## Development
 

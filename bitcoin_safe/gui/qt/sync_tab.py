@@ -50,7 +50,7 @@ from bitcoin_safe.storage import filtered_for_init
 logger = logging.getLogger(__name__)
 
 
-class SyncTab(QObject):
+class SyncTab(ControlledGroupbox):
     def __init__(
         self,
         network: bdk.Network,
@@ -59,30 +59,32 @@ class SyncTab(QObject):
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
+        parent=None,
         **kwargs,
     ) -> None:
-        super().__init__()
+        super().__init__(parent=parent, enabled=enabled)
         self.signals = signals
         self.network = network
 
-        self.main_widget = ControlledGroupbox(checkbox_text="", enabled=enabled)
-        self.main_widget.groupbox_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.groupbox_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        self.main_widget.checkbox.stateChanged.connect(self.checkbox_state_changed)
-        self.main_widget.checkbox.clicked.connect(self.publish_key_if_clicked)
+        self.checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.checkbox.clicked.connect(self.publish_key_if_clicked)
 
         self.nostr_sync = (
-            nostr_sync if nostr_sync else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals)
+            nostr_sync
+            if nostr_sync
+            else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=parent)
         )
 
-        self.main_widget.groupbox_layout.addWidget(self.nostr_sync.ui)
+        self.groupbox_layout.addWidget(self.nostr_sync.ui)
 
         # Create a checkable QAction
         self.checkbox_auto_open_psbts = QAction("")
         self.checkbox_auto_open_psbts.setCheckable(True)
         self.checkbox_auto_open_psbts.setChecked(auto_open_psbts)  # Set default state to checked
         self.nostr_sync.ui.menu.addAction(self.checkbox_auto_open_psbts)
-        # self.main_widget.groupbox_layout.addWidget(self.checkbox_auto_open_psbts)
+        # self.groupbox_layout.addWidget(self.checkbox_auto_open_psbts)
 
         self.updateUi()
 
@@ -97,7 +99,7 @@ class SyncTab(QObject):
 
     def publish_key_if_clicked(self):
         # just in case the relay lost the publish key message. I republish here
-        if self.main_widget.checkbox.isChecked():
+        if self.checkbox.isChecked():
             logger.info(
                 f"Publish my key {self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()} in protocol chat {self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()}"
             )
@@ -108,7 +110,7 @@ class SyncTab(QObject):
         return cls.tr("Label backup and encrypted syncing to trusted devices")
 
     def updateUi(self) -> None:
-        self.main_widget.checkbox.setText(self.get_checkbox_text())
+        self.checkbox.setText(self.get_checkbox_text())
         self.checkbox_auto_open_psbts.setText(self.tr("Open received Transactions and PSBTs"))
 
     def unsubscribe_all(self) -> None:
@@ -170,7 +172,7 @@ class SyncTab(QObject):
                 ).emit_with(self.signals.notification)
 
     def enabled(self) -> bool:
-        return self.main_widget.checkbox.isChecked()
+        return self.checkbox.isChecked()
 
     @classmethod
     def generate_hash_hex(
@@ -216,12 +218,14 @@ class SyncTab(QObject):
             parent=parent,
         )
 
-        return SyncTab(nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals)
+        return SyncTab(
+            nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals, parent=parent
+        )
 
     def dump(self) -> Dict[str, Any]:
         return {
             "auto_open_psbts": self.checkbox_auto_open_psbts.isChecked(),
-            "enabled": self.main_widget.checkbox.isChecked(),
+            "enabled": self.checkbox.isChecked(),
             "nostr_sync_dump": self.nostr_sync.dump(),
         }
 

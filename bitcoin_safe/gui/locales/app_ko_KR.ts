@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>고급  </translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>포트:  </translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>적용 및 종료  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>자동  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>응답:     {name}: {status}     Mempool 인스턴스: {server}  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>자동  </translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1449,6 +1453,10 @@ Do you want to proceed anyway?</source>
         <translation>서버 연결 오류. {responses}   그래도 진행하시겠습니까?  </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Tor 프록시 구성 문서를 열기  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>연결 테스트  </translation>
     </message>
@@ -1471,10 +1479,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>SSL 활성화  </translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1744,6 +1748,11 @@ Do you want to proceed anyway?</source>
         <translation>새 이름을 선택하거나 병합을 위해 기존 이름을 선택하세요:  </translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>주소 {used_addresses}에는 이미 다른 주소와 연결된 트랜잭션이 있습니다. 범주를 변경하시겠습니까?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>{server}와 동기화 중  </translation>
     </message>
@@ -1752,12 +1761,12 @@ Do you want to proceed anyway?</source>
         <translation>{server}에 연결됨  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>{server}에서 연결 해제됨  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sync &amp;&amp; Chat  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server}에서 연결 해제됨  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1796,12 +1805,12 @@ Do you want to proceed anyway?</source>
         <translation>{number}개의 명칭을 성공적으로 업데이트함  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Electrum 지갑 명칭 가져오기  </translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>내역</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Electrum 지갑 명칭 가져오기  </translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

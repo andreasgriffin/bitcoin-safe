@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>उन्नत</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>पोर्ट:</translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>लागू करें &amp;&amp; बंद करें  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>स्वचालित</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>प्रतिक्रियाएँ: {name}: {status} मेमपूल इंस्टेंस: {server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>स्वचालित</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1456,10 @@ Do you want to proceed anyway?</source>
 क्या आप फिर भी आगे बढ़ना चाहते हैं?</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Tor प्रॉक्सी कॉन्फ़िगरेशन दस्तावेज़ खोलें  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>कनेक्शन का परीक्षण करें</translation>
     </message>
@@ -1474,10 +1482,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>SSL सक्षम करें</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1751,11 @@ Do you want to proceed anyway?</source>
         <translation>नया नाम चुनें, या विलय के लिए मौजूदा नाम चुनें:</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>पते {used_addresses} के लेनदेन पहले से ही अन्य पतों से जुड़े हुए हैं। क्या आप वाकई श्रेणी बदलना चाहते हैं?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>{server} के साथ सिंकिंग  </translation>
     </message>
@@ -1755,12 +1764,12 @@ Do you want to proceed anyway?</source>
         <translation>{server} से जुड़ा हुआ  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>{server} से डिस्कनेक्टेड  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>सिंक &amp;&amp; चैट  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server} से डिस्कनेक्टेड  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1799,12 +1808,12 @@ Do you want to proceed anyway?</source>
         <translation>सफलतापूर्वक {number} लेबल अपडेट किए गए  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>इतिहास</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

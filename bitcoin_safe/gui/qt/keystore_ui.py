@@ -361,8 +361,11 @@ class KeyStoreUI(QObject):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def _process_input(self, s: str) -> None:
-        res = Data.from_str(s, network=self.network)
-        self._on_handle_input(res)
+        try:
+            res = Data.from_str(s, network=self.network)
+            self._on_handle_input(res)
+        except Exception as e:
+            Message(str(e), type=MessageType.Error)
 
     def _import_dialog(self):
         ImportDialog(
@@ -706,7 +709,6 @@ class SignerUI(QWidget):
                 button = QPushButton(button_prefix + signer.label)
                 button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             self.buttons.append(button)
-            button.setMinimumHeight(30)
             callback = partial(signer.sign, self.psbt)
             button.clicked.connect(callback)
             self.layout_keystore_buttons.addWidget(button)
@@ -736,7 +738,6 @@ class SignerUIHorizontal(QWidget):
         for signer in self.signature_importers:
 
             button = QPushButton(signer.label)
-            button.setMinimumHeight(30)
             button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
             action = partial(signer.sign, self.psbt)
             button.clicked.connect(action)

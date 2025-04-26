@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>ขั้นสูง  </translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>พอร์ต:  </translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>นำไปใช้แล้วปิด</translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>อัตโนมัติ  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>การตอบสนอง: {name}: {status} อินสแตนซ์ Mempool: {server}  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>อัตโนมัติ  </translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1449,6 +1453,10 @@ Do you want to proceed anyway?</source>
         <translation>มีข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์ {responses} คุณต้องการดำเนินการต่อหรือไม่?  </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>เปิดเอกสารการกำหนดค่าพร็อกซี Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>ทดสอบการเชื่อมต่อ  </translation>
     </message>
@@ -1471,10 +1479,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>เปิดใช้งาน SSL  </translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1744,6 +1748,11 @@ Do you want to proceed anyway?</source>
         <translation>เลือกชื่อใหม่หรือชื่อที่มีอยู่สำหรับการรวม:  </translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>ที่อยู่ {used_addresses} มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>กำลังซิงค์กับ {server}  </translation>
     </message>
@@ -1752,12 +1761,12 @@ Do you want to proceed anyway?</source>
         <translation>เชื่อมต่อกับ {server}  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>ตัดการเชื่อมต่อจาก {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sync &amp;&amp; Chat  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>ตัดการเชื่อมต่อจาก {server}  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1796,12 +1805,12 @@ Do you want to proceed anyway?</source>
         <translation>อัปเดตป้ายกำกับสำเร็จ {number} ป้าย  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>นำเข้าป้ายกำกับกระเป๋าเงิน Electrum  </translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>ประวัติ  </translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>นำเข้าป้ายกำกับกระเป๋าเงิน Electrum  </translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

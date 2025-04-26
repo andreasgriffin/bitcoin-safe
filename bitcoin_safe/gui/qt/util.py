@@ -181,6 +181,20 @@ def center_in_widget(
     return outer_layout
 
 
+def generate_help_website_open(url: str, title=translate("help", "Help"), tooltip: str = "") -> QPushButton:
+    # add the help buttonbox
+    button_help = QPushButton()
+    button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    button_help.setText(title)
+    button_help.setToolTip(tooltip)
+    button_help.setIcon(
+        (button_help.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion)
+    )
+
+    button_help.clicked.connect(partial(open_website, url))
+    return button_help
+
+
 def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) -> QPushButton:
     # add the help buttonbox
     button_help = QPushButton()

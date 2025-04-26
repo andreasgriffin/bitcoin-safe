@@ -171,7 +171,6 @@ class RecipientWidget(QWidget):
 
         self.send_max_button.setVisible(allow_edit)
 
-        self.address_edit.setReadOnly(not allow_edit)
         self.amount_spin_box.setReadOnly(not allow_edit)
         self.address_edit.set_allow_edit(allow_edit)
 

@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>Avanzado</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>Puerto:</translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>Aplicar &amp;&amp; Apagar  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>Automático</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Respuestas: {name}: {status} Mempool Instance: {server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>Automático</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1456,10 @@ Do you want to proceed anyway?</source>
 ¿Quieres proceder de todos modos?</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Abrir la documentación de configuración del proxy Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>Probar Conexión</translation>
     </message>
@@ -1474,10 +1482,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>Habilitar SSL</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1751,11 @@ Do you want to proceed anyway?</source>
         <translation>Elige un nuevo nombre o un nombre existente para fusionar:</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>Las direcciones {used_addresses} ya tienen transacciones vinculadas a otras direcciones. ¿Está seguro de que desea cambiar la categoría?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>Sincronizando con {server}  </translation>
     </message>
@@ -1755,12 +1764,12 @@ Do you want to proceed anyway?</source>
         <translation>Conectado a {server}  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>Desconectado de {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sincronizar &amp;&amp; Chatear  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>Desconectado de {server}  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1799,12 +1808,12 @@ Do you want to proceed anyway?</source>
         <translation>Se actualizaron correctamente {number} etiquetas  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Importar etiquetas de la cartera Electrum</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>Historial</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Importar etiquetas de la cartera Electrum</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

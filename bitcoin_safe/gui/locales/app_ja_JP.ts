@@ -9,22 +9,22 @@
     </message>
     <message>
         <source>No additional signatures were added</source>
-        <translation>追加の署名は追加されませんでした  </translation>
+        <translation>追加の署名はありませんでした</translation>
     </message>
     <message>
         <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_txライブラリエラー。txidは最終確定中に変更されるべきではありません</translation>
+        <translation>bitcoin_txライブラリエラー。txidは最終確定中に変更されてはいけません</translation>
     </message>
 </context>
 <context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
-        <translation>住所不足  </translation>
+        <translation>アドレスが不足しています</translation>
     </message>
     <message>
         <source>Valid Address</source>
-        <translation>有効なアドレス  </translation>
+        <translation>正しいアドレス</translation>
     </message>
     <message>
         <source>Invalid Address</source>
@@ -46,7 +46,7 @@
     </message>
     <message>
         <source>Address of wallet &quot;{id}&quot;</source>
-        <translation>ウォレットのアドレス &quot;{id}&quot;</translation>
+        <translation>ウォレット「{id}」のアドレス</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -54,7 +54,7 @@
     </message>
     <message>
         <source>Validate</source>
-        <translation>検証  </translation>
+        <translation>有効性を確認</translation>
     </message>
 </context>
 <context>
@@ -68,7 +68,7 @@
     <name>AddressList</name>
     <message>
         <source>Address {address}</source>
-        <translation>アドレス {address}</translation>
+        <translation>アドレス：{address}</translation>
     </message>
     <message>
         <source>receiving</source>
@@ -100,7 +100,7 @@
     </message>
     <message>
         <source>Tx</source>
-        <translation>トランザクション</translation>
+        <translation>Tx（トランザクション）</translation>
     </message>
     <message>
         <source>Type</source>
@@ -128,18 +128,18 @@
     </message>
     <message>
         <source>change</source>
-        <translation>変更</translation>
+        <translation>おつり</translation>
     </message>
 </context>
 <context>
     <name>AddressListWithToolbar</name>
     <message>
         <source>Show Filter</source>
-        <translation>フィルターを表示</translation>
+        <translation>フィルター表示</translation>
     </message>
     <message>
         <source>Generate to selected adddresses</source>
-        <translation>選択したアドレスに生成</translation>
+        <translation>選択したアドレスに送金</translation>
     </message>
 </context>
 <context>
@@ -168,7 +168,7 @@
     </message>
     <message>
         <source>Print recovery sheet</source>
-        <translation>リカバリーシートを印刷</translation>
+        <translation>回復用シートを印刷</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -180,7 +180,7 @@
     </message>
     <message>
         <source>Glue the {number} word seed onto the matching printed pdf.</source>
-        <translation>対応する印刷されたPDFに{number}語のシードを貼り付けてください。  </translation>
+        <translation>対応する印刷済みPDFに{number}単語のシードを貼り付けてください。</translation>
     </message>
     <message>
         <source>Glue the {number} word seed onto the printed pdf.</source>
@@ -191,15 +191,15 @@
     <name>Balance</name>
     <message>
         <source>Confirmed</source>
-        <translation>確認済み</translation>
+        <translation>承認済み</translation>
     </message>
     <message>
         <source>Unconfirmed</source>
-        <translation>未確認</translation>
+        <translation>未承認</translation>
     </message>
     <message>
         <source>Unmatured</source>
-        <translation>未成熟</translation>
+        <translation>未成熟 (Unmatured)</translation>
     </message>
 </context>
 <context>
@@ -213,14 +213,14 @@
     <name>BaseChat</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
-        <translation>{file_content} を BitcoinData として認識できませんでした  </translation>
+        <translation>{file_content} を Bitcoin データとして認識できませんでした</translation>
     </message>
 </context>
 <context>
     <name>BaseDeviceItem</name>
     <message>
         <source>Rename</source>
-        <translation>名前を変更  </translation>
+        <translation>名前変更</translation>
     </message>
     <message>
         <source>Enter a name of device with {npub}</source>
@@ -228,7 +228,7 @@
     </message>
     <message>
         <source>Device name</source>
-        <translation>デバイス名  </translation>
+        <translation>機器名</translation>
     </message>
 </context>
 <context>
@@ -321,7 +321,7 @@
     </message>
     <message>
         <source>Private</source>
-        <translation>プライベート  </translation>
+        <translation>非公開</translation>
     </message>
     <message>
         <source>category</source>
@@ -332,7 +332,7 @@
     <name>Chat</name>
     <message>
         <source>You can only send only PSBTs or transactions</source>
-        <translation>PSBTs またはトランザクションのみ送信できます  </translation>
+        <translation>PSBTまたはトランザクションのみ送信可能です</translation>
     </message>
 </context>
 <context>
@@ -383,11 +383,11 @@
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Missing Descriptor</source>
-        <translation>記述子がありません  </translation>
+        <translation>ディスクリプターがありません</translation>
     </message>
     <message>
         <source>Invalid Descriptor</source>
-        <translation>無効なディスクリプタ  </translation>
+        <translation>無効なディスクリプター</translation>
     </message>
 </context>
 <context>
@@ -424,7 +424,7 @@
     </message>
     <message>
         <source>Descriptor unchanged</source>
-        <translation>記述子は変更されていません  </translation>
+        <translation>ディスクリプターは変更されませんでした</translation>
     </message>
     <message>
         <source>New descriptor entered</source>
@@ -436,7 +436,7 @@
     </message>
     <message>
         <source>Paste or scan your descriptor, if you restore a wallet.</source>
-        <translation>ウォレットを復元する場合は、ディスクリプターを貼り付けるかスキャンしてください。</translation>
+        <translation>ウォレットを復元する場合は、ディスクリプターを貼り付けるかスキャンします。</translation>
     </message>
     <message>
         <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
@@ -449,15 +449,15 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Address Type</source>
-        <translation>アドレスタイプ</translation>
+        <translation>アドレスの種類</translation>
     </message>
     <message>
         <source>Wallet Descriptor</source>
-        <translation>ウォレットディスクリプタ</translation>
+        <translation>ウォレットディスクリプター</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>手動</translation>
+        <translation>インポート</translation>
     </message>
     <message>
         <source>Read QR Code</source>
@@ -486,7 +486,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
-        <translation>各シードバックアップとハードウェアサイナーを安全な場所に保管してください、例えば：</translation>
+        <translation>各シードバックアップとハードウェアサイナーを安全な場所（例：以下）に保管してください：</translation>
     </message>
     <message>
         <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
@@ -561,7 +561,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>FeeGroup</name>
     <message>
         <source>Fee</source>
-        <translation>手数料</translation>
+        <translation>手数料 (Fee)</translation>
     </message>
     <message>
         <source>... is the minimum to replace the existing transactions.</source>
@@ -684,7 +684,7 @@ the sending value {sent}</source>
     <name>GenerateSeed</name>
     <message>
         <source>Sticker Label</source>
-        <translation>ステッカーラベル  </translation>
+        <translation>ラベル用ステッカー</translation>
     </message>
     <message>
         <source>Please enter the name (sticker label) of the hardware signer</source>
@@ -793,7 +793,7 @@ the sending value {sent}</source>
     <name>HorizontalImportExportWallet</name>
     <message>
         <source>Seed</source>
-        <translation>署名デバイスの名前：...... 署名デバイスの場所：.....</translation>
+        <translation>シード</translation>
     </message>
 </context>
 <context>
@@ -862,7 +862,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Advanced</source>
-        <translation>詳細</translation>
+        <translation>高度な設定</translation>
     </message>
     <message>
         <source>Description</source>
@@ -882,7 +882,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Seed</source>
-        <translation>署名デバイスの名前：...... 署名デバイスの場所：.....</translation>
+        <translation>シード</translation>
     </message>
     <message>
         <source>Name of signing device: ......
@@ -1205,7 +1205,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Could not decode this string</source>
-        <translation>この文字列をデコードできませんでした  </translation>
+        <translation>この文字列を解読できませんでした</translation>
     </message>
     <message>
         <source>&amp;Open Wallet</source>
@@ -1225,7 +1225,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-        <translation>トランザクション {txid}</translation>
+        <translation>ビットコインのトランザクションまたはPSBTをここに貼り付けるか、ファイルをドロップしてください</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
@@ -1261,7 +1261,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Wallet already open</source>
-        <translation>{filename}のパスワードを入力してください：</translation>
+        <translation>ウォレットはすでに開かれています</translation>
     </message>
     <message>
         <source>There is no such file: {file_path}</source>
@@ -1269,7 +1269,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Please enter the password for {filename}:</source>
-        <translation>すべてのファイル ();;JSONファイル (.jsonl);;JSONファイル (.json)</translation>
+        <translation>{filename}のパスワードを入力してください：</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>詳細</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>モード：</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>IPアドレス：</translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>適用 &amp;&amp; シャットダウン  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>接続をテスト</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>シングルシグネチャーウォレット</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>接続をテスト</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1456,10 @@ Do you want to proceed anyway?</source>
 それでも進みますか？</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Tor プロキシ構成ドキュメントを開く  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>ブロックチェーンデータソース</translation>
     </message>
@@ -1474,10 +1482,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>SSL：</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>モード：</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1751,11 @@ Do you want to proceed anyway?</source>
         <translation>新しい名前、またはマージするための既存の名前を選択してください：</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>アドレス {used_addresses} には既に他のアドレスと関連するトランザクションがあります。本当にカテゴリを変更しますか？  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>{server} と同期中  </translation>
     </message>
@@ -1755,12 +1764,12 @@ Do you want to proceed anyway?</source>
         <translation>{server} に接続しました  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>{server} から切断しました  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>同期 &amp;&amp; チャット  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server} から切断しました  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1799,12 +1808,12 @@ Do you want to proceed anyway?</source>
         <translation>正常に{number}のラベルを更新しました  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Electrum ウォレットラベルのインポート</translation>
+        <source>History</source>
+        <translation>取引履歴</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>変更が適用されるものはありません。</translation>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Electrum ウォレットラベルのインポート</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
@@ -1812,7 +1821,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Receive</source>
-        <translation>{filename}にバックアップを保存しました</translation>
+        <translation>受信</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
@@ -2210,7 +2219,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignatureImporterWallet</name>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-        <translation>署名されたpsbtのtxidが元のTransaction Identifierと一致しない。中止</translation>
+        <translation>署名されたPSBTのtxidが元のtxidと一致しません</translation>
     </message>
     <message>
         <source>Sign with seed</source>
@@ -2362,7 +2371,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
-        <translation>{label}に属するプライベートキーで署名されたトランザクション</translation>
+        <translation>{label}のプライベートキーで署名されたトランザクション</translation>
     </message>
 </context>
 <context>
@@ -2570,7 +2579,7 @@ below {rate}</source>
     <name>USBValidateAddressWidget</name>
     <message>
         <source>Validate address</source>
-        <translation>アドレスを検証する  </translation>
+        <translation>アドレスを確認する</translation>
     </message>
     <message>
         <source>Validate receive address:</source>
@@ -2749,7 +2758,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Sync &amp; Chat</source>
-        <translation>同期 &amp; チャット  </translation>
+        <translation>同期とチャット</translation>
     </message>
     <message>
         <source>Send test {j}</source>

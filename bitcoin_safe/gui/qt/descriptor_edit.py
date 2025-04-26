@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from typing import Optional
 
@@ -35,7 +34,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import (
     MultipathDescriptor as BitcoinQRMultipathDescriptor,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QWidget
 
@@ -93,6 +92,14 @@ class DescriptorExport(QDialog):
         super().closeEvent(event)
 
 
+class DescriptorInputField(AnalyzerTextEdit):
+
+    def sizeHint(self) -> QSize:
+        size = super().sizeHint()
+        size.setHeight(30)
+        return size
+
+
 class DescriptorEdit(ButtonEdit, ThreadingManager):
     signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
@@ -105,7 +112,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
-            input_field=AnalyzerTextEdit(),
+            input_field=DescriptorInputField(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
             signals_min=signals_min,

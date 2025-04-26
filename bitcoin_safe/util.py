@@ -587,16 +587,15 @@ def format_number(
 
 
 class Satoshis:
-    def __init__(self, value: Union[str, int], network: bdk.Network):
+    def __init__(self, value: int, network: bdk.Network):
         self.network = network
-        self.value = value if isinstance(value, int) else self._to_int(value)
+        self.value = value
 
-    def _to_int(self, s: Union[float, str]):
-        if isinstance(s, float):
-            return int(s)
-
-        f = QLocale().toDouble(str(s).replace(unit_str(self.network), "").strip().replace(" ", ""))[0] * 1e8
-        return int(round(f))
+    @classmethod
+    def from_btc_str(cls, s: str, network: bdk.Network):
+        f = QLocale().toDouble(str(s).replace(unit_str(network), "").strip().replace(" ", ""))[0] * 1e8
+        value = int(round(f))
+        return Satoshis(value=value, network=network)
 
     def __repr__(self):
         return f"Satoshis({self.value})"

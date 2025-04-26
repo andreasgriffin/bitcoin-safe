@@ -196,6 +196,7 @@ class FeeGroup(QObject):
         url: str | None = None,
         fee_rate: float | None = None,
         decimal_precision: int = 1,
+        enable_approximate_fee_label: bool = True,
     ) -> None:
         super().__init__()
         self.is_viewer = is_viewer
@@ -203,6 +204,7 @@ class FeeGroup(QObject):
         self.allow_edit = allow_edit
         self.config = config
         self.fee_info = fee_info
+        self.enable_approximate_fee_label = enable_approximate_fee_label
 
         fee_rate = fee_rate if fee_rate else (mempool_data.get_prio_fee_rates()[TxPrio.low])
 
@@ -346,7 +348,9 @@ class FeeGroup(QObject):
                 )
             )
 
-        self.approximate_fee_label.setVisible(self.fee_info.is_estimated if self.fee_info else False)
+        self.approximate_fee_label.setVisible(
+            self.enable_approximate_fee_label and (self.fee_info.is_estimated if self.fee_info else False)
+        )
         if self.fee_info:
             self.approximate_fee_label.setToolTip(
                 f'<html><body>The {"approximate " if   self.fee_info.is_estimated else "" }fee is {Satoshis( self.fee_info.fee_amount  , self.config.network).str_with_unit()}</body></html>'

@@ -28,6 +28,7 @@
 
 
 import logging
+import os
 from typing import Optional
 
 import bdkpython as bdk
@@ -42,6 +43,16 @@ from bitcoin_safe.wallet import filename_clean
 from .descriptors import MultipathDescriptor
 
 logger = logging.getLogger(__name__)
+
+
+def shorten_filename(filename: str, max_total_length: int):
+    name, ext = os.path.splitext(filename)
+    max_name_length = max_total_length - len(ext)
+    if max_name_length < 0:
+        # Extension itself is too long, truncate it (last resort)
+        return filename[:max_total_length]
+    short_name = name[:max_name_length]
+    return short_name + ext
 
 
 class DescriptorExportTools:
@@ -94,7 +105,9 @@ class DescriptorExportTools:
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
-            default_filename=filename_clean(wallet_id, file_extension=".txt", replace_spaces_by="_")[:24],
+            default_filename=shorten_filename(
+                filename_clean(wallet_id, file_extension=".txt", replace_spaces_by="_"), max_total_length=20
+            ),
             window_title=f"Export Wallet for {descripor_type.display_name}",
         )
         if not filename:
