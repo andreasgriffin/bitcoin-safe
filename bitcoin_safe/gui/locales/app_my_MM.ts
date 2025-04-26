@@ -1380,6 +1380,10 @@ Do you want to proceed anyway?</source>
         <translation>အဆင့်မြင့်  </translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>ဆိပ်ကမ်း:  </translation>
     </message>
@@ -1416,14 +1420,14 @@ Do you want to proceed anyway?</source>
         <translation>လက်ခံပြီးပိတ်ပါ  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>အော်တို  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>တုံ့ပြန်ချက်: {name}: {status}     Mempool Instance: {server}  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>အော်တို  </translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1449,6 +1453,10 @@ Do you want to proceed anyway?</source>
         <translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။ {responses}   သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?  </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Tor proxy configuration စာရွက်ကို ဖွင့်ပါ  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>ချိတ်ဆက်မှုစမ်းသပ်ပါ  </translation>
     </message>
@@ -1471,10 +1479,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>SSL ဖွင့်ပါ  </translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1744,6 +1748,11 @@ Do you want to proceed anyway?</source>
         <translation>အမည်အသစ်ရွေးပါ သို့မဟုတ်ပေါင်းစပ်ရန်ရှိပြီးသားအမည်ရွေးပါ:  </translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>{server} နှင့်ထပ်တူညီပါ  </translation>
     </message>
@@ -1752,12 +1761,12 @@ Do you want to proceed anyway?</source>
         <translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>{server} မှဖြတ်တောက်ပါ  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sync &amp; Chat</translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>{server} မှဖြတ်တောက်ပါ  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1796,12 +1805,12 @@ Do you want to proceed anyway?</source>
         <translation>{number} တံဆိပ်များအားအောင်မြင်စွာအသစ်တင်ပါ  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>Electrum ပိုက်ဆံအိတ်တံဆိပ်များတင်သွင်းပါ  </translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>သမိုင်း  </translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Electrum ပိုက်ဆံအိတ်တံဆိပ်များတင်သွင်းပါ  </translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

@@ -1381,6 +1381,10 @@ Do you want to proceed anyway?</source>
         <translation>高级</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL：</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>端口：</translation>
     </message>
@@ -1417,16 +1421,16 @@ Do you want to proceed anyway?</source>
         <translation>应用&amp;&amp;关闭  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>自动</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>响应：
     {name}：{status}
     Mempool实例：{server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>自动</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1455,6 +1459,10 @@ Do you want to proceed anyway?</source>
 您还要继续吗？</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>打开 Tor 代理配置文档  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>测试连接</translation>
     </message>
@@ -1477,10 +1485,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>启用SSL</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL：</translation>
     </message>
 </context>
 <context>
@@ -1750,6 +1754,11 @@ Do you want to proceed anyway?</source>
         <translation>选择一个新名称，或一个已有名称以进行合并：</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>地址 {used_addresses} 已经有与其他地址关联的交易。您确定要更改类别吗？  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>与 {server} 同步  </translation>
     </message>
@@ -1758,12 +1767,12 @@ Do you want to proceed anyway?</source>
         <translation>已连接到 {server}  </translation>
     </message>
     <message>
-        <source>Disconnected from {server}</source>
-        <translation>已从 {server} 断开  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>同步 &amp;&amp; 聊天  </translation>
+    </message>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>已从 {server} 断开  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1802,12 +1811,12 @@ Do you want to proceed anyway?</source>
         <translation>成功更新了{number}个标签  </translation>
     </message>
     <message>
-        <source>Import Electrum Wallet labels</source>
-        <translation>导入 Electrum 钱包标签</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>历史记录</translation>
+    </message>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>导入 Electrum 钱包标签</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>

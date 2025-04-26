@@ -433,7 +433,7 @@ class NetworkSettingsUI(QDialog):
         self.proxy_help_button = generate_help_website_open(
             "https://bitcoin-safe.org/en/knowledge/tor-config/",
             title="",
-            tooltip=self.tr("Open Tor proxy configuration cocumentation"),
+            tooltip=self.tr("Open Tor proxy configuration documentation"),
         )
         self.groupbox_proxy_layout.addWidget(self.proxy_help_button)
 
