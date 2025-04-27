@@ -478,7 +478,8 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
 
 
 def caught_exception_message(e: Exception, title=None, log_traceback=True) -> Message:
-    exception_text = str(e).replace("\\", "")
+    exception_msg = str(e).replace("\\", "")
+    exception_text = f"{e.__class__}: {exception_msg}"
 
     logger.error(exception_text, exc_info=sys.exc_info() if log_traceback else None)
 

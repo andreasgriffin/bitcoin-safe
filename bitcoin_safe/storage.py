@@ -27,23 +27,18 @@
 # SOFTWARE.
 
 
-import logging
-from abc import abstractmethod
-from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Union
-
-logger = logging.getLogger(__name__)
-
-
 import enum
 import json
+import logging
 import os
 
 # from https://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password
 import secrets
+from abc import abstractmethod
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
-from typing import Callable, Dict, Iterable, Type
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, Optional, Type, Union
 
 import bdkpython as bdk
 from cryptography.fernet import Fernet
@@ -51,6 +46,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from packaging import version
+
+from bitcoin_safe import __version__
+
+logger = logging.getLogger(__name__)
 
 
 def varnames(method: Callable) -> Iterable[str]:
@@ -161,6 +160,13 @@ class ClassSerializer:
     """
                     )
             elif dct.get("__enum__"):
+                if version.parse(__version__) < version.parse("1.3.0"):
+                    # before bdk1.0 upgrade
+                    if dct["value"] == "TESTNET4" and "TESTNET4" not in [
+                        v.name for v in bdk.Network._value2member_map_.values()
+                    ]:
+                        dct["value"] = "TESTNET"
+
                 obj_cls = known_classes.get(dct["name"])
                 if obj_cls:
                     return getattr(obj_cls, dct["value"])
