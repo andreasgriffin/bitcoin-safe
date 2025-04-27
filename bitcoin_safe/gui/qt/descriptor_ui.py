@@ -275,8 +275,8 @@ class DescriptorUI(QWidget):
         self.edit_descriptor.format_and_apply_validator()
 
     def disable_fields(self) -> None:
-        self.comboBox_address_type.setHidden(self.no_edit_mode)
-        self.label_address_type.setHidden(self.no_edit_mode)
+        self.comboBox_address_type.setEnabled(not self.no_edit_mode)
+        self.label_address_type.setHidden(False)
         self.spin_signers.setHidden(self.no_edit_mode)
         self.spin_req.setHidden(self.no_edit_mode)
         self.label_signers.setHidden(self.no_edit_mode)

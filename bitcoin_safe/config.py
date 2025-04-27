@@ -128,6 +128,7 @@ class UserConfig(BaseSaveableClass):
                 "recently_open_wallets",
                 {network.name: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network},
             ).items()
+            if k in bdk.Network._member_map_
         }
         # for better portability between computers the saved string is relative to the home folder
         dct["data_dir"] = rel_home_path_to_abs_path(dct["data_dir"])
