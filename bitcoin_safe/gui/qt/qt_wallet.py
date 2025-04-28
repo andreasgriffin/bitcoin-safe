@@ -38,6 +38,7 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -379,6 +380,24 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:
             del dct["VERSION"]
+        return dct
+
+    @classmethod
+    def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
+        if version.parse(str(dct.get("VERSION", 0))) >= version.parse("0.2.0") > version.parse(cls.VERSION):
+            # downgrade bdk 1.x related stuff
+            if sync_tab := dct.get("sync_tab"):
+                if nostr_sync_dump := sync_tab.get("nostr_sync_dump"):
+
+                    def migrate_network(obj: Dict[str, Any], key: str = "network"):
+                        if obj.get(key) == "TESTNET4":
+                            obj[key] = "TESTNET"
+
+                    migrate_network(nostr_sync_dump)
+                    if nostr_protocol := nostr_sync_dump.get("nostr_protocol"):
+                        migrate_network(nostr_protocol)
+                    if group_chat := nostr_sync_dump.get("group_chat"):
+                        migrate_network(group_chat)
         return dct
 
     @classmethod

@@ -160,7 +160,7 @@ class ClassSerializer:
     """
                     )
             elif dct.get("__enum__"):
-                if version.parse(__version__) < version.parse("1.3.0"):
+                if dct["name"] == "Network" and version.parse(__version__) < version.parse("1.3.0"):
                     # before bdk1.0 upgrade
                     if dct["value"] == "TESTNET4" and "TESTNET4" not in [
                         v.name for v in bdk.Network._value2member_map_.values()
@@ -203,14 +203,22 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump_migration(cls, dct):
+    def from_dump_migration(cls, dct: Dict[str, Any]):
         "this class should be overwritten in child classes"
         return dct
 
     @classmethod
-    def _from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
+        "this class can be overwritten in child classes"
+        return dct
+
+    @classmethod
+    def _from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
         assert dct.get("__class__") == cls.__name__
         del dct["__class__"]
+
+        if version.parse(cls.VERSION) < version.parse(str(dct.get("VERSION", 0))):
+            dct = cls.from_dump_downgrade_migration(dct)
 
         if version.parse(cls.VERSION) > version.parse(str(dct.get("VERSION", 0))):
             dct = cls.from_dump_migration(dct)
@@ -220,7 +228,7 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
         raise NotImplementedError()
 
     def clone(self, class_kwargs: Dict | None = None):
