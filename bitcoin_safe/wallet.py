@@ -952,17 +952,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             elapsed = time() - start_time
             logger.debug(f"{self.id} wallet sync in {elapsed:.2f}s")
 
-            # Now you can fetch and log the updated balance
-            balance = self.bdkwallet.balance()
-            logger.info(
-                f"Wallet balance is: "
-                f"immature={balance.immature}, "
-                f"trusted_pending={balance.trusted_pending}, "
-                f"untrusted_pending={balance.untrusted_pending}, "
-                f"confirmed={balance.confirmed}, "
-                f"trusted_spendable={balance.trusted_spendable}, "
-                f"total={balance.total}"
-            )
+            logger.info("Wallet balance retrieved successfully.")
 
         except Exception as e:
             logger.error(f"{self.id} error syncing wallet: {e}")
