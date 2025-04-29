@@ -27,8 +27,10 @@
 # SOFTWARE.
 
 
+import datetime
 import enum
 import logging
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
@@ -166,10 +168,31 @@ class UtxosForInputs:
         self.spend_all_utxos = spend_all_utxos
 
 
+@dataclass
+class TransactionDetails:
+    transaction: bdk.Transaction
+    fee: int | None
+    received: int
+    sent: int
+    txid: str
+    chain_position: bdk.ChainPosition
+
+    def get_datetime(self, fallback_timestamp: float = 0) -> datetime.datetime:
+        if self.chain_position.is_confirmed():
+
+            return datetime.datetime.fromtimestamp(
+                self.chain_position.confirmation_block_time.confirmation_time
+            )
+        if isinstance(self.chain_position, bdk.ChainPosition.UNCONFIRMED):
+            return datetime.datetime.fromtimestamp(self.chain_position.timestamp or fallback_timestamp)
+
+        raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
+
+
 class FullTxDetail:
     """For all outputs and inputs, where it has a full PythonUtxo ."""
 
-    def __init__(self, tx: bdk.TransactionDetails, received=None, send=None) -> None:
+    def __init__(self, tx: TransactionDetails, received=None, send=None) -> None:
         self.outputs: Dict[str, PythonUtxo] = received if received else {}  # outpoint_str: PythonUtxo
         self.inputs: Dict[str, Optional[PythonUtxo]] = send if send else {}  # outpoint_str: PythonUtxo
         self.tx = tx
@@ -182,19 +205,20 @@ class FullTxDetail:
 
     @classmethod
     def fill_received(
-        cls, tx: bdk.TransactionDetails, get_address_of_txout: Callable[[TxOut], str | None]
+        cls, tx: TransactionDetails, get_address_of_txout: Callable[[TxOut], str | None]
     ) -> "FullTxDetail":
         res = FullTxDetail(tx)
         txid = tx.txid
         for vout, txout in enumerate(tx.transaction.output()):
             address = get_address_of_txout(TxOut.from_bdk(txout))
             if not address:
-                logger.error(
-                    f"Could not calculate the address of {TxOut.from_bdk(txout)}. This should not happen, unless it is a mining input."
-                )
+                if not tx.transaction.is_coinbase():
+                    logger.error(
+                        f"Could not calculate the address of {TxOut.from_bdk(txout)}. This should not happen."
+                    )
                 continue
             out_point = OutPoint(txid=txid, vout=vout)
-            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=txout)
+            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=TxOut.from_bdk(txout))
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
         return res
@@ -266,7 +290,7 @@ class AddressInfoMin(SaveAllClass):
     @classmethod
     def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo) -> "AddressInfoMin":
         return AddressInfoMin(
-            bdk_address_info.address.as_string(),
+            str(bdk_address_info.address),
             bdk_address_info.index,
             bdk_address_info.keychain,
         )
@@ -319,7 +343,7 @@ class BlockchainType(enum.Enum):
 
     @classmethod
     def active_types(cls) -> List["BlockchainType"]:
-        return [cls.Electrum, cls.Esplora, cls.RPC]
+        return [cls.Electrum, cls.Esplora]
 
 
 class CBFServerType(enum.Enum):
@@ -343,6 +367,15 @@ class Balance(QObject, SaveAllClass):
         self.trusted_pending = trusted_pending
         self.untrusted_pending = untrusted_pending
         self.confirmed = confirmed
+
+    @classmethod
+    def from_bdk(cls, balance: bdk.Balance):
+        return cls(
+            immature=balance.immature.to_sat(),
+            trusted_pending=balance.trusted_pending.to_sat(),
+            untrusted_pending=balance.untrusted_pending.to_sat(),
+            confirmed=balance.confirmed.to_sat(),
+        )
 
     @property
     def total(self) -> int:
@@ -391,7 +424,7 @@ class Balance(QObject, SaveAllClass):
 
 def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=True) -> str:
     try:
-        return bdk.Address.from_script(script_pubkey, network).as_string()
+        return str(bdk.Address.from_script(script_pubkey, network))
     except Exception as e:
         logger.debug(str(e))
         if on_error_return_hex:

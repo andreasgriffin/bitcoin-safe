@@ -36,12 +36,6 @@ import pytest
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.pythonbdk_types import BlockchainType
-from tests.test_setup_bitcoin_core import (
-    BITCOIN_HOST,
-    BITCOIN_PORT,
-    RPC_PASSWORD,
-    RPC_USER,
-)
 
 logger = logging.getLogger(__name__)
 

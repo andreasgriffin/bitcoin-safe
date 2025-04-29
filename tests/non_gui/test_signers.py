@@ -31,12 +31,12 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Literal
-from uuid import uuid4
 
 import bdkpython as bdk
 import pytest
 from _pytest.logging import LogCaptureFixture
 from bitcoin_qr_tools.data import Data
+from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
@@ -44,18 +44,7 @@ from bitcoin_safe.signals import TypedPyQtSignalNo
 from bitcoin_safe.signer import SignatureImporterClipboard
 from bitcoin_safe.util import hex_to_serialized, serialized_to_hex
 
-from ..test_helpers import test_config  # type: ignore
-
 logger = logging.getLogger(__name__)
-from ..test_helpers import test_config  # type: ignore
-from ..test_setup_bitcoin_core import (  # type: ignore
-    BITCOIN_PORT,
-    RPC_PASSWORD,
-    RPC_USER,
-    Faucet,
-    bitcoin_core,
-    faucet,
-)
 
 bacon_seed = ("bacon " * 24).strip()
 test_seeds = """peanut all ghost appear daring exotic choose disease bird ready love salad
@@ -172,29 +161,28 @@ def dummy_instance_with_close_all_video_widgets() -> My:
 @dataclass
 class PyTestBDKSetup:
     network: bdk.Network
-    blockchain: bdk.Blockchain
     descriptors: List[bdk.Descriptor]
     wallets: List[bdk.Wallet]
 
 
-def get_blockchain_config(bitcoin_core: Path, network: bdk.Network) -> bdk.BlockchainConfig.RPC:
-    return bdk.BlockchainConfig.RPC(
-        bdk.RpcConfig(
-            url=f"127.0.0.1:{BITCOIN_PORT}",
-            auth=bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
-            network=network,
-            wallet_name=str(uuid4()),
-            sync_params=bdk.RpcSyncParams(
-                start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
-            ),
-        )
-    )
+# def get_blockchain_config(bitcoin_core: Path, network: bdk.Network) -> bdk.BlockchainConfig.RPC:
+#     return bdk.BlockchainConfig.RPC(
+#         bdk.RpcConfig(
+#             url=f"127.0.0.1:{BITCOIN_PORT}",
+#             auth=bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
+#             network=network,
+#             wallet_name=str(uuid4()),
+#             sync_params=bdk.RpcSyncParams(
+#                 start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
+#             ),
+#         )
+#     )
 
 
 def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.REGTEST) -> PyTestBDKSetup:
-    blockchain_config = get_blockchain_config(bitcoin_core, network=network)
+    # blockchain_config = get_blockchain_config(bitcoin_core, network=network)
 
-    blockchain = bdk.Blockchain(blockchain_config)
+    # blockchain = bdk.Blockchain(blockchain_config)
 
     def create_single_sig_descriptor(seed):
         mnemonic = bdk.Mnemonic.from_string(seed)
@@ -206,15 +194,14 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
         )
 
     def create_wallet(descriptor: bdk.Descriptor):
-
         wallet = bdk.Wallet(
             descriptor=descriptor,
             change_descriptor=None,
             network=network,
-            database_config=bdk.DatabaseConfig.MEMORY(),
+            connection=bdk.Connection.new_in_memory(),
         )
 
-        return wallet
+        return connection, wallet
 
     def gen_multisig_descriptor_str(
         descriptor_strings, threshold, type: Literal["p2wsh", "p2sh_p2wsh", "p2sh"] = "p2wsh"
@@ -238,47 +225,51 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
     multisig_descripors = []
     for i in range(len(single_sig_descriptors)):
         descriptor_strings = [
-            descriptor.as_string_private() if i == j else descriptor.as_string()
+            descriptor.to_string_with_secret() if i == j else str(descriptor)
             for j, descriptor in enumerate(single_sig_descriptors)
         ]
-        multisig_descripor = bdk.Descriptor(
+        multisig_descripor = convert_to_multipath_descriptor(
             gen_multisig_descriptor_str(descriptor_strings, threshold=m, type="p2wsh"), network
         )
         multisig_descripors.append(multisig_descripor)
         wallets.append(create_wallet(multisig_descripor))
 
-    return PyTestBDKSetup(
-        network=network, blockchain=blockchain, descriptors=multisig_descripors, wallets=wallets
-    )
+    return PyTestBDKSetup(network=network, descriptors=multisig_descripors, wallets=wallets)
 
 
 def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST) -> PyTestBDKSetup:
     logger.debug("pytest_bdk_setup_single_sig start")
-    blockchain_config = get_blockchain_config(bitcoin_core, network=network)
-    logger.debug(f"blockchain_config = {blockchain_config}")
+    # blockchain_config = get_blockchain_config(bitcoin_core, network=network)
+    # logger.debug(f"blockchain_config = {blockchain_config}")
 
-    blockchain = bdk.Blockchain(blockchain_config)
-    logger.debug(f"blockchain = {blockchain}")
+    # blockchain = bdk.Blockchain(blockchain_config)
+    # logger.debug(f"blockchain = {blockchain}")
 
     mnemonic = bdk.Mnemonic.from_string(test_seeds[50])
     logger.debug(f"mnemonic = {mnemonic}")
 
+    secret_key = bdk.DescriptorSecretKey(network, mnemonic, "")
     descriptor = bdk.Descriptor.new_bip84(
-        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+        secret_key=secret_key,
         keychain=bdk.KeychainKind.EXTERNAL,
+        network=network,
+    )
+    change_descriptor = bdk.Descriptor.new_bip84(
+        secret_key=secret_key,
+        keychain=bdk.KeychainKind.INTERNAL,
         network=network,
     )
     logger.debug(f"descriptor = {descriptor}")
 
     wallet = bdk.Wallet(
         descriptor=descriptor,
-        change_descriptor=None,
+        change_descriptor=change_descriptor,
         network=network,
-        database_config=bdk.DatabaseConfig.MEMORY(),
+        connection=bdk.Connection.new_in_memory(),
     )
     logger.debug(f"wallet = {wallet}")
 
-    return PyTestBDKSetup(network=network, blockchain=blockchain, descriptors=[descriptor], wallets=[wallet])
+    return PyTestBDKSetup(network=network, descriptors=[descriptor], wallets=[wallet])
 
 
 @pytest.fixture
@@ -310,10 +301,8 @@ def test_signer_finalizes_ofn_final_sig_receive(
 
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.handle_data_input(
-            original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
-            data=Data.from_psbt(
-                bdk.PartiallySignedTransaction(psbt_second_signature_2_of_3), network=bdk.Network.REGTEST
-            ),
+            original_psbt=bdk.Psbt(psbt_1_sig_2_of_3),
+            data=Data.from_psbt(bdk.Psbt(psbt_second_signature_2_of_3), network=bdk.Network.REGTEST),
         )
 
     # Now check the argument with which the signal was emitted
@@ -342,7 +331,7 @@ def test_signer_recognizes_finalized_tx_received(
 
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         signer.handle_data_input(
-            original_psbt=bdk.PartiallySignedTransaction(psbt_1_sig_2_of_3),
+            original_psbt=bdk.Psbt(psbt_1_sig_2_of_3),
             data=Data.from_tx(
                 bdk.Transaction(list(hex_to_serialized(fully_signed_tx))), network=bdk.Network.REGTEST
             ),

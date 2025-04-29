@@ -33,7 +33,6 @@ from typing import Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_usb.psbt_tools import PSBTTools
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
@@ -45,6 +44,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.address_comparer import AddressComparer
+from bitcoin_safe.client import Client
+from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
@@ -115,9 +116,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         network: bdk.Network,
         mempool_data: MempoolData,
         data: Data,
-        blockchain: bdk.Blockchain | None = None,
+        client: Client | None = None,
         fee_info: FeeInfo | None = None,
-        confirmation_time: bdk.BlockTime | None = None,
+        chain_position: bdk.ChainPosition | None = None,
         parent=None,
         threading_parent: ThreadingManager | None = None,
         focus_ui_element: UiElements = UiElements.none,
@@ -133,9 +134,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.data = data
         self.network = network
         self.fee_info = fee_info
-        self.blockchain = blockchain
+        self.client = client
         self.utxo_list = widget_utxo_with_toolbar.utxo_list
-        self.confirmation_time = confirmation_time
+        self.chain_position = chain_position
 
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
@@ -224,8 +225,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             fee_info=fee_info,
             allow_edit=False,
             is_viewer=True,
-            confirmation_time=confirmation_time,
-            url=block_explorer_URL(config.network_config.mempool_url, "tx", self.extract_tx().txid()),
+            chain_position=chain_position,
+            url=block_explorer_URL(config.network_config.mempool_url, "tx", self.extract_tx().compute_txid()),
         )
         self.right_sidebar_layout.addWidget(
             self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter
@@ -332,7 +333,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin), self.tr("Diagram")
             )
         self.button_edit_tx.setText(self.tr("Edit"))
-        self.button_rbf.setText(self.tr("Edit with increased fee (RBF)"))
+        if GENERAL_RBF_AVAILABLE:
+            self.button_rbf.setText(self.tr("Edit with increased fee (RBF)"))
+        else:
+            self.button_rbf.setText(self.tr("Increase fee (RBF)"))
         self.button_previous.setText(self.tr("Previous step"))
         self.button_next.setText(self.tr("Next step"))
         self.button_send.setText(self.tr("Send"))
@@ -345,8 +349,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 raise Exception(f"{self.data.data} is not of type bdk.Transaction")
             return self.data.data
         if self.data.data_type == DataType.PSBT:
-            if not isinstance(self.data.data, bdk.PartiallySignedTransaction):
-                raise Exception(f"{self.data.data} is not of type bdk.PartiallySignedTransaction")
+            if not isinstance(self.data.data, bdk.Psbt):
+                raise Exception(f"{self.data.data} is not of type bdk.Psbt")
             return self.data.data.extract_tx()
         raise Exception(f"invalid data type {self.data.data}")
 
@@ -410,9 +414,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         if self.data.data_type == DataType.PSBT:
             self.set_psbt(self.data.data, fee_info=self.fee_info)
 
-            # PSBTTools.finalize is slow, so we thread it.
+            # TODO: Check if I can remove the threading here. Or if it becomes too slow for big transactions
             def do() -> bdk.Transaction | None:
-                return PSBTTools.finalize(self.data.data, network=self.network)
+                if not isinstance(self.data.data, bdk.Psbt):
+                    return None
+                result = self.data.data.finalize()
+                return result.psbt.extract_tx() if result.could_finalize else None
 
             def on_done(result) -> None:
                 pass
@@ -420,15 +427,15 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             def on_error(packed_error_info) -> None:
                 pass
 
-            def on_success(finalized_tx) -> None:
-                if finalized_tx:
+            def on_success(finalized_tx: bdk.Transaction) -> None:
+                if finalized_tx and isinstance(self.data.data, bdk.Psbt):
                     assert (
-                        finalized_tx.txid() == self.data.data.txid()
-                    ), "bitcoin_tx libary error. The txid should not be changed during finalizing"
+                        finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid()
+                    ), "error. The txid should not be changed during finalizing/reloading"
                     self.set_tx(
                         finalized_tx,
                         fee_info=self.fee_info,
-                        confirmation_time=self.confirmation_time,
+                        chain_position=self.chain_position,
                     )
                     return
 
@@ -438,11 +445,11 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             self.set_tx(
                 self.data.data,
                 fee_info=self.fee_info,
-                confirmation_time=self.confirmation_time,
+                chain_position=self.chain_position,
             )
 
     def txid(self) -> str:
-        return self.extract_tx().txid()
+        return self.extract_tx().compute_txid()
 
     def _get_height(self) -> int | None:
         for wallet in get_wallets(self.signals):
@@ -450,9 +457,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         return None
 
     def _broadcast(self, tx: bdk.Transaction) -> bool:
-        if self.blockchain:
+        if self.client:
             try:
-                self.blockchain.broadcast(tx)
+                self.client.broadcast(tx)
                 self.signals.signal_broadcast_tx.emit(tx)
                 return True
             except Exception as e:
@@ -471,9 +478,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
     def _set_blockchain(self):
         for wallet in get_wallets(self.signals):
-            if wallet.blockchain:
-                self.blockchain = wallet.blockchain
-                logger.error(f"Using {self.blockchain} from wallet {wallet.id}")
+            if wallet.client:
+                self.client = wallet.client
+                logger.error(f"Using {self.client} from wallet {wallet.id}")
 
     def broadcast(self) -> None:
         if not self.data.data_type == DataType.Tx:
@@ -483,7 +490,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             return
         tx = self.data.data
 
-        if not self.blockchain:
+        if not self.client:
             self._set_blockchain()
 
         logger.debug(f"broadcasting {serialized_to_hex( self.data.data.serialize())}")
@@ -493,7 +500,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         else:
             Message(
                 self.tr("Failed to broadcast {txid}. Consider broadcasting via {url}").format(
-                    txid=self.data.data.txid(), url="https://blockstream.info/tx/push"
+                    txid=self.data.data.compute_txid(), url="https://blockstream.info/tx/push"
                 ),
                 type=MessageType.Error,
             )
@@ -558,9 +565,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         return wallet_inputs
 
-    def get_combined_signature_importers(
-        self, psbt: bdk.PartiallySignedTransaction
-    ) -> Dict[str, List[AbstractSignatureImporter]]:
+    def get_combined_signature_importers(self, psbt: bdk.Psbt) -> Dict[str, List[AbstractSignatureImporter]]:
         signature_importers: Dict[str, List[AbstractSignatureImporter]] = {}
 
         def get_signing_fingerprints_of_wallet(wallet: Wallet) -> Set[str]:
@@ -653,8 +658,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     def update_tx_progress(self) -> Optional[TxSigningSteps]:
         if self.data.data_type != DataType.PSBT:
             return None
-        if not isinstance(self.data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{self.data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(self.data.data, bdk.Psbt):
+            logger.error(f"{self.data.data} is not of type bdk.Psbt")
             return None
 
         # this approach to clearning the layout
@@ -678,11 +683,11 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     def tx_received(self, tx: bdk.Transaction) -> None:
         if self.data.data_type != DataType.PSBT:
             return
-        if not isinstance(self.data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{self.data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(self.data.data, bdk.Psbt):
+            logger.error(f"{self.data.data} is not of type bdk.Psbt")
             return
 
-        if self.data.data and tx.txid() != self.data.data.txid():
+        if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():
             Message(
                 self.tr("The txid of the signed psbt doesnt match the original txid"), type=MessageType.Error
             )
@@ -700,8 +705,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 return signature_importer
         return None
 
-    def import_untrusted_psbt(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
-        if isinstance(self.data.data, bdk.PartiallySignedTransaction) and (
+    def import_untrusted_psbt(self, import_psbt: bdk.Psbt) -> None:
+        if isinstance(self.data.data, bdk.Psbt) and (
             signature_importer := self._get_any_signature_importer()
         ):
             signature_importer.handle_data_input(
@@ -714,7 +719,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         else:
             logger.warning("Cannot update the psbt. Unclear if more signatures were added")
 
-    def import_trusted_psbt(self, import_psbt: bdk.PartiallySignedTransaction) -> None:
+    def import_trusted_psbt(self, import_psbt: bdk.Psbt) -> None:
         simple_psbt = SimplePSBT.from_psbt(import_psbt)
 
         tx = import_psbt.extract_tx()
@@ -735,12 +740,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         return False
 
     def _set_warning_bars(
-        self, txins: List[bdk.TxIn], recipient_addresses: List[str], confirmation_time: bdk.BlockTime | None
+        self, txins: List[bdk.TxIn], recipient_addresses: List[str], chain_position: bdk.ChainPosition | None
     ):
         self.set_poisoning_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
         self.set_category_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
 
-        tx_status = self.get_tx_status(confirmation_time=confirmation_time)
+        tx_status = self.get_tx_status(chain_position=chain_position)
         self.update_high_fee_warning_label(confirmation_status=tx_status.confirmation_status)
         self.high_fee_rate_warning_label.update_fee_rate_warning(
             confirmation_status=tx_status.confirmation_status,
@@ -769,7 +774,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             network=self.config.network,
             # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
             force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in self.recipients.recipients]),
-            confirmation_time=self.fee_group.visible_mempool_buttons.confirmation_time,
+            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
         )
 
     def set_poisoning_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
@@ -811,7 +816,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         wallets = get_wallets(self.signals)
         # try via tx details
         for wallet_ in wallets:
-            txdetails = wallet_.get_tx(tx.txid())
+            txdetails = wallet_.get_tx(tx.compute_txid())
             if txdetails and txdetails.fee:
                 return FeeInfo(fee_amount=txdetails.fee, vsize=tx.vsize(), is_estimated=False)
 
@@ -834,36 +839,36 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         fee_amount = total_input_value - total_output_value
         return FeeInfo(fee_amount=fee_amount, vsize=tx.vsize(), is_estimated=not tx_has_final_size)
 
-    def get_confirmation_time(self, txid: str) -> bdk.BlockTime | None:
+    def get_chain_position(self, txid: str) -> bdk.ChainPosition | None:
         for wallet in get_wallets(self.signals):
             tx_details = wallet.get_tx(txid)
             if tx_details:
-                return tx_details.confirmation_time
+                return tx_details.chain_position
         return None
 
     def set_tx(
         self,
         tx: bdk.Transaction,
         fee_info: FeeInfo | None = None,
-        confirmation_time: bdk.BlockTime | None = None,
+        chain_position: bdk.ChainPosition | None = None,
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.txid())
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.compute_txid())
         if fee_info is None or fee_info.is_estimated:
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
-        if confirmation_time is None:
-            confirmation_time = self.get_confirmation_time(tx.txid())
-        self.confirmation_time = confirmation_time
+        if chain_position is None:
+            chain_position = self.get_chain_position(tx.compute_txid())
+        self.chain_position = chain_position
 
         # no Fee is unknown if no fee_info was given
         self.fee_group.groupBox_Fee.setVisible(fee_info is not None)
         if fee_info is not None:
             self.fee_group.set_fee_infos(
                 fee_info=fee_info,
-                url=block_explorer_URL(self.config.network_config.mempool_url, "tx", tx.txid()),
-                confirmation_time=confirmation_time,
+                url=block_explorer_URL(self.config.network_config.mempool_url, "tx", tx.compute_txid()),
+                chain_position=chain_position,
                 chain_height=self._get_height(),
             )
             # calcualte the fee warning. However since in a tx I don't know what is a change address,
@@ -872,8 +877,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 fee_info=fee_info,
                 total_non_change_output_amount=self.get_total_non_change_output_amount(tx),
                 network=self.config.network,
-                confirmation_time=self.fee_group.visible_mempool_buttons.confirmation_time,
+                chain_position=chain_position,
             )
+            self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
         outputs: List[bdk.TxOut] = tx.output()
 
@@ -884,13 +890,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             )
             for output in outputs
         ]
-        self.set_visibility(confirmation_time)
+        self.set_visibility(chain_position=chain_position)
         self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
 
         self._set_warning_bars(
             txins=tx.input(),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
-            confirmation_time=confirmation_time,
+            chain_position=chain_position,
         )
         self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
         self.label_line_edit.updateUi()
@@ -957,21 +963,21 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     def _get_height_from_mempool(self):
         return self.mempool_data.fetch_block_tip_height()
 
-    def get_tx_status(self, confirmation_time: bdk.BlockTime | None) -> TxStatus:
+    def get_tx_status(self, chain_position: bdk.ChainPosition | None) -> TxStatus:
         tx = self.extract_tx()
         return TxStatus(
             tx=tx,
-            confirmation_time=confirmation_time,
+            chain_position=chain_position,
             get_height=self._get_height_from_mempool,
-            is_in_mempool=self.is_in_mempool(tx.txid()),
+            is_in_mempool=self.is_in_mempool(tx.compute_txid()),
         )
 
-    def set_visibility(self, confirmation_time: bdk.BlockTime | None) -> None:
+    def set_visibility(self, chain_position: bdk.ChainPosition | None) -> None:
         is_psbt = self.data.data_type == DataType.PSBT
         self.export_widget_container.setVisible(not is_psbt)
         self.tx_singning_steps_container.setVisible(is_psbt)
 
-        tx_status = self.get_tx_status(confirmation_time=confirmation_time)
+        tx_status = self.get_tx_status(chain_position=chain_position)
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
         self.button_send.setEnabled(show_send)
@@ -985,24 +991,24 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
-        if isinstance(self.data.data, bdk.PartiallySignedTransaction) and self.data.data.txid() == txid:
+        if isinstance(self.data.data, bdk.Psbt) and self.data.data.extract_tx().compute_txid() == txid:
             return self.fee_info
-        elif isinstance(self.data.data, bdk.Transaction) and self.data.data.txid() == txid:
+        elif isinstance(self.data.data, bdk.Transaction) and self.data.data.compute_txid() == txid:
             return self.fee_info
         return None
 
-    def set_psbt(self, psbt: bdk.PartiallySignedTransaction, fee_info: FeeInfo | None = None) -> None:
+    def set_psbt(self, psbt: bdk.Psbt, fee_info: FeeInfo | None = None) -> None:
         """_summary_
 
         Args:
-            psbt (bdk.PartiallySignedTransaction): _description_
+            psbt (bdk.Psbt): _description_
             fee_rate (_type_, optional): This is the exact fee_rate chosen in txbuilder. If not given it has
                                         to be estimated with estimate_segwit_tx_size_from_psbt.
         """
         # check if any new signatures were added. If not tell the user
 
         self.data = Data.from_psbt(psbt, network=self.network)
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(psbt.txid())
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(psbt.extract_tx().compute_txid())
 
         # do not use calc_fee_info here, because calc_fee_info is for final tx only.
 
@@ -1014,13 +1020,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.fee_group.set_fee_infos(
             fee_info=fee_info,
+            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
         )
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
 
         self.recipients.recipients = [
             Recipient(
-                address=bdk.Address.from_script(output.script_pubkey, self.network).as_string(),
+                address=str(bdk.Address.from_script(output.script_pubkey, self.network)),
                 amount=output.value,
             )
             for output in outputs
@@ -1033,21 +1040,33 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             network=self.network,
             # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
             force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in self.recipients.recipients]),
-            confirmation_time=self.fee_group.visible_mempool_buttons.confirmation_time,
+            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
         )
 
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)
+        self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
         self._set_warning_bars(
             psbt.extract_tx().input(),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
-            confirmation_time=None,
+            chain_position=None,
         )
         txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(psbt.extract_tx(), fee_info=fee_info, txo_dict=txo_dict)
         self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
+
+    def handle_cpfp(
+        self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None
+    ) -> None:
+        parent_txids = set(txin.previous_output.txid for txin in tx.input())
+        self.set_fee_group_cpfp_label(
+            parent_txids=parent_txids,
+            this_fee_info=this_fee_info,
+            fee_group=self.fee_group,
+            chain_position=chain_position,
+        )
 
     def get_total_non_change_output_amount(self, tx: bdk.Transaction) -> int:
         out_flows: List[Tuple[str, int]] = [

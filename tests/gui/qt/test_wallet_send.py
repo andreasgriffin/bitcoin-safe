@@ -44,21 +44,10 @@ from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
-from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
+from tests.gui.qt.test_setup_wallet import close_wallet
 
-from ...test_helpers import test_config  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
-    CheckedDeletionContext,
-    Shutter,
-    close_wallet,
-    do_modal_click,
-    get_tab_with_title,
-    get_widget_top_level,
-    main_window_context,
-    save_wallet,
-    test_start_time,
-)
+from ...setup_fulcrum import Faucet
+from .helpers import CheckedDeletionContext, Shutter, close_wallet, main_window_context
 
 logger = logging.getLogger(__name__)
 
@@ -67,17 +56,18 @@ logger = logging.getLogger(__name__)
 def test_wallet_send(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
-    bitcoin_core: Path,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
     amount: int = int(1e6),
-) -> None:  # bitcoin_core: Path,
+) -> None:
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -106,7 +96,7 @@ def test_wallet_send(
             def fund_wallet() -> None:
                 # to be able to import a recipient list with amounts
                 # i need to fund the wallet first
-                faucet.send(qt_wallet.wallet.get_address().address.as_string(), amount=10000000)
+                faucet.send(str(qt_wallet.wallet.get_address().address), amount=10000000)
                 counter = 0
                 while qt_wallet.wallet.get_balance().total == 0:
                     with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):

@@ -191,7 +191,7 @@ class AddressEdit(ButtonEdit):
             buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         ):
             old_category = wallet.labels.get_category(address)
-            self.address = wallet.get_unused_category_address(category=old_category).address.as_string()
+            self.address = str(wallet.get_unused_category_address(category=old_category).address)
 
             if self.signals:
                 self.signals.wallet_signals[wallet.id].updated.emit(

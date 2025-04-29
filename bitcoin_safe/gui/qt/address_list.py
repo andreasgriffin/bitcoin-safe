@@ -56,6 +56,8 @@ import logging
 from functools import partial
 from typing import Any, Dict, List
 
+import bdkpython as bdk
+
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.wrappers import Menu
 
@@ -106,7 +108,6 @@ from .taglist import AddressDragInfo
 from .util import (
     ColorScheme,
     Message,
-    category_color,
     create_color_circle,
     do_copy,
     read_QIcon,
@@ -359,14 +360,14 @@ class AddressList(MyTreeView):
     def get_address(self, force_new=False, category: str | None = None) -> bdk.AddressInfo:
         if force_new:
             address_info = self.wallet.get_address(force_new=force_new)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
             self.wallet.labels.set_addr_category(address, category, timestamp="now")
             self.wallet_signals.updated.emit(
                 UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.NewAddressRevealed)
             )
         else:
             address_info = self.wallet.get_unused_category_address(category)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
 
             if self.signals:
                 self.signals.wallet_signals[self.wallet.id].updated.emit(
@@ -653,8 +654,10 @@ class AddressList(MyTreeView):
             category_menu.add_action(
                 category,
                 action,
-                icon=create_color_circle(category_color(category)),
+                icon=create_color_circle(CategoryEditor.color(category)),
             )
+
+        return menu
 
     def get_edit_key_from_coordinate(self, row, col) -> Any:
         if col != self.Columns.LABEL:

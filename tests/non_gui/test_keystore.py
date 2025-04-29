@@ -35,8 +35,6 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
 from tests.non_gui.test_wallet import create_test_seed_keystores
 
-from ..test_helpers import test_config  # type: ignore
-
 logger = logging.getLogger(__name__)
 
 

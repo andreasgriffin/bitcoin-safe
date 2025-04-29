@@ -26,9 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import bdkpython as bdk
 
@@ -40,6 +39,7 @@ from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
+    TransactionDetails,
     UtxosForInputs,
     robust_address_str_from_script,
 )
@@ -51,7 +51,7 @@ def short_tx_id(txid: str) -> str:
     return f"{txid[:4]}...{txid[-4:]}"
 
 
-def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_size: int, mempool_data: MempoolData) -> FeeInfo:
+def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_vsize: float, mempool_data: MempoolData) -> FeeInfo:
     """
     see https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki
 
@@ -69,8 +69,8 @@ def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_size: int, mempool_data: M
     # 3.
     new_absolute_fee += fee_amount
     # 4.
-    new_absolute_fee += new_tx_size * mempool_data.get_min_relay_fee_rate()
-    return FeeInfo(int(new_absolute_fee), new_tx_size, is_estimated=True)
+    new_absolute_fee += new_tx_vsize * mempool_data.get_min_relay_fee_rate()
+    return FeeInfo(fee_amount=int(new_absolute_fee), vsize=new_tx_vsize, is_estimated=True)
 
 
 class TxUiInfos:
@@ -80,7 +80,6 @@ class TxUiInfos:
         self.utxo_dict: Dict[OutPoint, PythonUtxo] = (
             {}
         )  # {outpoint_string:utxo} It is Ok if outpoint_string:None
-        self.global_xpubs: Dict[str, Tuple[str, str]] = {}  # xpub:(fingerprint, key_origin)
         self.fee_rate: Optional[float] = None
         self.opportunistic_merge_utxos = True
         self.spend_all_utxos = False
@@ -92,6 +91,8 @@ class TxUiInfos:
 
         self.hide_UTXO_selection = False
         self.recipient_read_only = False
+        self.utxos_read_only = False
+        self.replace_tx: TransactionDetails | None = None
 
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
@@ -111,16 +112,15 @@ class TxBuilderInfos:
         self,
         recipients: List[Recipient],
         utxos_for_input: UtxosForInputs,
-        builder_result: bdk.TxBuilderResult,
+        psbt: bdk.Psbt,
         recipient_category: Optional[str] = None,
         fee_rate: Optional[float] = None,
     ):
         self.fee_rate = fee_rate
-
         self.recipients = recipients
 
         self.utxos_for_input = utxos_for_input
-        self.builder_result = builder_result
+        self.psbt = psbt
         self.recipient_category = recipient_category
 
     def add_recipient(self, recipient: Recipient):
@@ -156,12 +156,12 @@ def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, 
 
     # Construct the transaction dictionary
     tx_dict = {
-        "txid": tx.txid(),
+        "txid": tx.compute_txid(),
         "weight": tx.weight(),
-        "size": tx.size(),
+        "size": tx.total_size(),
         "vsize": tx.vsize(),
         "serialize": serialized_to_hex(tx.serialize()),
-        "is_coin_base": tx.is_coin_base(),
+        "is_coin_base": tx.is_coinbase(),
         "is_explicitly_rbf": tx.is_explicitly_rbf(),
         "is_lock_time_enabled": tx.is_lock_time_enabled(),
         "version": tx.version(),

@@ -43,7 +43,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
@@ -67,7 +66,7 @@ class USBValidateAddressWidget(QWidget):
         super().__init__()
         self.signals = signals
         self.network = network
-        self.descriptor: Optional[MultipathDescriptor] = None
+        self.descriptor: Optional[bdk.Descriptor] = None
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
@@ -106,7 +105,7 @@ class USBValidateAddressWidget(QWidget):
 
     def set_descriptor(
         self,
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,
@@ -189,7 +188,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
     def set_descriptor(  # type: ignore
         self,
         keystores: List[KeyStore],
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,

@@ -59,7 +59,12 @@ from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab, TreeViewWithToolbar
 from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
-from bitcoin_safe.pythonbdk_types import Balance, python_utxo_balance
+from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
+from bitcoin_safe.pythonbdk_types import (
+    Balance,
+    TransactionDetails,
+    python_utxo_balance,
+)
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
@@ -85,7 +90,6 @@ from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion, question_dialog
 from .hist_list import HistList, HistListWithToolbar
 from .taglist import AddressDragInfo
-from .ui_tx_creator import UITx_Creator
 from .util import (
     Message,
     MessageType,
@@ -190,7 +194,7 @@ class ProgressSignal:
 
 
 class QTWallet(QtWalletBase, BaseSaveableClass):
-    VERSION = "0.1.1"
+    VERSION = "0.2.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "Wallet": Wallet,
@@ -294,6 +298,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
         self.signal_tracker.connect(self.signal_on_change_sync_status, self.update_display_balance)
         self.wallet_signals.updated.connect(self.signals.any_wallet_updated.emit)
+        self.wallet_signals.updated.connect(self.on_updated)
         self.wallet_signals.export_labels.connect(self.export_labels)
         self.wallet_signals.export_bip329_labels.connect(self.export_bip329_labels)
         self.wallet_signals.import_labels.connect(self.import_labels)
@@ -421,6 +426,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     @property
     def wallet_signals(self) -> WalletSignals:
         return self.signals.wallet_signals[self.wallet.id]
+
+    def on_updated(self, update_filter: UpdateFilter):
+        address_infos = [
+            self.wallet.get_address_info_min(address=address) for address in update_filter.addresses
+        ]
+        self.wallet.mark_labeled_addresses_used(
+            address_infos=[address_info for address_info in address_infos if address_info]
+        )
 
     def updateUi(self) -> None:
         self.tabs.setTabText(self.tabs.indexOf(self.send_tab), self.tr("Send"))
@@ -703,7 +716,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
         return delta_txs
 
-    def format_txs(self, txs: List[bdk.TransactionDetails]) -> str:
+    def format_txs(self, txs: List[TransactionDetails]) -> str:
         return "\n".join(
             [
                 self.tr("  {amount} in {shortid}").format(
@@ -714,7 +727,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             ]
         )
 
-    def hanlde_removed_txs(self, removed_txs: List[bdk.TransactionDetails]) -> None:
+    def hanlde_removed_txs(self, removed_txs: List[TransactionDetails]) -> None:
         if not removed_txs:
             return
 
@@ -747,7 +760,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # all the lists must be updated
         self.refresh_caches_and_ui_lists(force_ui_refresh=True)
 
-    def handle_appended_txs(self, appended_txs: List[bdk.TransactionDetails]) -> None:
+    def handle_appended_txs(self, appended_txs: List[TransactionDetails]) -> None:
         if not appended_txs:
             return
 
@@ -889,8 +902,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 update_filter = UpdateFilter(
                     addresses=set(
                         [
-                            bdk.Address.from_script(output.script_pubkey, self.wallet.network).as_string()
-                            for output in builder_infos.builder_result.psbt.extract_tx().output()
+                            str(bdk.Address.from_script(output.script_pubkey, self.wallet.network))
+                            for output in builder_infos.psbt.extract_tx().output()
                         ]
                     ),
                     reason=UpdateFilterReason.CreatePSBT,
@@ -1173,7 +1186,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         QApplication.processEvents()
 
     def _sync(self) -> Any:
-        self.wallet.sync(progress=ProgressSignal(self.signal_settext_balance_label))
+        self.wallet.sync()
 
     def _sync_on_done(self, result) -> None:
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
@@ -1226,7 +1239,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         #       by filling all the cache before the sync
         #       I do this in the main thread so all caches
         #       are filled before the syncing process
-        self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False, clear_cache=False)
+        # not necessary anymore, since the library is noch blocking since 1.0.0
+        # self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False, clear_cache=False)
 
         logger.info(f"Start syncing wallet {self.wallet.id}")
         self.set_sync_status(SyncStatus.syncing)

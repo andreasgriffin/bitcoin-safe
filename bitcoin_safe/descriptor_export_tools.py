@@ -40,8 +40,6 @@ from bitcoin_safe.gui.qt.util import save_file_dialog
 from bitcoin_safe.hardware_signers import DescriptorExportType, DescriptorExportTypes
 from bitcoin_safe.wallet import filename_clean
 
-from .descriptors import MultipathDescriptor
-
 logger = logging.getLogger(__name__)
 
 
@@ -58,9 +56,9 @@ def shorten_filename(filename: str, max_total_length: int):
 class DescriptorExportTools:
 
     @classmethod
-    def _get_coldcard_str(cls, wallet_id: str, multipath_descriptor: MultipathDescriptor) -> str:
+    def _get_coldcard_str(cls, wallet_id: str, multipath_descriptor: bdk.Descriptor) -> str:
         return f"""# Coldcard descriptor export of wallet: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
-{ multipath_descriptor.bdk_descriptors[0].as_string() }"""
+{ multipath_descriptor.to_single_descriptors()[0] }"""
 
     @staticmethod
     def _get_passport_str(wallet_id: str, descriptor_str: str, hardware_signer_name="Passport") -> str:
@@ -121,27 +119,25 @@ class DescriptorExportTools:
     def get_export_str(
         cls,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         descriptor_export_type: DescriptorExportType,
     ) -> str:
         if descriptor_export_type.name == DescriptorExportTypes.text.name:
-            return multipath_descriptor.as_string()
+            return str(multipath_descriptor)
         elif descriptor_export_type.name == DescriptorExportTypes.coldcard.name:
             return cls._get_coldcard_str(wallet_id=wallet_id, multipath_descriptor=multipath_descriptor)
         elif descriptor_export_type.name == DescriptorExportTypes.passport.name:
             return cls._get_passport_str(
                 wallet_id=wallet_id,
-                descriptor_str=multipath_descriptor.as_string(),
+                descriptor_str=str(multipath_descriptor),
             )
         elif descriptor_export_type.name == DescriptorExportTypes.keystone.name:
             return cls._get_keystone_str(
-                wallet_id=wallet_id, descriptor_str=multipath_descriptor.as_string(), network=network
+                wallet_id=wallet_id, descriptor_str=str(multipath_descriptor), network=network
             )
         elif descriptor_export_type.name == DescriptorExportTypes.specterdiy.name:
-            return cls._get_specter_diy_str(
-                wallet_id=wallet_id, descriptor_str=multipath_descriptor.as_string()
-            )
+            return cls._get_specter_diy_str(wallet_id=wallet_id, descriptor_str=str(multipath_descriptor))
         else:
             raise NotImplementedError(f"Cannot export descritpor for type {descriptor_export_type}")
 
@@ -149,7 +145,7 @@ class DescriptorExportTools:
     def export(
         cls,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         descripor_type: DescriptorExportType,
     ):

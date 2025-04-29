@@ -58,18 +58,15 @@ from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
 from ...non_gui.test_signers import test_seeds
-from ...test_helpers import test_config  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
+from ...setup_fulcrum import Faucet
+from .helpers import (
     CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
     get_tab_with_title,
-    get_widget_top_level,
     main_window_context,
     save_wallet,
-    test_start_time,
 )
 
 logger = logging.getLogger(__name__)
@@ -79,17 +76,18 @@ logger = logging.getLogger(__name__)
 def test_wallet_features_multisig(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
-    bitcoin_core: Path,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig2",
     amount: int = int(1e6),
-) -> None:  # bitcoin_core: Path,
+) -> None:
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:

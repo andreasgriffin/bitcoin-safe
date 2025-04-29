@@ -475,7 +475,7 @@ class BitcoinWalletRecoveryPDF:
 
 
 def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
-    info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
+    info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
     pdf_recovery = BitcoinWalletRecoveryPDF(lang_code=lang_code)
 
     for i, keystore in enumerate(wallet.keystores):
@@ -490,7 +490,7 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
         )
         pdf_recovery.create_pdf(
             title=title,
-            wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
+            wallet_descriptor_string=str(wallet.multipath_descriptor),
             threshold=info.threshold,
             seed=keystore.mnemonic,
             num_signers=len(wallet.keystores),

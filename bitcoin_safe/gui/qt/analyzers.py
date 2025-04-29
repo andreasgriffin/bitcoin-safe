@@ -32,9 +32,7 @@ from typing import Callable, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub
-from bitcoin_qr_tools.multipath_descriptor import (
-    MultipathDescriptor as BitcoinQRMultipathDescriptor,
-)
+from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
 from bitcoin_usb.address_types import SimplePubKeyProvider
 from PyQt6.QtCore import QObject
 
@@ -171,7 +169,7 @@ class DescriptorAnalyzer(BaseAnalyzer, QObject):
         if not input:
             return AnalyzerMessage(self.tr("Missing Descriptor"), AnalyzerState.Invalid)
 
-        if BitcoinQRMultipathDescriptor.is_valid(input, network=self.network):
+        if is_valid_descriptor(input, network=self.network):
             return AnalyzerMessage("Valid Descriptor", AnalyzerState.Valid)
         else:
             return AnalyzerMessage(self.tr("Invalid Descriptor"), AnalyzerState.Invalid)

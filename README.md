@@ -171,7 +171,7 @@
 poetry run pre-commit run --all-files
 ```
 
-### Regtest docker environement with electrs and mempool
+#### Regtest docker environement with electrs and mempool
 
 * install docker
 

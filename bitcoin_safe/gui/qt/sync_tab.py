@@ -41,7 +41,6 @@ from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
 from bitcoin_safe.gui.qt.util import Message, icon_path
 from bitcoin_safe.signals import Signals
@@ -189,12 +188,12 @@ class SyncTab(ControlledGroupbox):
     @classmethod
     def from_descriptor_new_device_keys(
         cls,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         signals: Signals,
         parent: QObject | None = None,
     ) -> "SyncTab":
-        descriptor_info = DescriptorInfo.from_str(multipath_descriptor.as_string())
+        descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
         xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
 
         protocol_keys = nostr_sdk.Keys(

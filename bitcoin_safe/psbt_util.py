@@ -27,22 +27,26 @@
 # SOFTWARE.
 
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 import json
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
 from math import ceil
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from bitcoin_safe.util import hex_to_script, remove_duplicates_keep_order
 
-from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_script
+from .pythonbdk_types import (
+    OutPoint,
+    PythonUtxo,
+    TransactionDetails,
+    TxOut,
+    robust_address_str_from_script,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def parse_redeem_script(script_hex: str) -> Tuple[int, List[str]]:
@@ -159,8 +163,22 @@ def estimate_tx_weight(
     return tx_weight
 
 
+class FeeRate(bdk.FeeRate):
+    @classmethod
+    def from_fee_rate(cls, fee_rate: bdk.FeeRate) -> "FeeRate":
+        return cls.from_sat_per_kwu(fee_rate.to_sat_per_kwu())
+
+    @classmethod
+    def from_float_sats_vB(cls, fee_rate: float):
+        sat_per_kwu = int(250 * fee_rate)
+        return cls.from_sat_per_kwu(sat_per_kwu)
+
+    def to_sats_per_vb(self) -> float:
+        return self.to_sat_per_kwu() / 250
+
+
 class FeeInfo:
-    def __init__(self, fee_amount: int, vsize: int, is_estimated: bool) -> None:
+    def __init__(self, fee_amount: int, vsize: float, is_estimated: bool) -> None:
         """_summary_
 
         Args:
@@ -181,7 +199,7 @@ class FeeInfo:
         return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=is_estimated)
 
     @classmethod
-    def from_txdetails(cls, tx_details: bdk.TransactionDetails) -> "FeeInfo|None":
+    def from_txdetails(cls, tx_details: TransactionDetails) -> "FeeInfo|None":
         fee = tx_details.fee
         if fee is None:
             # coinbase transaction have fee=None
@@ -191,7 +209,7 @@ class FeeInfo:
         return FeeInfo(fee, tx_details.transaction.vsize(), is_estimated=False)
 
     @classmethod
-    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.PartiallySignedTransaction) -> "FeeInfo":
+    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> "FeeInfo":
         """Estimate the fee rate of a SegWit transaction from a serialized PSBT
         JSON.
 
@@ -214,7 +232,7 @@ class FeeInfo:
         # For simplicity, let's assume you have a function estimate_tx_size(psbt_data) that can estimate the size
         vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())))
 
-        return FeeInfo(psbt.fee_amount(), vsize, is_estimated=True)
+        return FeeInfo(psbt.fee(), vsize, is_estimated=True)
 
     @classmethod
     def estimate_from_num_inputs(
@@ -234,9 +252,13 @@ class FeeInfo:
         )
         return FeeInfo(ceil(fee_rate * vsize), vsize, is_estimated=True)
 
-
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+    def __add__(self, other: "FeeInfo") -> "FeeInfo":
+        if isinstance(other, FeeInfo):
+            return FeeInfo(
+                fee_amount=self.fee_amount + other.fee_amount,
+                vsize=self.vsize + other.vsize,
+                is_estimated=self.is_estimated or other.is_estimated,
+            )
 
 
 class PubKeyInfo:
@@ -420,8 +442,8 @@ class SimplePSBT:
     outputs: List[SimpleOutput] = field(default_factory=list)
 
     @classmethod
-    def from_psbt(cls, psbt: bdk.PartiallySignedTransaction) -> "SimplePSBT":
-        instance = cls(txid=psbt.txid())
+    def from_psbt(cls, psbt: bdk.Psbt) -> "SimplePSBT":
+        instance = cls(txid=psbt.extract_tx().compute_txid())
         psbt_json = json.loads(psbt.json_serialize())
         instance.inputs = [
             SimpleInput.from_input(input_data, txin)

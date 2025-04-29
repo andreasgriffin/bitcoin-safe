@@ -33,7 +33,6 @@ from typing import List
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
-from bitcoin_usb.psbt_tools import PSBTTools
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -53,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractSignatureImporter(QObject):
-    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
     keystore_type = KeyStoreImporterTypes.watch_only
 
@@ -70,7 +69,7 @@ class AbstractSignatureImporter(QObject):
         self.key_label = key_label
         self.pub_keys_without_signature = pub_keys_without_signature
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         pass
 
     @property
@@ -85,15 +84,15 @@ class AbstractSignatureImporter(QObject):
 
     def txids_match(
         self,
-        psbt1: bdk.PartiallySignedTransaction,
-        psbt2: bdk.PartiallySignedTransaction,
+        psbt1: bdk.Psbt,
+        psbt2: bdk.Psbt,
     ) -> bool:
-        return bool(psbt1.txid() == psbt2.txid())
+        return bool(psbt1.extract_tx().compute_txid() == psbt2.extract_tx().compute_txid())
 
-    def handle_data_input(self, original_psbt: bdk.PartiallySignedTransaction, data: Data):
+    def handle_data_input(self, original_psbt: bdk.Psbt, data: Data):
         logger.debug(str(data.data))
         if data.data_type == DataType.PSBT:
-            scanned_psbt: bdk.PartiallySignedTransaction = data.data
+            scanned_psbt: bdk.Psbt = data.data
 
             if not self.txids_match(scanned_psbt, original_psbt):
                 Message(
@@ -120,10 +119,11 @@ class AbstractSignatureImporter(QObject):
                 return
 
             # check if the tx can be finalized:
-            finalized_tx = PSBTTools.finalize(psbt2, network=self.network)
-            if finalized_tx:
-                assert finalized_tx.txid() == original_psbt.txid(), self.tr(
-                    "bitcoin_tx libary error. The txid should not be changed during finalizing"
+            finalize_result = psbt2.finalize()
+            if finalize_result.could_finalize:
+                finalized_tx = finalize_result.psbt.extract_tx()
+                assert finalized_tx.compute_txid() == original_psbt.extract_tx().compute_txid(), self.tr(
+                    "bdk libary error. The txid should not be changed during finalizing"
                 )
                 self.signal_final_tx_received.emit(finalized_tx)
                 return
@@ -133,7 +133,7 @@ class AbstractSignatureImporter(QObject):
 
         elif data.data_type == DataType.Tx:
             scanned_tx: bdk.Transaction = data.data
-            if scanned_tx.txid() != original_psbt.txid():
+            if scanned_tx.compute_txid() != original_psbt.extract_tx().compute_txid():
                 Message(
                     self.tr("The txid of the signed psbt doesnt match the original txid"),
                     type=MessageType.Error,
@@ -169,8 +169,14 @@ class SignatureImporterWallet(AbstractSignatureImporter):
             ],
         )
 
+        receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
         self.software_signers = [
-            SoftwareSigner(keystore.mnemonic, self.network)
+            SoftwareSigner(
+                mnemonic=keystore.mnemonic,
+                network=self.network,
+                receive_descriptor=receive_descriptor.to_string_with_secret(),
+                change_descriptor=change_descriptor.to_string_with_secret(),
+            )
             for keystore in wallet.keystores
             if keystore.mnemonic
         ]
@@ -178,7 +184,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
     def can_sign(self) -> bool:
         return bool(self.software_signers)
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         for software_signer in self.software_signers:
@@ -194,7 +200,6 @@ class SignatureImporterWallet(AbstractSignatureImporter):
 
         if signing_was_successful:
             logger.debug(f"psbt after signing: {tx_of_psbt_to_hex(psbt)}")
-            logger.debug(f"psbt after signing: fee  {psbt.fee_rate().as_sat_per_vb()}")
 
         else:
             logger.debug(f"signing not completed")
@@ -233,7 +238,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
         if self._temp_bitcoin_video_widget:
             self._temp_bitcoin_video_widget.close()
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network)
         self._temp_bitcoin_video_widget.signal_data.connect(lambda data: self.handle_data_input(psbt, data))
@@ -265,7 +270,7 @@ class SignatureImporterFile(SignatureImporterQR):
             close_all_video_widgets=close_all_video_widgets,
         )
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
@@ -304,7 +309,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
             close_all_video_widgets=close_all_video_widgets,
         )
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
@@ -344,7 +349,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         )
         self.usb_gui = USBGui(self.network)
 
-    def sign(self, psbt: bdk.PartiallySignedTransaction, sign_options: bdk.SignOptions | None = None):
+    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         try:
             signed_psbt = self.usb_gui.sign(psbt, slow_hwi_listing=False)
             if signed_psbt:

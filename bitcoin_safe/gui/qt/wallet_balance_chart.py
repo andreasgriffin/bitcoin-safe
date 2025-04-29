@@ -31,6 +31,7 @@ import datetime
 import logging
 import random
 import sys
+from typing import List, Tuple
 
 import numpy as np
 from PyQt6.QtCharts import QChart, QChartView, QDateTimeAxis, QLineSeries, QValueAxis
@@ -114,10 +115,10 @@ class BalanceChart(QWidget):
         format_string = f"%.{decimals}f"
         self.value_axis.setLabelFormat(format_string)
 
-    def update_chart(self, balance_data, project_until_now=True) -> None:
-        if len(balance_data) == 0:
+    def update_chart(self, balance_data_list: List[Tuple[float, float]], project_until_now=True) -> None:
+        if len(balance_data_list) == 0:
             return
-        balance_data = np.array(balance_data).copy()
+        balance_data = np.array(balance_data_list).copy()
 
         self.datetime_axis.setTitleText(self.tr("Date"))
         self.datetime_axis.setTickCount(6)
@@ -272,14 +273,12 @@ class WalletBalanceChart(BalanceChart):
 
         # Calculate balance
         balance = 0
-        balance_data = []
+        balance_data: List[Tuple[float, float]] = []
         for transaction_details in self.wallet.sorted_delta_list_transactions():
             balance += transaction_details.received - transaction_details.sent
-            time = (
-                transaction_details.confirmation_time.timestamp
-                if transaction_details.confirmation_time
-                else datetime.datetime.now().timestamp()
-            )
+            time = transaction_details.get_datetime(
+                fallback_timestamp=datetime.datetime.now().timestamp()
+            ).timestamp()
             balance_data.append((time, balance / 1e8))
 
         # Update BalanceChart
@@ -290,7 +289,7 @@ class TransactionSimulator(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-        self.transactions = [
+        self.transactions: List[Tuple[float, float]] = [
             (1625692800, 0.1),  # July 8, 2021
             (1626111600, -0.03),  # July 13, 2021
             (1626520000, 0.15),  # July 18, 2021

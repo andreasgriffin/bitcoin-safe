@@ -31,11 +31,14 @@ import logging
 from typing import Optional, Tuple
 
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
-from bitcoin_qr_tools.multipath_descriptor import (
-    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+from bitcoin_qr_tools.gui.bitcoin_video_widget import (
+    BitcoinVideoWidget,
+    DecodingException,
 )
-from bitcoin_qr_tools.utils import DecodingException
+from bitcoin_qr_tools.multipath_descriptor import (
+    convert_to_multipath_descriptor,
+    is_valid_descriptor,
+)
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import QMargins, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -62,7 +65,11 @@ from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
 
-from ...descriptors import AddressType, MultipathDescriptor, get_default_address_type
+from ...descriptors import (
+    AddressType,
+    from_multisig_wallet_export,
+    get_default_address_type,
+)
 from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
@@ -266,7 +273,7 @@ class DescriptorUI(QWidget):
         try:
             multipath_descriptor = self.protowallet.to_multipath_descriptor()
             if multipath_descriptor:
-                self.edit_descriptor.setText(multipath_descriptor.as_string_private())
+                self.edit_descriptor.setText(multipath_descriptor.to_string_with_secret())
             else:
                 self.edit_descriptor.setText("")
         except Exception as e:
@@ -462,13 +469,13 @@ class DescriptorUI(QWidget):
                 logger.debug(f"autocorrection {user_input} --> {corrected_descriptor} denied")
                 return
 
-        if not BitcoinQRMultipathDescriptor.is_valid(user_input, network=self.protowallet.network):
+        if not is_valid_descriptor(user_input, network=self.protowallet.network):
             logger.debug("Descriptor invalid")
             return
 
         old_descriptor = self.protowallet.to_multipath_descriptor()
 
-        if old_descriptor and (user_input == old_descriptor.as_string()):
+        if old_descriptor and (user_input == str(old_descriptor)):
             logger.info(self.tr("Descriptor unchanged"))
             return
         else:
@@ -511,17 +518,19 @@ class DescriptorUI(QWidget):
 
     def _data_to_descriptor(self, data: Data) -> str | None:
         if data.data_type in [DataType.Descriptor]:
-            return MultipathDescriptor.from_descriptor_str(
-                descriptor_str=data.data_as_string(), network=self.protowallet.network
-            ).as_string_private()
+            return str(
+                convert_to_multipath_descriptor(
+                    descriptor_str=data.data_as_string(), network=self.protowallet.network
+                )
+            )
         if data.data_type in [DataType.MultiPathDescriptor]:
             return data.data_as_string()
         if data.data_type in [DataType.MultisigWalletExport] and isinstance(
             data.data, ConverterMultisigWalletExport
         ):
-            return MultipathDescriptor.from_multisig_wallet_export(
+            return from_multisig_wallet_export(
                 data.data, network=self.protowallet.network
-            ).as_string_private()
+            ).to_string_with_secret()
 
         return None
 

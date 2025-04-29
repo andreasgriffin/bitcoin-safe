@@ -40,22 +40,10 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
+from tests.gui.qt.test_setup_wallet import close_wallet
 
-from ...test_helpers import test_config  # type: ignore
-from ...test_helpers import test_config_main_chain  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
-    CheckedDeletionContext,
-    Shutter,
-    close_wallet,
-    do_modal_click,
-    get_tab_with_title,
-    get_widget_top_level,
-    main_window_context,
-    save_wallet,
-    test_start_time,
-)
+from ...setup_fulcrum import Faucet
+from .helpers import CheckedDeletionContext, Shutter, close_wallet, main_window_context
 
 logger = logging.getLogger(__name__)
 
@@ -64,17 +52,18 @@ logger = logging.getLogger(__name__)
 def test_open_wallet_and_address_is_consistent_and_destruction_ok(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
-    bitcoin_core: Path,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "0.2.0.wallet",
     amount: int = int(1e6),
-) -> None:  # bitcoin_core: Path,
+) -> None:
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:

@@ -81,9 +81,11 @@ def send_rpc_command(ip: str, port: Union[str, int], username: str, password: st
 
 def mine_coins(rpc_ip, rpc_username, rpc_password, wallet, blocks=101, always_new_addresses=False):
     """Mine some blocks to generate coins for the wallet."""
-    address = wallet.get_address(
-        bdk.AddressIndex.NEW() if always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
-    ).address.as_string()
+    address = str(
+        wallet.get_address(
+            bdk.AddressIndex.NEW() if always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
+        ).address
+    )
     print(f"Mining {blocks} blocks to {address}")
     ip, port = rpc_ip.split(":")
     response = send_rpc_command(
@@ -123,7 +125,7 @@ def create_complex_transactions(
     for i in range(n):
         try:
             # Build the transaction
-            tx_builder = bdk.TxBuilder().fee_rate(1.0).enable_rbf()
+            tx_builder = bdk.TxBuilder().fee_rate(1.0)
 
             recieve_address_infos: List[bdk.AddressInfo] = generate_random_own_addresses_info(
                 wallet, randint(1, 10), always_new_addresses=always_new_addresses
@@ -134,7 +136,7 @@ def create_complex_transactions(
 
             # Finish and sign transaction
             tx_final = tx_builder.finish(wallet)
-            psbt2 = bdk.PartiallySignedTransaction(tx_final.psbt.serialize())
+            psbt2 = bdk.Psbt(tx_final.psbt.serialize())
             wallet.sign(psbt2, None)
             final_tx = psbt2.extract_tx()
 
@@ -142,7 +144,7 @@ def create_complex_transactions(
             blockchain.broadcast(final_tx)
 
             print(
-                f"Broadcast tx {final_tx.txid()} to addresses {[recieve_address_info.index for recieve_address_info in recieve_address_infos]}"
+                f"Broadcast tx {final_tx.compute_txid()} to addresses {[recieve_address_info.index for recieve_address_info in recieve_address_infos]}"
             )
             if np.random.random() < 0.2:
                 mine_coins(
@@ -221,7 +223,7 @@ def main():
         # Use provided mnemonic or generate a new one
         mnemonic = bdk.Mnemonic.from_string(args.seed) if args.seed else None
         if mnemonic:
-            print(f"Mnemonic: {mnemonic.as_string()}")
+            print(f"Mnemonic: {mnemonic}")
         descriptor = bdk.Descriptor.new_bip84(
             secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
             keychain=bdk.KeychainKind.EXTERNAL,

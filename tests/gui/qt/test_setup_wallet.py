@@ -68,21 +68,18 @@ from bitcoin_safe.gui.qt.wizard import (
     Wizard,
 )
 from bitcoin_safe.util import Satoshis
+from tests.setup_fulcrum import Faucet
 
 from ...non_gui.test_signers import test_seeds
-from ...test_helpers import test_config  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
+from .helpers import (
     CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
     get_called_args_message_box,
     get_tab_with_title,
-    get_widget_top_level,
     main_window_context,
     save_wallet,
-    test_start_time,
     type_text_in_edit,
 )
 
@@ -104,7 +101,7 @@ def enter_text(text: str, widget: QWidget) -> None:
 def test_wizard(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
@@ -115,7 +112,9 @@ def test_wizard(
     logger.debug(f"start test_tutorial_wallet_setup")
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
@@ -390,9 +389,9 @@ def test_wizard(
                 assert [recipient.label for recipient in viewer.recipients.recipients] == ["Send Test"]
                 assert [recipient.amount for recipient in viewer.recipients.recipients] == [999890]
                 assert viewer.fee_info
-                assert round(viewer.fee_info.fee_rate(), 1) == 1.0
+                assert round(viewer.fee_info.fee_rate(), 1) == 1.3
                 assert not viewer.fee_group.allow_edit
-                assert viewer.fee_group.spin_fee_rate.value() == 1.0
+                assert viewer.fee_group.spin_fee_rate.value() == 1.3
                 assert not viewer.fee_group.approximate_fee_label.isVisible()
 
                 assert not viewer.button_next.isVisible()

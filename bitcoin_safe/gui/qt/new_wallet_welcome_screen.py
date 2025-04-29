@@ -29,7 +29,7 @@
 
 import logging
 
-from bdkpython import Network
+import bdkpython as bdk
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QGroupBox,
@@ -60,7 +60,7 @@ class NewWalletWelcomeScreen(QWidget):
 
     def __init__(
         self,
-        network: Network,
+        network: bdk.Network,
         signals: Signals,
         signal_recently_open_wallet_changed: TypedPyQtSignal,
         parent=None,

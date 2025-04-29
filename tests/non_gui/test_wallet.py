@@ -38,19 +38,24 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.wallet import ProtoWallet, Wallet, WalletInputsInconsistentError
 
-from ..test_helpers import test_config, test_config_main_chain  # type: ignore
 from .test_signers import bacon_seed, test_seeds
 
 logger = logging.getLogger(__name__)
 
 
 def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Network.REGTEST) -> KeyStore:
-    mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
+    mnemonic = str(bdk.Mnemonic.from_string(seed_str))
     key_origin = key_origin
     xpub, fingerprint = derive(mnemonic, key_origin, network)
 
     return KeyStore(
-        xpub, fingerprint, key_origin, label, network=network, mnemonic=seed_str, description=label
+        xpub,
+        fingerprint,
+        key_origin,
+        label,
+        network=network,
+        mnemonic=seed_str,
+        description=label,
     )
 
 
@@ -94,7 +99,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "xpub": "tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA",
             "fingerprint": "5AA39A43",
             "key_origin": "m/41h/1h/0h/2h",
-            "derivation_path": "/0/*",
+            "derivation_path": "/<0;1>/*",
             "network": test_config.network,
             "label": "0",
             "mnemonic": "peanut all ghost appear daring exotic choose disease bird ready love salad",
@@ -104,7 +109,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "xpub": "tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX",
             "fingerprint": "5459F23B",
             "key_origin": "m/42h/1h/0h/2h",
-            "derivation_path": "/0/*",
+            "derivation_path": "/<0;1>/*",
             "network": test_config.network,
             "label": "1",
             "mnemonic": "chair useful hammer word edge hat title drastic priority chalk city gentle",
@@ -114,7 +119,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "xpub": "tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1",
             "fingerprint": "A302D279",
             "key_origin": "m/43h/1h/0h/2h",
-            "derivation_path": "/0/*",
+            "derivation_path": "/<0;1>/*",
             "network": test_config.network,
             "label": "2",
             "mnemonic": "expand text improve perfect sponsor gesture flush wolf poem blouse kangaroo lesson",
@@ -124,7 +129,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "xpub": "tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv",
             "fingerprint": "BAC81685",
             "key_origin": "m/44h/1h/0h/2h",
-            "derivation_path": "/0/*",
+            "derivation_path": "/<0;1>/*",
             "network": test_config.network,
             "label": "3",
             "mnemonic": "base episode pyramid share teach degree ocean copper merit auto source noble",
@@ -134,7 +139,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
             "xpub": "tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy",
             "fingerprint": "6627F20A",
             "key_origin": "m/45h/1h/0h/2h",
-            "derivation_path": "/0/*",
+            "derivation_path": "/<0;1>/*",
             "network": test_config.network,
             "label": "4",
             "mnemonic": "scout clarify assist brain moon canvas rack memory coast gauge short child",
@@ -146,7 +151,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
     assert multipath_descriptor
     # descriptor was compared to sparrow and is (up to ordering) identical
     assert (
-        multipath_descriptor.as_string()
+        str(multipath_descriptor)
         == "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
     )
 
@@ -171,11 +176,11 @@ def test_protowallet_import_export_descriptor(test_config: UserConfig):
     assert multipath_descriptor
     # descriptor was compared to sparrow and is (up to ordering) identical
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
-    assert multipath_descriptor.as_string() == expected_descriptor
+    assert str(multipath_descriptor) == expected_descriptor
 
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
 
-    assert wallet.multipath_descriptor.as_string() == expected_descriptor
+    assert str(wallet.multipath_descriptor) == expected_descriptor
 
 
 def test_create_from_protowallet_and_from_descriptor_string(test_config: UserConfig):
@@ -210,7 +215,10 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
     wallet2 = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
 
     # compare
-    assert wallet.multipath_descriptor.as_string_private() == wallet2.multipath_descriptor.as_string_private()
+    assert (
+        wallet.multipath_descriptor.to_string_with_secret()
+        == wallet2.multipath_descriptor.to_string_with_secret()
+    )
     assert [keystore.__dict__ for keystore in wallet.keystores] == [
         keystore.__dict__ for keystore in wallet2.keystores
     ]

@@ -357,7 +357,7 @@ class PdfStatement:
 
 
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
-    info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
+    info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
 
     addresses_and_balances: List[Tuple[str, str, int]] = []  # category, address, amount
     total_amount = 0
@@ -395,7 +395,7 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
     ).format(id=wallet.id)
     pdf_statement.create_pdf(
         title=title,
-        wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
+        wallet_descriptor_string=str(wallet.multipath_descriptor),
         address_info=[
             (
                 category,

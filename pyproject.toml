@@ -12,7 +12,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.2.4"
+version = "1.3.0"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -27,7 +27,7 @@ python = ">=3.10,<3.13"
 fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
-bdkpython = "^0.32.0"
+bdkpython ="^1.2.0"
 cryptography = "^44.0.1"
 hwi = ">=2.3.1"
 appdirs = "^1.4.4"
@@ -37,10 +37,11 @@ pyqt6 = "^6.6.1"
 pyqt6-charts = "^6.6.0"
 pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
-numpy = "2.2.1" # error in wine/pyinstaller when increased 
-bitcoin-qr-tools =    { git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "afc9d6c552838d02e48f02abe69905116d372a5d" }   
-bitcoin-nostr-chat =   { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "a0e16671308822442f313f686174d2c46b6231e2" } # "^0.6.3"  
-bitcoin-usb =  { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "59d4ee5987e48657ae5903f5bbfe982a0be8bfa8" }   # "^0.7.9"
+numpy = "2.2.1" # error in wine/pyinstaller when increased
+# bitcoin-nostr-chat = { git = "./../bitcoin-nostr-chat", branch = "bdk1" }  #  "^0.3.3"
+bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "b587b27e291aa9c3ab99ecbe612a387ad19b91bb" }
+bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "9236dff9250c59c4d2770832f252400f096a0d9b" }  
+bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "33d9bb18007b3e499242be7ec4475aa6248069ab" }  #  "^0.3.3"
 pysocks = "^1.7.1"
 
 

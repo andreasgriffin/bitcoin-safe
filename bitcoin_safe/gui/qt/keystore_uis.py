@@ -39,10 +39,10 @@ from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.wallet_util import signer_name
 
 from ...descriptors import AddressType
 from ...wallet import ProtoWallet
-from ...wallet_util import signer_name
 from .keystore_ui import KeyStoreUI, icon_for_label
 from .util import Message, MessageType
 

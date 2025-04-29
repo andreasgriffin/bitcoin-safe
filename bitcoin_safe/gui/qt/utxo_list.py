@@ -52,18 +52,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import enum
 import logging
 from functools import partial
-
-from bitcoin_safe.gui.qt.wrappers import Menu
-
-from ...config import UserConfig
-from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
-
-logger = logging.getLogger(__name__)
-
-
-import enum
 from typing import Dict, List, Optional, Tuple, Union
 
 import bdkpython as bdk
@@ -71,7 +62,11 @@ from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
+from bitcoin_safe.gui.qt.wrappers import Menu
+
+from ...config import UserConfig
 from ...i18n import translate
+from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
 from ...util import Satoshis, block_explorer_URL, clean_list, time_logger
 from ...wallet import TxStatus, Wallet, get_wallets
@@ -87,15 +82,17 @@ from .my_treeview import (
 )
 from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
 
+logger = logging.getLogger(__name__)
 
-def icon_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime, sort_id: int) -> str:
-    if not confirmation_time and is_spent_by_txid:
+
+def icon_of_utxo(is_spent_by_txid: Optional[str], chain_position: bdk.ChainPosition, sort_id: int) -> str:
+    if isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED) and is_spent_by_txid:
         return "unconfirmed_child.svg"
     return sort_id_to_icon(sort_id)
 
 
-def tooltip_text_of_utxo(is_spent_by_txid: Optional[str], confirmation_time: bdk.BlockTime) -> str:
-    if not confirmation_time:
+def tooltip_text_of_utxo(is_spent_by_txid: Optional[str], chain_position: bdk.ChainPosition) -> str:
+    if isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
         if is_spent_by_txid:
             return translate(
                 "utxo_list", "Unconfirmed UTXO is spent by transaction {is_spent_by_txid}"
@@ -313,7 +310,7 @@ class UTXOList(MyTreeView):
             txout = self.txout_dict.get(str(outpoint))
             if txout:
                 satoshis = Satoshis(txout.value, self.config.network)
-                address = bdk.Address.from_script(txout.script_pubkey, self.config.network).as_string()
+                address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
     def get_headers(self):
@@ -439,14 +436,14 @@ class UTXOList(MyTreeView):
             items[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         items[self.Columns.STATUS].setIcon(
             read_QIcon(
-                icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.confirmation_time, sort_id)
+                icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.chain_position, sort_id)
                 if txdetails
                 else None
             )
         )
         if txdetails:
             items[self.Columns.STATUS].setToolTip(
-                tooltip_text_of_utxo(python_utxo.is_spent_by_txid, txdetails.confirmation_time)
+                tooltip_text_of_utxo(python_utxo.is_spent_by_txid, txdetails.chain_position)
             )
 
         wallet_id = wallet.id if wallet and address and wallet.is_my_address(address) else ""
@@ -528,7 +525,7 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             amount = sum(selected_values)
             self.uxto_selected_label.setText(
                 self.tr("{amount} selected ({number} UTXOs)").format(
-                    amount=Satoshis(amount, self.utxo_list.signals.get_network()).str_with_unit(),
+                    amount=Satoshis(amount, network=self.config.network).str_with_unit(),
                     number=len(selected_values),
                 )
             )

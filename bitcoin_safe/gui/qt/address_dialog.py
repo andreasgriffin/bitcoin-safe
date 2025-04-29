@@ -37,7 +37,6 @@ from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
 from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.descriptors import MultipathDescriptor, get_address_bip32_path
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
 from bitcoin_safe.gui.qt.sign_message import SignMessage
@@ -47,6 +46,7 @@ from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
+from ...descriptors import get_address_bip32_path
 from ...signals import Signals, SignalsMin
 from ...wallet import Wallet
 from .hist_list import HistList
@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 class AddressDetailsAdvanced(QWidget):
     def __init__(
         self,
-        wallet_descriptor: MultipathDescriptor,
+        wallet_descriptor: bdk.Descriptor,
         kind: bdk.KeychainKind,
         address_index: int,
         network: bdk.Network,
@@ -99,7 +99,7 @@ class AddressDetailsAdvanced(QWidget):
         # sign message row
         self.sign_message = SignMessage(
             bip32_path=get_address_bip32_path(
-                descriptor_str=wallet_descriptor.as_string(), kind=kind, index=address_index
+                descriptor_str=str(wallet_descriptor), kind=kind, index=address_index
             ),
             network=network,
             close_all_video_widgets=close_all_video_widgets,
@@ -114,7 +114,7 @@ class AddressValidateTab(QWidget):
     def __init__(
         self,
         bdk_address: bdk.Address,
-        wallet_descriptor: MultipathDescriptor,
+        wallet_descriptor: bdk.Descriptor,
         kind: bdk.KeychainKind,
         address_index: int,
         network: bdk.Network,
@@ -129,7 +129,7 @@ class AddressValidateTab(QWidget):
         edit_addr_descriptor = USBValidateAddressWidget(network=network, signals=signals)
         edit_addr_descriptor.set_descriptor(
             descriptor=wallet_descriptor,
-            expected_address=bdk_address.as_string(),
+            expected_address=str(bdk_address),
             kind=kind,
             address_index=address_index,
         )

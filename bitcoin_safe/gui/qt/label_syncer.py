@@ -33,17 +33,16 @@ from time import sleep
 from typing import List
 
 from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.nostr_sync import Data, DataType
 from bitcoin_nostr_chat.ui.ui import short_key
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
-
-logger = logging.getLogger(__name__)
-from bitcoin_nostr_chat.nostr_sync import Data, DataType
-
 from bitcoin_safe.labels import Labels, LabelType
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason, WalletSignals
+
+logger = logging.getLogger(__name__)
 
 
 class LabelSyncer(QObject):

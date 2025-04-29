@@ -25,8 +25,6 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 import enum
 import logging
 from abc import abstractmethod
@@ -169,7 +167,10 @@ class QCompleterLineEdit(AnalyzerLineEdit):
     signal_focus_out: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
-        self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] | None = None, parent=None
+        self,
+        network: bdk.Network,
+        suggestions: Dict[bdk.Network, List[str]] | None = None,
+        parent=None,
     ) -> None:
         super().__init__(parent)
         # Dictionary to store suggestions for each network

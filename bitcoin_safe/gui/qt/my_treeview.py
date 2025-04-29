@@ -496,6 +496,8 @@ class MyTreeView(QTreeView):
         self._currently_updating = False
         self._scroll_position = 0
 
+        self.allow_edit = True
+
         self.setRootIsDecorated(False)  # remove left margin
 
         # When figuring out the size of columns, Qt by default looks at
@@ -1137,6 +1139,17 @@ class MyTreeView(QTreeView):
                 return None
 
         return None
+
+    def selectionCommand(
+        self, index: QtCore.QModelIndex, event: Optional[QtCore.QEvent] = None
+    ) -> QtCore.QItemSelectionModel.SelectionFlag:
+        if not self.allow_edit:
+            return QtCore.QItemSelectionModel.SelectionFlag.NoUpdate
+
+        return super().selectionCommand(index, event)
+
+    def set_allow_edit(self, allow_edit: bool):
+        self.allow_edit = allow_edit
 
     def close(self):
         self.proxy.close()
