@@ -102,6 +102,7 @@ def test_default_network_config_works(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
             wallet_id = qt_wallet.wallet.id
+            del qt_wallet
 
             close_wallet(
                 shutter=shutter,
@@ -110,7 +111,6 @@ def test_default_network_config_works(
                 qtbot=qtbot,
                 main_window=main_window,
             )
-            del qt_wallet
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:

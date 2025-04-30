@@ -125,6 +125,7 @@ def test_wallet_features_multisig(
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
 
         def check_consistent() -> None:
+            assert isinstance(qt_protowallet, QTProtoWallet)
             signers = qt_protowallet.wallet_descriptor_ui.spin_signers.value()
             qt_protowallet.wallet_descriptor_ui.spin_req.value()
 
@@ -200,12 +201,14 @@ def test_wallet_features_multisig(
             set_mnemonic(0)
             set_mnemonic(1)
 
+            save_button = qt_protowallet.wallet_descriptor_ui.button_box.button(
+                QDialogButtonBox.StandardButton.Apply
+            )
+            assert save_button
             wallet_file = save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
-                save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-                    QDialogButtonBox.StandardButton.Apply
-                ),
+                save_button=save_button,
             )
 
             assert wallet_file.exists()
@@ -319,6 +322,7 @@ def test_wallet_features_multisig(
                                 action.trigger()
 
                                 clipboard = QApplication.clipboard()
+                                assert clipboard
                                 assert (
                                     clipboard.text()
                                     == "wsh(sortedmulti(1,[5aa39a43/48'/1'/0'/2']tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD/<0;1>/*,[5459f23b/48'/1'/0'/2']tpubDF5XHNeYNBkmPio8Zkw8zz6hBFoQ5BgXthUENZ7x51nbgNeC7exH6ZR8ZHSLEkLrKLxL1ELarJoDcZ1ZCAVCGALKA2V2KrNfegb2dPvdY5K/<0;1>/*))#4e59znyp"
@@ -473,6 +477,7 @@ def test_wallet_features_multisig(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
             wallet_id = qt_wallet.wallet.id
+            del qt_wallet
 
             close_wallet(
                 shutter=shutter,
@@ -481,7 +486,6 @@ def test_wallet_features_multisig(
                 qtbot=qtbot,
                 main_window=main_window,
             )
-            del qt_wallet
             shutter.save(main_window)
 
         # end

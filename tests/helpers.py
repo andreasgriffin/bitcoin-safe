@@ -57,6 +57,18 @@ def test_config(fulcrum: str) -> TestConfig:
     return config
 
 
+@pytest.fixture(scope="session")
+def test_config_session(fulcrum: str) -> TestConfig:
+    config = TestConfig()
+    logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
+    config.network = bdk.Network.REGTEST
+    config.network_config.server_type = BlockchainType.Electrum
+    config.network_config.electrum_url = fulcrum
+    config.network_config.electrum_use_ssl = False
+
+    return config
+
+
 @pytest.fixture()
 def test_config_main_chain() -> TestConfig:
     config = TestConfig()

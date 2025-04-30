@@ -33,8 +33,8 @@ from tests.gui.qt.test_helpers import test_start_time  # type: ignore
 setup_logging()
 
 from .gui.qt.helpers import mytest_start_time  # type: ignore
-from .helpers import test_config  # type: ignore
 from .helpers import test_config_main_chain  # type: ignore
+from .helpers import test_config, test_config_session  # type: ignore
 from .non_gui.test_wallet_coin_select import test_wallet_config  # type: ignore
 from .setup_bitcoin_core import bitcoin_core  # type: ignore
 from .setup_fulcrum import Faucet, faucet, fulcrum  # type: ignore

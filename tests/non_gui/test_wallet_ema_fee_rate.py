@@ -60,7 +60,7 @@ def test_wallet_config_seed(request) -> TestWalletConfig:
 # [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
 def test_funded_seed_wallet(
-    test_config: UserConfig,
+    test_config_session: UserConfig,
     faucet: Faucet,
     test_wallet_config_seed: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
@@ -82,8 +82,8 @@ def test_funded_seed_wallet(
         id=wallet_name,
         descriptor_str=descriptor_info.get_descriptor_str(faucet.network),
         keystores=[keystore],
-        network=test_config.network,
-        config=test_config,
+        network=test_config_session.network,
+        config=test_config_session,
     )
 
     # fund the wallet

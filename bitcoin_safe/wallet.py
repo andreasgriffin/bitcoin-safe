@@ -33,7 +33,6 @@ import logging
 import os
 import random
 from collections import defaultdict
-from threading import Lock
 from time import time
 from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
 
@@ -541,7 +540,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.gap_change = gap_change
         self.keystores = keystores
         self.config: UserConfig = config
-        self.write_lock = Lock()
         self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
         # refresh dependent values
@@ -1050,24 +1048,12 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     @time_logger
     def fill_commonly_used_caches(self) -> None:
-        i = 0
-        new_addresses_were_watched = True
         # you have to repeat fetching new tx when you start watching new addresses
         # And you can only start watching new addresses once you detected transactions on them.
         # Thas why this fetching has to be done in a loop
-        while new_addresses_were_watched:
-            if i > 0:
-                self.clear_cache()
-            self.get_addresses()
-            self.get_height()
-
-            advanced_tips = self.advance_tips_by_gap()
-            new_addresses_were_watched = any(advanced_tips)
-            if new_addresses_were_watched:
-                logger.info(f"{self.id} tips were advanced by {advanced_tips}")
-            i += 1
-            if i > 100:
-                break
+        self.clear_cache()
+        self.get_addresses()
+        self.get_height()
         self.bdkwallet.list_output()
         self.get_dict_fulltxdetail()
         self.get_all_txos_dict()
@@ -1115,39 +1101,23 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return reverse_search_used(self._tips[int(is_change)])
 
-    def _get_bdk_tip(self, is_change: bool) -> int:
-        if not self.bdkwallet:
-            return self._tips[int(is_change)]
-
-        keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
-        return max(0, self.bdkwallet.next_derivation_index(keychain=keychain_kind) - 1)
-
     def _get_tip(self, is_change: bool) -> int:
-        if not self.bdkwallet:
-            return self._tips[int(is_change)]
-
-        self._advance_tip_if_necessary(is_change=is_change, target=self._tips[int(is_change)])
-        return self._tips[int(is_change)]
+        keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
+        derivation_index = self.bdkwallet.derivation_index(keychain=keychain_kind)
+        if derivation_index is None:
+            self._advance_tip_if_necessary(is_change=is_change, target=0)
+            return 0
+        return derivation_index
 
     def _advance_tip_if_necessary(self, is_change: bool, target: int) -> None:
         keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
         max_derived_index = self.bdkwallet.derivation_index(keychain=keychain_kind)
 
         if max_derived_index is None or max_derived_index < target:
-            with self.write_lock:
-                self.bdkwallet.reveal_addresses_to(keychain=keychain_kind, index=target)
-                self.bdkwallet.persist(self.connection)
-                logger.info(f"{self.id} Revealed addresses up to {keychain_kind=} {target=}")
+            self.bdkwallet.reveal_addresses_to(keychain=keychain_kind, index=target)
+            self.bdkwallet.persist(self.connection)
+            logger.info(f"{self.id} Revealed addresses up to {keychain_kind=} {target=}")
             self.clear_cache()
-
-    def advance_tips_by_gap(self) -> Tuple[int, int]:
-        "Returns [number of added addresses, number of added change addresses]"
-        tip = [0, 0]
-        for is_change in [False, True]:
-            gap = self.gap_change if is_change else self.gap
-            used_tip = self.used_address_tip(is_change=is_change)
-            self._advance_tip_if_necessary(is_change=is_change, target=used_tip + gap)
-        return (tip[0], tip[1])
 
     def search_index_tuple(self, address, forward_search=500) -> Optional[AddressInfoMin]:
         """Looks for the address"""
@@ -1816,6 +1786,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         necessary (This is especially relevant if a psbt creates a new change
         address)"""
         self.clear_method(self._get_addresses)
+        self.clear_method(self._get_addresses_infos)
         logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
 
         not_indexed_addresses = set(update_filter.addresses) - set(self.get_addresses())

@@ -140,7 +140,7 @@ def test_coin_control_config(request) -> TestCoinControlConfig:
 # [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
 def test_funded_wallet(
-    test_config: UserConfig,
+    test_config_session: UserConfig,
     faucet: Faucet,
     test_wallet_config: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
@@ -156,14 +156,14 @@ def test_funded_wallet(
         fingerprint=descriptor_info.spk_providers[0].fingerprint,
         key_origin=descriptor_info.spk_providers[0].key_origin,
         label="test",
-        network=test_config.network,
+        network=test_config_session.network,
     )
     wallet = Wallet(
         id=wallet_name,
         descriptor_str=descriptor_str,
         keystores=[keystore],
-        network=test_config.network,
-        config=test_config,
+        network=test_config_session.network,
+        config=test_config_session,
     )
 
     # fund the wallet
