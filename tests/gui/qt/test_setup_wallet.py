@@ -428,7 +428,7 @@ def test_wizard(
                         main_window.signals.wallet_signals[qt_wallet.wallet.id].updated, timeout=10000
                     ):  # Timeout after 10 seconds
                         viewer.button_send.click()
-                    qtbot.wait(10000)
+                    qtbot.wait(1000)
                     mock_message.assert_called_with(
                         main_window.tr("All Send tests done successfully."), type=MessageType.Info
                     )
