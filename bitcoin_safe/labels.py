@@ -114,7 +114,16 @@ class Label(SaveAllClass):
 
     @classmethod
     def from_bip329(cls, d: Dict[str, Any], timestamp: Union[Literal["now"], float] = "now") -> "Label":
-        d["timestamp"] = datetime.now().timestamp() if timestamp == "now" else timestamp
+        """
+        Can import bip329,
+        Also uses additional fields (like timestamp)
+        if available.
+        """
+        d["timestamp"] = (
+            label_timestamp
+            if (label_timestamp := d.get("timestamp"))
+            else (datetime.now().timestamp() if timestamp == "now" else timestamp)
+        )
         d["type"] = LabelType[d["type"]]
         label = Label(**filtered_for_init(d, cls=cls))
 
