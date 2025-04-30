@@ -308,7 +308,7 @@ class Faucet:
         while len(self.bdk_wallet.transactions()) - len(txs) < len(block_hashes):
             time.sleep(0.5)
             self.sync()
-        logger.debug(f"Faucet Wallet balance is: {self.bdk_wallet.balance().total}")
+        logger.debug(f"Faucet Wallet balance is: {self.bdk_wallet.balance().total.to_sat()}")
 
     def initial_mine(self):
         self.mine(

@@ -651,7 +651,7 @@ class MainWindow(QMainWindow):
             self.tab_wallets.setCurrentWidget(last_qt_wallet_involved)
             last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
 
-        QTimer.singleShot(5000, self.sync_all)
+        QTimer.singleShot(500, self.sync_all)
 
     def sync_all(self):
         for qt_wallet in self.qt_wallets.values():
