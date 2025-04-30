@@ -841,6 +841,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             #     bdk.SqliteDbConfiguration(self._db_file())
             # ),
         )
+        for is_change, tip in enumerate(self._tips):
+            self.bdkwallet.reveal_addresses_to(
+                keychain=AddressInfoMin.is_change_to_keychain(is_change=bool(is_change)), index=tip
+            )
 
     def is_multisig(self) -> bool:
         return len(self.keystores) > 1
