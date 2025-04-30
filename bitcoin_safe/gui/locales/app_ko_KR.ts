@@ -12,8 +12,8 @@
         <translation>추가 서명이 없습니다  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx 라이브러리 오류. 최종화하는 동안 txid가 변경되어서는 안 됩니다  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk 라이브러리 오류. 최종화 중에 txid를 변경해서는 안 됩니다</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}은 {rbf}를 위한 최소 비율입니다.</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} 통합 수수료율</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>이 거래에는 미확인 부모 트랜잭션이 {number}개 있으며, 통합 수수료율은 {parents_fee_rate}입니다</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>지갑  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} 가속</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>지갑 &apos;{id}&apos;을(를) 가져올 수 없습니다. 먼저 지갑을 열어주세요.  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>상태  </translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} 확인  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>지갑 &apos;{id}&apos;을(를) 가져올 수 없습니다. 먼저 지갑을 열어주세요.  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>수신 출력이 없어 거래에 CPFP를 수행할 수 없습니다</translation>
     </message>
 </context>
 <context>
@@ -2483,6 +2499,10 @@ below {rate}</source>
         <translation>입력  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>명칭:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>잘못된 서명  </translation>
     </message>
@@ -2515,6 +2535,10 @@ below {rate}</source>
         <translation>증가된 수수료로 수정하기 (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>수수료 올리기 (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>이전 단계  </translation>
     </message>
@@ -2525,10 +2549,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>보내기  </translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>명칭:  </translation>
     </message>
 </context>
 <context>
@@ -3073,6 +3093,14 @@ below {rate}</source>
         <translation>트랜잭션 취소하기 (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>수수료 올리기 (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>더 빨리 받기 (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>미사용  </translation>
     </message>
@@ -3164,8 +3192,16 @@ below {rate}</source>
         <translation>이것은 비트코인 네트워크에 빠르고 비공개적으로 연결하는 방법입니다.  </translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>&quot;bitcoind -chain=regtest&quot;로 bitcoind를 실행하세요  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>&quot;bitcoind -chain=test&quot;로 bitcoind를 실행하세요  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>bitcoind를 &quot;bitcoind -chain=testnet4&quot; 옵션으로 실행하세요</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3179,6 +3215,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>{server}에서 Electrum 서버와 {explorer}에서 블록 탐색기로 {electrum}을 설정할 수 있습니다.  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>좋은 옵션은 {electrum_testnet}이며, 블록 탐색기는 {explorer_testnet}입니다</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3199,10 +3239,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>자신의 Bitcoin 노드, 예를 들어 {link}를 연결할 수 있습니다.  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>&quot;bitcoind -chain=regtest&quot;로 bitcoind를 실행하세요  </translation>
     </message>
 </context>
 <context>

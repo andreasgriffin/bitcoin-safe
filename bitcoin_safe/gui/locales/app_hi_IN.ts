@@ -12,8 +12,8 @@
         <translation>कोई अतिरिक्त हस्ताक्षर नहीं जोड़े गए  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx पुस्तकालय त्रुटि। txid को अंतिम रूप देते समय बदला नहीं जाना चाहिए</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk लाइब्रेरी त्रुटि। अंतिम चरण के दौरान txid को नहीं बदला जाना चाहिए</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} {rbf} के लिए न्यूनतम है</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} संयुक्त शुल्क दर</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>इस लेनदेन के {number} अप्रमाणित पैरेंट लेनदेन हैं, जिनकी संयुक्त शुल्क दर {parents_fee_rate} है</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>वॉलेट</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} का स्पीडअप</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>स्थिति</translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} पुष्टिकरण</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ट्रांजैक्शन पर CPFP नहीं किया जा सकता क्योंकि रिसीविंग आउटपुट नहीं मिला</translation>
     </message>
 </context>
 <context>
@@ -2486,6 +2502,10 @@ below {rate}</source>
         <translation>इनपुट्स</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>लेबल:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>अमान्य हस्ताक्षर</translation>
     </message>
@@ -2518,6 +2538,10 @@ below {rate}</source>
         <translation>बढ़ी हुई फीस के साथ संपादित करें (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>शुल्क बढ़ाएँ (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>पिछला चरण</translation>
     </message>
@@ -2528,10 +2552,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>भेजें</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>लेबल:  </translation>
     </message>
 </context>
 <context>
@@ -3076,6 +3096,14 @@ below {rate}</source>
         <translation>लेन-देन रद्द करने का प्रयास करें (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>शुल्क बढ़ाएँ (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>तेज़ी से प्राप्त करें (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>अप्रयुक्त</translation>
     </message>
@@ -3167,8 +3195,16 @@ below {rate}</source>
         <translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>&quot;bitcoind -chain=test&quot; के साथ अपना bitcoind चलाएं</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>&quot;bitcoind -chain=testnet4&quot; के साथ अपना bitcoind चलाएँ</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3182,6 +3218,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>आप {server} पर एक इलेक्ट्रम सर्वर के साथ {electrum} सेटअप कर सकते हैं और एक ब्लॉक एक्सप्लोरर {explorer} पर  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>एक अच्छा विकल्प है {electrum_testnet} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3202,10 +3242,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
     </message>
 </context>
 <context>

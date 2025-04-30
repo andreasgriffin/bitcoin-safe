@@ -12,8 +12,8 @@
         <translation>没有添加额外的签名  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx库错误。在完成过程中不应更改txid</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk 库错误。在完成过程中，不应更改 txid</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}是{rbf}的最低费率</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} 综合手续费率</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>此交易有 {number} 个未确认的父交易，其综合手续费率为 {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>钱包</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>对交易 {txid} 进行加速</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>无法获取钱包&apos;{id}&apos;。请先打开钱包。</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>状态</translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} 确认</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>无法获取钱包&apos;{id}&apos;。请先打开钱包。</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>无法对该交易进行 CPFP，因为未找到接收输出</translation>
     </message>
 </context>
 <context>
@@ -2492,6 +2508,10 @@ below {rate}</source>
         <translation>输入</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>标签：  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>签名无效</translation>
     </message>
@@ -2524,6 +2544,10 @@ below {rate}</source>
         <translation>使用增加的费用编辑（RBF）</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>提高手续费（RBF）</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>上一步</translation>
     </message>
@@ -2534,10 +2558,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>发送</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>标签：  </translation>
     </message>
 </context>
 <context>
@@ -3082,6 +3102,14 @@ below {rate}</source>
         <translation>尝试取消交易（RBF）</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>提高手续费（RBF）</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>更快接收（CPFP）</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>未使用</translation>
     </message>
@@ -3173,8 +3201,16 @@ below {rate}</source>
         <translation>这是一种私密且快速的连接到比特币网络的方式。</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>使用 &quot;bitcoind -chain=regtest&quot; 运行您的bitcoind</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>使用 &quot;bitcoind -chain=test&quot; 运行您的bitcoind</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>使用 &quot;bitcoind -chain=testnet4&quot; 运行 bitcoind</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3188,6 +3224,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>你可以在 {server} 上设置 {electrum} 与一个区块浏览器在 {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>一个不错的选项是 {electrum_testnet}，区块浏览器为 {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3208,10 +3248,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>您可以连接您自己的比特币节点，如 {link}。</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>使用 &quot;bitcoind -chain=regtest&quot; 运行您的bitcoind</translation>
     </message>
 </context>
 <context>

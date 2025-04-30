@@ -12,8 +12,8 @@
         <translation>ไม่มีลายเซ็นเพิ่มเติม  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>ข้อผิดพลาดของไลบรารี bitcoin_tx ไม่ควรเปลี่ยนแปลง txid ระหว่างการสรุป  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>ข้อผิดพลาดของไลบรารี bdk ไม่ควรเปลี่ยน txid ในระหว่างการสรุปผล</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} เป็นขั้นต่ำสำหรับ {rbf}  </translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} อัตราค่าธรรมเนียมรวม</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>ธุรกรรมนี้มีธุรกรรมหลักที่ยังไม่ยืนยัน {number} รายการ โดยมีอัตราค่าธรรมเนียมรวม {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>กระเป๋าเงิน  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>เร่งความเร็วของ {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>ไม่สามารถเรียกกระเป๋าเงิน &apos;{id}&apos; ได้ โปรดเปิดกระเป๋าเงินก่อน  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>สถานะ  </translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} การยืนยัน  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>ไม่สามารถเรียกกระเป๋าเงิน &apos;{id}&apos; ได้ โปรดเปิดกระเป๋าเงินก่อน  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ไม่สามารถใช้ CPFP กับธุรกรรมได้เนื่องจากไม่พบเอาต์พุตของการรับ</translation>
     </message>
 </context>
 <context>
@@ -2483,6 +2499,10 @@ below {rate}</source>
         <translation>อินพุต  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>ป้ายกำกับ:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>ลายเซ็นไม่ถูกต้อง  </translation>
     </message>
@@ -2515,6 +2535,10 @@ below {rate}</source>
         <translation>แก้ไขด้วยค่าธรรมเนียมที่สูงขึ้น (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>ขั้นตอนก่อนหน้า  </translation>
     </message>
@@ -2525,10 +2549,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>ส่ง  </translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>ป้ายกำกับ:  </translation>
     </message>
 </context>
 <context>
@@ -3073,6 +3093,14 @@ below {rate}</source>
         <translation>ลองยกเลิกธุรกรรม (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>รับเร็วขึ้น (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>ไม่ได้ใช้งาน  </translation>
     </message>
@@ -3164,8 +3192,16 @@ below {rate}</source>
         <translation>นี่คือวิธีที่เป็นส่วนตัวและรวดเร็วในการเชื่อมต่อกับเครือข่าย bitcoin  </translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=regtest&quot;  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=test&quot;  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3179,6 +3215,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>คุณสามารถตั้งค่า {electrum} กับเซิร์ฟเวอร์ electrum บน {server} และ block explorer บน {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>ตัวเลือกที่ดีคือ {electrum_testnet} และสำหรับบล็อกเอ็กซ์พลอเรอร์คือ {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3199,10 +3239,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>คุณสามารถเชื่อมต่อ Bitcoin node ของคุณเอง เช่น {link}  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=regtest&quot;  </translation>
     </message>
 </context>
 <context>

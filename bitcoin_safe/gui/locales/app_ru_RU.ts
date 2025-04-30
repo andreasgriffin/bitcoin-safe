@@ -12,8 +12,8 @@
         <translation>Дополнительные подписи не добавлены  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>Ошибка библиотеки bitcoin_tx. Идентификатор транзакции не должен быть изменен во время финализации</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>Ошибка библиотеки bdk. При финализации txid не должен изменяться</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} это минимум для {rbf}</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} комбинированная ставка комиссии</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>У этой транзакции {number} неподтверждённых родительских транзакций с объединённой ставкой комиссии {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>Кошелек</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>Ускорение {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>Не удается получить кошелек &apos;{id}&apos;. Пожалуйста, сначала откройте кошелек.</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} Подтверждений</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>Не удается получить кошелек &apos;{id}&apos;. Пожалуйста, сначала откройте кошелек.</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Невозможно выполнить CPFP для транзакции, так как не найден выход для получения</translation>
     </message>
 </context>
 <context>
@@ -2486,6 +2502,10 @@ below {rate}</source>
         <translation>Входы</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>Метка:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>Недействительные подписи</translation>
     </message>
@@ -2518,6 +2538,10 @@ below {rate}</source>
         <translation>Редактировать с увеличенной комиссией (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Увеличить комиссию (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>Предыдущий шаг</translation>
     </message>
@@ -2528,10 +2552,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>Отправить</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>Метка:  </translation>
     </message>
 </context>
 <context>
@@ -3076,6 +3096,14 @@ below {rate}</source>
         <translation>Попробовать отменить транзакцию (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Увеличить комиссию (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Получить быстрее (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>Неиспользованный</translation>
     </message>
@@ -3167,8 +3195,16 @@ below {rate}</source>
         <translation>Это приватный и быстрый способ подключения к биткойн-сети.</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=regtest&quot;</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>Запустите bitcoind с &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3182,6 +3218,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>Вы можете настроить {electrum} с сервером электрума на {server} и блок-эксплорером на {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>Хорошим вариантом является {electrum_testnet}, а в качестве обозревателя блоков {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3202,10 +3242,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>Вы можете подключить свой собственный биткойн-узел, например {link}.</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
 </context>
 <context>

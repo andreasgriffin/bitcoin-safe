@@ -12,8 +12,8 @@
         <translation>追加の署名はありませんでした</translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_txライブラリエラー。txidは最終確定中に変更されてはいけません</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk ライブラリエラー。最終処理中に txid を変更してはいけません</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}は{rbf}のための最小限です</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} の合計手数料率</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>このトランザクションには {number} 件の未確認親トランザクションがあり、合計手数料率は {parents_fee_rate} です</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>ウォレット</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} の高速化</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>ウォレット &apos;{id}&apos; を開けません。まずウォレットを開いてください。</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>ステータス</translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} 回の確認</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>ウォレット &apos;{id}&apos; を開けません。まずウォレットを開いてください。</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>受信出力が見つからないため、CPFP を実行できません</translation>
     </message>
 </context>
 <context>
@@ -2486,6 +2502,10 @@ below {rate}</source>
         <translation>入力</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>ラベル：  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>無効な署名</translation>
     </message>
@@ -2518,6 +2538,10 @@ below {rate}</source>
         <translation>増加した手数料で編集（RBF）</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>手数料を増やす (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>前のステップ</translation>
     </message>
@@ -2528,10 +2552,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>送信</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>ラベル：  </translation>
     </message>
 </context>
 <context>
@@ -3076,6 +3096,14 @@ below {rate}</source>
         <translation>トランザクションをキャンセルしようとしています（RBF）</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>手数料を増やす (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>より速く受け取る (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>未使用</translation>
     </message>
@@ -3167,8 +3195,16 @@ below {rate}</source>
         <translation>これはビットコインネットワークに接続するためのプライベートかつ高速な方法です。</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>&quot;bitcoind -chain=regtest&quot;でbitcoindを実行してください</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>&quot;bitcoind -chain=test&quot;でbitcoindを実行してください</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>bitcoind を &quot;bitcoind -chain=testnet4&quot; で実行してください</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3182,6 +3218,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>{server} でエレクトラムサーバーを使用して {electrum} を設定し、{explorer} でブロックエクスプローラーを使用することができます  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>推奨オプションは {electrum_testnet}、ブロックエクスプローラーは {explorer_testnet} です</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3202,10 +3242,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>{link}など、独自のBitcoinノードに接続できます。</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>&quot;bitcoind -chain=regtest&quot;でbitcoindを実行してください</translation>
     </message>
 </context>
 <context>
