@@ -84,8 +84,8 @@ requests = "^2.31.0"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "31548c9f42451663ac3fcff33becb5456175d130"
-resolved_reference = "31548c9f42451663ac3fcff33becb5456175d130"
+reference = "cc22a5718169ae7dd9b003dcea50d3b6fb2f13ab"
+resolved_reference = "cc22a5718169ae7dd9b003dcea50d3b6fb2f13ab"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -166,13 +166,13 @@ virtualenv = ["virtualenv (>=20.0.35)"]
 
 [[package]]
 name = "cachecontrol"
-version = "0.14.2"
+version = "0.14.3"
 description = "httplib2 caching for requests"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "cachecontrol-0.14.2-py3-none-any.whl", hash = "sha256:ebad2091bf12d0d200dfc2464330db638c5deb41d546f6d7aca079e87290f3b0"},
-    {file = "cachecontrol-0.14.2.tar.gz", hash = "sha256:7d47d19f866409b98ff6025b6a0fca8e4c791fb31abbd95f622093894ce903a2"},
+    {file = "cachecontrol-0.14.3-py3-none-any.whl", hash = "sha256:b35e44a3113f17d2a31c1e6b27b9de6d4405f84ae51baa8c1d3cc5b633010cae"},
+    {file = "cachecontrol-0.14.3.tar.gz", hash = "sha256:73e7efec4b06b20d9267b441c1f733664f989fb8688391b670ca812d70795d11"},
 ]
 
 [package.dependencies]
@@ -2571,13 +2571,13 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "80.0.1"
+version = "80.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "setuptools-80.0.1-py3-none-any.whl", hash = "sha256:f4b49d457765b3aae7cbbeb1c71f6633a61b729408c2d1a837dae064cca82ef2"},
-    {file = "setuptools-80.0.1.tar.gz", hash = "sha256:20fe373a22ef9f3925512650d1db90b1b8de01cdb6df91ab1788263139cbf9a2"},
+    {file = "setuptools-80.1.0-py3-none-any.whl", hash = "sha256:ea0e7655c05b74819f82e76e11a85b31779fee7c4969e82f72bab0664e8317e4"},
+    {file = "setuptools-80.1.0.tar.gz", hash = "sha256:2e308396e1d83de287ada2c2fd6e64286008fe6aca5008e0b6a8cb0e2c86eedd"},
 ]
 
 [package.extras]
@@ -2956,4 +2956,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "f7a71606a9ac796a427b36d896e25f5c5fcf92c5acf096f0978192408acb287b"
+content-hash = "96b28922adc0394bfad514439741d661a3b76a3101d254f07c32cd53b5e3b7dd"
