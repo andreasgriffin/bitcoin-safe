@@ -280,6 +280,7 @@ class Faucet:
             fee_rate=fee_rate,
         )
         self.bdk_wallet.sign(psbt_for_signing, None)
+        self.bdk_wallet.persist(self.connection)
 
         tx = psbt_for_signing.extract_tx()
         self.client.transaction_broadcast(tx)
