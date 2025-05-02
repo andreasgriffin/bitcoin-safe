@@ -84,8 +84,8 @@ requests = "^2.31.0"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "cc22a5718169ae7dd9b003dcea50d3b6fb2f13ab"
-resolved_reference = "cc22a5718169ae7dd9b003dcea50d3b6fb2f13ab"
+reference = "5e166054d6a38f3becab0b84d6a8b01c0fcb0fb1"
+resolved_reference = "5e166054d6a38f3becab0b84d6a8b01c0fcb0fb1"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -2792,13 +2792,13 @@ stellar = ["stellar-sdk (>=6)"]
 
 [[package]]
 name = "trove-classifiers"
-version = "2025.4.28.22"
+version = "2025.5.1.12"
 description = "Canonical source for classifiers on PyPI (pypi.org)."
 optional = false
 python-versions = "*"
 files = [
-    {file = "trove_classifiers-2025.4.28.22-py3-none-any.whl", hash = "sha256:fdb453fefa3a0da9c18b8d390846e6df7e961e8924703559ea9be07ec99c0925"},
-    {file = "trove_classifiers-2025.4.28.22.tar.gz", hash = "sha256:42bef4957a74fe7724b8310dafd4b23e0a71406a4812cf4dfd65e2ee34f1943d"},
+    {file = "trove_classifiers-2025.5.1.12-py3-none-any.whl", hash = "sha256:9ed1030cfcc8d0eb944155f05b4add4efaceba4ba6aca3f9f348a21f1e700404"},
+    {file = "trove_classifiers-2025.5.1.12.tar.gz", hash = "sha256:28d24c3d043dc6b0459813d6bf4a231e788509b55ee3d54ba08ce72638031182"},
 ]
 
 [[package]]
@@ -2956,4 +2956,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "96b28922adc0394bfad514439741d661a3b76a3101d254f07c32cd53b5e3b7dd"
+content-hash = "03bf0b119a0e6be5a1a5aa045703001090da6617b79fed2c43694e133086b462"

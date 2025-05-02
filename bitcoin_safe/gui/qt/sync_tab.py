@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 import bdkpython as bdk
 import nostr_sdk
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM
+from bitcoin_nostr_chat.chat_dm import ChatDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_qr_tools.data import DataType
@@ -134,13 +134,13 @@ class SyncTab(ControlledGroupbox):
     def subscribe(self) -> None:
         self.nostr_sync.subscribe()
 
-    def on_dm(self, dm: BitcoinDM) -> None:
+    def on_dm(self, dm: ChatDM) -> None:
         """
         Catches DataType.PSBT, DataType.Tx and opens them in a tab
         It also notifies of
 
         Args:
-            dm (BitcoinDM): _description_
+            dm (ChatDM): _description_
         """
         if self.nostr_sync.group_chat.sync_start and (dm.created_at < self.nostr_sync.group_chat.sync_start):
             # dm was created before the last shutdown,

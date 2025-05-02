@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import bdkpython as bdk
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
@@ -432,9 +432,9 @@ class SyncChatToolButton(QToolButton):
 
     def to_dm(
         self,
-    ) -> BitcoinDM:
+    ) -> ChatDM:
         txid = get_txid(self.data)
-        return BitcoinDM(
+        return ChatDM(
             label=ChatLabel.GroupChat,
             data=self.data,
             event=None,

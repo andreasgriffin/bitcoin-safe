@@ -32,7 +32,7 @@ from datetime import datetime
 from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_nostr_chat.nostr_sync import Data, DataType
 from bitcoin_nostr_chat.ui.ui import short_key
 from nostr_sdk import PublicKey
@@ -111,7 +111,7 @@ class LabelSyncer(QObject):
 
         for bitcoin_data in self.get_chunked_bitcoin_data(refs):
             self.nostr_sync.group_chat.dm_connection.send(
-                BitcoinDM(
+                ChatDM(
                     event=None,
                     label=ChatLabel.SingleRecipient,
                     description="",
@@ -216,7 +216,7 @@ class LabelSyncer(QObject):
 
         for bitcoin_data in self.get_chunked_bitcoin_data(refs):
             self.nostr_sync.group_chat.send(
-                BitcoinDM(
+                ChatDM(
                     event=None,
                     label=ChatLabel.GroupChat,
                     description="",
