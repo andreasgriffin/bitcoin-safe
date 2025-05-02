@@ -70,7 +70,7 @@ class BitcoinQuickReceive(
         self.update_content(UpdateFilter(refresh_all=True))
 
     def set_address(self, category: str, address_info: bdk.AddressInfo):
-        address = address_info.address.as_string()
+        address = str(address_info.address)
 
         self.add_box(
             ReceiveGroup(
@@ -120,7 +120,7 @@ class BitcoinQuickReceive(
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         super().update()
 
         self.clear_boxes()
@@ -134,13 +134,13 @@ class BitcoinQuickReceive(
                 continue
 
             address_info = self.wallet.get_unused_category_address(category)
-            updated_addressed.add(address_info.address.as_string())
+            updated_addressed.add(str(address_info.address))
             updated_categories.add(category)
             self.set_address(category, address_info)
 
         if not self.wallet.labels.categories:
             address_info = self.wallet.get_unused_category_address(None)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
             category = self.wallet.labels.get_category(address)
             self.set_address(category, address_info)
             updated_addressed.add(address)

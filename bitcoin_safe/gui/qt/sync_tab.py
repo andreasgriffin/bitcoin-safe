@@ -33,15 +33,15 @@ from typing import Any, Dict, List
 
 import bdkpython as bdk
 import nostr_sdk
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM
+from bitcoin_nostr_chat.chat_dm import ChatDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
+from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
 from bitcoin_safe.gui.qt.util import Message, icon_path
 from bitcoin_safe.signals import Signals
@@ -101,7 +101,7 @@ class SyncTab(ControlledGroupbox):
         # just in case the relay lost the publish key message. I republish here
         if self.checkbox.isChecked():
             logger.info(
-                f"Publish my key {self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()} in protocol chat {self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()}"
+                f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
             )
             self.nostr_sync.publish_my_key_in_protocol(force=True)
 
@@ -135,13 +135,13 @@ class SyncTab(ControlledGroupbox):
     def subscribe(self) -> None:
         self.nostr_sync.subscribe()
 
-    def on_dm(self, dm: BitcoinDM) -> None:
+    def on_dm(self, dm: ChatDM) -> None:
         """
         Catches DataType.PSBT, DataType.Tx and opens them in a tab
         It also notifies of
 
         Args:
-            dm (BitcoinDM): _description_
+            dm (ChatDM): _description_
         """
         if self.nostr_sync.group_chat.sync_start and (dm.created_at < self.nostr_sync.group_chat.sync_start):
             # dm was created before the last shutdown,
@@ -189,12 +189,12 @@ class SyncTab(ControlledGroupbox):
     @classmethod
     def from_descriptor_new_device_keys(
         cls,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         signals: Signals,
         parent: QObject | None = None,
     ) -> "SyncTab":
-        descriptor_info = DescriptorInfo.from_str(multipath_descriptor.as_string())
+        descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
         xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
 
         protocol_keys = nostr_sdk.Keys(
@@ -207,7 +207,7 @@ class SyncTab(ControlledGroupbox):
 
         device_keys = nostr_sdk.Keys.generate()
         logger.info(
-            f"Generated a new nostr keypair with public key {device_keys.public_key().to_bech32()} and saving to wallet"
+            f"Generated a new nostr keypair with public key {short_key(device_keys.public_key().to_bech32())} and saving to wallet"
         )
         nostr_sync = NostrSync.from_keys(
             network=network,

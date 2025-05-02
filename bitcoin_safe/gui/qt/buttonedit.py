@@ -30,6 +30,7 @@ import logging
 from functools import partial
 from typing import Callable, List, Optional, Union
 
+import bdkpython as bdk
 from bdkpython import bdk
 from bitcoin_qr_tools.data import Data, DecodingException
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
@@ -369,7 +370,7 @@ class ButtonEdit(QWidget):
         return self.pdf_button
 
     def _on_click_add_random_mnemonic_button(self, callback_seed: Callable | None = None) -> None:
-        seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
+        seed = str(bdk.Mnemonic(bdk.WordCount.WORDS12))
         self.setText(seed)
         if callback_seed:
             callback_seed(seed)
@@ -485,7 +486,7 @@ if __name__ == "__main__":
 
     text_edit = ButtonEdit(close_all_video_widgets=my.close_all_video_widgets)
     text_edit.add_copy_button()
-    text_edit.add_qr_input_from_camera_button(bdk.Network.TESTNET)
+    text_edit.add_qr_input_from_camera_button(bdk.Network.TESTNET4)
     text_edit.add_pdf_buttton(lambda: 0)
     text_edit.add_random_mnemonic_button(lambda: "some random")
     layout.addWidget(text_edit)

@@ -28,6 +28,7 @@
 
 
 import datetime
+import json
 
 from bitcoin_safe.labels import Label, Labels, LabelType
 from bitcoin_safe.util import clean_lines
@@ -125,6 +126,26 @@ def test_label_bip329_import():
 
     assert labels2.get_category("some_address") == "category 0"
     assert labels2.get_label("some_address") == "my label"
+
+
+def test_label_bip329_import_with_timestamp():
+    timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
+
+    d = {"type": "addr", "ref": "some_address", "label": "my label #category 0", "timestamp": timestamp}
+    s = json.dumps(d)
+
+    labels2 = Labels()
+    labels2.import_bip329_jsonlines(s)
+
+    assert labels2.data["some_address"].dump() == {
+        "__class__": "Label",
+        "VERSION": "0.0.3",
+        "type": "addr",
+        "ref": "some_address",
+        "label": "my label",
+        "category": "category 0",
+        "timestamp": timestamp,
+    }
 
 
 def test_label_bip329_category_drop_multiple_categories():

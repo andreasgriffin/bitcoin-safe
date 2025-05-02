@@ -12,8 +12,8 @@
         <translation>لم يتم إضافة توقيعات إضافية  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>خطأ في مكتبة bitcoin_tx. لا ينبغي تغيير txid أثناء الإنهاء</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>خطأ في مكتبة bdk. لا يجب تغيير txid أثناء الإنهاء</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} هو الحد الأدنى لـ {rbf}</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} معدل الرسوم المجمعة</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>هذه المعاملة بها {number} معاملات أصلية غير مؤكدة بمعدل رسوم مجمعة يبلغ {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>محفظة</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>تسريع المعاملة {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>تعذر جلب المحفظة &apos;{id}&apos;. يرجى فتح المحفظة أولاً.</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>الحالة</translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} تأكيدات</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>تعذر جلب المحفظة &apos;{id}&apos;. يرجى فتح المحفظة أولاً.</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>لا يمكن تنفيذ CPFP على المعاملة لأنه لم يتم العثور على مخرج استقبال</translation>
     </message>
 </context>
 <context>
@@ -2486,6 +2502,10 @@ below {rate}</source>
         <translation>المدخلات</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>التسمية:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>التوقيعات غير صالحة</translation>
     </message>
@@ -2518,6 +2538,10 @@ below {rate}</source>
         <translation>تحرير مع زيادة الرسوم (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>زيادة الرسوم (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>خطوة سابقة</translation>
     </message>
@@ -2528,10 +2552,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>يرسل</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>التسمية:  </translation>
     </message>
 </context>
 <context>
@@ -3076,6 +3096,14 @@ below {rate}</source>
         <translation>حاول إلغاء المعاملة (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>زيادة الرسوم (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>استلام أسرع (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>غير مستعمل</translation>
     </message>
@@ -3167,8 +3195,16 @@ below {rate}</source>
         <translation>هذه طريقة خاصة وسريعة للاتصال بشبكة البيتكوين.</translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=regtest&quot;</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>شغل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3182,6 +3218,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>يمكنك إعداد {electrum} بخادم إلكتروم على {server} ومستكشف البلوك على {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>خيار جيد هو {electrum_testnet}، ومُستكشف الكتل هو {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3202,10 +3242,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>يمكنك ربط عقدة البيتكوين الخاصة بك، مثل {link}.</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
 </context>
 <context>

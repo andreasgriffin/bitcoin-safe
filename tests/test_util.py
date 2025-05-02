@@ -198,12 +198,10 @@ def make_psbt(
     )
 
     txbuilder = txbuilder.fee_rate(fee_rate)
-    txbuilder = txbuilder.enable_rbf()
 
-    txbuilder_result = txbuilder.finish(bdk_wallet)
+    psbt = txbuilder.finish(bdk_wallet)
 
-    psbt = txbuilder_result.psbt
     logger.debug(f"psbt to {destination_address}: {psbt.serialize()}\n")
 
-    psbt_for_signing = bdk.PartiallySignedTransaction(txbuilder_result.psbt.serialize())
+    psbt_for_signing = bdk.Psbt(psbt.serialize())
     return psbt_for_signing

@@ -34,8 +34,6 @@ import sys
 from ctypes.util import find_library
 from pathlib import Path
 
-import bitcoin_usb
-import bitcointx
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
 from .i18n import translate
@@ -115,8 +113,6 @@ def setup_libsecp256k1() -> None:
 
     if lib_path:
         logger.info(f"Setting libsecp256k1: {lib_path}")
-        bitcoin_usb.set_custom_secp256k1_path(lib_path)
-        bitcointx.set_custom_secp256k1_path(lib_path)
     elif get_libsecp256k1_os_path():
         logger.info(translate("setup_libsecp256k1", f"libsecp256k1 was found in the OS"))
     else:

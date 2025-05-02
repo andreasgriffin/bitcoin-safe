@@ -34,7 +34,7 @@ from typing import Callable, Iterable, List, Optional, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
-from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QIcon
@@ -501,7 +501,6 @@ class KeyStoreUI(QObject):
             self.edit_fingerprint.setText(data.data)
         elif data.data_type in [
             DataType.Descriptor,
-            DataType.MultiPathDescriptor,
             DataType.MultisigWalletExport,
         ]:
             Message(self.tr("Please paste descriptors into the descriptor field in the top right."))
@@ -599,13 +598,11 @@ class KeyStoreUI(QObject):
         seed_str = self.edit_seed.text().strip()
 
         if seed_str:
-            mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
-            software_signer = SoftwareSigner(mnemonic, self.network)
+            mnemonic = str(bdk.Mnemonic.from_string(seed_str))
             key_origin = self.edit_key_origin.text().strip()
             # if key_origin is empty  fill it with the default
             key_origin = key_origin if key_origin else self.get_address_type().key_origin(self.network)
-            xpub = software_signer.derive(key_origin)
-            fingerprint = software_signer.get_fingerprint()
+            xpub, fingerprint = derive(mnemonic=mnemonic, key_origin=key_origin, network=self.network)
         else:
             mnemonic = None
             fingerprint = self.edit_fingerprint.text()
@@ -658,7 +655,7 @@ class SignedUI(QWidget):
     def __init__(
         self,
         text: str,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
         super().__init__()
@@ -676,13 +673,13 @@ class SignedUI(QWidget):
 
 
 class SignerUI(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,
         signature_importers: Iterable[AbstractSignatureImporter],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         button_prefix: str = "",
     ) -> None:
@@ -719,13 +716,13 @@ class SignerUI(QWidget):
 
 
 class SignerUIHorizontal(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,
         signature_importers: List[AbstractSignatureImporter],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
         super().__init__()

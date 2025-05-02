@@ -32,18 +32,17 @@ from datetime import datetime
 from time import sleep
 from typing import List
 
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
+from bitcoin_nostr_chat.nostr_sync import Data, DataType
 from bitcoin_nostr_chat.ui.ui import short_key
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
-
-logger = logging.getLogger(__name__)
-from bitcoin_nostr_chat.nostr_sync import Data, DataType
-
 from bitcoin_safe.labels import Labels, LabelType
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason, WalletSignals
+
+logger = logging.getLogger(__name__)
 
 
 class LabelSyncer(QObject):
@@ -112,7 +111,7 @@ class LabelSyncer(QObject):
 
         for bitcoin_data in self.get_chunked_bitcoin_data(refs):
             self.nostr_sync.group_chat.dm_connection.send(
-                BitcoinDM(
+                ChatDM(
                     event=None,
                     label=ChatLabel.SingleRecipient,
                     description="",
@@ -158,14 +157,16 @@ class LabelSyncer(QObject):
             return
 
         if self.sync_tab.nostr_sync.is_me(author) and not self.apply_own_labels:
-            logger.debug(f"on_nostr_label_bip329_received do not apply laybels from myself {author}")
+            logger.debug(
+                f"on_nostr_label_bip329_received do not apply laybels from myself {short_key(author.to_bech32())}"
+            )
             return
 
         changed_labels = self.labels.import_dumps_data(data.data)
         if not changed_labels:
             logger.debug(f"no labels changed in on_nostr_label_bip329_received")
             return
-        logger.info(f"on_nostr_label_bip329_received applied {len(changed_labels)} labels: {changed_labels} ")
+        logger.info(f"on_nostr_label_bip329_received applied {len(changed_labels)} labels")
 
         addresses: List[str] = []
         txids: List[str] = []
@@ -209,7 +210,7 @@ class LabelSyncer(QObject):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         refs = list(update_filter.addresses) + list(update_filter.txids)
         if not refs:
@@ -217,7 +218,7 @@ class LabelSyncer(QObject):
 
         for bitcoin_data in self.get_chunked_bitcoin_data(refs):
             self.nostr_sync.group_chat.send(
-                BitcoinDM(
+                ChatDM(
                     event=None,
                     label=ChatLabel.GroupChat,
                     description="",

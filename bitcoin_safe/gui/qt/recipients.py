@@ -119,12 +119,12 @@ class RecipientWidget(QWidget):
         )
 
         self.amount_layout = QHBoxLayout()
-        self.amount_spin_box = BTCSpinBox(self.signals.get_network())
+        self.amount_spin_box = BTCSpinBox(network=network)
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
         amount_analyzer.max_amount = int(21e6 * 1e8)
         self.amount_spin_box.setAnalyzer(amount_analyzer)
-        self.label_unit = QLabel(unit_str(self.signals.get_network()))
+        self.label_unit = QLabel(unit_str(network=network))
         self.send_max_button = QPushButton()
         self.send_max_button.setCheckable(True)
         self.send_max_button.setMaximumWidth(80)

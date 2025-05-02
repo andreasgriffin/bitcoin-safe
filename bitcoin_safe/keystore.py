@@ -63,6 +63,7 @@ class KeyStoreImporterType(SaveAllClass):
                 bdk.Network.BITCOIN,
                 bdk.Network.REGTEST,
                 bdk.Network.TESTNET,
+                bdk.Network.TESTNET4,
                 bdk.Network.SIGNET,
             ]
             if networks == "all"
@@ -111,7 +112,7 @@ class KeyStoreImporterTypes:
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
         "logo.svg",
-        networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.SIGNET],
+        networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.TESTNET4, bdk.Network.SIGNET],
     )  # add networks here to make the seed option visible
 
     @classmethod
@@ -138,7 +139,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         network: bdk.Network,
         mnemonic: Optional[str] = None,
         description: str = "",
-        derivation_path: str = ConstDerivationPaths.receive,
+        derivation_path: str = ConstDerivationPaths.multipath,
     ) -> None:
         super().__init__(
             xpub=xpub,

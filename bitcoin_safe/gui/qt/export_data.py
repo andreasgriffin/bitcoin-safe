@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import bdkpython as bdk
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
@@ -58,7 +58,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
@@ -106,27 +105,27 @@ def pretty_name(data_type: DataType) -> str:
 
 def get_txid(data: Data) -> str | None:
     if data.data_type == DataType.PSBT:
-        if not isinstance(data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(data.data, bdk.Psbt):
+            logger.error(f"data is not of type bdk.Psbt")
             return None
-        return data.data.txid()
+        return data.data.extract_tx().compute_txid()
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
-        return data.data.txid()
+        return data.data.compute_txid()
     return None
 
 
 def get_json_data(data: Data, network: bdk.Network) -> str | None:
     if data.data_type == DataType.PSBT:
-        if not isinstance(data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(data.data, bdk.Psbt):
+            logger.error(f"data is not of type bdk.Psbt")
             return None
         return json.dumps(json.loads(data.data.json_serialize()), indent=4)
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
         return json.dumps(transaction_to_dict(data.data, network=network), indent=4)
     return None
@@ -181,9 +180,7 @@ class FileToolButton(QToolButton):
         self._menu.clear()
         self._menu.blockSignals(True)
 
-        if self.data.data_type in [DataType.MultiPathDescriptor] and isinstance(
-            self.data.data, MultipathDescriptor
-        ):
+        if self.data.data_type in [DataType.Descriptor] and isinstance(self.data.data, bdk.Descriptor):
             self.fill_file_menu_descriptor_export_actions(
                 self._menu,
                 self.wallet_id if self.wallet_id else "descriptor",
@@ -207,7 +204,6 @@ class FileToolButton(QToolButton):
             default_filename = f"{short_tx_id( txid)}.{default_suffix}"
         if not default_filename and self.data.data_type in [
             DataType.Descriptor,
-            DataType.MultiPathDescriptor,
         ]:
             default_filename = (
                 (f"{filename_clean( self.wallet_id, file_extension='', replace_spaces_by='_')}.txt")
@@ -252,7 +248,7 @@ class FileToolButton(QToolButton):
     def _save_file(
         cls,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         descripor_type: DescriptorExportType,
     ):
@@ -267,7 +263,7 @@ class FileToolButton(QToolButton):
         self,
         menu: Menu,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
     ):
         menu.blockSignals(True)
@@ -436,9 +432,9 @@ class SyncChatToolButton(QToolButton):
 
     def to_dm(
         self,
-    ) -> BitcoinDM:
+    ) -> ChatDM:
         txid = get_txid(self.data)
-        return BitcoinDM(
+        return ChatDM(
             label=ChatLabel.GroupChat,
             data=self.data,
             event=None,
@@ -676,19 +672,19 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.data = data
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
-            if not isinstance(data.data, bdk.PartiallySignedTransaction):
-                logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+            if not isinstance(data.data, bdk.Psbt):
+                logger.error(f"data is not of type bdk.Psbt")
                 return
-            self.txid = data.data.txid()
+            self.txid = data.data.extract_tx().compute_txid()
             self.json_data = json.dumps(json.loads(data.data.json_serialize()), indent=4)
         if data.data_type == DataType.Tx:
             if not isinstance(data.data, bdk.Transaction):
-                logger.error(f"{data.data} is not of type bdk.Transaction")
+                logger.error(f"data is not of type bdk.Transaction")
                 return
-            self.txid = data.data.txid()
+            self.txid = data.data.compute_txid()
             self.json_data = json.dumps(transaction_to_dict(data.data, network=self.network), indent=4)
 
-        if data.data_type in [DataType.Descriptor, DataType.MultiPathDescriptor]:
+        if data.data_type in [DataType.Descriptor, DataType.Descriptor]:
             self.qr_types = DescriptorQrExportTypes.as_list()
         elif data.data_type in [DataType.SignMessageRequest]:
             self.qr_types = SignMessageRequestQrExportTypes.as_list()
@@ -738,27 +734,27 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         ## descriptors
         if qr_export_type.name == DescriptorQrExportTypes.specterdiy.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             return [
                 DescriptorExportTools._get_specter_diy_str(
                     wallet_id=self.wallet_id, descriptor_str=data.data_as_string()
                 )
             ]
         elif qr_export_type.name == DescriptorQrExportTypes.passport.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_passport_str(
                 wallet_id=self.wallet_id,
                 descriptor_str=data.data_as_string(),
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
         elif qr_export_type.name == DescriptorQrExportTypes.keystone.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_keystone_str(
                 wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
         elif qr_export_type.name == DescriptorQrExportTypes.coldcard_legacy.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             coldcard_str = DescriptorExportTools._get_coldcard_str_legacy(
                 wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
@@ -797,7 +793,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> Optional[str]:
-        if not isinstance(self.data.data, MultipathDescriptor):
+        if not isinstance(self.data.data, bdk.Descriptor):
             return None
 
         filename = save_file_dialog(
@@ -864,7 +860,6 @@ class QrToolButton(QToolButton):
     def _show_export_widget(self, export_type: QrExportType):
         if not self.export_qr_widget:
             return
-
         self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
         self.export_qr_widget.show()
 

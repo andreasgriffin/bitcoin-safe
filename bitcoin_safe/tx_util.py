@@ -34,13 +34,12 @@ This file was created once to provide  the pubkeys of a TxIn
 """
 import logging
 
-logger = logging.getLogger(__name__)
-
-
 import bdkpython as bdk
 
 from bitcoin_safe.util import hex_to_script
 
+logger = logging.getLogger(__name__)
+
 
 def script_pubkey_to_address(script_pubkey: str, network: bdk.Network) -> str:
-    return bdk.Address.from_script(hex_to_script(script_pubkey), network).as_string()
+    return str(bdk.Address.from_script(hex_to_script(script_pubkey), network))

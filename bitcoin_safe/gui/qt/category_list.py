@@ -93,7 +93,7 @@ class CategoryList(CustomListWidget):
         if not self.shoud_update(update_filter):
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.recreate(self.wallet_signals.get_category_infos() or list())
 
     @classmethod
@@ -170,7 +170,7 @@ class CategoryEditor(TagEditor):
         if not CategoryList.shoud_update(update_filter):
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.list_widget.recreate(self.wallet_signals.get_category_infos() or list())
 
     @classmethod

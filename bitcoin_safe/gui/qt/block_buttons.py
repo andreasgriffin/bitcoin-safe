@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import enum
 import logging
 from functools import partial
@@ -320,7 +321,9 @@ class MempoolScheduler(QObject):
         if ENABLE_TIMERS:
             self.timer.start(MEMPOOL_SCHEDULE_TIMER)
 
-    def set_mempool_block_unknown_fee_rate(self, i, confirmation_time: bdk.BlockTime | None = None) -> None:
+    def set_mempool_block_unknown_fee_rate(
+        self, i, confirmation_time: bdk.ConfirmationBlockTime | None = None
+    ) -> None:
         logger.error("This should not be called")
 
     def set_data_from_mempoolspace(self):
@@ -334,13 +337,13 @@ class BaseBlock(VerticalButtonGroup):
         self,
         mempool_data: MempoolData,
         network: bdk.Network,
-        confirmation_time: bdk.BlockTime | None = None,
+        chain_position: bdk.ChainPosition | None = None,
         button_count=3,
         parent=None,
         size=100,
     ) -> None:
         super().__init__(network=network, button_count=button_count, parent=parent, size=size)
-        self.confirmation_time = confirmation_time
+        self.chain_position = chain_position
         self.mempool_data = mempool_data
 
         # signals
@@ -370,7 +373,7 @@ class MempoolButtons(BaseBlock):
     ) -> None:
         super().__init__(
             mempool_data=mempool_data,
-            confirmation_time=None,
+            chain_position=None,
             network=mempool_data.network_config.network,
             button_count=max_button_count,
             parent=parent,
@@ -450,7 +453,7 @@ class MempoolProjectedBlock(BaseBlock):
     ) -> None:
         super().__init__(
             mempool_data=mempool_data,
-            confirmation_time=None,
+            chain_position=None,
             network=mempool_data.network_config.network,
             button_count=1,
             parent=parent,
@@ -520,13 +523,13 @@ class ConfirmedBlock(BaseBlock):
         self,
         mempool_data: MempoolData,
         url: str | None = None,
-        confirmation_time: bdk.BlockTime | None = None,
+        chain_position: bdk.ChainPosition | None = None,
         fee_rate: float | None = None,
         parent=None,
     ) -> None:
         super().__init__(
             mempool_data=mempool_data,
-            confirmation_time=confirmation_time,
+            chain_position=chain_position,
             network=mempool_data.network_config.network,
             button_count=1,
             parent=parent,
@@ -539,29 +542,30 @@ class ConfirmedBlock(BaseBlock):
     def set_url(self, url: str) -> None:
         self.url = url
 
-    def refresh(
-        self, fee_rate=None, confirmation_time=None, chain_height: int | None = None, **kwargs
-    ) -> None:
+    def refresh(self, fee_rate=None, chain_position=None, chain_height: int | None = None, **kwargs) -> None:
         self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
-        self.confirmation_time = confirmation_time if confirmation_time else self.confirmation_time
-        if not self.confirmation_time:
+        self.chain_position = chain_position if chain_position else self.chain_position
+        if not self.chain_position or not isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
             return
 
         for i, button in enumerate(self.buttons):
             button.label_title.set(
-                self.tr("Block {n}").format(n=format_block_number(self.confirmation_time.height)),
+                self.tr("Block {n}").format(
+                    n=format_block_number(self.chain_position.confirmation_block_time.block_id.height)
+                ),
                 BlockType.confirmed,
             )
             if chain_height is None:
                 button.label_number_confirmations.setText("")
             else:
                 button.label_number_confirmations.set(
-                    chain_height - self.confirmation_time.height + 1,
+                    chain_height - self.chain_position.confirmation_block_time.block_id.height + 1,
                     BlockType.confirmed,
                 )
             button.label_block_height.setText("")
             button.label_confirmation_time.set(
-                self.confirmation_time.timestamp, block_type=BlockType.confirmed
+                self.chain_position.confirmation_block_time.confirmation_time,
+                block_type=BlockType.confirmed,
             )
 
             button.explorer_explorer_icon.setVisible(True)

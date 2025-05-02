@@ -12,8 +12,8 @@
         <translation>အပိုဆောင်းလက်မှတ်များမထည့်ထားပါ။  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx ကိုင်တာရီအမှား။ txid သည်အဆုံးသတ်ရာတွင်ပြောင်းလဲမှုမဖြစ်ရပါ။  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk စာကြည့်တိုက် အမှား။ ပြီးဆုံးစဉ်အတွင်း txid ကို မပြောင်းလဲသင့်ပါ</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} သည် {rbf} အတွက်အနည်းဆုံးဖြစ်သည်  </translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} ပေါင်းစပ်ကြေးနှုန်း</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>ဤငွေလွှဲတွင် မအတည်ပြုထားသေးသော မိခင်ငွေလွှဲများ {number} ခုရှိပြီး ပေါင်းစပ်ကြေးနှုန်းမှာ {parents_fee_rate} ဖြစ်သည်</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>ပိုက်ဆံအိတ်  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} အတွက် အရှိန်မြှင့်ခြင်း</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>&apos;{id}&apos; ပိုက်ဆံအိတ်ကိုဆွဲယူမရပါ။ ပိုက်ဆံအိတ်ကိုဦးစွာဖွင့်ပါ။  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>အခြေအနေ  </translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} အတည်ပြုချက်များ  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>&apos;{id}&apos; ပိုက်ဆံအိတ်ကိုဆွဲယူမရပါ။ ပိုက်ဆံအိတ်ကိုဦးစွာဖွင့်ပါ။  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>လက်ခံထွက်ပေါက်ကို မတွေ့ရှိနိုင်သောကြောင့် ဤငွေလွှဲကို CPFP မပြုနိုင်ပါ</translation>
     </message>
 </context>
 <context>
@@ -2483,6 +2499,10 @@ below {rate}</source>
         <translation>ဝင်ငွေ  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>တံဆိပ်:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>မှားယွင်းသောလက်မှတ်များ  </translation>
     </message>
@@ -2515,6 +2535,10 @@ below {rate}</source>
         <translation>RBF ဖြင့်အကြွေးပိုထည့်ပြီးပြင်ဆင်ပါ  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>ကြေးတိုးပါ (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>ယခင်အဆင့်  </translation>
     </message>
@@ -2525,10 +2549,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>ပို့ပါ</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>တံဆိပ်:  </translation>
     </message>
 </context>
 <context>
@@ -3073,6 +3093,14 @@ below {rate}</source>
         <translation>ငွေလွှဲကိုဖျက်ပစ်ဖို့ကြိုးစားပါ (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>ကြေးတိုးပါ (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>ပိုမိုလျင်မြန်စွာ လက်ခံပါ (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>အသုံးမပြုရသေး</translation>
     </message>
@@ -3164,8 +3192,16 @@ below {rate}</source>
         <translation>ဤသည်သည် bitcoin ကွန်ယက်နှင့်ပတ်သက်သောပုဂ္ဂလိကနှင့်မြန်ဆန်သောဆက်သွယ်မှုပုံစံဖြစ်သည်။  </translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>&quot;bitcoind -chain=regtest&quot; ဖြင့် သင့် bitcoind ကို စတင်ပါ။</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>&quot;bitcoind -chain=test&quot; ဖြင့် သင့် bitcoind ကို စတင်ပါ။</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>bitcoind ကို &quot;bitcoind -chain=testnet4&quot; ဖြင့် စတင် အသုံးပြုပါ</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3179,6 +3215,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>{electrum} ကို {server} တွင်ရှိသော electrum ဆာဗာနှင့် {explorer} တွင်ရှိသော block explorer နှင့်တွဲဖက်စီမံရန်သင့်အားဖြစ်စေသည်။  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>ကောင်းမွန်သောရွေးချယ်စရာမှာ {electrum_testnet} ဖြစ်ပြီး ဘလော့ခ်စုံစမ်းစက်အဖြစ် {explorer_testnet} ကို အသုံးပြုပါ</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3199,10 +3239,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>သင့်ရဲ့ Bitcoin node ကိုယ်တိုင်ချိတ်ဆက်ပါ၊ ဥပမာ - {link}။  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>&quot;bitcoind -chain=regtest&quot; ဖြင့် သင့် bitcoind ကို စတင်ပါ။</translation>
     </message>
 </context>
 <context>

@@ -29,6 +29,10 @@
 
 import logging
 
+import bdkpython as bdk
+from bitcoin_qr_tools.data import Data
+from PyQt6.QtWidgets import QWidget
+
 from bitcoin_safe.gui.qt.export_data import (
     FileToolButton,
     QrToolButton,
@@ -40,11 +44,6 @@ from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
-
-
-import bdkpython as bdk
-from bitcoin_qr_tools.data import Data
-from PyQt6.QtWidgets import QWidget
 
 
 class TxExport(BaseHardwareSignerInteractionWidget):

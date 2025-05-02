@@ -12,8 +12,8 @@
         <translation>Aucune signature supplémentaire n&apos;a été ajoutée  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>Erreur de la bibliothèque bitcoin_tx. L&apos;ID de transaction ne doit pas être modifié lors de la finalisation  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>Erreur de la bibliothèque bdk. Le txid ne doit pas être modifié lors de la finalisation</translation>
     </message>
 </context>
 <context>
@@ -579,6 +579,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} est le minimum pour {rbf}  </translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} taux de frais combinés</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>Cette transaction a {number} parents non confirmés avec un taux de frais combinés de {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +737,14 @@ the sending value {sent}</source>
         <translation>Portefeuille  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>Accélération de {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>Impossible de récupérer le portefeuille &apos;{id}&apos;. Veuillez d&apos;abord ouvrir le portefeuille.  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Statut  </translation>
     </message>
@@ -757,8 +773,8 @@ the sending value {sent}</source>
         <translation>{number} Confirmations  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>Impossible de récupérer le portefeuille &apos;{id}&apos;. Veuillez d&apos;abord ouvrir le portefeuille.  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Impossible de faire un CPFP sur la transaction car aucune sortie réceptrice n’a été trouvée</translation>
     </message>
 </context>
 <context>
@@ -2483,6 +2499,10 @@ below {rate}</source>
         <translation>Entrées  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>Étiquette :  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>Signatures invalides  </translation>
     </message>
@@ -2515,6 +2535,10 @@ below {rate}</source>
         <translation>Modifier avec des frais augmentés (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Augmenter les frais (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>Étape précédente  </translation>
     </message>
@@ -2525,10 +2549,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>Envoyer  </translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>Étiquette :  </translation>
     </message>
 </context>
 <context>
@@ -3073,6 +3093,14 @@ below {rate}</source>
         <translation>Essayer d&apos;annuler la transaction (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Augmenter les frais (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Recevoir plus rapidement (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>Inutilisé  </translation>
     </message>
@@ -3164,8 +3192,16 @@ below {rate}</source>
         <translation>C&apos;est un moyen privé et rapide de se connecter au réseau Bitcoin.  </translation>
     </message>
     <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=regtest&quot;  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=test&quot;  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>Lancez votre bitcoind avec &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3179,6 +3215,10 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
         <translation>Vous pouvez configurer {electrum} avec un serveur electrum sur {server} et un explorateur de blocs sur {explorer}  </translation>
+    </message>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>Une bonne option est {electrum_testnet} et comme explorateur de blocs {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
@@ -3199,10 +3239,6 @@ It is best to use your own server, such as {link}.</source>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
         <translation>Vous pouvez connecter votre propre nœud Bitcoin, tel que {link}.  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=regtest&quot;  </translation>
     </message>
 </context>
 <context>

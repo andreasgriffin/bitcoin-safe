@@ -40,21 +40,8 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
-from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
-from ...test_helpers import test_config, test_config_main_chain  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
-    CheckedDeletionContext,
-    Shutter,
-    close_wallet,
-    do_modal_click,
-    get_tab_with_title,
-    get_widget_top_level,
-    main_window_context,
-    save_wallet,
-    test_start_time,
-)
+from .test_helpers import Shutter, main_window_context
 
 logger = logging.getLogger(__name__)
 

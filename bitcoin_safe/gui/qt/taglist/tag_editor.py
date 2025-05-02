@@ -69,7 +69,7 @@ class DeleteButton(QPushButton):
             json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
-            logger.debug(f"dragEnterEvent: Got {d}")
+            logger.debug(f"dragEnterEvent")
             if d.get("type") == "drag_tag" or d.get("type") == "drag_addresses":
                 event.acceptProposedAction()
                 return
@@ -90,14 +90,14 @@ class DeleteButton(QPushButton):
             json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
-            logger.debug(f"dropEvent: Got {d}")
+            logger.debug(f"dropEvent")
             if d.get("type") == "drag_tag":
                 self.signal_delete_item.emit(d.get("tag"))
                 event.acceptProposedAction()
                 return
             if d.get("type") == "drag_addresses":
                 drag_info = AddressDragInfo([None], d.get("addresses"))
-                logger.debug(f"dropEvent: {drag_info}")
+                logger.debug(f"dropEvent")
                 self.signal_addresses_dropped.emit(drag_info)
                 event.accept()
                 return
@@ -158,10 +158,10 @@ class TagEditor(QWidget):
             # print('accept')
             # tag = self.itemAt(event.pos())
 
-            json_string = qbytearray_to_str(mime_data.data("application/json"))
+            qbytearray_to_str(mime_data.data("application/json"))
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
-            logger.debug(f"dragEnterEvent: {json_string}")
+            logger.debug(f"dragEnterEvent")
 
             event.acceptProposedAction()
 

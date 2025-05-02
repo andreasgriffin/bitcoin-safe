@@ -394,7 +394,12 @@ class Message:
         self.create().exec()
 
     def create(self) -> QMessageBox:
-        logger.warning(str(self.__dict__))
+        if self.type == MessageType.Info:
+            logger.info(str(self.__dict__))
+        elif self.type == MessageType.Warning:
+            logger.warning(str(self.__dict__))
+        elif self.type == MessageType.Error:
+            logger.error(str(self.__dict__))
 
         icon, title = self.get_icon_and_title()
 

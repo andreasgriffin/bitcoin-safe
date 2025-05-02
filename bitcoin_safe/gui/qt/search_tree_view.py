@@ -57,11 +57,10 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals
-
-from .ui_tx_creator import UITx_Creator
 
 logger = logging.getLogger(__name__)
 

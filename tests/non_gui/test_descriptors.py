@@ -33,7 +33,7 @@ import bdkpython as bdk
 import pytest
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
 
-from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.descriptors import from_multisig_wallet_export
 
 logger = logging.getLogger(__name__)
 import logging
@@ -58,11 +58,11 @@ Derivation: m/48'/0'/0'/2'
     data = Data.from_str(s, network=bdk.Network.BITCOIN)
     assert data.data_type == DataType.MultisigWalletExport
     assert isinstance(data.data, ConverterMultisigWalletExport)
-    descriptor = MultipathDescriptor.from_multisig_wallet_export(data.data, network=bdk.Network.BITCOIN)
+    descriptor = from_multisig_wallet_export(data.data, network=bdk.Network.BITCOIN)
 
     # see also https://jlopp.github.io/xpub-converter/
     assert (
-        descriptor.as_string()
+        str(descriptor)
         == "wsh(sortedmulti(2,[0439f926/48'/0'/0'/2']xpub6DkFAXWQ2dHxq2vatrt9qyA3bXYU4ToWQwCHbf5XB2mSTexcHZCeKS1VZYcPoBd5X8yVcbXFHJR9R8UCVpt82VX1VhR28mCyxUFL4r6KFrf/<0;1>/*,[95af25ef/48'/0'/0'/2']xpub6EqLWU42dB2QNuQ5w8nCrwq3zwnyGWYQyd3fpu27BcQG8adgTdxoJBonAU6kjcQQKxCzvEfm3e3sp5d4ZKVXXVRQor6PLvbafehtr8QwtgS/<0;1>/*,[a32efffd/48'/0'/0'/2']xpub6EuZLQYmVs16eNnxVEh175kFwJH2bEmVJGobDMjvxafSz9VxY9er5bvrmcLXHdjqmnsvvnuyF1GUG1RxQ17bhR8yvEBJm7LTcNc4vKY7xds/<0;1>/*))#j5x0rym8"
     )
 
@@ -90,4 +90,4 @@ Format: P2WSH-P2SH
         # Nested Segwit (p2sh-p2wsh) mainnet, account 0: 1': Nested Segwit (p2sh-p2wsh) m/48'/0'/0'/1'
         # however the wallet export reverses this order of P2WSH-P2SH
         # Currently I dont have a consitent way of handling this, therefore it is better to raise an error here.
-        descriptor = MultipathDescriptor.from_multisig_wallet_export(data.data, network=bdk.Network.REGTEST)
+        descriptor = from_multisig_wallet_export(data.data, network=bdk.Network.REGTEST)

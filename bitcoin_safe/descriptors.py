@@ -26,16 +26,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from typing import Sequence
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport
 from bitcoin_qr_tools.multipath_descriptor import (
-    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+    convert_to_multipath_descriptor,
+    get_all_pubkey_providers,
 )
-from bitcoin_qr_tools.multipath_descriptor import get_all_pubkey_providers
 from bitcoin_usb.address_types import (
     AddressType,
     AddressTypes,
@@ -46,9 +45,8 @@ from bitcoin_usb.address_types import (
 )
 from hwilib.descriptor import parse_descriptor
 
+from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.wallet_util import signer_name
-
-from .keystore import KeyStore
 
 logger = logging.getLogger(__name__)
 
@@ -70,72 +68,58 @@ def get_address_bip32_path(descriptor_str: str, kind: bdk.KeychainKind, index: i
     return spkp.get_address_bip32_path(kind=kind, index=index)
 
 
-class MultipathDescriptor(BitcoinQRMultipathDescriptor):
-    @classmethod
-    def from_keystores(
-        cls,
-        threshold: int,
-        spk_providers: Sequence[SimplePubKeyProvider],
-        address_type: AddressType,
-        network: bdk.Network,
-    ) -> "MultipathDescriptor":
+def descriptor_from_keystores(
+    threshold: int,
+    spk_providers: Sequence[SimplePubKeyProvider],
+    address_type: AddressType,
+    network: bdk.Network,
+) -> bdk.Descriptor:
 
-        # sanity checks
-        assert threshold <= len(spk_providers)
-        is_multisig = len(spk_providers) > 1
-        assert address_type.is_multisig == is_multisig
+    # sanity checks
+    assert threshold <= len(spk_providers)
+    is_multisig = len(spk_providers) > 1
+    assert address_type.is_multisig == is_multisig
 
-        receive_spk_providers = [p.clone() for p in spk_providers]
-        for p in receive_spk_providers:
-            p.derivation_path = ConstDerivationPaths.receive
-        change_spk_providers = [p.clone() for p in spk_providers]
-        for p in change_spk_providers:
-            p.derivation_path = ConstDerivationPaths.change
+    multipath_spk_providers = [p.clone() for p in spk_providers]
+    for p in multipath_spk_providers:
+        p.derivation_path = ConstDerivationPaths.multipath
 
-        return cls(
-            DescriptorInfo(
-                address_type=address_type,
-                spk_providers=receive_spk_providers,
-                threshold=threshold,
-            ).get_bdk_descriptor(network),
-            DescriptorInfo(
-                address_type=address_type,
-                spk_providers=change_spk_providers,
-                threshold=threshold,
-            ).get_bdk_descriptor(network),
+    return convert_to_multipath_descriptor(
+        DescriptorInfo(
+            address_type=address_type,
+            spk_providers=multipath_spk_providers,
+            threshold=threshold,
+        ).get_descriptor_str(network),
+        network=network,
+    )
+
+
+def from_multisig_wallet_export(
+    multisig_wallet_export: ConverterMultisigWalletExport,
+    network: bdk.Network,
+) -> bdk.Descriptor:
+    matching_address_type: AddressType | None = None
+    for address_type in get_all_address_types():
+        if address_type.short_name == multisig_wallet_export.address_type_short_name:
+            matching_address_type = address_type
+    if not matching_address_type:
+        raise Exception(
+            f"Could not match address type {multisig_wallet_export.address_type_short_name} to {get_all_address_types()}"
         )
 
-    def __str__(self) -> str:
-        return self.as_string()
-
-    @classmethod
-    def from_multisig_wallet_export(
-        cls,
-        multisig_wallet_export: ConverterMultisigWalletExport,
-        network: bdk.Network,
-    ) -> "MultipathDescriptor":
-        matching_address_type: AddressType | None = None
-        for address_type in get_all_address_types():
-            if address_type.short_name == multisig_wallet_export.address_type_short_name:
-                matching_address_type = address_type
-        if not matching_address_type:
-            raise Exception(
-                f"Could not match address type {multisig_wallet_export.address_type_short_name} to {get_all_address_types()}"
-            )
-
-        keystores = [
-            KeyStore.from_signer_info(
-                signer_info=signer_info,
-                network=network,
-                default_label=signer_name(threshold=multisig_wallet_export.threshold, i=i),
-                default_derivation_path=ConstDerivationPaths.multipath,
-            )
-            for i, signer_info in enumerate(multisig_wallet_export.signer_infos)
-        ]
-
-        return MultipathDescriptor.from_keystores(
-            multisig_wallet_export.threshold,
-            spk_providers=keystores,
-            address_type=matching_address_type,
+    keystores = [
+        KeyStore.from_signer_info(
+            signer_info=signer_info,
             network=network,
+            default_label=signer_name(threshold=multisig_wallet_export.threshold, i=i),
+            default_derivation_path=ConstDerivationPaths.multipath,
         )
+        for i, signer_info in enumerate(multisig_wallet_export.signer_infos)
+    ]
+
+    return descriptor_from_keystores(
+        multisig_wallet_export.threshold,
+        spk_providers=keystores,
+        address_type=matching_address_type,
+        network=network,
+    )

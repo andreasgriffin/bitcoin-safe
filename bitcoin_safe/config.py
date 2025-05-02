@@ -37,9 +37,15 @@ import bdkpython as bdk
 from packaging import version
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
+from bitcoin_safe.pythonbdk_types import BlockchainType
 
 from .execute_config import DEFAULT_MAINNET
-from .network_config import NetworkConfig, NetworkConfigs
+from .network_config import (
+    NetworkConfig,
+    NetworkConfigs,
+    get_electrum_configs,
+    get_esplora_urls,
+)
 from .storage import BaseSaveableClass
 from .util import current_project_dir, path_to_rel_home_path, rel_home_path_to_abs_path
 
@@ -55,7 +61,7 @@ RECENT_WALLET_MAXLEN = 15
 
 class UserConfig(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes, "NetworkConfigs": NetworkConfigs}
-    VERSION = "0.1.6"
+    VERSION = "0.2.0"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -67,11 +73,12 @@ class UserConfig(BaseSaveableClass):
         bdk.Network.REGTEST: [0.0, 1000],
         bdk.Network.SIGNET: [0.0, 1000],
         bdk.Network.TESTNET: [0.0, 1000],
+        bdk.Network.TESTNET4: [0.0, 1000],
     }
 
     def __init__(self) -> None:
         self.network_configs = NetworkConfigs()
-        self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET
+        self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET4
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
         self.data_dir = appdirs.user_data_dir(self.app_name)
@@ -148,10 +155,10 @@ class UserConfig(BaseSaveableClass):
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
         "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
-            network_config: NetworkConfig = dct["network_config"]
+            network_config_testnet_3: NetworkConfig = dct["network_config"]
             dct["network_configs"] = {network.name: NetworkConfig(network=network) for network in bdk.Network}
-            dct["network_configs"][network_config.network.name] = network_config
-            dct["network"] = network_config.network
+            dct["network_configs"][network_config_testnet_3.network.name] = network_config_testnet_3
+            dct["network"] = network_config_testnet_3.network
             del dct["network_config"]
         if version.parse(str(dct["VERSION"])) <= version.parse("0.1.1"):
             if "enable_opportunistic_merging_fee_rate" in dct:
@@ -170,6 +177,35 @@ class UserConfig(BaseSaveableClass):
                 del dct["config_dir"]
             if "config_file" in dct:
                 del dct["config_file"]
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.2.0"):
+            # handle testnet4
+            if "recently_open_wallets" in dct:
+                dct["recently_open_wallets"][bdk.Network.TESTNET4.name] = []
+            if dct["network"] == bdk.Network.TESTNET:
+                network_configs: NetworkConfigs = dct["network_configs"]  # type: ignore
+                network_config_testnet_3 = network_configs.configs[bdk.Network.TESTNET.name]
+                if (
+                    network_config_testnet_3.server_type == BlockchainType.Electrum
+                    and network_config_testnet_3.electrum_url
+                    in [c.url for c in get_electrum_configs(bdk.Network.TESTNET4).values()]
+                ):
+                    dct["network"] = bdk.Network.TESTNET4
+                    network_config_testnet_4 = network_configs.configs[bdk.Network.TESTNET4.name]
+                    network_config_testnet_4.electrum_url = network_config_testnet_3.electrum_url
+                    network_config_testnet_4.electrum_use_ssl = network_config_testnet_3.electrum_use_ssl
+                    network_config_testnet_4.server_type = network_config_testnet_3.server_type
+                    network_config_testnet_4.proxy_url = network_config_testnet_3.proxy_url
+
+                elif (
+                    network_config_testnet_3.server_type == BlockchainType.Esplora
+                    and network_config_testnet_3.esplora_url
+                    in get_esplora_urls(bdk.Network.TESTNET4).values()
+                ):
+                    dct["network"] = bdk.Network.TESTNET4
+                    network_config_testnet_4 = network_configs.configs[bdk.Network.TESTNET4.name]
+                    network_config_testnet_4.esplora_url = network_config_testnet_3.esplora_url
+                    network_config_testnet_4.server_type = network_config_testnet_3.server_type
+                    network_config_testnet_4.proxy_url = network_config_testnet_3.proxy_url
 
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:

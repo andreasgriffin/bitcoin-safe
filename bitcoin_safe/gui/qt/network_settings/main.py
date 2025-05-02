@@ -27,10 +27,7 @@
 # SOFTWARE.
 
 
-import json
 import logging
-import socket
-import ssl
 from typing import Dict, Optional, Tuple
 
 import bdkpython as bdk
@@ -70,7 +67,6 @@ from bitcoin_safe.gui.qt.util import (
 from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
-    ProxyInfo,
     get_default_cbf_hosts,
     get_default_port,
     get_default_rpc_hosts,
@@ -78,6 +74,12 @@ from bitcoin_safe.network_config import (
     get_electrum_configs,
     get_esplora_urls,
     get_mempool_url,
+)
+from bitcoin_safe.network_utils import (
+    ProxyInfo,
+    ensure_scheme,
+    get_electrum_server_version,
+    get_host_and_port,
 )
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.signals import Signals
@@ -95,72 +97,6 @@ def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
     except Exception as e:
         logger.warning(f"Mempool.space server connection test failed: {e}")
         return False
-
-
-def get_electrum_server_version(
-    host: str, port: int, use_ssl: bool = True, timeout: int = 10, proxy_info: Optional[ProxyInfo] = None
-) -> Optional[str]:
-    sock = None
-    ssock = None
-    try:
-        if proxy_info:
-            # Set the default proxy with remote DNS resolution enabled.
-            socks.set_default_proxy(
-                proxy_info.get_socks_scheme(),
-                proxy_info.host,
-                proxy_info.port,
-                rdns=(proxy_info.scheme == "socks5h"),
-            )
-            # Instead of monkey-patching socket.socket and using create_connection,
-            # create a socks socket instance directly.
-            sock = socks.socksocket()
-            sock.settimeout(timeout)
-            sock.connect((host, port))
-        else:
-            sock = socket.create_connection((host, port), timeout=timeout)
-
-        # Wrap the socket with SSL if required.
-        if use_ssl:
-            context = ssl.create_default_context()
-            context.minimum_version = ssl.TLSVersion.TLSv1_2
-            ssock = context.wrap_socket(sock, server_hostname=host)
-        else:
-            ssock = sock
-
-        if not ssock:
-            return None
-
-        # Prepare and send the JSON-RPC request.
-        request = json.dumps({"id": 1, "method": "server.version", "params": ["1.4", "1.4"]}) + "\n"
-        ssock.sendall(request.encode())
-
-        # Receive the response.
-        response = ssock.recv(4096).decode()  # Assuming the response won't exceed 4096 bytes.
-        response_json = json.loads(response.split("\n")[0])  # Handling potential extra newlines.
-
-        # Check and return the server version.
-        if "result" in response_json:
-            logger.debug(f"Server version: {response_json['result']}")
-            return response_json["result"]
-        else:
-            logger.debug(f"Failed to retrieve server version of {host, port, use_ssl}.")
-            return None
-    except Exception as e:
-        logger.debug(f"Connection or communication error: {e}")
-        return None
-    finally:
-        # Ensure the SSL socket is closed if it was created.
-        if ssock is not None:
-            try:
-                ssock.close()
-            except Exception as close_err:
-                logger.debug(f"Error closing SSL socket: {close_err}")
-        # If ssock was never set, try closing the plain socket.
-        elif sock is not None:
-            try:
-                sock.close()
-            except Exception as close_err:
-                logger.debug(f"Error closing socket: {close_err}")
 
 
 def test_connection(network_config: NetworkConfig) -> Optional[str]:
@@ -234,7 +170,11 @@ class NetworkSettingsUI(QDialog):
     signal_cancel: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
-        self, network: bdk.Network, network_configs: NetworkConfigs, signals: Optional[Signals], parent=None
+        self,
+        network: bdk.Network,
+        network_configs: NetworkConfigs,
+        signals: Optional[Signals],
+        parent=None,
     ):
         super().__init__(parent)
         self.signals = signals

@@ -31,15 +31,18 @@ import logging
 from collections import defaultdict
 from typing import Dict, List, Set
 
+import bdkpython as bdk
 from PyQt6.QtWidgets import QLayout, QVBoxLayout
 
-from bitcoin_safe.gui.qt.fee_group import FeeRateWarningBar, FeeWarningBar
+from bitcoin_safe.gui.qt.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
+from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signal_tracker import SignalTracker
 
 from ...config import UserConfig
 from ...mempool import MempoolData
 from ...signals import Signals
-from ...wallet import Wallet
+from ...wallet import Wallet, get_wallets
 from .my_treeview import SearchableTab
 from .recipients import Recipients
 
@@ -102,3 +105,41 @@ class UITx_Base(SearchableTab):
                 if category is not None:
                     categories[category].add(wallet.id)
         return categories
+
+    def get_unconfirmed_ancestors(
+        self, txids: Set[str], wallets: List[Wallet] | None = None
+    ) -> List[TransactionDetails] | None:
+        wallets = wallets if wallets else get_wallets(self.signals)
+
+        unconfirmed_txs: List[TransactionDetails] = []
+        for txid in txids:
+            for wallet in wallets:
+                tx = wallet.get_tx(txid)
+                if tx and tx.chain_position.is_unconfirmed():
+                    unconfirmed_txs.append(tx)
+
+        for unconfirmed_tx in unconfirmed_txs:
+            # add its unconfirmed parents
+            unconfirmed_txs += (
+                self.get_unconfirmed_ancestors(
+                    txids=set(txin.previous_output.txid for txin in unconfirmed_tx.transaction.input()),
+                    wallets=wallets,
+                )
+                or []
+            )
+        return unconfirmed_txs if unconfirmed_txs else None
+
+    def set_fee_group_cpfp_label(
+        self,
+        parent_txids: Set[str],
+        this_fee_info: FeeInfo,
+        fee_group: FeeGroup,
+        chain_position: bdk.ChainPosition | None,
+    ) -> None:
+        if chain_position and chain_position.is_confirmed():
+            fee_group.set_cpfp_label(unconfirmed_ancestors=None, this_fee_info=this_fee_info)
+            return
+
+        unconfirmed_ancestors = self.get_unconfirmed_ancestors(txids=parent_txids)
+
+        fee_group.set_cpfp_label(unconfirmed_ancestors=unconfirmed_ancestors, this_fee_info=this_fee_info)

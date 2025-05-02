@@ -82,6 +82,7 @@ from typing import (
     Union,
 )
 
+import bdkpython as bdk
 from PyQt6.QtCore import QByteArray, QLocale
 from PyQt6.QtGui import QColor, QPalette
 from PyQt6.QtWidgets import QApplication
@@ -140,7 +141,7 @@ def hex_to_script(hex_string: str) -> bdk.Script:
     return bdk.Script(list(bytes.fromhex(hex_string)))
 
 
-def tx_of_psbt_to_hex(psbt: bdk.PartiallySignedTransaction):
+def tx_of_psbt_to_hex(psbt: bdk.Psbt):
     return serialized_to_hex(psbt.extract_tx().serialize())
 
 

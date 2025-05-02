@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 class HorizontalImportExportQR(QGroupBox):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         signals_min: SignalsMin,
         threading_parent: ThreadingManager | None,
@@ -99,7 +99,7 @@ class HorizontalImportExportQR(QGroupBox):
 class HorizontalImportExportUSB(QGroupBox):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         signature_importers: Iterable[SignatureImporterUSB],
         parent: QWidget | None = None,
@@ -129,7 +129,7 @@ class HorizontalImportExportUSB(QGroupBox):
 class HorizontalImportExportFile(QGroupBox):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         signature_importers: Iterable[SignatureImporterFile],
         parent: QWidget | None = None,
@@ -166,7 +166,7 @@ class HorizontalImportExportFile(QGroupBox):
 class HorizontalImportExportClipboard(QGroupBox):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         sync_tabs: dict[str, SyncTab] | None,
         signature_importers: Iterable[SignatureImporterFile],
@@ -202,7 +202,7 @@ class HorizontalImportExportClipboard(QGroupBox):
 class HorizontalImportExportWallet(QGroupBox):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         signature_importers: Iterable[SignatureImporterWallet],
         parent: QWidget | None = None,
@@ -229,7 +229,7 @@ class HorizontalImportExportWallet(QGroupBox):
 class HorizontalImportExportAll(QWidget):
     def __init__(
         self,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         sync_tabs: dict[str, SyncTab] | None,
         signals_min: SignalsMin,

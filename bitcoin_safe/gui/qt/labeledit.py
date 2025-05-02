@@ -298,7 +298,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         ):
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         wallet = None
         if self.label_type == LabelType.addr:
@@ -318,7 +318,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         ):
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         label = get_label_from_any_wallet(
             label_type=self.label_type, ref=ref, signals=self.signals, autofill_from_txs=False

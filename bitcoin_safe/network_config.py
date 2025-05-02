@@ -94,10 +94,13 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
             "nigiri": "http://localhost:5000/",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": "https://mempool.space/testnet4",
+            "default": "https://mempool.space/testnet/",
             "mempool.space": "https://mempool.space/testnet/",
             "blockstream": "https://blockstream.info/testnet",
-            "testnet4:mempool.space": "https://mempool.space/testnet4",
+        },
+        bdk.Network.TESTNET4: {
+            "default": "https://mempool.space/testnet4",
+            "mempool.space": "https://mempool.space/testnet4",
         },
         bdk.Network.SIGNET: {
             "default": "https://mempool.space/signet",
@@ -128,10 +131,13 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
             "nigiri": ElectrumConfig("127.0.0.1:50000", False),
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": ElectrumConfig("mempool.space:40002", True),  # Testnet4
+            "default": ElectrumConfig("blockstream.info:993", True),  # testnet3
             "blockstream": ElectrumConfig("blockstream.info:993", True),  # testnet3
             "electrum.blockstream.info": ElectrumConfig("electrum.blockstream.info:60002", True),  # testnet3
-            "testnet4:mempool.space": ElectrumConfig("mempool.space:40002", True),  # Testnet4
+        },
+        bdk.Network.TESTNET4: {
+            "default": ElectrumConfig("mempool.space:40002", True),  # Testnet4
+            "mempool.space": ElectrumConfig("mempool.space:40002", True),  # Testnet4
         },
         bdk.Network.SIGNET: {
             "default": ElectrumConfig("mempool.space:60602", True),
@@ -147,6 +153,7 @@ def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
         bdk.Network.BITCOIN: False,
         bdk.Network.REGTEST: False,
         bdk.Network.TESTNET: True,
+        bdk.Network.TESTNET4: True,
         bdk.Network.SIGNET: False,
     }
     return d[network]
@@ -166,6 +173,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.BITCOIN: 8333,
             bdk.Network.REGTEST: 18444,
             bdk.Network.TESTNET: 18333,
+            bdk.Network.TESTNET4: 18333,
             bdk.Network.SIGNET: 38333,
         }
         return d[network]
@@ -174,6 +182,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.BITCOIN: 50001,
             bdk.Network.REGTEST: 50000,  # nigiri default
             bdk.Network.TESTNET: 51001,
+            bdk.Network.TESTNET4: 51001,
             bdk.Network.SIGNET: 51001,
         }
         return d[network]
@@ -182,6 +191,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.BITCOIN: 60002,
             bdk.Network.REGTEST: 3000,  # nigiri default
             bdk.Network.TESTNET: 51001,
+            bdk.Network.TESTNET4: 51001,
             bdk.Network.SIGNET: 51001,
         }
         return d[network]
@@ -190,6 +200,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.BITCOIN: 8332,
             bdk.Network.REGTEST: 18443,
             bdk.Network.TESTNET: 18332,
+            bdk.Network.TESTNET4: 18332,
             bdk.Network.SIGNET: 38332,
         }
         return d[network]
@@ -208,8 +219,11 @@ def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
             "nigiri": "http://127.0.0.1:3000",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": "https://blockstream.info/testnet/api/",  # testnet3
-            "blockstream": "https://blockstream.info/testnet/api/",  # testnet3
+            "default": "https://blockstream.info/testnet/api/",
+            "blockstream": "https://blockstream.info/testnet/api/",
+        },
+        bdk.Network.TESTNET4: {
+            "default": "",
         },
         bdk.Network.SIGNET: {
             "default": "https://mutinynet.com/api",
@@ -228,6 +242,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             ),
             bdk.Network.REGTEST: "",
             bdk.Network.TESTNET: "",
+            bdk.Network.TESTNET4: "",
             bdk.Network.SIGNET: "",
         }
         return d[network]
@@ -253,12 +268,19 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.TESTNET: (
                 translate(
                     "net_conf",
+                    "A good option is  {electrum_testnet} and as block explorer {explorer_testnet}",
+                ).format(
+                    electrum_testnet=link(get_electrum_configs(bdk.Network.TESTNET)["default"].url),
+                    explorer_testnet=link(get_mempool_url(bdk.Network.TESTNET)["default"]),
+                )
+            ),
+            bdk.Network.TESTNET4: (
+                translate(
+                    "net_conf",
                     "A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}",
                 ).format(
-                    electrum_testnet4=link(
-                        get_electrum_configs(bdk.Network.TESTNET)["testnet4:mempool.space"].url
-                    ),
-                    explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET)["testnet4:mempool.space"]),
+                    electrum_testnet4=link(get_electrum_configs(bdk.Network.TESTNET4)["mempool.space"].url),
+                    explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET4)["mempool.space"]),
                 )
             ),
             bdk.Network.SIGNET: translate(
@@ -289,6 +311,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                 )
             ),  # nigiri default
             bdk.Network.TESTNET: "",
+            bdk.Network.TESTNET4: "",
             bdk.Network.SIGNET: (
                 translate(
                     "net_conf",
@@ -310,6 +333,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             ),
             bdk.Network.REGTEST: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=regtest"'),
             bdk.Network.TESTNET: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=test"'),
+            bdk.Network.TESTNET4: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=testnet4"'),
             bdk.Network.SIGNET: translate(
                 "net_conf",
                 'Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.',
@@ -320,16 +344,17 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
 
 
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.0.2"
+    VERSION = "0.1.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "BlockchainType": BlockchainType,
         "CBFServerType": CBFServerType,
+        "Network": bdk.Network,
     }
 
     def __init__(self, network: bdk.Network) -> None:
         self.network = network
-        self.server_type: BlockchainType = BlockchainType.Electrum
+        self.server_type: BlockchainType = BlockchainType.Esplora
         self.cbf_server_type: CBFServerType = CBFServerType.Automatic
         self.compactblockfilters_ip: str = get_default_cbf_hosts(network=network)["default"]
         self.compactblockfilters_port: int = get_default_port(network, BlockchainType.CompactBlockFilter)
@@ -390,6 +415,16 @@ class NetworkConfig(BaseSaveableClass):
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
             dct["network"] = dct["_network"]
             del dct["_network"]
+        if version.parse(str(dct["VERSION"])) < version.parse("0.1.0"):
+            # handle proxy
+            if "proxy_url" not in dct:
+                dct["proxy_url"] = None
+
+            # handle rpc
+            if dct["server_type"] == BlockchainType.RPC:
+                # blank out the fields.  let the user choose themself.
+                dct["server_type"] = BlockchainType.Electrum
+                dct["electrum_url"] = ""
 
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:
@@ -398,7 +433,7 @@ class NetworkConfig(BaseSaveableClass):
 
 
 class NetworkConfigs(BaseSaveableClass):
-    VERSION = "0.0.0"
+    VERSION = "0.1.0"
     known_classes = {**BaseSaveableClass.known_classes, "NetworkConfig": NetworkConfig}
 
     def __init__(self, configs: dict[str, NetworkConfig] | None = None) -> None:
@@ -407,11 +442,23 @@ class NetworkConfigs(BaseSaveableClass):
         self.configs: dict[str, NetworkConfig] = (
             configs if configs else {network.name: NetworkConfig(network=network) for network in bdk.Network}
         )
+        self.enforce_consistency(self.configs)
+
+    @classmethod
+    def enforce_consistency(cls, configs: dict[str, NetworkConfig]):
+        for network in bdk.Network:
+            if network.name not in configs:
+                configs[network.name] = NetworkConfig(network=network)
+            if configs[network.name].network != network:
+                configs[network.name].network = network
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
+            if bdk.Network.TESTNET4.name not in dct["configs"]:
+                dct["configs"][bdk.Network.TESTNET4.name] = NetworkConfig(network=bdk.Network.TESTNET4)
 
         # now the version is newest, so it can be deleted from the dict
         if "VERSION" in dct:

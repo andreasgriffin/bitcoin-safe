@@ -55,7 +55,7 @@ class HorizontalImporters(HorizontalImportExportGroups):
     def __init__(
         self,
         signature_importers: List[AbstractSignatureImporter],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
         super().__init__()
@@ -92,7 +92,7 @@ class TxSigningSteps(StepProgressContainer):
     def __init__(
         self,
         signature_importer_dict: Dict[str, List[AbstractSignatureImporter]],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         signals: Signals,
         parent: QWidget | None = None,

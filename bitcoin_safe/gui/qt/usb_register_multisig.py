@@ -31,6 +31,9 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
+from bitcoin_qr_tools.multipath_descriptor import (
+    address_descriptor_from_multipath_descriptor,
+)
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -43,7 +46,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
@@ -67,7 +69,7 @@ class USBValidateAddressWidget(QWidget):
         super().__init__()
         self.signals = signals
         self.network = network
-        self.descriptor: Optional[MultipathDescriptor] = None
+        self.descriptor: Optional[bdk.Descriptor] = None
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
@@ -106,7 +108,7 @@ class USBValidateAddressWidget(QWidget):
 
     def set_descriptor(
         self,
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,
@@ -126,8 +128,8 @@ class USBValidateAddressWidget(QWidget):
             logger.error("descriptor not set")
             return False
 
-        address_descriptor = self.descriptor.address_descriptor(
-            kind=self.kind, address_index=self.address_index
+        address_descriptor = address_descriptor_from_multipath_descriptor(
+            descriptor=self.descriptor, kind=self.kind, address_index=self.address_index
         )
         try:
             address = self.usb_gui.display_address(address_descriptor)
@@ -189,7 +191,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
     def set_descriptor(  # type: ignore
         self,
         keystores: List[KeyStore],
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,

@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import base64
 import gc
 import logging
@@ -40,6 +39,7 @@ from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import QCoreApplication, QPoint, QProcess, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
@@ -57,7 +57,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe import __version__
-from bitcoin_safe.descriptors import MultipathDescriptor
+from bitcoin_safe.client import Client
 from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_list import CategoryEditor
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
@@ -65,17 +65,18 @@ from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.my_treeview import SearchableTab
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
-from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike
+from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.search_tree_view import SearchWallets
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
+from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
-from bitcoin_safe.network_config import ProxyInfo
+from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.signal_tracker import SignalTools
@@ -87,8 +88,8 @@ from bitcoin_safe.util_os import xdg_open_file
 from ...config import UserConfig
 from ...fx import FX
 from ...mempool import MempoolData
-from ...psbt_util import FeeInfo, SimplePSBT
-from ...pythonbdk_types import get_prev_outpoints
+from ...psbt_util import FeeInfo, FeeRate, SimplePSBT
+from ...pythonbdk_types import TransactionDetails, get_prev_outpoints
 from ...signals import Signals
 from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
@@ -101,7 +102,6 @@ from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
 from .network_settings.main import NetworkSettingsUI
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
-from .ui_tx_viewer import UiElements, UITx_Viewer
 from .util import (
     Message,
     MessageType,
@@ -335,7 +335,7 @@ class MainWindow(QMainWindow):
                 else None
             ),
         )
-        self.update_notification_bar.check()  # TODO: disable this, after it got more stable
+        self.update_notification_bar.check()
         vbox.addWidget(self.update_notification_bar)
 
         vbox.addWidget(self.tab_wallets)
@@ -651,7 +651,7 @@ class MainWindow(QMainWindow):
             self.tab_wallets.setCurrentWidget(last_qt_wallet_involved)
             last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
 
-        QTimer.singleShot(500, self.sync_all)
+        QTimer.singleShot(1000, self.sync_all)
 
     def sync_all(self):
         for qt_wallet in self.qt_wallets.values():
@@ -701,7 +701,7 @@ class MainWindow(QMainWindow):
 
         edit = qt_wallet.wallet_descriptor_ui.edit_descriptor
         d = DescriptorExport(
-            MultipathDescriptor.from_descriptor_str(edit.text(), qt_wallet.wallet.network),
+            convert_to_multipath_descriptor(edit.text().strip(), qt_wallet.wallet.network),
             qt_wallet.signals,
             parent=self,
             network=self.config.network,
@@ -773,7 +773,7 @@ class MainWindow(QMainWindow):
         string_content = file_to_str(file_path)
         self.signals.open_tx_like.emit(string_content)
 
-    def fetch_txdetails(self, txid: str) -> Optional[bdk.TransactionDetails]:
+    def fetch_txdetails(self, txid: str) -> Optional[TransactionDetails]:
         for qt_wallet in self.qt_wallets.values():
             tx_details = qt_wallet.wallet.get_tx(txid)
             if tx_details:
@@ -783,9 +783,9 @@ class MainWindow(QMainWindow):
     def open_tx_like_in_tab(
         self,
         txlike: Union[
-            bdk.TransactionDetails,
+            TransactionDetails,
             bdk.Transaction,
-            bdk.PartiallySignedTransaction,
+            bdk.Psbt,
             PackagedTxLike,
             TxBuilderInfos,
             TxUiInfos,
@@ -802,11 +802,11 @@ class MainWindow(QMainWindow):
             txlike = txlike.tx_like
 
         # first do the bdk instance cases
-        if isinstance(txlike, (bdk.TransactionDetails, bdk.Transaction)):
+        if isinstance(txlike, (TransactionDetails, bdk.Transaction)):
             self.open_tx_in_tab(txlike, focus_ui_element=focus_ui_element)
             return None
 
-        if isinstance(txlike, (bdk.PartiallySignedTransaction, TxBuilderInfos)):
+        if isinstance(txlike, (bdk.Psbt, TxBuilderInfos)):
             self.open_psbt_in_tab(txlike)
             return None
 
@@ -815,9 +815,7 @@ class MainWindow(QMainWindow):
 
             if not wallet:
                 logger.info(
-                    self.tr(
-                        f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
-                    )
+                    f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
                 )
                 current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
                 wallet = current_qt_wallet.wallet if current_qt_wallet else None
@@ -923,33 +921,33 @@ class MainWindow(QMainWindow):
         return None
 
     def open_tx_in_tab(
-        self, txlike: Union[bdk.Transaction, bdk.TransactionDetails], focus_ui_element=UiElements.none
+        self, txlike: Union[bdk.Transaction, TransactionDetails], focus_ui_element=UiElements.none
     ) -> Optional[Tuple[SearchableTab, UITx_Viewer]]:
         tx: bdk.Transaction | None = None
         fee = None
-        confirmation_time = None
+        chain_position = None
 
         if isinstance(txlike, bdk.Transaction):
             # try to get all details from wallets
-            tx_details = self.fetch_txdetails(txlike.txid())
+            tx_details = self.fetch_txdetails(txlike.compute_txid())
             if tx_details:
                 txlike = tx_details
 
-        if isinstance(txlike, bdk.TransactionDetails):
+        if isinstance(txlike, TransactionDetails):
             logger.debug(f"Got a PartiallySignedTransaction")
             tx = txlike.transaction
             fee = txlike.fee
-            if fee is None and txlike.transaction and txlike.transaction.is_coin_base():
+            if fee is None and txlike.transaction.is_coinbase():
                 fee = 0
-            confirmation_time = txlike.confirmation_time
+            chain_position = txlike.chain_position
         elif isinstance(txlike, bdk.Transaction):
             tx = txlike
 
         if not tx:
-            logger.error(f"could not open {tx}")
+            logger.error(f"could not open tx")
             return None
 
-        title = self.tr("Transaction {txid}").format(txid=short_tx_id(tx.txid()))
+        title = self.tr("Transaction {txid}").format(txid=short_tx_id(tx.compute_txid()))
         data = Data.from_tx(tx, network=self.config.network)
 
         # check if the same tab with exactly the same data is open already
@@ -991,8 +989,8 @@ class MainWindow(QMainWindow):
             network=self.config.network,
             mempool_data=self.mempool_data,
             fee_info=FeeInfo(fee, tx.vsize(), is_estimated=False) if fee is not None else None,
-            confirmation_time=confirmation_time,
-            blockchain=self.get_blockchain_of_any_wallet(),
+            chain_position=chain_position,
+            client=self.get_client_of_any_wallet(),
             data=data,
             parent=self,
             threading_parent=self.threading_manager,
@@ -1027,58 +1025,65 @@ class MainWindow(QMainWindow):
 
     def open_psbt_in_tab(
         self,
-        tx: Union[
-            bdk.PartiallySignedTransaction, TxBuilderInfos, bdk.TxBuilderResult, str, bdk.TransactionDetails
-        ],
+        tx: Union[bdk.Psbt, TxBuilderInfos, str, TransactionDetails],
     ) -> Optional[Tuple[SearchableTab, UITx_Viewer]]:
-        psbt: bdk.PartiallySignedTransaction | None = None
+        psbt: bdk.Psbt | None = None
         fee_info: Optional[FeeInfo] = None
 
         logger.debug(f"tx is of type {type(tx)}")
 
         # converting to TxBuilderResult
         if isinstance(tx, TxBuilderInfos):
-            if (
-                not fee_info
-                and (tx.fee_rate is not None)
-                and (tx.builder_result.transaction_details.fee is not None)
-            ):
+            if not fee_info and (tx.fee_rate is not None):
                 fee_info = FeeInfo.from_fee_rate(
-                    fee_amount=tx.builder_result.transaction_details.fee,
+                    fee_amount=tx.psbt.fee(),
                     fee_rate=tx.fee_rate,
                     is_estimated=False,
                 )
-            tx = tx.builder_result  # then it is processed in the next if stament
+
+            tx = tx.psbt
             logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
 
-        if isinstance(tx, bdk.TxBuilderResult):
-            psbt = tx.psbt
-            if not fee_info:
-                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-            logger.debug(f"Converted TxBuilderResult --> {type(psbt)}")
-
-        if isinstance(tx, bdk.PartiallySignedTransaction):
+        if isinstance(tx, bdk.Psbt):
             logger.debug(f"Got a PartiallySignedTransaction")
             psbt = tx
             if not fee_info:
                 fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
         if isinstance(tx, str):
-            psbt = bdk.PartiallySignedTransaction(tx)
+            psbt = bdk.Psbt(tx)
             logger.debug(f"Converted str to {type(tx)}")
             if not fee_info:
                 fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
-        if isinstance(tx, bdk.TransactionDetails):
+        if isinstance(tx, TransactionDetails):
             logger.debug("is bdk.TransactionDetails")
             raise Exception("cannot handle TransactionDetails")
 
         if not psbt:
-            logger.error(f"{tx} could not be converted to a psbt")
+            logger.error(f"tx could not be converted to a psbt")
             return None
 
         data = Data.from_psbt(psbt, network=self.config.network)
-        title = self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.txid()))
+        title = self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.extract_tx().compute_txid()))
+
+        # check if any wallet has all the inputs for the tx, then i can calulate the fee_rate approximately
+        if not fee_info:
+            for tab_data in self.tab_wallets.getAllTabData().values():
+                if isinstance(tab_data, QTWallet):
+                    wallet = tab_data.wallet
+                    try:
+                        fee_rate = FeeRate.from_fee_rate(
+                            wallet.bdkwallet.calculate_fee_rate(tx=psbt.extract_tx())
+                        )
+                        fee_amount = psbt.fee()
+                        fee_info = FeeInfo.from_fee_rate(
+                            fee_amount=fee_amount,
+                            fee_rate=fee_rate.to_sats_per_vb(),
+                            is_estimated=False,
+                        )
+                    except:
+                        pass
 
         # check if the same tab with exactly the same data is open already
         tab_idx = self.get_tab_with_title(self.tab_wallets, title)
@@ -1118,7 +1123,7 @@ class MainWindow(QMainWindow):
             network=self.config.network,
             mempool_data=self.mempool_data,
             fee_info=fee_info,
-            blockchain=self.get_blockchain_of_any_wallet(),
+            client=self.get_client_of_any_wallet(),
             data=data,
             parent=self,
             threading_parent=self.threading_manager,
@@ -1413,7 +1418,7 @@ class MainWindow(QMainWindow):
             return
 
         if not isinstance(tab_import_xpub := tab_generators.get(TutorialStep.import_xpub), ImportXpubs):
-            logger.error(f"{tab_import_xpub} is not of type ImportXpubs")  # type: ignore[unreachable]
+            logger.error(f"tab_import_xpub is not of type ImportXpubs")  # type: ignore[unreachable]
             return None
 
         if not tab_import_xpub.keystore_uis:
@@ -1539,10 +1544,10 @@ class MainWindow(QMainWindow):
             return base_wallet
         return None
 
-    def get_blockchain_of_any_wallet(self) -> Optional[bdk.Blockchain]:
+    def get_client_of_any_wallet(self) -> Optional[Client]:
         for qt_wallet in self.qt_wallets.values():
-            if qt_wallet.wallet.blockchain:
-                return qt_wallet.wallet.blockchain
+            if qt_wallet.wallet.client:
+                return qt_wallet.wallet.client
         return None
 
     def show_address(self, addr: str, wallet_id: str, parent: QWidget | None = None) -> None:
@@ -1627,16 +1632,16 @@ class MainWindow(QMainWindow):
                 self.tr("Close wallet {id}?").format(id=qt_wallet.wallet.id), self.tr("Close wallet")
             ):
                 return
-            logger.info(self.tr("Closing wallet {id}").format(id=qt_wallet.wallet.id))
+            logger.info("Closing wallet {id}".format(id=qt_wallet.wallet.id))
             self.save_qt_wallet(qt_wallet)
             self.remove_qt_wallet(qt_wallet)
         elif isinstance(tab_data, QTProtoWallet):
             tab_data.close()
             self.remove_qt_protowallet(tab_data)
         elif isinstance(tab_data, UITx_Viewer):
-            if isinstance(tab_data.data.data, bdk.PartiallySignedTransaction) and question_dialog(
+            if isinstance(tab_data.data.data, bdk.Psbt) and question_dialog(
                 self.tr("Do you want to save the PSBT {id}?").format(
-                    id=short_tx_id(tab_data.data.data.extract_tx().txid())
+                    id=short_tx_id(tab_data.data.data.extract_tx().compute_txid())
                 ),
                 self.tr("Save PSBT?"),
                 buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,

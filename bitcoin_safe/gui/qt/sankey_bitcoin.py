@@ -75,7 +75,7 @@ class SankeyBitcoin(SankeyWidget):
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
-        if should_update or self.tx.txid() in update_filter.txids:
+        if should_update or self.tx.compute_txid() in update_filter.txids:
             should_update = True
         if should_update or set(self.outpoints).intersection(update_filter.outpoints):
             should_update = True
@@ -87,14 +87,14 @@ class SankeyBitcoin(SankeyWidget):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.set_tx(self.tx, fee_info=self.fee_info, txo_dict=self.txo_dict)
 
     @property
     def outpoints(self) -> List[OutPoint]:
         if not self.tx:
             return []
-        txid = self.tx.txid()
+        txid = self.tx.compute_txid()
         return [OutPoint(txid=txid, vout=vout) for vout in range(len(self.tx.output()))]
 
     @property
@@ -170,7 +170,7 @@ class SankeyBitcoin(SankeyWidget):
             )
             color = self.get_address_color(address, wallets=wallets)
 
-            outpoint = self.txo_dict.get(str(OutPoint(txid=self.tx.txid(), vout=vout)))
+            outpoint = self.txo_dict.get(str(OutPoint(txid=self.tx.compute_txid(), vout=vout)))
             labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
                 value=txout.value,
                 label=label,
@@ -330,7 +330,7 @@ class SankeyBitcoin(SankeyWidget):
             # output
             # careful, the last flow_index.i is the fee, so
             # outflow indexes go 1 larger than the actual vout index
-            outpoint = OutPoint(txid=self.tx.txid(), vout=flow_index.i)
+            outpoint = OutPoint(txid=self.tx.compute_txid(), vout=flow_index.i)
             txo = self.txo_dict.get(str(outpoint)) or self.get_python_txo(str(outpoint))
             if not txo:
                 return

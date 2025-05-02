@@ -28,7 +28,7 @@
 
 
 import logging
-from pathlib import Path
+from time import sleep
 
 import pytest
 from bitcoin_usb.address_types import AddressTypes, DescriptorInfo, SimplePubKeyProvider
@@ -36,28 +36,33 @@ from bitcoin_usb.software_signer import SoftwareSigner
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.wallet import Wallet
-from tests.non_gui.test_wallet import create_test_seed_keystores
-from tests.test_util import make_psbt
 
-from ..test_helpers import test_config  # type: ignore
-from ..test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_wallet_coin_select import (  # type: ignore
-    TestWalletConfig,
-    test_wallet_config,
-)
+from ..non_gui.test_wallet import create_test_seed_keystores
+from ..setup_fulcrum import Faucet
+from ..util import make_psbt
+from .test_wallet_coin_select import TestWalletConfig
 
 logger = logging.getLogger(__name__)
 import logging
+
+
+@pytest.fixture(
+    scope="session",
+    params=[
+        TestWalletConfig(utxo_value_private=1_000_000, num_private=1, utxo_value_kyc=2_000_000, num_kyc=1)
+    ],
+)
+def test_wallet_config_seed(request) -> TestWalletConfig:
+    return request.param
 
 
 # params
 # [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
 def test_funded_seed_wallet(
-    test_config: UserConfig,
-    bitcoin_core: Path,
+    test_config_session: UserConfig,
     faucet: Faucet,
-    test_wallet_config: TestWalletConfig,
+    test_wallet_config_seed: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
 ) -> Wallet:
 
@@ -75,22 +80,24 @@ def test_funded_seed_wallet(
     )
     wallet = Wallet(
         id=wallet_name,
-        descriptor_str=descriptor_info.get_bdk_descriptor(faucet.network).as_string_private(),
+        descriptor_str=descriptor_info.get_descriptor_str(faucet.network),
         keystores=[keystore],
-        network=test_config.network,
-        config=test_config,
+        network=test_config_session.network,
+        config=test_config_session,
     )
 
     # fund the wallet
     addresses_private = [
-        wallet.get_address(force_new=True).address.as_string() for i in range(test_wallet_config.num_private)
+        str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config_seed.num_private)
     ]
     for address in addresses_private:
         wallet.labels.set_addr_category(address, "Private")
-        faucet.send(address, amount=test_wallet_config.utxo_value_private)
+        faucet.send(address, amount=test_wallet_config_seed.utxo_value_private)
 
     faucet.mine()
-    wallet.sync()
+    while wallet.get_balance().total == 0:
+        sleep(0.5)
+        wallet.sync()
 
     return wallet
 
@@ -114,17 +121,25 @@ def test_ema_fee_rate_weights_recent_heavier(
             fee_rate=fee_rate,
         )
 
-        signer = SoftwareSigner(mnemonic=wallet.keystores[0].mnemonic, network=wallet.network)
+        descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
+        signer = SoftwareSigner(
+            mnemonic=wallet.keystores[0].mnemonic,
+            network=wallet.network,
+            receive_descriptor=str(descriptor),
+            change_descriptor=str(change_descriptor),
+        )
         signed_psbt = signer.sign_psbt(psbt_for_signing)
 
         tx = signed_psbt.extract_tx()
-        wallet.blockchain.broadcast(tx)
+        wallet.client.broadcast(tx)
         # to include the tx into a block and create a sorting of the txs
         # otherwise the order might be random and ema is random
         faucet.mine()
 
-        wallet.sync()
-        wallet.clear_cache()
+        while not wallet.get_tx(tx.compute_txid()):
+            sleep(0.5)
+            wallet.sync()
+            wallet.clear_cache()
 
     # incoming txs have no fee rate (rpc doesnt seem to fill the fee field)
     assert wallet.get_ema_fee_rate() == MIN_RELAY_FEE
@@ -134,20 +149,20 @@ def test_ema_fee_rate_weights_recent_heavier(
     txdetails[0].fee = 21 * txdetails[0].transaction.vsize()
     assert wallet.get_ema_fee_rate() == 21
 
-    # send_tx clears the cache and removes the previous incoming fee
+    # send_tx clears the cache and resets the previous tx
     send_tx(100)
 
     # test the outgoing is weighted more than
-    assert wallet.get_ema_fee_rate() == pytest.approx(100, abs=0.1)
+    assert wallet.get_ema_fee_rate() == pytest.approx(66.7, abs=0.1)
 
     for i in range(5):
         send_tx(1)
 
-    assert wallet.get_ema_fee_rate() == pytest.approx(37.3, abs=0.1)
+    assert wallet.get_ema_fee_rate() == pytest.approx(6.8, abs=0.1)
 
     for i in range(1):
         send_tx(40)
 
-    assert wallet.get_ema_fee_rate() == pytest.approx(37.79, abs=0.1)
+    assert wallet.get_ema_fee_rate() == pytest.approx(14.5, abs=0.1)
 
     return wallet

@@ -25,8 +25,6 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 import enum
 import logging
 from abc import abstractmethod
@@ -35,7 +33,6 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
 from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
-from PyQt6.QtGui import QFocusEvent, QKeyEvent
 from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit, QWidget
 
 from ...signals import TypedPyQtSignalNo
@@ -169,7 +166,10 @@ class QCompleterLineEdit(AnalyzerLineEdit):
     signal_focus_out: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
-        self, network: bdk.Network, suggestions: Dict[bdk.Network, List[str]] | None = None, parent=None
+        self,
+        network: bdk.Network,
+        suggestions: Dict[bdk.Network, List[str]] | None = None,
+        parent=None,
     ) -> None:
         super().__init__(parent)
         # Dictionary to store suggestions for each network
@@ -183,7 +183,7 @@ class QCompleterLineEdit(AnalyzerLineEdit):
         self.setCompleter(self._completer)
 
     def set_completer_list(self, words: Iterable[str]):
-        self._model.setStringList(words)
+        # self._model.setStringList(words)
         self._completer.setModel(self._model)
 
     def set_network(self, network) -> None:
@@ -218,17 +218,17 @@ class QCompleterLineEdit(AnalyzerLineEdit):
         if self.network:
             self.set_completer_list(self.suggestions[self.network])
 
-    def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        if not event:
-            super(QCompleterLineEdit, self).keyPressEvent(event)
-            return
+    # def keyPressEvent(self, event: QKeyEvent | None) -> None:
+    #     if not event:
+    #         super(QCompleterLineEdit, self).keyPressEvent(event)
+    #         return
 
-        if self.network and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
-            popup = self._completer.popup()
-            if popup and not popup.isVisible():
-                self._completer.complete()
-        super(QCompleterLineEdit, self).keyPressEvent(event)
+    #     if self.network and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+    #         popup = self._completer.popup()
+    #         if popup and not popup.isVisible():
+    #             self._completer.complete()
+    #     super(QCompleterLineEdit, self).keyPressEvent(event)
 
-    def focusOutEvent(self, event: QFocusEvent | None) -> None:
-        super().focusOutEvent(event)
-        self.signal_focus_out.emit()
+    # def focusOutEvent(self, event: QFocusEvent | None) -> None:
+    #     super().focusOutEvent(event)
+    #     self.signal_focus_out.emit()

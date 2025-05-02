@@ -47,8 +47,6 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from packaging import version
 
-from bitcoin_safe import __version__
-
 logger = logging.getLogger(__name__)
 
 
@@ -160,13 +158,6 @@ class ClassSerializer:
     """
                     )
             elif dct.get("__enum__"):
-                if dct["name"] == "Network" and version.parse(__version__) < version.parse("1.3.0"):
-                    # before bdk1.0 upgrade
-                    if dct["value"] == "TESTNET4" and "TESTNET4" not in [
-                        v.name for v in bdk.Network._value2member_map_.values()
-                    ]:
-                        dct["value"] = "TESTNET"
-
                 obj_cls = known_classes.get(dct["name"])
                 if obj_cls:
                     return getattr(obj_cls, dct["value"])

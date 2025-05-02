@@ -77,13 +77,13 @@ from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet_util import signer_name
 
 from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...signals import TypedPyQtSignalNo
 from ...tx import TxUiInfos
 from ...util import Satoshis
-from ...wallet_util import signer_name
 from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
@@ -177,7 +177,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
     def _catch_tx(self, tx: bdk.Transaction) -> None:
         self.set_status(self.TxSendStatus.finalized)
-        logger.info(f"tx {tx.txid()} is assumed to be the send test")
+        logger.info(f"tx {tx.compute_txid()[:4]=} is assumed to be the send test")
 
     def create_tx(self) -> None:
         # before do _create_tx, setup a 1 time connection
@@ -1630,7 +1630,7 @@ class Wizard(WizardBase):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         steps = self.get_send_tests_steps()
         latest_step = self.get_latest_send_test_in_tx_history(steps, self.qt_wallet.wallet)
@@ -1769,15 +1769,12 @@ class Wizard(WizardBase):
         # but it is probbaly better just to use 1 of the utxos
         # since the recipient is set to receive max
         txinfos.utxo_dict = {utxo.outpoint: utxo for utxo in utxos}
-        txinfos.global_xpubs = self.qt_wallet.uitx_creator.get_global_xpub_dict(
-            wallets=[self.qt_wallet.wallet]
-        )
         txinfos.main_wallet_id = self.qt_wallet.wallet.id
         # inputs
 
-        recipient_address = self.qt_wallet.wallet.get_unused_category_address(
-            category=funded_category
-        ).address.as_string()
+        recipient_address = str(
+            self.qt_wallet.wallet.get_unused_category_address(category=funded_category).address
+        )
         self.qt_wallet.wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=set([recipient_address]), reason=UpdateFilterReason.GetUnusedCategoryAddress

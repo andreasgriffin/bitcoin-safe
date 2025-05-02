@@ -178,7 +178,7 @@ class AddressEdit(ButtonEdit):
         self.input_field.update()
         self.update()
         logger.debug(
-            f"{self.__class__.__name__} format_address_field for self.address {self.address}, background_color = {background_color.name() if background_color else None}"
+            f"{self.__class__.__name__} format_address_field for self.address {str(self.address)[:6]}, background_color = {background_color.name() if background_color else None}"
         )
 
     def ask_to_replace_address(self, wallet: Wallet, address: str) -> None:
@@ -191,7 +191,7 @@ class AddressEdit(ButtonEdit):
             buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         ):
             old_category = wallet.labels.get_category(address)
-            self.address = wallet.get_unused_category_address(category=old_category).address.as_string()
+            self.address = str(wallet.get_unused_category_address(category=old_category).address)
 
             if self.signals:
                 self.signals.wallet_signals[wallet.id].updated.emit(

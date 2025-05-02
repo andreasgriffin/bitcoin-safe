@@ -31,6 +31,8 @@ import enum
 import logging
 from dataclasses import dataclass
 
+from bitcoin_safe.pythonbdk_types import TransactionDetails
+
 logger = logging.getLogger(__name__)
 
 
@@ -47,13 +49,5 @@ class UiElements(enum.Enum):
 
 @dataclass
 class PackagedTxLike:
-    tx_like: (
-        bdk.TransactionDetails
-        | bdk.Transaction
-        | bdk.PartiallySignedTransaction
-        | TxBuilderInfos
-        | TxUiInfos
-        | bytes
-        | str
-    )
+    tx_like: TransactionDetails | bdk.Transaction | bdk.Psbt | TxBuilderInfos | TxUiInfos | bytes | str
     focus_ui_elements: UiElements = UiElements.none
