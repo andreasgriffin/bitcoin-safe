@@ -201,7 +201,6 @@ class ProtoWallet(BaseSaveableClass):
         keystores: List[Optional[KeyStore]],
         address_type: Optional[AddressType] = None,
         gap=20,
-        gap_change=5,
     ) -> None:
         super().__init__()
 
@@ -210,7 +209,6 @@ class ProtoWallet(BaseSaveableClass):
         self.network = network
 
         self.gap = gap
-        self.gap_change = gap_change
 
         initial_address_type: AddressType = (
             address_type if address_type else get_default_address_type(len(keystores) > 1)
@@ -513,7 +511,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         network: bdk.Network,
         config: UserConfig,
         gap=20,
-        gap_change=5,
         labels: Labels | None = None,
         _blockchain_height: int | None = None,
         _tips: List[int] | None = None,
@@ -533,7 +530,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.network == config.network
         ), f"Cannot load a wallet for {self.network}, when the network {config.network} is configured"
         self.gap = gap
-        self.gap_change = gap_change
         self.keystores = keystores
         self.config: UserConfig = config
         self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
@@ -653,7 +649,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.id, self.multipath_descriptor.to_string_with_secret(), network=self.network
         )
         protowallet.gap = self.gap
-        protowallet.gap_change = self.gap_change
         protowallet.keystores = [keystore.clone() for keystore in self.keystores]
 
         return protowallet
@@ -690,7 +685,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             multipath_descriptor.to_string_with_secret(),
             keystores=keystores,
             gap=protowallet.gap,
-            gap_change=protowallet.gap_change,
             network=protowallet.network,
             config=config,
             labels=labels,
@@ -709,7 +703,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         keys = [
             "id",
             "gap",
-            "gap_change",
             "network",
         ]
         for k in keys:
@@ -744,7 +737,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             "id",
             "gap",
             "network",
-            "gap_change",
             "keystores",
             "labels",
             "_blockchain_height",
@@ -869,10 +861,6 @@ class Wallet(BaseSaveableClass, CacheManager):
                     if self.config.network_config.proxy_url
                     else None
                 ),
-                # retry=2,
-                # timeout=10,
-                # stop_gap=max(self.gap, self.gap_change),
-                # validate_domain=self.config.network_config.electrum_use_ssl,
             )
         elif self.config.network_config.server_type == BlockchainType.Esplora:
             client = Client.from_esplora(
@@ -882,9 +870,6 @@ class Wallet(BaseSaveableClass, CacheManager):
                     if self.config.network_config.proxy_url
                     else None
                 ),
-                # concurrency=1,
-                # stop_gap=max(self.gap, self.gap_change),
-                # timeout=10,
             )
         # elif self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
         #     folder = f"./compact-filters-{self.id}-{self.config.network.name}"
@@ -939,9 +924,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         try:
             start_time = time()
 
-            update = self.client.full_scan(
-                self.bdkwallet.start_full_scan().build(), stop_gap=max(self.gap, self.gap_change)
-            )
+            update = self.client.full_scan(self.bdkwallet.start_full_scan().build(), stop_gap=self.gap)
 
             self.bdkwallet.apply_update(update)
 
