@@ -106,12 +106,12 @@ def pretty_name(data_type: DataType) -> str:
 def get_txid(data: Data) -> str | None:
     if data.data_type == DataType.PSBT:
         if not isinstance(data.data, bdk.Psbt):
-            logger.error(f"{data.data} is not of type bdk.Psbt")
+            logger.error(f"data is not of type bdk.Psbt")
             return None
         return data.data.extract_tx().compute_txid()
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
         return data.data.compute_txid()
     return None
@@ -120,12 +120,12 @@ def get_txid(data: Data) -> str | None:
 def get_json_data(data: Data, network: bdk.Network) -> str | None:
     if data.data_type == DataType.PSBT:
         if not isinstance(data.data, bdk.Psbt):
-            logger.error(f"{data.data} is not of type bdk.Psbt")
+            logger.error(f"data is not of type bdk.Psbt")
             return None
         return json.dumps(json.loads(data.data.json_serialize()), indent=4)
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
         return json.dumps(transaction_to_dict(data.data, network=network), indent=4)
     return None
@@ -673,13 +673,13 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
             if not isinstance(data.data, bdk.Psbt):
-                logger.error(f"{data.data} is not of type bdk.Psbt")
+                logger.error(f"data is not of type bdk.Psbt")
                 return
             self.txid = data.data.extract_tx().compute_txid()
             self.json_data = json.dumps(json.loads(data.data.json_serialize()), indent=4)
         if data.data_type == DataType.Tx:
             if not isinstance(data.data, bdk.Transaction):
-                logger.error(f"{data.data} is not of type bdk.Transaction")
+                logger.error(f"data is not of type bdk.Transaction")
                 return
             self.txid = data.data.compute_txid()
             self.json_data = json.dumps(transaction_to_dict(data.data, network=self.network), indent=4)

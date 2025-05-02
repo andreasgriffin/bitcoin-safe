@@ -815,9 +815,7 @@ class MainWindow(QMainWindow):
 
             if not wallet:
                 logger.info(
-                    self.tr(
-                        f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
-                    )
+                    f"Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
                 )
                 current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
                 wallet = current_qt_wallet.wallet if current_qt_wallet else None
@@ -946,7 +944,7 @@ class MainWindow(QMainWindow):
             tx = txlike
 
         if not tx:
-            logger.error(f"could not open {tx}")
+            logger.error(f"could not open tx")
             return None
 
         title = self.tr("Transaction {txid}").format(txid=short_tx_id(tx.compute_txid()))
@@ -1063,7 +1061,7 @@ class MainWindow(QMainWindow):
             raise Exception("cannot handle TransactionDetails")
 
         if not psbt:
-            logger.error(f"{tx} could not be converted to a psbt")
+            logger.error(f"tx could not be converted to a psbt")
             return None
 
         data = Data.from_psbt(psbt, network=self.config.network)
@@ -1420,7 +1418,7 @@ class MainWindow(QMainWindow):
             return
 
         if not isinstance(tab_import_xpub := tab_generators.get(TutorialStep.import_xpub), ImportXpubs):
-            logger.error(f"{tab_import_xpub} is not of type ImportXpubs")  # type: ignore[unreachable]
+            logger.error(f"tab_import_xpub is not of type ImportXpubs")  # type: ignore[unreachable]
             return None
 
         if not tab_import_xpub.keystore_uis:
@@ -1634,7 +1632,7 @@ class MainWindow(QMainWindow):
                 self.tr("Close wallet {id}?").format(id=qt_wallet.wallet.id), self.tr("Close wallet")
             ):
                 return
-            logger.info(self.tr("Closing wallet {id}").format(id=qt_wallet.wallet.id))
+            logger.info("Closing wallet {id}".format(id=qt_wallet.wallet.id))
             self.save_qt_wallet(qt_wallet)
             self.remove_qt_wallet(qt_wallet)
         elif isinstance(tab_data, QTProtoWallet):

@@ -448,7 +448,7 @@ class DescriptorUI(QWidget):
             return
         corrected_descriptor = self._data_to_descriptor(data)
         if not corrected_descriptor:
-            logger.debug(f"{data.data_as_string()} could not be decoded into a descriptor")
+            logger.debug(f"data could not be decoded into a descriptor")
             return
 
         if corrected_descriptor != user_input:
@@ -461,12 +461,13 @@ class DescriptorUI(QWidget):
             ):
                 self.edit_descriptor.input_field.clear()
                 self.edit_descriptor.reset_formatting()
-                logger.debug(f"autocorrection {user_input} --> {corrected_descriptor} accepted")
                 return
             else:
                 self.edit_descriptor.input_field.setText(corrected_descriptor)
                 self.edit_descriptor.reset_formatting()
-                logger.debug(f"autocorrection {user_input} --> {corrected_descriptor} denied")
+                logger.debug(
+                    f"autocorrection {str(user_input)[:10]=} --> {str(corrected_descriptor)[:10]=} denied"
+                )
                 return
 
         if not is_valid_descriptor(user_input, network=self.protowallet.network):
@@ -479,7 +480,7 @@ class DescriptorUI(QWidget):
             logger.info(self.tr("Descriptor unchanged"))
             return
         else:
-            logger.info(f"Descriptor changed: {old_descriptor}  -->  {user_input}")
+            logger.info(f"Descriptor changed: {str(old_descriptor)[:10]=}  -->  {str(user_input)[:10]=}")
             if not question_dialog(
                 text=self.tr(
                     f"Fill signer information based on the new descriptor?",
@@ -491,7 +492,7 @@ class DescriptorUI(QWidget):
 
         try:
             self.set_protowallet_from_descriptor_str(user_input)
-            logger.info(f"Successfully set protwallet from descriptor {user_input}")
+            logger.info(f"Successfully set protwallet from descriptor {str(user_input)[:10]=}")
 
             self.set_wallet_ui_from_protowallet()
             self.keystore_uis.set_keystore_ui_from_protowallet()

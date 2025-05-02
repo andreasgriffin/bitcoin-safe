@@ -341,7 +341,6 @@ class AddressList(MyTreeView):
             if json_mime_data.get("type") == "drag_tag":
                 if hit_address is not None:
                     drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                    logger.debug(f"drag_info {drag_info}")
                     self.signal_tag_dropped.emit(drag_info)
                 event.accept()
                 return
@@ -409,7 +408,7 @@ class AddressList(MyTreeView):
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()
-        logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__}  update_with_filter")
 
         self._before_update_content()
         remaining_addresses = set(update_filter.addresses)
@@ -431,7 +430,7 @@ class AddressList(MyTreeView):
                 or address_match
                 or (not update_filter.addresses and category_match or len(update_filter.categories) > 1)
             ):
-                log_info.append((row, address))
+                log_info.append((row, str(address)[:6]))  # no sensitive info in log
                 self.refresh_row(address, row)
                 remaining_addresses = remaining_addresses - set([address])
 
@@ -443,11 +442,11 @@ class AddressList(MyTreeView):
         # i can add them here without recreating the whole model
         if remaining_addresses:
             for address in set(self.wallet.get_addresses()).intersection(remaining_addresses):
-                log_info.append((0, address))
+                log_info.append((0, str(address)[:6]))  # no sensitive info in log
                 self.append_address(address)
                 remaining_addresses = remaining_addresses - set([address])
 
-        logger.debug(f"Updated addresses  {log_info}.  remaining_addresses = {remaining_addresses}")
+        logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
     def get_headers(self) -> Dict:

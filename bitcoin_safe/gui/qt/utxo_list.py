@@ -336,7 +336,7 @@ class UTXOList(MyTreeView):
         if should_update:
             return self.update_content()
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         self._before_update_content()
 
@@ -352,7 +352,7 @@ class UTXOList(MyTreeView):
                     model.index(row, self.key_column), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
                 )
             ) or any([outpoint in update_filter.outpoints]):
-                log_info.append((row, str(outpoint)))
+                log_info.append((row, str(outpoint)[:4]))  # no sensitive info
                 self.refresh_row(outpoint, row)
 
         logger.debug(f"Updated  {log_info}")

@@ -320,7 +320,7 @@ class HistList(MyTreeView):
                 if json_mime_data.get("type") == "drag_tag":
                     if hit_address is not None:
                         drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                        logger.debug(f"drag_info {drag_info}")
+                        # logger.debug(f"drag_info {drag_info}")
                         self.signal_tag_dropped.emit(drag_info)
                     event.accept()
                     return
@@ -354,7 +354,7 @@ class HistList(MyTreeView):
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         def categories_intersect(model: MyStandardItemModel, row) -> Set:
             return set(model.data(model.index(row, self.Columns.CATEGORIES))).intersection(
@@ -368,7 +368,7 @@ class HistList(MyTreeView):
                 return set()
             return update_filter.addresses.intersection(fulltxdetail.involved_addresses())
 
-        logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__}  update_with_filter")
         self._before_update_content()
 
         log_info = []
@@ -385,7 +385,7 @@ class HistList(MyTreeView):
             ) or any(
                 [txid in update_filter.txids, categories_intersect(model, row), tx_involves_address(txid)]
             ):
-                log_info.append((row, txid))
+                log_info.append((row, str(txid)[:4]))  # no sensitive info in log
                 self.refresh_row(txid, row)
 
         logger.debug(f"Updated  {log_info}")

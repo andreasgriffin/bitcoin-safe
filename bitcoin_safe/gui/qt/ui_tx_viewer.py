@@ -81,7 +81,7 @@ from ...signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from ...util import block_explorer_URL, serialized_to_hex
+from ...util import block_explorer_URL
 from ...wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -409,7 +409,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         if not should_update:
             return
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         if self.data.data_type == DataType.PSBT:
             self.set_psbt(self.data.data, fee_info=self.fee_info)
@@ -486,17 +486,17 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         if not self.data.data_type == DataType.Tx:
             return
         if not isinstance(self.data.data, bdk.Transaction):
-            logger.error(f"{self.data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction and cannot be broadcastet")
             return
         tx = self.data.data
 
         if not self.client:
             self._set_blockchain()
 
-        logger.debug(f"broadcasting {serialized_to_hex( self.data.data.serialize())}")
+        logger.debug(f"broadcasting tx {tx.compute_txid()[:4]=}")
         success = self._broadcast(tx)
         if success:
-            logger.info(f"Successfully broadcasted {serialized_to_hex( self.data.data.serialize())}")
+            logger.info(f"Successfully broadcasted tx {tx.compute_txid()[:4]=}")
         else:
             Message(
                 self.tr("Failed to broadcast {txid}. Consider broadcasting via {url}").format(
@@ -659,7 +659,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         if self.data.data_type != DataType.PSBT:
             return None
         if not isinstance(self.data.data, bdk.Psbt):
-            logger.error(f"{self.data.data} is not of type bdk.Psbt")
+            logger.error(f"data is not of type bdk.Psbt")
             return None
 
         # this approach to clearning the layout
@@ -684,7 +684,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         if self.data.data_type != DataType.PSBT:
             return
         if not isinstance(self.data.data, bdk.Psbt):
-            logger.error(f"{self.data.data} is not of type bdk.Psbt")
+            logger.error(f"data is not of type bdk.Psbt")
             return
 
         if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():

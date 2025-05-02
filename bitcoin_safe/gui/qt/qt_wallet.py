@@ -674,7 +674,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     ),
                     title=self.tr("Delete wallet"),
                 ):
-                    logger.info(self.tr("No file selected"))
+                    logger.info("No file selected")
                     return None
 
         # if it is the first time saving, then the user can set a password
@@ -808,7 +808,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             delta_txs = self.get_delta_txs()
             change_dict = delta_txs.was_changed()
             formatted_dict = {k: [tx.txid for tx in v] for k, v in change_dict.items()}
-            logger.debug(f"change_dict={formatted_dict}")
+            logger.debug(f"{len(formatted_dict)=}")
             if force_ui_refresh or change_dict:
                 self.handle_delta_txs(delta_txs)
 

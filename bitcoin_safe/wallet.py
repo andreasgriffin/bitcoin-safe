@@ -28,7 +28,6 @@
 
 
 import functools
-import json
 import logging
 import os
 import random
@@ -464,9 +463,6 @@ class BdkWallet(bdk.Wallet, CacheManager):
         entry.appended = [tx for tx in entry.new_state if tx.txid in appended_ids]
         entry.removed = [tx for tx in entry.old_state if tx.txid in removed_ids]
 
-        # logger.debug(
-        #     f"self.bdkwallet.list_delta_transactions {len(entry.new)} results in { time()-start_time}s"
-        # )
         return entry
 
     @instance_lru_cache(always_keep=True)
@@ -680,7 +676,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             assert keystore is not None, "Cannot create wallet with None"
 
             if keystore.key_origin != protowallet.address_type.key_origin(config.network):
-                logger.warning(f"Warning: The derivation path of {keystore} is not the default")
+                logger.warning(f"Warning: {keystore.key_origin=} is not the default")
 
             keystores.append(keystore.clone())
 
@@ -850,7 +846,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return len(self.keystores) > 1
 
     def init_blockchain(self) -> Client:
-        logger.info(f"Creating blockchain connection for {self.config.network_config}")
+        logger.info(f"Creating blockchain connection for {self.config.network_config=}")
 
         if self.config.network == bdk.Network.BITCOIN:
             start_height = 0  # segwit block 481824
@@ -1488,9 +1484,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             selected_utxos.append(utxo)
             if selected_value >= total_sent_value:
                 break
-        logger.debug(
-            f"Selected {len(selected_utxos)} outpoints with {Satoshis(selected_value, self.network).str_with_unit()}"
-        )
+        logger.debug(f"{len(selected_utxos)=}")
 
         # 2. opportunistically  add additional outputs for merging
         if opportunistic_merge_utxos:
@@ -1516,7 +1510,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                 :number_of_opportunistic_outpoints
             ]
             logger.debug(
-                f"Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)}) with {Satoshis(sum([utxo.txout.value for utxo in opportunistic_merging_utxos]), self.network).str_with_unit()}"
+                f"Selected {len(opportunistic_merging_utxos)} additional opportunistic outpoints with small values (so total ={len(selected_utxos)+len(opportunistic_merging_utxos)})"
             )
 
         # now shuffle again the final utxos
@@ -1714,7 +1708,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
 
-        logger.info(json.loads(psbt.json_serialize()))
+        logger.info(f"Created PSBT {psbt.extract_tx().compute_txid()[:4]=}")
         fee_rate = self.bdkwallet.calculate_fee_rate(psbt.extract_tx())
         if fee_rate is not None:
             logger.info(f"psbt fee after finalized { FeeRate.from_fee_rate( fee_rate).to_sats_per_vb()}")
@@ -1791,7 +1785,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         address)"""
         self.clear_method(self._get_addresses)
         self.clear_method(self._get_addresses_infos)
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         not_indexed_addresses = set(update_filter.addresses) - set(self.get_addresses())
         for not_indexed_address in not_indexed_addresses:

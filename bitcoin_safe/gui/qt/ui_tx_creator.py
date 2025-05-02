@@ -226,7 +226,7 @@ class UITx_Creator(UITx_Base):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.update_balance_label()
         self.on_input_changed_and_categories()
         self.utxo_list.set_outpoints(self.get_outpoints())
@@ -478,7 +478,6 @@ class UITx_Creator(UITx_Base):
     def click_add_utxo(self) -> None:
         def process_input(s: str) -> None:
             outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
-            logger.debug(self.tr("Adding outpoints {outpoints}").format(outpoints=outpoints))
             self.add_outpoints(outpoints)
             self.utxo_list.update_content()
             self.utxo_list.select_rows(outpoints, self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY)

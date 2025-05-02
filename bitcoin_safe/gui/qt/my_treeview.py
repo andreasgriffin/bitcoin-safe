@@ -1131,7 +1131,7 @@ class MyTreeView(QTreeView):
             data_bytes = mime_data.data("application/json")
             try:
                 json_string = data_bytes.data().decode()
-                logger.debug(f"dragEnterEvent: {json_string}")
+                logger.debug(f"dragEnterEvent")
                 d = json.loads(json_string)
                 return d
             except Exception as e:

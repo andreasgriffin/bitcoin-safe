@@ -490,10 +490,10 @@ class CustomListWidget(QListWidget):
             # print('accept')
             # tag = self.itemAt(event.pos())
 
-            json_string = qbytearray_to_str(mime_data.data("application/json"))
+            qbytearray_to_str(mime_data.data("application/json"))
             # dropped_addresses = json.loads(json_string)
             # print(f'drag enter {dropped_addresses,   tag.text()}')
-            logger.debug(f"dragEnterEvent: {json_string}")
+            logger.debug(f"dragEnterEvent")
 
             event.acceptProposedAction()
         else:
@@ -514,7 +514,7 @@ class CustomListWidget(QListWidget):
             if d.get("type") == "drag_addresses":
                 if tag is not None:
                     drag_info = AddressDragInfo([tag.text()], d.get("addresses"))
-                    logger.debug(f"dropEvent: {drag_info}")
+                    logger.debug(f"dropEvent")
                     self.signal_addresses_dropped.emit(drag_info)
                 event.accept()
                 return

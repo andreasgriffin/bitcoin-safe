@@ -90,7 +90,7 @@ class AbstractSignatureImporter(QObject):
         return bool(psbt1.extract_tx().compute_txid() == psbt2.extract_tx().compute_txid())
 
     def handle_data_input(self, original_psbt: bdk.Psbt, data: Data):
-        logger.debug(str(data.data))
+        logger.debug(f"handle_data_input {data.data_type=}")
         if data.data_type == DataType.PSBT:
             scanned_psbt: bdk.Psbt = data.data
 
@@ -101,7 +101,7 @@ class AbstractSignatureImporter(QObject):
                 )
                 return
 
-            logger.debug(str(scanned_psbt.serialize()))
+            logger.debug(f"{str(scanned_psbt.serialize())[:4]=}")
             psbt2 = original_psbt.combine(scanned_psbt)
 
             if not self.txids_match(psbt2, original_psbt):
@@ -128,7 +128,7 @@ class AbstractSignatureImporter(QObject):
                 self.signal_final_tx_received.emit(finalized_tx)
                 return
 
-            logger.debug(f"psbt updated {psbt2.serialize()}")
+            logger.debug(f"psbt updated {psbt2.extract_tx().compute_txid()[:4]=}")
             self.signal_signature_added.emit(psbt2)
 
         elif data.data_type == DataType.Tx:
@@ -194,12 +194,12 @@ class SignatureImporterWallet(AbstractSignatureImporter):
             Message(self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"))
             return
 
-        logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)}")
+        logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)[:4]=}")
 
         signing_was_successful: bool = original_serialized_tx != tx_of_psbt_to_hex(psbt)
 
         if signing_was_successful:
-            logger.debug(f"psbt after signing: {tx_of_psbt_to_hex(psbt)}")
+            logger.debug(f"psbt after signing: {tx_of_psbt_to_hex(psbt)[:4]=}")
 
         else:
             logger.debug(f"signing not completed")

@@ -177,7 +177,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
     def _catch_tx(self, tx: bdk.Transaction) -> None:
         self.set_status(self.TxSendStatus.finalized)
-        logger.info(f"tx {tx.compute_txid()} is assumed to be the send test")
+        logger.info(f"tx {tx.compute_txid()[:4]=} is assumed to be the send test")
 
     def create_tx(self) -> None:
         # before do _create_tx, setup a 1 time connection
@@ -1630,7 +1630,7 @@ class Wizard(WizardBase):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         steps = self.get_send_tests_steps()
         latest_step = self.get_latest_send_test_in_tx_history(steps, self.qt_wallet.wallet)

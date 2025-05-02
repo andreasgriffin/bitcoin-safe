@@ -31,6 +31,9 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
+from bitcoin_qr_tools.multipath_descriptor import (
+    address_descriptor_from_multipath_descriptor,
+)
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -125,8 +128,8 @@ class USBValidateAddressWidget(QWidget):
             logger.error("descriptor not set")
             return False
 
-        address_descriptor = self.descriptor.address_descriptor(
-            kind=self.kind, address_index=self.address_index
+        address_descriptor = address_descriptor_from_multipath_descriptor(
+            descriptor=self.descriptor, kind=self.kind, address_index=self.address_index
         )
         try:
             address = self.usb_gui.display_address(address_descriptor)

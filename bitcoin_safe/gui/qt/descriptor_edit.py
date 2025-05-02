@@ -163,9 +163,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
             dialog.show()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            logger.error(
-                f"Could not create a DescriptorExport for {self.__class__.__name__} with text {self.text()}"
-            )
+            logger.error(f"Could not create a DescriptorExport for {self.__class__.__name__}: {e}")
             return
 
     def _check_if_valid(self) -> bool:

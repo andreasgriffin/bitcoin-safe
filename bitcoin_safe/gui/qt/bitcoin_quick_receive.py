@@ -120,7 +120,7 @@ class BitcoinQuickReceive(
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         super().update()
 
         self.clear_boxes()

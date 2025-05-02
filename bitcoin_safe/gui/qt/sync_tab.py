@@ -36,6 +36,7 @@ import nostr_sdk
 from bitcoin_nostr_chat.chat_dm import ChatDM
 from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
+from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
@@ -100,7 +101,7 @@ class SyncTab(ControlledGroupbox):
         # just in case the relay lost the publish key message. I republish here
         if self.checkbox.isChecked():
             logger.info(
-                f"Publish my key {self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()} in protocol chat {self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()}"
+                f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
             )
             self.nostr_sync.publish_my_key_in_protocol(force=True)
 
@@ -206,7 +207,7 @@ class SyncTab(ControlledGroupbox):
 
         device_keys = nostr_sdk.Keys.generate()
         logger.info(
-            f"Generated a new nostr keypair with public key {device_keys.public_key().to_bech32()} and saving to wallet"
+            f"Generated a new nostr keypair with public key {short_key(device_keys.public_key().to_bech32())} and saving to wallet"
         )
         nostr_sync = NostrSync.from_keys(
             network=network,

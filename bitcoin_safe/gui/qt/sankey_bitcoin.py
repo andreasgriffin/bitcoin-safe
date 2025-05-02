@@ -87,7 +87,7 @@ class SankeyBitcoin(SankeyWidget):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.set_tx(self.tx, fee_info=self.fee_info, txo_dict=self.txo_dict)
 
     @property

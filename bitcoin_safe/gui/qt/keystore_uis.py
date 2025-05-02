@@ -259,7 +259,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
 
         # and last are the keystore uis, which can cause exceptions, because the UI is not filled correctly
         for i, keystore_ui in enumerate(self.getAllTabData().values()):
-            logger.debug(f"set_keystore_from_ui_values in {keystore_ui.label}")
+            logger.debug(f"set_keystore_from_ui_values")
             ui_keystore = keystore_ui.get_ui_values_as_keystore()
 
             keystore = self.protowallet.keystores[i]
