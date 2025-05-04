@@ -1,0 +1,88 @@
+{
+    "VERSION": "0.2.0",
+    "__class__": "QTWallet",
+    "display_balance": {
+        "VERSION": "0.0.1",
+        "__class__": "Balance",
+        "confirmed": 0,
+        "immature": 0,
+        "trusted_pending": 0,
+        "untrusted_pending": 0
+    },
+    "tutorial_index": null,
+    "wallet": {
+        "VERSION": "0.3.0",
+        "__class__": "Wallet",
+        "_blockchain_height": 2073014,
+        "_tips": [
+            2,
+            0
+        ],
+        "auto_opportunistic_coin_select": true,
+        "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
+        "gap": 20,
+        "id": "demo-public",
+        "keystores": [
+            {
+                "VERSION": "0.0.2",
+                "__class__": "KeyStore",
+                "derivation_path": "/<0;1>/*",
+                "description": "",
+                "fingerprint": "44250C36",
+                "key_origin": "m/84h/1h/0h",
+                "label": "Signer 1",
+                "mnemonic": "catch favorite drip bench plunge purity rabbit slam crouch globe vapor honey",
+                "network": {
+                    "__enum__": true,
+                    "name": "Network",
+                    "value": "SIGNET"
+                },
+                "xpub": "tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9"
+            }
+        ],
+        "labels": {
+            "VERSION": "0.1.0",
+            "__class__": "Labels",
+            "categories": [
+                "KYC Exchange",
+                "Private"
+            ],
+            "data": {
+                "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "Private",
+                    "label": null,
+                    "ref": "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v",
+                    "timestamp": 1746249892.124667,
+                    "type": "addr"
+                },
+                "tb1qf45vu6275sm4wy96q5xeqmzg75f88tlplnrtxv": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "KYC Exchange",
+                    "label": null,
+                    "ref": "tb1qf45vu6275sm4wy96q5xeqmzg75f88tlplnrtxv",
+                    "timestamp": 1746249892.063778,
+                    "type": "addr"
+                },
+                "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "KYC Exchange",
+                    "label": null,
+                    "ref": "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm",
+                    "timestamp": 1746249813.261018,
+                    "type": "addr"
+                }
+            },
+            "default_category": "KYC Exchange"
+        },
+        "network": {
+            "__enum__": true,
+            "name": "Network",
+            "value": "SIGNET"
+        },
+        "refresh_wallet": false
+    }
+}

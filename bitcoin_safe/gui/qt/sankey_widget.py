@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.util import ColorScheme
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
@@ -76,8 +77,8 @@ class FlowIndex:
 class SankeyWidget(QWidget):
     signal_on_label_click: TypedPyQtSignal[FlowIndex] = pyqtSignal(FlowIndex)  # type: ignore
 
-    center_color = QColor("#7616ff")
-    border_color = QColor("#7616ff")
+    center_color = ColorScheme.Purple.as_color()
+    border_color = ColorScheme.Purple.as_color()
 
     def __init__(self, show_tooltips=True, parent: QWidget | None = None) -> None:
         super().__init__(parent=parent)

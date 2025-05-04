@@ -71,6 +71,10 @@
         <translation>လိပ်စာ {address}  </translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>ပြောင်းလဲ  </translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>လက်ခံသည့်  </translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>လက်ကျန်ငွေ  </translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>ပြောင်းလဲ  </translation>
+        <source>Value</source>
+        <translation>တန်ဖိုး</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>မရေရာသေးပါ  </translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>ရက်စွဲ  </translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>လက်ရှိပိုက်ဆံအိတ်ကိုသိမ်းပါ  </translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>{id} ပိုက်ဆံအိတ်ပိတ်ခြင်း  </translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>{id} PSBT ကိုသိမ်းချင်ပါသလား?  </translation>
     </message>
@@ -1688,6 +1681,14 @@ Do you want to proceed anyway?</source>
         <translation>ပို့ပါ</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>ဆက်လက်လုပ်ဆောင်ပါက ပိုက်ဆံအိတ်လိပ်စာများအားလုံးပြောင်းလဲနိုင်သည်။ ဆက်လက်လုပ်ဆောင်ချင်ပါသလား?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>ပိုက်ဆံအိတ်သိမ်းပါ  </translation>
     </message>
@@ -1708,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>ပိုက်ဆံအိတ်ဖျက်ပါ  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>ဖိုင်မရွေးရသေးပါ  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>စကားဝှက်မှားနေပါသည်  </translation>
     </message>
@@ -1724,12 +1721,12 @@ Do you want to proceed anyway?</source>
         <translation>စကားဝှက်အသစ်:  </translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ  </translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>ဖော်ပြချက်  </translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ  </translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1773,12 +1770,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} နှင့်ထပ်တူညီပါ  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sync &amp; Chat</translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1809,8 +1806,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>ဖိုင်များအားလုံး (*);;JSON ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>ဖိုင်မရွေးရသေးပါ  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>တံဆိပ်များတင်သွင်းပါ  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>သမိုင်း  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1819,10 +1824,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>{number} တံဆိပ်များအားအောင်မြင်စွာအသစ်တင်ပါ  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>သမိုင်း  </translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1837,6 +1838,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>လက်ခံပါ  </translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>လက်ကျန်ငွေ  </translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>တန်ဖိုး</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>မည်သည့်ပြောင်းလဲများမှမလုပ်ပါ  </translation>
     </message>
@@ -1844,20 +1853,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>{filename} သို့အရန်အသိမ်းထားပြီးပါပြီ  </translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>ဆက်လက်လုပ်ဆောင်ပါက ပိုက်ဆံအိတ်လိပ်စာများအားလုံးပြောင်းလဲနိုင်သည်။ ဆက်လက်လုပ်ဆောင်ချင်ပါသလား?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>QR ကုဒ်  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>လိပ်စာ  </translation>
     </message>
 </context>
 <context>
@@ -2429,10 +2437,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>လက်ခံသူအတွက်အကောင်းဆုံးကိုက်ညီသောအုပ်စုရွေးပါ  </translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>Outpoints {outpoints} ထည့်ပါ  </translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>ဝင်ငွေထည့်ပါ  </translation>
     </message>
@@ -2699,10 +2703,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>လက်ကျန်ငွေ ({unit})  </translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>နေ့စွဲ  </translation>
     </message>
 </context>
 <context>
@@ -3192,6 +3192,10 @@ below {rate}</source>
         <translation>ဤသည်သည် bitcoin ကွန်ယက်နှင့်ပတ်သက်သောပုဂ္ဂလိကနှင့်မြန်ဆန်သောဆက်သွယ်မှုပုံစံဖြစ်သည်။  </translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>သင့်ရဲ့ Bitcoin node ကိုယ်တိုင်ချိတ်ဆက်ပါ၊ ဥပမာ - {link}။  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot; ဖြင့် သင့် bitcoind ကို စတင်ပါ။</translation>
     </message>
@@ -3221,24 +3225,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>ကောင်းမွန်သောရွေးချယ်စရာမှာ {electrum_testnet} ဖြစ်ပြီး ဘလော့ခ်စုံစမ်းစက်အဖြစ် {explorer_testnet} ကို အသုံးပြုပါ</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>ကောင်းသောရွေးချယ်မှုမှာ {electrum_testnet4} နှင့် block explorer {explorer_testnet4} ဖြစ်သည်။  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>ကောင်းမွန်သော ရွေးချယ်စရာမှာ {electrum_testnet4} ဖြစ်ပြီး ဘလော့ခ် စူးစမ်းရေးအတွက် {explorer_testnet4} ဖြစ်ပါတယ်။ စမ်းသပ်ကြေးများကို အခမဲ့ရနိုင်တဲ့ {faucet} တစ်ခုရှိပါတယ်။</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet အတွက် {electrum} နှင့် {mempool_url} တွင်ရှိသော block explorer ကိုရွေးပါ။  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet သည် {electrum} ကို ရွေးပြီး {mempool_url} ပေါ်ရှိ ဘလော့ခ် အက်စ်ပလို့ရာကို အသုံးပြုသည်။ အခမဲ့ စမ်းသပ်ကွိုင်များအတွက် {faucet} တစ်ခုရှိသည်။</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>{setup} ကို {server} တွင်ရှိသော esplora server နှင့် {explorer} တွင်ရှိသော block explorer ဖြင့်စီမံပါ။  </translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>တစ်ခါတလေ အလုပ်လုပ်တဲ့ server ကို {link} နဲ့ {explorer} မှာရှိတဲ့ block explorer ဖြစ်သည်။ {faucet} ရှိပါတယ်။  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>စမ်းသပ်ကြေးများကို အခမဲ့ရနိုင်တဲ့ {faucet} တစ်ခုရှိပါတယ်။</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>သင့်ရဲ့ Bitcoin node ကိုယ်တိုင်ချိတ်ဆက်ပါ၊ ဥပမာ - {link}။  </translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>တစ်ခါတလေ အလုပ်လုပ်တဲ့ server ကို {link} နဲ့ {explorer} မှာရှိတဲ့ block explorer ဖြစ်သည်။ {faucet} ရှိပါတယ်။  </translation>
     </message>
 </context>
 <context>

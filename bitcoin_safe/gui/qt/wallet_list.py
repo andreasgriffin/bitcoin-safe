@@ -120,14 +120,15 @@ class ButtonList(QListWidget):
 class WalletList(ButtonList):
     signal_file_path_clicked: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, hide_extension=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.hide_extension = hide_extension
         self.itemClicked.connect(self.handleItemClick)
 
     def set_file_paths(self, file_paths: Iterable[str]):
         self.clear()
         for file_path in reversed(list(file_paths)):
-            name = Path(file_path).name
+            name = Path(file_path).stem if self.hide_extension else Path(file_path).name
             item = QListWidgetItem(name)
             item.setToolTip(file_path)  # Set tooltip to show full path on hover
             self.addItem(item)
@@ -143,6 +144,7 @@ class RecentlyOpenedWalletsGroup(QGroupBox):
         self,
         signal_open_wallet: TypedPyQtSignal,
         signal_recently_open_wallet_changed: TypedPyQtSignal[List[str]],
+        hide_extension=True,
     ):
         super().__init__()
         self.signal_recently_open_wallet_changed = signal_recently_open_wallet_changed
@@ -152,7 +154,7 @@ class RecentlyOpenedWalletsGroup(QGroupBox):
         self._layout = QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        self.wallet_list = WalletList()
+        self.wallet_list = WalletList(hide_extension=hide_extension)
         self._layout.addWidget(self.wallet_list)
 
         self.set_visibility()

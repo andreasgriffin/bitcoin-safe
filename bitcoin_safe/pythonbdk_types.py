@@ -177,8 +177,15 @@ class TransactionDetails:
     txid: str
     chain_position: bdk.ChainPosition
 
+    def get_height(self, unconfirmed_height: int) -> int:
+        if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
+            return self.chain_position.confirmation_block_time.block_id.height
+        if isinstance(self.chain_position, bdk.ChainPosition.UNCONFIRMED):
+            return unconfirmed_height
+        raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
+
     def get_datetime(self, fallback_timestamp: float = 0) -> datetime.datetime:
-        if self.chain_position.is_confirmed():
+        if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
 
             return datetime.datetime.fromtimestamp(
                 self.chain_position.confirmation_block_time.confirmation_time

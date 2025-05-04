@@ -63,6 +63,10 @@ datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/screenshots/*", f"{PYPKG}/gui/screenshots"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/locales/*", f"{PYPKG}/gui/locales"), 
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/REGTEST/*", f"{PYPKG}/gui/demo_wallets/REGTEST"), 
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/SIGNET/*", f"{PYPKG}/gui/demo_wallets/SIGNET"), 
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET/*", f"{PYPKG}/gui/demo_wallets/TESTNET"), 
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET4/*", f"{PYPKG}/gui/demo_wallets/TESTNET4"), 
 ]
 
 ##### data of included modules 

@@ -44,8 +44,10 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
+    QGridLayout,
     QHBoxLayout,
     QInputDialog,
+    QLabel,
     QMessageBox,
     QSplitter,
     QTabWidget,
@@ -442,6 +444,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.tabs.setTabText(self.tabs.indexOf(self.history_tab), self.tr("History"))
         self.tabs.setTabText(self.tabs.indexOf(self.address_tab), self.tr("Receive"))
 
+        self.balance_label_title.setText(self.tr("Balance"))
+        self.fiat_value_label_title.setText(self.tr("Value"))
+
     def set_display_balance(self, value: Balance):
         self.display_balance = value
 
@@ -454,6 +459,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def update_display_balance(self, sync_status: SyncStatus):
         if sync_status == SyncStatus.synced:
             self.set_display_balance(self.wallet.get_balance())
+
+        balance_total = Satoshis(self.get_display_balance().total, self.config.network)
+        self.balance_label.setText(balance_total.str_with_unit())
+        self.fiat_value_label.setText(self.fx.to_fiat_str(currency="USD", amount=balance_total.value))
 
     def stop_sync_timer(self) -> None:
         self.timer_sync_retry.stop()
@@ -716,12 +725,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
         return delta_txs
 
-    def format_txs(self, txs: List[TransactionDetails]) -> str:
+    def format_txs_for_notification(self, txs: List[TransactionDetails]) -> str:
         return "\n".join(
             [
-                self.tr("  {amount} in {shortid}").format(
+                self.tr("  {amount}").format(
                     amount=Satoshis(tx.received - tx.sent, self.config.network).str_as_change(unit=True),
-                    shortid=short_tx_id(tx.txid),
+                    # shortid=short_tx_id(tx.txid),
                 )
                 for tx in txs
             ]
@@ -734,7 +743,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # if transactions were removed (reorg or other), then recalculate everything
         message_content = self.tr(
             "The transactions \n{txs}\n in wallet '{wallet}' were removed from the history!!!"
-        ).format(txs=self.format_txs(removed_txs), wallet=self.wallet.id)
+        ).format(txs=self.format_txs_for_notification(removed_txs), wallet=self.wallet.id)
         Message(
             message_content,
             no_show=True,
@@ -769,7 +778,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if len(appended_txs) == 1:
             Message(
                 self.tr("New transaction in wallet '{wallet}':\n{txs}").format(
-                    txs=self.format_txs(appended_txs), wallet=self.wallet.id
+                    txs=self.format_txs_for_notification(appended_txs), wallet=self.wallet.id
                 ),
                 no_show=True,
             ).emit_with(self.signals.notification)
@@ -777,7 +786,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             Message(
                 self.tr("{number} new transactions in wallet '{wallet}':\n{txs}").format(
                     number=len(appended_txs),
-                    txs=self.format_txs(appended_txs),
+                    txs=self.format_txs_for_notification(appended_txs),
                     wallet=self.wallet.id,
                 ),
                 no_show=True,
@@ -1078,11 +1087,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     ) -> Tuple[SearchableTab, HistList, WalletBalanceChart, HistListWithToolbar]:
         tab = SearchableTab(parent=tabs)
         tab.setObjectName(f"created as HistList tab containrer")
-        tab_layout = QHBoxLayout(tab)
+        tab_layout = QVBoxLayout(tab)
         tab_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        splitter1 = QSplitter()  # horizontal splitter by default
-        tab_layout.addWidget(splitter1)
+        splitter = QSplitter(orientation=Qt.Orientation.Vertical)
+        tab_layout.addWidget(splitter)
 
         l = HistList(
             fx=self.fx,
@@ -1096,27 +1105,56 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             ],
             mempool_data=self.mempool_data,
         )
+        l.signal_selection_changed.connect(self.on_hist_list_selection_changed)
+
         treeview_with_toolbar = HistListWithToolbar(l, self.config, parent=tabs)
 
         list_widget = self.create_list_tab(treeview_with_toolbar, tabs)
-        splitter1.addWidget(list_widget)
         tab.searchable_list = l
 
-        right_widget = QWidget()
-        right_widget_layout = QVBoxLayout(right_widget)
-        right_widget_layout.setContentsMargins(0, 0, 0, 0)
+        top_widget = QWidget()
+        top_widget_layout = QHBoxLayout(top_widget)
+        top_widget_layout.setContentsMargins(0, 0, 0, 0)
+
+        chart_container = QWidget()
+        chart_container_layout = QVBoxLayout(chart_container)
+        chart_container_layout.setContentsMargins(0, 0, 0, 0)
 
         self.quick_receive: BitcoinQuickReceive = BitcoinQuickReceive(
-            self.wallet_signals, self.wallet, parent=right_widget, signals_min=self.signals
+            self.wallet_signals, self.wallet, parent=top_widget, signals_min=self.signals
         )
-        right_widget_layout.addWidget(self.quick_receive)
 
         wallet_balance_chart = WalletBalanceChart(
-            self.wallet, wallet_signals=self.wallet_signals, parent=right_widget
+            self.wallet,
+            wallet_signals=self.wallet_signals,
+            parent=top_widget,
         )
-        right_widget_layout.addWidget(wallet_balance_chart)
+        wallet_balance_chart.signal_click_transaction.connect(self.on_hist_chart_click)
 
-        splitter1.addWidget(right_widget)
+        balance_group = QWidget()
+        self.balance_label_title = QLabel()
+        self.balance_label = QLabel()
+        self.fiat_value_label_title = QLabel()
+        self.fiat_value_label = QLabel()
+        font = self.fiat_value_label.font()
+        font.setPixelSize(15)
+        self.fiat_value_label.setFont(font)
+        self.balance_label.setFont(font)
+        label_layout = QGridLayout(balance_group)
+        label_layout.addWidget(self.balance_label_title, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+        label_layout.addWidget(self.balance_label, 1, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+        label_layout.addWidget(self.fiat_value_label_title, 0, 1, alignment=Qt.AlignmentFlag.AlignCenter)
+        label_layout.addWidget(self.fiat_value_label, 1, 1, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        chart_container_layout.addWidget(balance_group)
+        chart_container_layout.addWidget(wallet_balance_chart)
+        top_widget_layout.addWidget(chart_container)
+        top_widget_layout.addWidget(self.quick_receive)
+
+        splitter.addWidget(top_widget)
+        splitter.addWidget(list_widget)
+        splitter.setCollapsible(0, True)
+        splitter.setCollapsible(1, False)
 
         tabs.insertTab(
             2,
@@ -1125,8 +1163,17 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             "",
         )
 
-        splitter1.setSizes([1, 1])
+        # set initial sizes so that top starts at its minimum
+        splitter.setSizes([1, 10])
+        splitter.setStretchFactor(0, 0)  # index 0 = top
+        splitter.setStretchFactor(1, 1)  # index 1 = bottom
+        splitter.setSizes(
+            [self.quick_receive.minimumHeight(), self.height() - self.quick_receive.minimumHeight()]
+        )
         return tab, l, wallet_balance_chart, treeview_with_toolbar
+
+    def on_hist_chart_click(self, tx_details: TransactionDetails):
+        self.history_list.select_rows(content_list=[tx_details.txid], column=self.history_list.key_column)
 
     def get_category_infos(self) -> List[CategoryInfo]:
 
@@ -1355,6 +1402,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.tr("Successfully updated {number} Labels").format(number=len(changed_data)),
             type=MessageType.Info,
         )
+
+    def on_hist_list_selection_changed(self):
+        keys = self.history_list.get_selected_keys()
+        self.wallet_balance_chart.highlight_txids(txids=set(keys))
 
     def close(self) -> bool:
         # crucial is to explicitly close everything that has a wallet attached

@@ -71,6 +71,10 @@
         <translation>Адрес {address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>сдача</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>получение</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>Баланс</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>сдача</translation>
+        <source>Value</source>
+        <translation>Значение</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>Не созревшее</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>Дата</translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Сохранить текущий кошелек</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>Закрытие кошелька {id}</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>Вы хотите сохранить PSBT {id}?  </translation>
     </message>
@@ -1691,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>Отправить</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>Не удается переместить файл кошелька, потому что {file_path} существует</translation>
     </message>
@@ -1711,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>Удалить кошелек  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>Файл не выбран  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>Неверный пароль</translation>
     </message>
@@ -1727,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>Новый пароль:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>Кошелек сохранен</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Дескриптор</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>Кошелек сохранен</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1776,12 +1773,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Синхронизация с {server}  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>Подключено к {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Синхронизация &amp;&amp; Чат  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>Подключено к {server}  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1812,8 +1809,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Все файлы (*);;Файлы JSON (*.jsonl);;Файлы JSON (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>Импортировать метки</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>История</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1822,10 +1827,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Успешно обновлено {number} меток  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>История</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1840,6 +1841,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Получить</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>Баланс</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Значение</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>Нет изменений для применения.</translation>
     </message>
@@ -1847,20 +1856,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>Резервная копия сохранена в {filename}</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>QR-код  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
     </message>
 </context>
 <context>
@@ -2432,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Выберите категорию, которая лучше всего подходит получателю</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>Добавление точек выхода {outpoints}</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>Добавить входы</translation>
     </message>
@@ -2702,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>Баланс ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Дата</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +3195,10 @@ below {rate}</source>
         <translation>Это приватный и быстрый способ подключения к биткойн-сети.</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>Вы можете подключить свой собственный биткойн-узел, например {link}.</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
@@ -3224,24 +3228,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>Хорошим вариантом является {electrum_testnet}, а в качестве обозревателя блоков {explorer_testnet}</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>Хорошим вариантом будет {electrum_testnet4} и как блок-эксплорер {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>Хорошим вариантом является {electrum_testnet4}, а в качестве обозревателя блоков — {explorer_testnet4}. Есть {faucet} для получения бесплатных тестовых монет.</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet выберите {electrum} и блок-эксплорер на {mempool_url}.  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet выбирает {electrum} и блок-обозреватель на {mempool_url}. Существует {faucet} для бесплатных тестовых монет。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Вы можете настроить {setup} с сервером esplora на {server} и блок-эксплорером на {explorer}</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>Работающий (иногда) сервер - {link} и блок-эксплорер на {explorer}. Есть {faucet}.  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>Есть {faucet} для получения бесплатных тестовых монет.</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>Вы можете подключить свой собственный биткойн-узел, например {link}.</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Работающий (иногда) сервер - {link} и блок-эксплорер на {explorer}. Есть {faucet}.  </translation>
     </message>
 </context>
 <context>

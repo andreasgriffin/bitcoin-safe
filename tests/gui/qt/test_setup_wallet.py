@@ -35,6 +35,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from bitcoin_nostr_chat.ui.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
@@ -321,7 +322,11 @@ def test_wizard(
                 shutter.save(main_window)
                 step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
-                address = step.quick_receive.group_boxes[0].text_edit.input_field.toPlainText()
+                address_with_spaces = step.quick_receive.group_boxes[0].label.text()
+                assert address_with_spaces == insert_invisible_spaces_for_wordwrap(
+                    "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes", max_word_length=1
+                )
+                address = step.quick_receive.group_boxes[0].address
                 assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
                 faucet.send(address, amount=amount)
 

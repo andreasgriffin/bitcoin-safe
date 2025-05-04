@@ -71,6 +71,10 @@
         <translation>주소 {address}  </translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>변경  </translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>수신  </translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>잔액  </translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>변경  </translation>
+        <source>Value</source>
+        <translation>값</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>미완료</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>날짜  </translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;현재 지갑 저장  </translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>지갑 {id} 닫는 중  </translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>PSBT {id}를 저장하시겠습니까?  </translation>
     </message>
@@ -1688,6 +1681,14 @@ Do you want to proceed anyway?</source>
         <translation>보내기  </translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>백업 실패. 변경 중단.  </translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>진행하면 모든 지갑 주소가 변경될 수 있습니다. 계속하시겠습니까?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>{file_path}가 이미 존재하기 때문에 지갑 파일을 이동할 수 없습니다  </translation>
     </message>
@@ -1708,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>지갑 삭제  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>파일이 선택되지 않았습니다  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>비밀번호가 틀렸습니다  </translation>
     </message>
@@ -1724,12 +1721,12 @@ Do you want to proceed anyway?</source>
         <translation>새 비밀번호:  </translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>지갑이 저장됨</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>디스크립터  </translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>지갑이 저장됨</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1773,12 +1770,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server}와 동기화 중  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>{server}에 연결됨  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sync &amp;&amp; Chat  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server}에 연결됨  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1809,8 +1806,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>모든 파일 (*);;JSON 파일 (*.jsonl);;JSON 파일 (*.json)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>파일이 선택되지 않았습니다  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>명칭 가져오기  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>내역</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1819,10 +1824,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>{number}개의 명칭을 성공적으로 업데이트함  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>내역</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1837,6 +1838,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>받기  </translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>잔액  </translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>값</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>적용할 변경 사항이 없습니다.  </translation>
     </message>
@@ -1844,20 +1853,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>{filename}에 백업이 저장됨</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>백업 실패. 변경 중단.  </translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>진행하면 모든 지갑 주소가 변경될 수 있습니다. 계속하시겠습니까?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>QR 코드  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>주소  </translation>
     </message>
 </context>
 <context>
@@ -2429,10 +2437,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>받는 사람에게 가장 적합한 카테고리 선택  </translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>outpoints {outpoints} 추가  </translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>입력 추가  </translation>
     </message>
@@ -2699,10 +2703,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>잔액 ({unit})  </translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>날짜  </translation>
     </message>
 </context>
 <context>
@@ -3192,6 +3192,10 @@ below {rate}</source>
         <translation>이것은 비트코인 네트워크에 빠르고 비공개적으로 연결하는 방법입니다.  </translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>자신의 Bitcoin 노드, 예를 들어 {link}를 연결할 수 있습니다.  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot;로 bitcoind를 실행하세요  </translation>
     </message>
@@ -3221,24 +3225,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>좋은 옵션은 {electrum_testnet}이며, 블록 탐색기는 {explorer_testnet}입니다</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>{electrum_testnet4}와 블록 탐색기로 {explorer_testnet4}이 좋은 옵션입니다  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>좋은 옵션은 {electrum_testnet4}이고, 블록 탐색기로는 {explorer_testnet4}가 있습니다. 무료 테스트 코인을 받을 수 있는 {faucet}이 있습니다.</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet에서는 {mempool_url}에서 블록 탐색기와 함께 {electrum}을 선택하세요.  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet은 {electrum}을 선택하고 {mempool_url}에서 블록 탐색기를 사용합니다. 무료 테스트 코인을 위한 {faucet}이 있습니다。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>{server}에서 esplora 서버와 {explorer}에서 블록 탐색기로 {setup}을 설정할 수 있습니다.  </translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>{link}과 {explorer}에서 (가끔 작동하는) 서버입니다. {faucet}가 있습니다.  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>무료 테스트 코인을 받을 수 있는 {faucet}이 있습니다.</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>자신의 Bitcoin 노드, 예를 들어 {link}를 연결할 수 있습니다.  </translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>{link}과 {explorer}에서 (가끔 작동하는) 서버입니다. {faucet}가 있습니다.  </translation>
     </message>
 </context>
 <context>

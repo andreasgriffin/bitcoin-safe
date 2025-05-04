@@ -277,17 +277,20 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.TESTNET4: (
                 translate(
                     "net_conf",
-                    "A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}",
+                    "A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.",
                 ).format(
                     electrum_testnet4=link(get_electrum_configs(bdk.Network.TESTNET4)["mempool.space"].url),
                     explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET4)["mempool.space"]),
+                    faucet=link("https://faucet.testnet4.dev/", "faucet"),
                 )
             ),
             bdk.Network.SIGNET: translate(
-                "net_conf", "Signet choose {electrum} and a block explorer on {mempool_url}."
+                "net_conf",
+                "Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.",
             ).format(
                 electrum=link(get_electrum_configs(bdk.Network.SIGNET)["mempool.space"].url),
                 mempool_url=link(get_mempool_url(bdk.Network.SIGNET)["mempool.space"]),
+                faucet=link("https://signet25.bublina.eu.org/", "faucet"),
             ),
         }
         return d[network]
@@ -311,7 +314,14 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                 )
             ),  # nigiri default
             bdk.Network.TESTNET: "",
-            bdk.Network.TESTNET4: "",
+            bdk.Network.TESTNET4: (
+                translate(
+                    "net_conf",
+                    "There is a {faucet} for free test coins.",
+                ).format(
+                    faucet=link("https://faucet.testnet4.dev/", "faucet"),
+                )
+            ),
             bdk.Network.SIGNET: (
                 translate(
                     "net_conf",
@@ -354,7 +364,9 @@ class NetworkConfig(BaseSaveableClass):
 
     def __init__(self, network: bdk.Network) -> None:
         self.network = network
-        self.server_type: BlockchainType = BlockchainType.Esplora
+        self.server_type: BlockchainType = (
+            BlockchainType.Esplora if network == bdk.Network.BITCOIN else BlockchainType.Electrum
+        )
         self.cbf_server_type: CBFServerType = CBFServerType.Automatic
         self.compactblockfilters_ip: str = get_default_cbf_hosts(network=network)["default"]
         self.compactblockfilters_port: int = get_default_port(network, BlockchainType.CompactBlockFilter)

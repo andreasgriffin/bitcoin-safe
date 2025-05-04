@@ -63,7 +63,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import get_wallet_of_address
 
 from ...pythonbdk_types import Recipient, is_address
-from ...signals import Signals
+from ...signals import Signals, UpdateFilter
 from ...util import is_int, unit_sat_str, unit_str
 from .invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox
@@ -153,6 +153,20 @@ class RecipientWidget(QWidget):
         self.signals.language_switch.connect(self.updateUi)
         self.address_edit.signal_text_change.connect(self.on_address_change)
         self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
+        signals.any_wallet_updated.connect(self.update_with_filter)
+
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        if not self.address:
+            return
+
+        should_update = False
+        if should_update or self.address in update_filter.addresses:
+            should_update = True
+
+        if not should_update:
+            return
+
+        self.label_line_edit.autofill_label_and_category(update_filter=update_filter)
 
     def _get_label_ref(self):
         return self.address_edit.address

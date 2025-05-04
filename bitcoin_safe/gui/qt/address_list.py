@@ -458,7 +458,7 @@ class AddressList(MyTreeView):
             self.Columns.CATEGORY: self.tr("Category"),
             self.Columns.LABEL: self.tr("Label"),
             self.Columns.COIN_BALANCE: self.tr("Balance"),
-            self.Columns.FIAT_BALANCE: "$ " + self.tr("Balance"),
+            self.Columns.FIAT_BALANCE: "$ " + self.tr("Value"),
         }
 
     def update_content(self) -> None:

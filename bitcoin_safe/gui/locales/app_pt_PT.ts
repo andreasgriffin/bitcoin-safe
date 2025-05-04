@@ -71,6 +71,10 @@
         <translation>Endereço {address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>troco</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>recebimento</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>Saldo</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>troco</translation>
+        <source>Value</source>
+        <translation>Valor</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>Não amadurecido</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>Data</translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Salvar Carteira Atual</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>Fechando carteira {id}</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>Deseja guardar o PSBT {id}?  </translation>
     </message>
@@ -1691,6 +1684,14 @@ Deseja prosseguir mesmo assim?</translation>
         <translation>Enviar</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Falha no backup. Abortando Alterações.</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>Proceder poderá alterar todos os endereços da carteira. Deseja proceder?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>Não é possível mover o arquivo da carteira, porque {file_path} existe</translation>
     </message>
@@ -1711,10 +1712,6 @@ Deseja prosseguir mesmo assim?</translation>
         <translation>Eliminar carteira  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>Nenhum arquivo selecionado  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>Senha incorreta</translation>
     </message>
@@ -1727,12 +1724,12 @@ Deseja prosseguir mesmo assim?</translation>
         <translation>Nova senha:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>Carteira salva</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Descritor</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>Carteira salva</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1776,12 +1773,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Sincronizando com {server}  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>Conectado a {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>Sincronizar &amp;&amp; Conversar  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>Conectado a {server}  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1812,8 +1809,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Todos os Arquivos (*);;Arquivos JSON (*.jsonl);;Arquivos JSON (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Nenhum arquivo selecionado  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>Importar etiquetas</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>Histórico</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1822,10 +1827,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>Atualizado com sucesso {number} etiquetas  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>Histórico</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1840,6 +1841,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Receber</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>Saldo</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valor</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>Sem alterações a aplicar.</translation>
     </message>
@@ -1847,20 +1856,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>Backup salvo em {filename}</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Falha no backup. Abortando Alterações.</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>Proceder poderá alterar todos os endereços da carteira. Deseja proceder?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>Código QR  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>Endereço</translation>
     </message>
 </context>
 <context>
@@ -2432,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Selecione uma categoria que melhor se ajuste ao destinatário</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>Adicionando pontos de saída {outpoints}</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>Adicionar Entradas</translation>
     </message>
@@ -2702,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>Saldo ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Data</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +3195,10 @@ below {rate}</source>
         <translation>Esta é uma maneira privada e rápida de se conectar à rede bitcoin.</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>Você pode conectar seu próprio nó Bitcoin, como {link}.</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>Execute seu bitcoind com &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
@@ -3224,24 +3228,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>Uma boa opção é {electrum_testnet} e como explorador de blocos {explorer_testnet}</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>Uma boa opção é {electrum_testnet4} e como explorador de blocos {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>Uma boa opção é {electrum_testnet4} e, como explorador de blocos, {explorer_testnet4}. Existe um {faucet} para obter moedas de teste gratuitas.</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet escolha {electrum} e um explorador de blocos em {mempool_url}.  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet escolhe {electrum} e um explorador de blocos em {mempool_url}. Há um {faucet} para moedas de teste grátis。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Você pode configurar {setup} com um servidor esplora em {server} e um explorador de blocos em {explorer}</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>Um servidor (às vezes funciona) é {link} e um explorador de blocos em {explorer}. Há um {faucet}.  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>Existe um {faucet} para obter moedas de teste gratuitas.</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>Você pode conectar seu próprio nó Bitcoin, como {link}.</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Um servidor (às vezes funciona) é {link} e um explorador de blocos em {explorer}. Há um {faucet}.  </translation>
     </message>
 </context>
 <context>

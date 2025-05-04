@@ -1,9 +1,11 @@
 import random
 
+import bdkpython as bdk
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 
 from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
+from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
 from ....signals import TypedPyQtSignalNo
 
@@ -33,9 +35,8 @@ if __name__ == "__main__":
         ReceiveGroup(
             color,
             generate_random_hex_color(),
+            AddressInfoMin(color * 10, 0, bdk.KeychainKind.EXTERNAL),
             color * 10,
-            color * 10,
-            close_all_video_widgets=my.close_all_video_widgets,
         )
     )
     color = generate_random_hex_color()
@@ -43,9 +44,8 @@ if __name__ == "__main__":
         ReceiveGroup(
             color,
             generate_random_hex_color(),
+            AddressInfoMin(color * 10, 0, bdk.KeychainKind.EXTERNAL),
             color * 10,
-            color * 10,
-            close_all_video_widgets=my.close_all_video_widgets,
         )
     )
     color = generate_random_hex_color()
@@ -53,9 +53,8 @@ if __name__ == "__main__":
         ReceiveGroup(
             color,
             generate_random_hex_color(),
+            AddressInfoMin(color * 10, 0, bdk.KeychainKind.EXTERNAL),
             color * 10,
-            color * 10,
-            close_all_video_widgets=my.close_all_video_widgets,
         )
     )
 
