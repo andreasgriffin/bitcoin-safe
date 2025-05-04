@@ -34,10 +34,9 @@ from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 
-logger = logging.getLogger(__name__)
-
-
 from .step_progress_bar import StepProgressContainer
+
+logger = logging.getLogger(__name__)
 
 
 class WizardBase(StepProgressContainer):

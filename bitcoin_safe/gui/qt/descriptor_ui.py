@@ -60,7 +60,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
-from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
+from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
@@ -427,10 +427,10 @@ class DescriptorUI(QWidget):
         # self.import_button.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         self.horizontalLayout_4.addWidget(self.import_button)
         self.action_import_qr = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_qr, icon=read_QIcon("camera.svg")
+            text="", slot=self.on_action_import_qr, icon=svg_tools.get_QIcon("camera.svg")
         )
         self.action_import_clipbard = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_from_clipboard, icon=read_QIcon("clip.svg")
+            text="", slot=self.on_action_import_from_clipboard, icon=svg_tools.get_QIcon("clip.svg")
         )
 
         box_wallet_type_and_descriptor_layout.addWidget(self.groupBox_wallet_descriptor)

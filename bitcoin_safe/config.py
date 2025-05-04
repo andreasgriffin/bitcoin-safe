@@ -34,10 +34,12 @@ from typing import Any, Dict, List, Optional
 
 import appdirs
 import bdkpython as bdk
+from bitcoin_tools.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from packaging import version
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.util import current_project_dir
 
 from .execute_config import DEFAULT_MAINNET
 from .network_config import (
@@ -47,7 +49,6 @@ from .network_config import (
     get_esplora_urls,
 )
 from .storage import BaseSaveableClass
-from .util import current_project_dir, path_to_rel_home_path, rel_home_path_to_abs_path
 
 logger = logging.getLogger(__name__)
 

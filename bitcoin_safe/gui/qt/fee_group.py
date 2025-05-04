@@ -31,8 +31,9 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis, format_fee_rate, unit_fee_str
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QGroupBox,
@@ -44,7 +45,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import icon_path
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -53,7 +54,6 @@ from bitcoin_safe.wallet import TxConfirmationStatus
 
 from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 from ...mempool import MempoolData, TxPrio
-from ...util import Satoshis, format_fee_rate, unit_fee_str
 from .block_buttons import (
     BaseBlock,
     ConfirmedBlock,
@@ -73,7 +73,7 @@ class FeeRateWarningBar(NotificationBar):
             has_close_button=False,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(QIcon(icon_path("warning.png")))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
         self.network = network
 
         self.optionalButton.setVisible(False)
@@ -117,7 +117,7 @@ class FeeWarningBar(NotificationBar):
         )
         self.network = network
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(QIcon(icon_path("warning.png")))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
 

@@ -50,12 +50,13 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import Signals
-from .util import Message, MessageType, generate_help_button, read_QIcon
+from .util import Message, MessageType, generate_help_button
 
 logger = logging.getLogger(__name__)
 
@@ -92,7 +93,7 @@ class USBValidateAddressWidget(QWidget):
         self.button_validate_address = SpinningButton(
             text="",
             enable_signal=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=read_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
         )
@@ -184,7 +185,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
             Message(
                 self.tr("Successfully registered multisig wallet on hardware signer"),
                 type=MessageType.Info,
-                icon=read_QIcon("checkmark.svg"),
+                icon=svg_tools.get_QIcon("checkmark.svg"),
             )
         return result
 

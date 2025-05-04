@@ -30,10 +30,9 @@
 import logging
 from typing import Optional
 
-logger = logging.getLogger(__name__)
-
-
 from PyQt6.QtCore import QCoreApplication
+
+logger = logging.getLogger(__name__)
 
 
 # this function must eb named identical to QCoreApplication.translate

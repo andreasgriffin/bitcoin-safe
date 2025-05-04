@@ -34,11 +34,12 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.tx_util import serialized_to_hex
 from packaging import version
 from PyQt6.QtCore import QObject
 
 from .storage import BaseSaveableClass, SaveAllClass
-from .util import Satoshis, serialized_to_hex
 
 logger = logging.getLogger(__name__)
 

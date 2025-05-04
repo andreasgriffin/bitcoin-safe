@@ -32,16 +32,17 @@ from typing import Dict, Optional, Tuple
 
 from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFont, QIcon, QKeyEvent
+from PyQt6.QtGui import QColor, QFont, QKeyEvent
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
 
 from ...hardware_signers import HardwareSigners
-from .util import adjust_bg_color_for_darkmode, icon_path, screenshot_path
+from .util import adjust_bg_color_for_darkmode, screenshot_path
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ class SeedWarningBar(NotificationBar):
             has_close_button=False,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(QIcon(icon_path("warning.png")))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
 

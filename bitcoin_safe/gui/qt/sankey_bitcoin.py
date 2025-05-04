@@ -32,6 +32,7 @@ import platform
 from typing import Dict, List, Optional
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
 from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
@@ -48,7 +49,6 @@ from bitcoin_safe.pythonbdk_types import (
     robust_address_str_from_script,
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
-from bitcoin_safe.util import Satoshis
 from bitcoin_safe.wallet import Wallet, get_label_from_any_wallet, get_wallets
 
 logger = logging.getLogger(__name__)

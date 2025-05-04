@@ -43,7 +43,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget, T
-from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
@@ -149,7 +149,7 @@ class LoadingWalletTab(QWidget):
     def __enter__(self) -> None:
         self.tabs.add_tab(
             tab=self,
-            icon=read_QIcon("status_waiting.svg"),
+            icon=svg_tools.get_QIcon("status_waiting.svg"),
             description=self.name,
             data=None,
             focus=self.focus,

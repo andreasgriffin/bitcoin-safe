@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import enum
 import logging
 from functools import partial
@@ -34,6 +33,7 @@ from typing import List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import unit_fee_str
 from PyQt6.QtCore import QDateTime, QLocale, QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
@@ -47,13 +47,18 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import ENABLE_TIMERS, MEMPOOL_SCHEDULE_TIMER
-from bitcoin_safe.util import block_explorer_URL_of_projected_block, unit_fee_str
 
 from ...html_utils import html_f
 from ...mempool import MempoolData, fee_to_color, mempoolFeeColors
 from ...signals import TypedPyQtSignal
 from .invisible_scroll_area import InvisibleScrollArea
-from .util import AspectRatioSvgWidget, center_in_widget, icon_path, open_website
+from .util import (
+    AspectRatioSvgWidget,
+    block_explorer_URL_of_projected_block,
+    center_in_widget,
+    open_website,
+    svg_tools,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -170,7 +175,12 @@ class LabelExplorer(BaseBlockLabel):
 
 class ButtonExplorerIcon(AspectRatioSvgWidget):
     def __init__(self, parent=None) -> None:
-        super().__init__(svg_path=icon_path("block-explorer.svg"), max_height=20, max_width=20, parent=parent)
+        super().__init__(
+            svg_content=svg_tools.get_svg_content("block-explorer.svg"),
+            max_height=20,
+            max_width=20,
+            parent=parent,
+        )
         self.setVisible(False)
 
 

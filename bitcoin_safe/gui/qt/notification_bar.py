@@ -30,6 +30,7 @@ import logging
 import sys
 from typing import Callable, Optional, Tuple
 
+from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QColor, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
@@ -38,15 +39,34 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QSizePolicy,
+    QStyle,
+    QStyleOptionButton,
+    QStylePainter,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
-from .recipients import CloseButton
+from bitcoin_safe.gui.qt.util import svg_tools
+
 from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
+
+
+class CloseButton(QPushButton):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.setFixedSize(QSize(16, 16))  # Adjust the size as needed
+
+    def paintEvent(self, event) -> None:
+        painter = QStylePainter(self)
+        option = QStyleOptionButton()
+        option.initFrom(self)
+        option.features = QStyleOptionButton.ButtonFeature.None_
+        option.icon = svg_tools.get_QIcon("close.svg")
+        option.iconSize = QSize(14, 14)  # Adjust icon size as needed
+        painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 
 
 class NotificationBar(QWidget):

@@ -82,12 +82,14 @@ class KeyStoreImporterType(SaveAllClass):
 
 
 class KeyStoreImporterTypes:
-    hwi = KeyStoreImporterType("hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "usb.svg")
+    hwi = KeyStoreImporterType(
+        "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "bi--usb-symbol.svg"
+    )
     file = KeyStoreImporterType(
         "file",
         "SD card",
         "Import signer details\nvia SD card",
-        "sd-card.svg",
+        "bi--sd-card.svg",
     )
     clipboard = KeyStoreImporterType(
         "clipboard",
@@ -99,13 +101,7 @@ class KeyStoreImporterTypes:
         "qr",
         "QR Code",
         "Import signer details\nvia QR code",
-        "camera.svg",
-    )
-    watch_only = KeyStoreImporterType(
-        "watch_only",
-        "Watch-Only",
-        "xPub / Public Key\nInformation",
-        "key-hole-icon.svg",
+        "bi--qr-code-scan.svg",
     )
     seed = KeyStoreImporterType(
         "seed",
@@ -117,7 +113,7 @@ class KeyStoreImporterTypes:
 
     @classmethod
     def list_types(cls, network: bdk.Network) -> List[KeyStoreImporterType]:
-        return [v for v in [cls.hwi, cls.file, cls.qr, cls.watch_only, cls.seed] if network in v.networks]
+        return [v for v in [cls.hwi, cls.file, cls.qr, cls.seed] if network in v.networks]
 
     @classmethod
     def list_names(cls, network: bdk.Network) -> List[str]:

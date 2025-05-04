@@ -60,8 +60,8 @@ from bitcoin_safe.gui.qt.util import (
     ensure_scheme,
     generate_help_website_open,
     get_host_and_port,
-    read_QIcon,
     remove_scheme,
+    svg_tools,
     webopen,
 )
 from bitcoin_safe.network_config import (
@@ -181,11 +181,11 @@ class NetworkSettingsUI(QDialog):
         self.network_configs = network_configs
         self._layout = QVBoxLayout(self)
 
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.network_combobox = QComboBox(self)
         for _network in bdk.Network:
             self.network_combobox.addItem(
-                read_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
+                svg_tools.get_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
             )
         self._layout.addWidget(self.network_combobox)
 
@@ -348,7 +348,7 @@ class NetworkSettingsUI(QDialog):
         self.groupbox_blockexplorer = QGroupBox()
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
         button_mempool = QPushButton(self)
-        button_mempool.setIcon(read_QIcon("block-explorer.svg"))
+        button_mempool.setIcon(svg_tools.get_QIcon("block-explorer.svg"))
         button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
@@ -380,7 +380,7 @@ class NetworkSettingsUI(QDialog):
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
         self.proxy_warning_label.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.proxy_warning_label.set_icon(read_QIcon("warning.png"))
+        self.proxy_warning_label.set_icon(svg_tools.get_QIcon("warning.svg"))
         self._layout.addWidget(self.proxy_warning_label)
 
         # Create buttons and layout

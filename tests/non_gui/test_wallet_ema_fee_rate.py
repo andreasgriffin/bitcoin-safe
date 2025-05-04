@@ -43,7 +43,6 @@ from ..util import make_psbt
 from .test_wallet_coin_select import TestWalletConfig
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 @pytest.fixture(

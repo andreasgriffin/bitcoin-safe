@@ -31,8 +31,8 @@ import logging
 from functools import partial
 from typing import List
 
-from bitcoin_nostr_chat.ui.util import insert_invisible_spaces_for_wordwrap
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
+from bitcoin_tools.util import insert_invisible_spaces_for_wordwrap
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
@@ -46,7 +46,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import do_copy, read_QIcon
+from bitcoin_safe.gui.qt.util import do_copy, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -134,15 +134,17 @@ class ReceiveGroup(TitledComponent):
         self._layout.addWidget(button_group_widget)
         button_group_widget_layout.addStretch()
 
-        force_new_button = FlatSquareButton(qicon=read_QIcon("reset-update.svg"), parent=button_group_widget)
+        force_new_button = FlatSquareButton(
+            qicon=svg_tools.get_QIcon("reset-update.svg"), parent=button_group_widget
+        )
         force_new_button.clicked.connect(partial(self.signal_set_address_as_used.emit, address_info))
         button_group_widget_layout.addWidget(force_new_button)
 
-        copy_button = FlatSquareButton(qicon=read_QIcon("copy.png"), parent=button_group_widget)
+        copy_button = FlatSquareButton(qicon=svg_tools.get_QIcon("bi--copy.svg"), parent=button_group_widget)
         copy_button.clicked.connect(partial(do_copy, text=address_info.address, title=self.tr("Address")))
         button_group_widget_layout.addWidget(copy_button)
 
-        qr_button = FlatSquareButton(qicon=read_QIcon("qr-code.svg"), parent=button_group_widget)
+        qr_button = FlatSquareButton(qicon=svg_tools.get_QIcon("bi--qr-code.svg"), parent=button_group_widget)
         qr_button.clicked.connect(self.qr_code.enlarge_image)
         button_group_widget_layout.addWidget(qr_button)
 

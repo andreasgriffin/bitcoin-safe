@@ -37,7 +37,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout,
 from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
-from .util import icon_path
+from .util import get_icon_path
 
 
 class SpinningButton(QPushButton):
@@ -52,7 +52,7 @@ class SpinningButton(QPushButton):
     ) -> None:
         super().__init__(text, parent)
         if spinning_svg_path is None:
-            spinning_svg_path = icon_path("loader-icon.svg")
+            spinning_svg_path = get_icon_path("loader-icon.svg")
         self.svg_renderer = QSvgRenderer(spinning_svg_path)
         self.rotation_angle = 0
         self._icon_size = QSize(18, 18)  # Default icon size
@@ -162,7 +162,7 @@ if __name__ == "__main__":
             super(MainWindow, self).__init__()
 
             # Replace 'path/to/your.svg' with the path to your SVG file
-            self.button = SpinningButton("Button Text", spinning_svg_path=icon_path("loader-icon.svg"))
+            self.button = SpinningButton("Button Text", spinning_svg_path=get_icon_path("loader-icon.svg"))
 
             layout = QVBoxLayout()
             layout.addWidget(self.button)

@@ -64,6 +64,8 @@ from functools import partial
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from bitcoin_qr_tools.data import Data
+from bitcoin_tools.gui.qt.util import str_to_qbytearray
+from bitcoin_tools.util import unique_elements
 from PyQt6 import QtCore
 from PyQt6.QtCore import (
     QAbstractItemModel,
@@ -115,15 +117,15 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.dialog_import import file_to_str
 from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.util import str_to_qbytearray, unique_elements
 from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
 from ...signals import TypedPyQtSignalNo
-from .util import do_copy, read_QIcon
+from .util import do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -484,6 +486,7 @@ class MyTreeView(QTreeView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
         self.setUniformRowHeights(True)
+        self.setIconSize(QSize(20, 20))
 
         # Control which columns are editable
         if editable_columns is None:
@@ -606,7 +609,7 @@ class MyTreeView(QTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
@@ -617,7 +620,7 @@ class MyTreeView(QTreeView):
 
     def add_copy_menu(self, menu: Menu, idx: QModelIndex, include_columns_even_if_hidden=None) -> Menu:
         copy_menu = menu.add_menu(self.tr("Copy"))
-        copy_menu.setIcon(read_QIcon("copy.png"))
+        copy_menu.setIcon(svg_tools.get_QIcon("bi--copy.svg"))
 
         for column in self.Columns:
             if self.isColumnHidden(column) and (
@@ -1204,13 +1207,13 @@ class TreeViewWithToolbar(SearchableTab):
     def create_toolbar_with_menu(self, title):
         self.menu = MyMenu(self.config)
         self.action_export_as_csv = self.menu.add_action(
-            "", self._searchable_list_export_as_csv, icon=read_QIcon("csv-file.svg")
+            "", self._searchable_list_export_as_csv, icon=svg_tools.get_QIcon("bi--filetype-csv.svg")
         )
 
         toolbar_button = QToolButton()
 
         toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
-        toolbar_button.setIcon(read_QIcon("preferences.svg"))
+        toolbar_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         toolbar_button.setMenu(self.menu)
         toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)

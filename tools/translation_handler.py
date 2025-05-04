@@ -36,8 +36,9 @@ from pathlib import Path
 from subprocess import CompletedProcess
 from typing import List, Tuple, Union
 
+from bitcoin_tools.util import threadtable
+
 from bitcoin_safe.gui.qt.language_chooser import FLAGS
-from bitcoin_safe.util import threadtable
 
 logger = logging.getLogger(__name__)
 
