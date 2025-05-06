@@ -31,7 +31,7 @@ import logging
 from unittest.mock import patch
 
 import pytest
-from PyQt6.QtWidgets import QApplication, QPushButton, QWidget
+from PyQt6.QtWidgets import QApplication, QPushButton, QToolButton, QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.buttonedit import (
@@ -77,8 +77,7 @@ def test_square_button(qapp: QApplication):
     icon = QIcon()
     parent = QWidget()
     button = SquareButton(icon, parent)
-    assert isinstance(button, QPushButton)
-    assert button.maximumSize() == QSize(24, 24)
+    assert isinstance(button, QToolButton)
     assert button.parent() == parent
     assert button.icon().cacheKey() == icon.cacheKey()
 
