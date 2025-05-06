@@ -33,19 +33,19 @@ from typing import List
 
 from bitcoin_nostr_chat.ui.util import insert_invisible_spaces_for_wordwrap
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.buttonedit import SquareButton
 from bitcoin_safe.gui.qt.util import do_copy, read_QIcon
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
@@ -98,6 +98,14 @@ class TitledComponent(QWidget):
         )
 
 
+class FlatSquareButton(QPushButton):
+    def __init__(self, qicon: QIcon, parent) -> None:
+        super().__init__(parent)
+        self.setIcon(qicon)
+        self.setFlat(True)
+        self.setFixedSize(QSize(24, 24))
+
+
 class ReceiveGroup(TitledComponent):
     signal_set_address_as_used: TypedPyQtSignal[AddressInfoMin] = pyqtSignal(AddressInfoMin)  # type: ignore
 
@@ -126,15 +134,15 @@ class ReceiveGroup(TitledComponent):
         self._layout.addWidget(button_group_widget)
         button_group_widget_layout.addStretch()
 
-        force_new_button = SquareButton(read_QIcon("reset-update.svg"), parent=button_group_widget)
+        force_new_button = FlatSquareButton(qicon=read_QIcon("reset-update.svg"), parent=button_group_widget)
         force_new_button.clicked.connect(partial(self.signal_set_address_as_used.emit, address_info))
         button_group_widget_layout.addWidget(force_new_button)
 
-        copy_button = SquareButton(read_QIcon("copy.png"), parent=button_group_widget)
+        copy_button = FlatSquareButton(qicon=read_QIcon("copy.png"), parent=button_group_widget)
         copy_button.clicked.connect(partial(do_copy, text=address_info.address, title=self.tr("Address")))
         button_group_widget_layout.addWidget(copy_button)
 
-        qr_button = SquareButton(read_QIcon("qr-code.svg"), parent=button_group_widget)
+        qr_button = FlatSquareButton(qicon=read_QIcon("qr-code.svg"), parent=button_group_widget)
         qr_button.clicked.connect(self.qr_code.enlarge_image)
         button_group_widget_layout.addWidget(qr_button)
 
