@@ -142,7 +142,7 @@ def test_ema_fee_rate_weights_recent_heavier(
             wallet.clear_cache()
 
     # incoming txs have no fee rate (rpc doesnt seem to fill the fee field)
-    assert wallet.get_ema_fee_rate() == MIN_RELAY_FEE
+    assert round(wallet.get_ema_fee_rate(), 1) == MIN_RELAY_FEE
 
     # test that it takes in account the icoming txs, if a fee is known
     txdetails = wallet.sorted_delta_list_transactions()

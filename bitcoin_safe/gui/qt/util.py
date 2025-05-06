@@ -653,6 +653,9 @@ class ColorScheme:
     DEFAULT = ColorSchemeItem("black", "white")
     GRAY = ColorSchemeItem("gray", "gray")
 
+    Purple = ColorSchemeItem("#7616ff", "#7616ff")
+    OrangeBitcoin = ColorSchemeItem("#f7931a", "#f7931a")
+
     @staticmethod
     def has_dark_background(widget: QWidget):
         background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
@@ -933,3 +936,26 @@ def create_color_circle(color: QColor, size=24, margin=1):
     painter.drawEllipse(margin, margin, size - 2 * margin, size - 2 * margin)
     painter.end()
     return QIcon(pixmap)
+
+
+def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
+    """
+    Linearly interpolate between two QColors.
+
+    Args:
+        c1: First QColor.
+        c2: Second QColor.
+        t:  Blend factor in [0.0, 1.0]. 0.0→c1, 1.0→c2, 0.5→midpoint.
+
+    Returns:
+        A new QColor whose components are (1-t)*c1 + t*c2.
+    """
+    # clamp t
+    t = max(0.0, min(1.0, t))
+
+    r = int(c1.red() * (1 - t) + c2.red() * t)
+    g = int(c1.green() * (1 - t) + c2.green() * t)
+    b = int(c1.blue() * (1 - t) + c2.blue() * t)
+    a = int(c1.alpha() * (1 - t) + c2.alpha() * t)
+
+    return QColor(r, g, b, a)

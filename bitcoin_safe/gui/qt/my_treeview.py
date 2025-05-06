@@ -87,7 +87,6 @@ from PyQt6.QtGui import (
     QDragEnterEvent,
     QDragMoveEvent,
     QDropEvent,
-    QFont,
     QHelpEvent,
     QKeyEvent,
     QMouseEvent,
@@ -518,10 +517,6 @@ class MyTreeView(QTreeView):
             source_model=self._source_model,
             sort_role=MyItemDataRole.ROLE_SORT_ORDER,
         )
-
-        # Here's where we set the font globally for the view
-        font = QFont("Arial", 10)
-        self.setFont(font)
 
         self.setAcceptDrops(True)
         if viewport := self.viewport():
@@ -1148,6 +1143,12 @@ class MyTreeView(QTreeView):
 
         return super().selectionCommand(index, event)
 
+    def get_selected_keys(self) -> List[str]:
+        if not self.model():
+            return []
+        items = self.selected_in_column(self.key_column)
+        return [x.data(MyItemDataRole.ROLE_KEY) for x in items]
+
     def set_allow_edit(self, allow_edit: bool):
         self.allow_edit = allow_edit
 
@@ -1216,6 +1217,7 @@ class TreeViewWithToolbar(SearchableTab):
         self.toolbar = QHBoxLayout()
 
         self.balance_label = QLabel()
+        self.balance_label.setVisible(False)
 
         self.search_edit = QLineEdit()
         self.search_edit.setClearButtonEnabled(True)

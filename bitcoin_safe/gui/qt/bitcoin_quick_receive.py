@@ -34,6 +34,7 @@ import bdkpython as bdk
 from PyQt6.QtGui import QShowEvent
 
 from bitcoin_safe.gui.qt.util import category_color
+from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
 from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...wallet import Wallet
@@ -60,7 +61,8 @@ class BitcoinQuickReceive(
         self.limit_to_categories = limit_to_categories
         self._pending_update = False
 
-        self.setFixedHeight(250)
+        # fixed height
+        self.setFixedHeight(220)
 
         # signals
         self.wallet_signals.updated.connect(self.update_content)
@@ -70,16 +72,23 @@ class BitcoinQuickReceive(
         self.update_content(UpdateFilter(refresh_all=True))
 
     def set_address(self, category: str, address_info: bdk.AddressInfo):
-        address = str(address_info.address)
+        receive_group = ReceiveGroup(
+            category,
+            category_color(category).name(),
+            AddressInfoMin.from_bdk_address_info(address_info),
+            address_info.address.to_qr_uri(),
+            parent=self,
+        )
+        receive_group.signal_set_address_as_used.connect(self.on_signal_set_address_as_used)
+        self.add_box(receive_group)
 
-        self.add_box(
-            ReceiveGroup(
-                category,
-                category_color(category).name(),
-                address,
-                address_info.address.to_qr_uri(),
-                parent=self,
-                close_all_video_widgets=self.signals_min.close_all_video_widgets,
+    def on_signal_set_address_as_used(self, address_info: AddressInfoMin):
+        self.wallet.bdkwallet.mark_used(keychain=address_info.keychain, index=address_info.index)
+        self.wallet_signals.updated.emit(
+            UpdateFilter(
+                addresses=[address_info.address],
+                categories=[],
+                reason=UpdateFilterReason.AddressMarkedUsed,
             )
         )
 
@@ -110,7 +119,12 @@ class BitcoinQuickReceive(
             return
 
         should_update = False
-        if should_update or update_filter.refresh_all:
+        if (
+            should_update
+            or update_filter.refresh_all
+            or update_filter.reason
+            in [UpdateFilterReason.CategoryAdded, UpdateFilterReason.AddressMarkedUsed]
+        ):
             should_update = True
         if should_update or set(self.addresses).intersection(update_filter.addresses):
             should_update = True

@@ -71,6 +71,10 @@
         <translation>العنوان {address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>تغيير</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>استقبال</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>رصيد</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>تغيير</translation>
+        <source>Value</source>
+        <translation>القيمة</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>غير ناضج</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>تاريخ</translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;حفظ المحفظة الحالية</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>جارٍ إغلاق المحفظة {id}</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>هل تريد حفظ PSBT {id}؟  </translation>
     </message>
@@ -1691,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>إرسال</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>المتابعة قد تغير جميع عناوين المحافظ. هل تريد المتابعة؟  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>لا يمكن نقل ملف المحفظة، لأن {file_path} موجود</translation>
     </message>
@@ -1711,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>حذف المحفظة  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>لم يتم اختيار ملف  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>كلمة المرور غير صحيحة</translation>
     </message>
@@ -1727,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>كلمة مرور جديدة:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>تم حفظ المحفظة</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>وصف</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>تم حفظ المحفظة</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1776,12 +1773,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>مزامنة مع {server}  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>متصل بـ {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>المزامنة &amp;&amp; الدردشة  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>متصل بـ {server}  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1812,8 +1809,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>جميع الملفات (*);;ملفات JSON (*.jsonl);;ملفات JSON (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>استيراد التسميات</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>التاريخ</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1822,10 +1827,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>تم تحديث {number} من العلامات بنجاح  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>التاريخ</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1840,6 +1841,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>استلام</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>لا توجد تغييرات لتطبيقها.</translation>
     </message>
@@ -1847,20 +1856,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>تم حفظ النسخ الاحتياطي إلى {filename}</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>المتابعة قد تغير جميع عناوين المحافظ. هل تريد المتابعة؟  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>رمز الاستجابة السريعة  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
     </message>
 </context>
 <context>
@@ -2432,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>حدد الفئة التي تناسب المستلم بشكل أفضل</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>إضافة نقاط خارجية {outpoints}</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>إضافة المدخلات</translation>
     </message>
@@ -2702,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>الرصيد ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>تاريخ</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +3195,10 @@ below {rate}</source>
         <translation>هذه طريقة خاصة وسريعة للاتصال بشبكة البيتكوين.</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>يمكنك ربط عقدة البيتكوين الخاصة بك، مثل {link}.</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
@@ -3224,24 +3228,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>خيار جيد هو {electrum_testnet}، ومُستكشف الكتل هو {explorer_testnet}</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>خيار جيد هو {electrum_testnet4} وكمستكشف بلوك {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>خيار جيد هو {electrum_testnet4} وكمتصفح للكتل {explorer_testnet4}. هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>اختر Signet {electrum} ومستكشف بلوك على {mempool_url}.  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet يختار {electrum} ويستخدم مستعرض الكتل على {mempool_url}. يوجد {faucet} للحصول على عملات اختبار مجانية。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>يمكنك إعداد {setup} باستخدام خادم esplora على {server} ومستكشف الكتل على {explorer}</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>خادم (يعمل أحياناً) هو {link} ومستكشف بلوك على {explorer}. هناك {faucet}.  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>يمكنك ربط عقدة البيتكوين الخاصة بك، مثل {link}.</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>خادم (يعمل أحياناً) هو {link} ومستكشف بلوك على {explorer}. هناك {faucet}.  </translation>
     </message>
 </context>
 <context>

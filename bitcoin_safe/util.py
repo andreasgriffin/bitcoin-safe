@@ -50,9 +50,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -915,3 +918,45 @@ def str_to_qbytearray(s: str) -> QByteArray:
 
 def unique_elements(iterable: Iterable):
     return list(dict.fromkeys(iterable))
+
+
+def monotone_increasing_timestamps(
+    heights_timestamps: List[Tuple[int, datetime]], default_block_time: timedelta = timedelta(minutes=1)
+) -> List[datetime]:
+    """
+    Given a monotone‐increasing list of (height, timestamp) pairs where
+    timestamp is a datetime, returns a list of datetimes whose values
+    never decrease. Whenever an input timestamp would go backwards,
+    bumps it to last_timestamp + default_block_time * height_difference.
+
+    Args:
+        heights_timestamps: List of (block_height, timestamp) with strictly
+            increasing block_height and timestamp as datetime.
+        default_block_time: Fallback timedelta per block height difference.
+
+    Returns:
+        List[datetime]: corrected, non‐decreasing timestamps.
+    """
+    if not heights_timestamps:
+        return []
+
+    result: List[datetime] = []
+
+    # Initialize with first entry
+    last_height, last_ts = heights_timestamps[0]
+    result.append(last_ts)
+
+    # Process the rest
+    for height, ts in heights_timestamps[1:]:
+        # how many blocks since last
+        height_diff = height - last_height
+
+        if ts >= last_ts:
+            fixed_ts = ts
+        else:
+            fixed_ts = last_ts + default_block_time * height_diff
+
+        result.append(fixed_ts)
+        last_height, last_ts = height, fixed_ts
+
+    return result

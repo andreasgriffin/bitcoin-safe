@@ -46,6 +46,7 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QTextEdit,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -65,10 +66,11 @@ from ...signals import TypedPyQtSignal
 logger = logging.getLogger(__name__)
 
 
-class SquareButton(QPushButton):
+class SquareButton(QToolButton):
     def __init__(self, qicon: QIcon, parent) -> None:
-        super().__init__(qicon, "", parent)
-        self.setMaximumSize(24, 24)
+        super().__init__(parent)
+        self.setIcon(qicon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
 
 class ButtonsField(QWidget):
@@ -78,7 +80,7 @@ class ButtonsField(QWidget):
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setSpacing(0)
         self.vertical_align = vertical_align
-        self.buttons: List[QPushButton] = []
+        self.buttons: List[QPushButton | QToolButton] = []
 
     def minimumSizeHint(self) -> QSize:
         # Initialize minimum width and height
@@ -147,7 +149,7 @@ class ButtonsField(QWidget):
         if self.vertical_align == Qt.AlignmentFlag.AlignTop:
             self.grid_layout.setRowStretch(num_rows + 1, 1)
 
-    def append_button(self, button: QPushButton):
+    def append_button(self, button: QPushButton | QToolButton):
         self.buttons.append(button)
         self.rearrange_buttons()
 
@@ -412,7 +414,7 @@ class ButtonEdit(QWidget):
         self,
         callback_open_filepath: Callable | None = None,
         filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
-    ) -> QPushButton:
+    ) -> QPushButton | QToolButton:
 
         button = self.add_button(
             None,

@@ -311,11 +311,16 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
             self.set_category_visible(False)
             self.set_category("")
 
-    def autofill_label(self, update_filter: UpdateFilter | None = None):
+    def autofill_label(self, update_filter: UpdateFilter | None = None, overwrite_existing=False):
         ref = self.get_label_ref()
         if update_filter and not (
             (ref in update_filter.addresses or ref in update_filter.txids) or update_filter.refresh_all
         ):
+            return
+
+        # decide wether to overwrite an existing label or not
+        if (not overwrite_existing) and self.label() and not self.label_edit.isReadOnly():
+            # do not overwrite an existing label that the user can edit
             return
 
         logger.debug(f"{self.__class__.__name__} update_with_filter")

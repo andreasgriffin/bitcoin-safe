@@ -42,7 +42,7 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import QCoreApplication, QPoint, QProcess, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
+from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
@@ -60,6 +60,7 @@ from bitcoin_safe import __version__
 from bitcoin_safe.client import Client
 from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_list import CategoryEditor
+from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
@@ -138,6 +139,7 @@ class MainWindow(QMainWindow):
         # however I need to clear them again with signal_remove_attached_widget
         self.attached_widgets = AttachedWidgets(maxlen=10000)
         self.setMinimumSize(600, 600)
+        self.log_color_palette()
 
         self.signals = Signals()
         self.threading_manager = ThreadingManager(threading_manager_name=self.__class__.__name__)
@@ -229,6 +231,17 @@ class MainWindow(QMainWindow):
         self.setup_signal_handlers()
 
         delayed_execution(self.load_last_state, self)
+
+        # demo wallets
+        if self.config.network in [
+            bdk.Network.REGTEST,
+            bdk.Network.SIGNET,
+            bdk.Network.TESTNET,
+            bdk.Network.TESTNET4,
+        ]:
+            demo_wallet_files = copy_testnet_demo_wallet(config=self.config)
+            for demo_wallet_file in demo_wallet_files:
+                self.add_recently_open_wallet(str(demo_wallet_file))
 
     @property
     def qt_wallets(self) -> Dict[str, QTWallet]:
@@ -376,6 +389,13 @@ class MainWindow(QMainWindow):
             data = self.tab_wallets.get_data_for_tab(tab)
             if isinstance(data, cls):
                 self.close_tab(index)
+
+    def log_color_palette(self):
+        pal = self.palette()
+        d = {}
+        for role in QPalette.ColorRole:
+            d[f"{role}"] = f"{pal.color(role).name()}"
+        logger.debug(f"QColors QPalette {d}")
 
     def init_menubar(self) -> None:
         self.menubar = MenuBar()
@@ -651,7 +671,12 @@ class MainWindow(QMainWindow):
             self.tab_wallets.setCurrentWidget(last_qt_wallet_involved)
             last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
 
-        QTimer.singleShot(1000, self.sync_all)
+        # due to fulcrum delay,
+        # syncing immediately after broadcast will not see the new tx.
+        # So I have to wait until it is taken into the electrum server index
+        QTimer.singleShot(2000, self.sync_all)
+        # # the second sync is a backup, in case the first didnt catch
+        # QTimer.singleShot(6000, self.sync_all)
 
     def sync_all(self):
         for qt_wallet in self.qt_wallets.values():

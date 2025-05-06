@@ -554,6 +554,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             for keystore in keystores:
                 if keystore.fingerprint == fingerprint:
                     return keystore
+                if keystore.network != network:
+                    raise WalletInputsInconsistentError(
+                        f"Wallet file contains different networks: {keystore.network=} != {network=}"
+                    )
             return None
 
         if not keystores:
@@ -959,10 +963,16 @@ class Wallet(BaseSaveableClass, CacheManager):
         return None
 
     def reverse_search_unused_address(
-        self, category: Optional[str] = None, is_change=False
+        self,
+        category: Optional[str] = None,
+        is_change=False,
     ) -> Optional[bdk.AddressInfo]:
 
         result: Optional[bdk.AddressInfo] = None
+        bdk_unused_addresses = self.bdkwallet.list_unused_addresses(
+            AddressInfoMin.is_change_to_keychain(is_change=is_change)
+        )
+        bdk_unused_addresses_str = [str(a.address) for a in bdk_unused_addresses]
 
         for index, address_str in reversed(list(enumerate(self._get_addresses(is_change=is_change)))):
 
@@ -972,7 +982,11 @@ class Wallet(BaseSaveableClass, CacheManager):
                 if (
                     not category
                     or (not self.labels.get_category_raw(address_str))
-                    or (category and self.labels.get_category(address_str) == category)
+                    or (
+                        category
+                        and (self.labels.get_category(address_str) == category)
+                        and (address_str in bdk_unused_addresses_str)
+                    )
                 ):
                     result = self.bdkwallet.peek_address(
                         index=index,

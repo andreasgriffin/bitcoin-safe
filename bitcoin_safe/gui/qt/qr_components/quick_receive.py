@@ -28,25 +28,28 @@
 
 
 import logging
+from functools import partial
 from typing import List
 
+from bitcoin_nostr_chat.ui.util import insert_invisible_spaces_for_wordwrap
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFont, QPalette
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
-    QGraphicsDropShadowEffect,
+    QFrame,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
+from bitcoin_safe.gui.qt.util import do_copy, read_QIcon
+from bitcoin_safe.pythonbdk_types import AddressInfoMin
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -57,67 +60,107 @@ class TitledComponent(QWidget):
         self._layout = QVBoxLayout(self)
         self._layout.setSpacing(3)
 
+        # 1) Give this widget a unique objectName
+        self.setObjectName("titledComponent")
+
         self.title = QLabel(title, self)
+        self._radius = 20
 
         font = QFont()
         font.setBold(True)
         self.title.setFont(font)
         self.title.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
 
-        # Set the background color
-        palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, QColor(hex_color))
-        self.setPalette(palette)
-        self.setAutoFillBackground(True)
+        # # Set the background color
+        # palette = self.palette()
+        # palette.setColor(QPalette.ColorRole.Window, QColor(hex_color))
+        # self.setPalette(palette)
+        # self.setAutoFillBackground(True)
 
         self._layout.addWidget(self.title)
 
+        # 1) Give this widget a unique objectName
+        self.setObjectName("titledComponent")
+
+        # 2) Enable CSS painting
+        self.setAutoFillBackground(False)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        # 3) Apply a stylesheet that only matches #titledComponent
+        self.setStyleSheet(
+            f"""
+            /* only the widget with objectName 'titledComponent' */
+            #titledComponent {{
+                background-color: {hex_color};
+                border-radius: 10px;
+            }}
+        """
+        )
+
+
+class FlatSquareButton(QPushButton):
+    def __init__(self, qicon: QIcon, parent) -> None:
+        super().__init__(parent)
+        self.setIcon(qicon)
+        self.setFlat(True)
+        self.setFixedSize(QSize(24, 24))
+
 
 class ReceiveGroup(TitledComponent):
+    signal_set_address_as_used: TypedPyQtSignal[AddressInfoMin] = pyqtSignal(AddressInfoMin)  # type: ignore
+
     def __init__(
         self,
         category: str,
         hex_color: str,
-        address: str,
+        address_info: AddressInfoMin,
         qr_uri: str,
-        close_all_video_widgets: TypedPyQtSignalNo,
         width=170,
         parent=None,
     ) -> None:
         super().__init__(title=category, hex_color=hex_color, parent=parent)
+        self.address_info = address_info
         self.setFixedWidth(width)
+        self._layout.setContentsMargins(12, 12, 12, 12)  # Left, Top, Right, Bottom margins
 
         # QR Code
         self.qr_code = QRCodeWidgetSVG(always_animate=True, parent=self)
         self.qr_code.set_data_list([qr_uri])
         self._layout.addWidget(self.qr_code)
 
-        input_field = AnalyzerTextEdit(address, parent=self)
-        self.text_edit = ButtonEdit(
-            input_field=input_field, parent=self, close_all_video_widgets=close_all_video_widgets
-        )
-        input_field.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.text_edit.setReadOnly(True)
-        self.text_edit.add_copy_button()
-        self.text_edit.input_field.setStyleSheet(
-            f"""
-            background-color: {hex_color};
-            border: none;
-            """
-        )
+        button_group_widget = QWidget()
+        button_group_widget_layout = QHBoxLayout(button_group_widget)
+        button_group_widget_layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.addWidget(button_group_widget)
+        button_group_widget_layout.addStretch()
 
-        glow_effect = QGraphicsDropShadowEffect(parent)
-        glow_effect.setOffset(3)
-        glow_effect.setBlurRadius(10)
-        glow_effect.setColor(QColor(hex_color))
-        self.setGraphicsEffect(glow_effect)
+        force_new_button = FlatSquareButton(qicon=read_QIcon("reset-update.svg"), parent=button_group_widget)
+        force_new_button.clicked.connect(partial(self.signal_set_address_as_used.emit, address_info))
+        button_group_widget_layout.addWidget(force_new_button)
 
-        self.text_edit.setFixedHeight(60)
-        self._layout.addWidget(self.text_edit)
+        copy_button = FlatSquareButton(qicon=read_QIcon("copy.png"), parent=button_group_widget)
+        copy_button.clicked.connect(partial(do_copy, text=address_info.address, title=self.tr("Address")))
+        button_group_widget_layout.addWidget(copy_button)
+
+        qr_button = FlatSquareButton(qicon=read_QIcon("qr-code.svg"), parent=button_group_widget)
+        qr_button.clicked.connect(self.qr_code.enlarge_image)
+        button_group_widget_layout.addWidget(qr_button)
+
+        button_group_widget_layout.addStretch()
+
+        self.label = QLabel(
+            insert_invisible_spaces_for_wordwrap(address_info.address, max_word_length=1), parent=self
+        )
+        self.label.setWordWrap(True)
+        font = self.label.font()
+        font.setPixelSize(11)
+        self.label.setFont(font)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center horizontally & vertically
+        self._layout.addWidget(self.label)
 
     @property
     def address(self) -> str:
-        return self.text_edit.input_field.text()
+        return self.address_info.address
 
     @property
     def category(self) -> str:
@@ -138,6 +181,7 @@ class QuickReceive(QWidget):
 
         # Content Widget for the Scroll Area
         self.content_widget = QWidget(parent)
+        self.content_widget.setAutoFillBackground(True)
         self.content_widget_layout = QHBoxLayout(self.content_widget)
         # self.content_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
@@ -145,12 +189,25 @@ class QuickReceive(QWidget):
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setWidget(self.content_widget)
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+
+        # — make backgrounds transparent —
+        # 1) content widget (the inner holder)
+        self.content_widget.setAutoFillBackground(False)
+        self.content_widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.content_widget.setStyleSheet("background: transparent;")
+
+        # 2) scroll‐area viewport (where it actually paints)
+        if viewport := self.scroll_area.viewport():
+            viewport.setAutoFillBackground(False)
+            viewport.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+            viewport.setStyleSheet("background: transparent;")
 
         # Main Layout
         main_layout = QVBoxLayout(self)
         self.label_title = QLabel(title)
         font = QFont()
-        font.setBold(True)
+        # font.setBold(True)
         self.label_title.setFont(font)
         main_layout.addWidget(self.label_title)
         main_layout.addWidget(self.scroll_area)

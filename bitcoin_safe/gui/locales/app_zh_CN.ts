@@ -71,6 +71,10 @@
         <translation>地址 {address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>找零</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>接收</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>余额</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>找零</translation>
+        <source>Value</source>
+        <translation>价值</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>未成熟</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>日期</translation>
     </message>
 </context>
 <context>
@@ -1317,10 +1314,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;保存当前钱包</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>正在关闭钱包 {id}</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>您想保存 PSBT {id} 吗？  </translation>
     </message>
@@ -1694,6 +1687,14 @@ Do you want to proceed anyway?</source>
         <translation>发送</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>备份失败。正在中止更改。</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>继续可能会更改所有钱包地址。您要继续吗？  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>无法移动钱包文件，因为{file_path}已存在</translation>
     </message>
@@ -1714,10 +1715,6 @@ Do you want to proceed anyway?</source>
         <translation>删除钱包  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>未选择文件  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>密码错误</translation>
     </message>
@@ -1730,12 +1727,12 @@ Do you want to proceed anyway?</source>
         <translation>新密码：</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>钱包已保存</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>描述</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>钱包已保存</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1779,12 +1776,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>与 {server} 同步  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>已连接到 {server}  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>同步 &amp;&amp; 聊天  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>已连接到 {server}  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1815,8 +1812,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>所有文件 (*);;JSON 文件 (*.jsonl);;JSON 文件 (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>未选择文件  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>导入标签</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>历史记录</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1825,10 +1830,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>成功更新了{number}个标签  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>历史记录</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1843,6 +1844,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>接收</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>余额</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>价值</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>没有变更可应用。</translation>
     </message>
@@ -1850,20 +1859,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>备份已保存到{filename}</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>备份失败。正在中止更改。</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>继续可能会更改所有钱包地址。您要继续吗？  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>二维码  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>地址</translation>
     </message>
 </context>
 <context>
@@ -2435,10 +2443,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>选择最适合接收者的类别</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>添加输出点{outpoints}</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>添加输入</translation>
     </message>
@@ -2708,10 +2712,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>余额（{unit}）</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>日期</translation>
     </message>
 </context>
 <context>
@@ -3201,6 +3201,10 @@ below {rate}</source>
         <translation>这是一种私密且快速的连接到比特币网络的方式。</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>您可以连接您自己的比特币节点，如 {link}。</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>使用 &quot;bitcoind -chain=regtest&quot; 运行您的bitcoind</translation>
     </message>
@@ -3230,24 +3234,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>一个不错的选项是 {electrum_testnet}，区块浏览器为 {explorer_testnet}</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>一个好的选择是 {electrum_testnet4} 和作为区块浏览器的 {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>一个不错的选项是 {electrum_testnet4}，区块浏览器使用 {explorer_testnet4}。有一个 {faucet} 可免费获取测试币。</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet 选择 {electrum} 和一个区块浏览器在 {mempool_url}。  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet 使用 {electrum} 并在 {mempool_url} 上选择一个区块浏览器。有一个 {faucet} 提供免费的测试币。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>您可以在 {server} 上设置 {setup}，并在 {explorer} 上设置一个esplora服务器</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>一个（有时有效的）服务器是 {link} 和一个区块浏览器在 {explorer}。这里有一个 {faucet}。  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>有一个 {faucet} 可免费获取测试币。</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>您可以连接您自己的比特币节点，如 {link}。</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>一个（有时有效的）服务器是 {link} 和一个区块浏览器在 {explorer}。这里有一个 {faucet}。  </translation>
     </message>
 </context>
 <context>

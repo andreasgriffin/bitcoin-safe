@@ -71,6 +71,10 @@
         <translation>पता {address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>परिवर्तन</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>प्राप्ति</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>बैलेंस</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>परिवर्तन</translation>
+        <source>Value</source>
+        <translation>मान</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>परिपक्व नहीं</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>तारीख</translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>वॉलेट {id} बंद करना</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>क्या आप PSBT {id} को सहेजना चाहते हैं?  </translation>
     </message>
@@ -1691,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>भेजें</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>आगे बढ़ने से सभी वॉलेट पते बदल सकते हैं। क्या आप आगे बढ़ना चाहते हैं?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>वॉलेट फ़ाइल को स्थानांतरित नहीं किया जा सकता, क्योंकि {file_path} मौजूद है</translation>
     </message>
@@ -1711,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>वॉलेट हटाएं  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>पासवर्ड गलत है</translation>
     </message>
@@ -1727,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>नया पासवर्ड:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>वॉलेट सहेजा गया</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>वर्णनकर्ता</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>वॉलेट सहेजा गया</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1776,12 +1773,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} के साथ सिंकिंग  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>{server} से जुड़ा हुआ  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>सिंक &amp;&amp; चैट  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server} से जुड़ा हुआ  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1812,8 +1809,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>सभी फाइलें (*);;JSON फाइलें (*.jsonl);;JSON फाइलें (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>लेबल आयात करें</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>इतिहास</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1822,10 +1827,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>सफलतापूर्वक {number} लेबल अपडेट किए गए  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>इतिहास</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1840,6 +1841,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>प्राप्त करें</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>बैलेंस</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>मान</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>कोई परिवर्तन लागू करने के लिए नहीं।</translation>
     </message>
@@ -1847,20 +1856,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>बैकअप {filename} में सहेजा गया</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>आगे बढ़ने से सभी वॉलेट पते बदल सकते हैं। क्या आप आगे बढ़ना चाहते हैं?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>क्यूआर कोड  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>पता</translation>
     </message>
 </context>
 <context>
@@ -2432,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>प्राप्तकर्ता के लिए सबसे उपयुक्त श्रेणी चुनें</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>आउटपॉइंट्स {outpoints} जोड़ना</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>इनपुट्स जोड़ें</translation>
     </message>
@@ -2702,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>बैलेंस ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>तारीख</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +3195,10 @@ below {rate}</source>
         <translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
     </message>
@@ -3224,24 +3228,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>एक अच्छा विकल्प है {electrum_testnet} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet}</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>एक अच्छा विकल्प है {electrum_testnet4} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>एक अच्छा विकल्प {electrum_testnet4} है और ब्लॉक एक्सप्लोरर के लिए {explorer_testnet4} है। मुफ्त टेस्ट कॉइन्स के लिए एक {faucet} है।</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet चुनें {electrum} और एक ब्लॉक एक्सप्लोरर पर {mempool_url}।  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet {electrum} चुनता है और {mempool_url} पर एक ब्लॉक एक्सप्लोरर का उपयोग करता है। मुफ्त परीक्षण सिक्कों के लिए एक {faucet} है।</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>आप {setup} के साथ एक esplora सर्वर पर {server} और एक ब्लॉक एक्सप्लोरर पर {explorer} के साथ सेटअप कर सकते हैं</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>एक (कभी-कभी काम करने वाला) सर्वर है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। एक {faucet} है।  </translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>मुफ्त टेस्ट कॉइन्स के लिए एक {faucet} है।</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>एक (कभी-कभी काम करने वाला) सर्वर है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। एक {faucet} है।  </translation>
     </message>
 </context>
 <context>

@@ -71,6 +71,10 @@
         <translation>アドレス：{address}</translation>
     </message>
     <message>
+        <source>change</source>
+        <translation>おつり</translation>
+    </message>
+    <message>
         <source>receiving</source>
         <translation>受取</translation>
     </message>
@@ -127,8 +131,8 @@
         <translation>残高</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>おつり</translation>
+        <source>Value</source>
+        <translation>値</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>未成熟 (Unmatured)</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>日付</translation>
     </message>
 </context>
 <context>
@@ -1316,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>次のブロック</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>PSBT {id} を保存しますか？  </translation>
     </message>
@@ -1691,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>同期</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>パスワードが間違っています</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>進行すると全てのウォレットアドレスが変更される可能性があります。進行しますか？  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>パスワードを変更</translation>
     </message>
@@ -1711,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットを削除  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>ファイルが選択されていません  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>新しいパスワード：</translation>
     </message>
@@ -1727,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>新しいアドレスをクリック</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>{amount}を受け取りました</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>履歴</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>{amount}を受け取りました</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1776,12 +1773,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} と同期中  </translation>
     </message>
     <message>
-        <source>Connected to {server}</source>
-        <translation>{server} に接続しました  </translation>
-    </message>
-    <message>
         <source>Sync &amp;&amp; Chat</source>
         <translation>同期 &amp;&amp; チャット  </translation>
+    </message>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>{server} に接続しました  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1812,8 +1809,16 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>友達</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>ファイルが選択されていません  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>ラベルのインポート</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>取引履歴</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1822,10 +1827,6 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Successfully updated {number} Labels</source>
         <translation>正常に{number}のラベルを更新しました  </translation>
-    </message>
-    <message>
-        <source>History</source>
-        <translation>取引履歴</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
@@ -1840,6 +1841,14 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>受信</translation>
     </message>
     <message>
+        <source>Balance</source>
+        <translation>残高</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>値</translation>
+    </message>
+    <message>
         <source>No changes to apply.</source>
         <translation>バックアップに失敗しました。変更を中止します。</translation>
     </message>
@@ -1847,20 +1856,19 @@ have transactions linking to other addresses already. Are you sure you want to c
         <source>Backup saved to {filename}</source>
         <translation>{file_path}が存在するため、ウォレットファイルを移動できません</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>パスワードが間違っています</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>進行すると全てのウォレットアドレスが変更される可能性があります。進行しますか？  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>QRコード  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>アドレス</translation>
     </message>
 </context>
 <context>
@@ -2432,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>受取人に最適なカテゴリを選択</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>アウトポイント{outpoints}を追加</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>入力を追加</translation>
     </message>
@@ -2702,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>残高 ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>日付</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +3195,10 @@ below {rate}</source>
         <translation>これはビットコインネットワークに接続するためのプライベートかつ高速な方法です。</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>{link}など、独自のBitcoinノードに接続できます。</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
         <translation>&quot;bitcoind -chain=regtest&quot;でbitcoindを実行してください</translation>
     </message>
@@ -3224,24 +3228,24 @@ It is best to use your own server, such as {link}.</source>
         <translation>推奨オプションは {electrum_testnet}、ブロックエクスプローラーは {explorer_testnet} です</translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>良い選択肢は {electrum_testnet4} としてブロックエクスプローラー {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>良いオプションは {electrum_testnet4} で、ブロックエクスプローラーとしては {explorer_testnet4} を使用できます。無料のテストコインを取得できる {faucet} があります。</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet は {electrum} と {mempool_url} でブロックエクスプローラーを選択します。  </translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet は {electrum} を選択し、{mempool_url} 上でブロックエクスプローラーを利用します。無料テストコイン用の {faucet} があります。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>{setup}を{server}上のEsploraサーバーと{explorer}上のブロックエクスプローラーに設定できます。</translation>
     </message>
     <message>
-        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>（時々動作する）サーバーは {link} と {explorer} でブロックエクスプローラーです。{faucet} があります。</translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>無料のテストコインを取得できる {faucet} があります。</translation>
     </message>
     <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>{link}など、独自のBitcoinノードに接続できます。</translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>（時々動作する）サーバーは {link} と {explorer} でブロックエクスプローラーです。{faucet} があります。</translation>
     </message>
 </context>
 <context>

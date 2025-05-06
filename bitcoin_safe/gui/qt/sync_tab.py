@@ -76,6 +76,9 @@ class SyncTab(ControlledGroupbox):
             if nostr_sync
             else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=parent)
         )
+        assert (
+            self.nostr_sync.network == network
+        ), f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
 
         self.groupbox_layout.addWidget(self.nostr_sync.ui)
 
