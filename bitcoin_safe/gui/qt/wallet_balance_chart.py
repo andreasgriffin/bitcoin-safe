@@ -48,7 +48,7 @@ from PyQt6.QtCharts import (
     QValueAxis,
 )
 from PyQt6.QtCore import QDateTime, QMargins, QPointF, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QMouseEvent, QPalette, QPen
+from PyQt6.QtGui import QBrush, QMouseEvent, QPalette, QPen
 from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsLayout,
@@ -231,10 +231,18 @@ class ChartPoint:
 
 
 class BalanceChart(QWidget):
+    default_buffer_time_in_sec = 60 * 60
+
     def __init__(
-        self, network: bdk.Network, y_axis_text="Balance", highlight_radius=150, parent: QWidget | None = None
+        self,
+        network: bdk.Network,
+        y_axis_text="Balance",
+        highlight_radius=150,
+        parent: QWidget | None = None,
+        show_time_up_to_now=True,
     ) -> None:
         super().__init__(parent)
+        self.project_until_now = show_time_up_to_now
         self.signal_tracker = SignalTracker()
         self.y_axis_text = y_axis_text
         color_text = blend_qcolors(
@@ -254,9 +262,17 @@ class BalanceChart(QWidget):
 
         # -- 2) Set up a scatter series as our highlight marker --
         self.highlight_series = QScatterSeries()
-        self.highlight_series.setMarkerSize(6)
-        self.highlight_series.setColor(ColorScheme.Purple.as_color())
-        self.highlight_series.setBorderColor(Qt.GlobalColor.transparent)
+        self.highlight_series.setMarkerSize(7 if is_dark_mode() else 6)
+        # self.highlight_series.setColor(ColorScheme.Purple.as_color())
+        # self.highlight_series.setBorderColor(Qt.GlobalColor.transparent)
+        pen = QPen()
+        pen.setColor(ColorScheme.OrangeBitcoin.as_color() if is_dark_mode() else Qt.GlobalColor.transparent)
+        brush = QBrush()
+        brush.setStyle(Qt.BrushStyle.SolidPattern)
+        brush.setColor(ColorScheme.Purple.as_color())
+        pen.setWidthF(1)
+        self.highlight_series.setPen(pen)
+        self.highlight_series.setBrush(brush)
 
         # Adding series to the chart
         self.chart.addSeries(self.line_series)
@@ -273,6 +289,14 @@ class BalanceChart(QWidget):
         self.datetime_axis.setLabelsColor(color_text)
         self.datetime_axis.setTitleBrush(color_text)
         self.datetime_axis.setGridLineColor(color_major_grid)
+        x_values = [
+            datetime.datetime.now().timestamp() - self.default_buffer_time_in_sec,
+            datetime.datetime.now().timestamp() + self.default_buffer_time_in_sec,
+        ]
+        self.datetime_axis.setRange(
+            QDateTime.fromSecsSinceEpoch(int(x_values[0])), QDateTime.fromSecsSinceEpoch(int(x_values[1]))
+        )
+        self.set_time_axis_label_format(x_values=x_values)
 
         # Create Value axis for Y
         self.value_axis = QValueAxis()
@@ -330,7 +354,13 @@ class BalanceChart(QWidget):
         format_string = f"%.{decimals}f"
         self.value_axis.setLabelFormat(format_string)
 
-    def update_chart(self, points: List[ChartPoint], project_until_now=True) -> None:
+    def set_time_axis_label_format(self, x_values: List[float]) -> None:
+        if np.max(x_values) - np.min(x_values) < 24 * 60 * 60:
+            self.datetime_axis.setFormat("HH:mm")
+        else:
+            self.datetime_axis.setFormat("d MMM")
+
+    def update_chart(self, points: List[ChartPoint]) -> None:
         self.points = points
         if len(points) == 0:
             return
@@ -345,7 +375,7 @@ class BalanceChart(QWidget):
         min_balance: float = 0
         max_balance: float = 0
         min_timestamp = float("inf")
-        max_timestamp = float("-inf")
+        max_timestamp = datetime.datetime.now().timestamp() if self.project_until_now else float("inf")
         for p in points:
             max_balance = max(max_balance, p.y)
             min_balance = min(min_balance, p.y)
@@ -356,15 +386,12 @@ class BalanceChart(QWidget):
         points.insert(0, ChartPoint(x=min_timestamp, y=0, id="initial balance"))
 
         # add the current time as last point, if the data is in the past
-        if project_until_now and datetime.datetime.now().timestamp() > max(x_values):
+        if self.project_until_now and datetime.datetime.now().timestamp() > max(x_values):
             points.append(
                 ChartPoint(x=datetime.datetime.now().timestamp(), y=points[-1].y, id="today balance")
             )
 
-        if np.max(x_values) - np.min(x_values) < 24 * 60 * 60:
-            self.datetime_axis.setFormat("HH:mm")
-        else:
-            self.datetime_axis.setFormat("d MMM")
+        self.set_time_axis_label_format(x_values=x_values)
 
         for p in points:
             self.line_series.append(
@@ -372,9 +399,15 @@ class BalanceChart(QWidget):
                 p.y,
             )
 
-        buffer_time = (max_timestamp - min_timestamp) * 0.02
-        self.datetime_axis.setMin(QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)))
-        self.datetime_axis.setMax(QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)))
+        buffer_time = (
+            (max_timestamp - min_timestamp) * 0.02
+            if (max_timestamp - min_timestamp) > 0
+            else self.default_buffer_time_in_sec
+        )
+        self.datetime_axis.setRange(
+            QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)),
+            QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)),
+        )
 
         buffer_factor = 0.1
         self.value_axis.setMin(0)
