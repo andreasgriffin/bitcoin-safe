@@ -30,13 +30,12 @@
 from typing import Optional, Tuple
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
 from PyQt6 import QtGui, QtWidgets
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-
-from ...util import Satoshis
 
 
 class AnalyzerSpinBox(QtWidgets.QDoubleSpinBox):

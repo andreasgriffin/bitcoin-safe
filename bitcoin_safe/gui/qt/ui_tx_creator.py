@@ -32,6 +32,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 import numpy as np
+from bitcoin_tools.gui.qt.satoshis import format_fee_rate
+from bitcoin_tools.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -42,7 +44,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSplitter,
-    QStyle,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -55,6 +56,7 @@ from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -71,7 +73,6 @@ from ...pythonbdk_types import (
 )
 from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
 from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
-from ...util import clean_list, format_fee_rate, time_logger
 from ...wallet import ToolsTxUiInfo, TxConfirmationStatus, Wallet, get_wallets
 from .category_list import CategoryList
 from .dialog_import import ImportDialog
@@ -159,11 +160,10 @@ class UITx_Creator(UITx_Base):
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
         self.button_box = QDialogButtonBox()
-        ok_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogOkButton)
         self.button_ok = SpinningButton(
             "",
             enable_signal=self.signals.wallet_signals[self.wallet.id].finished_psbt_creation,
-            enabled_icon=ok_icon,
+            enabled_icon=svg_tools.get_QIcon("checkmark.svg"),
         )
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:

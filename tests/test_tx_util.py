@@ -28,8 +28,7 @@
 
 
 import bdkpython as bdk
-
-from bitcoin_safe.util import serialized_to_hex
+from bitcoin_tools.tx_util import serialized_to_hex
 
 ##### regtest
 segwit_no_signature = serialized_to_hex(

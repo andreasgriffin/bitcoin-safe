@@ -37,12 +37,12 @@ import pytest
 from _pytest.logging import LogCaptureFixture
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
+from bitcoin_tools.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.signals import TypedPyQtSignalNo
 from bitcoin_safe.signer import SignatureImporterClipboard
-from bitcoin_safe.util import hex_to_serialized, serialized_to_hex
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +201,7 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
             connection=bdk.Connection.new_in_memory(),
         )
 
-        return connection, wallet
+        return wallet
 
     def gen_multisig_descriptor_str(
         descriptor_strings, threshold, type: Literal["p2wsh", "p2sh_p2wsh", "p2sh"] = "p2wsh"

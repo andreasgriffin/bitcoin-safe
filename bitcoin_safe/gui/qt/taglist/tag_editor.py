@@ -30,6 +30,7 @@ import json
 import logging
 from typing import Optional
 
+from bitcoin_tools.gui.qt.util import qbytearray_to_str
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QCursor, QDragEnterEvent, QDragLeaveEvent, QDropEvent
 from PyQt6.QtWidgets import QLineEdit, QPushButton, QStyle, QVBoxLayout, QWidget
@@ -44,7 +45,6 @@ from bitcoin_safe.gui.qt.taglist.custom_list_widget import (
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ....i18n import translate
-from ....util import qbytearray_to_str
 
 logger = logging.getLogger(__name__)
 

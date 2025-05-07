@@ -43,6 +43,13 @@ from bitcoin_qr_tools.multipath_descriptor import (
     address_descriptor_from_multipath_descriptor,
     convert_to_multipath_descriptor,
 )
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.util import (
+    clean_list,
+    hash_string,
+    replace_non_alphanumeric,
+    time_logger,
+)
 from bitcoin_usb.address_types import DescriptorInfo
 from bitcoin_usb.software_signer import derive as software_signer_derive
 from packaging import version
@@ -66,16 +73,7 @@ from .pythonbdk_types import *
 from .signals import Signals, UpdateFilter
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos
-from .util import (
-    CacheManager,
-    Satoshis,
-    calculate_ema,
-    clean_list,
-    hash_string,
-    instance_lru_cache,
-    replace_non_alphanumeric,
-    time_logger,
-)
+from .util import CacheManager, calculate_ema, instance_lru_cache
 
 logger = logging.getLogger(__name__)
 

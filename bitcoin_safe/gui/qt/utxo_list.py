@@ -58,17 +58,19 @@ from functools import partial
 from typing import Dict, List, Optional, Tuple, Union
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.util import clean_list, time_logger
 from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 from ...config import UserConfig
 from ...i18n import translate
 from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...util import Satoshis, block_explorer_URL, clean_list, time_logger
 from ...wallet import TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -80,7 +82,7 @@ from .my_treeview import (
     TreeViewWithToolbar,
     needs_frequent_flag,
 )
-from .util import ColorScheme, read_QIcon, sort_id_to_icon, webopen
+from .util import ColorScheme, block_explorer_URL, sort_id_to_icon, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -254,7 +256,7 @@ class UTXOList(MyTreeView):
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
                     partial(webopen, txid_URL),
-                    icon=read_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
 
             wallet_ids: List[str] = clean_list(
@@ -287,7 +289,7 @@ class UTXOList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
@@ -435,7 +437,7 @@ class UTXOList(MyTreeView):
             # unconfirmed txos might be confirmed, and need to be updated more often
             items[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         items[self.Columns.STATUS].setIcon(
-            read_QIcon(
+            svg_tools.get_QIcon(
                 icon_of_utxo(python_utxo.is_spent_by_txid, txdetails.chain_position, sort_id)
                 if txdetails
                 else None

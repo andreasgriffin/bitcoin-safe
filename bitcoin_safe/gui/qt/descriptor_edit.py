@@ -49,7 +49,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 from ...pdfrecovery import make_and_open_pdf
-from .util import Message, MessageType, icon_path
+from .util import Message, MessageType
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
         self.wallet = wallet
 
         self.add_copy_button()
-        self.add_button(icon_path("qr-code.svg"), self.show_export_widget, tooltip="Show QR code")
+        self.add_button("bi--qr-code.svg", self.show_export_widget, tooltip="Show QR code")
         if wallet is not None:
             self.add_pdf_buttton(self._do_pdf)
         self.input_field.setAnalyzer(DescriptorAnalyzer(self.network, parent=self))

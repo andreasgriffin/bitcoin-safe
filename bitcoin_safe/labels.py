@@ -47,7 +47,6 @@ from bitcoin_safe.util import (
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 logger = logging.getLogger(__name__)
-
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
 
 

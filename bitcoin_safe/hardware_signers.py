@@ -34,8 +34,8 @@ from typing import List, Union
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 
 from bitcoin_safe.gui.qt.util import (
-    generated_hardware_signer_path,
-    hardware_signer_path,
+    get_generated_hardware_signer_path,
+    get_hardware_signer_path,
 )
 
 logger = logging.getLogger(__name__)
@@ -114,15 +114,15 @@ class HardwareSigner:
 
     @property
     def icon_path(self):
-        return hardware_signer_path(f"{self.name}-icon.svg")
+        return get_hardware_signer_path(f"{self.name}-icon.svg")
 
     @property
     def image_path(self):
-        return generated_hardware_signer_path(f"{self.name}.svg")
+        return get_generated_hardware_signer_path(f"{self.name}.svg")
 
     @property
     def image_sticker_path(self):
-        return hardware_signer_path(f"{self.name}-sticker.svg")
+        return get_hardware_signer_path(f"{self.name}-sticker.svg")
 
 
 class HardwareSigners:

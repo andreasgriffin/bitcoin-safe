@@ -34,9 +34,9 @@ from math import ceil
 from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
+from bitcoin_tools.tx_util import hex_to_script
+from bitcoin_tools.util import remove_duplicates_keep_order
 from bitcoin_usb.address_types import SimplePubKeyProvider
-
-from bitcoin_safe.util import hex_to_script, remove_duplicates_keep_order
 
 from .pythonbdk_types import (
     OutPoint,

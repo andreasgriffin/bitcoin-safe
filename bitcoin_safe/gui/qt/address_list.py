@@ -52,26 +52,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import enum
 import logging
+from enum import IntEnum
 from functools import partial
 from typing import Any, Dict, List
 
 import bdkpython as bdk
-
-from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.wrappers import Menu
-
-from ...config import UserConfig
-from ...network_config import BlockchainType
-from ...signals import TypedPyQtSignal
-
-logger = logging.getLogger(__name__)
-
-
-import enum
-from enum import IntEnum
-
-import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.util import time_logger
 from PyQt6.QtCore import QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -90,10 +79,21 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.wrappers import Menu
+
+from ...config import UserConfig
 from ...i18n import translate
+from ...network_config import BlockchainType
 from ...rpc import send_rpc_command
-from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
-from ...util import Satoshis, block_explorer_URL, time_logger
+from ...signals import (
+    Signals,
+    TypedPyQtSignal,
+    UpdateFilter,
+    UpdateFilterReason,
+    WalletSignals,
+)
 from ...wallet import TxStatus, Wallet
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -108,12 +108,14 @@ from .taglist import AddressDragInfo
 from .util import (
     ColorScheme,
     Message,
+    block_explorer_URL,
     create_color_circle,
     do_copy,
-    read_QIcon,
     sort_id_to_icon,
     webopen,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ImportLabelMenu:
@@ -124,21 +126,20 @@ class ImportLabelMenu:
         )
 
         self.action_import = self.import_label_menu.add_action(
-            "",
-            self.wallet_signals.import_labels.emit,
+            "", self.wallet_signals.import_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
         self.action_bip329_import = self.import_label_menu.add_action(
-            "",
-            self.wallet_signals.import_bip329_labels.emit,
+            "", self.wallet_signals.import_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
         self.action_electrum_import = self.import_label_menu.add_action(
             "",
             self.wallet_signals.import_electrum_wallet_labels.emit,
+            icon=svg_tools.get_QIcon("bi--upload.svg"),
         )
         self.action_nostr_import = self.import_label_menu.add_action(
             "",
             self.import_nostr_labels,
-            icon=read_QIcon("cloud-sync.svg"),
+            icon=svg_tools.get_QIcon("bi--cloud.svg"),
         )
         self.updateUi()
 
@@ -168,12 +169,10 @@ class ExportLabelMenu:
         )
 
         self.action_export_full = self.export_label_menu.add_action(
-            "",
-            self.wallet_signals.export_labels.emit,
+            "", self.wallet_signals.export_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         self.action_bip329 = self.export_label_menu.add_action(
-            "",
-            self.wallet_signals.export_bip329_labels.emit,
+            "", self.wallet_signals.export_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         self.updateUi()
 
@@ -583,7 +582,7 @@ class AddressList(MyTreeView):
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.NUM_TXS].setIcon(read_QIcon(icon_path))
+        item[self.Columns.NUM_TXS].setIcon(svg_tools.get_QIcon(icon_path))
 
         # calculated_width = QFontMetrics(self.font()).horizontalAdvance(balance_text)
         # current_width = self.header().sectionSize(self.Columns.ADDRESS)
@@ -617,7 +616,7 @@ class AddressList(MyTreeView):
                 menu.add_action(
                     self.tr("View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=read_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
 
             menu.addSeparator()
@@ -632,7 +631,7 @@ class AddressList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
         menu.addSeparator()
         self.export_label_menu = ExportLabelMenu(menu, wallet_signals=self.wallet_signals)

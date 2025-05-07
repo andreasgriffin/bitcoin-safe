@@ -52,10 +52,9 @@
 
 import logging
 
-logger = logging.getLogger(__name__)
-import logging
-
 from .i18n import translate
+
+logger = logging.getLogger(__name__)
 
 
 def signer_name(threshold: int, i: int) -> str:

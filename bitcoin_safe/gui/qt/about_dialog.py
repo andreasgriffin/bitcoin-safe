@@ -40,7 +40,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import link
 
 
@@ -48,7 +48,7 @@ class LicenseDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle(self.tr("License Info"))
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.setModal(True)
         self.initUI()
 

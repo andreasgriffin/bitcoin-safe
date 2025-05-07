@@ -29,6 +29,8 @@
 
 import logging
 
+from bitcoin_tools.gui.qt.util import qbytearray_to_str, str_to_qbytearray
+from bitcoin_tools.util import hash_string
 from PyQt6.QtCore import QMimeData, QPoint, QPointF, Qt
 from PyQt6.QtGui import QDragEnterEvent
 from PyQt6.QtWidgets import QApplication
@@ -44,8 +46,7 @@ from bitcoin_safe.gui.qt.taglist.tag_editor import (
     clean_tag,
     qbytearray_to_str,
 )
-from bitcoin_safe.gui.qt.util import hash_color, rescale
-from bitcoin_safe.util import hash_string, str_to_qbytearray
+from bitcoin_safe.gui.qt.util import hash_color, hash_string, rescale
 
 logger = logging.getLogger(__name__)
 

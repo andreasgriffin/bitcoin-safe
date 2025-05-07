@@ -36,9 +36,10 @@ from math import ceil
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -83,7 +84,6 @@ from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...signals import TypedPyQtSignalNo
 from ...tx import TxUiInfos
-from ...util import Satoshis
 from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
@@ -95,11 +95,11 @@ from .util import (
     center_in_widget,
     create_button_box,
     generate_help_button,
-    generated_hardware_signer_path,
-    icon_path,
+    get_icon_path,
     one_time_signal_connection,
     open_website,
-    svg_widgets_hardware_signers,
+    svg_tools,
+    svg_widget_hardware_signer,
 )
 
 logger = logging.getLogger(__name__)
@@ -326,9 +326,10 @@ class BuyHardware(BaseTab):
         widget_layout = QHBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        svg_widgets = svg_widgets_hardware_signers(
-            self.num_keystores(), parent=widget, max_height=100, max_width=100
-        )
+        svg_widgets = [
+            svg_widget_hardware_signer(index=i, parent=widget, max_height=100, max_width=100)
+            for i in range(self.num_keystores())
+        ]
         for i, svg_widget in enumerate(svg_widgets):
             widget_layout.addWidget(svg_widget)
 
@@ -342,33 +343,33 @@ class BuyHardware(BaseTab):
         self.label_buy.setWordWrap(True)
         right_widget_layout.addWidget(self.label_buy)
 
-        self.button_buy_q = QPushButton()
-        self.button_buy_q.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
-        self.button_buy_q.clicked.connect(self.website_open_coinkite)
-        # if HardwareSigners.q in ScreenshotsTutorial.enabled_hardware_signers:
-        #     right_widget_layout.addWidget(self.button_buy_q)
-        self.button_buy_q.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
+        # self.button_buy_q = QPushButton()
+        # self.button_buy_q.setIcon(svg_tools_generated_hardware_signer.get_QIcon("coldcard.svg"))
+        # self.button_buy_q.clicked.connect(self.website_open_coinkite)
+        # # if HardwareSigners.q in ScreenshotsTutorial.enabled_hardware_signers:
+        # #     right_widget_layout.addWidget(self.button_buy_q)
+        # self.button_buy_q.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
-        self.button_buycoldcard = QPushButton()
-        self.button_buycoldcard.setIcon(QIcon(generated_hardware_signer_path("coldcard.svg")))
-        self.button_buycoldcard.clicked.connect(self.website_open_coinkite)
-        # if HardwareSigners.coldcard in ScreenshotsTutorial.enabled_hardware_signers:
-        #     right_widget_layout.addWidget(self.button_buycoldcard)
-        self.button_buycoldcard.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
+        # self.button_buycoldcard = QPushButton()
+        # self.button_buycoldcard.setIcon(svg_tools_generated_hardware_signer.get_QIcon("coldcard.svg"))
+        # self.button_buycoldcard.clicked.connect(self.website_open_coinkite)
+        # # if HardwareSigners.coldcard in ScreenshotsTutorial.enabled_hardware_signers:
+        # #     right_widget_layout.addWidget(self.button_buycoldcard)
+        # self.button_buycoldcard.setIconSize(QSize(32, 32))  # Set the icon size to 64x64 pixels
 
-        self.button_buybitbox = QPushButton()
-        self.button_buybitbox.setIcon(QIcon(generated_hardware_signer_path("bitbox02.svg")))
-        self.button_buybitbox.clicked.connect(self.website_open_bitbox)
-        self.button_buybitbox.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
-        # if HardwareSigners.bitbox02 in ScreenshotsTutorial.enabled_hardware_signers:
-        #     right_widget_layout.addWidget(self.button_buybitbox)
+        # self.button_buybitbox = QPushButton()
+        # self.button_buybitbox.setIcon(svg_tools_generated_hardware_signer.get_QIcon("bitbox02.svg"))
+        # self.button_buybitbox.clicked.connect(self.website_open_bitbox)
+        # self.button_buybitbox.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
+        # # if HardwareSigners.bitbox02 in ScreenshotsTutorial.enabled_hardware_signers:
+        # #     right_widget_layout.addWidget(self.button_buybitbox)
 
-        self.button_buyjade = QPushButton()
-        self.button_buyjade.setIcon(QIcon(generated_hardware_signer_path("jade.svg")))
-        self.button_buyjade.clicked.connect(self.website_open_jade)
-        self.button_buyjade.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
-        # if HardwareSigners.jade in ScreenshotsTutorial.enabled_hardware_signers:
-        #     right_widget_layout.addWidget(self.button_buyjade)
+        # self.button_buyjade = QPushButton()
+        # self.button_buyjade.setIcon(svg_tools_generated_hardware_signer.get_QIcon("jade.svg"))
+        # self.button_buyjade.clicked.connect(self.website_open_jade)
+        # self.button_buyjade.setIconSize(QSize(45, 32))  # Set the icon size to 64x64 pixels
+        # # if HardwareSigners.jade in ScreenshotsTutorial.enabled_hardware_signers:
+        # #     right_widget_layout.addWidget(self.button_buyjade)
 
         right_widget_layout.addItem(QSpacerItem(1, 40))
 
@@ -421,10 +422,10 @@ class BuyHardware(BaseTab):
             )
         )
 
-        self.button_buybitbox.setText(self.tr("Buy a {name}").format(name="Bitbox02\nBitcoin Only Edition"))
-        self.button_buycoldcard.setText(self.tr("Buy a Coldcard Mk4"))
-        self.button_buy_q.setText(self.tr("Buy a Coldcard Q"))
-        self.button_buyjade.setText(self.tr("Buy a Blockstream Jade"))
+        # self.button_buybitbox.setText(self.tr("Buy a {name}").format(name="Bitbox02\nBitcoin Only Edition"))
+        # self.button_buycoldcard.setText(self.tr("Buy a Coldcard Mk4"))
+        # self.button_buy_q.setText(self.tr("Buy a Coldcard Q"))
+        # self.button_buyjade.setText(self.tr("Buy a Blockstream Jade"))
         # self.label_turn_on.setText(
         #     html_f(
         #         self.tr("Buy {n} hardware signers").format(n=self.num_keystores())
@@ -462,11 +463,15 @@ class StickerTheHardware(BaseTab):
         self.label = QLabel()
         widget_layout.addWidget(self.label)
 
-        svg_widgets = svg_widgets_hardware_signers(self.num_keystores(), parent=widget)
-        for i, svg_widget in enumerate(svg_widgets):
-            svg_widget.modify_svg_text(
-                ("Label", self.refs.qtwalletbase.get_editable_protowallet().sticker_name(i))
+        svg_widgets = [
+            svg_widget_hardware_signer(
+                index=i,
+                parent=widget,
+                sticker=True,
+                replace_tuples=[("Label", self.refs.qtwalletbase.get_editable_protowallet().sticker_name(i))],
             )
+            for i in range(self.num_keystores())
+        ]
 
         widget1 = QWidget(parent=widget)
         widget_layout.addWidget(widget1)
@@ -834,7 +839,7 @@ class BackupSeed(BaseTab):
 
         buttonbox = QDialogButtonBox()
         self.custom_yes_button = QPushButton()
-        self.custom_yes_button.setIcon(QIcon(icon_path("print.svg")))
+        self.custom_yes_button.setIcon(QIcon(get_icon_path("print.svg")))
         self.custom_yes_button.clicked.connect(self._do_pdf)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
@@ -918,7 +923,7 @@ class ReceiveTest(BaseTab):
             self.quick_receive.setMaximumWidth(300)
             widget_layout.addWidget(self.quick_receive)
         else:
-            add_centered_icons(["receive.svg"], widget_layout, max_sizes=[(50, 80)])
+            add_centered_icons(["ic--baseline-call-received.svg"], widget_layout, max_sizes=[(50, 80)])
             if (_layout_item := widget_layout.itemAt(0)) and (_widget := _layout_item.widget()):
                 _widget.setMaximumWidth(150)
 
@@ -1313,7 +1318,7 @@ class LabelBackup(BaseTab):
         left_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         widget_layout.addWidget(left_widget)
 
-        self.icon = AspectRatioSvgWidget(icon_path("cloud-sync-off.svg"), 300, 300)
+        self.icon = AspectRatioSvgWidget(svg_tools.get_QIcon("bi--cloud-slash.svg"), 300, 300)
         left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
 
         left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
@@ -1334,7 +1339,7 @@ class LabelBackup(BaseTab):
 
         # right_widget_layout.addItem(QSpacerItem(1, 40))
 
-        self.button_next.setIcon(QIcon(icon_path("checkmark.svg")))
+        self.button_next.setIcon(QIcon(get_icon_path("checkmark.svg")))
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
@@ -1377,10 +1382,10 @@ class LabelBackup(BaseTab):
         )
         self.button_next.setText(self.tr("Finish"))
         self.checkbox.setText(self.tr("Enable"))
-        icon_path = SyncTab.get_icon_path(
+        icon_basename = SyncTab.get_icon_basename(
             enabled=bool(self.refs.qt_wallet and self.refs.qt_wallet.sync_tab.enabled())
         )
-        self.icon.load(icon_path)
+        self.icon.load(get_icon_path(icon_basename))
         self.checkbox.setChecked(self.refs.qt_wallet.sync_tab.enabled() if self.refs.qt_wallet else False)
 
 
@@ -1437,7 +1442,7 @@ class SendTest(BaseTab):
         widget_layout = QHBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        add_centered_icons(["send.svg"], widget_layout, max_sizes=[(50, 80)])
+        add_centered_icons(["bi--send.svg"], widget_layout, max_sizes=[(50, 80)])
         if (layout_item := widget_layout.itemAt(0)) and (sub_widget := layout_item.widget()):
             sub_widget.setMaximumWidth(150)
 

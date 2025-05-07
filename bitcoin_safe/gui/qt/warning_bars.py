@@ -36,10 +36,11 @@ from PyQt6.QtWidgets import QSizePolicy
 
 from bitcoin_safe.address_comparer import FuzzyMatch
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f
 
 from ...signals import SignalsMin
-from .util import adjust_bg_color_for_darkmode, read_QIcon
+from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class LinkingWarningBar(NotificationBar):
         self.category_dict: Dict[str, Set[str]] = {}
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(read_QIcon("warning.png"))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
         self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -104,7 +105,7 @@ class PoisoningWarningBar(NotificationBar):
         self.signals_min = signals_min
         self.poisonous_matches: List[Tuple[str, str, FuzzyMatch]] = []
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(read_QIcon("warning.png"))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
         self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

@@ -37,6 +37,8 @@ from typing import List, Optional, Sequence, Set, Tuple
 
 import bdkpython as bdk
 import numpy as np
+from bitcoin_tools.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
 from PyQt6.QtCharts import (
     QChart,
     QChartView,
@@ -62,13 +64,7 @@ from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.util import (
-    Satoshis,
-    adjust_brightness,
-    is_dark_mode,
-    monotone_increasing_timestamps,
-    unit_str,
-)
+from bitcoin_safe.util import monotone_increasing_timestamps
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)

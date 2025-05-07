@@ -54,8 +54,10 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
+from bitcoin_safe.gui.qt.util import svg_tools
+
 from ...wallet import filename_clean
-from .util import create_button_box, read_QIcon
+from .util import create_button_box
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +91,7 @@ class PasswordQuestion(QDialog):
         super(PasswordQuestion, self).__init__(parent)
 
         self.setWindowTitle(self.tr("Password Input"))
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
 
         self._layout = QVBoxLayout(self)
 

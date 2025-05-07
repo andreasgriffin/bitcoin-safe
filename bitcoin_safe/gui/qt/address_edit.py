@@ -38,13 +38,12 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
-from bitcoin_safe.util import block_explorer_URL
 
 from ...i18n import translate
 from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
 from ...wallet import Wallet, get_wallet_of_address
 from .dialogs import question_dialog
-from .util import ColorScheme, icon_path, webopen
+from .util import ColorScheme, block_explorer_URL, get_icon_path, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -122,7 +121,9 @@ class AddressEdit(ButtonEdit):
     def _add_mempool_button(self) -> SquareButton:
 
         copy_button = self.add_button(
-            icon_path("block-explorer.svg"), self._on_click, tooltip=translate("d", "View on block explorer")
+            get_icon_path("block-explorer.svg"),
+            self._on_click,
+            tooltip=translate("d", "View on block explorer"),
         )
         return copy_button
 

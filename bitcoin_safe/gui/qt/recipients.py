@@ -34,8 +34,10 @@ from typing import Any, List
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_tools.gui.qt.satoshis import unit_sat_str, unit_str
+from bitcoin_tools.util import is_int
 from PyQt6 import QtCore, QtWidgets
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QFileDialog,
     QFormLayout,
@@ -44,9 +46,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
-    QStyle,
-    QStyleOptionButton,
-    QStylePainter,
     QTabWidget,
     QToolButton,
     QVBoxLayout,
@@ -56,7 +55,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.util import Message, MessageType, read_QIcon
+from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -64,26 +63,10 @@ from bitcoin_safe.wallet import get_wallet_of_address
 
 from ...pythonbdk_types import Recipient, is_address
 from ...signals import Signals, UpdateFilter
-from ...util import is_int, unit_sat_str, unit_str
 from .invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox
 
 logger = logging.getLogger(__name__)
-
-
-class CloseButton(QPushButton):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-        self.setFixedSize(QSize(16, 16))  # Adjust the size as needed
-
-    def paintEvent(self, event) -> None:
-        painter = QStylePainter(self)
-        option = QStyleOptionButton()
-        option.initFrom(self)
-        option.features = QStyleOptionButton.ButtonFeature.None_
-        option.icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_TabCloseButton)  # type: ignore[attr-defined]
-        option.iconSize = QSize(14, 14)  # Adjust icon size as needed
-        painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 
 
 class RecipientWidget(QWidget):
@@ -295,7 +278,7 @@ class RecipientTabWidget(QTabWidget):
             parent=self,
         )
 
-        self.addTab(self.recipient_widget, read_QIcon("person.svg"), title)
+        self.addTab(self.recipient_widget, svg_tools.get_QIcon("bi--person.svg"), title)
 
         # connect signals
         self.tabCloseRequested.connect(self.on_tabCloseRequested)
@@ -409,22 +392,24 @@ class Recipients(QWidget):
 
         self.add_recipient_button = QPushButton("")
         self.add_recipient_button.setMaximumWidth(150)
-        self.add_recipient_button.setIcon(read_QIcon("add-person.svg"))
+        self.add_recipient_button.setIcon(svg_tools.get_QIcon("bi--person-add.svg"))
         self.add_recipient_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.add_recipient_button.clicked.connect(self.add_recipient)
 
         self.toolbutton_csv = QToolButton()
         self.toolbutton_csv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.toolbutton_csv.setIcon(read_QIcon("csv-file.svg"))
+        self.toolbutton_csv.setIcon(svg_tools.get_QIcon("bi--filetype-csv.svg"))
 
         menu = Menu(self)
-        self.action_export_csv_template = menu.add_action(
-            "", self.on_action_export_csv_template, icon=read_QIcon("csv-file.svg")
+        self.action_import_csv = menu.add_action(
+            "", self.import_csv, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
-        self.action_import_csv = menu.add_action("", self.import_csv, icon=read_QIcon("csv-file.svg"))
-        menu.addSeparator()
         self.action_export_csv = menu.add_action(
-            "", self.on_action_export_csv, icon=read_QIcon("csv-file.svg")
+            "", self.on_action_export_csv, icon=svg_tools.get_QIcon("bi--download.svg")
+        )
+        menu.addSeparator()
+        self.action_export_csv_template = menu.add_action(
+            "", self.on_action_export_csv_template, icon=svg_tools.get_QIcon("bi--layout-three-columns.svg")
         )
 
         self.toolbutton_csv.setMenu(menu)

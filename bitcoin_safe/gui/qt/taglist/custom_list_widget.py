@@ -31,6 +31,8 @@ import logging
 from functools import lru_cache, partial
 from typing import Callable, Generator, Iterable, List, Optional, Tuple
 
+from bitcoin_tools.caching import register_cache
+from bitcoin_tools.gui.qt.util import qbytearray_to_str, str_to_qbytearray
 from PyQt6.QtCore import (
     QMimeData,
     QModelIndex,
@@ -74,7 +76,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.category_info import CategoryInfo, SubtextType
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
-from ....util import qbytearray_to_str, register_cache, str_to_qbytearray
 from ..util import category_color
 
 logger = logging.getLogger(__name__)

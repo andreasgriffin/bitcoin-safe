@@ -29,13 +29,12 @@
 
 import logging
 
+import pytest
+from PyQt6.QtWidgets import QApplication, QWidget
+
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 
 logger = logging.getLogger(__name__)
-
-
-import pytest
-from PyQt6.QtWidgets import QApplication, QWidget
 
 
 @pytest.fixture

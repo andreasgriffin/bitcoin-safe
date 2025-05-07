@@ -33,6 +33,7 @@ from typing import List
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_tools.tx_util import tx_of_psbt_to_hex, tx_to_hex
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -45,7 +46,6 @@ from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .gui.qt.dialog_import import ImportDialog
 from .keystore import KeyStoreImporterTypes
-from .util import tx_of_psbt_to_hex, tx_to_hex
 from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 class AbstractSignatureImporter(QObject):
     signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
-    keystore_type = KeyStoreImporterTypes.watch_only
+    keystore_type = KeyStoreImporterTypes.clipboard
 
     def __init__(
         self,

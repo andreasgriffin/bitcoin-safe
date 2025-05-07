@@ -45,7 +45,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.execute_config import DEFAULT_LANG_CODE
-from bitcoin_safe.gui.qt.util import read_QIcon
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
@@ -130,7 +130,7 @@ class LanguageDialog(QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         self.setModal(True)
-        self.setWindowIcon(read_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.centerOnScreen()
 
     def centerOnScreen(self) -> None:

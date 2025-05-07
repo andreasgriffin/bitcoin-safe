@@ -46,7 +46,6 @@ from bitcoin_safe.wallet import Wallet
 from ..setup_fulcrum import Faucet
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:

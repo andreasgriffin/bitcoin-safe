@@ -33,7 +33,7 @@ from typing import List
 
 import bdkpython as bdk
 
-from bitcoin_safe.util import resource_path
+from bitcoin_safe.gui.qt.util import resource_path
 
 from ...config import UserConfig
 

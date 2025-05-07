@@ -1,8 +1,6 @@
 import argparse
 import sys
 
-from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette
-
 # all import must be absolute, because this is the entry script for pyinstaller
 from bitcoin_safe.logging_setup import setup_logging
 
@@ -17,6 +15,7 @@ ensure_pyzbar_works()
 
 from PyQt6.QtWidgets import QApplication
 
+from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.util import custom_exception_handler
 

@@ -62,6 +62,9 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.gui.qt.util import confirmation_wait_formatted
+from bitcoin_tools.util import time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -73,10 +76,11 @@ from PyQt6.QtGui import (
     QFontMetrics,
     QStandardItem,
 )
-from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QStyle, QWidget
+from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
@@ -86,12 +90,6 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...util import (
-    Satoshis,
-    block_explorer_URL,
-    confirmation_wait_formatted,
-    time_logger,
-)
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -103,7 +101,7 @@ from .my_treeview import (
     needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
-from .util import Message, MessageType, read_QIcon, sort_id_to_icon, webopen
+from .util import Message, MessageType, block_explorer_URL, sort_id_to_icon, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -538,7 +536,7 @@ class HistList(MyTreeView):
             item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.STATUS].setText(status_text)
         item[self.Columns.STATUS].setData(status_text, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.STATUS].setIcon(read_QIcon(sort_id_to_icon(status.sort_id())))
+        item[self.Columns.STATUS].setIcon(svg_tools.get_QIcon(sort_id_to_icon(status.sort_id())))
         item[self.Columns.STATUS].setToolTip(status_tooltip)
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -572,7 +570,7 @@ class HistList(MyTreeView):
                 menu.add_action(
                     translate("hist_list", "View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=read_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
             menu.addSeparator()
 
@@ -597,13 +595,13 @@ class HistList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=read_QIcon("csv-file.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         menu.add_action(
             translate("hist_list", "Save as file"),
             partial(self.export_raw_transactions, selected_items),
-            icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton),
+            icon=svg_tools.get_QIcon("bi--download.svg"),
         )
 
         if not multi_select:
@@ -774,12 +772,12 @@ class RefreshButton(QPushButton):
         self.set_icon_allow_refresh()
 
     def set_icon_allow_refresh(self) -> None:
-        icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.setIcon(icon)
 
     def set_icon_is_syncing(self) -> None:
 
-        icon = read_QIcon("status_waiting.svg")
+        icon = svg_tools.get_QIcon("status_waiting.svg")
         self.setIcon(icon)
 
 

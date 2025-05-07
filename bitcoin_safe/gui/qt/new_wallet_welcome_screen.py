@@ -42,12 +42,13 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
-from .util import read_QIcon, svg_widgets_hardware_signers
+from .util import svg_widget_hardware_signer
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +99,7 @@ class NewWalletWelcomeScreen(QWidget):
     def add_new_wallet_welcome_tab(self, main_tabs: DataTabWidget[object]) -> None:
         main_tabs.add_tab(
             tab=self,
-            icon=read_QIcon("file.png"),
+            icon=svg_tools.get_QIcon("file.svg"),
             description=self.tr("Create new wallet"),
             focus=True,
             data=self,
@@ -129,9 +130,11 @@ class NewWalletWelcomeScreen(QWidget):
         self.groupBox_1signingdevice.setEnabled(True)
         self.horizontalLayout_4 = QHBoxLayout(self.groupBox_1signingdevice)
 
-        svg_widgets = svg_widgets_hardware_signers(
-            1, parent=self.groupBox_1signingdevice, max_height=svg_max_height, max_width=svg_max_width
-        )
+        svg_widgets = [
+            svg_widget_hardware_signer(
+                0, parent=self.groupBox_1signingdevice, max_height=svg_max_height, max_width=svg_max_width
+            )
+        ]
         for svg_widget in svg_widgets:
             self.horizontalLayout_4.addWidget(svg_widget)
 
@@ -164,9 +167,12 @@ class NewWalletWelcomeScreen(QWidget):
         self.groupBox_3signingdevices.setEnabled(True)
         self.groupBox_3signingdevices_layout = QHBoxLayout(self.groupBox_3signingdevices)
 
-        svg_widgets = svg_widgets_hardware_signers(
-            3, parent=self.groupBox_3signingdevices, max_height=svg_max_height, max_width=svg_max_width
-        )
+        svg_widgets = [
+            svg_widget_hardware_signer(
+                i, parent=self.groupBox_3signingdevices, max_height=svg_max_height, max_width=svg_max_width
+            )
+            for i in range(3)
+        ]
         for i, svg_widget in enumerate(svg_widgets):
             self.groupBox_3signingdevices_layout.addWidget(svg_widget)
 
