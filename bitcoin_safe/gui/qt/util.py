@@ -28,7 +28,6 @@
 
 
 import enum
-import hashlib
 import logging
 import platform
 import sys
@@ -44,6 +43,7 @@ from bitcoin_qr_tools.data import ConverterAddress
 from bitcoin_tools.caching import register_cache
 from bitcoin_tools.gui.qt.icons import SvgTools
 from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
+from bitcoin_tools.util import hash_string
 from PyQt6.QtCore import QByteArray, QCoreApplication, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,
@@ -903,10 +903,6 @@ def adjust_bg_color_for_darkmode(
     color: QColor,
 ) -> QColor:
     return adjust_brightness(color, -0.4) if is_dark_mode() else color
-
-
-def hash_string(text: str) -> str:
-    return hashlib.sha256(str(text).encode()).hexdigest()
 
 
 def rescale(value: float, old_min: float, old_max: float, new_min: float, new_max: float):
