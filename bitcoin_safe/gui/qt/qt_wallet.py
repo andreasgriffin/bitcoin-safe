@@ -727,7 +727,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def format_txs_for_notification(self, txs: List[TransactionDetails]) -> str:
         return "\n".join(
             [
-                self.tr("  {amount}").format(
+                "  {amount}".format(
                     amount=Satoshis(tx.received - tx.sent, self.config.network).str_as_change(unit=True),
                     # shortid=short_tx_id(tx.txid),
                 )
