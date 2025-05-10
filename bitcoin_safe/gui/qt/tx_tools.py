@@ -40,7 +40,7 @@ from bitcoin_safe.tx import TxUiInfos, short_tx_id
 from ...psbt_util import FeeInfo
 from ...pythonbdk_types import Recipient, TransactionDetails
 from ...signals import Signals
-from ...wallet import Wallet, get_wallets
+from ...wallet import TxStatus, Wallet, get_wallets
 from .util import Message
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,9 @@ class TxTools:
         signals.open_tx_like.emit(txinfos)
 
     @classmethod
-    def can_cpfp(cls, tx: bdk.Transaction, wallet: Wallet) -> bool:
+    def can_cpfp(cls, tx: bdk.Transaction, tx_status: TxStatus, wallet: Wallet) -> bool:
+        if not tx_status.can_cpfp():
+            return False
         utxo = wallet.get_cpfp_utxos(tx=tx)
         return bool(utxo)
 

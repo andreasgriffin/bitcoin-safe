@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>Nome del portafoglio:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>Digita il nome del portafoglio</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Errore</translation>
     </message>

@@ -427,8 +427,6 @@ class BalanceChart(QWidget):
         pen.setWidth(2)
         self.line_series.setPen(pen)
 
-        print(f"Actual DateTime Axis Range: {self.datetime_axis.min()} - {self.datetime_axis.max()}")
-
     def close(self):
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>Nome da carteira:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>Digite o nome da carteira</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Erro</translation>
     </message>

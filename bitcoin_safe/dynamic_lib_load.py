@@ -34,22 +34,9 @@ import sys
 from ctypes.util import find_library
 from pathlib import Path
 
-from PyQt6.QtWidgets import QApplication, QMessageBox
-
 from .i18n import translate
 
 logger = logging.getLogger(__name__)
-
-
-# Function to show the warning dialog before starting the QApplication
-def show_warning_before_failiure(msg: str) -> None:
-    # Initialize QApplication if not already running
-    # the variable app, MUST be here, otherwise the QApplication will not be created
-    app = QApplication.instance() or QApplication(sys.argv)
-
-    # Show the warning dialog
-    QMessageBox().warning(None, "Warning", msg, QMessageBox.StandardButton.Ok)
-    app.quit()
 
 
 def get_libsecp256k1_os_path() -> str | None:

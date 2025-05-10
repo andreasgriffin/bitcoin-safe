@@ -2705,6 +2705,10 @@ below {rate}</source>
         <translation>钱包名称：</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>请输入钱包名称</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>错误</translation>
     </message>

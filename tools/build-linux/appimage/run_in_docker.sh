@@ -221,9 +221,9 @@ rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/plugins/{bearer,gamepads,geometryloaders
 #     rm -rf "$PYDIR"/site-packages/PyQt6/Qt${component}*
 #     rm -rf "$PYDIR"/site-packages/PyQt6/bindings/Qt${component}*
 # done
-for component in Qml Quick ; do
-    rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/lib/libQt6*${component}.so*
-done
+# for component in Qml Quick ; do
+#     rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/lib/libQt6*${component}.so*
+# done
 # rm -rf "$PYDIR"/site-packages/PyQt6/Qt.so
 
 

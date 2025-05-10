@@ -414,12 +414,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 return tx, wallet
         return None, None
 
-    def can_cpfp(self) -> bool:
+    def can_cpfp(self, tx_status: TxStatus) -> bool:
         tx = self.extract_tx()
         tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
         if not wallet:
             return False
-        return TxTools.can_cpfp(tx=tx, wallet=wallet)
+        return TxTools.can_cpfp(tx=tx, wallet=wallet, tx_status=tx_status)
 
     def cpfp(self) -> None:
         tx = self.extract_tx()
@@ -1029,7 +1029,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
         self.button_cpfp_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
         self.button_rbf.setVisible(tx_status.can_rbf())
-        self.button_cpfp_tx.setVisible(self.can_cpfp())
+        self.button_cpfp_tx.setVisible(self.can_cpfp(tx_status=tx_status))
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:

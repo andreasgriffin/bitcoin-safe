@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>اسم المحفظة:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>أدخل اسم المحفظة</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
