@@ -2696,6 +2696,10 @@ below {rate}</source>
         <translation>지갑 이름:  </translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>지갑 이름을 입력하세요</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>오류  </translation>
     </message>

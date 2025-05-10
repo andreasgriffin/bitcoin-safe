@@ -635,7 +635,7 @@ class HistList(MyTreeView):
                         translate("hist_list", "Increase fee (RBF)"), partial(self.edit_tx, tx_details)
                     )
 
-            if tx_status and tx_status.is_unconfirmed() and self.can_cpfp(tx=tx_details.transaction):
+            if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
                 menu.add_action(
                     translate("hist_list", "Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details)
                 )
@@ -646,11 +646,11 @@ class HistList(MyTreeView):
 
         return menu
 
-    def can_cpfp(self, tx: bdk.Transaction) -> bool:
+    def can_cpfp(self, tx: bdk.Transaction, tx_status: TxStatus) -> bool:
         wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
         if not wallet:
             return False
-        return TxTools.can_cpfp(tx=tx, wallet=wallet)
+        return TxTools.can_cpfp(tx=tx, wallet=wallet, tx_status=tx_status)
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
         wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)

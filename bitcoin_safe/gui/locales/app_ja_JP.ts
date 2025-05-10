@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>ウォレット名：</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>ウォレット名を入力してください</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>エラー</translation>
     </message>

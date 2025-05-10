@@ -2696,6 +2696,10 @@ below {rate}</source>
         <translation>ชื่อกระเป๋าเงิน:  </translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>พิมพ์ชื่อกระเป๋าเงิน</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>ข้อผิดพลาด  </translation>
     </message>

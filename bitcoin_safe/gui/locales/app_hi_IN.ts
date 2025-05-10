@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>वॉलेट का नाम:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>वॉलेट का नाम दर्ज करें</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>त्रुटि</translation>
     </message>

@@ -2696,6 +2696,10 @@ below {rate}</source>
         <translation>ပိုက်ဆံအိတ်အမည်:  </translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>ဘဏ်အိတ်အမည်ကိုရိုက်ထည့်ပါ</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>အမှား  </translation>
     </message>

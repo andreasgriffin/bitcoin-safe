@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>Имя кошелька:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>Введите имя кошелька</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>

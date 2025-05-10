@@ -257,6 +257,7 @@ class WalletIdDialog(QDialog):
         label_text = label_text if label_text else self.tr("Wallet name:")
         self.name_label = QLabel(label_text)
         self.name_input = QLineEdit(prefilled if prefilled else "")
+        self.name_input.setPlaceholderText(self.tr("Type wallet name"))
         layout.addWidget(self.name_label)
         layout.addWidget(self.name_input)
 

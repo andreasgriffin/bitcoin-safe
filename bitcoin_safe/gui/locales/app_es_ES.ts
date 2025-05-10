@@ -2699,6 +2699,10 @@ below {rate}</source>
         <translation>Nombre de la cartera:</translation>
     </message>
     <message>
+        <source>Type wallet name</source>
+        <translation>Escriba el nombre de la billetera</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Error</translation>
     </message>
