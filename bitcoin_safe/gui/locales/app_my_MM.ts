@@ -293,22 +293,6 @@
                            </source>
         <translation>{number} ခုအား ဝယ်ယူပါ။&lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲလ်လက်မှတ်ထိုးသူများကို ထောက်ခံသည်။ &lt;a href=&quot;{url}&quot;&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>{name} ဝယ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Coldcard Mk4 ဝယ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Coldcard Q ဝယ်ပါ  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>Blockstream Jade ကို ဝယ်ပါ။  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>အခကြေးငွေ</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... သည် ရှိပြီးသား ငွေလွှဲများကို အစားထိုးရန် အနည်းဆုံး လိုအပ်ချက် ဖြစ်သည်။</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>ခန့်မှန်းထားသောကြေးနန်း  </translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>ပိုက်ဆံအိတ်  </translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>{txid} အတွက် အရှိန်မြှင့်ခြင်း</translation>
+        <source>Not broadcasted.</source>
+        <translation>ထုတ်လွှင့်မထားသေးပါ။</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} အတည်ပြုချက်များ  </translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>လက်ခံထွက်ပေါက်ကို မတွေ့ရှိနိုင်သောကြောင့် ဤငွေလွှဲကို CPFP မပြုနိုင်ပါ</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>ဘလော့ခ်ထဲတွင် ပါဝင်ရန် စောင့်ဆိုင်းနေသည်။</translation>
     </message>
 </context>
 <context>
@@ -1729,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ  </translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} သည် {shortid} တွင်  </translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1770,12 +1746,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} နှင့်ထပ်တူညီပါ  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sync &amp; Chat</translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sync &amp; Chat</translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1814,12 +1790,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>တံဆိပ်များတင်သွင်းပါ  </translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>သမိုင်း  </translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>ဖိုင်များအားလုံး (*);;JSONL ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>သမိုင်း  </translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2503,8 +2479,16 @@ below {rate}</source>
         <translation>ဝင်ငွေ  </translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>ပို့ပါ</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>တံဆိပ်:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>ဖွင့်ထားသော ဝေါလက်များတွင် အစားထိုးမည့် ငွေလွှဲ မတွေ့ပါ။</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2535,6 +2519,10 @@ below {rate}</source>
         <translation>ပြင်ဆင်ပါ  </translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>ပိုမိုလျင်မြန်စွာ လက်ခံပါ (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>RBF ဖြင့်အကြွေးပိုထည့်ပြီးပြင်ဆင်ပါ  </translation>
     </message>
@@ -2549,10 +2537,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>နောက်တစ်ဆင့်  </translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>ပို့ပါ</translation>
     </message>
 </context>
 <context>
@@ -2632,10 +2616,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>ပမာဏ  </translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>မိဘများ  </translation>
     </message>
 </context>
 <context>
@@ -3184,6 +3164,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>CSV ဖိုင်အဖြစ်ထုတ်ပို့ပါ  </translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>မြင်သာသော ကော်လံများ</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3411,6 +3395,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>လက်ခံထွက်ပေါက်ကို မတွေ့ရှိနိုင်သောကြောင့် ဤငွေလွှဲကို CPFP မပြုနိုင်ပါ</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} အတွက် အရှိန်မြှင့်ခြင်း</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3426,56 +3421,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>ဖိုင်ထုတ်မရနိုင်ခဲ့ပါ  </translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>လက်ကျန်ငွေ: {amount}  </translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>အမည်မသိ  </translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>မသိ</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} စက္ကန့် အကြာက</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>မိနစ်အနည်းငယ်အတွင်း  </translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>တစ်မိနစ်ထက် ငယ်သည့် အချိန်က</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>တစ်မိနစ်အတွင်း</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>တစ်နာရီအကြာက  </translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>{} မိနစ်ခန့် အတွင်း</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>နာရီခန့် လွန်ခဲ့သည်</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>အတည်မပြုသေးသည့် မူရင်း</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>တစ်နာရီခန့် အတွင်း</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3514,12 +3461,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>{} လခန့် လွန်ခဲ့သည်</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>အတည်မပြုရ  </translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>{} လအတွင်း  </translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} စက္ကန့် အကြာက</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3538,44 +3485,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>{} နှစ်အတွင်း  </translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>အခကြေးငွေ တိုးလို့ မရနိုင်ပါ</translation>
+        <source>Balance: {amount}</source>
+        <translation>အမည်မသိ  </translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>ငွေလွှဲပယ်ဖျက်မရနိုင်ပါ  </translation>
+        <source>in {} seconds</source>
+        <translation>မိနစ်အနည်းငယ်အတွင်း  </translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>ကလေးငွေလွှဲမရေးနိုင်ပါ  </translation>
+        <source>less than a minute ago</source>
+        <translation>တစ်မိနစ်ထက် ငယ်သည့် အချိန်က</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>ပိုက်ဆံအိတ်ဖိုင်ပျက်စီးမှုတွေ့ရှိပါ။ မျိုးစေ့မှပိုက်ဆံအိတ်ကိုပြန်ရွေးစောင့်ပြီးလိပ်စာများကိုနှစ်ဖိုင်အားလုံးဖြင့်ယှဉ်ကြည့်ပါ။  </translation>
+        <source>in less than a minute</source>
+        <translation>တစ်မိနစ်အတွင်း</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>ဒေသဆိုင်ရာ  </translation>
+        <source>about {} minutes ago</source>
+        <translation>တစ်နာရီအကြာက  </translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>ငွေလျော့နည်းပါသည်  </translation>
+        <source>in about {} minutes</source>
+        <translation>{} မိနစ်ခန့် အတွင်း</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>လျော်ကြေးအကဲဖြတ်များမရနိုင်ပါ  </translation>
+        <source>about 1 hour ago</source>
+        <translation>နာရီခန့် လွန်ခဲ့သည်</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>စကားဝှက်မှားနေပါသည်  </translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>ဒီငွေလွှဲဟာဒီပိုက်ဆံအိတ်နဲ့မဆိုင်ပါ။  </translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>ဖိုင်မှတင်သွင်းမရနိုင်ခဲ့ပါ။</translation>
+        <source>in about 1 hour</source>
+        <translation>တစ်နာရီခန့် အတွင်း</translation>
     </message>
 </context>
 <context>

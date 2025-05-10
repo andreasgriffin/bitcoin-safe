@@ -293,22 +293,6 @@
                            </source>
         <translation>شراء {number} من الموقعين على الأجهزة                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe يدعم جميع الموقعين الرئيسيين على الأجهزة: &lt;a href=&quot;{url}&quot;&gt;اعرض القائمة الكاملة&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>شراء {name}</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>اشترِ Coldcard Mk4  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>اشترِ Coldcard Q  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>شراء Blockstream Jade  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>رسوم</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... هو الحد الأدنى لاستبدال المعاملات الحالية.</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>معدل رسوم تقريبي</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>محفظة</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>تسريع المعاملة {txid}</translation>
+        <source>Not broadcasted.</source>
+        <translation>لم يتم نشرها.</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} تأكيدات</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>لا يمكن تنفيذ CPFP على المعاملة لأنه لم يتم العثور على مخرج استقبال</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>في انتظار تضمينها في كتلة</translation>
     </message>
 </context>
 <context>
@@ -1732,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>تم حفظ المحفظة</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} في {shortid}</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1773,12 +1749,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>مزامنة مع {server}  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>المزامنة &amp;&amp; الدردشة  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>متصل بـ {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>المزامنة &amp;&amp; الدردشة  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1817,12 +1793,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>استيراد التسميات</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>التاريخ</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>جميع الملفات (*);;ملفات JSONL (*.jsonl);;ملفات JSON (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>التاريخ</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2506,8 +2482,16 @@ below {rate}</source>
         <translation>المدخلات</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>يرسل</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>التسمية:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>لم يتم العثور على المعاملة المراد استبدالها في المحافظ المفتوحة</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2538,6 +2522,10 @@ below {rate}</source>
         <translation>يحرر</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>استلام أسرع (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>تحرير مع زيادة الرسوم (RBF)</translation>
     </message>
@@ -2552,10 +2540,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>الخطوة التالية</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>يرسل</translation>
     </message>
 </context>
 <context>
@@ -2635,10 +2619,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>كمية</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>آباء</translation>
     </message>
 </context>
 <context>
@@ -3187,6 +3167,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>تصدير كملف CSV</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>الأعمدة المرئية</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3414,6 +3398,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>لا يمكن تنفيذ CPFP على المعاملة لأنه لم يتم العثور على مخرج استقبال</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>تسريع المعاملة {txid}</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3429,56 +3424,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>غير مؤكد</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>فشل التصدير إلى الملف.</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>الرصيد: {amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>مجهول</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} منذ ثوانى</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>في ثوان</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>قبل أقل من دقيقة</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>في أقل من دقيقة</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>منذ {} دقيقة تقريبًا</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>في حوالي {} دقيقة</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>منذ حوالي 1 ساعة</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>والد غير مؤكد</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>في حوالي 1 ساعة</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3517,12 +3464,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>منذ حوالي {} أشهر</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>لم يتم التحقق منها</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>في حوالي {} شهرًا</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} منذ ثوانى</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3541,44 +3488,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>في أكثر من {} سنة</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>لا يمكن عثرة الرسوم</translation>
+        <source>Balance: {amount}</source>
+        <translation>الرصيد: {amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>لا يمكن إلغاء المعاملة</translation>
+        <source>in {} seconds</source>
+        <translation>في ثوان</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>لا يمكن إنشاء معاملة فرعية</translation>
+        <source>less than a minute ago</source>
+        <translation>قبل أقل من دقيقة</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>تم اكتشاف تلف في ملف المحفظة. يرجى استعادة محفظتك من البذور، ومقارنة العناوين في كلا الملفين</translation>
+        <source>in less than a minute</source>
+        <translation>في أقل من دقيقة</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>محلي</translation>
+        <source>about {} minutes ago</source>
+        <translation>منذ {} دقيقة تقريبًا</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>رصيد غير كاف</translation>
+        <source>in about {} minutes</source>
+        <translation>في حوالي {} دقيقة</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>تقديرات الرسوم الديناميكية غير متوفرة</translation>
+        <source>about 1 hour ago</source>
+        <translation>منذ حوالي 1 ساعة</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>كلمة سر خاطئة</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>المعاملة لا علاقة لها بهذه المحفظة.</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>فشل الاستيراد من الملف.</translation>
+        <source>in about 1 hour</source>
+        <translation>في حوالي 1 ساعة</translation>
     </message>
 </context>
 <context>

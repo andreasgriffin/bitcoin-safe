@@ -30,6 +30,7 @@
 import datetime
 import logging
 import math
+import platform
 import random
 import sys
 from dataclasses import dataclass
@@ -48,7 +49,7 @@ from PyQt6.QtCharts import (
     QValueAxis,
 )
 from PyQt6.QtCore import QDateTime, QMargins, QPointF, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QBrush, QMouseEvent, QPalette, QPen
+from PyQt6.QtGui import QBrush, QMouseEvent, QPainter, QPalette, QPen
 from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsLayout,
@@ -130,6 +131,8 @@ class TrackingChartView(QChartView):
     ) -> None:
         super().__init__(chart, parent)
         self.setMouseTracking(True)
+        self.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        self.setRenderHint(QPainter.RenderHint.TextAntialiasing, True)
         self.line_series = line_series
         self.highlight_series = highlight_series
         self.highlight_radius = highlight_radius
@@ -262,11 +265,11 @@ class BalanceChart(QWidget):
 
         # -- 2) Set up a scatter series as our highlight marker --
         self.highlight_series = QScatterSeries()
-        self.highlight_series.setMarkerSize(7 if is_dark_mode() else 6)
+        self.highlight_series.setMarkerSize(7)
         # self.highlight_series.setColor(ColorScheme.Purple.as_color())
         # self.highlight_series.setBorderColor(Qt.GlobalColor.transparent)
         pen = QPen()
-        pen.setColor(ColorScheme.OrangeBitcoin.as_color() if is_dark_mode() else Qt.GlobalColor.transparent)
+        pen.setColor(ColorScheme.OrangeBitcoin.as_color())
         brush = QBrush()
         brush.setStyle(Qt.BrushStyle.SolidPattern)
         brush.setColor(ColorScheme.Purple.as_color())
@@ -353,6 +356,12 @@ class BalanceChart(QWidget):
         # Set the label format on the axis
         format_string = f"%.{decimals}f"
         self.value_axis.setLabelFormat(format_string)
+
+        if platform.system() == "Darwin":
+            # y axis labels are cut off in mac otherwise
+            font = self.value_axis.labelsFont()
+            font.setPixelSize(8)
+            self.value_axis.setLabelsFont(font)
 
     def set_time_axis_label_format(self, x_values: List[float]) -> None:
         if np.max(x_values) - np.min(x_values) < 24 * 60 * 60:
@@ -461,7 +470,7 @@ class WalletBalanceChart(BalanceChart):
     def on_signal_click(self, index: int):
         tx_index = max(0, index - 1)
         if tx_index >= len(self.transactions):
-            return
+            tx_index = len(self.transactions) - 1
         self.signal_click_transaction.emit(self.transactions[tx_index])
 
     def updateUi(self) -> None:

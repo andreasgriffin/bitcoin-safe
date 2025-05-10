@@ -748,7 +748,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             no_show=True,
         ).emit_with(self.signals.notification)
         if question_dialog(
-            message_content + "\n" + self.tr("Do you want to save a copy of these transactions?")
+            message_content + "\n" + self.tr("Do you want to save a copy of these transactions?"),
+            buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         ):
             folder_path = QFileDialog.getExistingDirectory(
                 self, "Select Folder to save the removed transactions"
@@ -854,7 +855,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             outpoints=[],
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
-                UTXOList.Columns.PARENTS,
+                # UTXOList.Columns.PARENTS,
                 UTXOList.Columns.WALLET_ID,
             ],
             sort_column=UTXOList.Columns.CATEGORY,

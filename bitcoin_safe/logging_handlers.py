@@ -147,4 +147,4 @@ class OpenLogHandler(logging.Handler):
             temp_file.write(message)
             temp_file_path = temp_file.name
 
-            xdg_open_file(Path(temp_file_path), is_text_file=True)
+        xdg_open_file(Path(temp_file_path), is_text_file=True)

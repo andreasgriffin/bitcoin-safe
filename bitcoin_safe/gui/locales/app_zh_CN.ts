@@ -293,22 +293,6 @@
                            </source>
         <translation>购买 {number} 硬件签名器                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe 支持所有主要硬件签名器：&lt;a href=&quot;{url}&quot;&gt;查看完整列表&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>购买{name}</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>购买Coldcard Mk4  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>购买Coldcard Q  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>购买 Blockstream Jade  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>费用</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>...是取代现有交易的最低限度。</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>大约费率</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>钱包</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>对交易 {txid} 进行加速</translation>
+        <source>Not broadcasted.</source>
+        <translation>未广播。</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} 确认</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>无法对该交易进行 CPFP，因为未找到接收输出</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>等待被包含在区块中</translation>
     </message>
 </context>
 <context>
@@ -1735,10 +1715,6 @@ Do you want to proceed anyway?</source>
         <translation>钱包已保存</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} 在 {shortid}</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1776,12 +1752,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>与 {server} 同步  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同步 &amp;&amp; 聊天  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>已连接到 {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同步 &amp;&amp; 聊天  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1820,12 +1796,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>导入标签</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>历史记录</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>所有文件 (*);;JSONL 文件 (*.jsonl);;JSON 文件 (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>历史记录</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2512,8 +2488,16 @@ below {rate}</source>
         <translation>输入</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>发送</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>标签：  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>在打开的钱包中找不到要替换的交易</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2544,6 +2528,10 @@ below {rate}</source>
         <translation>编辑</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>更快接收（CPFP）</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>使用增加的费用编辑（RBF）</translation>
     </message>
@@ -2558,10 +2546,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>下一步</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>发送</translation>
     </message>
 </context>
 <context>
@@ -2641,10 +2625,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>金额</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>父交易</translation>
     </message>
 </context>
 <context>
@@ -3193,6 +3173,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>导出为CSV</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>可见列</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3420,6 +3404,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>无法对该交易进行 CPFP，因为未找到接收输出</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>对交易 {txid} 进行加速</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3435,56 +3430,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>未确认</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>导出到文件失败。</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>余额：{amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>未知</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{}秒前</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>在{}秒内</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>不到一分钟前</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>不到一分钟内</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>大约{}分钟前</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>在大约{}分钟内</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>大约1小时前</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>未确认的父交易</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>在大约1小时内</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3523,12 +3470,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>大约{}个月前</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>未验证</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>在大约{}个月内</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{}秒前</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3547,44 +3494,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>在超过{}年内</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>无法提高费用</translation>
+        <source>Balance: {amount}</source>
+        <translation>余额：{amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>无法取消交易</translation>
+        <source>in {} seconds</source>
+        <translation>在{}秒内</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>无法创建子交易</translation>
+        <source>less than a minute ago</source>
+        <translation>不到一分钟前</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>检测到钱包文件损坏。请从助记词种子恢复您的钱包，并比较两个文件中的地址</translation>
+        <source>in less than a minute</source>
+        <translation>不到一分钟内</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>本地</translation>
+        <source>about {} minutes ago</source>
+        <translation>大约{}分钟前</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>资金不足</translation>
+        <source>in about {} minutes</source>
+        <translation>在大约{}分钟内</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>动态费用估算不可用</translation>
+        <source>about 1 hour ago</source>
+        <translation>大约1小时前</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>密码错误</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>交易与此钱包无关。</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>从文件导入失败。</translation>
+        <source>in about 1 hour</source>
+        <translation>在大约1小时内</translation>
     </message>
 </context>
 <context>

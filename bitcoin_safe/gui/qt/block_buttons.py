@@ -39,6 +39,7 @@ from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsDropShadowEffect,
+    QGraphicsOpacityEffect,
     QLabel,
     QMenu,
     QPushButton,
@@ -176,7 +177,9 @@ class LabelExplorer(BaseBlockLabel):
 class ButtonExplorerIcon(AspectRatioSvgWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(
-            svg_content=svg_tools.get_svg_content("block-explorer.svg"),
+            svg_content=svg_tools.get_svg_content(
+                "block-explorer.svg", auto_theme=False, replace_tuples=[("currentColor", "#ffffff")]
+            ),
             max_height=20,
             max_width=20,
             parent=parent,
@@ -185,13 +188,27 @@ class ButtonExplorerIcon(AspectRatioSvgWidget):
 
 
 class BlockButton(QPushButton):
-    def __init__(self, network: bdk.Network, size=100, glow_color="#fab30d", parent=None) -> None:
+    def __init__(
+        self,
+        network: bdk.Network,
+        size=100,
+        glow_color="#fab30d",
+        non_active_opacity=0.7,
+        active_border_width=0,
+        border_radius=5,
+        active_glow=False,
+        parent=None,
+    ) -> None:
         super().__init__(parent=parent)
         self.active = False
         self.min_fee: float = MIN_RELAY_FEE
         self.max_fee: float = MIN_RELAY_FEE
         self.block_type: BlockType = BlockType.confirmed
         self.glow_color = glow_color
+        self.non_active_opacity = non_active_opacity
+        self.active_glow = active_glow
+        self.active_border_width = active_border_width
+        self.border_radius = border_radius
 
         # Create labels for each text line
 
@@ -231,8 +248,8 @@ class BlockButton(QPushButton):
             active=value, min_fee=self.min_fee, max_fee=self.max_fee, block_type=self.block_type
         )
 
-    def _set_glow(self, value: bool):
-        if value:
+    def _set_glow(self, active: bool):
+        if active:
             glow_effect = QGraphicsDropShadowEffect()
             glow_effect.setOffset(0)
             glow_effect.setBlurRadius(30)  # Increased blur radius
@@ -245,6 +262,15 @@ class BlockButton(QPushButton):
         for label in self.labels:
             label.setText("")
 
+    def set_opacity(self, active: bool):
+        # remove any existing effect first
+        self.setGraphicsEffect(None)
+
+        if not active:
+            effect = QGraphicsOpacityEffect(self)
+            effect.setOpacity(self.non_active_opacity)
+            self.setGraphicsEffect(effect)
+
     def _get_css(self, active: bool, color_top: str, color_bottom: str) -> str:
         css = f"""
             QPushButton {{
@@ -253,6 +279,7 @@ class BlockButton(QPushButton):
                                     stop:1 {color_top});
                 border: none;
                 color: white;
+                border-radius: {self.border_radius}px;
             }}
             QPushButton:pressed {{
                 border: none;
@@ -266,7 +293,7 @@ class BlockButton(QPushButton):
         if active:
             css += f""" 
                 QPushButton:active {{
-                    border: 2px solid {self.glow_color};  
+                    border: {self.active_border_width}px solid {self.glow_color};  
                 }}            
             """
         return css
@@ -288,13 +315,24 @@ class BlockButton(QPushButton):
                 color_bottom=fee_to_color(max_fee, mempoolFeeColors),
             )
         self.setStyleSheet(css)
-        self._set_glow(active)
+        self.set_opacity(active=active)
+        if self.active_glow:
+            self._set_glow(active)
 
 
 class VerticalButtonGroup(InvisibleScrollArea):
     signal_button_click: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
 
-    def __init__(self, network: bdk.Network, button_count=3, parent=None, size=100) -> None:
+    def __init__(
+        self,
+        network: bdk.Network,
+        button_count=3,
+        parent=None,
+        size=100,
+        non_active_opacity=0.6,
+        border_radius=5,
+        active_glow=False,
+    ) -> None:
         super().__init__(parent)
         layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -307,7 +345,13 @@ class VerticalButtonGroup(InvisibleScrollArea):
 
         # Create buttons
         for i in range(button_count):
-            button = BlockButton(network=network, size=size)
+            button = BlockButton(
+                network=network,
+                size=size,
+                non_active_opacity=non_active_opacity,
+                active_glow=active_glow,
+                border_radius=border_radius,
+            )
             button.clicked.connect(partial(self.signal_button_click.emit, i))
 
             self.buttons.append(button)
@@ -349,10 +393,21 @@ class BaseBlock(VerticalButtonGroup):
         network: bdk.Network,
         chain_position: bdk.ChainPosition | None = None,
         button_count=3,
+        non_active_opacity=0.6,
+        border_radius=5,
+        active_glow=False,
         parent=None,
         size=100,
     ) -> None:
-        super().__init__(network=network, button_count=button_count, parent=parent, size=size)
+        super().__init__(
+            network=network,
+            button_count=button_count,
+            parent=parent,
+            size=size,
+            non_active_opacity=non_active_opacity,
+            active_glow=active_glow,
+            border_radius=border_radius,
+        )
         self.chain_position = chain_position
         self.mempool_data = mempool_data
 
@@ -379,6 +434,7 @@ class MempoolButtons(BaseBlock):
         decimal_precision: int,
         fee_rate: float = 1,
         max_button_count=3,
+        size=100,
         parent=None,
     ) -> None:
         super().__init__(
@@ -386,7 +442,9 @@ class MempoolButtons(BaseBlock):
             chain_position=None,
             network=mempool_data.network_config.network,
             button_count=max_button_count,
+            size=size,
             parent=parent,
+            border_radius=int(5 / 100 * size),
         )
         self.mempool_scheduler = MempoolScheduler(
             mempool_data=mempool_data,
@@ -403,6 +461,8 @@ class MempoolButtons(BaseBlock):
     def open_context_menu(self, pos):
         menu = QMenu(self)
         action_refresh = menu.addAction(self.tr("Fetch new mempool data"))
+        if action_refresh:
+            action_refresh.setIcon(svg_tools.get_QIcon("bi--arrow-clockwise.svg"))
 
         # Convert the local position to global coordinates.
         global_pos = self.mapToGlobal(pos)
@@ -459,6 +519,7 @@ class MempoolProjectedBlock(BaseBlock):
         mempool_data: MempoolData,
         config: UserConfig,
         fee_rate: float = 1,
+        size=100,
         parent=None,
     ) -> None:
         super().__init__(
@@ -467,7 +528,9 @@ class MempoolProjectedBlock(BaseBlock):
             network=mempool_data.network_config.network,
             button_count=1,
             parent=parent,
-            size=100,
+            non_active_opacity=1,
+            size=size,
+            border_radius=int(5 / 100 * size),
         )
         self.mempool_scheduler = MempoolScheduler(
             mempool_data=mempool_data,
@@ -512,7 +575,7 @@ class MempoolProjectedBlock(BaseBlock):
             button.label_time_estimation.set(block_index + 1, BlockType.projected)
             min_fee, max_fee = self.mempool_data.fee_rates_min_max(block_index)
             button.set_background_gradient(
-                active=True, min_fee=min_fee, max_fee=max_fee, block_type=BlockType.projected
+                active=False, min_fee=min_fee, max_fee=max_fee, block_type=BlockType.projected
             )
 
     def _on_button_click(self, i: int) -> None:
@@ -535,6 +598,7 @@ class ConfirmedBlock(BaseBlock):
         url: str | None = None,
         chain_position: bdk.ChainPosition | None = None,
         fee_rate: float | None = None,
+        size=120,
         parent=None,
     ) -> None:
         super().__init__(
@@ -542,8 +606,10 @@ class ConfirmedBlock(BaseBlock):
             chain_position=chain_position,
             network=mempool_data.network_config.network,
             button_count=1,
+            non_active_opacity=1,
             parent=parent,
-            size=120,
+            size=size,
+            border_radius=int(5 / 100 * size),
         )
 
         self.fee_rate = fee_rate
@@ -581,12 +647,12 @@ class ConfirmedBlock(BaseBlock):
             button.explorer_explorer_icon.setVisible(True)
             if self.fee_rate:
                 button.set_background_gradient(
-                    active=True, min_fee=self.fee_rate, max_fee=self.fee_rate, block_type=BlockType.confirmed
+                    active=False, min_fee=self.fee_rate, max_fee=self.fee_rate, block_type=BlockType.confirmed
                 )
                 button.label_exact_median_fee.set(median_fee=self.fee_rate, block_type=BlockType.confirmed)
             else:
                 button.set_background_gradient(
-                    active=True, min_fee=MIN_RELAY_FEE, max_fee=MIN_RELAY_FEE, block_type=BlockType.confirmed
+                    active=False, min_fee=MIN_RELAY_FEE, max_fee=MIN_RELAY_FEE, block_type=BlockType.confirmed
                 )
                 button.label_exact_median_fee.setText("")
 

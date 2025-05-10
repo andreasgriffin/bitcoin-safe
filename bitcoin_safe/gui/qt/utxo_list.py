@@ -66,6 +66,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.tx import short_tx_id
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -98,7 +99,7 @@ def tooltip_text_of_utxo(is_spent_by_txid: Optional[str], chain_position: bdk.Ch
         if is_spent_by_txid:
             return translate(
                 "utxo_list", "Unconfirmed UTXO is spent by transaction {is_spent_by_txid}"
-            ).format(is_spent_by_txid=is_spent_by_txid)
+            ).format(is_spent_by_txid=short_tx_id(is_spent_by_txid))
         else:
             return translate("utxo_list", "Unconfirmed UTXO")
 
@@ -114,7 +115,7 @@ class UTXOList(MyTreeView):
         CATEGORY = enum.auto()
         LABEL = enum.auto()
         AMOUNT = enum.auto()
-        PARENTS = enum.auto()
+        # PARENTS = enum.auto()
 
     filter_columns = [
         Columns.WALLET_ID,
@@ -132,7 +133,7 @@ class UTXOList(MyTreeView):
         Columns.CATEGORY: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.LABEL: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.AMOUNT: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
-        Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
+        # Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
     }
 
     column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
@@ -315,16 +316,16 @@ class UTXOList(MyTreeView):
                 address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
-    def get_headers(self):
+    def get_headers(self) -> Dict["UTXOList.Columns", str]:
         return {
-            self.Columns.STATUS: (""),
+            self.Columns.STATUS: ("Tx"),
             self.Columns.WALLET_ID: self.tr("Wallet"),
             self.Columns.OUTPOINT: self.tr("Outpoint"),
             self.Columns.ADDRESS: self.tr("Address"),
             self.Columns.CATEGORY: self.tr("Category"),
             self.Columns.LABEL: self.tr("Label"),
             self.Columns.AMOUNT: self.tr("Amount"),
-            self.Columns.PARENTS: self.tr("Parents"),
+            # self.Columns.PARENTS: self.tr("Parents"),
         }
 
     @time_logger

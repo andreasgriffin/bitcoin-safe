@@ -148,7 +148,6 @@ class UITx_Creator(UITx_Base):
         )
 
         self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
-        self.recipients.add_recipient()
 
         self.fee_group = FeeGroup(
             mempool_data=mempool_data, fx=fx, config=self.config, enable_approximate_fee_label=False
@@ -193,6 +192,9 @@ class UITx_Creator(UITx_Base):
         self.fee_group.signal_fee_rate_change.connect(self.on_fee_rate_change)
         self.signals.language_switch.connect(self.updateUi)
 
+        # must be after setting signals, to trigger signals when adding a recipient
+        self.recipients.add_recipient()
+
     def on_input_changed(self):
         fee_rate = self.fee_group.spin_fee_rate.value()
         # set max values
@@ -210,7 +212,7 @@ class UITx_Creator(UITx_Base):
             max_reasonable_fee_rate=self.mempool_data.max_reasonable_fee_rate(),
             confirmation_status=TxConfirmationStatus.LOCAL,
         )
-        self.handle_cpfp()
+        self.handle_cpfp(txinfos=self.get_ui_tx_infos())
 
     def on_fee_rate_change(self, fee_rate: float) -> None:
         self.on_input_changed()
@@ -274,11 +276,15 @@ class UITx_Creator(UITx_Base):
     def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
         self.on_input_changed()
 
+    def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
+        self.update_categories()
+
     def on_category_list_clicked(self, tag: str):
         self.on_input_changed_and_categories()
 
     def on_recipients_added(self, recipient_tab_widget: RecipientTabWidget):
         recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
+        recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
         self.on_input_changed_and_categories()
 
     def on_recipients_removed(self, recipient_tab_widget: RecipientTabWidget):
@@ -722,7 +728,7 @@ class UITx_Creator(UITx_Base):
                 except Exception:
                     pass
             else:
-                assert txinfos.replace_tx, "No replace_tx provided"
+                assert txinfos.replace_tx, "No replace_tx available in bdk."
                 fee_info = FeeInfo.from_txdetails(txinfos.replace_tx)
 
             if not fee_info:
@@ -743,9 +749,13 @@ class UITx_Creator(UITx_Base):
         else:
             self.fee_group.set_rbf_label(None)
 
-    def handle_cpfp(self) -> None:
-        utxos = list(self.get_ui_tx_infos().utxo_dict.values())
-        parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+    def handle_cpfp(self, txinfos: TxUiInfos) -> None:
+        parent_txids = set()
+        # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
+        if txinfos.spend_all_utxos:
+            utxos = list(self.get_ui_tx_infos().utxo_dict.values())
+            parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
             this_fee_info=self.estimate_fee_info(),
@@ -755,7 +765,7 @@ class UITx_Creator(UITx_Base):
 
     def set_ui(self, txinfos: TxUiInfos) -> None:
         self.handle_conflicting_utxo(txinfos=txinfos)
-        self.handle_cpfp()
+        self.handle_cpfp(txinfos)
 
         if txinfos.fee_rate:
             self.fee_group.set_spin_fee_value(txinfos.fee_rate)

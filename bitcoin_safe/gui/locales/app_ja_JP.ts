@@ -293,22 +293,6 @@
                            </source>
         <translation>{number} 個のハードウェア署名者を購入する                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe はすべての主要なハードウェア署名者をサポートしています：&lt;a href=&quot;{url}&quot;&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>{name}を購入</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Coldcard Mk4を購入する  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Coldcard Qを購入する  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>Blockstream Jade を購入する  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>手数料 (Fee)</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>...は既存のトランザクションを置き換える最小限です。</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>おおよその手数料率</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>ウォレット</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>{txid} の高速化</translation>
+        <source>Not broadcasted.</source>
+        <translation>ブロードキャストされていません。</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} 回の確認</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>受信出力が見つからないため、CPFP を実行できません</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>ブロックに含まれるのを待っています</translation>
     </message>
 </context>
 <context>
@@ -1732,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>{amount}を受け取りました</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} が {shortid} に</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1773,12 +1749,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} と同期中  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>同期 &amp;&amp; チャット  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>{server} に接続しました  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>同期 &amp;&amp; チャット  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1817,12 +1793,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>ラベルのインポート</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>取引履歴</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>すべてのファイル (*);;JSONL ファイル (*.jsonl);;JSON ファイル (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>取引履歴</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2506,8 +2482,16 @@ below {rate}</source>
         <translation>入力</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>送信</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>ラベル：  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>置き換えるトランザクションが開いているウォレットに見つかりませんでした</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2538,6 +2522,10 @@ below {rate}</source>
         <translation>編集</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>より速く受け取る (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>増加した手数料で編集（RBF）</translation>
     </message>
@@ -2552,10 +2540,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>次のステップ</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>送信</translation>
     </message>
 </context>
 <context>
@@ -2635,10 +2619,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>金額</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>親</translation>
     </message>
 </context>
 <context>
@@ -3187,6 +3167,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>CSVとしてエクスポート</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>表示列</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3414,6 +3398,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>受信出力が見つからないため、CPFP を実行できません</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} の高速化</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3429,56 +3424,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>未確認</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>ファイルへのエクスポートに失敗しました。</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>残高：{amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>不明</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{}秒前</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>{}秒後に</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>1分未満前</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>1分未満後に</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>約{}分前</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>約{}分後に</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>約1時間前</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>未確認の親</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>約1時間後に</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3517,12 +3464,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>約{}ヶ月前</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>確認されていません</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>約{}ヶ月後に</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{}秒前</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3541,44 +3488,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>{}年以上後に</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>手数料を引き上げることはできません</translation>
+        <source>Balance: {amount}</source>
+        <translation>残高：{amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>トランザクションをキャンセルできません</translation>
+        <source>in {} seconds</source>
+        <translation>{}秒後に</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>子トランザクションを作成できません</translation>
+        <source>less than a minute ago</source>
+        <translation>1分未満前</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>ウォレットファイルの破損が検出されました。ウォレットをシードから復元し、両方のファイルのアドレスを比較してください</translation>
+        <source>in less than a minute</source>
+        <translation>1分未満後に</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>ローカル</translation>
+        <source>about {} minutes ago</source>
+        <translation>約{}分前</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>資金不足</translation>
+        <source>in about {} minutes</source>
+        <translation>約{}分後に</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>動的手数料の見積もりは利用できません</translation>
+        <source>about 1 hour ago</source>
+        <translation>約1時間前</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>パスワードが間違っています</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>このウォレットに関連するトランザクションではありません。</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>ファイルからのインポートに失敗しました。</translation>
+        <source>in about 1 hour</source>
+        <translation>約1時間後に</translation>
     </message>
 </context>
 <context>

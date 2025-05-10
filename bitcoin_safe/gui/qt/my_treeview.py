@@ -376,7 +376,9 @@ class MySortModel(QSortFilterProxyModel):
         return mime_data
 
 
-class ElectrumItemDelegate(QStyledItemDelegate):
+class MyItemDelegate(QStyledItemDelegate):
+    ROW_HEIGHT = 24
+
     def __init__(self, tv: "MyTreeView") -> None:
         super().__init__(tv)
         self.icon_shift_right = 30
@@ -441,7 +443,8 @@ class ElectrumItemDelegate(QStyledItemDelegate):
     def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex) -> QSize:
         custom_data = idx.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
         if custom_data is None:
-            return super().sizeHint(option, idx)
+            orghint = super().sizeHint(option, idx)
+            return QSize(orghint.width(), max(self.ROW_HEIGHT, orghint.height()))
         else:
             # default_size = super().sizeHint(option, idx)
             return custom_data.sizeHint(option, idx)
@@ -486,13 +489,13 @@ class MyTreeView(QTreeView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
         self.setUniformRowHeights(True)
-        self.setIconSize(QSize(20, 20))
+        self.setIconSize(QSize(MyItemDelegate.ROW_HEIGHT - 2, MyItemDelegate.ROW_HEIGHT - 2))
 
         # Control which columns are editable
         if editable_columns is None:
             editable_columns = []
         self.editable_columns = set(editable_columns)
-        self.setItemDelegate(ElectrumItemDelegate(self))
+        self.setItemDelegate(MyItemDelegate(self))
         self.current_filter = ""
         self.is_editor_open = False
         self._currently_updating = False
@@ -533,7 +536,7 @@ class MyTreeView(QTreeView):
         self._current_order = sort_order
         self.sortByColumn(self._current_column, self._current_order)
 
-    def setItemDelegate(self, delegate: ElectrumItemDelegate) -> None:  # type: ignore[override]
+    def setItemDelegate(self, delegate: MyItemDelegate) -> None:  # type: ignore[override]
         self._item_delegate = delegate
         super().setItemDelegate(delegate)
 
@@ -689,7 +692,7 @@ class MyTreeView(QTreeView):
     def sourceModel(self) -> MyStandardItemModel:
         return self._source_model
 
-    def itemDelegate(self) -> ElectrumItemDelegate:
+    def itemDelegate(self) -> MyItemDelegate:
         return self._item_delegate
 
     def item_from_index(self, idx: QModelIndex) -> Optional[QStandardItem]:
@@ -1155,6 +1158,19 @@ class MyTreeView(QTreeView):
     def set_allow_edit(self, allow_edit: bool):
         self.allow_edit = allow_edit
 
+    def get_headers(self) -> Dict[Any, str]:
+        return {col: col.name for col in self.Columns}
+
+    def set_column_hidden(self, col: BaseColumnsEnum, hide: bool):
+        self.setColumnHidden(col.value, hide)
+        if hide and col not in self.hidden_columns:
+            self.hidden_columns.append(col)
+        if not hide and col in self.hidden_columns:
+            self.hidden_columns.remove(col)
+
+    def toggle_column_hidden(self, col: BaseColumnsEnum):
+        self.set_column_hidden(col, not (col.value in self.hidden_columns))
+
     def close(self):
         self.proxy.close()
         self._source_model.clear()
@@ -1209,6 +1225,9 @@ class TreeViewWithToolbar(SearchableTab):
         self.action_export_as_csv = self.menu.add_action(
             "", self._searchable_list_export_as_csv, icon=svg_tools.get_QIcon("bi--filetype-csv.svg")
         )
+        self.menu_hiddden_columns = self.menu.add_menu(
+            "",
+        )
 
         toolbar_button = QToolButton()
 
@@ -1231,7 +1250,20 @@ class TreeViewWithToolbar(SearchableTab):
         self.toolbar.addStretch()
         self.toolbar.addWidget(self.search_edit)
         self.toolbar.addWidget(toolbar_button)
+        self.fill_menu_hiddden_columns()
         return self.toolbar, self.menu, self.balance_label, self.search_edit, self.action_export_as_csv
+
+    def fill_menu_hiddden_columns(self):
+        self.menu_hiddden_columns.clear()
+        if not self.searchable_list:
+            return
+        for column in self.searchable_list.Columns:
+            action = self.menu_hiddden_columns.add_action(
+                self.searchable_list.get_headers().get(column, ""),
+                partial(self.searchable_list.toggle_column_hidden, column),
+            )
+            action.setCheckable(True)
+            action.setChecked(column.value not in self.searchable_list.hidden_columns)
 
     def show_toolbar(self, is_visible: bool, config=None) -> None:
         if is_visible == self.toolbar_is_visible:
@@ -1249,6 +1281,7 @@ class TreeViewWithToolbar(SearchableTab):
     def updateUi(self) -> None:
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))
+        self.menu_hiddden_columns.setTitle(translate("mytreeview", "Visible columns"))
 
     def close(self):
         if self.searchable_list:

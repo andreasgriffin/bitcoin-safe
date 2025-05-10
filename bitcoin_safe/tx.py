@@ -70,7 +70,7 @@ def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_vsize: float, mempool_data
     new_absolute_fee += fee_amount
     # 4.
     new_absolute_fee += new_tx_vsize * mempool_data.get_min_relay_fee_rate()
-    return FeeInfo(fee_amount=int(new_absolute_fee), vsize=new_tx_vsize, is_estimated=True)
+    return FeeInfo(fee_amount=int(new_absolute_fee), vsize=int(new_tx_vsize), is_estimated=True)
 
 
 class TxUiInfos:

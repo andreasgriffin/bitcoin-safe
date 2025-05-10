@@ -994,7 +994,7 @@ class MainWindow(QMainWindow):
             outpoints=get_prev_outpoints(tx),
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
-                UTXOList.Columns.PARENTS,
+                # UTXOList.Columns.PARENTS,
             ],
             keep_outpoint_order=True,
             # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
@@ -1127,7 +1127,7 @@ class MainWindow(QMainWindow):
             outpoints=get_prev_outpoints(psbt.extract_tx()),
             hidden_columns=[
                 UTXOList.Columns.OUTPOINT,
-                UTXOList.Columns.PARENTS,
+                # UTXOList.Columns.PARENTS,
             ],
             txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
             keep_outpoint_order=True,

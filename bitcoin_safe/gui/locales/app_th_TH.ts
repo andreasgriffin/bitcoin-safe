@@ -293,22 +293,6 @@
                            </source>
         <translation>ซื้อ {number} ผู้ลงนามฮาร์ดแวร์                                                  </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>ซื้อ {name}  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>ซื้อ Coldcard Mk4  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>ซื้อ Coldcard Q  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>ซื้อ Blockstream Jade  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>ค่าธรรมเนียม  </translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... เป็นขั้นต่ำในการแทนที่ธุรกรรมที่มีอยู่  </translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>อัตราค่าธรรมเนียมโดยประมาณ  </translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>กระเป๋าเงิน  </translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>เร่งความเร็วของ {txid}</translation>
+        <source>Not broadcasted.</source>
+        <translation>ไม่ได้เผยแพร่</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} การยืนยัน  </translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>ไม่สามารถใช้ CPFP กับธุรกรรมได้เนื่องจากไม่พบเอาต์พุตของการรับ</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>กำลังรอให้รวมอยู่ในบล็อก</translation>
     </message>
 </context>
 <context>
@@ -1729,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>บันทึกกระเป๋าเงินแล้ว  </translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>{amount} ใน {shortid}  </translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1770,12 +1746,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>กำลังซิงค์กับ {server}  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sync &amp;&amp; Chat  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>เชื่อมต่อกับ {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1814,12 +1790,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>นำเข้าป้ายกำกับ  </translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>ประวัติ  </translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>ไฟล์ทั้งหมด (*);;ไฟล์ JSONL (*.jsonl);;ไฟล์ JSON (*.json)  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>ประวัติ  </translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2503,8 +2479,16 @@ below {rate}</source>
         <translation>อินพุต  </translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>ส่ง  </translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>ป้ายกำกับ:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>ไม่พบธุรกรรมที่ต้องการแทนที่ในกระเป๋าที่เปิด</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2535,6 +2519,10 @@ below {rate}</source>
         <translation>แก้ไข  </translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>รับเร็วขึ้น (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>แก้ไขด้วยค่าธรรมเนียมที่สูงขึ้น (RBF)  </translation>
     </message>
@@ -2549,10 +2537,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>ขั้นตอนถัดไป  </translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>ส่ง  </translation>
     </message>
 </context>
 <context>
@@ -2632,10 +2616,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>จำนวนเงิน  </translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>บิดามารดา  </translation>
     </message>
 </context>
 <context>
@@ -3184,6 +3164,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>ส่งออกเป็น CSV  </translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>คอลัมน์ที่มองเห็นได้</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3411,6 +3395,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ไม่สามารถใช้ CPFP กับธุรกรรมได้เนื่องจากไม่พบเอาต์พุตของการรับ</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>เร่งความเร็วของ {txid}</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3426,56 +3421,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>ยังไม่ยืนยัน  </translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>ไม่สามารถส่งออกไปยังไฟล์ได้  </translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>ยอดเงิน: {amount}  </translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>ไม่ทราบ  </translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} วินาทีที่แล้ว  </translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>ใน {} วินาที  </translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>น้อยกว่าหนึ่งนาทีที่แล้ว  </translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>ในเวลาน้อยกว่าหนึ่งนาที  </translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>ประมาณ {} นาทีที่แล้ว  </translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>ในประมาณ {} นาที  </translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>ประมาณ 1 ชั่วโมงที่แล้ว  </translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>บิดามารดาที่ยังไม่ยืนยัน  </translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>ในประมาณ 1 ชั่วโมง  </translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3514,12 +3461,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>ประมาณ {} เดือนที่แล้ว  </translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>ยังไม่ได้รับการยืนยัน  </translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>ในประมาณ {} เดือน  </translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} วินาทีที่แล้ว  </translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3538,44 +3485,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>ในมากกว่า {} ปี  </translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>ไม่สามารถเพิ่มค่าธรรมเนียมได้</translation>
+        <source>Balance: {amount}</source>
+        <translation>ยอดเงิน: {amount}  </translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>ไม่สามารถยกเลิกธุรกรรมได้  </translation>
+        <source>in {} seconds</source>
+        <translation>ใน {} วินาที  </translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>ไม่สามารถสร้างธุรกรรมลูกได้  </translation>
+        <source>less than a minute ago</source>
+        <translation>น้อยกว่าหนึ่งนาทีที่แล้ว  </translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>ตรวจพบความเสียหายของไฟล์กระเป๋าเงิน โปรดกู้คืนกระเป๋าเงินของคุณจากเมล็ดพันธุ์ และเปรียบเทียบที่อยู่ในทั้งสองไฟล์  </translation>
+        <source>in less than a minute</source>
+        <translation>ในเวลาน้อยกว่าหนึ่งนาที  </translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>ท้องถิ่น  </translation>
+        <source>about {} minutes ago</source>
+        <translation>ประมาณ {} นาทีที่แล้ว  </translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>เงินไม่เพียงพอ  </translation>
+        <source>in about {} minutes</source>
+        <translation>ในประมาณ {} นาที  </translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>ประมาณการค่าธรรมเนียมแบบไดนามิกไม่พร้อมใช้งาน  </translation>
+        <source>about 1 hour ago</source>
+        <translation>ประมาณ 1 ชั่วโมงที่แล้ว  </translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>รหัสผ่านไม่ถูกต้อง  </translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>ธุรกรรมไม่เกี่ยวข้องกับกระเป๋าเงินนี้  </translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>ไม่สามารถนำเข้าจากไฟล์ได้  </translation>
+        <source>in about 1 hour</source>
+        <translation>ในประมาณ 1 ชั่วโมง  </translation>
     </message>
 </context>
 <context>

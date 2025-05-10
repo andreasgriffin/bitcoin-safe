@@ -293,22 +293,6 @@
                            </source>
         <translation>Compra {number} firmatari hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe supporta tutti i principali firmatari hardware: &lt;a href=&quot;{url}&quot;&gt;Vedi lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>Compra un {name}</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Compra un Coldcard Mk4  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Compra un Coldcard Q  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>Compra un Blockstream Jade  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Commissione</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... è il minimo per sostituire le transazioni esistenti.</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>Tasso di commissione approssimativo</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>Portafoglio</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>Accelerazione di {txid}</translation>
+        <source>Not broadcasted.</source>
+        <translation>Non trasmesso.</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} Conferme</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>Impossibile eseguire CPFP sulla transazione perché non è stato trovato alcun output di ricezione</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>In attesa di essere incluso in un blocco</translation>
     </message>
 </context>
 <context>
@@ -1732,10 +1712,6 @@ Vuoi procedere comunque?</translation>
         <translation>Portafoglio salvato</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} in {shortid}</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1773,12 +1749,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Sincronizzazione con {server}  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sincronizza &amp;&amp; Chatta  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>Connesso a {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sincronizza &amp;&amp; Chatta  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1817,12 +1793,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Importa etichette</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>Cronologia</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Tutti i File (*);;File JSONL (*.jsonl);;File JSON (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>Cronologia</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2506,8 +2482,16 @@ below {rate}</source>
         <translation>Input</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>Invia</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>Etichetta:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>Impossibile trovare la transazione da sostituire nei portafogli aperti</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2538,6 +2522,10 @@ below {rate}</source>
         <translation>Modifica</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Ricevi più velocemente (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>Modifica con commissione aumentata (RBF)</translation>
     </message>
@@ -2552,10 +2540,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>Prossimo passo</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>Invia</translation>
     </message>
 </context>
 <context>
@@ -2635,10 +2619,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>Importo</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>Genitori</translation>
     </message>
 </context>
 <context>
@@ -3187,6 +3167,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>Esporta come CSV</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>Colonne visibili</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3414,6 +3398,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Impossibile eseguire CPFP sulla transazione perché non è stato trovato alcun output di ricezione</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>Accelerazione di {txid}</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3429,56 +3424,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>Non confermato</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>Esportazione fallita su file.</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>Saldo: {amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>Sconosciuto</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} secondi fa</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>tra {} secondi</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>meno di un minuto fa</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>tra meno di un minuto</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>circa {} minuti fa</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>tra circa {} minuti</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>circa 1 ora fa</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>Non confermato genitore</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>tra circa 1 ora</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3517,12 +3464,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>circa {} mesi fa</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>Non Verificato</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>tra circa {} mesi</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} secondi fa</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3541,44 +3488,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>tra oltre {} anni</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>Non è possibile aumentare la commissione</translation>
+        <source>Balance: {amount}</source>
+        <translation>Saldo: {amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>Non è possibile annullare la transazione</translation>
+        <source>in {} seconds</source>
+        <translation>tra {} secondi</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>Non è possibile creare una transazione figlia</translation>
+        <source>less than a minute ago</source>
+        <translation>meno di un minuto fa</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>Rilevata corruzione del file del portafoglio. Si prega di ripristinare il portafoglio dal seme e confrontare gli indirizzi nei due file</translation>
+        <source>in less than a minute</source>
+        <translation>tra meno di un minuto</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>Locale</translation>
+        <source>about {} minutes ago</source>
+        <translation>circa {} minuti fa</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>Fondi insufficienti</translation>
+        <source>in about {} minutes</source>
+        <translation>tra circa {} minuti</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>Stime della commissione dinamica non disponibili</translation>
+        <source>about 1 hour ago</source>
+        <translation>circa 1 ora fa</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>Password errata</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>La transazione non è relativa a questo portafoglio.</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>Importazione fallita dal file.</translation>
+        <source>in about 1 hour</source>
+        <translation>tra circa 1 ora</translation>
     </message>
 </context>
 <context>

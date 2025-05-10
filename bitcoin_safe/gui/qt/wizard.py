@@ -1318,7 +1318,7 @@ class LabelBackup(BaseTab):
         left_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         widget_layout.addWidget(left_widget)
 
-        self.icon = AspectRatioSvgWidget(svg_tools.get_QIcon("bi--cloud-slash.svg"), 300, 300)
+        self.icon = AspectRatioSvgWidget(svg_tools.get_svg_content("bi--cloud-slash.svg"), 300, 300)
         left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
 
         left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
@@ -1333,7 +1333,6 @@ class LabelBackup(BaseTab):
             Qt.TextInteractionFlag.TextSelectableByMouse | Qt.TextInteractionFlag.LinksAccessibleByMouse
         )
         self.label_main.setOpenExternalLinks(True)  # Allows opening links externally
-        self.label_main.setMinimumWidth(700)
         self.label_main.setWordWrap(True)
         right_widget_layout.addWidget(self.label_main)
 

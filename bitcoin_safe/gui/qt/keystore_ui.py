@@ -93,7 +93,7 @@ logger = logging.getLogger(__name__)
 
 def icon_for_label(label: str) -> QIcon:
     return (
-        svg_tools.get_QIcon("bi--key-gray.svg")
+        svg_tools.get_QIcon("bi--key.svg")
         if label.startswith(translate("d", "Recovery"))
         else svg_tools.get_QIcon("bi--key.svg")
     )

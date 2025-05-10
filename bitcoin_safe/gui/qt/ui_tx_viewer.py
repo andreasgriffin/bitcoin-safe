@@ -54,6 +54,7 @@ from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
+from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarningBar
 from bitcoin_safe.keystore import KeyStore
@@ -69,6 +70,7 @@ from ...pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
+    TransactionDetails,
     get_prev_outpoints,
     robust_address_str_from_script,
 )
@@ -285,6 +287,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
+        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
+        self.button_cpfp_tx = add_to_buttonbox(
+            self.buttonBox,
+            "",
+            "",
+            on_clicked=self.cpfp,
+            role=QDialogButtonBox.ButtonRole.ResetRole,
+        )
         self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "bi--sd-card.svg")
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
@@ -337,6 +347,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin), self.tr("Diagram")
             )
         self.button_edit_tx.setText(self.tr("Edit"))
+        self.button_cpfp_tx.setText(self.tr("Receive faster (CPFP)"))
         if GENERAL_RBF_AVAILABLE:
             self.button_rbf.setText(self.tr("Edit with increased fee (RBF)"))
         else:
@@ -396,13 +407,38 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.set_next_prev_button_enabledness()
 
+    def get_tx_details(self, txid: str) -> Tuple[TransactionDetails | None, Wallet | None]:
+        for wallet in get_wallets(self.signals):
+            tx = wallet.get_tx(txid=txid)
+            if tx:
+                return tx, wallet
+        return None, None
+
+    def can_cpfp(self) -> bool:
+        tx = self.extract_tx()
+        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
+        if not wallet:
+            return False
+        return TxTools.can_cpfp(tx=tx, wallet=wallet)
+
+    def cpfp(self) -> None:
+        tx = self.extract_tx()
+        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
+        if not wallet or not tx_details:
+            return
+        TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
+
     def edit(self) -> None:
-
-        txinfos = ToolsTxUiInfo.from_tx(
-            self.extract_tx(), self.fee_info, self.network, get_wallets(self.signals)
-        )
-
-        self.signals.open_tx_like.emit(txinfos)
+        tx = self.extract_tx()
+        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, get_wallets(self.signals))
+        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
+        if tx_details:
+            TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
+        else:
+            Message(
+                self.tr("Transaction to be replaced could not be found in open wallets"),
+                type=MessageType.Error,
+            )
 
     def reload(self, update_filter: UpdateFilter) -> None:
         should_update = False
@@ -991,7 +1027,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.button_save_tx.setHidden(True)
 
         self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
+        self.button_cpfp_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
         self.button_rbf.setVisible(tx_status.can_rbf())
+        self.button_cpfp_tx.setVisible(self.can_cpfp())
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
