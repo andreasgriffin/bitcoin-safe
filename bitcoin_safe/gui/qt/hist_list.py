@@ -80,12 +80,12 @@ from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Balance, Recipient, TransactionDetails
-from bitcoin_safe.tx import TxUiInfos, short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
@@ -524,11 +524,15 @@ class HistList(MyTreeView):
             if tx.chain_position.is_confirmed()
             else estimated_duration_str
         )
-        status_tooltip = (
-            self.tr("{number} Confirmations").format(number=status.confirmations())
-            if 1 <= status.confirmations() <= 6
-            else status_text
-        )
+        if 1 <= status.confirmations() <= 6:
+            status_tooltip = self.tr("{number} Confirmations").format(number=status.confirmations())
+        elif status.confirmations() <= 0:
+            if wallet.is_in_mempool(txid=tx.txid):
+                status_tooltip = self.tr("Waiting to be included in a block")
+            else:
+                status_tooltip = self.tr("Not broadcasted.")
+        else:
+            status_tooltip = status_text
 
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
@@ -646,32 +650,13 @@ class HistList(MyTreeView):
         wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
         if not wallet:
             return False
-        utxo = wallet.get_cpfp_utxos(tx=tx)
-        return bool(utxo)
+        return TxTools.can_cpfp(tx=tx, wallet=wallet)
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
         wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
         if not wallet:
             return
-        utxo = wallet.get_cpfp_utxos(tx=tx_details.transaction)
-        if not utxo:
-            Message(self.tr("Cannot CPFP the transaction because no receiving output could be found"))
-            return
-
-        txinfos = TxUiInfos()
-        txinfos.fill_utxo_dict_from_utxos(utxos=[utxo])
-        fee_info = FeeInfo.from_txdetails(tx_details)
-        txinfos.fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
-        txinfos.recipients = [
-            Recipient(
-                address=str(wallet.get_address().address),
-                label=self.tr("Speedup of {txid}").format(txid=short_tx_id(tx_details.txid)),
-                checked_max_amount=True,
-                amount=0,
-            )
-        ]
-        txinfos.main_wallet_id = wallet.id
-        self.signals.open_tx_like.emit(txinfos)
+        TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
 
     def edit_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
@@ -680,11 +665,7 @@ class HistList(MyTreeView):
             self.config.network,
             get_wallets(self.signals),
         )
-        if not GENERAL_RBF_AVAILABLE:
-            txinfos.utxos_read_only = True
-            txinfos.recipient_read_only = True
-            txinfos.replace_tx = tx_details
-        self.signals.open_tx_like.emit(txinfos)
+        TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
 
     def cancel_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(

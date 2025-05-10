@@ -336,9 +336,6 @@ class FeeGroup(QObject):
 
     def updateUi(self) -> None:
         self.groupBox_Fee.setTitle(self.tr("Fee"))
-        self.rbf_fee_label.setText(
-            html_f(self.tr("... is the minimum to replace the existing transactions."), bf=True)
-        )
         self.approximate_fee_label.setText(html_f(self.tr("Approximate fee rate"), bf=True))
 
         # only in editor mode
@@ -396,16 +393,6 @@ class FeeGroup(QObject):
             self.rbf_fee_label.setTextFormat(Qt.TextFormat.RichText)
             self.rbf_fee_label.setOpenExternalLinks(True)  # Enable opening links
 
-    def combined_fee_info(self, txs: List[TransactionDetails]) -> FeeInfo:
-        combined_info = FeeInfo(fee_amount=0, vsize=0, is_estimated=False)
-        if not txs:
-            return combined_info
-        for tx in txs:
-            info = FeeInfo.from_txdetails(tx)
-            if info:
-                combined_info += info
-        return combined_info
-
     def set_cpfp_label(
         self, unconfirmed_ancestors: List[TransactionDetails] | None, this_fee_info: FeeInfo
     ) -> None:
@@ -414,7 +401,7 @@ class FeeGroup(QObject):
         if not unconfirmed_ancestors:
             return
 
-        unconfirmed_parents_fee_info = self.combined_fee_info(txs=unconfirmed_ancestors)
+        unconfirmed_parents_fee_info = FeeInfo.combined_fee_info(txs=unconfirmed_ancestors)
         if not unconfirmed_parents_fee_info:
             self.cpfp_fee_label.setVisible(False)
             return

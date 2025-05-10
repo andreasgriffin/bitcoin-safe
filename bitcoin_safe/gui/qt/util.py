@@ -271,11 +271,12 @@ class AspectRatioSvgWidget(QSvgWidget):
         self.svg_content = svg_content
         self._max_width = max_width
         self._max_height = max_height
-        self.setFixedSize(self.calculate_proportional_size())
+        self.load_svg_content(svg_content=svg_content)
 
     def load_svg_content(self, svg_content: str):
         modified_svg_content = QByteArray(svg_content.encode())  # type: ignore[call-overload]
         super().load(modified_svg_content)
+        self.setFixedSize(self.calculate_proportional_size())
 
     def calculate_proportional_size(self):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))

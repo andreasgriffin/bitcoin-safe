@@ -293,22 +293,6 @@
                            </source>
         <translation>{number}개 하드웨어 서명자 구입&lt;ul&gt; {different_hint} &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href=&quot;{url}&quot;&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt;</translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>{name} 구입  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Coldcard Mk4 구매</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Coldcard Q 구매</translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>Blockstream Jade 구입</translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>수수료  </translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>...는 기존 트랜잭션을 대체하기 위한 최소 금액입니다.  </translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>대략적인 수수료율  </translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>지갑  </translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>{txid} 가속</translation>
+        <source>Not broadcasted.</source>
+        <translation>브로드캐스트되지 않음.</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} 확인  </translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>수신 출력이 없어 거래에 CPFP를 수행할 수 없습니다</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>블록에 포함되기를 대기 중</translation>
     </message>
 </context>
 <context>
@@ -1729,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>지갑이 저장됨</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} in {shortid}  </translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1770,12 +1746,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server}와 동기화 중  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sync &amp;&amp; Chat  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>{server}에 연결됨  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1814,12 +1790,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>명칭 가져오기  </translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>내역</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>모든 파일 (*);;JSONL 파일 (*.jsonl);;JSON 파일 (*.json)  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>내역</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2503,8 +2479,16 @@ below {rate}</source>
         <translation>입력  </translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>보내기  </translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>명칭:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>대체할 트랜잭션을 열린 지갑에서 찾을 수 없음</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2535,6 +2519,10 @@ below {rate}</source>
         <translation>편집  </translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>더 빨리 받기 (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>증가된 수수료로 수정하기 (RBF)</translation>
     </message>
@@ -2549,10 +2537,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>다음 단계  </translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>보내기  </translation>
     </message>
 </context>
 <context>
@@ -2632,10 +2616,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>금액  </translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>부모  </translation>
     </message>
 </context>
 <context>
@@ -3184,6 +3164,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>CSV로 내보내기  </translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>표시된 열</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3411,6 +3395,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>수신 출력이 없어 거래에 CPFP를 수행할 수 없습니다</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} 가속</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3426,56 +3421,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>미확인  </translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>파일로 내보내기 실패.  </translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>잔액: {amount}  </translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>알 수 없음  </translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{}초 전  </translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>{}초 후  </translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>1분 전</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>1분 이내  </translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>약 {}분 전  </translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>약 {}분 이내</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>약 1시간 전  </translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>미확인 부모  </translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>약 1시간 이내</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3514,12 +3461,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>약 {}개월 전  </translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>인증되지 않음  </translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>약 {}개월 이내</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{}초 전  </translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3538,44 +3485,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>{}년 이후</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>수수료를 올릴 수 없음  </translation>
+        <source>Balance: {amount}</source>
+        <translation>잔액: {amount}  </translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>트랜잭션을 취소할 수 없음  </translation>
+        <source>in {} seconds</source>
+        <translation>{}초 후  </translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>하위 트랜잭션을 생성할 수 없음  </translation>
+        <source>less than a minute ago</source>
+        <translation>1분 전</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>지갑 파일 손상 감지. 시드에서 지갑을 복원하고 두 파일의 주소를 비교하세요  </translation>
+        <source>in less than a minute</source>
+        <translation>1분 이내  </translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>로컬  </translation>
+        <source>about {} minutes ago</source>
+        <translation>약 {}분 전  </translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>자금 부족  </translation>
+        <source>in about {} minutes</source>
+        <translation>약 {}분 이내</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>동적 수수료 추정치 사용 불가  </translation>
+        <source>about 1 hour ago</source>
+        <translation>약 1시간 전  </translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>잘못된 비밀번호  </translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>이 트랜잭션은 이 지갑과 관련 없음  </translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>파일에서 가져오기 실패  </translation>
+        <source>in about 1 hour</source>
+        <translation>약 1시간 이내</translation>
     </message>
 </context>
 <context>

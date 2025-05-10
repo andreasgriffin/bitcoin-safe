@@ -233,12 +233,13 @@ class AddressList(MyTreeView):
         Columns.COIN_BALANCE,
     ]
     column_alignments = {
+        Columns.NUM_TXS: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         Columns.TYPE: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
+        Columns.INDEX: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.ADDRESS: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.CATEGORY: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.LABEL: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.COIN_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
-        Columns.NUM_TXS: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
@@ -448,7 +449,7 @@ class AddressList(MyTreeView):
         logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
-    def get_headers(self) -> Dict:
+    def get_headers(self) -> Dict["AddressList.Columns", str]:
         return {
             self.Columns.NUM_TXS: self.tr("Tx"),
             self.Columns.TYPE: self.tr("Type"),
@@ -508,7 +509,10 @@ class AddressList(MyTreeView):
 
         address_info_min = self.wallet.get_address_info_min(address)
         if address_info_min:
+            sort_tuple = (address_info_min.address_path()[0], -address_info_min.address_path()[1])
+            item[self.Columns.INDEX].setText(str(address_info_min.index))
             item[self.Columns.INDEX].setData(address_info_min.index, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+            item[self.Columns.INDEX].setData(sort_tuple, MyItemDataRole.ROLE_SORT_ORDER)
             if address_info_min.is_change():
                 item[self.Columns.TYPE].setText(self.tr("change"))
                 item[self.Columns.TYPE].setData(self.tr("change"), MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -519,7 +523,7 @@ class AddressList(MyTreeView):
                 item[self.Columns.TYPE].setBackground(ColorScheme.GREEN.as_color(True))
             item[self.key_column].setData(address, MyItemDataRole.ROLE_KEY)
             item[self.Columns.TYPE].setData(
-                (address_info_min.address_path()[0], -address_info_min.address_path()[1]),
+                sort_tuple,
                 MyItemDataRole.ROLE_SORT_ORDER,
             )
             item[self.Columns.TYPE].setToolTip(
@@ -582,6 +586,9 @@ class AddressList(MyTreeView):
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.NUM_TXS].setData(
+            min_status.sort_id() if min_status else -1, MyItemDataRole.ROLE_SORT_ORDER
+        )
         item[self.Columns.NUM_TXS].setIcon(svg_tools.get_QIcon(icon_path))
 
         # calculated_width = QFontMetrics(self.font()).horizontalAdvance(balance_text)

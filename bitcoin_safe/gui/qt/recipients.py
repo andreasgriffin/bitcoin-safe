@@ -256,6 +256,7 @@ class RecipientWidget(QWidget):
 class RecipientTabWidget(QTabWidget):
     signal_close: "TypedPyQtSignal[RecipientTabWidget]" = pyqtSignal(QTabWidget)  # type: ignore
     signal_clicked_send_max_button: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
+    signal_address_text_changed: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
     signal_amount_changed: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
 
     def __init__(
@@ -285,13 +286,17 @@ class RecipientTabWidget(QTabWidget):
         self.recipient_widget.amount_spin_box.valueChanged.connect(self.on_amount_spin_box_changed)
         self.recipient_widget.send_max_button.clicked.connect(self.on_send_max_button)
 
-        self.recipient_widget.address_edit.signal_text_change.connect(self.autofill_tab_text)
+        self.recipient_widget.address_edit.signal_text_change.connect(self.on_address_text_changed)
 
     def on_tabCloseRequested(self):
         self.signal_close.emit(self)
 
     def on_send_max_button(self):
         self.signal_clicked_send_max_button.emit(self.recipient_widget)
+
+    def on_address_text_changed(self, text: str):
+        self.signal_address_text_changed.emit(self.recipient_widget)
+        self.autofill_tab_text()
 
     def on_amount_spin_box_changed(self):
         self.signal_amount_changed.emit(self.recipient_widget)

@@ -293,22 +293,6 @@
                            </source>
         <translation>{number} हार्डवेयर साइनर खरीदें                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनरों का समर्थन करता है: &lt;a href=&quot;{url}&quot;&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>{name} खरीदें</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Coldcard Mk4 खरीदें  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Coldcard Q खरीदें  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>एक Blockstream Jade खरीदें  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>शुल्क</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... मौजूदा लेन-देनों को बदलने के लिए न्यूनतम है।</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>अनुमानित शुल्क दर</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>वॉलेट</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>{txid} का स्पीडअप</translation>
+        <source>Not broadcasted.</source>
+        <translation>प्रसारित नहीं किया गया।</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} पुष्टिकरण</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>ट्रांजैक्शन पर CPFP नहीं किया जा सकता क्योंकि रिसीविंग आउटपुट नहीं मिला</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>ब्लॉक में शामिल होने की प्रतीक्षा</translation>
     </message>
 </context>
 <context>
@@ -1732,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>वॉलेट सहेजा गया</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} में {shortid}</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1773,12 +1749,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>{server} के साथ सिंकिंग  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>सिंक &amp;&amp; चैट  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>{server} से जुड़ा हुआ  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1817,12 +1793,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>लेबल आयात करें</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>इतिहास</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>सभी फ़ाइलें (*);;JSONL फ़ाइलें (*.jsonl);;JSON फ़ाइलें (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>इतिहास</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2506,8 +2482,16 @@ below {rate}</source>
         <translation>इनपुट्स</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>भेजें</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>लेबल:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>खुले वॉलेट्स में प्रतिस्थापित करने हेतु लेनदेन नहीं मिला</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2538,6 +2522,10 @@ below {rate}</source>
         <translation>संपादित करें</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>तेज़ी से प्राप्त करें (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>बढ़ी हुई फीस के साथ संपादित करें (RBF)</translation>
     </message>
@@ -2552,10 +2540,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>अगला चरण</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>भेजें</translation>
     </message>
 </context>
 <context>
@@ -2635,10 +2619,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>राशि</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>माता-पिता</translation>
     </message>
 </context>
 <context>
@@ -3187,6 +3167,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>सीएसवी के रूप में निर्यात करें</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>दृश्यमान स्तंभ</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3414,6 +3398,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ट्रांजैक्शन पर CPFP नहीं किया जा सकता क्योंकि रिसीविंग आउटपुट नहीं मिला</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} का स्पीडअप</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3429,56 +3424,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>अपुष्ट</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>फ़ाइल में निर्यात करने में विफल।</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>बैलेंस: {amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>अज्ञात</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} सेकंड पहले</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>{} सेकंड में</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>एक मिनट से कम समय पहले</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>एक मिनट से कम समय में</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>लगभग {} मिनट पहले</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>लगभग {} मिनट में</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>लगभग 1 घंटे पहले</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>अपुष्ट माता-पिता</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>लगभग 1 घंटे में</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3517,12 +3464,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>लगभग {} महीने पहले</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>सत्यापित नहीं</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>लगभग {} महीने में</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} सेकंड पहले</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3541,44 +3488,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>{} साल से अधिक में</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>शुल्क बढ़ाना संभव नहीं</translation>
+        <source>Balance: {amount}</source>
+        <translation>बैलेंस: {amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>लेन-देन रद्द करना संभव नहीं</translation>
+        <source>in {} seconds</source>
+        <translation>{} सेकंड में</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>बच्चा लेन-देन बनाना संभव नहीं</translation>
+        <source>less than a minute ago</source>
+        <translation>एक मिनट से कम समय पहले</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>वॉलेट फ़ाइल का भ्रष्टाचार पता चला। कृपया अपने वॉलेट को बीज से पुनर्स्थापित करें, और दोनों फ़ाइलों में पते की तुलना करें</translation>
+        <source>in less than a minute</source>
+        <translation>एक मिनट से कम समय में</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>स्थानीय</translation>
+        <source>about {} minutes ago</source>
+        <translation>लगभग {} मिनट पहले</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>अपर्याप्त फंड</translation>
+        <source>in about {} minutes</source>
+        <translation>लगभग {} मिनट में</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>गतिशील शुल्क अनुमान उपलब्ध नहीं</translation>
+        <source>about 1 hour ago</source>
+        <translation>लगभग 1 घंटे पहले</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>गलत पासवर्ड</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>लेन-देन इस वॉलेट से संबंधित नहीं है।</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>फ़ाइल से आयात करने में विफल।</translation>
+        <source>in about 1 hour</source>
+        <translation>लगभग 1 घंटे में</translation>
     </message>
 </context>
 <context>

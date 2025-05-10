@@ -34,6 +34,7 @@ from typing import Dict, List, Set
 import bdkpython as bdk
 from PyQt6.QtWidgets import QLayout, QVBoxLayout
 
+from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.gui.qt.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -111,23 +112,8 @@ class UITx_Base(SearchableTab):
     ) -> List[TransactionDetails] | None:
         wallets = wallets if wallets else get_wallets(self.signals)
 
-        unconfirmed_txs: List[TransactionDetails] = []
-        for txid in txids:
-            for wallet in wallets:
-                tx = wallet.get_tx(txid)
-                if tx and tx.chain_position.is_unconfirmed():
-                    unconfirmed_txs.append(tx)
-
-        for unconfirmed_tx in unconfirmed_txs:
-            # add its unconfirmed parents
-            unconfirmed_txs += (
-                self.get_unconfirmed_ancestors(
-                    txids=set(txin.previous_output.txid for txin in unconfirmed_tx.transaction.input()),
-                    wallets=wallets,
-                )
-                or []
-            )
-        return unconfirmed_txs if unconfirmed_txs else None
+        cpfp_tools = CpfpTools(wallets=wallets)
+        return cpfp_tools.get_unconfirmed_ancestors(txids=txids)
 
     def set_fee_group_cpfp_label(
         self,

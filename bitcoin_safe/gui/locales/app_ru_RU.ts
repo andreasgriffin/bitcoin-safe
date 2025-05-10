@@ -293,22 +293,6 @@
                            </source>
         <translation>Купить {number} аппаратных подписантов                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe поддерживает все основные аппаратные подписанты: &lt;a href=&quot;{url}&quot;&gt;Смотреть полный список&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-    <message>
-        <source>Buy a {name}</source>
-        <translation>Купить {name}</translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Mk4</source>
-        <translation>Купить Coldcard Mk4  </translation>
-    </message>
-    <message>
-        <source>Buy a Coldcard Q</source>
-        <translation>Купить Coldcard Q  </translation>
-    </message>
-    <message>
-        <source>Buy a Blockstream Jade</source>
-        <translation>Купить Blockstream Jade  </translation>
-    </message>
 </context>
 <context>
     <name>CategoryEditor</name>
@@ -561,10 +545,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Комиссия</translation>
     </message>
     <message>
-        <source>... is the minimum to replace the existing transactions.</source>
-        <translation>... это минимум для замены существующих транзакций.</translation>
-    </message>
-    <message>
         <source>Approximate fee rate</source>
         <translation>Приблизительная ставка комиссии</translation>
     </message>
@@ -734,8 +714,8 @@ the sending value {sent}</source>
         <translation>Кошелек</translation>
     </message>
     <message>
-        <source>Speedup of {txid}</source>
-        <translation>Ускорение {txid}</translation>
+        <source>Not broadcasted.</source>
+        <translation>Не передано.</translation>
     </message>
     <message>
         <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
@@ -770,8 +750,8 @@ the sending value {sent}</source>
         <translation>{number} Подтверждений</translation>
     </message>
     <message>
-        <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>Невозможно выполнить CPFP для транзакции, так как не найден выход для получения</translation>
+        <source>Waiting to be included in a block</source>
+        <translation>Ожидание включения в блок</translation>
     </message>
 </context>
 <context>
@@ -1732,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>Кошелек сохранен</translation>
     </message>
     <message>
-        <source>  {amount} in {shortid}</source>
-        <translation>  {amount} в {shortid}</translation>
-    </message>
-    <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
@@ -1773,12 +1749,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Синхронизация с {server}  </translation>
     </message>
     <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Синхронизация &amp;&amp; Чат  </translation>
-    </message>
-    <message>
         <source>Connected to {server}</source>
         <translation>Подключено к {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Синхронизация &amp;&amp; Чат  </translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
@@ -1817,12 +1793,12 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Импортировать метки</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>История</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
         <translation>Все файлы (*);;Файлы JSONL (*.jsonl);;Файлы JSON (*.json)</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>История</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
@@ -2506,8 +2482,16 @@ below {rate}</source>
         <translation>Входы</translation>
     </message>
     <message>
+        <source>Send</source>
+        <translation>Отправить</translation>
+    </message>
+    <message>
         <source>Label: </source>
         <translation>Метка:  </translation>
+    </message>
+    <message>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>Транзакция для замены не найдена в открытых кошельках</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2538,6 +2522,10 @@ below {rate}</source>
         <translation>Редактировать</translation>
     </message>
     <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Получить быстрее (CPFP)</translation>
+    </message>
+    <message>
         <source>Edit with increased fee (RBF)</source>
         <translation>Редактировать с увеличенной комиссией (RBF)</translation>
     </message>
@@ -2552,10 +2540,6 @@ below {rate}</source>
     <message>
         <source>Next step</source>
         <translation>Следующий шаг</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>Отправить</translation>
     </message>
 </context>
 <context>
@@ -2635,10 +2619,6 @@ below {rate}</source>
     <message>
         <source>Amount</source>
         <translation>Сумма</translation>
-    </message>
-    <message>
-        <source>Parents</source>
-        <translation>Родители</translation>
     </message>
 </context>
 <context>
@@ -3187,6 +3167,10 @@ below {rate}</source>
         <source>Export as CSV</source>
         <translation>Экспортировать как CSV</translation>
     </message>
+    <message>
+        <source>Visible columns</source>
+        <translation>Видимые столбцы</translation>
+    </message>
 </context>
 <context>
     <name>net_conf</name>
@@ -3414,6 +3398,17 @@ It is best to use your own server, such as {link}.</source>
     </message>
 </context>
 <context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Невозможно выполнить CPFP для транзакции, так как не найден выход для получения</translation>
+    </message>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>Ускорение {txid}</translation>
+    </message>
+</context>
+<context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
@@ -3429,56 +3424,8 @@ It is best to use your own server, such as {link}.</source>
 <context>
     <name>util</name>
     <message>
-        <source>Unconfirmed</source>
-        <translation>Не подтверждено</translation>
-    </message>
-    <message>
-        <source>Failed to export to file.</source>
-        <translation>Не удалось экспортировать в файл.</translation>
-    </message>
-    <message>
-        <source>Balance: {amount}</source>
-        <translation>Баланс: {amount}</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
-    </message>
-    <message>
-        <source>{} seconds ago</source>
-        <translation>{} секунд назад</translation>
-    </message>
-    <message>
-        <source>in {} seconds</source>
-        <translation>через {} секунд</translation>
-    </message>
-    <message>
-        <source>less than a minute ago</source>
-        <translation>менее минуты назад</translation>
-    </message>
-    <message>
-        <source>in less than a minute</source>
-        <translation>менее чем через минуту</translation>
-    </message>
-    <message>
-        <source>about {} minutes ago</source>
-        <translation>около {} минут назад</translation>
-    </message>
-    <message>
-        <source>in about {} minutes</source>
-        <translation>примерно через {} минут</translation>
-    </message>
-    <message>
-        <source>about 1 hour ago</source>
-        <translation>около 1 часа назад</translation>
-    </message>
-    <message>
-        <source>Unconfirmed parent</source>
-        <translation>Не подтвержденный родитель</translation>
-    </message>
-    <message>
-        <source>in about 1 hour</source>
-        <translation>примерно через 1 час</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3517,12 +3464,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>около {} месяцев назад</translation>
     </message>
     <message>
-        <source>Not Verified</source>
-        <translation>Не проверено</translation>
-    </message>
-    <message>
         <source>in about {} months</source>
         <translation>примерно через {} месяцев</translation>
+    </message>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} секунд назад</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
@@ -3541,44 +3488,36 @@ It is best to use your own server, such as {link}.</source>
         <translation>через более {} лет</translation>
     </message>
     <message>
-        <source>Cannot bump fee</source>
-        <translation>Нельзя повысить комиссию</translation>
+        <source>Balance: {amount}</source>
+        <translation>Баланс: {amount}</translation>
     </message>
     <message>
-        <source>Cannot cancel transaction</source>
-        <translation>Нельзя отменить транзакцию</translation>
+        <source>in {} seconds</source>
+        <translation>через {} секунд</translation>
     </message>
     <message>
-        <source>Cannot create child transaction</source>
-        <translation>Нельзя создать дочернюю транзакцию</translation>
+        <source>less than a minute ago</source>
+        <translation>менее минуты назад</translation>
     </message>
     <message>
-        <source>Wallet file corruption detected. Please restore your wallet from seed, and compare the addresses in both files</source>
-        <translation>Обнаружено повреждение файла кошелька. Пожалуйста, восстановите свой кошелек из семени и сравните адреса в обоих файлах</translation>
+        <source>in less than a minute</source>
+        <translation>менее чем через минуту</translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation>Локальный</translation>
+        <source>about {} minutes ago</source>
+        <translation>около {} минут назад</translation>
     </message>
     <message>
-        <source>Insufficient funds</source>
-        <translation>Недостаточно средств</translation>
+        <source>in about {} minutes</source>
+        <translation>примерно через {} минут</translation>
     </message>
     <message>
-        <source>Dynamic fee estimates not available</source>
-        <translation>Динамические оценки комиссии недоступны</translation>
+        <source>about 1 hour ago</source>
+        <translation>около 1 часа назад</translation>
     </message>
     <message>
-        <source>Incorrect password</source>
-        <translation>Неправильный пароль</translation>
-    </message>
-    <message>
-        <source>Transaction is unrelated to this wallet.</source>
-        <translation>Транзакция не относится к этому кошельку.</translation>
-    </message>
-    <message>
-        <source>Failed to import from file.</source>
-        <translation>Не удалось импортировать из файла.</translation>
+        <source>in about 1 hour</source>
+        <translation>примерно через 1 час</translation>
     </message>
 </context>
 <context>

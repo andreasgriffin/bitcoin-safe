@@ -31,7 +31,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from math import ceil
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
 from bitcoin_tools.tx_util import hex_to_script
@@ -178,7 +178,7 @@ class FeeRate(bdk.FeeRate):
 
 
 class FeeInfo:
-    def __init__(self, fee_amount: int, vsize: float, is_estimated: bool) -> None:
+    def __init__(self, fee_amount: int, vsize: int, is_estimated: bool) -> None:
         """_summary_
 
         Args:
@@ -197,6 +197,10 @@ class FeeInfo:
     def from_fee_rate(cls, fee_amount: int, fee_rate: float, is_estimated: bool) -> "FeeInfo|None":
         vsize = int(fee_amount / fee_rate)
         return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=is_estimated)
+
+    @classmethod
+    def from_fee_rate_and_vsize(cls, vsize: int, fee_rate: float, is_estimated: bool) -> "FeeInfo":
+        return FeeInfo(fee_amount=int(vsize * fee_rate), vsize=vsize, is_estimated=is_estimated)
 
     @classmethod
     def from_txdetails(cls, tx_details: TransactionDetails) -> "FeeInfo|None":
@@ -259,6 +263,17 @@ class FeeInfo:
                 vsize=self.vsize + other.vsize,
                 is_estimated=self.is_estimated or other.is_estimated,
             )
+
+    @classmethod
+    def combined_fee_info(cls, txs: Iterable[TransactionDetails]) -> "FeeInfo":
+        combined_info = FeeInfo(fee_amount=0, vsize=0, is_estimated=False)
+        if not txs:
+            return combined_info
+        for tx in txs:
+            info = FeeInfo.from_txdetails(tx)
+            if info:
+                combined_info += info
+        return combined_info
 
 
 class PubKeyInfo:

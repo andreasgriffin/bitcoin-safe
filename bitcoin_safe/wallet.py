@@ -27,7 +27,6 @@
 # SOFTWARE.
 
 
-import functools
 import logging
 import os
 import random
@@ -514,7 +513,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         _tips: List[int] | None = None,
         refresh_wallet=False,
         default_category="default",
-        auto_opportunistic_coin_select=True,
+        auto_opportunistic_coin_select=False,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -545,6 +544,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.client: Optional[Client] = None
         self.clear_cache()
         self.mark_all_labeled_addresses_used(include_receiving_addresses=False)
+
+    def persist(self):
+        self.bdkwallet.persist(self.connection)
+        self.clear_cache()
 
     @staticmethod
     def check_consistency(keystores: List[KeyStore], descriptor_str: str, network: bdk.Network):
@@ -793,6 +796,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             if dct.get("data_dump"):
                 del dct["data_dump"]
 
+        if version.parse(str(dct["VERSION"])) < version.parse("0.3.0"):
+            if dct.get("auto_opportunistic_coin_select"):
+                dct["auto_opportunistic_coin_select"] = False
+
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:
             del dct["VERSION"]
@@ -930,7 +937,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
             self.bdkwallet.apply_update(update)
 
-            self.bdkwallet.persist(self.connection)
+            self.persist()
 
             elapsed = time() - start_time
             logger.debug(f"{self.id} wallet sync in {elapsed:.2f}s")
@@ -1007,7 +1014,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     def get_force_new_address(self, is_change) -> bdk.AddressInfo:
         keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
         address_info = self.bdkwallet.reveal_next_address(keychain=keychain_kind)
-        self.bdkwallet.persist(self.connection)
+        self.persist()
 
         index = address_info.index
         self._tips[int(is_change)] = index
@@ -1110,9 +1117,8 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         if max_derived_index is None or max_derived_index < target:
             self.bdkwallet.reveal_addresses_to(keychain=keychain_kind, index=target)
-            self.bdkwallet.persist(self.connection)
+            self.persist()
             logger.info(f"{self.id} Revealed addresses up to {keychain_kind=} {target=}")
-            self.clear_cache()
 
     def search_index_tuple(self, address, forward_search=500) -> Optional[AddressInfoMin]:
         """Looks for the address"""
@@ -1452,6 +1458,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return self._blockchain_height
 
     @instance_lru_cache()
+    # caching is crucial, because this function is called vor every row in the hist table
     def get_height(self) -> int:
         return self.get_height_no_cache()
 
@@ -1622,7 +1629,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         except Exception as e:
             raise e
 
-        self.bdkwallet.persist(self.connection)
+        self.persist()
 
         recipient_category = self.determine_recipient_category(utxos_for_input.utxos)
 
@@ -1698,7 +1705,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         start_time = time()
         psbt = tx_builder.finish(self.bdkwallet)
-        self.bdkwallet.persist(self.connection)
+        self.persist()
         logger.debug(f"{self.id} tx_builder.finish  in { time()-start_time}s")
 
         # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
@@ -1821,79 +1828,131 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     @instance_lru_cache()
     def sorted_delta_list_transactions(self, access_marker=None) -> List[TransactionDetails]:
-        "Returns a List of TransactionDetails, sorted from old to new"
+        """
+        Returns TransactionDetails sorted such that:
+        1) All confirmed transactions come first, ordered by block height (oldest to newest).
+           Within each block, parent transactions precede their children.
+        2) All unconfirmed transactions follow, grouped by dependency chains so that each parent
+           immediately precedes its children (and descendants).
+        """
+        # Fetch full transaction details mapping
+        dict_full: Dict[str, FullTxDetail] = self.get_dict_fulltxdetail()
 
-        def check_relation(child: FullTxDetail, parent: FullTxDetail) -> bool:
-            visited = set()
-            stack = [child]
+        # 1) Split into confirmed vs. unconfirmed using helper
+        confirmed, unconfirmed = self._split_by_confirmation(dict_full)
 
-            while stack:
-                current = stack.pop()
+        # 2) Sort confirmed: by height + intra-block parent→child order
+        sorted_confirmed: List[FullTxDetail] = self._sort_confirmed_transactions(confirmed)
 
-                if current.txid == parent.txid:
-                    return True
+        # 3) Sort unconfirmed: group dependency chains via DFS-topo
+        sorted_unconfirmed: List[FullTxDetail] = self._sort_unconfirmed_transactions(unconfirmed)
 
-                if current.txid in visited:
-                    continue
-                visited.add(current.txid)
+        # 4) Merge: confirmed first, then unconfirmed
+        all_sorted: List[FullTxDetail] = sorted_confirmed + sorted_unconfirmed
+        return [fx.tx for fx in all_sorted]
 
-                # the following loop puts all acenstors on the stack
-                # and the while loop will check if any of them matches the parent
-                for child_inp in current.inputs.values():
-                    if not child_inp:
-                        continue
-                    child_parent_txid = child_inp.outpoint.txid
-                    this_parent = dict_fulltxdetail.get(child_parent_txid)
-                    if this_parent:
-                        stack.append(this_parent)
-
-            return False
-
-        def compare_items(item1: FullTxDetail, item2: FullTxDetail) -> int:
-            future_height = 1e9  # that is far in the future
-
-            c1 = (
-                item1.tx.chain_position.confirmation_block_time.block_id.height
-                if isinstance(item1.tx.chain_position, bdk.ChainPosition.CONFIRMED)
-                else future_height
-            )
-            c2 = (
-                item2.tx.chain_position.confirmation_block_time.block_id.height
-                if isinstance(item2.tx.chain_position, bdk.ChainPosition.CONFIRMED)
-                else future_height
-            )
-
-            if c1 != c2:
-                # unequal
-                if c1 < c2:
-                    return -1
-                elif c1 > c2:
-                    return 1
+    def _split_by_confirmation(
+        self, dict_full: Dict[str, FullTxDetail]
+    ) -> Tuple[List[FullTxDetail], List[FullTxDetail]]:
+        """
+        Splits the full-detail mapping into two lists:
+        - confirmed: with a confirmed chain position
+        - unconfirmed: awaiting confirmation
+        """
+        confirmed: List[FullTxDetail] = []
+        unconfirmed: List[FullTxDetail] = []
+        for tx_detail in dict_full.values():
+            if isinstance(tx_detail.tx.chain_position, bdk.ChainPosition.CONFIRMED):
+                confirmed.append(tx_detail)
             else:
-                # equal height
+                unconfirmed.append(tx_detail)
+        return confirmed, unconfirmed
 
-                # now check item1 is a (distant) child of item2
-                child = item1
-                parent = item2
-                if check_relation(child, parent):
-                    # sort this just as if the child had a larger confirmation_time.height
-                    return 1
-                # now check item2 is a (distant) child of item1
-                child = item2
-                parent = item1
-                if check_relation(child, parent):
-                    return -1
+    def _sort_confirmed_transactions(self, confirmed: List[FullTxDetail]) -> List[FullTxDetail]:
+        """
+        Orders confirmed transactions by block height, and within the same block,
+        ensures parent transactions precede their children.
+        """
+        # Bucket confirmed txs by their block height
+        conf_by_height: Dict[int, List[FullTxDetail]] = defaultdict(list)
+        for fx in confirmed:
+            assert isinstance(fx.tx.chain_position, bdk.ChainPosition.CONFIRMED)
+            height: int = fx.tx.chain_position.confirmation_block_time.block_id.height  # type: ignore
+            conf_by_height[height].append(fx)
 
-            # cannot be decided
-            return 0
+        sorted_list: List[FullTxDetail] = []
+        # Iterate heights in ascending order
+        for height in sorted(conf_by_height.keys()):
+            bucket = conf_by_height[height]
+            if len(bucket) > 1:
+                # Sort within the same block by dependency
+                sorted_list.extend(self._dfs_topo_sort(bucket))
+            else:
+                # Single tx has no intra-block dependencies
+                sorted_list.append(bucket[0])
+        return sorted_list
 
-        dict_fulltxdetail = self.get_dict_fulltxdetail()
+    def _sort_unconfirmed_transactions(self, unconfirmed: List[FullTxDetail]) -> List[FullTxDetail]:
+        """
+        Topologically sorts unconfirmed transactions so that each parent precedes
+        its children and deeper descendants.
+        """
+        # Mypy narrowing: all entries must be unconfirmed
+        for fx in unconfirmed:
+            assert not isinstance(fx.tx.chain_position, bdk.ChainPosition.CONFIRMED)
+        return self._dfs_topo_sort(unconfirmed)
 
-        sorted_fulltxdetail = sorted(
-            dict_fulltxdetail.values(),
-            key=functools.cmp_to_key(compare_items),
-        )
-        return [fulltxdetail.tx for fulltxdetail in sorted_fulltxdetail]
+    def _dfs_topo_sort(self, tx_list: List[FullTxDetail]) -> List[FullTxDetail]:
+        """
+        Given a homogeneous list of FullTxDetail (either all from the same block
+        or all unconfirmed), builds a dependency graph and performs a DFS-based
+        topological sort to group parents immediately before their children.
+        """
+        # Build a lookup from txid to detail
+        tx_map: Dict[str, FullTxDetail] = {fx.tx.txid: fx for fx in tx_list}
+        children: Dict[str, List[str]] = defaultdict(list)
+        indegree: Dict[str, int] = {txid: 0 for txid in tx_map}
+
+        # Populate edges: parent_id -> list of child_ids
+        for fx in tx_list:
+            for inp in fx.inputs.values():
+                if not inp:
+                    continue
+                parent_id = inp.outpoint.txid
+                if parent_id in tx_map:
+                    children[parent_id].append(fx.tx.txid)
+                    indegree[fx.tx.txid] += 1
+
+        # Roots have no incoming edges
+        roots: List[str] = [txid for txid, deg in indegree.items() if deg == 0]
+
+        sorted_order: List[FullTxDetail] = []
+        visited: set = set()
+
+        def dfs(txid: str) -> None:
+            """
+            Depth-first search helper for topological sort.
+            - Marks the current txid as visited to avoid reprocessing (and to break cycles).
+            - Appends the parent transaction before its children, ensuring grouping.
+            - Recursively processes each child in turn.
+
+            Args:
+                txid: The transaction ID to process.
+            """
+            if txid in visited:
+                return
+            visited.add(txid)
+            # Visit parent
+            sorted_order.append(tx_map[txid])
+            # Recurse into children
+            for child_id in children.get(txid, []):
+                dfs(child_id)
+
+        # Perform DFS from each root to cover all chains
+        for root in roots:
+            dfs(root)
+
+        return sorted_order
 
     def is_in_mempool(self, txid: str) -> bool:
         # TODO: Currently in mempool and is in wallet is the same thing.
@@ -1955,15 +2014,20 @@ class Wallet(BaseSaveableClass, CacheManager):
             category_python_utxo_dict[category].append(python_utxo)
         return category_python_utxo_dict
 
-    def get_cpfp_utxos(self, tx: bdk.Transaction) -> PythonUtxo | None:
+    def get_cpfp_utxos(self, tx: bdk.Transaction, exclude_spent_utxos=True) -> PythonUtxo | None:
         """
-        returns the first output that can be used for cpfp
+        returns the first unspent output that can be used for cpfp
+
+        If no unspent utxo is found it returns the first spent utxo
         """
         txid = tx.compute_txid()
         for vout, output in enumerate(tx.output()):
             python_utxo = self.get_python_txo(str(OutPoint(txid=txid, vout=vout)))
-            if python_utxo:
-                return python_utxo
+            if not python_utxo:
+                continue
+            if exclude_spent_utxos and python_utxo.is_spent_by_txid:
+                continue
+            return python_utxo
         return None
 
     def close(self) -> None:
