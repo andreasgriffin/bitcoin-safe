@@ -80,17 +80,19 @@ from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Balance, Recipient, TransactionDetails
+from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallet, get_wallets
+from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
     MyItemDataRole,
@@ -171,11 +173,11 @@ class HistList(MyTreeView):
 
     def __init__(
         self,
-        fx,
-        config,
+        fx: FX,
+        config: UserConfig,
         signals: Signals,
         mempool_data: MempoolData,
-        wallet_id: str,
+        wallets: List[Wallet],
         hidden_columns: List[int] | None = None,
         column_widths: Optional[Dict[MyTreeView.BaseColumnsEnum, int]] = None,
         address_domain: List[str] | None = None,
@@ -193,9 +195,8 @@ class HistList(MyTreeView):
         self.mempool_data = mempool_data
         self.address_domain = address_domain
         self.hidden_columns = hidden_columns if hidden_columns else []
-        self._tx_dict: Dict[str, Tuple[Wallet, TransactionDetails]] = {}  # txid -> wallet, tx
         self.signals = signals
-        self.wallet_id = wallet_id
+        self.wallets = wallets
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
@@ -230,7 +231,8 @@ class HistList(MyTreeView):
         )
         self.setModel(self.proxy)
         self.update_content()
-        self.signals.wallet_signals[self.wallet_id].updated.connect(self.update_with_filter)
+        for wallet in self.wallets:
+            self.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
         self.signals.language_switch.connect(self.update)
 
     def get_file_data(self, txid: str) -> Optional[Data]:
@@ -333,7 +335,12 @@ class HistList(MyTreeView):
 
     def on_double_click(self, idx: QModelIndex) -> None:
         txid = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
-        wallet, tx_details = self._tx_dict[txid]
+        wallet = self.get_wallet(txid=txid)
+        if not wallet:
+            return
+        tx_details = wallet.get_tx(txid=txid)
+        if not tx_details:
+            return
         self.signals.open_tx_like.emit(tx_details)
 
     def toggle_change(self, state: int) -> None:
@@ -360,7 +367,9 @@ class HistList(MyTreeView):
             )
 
         def tx_involves_address(txid) -> Set[str]:
-            (wallet, tx) = self._tx_dict[txid]
+            wallet = self.get_wallet(txid=txid)
+            if not wallet:
+                return set()
             fulltxdetail = wallet.get_dict_fulltxdetail().get(txid)
             if not fulltxdetail:
                 return set()
@@ -414,7 +423,6 @@ class HistList(MyTreeView):
         # AMOUNT = enum.auto()
         # BALANCE = enum.auto()
         # TXID = enum.auto()
-        self._tx_dict[tx.txid] = (wallet, tx)
 
         # calculate the amount
         if self.address_domain:
@@ -461,17 +469,13 @@ class HistList(MyTreeView):
             return
 
         self._before_update_content()
-        self._tx_dict = {}
-        wallets = [
-            wallet for wallet in get_wallets(self.signals) if self.wallet_id and wallet.id == self.wallet_id
-        ]
 
         self._source_model.clear()
         self.update_headers(self.get_headers())
 
         num_shown = 0
         self.balance = 0
-        for wallet in wallets:
+        for wallet in self.wallets:
 
             txid_domain: Optional[Set[str]] = None
             if self.address_domain:
@@ -499,7 +503,11 @@ class HistList(MyTreeView):
 
     def refresh_row(self, key: str, row: int) -> None:
         assert row is not None
-        wallet, tx = self._tx_dict[key]
+        wallet = self.get_wallet(txid=key)
+        if not wallet:
+            return
+        if not (tx := wallet.get_tx(txid=key)):
+            return
         # STATUS = enum.auto()
         # CATEGORIES = enum.auto()
         # LABEL = enum.auto()
@@ -617,28 +625,29 @@ class HistList(MyTreeView):
                 return menu
             txid = txids[0]
 
-            wallet, tx_details = self._tx_dict[txid]
-            tx_status = TxStatus.from_wallet(txid, wallet)
-            if tx_status and tx_status.can_rbf():
-                menu.addSeparator()
-                if GENERAL_RBF_AVAILABLE:
-                    menu.add_action(
-                        translate("hist_list", "Edit with higher fee (RBF)"),
-                        partial(self.edit_tx, tx_details),
-                    )
-                    menu.add_action(
-                        translate("hist_list", "Try cancel transaction (RBF)"),
-                        partial(self.cancel_tx, tx_details),
-                    )
-                else:
-                    menu.add_action(
-                        translate("hist_list", "Increase fee (RBF)"), partial(self.edit_tx, tx_details)
-                    )
+            wallet = self.get_wallet(txid=txid)
+            if wallet and (tx_details := wallet.get_tx(txid=txid)):
+                tx_status = TxStatus.from_wallet(txid, wallet)
+                if tx_status and tx_status.can_rbf():
+                    menu.addSeparator()
+                    if GENERAL_RBF_AVAILABLE:
+                        menu.add_action(
+                            translate("hist_list", "Edit with higher fee (RBF)"),
+                            partial(self.edit_tx, tx_details),
+                        )
+                        menu.add_action(
+                            translate("hist_list", "Try cancel transaction (RBF)"),
+                            partial(self.cancel_tx, tx_details),
+                        )
+                    else:
+                        menu.add_action(
+                            translate("hist_list", "Increase fee (RBF)"), partial(self.edit_tx, tx_details)
+                        )
 
-            if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
-                menu.add_action(
-                    translate("hist_list", "Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details)
-                )
+                if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
+                    menu.add_action(
+                        translate("hist_list", "Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details)
+                    )
 
         # run_hook('receive_menu', menu, txids, self.wallet)
         if viewport := self.viewport():
@@ -646,14 +655,20 @@ class HistList(MyTreeView):
 
         return menu
 
+    def get_wallet(self, txid: str) -> Wallet | None:
+        for wallet in self.wallets:
+            if tx_detail := wallet.get_tx(txid=txid):
+                return wallet
+        return None
+
     def can_cpfp(self, tx: bdk.Transaction, tx_status: TxStatus) -> bool:
-        wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
+        wallet = self.get_wallet(txid=tx.compute_txid())
         if not wallet:
             return False
         return TxTools.can_cpfp(tx=tx, wallet=wallet, tx_status=tx_status)
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
-        wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
+        wallet = self.get_wallet(txid=tx_details.transaction.compute_txid())
         if not wallet:
             return
         TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
@@ -675,12 +690,13 @@ class HistList(MyTreeView):
             get_wallets(self.signals),
         )
 
-        wallet = get_wallet(self.wallet_id, self.signals)
+        txid = tx_details.transaction.compute_txid()
+        wallet = self.get_wallet(txid=txid)
         if not wallet:
             Message(
-                self.tr("Cannot fetch wallet '{id}'. Please open the wallet first.").format(
-                    id=self.wallet_id
-                ),
+                self.tr(
+                    "Cannot find wallet for transaction {txid}. Please open the corresponding wallet first."
+                ).format(txid=short_tx_id(txid)),
                 type=MessageType.Error,
             )
             return
@@ -721,12 +737,14 @@ class HistList(MyTreeView):
 
     def on_edited(self, idx: QModelIndex, edit_key: str, *, text: str) -> None:
         txid = edit_key
-        wallet, tx = self._tx_dict[txid]
 
+        wallet = self.get_wallet(txid=txid)
+        if not wallet:
+            return
         wallet.labels.set_tx_label(edit_key, text, timestamp="now")
 
         fulltxdetails = wallet.get_dict_fulltxdetail().get(txid)
-        self.signals.wallet_signals[self.wallet_id].updated.emit(
+        self.signals.wallet_signals[wallet.id].updated.emit(
             UpdateFilter(
                 txids=[txid],
                 addresses=(
@@ -739,7 +757,6 @@ class HistList(MyTreeView):
         )
 
     def close(self):
-        self._tx_dict.clear()
         self.setParent(None)
         super().close()
 
@@ -772,9 +789,8 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.sync_button.clicked.connect(self.hist_list.signals.request_manual_sync.emit)
         self.toolbar.insertWidget(0, self.sync_button)
         self.hist_list.signals.language_switch.connect(self.updateUi)
-        self.hist_list.signals.wallet_signals[self.hist_list.wallet_id].updated.connect(
-            self.update_with_filter
-        )
+        for wallet in self.hist_list.wallets:
+            self.hist_list.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
 
     def update_with_filter(self, update_filter: UpdateFilter):
         self.updateUi()
@@ -786,11 +802,13 @@ class HistListWithToolbar(TreeViewWithToolbar):
 
             if self.hist_list.signals and not self.hist_list.address_domain:
                 if self.hist_list.signals:
-                    display_balance = self.hist_list.signals.wallet_signals[
-                        self.hist_list.wallet_id
-                    ].get_display_balance.emit()
-                    if isinstance(display_balance, Balance):
-                        balance_total = Satoshis(display_balance.total, self.config.network)
+                    balance_total = Satoshis(value=0, network=self.config.network)
+                    for wallet in self.hist_list.wallets:
+                        display_balance = self.hist_list.signals.wallet_signals[
+                            wallet.id
+                        ].get_display_balance.emit()
+                        if isinstance(display_balance, Balance):
+                            balance_total += Satoshis(display_balance.total, self.config.network)
 
             self.balance_label.setText(balance_total.format_as_balance())
 

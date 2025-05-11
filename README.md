@@ -62,8 +62,8 @@
 - **Wallet Features**
   
   - Simplified address labeling using categories like KYC, Non-KYC, Work, Friends
-  - Cancel unconfirmed transactions (via Replace-by-Fee)
   - Bump fee on transactions (via Replace-by-Fee)
+  - Receive faster (via Child Pays For Parents)
   - Encrypted wallet storage
   - Backup PDF with Descriptor (Text and QR code)
   - Message signing via USB and QR

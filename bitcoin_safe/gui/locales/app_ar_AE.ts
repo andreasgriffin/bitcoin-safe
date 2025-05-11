@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>لم يتم نشرها.</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>تعذر جلب المحفظة &apos;{id}&apos;. يرجى فتح المحفظة أولاً.</translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>لا يمكن العثور على المحفظة للمعاملة {txid}. الرجاء فتح المحفظة المقابلة أولاً.</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} هل ترغب في المتابعة على أي حال؟  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>لا توجد بيانات موقع للموقع المتوقع {expected_key_origin}.</translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>لم يتم العثور على بيانات الموقّع للأصل Xpub المتوقع {key_origin}. إذا كنت تريد استيراد رقم حساب غير افتراضي، فحدّد أصل Xpub ثم أعد الفحص.</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

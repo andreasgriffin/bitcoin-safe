@@ -218,7 +218,7 @@ class ThreadingManager:
         if threading_parent:
             threading_parent.threading_manager_children.append(self)
 
-    def append_thread(self, thread: TaskThread):
+    def append_thread(self, thread: TaskThread) -> None:
         with self.lock:
             self._taskthreads.append(thread)
             thread.signal_stop_threat.connect(self.remove_thread)
@@ -226,7 +226,7 @@ class ThreadingManager:
                 f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
-    def remove_thread(self, thread_name: str | None):
+    def remove_thread(self, thread_name: str | None) -> None:
         with self.lock:
             for thread in list(self._taskthreads):
                 # if not thread.thread_name:
@@ -239,7 +239,7 @@ class ThreadingManager:
                 f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
-    def stop_and_wait_all(self):
+    def stop_and_wait_all(self) -> None:
         while self.threading_manager_children:
             child = self.threading_manager_children.pop()
             child.end_threading_manager()
@@ -250,7 +250,7 @@ class ThreadingManager:
             logger.debug(f"stop taskthreads {taskthread}")
             taskthread.stop()
 
-    def end_threading_manager(self):
+    def end_threading_manager(self) -> None:
         logger.debug(f"end_threading_manager of {self.__class__.__name__}")
         self.stop_and_wait_all()
 

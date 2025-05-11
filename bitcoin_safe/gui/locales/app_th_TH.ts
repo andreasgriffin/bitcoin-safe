@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>ไม่ได้เผยแพร่</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>ไม่สามารถเรียกกระเป๋าเงิน &apos;{id}&apos; ได้ โปรดเปิดกระเป๋าเงินก่อน  </translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>ไม่พบกระเป๋าเงินสำหรับรายการธุรกรรม {txid} โปรดเปิดกระเป๋าเงินที่เกี่ยวข้องก่อน</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} คุณต้องการดำเนินการต่อหรือไม่?  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>ไม่พบข้อมูลผู้ลงนามสำหรับคีย์ต้นทางที่คาดหวัง {expected_key_origin}  </translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>ไม่พบข้อมูลผู้ลงนามสำหรับที่มา Xpub ที่คาดไว้ {key_origin} หากคุณต้องการนำเข้าหมายเลขบัญชีที่ไม่ใช่ค่าเริ่มต้น โปรดระบุที่มา Xpub แล้วสแกนอีกครั้ง</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

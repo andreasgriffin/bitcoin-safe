@@ -580,4 +580,4 @@ class DescriptorUI(QWidget):
         SignalTools.disconnect_all_signals_from(self)
         self.edit_descriptor.close()
         self.setParent(None)
-        super().close()
+        return super().close()

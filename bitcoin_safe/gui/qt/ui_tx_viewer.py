@@ -1131,4 +1131,4 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
-        super().close()
+        return super().close()

@@ -597,7 +597,7 @@ class StepProgressContainer(ThreadingManager, QWidget):
             # visiblities. So it is critical to do the set_current_widget at the end.
             self.signal_set_current_widget.emit(new_widget)
 
-    def clear_widgets(self):
+    def clear_widgets(self) -> None:
         while self.stacked_widget.count():
             widget = self.stacked_widget.widget(0)
             if widget:

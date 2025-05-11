@@ -81,7 +81,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.pushButton_custom_wallet.clicked.connect(self.on_pushButton_custom_wallet)
         logger.debug(f"initialized welcome_screen = {self.__class__.__name__}")
 
-    def remove_me(self):
+    def remove_me(self) -> None:
         self.signal_remove_me.emit(self)
 
     def on_pushButton_multisig(self):

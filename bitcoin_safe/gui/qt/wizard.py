@@ -200,7 +200,7 @@ class FloatingButtonBar(QDialogButtonBox):
         self.go_to_next_index()
         self.fill_tx()
 
-    def fill(self):
+    def fill(self) -> None:
         self.setVisible(False)
 
         self.tutorial_button_prefill = QPushButton()
@@ -490,7 +490,7 @@ class StickerTheHardware(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def device_name(self, i) -> str:
+    def device_name(self, i: int) -> str:
         protowallet = self.refs.qtwalletbase.get_editable_protowallet()
         threshold, n = protowallet.get_mn_tuple()
         return signer_name(threshold=threshold, i=i)
@@ -1391,9 +1391,9 @@ class LabelBackup(BaseTab):
 class SendTest(BaseTab):
     def __init__(
         self,
-        test_label,
-        test_number,
-        tx_text,
+        test_label: str,
+        test_number: int,
+        tx_text: str,
         refs: TabInfo,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
@@ -1848,7 +1848,7 @@ class Wizard(WizardBase):
 
         self.set_labels([labels[key] for key in self.tab_generators if key in labels])
 
-    def _clear_tab_generators(self):
+    def _clear_tab_generators(self) -> None:
         for g in self.tab_generators.values():
             del g.refs
             g.setParent(None)

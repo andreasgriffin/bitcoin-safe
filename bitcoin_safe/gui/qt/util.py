@@ -425,7 +425,7 @@ class Message:
         title = self.title or title
         return return_icon, title
 
-    def show(self):
+    def show(self) -> None:
         self.create().exec()
 
     def create(self) -> QMessageBox:

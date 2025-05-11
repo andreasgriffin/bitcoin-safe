@@ -107,5 +107,5 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
 
         self.updateUi()
 
-    def set_minimum_size_as_floating_window(self):
+    def set_minimum_size_as_floating_window(self) -> None:
         self.setMinimumSize(500, 200)

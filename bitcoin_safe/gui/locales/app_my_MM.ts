@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>ထုတ်လွှင့်မထားသေးပါ။</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>&apos;{id}&apos; ပိုက်ဆံအိတ်ကိုဆွဲယူမရပါ။ ပိုက်ဆံအိတ်ကိုဦးစွာဖွင့်ပါ။  </translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>ငွေလွှဲ {txid} အတွက် ပိုက်ဆံအိတ် မတွေ့ပါ။ ကျေးဇူးပြု၍ သက်ဆိုင်ရာ ပိုက်ဆံအိတ်ကို ပထမဆုံး ဖွင့်ပါ။</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} ခေါင်းပါပဲဆက်လုပ်မလား။  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>မျှော်လင့်ထားသော key_origin {expected_key_origin} အတွက်လက်မှတ်သားဒေတာမရှိပါ  </translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>မျှော်မှန်းထားသည့် Xpub မူလ {key_origin} အတွက် လက်မှတ်ထိုးသူ ဒေတာ မတွေ့ပါ။ မူရင်းမဟုတ်သော အကောင့်နံပါတ် တင်သွင်းလိုပါက၊ Xpub မူလကို ဖော်ပြပြီး ထပ်မံ စကင်လုပ်ပါ။</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

@@ -179,11 +179,11 @@ class QTProtoWallet(QtWalletBase):
     def get_editable_protowallet(self) -> ProtoWallet:
         return self.protowallet
 
-    def close(self):
+    def close(self) -> bool:
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 class ProgressSignal:
@@ -1097,7 +1097,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             fx=self.fx,
             config=self.config,
             signals=self.signals,
-            wallet_id=self.wallet.id,
+            wallets=[self.wallet],
             hidden_columns=[
                 HistList.Columns.WALLET_ID,
                 HistList.Columns.BALANCE,
