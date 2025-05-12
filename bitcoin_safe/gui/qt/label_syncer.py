@@ -122,7 +122,7 @@ class LabelSyncer(QObject):
             )
         logger.info(f"Sent all labels to trusted device {short_key( pub_key_bech32)}")
 
-    def send_all_labels_to_myself(self):
+    def send_all_labels_to_myself(self) -> None:
         if not self.sync_tab.enabled():
             return
         logger.debug(f"send_all_labels_to_myself")

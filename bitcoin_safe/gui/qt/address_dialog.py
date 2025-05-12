@@ -242,11 +242,11 @@ class AddressDialog(QWidget):
         self.upper_widget_layout.addWidget(self.qr_code)
 
         self.hist_list = HistList(
-            self.fx,
-            self.config,
-            self.signals,
-            self.mempool_data,
-            self.wallet.id,
+            fx=self.fx,
+            config=self.config,
+            signals=self.signals,
+            mempool_data=self.mempool_data,
+            wallets=[self.wallet],
             hidden_columns=[
                 HistList.Columns.TXID,
                 HistList.Columns.BALANCE,

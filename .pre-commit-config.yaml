@@ -38,6 +38,7 @@ repos:
         args: 
           - --check-untyped-defs
           # - --disallow-untyped-defs
+          # - --disallow-untyped-calls
           # - --disallow-incomplete-defs
           # - --strict-optional
           - --implicit-optional

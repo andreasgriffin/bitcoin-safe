@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>브로드캐스트되지 않음.</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>지갑 &apos;{id}&apos;을(를) 가져올 수 없습니다. 먼저 지갑을 열어주세요.  </translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>거래 {txid}에 대한 지갑을 찾을 수 없습니다. 먼저 해당 지갑을 열어주세요.</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} 그래도 계속하시겠습니까?  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>예상 키 출처 {expected_key_origin}에 대한 서명 기계 데이터가 없습니다.</translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>예상된 Xpub 출처 {key_origin}에 대한 서명자 데이터를 찾을 수 없습니다. 기본값이 아닌 계좌 번호를 가져오려면 Xpub 출처를 지정하고 다시 스캔하세요.</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

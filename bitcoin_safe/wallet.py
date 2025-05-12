@@ -163,7 +163,7 @@ class TxStatus:
         return self.is_unconfirmed() and self.confirmation_status != TxConfirmationStatus.LOCAL
 
     def can_cpfp(self) -> bool:
-        return self.confirmation_status == TxConfirmationStatus.UNCONF_PARENT
+        return self.confirmation_status == TxConfirmationStatus.UNCONFIRMED
 
 
 def locked(func) -> Any:
@@ -545,7 +545,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.clear_cache()
         self.mark_all_labeled_addresses_used(include_receiving_addresses=False)
 
-    def persist(self):
+    def persist(self) -> None:
         self.bdkwallet.persist(self.connection)
         self.clear_cache()
 

@@ -34,6 +34,7 @@ import signal as syssignal
 import sys
 from functools import partial
 from pathlib import Path
+from types import FrameType
 from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
@@ -376,10 +377,10 @@ class MainWindow(QMainWindow):
         # Show the menu at the position
         menu.exec(position)
 
-    def on_close_all_tx_tabs(self):
+    def on_close_all_tx_tabs(self) -> None:
         self.close_all_tabs_of_type(cls=UITx_Viewer)
 
-    def close_all_tabs_of_type(self, cls):
+    def close_all_tabs_of_type(self, cls) -> None:
         for index in reversed(range(self.tab_wallets.count())):
             # Get the widget for the current tab
             tab = self.tab_wallets.widget(index)
@@ -389,7 +390,7 @@ class MainWindow(QMainWindow):
             if isinstance(data, cls):
                 self.close_tab(index)
 
-    def log_color_palette(self):
+    def log_color_palette(self) -> None:
         pal = self.palette()
         d = {}
         for role in QPalette.ColorRole:
@@ -504,7 +505,8 @@ class MainWindow(QMainWindow):
             icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
         )
         self.menu_show_logs = self.menu_about.add_action("", self.menu_action_show_log)
-        self.menu_action_license = self.menu_about.add_action("", LicenseDialog().exec)
+        self._license_dialog = LicenseDialog()
+        self.menu_action_license = self.menu_about.add_action("", self._license_dialog.exec)
         self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
 
         self.menu_knowledge = self.menu_about.add_menu("")
@@ -1461,13 +1463,13 @@ class MainWindow(QMainWindow):
             tutorial_index=qt_protowallet.tutorial_index,
         )
 
-    def on_signal_close_qtprotowallet(self, wallet_id):
+    def on_signal_close_qtprotowallet(self, wallet_id: str):
         qt_protowallet = self.qt_protowallets.get(wallet_id)
         if not qt_protowallet:
             return
         self.close_tab(self.tab_wallets.indexOf(qt_protowallet))
 
-    def on_signal_create_qtprotowallet(self, wallet_id):
+    def on_signal_create_qtprotowallet(self, wallet_id: str):
         qt_protowallet = self.qt_protowallets.get(wallet_id)
         if not qt_protowallet:
             return
@@ -1740,7 +1742,7 @@ class MainWindow(QMainWindow):
         self.new_startup_network = new_startup_network
         QCoreApplication.quit()
 
-    def signal_handler(self, signum, frame) -> None:
+    def signal_handler(self, signum: int, frame: Optional[FrameType]) -> None:
         logger.info(f"Handling signal: {signum}")
         close_event = QCloseEvent()
         self.closeEvent(close_event)
@@ -1748,9 +1750,10 @@ class MainWindow(QMainWindow):
         QCoreApplication.quit()
 
     def setup_signal_handlers(self) -> None:
-        for sig in [
+        signals: list[int] = [
             getattr(syssignal, attr)
             for attr in ["SIGTERM", "SIGINT", "SIGHUP", "SIGQUIT"]
             if hasattr(syssignal, attr)
-        ]:
+        ]
+        for sig in signals:
             syssignal.signal(sig, self.signal_handler)

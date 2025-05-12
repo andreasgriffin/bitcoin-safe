@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>未广播。</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>无法获取钱包&apos;{id}&apos;。请先打开钱包。</translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>找不到交易 {txid} 的钱包。请先打开相应的钱包。</translation>
     </message>
     <message>
         <source>Status</source>
@@ -925,8 +925,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} 无论如何您还想继续吗？  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>没有找到期望的关键来源 {expected_key_origin} 的签名数据。</translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>未找到预期 Xpub 来源 {key_origin} 的签名者数据。如果您想导入非默认帐户编号，请指定 Xpub 来源并重新扫描。</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

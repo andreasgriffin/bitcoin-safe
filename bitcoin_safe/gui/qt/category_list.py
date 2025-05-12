@@ -131,7 +131,7 @@ class CategoryEditor(TagEditor):
     def get_default_categories(cls) -> List[str]:
         return [cls.tr("KYC Exchange"), cls.tr("Private")]
 
-    def add_default_categories(self):
+    def add_default_categories(self) -> None:
         for category in self.get_default_categories():
             self.add(category)
 

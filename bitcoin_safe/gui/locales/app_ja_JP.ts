@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>ブロードキャストされていません。</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>ウォレット &apos;{id}&apos; を開けません。まずウォレットを開いてください。</translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>トランザクション {txid} のウォレットが見つかりません。対応するウォレットを先に開いてください。</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} それでも進みますか？  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>予想されるキーの起源 {expected_key_origin} に対する署名者データが見つかりませんでした。</translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>期待される Xpub オリジン {key_origin} の署名者データが見つかりませんでした。デフォルト以外のアカウント番号をインポートしたい場合は、Xpub オリジンを指定して再スキャンしてください。</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

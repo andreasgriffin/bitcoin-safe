@@ -718,8 +718,8 @@ the sending value {sent}</source>
         <translation>No transmitido.</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>No se puede obtener la cartera &apos;{id}&apos;. Por favor, abre la cartera primero.</translation>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>No se puede encontrar la cartera para la transacción {txid}. Por favor, abra primero la cartera correspondiente.</translation>
     </message>
     <message>
         <source>Status</source>
@@ -924,8 +924,8 @@ Do you want to proceed anyway?</source>
         <translation>{msg} ¿Desea proceder de todos modos?  </translation>
     </message>
     <message>
-        <source>No signer data for the expected key_origin {expected_key_origin} found.</source>
-        <translation>No se encontraron datos del firmante para el origen clave {expected_key_origin} esperado.</translation>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>No se encontraron datos de firmante para el origen Xpub esperado {key_origin}. Si desea importar un número de cuenta no predeterminado, especifique el origen Xpub y examine de nuevo.</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>

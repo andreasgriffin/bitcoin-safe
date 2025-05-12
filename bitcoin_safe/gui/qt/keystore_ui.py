@@ -446,6 +446,10 @@ class KeyStoreUI(QObject):
     def get_expected_key_origin(self) -> str:
         return self.get_address_type().key_origin(self.network)
 
+    def get_key_origin(self) -> str:
+        key_origin = self.edit_key_origin.text().strip()
+        return key_origin if key_origin else self.get_expected_key_origin()
+
     def set_using_signer_info(self, signer_info: SignerInfo) -> None:
 
         key_origin_input_analyzer = self.edit_key_origin_input.analyzer()
@@ -475,12 +479,12 @@ class KeyStoreUI(QObject):
             # this case is relevant if a single SignerInfo is contains an account>0
             self.set_using_signer_info(data.data[0])
         elif data.data_type == DataType.SignerInfos:
-            expected_key_origin = self.get_expected_key_origin()
+            key_origin = self.get_key_origin()
 
             matching_signer_infos = [
                 signer_info
                 for signer_info in data.data
-                if isinstance(signer_info, SignerInfo) and (signer_info.key_origin == expected_key_origin)
+                if isinstance(signer_info, SignerInfo) and (signer_info.key_origin == key_origin)
             ]
 
             if len(matching_signer_infos) == 1:
@@ -490,9 +494,9 @@ class KeyStoreUI(QObject):
             else:
                 # none found
                 Message(
-                    self.tr("No signer data for the expected key_origin {expected_key_origin} found.").format(
-                        expected_key_origin=expected_key_origin
-                    )
+                    self.tr(
+                        "No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again."
+                    ).format(key_origin=key_origin)
                 )
 
         elif data.data_type == DataType.Xpub:

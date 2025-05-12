@@ -1190,7 +1190,7 @@ class SearchableTab(QWidget):
             self.searchable_list.close()
         self.searchable_list = None
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 class TreeViewWithToolbar(SearchableTab):

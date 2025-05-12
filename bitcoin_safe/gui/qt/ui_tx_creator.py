@@ -804,4 +804,4 @@ class UITx_Creator(UITx_Base):
         self.category_list.close()
         self.widget_utxo_with_toolbar.close()
         self.setParent(None)
-        super().close()
+        return super().close()

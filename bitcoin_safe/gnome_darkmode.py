@@ -39,7 +39,7 @@ from bitcoin_safe.util_os import linux_env
 logger = logging.getLogger(__name__)
 
 
-def is_gnome_dark_mode():
+def is_gnome_dark_mode() -> bool:
     # Check if running on Linux with a GNOME desktop
     if sys.platform.startswith("linux"):
         desktop = os.environ.get("XDG_CURRENT_DESKTOP", "")
