@@ -171,6 +171,8 @@ class HistList(MyTreeView):
         Columns.BALANCE: Qt.AlignmentFlag.AlignRight,
     }
 
+    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
+
     def __init__(
         self,
         fx: FX,
@@ -179,14 +181,13 @@ class HistList(MyTreeView):
         mempool_data: MempoolData,
         wallets: List[Wallet],
         hidden_columns: List[int] | None = None,
-        column_widths: Optional[Dict[MyTreeView.BaseColumnsEnum, int]] = None,
         address_domain: List[str] | None = None,
     ) -> None:
         super().__init__(
             config=config,
             stretch_column=HistList.Columns.LABEL,
             editable_columns=[HistList.Columns.LABEL],
-            column_widths=column_widths,
+            column_widths=self.column_widths,
             signals=signals,
             sort_column=HistList.Columns.STATUS,
             sort_order=Qt.SortOrder.DescendingOrder,

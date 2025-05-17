@@ -247,7 +247,11 @@ class AddressList(MyTreeView):
 
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
-    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.ADDRESS: 150, Columns.COIN_BALANCE: 100}
+    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
+        Columns.ADDRESS: 150,
+        Columns.COIN_BALANCE: 120,
+        Columns.FIAT_BALANCE: 110,
+    }
 
     def __init__(
         self,

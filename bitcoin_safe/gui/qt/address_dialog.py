@@ -252,7 +252,6 @@ class AddressDialog(QWidget):
                 HistList.Columns.BALANCE,
             ],
             address_domain=[self.address],
-            column_widths={HistList.Columns.TXID: 100},
         )
         vbox.addWidget(self.hist_list)
 
