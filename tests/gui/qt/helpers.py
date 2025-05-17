@@ -203,7 +203,7 @@ def do_modal_click(
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
     cls: Type[T] = Union[QMessageBox, QWidget],
     timeout=5000,
-    timer_delay=200,
+    timer_delay=100,
 ) -> None:
     def click() -> None:
         QApplication.processEvents()
@@ -219,7 +219,6 @@ def do_modal_click(
         print("is_dialog_open = True")
         print("Do on_open")
         on_open(dialog)
-        QApplication.processEvents()
 
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
@@ -228,6 +227,8 @@ def do_modal_click(
         click_pushbutton.trigger()
     else:
         qtbot.mouseClick(click_pushbutton, button)
+
+    QApplication.processEvents()
 
 
 def get_called_args_message_box(
