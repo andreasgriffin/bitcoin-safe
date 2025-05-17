@@ -51,9 +51,9 @@ def check_compatibility():
 
     # Define minimum required versions
     if arch == "arm64":
-        required_ver = parse_version("14.0")
+        required_ver = parse_version("14.0")  # this depends on the github runner
     elif arch == "x86_64":
-        required_ver = parse_version("13.0")
+        required_ver = parse_version("13.0")  # this depends on the github runner
     else:
         raise RuntimeError(f"Unsupported architecture: {arch!r}")
 
