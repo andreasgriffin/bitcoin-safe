@@ -500,6 +500,7 @@ class MyTreeView(QTreeView):
         self.is_editor_open = False
         self._currently_updating = False
         self._scroll_position = 0
+        self._header_state: QtCore.QByteArray | None = None
 
         self.allow_edit = True
 
@@ -1095,8 +1096,12 @@ class MyTreeView(QTreeView):
     def _before_update_content(self):
         self._currently_updating = True
         self._save_selection()
-        if not isinstance(header := self.header(), QHeaderView):
+
+        header = self.header()
+        if not isinstance(header, QHeaderView):
             return
+
+        self._header_state = header.saveState()
         self._current_column = header.sortIndicatorSection()
         self._current_order = header.sortIndicatorOrder()
         self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
@@ -1114,6 +1119,10 @@ class MyTreeView(QTreeView):
 
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
+
+        header = self.header()
+        if isinstance(header, QHeaderView) and self._header_state:
+            header.restoreState(self._header_state)
 
         self._restore_selection()
         # this MUST be after the selection,
