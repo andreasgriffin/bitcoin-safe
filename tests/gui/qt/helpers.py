@@ -219,6 +219,7 @@ def do_modal_click(
         print("is_dialog_open = True")
         print("Do on_open")
         on_open(dialog)
+        QApplication.processEvents()
 
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
