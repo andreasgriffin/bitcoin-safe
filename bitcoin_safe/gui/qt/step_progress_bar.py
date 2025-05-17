@@ -28,7 +28,6 @@
 
 
 import logging
-import os
 import sys
 from dataclasses import dataclass
 from functools import partial
@@ -45,7 +44,6 @@ from PyQt6.QtGui import (
     QPainter,
     QPaintEvent,
     QPen,
-    QPixmap,
     QPolygon,
     QResizeEvent,
     QTextOption,
@@ -66,6 +64,8 @@ from bitcoin_safe.gui.qt.util import create_button_box
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
+
+from .util import svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -103,12 +103,12 @@ class StepProgressBar(QWidget):
         self.max_label_height = 0  # Initialize max label height
         self.use_checkmark_icon = use_checkmark_icon
 
-        normalized_icon_path = os.path.normpath(
-            os.path.join(os.path.dirname(__file__), "../icons/checkmark.svg")
+        self.checkmark_pixmap = svg_tools.get_pixmap(
+            icon_basename="checkmark.svg",
+            auto_theme=False,
+            size=(26, 26),
+            replace_tuples=(("greenColor", "#ffffff"),),
         )
-        self.checkmark_pixmap = QPixmap(normalized_icon_path).scaled(
-            20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
-        )  # Load and scale your checkmark image
         self.mark_current_index_as_completed = mark_current_index_as_completed
         self.tooltips = [""] * number_of_steps  # Initialize tooltips as empty strings
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)

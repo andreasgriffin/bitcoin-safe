@@ -30,13 +30,12 @@
 import logging
 
 import bdkpython as bdk
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import get_icon_path
 from bitcoin_safe.signals import SignalsMin
 
-from .util import adjust_bg_color_for_darkmode
+from .util import adjust_bg_color_for_darkmode, svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +51,7 @@ class NotificationBarRegtest(NotificationBar):
         self.network = network
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
-        self.set_icon(QIcon(get_icon_path(f"bitcoin-{network.name.lower()}.svg")))
+        self.set_icon(svg_tools.get_QIcon(f"bitcoin-{network.name.lower()}.svg"))
 
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)

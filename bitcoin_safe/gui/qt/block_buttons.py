@@ -178,7 +178,7 @@ class ButtonExplorerIcon(AspectRatioSvgWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(
             svg_content=svg_tools.get_svg_content(
-                "block-explorer.svg", auto_theme=False, replace_tuples=[("currentColor", "#ffffff")]
+                "block-explorer.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
             ),
             max_height=20,
             max_width=20,
