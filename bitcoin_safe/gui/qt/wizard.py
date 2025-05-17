@@ -1854,7 +1854,7 @@ class Wizard(WizardBase):
             g.setParent(None)
         self.tab_generators.clear()
 
-    def close(self):
+    def close(self) -> bool:
         self.clear_widgets()
         self.qtwalletbase.outer_layout.removeWidget(self.floating_button_box)
         self.qtwalletbase.outer_layout.removeWidget(self)
@@ -1863,4 +1863,4 @@ class Wizard(WizardBase):
         self.widgets.clear()
         self._clear_tab_generators()
         self.setParent(None)
-        super().close()
+        return super().close()

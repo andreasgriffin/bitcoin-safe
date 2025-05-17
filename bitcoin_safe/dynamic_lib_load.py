@@ -119,7 +119,7 @@ def ensure_pyzbar_works() -> None:
         # Determine the base path:
         if hasattr(sys, "_MEIPASS"):
             # Running as a PyInstaller bundle; _MEIPASS is the temporary folder
-            base_path = sys._MEIPASS
+            base_path = sys._MEIPASS  # type: ignore
         else:
             # Otherwise, use the directory of this script
             base_path = os.path.dirname(os.path.abspath(__file__))

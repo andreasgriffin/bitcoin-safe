@@ -32,7 +32,7 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple
 
 from PyQt6.QtCore import QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -42,6 +42,7 @@ from PyQt6.QtGui import (
     QMouseEvent,
     QPainter,
     QPainterPath,
+    QPaintEvent,
     QPen,
 )
 from PyQt6.QtSvg import QSvgGenerator
@@ -367,31 +368,31 @@ class SankeyWidget(QWidget):
         )
         painter.end()
 
-    def paintEvent(self, event):
+    def paintEvent(self, a0: Optional[QPaintEvent]) -> None:
         painter = QPainter(self)
         self.draw_content(painter)
 
-    def mouseMoveEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
+    def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
+        if not a0:
             return
         if not self.show_tooltips:
             return
         for rect, flow_index in self.text_rects:
             if flow_index not in self.tooltips:
                 continue
-            if rect.contains(event.position()):
+            if rect.contains(a0.position()):
                 # Convert widget-relative position to global position for the tooltip
-                globalPos = self.mapToGlobal(event.position().toPoint())
+                globalPos = self.mapToGlobal(a0.position().toPoint())
                 QToolTip.showText(globalPos, self.tooltips[flow_index], None, msecShowTime=5000)
                 return  # Exit after showing one tooltip
         # QToolTip.hideText()  # Hide tooltip if no text is hovered, this leads to flickering
-        super().mouseMoveEvent(event)
+        super().mouseMoveEvent(a0)
 
-    def mousePressEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
+    def mousePressEvent(self, a0: QMouseEvent | None) -> None:
+        if not a0:
             return
 
-        if event.button() == Qt.MouseButton.RightButton:
+        if a0.button() == Qt.MouseButton.RightButton:
             # Right-click detected, show context menu
             menu = QMenu(self)
             export_action = QAction("Export to svg", self)
@@ -399,11 +400,11 @@ class SankeyWidget(QWidget):
             # Connect the action to the export method
             export_action.triggered.connect(self.export_to_svg)
             # Show the menu at the cursor position
-            menu.exec(event.globalPosition().toPoint())
+            menu.exec(a0.globalPosition().toPoint())
         else:
             # Handle other mouse events (e.g., left-click)
             for rect, flow_index in self.text_rects:
-                if rect.contains(event.position()):
+                if rect.contains(a0.position()):
                     self.signal_on_label_click.emit(flow_index)
                     break
 

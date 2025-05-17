@@ -215,9 +215,9 @@ class MySortModel(QSortFilterProxyModel):
     def sourceModel(self) -> MyStandardItemModel:
         return self._source_model
 
-    def lessThan(self, source_left: QModelIndex, source_right: QModelIndex) -> bool:
-        item1 = self.sourceModel().itemFromIndex(source_left)
-        item2 = self.sourceModel().itemFromIndex(source_right)
+    def lessThan(self, left: QModelIndex, right: QModelIndex) -> bool:
+        item1 = self.sourceModel().itemFromIndex(left)
+        item2 = self.sourceModel().itemFromIndex(right)
 
         if not item1 or not item2:
             return bool(item1) < bool(item2)
@@ -417,37 +417,37 @@ class MyItemDelegate(QStyledItemDelegate):
         self.tv.is_editor_open = True
         return super().createEditor(parent, option, index)
 
-    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, idx: QModelIndex) -> None:
-        custom_data = idx.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
+    def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        custom_data = index.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
         if isinstance(custom_data, HTMLDelegate):
-            custom_data.paint(painter, option, idx)
+            custom_data.paint(painter, option, index)
         else:
-            super().paint(painter, option, idx)
+            super().paint(painter, option, index)
 
     def helpEvent(
         self,
-        evt: QHelpEvent | None,
+        event: QHelpEvent | None,
         view: QAbstractItemView | None,
         option: QStyleOptionViewItem,
-        idx: QModelIndex,
+        index: QModelIndex,
     ) -> bool:
-        custom_data = idx.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
+        custom_data = index.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
         if custom_data is None:
-            return super().helpEvent(evt, view, option, idx)
+            return super().helpEvent(event, view, option, index)
         else:
-            if evt and evt.type() == QEvent.Type.ToolTip and isinstance(custom_data, HTMLDelegate):
-                if custom_data.show_tooltip(evt):
+            if event and event.type() == QEvent.Type.ToolTip and isinstance(custom_data, HTMLDelegate):
+                if custom_data.show_tooltip(event):
                     return True
-        return super().helpEvent(evt, view, option, idx)
+        return super().helpEvent(event, view, option, index)
 
-    def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex) -> QSize:
-        custom_data = idx.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
+    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
+        custom_data = index.data(MyItemDataRole.ROLE_CUSTOM_PAINT)
         if custom_data is None:
-            orghint = super().sizeHint(option, idx)
+            orghint = super().sizeHint(option, index)
             return QSize(orghint.width(), max(self.ROW_HEIGHT, orghint.height()))
         else:
             # default_size = super().sizeHint(option, idx)
-            return custom_data.sizeHint(option, idx)
+            return custom_data.sizeHint(option, index)
 
 
 class MyTreeView(QTreeView):
@@ -543,7 +543,7 @@ class MyTreeView(QTreeView):
     def updateUi(self) -> None:
         pass
 
-    def startDrag(self, action: Qt.DropAction) -> None:
+    def startDrag(self, supportedActions: Qt.DropAction) -> None:
         indexes = self.selectedIndexes()
         if indexes:
             drag = QDrag(self)
@@ -577,7 +577,7 @@ class MyTreeView(QTreeView):
             drag.setPixmap(pixmap)
             drag.setHotSpot(hotspot_pos)
 
-            drag.exec(action)
+            drag.exec(supportedActions)
 
     def create_menu(self, position: QPoint) -> Menu:
         menu = Menu()
@@ -848,10 +848,10 @@ class MyTreeView(QTreeView):
             title=f"{len(list(drag_keys) ) if drag_keys else self.model().rowCount()  } rows have ben copied as csv",
         )
 
-    def mouseDoubleClickEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
+    def mouseDoubleClickEvent(self, e: QMouseEvent | None) -> None:
+        if not e:
             return
-        idx: QModelIndex = self.indexAt(event.pos())
+        idx: QModelIndex = self.indexAt(e.pos())
         if self.proxy:
             idx = self.proxy.mapToSource(idx)
         if not idx.isValid():
@@ -859,7 +859,7 @@ class MyTreeView(QTreeView):
             return
 
         if idx.column() in self.editable_columns:
-            super().mouseDoubleClickEvent(event)
+            super().mouseDoubleClickEvent(e)
         else:
             self.on_double_click(idx)
 
@@ -951,9 +951,9 @@ class MyTreeView(QTreeView):
     def place_text_on_clipboard(self, text: str, *, title: str | None = None) -> None:
         do_copy(text, title=title)
 
-    def showEvent(self, e: QShowEvent | None) -> None:
-        super().showEvent(e)
-        if e and e.isAccepted() and self._pending_update:
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        if a0 and a0.isAccepted() and self._pending_update:
             self._forced_update = True
             self.update_content()
             self._forced_update = False
@@ -982,7 +982,7 @@ class MyTreeView(QTreeView):
             key = item.data(MyItemDataRole.ROLE_KEY)
             self.refresh_row(key, row)
 
-    def refresh_row(self, key: str, row: int) -> None:
+    def refresh_row(self, key: Any, row: int) -> None:
         pass
 
     def refresh_item(self, key: str) -> None:
@@ -1007,15 +1007,15 @@ class MyTreeView(QTreeView):
                     result.append(file_path)
         return result
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
-        if not event:
+    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
+        if not e:
             return
-        if (mime_data := event.mimeData()) and self._recognized_files(mime_data):
-            event.accept()
+        if (mime_data := e.mimeData()) and self._recognized_files(mime_data):
+            e.accept()
             return
 
-        if not event.isAccepted():
-            event.ignore()
+        if not e.isAccepted():
+            e.ignore()
 
     def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
         if not event:
@@ -1027,27 +1027,27 @@ class MyTreeView(QTreeView):
         if not event.isAccepted():
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent | None) -> None:
-        if not event:
+    def dropEvent(self, e: QDropEvent | None) -> None:
+        if not e:
             return
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data:
             file_paths = self._recognized_files(mime_data)
             for file_path in file_paths:
                 if file_path.endswith(".wallet"):
                     logger.debug(file_path)
-                    event.accept()
+                    e.accept()
                     self.signals.open_wallet.emit(file_path)
 
                 if file_path.endswith(".tx") or file_path.endswith(".psbt"):
                     logger.debug(file_path)
-                    event.accept()
+                    e.accept()
 
                     data = Data.from_str(file_to_str(file_path), network=self.config.network)
                     self.signals.open_tx_like.emit(data.data)
 
-        if not event.isAccepted():
-            event.ignore()
+        if not e.isAccepted():
+            e.ignore()
 
     def _save_selection(self):
         self.selected_ids = []
@@ -1171,11 +1171,11 @@ class MyTreeView(QTreeView):
     def toggle_column_hidden(self, col: BaseColumnsEnum):
         self.set_column_hidden(col, not (col.value in self.hidden_columns))
 
-    def close(self):
+    def close(self) -> bool:
         self.proxy.close()
         self._source_model.clear()
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 class SearchableTab(QWidget):
@@ -1220,7 +1220,7 @@ class TreeViewWithToolbar(SearchableTab):
         if self.searchable_list:
             self.searchable_list.export_as_csv()
 
-    def create_toolbar_with_menu(self, title):
+    def create_toolbar_with_menu(self, title: str):
         self.menu = MyMenu(self.config)
         self.action_export_as_csv = self.menu.add_action(
             "", self._searchable_list_export_as_csv, icon=svg_tools.get_QIcon("bi--filetype-csv.svg")
@@ -1251,7 +1251,6 @@ class TreeViewWithToolbar(SearchableTab):
         self.toolbar.addWidget(self.search_edit)
         self.toolbar.addWidget(toolbar_button)
         self.fill_menu_hiddden_columns()
-        return self.toolbar, self.menu, self.balance_label, self.search_edit, self.action_export_as_csv
 
     def fill_menu_hiddden_columns(self):
         self.menu_hiddden_columns.clear()
@@ -1283,9 +1282,9 @@ class TreeViewWithToolbar(SearchableTab):
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))
         self.menu_hiddden_columns.setTitle(translate("mytreeview", "Visible columns"))
 
-    def close(self):
+    def close(self) -> bool:
         if self.searchable_list:
             self.searchable_list.close()
             self.searchable_list = None
         self.setParent(None)
-        super().close()
+        return super().close()

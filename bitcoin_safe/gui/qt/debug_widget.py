@@ -28,7 +28,7 @@
 
 
 import random
-from typing import Type, TypeVar
+from typing import Optional, Type, TypeVar
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QPainter, QPaintEvent
@@ -42,8 +42,8 @@ from PyQt6.QtWidgets import (
 
 
 class DebugWidget(QWidget):
-    def paintEvent(self, event: QPaintEvent | None) -> None:
-        super().paintEvent(event)
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
+        super().paintEvent(a0)
         self.drawDebugInfo(self)
 
     def _cleaned_size_policy(self, policy) -> str:
@@ -107,8 +107,8 @@ W = TypeVar("W", bound=QWidget)
 
 def generate_debug_class(BaseClass: Type[W]) -> Type[W]:
     class DebugClass(BaseClass):  # type: ignore
-        def paintEvent(self, event: QPaintEvent) -> None:
-            super().paintEvent(event)
+        def paintEvent(self, a0: Optional[QPaintEvent]) -> None:
+            super().paintEvent(a0)
             DebugWidget().drawDebugInfo(self)
 
     DebugClass.__name__ = f"{BaseClass.__name__}"

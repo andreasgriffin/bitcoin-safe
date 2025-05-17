@@ -96,45 +96,45 @@ class DragAndDropTextEdit(AnalyzerTextEdit):
         self.callback_enter = callback_enter
         self.callback_esc = callback_esc
 
-    def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        if not event:
-            super().keyPressEvent(event)
+    def keyPressEvent(self, e: QKeyEvent | None) -> None:
+        if not e:
+            super().keyPressEvent(e)
             return
 
-        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+        if e.key() == Qt.Key.Key_Return or e.key() == Qt.Key.Key_Enter:
             if self.callback_enter:
                 self.callback_enter(self.toPlainText())
-        elif event.key() == Qt.Key.Key_Escape:
+        elif e.key() == Qt.Key.Key_Escape:
             if self.callback_esc:
                 self.callback_esc()
-        super().keyPressEvent(event)
+        super().keyPressEvent(e)
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
-        if not event:
-            super().dragEnterEvent(event)
+    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
+        if not e:
+            super().dragEnterEvent(e)
             return
 
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data and mime_data.hasUrls():
-            event.accept()
+            e.accept()
         else:
-            event.ignore()
+            e.ignore()
 
-        super().dragEnterEvent(event)
+        super().dragEnterEvent(e)
 
-    def dropEvent(self, event: QDropEvent | None) -> None:
-        if not event:
-            super().dropEvent(event)
+    def dropEvent(self, e: QDropEvent | None) -> None:
+        if not e:
+            super().dropEvent(e)
             return
 
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data:
             file_path = mime_data.urls()[0].toLocalFile()
             if self.process_filepath:
                 self.process_filepath(file_path)
                 return  # prevent         super().dropEvent(event)
 
-        super().dropEvent(event)
+        super().dropEvent(e)
 
 
 class DragAndDropButtonEdit(ButtonEdit):
@@ -231,8 +231,8 @@ class ImportDialog(QDialog):
     def on_button_ok_clicked(self):
         self.on_ok_button(self.text_edit.text())
 
-    def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        if event and event.key() == Qt.Key.Key_Escape:
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        if a0 and a0.key() == Qt.Key.Key_Escape:
             self.close()
 
     def on_ok_button(self, s: str) -> None:
@@ -240,9 +240,9 @@ class ImportDialog(QDialog):
             self.close()
             self.on_open(s)
 
-    def closeEvent(self, event: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
 
 if __name__ == "__main__":

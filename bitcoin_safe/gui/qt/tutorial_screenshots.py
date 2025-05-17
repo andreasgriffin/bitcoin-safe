@@ -89,15 +89,15 @@ class ScreenshotsTutorial(QWidget):
     def set_title(self, text: str) -> None:
         self.title.setText(text)
 
-    def keyPressEvent(self, event: QKeyEvent | None):
-        if not event:
-            return super().keyPressEvent(event)
+    def keyPressEvent(self, a0: Optional[QKeyEvent]) -> None:
+        if not a0:
+            return super().keyPressEvent(a0)
 
-        if event.key() == Qt.Key.Key_Escape:
+        if a0.key() == Qt.Key.Key_Escape:
             self.close()
             return
 
-        super().keyPressEvent(event)
+        super().keyPressEvent(a0)
 
 
 class SeedWarningBar(NotificationBar):
@@ -142,6 +142,7 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
                 "Generate {number} secret seed words on each hardware signer and write them on the recovery sheet"
             ).format(number=TEXT_24_WORDS)
         )
+        self.never_label.updateUi()
 
         self.never_label.setText(
             translate("tutorial", "Never share the {number} secret words with anyone!").format(

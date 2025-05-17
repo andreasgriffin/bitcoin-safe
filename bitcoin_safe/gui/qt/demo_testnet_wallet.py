@@ -59,8 +59,24 @@ def copy_testnet_demo_wallet(config: UserConfig) -> List[Path]:
             return destination
         return None
 
-    if config.network in [bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.TESTNET4, bdk.Network.SIGNET]:
-        if destination := copy_to_wallet_dir("demo-public.wallet"):
+    if config.network in [
+        bdk.Network.REGTEST,
+    ]:
+        if destination := copy_to_wallet_dir("demo-public-regtest.wallet"):
+            demo_wallet_files.append(destination)
+
+    if config.network in [bdk.Network.SIGNET]:
+        if destination := copy_to_wallet_dir("demo-public-signet.wallet"):
+            demo_wallet_files.append(destination)
+
+    if config.network in [
+        bdk.Network.TESTNET,
+    ]:
+        if destination := copy_to_wallet_dir("demo-public-testnet.wallet"):
+            demo_wallet_files.append(destination)
+
+    if config.network in [bdk.Network.TESTNET4]:
+        if destination := copy_to_wallet_dir("demo-public-testnet4.wallet"):
             demo_wallet_files.append(destination)
 
     return demo_wallet_files

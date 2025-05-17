@@ -30,7 +30,7 @@
 import os
 from functools import partial
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 from PyQt6.QtCore import QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QMouseEvent, QPainter
@@ -83,23 +83,23 @@ class ButtonList(QListWidget):
         )  # Disable horizontal scrollbar
         self.setItemDelegate(ButtonStyleDelegate())
 
-    def mousePressEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
+    def mousePressEvent(self, e: Optional[QMouseEvent]) -> None:
+        if not e:
             return
-        if event.button() == Qt.MouseButton.LeftButton:
-            super().mousePressEvent(event)  # Proceed with base class handling
-            item = self.itemAt(event.position().toPoint())
+        if e.button() == Qt.MouseButton.LeftButton:
+            super().mousePressEvent(e)  # Proceed with base class handling
+            item = self.itemAt(e.position().toPoint())
             if item:
                 item.setSelected(True)  # Manually set the item as selected
                 self.itemClicked.emit(item)  # Emit the custom signal
-        elif event.button() == Qt.MouseButton.RightButton:
-            self.handleRightClick(event.position().toPoint())
+        elif e.button() == Qt.MouseButton.RightButton:
+            self.handleRightClick(e.position().toPoint())
 
-    def mouseReleaseEvent(self, event: QMouseEvent | None) -> None:
-        super().mouseReleaseEvent(event)
-        if not event:
+    def mouseReleaseEvent(self, e: QMouseEvent | None) -> None:
+        super().mouseReleaseEvent(e)
+        if not e:
             return
-        if event.button() == Qt.MouseButton.LeftButton:
+        if e.button() == Qt.MouseButton.LeftButton:
             self.clearSelection()  # Deselect all items on release
 
     def handleRightClick(self, position: QPoint):

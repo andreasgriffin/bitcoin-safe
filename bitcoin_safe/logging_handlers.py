@@ -33,6 +33,7 @@ import platform
 import sys
 import tempfile
 from pathlib import Path
+from types import TracebackType
 
 from bitcoin_safe import __version__
 from bitcoin_safe.util_os import xdg_open_file
@@ -109,8 +110,10 @@ def mail_feedback() -> None:
 
 
 class RelativePathFormatter(logging.Formatter):
-    def formatException(self, exc_info) -> str:
-        return remove_absolute_paths(super().formatException(exc_info))
+    def formatException(
+        self, ei: tuple[type[BaseException], BaseException, TracebackType | None] | tuple[None, None, None]
+    ) -> str:
+        return remove_absolute_paths(super().formatException(ei))
 
     def format(self, record) -> str:
         if record.exc_info:

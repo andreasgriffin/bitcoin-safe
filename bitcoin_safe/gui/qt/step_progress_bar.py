@@ -135,9 +135,9 @@ class StepProgressBar(QWidget):
             self.max_label_height = int(max(self.max_label_height, height_of_str(label, self, max_width)))
         self.updateGeometry()  # Notify the layout system that the widget's size hint has changed
 
-    def resizeEvent(self, event: QResizeEvent | None) -> None:
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
         self.recalculate_max_height()
-        super().resizeEvent(event)
+        super().resizeEvent(a0)
 
     @property
     def number_of_steps(self) -> int:
@@ -157,20 +157,20 @@ class StepProgressBar(QWidget):
         )
         return QSize(self.width(), total_height)
 
-    def mousePressEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
-            super().mousePressEvent(event)
+    def mousePressEvent(self, a0: QMouseEvent | None) -> None:
+        if not a0:
+            super().mousePressEvent(a0)
             return
 
         for i in range(self.number_of_steps):
             # Define the rectangle area for each step
-            if self._ellipse_rect(i).contains(event.position()):
+            if self._ellipse_rect(i).contains(a0.position()):
                 self.signal_index_clicked.emit(i)  # Emit the clicked step number
                 break
 
-        super().mousePressEvent(event)
+        super().mousePressEvent(a0)
 
-    def paintEvent(self, event: QPaintEvent | None) -> None:
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -294,19 +294,19 @@ class StepProgressBar(QWidget):
     def enterEvent(self, event: QEvent | None) -> None:
         self.setMouseTracking(True)  # Enable mouse tracking to receive mouse move events
 
-    def leaveEvent(self, event: QEvent | None) -> None:
+    def leaveEvent(self, a0: QEvent | None) -> None:
         self.setMouseTracking(False)  # Disable mouse tracking when the mouse leaves the widget
         QToolTip.hideText()  # Hide tooltip when the cursor is not above a step
         self.restore_cursor()
 
-    def mouseMoveEvent(self, event: QMouseEvent | None) -> None:
-        if not event:
-            super().mouseMoveEvent(event)
+    def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
+        if not a0:
+            super().mouseMoveEvent(a0)
             return
 
         in_circle = None
         for i in range(self.number_of_steps):
-            if self._ellipse_rect(i).contains(event.position()):
+            if self._ellipse_rect(i).contains(a0.position()):
                 in_circle = i
                 break
 
@@ -315,9 +315,9 @@ class StepProgressBar(QWidget):
             self.restore_cursor()
         else:
             self.set_cursor()
-            QToolTip.showText(event.globalPosition().toPoint(), self.tooltips[in_circle], self)
+            QToolTip.showText(a0.globalPosition().toPoint(), self.tooltips[in_circle], self)
 
-        super().mouseMoveEvent(event)
+        super().mouseMoveEvent(a0)
 
     def restore_cursor(self) -> None:
         if self.clickable and self.cursor_set:
@@ -352,8 +352,8 @@ class HorizontalIndicator(QWidget):
         self.current_index = index
         self.update()  # Repaint the widget with the new step indicator
 
-    def paintEvent(self, event: QPaintEvent | None) -> None:
-        super().paintEvent(event)
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
+        super().paintEvent(a0)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -630,10 +630,10 @@ class StepProgressContainer(ThreadingManager, QWidget):
             self.signal_set_current_widget.emit(widget)
             self.signal_widget_focus.emit(widget)
 
-    def close(self):
+    def close(self) -> bool:
         self.end_threading_manager()
         self.clear_widgets()
-        super().close()
+        return super().close()
 
 
 @dataclass

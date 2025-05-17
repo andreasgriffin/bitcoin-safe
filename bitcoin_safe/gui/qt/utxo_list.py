@@ -536,6 +536,6 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             logger.debug(f"{self.__class__.__name__}: {e}")
             self.uxto_selected_label.setText(f"")
 
-    def create_toolbar_with_menu(self, title):
+    def create_toolbar_with_menu(self, title: str) -> None:
         super().create_toolbar_with_menu(title=title)
         self.uxto_selected_label = self.balance_label

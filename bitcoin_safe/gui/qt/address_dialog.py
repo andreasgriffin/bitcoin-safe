@@ -276,6 +276,6 @@ class AddressDialog(QWidget):
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))
 
-    def closeEvent(self, event: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
-        super().closeEvent(event)
+        super().closeEvent(a0)

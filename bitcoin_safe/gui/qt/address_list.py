@@ -298,15 +298,15 @@ class AddressList(MyTreeView):
     def updateUi(self) -> None:
         self.update_content()
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
-        super().dragEnterEvent(event)
-        if not event or event.isAccepted():
+    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
+        super().dragEnterEvent(e)
+        if not e or e.isAccepted():
             return
 
-        if (mime_data := event.mimeData()) and self.get_json_mime_data(mime_data) is not None:
-            event.acceptProposedAction()
+        if (mime_data := e.mimeData()) and self.get_json_mime_data(mime_data) is not None:
+            e.acceptProposedAction()
         else:
-            event.ignore()
+            e.ignore()
 
     def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
         super().dragMoveEvent(event)

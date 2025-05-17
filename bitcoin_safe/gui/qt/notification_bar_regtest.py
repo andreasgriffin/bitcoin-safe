@@ -58,6 +58,7 @@ class NotificationBarRegtest(NotificationBar):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
+        super().updateUi()
         self.optionalButton.setText(self.tr("Change Network"))
         self.textLabel.setText(
             self.tr("Network = {network}. The coins are worthless!").format(

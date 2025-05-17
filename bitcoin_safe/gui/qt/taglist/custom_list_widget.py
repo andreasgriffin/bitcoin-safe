@@ -415,51 +415,51 @@ class CustomListWidget(QListWidget):
             item.setText(new_text)
             # item.setBackground()
 
-    def mouseReleaseEvent(self, event: QMouseEvent | None):
-        if event and event.button() == Qt.MouseButton.LeftButton:
+    def mouseReleaseEvent(self, e: QMouseEvent | None):
+        if e and e.button() == Qt.MouseButton.LeftButton:
             # Perform actions that should happen after the mouse button is released
             # This could be updating the state of the widget, triggering signals, etc.
 
-            item = self.itemAt(event.pos())
+            item = self.itemAt(e.pos())
             if item is not None and item.isSelected():
                 self.on_item_clicked(item)
                 if self.immediate_release:
                     if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
                         self.clearSelection()
                         return
-        if event and event.button() == Qt.MouseButton.RightButton:
+        if e and e.button() == Qt.MouseButton.RightButton:
             # Get the item at the mouse position
-            item = self.itemAt(event.pos())
+            item = self.itemAt(e.pos())
             if item:
-                self.show_context_menu(event.globalPosition(), item=item)
+                self.show_context_menu(e.globalPosition(), item=item)
         else:
-            super().mouseReleaseEvent(event)
+            super().mouseReleaseEvent(e)
 
     def show_context_menu(self, position: QPointF, item: QListWidgetItem):
         context_menu = QMenu(self)
         context_menu.addAction(self.tr("Delete Category"), partial(self.delete_item, item.text()))
         context_menu.exec(position.toPoint())
 
-    def mouseMoveEvent(self, event: QMouseEvent | None):
-        if not event:
-            super().mouseMoveEvent(event)
+    def mouseMoveEvent(self, e: Optional[QMouseEvent]) -> None:
+        if not e:
+            super().mouseMoveEvent(e)
             return
 
         if self._drag_start_position is None:
-            self._drag_start_position = event.pos()
-        if not (event.buttons() & Qt.MouseButton.LeftButton):
+            self._drag_start_position = e.pos()
+        if not (e.buttons() & Qt.MouseButton.LeftButton):
             return
-        if (event.pos() - self._drag_start_position).manhattanLength() < QApplication.startDragDistance():
+        if (e.pos() - self._drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
         if self.dragEnabled():
             self.startDrag(Qt.DropAction.MoveAction)
 
         else:
-            super().mouseMoveEvent(event)
+            super().mouseMoveEvent(e)
 
-    def startDrag(self, action: Qt.DropAction | None):
+    def startDrag(self, supportedActions: Qt.DropAction) -> None:
         item = self.currentItem()
-        if not action or not isinstance(item, CustomListWidgetItem):
+        if not supportedActions or not isinstance(item, CustomListWidgetItem):
             return
         rect = self.visualItemRect(item)
 
@@ -476,17 +476,17 @@ class CustomListWidget(QListWidget):
 
         self.signal_start_drag.emit()
 
-        drag.exec(action)
+        drag.exec(supportedActions)
 
         self.signal_stop_drag.emit()
         self.clearSelection()
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None):
-        if not event:
-            super().dragEnterEvent(event)
+    def dragEnterEvent(self, e: QDragEnterEvent | None):
+        if not e:
+            super().dragEnterEvent(e)
             return
 
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data and mime_data.hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
@@ -496,9 +496,9 @@ class CustomListWidget(QListWidget):
             # print(f'drag enter {dropped_addresses,   tag.text()}')
             logger.debug(f"dragEnterEvent")
 
-            event.acceptProposedAction()
+            e.acceptProposedAction()
         else:
-            event.ignore()
+            e.ignore()
 
     def dropEvent(self, event: QDropEvent | None):
         super().dropEvent(event)
@@ -522,9 +522,9 @@ class CustomListWidget(QListWidget):
 
         event.ignore()
 
-    def dragLeaveEvent(self, event: QDragLeaveEvent | None):
+    def dragLeaveEvent(self, e: QDragLeaveEvent | None):
         "do nothing"
-        super().dragLeaveEvent(event)
+        super().dragLeaveEvent(e)
 
     def delete_item(self, item_text: str):
         for i in range(self.count()):

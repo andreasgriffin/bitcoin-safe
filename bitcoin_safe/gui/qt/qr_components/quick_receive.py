@@ -232,10 +232,10 @@ class QuickReceive(QWidget):
         while self.group_boxes:
             self.remove_box()
 
-    def close(self):
+    def close(self) -> bool:
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
 
         self.clear_boxes()
         self.setParent(None)
-        super().close()
+        return super().close()

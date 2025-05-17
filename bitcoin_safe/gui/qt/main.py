@@ -35,7 +35,7 @@ import sys
 from functools import partial
 from pathlib import Path
 from types import FrameType
-from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -85,7 +85,7 @@ from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import ThreadingManager
-from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util_os import xdg_open_file
 
 from ...config import UserConfig
@@ -153,7 +153,8 @@ class MainWindow(QMainWindow):
                 else None
             ),
         )
-        self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
+        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
+        self.language_chooser = LanguageChooser(self, self.config, [language_switch])
         if not config_present:
             os_language_code = self.language_chooser.get_os_language_code()
             self.config.language_code = (
@@ -321,7 +322,6 @@ class MainWindow(QMainWindow):
         self.tab_wallets.setMovable(True)  # Enable tab reordering
         self.tab_wallets.setTabsClosable(True)
         self.tab_wallets.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.tab_wallets.signal_tab_bar_visibility.connect(self.on_signal_tab_bar_visibility)
         # Connect signals to slots
         self.tab_wallets.tabCloseRequested.connect(self.close_tab)
         self.tab_wallets.currentChanged.connect(self.set_title)
@@ -545,12 +545,9 @@ class MainWindow(QMainWindow):
     def close_current_tab(self):
         self.close_tab(self.tab_wallets.currentIndex())
 
-    def showEvent(self, event) -> None:
-        super().showEvent(event)
+    def showEvent(self, a0) -> None:
+        super().showEvent(a0)
         # self.updateUI()
-
-    def on_signal_tab_bar_visibility(self, value: bool):
-        self.updateUI()
 
     def updateUI(self) -> None:
 
@@ -600,11 +597,8 @@ class MainWindow(QMainWindow):
         self.menu_knowledge.setTitle(self.tr("&Documentation"))
         self.action_knowledge_website.setText(self.tr("&Knowledge"))
 
-        # the search fields
-        # for qt_wallet in self.qt_wallets.values():
-        if self.tab_wallets.top_right_widget:
-            main_search_field_hidden = (self.tab_wallets.count() <= 1) and self.tab_wallets.tabBarAutoHide()
-            self.tab_wallets.top_right_widget.setVisible(not main_search_field_hidden)
+        self.notification_bar_testnet.updateUi()
+        self.update_notification_bar.updateUi()
 
     def focus_search_box(self):
         self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
@@ -1526,9 +1520,10 @@ class MainWindow(QMainWindow):
         # qt_wallet.tabs.set_top_right_widget(search_box)
 
         qt_wallet.wizard.set_visibilities()
-        self.language_chooser.add_signal_language_switch(
-            self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
+        language_switch = cast(
+            TypedPyQtSignalNo, self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
         )
+        self.language_chooser.add_signal_language_switch(language_switch)
         self.signals.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
         self.signals.event_wallet_tab_added.emit()
 
@@ -1700,7 +1695,7 @@ class MainWindow(QMainWindow):
         if qt_wallet:
             qt_wallet.sync()
 
-    def closeEvent(self, event: Optional[QCloseEvent]) -> None:
+    def closeEvent(self, a0: Optional[QCloseEvent]) -> None:
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
@@ -1720,7 +1715,7 @@ class MainWindow(QMainWindow):
         SignalTools.disconnect_all_signals_from(self)
         self.tray.hide()
         logger.info(f"Finished close handling of {self.__class__.__name__}")
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
     def restart(self, new_startup_network: bdk.Network | None = None) -> None:
         """

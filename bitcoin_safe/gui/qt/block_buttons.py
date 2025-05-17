@@ -84,9 +84,9 @@ class BaseBlockLabel(QLabel):
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setHidden(not text)
 
-    def setText(self, s: str | None) -> None:
-        self.setHidden(not s)
-        return super().setText(s)
+    def setText(self, a0: str | None) -> None:
+        self.setHidden(not a0)
+        return super().setText(a0)
 
 
 class LabelTitle(BaseBlockLabel):

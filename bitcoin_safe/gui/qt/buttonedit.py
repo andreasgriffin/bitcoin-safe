@@ -104,8 +104,8 @@ class ButtonsField(QWidget):
         # If there are no buttons, fall back to the default minimum size hint
         return super().minimumSizeHint()
 
-    def resizeEvent(self, event: QResizeEvent | None) -> None:
-        super().resizeEvent(event)
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        super().resizeEvent(a0)
         self.rearrange_buttons()
 
     def rearrange_buttons(self) -> None:
@@ -302,8 +302,8 @@ class ButtonEdit(QWidget):
     def setPlainText(self, value: str | None) -> None:
         self.input_field.setText(value)
 
-    def setStyleSheet(self, value: str | None) -> None:
-        self.input_field.setStyleSheet(value)
+    def setStyleSheet(self, styleSheet: str | None) -> None:
+        self.input_field.setStyleSheet(styleSheet)
 
     def text(self) -> str:
         if hasattr(self.input_field, "toPlainText"):
@@ -457,11 +457,11 @@ class ButtonEdit(QWidget):
         self.format_as_error(error)
         self.setToolTip(analysis.msg if error else "")
 
-    def close(self):
+    def close(self) -> bool:
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 # Example usage
