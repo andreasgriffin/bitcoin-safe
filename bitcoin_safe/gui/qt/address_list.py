@@ -559,11 +559,6 @@ class AddressList(MyTreeView):
             if dollar_amount is not None
             else ""
         )
-        fiat_balance_data = (
-            self.fx.format_dollar(dollar_amount, prepend_dollar_sign=False)
-            if dollar_amount is not None
-            else ""
-        )
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
         if needs_frequent_flag(status=min_status):
@@ -582,7 +577,8 @@ class AddressList(MyTreeView):
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
         item[self.Columns.FIAT_BALANCE].setForeground(QBrush(color))
-        item[self.Columns.FIAT_BALANCE].setData(fiat_balance_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_SORT_ORDER)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
