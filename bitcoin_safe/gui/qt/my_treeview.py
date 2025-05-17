@@ -514,6 +514,8 @@ class MyTreeView(QTreeView):
         # only look at as many rows as currently visible.
         if isinstance(header := self.header(), QHeaderView):
             header.setResizeContentsPrecision(0)
+            header.setSectionsMovable(True)
+            header.setFirstSectionMovable(True)
         self._pending_update = False
         self._forced_update = False
 
