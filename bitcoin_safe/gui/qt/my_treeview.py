@@ -501,6 +501,7 @@ class MyTreeView(QTreeView):
         self._currently_updating = False
         self._scroll_position = 0
         self._header_state: QtCore.QByteArray | None = None
+        self._valid_header = False
 
         self.allow_edit = True
 
@@ -779,6 +780,12 @@ class MyTreeView(QTreeView):
         for col_idx, width in self.column_widths.items():
             header.setSectionResizeMode(col_idx, QHeaderView.ResizeMode.Interactive)
             header.resizeSection(col_idx, width)
+
+        if not self._valid_header:
+            # initial setting of the header state
+            # dont do this every time, because at this point, its the default columns , in default order
+            self._header_state = header.saveState()
+            self._valid_header = True
 
     def selectionChanged(self, selected: QItemSelection, deselected: QItemSelection) -> None:
         super().selectionChanged(selected, deselected)
@@ -1101,7 +1108,7 @@ class MyTreeView(QTreeView):
         if not isinstance(header, QHeaderView):
             return
 
-        self._header_state = header.saveState()
+        self._header_state = header.saveState() if self._valid_header else None
         self._current_column = header.sortIndicatorSection()
         self._current_order = header.sortIndicatorOrder()
         self.proxy.setDynamicSortFilter(False)  # temp. disable re-sorting after every change
@@ -1114,17 +1121,18 @@ class MyTreeView(QTreeView):
         self.proxy.setDynamicSortFilter(True)
         self.sortByColumn(self._current_column, self._current_order)
 
-        # show/hide self.Columns
+        # show/hide self.Columns (must be befoe restoring header)
         self.filter()
+
+        header = self.header()
+        if isinstance(header, QHeaderView) and self._header_state and self._valid_header:
+            header.restoreState(self._header_state)
+
+        self._restore_selection()
 
         for hidden_column in self.hidden_columns:
             self.hideColumn(hidden_column)
 
-        header = self.header()
-        if isinstance(header, QHeaderView) and self._header_state:
-            header.restoreState(self._header_state)
-
-        self._restore_selection()
         # this MUST be after the selection,
         # such that on_selection_change is not triggered
         self._currently_updating = False
