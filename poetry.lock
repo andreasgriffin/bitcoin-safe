@@ -85,8 +85,8 @@ requests = "^2.31.0"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "849db02fced049ee39a6e53cf3997ed0d6d6bc90"
-resolved_reference = "849db02fced049ee39a6e53cf3997ed0d6d6bc90"
+reference = "cc5049a552d18fa90c10c66e7f0f044adfee5d32"
+resolved_reference = "cc5049a552d18fa90c10c66e7f0f044adfee5d32"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -2970,4 +2970,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "27ff9627f3195c38b0a4544b694837f7202e88fc5de9c350156a9748a05f9284"
+content-hash = "bfc5536fef130f37d27b69d32daea73dcee1a6e67dd18ae03abf2be850a6dc9a"
