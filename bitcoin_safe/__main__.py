@@ -5,6 +5,8 @@ import sys
 from bitcoin_safe.logging_setup import setup_logging
 
 setup_logging()
+
+
 from bitcoin_safe.dynamic_lib_load import setup_libsecp256k1
 
 setup_libsecp256k1()
@@ -15,6 +17,7 @@ ensure_pyzbar_works()
 
 from PyQt6.QtWidgets import QApplication
 
+from bitcoin_safe.compatibility import check_compatibility
 from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.util import custom_exception_handler
@@ -42,6 +45,8 @@ def main() -> None:
     args = parse_args()
 
     sys.excepthook = custom_exception_handler
+    check_compatibility()
+
     app = QApplication(sys.argv)
 
     if is_gnome_dark_mode():
