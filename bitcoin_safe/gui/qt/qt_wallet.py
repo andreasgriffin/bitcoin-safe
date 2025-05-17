@@ -578,6 +578,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
 
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)
+        qt_wallet.sync()
 
     def add_sync_tab(self) -> Tuple[SyncTab, QWidget, LabelSyncer]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
