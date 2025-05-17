@@ -129,3 +129,7 @@ class UITx_Base(SearchableTab):
         unconfirmed_ancestors = self.get_unconfirmed_ancestors(txids=parent_txids)
 
         fee_group.set_cpfp_label(unconfirmed_ancestors=unconfirmed_ancestors, this_fee_info=this_fee_info)
+
+    def updateUi(self) -> None:
+        self.high_fee_rate_warning_label.updateUi()
+        self.high_fee_warning_label.updateUi()

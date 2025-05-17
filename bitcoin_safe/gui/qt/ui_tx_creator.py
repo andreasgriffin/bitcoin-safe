@@ -524,7 +524,7 @@ class UITx_Creator(UITx_Base):
             return utxos_for_input
 
         utxo_values = np.array([utxo.txout.value for utxo in utxos_for_input.utxos])
-        sort_filter: List[int] = (np.argsort(utxo_values)[::-1]).tolist()
+        sort_filter: List[int] = (np.argsort(utxo_values)[::-1]).tolist()  # type: ignore
 
         selected_utxos: List[PythonUtxo] = []
         for i in sort_filter:

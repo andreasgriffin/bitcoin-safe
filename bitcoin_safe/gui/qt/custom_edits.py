@@ -219,17 +219,17 @@ class QCompleterLineEdit(AnalyzerLineEdit):
         if self.network:
             self.set_completer_list(self.suggestions[self.network])
 
-    def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        if not event:
-            super(QCompleterLineEdit, self).keyPressEvent(event)
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        if not a0:
+            super().keyPressEvent(a0)
             return
 
-        if self.network and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+        if self.network and a0.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
             popup = self._completer.popup()
             if popup and not popup.isVisible():
                 self._completer.complete()
-        super(QCompleterLineEdit, self).keyPressEvent(event)
+        super().keyPressEvent(a0)
 
-    def focusOutEvent(self, event: QFocusEvent | None) -> None:
-        super().focusOutEvent(event)
+    def focusOutEvent(self, a0: QFocusEvent | None) -> None:
+        super().focusOutEvent(a0)
         self.signal_focus_out.emit()

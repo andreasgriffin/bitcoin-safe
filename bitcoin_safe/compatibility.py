@@ -26,41 +26,49 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
+import platform
 
-import bdkpython as bdk
-from PyQt6.QtGui import QColor
+from packaging.version import parse as parse_version
 
-from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.signals import SignalsMin
-
-from .util import adjust_bg_color_for_darkmode, svg_tools
+from bitcoin_safe.gui.qt.util import caught_exception_message
 
 logger = logging.getLogger(__name__)
 
 
-class NotificationBarRegtest(NotificationBar):
-    def __init__(self, open_network_settings, network: bdk.Network, signals_min: SignalsMin) -> None:
-        super().__init__(
-            text="",
-            optional_button_text="",
-            callback_optional_button=open_network_settings,
-            has_close_button=True,
-        )
-        self.network = network
-        self.signals_min = signals_min
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
-        self.set_icon(svg_tools.get_QIcon(f"bitcoin-{network.name.lower()}.svg"))
+def check_compatibility():
+    # Only enforce on macOS
+    if platform.system().lower() != "darwin":
+        return
 
-        self.updateUi()
-        self.signals_min.language_switch.connect(self.updateUi)
+    # Get the macOS version string, e.g. "14.0.1" or "13.4.1"
+    ver_str = platform.mac_ver()[0]
+    if not ver_str:
+        logger.error(("Unable to determine macOS version"))
 
-    def updateUi(self) -> None:
-        super().updateUi()
-        self.optionalButton.setText(self.tr("Change Network"))
-        self.textLabel.setText(
-            self.tr("Network = {network}. The coins are worthless!").format(
-                network=self.network.name.capitalize()
+    current_ver = parse_version(ver_str)
+
+    # Detect CPU architecture
+    arch = platform.machine().lower()  # "arm64" or "x86_64" typically
+
+    # Define minimum required versions
+    required_ver = parse_version("13.0")  # this depends on the github runner
+    if arch == "arm64":
+        required_ver = parse_version("14.0")  # this depends on the github runner
+    elif arch == "x86_64":
+        required_ver = parse_version("13.0")  # this depends on the github runner
+    else:
+        logger.error(RuntimeError(f"Unsupported architecture: {arch!r}"))
+
+    # Compare
+    if current_ver < required_ver:
+        caught_exception_message(
+            RuntimeError(
+                f"Unsupported macOS version: {current_ver} on {arch!r} — "
+                f"requires macOS {required_ver} or newer."
             )
         )
+
+
+if __name__ == "__main__":
+    check_compatibility()

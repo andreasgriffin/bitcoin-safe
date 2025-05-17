@@ -101,17 +101,17 @@ class BTCSpinBox(AnalyzerSpinBox):
             return 0
         return Satoshis.from_btc_str(text if text else "0", self.network).value
 
-    def validate(self, text: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
-        if text is None:
-            text = ""
+    def validate(self, input: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
+        if input is None:
+            input = ""
         try:
             # Try to convert the text to a float
-            self.valueFromText(text)
+            self.valueFromText(input)
             # If it succeeds, the text is valid
-            return QtGui.QValidator.State.Acceptable, text, pos
+            return QtGui.QValidator.State.Acceptable, input, pos
         except ValueError:
             # If it fails, the text is not valid
-            return QtGui.QValidator.State.Invalid, text, pos
+            return QtGui.QValidator.State.Invalid, input, pos
 
     def set_warning_maximum(self, value: int) -> None:
         if not self._smart_state:

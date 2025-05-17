@@ -29,7 +29,7 @@
 
 import logging
 from functools import partial
-from typing import Callable, Iterable, List, Optional, Tuple, Union
+from typing import Callable, Iterable, List, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
@@ -134,9 +134,9 @@ class BaseHardwareSignerInteractionWidget(QWidget):
         if self.help_button:
             self.help_button.setText(self.tr("Help"))
 
-    def closeEvent(self, event: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
 
 class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
@@ -241,8 +241,9 @@ class KeyStoreUI(QObject):
         self.tabs_import_type.addTab(self.tab_manual, "")
 
         self.label_fingerprint = QLabel()
+        language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_fingerprint = ButtonEdit(
-            signal_update=self.signals_min.language_switch,
+            signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_fingerprint.add_qr_input_from_camera_button(
@@ -254,9 +255,10 @@ class KeyStoreUI(QObject):
         # key_origin
         self.label_key_origin = QLabel()
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
+        language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_key_origin = ButtonEdit(
             input_field=self.edit_key_origin_input,
-            signal_update=self.signals_min.language_switch,
+            signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_key_origin.add_qr_input_from_camera_button(
@@ -271,9 +273,10 @@ class KeyStoreUI(QObject):
 
         # xpub
         self.label_xpub = QLabel()
+        language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_xpub = ButtonEdit(
             input_field=AnalyzerTextEdit(),
-            signal_update=self.signals_min.language_switch,
+            signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
         )
         self.edit_xpub.setFixedHeight(50)

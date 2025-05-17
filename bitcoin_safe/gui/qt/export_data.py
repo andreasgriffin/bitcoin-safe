@@ -434,13 +434,11 @@ class SyncChatToolButton(QToolButton):
             )
             return
         sync_tab.nostr_sync.group_chat.dm_connection.send(
-            self.to_dm(),
+            self.to_dm(use_compression=sync_tab.nostr_sync.group_chat.use_compression),
             receiver_public_key,
         )
 
-    def to_dm(
-        self,
-    ) -> ChatDM:
+    def to_dm(self, use_compression: bool) -> ChatDM:
         txid = get_txid(self.data)
         return ChatDM(
             label=ChatLabel.GroupChat,
@@ -450,6 +448,7 @@ class SyncChatToolButton(QToolButton):
                 f"{self.data.data_type.name} {short_tx_id(txid)}" if txid else self.data.data_type.name
             ),
             created_at=datetime.now(),
+            use_compression=use_compression,
         )
 
     def on_nostr_share_in_group(self, wallet_id: str, sync_tab: SyncTab) -> None:
@@ -460,7 +459,7 @@ class SyncChatToolButton(QToolButton):
             return
 
         sync_tab.nostr_sync.group_chat.send(
-            self.to_dm(),
+            self.to_dm(use_compression=sync_tab.nostr_sync.group_chat.use_compression),
             send_also_to_me=False,
         )
 
@@ -821,8 +820,8 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.signal_close.emit()
         return super().closeEvent(a0)
 
-    def showEvent(self, event: QShowEvent | None) -> None:
-        super().showEvent(event)
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
         self.signal_show.emit()  # Emit custom signal when the widget is shown.
 
 

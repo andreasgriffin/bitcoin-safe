@@ -54,7 +54,7 @@ class ElidedLabel(QLabel):
         super().__init__()
         self.elide_mode = elide_mode
 
-    def paintEvent(self, event):
+    def paintEvent(self, a0):
         painter = QPainter(self)
         metrics = QFontMetrics(self.font())
         elided = "\n".join(
@@ -183,8 +183,7 @@ if __name__ == "__main__":
     class CustomIntAnalyzer(BaseAnalyzer):
         """Custom validator that allows any input but validates numeric input."""
 
-        @staticmethod
-        def analyze(input: str, pos: int = 0) -> AnalyzerMessage:
+        def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
             if input.isdigit():
                 return AnalyzerMessage("ok", AnalyzerState.Valid)
             elif not input:

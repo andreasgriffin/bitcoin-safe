@@ -357,6 +357,8 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.button_send.setText(self.tr("Send"))
         self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
         self.label_label.setText(self.tr("Label: "))
+        self.category_linking_warning_bar.updateUi()
+        self.address_poisoning_warning_bar.updateUi()
 
     def extract_tx(self) -> bdk.Transaction:
         if self.data.data_type == DataType.Tx:

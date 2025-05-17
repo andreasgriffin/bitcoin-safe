@@ -171,6 +171,8 @@ class HistList(MyTreeView):
         Columns.BALANCE: Qt.AlignmentFlag.AlignRight,
     }
 
+    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
+
     def __init__(
         self,
         fx: FX,
@@ -179,14 +181,13 @@ class HistList(MyTreeView):
         mempool_data: MempoolData,
         wallets: List[Wallet],
         hidden_columns: List[int] | None = None,
-        column_widths: Optional[Dict[MyTreeView.BaseColumnsEnum, int]] = None,
         address_domain: List[str] | None = None,
     ) -> None:
         super().__init__(
             config=config,
             stretch_column=HistList.Columns.LABEL,
             editable_columns=[HistList.Columns.LABEL],
-            column_widths=column_widths,
+            column_widths=self.column_widths,
             signals=signals,
             sort_column=HistList.Columns.STATUS,
             sort_order=Qt.SortOrder.DescendingOrder,
@@ -278,16 +279,16 @@ class HistList(MyTreeView):
             return True
         return False
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
-        super().dragEnterEvent(event)
-        if not event or event.isAccepted():
+    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
+        super().dragEnterEvent(e)
+        if not e or e.isAccepted():
             return
 
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data and self._acceptable_mime_data(mime_data):
-            event.acceptProposedAction()
+            e.acceptProposedAction()
         else:
-            event.ignore()
+            e.ignore()
 
     def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
         super().dragMoveEvent(event)
@@ -300,18 +301,18 @@ class HistList(MyTreeView):
         else:
             event.ignore()
 
-    def dropEvent(self, event: QDropEvent | None) -> None:
+    def dropEvent(self, e: QDropEvent | None) -> None:
         # handle dropped files
-        super().dropEvent(event)
-        if not event or event.isAccepted():
+        super().dropEvent(e)
+        if not e or e.isAccepted():
             return
 
-        index = self.indexAt(event.position().toPoint())
+        index = self.indexAt(e.position().toPoint())
         if not index.isValid():
             # Handle the case where the drop is not on a valid index
             return
 
-        mime_data = event.mimeData()
+        mime_data = e.mimeData()
         if mime_data:
             json_mime_data = self.get_json_mime_data(mime_data)
             if json_mime_data is not None:
@@ -322,7 +323,7 @@ class HistList(MyTreeView):
                         drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
                         # logger.debug(f"drag_info {drag_info}")
                         self.signal_tag_dropped.emit(drag_info)
-                    event.accept()
+                    e.accept()
                     return
 
             elif mime_data.hasUrls():
@@ -331,7 +332,7 @@ class HistList(MyTreeView):
                     # Convert URL to local file path
                     self.signals.open_file_path.emit(url.toLocalFile())
 
-        event.ignore()
+        e.ignore()
 
     def on_double_click(self, idx: QModelIndex) -> None:
         txid = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
@@ -756,9 +757,9 @@ class HistList(MyTreeView):
             )
         )
 
-    def close(self):
+    def close(self) -> bool:
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 class RefreshButton(QPushButton):

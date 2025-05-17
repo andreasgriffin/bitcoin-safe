@@ -30,6 +30,9 @@ repos:
     hooks:
     - id: black
       language_version: python3.10
+
+
+
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.11.2   # Use the latest MyPy version
     hooks:
@@ -62,6 +65,19 @@ repos:
           - pyqt6 
           - "bdkpython==1.2.0"
 
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: Pyright Type Check (npm install -g pyright)
+        entry: bash -c 'if command -v pyright >/dev/null; then pyright; else echo "pyright not installed, skipping..."; exit 0; fi'
+        language: system
+        types: [python]
+        pass_filenames: false
+
+
+
+
   - repo: local
     hooks:
       - id: update-poetry-version
@@ -81,6 +97,8 @@ repos:
         language: python
         always_run: true
         
+
+
 
   # - repo: https://github.com/PyCQA/bandit
   #   rev: 1.7.6  # Use the latest version

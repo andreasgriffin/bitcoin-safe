@@ -883,7 +883,8 @@ def svg_widget_hardware_signer(
 
     return AspectRatioSvgWidget(
         svg_content=svg_tools_hardware_signer.get_svg_content(
-            icon_basename=hardware_signer.get("svg_basename"), replace_tuples=replace_tuples
+            icon_basename=hardware_signer.get("svg_basename"),
+            replace_tuples=tuple(replace_tuples) if replace_tuples else None,
         ),
         max_width=hardware_signer["max_width"],
         max_height=hardware_signer["max_height"],

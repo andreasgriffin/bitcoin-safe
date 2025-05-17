@@ -31,7 +31,7 @@ import sys
 from typing import Callable, Optional, Tuple
 
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtGui import QColor, QIcon, QPaintEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -59,7 +59,7 @@ class CloseButton(QPushButton):
         super().__init__(parent)
         self.setFixedSize(QSize(16, 16))  # Adjust the size as needed
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
         painter = QStylePainter(self)
         option = QStyleOptionButton()
         option.initFrom(self)
@@ -142,6 +142,9 @@ class NotificationBar(QWidget):
         if icon:
             pixmap_sizes = [(s if s else self.textLabel.sizeHint().height()) for s in sizes]
             self.icon_label.setPixmap(icon.pixmap(*pixmap_sizes))  # type: ignore
+
+    def updateUi(self) -> None:
+        self.closeButton.setAccessibleName(self.tr("Close notification"))
 
 
 if __name__ == "__main__":

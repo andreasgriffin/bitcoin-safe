@@ -451,6 +451,8 @@ class NetworkSettingsUI(QDialog):
         if ok_button := self.button_box.button(QDialogButtonBox.StandardButton.Ok):
             ok_button.setText(self.tr("Apply && Shutdown"))
 
+        self.proxy_warning_label.updateUi()
+
     def on_electrum_url_editing_finished(self):
         def get_use_ssl(url: str):
             for electrum_config in get_electrum_configs(self.network).values():
@@ -596,13 +598,13 @@ class NetworkSettingsUI(QDialog):
         self.close()
 
     # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent | None):
+    def keyPressEvent(self, a0: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
-        if event and event.key() == Qt.Key.Key_Escape:
+        if a0 and a0.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.on_cancel_click()
 
-        super().keyPressEvent(event)
+        super().keyPressEvent(a0)
 
     def get_network_settings_from_ui(self) -> NetworkConfig:
         "returns current ui as NetworkConfig"

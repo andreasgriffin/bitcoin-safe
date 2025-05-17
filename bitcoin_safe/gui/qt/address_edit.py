@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Optional
+from typing import Optional, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -38,6 +38,7 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...i18n import translate
 from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
@@ -64,11 +65,12 @@ class AddressEdit(ButtonEdit):
         self.signals = signals
         self.network = network
         self.allow_edit = allow_edit
+        language_switch = cast(TypedPyQtSignalNo, signals.language_switch)
         super().__init__(
             text=text,
             button_vertical_align=button_vertical_align,
             parent=parent,
-            signal_update=signals.language_switch if signals else None,
+            signal_update=language_switch if signals else None,
             close_all_video_widgets=signals.close_all_video_widgets,
         )
 

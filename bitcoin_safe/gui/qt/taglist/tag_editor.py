@@ -59,33 +59,33 @@ class DeleteButton(QPushButton):
         icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_TrashIcon)
         self.setIcon(icon)
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None):
-        if not event:
-            super().dragEnterEvent(event)
+    def dragEnterEvent(self, a0: QDragEnterEvent | None):
+        if not a0:
+            super().dragEnterEvent(a0)
             return
 
-        mime_data = event.mimeData()
+        mime_data = a0.mimeData()
         if mime_data and mime_data.hasFormat("application/json"):
             json_string = qbytearray_to_str(mime_data.data("application/json"))
 
             d = json.loads(json_string)
             logger.debug(f"dragEnterEvent")
             if d.get("type") == "drag_tag" or d.get("type") == "drag_addresses":
-                event.acceptProposedAction()
+                a0.acceptProposedAction()
                 return
 
-        event.ignore()
+        a0.ignore()
 
-    def dragLeaveEvent(self, event: QDragLeaveEvent | None):
+    def dragLeaveEvent(self, a0: QDragLeaveEvent | None):
         "this is just to hide/undide the button"
         logger.debug("Drag has left the delete button")
 
-    def dropEvent(self, event: QDropEvent | None):
-        super().dropEvent(event)
-        if not event or event.isAccepted():
+    def dropEvent(self, a0: QDropEvent | None):
+        super().dropEvent(a0)
+        if not a0 or a0.isAccepted():
             return
 
-        mime_data = event.mimeData()
+        mime_data = a0.mimeData()
         if mime_data and mime_data.hasFormat("application/json"):
             json_string = qbytearray_to_str(mime_data.data("application/json"))
 
@@ -93,16 +93,16 @@ class DeleteButton(QPushButton):
             logger.debug(f"dropEvent")
             if d.get("type") == "drag_tag":
                 self.signal_delete_item.emit(d.get("tag"))
-                event.acceptProposedAction()
+                a0.acceptProposedAction()
                 return
             if d.get("type") == "drag_addresses":
                 drag_info = AddressDragInfo([None], d.get("addresses"))
                 logger.debug(f"dropEvent")
                 self.signal_addresses_dropped.emit(drag_info)
-                event.accept()
+                a0.accept()
                 return
 
-        event.ignore()
+        a0.ignore()
 
 
 class TagEditor(QWidget):
@@ -148,12 +148,12 @@ class TagEditor(QWidget):
     def default_placeholder_text(self):
         return translate("tageditor", "Add new {name}").format(name=self.tag_name)
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None):
-        if not event:
-            super().dragEnterEvent(event)
+    def dragEnterEvent(self, a0: QDragEnterEvent | None):
+        if not a0:
+            super().dragEnterEvent(a0)
             return
 
-        mime_data = event.mimeData()
+        mime_data = a0.mimeData()
         if mime_data and mime_data.hasFormat("application/json"):
             # print('accept')
             # tag = self.itemAt(event.pos())
@@ -163,40 +163,40 @@ class TagEditor(QWidget):
             # print(f'drag enter {dropped_addresses,   tag.text()}')
             logger.debug(f"dragEnterEvent")
 
-            event.acceptProposedAction()
+            a0.acceptProposedAction()
 
             logger.debug(f"show_delete_button")
             self.show_delete_button()
         else:
-            event.ignore()
-            super().dragEnterEvent(event)
+            a0.ignore()
+            super().dragEnterEvent(a0)
 
-    def dragLeaveEvent(self, event: QDragLeaveEvent | None):
+    def dragLeaveEvent(self, a0: Optional[QDragLeaveEvent]) -> None:
         "this is just to hide/undide the button"
-        if not event:
-            super().dragLeaveEvent(event)
+        if not a0:
+            super().dragLeaveEvent(a0)
             return
 
         if not self.rect().contains(self.mapFromGlobal(QCursor.pos())):
             logger.debug("Drag operation left the TagEditor")
             self.hide_delete_button()
         else:
-            event.ignore()
-            super().dragLeaveEvent(event)
+            a0.ignore()
+            super().dragLeaveEvent(a0)
 
-    def dropEvent(self, event: QDropEvent | None):
-        super().dropEvent(event)
+    def dropEvent(self, a0: Optional[QDropEvent]) -> None:
+        super().dropEvent(a0)
 
-        if not event or event.isAccepted():
+        if not a0 or a0.isAccepted():
             return
 
-        mime_data = event.mimeData()
+        mime_data = a0.mimeData()
         if mime_data and mime_data.hasFormat("application/json"):
             self.hide_delete_button()
-            event.accept()
+            a0.accept()
         else:
-            event.ignore()
-            super().dropEvent(event)
+            a0.ignore()
+            super().dropEvent(a0)
 
     def show_delete_button(self, *args):
         self.input_field.hide()

@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import (
@@ -90,9 +90,10 @@ class USBValidateAddressWidget(QWidget):
         self._layout.addWidget(self.button_box)
         self._layout.setAlignment(self.button_box, Qt.AlignmentFlag.AlignCenter)
 
+        signal_end_hwi_blocker = cast(TypedPyQtSignalNo, self.usb_gui.signal_end_hwi_blocker)
         self.button_validate_address = SpinningButton(
             text="",
-            enable_signal=self.usb_gui.signal_end_hwi_blocker,
+            enable_signal=signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,

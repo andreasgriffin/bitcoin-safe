@@ -29,25 +29,21 @@
 
 import logging
 from collections import deque
-from typing import Generic, MutableSequence, TypeVar
+from typing import Generic, TypeVar
 
 _T = TypeVar("_T")
 
-
-from collections import deque
-from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 class UniqueDeque(
     deque,
-    MutableSequence[_T],
     Generic[_T],
 ):
-    def append(self, item: Any) -> None:
+    def append(self, value: _T) -> None:
         # If the item is already in the deque, remove it
-        while item in self:
-            self.remove(item)
+        while value in self:
+            self.remove(value)
         # Append the new item (deque automatically handles maxlen overflow)
-        super().append(item)
+        super().append(value)

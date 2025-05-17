@@ -170,9 +170,9 @@ class TrackingChartView(QChartView):
 
         return nearest_xy, index, distance
 
-    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+    def mouseMoveEvent(self, event: Optional[QMouseEvent]) -> None:
         chart = self.chart()
-        if not chart:
+        if not chart or not event:
             return
 
         # 1) Get data-space mouse position
@@ -206,7 +206,9 @@ class TrackingChartView(QChartView):
 
         super().mouseMoveEvent(event)
 
-    def mousePressEvent(self, event: QMouseEvent) -> None:
+    def mousePressEvent(self, event: Optional[QMouseEvent]) -> None:
+        if not event:
+            return
         if not (chart := self.chart()):
             return
         # 1) map click → data coords (using your series)
@@ -427,11 +429,11 @@ class BalanceChart(QWidget):
         pen.setWidth(2)
         self.line_series.setPen(pen)
 
-    def close(self):
+    def close(self) -> bool:
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
-        super().close()
+        return super().close()
 
 
 class WalletBalanceChart(BalanceChart):

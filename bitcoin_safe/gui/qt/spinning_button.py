@@ -112,8 +112,8 @@ class SpinningButton(QPushButton):
         self.rotation_angle = (self.rotation_angle + 10) % 360
         self.update()  # Trigger repaint
 
-    def paintEvent(self, event: QPaintEvent | None) -> None:
-        super().paintEvent(event)
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
+        super().paintEvent(a0)
 
         if self.timer.isActive():
             painter = QPainter(self)

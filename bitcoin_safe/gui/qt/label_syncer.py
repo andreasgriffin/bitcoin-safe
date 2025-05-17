@@ -117,6 +117,7 @@ class LabelSyncer(QObject):
                     description="",
                     data=bitcoin_data,
                     created_at=datetime.now(),
+                    use_compression=self.nostr_sync.group_chat.use_compression,
                 ),
                 PublicKey.parse(pub_key_bech32),
             )
@@ -224,6 +225,7 @@ class LabelSyncer(QObject):
                     description="",
                     data=bitcoin_data,
                     created_at=datetime.now(),
+                    use_compression=self.nostr_sync.group_chat.use_compression,
                 )
             )
         logger.info(

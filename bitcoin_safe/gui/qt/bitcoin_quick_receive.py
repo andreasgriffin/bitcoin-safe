@@ -100,9 +100,9 @@ class BitcoinQuickReceive(
     def categories(self) -> List[str]:
         return [group_box.category for group_box in self.group_boxes]
 
-    def showEvent(self, e: QShowEvent | None) -> None:
-        super().showEvent(e)
-        if e and e.isAccepted() and self._pending_update:
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        if a0 and a0.isAccepted() and self._pending_update:
             self._forced_update = True
             self.update_content(UpdateFilter(refresh_all=True))
             self._forced_update = False

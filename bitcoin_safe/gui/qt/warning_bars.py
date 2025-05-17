@@ -92,6 +92,7 @@ class LinkingWarningBar(NotificationBar):
         ).format(categories=s)
 
     def updateUi(self) -> None:
+        super().updateUi()
         self.textLabel.setText(self.get_warning_text(self.category_dict))
 
 
@@ -140,7 +141,7 @@ class PoisoningWarningBar(NotificationBar):
                 add_match(a1, r1, bool1)
                 add_match(a2, r2, bool2)
 
-            return underline(a1, np.bool(bool1)), underline(a2, np.bool(bool2))
+            return underline(a1, bool1.astype(bool)), underline(a2, bool2.astype(bool))
 
         formatted_addresses = [underline_text(a1, a2, match) for a1, a2, match in poisonous_matches]
 
@@ -150,4 +151,5 @@ class PoisoningWarningBar(NotificationBar):
         ).format(addresses=s)
 
     def updateUi(self) -> None:
+        super().updateUi()
         self.textLabel.setText(self.get_warning_text(self.poisonous_matches))

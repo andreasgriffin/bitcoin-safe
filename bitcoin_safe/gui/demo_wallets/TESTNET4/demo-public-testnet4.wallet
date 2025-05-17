@@ -4,25 +4,27 @@
     "display_balance": {
         "VERSION": "0.0.1",
         "__class__": "Balance",
-        "confirmed": 0,
+        "confirmed": 500000,
         "immature": 0,
         "trusted_pending": 0,
         "untrusted_pending": 0
     },
-    "notified_tx_ids": [], 
+    "notified_tx_ids": [
+        "ac745b6d181d6930fa974bf3fd9c5551ccc0f8c5a8ffe2fa58bf1d83de11287b"
+    ],
     "tutorial_index": null,
     "wallet": {
         "VERSION": "0.3.0",
         "__class__": "Wallet",
-        "_blockchain_height": 3080,
+        "_blockchain_height": 80655,
         "_tips": [
-            1,
+            2,
             0
         ],
         "auto_opportunistic_coin_select": true,
         "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
         "gap": 20,
-        "id": "demo-public",
+        "id": "demo-public-testnet4",
         "keystores": [
             {
                 "VERSION": "0.0.2",
@@ -36,7 +38,7 @@
                 "network": {
                     "__enum__": true,
                     "name": "Network",
-                    "value": "REGTEST"
+                    "value": "TESTNET4"
                 },
                 "xpub": "tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9"
             }
@@ -49,22 +51,31 @@
                 "Private"
             ],
             "data": {
-                "bcrt1q45jympdfyfluktqmkda5g6vgyyza4ug5h33yj9": {
+                "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v": {
                     "VERSION": "0.0.3",
                     "__class__": "Label",
                     "category": "Private",
                     "label": null,
-                    "ref": "bcrt1q45jympdfyfluktqmkda5g6vgyyza4ug5h33yj9",
-                    "timestamp": 1746003358,
+                    "ref": "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v",
+                    "timestamp": 1746248861.901771,
                     "type": "addr"
                 },
-                "bcrt1qqugr58xv76s75e2ta6ty5spq6gxyr7c9nx8x7j": {
+                "tb1qf45vu6275sm4wy96q5xeqmzg75f88tlplnrtxv": {
                     "VERSION": "0.0.3",
                     "__class__": "Label",
                     "category": "KYC Exchange",
                     "label": null,
-                    "ref": "bcrt1qqugr58xv76s75e2ta6ty5spq6gxyr7c9nx8x7j",
-                    "timestamp": 1746003358,
+                    "ref": "tb1qf45vu6275sm4wy96q5xeqmzg75f88tlplnrtxv",
+                    "timestamp": 1746248861.837888,
+                    "type": "addr"
+                },
+                "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "KYC Exchange",
+                    "label": null,
+                    "ref": "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm",
+                    "timestamp": 1746248857.097028,
                     "type": "addr"
                 }
             },
@@ -73,7 +84,7 @@
         "network": {
             "__enum__": true,
             "name": "Network",
-            "value": "REGTEST"
+            "value": "TESTNET4"
         },
         "refresh_wallet": false
     }

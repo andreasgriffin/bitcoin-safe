@@ -28,10 +28,11 @@
 
 
 import logging
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from bitcoin_qr_tools.data import SignerInfo
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QTabBar
 
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
@@ -57,19 +58,19 @@ class OrderTrackingTabBar(QTabBar):
         self.order = []
         self.tabMoved.connect(self.on_tab_moved)  # type: ignore
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, a0):
         # Capture the tab order when the drag starts
         self.order = list(range(self.count()))
-        super().mousePressEvent(event)
+        super().mousePressEvent(a0)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, a0: Optional[QMouseEvent]) -> None:
         # When the mouse is released, check if the order changed
         normal_order = list(range(self.count()))
         if normal_order != self.order:
             logger.debug(f"Final order:  {self.order}")
             self.signal_new_tab_order.emit(self.order)
             self.order = normal_order
-        super().mouseReleaseEvent(event)
+        super().mouseReleaseEvent(a0)
 
     def on_tab_moved(self, from_index, to_index):
         self.order.insert(to_index, self.order.pop(from_index))

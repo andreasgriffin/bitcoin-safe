@@ -199,7 +199,7 @@ class RecipientWidget(QWidget):
         self.address_edit.updateUi()
         self.label_line_edit.updateUi()
 
-    def showEvent(self, event) -> None:
+    def showEvent(self, a0) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
         self.updateUi()
@@ -309,7 +309,7 @@ class RecipientTabWidget(QTabWidget):
         self.recipient_widget.updateUi()
         self.autofill_tab_text()
 
-    def showEvent(self, event) -> None:
+    def showEvent(self, a0) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
         self.updateUi()
