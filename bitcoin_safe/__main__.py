@@ -45,9 +45,9 @@ def main() -> None:
     args = parse_args()
 
     sys.excepthook = custom_exception_handler
-    check_compatibility()
-
     app = QApplication(sys.argv)
+
+    check_compatibility()
 
     if is_gnome_dark_mode():
         set_dark_palette(app)
