@@ -43,7 +43,15 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_tools.util import rel_home_path_to_abs_path
 from bitcoin_usb.tool_gui import ToolGui
-from PyQt6.QtCore import QCoreApplication, QPoint, QProcess, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import (
+    QCoreApplication,
+    QPoint,
+    QProcess,
+    QSettings,
+    Qt,
+    QTimer,
+    pyqtSignal,
+)
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QDialog,
@@ -139,7 +147,6 @@ class MainWindow(QMainWindow):
         # to the mainwindow to avoid memory issues
         # however I need to clear them again with signal_remove_attached_widget
         self.attached_widgets = AttachedWidgets(maxlen=10000)
-        self.setMinimumSize(600, 600)
         self.log_color_palette()
 
         self.signals = Signals()
@@ -302,15 +309,20 @@ class MainWindow(QMainWindow):
 
     def setupUi(self) -> None:
         logger.debug(f"start setupUi")
-        # sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        # sizePolicy.setHorizontalStretch(0)
-        # sizePolicy.setVerticalStretch(0)
-        # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
-        # MainWindow.setSizePolicy(sizePolicy)
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         w, h = 900, 600
-        self.resize(w, h)
         self.setMinimumSize(w, h)
+
+        # 1) Configure QSettings to use your app’s name/org
+        QCoreApplication.setOrganizationName("Bitcoin Safe")
+        QCoreApplication.setApplicationName("Bitcoin Safe")
+        self.settings = QSettings()
+
+        # 2) Restore geometry (size+pos) if we saved it before
+        if self.settings.contains("window/geometry"):
+            self.restoreGeometry(self.settings.value("window/geometry"))
+        if self.settings.contains("window/state"):
+            self.restoreState(self.settings.value("window/state"))
 
         #####
         self.tab_wallets = ExtendedTabWidget[object](
@@ -1714,6 +1726,11 @@ class MainWindow(QMainWindow):
         SignalTools.disconnect_all_signals_from(self.signals)
         SignalTools.disconnect_all_signals_from(self)
         self.tray.hide()
+
+        # 3) On close, save both geometry and (optionally) window state
+        self.settings.setValue("window/geometry", self.saveGeometry())
+        self.settings.setValue("window/state", self.saveState())
+
         logger.info(f"Finished close handling of {self.__class__.__name__}")
         super().closeEvent(a0)
 
