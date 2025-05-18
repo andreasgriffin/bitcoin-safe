@@ -1218,6 +1218,8 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         balances: defaultdict[str, Balance] = defaultdict(Balance)
         for i, utxo in enumerate(utxos):
+            if utxo.is_spent:
+                continue
             outpoint = OutPoint.from_bdk(utxo.outpoint)
             txout = self.get_txout_of_outpoint(outpoint)
             if not txout:
