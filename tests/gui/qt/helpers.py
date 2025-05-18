@@ -282,7 +282,7 @@ def type_text_in_edit(text: str, edit: Union[QLineEdit, QTextEdit]) -> None:
         QApplication.processEvents()
 
 
-def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
+def get_tab_with_title(tabs: QTabWidget, title: str, timeout: int = 10) -> Optional[QWidget]:
     """
     Returns the tab with the specified title from a QTabWidget.
 
@@ -290,9 +290,12 @@ def get_tab_with_title(tabs: QTabWidget, title: str) -> Optional[QWidget]:
     :param title: The title of the tab to find.
     :return: The QWidget of the tab with the specified title, or None if not found.
     """
-    for index in range(tabs.count()):
-        if tabs.tabText(index).lower() == title.lower():
-            return tabs.widget(index)
+    for i in range(timeout + 1):
+        QApplication.processEvents()
+        for index in range(tabs.count()):
+            if tabs.tabText(index).lower() == title.lower():
+                return tabs.widget(index)
+        sleep(1)
     return None
 
 
