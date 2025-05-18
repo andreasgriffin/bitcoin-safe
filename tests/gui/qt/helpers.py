@@ -228,6 +228,7 @@ def do_modal_click(
     else:
         qtbot.mouseClick(click_pushbutton, button)
 
+    qtbot.wait(timer_delay)
     QApplication.processEvents()
 
 
