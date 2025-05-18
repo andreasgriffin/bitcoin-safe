@@ -41,7 +41,7 @@ from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 
-from .test_helpers import Shutter, main_window_context
+from .helpers import Shutter, main_window_context
 
 logger = logging.getLogger(__name__)
 
@@ -50,13 +50,15 @@ logger = logging.getLogger(__name__)
 def test_psbt_warning_poision_mainnet(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config_main_chain: UserConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
@@ -132,13 +134,15 @@ def test_psbt_warning_poision_mainnet(
 def test_psbt_warning_poision(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
