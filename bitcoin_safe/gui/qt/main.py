@@ -321,7 +321,6 @@ class MainWindow(QMainWindow):
         self.tab_wallets.setMovable(True)  # Enable tab reordering
         self.tab_wallets.setTabsClosable(True)
         self.tab_wallets.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.tab_wallets.signal_tab_bar_visibility.connect(self.on_signal_tab_bar_visibility)
         # Connect signals to slots
         self.tab_wallets.tabCloseRequested.connect(self.close_tab)
         self.tab_wallets.currentChanged.connect(self.set_title)
@@ -549,9 +548,6 @@ class MainWindow(QMainWindow):
         super().showEvent(event)
         # self.updateUI()
 
-    def on_signal_tab_bar_visibility(self, value: bool):
-        self.updateUI()
-
     def updateUI(self) -> None:
 
         # menu
@@ -599,12 +595,6 @@ class MainWindow(QMainWindow):
 
         self.menu_knowledge.setTitle(self.tr("&Documentation"))
         self.action_knowledge_website.setText(self.tr("&Knowledge"))
-
-        # the search fields
-        # for qt_wallet in self.qt_wallets.values():
-        if self.tab_wallets.top_right_widget:
-            main_search_field_hidden = (self.tab_wallets.count() <= 1) and self.tab_wallets.tabBarAutoHide()
-            self.tab_wallets.top_right_widget.setVisible(not main_search_field_hidden)
 
     def focus_search_box(self):
         self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
