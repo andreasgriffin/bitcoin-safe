@@ -202,8 +202,8 @@ def do_modal_click(
     qtbot: QtBot,
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
     cls: Type[T] = Union[QMessageBox, QWidget],
-    timeout=10000,
-    timer_delay=100,
+    timeout=5000,
+    timer_delay=500,
 ) -> None:
     def click() -> None:
         QApplication.processEvents()
