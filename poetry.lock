@@ -76,7 +76,7 @@ develop = false
 
 [package.dependencies]
 bitcoin-qr-tools = {git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "24e4392f0a2e4eb3c4cbf61a4e5b44eeac17fcf4"}
-bitcoin-tools = {git = "https://github.com/andreasgriffin/bitcoin-tools.git", rev = "b161d1e3f630a4acac3599797d68071eea0f77e4"}
+bitcoin-tools = {git = "https://github.com/andreasgriffin/bitcoin-tools.git", rev = "c69522186e0408c973e972c5002df6f06684a918"}
 cbor2 = "^5.6.3"
 nostr-sdk = "^0.38.0"
 pyqt6 = "^6.6.1"
@@ -85,8 +85,8 @@ requests = "^2.31.0"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "cc5049a552d18fa90c10c66e7f0f044adfee5d32"
-resolved_reference = "cc5049a552d18fa90c10c66e7f0f044adfee5d32"
+reference = "bf578cffaeced13be00c11db6dafe0330ccbff63"
+resolved_reference = "bf578cffaeced13be00c11db6dafe0330ccbff63"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -129,8 +129,8 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-tools.git"
-reference = "b161d1e3f630a4acac3599797d68071eea0f77e4"
-resolved_reference = "b161d1e3f630a4acac3599797d68071eea0f77e4"
+reference = "c69522186e0408c973e972c5002df6f06684a918"
+resolved_reference = "c69522186e0408c973e972c5002df6f06684a918"
 
 [[package]]
 name = "bitcoin-usb"
@@ -2973,4 +2973,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "bfc5536fef130f37d27b69d32daea73dcee1a6e67dd18ae03abf2be850a6dc9a"
+content-hash = "f374d3c5cfe165a7861a77c059687993b5c3ae0102d7e4c3eb173242bb98a24f"
