@@ -136,7 +136,7 @@ def test_ema_fee_rate_weights_recent_heavier(
         faucet.mine()
 
         while not wallet.get_tx(tx.compute_txid()):
-            sleep(0.5)
+            sleep(1)
             wallet.sync()
             wallet.clear_cache()
 
