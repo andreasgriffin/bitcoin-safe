@@ -27,10 +27,10 @@
 # SOFTWARE.
 
 import logging
-from typing import Callable
+from typing import Callable, Optional
 
-from PyQt6.QtCore import QPoint, Qt
-from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QMouseEvent, QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
@@ -44,20 +44,66 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget, T
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
 class ExtendedTabWidget(DataTabWidget[T]):
+    signal_tab_bar_visibility: TypedPyQtSignal[bool] = pyqtSignal(bool)  # type: ignore
+
     def __init__(self, show_ContextMenu: Callable[[QPoint, int], None] | None = None, parent=None) -> None:
         super().__init__(parent=parent)
         self.set_top_right_widget()
         self.show_ContextMenu = show_ContextMenu
         self.tabBar().installEventFilter(self)  # type: ignore
 
+        self.tabCloseRequested.connect(self.updateLineEditPosition)
+        self.currentChanged.connect(self.updateLineEditPosition)
+
+    def eventFilter(self, a0: Optional[QObject], a1: Optional[QEvent]) -> bool:
+        if a0 == self.tabBar() and a1 and a1.type() == a1.Type.Show:
+            if self.top_right_widget:
+                self.signal_tab_bar_visibility.emit(True)
+        elif a0 == self.tabBar() and a1 and a1.type() == a1.Type.Hide:
+            if self.top_right_widget:
+                self.signal_tab_bar_visibility.emit(False)
+        return super().eventFilter(a0, a1)
+
     def set_top_right_widget(self, top_right_widget: QWidget | None = None, target_width=150) -> None:
+        self.top_right_widget = top_right_widget
         self.target_width = target_width
-        self.setCornerWidget(top_right_widget)
+
+        # Adjust the size and position of the QLineEdit
+        if self.top_right_widget:
+            self.top_right_widget.setFixedWidth(self.target_width)
+            self.top_right_widget.setParent(self)
+            self.updateLineEditPosition()
+
+    def tabInserted(self, index: int) -> None:
+        super().tabInserted(index)
+        self.updateLineEditPosition()
+
+    def updateLineEditPosition(self) -> None:
+        tabBarRect = self.tabBar().geometry()  # type: ignore[union-attr]
+        availableWidth = self.width()
+
+        line_width = availableWidth // 2 if availableWidth < 2 * self.target_width else self.target_width
+
+        self.tabBar().setMaximumWidth(availableWidth - line_width - 3)  # type: ignore[union-attr]
+
+        # Update QLineEdit geometry
+        lineEditX = self.width() - line_width - 2
+        if self.top_right_widget:
+            v_margin = (tabBarRect.height() - self.top_right_widget.height()) // 2
+            self.top_right_widget.setGeometry(
+                lineEditX, tabBarRect.y(), line_width, tabBarRect.height() - v_margin
+            )
+            self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
+
+    def resizeEvent(self, a0: Optional[QResizeEvent]) -> None:
+        self.updateLineEditPosition()
+        super().resizeEvent(a0)
 
     def mousePressEvent(self, a0: QMouseEvent | None):
         super().mousePressEvent(a0)
