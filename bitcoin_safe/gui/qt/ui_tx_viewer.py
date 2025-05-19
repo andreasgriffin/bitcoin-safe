@@ -1022,6 +1022,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         tx_status = self.get_tx_status(chain_position=chain_position)
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
+        logger.debug(
+            f"set_visibility {show_send=} {tx_status.can_do_initial_broadcast()=} {self.data.data_type=}"
+        )
         self.button_send.setEnabled(show_send)
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)

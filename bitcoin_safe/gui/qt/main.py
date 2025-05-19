@@ -140,6 +140,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.open_files_at_startup = open_files_at_startup if open_files_at_startup else []
         config_present = UserConfig.exists() or config
+        if config:
+            logger.debug(f"MainWindow was started with config  argument")
+        elif UserConfig.exists():
+            logger.debug(f"UserConfig file {UserConfig.config_file} exists and will be loaded from there")
+        else:
+            logger.debug(f"UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
         self.new_startup_network: bdk.Network | None = None
