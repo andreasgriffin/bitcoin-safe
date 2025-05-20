@@ -28,10 +28,10 @@
 
 
 import logging
-from typing import Callable, List, Set
+from typing import Callable, List, Optional, Set
 
 from PyQt6 import QtGui
-from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QObject, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -86,32 +86,34 @@ class LabelLineEdit(QLineEdit):
     def onTextChanged(self):
         self.textChangedSinceFocus = True  # Set flag when text changes
 
-    def eventFilter(self, obj, event):
-        if obj == self:
-            if event.type() == QKeyEvent.Type.FocusIn:
+    def eventFilter(self, a0: Optional[QObject], a1: Optional[QEvent]) -> bool:
+        if not a1:
+            return False
+        if a0 == self:
+            if a1.type() == QKeyEvent.Type.FocusIn:
                 self.originalText = self.text()  # Store text when focused
                 self.textChangedSinceFocus = False  # Reset change flag
-            elif event.type() == QKeyEvent.Type.FocusOut:
+            elif a1.type() == QKeyEvent.Type.FocusOut:
                 if self.textChangedSinceFocus:
                     self.signal_textEditedAndFocusLost.emit()  # Emit signal if text was edited
                 self.textChangedSinceFocus = False  # Reset change flag
-        return super().eventFilter(obj, event)
+        return super().eventFilter(a0, a1)
 
-    def keyPressEvent(self, event: QKeyEvent | None):
-        if not event:
-            super().keyPressEvent(event)
+    def keyPressEvent(self, a0: QKeyEvent | None):
+        if not a0:
+            super().keyPressEvent(a0)
             return
 
-        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+        if a0.key() == Qt.Key.Key_Return or a0.key() == Qt.Key.Key_Enter:
             self.signal_enterPressed.emit()  # Emit Enter pressed signal
-        elif event.key() == Qt.Key.Key_Escape:
+        elif a0.key() == Qt.Key.Key_Escape:
             self.setText(self.originalText)  # Reset text on ESC
-        elif self._model.stringList() and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+        elif self._model.stringList() and a0.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
             popup = self._completer.popup()
             if popup and not popup.isVisible():
                 self._completer.complete()
         else:
-            super().keyPressEvent(event)
+            super().keyPressEvent(a0)
 
 
 class LabelAndCategoryEdit(QWidget):

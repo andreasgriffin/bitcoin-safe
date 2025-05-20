@@ -140,6 +140,8 @@ class UTXOList(MyTreeView):
         Columns.STATUS: 15,
         Columns.ADDRESS: 100,
         Columns.AMOUNT: 100,
+        Columns.WALLET_ID: 100,
+        Columns.OUTPOINT: 100,
     }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
@@ -536,6 +538,6 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             logger.debug(f"{self.__class__.__name__}: {e}")
             self.uxto_selected_label.setText(f"")
 
-    def create_toolbar_with_menu(self, title):
+    def create_toolbar_with_menu(self, title: str) -> None:
         super().create_toolbar_with_menu(title=title)
         self.uxto_selected_label = self.balance_label

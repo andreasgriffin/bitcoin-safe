@@ -147,7 +147,7 @@ class SignalFunction(Generic[T]):
                 if allow_list and key not in allow_list:
                     continue
 
-                name = f"{slot.__self__.__class__.__name__}." if hasattr(slot, "__self__") else ""
+                name = f"{slot.__self__.__class__.__name__}." if hasattr(slot, "__self__") else ""  # type: ignore
                 name += f"{slot.__name__}{args, kwargs}"
                 name += f" with key={key}" if key else ""
                 try:

@@ -28,7 +28,7 @@
 
 
 from bitcoin_safe.logging_setup import setup_logging
-from tests.gui.qt.test_helpers import test_start_time  # type: ignore
+from tests.gui.qt.helpers import mytest_start_time  # type: ignore
 
 setup_logging()
 

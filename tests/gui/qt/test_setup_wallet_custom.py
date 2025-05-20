@@ -81,6 +81,7 @@ def test_custom_wallet_setup_custom_single_sig(
         QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
+        QApplication.processEvents()
         shutter.save(main_window)
 
         button = main_window.welcome_screen.pushButton_custom_wallet

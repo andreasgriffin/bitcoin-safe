@@ -87,9 +87,9 @@ class DescriptorExport(QDialog):
         self._layout = QVBoxLayout(self)
         self._layout.addWidget(self.export_widget)
 
-    def closeEvent(self, event: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
 
 class DescriptorInputField(AnalyzerTextEdit):

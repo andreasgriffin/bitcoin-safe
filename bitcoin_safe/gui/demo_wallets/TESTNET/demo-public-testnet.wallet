@@ -22,7 +22,7 @@
         "auto_opportunistic_coin_select": true,
         "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
         "gap": 20,
-        "id": "demo-public",
+        "id": "demo-public-testnet",
         "keystores": [
             {
                 "VERSION": "0.0.2",

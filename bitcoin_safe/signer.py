@@ -188,7 +188,9 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         for software_signer in self.software_signers:
-            psbt = software_signer.sign_psbt(psbt)
+            new_psbt = software_signer.sign_psbt(psbt)
+            if new_psbt:
+                psbt = new_psbt
 
         if not self.txids_match(original_psbt, psbt):
             Message(self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"))

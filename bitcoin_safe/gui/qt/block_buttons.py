@@ -84,9 +84,9 @@ class BaseBlockLabel(QLabel):
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setHidden(not text)
 
-    def setText(self, s: str | None) -> None:
-        self.setHidden(not s)
-        return super().setText(s)
+    def setText(self, a0: str | None) -> None:
+        self.setHidden(not a0)
+        return super().setText(a0)
 
 
 class LabelTitle(BaseBlockLabel):
@@ -178,7 +178,7 @@ class ButtonExplorerIcon(AspectRatioSvgWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(
             svg_content=svg_tools.get_svg_content(
-                "block-explorer.svg", auto_theme=False, replace_tuples=[("currentColor", "#ffffff")]
+                "block-explorer.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
             ),
             max_height=20,
             max_width=20,

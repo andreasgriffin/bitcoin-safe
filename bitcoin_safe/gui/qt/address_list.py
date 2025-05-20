@@ -247,7 +247,11 @@ class AddressList(MyTreeView):
 
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
-    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.ADDRESS: 150, Columns.COIN_BALANCE: 100}
+    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
+        Columns.ADDRESS: 150,
+        Columns.COIN_BALANCE: 120,
+        Columns.FIAT_BALANCE: 110,
+    }
 
     def __init__(
         self,
@@ -298,15 +302,15 @@ class AddressList(MyTreeView):
     def updateUi(self) -> None:
         self.update_content()
 
-    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:
-        super().dragEnterEvent(event)
-        if not event or event.isAccepted():
+    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
+        super().dragEnterEvent(e)
+        if not e or e.isAccepted():
             return
 
-        if (mime_data := event.mimeData()) and self.get_json_mime_data(mime_data) is not None:
-            event.acceptProposedAction()
+        if (mime_data := e.mimeData()) and self.get_json_mime_data(mime_data) is not None:
+            e.acceptProposedAction()
         else:
-            event.ignore()
+            e.ignore()
 
     def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
         super().dragMoveEvent(event)
@@ -559,11 +563,6 @@ class AddressList(MyTreeView):
             if dollar_amount is not None
             else ""
         )
-        fiat_balance_data = (
-            self.fx.format_dollar(dollar_amount, prepend_dollar_sign=False)
-            if dollar_amount is not None
-            else ""
-        )
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
         if needs_frequent_flag(status=min_status):
@@ -582,7 +581,8 @@ class AddressList(MyTreeView):
         item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
         item[self.Columns.FIAT_BALANCE].setForeground(QBrush(color))
-        item[self.Columns.FIAT_BALANCE].setData(fiat_balance_data, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_SORT_ORDER)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)

@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Optional, Tuple
+from typing import Optional, Tuple, cast
 
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import (
@@ -408,11 +408,12 @@ class DescriptorUI(QWidget):
         # }
         # """)
         self.horizontalLayout_4 = QVBoxLayout(self.groupBox_wallet_descriptor)
+        language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
             signals_min=self.signals_min,
             wallet=self.wallet,
-            signal_update=self.signals_min.language_switch,
+            signal_update=language_switch,
             threading_parent=threading_parent,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

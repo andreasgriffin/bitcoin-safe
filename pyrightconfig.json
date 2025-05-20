@@ -1,0 +1,10 @@
+{
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Linux",
+  "venvPath": "./",  // Parent of `.venv`
+  "venv": ".venv",
+  "include": ["bitcoin_safe"],
+  "exclude": ["build", "dist", ".venv"],
+  "reportMissingImports": true,
+  "pythonVersion": "3.10"
+}

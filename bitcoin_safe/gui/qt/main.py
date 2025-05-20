@@ -35,7 +35,7 @@ import sys
 from functools import partial
 from pathlib import Path
 from types import FrameType
-from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -43,7 +43,15 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_tools.util import rel_home_path_to_abs_path
 from bitcoin_usb.tool_gui import ToolGui
-from PyQt6.QtCore import QCoreApplication, QPoint, QProcess, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import (
+    QCoreApplication,
+    QPoint,
+    QProcess,
+    QSettings,
+    Qt,
+    QTimer,
+    pyqtSignal,
+)
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QDialog,
@@ -85,7 +93,7 @@ from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import ThreadingManager
-from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util_os import xdg_open_file
 
 from ...config import UserConfig
@@ -132,6 +140,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.open_files_at_startup = open_files_at_startup if open_files_at_startup else []
         config_present = UserConfig.exists() or config
+        if config:
+            logger.debug(f"MainWindow was started with config  argument")
+        elif UserConfig.exists():
+            logger.debug(f"UserConfig file {UserConfig.config_file} exists and will be loaded from there")
+        else:
+            logger.debug(f"UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
         self.new_startup_network: bdk.Network | None = None
@@ -139,7 +153,6 @@ class MainWindow(QMainWindow):
         # to the mainwindow to avoid memory issues
         # however I need to clear them again with signal_remove_attached_widget
         self.attached_widgets = AttachedWidgets(maxlen=10000)
-        self.setMinimumSize(600, 600)
         self.log_color_palette()
 
         self.signals = Signals()
@@ -153,7 +166,8 @@ class MainWindow(QMainWindow):
                 else None
             ),
         )
-        self.language_chooser = LanguageChooser(self, self.config, [self.signals.language_switch])
+        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
+        self.language_chooser = LanguageChooser(self, self.config, [language_switch])
         if not config_present:
             os_language_code = self.language_chooser.get_os_language_code()
             self.config.language_code = (
@@ -301,15 +315,20 @@ class MainWindow(QMainWindow):
 
     def setupUi(self) -> None:
         logger.debug(f"start setupUi")
-        # sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        # sizePolicy.setHorizontalStretch(0)
-        # sizePolicy.setVerticalStretch(0)
-        # sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
-        # MainWindow.setSizePolicy(sizePolicy)
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         w, h = 900, 600
-        self.resize(w, h)
         self.setMinimumSize(w, h)
+
+        # 1) Configure QSettings to use your app’s name/org
+        QCoreApplication.setOrganizationName("Bitcoin Safe")
+        QCoreApplication.setApplicationName("Bitcoin Safe")
+        self.settings = QSettings()
+
+        # 2) Restore geometry (size+pos) if we saved it before
+        if self.settings.contains("window/geometry"):
+            self.restoreGeometry(self.settings.value("window/geometry"))
+        if self.settings.contains("window/state"):
+            self.restoreState(self.settings.value("window/state"))
 
         #####
         self.tab_wallets = ExtendedTabWidget[object](
@@ -545,8 +564,8 @@ class MainWindow(QMainWindow):
     def close_current_tab(self):
         self.close_tab(self.tab_wallets.currentIndex())
 
-    def showEvent(self, event) -> None:
-        super().showEvent(event)
+    def showEvent(self, a0) -> None:
+        super().showEvent(a0)
         # self.updateUI()
 
     def on_signal_tab_bar_visibility(self, value: bool):
@@ -600,6 +619,8 @@ class MainWindow(QMainWindow):
         self.menu_knowledge.setTitle(self.tr("&Documentation"))
         self.action_knowledge_website.setText(self.tr("&Knowledge"))
 
+        self.notification_bar_testnet.updateUi()
+        self.update_notification_bar.updateUi()
         # the search fields
         # for qt_wallet in self.qt_wallets.values():
         if self.tab_wallets.top_right_widget:
@@ -1526,9 +1547,10 @@ class MainWindow(QMainWindow):
         # qt_wallet.tabs.set_top_right_widget(search_box)
 
         qt_wallet.wizard.set_visibilities()
-        self.language_chooser.add_signal_language_switch(
-            self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
+        language_switch = cast(
+            TypedPyQtSignalNo, self.signals.wallet_signals[qt_wallet.wallet.id].language_switch
         )
+        self.language_chooser.add_signal_language_switch(language_switch)
         self.signals.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
         self.signals.event_wallet_tab_added.emit()
 
@@ -1700,7 +1722,7 @@ class MainWindow(QMainWindow):
         if qt_wallet:
             qt_wallet.sync()
 
-    def closeEvent(self, event: Optional[QCloseEvent]) -> None:
+    def closeEvent(self, a0: Optional[QCloseEvent]) -> None:
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
@@ -1719,8 +1741,13 @@ class MainWindow(QMainWindow):
         SignalTools.disconnect_all_signals_from(self.signals)
         SignalTools.disconnect_all_signals_from(self)
         self.tray.hide()
+
+        # 3) On close, save both geometry and (optionally) window state
+        self.settings.setValue("window/geometry", self.saveGeometry())
+        self.settings.setValue("window/state", self.saveState())
+
         logger.info(f"Finished close handling of {self.__class__.__name__}")
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
     def restart(self, new_startup_network: bdk.Network | None = None) -> None:
         """

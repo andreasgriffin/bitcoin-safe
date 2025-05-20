@@ -27,9 +27,9 @@
 # SOFTWARE.
 
 import logging
-from typing import Callable
+from typing import Callable, Optional
 
-from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent, QResizeEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -61,14 +61,14 @@ class ExtendedTabWidget(DataTabWidget[T]):
         self.tabCloseRequested.connect(self.updateLineEditPosition)
         self.currentChanged.connect(self.updateLineEditPosition)
 
-    def eventFilter(self, obj, event) -> bool:
-        if obj == self.tabBar() and event.type() == event.Type.Show:
+    def eventFilter(self, a0: Optional[QObject], a1: Optional[QEvent]) -> bool:
+        if a0 == self.tabBar() and a1 and a1.type() == a1.Type.Show:
             if self.top_right_widget:
                 self.signal_tab_bar_visibility.emit(True)
-        elif obj == self.tabBar() and event.type() == event.Type.Hide:
+        elif a0 == self.tabBar() and a1 and a1.type() == a1.Type.Hide:
             if self.top_right_widget:
                 self.signal_tab_bar_visibility.emit(False)
-        return super().eventFilter(obj, event)
+        return super().eventFilter(a0, a1)
 
     def set_top_right_widget(self, top_right_widget: QWidget | None = None, target_width=150) -> None:
         self.top_right_widget = top_right_widget
@@ -101,21 +101,21 @@ class ExtendedTabWidget(DataTabWidget[T]):
             )
             self.top_right_widget.setFixedWidth(line_width)  # Ensure fixed width is maintained
 
-    def resizeEvent(self, event: QResizeEvent | None) -> None:
+    def resizeEvent(self, a0: Optional[QResizeEvent]) -> None:
         self.updateLineEditPosition()
-        super().resizeEvent(event)
+        super().resizeEvent(a0)
 
-    def mousePressEvent(self, event: QMouseEvent | None):
-        super().mousePressEvent(event)
+    def mousePressEvent(self, a0: QMouseEvent | None):
+        super().mousePressEvent(a0)
 
-        if not event:
+        if not a0:
             return
-        if event.button() == Qt.MouseButton.RightButton:
+        if a0.button() == Qt.MouseButton.RightButton:
             # Get the index of the tab under the cursor
             if tab_bar := self.tabBar():
-                index = tab_bar.tabAt(event.pos())
+                index = tab_bar.tabAt(a0.pos())
                 if index != -1:
-                    self.showContextMenu(event.globalPosition().toPoint(), index)
+                    self.showContextMenu(a0.globalPosition().toPoint(), index)
 
     def showContextMenu(self, position: QPoint, index: int) -> None:
         if self.show_ContextMenu:

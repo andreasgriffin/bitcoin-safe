@@ -40,7 +40,6 @@ from bitcoin_tools.gui.qt.satoshis import Satoshis
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -839,7 +838,7 @@ class BackupSeed(BaseTab):
 
         buttonbox = QDialogButtonBox()
         self.custom_yes_button = QPushButton()
-        self.custom_yes_button.setIcon(QIcon(get_icon_path("print.svg")))
+        self.custom_yes_button.setIcon(svg_tools.get_QIcon("print.svg"))
         self.custom_yes_button.clicked.connect(self._do_pdf)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
@@ -1338,7 +1337,7 @@ class LabelBackup(BaseTab):
 
         # right_widget_layout.addItem(QSpacerItem(1, 40))
 
-        self.button_next.setIcon(QIcon(get_icon_path("checkmark.svg")))
+        self.button_next.setIcon(svg_tools.get_QIcon("checkmark.svg"))
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
@@ -1854,7 +1853,7 @@ class Wizard(WizardBase):
             g.setParent(None)
         self.tab_generators.clear()
 
-    def close(self):
+    def close(self) -> bool:
         self.clear_widgets()
         self.qtwalletbase.outer_layout.removeWidget(self.floating_button_box)
         self.qtwalletbase.outer_layout.removeWidget(self)
@@ -1863,4 +1862,4 @@ class Wizard(WizardBase):
         self.widgets.clear()
         self._clear_tab_generators()
         self.setParent(None)
-        super().close()
+        return super().close()
