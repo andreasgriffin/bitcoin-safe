@@ -249,7 +249,7 @@ class Builder:
             f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/wine64/drive_c/bitcoin_safe '
             f"--rm "
             f"--workdir /opt/wine64/drive_c/bitcoin_safe/{build_folder} "
-            f"  -it   {docker_image} "
+            f"  -i   {docker_image} "
             f"./run_in_docker.sh"
         )
 
