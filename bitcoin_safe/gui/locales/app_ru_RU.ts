@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>Выберите доверенные компьютеры на вкладке Синхронизация &amp; Чат на каждом компьютере.  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>Смотреть видео  </translation>
+        <source>Synchronization video</source>
+        <translation>Видео синхронизации</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>Видео сотрудничества</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1575,6 +1579,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>Закрыть уведомление</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1664,12 +1675,12 @@ Do you want to proceed anyway?</source>
         <translation>Отправить</translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
+        <source>Backup saved to {filename}</source>
+        <translation>Резервная копия сохранена в {filename}</translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1829,8 +1840,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Нет изменений для применения.</translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>Резервная копия сохранена в {filename}</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
     </message>
 </context>
 <context>
@@ -2301,8 +2312,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Подписать сообщение  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>Вставьте ваш дескриптор для подписи  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>Вставьте ваш дескриптор адреса, например wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3015,13 +3026,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>Отпечатки пальцев различаются. Поддерживаются только одинаковые отпечатки, что гарантирует, что все производные ключи принадлежат одному подписанту!  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>libsecp256k1 не найдена. Пожалуйста, установите libsecp256k1 в вашей операционной системе.  </translation>
     </message>
 </context>
 <context>

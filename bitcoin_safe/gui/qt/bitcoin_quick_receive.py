@@ -71,7 +71,7 @@ class BitcoinQuickReceive(
     def refresh_all(self):
         self.update_content(UpdateFilter(refresh_all=True))
 
-    def set_address(self, category: str, address_info: bdk.AddressInfo):
+    def set_address(self, category: str, address_info: bdk.AddressInfo) -> ReceiveGroup:
         receive_group = ReceiveGroup(
             category,
             category_color(category).name(),
@@ -81,6 +81,7 @@ class BitcoinQuickReceive(
         )
         receive_group.signal_set_address_as_used.connect(self.on_signal_set_address_as_used)
         self.add_box(receive_group)
+        return receive_group
 
     def on_signal_set_address_as_used(self, address_info: AddressInfoMin):
         self.wallet.bdkwallet.mark_used(keychain=address_info.keychain, index=address_info.index)
@@ -118,6 +119,7 @@ class BitcoinQuickReceive(
         if self.maybe_defer_update():
             return
 
+        # decide whether to update
         should_update = False
         if (
             should_update
@@ -137,12 +139,18 @@ class BitcoinQuickReceive(
         logger.debug(f"{self.__class__.__name__} update_with_filter")
         super().update()
 
-        self.clear_boxes()
+        # reset title & snapshot old tips
         self.label_title.setText(self.tr("Quick Receive"))
         old_tips = self.wallet.tips
 
+        # 1) grab old boxes and clear the list
+        old_boxes: List[ReceiveGroup] = list(self.group_boxes)
+        self.group_boxes.clear()
+
         updated_addressed = set()
         updated_categories = set()
+
+        # 2) build & add all new boxes via your helpers
         for category in self.wallet.labels.categories:
             if self.limit_to_categories and category not in self.limit_to_categories:
                 continue
@@ -150,16 +158,25 @@ class BitcoinQuickReceive(
             address_info = self.wallet.get_unused_category_address(category)
             updated_addressed.add(str(address_info.address))
             updated_categories.add(category)
+
+            # this calls add_box() under the hood
             self.set_address(category, address_info)
 
+        # fallback if no categories
         if not self.wallet.labels.categories:
             address_info = self.wallet.get_unused_category_address(None)
-            address = str(address_info.address)
-            category = self.wallet.labels.get_category(address)
-            self.set_address(category, address_info)
-            updated_addressed.add(address)
+            addr_str = str(address_info.address)
+            category = self.wallet.labels.get_category(addr_str)
+            updated_addressed.add(addr_str)
             updated_categories.add(category)
 
+            self.set_address(category, address_info)
+
+        # 3) now remove the old widgets
+        for old_box in old_boxes:
+            self.remove_box(old_box)
+
+        # 4) emit a follow-up if tips changed
         if old_tips != self.wallet.tips:
             self.wallet_signals.updated.emit(
                 UpdateFilter(

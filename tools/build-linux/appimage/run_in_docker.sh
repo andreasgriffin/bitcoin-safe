@@ -21,8 +21,8 @@ git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clo
 export GCC_STRIP_BINARIES="1"
 
 # pinned versions
-PYTHON_VERSION=3.10.12
-PY_VER_MAJOR="3.10"  # as it appears in fs paths
+PYTHON_VERSION=3.12.3
+PY_VER_MAJOR="3.12"  # as it appears in fs paths
 PKG2APPIMAGE_COMMIT="a9c85b7e61a3a883f4a35c41c5decb5af88b6b5d"
 
 VERSION=$(git describe --tags --dirty --always)
@@ -44,7 +44,7 @@ download_if_not_exist "$BUILD_CACHEDIR/appimagetool" "https://github.com/AppImag
 verify_hash "$BUILD_CACHEDIR/appimagetool" "df3baf5ca5facbecfc2f3fa6713c29ab9cefa8fd8c1eac5d283b79cab33e4acb"
 
 download_if_not_exist "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz"
-verify_hash "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "afb74bf19130e7a47d10312c8f5e784f24e0527981eab68e20546cfb865830b8"
+verify_hash "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "56bfef1fdfc1221ce6720e43a661e3eb41785dd914ce99698d8c7896af4bdaa1"
 
 
 
@@ -58,8 +58,8 @@ tar xf "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" -C "$BUILD_CACHEDIR"
     cd "$BUILD_CACHEDIR/Python-$PYTHON_VERSION"
     LC_ALL=C export BUILD_DATE=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%b %d %Y")
     LC_ALL=C export BUILD_TIME=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%H:%M:%S")
-    # Patch taken from Ubuntu http://archive.ubuntu.com/ubuntu/pool/main/p/python3.10/python3.10_3.10.12-1~22.04.6.debian.tar.xz
-    patch -p1 < "$CONTRIB_APPIMAGE/patches/python-3.10-reproducible-buildinfo.diff"
+    # Patch taken from Ubuntu http://archive.ubuntu.com/ubuntu/pool/main/p/python3.12/python3.12_3.12.3-1.debian.tar.xz
+    patch -p1 < "$CONTRIB_APPIMAGE/patches/python-3.12-reproducible-buildinfo.diff"
     ./configure \
         --cache-file="$BUILD_CACHEDIR/python.config.cache" \
         --prefix="$APPDIR/usr" \
@@ -136,9 +136,6 @@ info "copying zbar"
 mkdir -p "$APPDIR/usr/lib/"
 cp /usr/lib/x86_64-linux-gnu/libzbar* "$APPDIR/usr/lib/"
 cp /usr/lib/x86_64-linux-gnu/libzbar.so.0 "$APPDIR/usr/lib/libzbar.so"  # otherwise it is not detected
-
-info "copying libsecp256k1"
-cp -f /usr/lib/x86_64-linux-gnu/libsecp256k1.so* "$APPDIR/usr/lib/" || fail "Could not copy libsecp to its destination"
 
 
 info "desktop integration."

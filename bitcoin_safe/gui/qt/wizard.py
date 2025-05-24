@@ -468,6 +468,8 @@ class StickerTheHardware(BaseTab):
                 parent=widget,
                 sticker=True,
                 replace_tuples=[("Label", self.refs.qtwalletbase.get_editable_protowallet().sticker_name(i))],
+                size_hint_height=200,
+                size_hint_width=200,
             )
             for i in range(self.num_keystores())
         ]
@@ -1317,7 +1319,11 @@ class LabelBackup(BaseTab):
         left_widget_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         widget_layout.addWidget(left_widget)
 
-        self.icon = AspectRatioSvgWidget(svg_tools.get_svg_content("bi--cloud-slash.svg"), 300, 300)
+        self.icon = AspectRatioSvgWidget(
+            svg_content=svg_tools.get_svg_content("bi--cloud-slash.svg"), size_hint_height=300
+        )
+        self.icon.setMaximumWidth(300)
+        self.icon.setMaximumHeight(300)
         left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
 
         left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
@@ -1369,7 +1375,7 @@ class LabelBackup(BaseTab):
     </ul>   
 <li>{self.tr('Multi-computer synchronization and chat')}</li> 
     <ul>
-    <li>{self.tr('Choose trusted computers in Sync & Chat tab on each computer.') + ' '+  link('https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#psbt-sharing-with-trusted-devices', self.tr('See video'))   }</li> 
+    <li>{self.tr('Choose trusted computers in Sync & Chat tab on each computer.') + ' '+  link('https://bitcoin-safe.org/en/features/label-sync/', self.tr('Synchronization video')) + ',  '+  link('https://bitcoin-safe.org/en/features/collaboration/', self.tr('Collaboration video'))    }</li> 
     </ul>
 </ul>   
  """,
@@ -1447,21 +1453,14 @@ class SendTest(BaseTab):
         inner_widget = QWidget()
         inner_widget_layout = QVBoxLayout(inner_widget)
         self.label = QLabel()
-        if self.num_keystores() == 1:
-
-            inner_widget_layout.addWidget(self.label)
-
-        else:
-
-            self.label = QLabel(html_f(self.tx_text, add_html_and_body=True, p=True, size=12))
-            inner_widget_layout.addWidget(self.label)
+        inner_widget_layout.addWidget(self.label)
 
         widget_layout.addWidget(inner_widget)
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.setMinimumHeight(30)
+        tutorial_widget.setMinimumHeight(50)  # otherwise self.label isnt visible
 
         tutorial_widget.set_callback(self._callback)
         tutorial_widget.synchronize_visiblity(
@@ -1486,14 +1485,18 @@ class SendTest(BaseTab):
     def updateUi(self) -> None:
         super().updateUi()
 
-        self.label.setText(
-            html_f(
+        if self.num_keystores() == 1:
+            text = html_f(
                 self.tr("Complete the send test to ensure the hardware signer works!"),
                 add_html_and_body=True,
                 p=True,
                 size=12,
             )
-        )
+        else:
+
+            text = html_f(self.tx_text, add_html_and_body=True, p=True, size=12)
+
+        self.label.setText(text)
 
 
 class Wizard(WizardBase):

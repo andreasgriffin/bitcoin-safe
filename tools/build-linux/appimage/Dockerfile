@@ -19,7 +19,7 @@ RUN apt-get update -q  && \
     apt-get install -qy   \
         sudo \
         git \
-        wget \
+        wget 
         # libtool \
         # autopoint \
         # pkg-config \
@@ -60,8 +60,7 @@ RUN apt-get update -q  && \
         # libx11-xcb1 \
         # libc6-dev \
         # libc6 \
-        # libc-dev-bin \
-        libsecp256k1-0  
+        # libc-dev-bin  
 
 
 # for building python
@@ -85,8 +84,7 @@ RUN apt-get update -q  && \
 # app runtime dependencies
 RUN apt-get update -q  && \
     apt-get install -qy  \ 
-        libzbar0 \
-        libsecp256k1-0  
+        libzbar0  
         
 # other needed for systems that lack libxcb  by default (linux Mint)
 RUN apt-get update -q  && \

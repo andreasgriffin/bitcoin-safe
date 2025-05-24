@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>Choisissez des ordinateurs de confiance dans l&apos;onglet Sync &amp; Chat sur chaque ordinateur.  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>Voir la vidéo  </translation>
+        <source>Synchronization video</source>
+        <translation>Vidéo de synchronisation</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>Vidéo de collaboration</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1572,6 +1576,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>Fermer la notification</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1661,12 +1672,12 @@ Do you want to proceed anyway?</source>
         <translation>Envoyer  </translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Échec de la sauvegarde. Annulation des changements.  </translation>
+        <source>Backup saved to {filename}</source>
+        <translation>Sauvegarde enregistrée dans {filename}  </translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>La procédure changera potentiellement toutes les adresses du portefeuille. Voulez-vous continuer ?  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Échec de la sauvegarde. Annulation des changements.  </translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1826,8 +1837,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Aucun changement à appliquer.  </translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>Sauvegarde enregistrée dans {filename}  </translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>La procédure changera potentiellement toutes les adresses du portefeuille. Voulez-vous continuer ?  </translation>
     </message>
 </context>
 <context>
@@ -2298,8 +2309,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Signer le Message  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>Collez votre descripteur à signer  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>Collez votre descripteur d&apos;adresse, par ex. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3012,13 +3023,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>Les empreintes diffèrent. Seules les mêmes empreintes sont prises en charge, garantissant que toutes les clés dérivées appartiennent au même signataire !  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>libsecp256k1 n&apos;a pas pu être trouvé. Veuillez installer libsecp256k1 sur votre OS.  </translation>
     </message>
 </context>
 <context>

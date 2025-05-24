@@ -371,7 +371,7 @@ class KeyStoreUI(QObject):
             Message(str(e), type=MessageType.Error)
 
     def _import_dialog(self):
-        ImportDialog(
+        self._attached_import_dialog = ImportDialog(
             self.network,
             on_open=self._process_input,
             window_title=self.tr("Import fingerprint and xpub"),
@@ -379,7 +379,8 @@ class KeyStoreUI(QObject):
             text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
             text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
-        ).exec()
+        )
+        self._attached_import_dialog.show()
 
     def on_edit_seed_changed(self, text: str):
         try:

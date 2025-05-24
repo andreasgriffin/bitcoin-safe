@@ -50,7 +50,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import enum
 import logging
+from dataclasses import dataclass
+from typing import Any
 
 from .i18n import translate
 
@@ -63,3 +66,36 @@ def signer_name(threshold: int, i: int) -> str:
         return translate("d", "Signer {i}").format(i=i)
     else:
         return translate("d", "Recovery Signer {i}").format(i=i)
+
+
+class WalletDifferenceType(enum.Enum):
+    # must be sorted by severity
+    NoImpactOnAddresses = 1
+    ImpactOnAddresses = 100
+
+
+@dataclass
+class WalletDifference:
+    type: WalletDifferenceType
+    key: str
+    this_value: Any
+    other_value: Any
+
+
+@dataclass
+class WalletDifferences(list[WalletDifference]):
+
+    def has_impact_on_addresses(self) -> bool:
+        worst = self.worst()
+        if not worst:
+            return False
+        return worst.type == WalletDifferenceType.ImpactOnAddresses
+
+    def worst(self) -> WalletDifference | None:
+        if not self:
+            return None
+
+        def key(d: WalletDifference):
+            return d.type.value
+
+        return sorted(self, key=key, reverse=True)[0]

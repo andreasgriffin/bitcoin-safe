@@ -5,8 +5,8 @@ set -e
 # ======================
 # Parameters
 # ======================
-PYTHON_VERSION=3.10.11
-PY_VER_MAJOR="3.10"  # as it appears in fs paths
+PYTHON_VERSION=3.12.3
+PY_VER_MAJOR="3.12"  # as it appears in fs paths
 EXECUTABLE_NAME="run_Bitcoin_Safe"
 PACKAGE_NAME='Bitcoin_Safe.app'
 PACKAGE=Bitcoin_Safe
@@ -52,7 +52,7 @@ PKG_FILE="python-${PYTHON_VERSION}-macos11.pkg"
 if [ ! -f "$CACHEDIR/$PKG_FILE" ]; then
     curl -o "$CACHEDIR/$PKG_FILE" "https://www.python.org/ftp/python/${PYTHON_VERSION}/$PKG_FILE"
 fi
-echo "767ed35ad688d28ea4494081ae96408a0318d0d5bb9ca0139d74d6247b231cfc  $CACHEDIR/$PKG_FILE" | shasum -a 256 -c \
+echo "70a701542ff297760ac5e20f81d0e610aaaa1aba016e411788aa80029e571c5e  $CACHEDIR/$PKG_FILE" | shasum -a 256 -c \
     || fail "python pkg checksum mismatched"
 sudo installer -pkg "$CACHEDIR/$PKG_FILE" -target / \
     || fail "failed to install python"
@@ -136,7 +136,7 @@ export ARCHFLAGS="-arch $arch"
 
 info "Building PyInstaller"
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ~ v6.11.1
+PYINSTALLER_COMMIT="306d4d92580fea7be7ff2c89ba112cdc6f73fac1" # ~ v6.13.0
 
 (
     if [ -f "$CACHEDIR/pyinstaller/PyInstaller/bootloader/Darwin-64bit/runw" ]; then
@@ -175,17 +175,9 @@ pyinstaller --version
 
 
 # ======================
-# Build .dylibs (libsecp256k1, zbar, libusb)
+# Build .dylibs (zbar, libusb)
 # ======================
 git submodule update --init
-
-if [ ! -f "$DLL_TARGET_DIR/libsecp256k1.2.dylib" ]; then
-    info "Building libsecp256k1 dylib..."
-    "$CONTRIB"/make_libsecp256k1.sh || fail "Could not build libsecp"
-else
-    info "Skipping libsecp256k1 build: reusing already built dylib."
-fi
-cp -f "$DLL_TARGET_DIR"/libsecp256k1.*.dylib "$PROJECT_ROOT/bitcoin_safe" || fail "copying libsecp256k1 failed"
 
 if [ ! -f "$DLL_TARGET_DIR/libzbar.0.dylib" ]; then
     info "Building ZBar dylib..."

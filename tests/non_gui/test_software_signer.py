@@ -32,7 +32,6 @@ import logging
 import bdkpython as bdk
 from bitcoin_usb.software_signer import SoftwareSigner
 
-from bitcoin_safe.wallet import Wallet
 from tests.util import make_psbt
 
 from ..setup_fulcrum import Faucet
@@ -43,7 +42,7 @@ import logging
 
 def test_compare_software_signer_to_bdk(
     faucet: Faucet,
-) -> Wallet:
+):
     wallet = faucet.bdk_wallet
 
     psbt = make_psbt(
@@ -70,4 +69,3 @@ def test_compare_software_signer_to_bdk(
     tx = psbt.extract_tx().serialize()
 
     assert software_tx == tx
-    return wallet

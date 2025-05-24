@@ -31,84 +31,8 @@ import logging
 import os
 import platform
 import sys
-from ctypes.util import find_library
-from pathlib import Path
-
-from .i18n import translate
 
 logger = logging.getLogger(__name__)
-
-
-def get_libsecp256k1_os_path() -> str | None:
-    "This cannot be used directly, because it doesnt return an absolute path"
-    lib_name = "secp256k1"
-    return find_library(lib_name)
-
-
-def get_packaged_libsecp256k1_path() -> str | None:
-    if platform.system() == "Linux":
-        # for apppimage it is
-        # __file__ = squashfs-root/usr/lib/python3.10/site-packages/bitcoin_safe/dynamic_lib_load.py
-        # and the lib is in
-        # squashfs-root/usr/lib/libsecp256k1.so.0.0.0
-
-        for name in ["libsecp256k1.so.0.0.0", "libsecp256k1.so.0"]:
-            lib_path = Path(__file__).parent.parent.parent.parent / name
-            logger.debug(f"Searching for {name} in {lib_path.absolute()}")
-            if lib_path.exists():
-                return str(lib_path)
-
-    elif platform.system() == "Windows":
-        # for exe the dlls are packages in the same folder as dynamic_lib_load.py
-        # packaged in setup:  __file__ = C:/Program Files/Bitcoin Safe/_internals/bitcoin_safe/dynamic_lib_load.pyc
-        # the dll is in: C:/Program Files/Bitcoin Safe/_internals/libsecp256k1-2.dll
-        for name in ["libsecp256k1-2.dll"]:
-            # logger.info(f"file in  {Path(__file__).absolute()}")
-            lib_path = Path(__file__).parent.parent / name
-            logger.info(f"Searching for {name} in {lib_path.absolute()}")
-            if lib_path.exists():
-                return str(lib_path)
-
-    elif platform.system() == "Darwin":
-        # for exe the dlls are packages in the same folder as dynamic_lib_load.py
-        # packaged in setup:  __file__ = bitcoin_safe/dynamic_lib_load.pyc
-        # the dll is in: C:/Program Files/Bitcoin Safe/_internals/libsecp256k1.2.dylib
-        for name in ["libsecp256k1.2.dylib"]:
-            # logger.info(f"file in  {Path(__file__).absolute()}")
-            lib_path = Path(__file__).parent.parent / name
-            logger.info(f"Searching for {name} in {lib_path.absolute()}")
-            if lib_path.exists():
-                return str(lib_path)
-
-    return None
-
-
-def setup_libsecp256k1() -> None:
-    """
-    The packaged versions com with libsecp256k1
-
-    Only if you install it via pip/git, libsecp256k1 is required to be on the system
-    """
-
-    lib_path = None
-
-    # 1 choice is the packaged version
-    packaged_libsecp256k1_path = get_packaged_libsecp256k1_path()
-    if packaged_libsecp256k1_path:
-        logger.info(f"libsecp256k1 found in package.: {packaged_libsecp256k1_path}")
-        lib_path = packaged_libsecp256k1_path
-
-    if lib_path:
-        logger.info(f"Setting libsecp256k1: {lib_path}")
-    elif get_libsecp256k1_os_path():
-        logger.info(translate("setup_libsecp256k1", f"libsecp256k1 was found in the OS"))
-    else:
-        msg = translate(
-            "dynamic_lib_load", "libsecp256k1 could not be found. Please install libsecp256k1 in your OS."
-        )
-        logger.warning(msg)
-        # cannot show a gui message here, because otherwise
-        # pyinstaller (which goes through all module inits)  halts
 
 
 def ensure_pyzbar_works() -> None:

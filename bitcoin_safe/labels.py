@@ -427,7 +427,9 @@ class Labels(BaseSaveableClass):
     def rename_category(self, old_category: str, new_category: str) -> List[str]:
         affected_keys: List[str] = []
         for key, item in list(self.data.items()):
-            if item.category and item.category == old_category:
+            if (item.category and item.category == old_category) or (
+                not item.category and old_category == self.default_category
+            ):
                 item.category = new_category
                 item.timestamp = datetime.now().timestamp()
                 affected_keys.append(key)

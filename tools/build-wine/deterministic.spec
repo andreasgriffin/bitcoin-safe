@@ -28,7 +28,7 @@ binaries = []
 binaries += [b for b in collect_dynamic_libs('PyQt6') if 'qwindowsvista' in b[0]]
 for package_with_dlls in packages_with_dlls:
     binaries += collect_dynamic_libs(package_with_dlls)
-# add libsecp256k1, libusb, etc:
+# add libusb, etc:
 binaries += [(f"{PROJECT_ROOT}/{PYPKG}/*.dll", '.')]
 print(f"Included binaries: {binaries}")
 

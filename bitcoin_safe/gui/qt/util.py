@@ -32,7 +32,6 @@ import logging
 import platform
 import sys
 import traceback
-import webbrowser
 from functools import partial
 from typing import Any, Callable, Iterable, List, Literal, Optional, Tuple, Union
 from urllib.parse import urlparse
@@ -44,7 +43,7 @@ from bitcoin_tools.caching import register_cache
 from bitcoin_tools.gui.qt.icons import SvgTools
 from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
 from bitcoin_tools.util import hash_string
-from PyQt6.QtCore import QByteArray, QCoreApplication, QSize, Qt, QTimer, QUrl
+from PyQt6.QtCore import QByteArray, QCoreApplication, QRectF, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -53,10 +52,11 @@ from PyQt6.QtGui import (
     QIcon,
     QImage,
     QPainter,
+    QPaintEvent,
     QPalette,
     QPixmap,
 )
-from PyQt6.QtSvgWidgets import QSvgWidget
+from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import (
     QApplication,
     QBoxLayout,
@@ -265,22 +265,107 @@ def generate_help_message_button(message, title=translate("help", "Help")) -> QP
     return help_button
 
 
-class AspectRatioSvgWidget(QSvgWidget):
-    def __init__(self, svg_content: str, max_width: int, max_height: int, parent=None):
+class AspectRatioSvgWidget(QWidget):
+    """
+    A drop-in widget that displays an SVG while always preserving its aspect
+    ratio.  You can optionally dictate the size-hint’s width or height and the
+    other dimension will be computed from the SVG’s intrinsic aspect ratio.
+
+        widget = AspectRatioSvgWidget(
+            svg_content=raw_svg,
+            size_hint_width=128          # height is auto-calculated
+        )
+    """
+
+    def __init__(
+        self,
+        svg_content: str | None = None,
+        size_hint_width: int | None = None,
+        size_hint_height: int | None = None,
+        parent=None,
+    ):
         super().__init__(parent)
-        self.svg_content = svg_content
-        self._max_width = max_width
-        self._max_height = max_height
-        self.load_svg_content(svg_content=svg_content)
 
-    def load_svg_content(self, svg_content: str):
-        modified_svg_content = QByteArray(svg_content.encode())  # type: ignore[call-overload]
-        super().load(modified_svg_content)
-        self.setFixedSize(self.calculate_proportional_size())
+        # Store caller-desired hint(s); they may be refined once the SVG loads
+        self._requested_hint_w = size_hint_width
+        self._requested_hint_h = size_hint_height
 
-    def calculate_proportional_size(self):
-        qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
-        return qsize
+        self._renderer = QSvgRenderer(parent=self)
+
+        if svg_content:
+            self.setSvgContent(svg_content)
+
+        self.setMinimumSize(10, 10)
+
+    # ------------------------------------------------------------------ API
+
+    def setSvgContent(self, svg_content: str) -> None:
+        """Load an SVG string already in memory."""
+        self._renderer.load(QByteArray(svg_content.encode()))
+        self.updateGeometry()  # sizeHint may have changed
+        self.update()
+
+    def load(self, filepath: str) -> None:
+        """Load an SVG from disk (convenience wrapper)."""
+        self._renderer.load(filepath)
+        self.updateGeometry()
+        self.update()
+
+    # -------------------------------------------------------------- Qt stuff
+
+    def sizeHint(self) -> QSize:
+        """
+        Return the preferred size according to caller input and/or the SVG’s
+        own aspect ratio.  Falls back to the renderer’s default size when no
+        hints were supplied.
+        """
+        if not self._renderer.isValid():
+            # No valid SVG yet – rely on any caller hints or give a stub size
+            if self._requested_hint_w and self._requested_hint_h:
+                return QSize(self._requested_hint_w, self._requested_hint_h)
+            if self._requested_hint_w:
+                return QSize(self._requested_hint_w, self._requested_hint_w)
+            if self._requested_hint_h:
+                return QSize(self._requested_hint_h, self._requested_hint_h)
+            return QSize(100, 100)
+
+        # Renderer knows the intrinsic ViewBox aspect ratio
+        view_box: QRectF = self._renderer.viewBoxF()
+        if view_box.isEmpty():
+            view_box = QRectF(0, 0, 1, 1)
+        vw, vh = view_box.width(), view_box.height()
+        aspect = vw / vh if vh else 1.0
+
+        # Apply caller-requested hint(s) while preserving aspect
+        if self._requested_hint_w and self._requested_hint_h:
+            return QSize(self._requested_hint_w, self._requested_hint_h)
+        elif self._requested_hint_w:
+            return QSize(self._requested_hint_w, int(round(self._requested_hint_w / aspect)))
+        elif self._requested_hint_h:
+            return QSize(int(round(self._requested_hint_h * aspect)), self._requested_hint_h)
+        else:
+            # No override – defer to the SVG’s own default size
+            return self._renderer.defaultSize()
+
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
+        painter = QPainter(self)
+        if not self._renderer.isValid():
+            return
+
+        view_box: QRectF = self._renderer.viewBoxF()
+        if view_box.isEmpty():
+            view_box = QRectF(0, 0, 1, 1)
+
+        w, h = self.width(), self.height()
+        vw, vh = view_box.width(), view_box.height()
+
+        scale = min(w / vw, h / vh)
+        new_w, new_h = vw * scale, vh * scale
+        x = (w - new_w) * 0.5
+        y = (h - new_h) * 0.5
+        target = QRectF(x, y, new_w, new_h)
+
+        self._renderer.render(painter, target)
 
 
 def add_centered_icons(
@@ -289,17 +374,19 @@ def add_centered_icons(
     direction="h",
     alignment: Qt.AlignmentFlag = Qt.AlignmentFlag.AlignCenter,
     max_sizes: Iterable[Tuple[int, int]] = [],
-):
+) -> List[AspectRatioSvgWidget]:
     max_sizes = max_sizes if max_sizes else [(60, 80) for path in paths]
     if len(paths) > 1 and len(max_sizes) == 1:  # type: ignore
         max_sizes = max_sizes * len(paths)  # type: ignore
 
-    svg_widgets = [
-        AspectRatioSvgWidget(
-            svg_content=svg_tools.get_svg_content(path), max_width=max_size[0], max_height=max_size[1]
+    svg_widgets: List[AspectRatioSvgWidget] = []
+    for max_size, path in zip(max_sizes, paths):
+        widget = AspectRatioSvgWidget(
+            svg_content=svg_tools.get_svg_content(path),
         )
-        for max_size, path in zip(max_sizes, paths)
-    ]
+        widget.setMaximumWidth(max_size[0])
+        widget.setMaximumHeight(max_size[1])
+        svg_widgets.append(widget)
 
     widget1 = QWidget()
     parent_layout.addWidget(widget1)
@@ -387,7 +474,7 @@ class Message:
 
     @staticmethod
     def system_tray_icon(
-        icon: Optional[Union[QIcon, QPixmap, QMessageBox.Icon, QSystemTrayIcon.MessageIcon]]
+        icon: Optional[Union[QIcon, QPixmap, QMessageBox.Icon, QSystemTrayIcon.MessageIcon]],
     ) -> Union[QIcon, QSystemTrayIcon.MessageIcon]:
         if isinstance(icon, QIcon):
             return icon
@@ -717,10 +804,6 @@ def font_height() -> int:
     return QFontMetrics(QLabel().font()).height()
 
 
-def webopen(url: str):
-    webbrowser.open(url)
-
-
 def clipboard_contains_address(network: bdk.Network) -> bool:
     clipboard = QApplication.clipboard()
     if not clipboard:
@@ -849,29 +932,23 @@ def svg_widget_hardware_signer(
     sticker=False,
     max_width=200,
     max_height=200,
+    size_hint_width: int | None = None,
+    size_hint_height: int | None = None,
     replace_tuples: List[Tuple[str, str]] | None = None,
 ) -> AspectRatioSvgWidget:
 
     base_hardware_signers = [
         {
             "svg_basename": ("coldcard-sticker.svg"),
-            "max_width": max_width,
-            "max_height": max_height,
         },
         {
             "svg_basename": ("jade-sticker.svg"),
-            "max_width": max_width,
-            "max_height": max_height,
         },
         {
             "svg_basename": ("bitbox02-sticker.svg"),
-            "max_width": max_width,
-            "max_height": max_height,
         },
         {
             "svg_basename": ("passport-sticker.svg"),
-            "max_width": max_width,
-            "max_height": max_height,
         },
     ]
 
@@ -881,15 +958,18 @@ def svg_widget_hardware_signer(
         replace_tuples = replace_tuples if replace_tuples else []
         replace_tuples += [('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", "")]
 
-    return AspectRatioSvgWidget(
+    widget = AspectRatioSvgWidget(
         svg_content=svg_tools_hardware_signer.get_svg_content(
             icon_basename=hardware_signer.get("svg_basename"),
             replace_tuples=tuple(replace_tuples) if replace_tuples else None,
         ),
-        max_width=hardware_signer["max_width"],
-        max_height=hardware_signer["max_height"],
+        size_hint_width=size_hint_width,
+        size_hint_height=size_hint_height,
         parent=parent,
     )
+    widget.setMaximumHeight(max_height)
+    widget.setMaximumWidth(max_width)
+    return widget
 
 
 def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:

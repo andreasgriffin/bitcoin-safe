@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>各コンピューターの同期＆チャットタブで信頼できるコンピューターを選択してください。  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>ビデオを見る  </translation>
+        <source>Synchronization video</source>
+        <translation>同期ビデオ</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>コラボレーションビデオ</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1575,6 +1579,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>通知を閉じる</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1664,12 +1675,12 @@ Do you want to proceed anyway?</source>
         <translation>同期</translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>パスワードが間違っています</translation>
+        <source>Backup saved to {filename}</source>
+        <translation>{file_path}が存在するため、ウォレットファイルを移動できません</translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>進行すると全てのウォレットアドレスが変更される可能性があります。進行しますか？  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>パスワードが間違っています</translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1829,8 +1840,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>バックアップに失敗しました。変更を中止します。</translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>{file_path}が存在するため、ウォレットファイルを移動できません</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>進行すると全てのウォレットアドレスが変更される可能性があります。進行しますか？  </translation>
     </message>
 </context>
 <context>
@@ -2301,8 +2312,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>メッセージを署名する  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>署名するためのディスクリプタを貼り付ける  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>アドレスディスクリプタを貼り付けてください。例: wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3015,13 +3026,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>指紋が異なります。同じ指紋のみがサポートされ、すべての派生キーが同じ署名者に属することが保証されます！  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>libsecp256k1が見つかりませんでした。OSにlibsecp256k1をインストールしてください。  </translation>
     </message>
 </context>
 <context>

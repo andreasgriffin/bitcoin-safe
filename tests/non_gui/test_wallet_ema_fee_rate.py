@@ -165,3 +165,22 @@ def test_ema_fee_rate_weights_recent_heavier(
     assert wallet.get_ema_fee_rate() == pytest.approx(14.5, abs=0.1)
 
     return wallet
+
+
+def test_address_balance(
+    test_funded_seed_wallet: Wallet,
+):
+    """
+    Test that the EMA fee rate for an incoming wallet is weighted more heavily towards recent transactions.
+    """
+
+    wallet = test_funded_seed_wallet
+
+    # check that spent utxos do not count into the address balance
+    addresses = wallet.get_addresses()
+    assert addresses
+    total = 0
+    for address in addresses:
+        total += wallet.get_addr_balance(address).total
+
+    assert total == wallet.get_balance().total

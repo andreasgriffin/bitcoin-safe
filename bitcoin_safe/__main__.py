@@ -6,10 +6,6 @@ from bitcoin_safe.logging_setup import setup_logging
 
 setup_logging()
 
-
-from bitcoin_safe.dynamic_lib_load import setup_libsecp256k1
-
-setup_libsecp256k1()
 from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works
 
 ensure_pyzbar_works()

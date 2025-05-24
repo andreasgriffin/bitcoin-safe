@@ -29,10 +29,9 @@
 
 import logging
 import urllib.parse
-import webbrowser
 from typing import List
 
-from bitcoin_safe.util_os import open_mailto_link
+from bitcoin_safe.util_os import open_mailto_link, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +52,7 @@ def compose_email(
         logger.debug(f"Failed to open the default email client using the OS native command: {e}")
         logger.debug("Attempting to open using webbrowser module...")
         # If the native OS command fails, fall back to using the webbrowser module
-        webbrowser.open(mailto_link, new=0, autoraise=True)
+        webopen(mailto_link)
 
 
 if __name__ == "__main__":

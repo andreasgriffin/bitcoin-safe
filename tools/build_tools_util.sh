@@ -276,3 +276,35 @@ list_dirty_files() {
         info "Repository is clean version: $temp_version"
     fi
 }
+
+
+
+breakpoint() {
+  local src="${BASH_SOURCE[1]}"
+  local line="${BASH_LINENO[0]}"
+
+  # 1️⃣ grab every variable (and function) definition
+  local allvars
+  allvars="$(declare -p)"
+
+  # 2️⃣ grab every exported var too (so that declare -p covers only shell variables,
+  #    and export -p covers already‐exported ones)
+  local exports
+  exports="$(export -p)"
+
+  echo "⏸ Pausing at ${src}:${line}"
+
+  # 3️⃣ spawn an interactive bash with a custom rcfile
+  /bin/bash --rcfile <(
+    # re-inject all shell vars as exported
+    printf '%s\n' "$allvars" 2>/dev/null
+    printf '%s\n' "$exports" 2>/dev/null
+    # your friendly welcome…
+    printf 'echo "🛠  Welcome to debug shell (paused at %s:%s). Type exit to resume."\n' \
+           "${src}" "${line}"
+    # and a distinctive prompt
+    printf 'PS1="(DEBUG) $ "\n'
+    # then load your normal profile so aliases/functions still work:
+    cat ~/.bashrc 2>/dev/null
+  ) -i
+}

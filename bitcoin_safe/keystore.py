@@ -29,7 +29,7 @@
 
 import copy
 import logging
-from typing import Any, Dict, List, Literal, Optional, Set
+from typing import Any, Dict, List, Literal, Optional
 
 import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
@@ -39,6 +39,12 @@ from bitcoin_usb.address_types import (
     SimplePubKeyProvider,
 )
 from packaging import version
+
+from bitcoin_safe.wallet_util import (
+    WalletDifference,
+    WalletDifferences,
+    WalletDifferenceType,
+)
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
@@ -152,9 +158,9 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         self.mnemonic = mnemonic
         self.description = description
 
-    def get_relevant_differences(self, other_keystore: "KeyStore") -> Set[str]:
+    def get_differences(self, other_keystore: "KeyStore", prefix="") -> WalletDifferences:
         "Compares the relevant entries like keystores"
-        differences = set()
+        differences = WalletDifferences()
         this = self.dump()
         other = other_keystore.dump()
 
@@ -168,7 +174,29 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         ]
         for k in keys:
             if this[k] != other[k]:
-                differences.add(k)
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.ImpactOnAddresses,
+                        key=f"{prefix}{k}",
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
+
+        keys = [
+            "label",
+            "description",
+        ]
+        for k in keys:
+            if this[k] != other[k]:
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        key=f"{prefix}{k}",
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
 
         return differences
 
@@ -266,3 +294,10 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
                 signer_info.derivation_path if signer_info.derivation_path else default_derivation_path
             ),
         )
+
+
+def sorted_keystores(keystores: List[KeyStore]) -> List[KeyStore]:
+    def key(v: KeyStore) -> str:
+        return v.xpub
+
+    return sorted(keystores, key=key)

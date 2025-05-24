@@ -56,7 +56,12 @@ from packaging import version
 from bitcoin_safe.client import Client
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.psbt_util import FeeInfo, FeeRate
-from bitcoin_safe.wallet_util import signer_name
+from bitcoin_safe.wallet_util import (
+    WalletDifference,
+    WalletDifferences,
+    WalletDifferenceType,
+    signer_name,
+)
 
 from .config import MIN_RELAY_FEE, UserConfig
 from .descriptors import (
@@ -217,36 +222,63 @@ class ProtoWallet(BaseSaveableClass):
     def get_mn_tuple(self) -> Tuple[int, int]:
         return self.threshold, len(self.keystores)
 
-    def get_relevant_differences(self, other_wallet: "ProtoWallet") -> Set[str]:
+    def get_differences(self, other_wallet: "ProtoWallet") -> WalletDifferences:
         "Compares the relevant entries like keystores"
-        differences = set()
+        differences = WalletDifferences()
+        this = self.__dict__
+        other = other_wallet.__dict__
 
-        if self.id != other_wallet.id:
-            differences.add("id")
-        if self.network != other_wallet.network:
-            differences.add("network")
+        keys = [
+            "id",
+            "gap",
+        ]
+        for k in keys:
+            if this[k] != other[k]:
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        key=k,
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
 
-        if len(self.keystores) != len(other_wallet.keystores):
-            differences.add("keystores")
+        keys = ["network", "threshold", "address_type"]
+        for k in keys:
+            if this[k] != other[k]:
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.ImpactOnAddresses,
+                        key=k,
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
+
+        if (this_len := len(self.keystores)) != (other_len := len(other_wallet.keystores)):
+            differences.append(
+                WalletDifference(
+                    type=WalletDifferenceType.ImpactOnAddresses,
+                    key="keystore added/removed",
+                    this_value=this_len,
+                    other_value=other_len,
+                )
+            )
 
         for keystore, other_keystore in zip(self.keystores, other_wallet.keystores):
-            if not keystore:
-                if not other_keystore:
-                    continue
-                elif not keystore and other_keystore:
-                    differences.add("keystores")
-                    continue
-            if keystore:
-                if not other_keystore:
-                    differences.add("keystores")
-                    continue
-                elif not keystore.is_equal(other_keystore):
-                    differences.add("keystores")
+            if type(keystore) != type(other_keystore):
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.ImpactOnAddresses,
+                        key="keystore set/unset",
+                        this_value=this_len,
+                        other_value=other_len,
+                    )
+                )
+            if keystore and other_keystore:
+                differences += keystore.get_differences(other_keystore, prefix=f"{keystore.label} ")
 
         return differences
-
-    def is_essentially_equal(self, other_wallet: "ProtoWallet") -> bool:
-        return not self.get_relevant_differences(other_wallet)
 
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "ProtoWallet":
@@ -699,41 +731,86 @@ class Wallet(BaseSaveableClass, CacheManager):
             default_category=default_category,
         )
 
-    def get_relevant_differences(self, other_wallet: "Wallet") -> Set[str]:
+    def get_differences(self, other_wallet: "Wallet") -> WalletDifferences:
         "Compares the relevant entries like keystores"
-        differences = set()
+        differences = WalletDifferences()
         this = self.dump()
         other = other_wallet.dump()
 
         keys = [
             "id",
             "gap",
+            "_blockchain_height",
+            "_tips",
+            "refresh_wallet",
+            "auto_opportunistic_coin_select",
+        ]
+        for k in keys:
+            if this[k] != other[k]:
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        key=k,
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
+
+        keys = [
             "network",
         ]
         for k in keys:
             if this[k] != other[k]:
-                differences.add(k)
+                differences.append(
+                    WalletDifference(
+                        type=WalletDifferenceType.ImpactOnAddresses,
+                        key=k,
+                        this_value=this[k],
+                        other_value=other[k],
+                    )
+                )
 
-        if self.labels.export_bip329_jsonlines() != other_wallet.labels.export_bip329_jsonlines():
-            differences.add("labels")
+        if (this_value := self.labels.export_bip329_jsonlines()) != (
+            other_value := other_wallet.labels.export_bip329_jsonlines()
+        ):
+            differences.append(
+                WalletDifference(
+                    type=WalletDifferenceType.NoImpactOnAddresses,
+                    key="labels",
+                    this_value=this_value,
+                    other_value=other_value,
+                )
+            )
 
-        if len(self.keystores) != len(other_wallet.keystores):
-            differences.add("keystores")
+        if (this_len := len(self.keystores)) != (other_len := len(other_wallet.keystores)):
+            differences.append(
+                WalletDifference(
+                    type=WalletDifferenceType.ImpactOnAddresses,
+                    key="keystore added/removed",
+                    this_value=this_len,
+                    other_value=other_len,
+                )
+            )
 
         for keystore, other_keystore in zip(self.keystores, other_wallet.keystores):
-            if not keystore.is_equal(other_keystore):
-                differences.add("keystores")
+            differences += keystore.get_differences(other_keystore, prefix=f"{keystore.label} ")
 
-        if (
-            self.multipath_descriptor.to_string_with_secret()
-            != other_wallet.multipath_descriptor.to_string_with_secret()
+        if (this_descriptor := self.multipath_descriptor.to_string_with_secret()) != (
+            other_descriptor := other_wallet.multipath_descriptor.to_string_with_secret()
         ):
-            differences.add("multipath_descriptor")
+            differences.append(
+                WalletDifference(
+                    type=WalletDifferenceType.ImpactOnAddresses,
+                    key="descriptor changed",
+                    this_value=this_descriptor,
+                    other_value=other_descriptor,
+                )
+            )
 
         return differences
 
-    def is_essentially_equal(self, other_wallet: "Wallet") -> bool:
-        return not self.get_relevant_differences(other_wallet)
+    def derives_identical_addresses(self, other_wallet: "Wallet") -> bool:
+        return self.bdkwallet.peek_address_str(0) == other_wallet.bdkwallet.peek_address_str(0)
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()

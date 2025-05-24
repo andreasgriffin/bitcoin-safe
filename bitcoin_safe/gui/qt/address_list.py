@@ -82,6 +82,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.util_os import webopen
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -112,7 +113,6 @@ from .util import (
     create_color_circle,
     do_copy,
     sort_id_to_icon,
-    webopen,
 )
 
 logger = logging.getLogger(__name__)

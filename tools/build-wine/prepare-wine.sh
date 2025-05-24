@@ -1,9 +1,9 @@
 #!/bin/bash
 
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="1318b8bc26d348147c4e99c0a7b60052a27eb1cc" # ^ tag "v6.11.1"
+PYINSTALLER_COMMIT="306d4d92580fea7be7ff2c89ba112cdc6f73fac1" # ~ v6.13.0
 
-PYTHON_VERSION=3.10.4
+PYTHON_VERSION=3.12.3
 
 
 # Let's begin!
@@ -37,7 +37,7 @@ else
 fi
 PYTHON_DOWNLOADS="$BUILD_CACHEDIR/python$PYTHON_VERSION"
 mkdir -p "$PYTHON_DOWNLOADS"
-for msifile in core dev exe lib pip tools; do
+for msifile in core dev exe lib pip; do
     echo "Installing $msifile..."
     download_if_not_exist "$PYTHON_DOWNLOADS/${msifile}.msi" "https://www.python.org/ftp/python/$PYTHON_VERSION/$PYARCH/${msifile}.msi"
     download_if_not_exist "$PYTHON_DOWNLOADS/${msifile}.msi.asc" "https://www.python.org/ftp/python/$PYTHON_VERSION/$PYARCH/${msifile}.msi.asc"
@@ -55,7 +55,7 @@ do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt
 info "Installing build dependencies using poetry"
 # Installing via poetry directly would be better, but it seems not possible to 
 # overwrite the poetry.toml config to prevent local venv
-export POETRY_CACHE_DIR
+export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
 export POETRY_VIRTUALENVS_CREATE=false
 $WINE_PYTHON -m poetry config virtualenvs.create false
 move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
@@ -65,7 +65,6 @@ move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 
 # copy already built DLLs
-cp "$DLL_TARGET_DIR"/libsecp256k1-*.dll $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libsecp to its destination"
 cp "$DLL_TARGET_DIR/libiconv.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libiconv to its destination"
 cp "$DLL_TARGET_DIR/libzbar-0.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/libzbar-64.dll || fail "Could not copy libzbar to its destination"
 cp "$DLL_TARGET_DIR/libusb-1.0.dll" $WINEPREFIX/drive_c/bitcoin_safe/bitcoin_safe/ || fail "Could not copy libusb to its destination"
