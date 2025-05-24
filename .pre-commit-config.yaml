@@ -26,10 +26,10 @@ repos:
           - --exclude=__init__.py
           - --remove-duplicate-keys 
   - repo: https://github.com/ambv/black
-    rev: 24.8.0
+    rev: 25.1.0
     hooks:
     - id: black
-      language_version: python3.10
+      language_version: python3.12
 
 
 

@@ -24,7 +24,7 @@ APPDIR="$(dirname "$(readlink -e "$0")")"
 # the order matters!!!
 LD_PATHS=(
     "${APPDIR}/usr/lib/"
-    "${APPDIR}/usr/lib/python3.10/site-packages/PyQt6/Qt6/lib"
+    "${APPDIR}/usr/lib/python3.12/site-packages/PyQt6/Qt6/lib"
     "${APPDIR}/usr/lib/x86_64-linux-gnu"
 )
 

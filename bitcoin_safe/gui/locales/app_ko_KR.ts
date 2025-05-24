@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>각 컴퓨터에서 Sync &amp; Chat 탭에서 신뢰할 수 있는 컴퓨터를 선택하세요.  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>비디오 보기  </translation>
+        <source>Synchronization video</source>
+        <translation>동기화 비디오</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>협업 비디오</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1572,6 +1576,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>알림 닫기</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1661,12 +1672,12 @@ Do you want to proceed anyway?</source>
         <translation>보내기  </translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>백업 실패. 변경 중단.  </translation>
+        <source>Backup saved to {filename}</source>
+        <translation>{filename}에 백업이 저장됨</translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>진행하면 모든 지갑 주소가 변경될 수 있습니다. 계속하시겠습니까?  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>백업 실패. 변경 중단.  </translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1826,8 +1837,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>적용할 변경 사항이 없습니다.  </translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>{filename}에 백업이 저장됨</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>진행하면 모든 지갑 주소가 변경될 수 있습니다. 계속하시겠습니까?  </translation>
     </message>
 </context>
 <context>
@@ -2298,8 +2309,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>메시지 서명  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>서명할 디스크립터 붙여넣기  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>주소 디스크립터를 붙여넣으세요. 예: wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3012,13 +3023,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>지문이 다릅니다. 동일한 지문만 지원되므로 모든 파생 키가 동일한 서명 기계에 속함을 보장합니다!</translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>libsecp256k1을 찾을 수 없습니다. OS에 libsecp256k1을 설치하세요.  </translation>
     </message>
 </context>
 <context>

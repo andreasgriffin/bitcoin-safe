@@ -222,8 +222,8 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
     assert [keystore.__dict__ for keystore in wallet.keystores] == [
         keystore.__dict__ for keystore in wallet2.keystores
     ]
-    assert wallet.is_essentially_equal(wallet2)
-    assert wallet2.is_essentially_equal(wallet)
+    assert wallet.derives_identical_addresses(wallet2)
+    assert wallet2.derives_identical_addresses(wallet)
 
 
 def test_is_multisig(test_config: UserConfig):
@@ -297,7 +297,7 @@ def test_dump(test_config: UserConfig):
         class_kwargs={"Wallet": {"config": test_config}},
     )
 
-    assert walllet_restored.is_essentially_equal(wallet)
+    assert walllet_restored.derives_identical_addresses(wallet)
 
 
 def test_correct_addresses(test_config: UserConfig):
@@ -412,7 +412,7 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
 
     restored_wallet = Wallet.from_dump(dct=dump, class_kwargs={"Wallet": {"config": test_config}})
 
-    assert wallet.is_essentially_equal(restored_wallet)
+    assert wallet.derives_identical_addresses(restored_wallet)
 
     assert len(wallet.keystores) == len(restored_wallet.keystores)
     for org_keystore, restored_keystore in zip(wallet.keystores, restored_wallet.keystores):
@@ -443,3 +443,9 @@ def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
     tx_list = wallet.sorted_delta_list_transactions()
     assert len(tx_list) >= 28
     assert tx_list[0].txid == "5d321554674865dffb7a5406002ba5d68d4819d0eff805393d4917921d68f3c5"
+
+    # check that spent utxos do not count into the address balance
+    addresses = wallet.get_addresses()
+    assert addresses
+    for address in addresses:
+        assert wallet.get_addr_balance(address).total == 0

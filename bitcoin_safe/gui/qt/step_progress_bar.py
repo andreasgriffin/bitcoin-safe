@@ -418,17 +418,9 @@ class AutoResizingStackedWidget(QWidget):
             self.widgets[index].setVisible(True)
 
             self._currentIndex = index
-            self.adjustSizeToCurrentWidget()
 
     def currentIndex(self) -> int:
         return self._currentIndex
-
-    def adjustSizeToCurrentWidget(self) -> None:
-        if self._currentIndex != -1:
-            currentWidget = self.widgets[self._currentIndex]
-            if currentWidget.sizeHint().height() != -1 and currentWidget.sizeHint().width() != -1:
-                self.setMinimumHeight(currentWidget.sizeHint().height())
-            self.setMaximumSize(currentWidget.maximumSize())
 
     def count(self) -> int:
         return len(self.widgets)

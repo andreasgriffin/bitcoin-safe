@@ -33,8 +33,6 @@ WINE_POETRY_WHEEL_DIR=$(win_path "$POETRY_WHEEL_DIR")
 
 APPDIR="$WINEPREFIX/drive_c/$NAME_ROOT"
 WINE_APPDIR=$(win_path "$APPDIR")
-L_POETRY_CACHE_DIR="$BUILD_CACHEDIR/poetry" # needs the L_, because later I need to do  export POETRY_CACHE_DIR=WINE_POETRY_CACHE_DIR
-WINE_POETRY_CACHE_DIR=$(win_path "$L_POETRY_CACHE_DIR") 
 PIP_CACHE_DIR="$BUILD_CACHEDIR/pip"
 WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR") 
 
@@ -44,7 +42,7 @@ mkdir -p "$POETRY_WHEEL_DIR" "$APPDIR"   "$PIP_CACHE_DIR"   "$L_POETRY_CACHE_DIR
 info "Installing requirements..."
 
 
-info "Installing build dependencies using poetry" 
+info "Installing dependencies using poetry" 
 # ln -s $WINE_PYHOME/python.exe "/usr/bin/python.exe"
 # export PATH="$APPDIR/usr/bin:$PATH"
 # for poetry to install into the system python environment 
@@ -54,13 +52,22 @@ export POETRY_VIRTUALENVS_CREATE=false
 $WINE_PYTHON -m poetry config virtualenvs.create false
 
 move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
+# should have been installed already in prepare-wine
 $WINE_PYTHON -m poetry install --only main --no-interaction  
+
 
 info "now install the root package"
 rm -Rf "$POETRY_WHEEL_DIR" || true 
 $WINE_PYTHON -m poetry build -f wheel --output="$WINE_POETRY_WHEEL_DIR"
 info "ls of output directory: {$POETRY_WHEEL_DIR}  $(ls $POETRY_WHEEL_DIR)"
-do_wine_pip "$POETRY_WHEEL_DIR/"*.whl
+for fullpath in "$POETRY_WHEEL_DIR"/*.whl; do
+  # remove everything up to and including the last slash
+  filename="${fullpath##*/}"
+  do_wine_pip "$WINE_POETRY_WHEEL_DIR/$filename"
+  break  # stop after the first one
+done
+
+
 
 
 # # was only needed during build time, not runtime

@@ -228,3 +228,4 @@ tools/libusb/
 
 
 bitcoin_safe/gui/locales/chatgpt.txt
+bitcoin_safe/gui/locales/*.xlsx

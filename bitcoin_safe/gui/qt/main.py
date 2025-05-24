@@ -94,7 +94,7 @@ from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe.util_os import xdg_open_file
+from bitcoin_safe.util_os import webopen, xdg_open_file
 
 from ...config import UserConfig
 from ...fx import FX
@@ -113,13 +113,7 @@ from .extended_tabwidget import ExtendedTabWidget, LoadingWalletTab
 from .network_settings.main import NetworkSettingsUI
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
-from .util import (
-    Message,
-    MessageType,
-    caught_exception_message,
-    delayed_execution,
-    webopen,
-)
+from .util import Message, MessageType, caught_exception_message, delayed_execution
 from .utxo_list import UTXOList, UtxoListWithToolbar
 
 logger = logging.getLogger(__name__)
@@ -1473,7 +1467,7 @@ class MainWindow(QMainWindow):
 
         org_protowallet = qt_protowallet.protowallet
         tab_import_xpub.keystore_uis.set_protowallet_from_keystore_ui()
-        if not org_protowallet.is_essentially_equal(qt_protowallet.protowallet):
+        if org_protowallet.get_differences(qt_protowallet.protowallet).has_impact_on_addresses():
             Message("QtProtowallet inconsitent. Cannot create wallet", type=MessageType.Error)
             return
 

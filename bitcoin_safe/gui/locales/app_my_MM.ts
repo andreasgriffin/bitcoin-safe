@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>ကွန်ပျူတာတိုင်း၏ Sync &amp; Chat တက်ဘ်ပေါ်တွင်ယုံကြည်ရသောကွန်ပျူတာများကိုရွေးပါ။  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>ဗီဒီယိုကြည့်ပါ  </translation>
+        <source>Synchronization video</source>
+        <translation>အချိန်ညှိဗီဒီယို</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>ပူးပေါင်းဆောင်ရွက်မှုဗီဒီယို</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1572,6 +1576,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>အသိပေးချက်ကိုပိတ်ပါ</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1661,12 +1672,12 @@ Do you want to proceed anyway?</source>
         <translation>ပို့ပါ</translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
+        <source>Backup saved to {filename}</source>
+        <translation>{filename} သို့အရန်အသိမ်းထားပြီးပါပြီ  </translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>ဆက်လက်လုပ်ဆောင်ပါက ပိုက်ဆံအိတ်လိပ်စာများအားလုံးပြောင်းလဲနိုင်သည်။ ဆက်လက်လုပ်ဆောင်ချင်ပါသလား?  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1826,8 +1837,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>မည်သည့်ပြောင်းလဲများမှမလုပ်ပါ  </translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>{filename} သို့အရန်အသိမ်းထားပြီးပါပြီ  </translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>ဆက်လက်လုပ်ဆောင်ပါက ပိုက်ဆံအိတ်လိပ်စာများအားလုံးပြောင်းလဲနိုင်သည်။ ဆက်လက်လုပ်ဆောင်ချင်ပါသလား?  </translation>
     </message>
 </context>
 <context>
@@ -2298,8 +2309,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>စာတိုလက်မှတ်ပါ  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>သင့်ဖော်ပြချက်ကိုလက်မှတ်ဖို့ကပ်ပါ  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>သင့်လိပ်စာဖေါ်ပြချက်ကိုထည့်ပါ၊ဥပမာ wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3012,13 +3023,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>လက်ဗွေများသည်ကွဲပြားနေသည်။ တူညီသောလက်ဗွေများသာထောက်ပံ့ပါ၊ ဤအရာသည်အားလုံးလက်မှတ်သားများသည်တူညီသောလက်မှတ်သားမှလာသည်ဟုအာမခံပါသည်။  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>libsecp256k1 မတွေ့ပါ။ သင့် OS တွင် libsecp256k1 တပ်ဆင်ပါ။  </translation>
     </message>
 </context>
 <context>

@@ -120,7 +120,7 @@
 - Install dependencies: 
 
   ```sh
-  sudo apt-get install qt6-tools-dev-tools libzbar-dev libxcb-cursor0 '^libsecp256k1-.*$' '^libqt6.*$' 
+  sudo apt-get install qt6-tools-dev-tools libzbar-dev libxcb-cursor0 '^libqt6.*$' 
   ```
 
 - Install `poetry` and run `bitcoin_safe`
@@ -140,16 +140,7 @@
   git clone https://github.com/andreasgriffin/bitcoin-safe.git
   cd bitcoin-safe
   ```
-
-- `libsecp256k1` 
-
-  ```sh
-  xcode-select --install
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
-  brew install automake libtool
-  /bin/bash ./tools/make_libsecp256k1.sh
-  mv bitcoin_safe/libsecp256k1.* .
-  ``` 
+ 
 
 
 - *Optional*: dependency `zbar`

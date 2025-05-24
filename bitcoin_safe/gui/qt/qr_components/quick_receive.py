@@ -220,17 +220,18 @@ class QuickReceive(QWidget):
     def add_box(self, receive_group: ReceiveGroup) -> None:
         self.group_boxes.append(receive_group)
         self.content_widget_layout.addWidget(receive_group)
-        self.content_widget.adjustSize()
 
-    def remove_box(self) -> None:
+    def remove_box(self, group_box: ReceiveGroup) -> None:
+        group_box.setParent(None)  # type: ignore[call-overload]
+
+    def remove_last_box(self) -> None:
         if self.group_boxes:
             group_box = self.group_boxes.pop()
-            group_box.setParent(None)  # type: ignore[call-overload]
-            self.content_widget.adjustSize()
+            self.remove_box(group_box)
 
     def clear_boxes(self) -> None:
         while self.group_boxes:
-            self.remove_box()
+            self.remove_last_box()
 
     def close(self) -> bool:
         self.signal_tracker.disconnect_all()

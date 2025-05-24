@@ -39,6 +39,10 @@ export WINE_PYTHON="wine $WINE_PYHOME/python.exe -B"
 
 . "$CONTRIB"/build_tools_util.sh
 
+export L_POETRY_CACHE_DIR="$BUILD_CACHEDIR/poetry" # needs the L_, because later I need to do  export POETRY_CACHE_DIR=WINE_POETRY_CACHE_DIR
+export WINE_POETRY_CACHE_DIR=$(win_path "$L_POETRY_CACHE_DIR") 
+
+
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported. PROJECT_ROOT contents:\n$(ls -la "$PROJECT_ROOT")"
 
 info "Clearing $here/build and $here/dist..."
@@ -53,12 +57,6 @@ mkdir -p "$BUILD_CACHEDIR" "$DLL_TARGET_DIR" "$PIP_CACHE_DIR"
 #################
 ####  build libs
 #################
-if [ -f "$DLL_TARGET_DIR/libsecp256k1-2.dll" ]; then
-    info "libsecp256k1 already built, skipping"
-else
-    "$CONTRIB"/make_libsecp256k1.sh || fail "Could not build libsecp"
-fi
-
 if [ -f "$DLL_TARGET_DIR/libiconv.dll" ]; then
     info "libzbar already built, skipping"
 else

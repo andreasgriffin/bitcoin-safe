@@ -62,7 +62,6 @@ from bitcoin_safe.gui.qt.util import (
     get_host_and_port,
     remove_scheme,
     svg_tools,
-    webopen,
 )
 from bitcoin_safe.network_config import (
     NetworkConfig,
@@ -84,6 +83,7 @@ from bitcoin_safe.network_utils import (
 from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.util_os import webopen
 
 from ....signals import TypedPyQtSignalNo
 

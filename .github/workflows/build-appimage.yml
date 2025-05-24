@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Setup xvfb (Linux)
         if: runner.os == 'Linux'
@@ -58,8 +58,7 @@ jobs:
                                 libxrender-dev \
                                 libxi-dev \
                                 libxkbcommon-dev \
-                                libxkbcommon-x11-dev \
-                                libsecp256k1-0
+                                libxkbcommon-x11-dev 
 
       - name: Install Python dependencies
         run: |

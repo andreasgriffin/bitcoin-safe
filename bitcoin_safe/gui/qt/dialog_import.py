@@ -41,14 +41,7 @@ from PyQt6.QtGui import (
     QKeySequence,
     QShortcut,
 )
-from PyQt6.QtWidgets import (
-    QApplication,
-    QDialog,
-    QDialogButtonBox,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
@@ -170,7 +163,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         self.signal_drop_file.emit(s)
 
 
-class ImportDialog(QDialog):
+class ImportDialog(QWidget):
     aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
 
     def __init__(
@@ -186,6 +179,7 @@ class ImportDialog(QDialog):
         text_placeholder="Paste your Bitcoin Transaction or PSBT in here or drop a file",
     ) -> None:
         super().__init__(parent)
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
         self.on_open = on_open
 
         self.setWindowTitle(window_title)

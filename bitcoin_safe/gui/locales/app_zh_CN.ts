@@ -975,8 +975,12 @@ Do you want to proceed anyway?</source>
         <translation>在每台电脑上的同步与聊天标签中选择受信任的电脑。  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>查看视频  </translation>
+        <source>Synchronization video</source>
+        <translation>同步视频</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>协作视频</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1578,6 +1582,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>关闭通知</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1667,12 +1678,12 @@ Do you want to proceed anyway?</source>
         <translation>发送</translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>备份失败。正在中止更改。</translation>
+        <source>Backup saved to {filename}</source>
+        <translation>备份已保存到{filename}</translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>继续可能会更改所有钱包地址。您要继续吗？  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>备份失败。正在中止更改。</translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1832,8 +1843,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>没有变更可应用。</translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>备份已保存到{filename}</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>继续可能会更改所有钱包地址。您要继续吗？  </translation>
     </message>
 </context>
 <context>
@@ -2304,8 +2315,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>签名消息  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>粘贴您要签名的描述符  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>粘贴您的地址描述符，例如 wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3021,13 +3032,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>指纹不同。只支持相同的指纹，确保所有派生的密钥属于同一签名者！  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>找不到 libsecp256k1。请在您的操作系统中安装 libsecp256k1。  </translation>
     </message>
 </context>
 <context>

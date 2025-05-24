@@ -71,4 +71,13 @@ RUN chown --recursive ${USER} ${WORK_DIR}
 RUN chown ${USER} /opt
 USER ${USER}
 
+
+# create the folder and set permissions
+RUN mkdir -p /tmp/wine-runtime && \
+    chmod 700 /tmp/wine-runtime
+
+# export it so any subsequent RUN (or entrypoint) sees it
+ENV XDG_RUNTIME_DIR=/tmp/wine-runtime
+
+
 RUN mkdir --parents "/opt/wine64/drive_c/bitcoin_safe"

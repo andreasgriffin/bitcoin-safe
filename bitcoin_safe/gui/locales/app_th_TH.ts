@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>เลือกคอมพิวเตอร์ที่เชื่อถือได้ในแท็บ Sync &amp; Chat ที่แต่ละคอมพิวเตอร์  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>ดูวิดีโอ  </translation>
+        <source>Synchronization video</source>
+        <translation>วิดีโอซิงโครไนซ์</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>วิดีโอความร่วมมือ</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1572,6 +1576,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>ปิดการแจ้งเตือน</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1661,12 +1672,12 @@ Do you want to proceed anyway?</source>
         <translation>ส่ง  </translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>การสำรองข้อมูลล้มเหลว ยกเลิกการเปลี่ยนแปลง  </translation>
+        <source>Backup saved to {filename}</source>
+        <translation>การสำรองข้อมูลถูกบันทึกไว้ที่ {filename}  </translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>การดำเนินการต่อไปนี้อาจเปลี่ยนที่อยู่กระเป๋าเงินทั้งหมด คุณต้องการดำเนินการต่อหรือไม่?  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>การสำรองข้อมูลล้มเหลว ยกเลิกการเปลี่ยนแปลง  </translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1826,8 +1837,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>ไม่มีการเปลี่ยนแปลงใดๆ ที่จะใช้  </translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>การสำรองข้อมูลถูกบันทึกไว้ที่ {filename}  </translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>การดำเนินการต่อไปนี้อาจเปลี่ยนที่อยู่กระเป๋าเงินทั้งหมด คุณต้องการดำเนินการต่อหรือไม่?  </translation>
     </message>
 </context>
 <context>
@@ -2298,8 +2309,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>ลงนามข้อความ  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>วางตัวบ่งชี้ของคุณเพื่อลงนาม  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>วางตัวพรรณนาที่อยู่ของคุณ เช่น wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3012,13 +3023,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>ลายนิ้วมือแตกต่างกัน รองรับเฉพาะลายนิ้วมือเดียวกันเท่านั้น, เพื่อให้แน่ใจว่าคีย์ที่ได้มาทั้งหมดมาจากผู้ลงนามเดียวกัน!  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>ไม่พบ libsecp256k1 โปรดติดตั้ง libsecp256k1 ในระบบปฏิบัติการของคุณ  </translation>
     </message>
 </context>
 <context>

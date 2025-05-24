@@ -54,8 +54,10 @@
 import os
 import platform
 import shlex
+import shutil
 import subprocess
 import sys
+import webbrowser
 from pathlib import Path
 
 # do not import logging, because has this a dependency for setup_logging
@@ -71,6 +73,59 @@ def linux_env():
         paths += env["LD_LIBRARY_PATH"]
     env["LD_LIBRARY_PATH"] = ":".join(paths)
     return env
+
+
+def subprocess_empty_env(cmd: list[str]) -> bool:
+    """
+    Run the given command in a cleaned environment (dropping AppImage/PyInstaller libs).
+    Returns True if the process ran successfully (exit code 0), False otherwise.
+    """
+    # Copy the current env and remove variables that point to bundled libs
+    env = os.environ.copy()
+    for var in ("LD_LIBRARY_PATH", "APPDIR", "PYINSTALLER_APPDIR"):
+        env.pop(var, None)
+
+    try:
+        subprocess.run(cmd, check=True, env=env)
+        return True
+    except Exception:
+        return False
+
+
+def webopen(url: str) -> bool:
+    """
+    Cross-platform URL opener with honest success/fail.
+
+    - On Linux: tries system helpers (xdg-open, gio, gvfs-open) in a clean env;
+      falls back to webbrowser.open() if none succeed.
+    - On others: uses webbrowser.open() directly.
+
+    Returns True if any launcher was successfully invoked, False otherwise.
+    """
+    if sys.platform.lower().startswith("linux"):
+        helpers = [
+            "/usr/bin/xdg-open",  # absolute path first
+            "xdg-open",
+            "gio",
+            "gvfs-open",
+        ]
+        for helper in helpers:
+            # resolve helper to an executable path
+            path = helper if os.path.isabs(helper) else shutil.which(helper)
+            if not path:
+                continue
+            if subprocess_empty_env([path, url]):
+                return True
+        # fallback to stdlib
+        return webbrowser.open(url)
+
+    # if sys.platform == "darwin":
+    #     if subprocess_empty_env(["open", url]):
+    #         return True
+    #     return webbrowser.open(url)
+
+    # other platforms
+    return webbrowser.open(url)
 
 
 def open_mailto_link(mailto_link: str) -> None:

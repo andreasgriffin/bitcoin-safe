@@ -180,10 +180,10 @@ class ButtonExplorerIcon(AspectRatioSvgWidget):
             svg_content=svg_tools.get_svg_content(
                 "block-explorer.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
             ),
-            max_height=20,
-            max_width=20,
             parent=parent,
         )
+        self.setMaximumHeight(20)
+        self.setMaximumWidth(20)
         self.setVisible(False)
 
 

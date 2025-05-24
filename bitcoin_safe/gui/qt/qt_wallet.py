@@ -72,6 +72,7 @@ from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
 from ...execute_config import ENABLE_THREADING, ENABLE_TIMERS
@@ -545,9 +546,19 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             default_category=self.wallet.labels.default_category,
         )
         # compare if something change
-        if self.wallet.is_essentially_equal(new_wallet):
+        worst = self.wallet.get_differences(new_wallet).worst()
+        if not worst:
             Message(self.tr("No changes to apply."))
             return
+
+        if worst.type == WalletDifferenceType.NoImpactOnAddresses:
+            # no message needs to be shown here
+            pass
+        elif worst.type == WalletDifferenceType.ImpactOnAddresses:
+            if not question_dialog(
+                self.tr("Proceeding will potentially change all wallet addresses. Do you want to proceed?")
+            ):
+                return
 
         # do backup
         filename = self.save_backup()
@@ -555,11 +566,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             Message(self.tr("Backup saved to {filename}").format(filename=filename))
         else:
             Message(self.tr("Backup failed. Aborting Changes."))
-            return
-
-        if not question_dialog(
-            self.tr("Proceeding will potentially change all wallet addresses. Do you want to proceed?")
-        ):
             return
 
         # i have to close it first, to ensure the wallet is shut down completely
@@ -604,26 +610,26 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Returns:
             str: filename
         """
-        filename = os.path.join(
+        file_path = os.path.join(
             self.config.wallet_dir, "backups", filename_clean(f"{self.wallet.id}-backup-{0}")
         )
         max_number_backups = 100000
         for i in range(max_number_backups):
-            filename = os.path.join(
+            file_path = os.path.join(
                 self.config.wallet_dir, "backups", filename_clean(f"{self.wallet.id}-backup-{i}")
             )
-            if not os.path.exists(filename):
+            if not os.path.exists(file_path):
                 break
 
         # save the tutorial step into the wallet
         if self.wizard:
             self.tutorial_index = self.wizard.current_index() if not self.wizard.isHidden() else None
 
-        self.wallet.save(
-            filename,
-            password=self.password,
+        self.save_to(
+            wallet_id=Path(file_path).stem,
+            file_path=file_path,
         )
-        return filename
+        return file_path
 
     def move_wallet_file(self, new_file_path) -> Optional[str]:
         if os.path.exists(new_file_path):
@@ -690,12 +696,19 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not os.path.isfile(self.file_path):
             self.password = PasswordCreation().get_password()
 
+        self.save_to(file_path=self.file_path)
+        return self.file_path
+
+    def save_to(self, file_path: str, wallet_id: str | None = None):
+        original_id = self.wallet.id
+        if wallet_id:
+            self.wallet.id = wallet_id
         super().save(
-            self.file_path,
+            file_path,
             password=self.password,
         )
-        logger.info(f"wallet {self.wallet.id} saved")
-        return self.file_path
+        self.wallet.id = original_id
+        logger.info(f"wallet {self.wallet.id} saved to {file_path}")
 
     def change_password(self) -> Optional[str]:
         if self.password:
@@ -961,6 +974,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def rename_category(self, old_category: str, new_category: str) -> None:
         affected_keys = self.wallet.labels.rename_category(old_category, new_category)
+        # add addresses with no category
+        affected_keys += [a for a in self.wallet.get_addresses() if self.wallet.labels.get_category(a)]
+        affected_keys = list(set(affected_keys))
         self.wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=affected_keys,
@@ -984,15 +1000,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             # just rename it with the same name
             new_category = category
 
-        affected_keys = self.wallet.labels.rename_category(category, new_category)
-        self.wallet_signals.updated.emit(
-            UpdateFilter(
-                addresses=affected_keys,
-                categories=([category]),
-                txids=affected_keys,
-                reason=UpdateFilterReason.CategoryRenamed,
-            )
-        )
+        self.rename_category(category, new_category)
 
     def set_category(self, address_drag_info: AddressDragInfo) -> None:
         apply_addresses = address_drag_info.addresses

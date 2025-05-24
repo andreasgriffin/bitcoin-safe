@@ -67,6 +67,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.util_os import webopen
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -83,7 +84,7 @@ from .my_treeview import (
     TreeViewWithToolbar,
     needs_frequent_flag,
 )
-from .util import ColorScheme, block_explorer_URL, sort_id_to_icon, webopen
+from .util import ColorScheme, block_explorer_URL, sort_id_to_icon
 
 logger = logging.getLogger(__name__)
 

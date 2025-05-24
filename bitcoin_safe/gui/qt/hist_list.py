@@ -89,6 +89,7 @@ from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Balance, Recipient, TransactionDetails
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.util_os import webopen
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
@@ -103,7 +104,7 @@ from .my_treeview import (
     needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
-from .util import Message, MessageType, block_explorer_URL, sort_id_to_icon, webopen
+from .util import Message, MessageType, block_explorer_URL, sort_id_to_icon
 
 logger = logging.getLogger(__name__)
 

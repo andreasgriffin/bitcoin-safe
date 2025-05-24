@@ -39,6 +39,7 @@ from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit, QWidget
 from ...signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
+ENABLE_COMPLETERS = True
 
 
 class AnalyzerState(enum.IntEnum):
@@ -181,7 +182,8 @@ class QCompleterLineEdit(AnalyzerLineEdit):
         self._completer.setFilterMode(Qt.MatchFlag.MatchContains)
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self._model = QStringListModel()
-        self.setCompleter(self._completer)
+        if ENABLE_COMPLETERS:
+            self.setCompleter(self._completer)
 
     def set_completer_list(self, words: Iterable[str]):
         self._model.setStringList(words)

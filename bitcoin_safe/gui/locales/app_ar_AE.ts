@@ -974,8 +974,12 @@ Do you want to proceed anyway?</source>
         <translation>اختر الحواسيب الموثوقة في تبويب المزامنة والدردشة على كل جهاز.  </translation>
     </message>
     <message>
-        <source>See video</source>
-        <translation>مشاهدة الفيديو  </translation>
+        <source>Synchronization video</source>
+        <translation>فيديو التزامن</translation>
+    </message>
+    <message>
+        <source>Collaboration video</source>
+        <translation>فيديو التعاون</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -1575,6 +1579,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>إغلاق الإشعار</translation>
+    </message>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
@@ -1664,12 +1675,12 @@ Do you want to proceed anyway?</source>
         <translation>إرسال</translation>
     </message>
     <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
+        <source>Backup saved to {filename}</source>
+        <translation>تم حفظ النسخ الاحتياطي إلى {filename}</translation>
     </message>
     <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>المتابعة قد تغير جميع عناوين المحافظ. هل تريد المتابعة؟  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
@@ -1829,8 +1840,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>لا توجد تغييرات لتطبيقها.</translation>
     </message>
     <message>
-        <source>Backup saved to {filename}</source>
-        <translation>تم حفظ النسخ الاحتياطي إلى {filename}</translation>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>المتابعة قد تغير جميع عناوين المحافظ. هل تريد المتابعة؟  </translation>
     </message>
 </context>
 <context>
@@ -2301,8 +2312,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>توقيع رسالة  </translation>
     </message>
     <message>
-        <source>Paste your descriptor to be signed</source>
-        <translation>الصق مُعرّفك ليتم التوقيع عليه  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>ألصق واصف العنوان الخاص بك، على سبيل المثال wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -3015,13 +3026,6 @@ below {rate}</source>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
         <translation>البصمات مختلفة. يتم دعم البصمات المتطابقة فقط، مما يضمن أن جميع المفاتيح المشتقة تنتمي إلى نفس الموقع!  </translation>
-    </message>
-</context>
-<context>
-    <name>dynamic_lib_load</name>
-    <message>
-        <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
-        <translation>لم يتم العثور على libsecp256k1. يرجى تثبيت libsecp256k1 في نظام التشغيل الخاص بك.  </translation>
     </message>
 </context>
 <context>
