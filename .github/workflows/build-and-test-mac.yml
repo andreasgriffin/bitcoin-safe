@@ -22,11 +22,19 @@ jobs:
           - os: macos-13
             artifact_name: dmgs-x86_64
     steps:
-      - name: Checkout repository
+      # 1) clone the default branch with full history
+      - name: Checkout default branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          ref: ${{ github.event.inputs.commitHash || github.sha }}
+          fetch-depth: 0
+
+      # 2) if a SHA was provided, fetch it and switch to it
+      - name: Fetch and checkout custom commit
+        if: ${{ github.event.inputs.commitHash != '' }}
+        run: |
+          # this will succeed as long as the commit is reachable from ANY branch on the remote
+          git fetch origin ${{ github.event.inputs.commitHash }}
+          git checkout ${{ github.event.inputs.commitHash }}           
 
       - name: Set up Python environment
         uses: actions/setup-python@v5

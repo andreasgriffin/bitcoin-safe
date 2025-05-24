@@ -29,6 +29,7 @@ jobs:
           # this will succeed as long as the commit is reachable from ANY branch on the remote
           git fetch origin ${{ github.event.inputs.commitHash }}
           git checkout ${{ github.event.inputs.commitHash }}
+          
       - name: Set up Python environment
         uses: actions/setup-python@v5
         with:
