@@ -8,8 +8,8 @@ set -e
 PYTHON_VERSION=3.12.3
 PY_VER_MAJOR="3.12"  # as it appears in fs paths
 EXECUTABLE_NAME="run_Bitcoin_Safe"
-PACKAGE_NAME='Bitcoin_Safe.app'
-PACKAGE=Bitcoin_Safe
+PACKAGE='Bitcoin Safe'
+PACKAGE_NAME="$PACKAGE.app"
 GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
 export GCC_STRIP_BINARIES="1"
