@@ -37,12 +37,8 @@ import certifi
 logger = logging.getLogger(__name__)
 
 
-def set_os_env_ssl_certs_for_mac():
-    # Only on macOS (“darwin”) do we override the SSL_CERT_FILE
-    if sys.platform.lower() == "darwin" and "SSL_CERT_FILE" not in os.environ:
-        # If you’ve bundled certifi into your app, certifi.where()
-        # will resolve inside your .app Resources/_MEIPASS
-        os.environ["SSL_CERT_FILE"] = certifi.where()
+def set_os_env_ssl_certs():
+    os.environ["SSL_CERT_FILE"] = certifi.where()
 
 
 def ensure_pyzbar_works() -> None:
