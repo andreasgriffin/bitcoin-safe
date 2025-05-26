@@ -158,7 +158,7 @@ jobs:
             echo "Error: 'pyzbar could be loaded successfully' not found in bitcoin_safe.log" | tee -a test_dmg.log
             exit 1
           fi
-
+                
       - name: Gatekeeper tests on ${{ matrix.arch }}
         run: |
           echo "Starting DMG Gatekeeper tests..." | tee test_dmg.log
@@ -197,8 +197,10 @@ jobs:
           done
           echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
           
-          # Extract the mount point (assuming the output contains a /Volumes entry)
-          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          # Extract the mount point (preserving spaces in volume name)
+          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" \
+            | grep '/Volumes/' \
+            | cut -f3- -d $'\t')
           if [ -z "$MOUNT_POINT" ]; then
             echo "Failed to identify DMG mount point" | tee -a test_dmg.log
             exit 1
@@ -227,7 +229,8 @@ jobs:
           if echo "$OUTPUT" | grep -Eq "(invalid signature)"; then
             echo "App has invalid signature" | tee -a test_dmg.log
             exit 1
-          fi 
+          fi
+
 
 
       - name: Upload DMG and Application Logs for ${{ matrix.arch }}
