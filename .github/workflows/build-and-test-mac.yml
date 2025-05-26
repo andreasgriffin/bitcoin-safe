@@ -136,13 +136,13 @@ jobs:
           done
 
 
-          echo "Checking if Bitcoin_Safe is running..." | tee -a test_dmg.log
-          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin_Safe" | wc -l)
+          echo "Checking if Bitcoin Safe is running..." | tee -a test_dmg.log
+          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin Safe" | wc -l)
           if [ "$PROCESS_COUNT" -eq 0 ]; then
-            echo "Error: Bitcoin_Safe is not running!" | tee -a test_dmg.log
+            echo "Error: Bitcoin Safe is not running!" | tee -a test_dmg.log
             exit 1
           else
-            echo "Bitcoin_Safe is running." | tee -a test_dmg.log
+            echo "Bitcoin Safe is running." | tee -a test_dmg.log
           fi
 
 
