@@ -87,7 +87,7 @@ jobs:
       - name: Start DMG file on ${{ matrix.arch }}
         run: |
           # Find the DMG file from the downloaded artifacts.
-          DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
+          DMG_FILE="$(find dmgs -type f -name '*.dmg' | head -n 1)"
           if [ -z "$DMG_FILE" ]; then
             echo "No DMG file found to test."
             exit 1
@@ -109,7 +109,7 @@ jobs:
 
           
           # Extract the mount point (assuming the output contains a /Volumes entry).
-          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          MOUNT_POINT="$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')"
           if [ -z "$MOUNT_POINT" ]; then
             echo "Failed to mount DMG file" | tee -a test_dmg.log
             exit 1
@@ -117,7 +117,7 @@ jobs:
           echo "DMG mounted at: $MOUNT_POINT" | tee -a test_dmg.log
           
           # Find the .app bundle within the mounted DMG.
-          APP_PATH=$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)
+          APP_PATH="$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)"
           if [ -z "$APP_PATH" ]; then
             echo "No .app found in mounted DMG" | tee -a test_dmg.log
             exit 1
