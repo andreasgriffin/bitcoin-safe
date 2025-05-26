@@ -82,8 +82,6 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: dmgs
 
-
-
       - name: Start DMG file on ${{ matrix.arch }}
         run: |
           # Find the DMG file from the downloaded artifacts.
@@ -93,7 +91,7 @@ jobs:
             exit 1
           fi
           echo "Found DMG file: $DMG_FILE" | tee test_dmg.log
-          
+
           # Mount the DMG.
           echo "Mounting DMG file..." | tee -a test_dmg.log
           i=0
@@ -107,15 +105,16 @@ jobs:
           done
           echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
 
-          
-          # Extract the mount point (assuming the output contains a /Volumes entry).
-          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          # Extract the mount point (preserving spaces in volume name).
+          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" \
+            | grep '/Volumes/' \
+            | cut -f3- -d $'\t')
           if [ -z "$MOUNT_POINT" ]; then
             echo "Failed to mount DMG file" | tee -a test_dmg.log
             exit 1
           fi
           echo "DMG mounted at: $MOUNT_POINT" | tee -a test_dmg.log
-          
+
           # Find the .app bundle within the mounted DMG.
           APP_PATH=$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)
           if [ -z "$APP_PATH" ]; then
@@ -123,19 +122,20 @@ jobs:
             exit 1
           fi
           echo "Found app at: $APP_PATH" | tee -a test_dmg.log
-           
-          # Open the app using the 'open' command
+
+          # Launch the app.
           echo "Launching app via open" | tee -a test_dmg.log
           open "$APP_PATH"
 
-          echo "Starting screenshot capture..."
+          # Take screenshots.
+          echo "Starting screenshot capture..." | tee -a test_dmg.log
           for i in $(seq 1 20); do
-            echo "Taking screenshot $i"
+            echo "Taking screenshot $i" | tee -a test_dmg.log
             screencapture -x "screenshot_$i.png"
             sleep 1
           done
 
-
+          # Verify the app is running.
           echo "Checking if Bitcoin Safe is running..." | tee -a test_dmg.log
           PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin Safe" | wc -l)
           if [ "$PROCESS_COUNT" -eq 0 ]; then
@@ -144,8 +144,7 @@ jobs:
           else
             echo "Bitcoin Safe is running." | tee -a test_dmg.log
           fi
-
-
+ 
           # Optionally, you can run further tests against the application.
           
           
