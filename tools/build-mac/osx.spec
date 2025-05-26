@@ -29,7 +29,7 @@ print(f"Building for {target_arch=}")
 
 
 EXECUTABLE_NAME=f"run_Bitcoin_Safe"
-PACKAGE_NAME='Bitcoin_Safe.app'
+PACKAGE_NAME='Bitcoin Safe.app'
 PYPKG='bitcoin_safe'
 PROJECT_ROOT = os.path.abspath(".")
 ICONS_FILE=f"{PROJECT_ROOT}/tools/resources/icon.icns"
