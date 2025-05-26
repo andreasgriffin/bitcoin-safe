@@ -10,6 +10,8 @@ from PyInstaller.building.osx import BUNDLE
 
 import sys, os
 
+import certifi
+
 
 
 # Function to determine target architecture based on Python's running architecture
@@ -56,8 +58,8 @@ binaries += [(f"{PROJECT_ROOT}/{PYPKG}/*.dylib", ".")]
 print(f"Included binaries: {binaries}")
 
 
-
 datas = [
+    (certifi.where(), "certifi/"), # necessary on mac to avail ssl errors
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),

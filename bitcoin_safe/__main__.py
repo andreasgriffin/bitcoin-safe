@@ -6,8 +6,12 @@ from bitcoin_safe.logging_setup import setup_logging
 
 setup_logging()
 
-from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works
+from bitcoin_safe.dynamic_lib_load import (
+    ensure_pyzbar_works,
+    set_os_env_ssl_certs_for_mac,
+)
 
+set_os_env_ssl_certs_for_mac()
 ensure_pyzbar_works()
 
 
