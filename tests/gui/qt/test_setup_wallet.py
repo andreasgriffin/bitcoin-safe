@@ -38,6 +38,7 @@ import pytest
 from bitcoin_tools.gui.qt.satoshis import Satoshis
 from bitcoin_tools.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
+from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
     QApplication,
@@ -53,6 +54,7 @@ from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
@@ -467,6 +469,42 @@ def test_wizard(
 
         do_all(qt_wallet)
         del wizard
+
+        def check_address_balances():
+            wallet = qt_wallet.wallet
+
+            # check that spent utxos do not count into the address balance
+            addresses = wallet.get_addresses()
+            assert addresses
+            total = 0
+            for address in addresses:
+                total += wallet.get_addr_balance(address).total
+
+            assert total
+            assert total == wallet.get_balance().total
+
+        check_address_balances()
+
+        def check_utxo_list():
+            qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
+            qt_wallet.uitx_creator.tabs_inputs.setCurrentWidget(qt_wallet.uitx_creator.tab_inputs_utxos)
+            QCoreApplication.processEvents()
+
+            utxo_list = qt_wallet.uitx_creator.utxo_list
+
+            total = 0
+            model = utxo_list._source_model
+            # Select rows with an ID in id_list
+            for row in range(model.rowCount()):
+                amount = model.data(
+                    model.index(row, utxo_list.Columns.AMOUNT), role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+                )
+                total += amount
+
+            assert total
+            assert total == qt_wallet.wallet.get_balance().total
+
+        check_utxo_list()
 
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()

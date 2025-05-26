@@ -206,31 +206,52 @@ poetry build -f wheel --output="$POETRY_WHEEL_DIR"
 pip install "$POETRY_WHEEL_DIR"/*.whl
 
 
+
 # ======================
-# Build the final binary
+# clean dist
 # ======================
-rm -rf ./dist/*   || true
-info "Faking timestamps..."
-find . -exec sudo touch -t '200101220000' {} + || true
+rm -rf ./dmg-package   || true
+rm -rf ./dist   || true
+mkdir -p dmg-package
+mkdir -p dist
+
 
 VERSION=$(git describe --tags --dirty --always)
 list_dirty_files
 
-info "Running PyInstaller to create macOS .app"
+
+
+# ======================
+# Build the final binary
+# ======================
+info "Faking timestamps..."
+find . -exec sudo touch -t '200101220000' {} + || true
+
+
+info "Running PyInstaller to create macOS .app in dist/${PACKAGE_NAME}"
 BITCOIN_SAFE_VERSION=$VERSION \
   pyinstaller --noconfirm --clean tools/build-mac/osx.spec || fail "PyInstaller failed."
 
 info "Finished building unsigned dist/${PACKAGE_NAME}. This hash should be reproducible:"
 find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256
 
+
+info "Moving dist/${PACKAGE_NAME} to dmg-package/"
+mv "dist/${PACKAGE_NAME}" dmg-package/
+
+info "Adding Applications symlink" 
+ln -s /Applications "dmg-package/Applications"
+touch -h -t '200101220000' "dmg-package/Applications"
+
 info "Creating unsigned .DMG"
 # Workaround resource busy bug on github on MacOS 13
 # https://github.com/actions/runner-images/issues/7522
+# package all of build/ to also include the Applications symlink 
 i=0
 until     hdiutil create \
             -fs HFS+ \
             -volname "$PACKAGE" \
-            -srcfolder "dist/$PACKAGE_NAME" \
+            -srcfolder "dmg-package" \
             "dist/bitcoin_safe-$VERSION-unsigned.dmg"     
 do
     if [ $i -eq 10 ]; then  
