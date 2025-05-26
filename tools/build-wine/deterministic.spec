@@ -7,6 +7,8 @@ from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 import sys, os
 
+import certifi
+
 PYPKG="bitcoin_safe"
 PROJECT_ROOT = "C:/bitcoin_safe"
 ICONS_FILE=f"{PROJECT_ROOT}/tools/resources/icon.ico"
@@ -33,6 +35,7 @@ binaries += [(f"{PROJECT_ROOT}/{PYPKG}/*.dll", '.')]
 print(f"Included binaries: {binaries}")
 
 datas = [
+    (certifi.where(), "certifi/"), # necessary on mac to avail ssl errors
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),
