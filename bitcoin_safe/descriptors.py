@@ -123,3 +123,34 @@ def from_multisig_wallet_export(
         address_type=matching_address_type,
         network=network,
     )
+
+
+def min_blockheight(address_type: AddressType) -> int:
+    """
+    Returns the minimum Bitcoin blockheight at which this address type
+    became (or becomes) usable on mainnet.
+    """
+    # SegWit (BIP141) activation block
+    BIP141_ACTIVATION = 481_824
+    # Taproot (BIP342) activation block
+    BIP342_ACTIVATION = 709_632
+
+    # Legacy (pre-SegWit) always available
+    if address_type is AddressTypes.p2pkh:
+        return 0
+
+    # All flavors of SegWit (nested or native), including P2WSH multisig
+    if address_type in (
+        AddressTypes.p2sh_p2wpkh,
+        AddressTypes.p2wpkh,
+        AddressTypes.p2sh_p2wsh,
+        AddressTypes.p2wsh,
+    ):
+        return BIP141_ACTIVATION
+
+    # Taproot
+    if address_type is AddressTypes.p2tr:
+        return BIP342_ACTIVATION
+
+    # Fallback
+    return 0
