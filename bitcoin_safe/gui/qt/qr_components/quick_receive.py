@@ -222,6 +222,8 @@ class QuickReceive(QWidget):
         self.content_widget_layout.addWidget(receive_group)
 
     def remove_box(self, group_box: ReceiveGroup) -> None:
+        group_box.setHidden(True)
+        group_box.close()
         group_box.setParent(None)  # type: ignore[call-overload]
 
     def remove_last_box(self) -> None:
