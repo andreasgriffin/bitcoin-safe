@@ -5,74 +5,74 @@
     <name>AbstractSignatureImporter</name>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation type="unfinished"></translation>
+        <translation>txid podpisanego psbt nie odpowiada oryginalnemu txid-owi</translation>
     </message>
     <message>
         <source>No additional signatures were added</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie dodano dodatkowych podpisów</translation>
     </message>
     <message>
         <source>bdk libary error. The txid should not be changed during finalizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd bibliotek bdk. Nie udało się zmienić txid w fazie końcowej</translation>
     </message>
 </context>
 <context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak adresu</translation>
     </message>
     <message>
         <source>Valid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawny adres</translation>
     </message>
     <message>
         <source>Invalid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny adres</translation>
     </message>
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
     <message>
         <source>Address descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Dekryptator adresów</translation>
     </message>
 </context>
 <context>
     <name>AddressDialog</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adres</translation>
     </message>
     <message>
         <source>Address of wallet &quot;{id}&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Adres portfela &quot;{id}&quot;</translation>
     </message>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaawansowane</translation>
     </message>
     <message>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation>Walidacja</translation>
     </message>
 </context>
 <context>
     <name>AddressEdit</name>
     <message>
         <source>Enter address here</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź adres</translation>
     </message>
 </context>
 <context>
     <name>AddressList</name>
     <message>
         <source>Address {address}</source>
-        <translation type="unfinished"></translation>
+        <translation>Adres {address}</translation>
     </message>
     <message>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>zmień</translation>
     </message>
     <message>
         <source>receiving</source>
