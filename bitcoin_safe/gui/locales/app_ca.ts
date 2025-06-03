@@ -5,37 +5,37 @@
     <name>AbstractSignatureImporter</name>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation type="unfinished"></translation>
+        <translation>El txid del PSBT signat no coincideix amb el txid original</translation>
     </message>
     <message>
         <source>No additional signatures were added</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;han afegit signatures addicionals</translation>
     </message>
     <message>
         <source>bdk libary error. The txid should not be changed during finalizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de la llibreria bdk. El txid no s&apos;hauria de canviar durant la finalització</translation>
     </message>
 </context>
 <context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta adreça</translation>
     </message>
     <message>
         <source>Valid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça vàlida</translation>
     </message>
     <message>
         <source>Invalid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça no vàlida</translation>
     </message>
 </context>
 <context>
     <name>AddressDetailsAdvanced</name>
     <message>
         <source>Address descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor d&apos;adreça</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     </message>
     <message>
         <source>Address of wallet &quot;{id}&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça de la cartera &quot;{id}&quot;</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -54,37 +54,37 @@
     </message>
     <message>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida</translation>
     </message>
 </context>
 <context>
     <name>AddressEdit</name>
     <message>
         <source>Enter address here</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix l&apos;adreça aquí</translation>
     </message>
 </context>
 <context>
     <name>AddressList</name>
     <message>
         <source>Address {address}</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça {address}</translation>
     </message>
     <message>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>canvi</translation>
     </message>
     <message>
         <source>receiving</source>
-        <translation type="unfinished"></translation>
+        <translation>recepció</translation>
     </message>
     <message>
         <source>change address</source>
-        <translation type="unfinished"></translation>
+        <translation>adreça de canvi</translation>
     </message>
     <message>
         <source>receiving address</source>
-        <translation type="unfinished"></translation>
+        <translation>adreça de recepció</translation>
     </message>
     <message>
         <source>Details</source>
@@ -92,7 +92,7 @@
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veure al explorador de blocs</translation>
     </message>
     <message>
         <source>Copy as csv</source>
@@ -100,19 +100,19 @@
     </message>
     <message>
         <source>Set category</source>
-        <translation type="unfinished"></translation>
+        <translation>Estableix categoria</translation>
     </message>
     <message>
         <source>Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Tx</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Index</translation>
     </message>
     <message>
         <source>Address</source>
@@ -139,22 +139,22 @@
     <name>AddressListWithToolbar</name>
     <message>
         <source>Show Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra el filtre</translation>
     </message>
     <message>
         <source>Generate to selected adddresses</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera a les adreces seleccionades</translation>
     </message>
 </context>
 <context>
     <name>AmountAnalyzer</name>
     <message>
         <source>Amount too small</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat massa petita</translation>
     </message>
     <message>
         <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat massa gran. Fes clic en una categoria amb fons suficients a l&apos;esquerra o selecciona les monedes a la pestanya avançada</translation>
     </message>
 </context>
 <context>
@@ -168,11 +168,11 @@
     <name>BackupSeed</name>
     <message>
         <source>Please complete the previous steps.</source>
-        <translation type="unfinished"></translation>
+        <translation>Completa els passos anteriors.</translation>
     </message>
     <message>
         <source>Print recovery sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimeix el full de recuperació</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -180,15 +180,15 @@
     </message>
     <message>
         <source>Print the pdf (it also contains the wallet descriptor)</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimeix el PDF (també conté el descriptor de la cartera)</translation>
     </message>
     <message>
         <source>Glue the {number} word seed onto the matching printed pdf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa la seed de {number} paraules al PDF imprès corresponent.</translation>
     </message>
     <message>
         <source>Glue the {number} word seed onto the printed pdf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa la seed de {number} paraules al PDF imprès.</translation>
     </message>
 </context>
 <context>
@@ -203,21 +203,21 @@
     </message>
     <message>
         <source>Unmatured</source>
-        <translation type="unfinished"></translation>
+        <translation>Immadur</translation>
     </message>
 </context>
 <context>
     <name>BaseChat</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut reconèixer {file_content} com a BitcoinData</translation>
     </message>
 </context>
 <context>
     <name>BaseDeviceItem</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Reanomena</translation>
     </message>
     <message>
         <source>Enter a name of device with {npub}</source>
@@ -225,7 +225,7 @@
     </message>
     <message>
         <source>Device name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom del dispositiu</translation>
     </message>
 </context>
 <context>
@@ -243,43 +243,43 @@
     </message>
     <message>
         <source>Go to {untrusted}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ves a {untrusted}</translation>
     </message>
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Per completar la connexió, accepta la meva sol·licitud {id} a l&apos;altre dispositiu {other}.</translation>
     </message>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix un nom per al dispositiu amb {npub}</translation>
     </message>
 </context>
 <context>
     <name>BitcoinDmChatGui</name>
     <message>
         <source>Me</source>
-        <translation type="unfinished"></translation>
+        <translation>Jo</translation>
     </message>
 </context>
 <context>
     <name>BitcoinQuickReceive</name>
     <message>
         <source>Quick Receive</source>
-        <translation type="unfinished"></translation>
+        <translation>Recepció ràpida</translation>
     </message>
 </context>
 <context>
     <name>BlockingWaitingDialog</name>
     <message>
         <source>Please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Si us plau, espera</translation>
     </message>
 </context>
 <context>
     <name>ButtonList</name>
     <message>
         <source>Open containing folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre la carpeta que el conté</translation>
     </message>
 </context>
 <context>
@@ -291,44 +291,45 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation type="unfinished"></translation>
+        <translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href=&quot;{url}&quot;&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
     </message>
 </context>
 <context>
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation type="unfinished"></translation>
+        <translation>Exchange amb KYC</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation type="unfinished"></translation>
+        <translation>Privat</translation>
     </message>
     <message>
         <source>category</source>
-        <translation type="unfinished"></translation>
+        <translation>categoria</translation>
     </message>
 </context>
 <context>
     <name>Chat</name>
     <message>
         <source>You can only send only PSBTs or transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Només pots enviar PSBT o transaccions</translation>
     </message>
 </context>
 <context>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
-        <translation type="unfinished"></translation>
+        <translation>Escriu el teu missatge aquí...</translation>
     </message>
     <message>
         <source>Share a PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparteix un PSBT</translation>
     </message>
     <message>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia</translation>
     </message>
     <message>
         <source>Open Transaction/PSBT</source>
@@ -343,98 +344,98 @@
     <name>CloseButton</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanca</translation>
     </message>
 </context>
 <context>
     <name>ConfirmedBlock</name>
     <message>
         <source>Block {n}</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloc {n}</translation>
     </message>
 </context>
 <context>
     <name>CustomListWidget</name>
     <message>
         <source>Delete Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimeix categoria</translation>
     </message>
 </context>
 <context>
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Missing Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta descriptor</translation>
     </message>
     <message>
         <source>Invalid Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor no vàlid</translation>
     </message>
 </context>
 <context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuració de la cartera no finalitzada. Finalitza abans de crear un PDF de còpia de seguretat.</translation>
     </message>
     <message>
         <source>Descriptor not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor no vàlid</translation>
     </message>
 </context>
 <context>
     <name>DescriptorExport</name>
     <message>
         <source>Export Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta descriptor</translation>
     </message>
 </context>
 <context>
     <name>DescriptorUI</name>
     <message>
         <source>Required Signers</source>
-        <translation type="unfinished"></translation>
+        <translation>Signadors requerits</translation>
     </message>
     <message>
         <source>Import from Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa des del porta-retalls</translation>
     </message>
     <message>
         <source>Input corrected</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrada corregida</translation>
     </message>
     <message>
         <source>Descriptor unchanged</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor sense canvis</translation>
     </message>
     <message>
         <source>New descriptor entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Nou descriptor introduït</translation>
     </message>
     <message>
         <source>Scan Addresses ahead</source>
-        <translation type="unfinished"></translation>
+        <translation>Escaneja adreces per endavant</translation>
     </message>
     <message>
         <source>Paste or scan your descriptor, if you restore a wallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa o escaneja el teu descriptor, si estàs restaurant una cartera.</translation>
     </message>
     <message>
         <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquest &quot;descriptor&quot; conté tota la informació per reconstruir la cartera.  Fes-ne una còpia de seguretat per poder recuperar els fons!</translation>
     </message>
     <message>
         <source>Wallet Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propietats de la cartera</translation>
     </message>
     <message>
         <source>Address Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipus d&apos;adreça</translation>
     </message>
     <message>
         <source>Wallet Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor de la cartera</translation>
     </message>
     <message>
         <source>Import</source>
@@ -442,223 +443,223 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Read QR Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Llegeix codi QR</translation>
     </message>
 </context>
 <context>
     <name>DeviceDialog</name>
     <message>
         <source>Select the detected device</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona el dispositiu detectat</translation>
     </message>
 </context>
 <context>
     <name>DeviceManager</name>
     <message>
         <source>Trusted</source>
-        <translation type="unfinished"></translation>
+        <translation>De confiança</translation>
     </message>
     <message>
         <source>Untrusted</source>
-        <translation type="unfinished"></translation>
+        <translation>No de confiança</translation>
     </message>
 </context>
 <context>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
-        <translation type="unfinished"></translation>
+        <translation>Col·loca cada còpia de seguretat de la seed i signador de maquinari en un lloc segur, com:</translation>
     </message>
     <message>
         <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-        <translation type="unfinished"></translation>
+        <translation>La còpia de seguretat de la seed {j} i el signador de maquinari {j} haurien d&apos;estar a la ubicació {j}</translation>
     </message>
     <message>
         <source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria els llocs segurs amb cura, tenint en compte que hauràs d&apos;anar a {m} dels {n} per gastar des de la teva cartera multisignatura.</translation>
     </message>
     <message>
         <source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-        <translation type="unfinished"></translation>
+        <translation>Desa la còpia de seguretat de la seed en un lloc &lt;b&gt;molt&lt;/b&gt; segur (com una caixa forta).</translation>
     </message>
     <message>
         <source>The seed backup (24 words) give total control over the funds.</source>
-        <translation type="unfinished"></translation>
+        <translation>La còpia de seguretat de la seed (24 paraules) dóna control total sobre els fons.</translation>
     </message>
     <message>
         <source>Store the   hardware signer   in secure location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desa el signador de maquinari en un lloc segur.</translation>
     </message>
 </context>
 <context>
     <name>Downloader</name>
     <message>
         <source>Download Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progrés de la descàrrega</translation>
     </message>
     <message>
         <source>Download {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Descarrega {}</translation>
     </message>
     <message>
         <source>Open download folder: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre la carpeta de descàrregues: {}</translation>
     </message>
 </context>
 <context>
     <name>DragAndDropButtonEdit</name>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
 </context>
 <context>
     <name>EnlargableImageWidgetWithButton</name>
     <message>
         <source>Enlarge</source>
-        <translation type="unfinished"></translation>
+        <translation>Amplia</translation>
     </message>
 </context>
 <context>
     <name>ExportDataSimple</name>
     <message>
         <source>Enlarge {} QR</source>
-        <translation type="unfinished"></translation>
+        <translation>Amplia el QR de {}</translation>
     </message>
     <message>
         <source>Save as image</source>
-        <translation type="unfinished"></translation>
+        <translation>Desa com a imatge</translation>
     </message>
     <message>
         <source>Export {data_type} to hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta {data_type} al signador de maquinari</translation>
     </message>
     <message>
         <source>Image (*.{image_format})</source>
-        <translation type="unfinished"></translation>
+        <translation>Imatge (*.{image_format})</translation>
     </message>
 </context>
 <context>
     <name>FeeGroup</name>
     <message>
         <source>Fee</source>
-        <translation type="unfinished"></translation>
+        <translation>Comissió</translation>
     </message>
     <message>
         <source>Approximate fee rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxa de comissió aproximada</translation>
     </message>
     <message>
         <source>in ~{n}. Block</source>
-        <translation type="unfinished"></translation>
+        <translation>en ~{n}. bloc</translation>
     </message>
     <message>
         <source>{rate} is the minimum for {rbf}</source>
-        <translation type="unfinished"></translation>
+        <translation>{rate} és el mínim per a {rbf}</translation>
     </message>
     <message>
         <source>{rate} combined fee rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxa de comissió combinada {rate}</translation>
     </message>
     <message>
         <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquesta transacció té {number} progenitors sense confirmar amb una taxa de comissió combinada de {parents_fee_rate}</translation>
     </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxa de comissió alta!</translation>
     </message>
     <message>
         <source>The high priority mempool fee rate is {rate}</source>
-        <translation type="unfinished"></translation>
+        <translation>La taxa de comissió de la mempool d&apos;alta prioritat és {rate}</translation>
     </message>
 </context>
 <context>
     <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;ha enviat {sent}!</translation>
     </message>
     <message>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-        <translation type="unfinished"></translation>
+        <translation>La comissió de transacció és: {fee}, i s&apos;ha enviat {sent}!</translation>
     </message>
     <message>
         <source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation type="unfinished"></translation>
+        <translation>La comissió de transacció estimada és: {fee}, que és el {percent}% del valor enviat {sent}</translation>
     </message>
     <message>
         <source>The transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation type="unfinished"></translation>
+        <translation>La comissió de transacció és: {fee}, que és el {percent}% del valor enviat {sent}</translation>
     </message>
     <message>
         <source>High fee ratio: {ratio}%.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ràtio de comissió alta: {ratio}%.</translation>
     </message>
 </context>
 <context>
     <name>FileToolButton</name>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta</translation>
     </message>
     <message>
         <source>Copy {name}</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia {name}</translation>
     </message>
     <message>
         <source>Copy TxId</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia TxId</translation>
     </message>
     <message>
         <source>Copy JSON</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia JSON</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta a fitxer</translation>
     </message>
     <message>
         <source>Not available</source>
-        <translation type="unfinished"></translation>
+        <translation>No disponible</translation>
     </message>
 </context>
 <context>
     <name>FingerprintAnalyzer</name>
     <message>
         <source>Missing Fingerprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta empremta digital</translation>
     </message>
     <message>
         <source>Invalid Fingerprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Empremta digital no vàlida</translation>
     </message>
 </context>
 <context>
     <name>FloatingButtonBar</name>
     <message>
         <source>Prefill transaction fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefereix camps de transacció</translation>
     </message>
     <message>
         <source>Create Transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea transacció</translation>
     </message>
     <message>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Torna-ho a provar</translation>
     </message>
     <message>
         <source>Yes, I see the transaction in the history</source>
-        <translation type="unfinished"></translation>
+        <translation>Sí, veig la transacció a l&apos;historial</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -669,11 +670,11 @@ the sending value {sent}</source>
     <name>GenerateSeed</name>
     <message>
         <source>Sticker Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta adhesiva</translation>
     </message>
     <message>
         <source>Please enter the name (sticker label) of the hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix el nom (etiqueta adhesiva) del signador de maquinari</translation>
     </message>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
@@ -681,26 +682,26 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>The setup didnt complete. Please repeat.</source>
-        <translation type="unfinished"></translation>
+        <translation>La configuració no s&apos;ha completat. Torna-ho a repetir.</translation>
     </message>
     <message>
         <source>Success! Please complete this step with all hardware signers and then click Next.</source>
-        <translation type="unfinished"></translation>
+        <translation>Èxit! Completa aquest pas amb tots els signadors de maquinari i després fes clic a Següent.</translation>
     </message>
 </context>
 <context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa fitxer o text</translation>
     </message>
     <message>
         <source>Export File</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta fitxer</translation>
     </message>
     <message>
         <source>QR Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Codi QR</translation>
     </message>
     <message>
         <source>USB</source>
@@ -715,15 +716,15 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Not broadcasted.</source>
-        <translation type="unfinished"></translation>
+        <translation>No difosa.</translation>
     </message>
     <message>
         <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-        <translation type="unfinished"></translation>
+        <translation>No es pot trobar la cartera per a la transacció {txid}. Obre primer la cartera corresponent.</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Estat</translation>
     </message>
     <message>
         <source>Category</source>
@@ -731,11 +732,11 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat</translation>
     </message>
     <message>
         <source>Balance</source>
@@ -743,43 +744,43 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Txid</source>
-        <translation type="unfinished"></translation>
+        <translation>Txid</translation>
     </message>
     <message>
         <source>{number} Confirmations</source>
-        <translation type="unfinished"></translation>
+        <translation>{number} confirmacions</translation>
     </message>
     <message>
         <source>Waiting to be included in a block</source>
-        <translation type="unfinished"></translation>
+        <translation>Esperant ser inclosa en un bloc</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportClipboard</name>
     <message>
         <source>Share</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparteix</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportFile</name>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxer</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportQR</name>
     <message>
         <source>QR</source>
-        <translation type="unfinished"></translation>
+        <translation>QR</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportUSB</name>
     <message>
         <source>USB</source>
-        <translation type="unfinished"></translation>
+        <translation>USB</translation>
     </message>
 </context>
 <context>
@@ -797,7 +798,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Skip step</source>
-        <translation type="unfinished"></translation>
+        <translation>Omet pas</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -805,11 +806,11 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Next signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador següent</translation>
     </message>
     <message>
         <source>Previous signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador anterior</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -820,30 +821,30 @@ the sending value {sent}</source>
     <name>KeyOriginAnalyzer</name>
     <message>
         <source>Missing Key origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta origen de clau</translation>
     </message>
     <message>
         <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation type="unfinished"></translation>
+        <translation>La informació proporcionada és per a {key_origin_network}. Proporciona un xPub per a la xarxa {network}</translation>
     </message>
     <message>
         <source>The provided account {provided_account} differs from the default account {default_account}.</source>
-        <translation type="unfinished"></translation>
+        <translation>El compte proporcionat {provided_account} difereix del compte per defecte {default_account}.</translation>
     </message>
     <message>
         <source>Unexpected xpub origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Origen d&apos;xpub inesperat</translation>
     </message>
 </context>
 <context>
     <name>KeyStoreUI</name>
     <message>
         <source>Import fingerprint and xpub</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa empremta digital i xpub</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
-        <translation type="unfinished"></translation>
+        <translation>{data_type} no es pot utilitzar aquí.</translation>
     </message>
     <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
@@ -851,7 +852,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -859,28 +860,28 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripció</translation>
     </message>
     <message>
         <source>Fingerprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Empremta digital</translation>
     </message>
     <message>
         <source>xPub Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Origen xPub</translation>
     </message>
     <message>
         <source>xPub</source>
-        <translation type="unfinished"></translation>
+        <translation>xPub</translation>
     </message>
     <message>
         <source>Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seed</translation>
     </message>
     <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom del dispositiu de signatura: ...... Ubicació del dispositiu de signatura: .....</translation>
     </message>
     <message>
         <source>OK</source>
@@ -888,297 +889,297 @@ Location of signing device: .....</source>
     </message>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Assegura&apos;t que no hi hagi altres programes accedint al signador de maquinari</translation>
     </message>
     <message>
         <source>Please enter a valid key origin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix un origen de clau vàlid.</translation>
     </message>
     <message>
         <source>{xpub} is not a valid public xpub</source>
-        <translation type="unfinished"></translation>
+        <translation>{xpub} no és un xpub públic vàlid</translation>
     </message>
     <message>
         <source>Please import the information from all hardware signers first</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa primer la informació de tots els signadors de maquinari</translation>
     </message>
     <message>
         <source>Please paste the exported file (like sparrow-export.json):</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el fitxer exportat (com sparrow-export.json):</translation>
     </message>
     <message>
         <source>Please paste the exported file (like sparrow-export.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el fitxer exportat (com sparrow-export.json)</translation>
     </message>
     <message>
         <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;estàndard per al tipus d&apos;adreça seleccionat {type} és {expected_key_origin}.  Corregeix-ho si no estàs segur.</translation>
     </message>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;origen xPub {key_origin} i l&apos;xPub van junts. Tria el parell d&apos;origen xPub correcte.</translation>
     </message>
     <message>
         <source>{msg}
 Do you want to proceed anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>{msg} Vols continuar igualment?</translation>
     </message>
     <message>
         <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;han trobat dades de signador per a l&apos;origen Xpub esperat {key_origin}. Si vols importar un número de compte no per defecte, especifica l&apos;origen Xpub i torna a escanejar.</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa els descriptors al camp descriptor a la part superior dreta.</translation>
     </message>
 </context>
 <context>
     <name>KeyStoreUIs</name>
     <message>
         <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-        <translation type="unfinished"></translation>
+        <translation>Omplint els {number} signadors amb les empremtes digitals {fingerprints}</translation>
     </message>
     <message>
         <source>Please import the complete data for Signer {i}!</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa les dades completes per al signador {i}!</translation>
     </message>
     <message>
         <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Has importat la mateixa empremta digital diverses vegades!!! Utilitza un dispositiu de signatura diferent.</translation>
     </message>
     <message>
         <source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Has importat el mateix xpub diverses vegades!!! Utilitza un dispositiu de signatura diferent.</translation>
     </message>
     <message>
         <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-        <translation type="unfinished"></translation>
+        <translation>Els orígens de clau importats {key_origins} difereixen! Verifica-ho dues vegades si era la teva intenció.</translation>
     </message>
 </context>
 <context>
     <name>LabelBackup</name>
     <message>
         <source>Encrypted cloud backup of the address labels and categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Còpia de seguretat xifrada al núvol de les etiquetes i categories d&apos;adreces</translation>
     </message>
     <message>
         <source>Backup secret sync key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Clau secreta de sincronització de còpia de seguretat:</translation>
     </message>
     <message>
         <source>Multi-computer synchronization and chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronització i xat multiordinador</translation>
     </message>
     <message>
         <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria ordinadors de confiança a la pestanya Sync &amp; Chat de cada ordinador.</translation>
     </message>
     <message>
         <source>Synchronization video</source>
-        <translation type="unfinished"></translation>
+        <translation>Vídeo de sincronització</translation>
     </message>
     <message>
         <source>Collaboration video</source>
-        <translation type="unfinished"></translation>
+        <translation>Vídeo de col·laboració</translation>
     </message>
     <message>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Finalitza</translation>
     </message>
     <message>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilita</translation>
     </message>
 </context>
 <context>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} min</source>
-        <translation type="unfinished"></translation>
+        <translation>~en {t} min</translation>
     </message>
     <message>
         <source>~in {t} hours</source>
-        <translation type="unfinished"></translation>
+        <translation>~en {t} hores</translation>
     </message>
 </context>
 <context>
     <name>LicenseDialog</name>
     <message>
         <source>License Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informació de llicència</translation>
     </message>
 </context>
 <context>
     <name>LinkingWarningBar</name>
     <message>
         <source>{category} (in wallet {wallet_ids})</source>
-        <translation type="unfinished"></translation>
+        <translation>{category} (a la cartera {wallet_ids})</translation>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquesta transacció combina les categories de monedes {categories} i les fa enllaçables!</translation>
     </message>
 </context>
 <context>
     <name>LoadingWalletTab</name>
     <message>
         <source>Loading, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregant, espera...</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanca pestanya</translation>
     </message>
     <message>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporta</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reanomena cartera</translation>
     </message>
     <message>
         <source>&amp;Change Password</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Canvia contrasenya</translation>
     </message>
     <message>
         <source>&amp;Export Wallet PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporta PDF de la cartera</translation>
     </message>
     <message>
         <source>&amp;Generate PDF balance Statement</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Genera estat PDF de saldo</translation>
     </message>
     <message>
         <source>Export &amp;Descriptor for hardware signers</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta &amp;descriptor per a signadors de maquinari</translation>
     </message>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Registra multisig amb signadors de maquinari</translation>
     </message>
     <message>
         <source>Re&amp;fresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Actu&amp;alitza</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei&amp;nes</translation>
     </message>
     <message>
         <source>&amp;USB Signer Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines de signador &amp;USB</translation>
     </message>
     <message>
         <source>Close all transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanca totes les transaccions</translation>
     </message>
     <message>
         <source>&amp;Load Transaction or PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Carrega transacció o &amp;PSBT</translation>
     </message>
     <message>
         <source>From &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>Des de &amp;fitxer</translation>
     </message>
     <message>
         <source>QR &amp;Scanner</source>
-        <translation type="unfinished"></translation>
+        <translation>Lector &amp;QR</translation>
     </message>
     <message>
         <source>From &amp;text</source>
-        <translation type="unfinished"></translation>
+        <translation>Des de &amp;text</translation>
     </message>
     <message>
         <source>From &amp;QR Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Des de codi &amp;QR</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Configuració</translation>
     </message>
     <message>
         <source>&amp;Network Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuració de &amp;xarxa</translation>
     </message>
     <message>
         <source>&amp;Show/Hide Tutorial</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostra/Amaga tutorial</translation>
     </message>
     <message>
         <source>&amp;Languages</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Idiomes</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quant a</translation>
     </message>
     <message>
         <source>&amp;Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cartera</translation>
     </message>
     <message>
         <source>&amp;Version: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Versió: {}</translation>
     </message>
     <message>
         <source>&amp;Check for update</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comprova actualitzacions</translation>
     </message>
     <message>
         <source>&amp;License</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Llicència</translation>
     </message>
     <message>
         <source>&amp;Show Logs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostra registres</translation>
     </message>
     <message>
         <source>&amp;Feedback / Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comentaris / Contacte</translation>
     </message>
     <message>
         <source>&amp;Contact via Nostr</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Contacta via Nostr</translation>
     </message>
     <message>
         <source>&amp;Open issue in github</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Obre incidència a GitHub</translation>
     </message>
     <message>
         <source>&amp;Mail feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Envia comentaris per correu</translation>
     </message>
     <message>
         <source>&amp;Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Documentació</translation>
     </message>
     <message>
         <source>&amp;Knowledge</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Coneixement</translation>
     </message>
     <message>
         <source>&amp;New Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nova cartera</translation>
     </message>
     <message>
         <source>Please select the wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona la cartera</translation>
     </message>
     <message>
         <source>Please select the wallet first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona primer la cartera.</translation>
     </message>
     <message>
         <source>Please select a Multisignature wallet first</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona primer una cartera multisignatura</translation>
     </message>
     <message>
         <source>Open Transaction/PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre Transacció/PSBT</translation>
     </message>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
@@ -1190,146 +1191,146 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Selected file: {file_path}</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxer seleccionat: {file_path}</translation>
     </message>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap cartera oberta. Obre la cartera emissora per editar aquesta transacció.</translation>
     </message>
     <message>
         <source> Please open the sender wallet to edit this transaction.</source>
-        <translation type="unfinished"></translation>
+        <translation> Obre la cartera emissora per editar aquesta transacció.</translation>
     </message>
     <message>
         <source>Could not decode this string</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut descodificar aquesta cadena</translation>
     </message>
     <message>
         <source>&amp;Open Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Obre cartera</translation>
     </message>
     <message>
         <source>QR Scanner</source>
-        <translation type="unfinished"></translation>
+        <translation>Lector QR</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre transacció o PSBT</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>D&apos;acord</translation>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa la teva transacció Bitcoin o PSBT aquí, o arrossega un fitxer</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa la teva transacció Bitcoin o PSBT aquí o arrossega un fitxer</translation>
     </message>
     <message>
         <source>Transaction {txid}</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció {txid}</translation>
     </message>
     <message>
         <source>PSBT {txid}</source>
-        <translation type="unfinished"></translation>
+        <translation>PSBT {txid}</translation>
     </message>
     <message>
         <source>Open Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre cartera</translation>
     </message>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxers de cartera (*.wallet);;Tots els fitxers (*)</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.</source>
-        <translation type="unfinished"></translation>
+        <translation>La cartera {file_path} ja està oberta.</translation>
     </message>
     <message>
         <source>Open &amp;Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre &amp;recents</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>La cartera {file_path} ja està oberta.  Vols obrir-la igualment?</translation>
     </message>
     <message>
         <source>Wallet already open</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera ja oberta</translation>
     </message>
     <message>
         <source>There is no such file: {file_path}</source>
-        <translation type="unfinished"></translation>
+        <translation>No existeix el fitxer: {file_path}</translation>
     </message>
     <message>
         <source>Please enter the password for {filename}:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix la contrasenya per a {filename}:</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja hi ha una cartera amb id {name} oberta. Tanca-la primer.</translation>
     </message>
     <message>
         <source>new</source>
-        <translation type="unfinished"></translation>
+        <translation>nova</translation>
     </message>
     <message>
         <source>A wallet with id {name} is already open.  </source>
-        <translation type="unfinished"></translation>
+        <translation>Ja hi ha una cartera amb id {name} oberta.  </translation>
     </message>
     <message>
         <source>Please complete the wallet setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Completa la configuració de la cartera.</translation>
     </message>
     <message>
         <source>Close wallet {id}?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tancar cartera {id}?</translation>
     </message>
     <message>
         <source>Close wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Tancar cartera</translation>
     </message>
     <message>
         <source>&amp;Save Current Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Desa la cartera actual</translation>
     </message>
     <message>
         <source>Do you want to save the PSBT {id}?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vols desar el PSBT {id}?</translation>
     </message>
     <message>
         <source>Save PSBT?</source>
-        <translation type="unfinished"></translation>
+        <translation>Desar PSBT?</translation>
     </message>
     <message>
         <source>Closing tab {name}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tancant pestanya {name}</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cerca</translation>
     </message>
     <message>
         <source>&amp;Change</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Canvia</translation>
     </message>
 </context>
 <context>
     <name>MempoolButtons</name>
     <message>
         <source>Fetch new mempool data</source>
-        <translation type="unfinished"></translation>
+        <translation>Recupera noves dades de la mempool</translation>
     </message>
     <message>
         <source>Next Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Següent bloc</translation>
     </message>
     <message>
         <source>{n}. Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloc {n}</translation>
     </message>
 </context>
 <context>
@@ -1340,26 +1341,26 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>~{n}. Block</source>
-        <translation type="unfinished"></translation>
+        <translation>~Bloc {n}</translation>
     </message>
 </context>
 <context>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia com a CSV</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia</translation>
     </message>
     <message>
         <source>Export csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta CSV</translation>
     </message>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers de text (*.csv)</translation>
     </message>
     <message>
         <source>No file selected</source>
@@ -1374,96 +1375,96 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>SSL:</source>
-        <translation type="unfinished"></translation>
+        <translation>SSL:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode:</translation>
     </message>
     <message>
         <source>IP Address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça IP:</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom d&apos;usuari:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya:</translation>
     </message>
     <message>
         <source>Mempool Instance URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL de la instància Mempool</translation>
     </message>
     <message>
         <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-        <translation type="unfinished"></translation>
+        <translation>El servidor intermediari no s&apos;aplica a la funció Sync&amp;Chat!</translation>
     </message>
     <message>
         <source>Proxy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy:</translation>
     </message>
     <message>
         <source>Apply &amp;&amp; Shutdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplica &amp;&amp; Apaga</translation>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Automàtic</translation>
     </message>
     <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-        <translation type="unfinished"></translation>
+        <translation>Respostes:     {name}: {status}     Instància Mempool: {server}</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina &apos;{scheme}&apos; de l&apos;URL d&apos;electrum</translation>
     </message>
     <message>
         <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
-        <translation type="unfinished"></translation>
+        <translation>Estàs segur que &apos;{scheme}&apos; és correcte a l&apos;URL d&apos;esplora?</translation>
     </message>
     <message>
         <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>El format per a adreces tor hauria de ser &apos;{scheme}&apos;</translation>
     </message>
     <message>
         <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova &apos;{scheme}&apos; al principi de l&apos;URL de la mempool</translation>
     </message>
     <message>
         <source>Error in server connection.
 {responses}
 
  Do you want to proceed anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la connexió amb el servidor. {responses}   Vols continuar igualment?</translation>
     </message>
     <message>
         <source>Open Tor proxy configuration documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre la documentació de configuració del proxy Tor</translation>
     </message>
     <message>
         <source>Test Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova la connexió</translation>
     </message>
     <message>
         <source>Network Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuració de xarxa</translation>
     </message>
     <message>
         <source>Blockchain data source</source>
-        <translation type="unfinished"></translation>
+        <translation>Font de dades de la cadena de blocs</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <source>Press ⬇ arrow key for suggestions</source>
@@ -1471,157 +1472,157 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Enable SSL</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilita SSL</translation>
     </message>
 </context>
 <context>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Create new wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea nova cartera</translation>
     </message>
     <message>
         <source>Choose Single Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria signatura única</translation>
     </message>
     <message>
         <source>2 of 3 Multi-Signature Wal</source>
-        <translation type="unfinished"></translation>
+        <translation>2 de 3 cartera multisignatura</translation>
     </message>
     <message>
         <source>Best for large funds</source>
-        <translation type="unfinished"></translation>
+        <translation>Millor per a fons grans</translation>
     </message>
     <message>
         <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-        <translation type="unfinished"></translation>
+        <translation>Si es perd o es roba 1 seed, tots els fons es poden transferir a una cartera nova amb les 2 seeds restants + descriptor de la cartera (codi QR)</translation>
     </message>
     <message>
         <source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Es necessiten 3 ubicacions segures (cadascuna amb 1 còpia de seguretat de la seed   + descriptor de la cartera)</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>El descriptor de la cartera (codi QR) és necessari per recuperar la cartera</translation>
     </message>
     <message>
         <source>3 signing devices</source>
-        <translation type="unfinished"></translation>
+        <translation>3 dispositius de signatura</translation>
     </message>
     <message>
         <source>Choose Multi-Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria multisignatura</translation>
     </message>
     <message>
         <source>Custom or import existing Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalitza o importa cartera existent</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalitza la cartera segons les teves necessitats</translation>
     </message>
     <message>
         <source>Single Signature Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera de signatura única</translation>
     </message>
     <message>
         <source>Less support material online in case of recovery</source>
-        <translation type="unfinished"></translation>
+        <translation>Menys material d&apos;ajuda en línia en cas de recuperació</translation>
     </message>
     <message>
         <source>Create custom wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea cartera personalitzada</translation>
     </message>
     <message>
         <source>Best for medium-sized funds</source>
-        <translation type="unfinished"></translation>
+        <translation>Millor per a fons de mida mitjana</translation>
     </message>
     <message>
         <source>Pros:</source>
-        <translation type="unfinished"></translation>
+        <translation>Avantatges:</translation>
     </message>
     <message>
         <source>1 seed (24 secret words) is all you need to access your funds</source>
-        <translation type="unfinished"></translation>
+        <translation>1 seed (24 paraules secretes) és tot el que necessites per accedir als teus fons</translation>
     </message>
     <message>
         <source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-        <translation type="unfinished"></translation>
+        <translation>Es necessita 1 ubicació segura per desar la còpia de seguretat de la seed (en paper o acer)</translation>
     </message>
     <message>
         <source>Cons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inconvenients:</translation>
     </message>
     <message>
         <source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-        <translation type="unfinished"></translation>
+        <translation>Si et fan enganyar i dones la teva seed als pirates, els teus Bitcoin es robaran immediatament</translation>
     </message>
     <message>
         <source>1 signing devices</source>
-        <translation type="unfinished"></translation>
+        <translation>1 dispositiu de signatura</translation>
     </message>
 </context>
 <context>
     <name>NostrSync</name>
     <message>
         <source>Group Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Xat de grup</translation>
     </message>
 </context>
 <context>
     <name>NostrSyncWithSingleChats</name>
     <message>
         <source>Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Xat</translation>
     </message>
 </context>
 <context>
     <name>NotificationBar</name>
     <message>
         <source>Close notification</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanca notificació</translation>
     </message>
 </context>
 <context>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Change Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Canvia xarxa</translation>
     </message>
     <message>
         <source>Network = {network}. The coins are worthless!</source>
-        <translation type="unfinished"></translation>
+        <translation>Xarxa = {network}. Les monedes no tenen valor!</translation>
     </message>
 </context>
 <context>
     <name>PasswordCreation</name>
     <message>
         <source>Create Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea contrasenya</translation>
     </message>
     <message>
         <source>Enter your password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix la teva contrasenya:</translation>
     </message>
     <message>
         <source>Show Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra contrasenya</translation>
     </message>
     <message>
         <source>Re-enter your password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Torna a introduir la contrasenya:</translation>
     </message>
     <message>
         <source>Submit</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia</translation>
     </message>
     <message>
         <source>Hide Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Amaga contrasenya</translation>
     </message>
     <message>
         <source>Passwords do not match!</source>
-        <translation type="unfinished"></translation>
+        <translation>Les contrasenyes no coincideixen!</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1632,11 +1633,11 @@ Do you want to proceed anyway?</source>
     <name>PasswordQuestion</name>
     <message>
         <source>Password Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrada de contrasenya</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix la teva contrasenya:</translation>
     </message>
     <message>
         <source>Show Password</source>
@@ -1655,14 +1656,14 @@ Do you want to proceed anyway?</source>
     <name>PoisoningWarningBar</name>
     <message>
         <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
-        <translation type="unfinished"></translation>
+        <translation>Avís! Aquesta transacció implica adreces enganyosament semblants. Pot ser un atac d&apos;enverinament d&apos;adreces. Les adreces similars són  &lt;br&gt;{addresses}.&lt;br&gt; Revisa amb cura tots els detalls de la transacció!</translation>
     </message>
 </context>
 <context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Configura cartera</translation>
     </message>
 </context>
 <context>
@@ -1673,124 +1674,124 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Backup saved to {filename}</source>
-        <translation type="unfinished"></translation>
+        <translation>Còpia de seguretat desada a {filename}</translation>
     </message>
     <message>
         <source>Backup failed. Aborting Changes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la còpia de seguretat. S&apos;estan cancel·lant els canvis.</translation>
     </message>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
-        <translation type="unfinished"></translation>
+        <translation>No es pot moure el fitxer de la cartera, perquè {file_path} existeix</translation>
     </message>
     <message>
         <source>Save wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Desa cartera</translation>
     </message>
     <message>
         <source>All Files (*);;Wallet Files (*.wallet)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers de cartera (*.wallet)</translation>
     </message>
     <message>
         <source>Are you SURE you don&apos;t want save the wallet {id}?</source>
-        <translation type="unfinished"></translation>
+        <translation>Estàs SEGUR que no vols desar la cartera {id}?</translation>
     </message>
     <message>
         <source>Delete wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimeix cartera</translation>
     </message>
     <message>
         <source>Password incorrect</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya incorrecta</translation>
     </message>
     <message>
         <source>Change password</source>
-        <translation type="unfinished"></translation>
+        <translation>Canvia contrasenya</translation>
     </message>
     <message>
         <source>New password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova contrasenya:</translation>
     </message>
     <message>
         <source>Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptor</translation>
     </message>
     <message>
         <source>Wallet saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera desada</translation>
     </message>
     <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Les transaccions  {txs}  a la cartera &apos;{wallet}&apos; s&apos;han eliminat de l&apos;historial!!!</translation>
     </message>
     <message>
         <source>Do you want to save a copy of these transactions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vols desar una còpia d&apos;aquestes transaccions?</translation>
     </message>
     <message>
         <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova transacció a la cartera &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
         <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation type="unfinished"></translation>
+        <translation>{number} noves transaccions a la cartera &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
         <source>Rename or merge categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Reanomena o fusiona categories</translation>
     </message>
     <message>
         <source>Choose a new name, or an existing name for merging:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria un nom nou o un nom existent per fusionar:</translation>
     </message>
     <message>
         <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-        <translation type="unfinished"></translation>
+        <translation>Les adreces {used_addresses} ja tenen transaccions que enllacen a altres adreces. Segur que vols canviar la categoria?</translation>
     </message>
     <message>
         <source>Syncing with {server}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronitzant amb {server}</translation>
     </message>
     <message>
         <source>Connected to {server}</source>
-        <translation type="unfinished"></translation>
+        <translation>Connectat a {server}</translation>
     </message>
     <message>
         <source>Sync &amp;&amp; Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Sync &amp;&amp; Xat</translation>
     </message>
     <message>
         <source>Disconnected from {server}</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconnectat de {server}</translation>
     </message>
     <message>
         <source>Click for new address</source>
-        <translation type="unfinished"></translation>
+        <translation>Fes clic per obtenir una nova adreça</translation>
     </message>
     <message>
         <source>{num_inputs} Inputs: {inputs}</source>
-        <translation type="unfinished"></translation>
+        <translation>{num_inputs} entrades: {inputs}</translation>
     </message>
     <message>
         <source>start updating lists</source>
-        <translation type="unfinished"></translation>
+        <translation>iniciant actualització de llistes</translation>
     </message>
     <message>
         <source>finished updating lists</source>
-        <translation type="unfinished"></translation>
+        <translation>actualització de llistes finalitzada</translation>
     </message>
     <message>
         <source>Export labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta etiquetes</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers JSON (*.jsonl);;Fitxers JSON (*.json)</translation>
     </message>
     <message>
         <source>No file selected</source>
@@ -1798,31 +1799,31 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Import labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa etiquetes</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers JSONL (*.jsonl);;Fitxers JSON (*.json)</translation>
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historial</translation>
     </message>
     <message>
         <source>Successfully updated {number} Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;han actualitzat correctament {number} etiquetes</translation>
     </message>
     <message>
         <source>Import Electrum Wallet labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa etiquetes de cartera Electrum</translation>
     </message>
     <message>
         <source>All Files (*);;JSON Files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers JSON (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
-        <translation type="unfinished"></translation>
+        <translation>Rebre</translation>
     </message>
     <message>
         <source>Balance</source>
@@ -1830,15 +1831,15 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hi ha canvis per aplicar.</translation>
     </message>
     <message>
         <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Continuar pot canviar totes les adreces de la cartera. Vols continuar?</translation>
     </message>
 </context>
 <context>
@@ -1859,11 +1860,11 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ReceiveTest</name>
     <message>
         <source>Balance = {amount}</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo = {amount}</translation>
     </message>
     <message>
         <source>No wallet setup yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Encara no s&apos;ha configurat cap cartera</translation>
     </message>
     <message>
         <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
@@ -1876,15 +1877,16 @@ have transactions linking to other addresses already. Are you sure you want to c
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation type="unfinished"></translation>
+        <translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d&apos;aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar a gastar des de la cartera.                      &lt;br&gt;                     Així que abans d&apos;enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d&apos;enviament!&lt;/b&gt;   
+                    </translation>
     </message>
     <message>
         <source>Next step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas següent</translation>
     </message>
     <message>
         <source>Check if received</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprova si s&apos;ha rebut</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -1895,14 +1897,14 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>RecentlyOpenedWalletsGroup</name>
     <message>
         <source>Recently Opened Wallets</source>
-        <translation type="unfinished"></translation>
+        <translation>Carteres obertes recentment</translation>
     </message>
 </context>
 <context>
     <name>RecipientTabWidget</name>
     <message>
         <source>Wallet &quot;{id}&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera &quot;{id}&quot;</translation>
     </message>
 </context>
 <context>
@@ -1921,11 +1923,11 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Enter label here</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix l&apos;etiqueta aquí</translation>
     </message>
     <message>
         <source>Send max</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia màxim</translation>
     </message>
 </context>
 <context>
@@ -1936,43 +1938,43 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>No rows recognized</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;han reconegut files</translation>
     </message>
     <message>
         <source>{address} is not a valid address!</source>
-        <translation type="unfinished"></translation>
+        <translation>{address} no és una adreça vàlida!</translation>
     </message>
     <message>
         <source>{amount} is not a valid integer!</source>
-        <translation type="unfinished"></translation>
+        <translation>{amount} no és un enter vàlid!</translation>
     </message>
     <message>
         <source>Recipients</source>
-        <translation type="unfinished"></translation>
+        <translation>Destinataris</translation>
     </message>
     <message>
         <source>Add Recipient</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix destinatari</translation>
     </message>
     <message>
         <source>Import/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa/Exporta</translation>
     </message>
     <message>
         <source>Export CSV Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta plantilla CSV</translation>
     </message>
     <message>
         <source>Import CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa fitxer CSV</translation>
     </message>
     <message>
         <source>Export as CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta com a fitxer CSV</translation>
     </message>
     <message>
         <source>Amount [{unit}]</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat \[{unit}]</translation>
     </message>
     <message>
         <source>Label</source>
@@ -1984,7 +1986,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>All Files (*);;Wallet Files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers de cartera (*.csv)</translation>
     </message>
     <message>
         <source>No file selected</source>
@@ -1992,22 +1994,22 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Open CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre CSV</translation>
     </message>
     <message>
         <source>All Files (*);;CSV (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;CSV (*.csv)</translation>
     </message>
     <message>
         <source>Please use the CSV template and include the header row.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fes servir la plantilla CSV i inclou la fila de capçalera.</translation>
     </message>
 </context>
 <context>
     <name>RegisterMultisig</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
-        <translation type="unfinished"></translation>
+        <translation>2. Importa la informació de la cartera a Bitcoin Safe</translation>
     </message>
     <message>
         <source>Skip step</source>
@@ -2031,21 +2033,21 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Yes, I registered the multisig on the {n} hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sí, he registrat la multisig al signador de maquinari {n}</translation>
     </message>
 </context>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
         <source>Register {wallet_name}</source>
-        <translation type="unfinished"></translation>
+        <translation>Registra {wallet\_name}</translation>
     </message>
 </context>
 <context>
     <name>RelayDialog</name>
     <message>
         <source>Enter custom Nostr Relays</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix relays Nostr personalitzats</translation>
     </message>
 </context>
 <context>
@@ -2059,36 +2061,36 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>SankeyWidget</name>
     <message>
         <source>Export svg</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta svg</translation>
     </message>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;Fitxers de text (*.svg)</translation>
     </message>
     <message>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap fitxer seleccionat</translation>
     </message>
 </context>
 <context>
     <name>ScreenshotsExportXpub</name>
     <message>
         <source>How-to export the wallet information from the hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Com exportar la informació de la cartera des del signador de maquinari</translation>
     </message>
 </context>
 <context>
     <name>ScreenshotsGenerateSeed</name>
     <message>
         <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera {number} paraules de seed secreta a cada signador de maquinari i escriu-les al full de recuperació</translation>
     </message>
 </context>
 <context>
     <name>ScreenshotsRegisterMultisig</name>
     <message>
         <source>Import the multisig information in the hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa la informació de multisig al signador de maquinari</translation>
     </message>
 </context>
 <context>
@@ -2096,75 +2098,75 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-        <translation type="unfinished"></translation>
+        <translation>Compara les {number} paraules del paper de còpia de seguretat amb el signador de maquinari. Si t&apos;equivoques aquí, pots perdre els diners!</translation>
     </message>
 </context>
 <context>
     <name>SearchWallets</name>
     <message>
         <source>Addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreces</translation>
     </message>
     <message>
         <source>Transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Transaccions</translation>
     </message>
     <message>
         <source>UTXOs</source>
-        <translation type="unfinished"></translation>
+        <translation>UTXOs</translation>
     </message>
     <message>
         <source>Spent Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortides gastades</translation>
     </message>
 </context>
 <context>
     <name>SeedAnalyzer</name>
     <message>
         <source>Missing Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta seed</translation>
     </message>
     <message>
         <source>Invalid seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seed no vàlida</translation>
     </message>
 </context>
 <context>
     <name>SendTest</name>
     <message>
         <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja has fet {n} transaccions sortints. Vols ometre aquesta prova de despesa?</translation>
     </message>
     <message>
         <source>Skip spend test?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ometre la prova de despesa?</translation>
     </message>
     <message>
         <source>Complete the send test to ensure the hardware signer works!</source>
-        <translation type="unfinished"></translation>
+        <translation>Completa la prova d&apos;enviament per assegurar-te que el signador de maquinari funciona!</translation>
     </message>
 </context>
 <context>
     <name>SignMessage</name>
     <message>
         <source>Enter message to be signed at {bip32_path}</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix el missatge a signar a {bip32\_path}</translation>
     </message>
     <message>
         <source>Sign message</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa missatge</translation>
     </message>
     <message>
         <source>Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa</translation>
     </message>
     <message>
         <source>Signed Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Missatge signat</translation>
     </message>
     <message>
         <source>Message too short.</source>
-        <translation type="unfinished"></translation>
+        <translation>Missatge massa curt.</translation>
     </message>
 </context>
 <context>
@@ -2183,14 +2185,14 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu PSBT aquí o arrossega un fitxer</translation>
     </message>
 </context>
 <context>
     <name>SignatureImporterFile</name>
     <message>
         <source>Import signed PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa PSBT signat</translation>
     </message>
     <message>
         <source>OK</source>
@@ -2198,7 +2200,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu PSBT aquí, o arrossega un fitxer</translation>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
@@ -2209,144 +2211,144 @@ If you make a mistake here, your money is lost!</source>
     <name>SignatureImporterQR</name>
     <message>
         <source>Scan QR code</source>
-        <translation type="unfinished"></translation>
+        <translation>Escaneja codi QR</translation>
     </message>
 </context>
 <context>
     <name>SignatureImporterUSB</name>
     <message>
         <source>USB Signing</source>
-        <translation type="unfinished"></translation>
+        <translation>Signatura USB</translation>
     </message>
     <message>
         <source>Please do &apos;Wallet --&gt; Export --&gt; Export for ...&apos; and register the multisignature wallet on the hardware signer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fes &apos;Wallet --&gt; Export --&gt; Export for ...&apos; i registra la cartera multisignatura al signador de maquinari.</translation>
     </message>
 </context>
 <context>
     <name>SignatureImporterWallet</name>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-        <translation type="unfinished"></translation>
+        <translation>El txid del PSBT signat no coincideix amb el txid original. S&apos;aborta</translation>
     </message>
     <message>
         <source>Sign with seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa amb seed</translation>
     </message>
 </context>
 <context>
     <name>StickerTheHardware</name>
     <message>
         <source>Put the following stickers on your hardware:</source>
-        <translation type="unfinished"></translation>
+        <translation>Posa les següents etiquetes al teu dispositiu:</translation>
     </message>
     <message>
         <source>&quot;{sticker}&quot; on {device_name}</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;{sticker}&quot; a {device\_name}</translation>
     </message>
 </context>
 <context>
     <name>SyncChatToolButton</name>
     <message>
         <source>Please enable the sync tab first</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilita primer la pestanya de sincronització</translation>
     </message>
     <message>
         <source>Share with trusted devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparteix amb dispositius de confiança</translation>
     </message>
     <message>
         <source>Share with all devices in {wallet_id}</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparteix amb tots els dispositius a {wallet\_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparteix amb un sol dispositiu</translation>
     </message>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilita primer la sincronització a la cartera {wallet\_id}</translation>
     </message>
 </context>
 <context>
     <name>SyncTab</name>
     <message>
         <source>Label backup and encrypted syncing to trusted devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Còpia de seguretat d&apos;etiquetes i sincronització xifrada amb dispositius de confiança</translation>
     </message>
     <message>
         <source>Open received Transactions and PSBTs</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre transaccions i PSBTs rebuts</translation>
     </message>
     <message>
         <source>Please backup your sync key:
 {nsec}
 
 You can restore your labels at a later time with &apos;Import Sync Key&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fes una còpia de seguretat de la teva clau de sincronització: {nsec}  Podràs restaurar les teves etiquetes més tard amb &apos;Importa clau de sincronització&apos;.</translation>
     </message>
     <message>
         <source>Opening {name} from {author}</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrint {name} de {author}</translation>
     </message>
     <message>
         <source>{author}: {description}</source>
-        <translation type="unfinished"></translation>
+        <translation>{author}: {description}</translation>
     </message>
 </context>
 <context>
     <name>ToolGui</name>
     <message>
         <source>USB Signer Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines de signador USB</translation>
     </message>
     <message>
         <source>Address index</source>
-        <translation type="unfinished"></translation>
+        <translation>Índex d&apos;adreces</translation>
     </message>
     <message>
         <source>Sign Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa missatge</translation>
     </message>
     <message>
         <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu descriptor d&apos;adreça, p. ex. wpkh(\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra adreça</translation>
     </message>
     <message>
         <source>Wipe Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Esborra dispositiu</translation>
     </message>
     <message>
         <source>Show Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra seed</translation>
     </message>
     <message>
         <source>Unlock Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloca dispositius</translation>
     </message>
     <message>
         <source>Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloca</translation>
     </message>
     <message>
         <source>Get xpubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Obté xpubs</translation>
     </message>
     <message>
         <source>XPUBs</source>
-        <translation type="unfinished"></translation>
+        <translation>XPUBs</translation>
     </message>
     <message>
         <source>Paste your PSBT in here</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu PSBT aquí</translation>
     </message>
     <message>
         <source>Sign PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa PSBT</translation>
     </message>
     <message>
         <source>PSBT</source>
@@ -2354,32 +2356,32 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Paste your text to be signed</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el text a signar</translation>
     </message>
 </context>
 <context>
     <name>TrustedDeviceItem</name>
     <message>
         <source>Untrust device</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconfia dispositiu</translation>
     </message>
 </context>
 <context>
     <name>TxExport</name>
     <message>
         <source>Export Transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta transacció</translation>
     </message>
 </context>
 <context>
     <name>TxSigningSteps</name>
     <message>
         <source>Create and collect {n}. signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea i recull {n}. signatura</translation>
     </message>
     <message>
         <source>Transaction signed with the private key belonging to {label}</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció signada amb la clau privada pertanyent a {label}</translation>
     </message>
 </context>
 <context>
@@ -2390,104 +2392,104 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 {sync_key}
 
  Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation type="unfinished"></translation>
+        <translation>La teva clau de sincronització és:  {sync\_key}   Desa-la, i quan facis clic a &apos;importa clau de sincronització&apos;, s&apos;haurien de restaurar les teves etiquetes des dels relays Nostr.</translation>
     </message>
     <message>
         <source>Sync key Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta clau de sincronització</translation>
     </message>
     <message>
         <source>Export sync key</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta clau de sincronització</translation>
     </message>
     <message>
         <source>Import sync key</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa clau de sincronització</translation>
     </message>
     <message>
         <source>Reset sync key</source>
-        <translation type="unfinished"></translation>
+        <translation>Reinicia clau de sincronització</translation>
     </message>
     <message>
         <source>Set custom Relay list</source>
-        <translation type="unfinished"></translation>
+        <translation>Defineix llista de relays personalitzada</translation>
     </message>
     <message>
         <source>My Device: {id}</source>
-        <translation type="unfinished"></translation>
+        <translation>El meu dispositiu: {id}</translation>
     </message>
 </context>
 <context>
     <name>UITx_Creator</name>
     <message>
         <source>Select a category that fits the recipient best</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona la categoria que millor s&apos;adapti al destinatari</translation>
     </message>
     <message>
         <source>Add Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix entrades</translation>
     </message>
     <message>
         <source>Load UTXOs</source>
-        <translation type="unfinished"></translation>
+        <translation>Carrega UTXOs</translation>
     </message>
     <message>
         <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa aquí els UTXO en el format  txid\:outpoint txid\:outpoint</translation>
     </message>
     <message>
         <source>Please paste UTXO here</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa aquí els UTXO</translation>
     </message>
     <message>
         <source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les entrades {inputs} entren en conflicte amb aquests txids confirmats {txids}.</translation>
     </message>
     <message>
         <source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les transaccions dependents sense confirmar {txids} seran eliminades per aquesta nova transacció que estàs creant.</translation>
     </message>
     <message>
         <source>Reduce future fees
 by merging address balances</source>
-        <translation type="unfinished"></translation>
+        <translation>Redueix comissions futures fusionant saldos d&apos;adreces</translation>
     </message>
     <message>
         <source>Send Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia categoria</translation>
     </message>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Avançat</translation>
     </message>
     <message>
         <source>Add foreign UTXOs</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix UTXOs externs</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea</translation>
     </message>
     <message>
         <source>This checkbox automatically checks 
 below {rate}</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquesta casella es marca automàticament per sota de {rate}</translation>
     </message>
     <message>
         <source>Please select an input category on the left, that fits the transaction recipients.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona una categoria d&apos;entrada a l&apos;esquerra que s&apos;ajusti als destinataris de la transacció.</translation>
     </message>
     <message>
         <source>Do you want to continue, even though both coin categories become linkable?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vols continuar encara que ambdues categories de monedes esdevinguin enllaçables?</translation>
     </message>
 </context>
 <context>
     <name>UITx_Viewer</name>
     <message>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrades</translation>
     </message>
     <message>
         <source>Send</source>
@@ -2495,19 +2497,19 @@ below {rate}</source>
     </message>
     <message>
         <source>Label: </source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta: </translation>
     </message>
     <message>
         <source>Transaction to be replaced could not be found in open wallets</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut trobar la transacció a substituir en les carteres obertes</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
-        <translation type="unfinished"></translation>
+        <translation>Signatures no vàlides</translation>
     </message>
     <message>
         <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut difondre {txid}. Considera difondre via {url}</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2523,11 +2525,11 @@ below {rate}</source>
     </message>
     <message>
         <source>Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrama</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Edita</translation>
     </message>
     <message>
         <source>Receive faster (CPFP)</source>
@@ -2535,15 +2537,15 @@ below {rate}</source>
     </message>
     <message>
         <source>Edit with increased fee (RBF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Edita amb comissió augmentada (RBF)</translation>
     </message>
     <message>
         <source>Increase fee (RBF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Augmenta comissió (RBF)</translation>
     </message>
     <message>
         <source>Previous step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -2554,63 +2556,63 @@ below {rate}</source>
     <name>USBDevice</name>
     <message>
         <source>Do you want to restore an existing seed onto the device?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vols restaurar una seed existent al dispositiu?</translation>
     </message>
 </context>
 <context>
     <name>USBGui</name>
     <message>
         <source>Unlock USB devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloca dispositius USB</translation>
     </message>
     <message>
         <source>Please unlock USB devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloqueja dispositius USB</translation>
     </message>
     <message>
         <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-        <translation type="unfinished"></translation>
+        <translation>El registre de carteres multisignatura via USB no és compatible amb {device\_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
     </message>
 </context>
 <context>
     <name>USBRegisterMultisigWidget</name>
     <message>
         <source>Register Multisig wallet on hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Registra cartera multisig al signador de maquinari</translation>
     </message>
     <message>
         <source>Register Multisig</source>
-        <translation type="unfinished"></translation>
+        <translation>Registra multisig</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda</translation>
     </message>
     <message>
         <source>Successfully registered multisig wallet on hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera multisignatura registrada correctament al signador de maquinari</translation>
     </message>
 </context>
 <context>
     <name>USBValidateAddressWidget</name>
     <message>
         <source>Validate address</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida adreça</translation>
     </message>
     <message>
         <source>Validate receive address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida adreça de recepció:</translation>
     </message>
 </context>
 <context>
     <name>UTXOList</name>
     <message>
         <source>Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera</translation>
     </message>
     <message>
         <source>Outpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Outpoint</translation>
     </message>
     <message>
         <source>Address</source>
@@ -2618,7 +2620,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Categoria</translation>
     </message>
     <message>
         <source>Label</source>
@@ -2633,56 +2635,56 @@ below {rate}</source>
     <name>UntrustedDeviceItem</name>
     <message>
         <source>Trust</source>
-        <translation type="unfinished"></translation>
+        <translation>Confiança</translation>
     </message>
     <message>
         <source>Trust this device</source>
-        <translation type="unfinished"></translation>
+        <translation>Confia en aquest dispositiu</translation>
     </message>
 </context>
 <context>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Check for Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprova actualitzacions</translation>
     </message>
     <message>
         <source>New version available {tag}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova versió disponible {tag}</translation>
     </message>
     <message>
         <source>You have already the newest version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja tens la versió més recent.</translation>
     </message>
     <message>
         <source>No update found</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha trobat actualització</translation>
     </message>
     <message>
         <source>Could not verify the download. Please try again later.</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut verificar la descàrrega. Torna-ho a provar més tard.</translation>
     </message>
     <message>
         <source>Signature doesn&apos;t match!!! Please try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>La signatura no coincideix!!! Torna-ho a intentar.</translation>
     </message>
     <message>
         <source>Signature verified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Signatura verificada.</translation>
     </message>
 </context>
 <context>
     <name>UtxoListWithToolbar</name>
     <message>
         <source>{amount} selected ({number} UTXOs)</source>
-        <translation type="unfinished"></translation>
+        <translation>{amount} seleccionats ({number} UTXOs)</translation>
     </message>
 </context>
 <context>
     <name>ValidateBackup</name>
     <message>
         <source>Yes, I am sure all {number} words are correct</source>
-        <translation type="unfinished"></translation>
+        <translation>Sí, estic segur que totes les {number} paraules són correctes</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -2693,22 +2695,22 @@ below {rate}</source>
     <name>WalletBalanceChart</name>
     <message>
         <source>Balance ({unit})</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo ({unit})</translation>
     </message>
 </context>
 <context>
     <name>WalletIdDialog</name>
     <message>
         <source>Choose wallet name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria nom de cartera</translation>
     </message>
     <message>
         <source>Wallet name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la cartera:</translation>
     </message>
     <message>
         <source>Type wallet name</source>
-        <translation type="unfinished"></translation>
+        <translation>Escriu el nom de la cartera</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2716,130 +2718,130 @@ below {rate}</source>
     </message>
     <message>
         <source>The wallet {filename} exists already.</source>
-        <translation type="unfinished"></translation>
+        <translation>La cartera {filename} ja existeix.</translation>
     </message>
     <message>
         <source>Please choose a wallet name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tria un nom de cartera</translation>
     </message>
 </context>
 <context>
     <name>WalletLabelAndCategoryEdit</name>
     <message>
         <source>Enter label for recipient address</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix l&apos;etiqueta per a l&apos;adreça del destinatari</translation>
     </message>
     <message>
         <source>Enter label for transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix l&apos;etiqueta per a la transacció</translation>
     </message>
 </context>
 <context>
     <name>Wizard</name>
     <message>
         <source>You must have an initilized wallet first</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer has de tenir una cartera inicialitzada</translation>
     </message>
     <message>
         <source>Generate Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera seed</translation>
     </message>
     <message>
         <source>Import signer info</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa informació de signador</translation>
     </message>
     <message>
         <source>Backup Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Còpia de seguretat de la seed</translation>
     </message>
     <message>
         <source>Validate Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida còpia de seguretat</translation>
     </message>
     <message>
         <source>Receive Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova de recepció</translation>
     </message>
     <message>
         <source>Put in secure locations</source>
-        <translation type="unfinished"></translation>
+        <translation>Col·loca en llocs segurs</translation>
     </message>
     <message>
         <source>Register multisig on signers</source>
-        <translation type="unfinished"></translation>
+        <translation>Registra multisig als signadors</translation>
     </message>
     <message>
         <source>Sync &amp; Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Sync &amp; Xat</translation>
     </message>
     <message>
         <source>Send test {j}</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova d&apos;enviament {j}</translation>
     </message>
     <message>
         <source>Send test</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova d&apos;enviament</translation>
     </message>
     <message>
         <source>All Send tests done successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Totes les proves d&apos;enviament s&apos;han realitzat amb èxit.</translation>
     </message>
     <message>
         <source>The test transaction 
 &apos;{tx_text}&apos;
  was done successfully. Please proceed to do the send test: 
 &apos;{next_text}&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>La transacció de prova  &apos;{tx\_text}&apos;  s&apos;ha realitzat correctament. Si us plau, procedeix a fer la prova d&apos;enviament:  &apos;{next\_text}&apos;</translation>
     </message>
     <message>
         <source> and </source>
-        <translation type="unfinished"></translation>
+        <translation> i </translation>
     </message>
     <message>
         <source>Send Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Prova d&apos;enviament</translation>
     </message>
     <message>
         <source>Sign with {label}</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa amb {label}</translation>
     </message>
     <message>
         <source>The wallet is not funded. Please fund the wallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>La cartera no està finançada. Finança la cartera.</translation>
     </message>
     <message>
         <source>Buy hardware signers</source>
-        <translation type="unfinished"></translation>
+        <translation>Compra signadors de maquinari</translation>
     </message>
     <message>
         <source>Label the hardware signers</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta els signadors de maquinari</translation>
     </message>
 </context>
 <context>
     <name>XpubAnalyzer</name>
     <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;xpub està en format SLIP132. Convertint-lo al format estàndard.</translation>
     </message>
     <message>
         <source>Converting format</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertint format</translation>
     </message>
     <message>
         <source>Missing xPub</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta xPub</translation>
     </message>
     <message>
         <source>Invalid xpub</source>
-        <translation type="unfinished"></translation>
+        <translation>xpub no vàlid</translation>
     </message>
 </context>
 <context>
     <name>address_list</name>
     <message>
         <source>All status</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els estats</translation>
     </message>
     <message>
         <source>Unused</source>
@@ -2851,7 +2853,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Used</source>
-        <translation type="unfinished"></translation>
+        <translation>Usat</translation>
     </message>
     <message>
         <source>Funded or Unused</source>
@@ -2859,7 +2861,7 @@ below {rate}</source>
     </message>
     <message>
         <source>All types</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els tipus</translation>
     </message>
     <message>
         <source>Receiving</source>
@@ -2878,116 +2880,116 @@ below {rate}</source>
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
 </context>
 <context>
     <name>bitcoin_usb</name>
     <message>
         <source>No HWI AddressType could be found for {name}</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha trobat cap AddressType HWI per a {name}</translation>
     </message>
     <message>
         <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Els errors USB poden aparèixer per falta de fitxers udev. Vols instal·lar ara els fitxers udev?</translation>
     </message>
     <message>
         <source>Install udev files</source>
-        <translation type="unfinished"></translation>
+        <translation>Instal·la fitxers udev</translation>
     </message>
     <message>
         <source>Please restart your computer for the changes to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reinicia l&apos;ordinador perquè els canvis tinguin efecte.</translation>
     </message>
     <message>
         <source>Restart computer</source>
-        <translation type="unfinished"></translation>
+        <translation>Reinicia ordinador</translation>
     </message>
     <message>
         <source>Executing the script</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;està executant l&apos;script</translation>
     </message>
     <message>
         <source>No suitable terminal emulator found.</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha trobat un emulador de terminal adequat.</translation>
     </message>
     <message>
         <source>derivation_path {value} must start with a /</source>
-        <translation type="unfinished"></translation>
+        <translation>derivation\_path {value} ha de començar amb /</translation>
     </message>
     <message>
         <source>{value} is not a valid fingerprint</source>
-        <translation type="unfinished"></translation>
+        <translation>{value} no és una empremta digital vàlida</translation>
     </message>
     <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation type="unfinished"></translation>
+        <translation>La part de xarxa {network\_str} de l&apos;origen de clau {key\_origin} ha d&apos;estar protegida amb una h</translation>
     </message>
     <message>
         <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation type="unfinished"></translation>
+        <translation>Xarxa/tipus de moneda desconegut {network\_str} a {key\_origin}</translation>
     </message>
     <message>
         <source>No USB devices found</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;han trobat dispositius USB</translation>
     </message>
     <message>
         <source>USB Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositius USB</translation>
     </message>
     <message>
         <source>No device selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap dispositiu seleccionat</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
     <name>constant</name>
     <message>
         <source>Transaction (*.txn *.psbt);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció (*.txn *.psbt);;Tots els fitxers (*)</translation>
     </message>
     <message>
         <source>Partial Transaction (*.psbt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció parcial (*.psbt)</translation>
     </message>
     <message>
         <source>Complete Transaction (*.txn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció completa (*.txn)</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*)</translation>
     </message>
 </context>
 <context>
     <name>d</name>
     <message>
         <source>Signer {i}</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador {i}</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre fitxer</translation>
     </message>
     <message>
         <source>Read QR code from camera</source>
-        <translation type="unfinished"></translation>
+        <translation>Llegeix codi QR de la càmera</translation>
     </message>
     <message>
         <source>Connect to USB signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Connecta al signador USB</translation>
     </message>
     <message>
         <source>Recovery</source>
-        <translation type="unfinished"></translation>
+        <translation>Recuperació</translation>
     </message>
     <message>
         <source>Recovery Signer {i}</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador de recuperació {i}</translation>
     </message>
     <message>
         <source>View on block explorer</source>
@@ -2995,56 +2997,56 @@ below {rate}</source>
     </message>
     <message>
         <source>Text copied to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Text copiat al porta-retalls</translation>
     </message>
     <message>
         <source>{} copied to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>{} copiat al porta-retalls</translation>
     </message>
     <message>
         <source>Import from camera</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa des de la càmera</translation>
     </message>
     <message>
         <source>Copy to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia al porta-retalls</translation>
     </message>
     <message>
         <source>Create PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea PDF</translation>
     </message>
     <message>
         <source>Create random mnemonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea mnemotècnic aleatori</translation>
     </message>
 </context>
 <context>
     <name>data</name>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Les empremtes digitals difereixen.  Només es permeten empremtes iguals, assegurant que totes les claus derivades pertanyen al mateix signador!</translation>
     </message>
 </context>
 <context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta etiquetes</translation>
     </message>
     <message>
         <source>Export Labels for other wallets (BIP329)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta etiquetes per a altres carteres (BIP329)</translation>
     </message>
 </context>
 <context>
     <name>general</name>
     <message>
         <source>PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>PSBT</translation>
     </message>
     <message>
         <source>Transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Transacció</translation>
     </message>
 </context>
 <context>
@@ -3070,15 +3072,15 @@ below {rate}</source>
     </message>
     <message>
         <source>Save as file</source>
-        <translation type="unfinished"></translation>
+        <translation>Desa com a fitxer</translation>
     </message>
     <message>
         <source>Edit with higher fee (RBF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Edita amb comissió més alta (RBF)</translation>
     </message>
     <message>
         <source>Try cancel transaction (RBF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Intenta cancel·lar transacció (RBF)</translation>
     </message>
     <message>
         <source>Increase fee (RBF)</source>
@@ -3086,15 +3088,15 @@ below {rate}</source>
     </message>
     <message>
         <source>Receive faster (CPFP)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rep més ràpid (CPFP)</translation>
     </message>
     <message>
         <source>Unused</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense usar</translation>
     </message>
     <message>
         <source>Funded</source>
-        <translation type="unfinished"></translation>
+        <translation>Finançat</translation>
     </message>
     <message>
         <source>Used</source>
@@ -3102,7 +3104,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Funded or Unused</source>
-        <translation type="unfinished"></translation>
+        <translation>Finançat o sense usar</translation>
     </message>
     <message>
         <source>All types</source>
@@ -3110,52 +3112,52 @@ below {rate}</source>
     </message>
     <message>
         <source>Receiving</source>
-        <translation type="unfinished"></translation>
+        <translation>Recepció</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Canvi</translation>
     </message>
     <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalls</translation>
     </message>
 </context>
 <context>
     <name>import</name>
     <message>
         <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ves a la pestanya Sync i importa-hi la teva clau de sincronització. Les etiquetes es restauraran automàticament.</translation>
     </message>
 </context>
 <context>
     <name>importer</name>
     <message>
         <source>Import file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa fitxer</translation>
     </message>
     <message>
         <source>Import Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa signatura</translation>
     </message>
 </context>
 <context>
     <name>menu</name>
     <message>
         <source>Import Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa etiquetes</translation>
     </message>
     <message>
         <source>Import Labels (BIP329 / Sparrow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa etiquetes (BIP329 / Sparrow)</translation>
     </message>
     <message>
         <source>Import Labels (Electrum Wallet)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa etiquetes (Cartera Electrum)</translation>
     </message>
     <message>
         <source>Restore labels from cloud using an existing sync key</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaura etiquetes del núvol utilitzant una clau de sincronització existent</translation>
     </message>
     <message>
         <source>Export Labels</source>
@@ -3166,86 +3168,86 @@ below {rate}</source>
     <name>mytreeview</name>
     <message>
         <source>Type to filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Escriu per filtrar</translation>
     </message>
     <message>
         <source>Export as CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta com a CSV</translation>
     </message>
     <message>
         <source>Visible columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Columnes visibles</translation>
     </message>
 </context>
 <context>
     <name>net_conf</name>
     <message>
         <source>This is a private and fast way to connect to the bitcoin network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquesta és una manera privada i ràpida de connectar-se a la xarxa bitcoin.</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pots connectar el teu propi node Bitcoin, com {link}.</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa bitcoind amb &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa bitcoind amb &quot;bitcoind -chain=test&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa bitcoind amb &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa bitcoind amb &quot;bitcoind -chain=signet&quot;  Aquest però és un signet diferent de mutinynet.com.</translation>
     </message>
     <message>
         <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-        <translation type="unfinished"></translation>
+        <translation>El servidor pot associar la teva IP amb les adreces de la cartera. És millor utilitzar el teu propi servidor, com {link}.</translation>
     </message>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation type="unfinished"></translation>
+        <translation>Pots configurar {electrum} amb un servidor electrum a {server} i un explorador de blocs a {explorer}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-        <translation type="unfinished"></translation>
+        <translation>Una bona opció és  {electrum\_testnet} i com a explorador de blocs {explorer\_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Una bona opció és  {electrum\_testnet4} i com a explorador de blocs {explorer\_testnet4}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-        <translation type="unfinished"></translation>
+        <translation>A Signet tria {electrum} i un explorador de blocs a {mempool\_url}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-        <translation type="unfinished"></translation>
+        <translation>Pots configurar {setup} amb un servidor esplora a {server} i un explorador de blocs a {explorer}</translation>
     </message>
     <message>
         <source>There is a {faucet} for free test coins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un servidor (de vegades operatiu) és {link} i un explorador de blocs a {explorer}. Hi ha un {faucet}.</translation>
     </message>
 </context>
 <context>
     <name>network_config</name>
     <message>
         <source>{server_name} via the proxy {proxy}</source>
-        <translation type="unfinished"></translation>
+        <translation>{server\_name} via el proxy {proxy}</translation>
     </message>
     <message>
         <source>{server_name}</source>
-        <translation type="unfinished"></translation>
+        <translation>{server\_name}</translation>
     </message>
 </context>
 <context>
@@ -3263,27 +3265,27 @@ It is best to use your own server, such as {link}.</source>
     <name>pdf</name>
     <message>
         <source>12 or 24</source>
-        <translation type="unfinished"></translation>
+        <translation>12 o 24</translation>
     </message>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation type="unfinished"></translation>
+        <translation>{keystore\_label}: Empremta digital: {keystore\_fingerprint}, Origen de clau: {keystore\_key\_origin}, {keystore\_xpub}</translation>
     </message>
     <message>
         <source>File not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxer no trobat!</translation>
     </message>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>{i}. Còpia de seguretat de la seed d&apos;una cartera multisig de {threshold} de {m}: &quot;{id}&quot;</translation>
     </message>
     <message>
         <source>Seed backup of {id}</source>
-        <translation type="unfinished"></translation>
+        <translation>Còpia de seguretat de la seed de {id}</translation>
     </message>
     <message>
         <source>Total</source>
-        <translation type="unfinished"></translation>
+        <translation>Total</translation>
     </message>
     <message>
         <source>Category</source>
@@ -3291,19 +3293,19 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo</translation>
     </message>
     <message>
         <source>Created at {date} with</source>
-        <translation type="unfinished"></translation>
+        <translation>Creat el {date} amb</translation>
     </message>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation type="unfinished"></translation>
+        <translation>En tornar a escanejar aquesta cartera, escaneja fins a l&apos;índex d&apos;adreça {max\_tip} com a mínim per descobrir totes les adreces finançades.</translation>
     </message>
     <message>
         <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
@@ -3311,19 +3313,20 @@ It is best to use your own server, such as {link}.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation type="unfinished"></translation>
+        <translation>1. Adjunta el &apos;Full de recuperació&apos; ({number} paraules) a aquest paper o copia les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Doblega aquest paper per la línia inferior &lt;br/&gt;                 3. Posa aquest paper en un lloc segur on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar el signador de maquinari a) junt amb la còpia de seguretat en paper, o b) en un altre lloc segur (si en disposes)   
+                </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation type="unfinished"></translation>
+        <translation>Clau de còpia de seguretat de sincronització d&apos;etiquetes: {label\_sync\_nsec}</translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>
-        <translation type="unfinished"></translation>
+        <translation>Extracte de saldo de {id}</translation>
     </message>
     <message>
         <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Extracte de saldo de &quot;{id}&quot;</translation>
     </message>
     <message>
         <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
@@ -3331,99 +3334,100 @@ It is best to use your own server, such as {link}.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation type="unfinished"></translation>
+        <translation>1. Adjunta el &apos;Full de recuperació&apos; ({number} paraules) a aquest paper o copia les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Doblega aquest paper per la línia inferior &lt;br/&gt;                 3. Posa cada paper en un lloc segur diferent, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar els signadors de maquinari a) junt amb la còpia de seguretat en paper corresponent, o b) cadascun en un altre lloc segur (si en disposes)   
+                </translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-        <translation type="unfinished"></translation>
+        <translation>Paraules secretes de la seed per a un signador de maquinari: Mai les escriguis en un ordinador. Mai en facis una foto.</translation>
     </message>
     <message>
         <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-        <translation type="unfinished"></translation>
+        <translation>{keystore\_label} ({keystore\_fingerprint}): {keystore\_description}&lt;br/&gt;&lt;br/&gt;Instruccions per als hereus:</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation type="unfinished"></translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\_descriptor\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo. Per gastar-ne necessites {threshold} Seeds i el descriptor de la cartera.</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-        <translation type="unfinished"></translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\_descriptor\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
     </message>
     <message>
         <source>Created with</source>
-        <translation type="unfinished"></translation>
+        <translation>Creat amb</translation>
     </message>
     <message>
         <source>Please fold here!</source>
-        <translation type="unfinished"></translation>
+        <translation>Doblega aquí!</translation>
     </message>
 </context>
 <context>
     <name>recipients</name>
     <message>
         <source>Address Already Used</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça ja utilitzada</translation>
     </message>
 </context>
 <context>
     <name>search_treeview</name>
     <message>
         <source>Type to search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Escriu per cercar...</translation>
     </message>
 </context>
 <context>
     <name>tageditor</name>
     <message>
         <source>Delete {name}</source>
-        <translation type="unfinished"></translation>
+        <translation>Suprimeix {name}</translation>
     </message>
     <message>
         <source>Add new {name}</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix nou {name}</translation>
     </message>
     <message>
         <source>This {name} exists already.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aquest {name} ja existeix.</translation>
     </message>
 </context>
 <context>
     <name>tutorial</name>
     <message>
         <source>Never share the {number} secret words with anyone!</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai comparteixis les {number} paraules secretes amb ningú!</translation>
     </message>
     <message>
         <source>Never type them into any computer or cellphone!</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai les escriguis en cap ordinador o mòbil!</translation>
     </message>
     <message>
         <source>Never make a picture of them!</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai en facis una foto!</translation>
     </message>
 </context>
 <context>
     <name>tx</name>
     <message>
         <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation type="unfinished"></translation>
+        <translation>No es pot fer CPFP a la transacció perquè no s&apos;ha trobat cap sortida de recepció</translation>
     </message>
     <message>
         <source>Speedup of {txid}</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceleració de {txid}</translation>
     </message>
 </context>
 <context>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
-        <translation type="unfinished"></translation>
+        <translation>Emparella Bitbox02</translation>
     </message>
     <message>
         <source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-        <translation type="unfinished"></translation>
+        <translation>Compara i confirma el codi d&apos;emparellament al teu BitBox02:  {code}</translation>
     </message>
 </context>
 <context>
@@ -3434,110 +3438,110 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>about {} hours ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament {} hores</translation>
     </message>
     <message>
         <source>in about {} hours</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament {} hores</translation>
     </message>
     <message>
         <source>about 1 day ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament 1 dia</translation>
     </message>
     <message>
         <source>in about 1 day</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament 1 dia</translation>
     </message>
     <message>
         <source>about {} days ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament {} dies</translation>
     </message>
     <message>
         <source>in about {} days</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament {} dies</translation>
     </message>
     <message>
         <source>about 1 month ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament 1 mes</translation>
     </message>
     <message>
         <source>in about 1 month</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament 1 mes</translation>
     </message>
     <message>
         <source>about {} months ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament {} mesos</translation>
     </message>
     <message>
         <source>in about {} months</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament {} mesos</translation>
     </message>
     <message>
         <source>{} seconds ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa {} segons</translation>
     </message>
     <message>
         <source>about 1 year ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament 1 any</translation>
     </message>
     <message>
         <source>in about 1 year</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament 1 any</translation>
     </message>
     <message>
         <source>over {} years ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa més de {} anys</translation>
     </message>
     <message>
         <source>in over {} years</source>
-        <translation type="unfinished"></translation>
+        <translation>d&apos;aquí a més de {} anys</translation>
     </message>
     <message>
         <source>Balance: {amount}</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo: {amount}</translation>
     </message>
     <message>
         <source>in {} seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>en {} segons</translation>
     </message>
     <message>
         <source>less than a minute ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa menys d&apos;un minut</translation>
     </message>
     <message>
         <source>in less than a minute</source>
-        <translation type="unfinished"></translation>
+        <translation>en menys d&apos;un minut</translation>
     </message>
     <message>
         <source>about {} minutes ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament {} minuts</translation>
     </message>
     <message>
         <source>in about {} minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament {} minuts</translation>
     </message>
     <message>
         <source>about 1 hour ago</source>
-        <translation type="unfinished"></translation>
+        <translation>fa aproximadament 1 hora</translation>
     </message>
     <message>
         <source>in about 1 hour</source>
-        <translation type="unfinished"></translation>
+        <translation>en aproximadament 1 hora</translation>
     </message>
 </context>
 <context>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-        <translation type="unfinished"></translation>
+        <translation>El UTXO sense confirmar és gastat per la transacció {is\_spent\_by\_txid}</translation>
     </message>
     <message>
         <source>Unconfirmed UTXO</source>
-        <translation type="unfinished"></translation>
+        <translation>UTXO sense confirmar</translation>
     </message>
     <message>
         <source>Open transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre transacció</translation>
     </message>
     <message>
         <source>View on block explorer</source>
@@ -3545,7 +3549,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Open Address Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre detalls de l&apos;adreça</translation>
     </message>
     <message>
         <source>Copy as csv</source>
@@ -3556,19 +3560,19 @@ It is best to use your own server, such as {link}.</source>
     <name>video</name>
     <message>
         <source>Camera</source>
-        <translation type="unfinished"></translation>
+        <translation>Càmera</translation>
     </message>
     <message>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Pantalla</translation>
     </message>
     <message>
         <source>Enter RTSP URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix URL RTSP</translation>
     </message>
     <message>
         <source>RTSP URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL RTSP:</translation>
     </message>
     <message>
         <source>Error</source>
@@ -3576,70 +3580,70 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>The camera could not be opened</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut obrir la càmera</translation>
     </message>
     <message>
         <source>Camera:</source>
-        <translation type="unfinished"></translation>
+        <translation>Càmera:</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuració</translation>
     </message>
     <message>
         <source>Enhance picture for detection</source>
-        <translation type="unfinished"></translation>
+        <translation>Millora la imatge per a la detecció</translation>
     </message>
     <message>
         <source>Zoom:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom:</translation>
     </message>
     <message>
         <source>Brightness (reduce for bright displays):</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillantor (redueix per a pantalles brillants):</translation>
     </message>
     <message>
         <source>Postprocess</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocés</translation>
     </message>
     <message>
         <source>Show camera controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra controls de la càmera</translation>
     </message>
     <message>
         <source>Add RTSP Camera</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix càmera RTSP</translation>
     </message>
 </context>
 <context>
     <name>wallet</name>
     <message>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmat</translation>
     </message>
     <message>
         <source>Unconfirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense confirmar</translation>
     </message>
     <message>
         <source>Unconfirmed parent</source>
-        <translation type="unfinished"></translation>
+        <translation>Pare sense confirmar</translation>
     </message>
     <message>
         <source>Local</source>
-        <translation type="unfinished"></translation>
+        <translation>Local</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconegut</translation>
     </message>
     <message>
         <source>Change of:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canvi de:</translation>
     </message>
     <message>
         <source>Send to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia a:</translation>
     </message>
 </context>
 </TS>
