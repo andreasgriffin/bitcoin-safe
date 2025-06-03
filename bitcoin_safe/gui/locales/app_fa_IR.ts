@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>No additional signatures were added</source>
-        <translation>امضای اضافی دیگری افزوده نشد</translation>
+        <translation>امضای دیگری افزوده نشد</translation>
     </message>
     <message>
         <source>bdk libary error. The txid should not be changed during finalizing</source>
@@ -35,7 +35,7 @@
     <name>AddressDetailsAdvanced</name>
     <message>
         <source>Address descriptor</source>
-        <translation>توصیفگر آدرس</translation>
+        <translation>توصیف‌گر آدرس</translation>
     </message>
 </context>
 <context>
@@ -80,7 +80,7 @@
     </message>
     <message>
         <source>change address</source>
-        <translation>آدرس تغییر</translation>
+        <translation>آدرس باقی‌مانده</translation>
     </message>
     <message>
         <source>receiving address</source>
@@ -92,7 +92,7 @@
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation>نمایش در بلاک اکسپلورر</translation>
+        <translation>نمایش در کاوش‌گر بلاک</translation>
     </message>
     <message>
         <source>Copy as csv</source>
@@ -154,7 +154,7 @@
     </message>
     <message>
         <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-        <translation>مقدار بیش‌ازحد بزرگ است. لطفاً روی دسته‌ای با موجودی کافی در سمت چپ کلیک کنید یا سکه‌ها را در تب پیشرفته انتخاب کنید</translation>
+        <translation>مقدار بیش‌ازحد بزرگ است. لطفاً روی دسته‌ای با موجودی کافی در سمت چپ کلیک کنید یا سکه‌ها را به صورت دستی از بخش پیشرفته انتخاب کنید</translation>
     </message>
 </context>
 <context>
@@ -180,11 +180,11 @@
     </message>
     <message>
         <source>Print the pdf (it also contains the wallet descriptor)</source>
-        <translation>PDF را چاپ کنید (شامل توصیفگر کیف پول نیز هست)</translation>
+        <translation>PDF را چاپ کنید (شامل توصیف‌گر کیف پول نیز هست)</translation>
     </message>
     <message>
         <source>Glue the {number} word seed onto the matching printed pdf.</source>
-        <translation>عبارت بازیابی {number} کلمه‌ای را روی PDF چاپ‌شدهٔ منطبق بچسبانید.</translation>
+        <translation>عبارت بازیابی {number} کلمه‌ای را روی PDF چاپ‌شدهٔ مربوطه بچسبانید.</translation>
     </message>
     <message>
         <source>Glue the {number} word seed onto the printed pdf.</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Unmatured</source>
-        <translation>بلوغ‌نیافته</translation>
+        <translation>ناپایدار</translation>
     </message>
 </context>
 <context>
@@ -279,7 +279,7 @@
     <name>ButtonList</name>
     <message>
         <source>Open containing folder</source>
-        <translation>پوشه حاوی را باز کنید</translation>
+        <translation>پوشه محتوی را باز کنید</translation>
     </message>
 </context>
 <context>
@@ -365,29 +365,29 @@
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Missing Descriptor</source>
-        <translation>توصیفگر موجود نیست</translation>
+        <translation>توصیف‌گر موجود نیست</translation>
     </message>
     <message>
         <source>Invalid Descriptor</source>
-        <translation>توصیفگر نامعتبر</translation>
+        <translation>توصیف‌گر نامعتبر</translation>
     </message>
 </context>
 <context>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-        <translation>راه‌اندازی کیف پول کامل نشده است. لطفاً قبل از ایجاد PDF پشتیبان آن را کامل کنید.</translation>
+        <translation>راه‌اندازی کیف پول ناتمام مانده است. لطفاً قبل از ایجاد PDF پشتیبان، آن را کامل کنید.</translation>
     </message>
     <message>
         <source>Descriptor not valid</source>
-        <translation>توصیفگر معتبر نیست</translation>
+        <translation>توصیف‌گر معتبر نیست</translation>
     </message>
 </context>
 <context>
     <name>DescriptorExport</name>
     <message>
         <source>Export Descriptor</source>
-        <translation>صدور توصیفگر</translation>
+        <translation>ذخیره توصیف‌گر</translation>
     </message>
 </context>
 <context>
@@ -406,24 +406,24 @@
     </message>
     <message>
         <source>Descriptor unchanged</source>
-        <translation>توصیفگر بدون تغییر</translation>
+        <translation>توصیف‌گر بدون تغییر</translation>
     </message>
     <message>
         <source>New descriptor entered</source>
-        <translation>توصیفگر جدید وارد شد</translation>
+        <translation>توصیف‌گر جدید وارد شد</translation>
     </message>
     <message>
         <source>Scan Addresses ahead</source>
-        <translation>اسکن آدرس‌های جلوتر</translation>
+        <translation>اسکن آدرس‌های بعدی</translation>
     </message>
     <message>
         <source>Paste or scan your descriptor, if you restore a wallet.</source>
-        <translation>در صورت بازیابی کیف پول، توصیفگر خود را جای‌گذاری یا اسکن کنید.</translation>
+        <translation>در صورت بازیابی کیف پول، توصیف‌گر خود را جای‌گذاری یا اسکن کنید.</translation>
     </message>
     <message>
         <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-        <translation>این «توصیفگر» تمام اطلاعات لازم برای بازسازی کیف پول را در خود دارد. لطفاً برای بازیابی وجوه، این توصیفگر را پشتیبان‌گیری کنید!</translation>
+        <translation>این «توصیف‌گر» تمام اطلاعات لازم برای بازسازی کیف پول را در خود دارد. لطفاً برای بازیابی کیف‌پول، این توصیف‌گر را ذخیره و پشتیبان‌گیری کنید!</translation>
     </message>
     <message>
         <source>Wallet Properties</source>
@@ -435,7 +435,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Wallet Descriptor</source>
-        <translation>توصیفگر کیف پول</translation>
+        <translation>توصیف‌گر کیف پول</translation>
     </message>
     <message>
         <source>Import</source>
@@ -930,7 +930,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>لطفاً توصیفگرها را در فیلد توصیفگر بالا سمت راست جای‌گذاری کنید.</translation>
+        <translation>لطفاً توصیف‌گرها را در فیلد توصیف‌گر بالا سمت راست جای‌گذاری کنید.</translation>
     </message>
 </context>
 <context>
@@ -1055,7 +1055,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Export &amp;Descriptor for hardware signers</source>
-        <translation>صدور &amp;توصیفگر برای امضاکننده‌های سخت‌افزاری</translation>
+        <translation>خروجی‌گرفتن &amp; توصیف‌گر برای امضاکننده‌های سخت‌افزاری</translation>
     </message>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
@@ -1495,15 +1495,15 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-        <translation>اگر یک سید گم یا دزدیده شود، با دو سید باقی‌مانده + توصیفگر کیف پول (کد QR) می‌توان همهٔ وجوه را به کیف پولی جدید منتقل کرد</translation>
+        <translation>اگر یک سید (کلمات بازیابی) گم یا دزدیده شود، با دو سید باقی‌مانده + توصیف‌گر کیف پول (کد QR) می‌توان همهٔ موجودی را به کیف پولی جدید منتقل کرد</translation>
     </message>
     <message>
         <source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-        <translation>۳ مکان امن (هر یک با ۱ نسخه پشتیبان سید   + توصیفگر کیف پول   نیاز است)</translation>
+        <translation>۳ مکان امن (هر یک با ۱ نسخه پشتیبان سید   + توصیف‌گر کیف پول   نیاز است)</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-        <translation>توصیفگر کیف پول (کد QR) برای بازیابی کیف پول ضروری است</translation>
+        <translation>توصیف‌گر کیف پول (کد QR) برای بازیابی کیف پول ضروری است</translation>
     </message>
     <message>
         <source>3 signing devices</source>
@@ -1714,7 +1714,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Descriptor</source>
-        <translation>توصیفگر</translation>
+        <translation>توصیف‌گر</translation>
     </message>
     <message>
         <source>Wallet saved</source>
