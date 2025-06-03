@@ -210,7 +210,7 @@
     <name>BaseChat</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
-        <translation>{file_content} به‌عنوان دادهٔ بیت‌کوین تشخیص داده نشد</translation>
+        <translation>{file_content} به‌عنوان دادهٔ بیتکوین تشخیص داده نشد</translation>
     </message>
 </context>
 <context>
@@ -239,7 +239,7 @@
     <name>BaseNostrSync</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
-        <translation>{file_content} به‌عنوان دادهٔ بیت‌کوین تشخیص داده نشد</translation>
+        <translation>{file_content} به‌عنوان دادهٔ بیتکوین تشخیص داده نشد</translation>
     </message>
     <message>
         <source>Go to {untrusted}</source>
@@ -468,7 +468,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
-        <translation>هر نسخه پشتیبان سید و امضاکننده سخت‌افزاری را در مکانی امن قرار دهید، مانند:</translation>
+        <translation>هر نسخه از پشتیبان سید (کلمات) و امضاکننده (کیف‌پول) سخت‌افزاری را در مکانی امن قرار دهید، مانند:</translation>
     </message>
     <message>
         <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
@@ -488,14 +488,14 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Store the   hardware signer   in secure location.</source>
-        <translation>امضاکننده سخت‌افزاری را در مکانی امن نگهداری کنید.</translation>
+        <translation>امضاکننده (کیف‌پول) سخت‌افزاری را در مکانی امن نگهداری کنید.</translation>
     </message>
 </context>
 <context>
     <name>Downloader</name>
     <message>
         <source>Download Progress</source>
-        <translation>پیشرفت دانلود</translation>
+        <translation>مقدار پیشرفت دانلود</translation>
     </message>
     <message>
         <source>Download {}</source>
@@ -532,7 +532,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Export {data_type} to hardware signer</source>
-        <translation>صدور {data_type} به امضاکننده سخت‌افزاری</translation>
+        <translation>خروجی‌گرفتن {data_type} به امضاکننده سخت‌افزاری</translation>
     </message>
     <message>
         <source>Image (*.{image_format})</source>
@@ -555,15 +555,15 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>{rate} is the minimum for {rbf}</source>
-        <translation>{rate} حداقل برای {rbf} است</translation>
+        <translation>{rate} حداقل مقدار برای {rbf} است</translation>
     </message>
     <message>
         <source>{rate} combined fee rate</source>
-        <translation>نرخ کارمزد ترکیبی {rate}</translation>
+        <translation>نرخ تجمیعی کارمزد {rate}</translation>
     </message>
     <message>
         <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-        <translation>این تراکنش {number} والد تأییدنشده با نرخ کارمزد ترکیبی {parents_fee_rate} دارد</translation>
+        <translation>این تراکنش {number} یک تراکنش مبنای تأییدنشده با نرخ کارمزد تجمیعی {parents_fee_rate} دارد</translation>
     </message>
 </context>
 <context>
@@ -574,7 +574,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>The high priority mempool fee rate is {rate}</source>
-        <translation>نرخ کارمزد ممپول اولویت‌بالا {rate} است</translation>
+        <translation>نرخ کارمزد برای بالاترین اولویت تایید در ممپول {rate} است</translation>
     </message>
 </context>
 <context>
@@ -602,14 +602,14 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>High fee ratio: {ratio}%.</source>
-        <translation>نسبت کارمزد بالا: {ratio}%.</translation>
+        <translation>نسبت کارمزد زیاد: {ratio}%.</translation>
     </message>
 </context>
 <context>
     <name>FileToolButton</name>
     <message>
         <source>Export</source>
-        <translation>صدور</translation>
+        <translation>خروجی‌گرفتن</translation>
     </message>
     <message>
         <source>Copy {name}</source>
@@ -625,7 +625,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Export to file</source>
-        <translation>صدور به فایل</translation>
+        <translation>ذخیره به فایل</translation>
     </message>
     <message>
         <source>Not available</source>
@@ -636,11 +636,11 @@ the sending value {sent}</source>
     <name>FingerprintAnalyzer</name>
     <message>
         <source>Missing Fingerprint</source>
-        <translation>اثرانگشت موجود نیست</translation>
+        <translation>فینگرپرینت موجود نیست</translation>
     </message>
     <message>
         <source>Invalid Fingerprint</source>
-        <translation>اثرانگشت نامعتبر</translation>
+        <translation>فینگرپرینت نامعتبر</translation>
     </message>
 </context>
 <context>
@@ -651,7 +651,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Create Transaction</source>
-        <translation>ایجاد تراکنش</translation>
+        <translation>ساخت تراکنش</translation>
     </message>
     <message>
         <source>Retry</source>
@@ -670,7 +670,7 @@ the sending value {sent}</source>
     <name>GenerateSeed</name>
     <message>
         <source>Sticker Label</source>
-        <translation>برچسب استیکر</translation>
+        <translation>نام استیکر</translation>
     </message>
     <message>
         <source>Please enter the name (sticker label) of the hardware signer</source>
@@ -678,15 +678,15 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-        <translation>لطفاً اطمینان حاصل کنید برنامه دیگری به امضاکننده سخت‌افزاری دسترسی ندارد</translation>
+        <translation>لطفاً اطمینان حاصل کنید برنامه دیگری به امضاکننده (کیف‌پول) سخت‌افزاری دسترسی ندارد</translation>
     </message>
     <message>
         <source>The setup didnt complete. Please repeat.</source>
-        <translation>راه‌اندازی کامل نشد. لطفاً تکرار کنید.</translation>
+        <translation>راه‌اندازی ناموفق. لطفاً تکرار کنید.</translation>
     </message>
     <message>
         <source>Success! Please complete this step with all hardware signers and then click Next.</source>
-        <translation>موفقیت! لطفاً این مرحله را با تمام امضاکننده‌های سخت‌افزاری کامل کرده و سپس روی «بعدی» کلیک کنید.</translation>
+        <translation>با موفقیت انجام شد! لطفاً این مرحله را با تمام امضاکننده‌های سخت‌افزاری کامل کرده و سپس روی «بعدی» کلیک کنید.</translation>
     </message>
 </context>
 <context>
@@ -697,7 +697,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Export File</source>
-        <translation>صدور فایل</translation>
+        <translation>ذخیره فایل</translation>
     </message>
     <message>
         <source>QR Code</source>
@@ -716,7 +716,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Not broadcasted.</source>
-        <translation>پخش نشده است.</translation>
+        <translation>در شبکه پخش نشده است.</translation>
     </message>
     <message>
         <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
@@ -752,7 +752,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Waiting to be included in a block</source>
-        <translation>در انتظار درج در بلاک</translation>
+        <translation>در انتظار ثبت در بلاک</translation>
     </message>
 </context>
 <context>
@@ -833,14 +833,14 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Unexpected xpub origin</source>
-        <translation>منبع xpub غیرمنتظره</translation>
+        <translation>منبع xpub پیش‌بینی نشده</translation>
     </message>
 </context>
 <context>
     <name>KeyStoreUI</name>
     <message>
         <source>Import fingerprint and xpub</source>
-        <translation>وارد کردن اثرانگشت و xpub</translation>
+        <translation>وارد کردن فینگرپرینت و xpub</translation>
     </message>
     <message>
         <source>{data_type} cannot be used here.</source>
@@ -905,11 +905,11 @@ Location of signing device: .....</source>
     </message>
     <message>
         <source>Please paste the exported file (like sparrow-export.json):</source>
-        <translation>لطفاً فایل صادراتی (مثل sparrow-export.json) را جای‌گذاری کنید:</translation>
+        <translation>لطفاً فایل خروجی (مثل sparrow-export.json) را جای‌گذاری کنید:</translation>
     </message>
     <message>
         <source>Please paste the exported file (like sparrow-export.json)</source>
-        <translation>لطفاً فایل صادراتی (مثل sparrow-export.json) را جای‌گذاری کنید</translation>
+        <translation>لطفاً فایل خروجی (مثل sparrow-export.json) را جای‌گذاری کنید</translation>
     </message>
     <message>
         <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
@@ -926,7 +926,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-        <translation>داده‌ای برای منبع xpub مورد انتظار {key_origin} یافت نشد. اگر می‌خواهید شماره حساب غیرپیش‌فرض وارد کنید، منبع xpub را مشخص کرده و دوباره اسکن کنید.</translation>
+        <translation>داده‌ای برای منبع xpub مورد انتظار {key_origin} یافت نشد. اگر می‌خواهید عدد اکانت غیرپیش‌فرض وارد کنید، منبع xpub را مشخص کرده و دوباره اسکن کنید.</translation>
     </message>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>
@@ -953,7 +953,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-        <translation>منابع کلیدی واردشده شما {key_origins} متفاوت‌اند! لطفاً بررسی کنید آیا این قصد شما بوده است.</translation>
+        <translation>منابع کلیدی واردشده شما {key_origins} متفاوت‌اند! لطفاً مطمئن شوید که قصد این کار را دارید.</translation>
     </message>
 </context>
 <context>
@@ -968,7 +968,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Multi-computer synchronization and chat</source>
-        <translation>همگام‌سازی چندرایانه‌ای و گپ</translation>
+        <translation>همگام‌سازی و چت میان چندین کامپیوتر</translation>
     </message>
     <message>
         <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
@@ -1006,7 +1006,7 @@ Do you want to proceed anyway?</source>
     <name>LicenseDialog</name>
     <message>
         <source>License Info</source>
-        <translation>اطلاعات مجوز</translation>
+        <translation>اطلاعات لایسنس</translation>
     </message>
 </context>
 <context>
@@ -1017,7 +1017,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-        <translation>این تراکنش دسته‌های سکه {categories} را ترکیب کرده و این دسته‌ها را قابل پیوند می‌کند!</translation>
+        <translation>این تراکنش دسته‌های بیتکوین {categories} را ترکیب کرده و آن‌ها را بهم مرتبط می‌کند!</translation>
     </message>
 </context>
 <context>
@@ -1035,7 +1035,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Export</source>
-        <translation>&amp;صدور</translation>
+        <translation>&amp;ذخیره</translation>
     </message>
     <message>
         <source>&amp;Rename Wallet</source>
@@ -1047,7 +1047,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Export Wallet PDF</source>
-        <translation>&amp;صدور PDF کیف پول</translation>
+        <translation>&amp;ذخیره PDF کیف پول</translation>
     </message>
     <message>
         <source>&amp;Generate PDF balance Statement</source>
@@ -1131,7 +1131,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;License</source>
-        <translation>&amp;مجوز</translation>
+        <translation>&amp;لایسنس</translation>
     </message>
     <message>
         <source>&amp;Show Logs</source>
@@ -1147,7 +1147,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Open issue in github</source>
-        <translation>باز کردن &amp;ایسشو در گیت‌هاب</translation>
+        <translation>باز کردن &amp;ایشو در گیت‌هاب</translation>
     </message>
     <message>
         <source>&amp;Mail feedback</source>
@@ -1223,11 +1223,11 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-        <translation>لطفاً تراکنش بیت‌کوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>لطفاً تراکنش بیتکوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-        <translation>تراکنش بیت‌کوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>تراکنش بیتکوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
     <message>
         <source>Transaction {txid}</source>
@@ -1295,7 +1295,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Save Current Wallet</source>
-        <translation>&amp;ذخیرهٔ کیف پول جاری</translation>
+        <translation>&amp;ذخیرهٔ کیف پول فعلی</translation>
     </message>
     <message>
         <source>Do you want to save the PSBT {id}?</source>
@@ -1356,7 +1356,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Export csv</source>
-        <translation>صدور CSV</translation>
+        <translation>خروجی CSV</translation>
     </message>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
@@ -1515,11 +1515,11 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Custom or import existing Wallet</source>
-        <translation>سفارشی یا وارد کردن کیف پول موجود</translation>
+        <translation>سفارشی‌سازی یا وارد کردن کیف پول موجود</translation>
     </message>
     <message>
         <source>Customize the wallet to your needs</source>
-        <translation>کیف پول را مطابق نیاز سفارشی کنید</translation>
+        <translation>کیف پول را مطابق نیاز سفارش‌سازی کنید</translation>
     </message>
     <message>
         <source>Single Signature Wallet</source>
@@ -1555,7 +1555,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-        <translation>اگر فریب خورده و سید خود را به هکرها بدهید، بیت‌کوین شما فوراً دزدیده می‌شود</translation>
+        <translation>اگر مورد فریب واقع شوید و سید (کلمات) خود را به هکرها بدهید، بیتکوین شما فوراً دزدیده می‌شود</translation>
     </message>
     <message>
         <source>1 signing devices</source>
@@ -1566,21 +1566,21 @@ Do you want to proceed anyway?</source>
     <name>NostrSync</name>
     <message>
         <source>Group Chat</source>
-        <translation>گپ گروهی</translation>
+        <translation>چت گروهی</translation>
     </message>
 </context>
 <context>
     <name>NostrSyncWithSingleChats</name>
     <message>
         <source>Chat</source>
-        <translation>گپ</translation>
+        <translation>چت</translation>
     </message>
 </context>
 <context>
     <name>NotificationBar</name>
     <message>
         <source>Close notification</source>
-        <translation>بستن اعلان</translation>
+        <translation>بستن نوتیفیکیشن</translation>
     </message>
 </context>
 <context>
@@ -1591,7 +1591,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Network = {network}. The coins are worthless!</source>
-        <translation>شبکه = {network}. سکه‌ها بی‌ارزش‌اند!</translation>
+        <translation>شبکه = {network}. بیتکوین‌های این شبکه بی‌ارزش‌اند!</translation>
     </message>
 </context>
 <context>
@@ -1839,7 +1839,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>ادامه ممکن است همهٔ آدرس‌های کیف پول را تغییر دهد. آیا می‌خواهید ادامه دهید؟</translation>
+        <translation>در ادامه ممکن است همهٔ آدرس‌های کیف پول را تغییر دهید. آیا می‌خواهید ادامه دهید؟</translation>
     </message>
 </context>
 <context>
@@ -1877,7 +1877,7 @@ have transactions linking to other addresses already. Are you sure you want to c
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>مقدار &lt;b&gt;کمی&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس از این کیف پول دریافت کنید.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج‌کردن از کیف پول را آزمایش کنید.                      &lt;br&gt;                     بنابراین پیش از ارسال مقدار قابل‌توجهی بیت‌کوین به کیف پول، &lt;b&gt;ضروری&lt;/b&gt; است که از کیف پول خرج کنید و همهٔ امضاکننده‌ها را آزمایش نمایید.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;هنوز مبالغ زیاد به کیف پول ارسال نکنید. لطفاً ابتدا همهٔ آزمایش‌های ارسال را کامل کنید!&lt;/b&gt;   
+        <translation>مقدار &lt;b&gt;کمی&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس از این کیف پول دریافت کنید.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج‌کردن از کیف پول را آزمایش کنید.                      &lt;br&gt;                     بنابراین پیش از ارسال مقدار قابل‌توجهی بیتکوین به کیف پول، &lt;b&gt;ضروری&lt;/b&gt; است که از کیف پول خرج کنید و همهٔ امضاکننده‌ها را آزمایش نمایید.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;فعلا مبالغ زیاد به کیف پول ارسال نکنید. لطفاً ابتدا همهٔ تست‌های ارسال تراکنش را کامل کنید!&lt;/b&gt;   
                     </translation>
     </message>
     <message>
@@ -1927,7 +1927,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Send max</source>
-        <translation>ارسال حداکثر</translation>
+        <translation>ارسال تمام موجودی</translation>
     </message>
 </context>
 <context>
@@ -1958,11 +1958,11 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Import/Export</source>
-        <translation>واردات/صادرات</translation>
+        <translation>واردکردن/خروجی‌گرفتن</translation>
     </message>
     <message>
         <source>Export CSV Template</source>
-        <translation>صدور الگوی CSV</translation>
+        <translation>خروجی‌گرفتن الگوی CSV</translation>
     </message>
     <message>
         <source>Import CSV file</source>
@@ -1970,7 +1970,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Export as CSV file</source>
-        <translation>صدور به‌صورت فایل CSV</translation>
+        <translation>خروجی به‌صورت فایل CSV</translation>
     </message>
     <message>
         <source>Amount [{unit}]</source>
@@ -1982,7 +1982,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Export csv</source>
-        <translation>صدور CSV</translation>
+        <translation>خروجی‌گرفتن CSV</translation>
     </message>
     <message>
         <source>All Files (*);;Wallet Files (*.csv)</source>
@@ -2002,7 +2002,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Please use the CSV template and include the header row.</source>
-        <translation>لطفاً از الگوی CSV استفاده کرده و ردیف سرآیند را درج کنید.</translation>
+        <translation>لطفاً از الگوی CSV استفاده کرده و ردیف سربرگ را درج کنید.</translation>
     </message>
 </context>
 <context>
@@ -2061,7 +2061,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>SankeyWidget</name>
     <message>
         <source>Export svg</source>
-        <translation>صدور SVG</translation>
+        <translation>خروجی‌ SVG</translation>
     </message>
     <message>
         <source>All Files (*);;Text Files (*.svg)</source>
@@ -2083,7 +2083,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ScreenshotsGenerateSeed</name>
     <message>
         <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-        <translation>روی هر امضاکننده سخت‌افزاری {number} کلمهٔ سید مخفی تولید کرده و روی برگه بازیابی بنویسید</translation>
+        <translation>روی هر امضاکننده سخت‌افزاری {number} کلمهٔ سید محرمانه تولید کرده و روی برگه بازیابی بنویسید</translation>
     </message>
 </context>
 <context>
@@ -2181,11 +2181,11 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation>لطفاً PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>لطفاً PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation>PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
 </context>
 <context>
@@ -2200,11 +2200,11 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation>لطفاً PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>لطفاً PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation>PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بیندازید</translation>
+        <translation>PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
     </message>
 </context>
 <context>
@@ -2222,7 +2222,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please do &apos;Wallet --&gt; Export --&gt; Export for ...&apos; and register the multisignature wallet on the hardware signer.</source>
-        <translation>لطفاً «کیف پول → صدور → صدور برای ...» را انجام داده و کیف پول چندامضایی را روی امضاکننده سخت‌افزاری ثبت کنید.</translation>
+        <translation>لطفاً «کیف پول → خروجی → خروجی برای ...» را انجام داده و کیف پول چندامضایی را روی امضاکننده سخت‌افزاری ثبت کنید.</translation>
     </message>
 </context>
 <context>
@@ -2312,7 +2312,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
-        <translation>توصیفگر آدرس خود را الصاق کنید، برای مثال wpkh(\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
+        <translation>توصیف‌گر آدرس خود را پیست کنید، برای مثال wpkh(\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -2328,11 +2328,11 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Unlock Devices</source>
-        <translation>قفل‌گشایی دستگاه‌ها</translation>
+        <translation>باز کردن دستگاه‌ها</translation>
     </message>
     <message>
         <source>Unlock</source>
-        <translation>قفل‌گشایی</translation>
+        <translation>باز کردن</translation>
     </message>
     <message>
         <source>Get xpubs</source>
@@ -2363,14 +2363,14 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <name>TrustedDeviceItem</name>
     <message>
         <source>Untrust device</source>
-        <translation>ناامن کردن دستگاه</translation>
+        <translation>غیرمعتمد کردن دستگاه</translation>
     </message>
 </context>
 <context>
     <name>TxExport</name>
     <message>
         <source>Export Transaction</source>
-        <translation>صدور تراکنش</translation>
+        <translation>خروجی‌گرفتن تراکنش</translation>
     </message>
 </context>
 <context>
@@ -2396,11 +2396,11 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Sync key Export</source>
-        <translation>صدور کلید همگام‌سازی</translation>
+        <translation>خروجی گرفتن کلید همگام‌سازی</translation>
     </message>
     <message>
         <source>Export sync key</source>
-        <translation>صدور کلید همگام‌سازی</translation>
+        <translation>خروجی‌گرفتن کلید همگام‌سازی</translation>
     </message>
     <message>
         <source>Import sync key</source>
@@ -2408,7 +2408,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Reset sync key</source>
-        <translation>بازنشانی کلید همگام‌سازی</translation>
+        <translation>ریست‌ کردن کلید همگام‌سازی</translation>
     </message>
     <message>
         <source>Set custom Relay list</source>
@@ -2469,7 +2469,7 @@ by merging address balances</source>
     </message>
     <message>
         <source>Create</source>
-        <translation>ایجاد</translation>
+        <translation>ساخت</translation>
     </message>
     <message>
         <source>This checkbox automatically checks 
@@ -2482,7 +2482,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Do you want to continue, even though both coin categories become linkable?</source>
-        <translation>آیا می‌خواهید ادامه دهید، حتی اگر هر دو دستهٔ سکه قابل پیوند شوند؟</translation>
+        <translation>آیا می‌خواهید ادامه دهید، حتی اگر هر دو دستهٔ بیتکوین بهم مرتبط شوند؟</translation>
     </message>
 </context>
 <context>
@@ -2501,7 +2501,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Transaction to be replaced could not be found in open wallets</source>
-        <translation>تراکنش جایگزین‌شونده در کیف پول‌های باز یافت نشد</translation>
+        <translation>تراکنش جایگزین‌ در کیف پول‌های باز یافت نشد</translation>
     </message>
     <message>
         <source>Invalid Signatures</source>
@@ -2509,7 +2509,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-        <translation>پخش {txid} ناموفق بود. پخش از طریق {url} را در نظر بگیرید</translation>
+        <translation>پخش {txid} در شبکه ناموفق بود. پخش از طریق {url} را در نظر بگیرید</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2744,7 +2744,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Generate Seed</source>
-        <translation>ایجاد سید</translation>
+        <translation>ساخت سید</translation>
     </message>
     <message>
         <source>Import signer info</source>
@@ -2772,11 +2772,11 @@ below {rate}</source>
     </message>
     <message>
         <source>Sync &amp; Chat</source>
-        <translation>همگام‌سازی و گپ</translation>
+        <translation>همگام‌سازی و چت</translation>
     </message>
     <message>
         <source>Send test {j}</source>
-        <translation>ارسال آزمایش {j}</translation>
+        <translation>ارسال آزمایشی {j}</translation>
     </message>
     <message>
         <source>Send test</source>
@@ -2807,7 +2807,7 @@ below {rate}</source>
     </message>
     <message>
         <source>The wallet is not funded. Please fund the wallet.</source>
-        <translation>کیف پول تأمین مالی نشده است. لطفاً کیف پول را شارژ کنید.</translation>
+        <translation>کیف پول خالی است. لطفاً به کیف پول مبلغی را ارسال کنید.</translation>
     </message>
     <message>
         <source>Buy hardware signers</source>
@@ -2919,11 +2919,11 @@ below {rate}</source>
     </message>
     <message>
         <source>{value} is not a valid fingerprint</source>
-        <translation>{value} یک اثرانگشت معتبر نیست</translation>
+        <translation>{value} یک فینگرپرینت معتبر نیست</translation>
     </message>
     <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>بخش شبکهٔ {network_str} از منشأ کلید {key_origin} باید با h سخت شود</translation>
+        <translation>بخش شبکهٔ {network_str} از منشأ کلید {key_origin} باید با عامل h سخت‌سازی شود</translation>
     </message>
     <message>
         <source>Unknown network/coin type {network_str} in {key_origin}</source>
@@ -2993,7 +2993,7 @@ below {rate}</source>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation>مشاهده در بلاک اکسپلورر</translation>
+        <translation>مشاهده در کاوش‌گر بلاک</translation>
     </message>
     <message>
         <source>Text copied to Clipboard</source>
@@ -3017,25 +3017,25 @@ below {rate}</source>
     </message>
     <message>
         <source>Create random mnemonic</source>
-        <translation>ایجاد عبارت نمونیک تصادفی</translation>
+        <translation>ایجاد عبارت یادیار تصادفی</translation>
     </message>
 </context>
 <context>
     <name>data</name>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-        <translation>اثرانگشت‌ها متفاوت‌اند. فقط اثرانگشت‌های یکسان پشتیبانی می‌شوند تا اطمینان حاصل شود همهٔ کلیدهای مشتق‌شده متعلق به یک امضاکننده باشند!</translation>
+        <translation>فینگرپرینت‌ها متفاوت‌اند. فقط فینگرپرینت‌های یکسان پشتیبانی می‌شوند تا اطمینان حاصل شود همهٔ کلیدهای مشتق‌شده متعلق به یک امضاکننده باشند!</translation>
     </message>
 </context>
 <context>
     <name>export</name>
     <message>
         <source>Export Labels</source>
-        <translation>صدور برچسب‌ها</translation>
+        <translation>خروجی‌گرفتن برچسب‌ها</translation>
     </message>
     <message>
         <source>Export Labels for other wallets (BIP329)</source>
-        <translation>صدور برچسب‌ها برای کیف پول‌های دیگر (BIP329)</translation>
+        <translation>خروجی‌گرفتن برچسب‌ها برای کیف پول‌های دیگر (BIP329)</translation>
     </message>
 </context>
 <context>
@@ -3064,7 +3064,7 @@ below {rate}</source>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation>مشاهده در بلاک اکسپلورر</translation>
+        <translation>مشاهده در کاوش‌گر بلاک</translation>
     </message>
     <message>
         <source>Copy as csv</source>
@@ -3076,7 +3076,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Edit with higher fee (RBF)</source>
-        <translation>ویرایش با کارمزد بالاتر (RBF)</translation>
+        <translation>ویرایش تراکنش با کارمزد بیشتر (RBF)</translation>
     </message>
     <message>
         <source>Try cancel transaction (RBF)</source>
@@ -3157,11 +3157,11 @@ below {rate}</source>
     </message>
     <message>
         <source>Restore labels from cloud using an existing sync key</source>
-        <translation>بازیابی برچسب‌ها از ابر با استفاده از کلید همگام‌سازی موجود</translation>
+        <translation>بازیابی برچسب‌ها از فضای ابری با استفاده از کلید همگام‌سازی موجود</translation>
     </message>
     <message>
         <source>Export Labels</source>
-        <translation>صدور برچسب‌ها</translation>
+        <translation>خروجی برچسب‌ها</translation>
     </message>
 </context>
 <context>
@@ -3172,7 +3172,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Export as CSV</source>
-        <translation>صدور به‌صورت CSV</translation>
+        <translation>خروجی به‌صورت CSV</translation>
     </message>
     <message>
         <source>Visible columns</source>
@@ -3183,11 +3183,11 @@ below {rate}</source>
     <name>net_conf</name>
     <message>
         <source>This is a private and fast way to connect to the bitcoin network.</source>
-        <translation>این روشی خصوصی و سریع برای اتصال به شبکهٔ بیت‌کوین است.</translation>
+        <translation>این روشی خصوصی و سریع برای اتصال به شبکهٔ بیتکوین است.</translation>
     </message>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>می‌توانید نود بیت‌کوین خود، مانند {link} را متصل کنید.</translation>
+        <translation>می‌توانید نود بیتکوین خود، مانند {link} را متصل کنید.</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
@@ -3212,31 +3212,31 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>می‌توانید {electrum} را با یک سرور Electrum روی {server} و یک بلاک اکسپلورر روی {explorer} راه‌اندازی کنید</translation>
+        <translation>می‌توانید {electrum} را با یک سرور Electrum روی {server} و یک کاوش‌گر بلاک روی {explorer} راه‌اندازی کنید</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-        <translation>گزینهٔ خوب {electrum_testnet} و به‌عنوان بلاک اکسپلورر {explorer_testnet} است</translation>
+        <translation>یک گزینهٔ مناسب {electrum_testnet} است و برای کاوش‌گر بلاک نیز {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-        <translation>گزینهٔ خوب {electrum_testnet4} و به‌عنوان بلاک اکسپلورر {explorer_testnet4} است. یک {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
+        <translation>یک گزینه‌ی مناسب {electrum_testnet4} است و برای کاوش‌گر بلاک نیز {explorer_testnet4} این سرویس {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
     </message>
     <message>
         <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-        <translation>برای Signet، {electrum} و یک بلاک اکسپلورر روی {mempool_url} را انتخاب کنید. یک {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
+        <translation>برای Signet، {electrum} و برای کاوش‌گر بلاک {mempool_url} را انتخاب کنید. سرویس {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-        <translation>می‌توانید {setup} را با یک سرور esplora روی {server} و یک بلاک اکسپلورر روی {explorer} راه‌اندازی کنید</translation>
+        <translation>می‌توانید {setup} را با یک سرور esplora روی {server} و یک کاوش‌گر بلاک روی {explorer} راه‌اندازی کنید</translation>
     </message>
     <message>
         <source>There is a {faucet} for free test coins.</source>
-        <translation>یک {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
+        <translation>سرویس {faucet} برای سکه‌های آزمایشی رایگان وجود دارد.</translation>
     </message>
     <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>یک سرور (گاهی فعال) {link} و یک بلاک اکسپلورر روی {explorer} است. یک {faucet} وجود دارد.</translation>
+        <translation>یک سرور (گاهی فعال) {link} و کاوش‌گر بلاک روی {explorer} است. این سرویس {faucet} را ‌می‌توانید استفاده کنید.</translation>
     </message>
 </context>
 <context>
@@ -3269,7 +3269,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation>{keystore_label}: اثرانگشت: {keystore_fingerprint}، منشأ کلید: {keystore_key_origin}، {keystore_xpub}</translation>
+        <translation>{keystore_label}: فینگرپرینت: {keystore_fingerprint}، منشأ کلید: {keystore_key_origin}، {keystore_xpub}</translation>
     </message>
     <message>
         <source>File not found!</source>
@@ -3305,7 +3305,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation>هنگام بازاسکن این کیف پول، حداقل تا شاخص آدرس {max_tip} اسکن کنید تا همهٔ آدرس‌های دارای موجودی کشف شوند.</translation>
+        <translation>هنگام اسکن مجدد این کیف پول، حداقل تا ایندکس آدرس {max_tip} اسکن کنید تا همهٔ آدرس‌های دارای موجودی نمایش داده شوند.</translation>
     </message>
     <message>
         <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
@@ -3334,7 +3334,7 @@ It is best to use your own server, such as {link}.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>۱. «برگهٔ بازیابی» ({number} کلمه) را به این کاغذ بچسبانید یا ۱۲/۲۴ کلمه را روی این کاغذ کپی کنید.&lt;br/&gt;                 ۲. این کاغذ را در خط زیر تا کنید&lt;br/&gt;                 ۳. هر کاغذ را در مکان امن متفاوتی قرار دهید که فقط شما دسترسی دارید&lt;br/&gt;                 ۴. می‌توانید امضاکننده‌های سخت‌افزاری را الف) همراه با نسخهٔ پشتیبان سید کاغذ مربوطه یا ب) هر یک را در مکان امن دیگری (در صورت وجود) قرار دهید   
+        <translation>۱. «برگهٔ بازیابی» ({number} کلمه) را به این کاغذ بچسبانید یا ۱۲/۲۴ کلمه را روی این کاغذ کپی کنید.&lt;br/&gt;                 ۲. این کاغذ را در خط زیر تا کنید&lt;br/&gt;                 ۳. هر کاغذ را در مکان امن متفاوتی قرار دهید که فقط شما دسترسی دارید&lt;br/&gt;                 ۴. می‌توانید امضاکننده‌های سخت‌افزاری را الف) همراه با نسخهٔ پشتیبان سید کاغذ مربوطه یا ب) هر یک را در مکان امن دیگری (در صورت امکان) قرار دهید   
                 </translation>
     </message>
     <message>
@@ -3347,11 +3347,11 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation>توصیفگر کیف پول (کد QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; به شما اجازه می‌دهد یک کیف پول فقط-مشاهده بسازید تا موجودی را ببینید. برای خرج‌کردن از آن به {threshold} سید و توصیفگر کیف پول نیاز دارید.</translation>
+        <translation>توصیف‌گر کیف پول (کد QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; به شما اجازه می‌دهد یک کیف پول فقط-نمایشی بسازید تا موجودی را ببینید. برای خرج‌کردن از آن به {threshold} سید و توصیف‌گر کیف پول نیاز دارید.</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-        <translation>توصیفگر کیف پول (کد QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; به شما اجازه می‌دهد یک کیف پول فقط-مشاهده بسازید تا موجودی را ببینید. برای خرج‌کردن از آن به {number} کلمهٔ محرمانه (سید) نیاز دارید.</translation>
+        <translation>توصیف‌گر کیف پول (کد QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; به شما اجازه می‌دهد یک کیف پول فقط-نمایشی بسازید تا موجودی را ببینید. برای خرج‌کردن از آن به {number} کلمهٔ محرمانه (سید) نیاز دارید.</translation>
     </message>
     <message>
         <source>Created with</source>
@@ -3410,11 +3410,11 @@ It is best to use your own server, such as {link}.</source>
     <name>tx</name>
     <message>
         <source>Cannot CPFP the transaction because no receiving output could be found</source>
-        <translation>امکان CPFP این تراکنش وجود ندارد زیرا هیچ خروجی دریافتی یافت نشد</translation>
+        <translation>امکان CPFP این تراکنش وجود ندارد زیرا هیچ خروجی دریافتی به شما یافت نشد</translation>
     </message>
     <message>
         <source>Speedup of {txid}</source>
-        <translation>تسریع {txid}</translation>
+        <translation>تسریع تراکنش {txid}</translation>
     </message>
 </context>
 <context>
@@ -3545,7 +3545,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation>مشاهده در بلاک اکسپلورر</translation>
+        <translation>مشاهده در کاوش‌گر بلاک</translation>
     </message>
     <message>
         <source>Open Address Details</source>
@@ -3627,11 +3627,11 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Unconfirmed parent</source>
-        <translation>والد تأییدنشده</translation>
+        <translation>مبنای تأییدنشده</translation>
     </message>
     <message>
         <source>Local</source>
-        <translation>محلی</translation>
+        <translation>لوکال</translation>
     </message>
     <message>
         <source>Unknown</source>
