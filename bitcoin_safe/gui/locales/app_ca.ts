@@ -42,7 +42,7 @@
     <name>AddressDialog</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>Address of wallet &quot;{id}&quot;</source>
@@ -50,7 +50,7 @@
     </message>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Avançat</translation>
     </message>
     <message>
         <source>Validate</source>
@@ -88,7 +88,7 @@
     </message>
     <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalls</translation>
     </message>
     <message>
         <source>View on block explorer</source>
@@ -96,7 +96,7 @@
     </message>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia com a CSV</translation>
     </message>
     <message>
         <source>Set category</source>
@@ -116,23 +116,23 @@
     </message>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Categoria</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor</translation>
     </message>
 </context>
 <context>
@@ -161,7 +161,7 @@
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
-        <translation type="unfinished"></translation>
+        <translation>Màx ≈ {amount}</translation>
     </message>
 </context>
 <context>
@@ -176,7 +176,7 @@
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
     <message>
         <source>Print the pdf (it also contains the wallet descriptor)</source>
@@ -195,11 +195,11 @@
     <name>Balance</name>
     <message>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmat</translation>
     </message>
     <message>
         <source>Unconfirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense confirmar</translation>
     </message>
     <message>
         <source>Unmatured</source>
@@ -221,7 +221,7 @@
     </message>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation type="unfinished"></translation>
+        <translation>Introdueix un nom per al dispositiu amb {npub}</translation>
     </message>
     <message>
         <source>Device name</source>
@@ -232,14 +232,14 @@
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda</translation>
     </message>
 </context>
 <context>
     <name>BaseNostrSync</name>
     <message>
         <source>Could not recognize {file_content} as BitcoinData</source>
-        <translation type="unfinished"></translation>
+        <translation>No s&apos;ha pogut reconèixer {file_content} com a BitcoinData</translation>
     </message>
     <message>
         <source>Go to {untrusted}</source>
@@ -333,11 +333,11 @@
     </message>
     <message>
         <source>Open Transaction/PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre Transacció/PSBT</translation>
     </message>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -439,7 +439,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Read QR Code</source>
@@ -663,7 +663,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
 </context>
 <context>
@@ -678,7 +678,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Assegura&apos;t que no hi hagi altres programes accedint al signador de maquinari</translation>
     </message>
     <message>
         <source>The setup didnt complete. Please repeat.</source>
@@ -705,14 +705,14 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>USB</source>
-        <translation type="unfinished"></translation>
+        <translation>USB</translation>
     </message>
 </context>
 <context>
     <name>HistList</name>
     <message>
         <source>Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartera</translation>
     </message>
     <message>
         <source>Not broadcasted.</source>
@@ -728,7 +728,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Categoria</translation>
     </message>
     <message>
         <source>Label</source>
@@ -740,7 +740,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo</translation>
     </message>
     <message>
         <source>Txid</source>
@@ -787,14 +787,14 @@ the sending value {sent}</source>
     <name>HorizontalImportExportWallet</name>
     <message>
         <source>Seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seed</translation>
     </message>
 </context>
 <context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
-        <translation type="unfinished"></translation>
+        <translation>2. Importa la informació de la cartera a Bitcoin Safe</translation>
     </message>
     <message>
         <source>Skip step</source>
@@ -802,7 +802,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Next step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas següent</translation>
     </message>
     <message>
         <source>Next signer</source>
@@ -814,7 +814,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
 </context>
 <context>
@@ -848,7 +848,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;xpub està en format SLIP132. Convertint al format estàndard.</translation>
     </message>
     <message>
         <source>Import</source>
@@ -856,7 +856,7 @@ the sending value {sent}</source>
     </message>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Avançat</translation>
     </message>
     <message>
         <source>Description</source>
@@ -885,7 +885,7 @@ Location of signing device: .....</source>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>D&apos;acord</translation>
     </message>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
@@ -1183,11 +1183,11 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
     <message>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap fitxer seleccionat</translation>
     </message>
     <message>
         <source>Selected file: {file_path}</source>
@@ -1337,7 +1337,7 @@ Do you want to proceed anyway?</source>
     <name>MempoolProjectedBlock</name>
     <message>
         <source>Unconfirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense confirmar</translation>
     </message>
     <message>
         <source>~{n}. Block</source>
@@ -1364,14 +1364,14 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap fitxer seleccionat</translation>
     </message>
 </context>
 <context>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Avançat</translation>
     </message>
     <message>
         <source>SSL:</source>
@@ -1468,7 +1468,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Press ⬇ arrow key for suggestions</source>
-        <translation type="unfinished"></translation>
+        <translation>Prem la tecla ⬇ per a suggeriments</translation>
     </message>
     <message>
         <source>Enable SSL</source>
@@ -1626,7 +1626,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
@@ -1641,15 +1641,15 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>Show Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra contrasenya</translation>
     </message>
     <message>
         <source>Submit</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia</translation>
     </message>
     <message>
         <source>Hide Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Amaga contrasenya</translation>
     </message>
 </context>
 <context>
@@ -1670,7 +1670,7 @@ Do you want to proceed anyway?</source>
     <name>QTWallet</name>
     <message>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia</translation>
     </message>
     <message>
         <source>Backup saved to {filename}</source>
@@ -1795,7 +1795,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap fitxer seleccionat</translation>
     </message>
     <message>
         <source>Import labels</source>
@@ -1827,7 +1827,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Saldo</translation>
     </message>
     <message>
         <source>Value</source>
@@ -1846,14 +1846,14 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Codi QR</translation>
     </message>
 </context>
 <context>
     <name>ReceiveGroup</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
 </context>
 <context>
@@ -1890,7 +1890,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
 </context>
 <context>
@@ -1911,15 +1911,15 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>RecipientWidget</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat</translation>
     </message>
     <message>
         <source>Enter label here</source>
@@ -1934,7 +1934,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>Recipients</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>No rows recognized</source>
@@ -1978,11 +1978,11 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Export csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta csv</translation>
     </message>
     <message>
         <source>All Files (*);;Wallet Files (*.csv)</source>
@@ -1990,7 +1990,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Cap fitxer seleccionat</translation>
     </message>
     <message>
         <source>Open CSV</source>
@@ -2013,23 +2013,23 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Skip step</source>
-        <translation type="unfinished"></translation>
+        <translation>Omet pas</translation>
     </message>
     <message>
         <source>Next step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas següent</translation>
     </message>
     <message>
         <source>Next signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador següent</translation>
     </message>
     <message>
         <source>Previous signer</source>
-        <translation type="unfinished"></translation>
+        <translation>Signador anterior</translation>
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
     <message>
         <source>Yes, I registered the multisig on the {n} hardware signer</source>
@@ -2054,7 +2054,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>SankeyBitcoin</name>
     <message>
         <source>Fee</source>
-        <translation type="unfinished"></translation>
+        <translation>Comissió</translation>
     </message>
 </context>
 <context>
@@ -2173,15 +2173,15 @@ If you make a mistake here, your money is lost!</source>
     <name>SignatureImporterClipboard</name>
     <message>
         <source>Import signed PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa PSBT signat</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>D&apos;acord</translation>
     </message>
     <message>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu PSBT aquí, o arrossega un fitxer</translation>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
@@ -2196,7 +2196,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>D&apos;acord</translation>
     </message>
     <message>
         <source>Please paste your PSBT in here, or drop a file</source>
@@ -2204,7 +2204,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa el teu PSBT aquí o arrossega un fitxer</translation>
     </message>
 </context>
 <context>
@@ -2352,7 +2352,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>PSBT</translation>
     </message>
     <message>
         <source>Paste your text to be signed</source>
@@ -2493,7 +2493,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Envia</translation>
     </message>
     <message>
         <source>Label: </source>
@@ -2513,15 +2513,15 @@ below {rate}</source>
     </message>
     <message>
         <source>Import file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa fitxer</translation>
     </message>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid</source>
-        <translation type="unfinished"></translation>
+        <translation>El txid del PSBT signat no coincideix amb el txid original</translation>
     </message>
     <message>
         <source>Recipients</source>
-        <translation type="unfinished"></translation>
+        <translation>Destinataris</translation>
     </message>
     <message>
         <source>Diagram</source>
@@ -2533,7 +2533,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Receive faster (CPFP)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rep més ràpid (CPFP)</translation>
     </message>
     <message>
         <source>Edit with increased fee (RBF)</source>
@@ -2549,7 +2549,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Next step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas següent</translation>
     </message>
 </context>
 <context>
@@ -2616,7 +2616,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreça</translation>
     </message>
     <message>
         <source>Category</source>
@@ -2624,11 +2624,11 @@ below {rate}</source>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantitat</translation>
     </message>
 </context>
 <context>
@@ -2688,7 +2688,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas anterior</translation>
     </message>
 </context>
 <context>
@@ -2714,7 +2714,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>The wallet {filename} exists already.</source>
@@ -2845,11 +2845,11 @@ below {rate}</source>
     </message>
     <message>
         <source>Unused</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense usar</translation>
     </message>
     <message>
         <source>Funded</source>
-        <translation type="unfinished"></translation>
+        <translation>Finançat</translation>
     </message>
     <message>
         <source>Used</source>
@@ -2857,7 +2857,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Funded or Unused</source>
-        <translation type="unfinished"></translation>
+        <translation>Finançat o sense usar</translation>
     </message>
     <message>
         <source>All types</source>
@@ -2865,18 +2865,18 @@ below {rate}</source>
     </message>
     <message>
         <source>Receiving</source>
-        <translation type="unfinished"></translation>
+        <translation>Recepció</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Canvi</translation>
     </message>
 </context>
 <context>
     <name>basetab</name>
     <message>
         <source>Next step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas següent</translation>
     </message>
     <message>
         <source>Previous Step</source>
@@ -2993,7 +2993,7 @@ below {rate}</source>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veure a l&apos;explorador de blocs</translation>
     </message>
     <message>
         <source>Text copied to Clipboard</source>
@@ -3053,22 +3053,22 @@ below {rate}</source>
     <name>help</name>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda</translation>
     </message>
 </context>
 <context>
     <name>hist_list</name>
     <message>
         <source>All status</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els estats</translation>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veure a l&apos;explorador de blocs</translation>
     </message>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia com a CSV</translation>
     </message>
     <message>
         <source>Save as file</source>
@@ -3084,7 +3084,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Increase fee (RBF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Augmenta comissió (RBF)</translation>
     </message>
     <message>
         <source>Receive faster (CPFP)</source>
@@ -3100,7 +3100,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Used</source>
-        <translation type="unfinished"></translation>
+        <translation>Usat</translation>
     </message>
     <message>
         <source>Funded or Unused</source>
@@ -3108,7 +3108,7 @@ below {rate}</source>
     </message>
     <message>
         <source>All types</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els tipus</translation>
     </message>
     <message>
         <source>Receiving</source>
@@ -3161,7 +3161,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Export Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta etiquetes</translation>
     </message>
 </context>
 <context>
@@ -3254,11 +3254,11 @@ It is best to use your own server, such as {link}.</source>
     <name>open_file</name>
     <message>
         <source>Open Transaction/PSBT</source>
-        <translation type="unfinished"></translation>
+        <translation>Obre Transacció/PSBT</translation>
     </message>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -3289,7 +3289,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Categoria</translation>
     </message>
     <message>
         <source>Address</source>
@@ -3434,7 +3434,7 @@ It is best to use your own server, such as {link}.</source>
     <name>util</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconegut</translation>
     </message>
     <message>
         <source>about {} hours ago</source>
@@ -3545,7 +3545,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>View on block explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veure a l&apos;explorador de blocs</translation>
     </message>
     <message>
         <source>Open Address Details</source>
@@ -3553,7 +3553,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia com a CSV</translation>
     </message>
 </context>
 <context>
@@ -3576,7 +3576,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>The camera could not be opened</source>
