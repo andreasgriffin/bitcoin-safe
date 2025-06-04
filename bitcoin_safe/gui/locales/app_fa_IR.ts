@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS language="fa">
+<TS>
 <context>
     <name>AbstractSignatureImporter</name>
     <message>
@@ -551,7 +551,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     </message>
     <message>
         <source>in ~{n}. Block</source>
-        <translation>در حدود بلاک \~{n}</translation>
+        <translation>در حدود بلاک \\~{n}</translation>
     </message>
     <message>
         <source>{rate} is the minimum for {rbf}</source>
@@ -995,11 +995,11 @@ Do you want to proceed anyway?</source>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} min</source>
-        <translation>\~در {t} دقیقه</translation>
+        <translation>\\~در {t} دقیقه</translation>
     </message>
     <message>
         <source>~in {t} hours</source>
-        <translation>\~در {t} ساعت</translation>
+        <translation>\\~در {t} ساعت</translation>
     </message>
 </context>
 <context>
@@ -1071,7 +1071,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;USB Signer Tools</source>
-        <translation>ابزارهای امضاکننده \&amp;USB</translation>
+        <translation>ابزارهای امضاکننده \\&amp;USB</translation>
     </message>
     <message>
         <source>Close all transactions</source>
@@ -1079,7 +1079,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Load Transaction or PSBT</source>
-        <translation>بارگذاری تراکنش یا \&amp;PSBT</translation>
+        <translation>بارگذاری تراکنش یا \\&amp;PSBT</translation>
     </message>
     <message>
         <source>From &amp;file</source>
@@ -1143,7 +1143,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>&amp;Contact via Nostr</source>
-        <translation>تماس از طریق \&amp;Nostr</translation>
+        <translation>تماس از طریق \\&amp;Nostr</translation>
     </message>
     <message>
         <source>&amp;Open issue in github</source>
@@ -1341,7 +1341,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>~{n}. Block</source>
-        <translation>بلاک \~{n}.</translation>
+        <translation>بلاک \\~{n}.</translation>
     </message>
 </context>
 <context>
@@ -1403,7 +1403,7 @@ Do you want to proceed anyway?</source>
     </message>
     <message>
         <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-        <translation>پروکسی شامل قابلیت Sync\&amp;Chat نمی‌شود!</translation>
+        <translation>پروکسی شامل قابلیت Sync\\&amp;Chat نمی‌شود!</translation>
     </message>
     <message>
         <source>Proxy:</source>
@@ -1974,7 +1974,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Amount [{unit}]</source>
-        <translation>مقدار \[{unit}]</translation>
+        <translation>مقدار \\[{unit}]</translation>
     </message>
     <message>
         <source>Label</source>
@@ -2312,7 +2312,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
-        <translation>توصیف‌گر آدرس خود را پیست کنید، برای مثال wpkh(\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
+        <translation>توصیف‌گر آدرس خود را پیست کنید، برای مثال wpkh(\\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -2436,7 +2436,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-        <translation>لطفاً UTXO را در اینجا با قالب txid\:outpoint txid\:outpoint جای‌گذاری کنید</translation>
+        <translation>لطفاً UTXO را در اینجا با قالب txid\\:outpoint txid\\:outpoint جای‌گذاری کنید</translation>
     </message>
     <message>
         <source>Please paste UTXO here</source>
@@ -3258,7 +3258,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>تمام فایل‌ها (*);;PSBT (*.psbt);;تراکنش (\*.tx)</translation>
+        <translation>تمام فایل‌ها (*);;PSBT (*.psbt);;تراکنش (\\*.tx)</translation>
     </message>
 </context>
 <context>
