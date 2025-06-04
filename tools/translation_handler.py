@@ -53,34 +53,20 @@ class TranslationHandler:
     def __init__(
         self,
         module_name,
-        languages=[
-            "zh_CN",
-            "es_ES",
-            "ru_RU",
-            "hi_IN",
-            "pt_PT",
-            "ja_JP",
-            "ar_AE",
-            "it_IT",
-            "fr_FR",
-            "de_DE",
-            "my_MM",
-            "ko_KR",
-            # "lo_LA",
-            "th_TH",
-        ],
         prefix="app",
     ) -> None:
         self.module_name = module_name
         self.ts_folder = Path(module_name) / "gui" / "locales"
         self.prefix = prefix
-        self.languages = languages
+
+        autodetected_lang_files = list(self.ts_folder.glob("*.ts"))
+        self.languages = [file.stem[len(prefix) + 1 :] for file in autodetected_lang_files]
 
         logger.info("=" * 20)
         logger.info(
             f"""
 Translate all following lines   to the following languages
- {languages}
+ {self.languages}
 Information context:  A bitcoin only bitcoin wallet.   So a term like "KYC Exchange"  means a trading place, that requires KYC. A wallet is a software that shows the balances on bitcoin addresses that belong to the user.  An address is a bitcoin address. 
 Formatting instructions:
 - no bullets points.  
@@ -93,7 +79,7 @@ Content to translate:
         )
         logger.info("=" * 20)
 
-        for language in languages:
+        for language in self.languages:
             assert language in FLAGS
 
     def delete_po_files(self):
