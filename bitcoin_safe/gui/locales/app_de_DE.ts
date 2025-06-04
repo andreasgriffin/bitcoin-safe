@@ -648,7 +648,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
         <location filename="../qt/export_data.py" line="716"/>
         <source>Image (*.{image_format})</source>
         <comment>All Files (*.*)</comment>
-        <translation type="unfinished">Bild (*.{image_format})  </translation>
+        <translation>Bild (*.{image_format})</translation>
     </message>
 </context>
 <context>
