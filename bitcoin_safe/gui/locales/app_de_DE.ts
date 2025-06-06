@@ -354,7 +354,13 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-        <translation>Kaufen Sie {number} Hardware-Unterzeichner                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe unterstützt alle wichtigen Hardware-Unterzeichner: &lt;a href=&quot;{url}&quot;&gt;Vollständige Liste anzeigen&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+        <translation>Kaufen Sie {number} Hardware-Unterzeichner                                                  
+&lt;ul&gt;                             
+{different_hint}                              
+&lt;li&gt;Bitcoin Safe unterstützt alle wichtigen Hardware-Unterzeichner: &lt;a href=&quot;{url}&quot;&gt;Vollständige Liste anzeigen&lt;/a&gt;&lt;/li&gt;                             
+            
+             &lt;/ul&gt;
+                           </translation>
     </message>
 </context>
 <context>
@@ -1791,7 +1797,9 @@ Standort des Signiergeräts: .....</translation>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-        <translation>Antworten: {name}: {status} Mempool-Instanz: {server}  </translation>
+        <translation>Antworten:
+{name}: {status}
+Mempool-Instanz: {server}</translation>
     </message>
     <message>
         <location filename="../qt/network_settings/main.py" line="504"/>
@@ -1820,7 +1828,10 @@ Standort des Signiergeräts: .....</translation>
 {responses}
 
  Do you want to proceed anyway?</source>
-        <translation>Fehler in der Serververbindung. {responses} Möchten Sie trotzdem fortfahren?</translation>
+        <translation>Fehler in der Serververbindung.
+{responses}
+
+Möchten Sie trotzdem fortfahren?</translation>
     </message>
 </context>
 <context>
@@ -2168,7 +2179,9 @@ Standort des Signiergeräts: .....</translation>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
-        <translation>Die Transaktionen {txs} im Wallet &apos;{wallet}&apos; wurden aus der Historie entfernt!!!</translation>
+        <translation>Die Transaktionen
+{txs}
+im Wallet &apos;{wallet}&apos; wurden aus der Historie entfernt!!!</translation>
     </message>
     <message>
         <location filename="../qt/qt_wallet.py" line="765"/>
@@ -2179,13 +2192,15 @@ Standort des Signiergeräts: .....</translation>
         <location filename="../qt/qt_wallet.py" line="794"/>
         <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>Neue Transaktion im Wallet &apos;{wallet}&apos;: {txs}</translation>
+        <translation>Neue Transaktion im Wallet &apos;{wallet}&apos;:
+{txs}</translation>
     </message>
     <message>
         <location filename="../qt/qt_wallet.py" line="801"/>
         <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>{number} neue Transaktionen im Wallet &apos;{wallet}&apos;: {txs}</translation>
+        <translation>{number} neue Transaktionen im Wallet &apos;{wallet}&apos;:
+{txs}</translation>
     </message>
     <message>
         <location filename="../qt/qt_wallet.py" line="993"/>
@@ -2201,7 +2216,8 @@ Standort des Signiergeräts: .....</translation>
         <location filename="../qt/qt_wallet.py" line="1012"/>
         <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-        <translation>Die Adressen {used_addresses} haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie sicher, dass Sie die Kategorie ändern möchten?</translation>
+        <translation>Die Adressen {used_addresses}
+haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie sicher, dass Sie die Kategorie ändern möchten?</translation>
     </message>
     <message>
         <location filename="../qt/qt_wallet.py" line="1049"/>
@@ -2286,7 +2302,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/qt_wallet.py" line="1399"/>
         <source>All Files (*);;JSON Files (*.json)</source>
-        <translation>Alle Dateien (*);;JSON-Dateien (*.json)  </translation>
+        <translation>Alle Dateien (*);;JSON-Dateien (*.json)</translation>
     </message>
 </context>
 <context>
@@ -2294,7 +2310,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/export_data.py" line="890"/>
         <source>QR Code</source>
-        <translation>QR-Code  </translation>
+        <translation>QR-Code</translation>
     </message>
 </context>
 <context>
@@ -2302,7 +2318,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/qr_components/quick_receive.py" line="144"/>
         <source>Address</source>
-        <translation>Adresse  </translation>
+        <translation>Adresse</translation>
     </message>
 </context>
 <context>
@@ -2310,12 +2326,12 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/wizard.py" line="893"/>
         <source>Balance = {amount}</source>
-        <translation>Saldo = {amount}  </translation>
+        <translation>Saldo = {amount}</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="902"/>
         <source>No wallet setup yet</source>
-        <translation>Noch kein Wallet eingerichtet  </translation>
+        <translation>Noch kein Wallet eingerichtet</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="978"/>
@@ -2329,22 +2345,31 @@ have transactions linking to other addresses already. Are you sure you want to c
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;  </translation>
+        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.
+                     &lt;br&gt;&lt;br&gt;
+                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;
+                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen.
+                      &lt;br&gt;
+                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.
+                          &lt;br&gt;
+                     &lt;br&gt;
+                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;   
+                    </translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="995"/>
         <source>Next step</source>
-        <translation>Nächster Schritt  </translation>
+        <translation>Nächster Schritt</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="996"/>
         <source>Check if received</source>
-        <translation>Überprüfen, ob empfangen  </translation>
+        <translation>Überprüfen, ob empfangen</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="997"/>
         <source>Previous Step</source>
-        <translation>Vorheriger Schritt  </translation>
+        <translation>Vorheriger Schritt</translation>
     </message>
 </context>
 <context>
@@ -2352,7 +2377,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/wallet_list.py" line="153"/>
         <source>Recently Opened Wallets</source>
-        <translation>Kürzlich geöffnete Wallets  </translation>
+        <translation>Kürzlich geöffnete Wallets</translation>
     </message>
 </context>
 <context>
@@ -2360,7 +2385,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/recipients.py" line="274"/>
         <source>Wallet &quot;{id}&quot;</source>
-        <translation>Wallet &quot;{id}&quot;  </translation>
+        <translation>Wallet &quot;{id}&quot;</translation>
     </message>
 </context>
 <context>
@@ -2368,27 +2393,27 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/recipients.py" line="190"/>
         <source>Address</source>
-        <translation>Adresse  </translation>
+        <translation>Adresse</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="191"/>
         <source>Label</source>
-        <translation>Label  </translation>
+        <translation>Label</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="192"/>
         <source>Amount</source>
-        <translation>Betrag  </translation>
+        <translation>Betrag</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="194"/>
         <source>Enter label here</source>
-        <translation>Label hier eingeben  </translation>
+        <translation>Label hier eingeben</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="195"/>
         <source>Send max</source>
-        <translation>Max senden  </translation>
+        <translation>Max senden</translation>
     </message>
 </context>
 <context>
@@ -2396,43 +2421,43 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/recipients.py" line="460"/>
         <source>Address</source>
-        <translation>Adresse  </translation>
+        <translation>Adresse</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="461"/>
         <source>Amount [{unit}]</source>
-        <translation>Betrag [{unit}]  </translation>
+        <translation>Betrag [{unit}]</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="462"/>
         <source>Label</source>
-        <translation>Label  </translation>
+        <translation>Label</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="476"/>
         <source>Export csv</source>
-        <translation>CSV exportieren  </translation>
+        <translation>CSV exportieren</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="478"/>
         <source>All Files (*);;Wallet Files (*.csv)</source>
-        <translation>Alle Dateien (*);;Wallet-Dateien (*.csv)  </translation>
+        <translation>Alle Dateien (*);;Wallet-Dateien (*.csv)</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="502"/>
         <location filename="../qt/recipients.py" line="481"/>
         <source>No file selected</source>
-        <translation>Keine Datei ausgewählt  </translation>
+        <translation>Keine Datei ausgewählt</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="497"/>
         <source>Open CSV</source>
-        <translation>CSV öffnen  </translation>
+        <translation>CSV öffnen</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="499"/>
         <source>All Files (*);;CSV (*.csv)</source>
-        <translation>Alle Dateien (*);;CSV (*.csv)  </translation>
+        <translation>Alle Dateien (*);;CSV (*.csv)</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="512"/>
@@ -2442,7 +2467,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/recipients.py" line="517"/>
         <source>No rows recognized</source>
-        <translation>Keine Zeilen erkannt  </translation>
+        <translation>Keine Zeilen erkannt</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="526"/>
@@ -2457,32 +2482,32 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/recipients.py" line="539"/>
         <source>Recipients</source>
-        <translation>Empfänger  </translation>
+        <translation>Empfänger</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="540"/>
         <source>Add Recipient</source>
-        <translation>Empfänger hinzufügen  </translation>
+        <translation>Empfänger hinzufügen</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="542"/>
         <source>Import/Export</source>
-        <translation>Import/Export  </translation>
+        <translation>Import/Export</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="544"/>
         <source>Export CSV Template</source>
-        <translation>CSV-Vorlage exportieren  </translation>
+        <translation>CSV-Vorlage exportieren</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="545"/>
         <source>Import CSV file</source>
-        <translation>CSV-Datei importieren  </translation>
+        <translation>CSV-Datei importieren</translation>
     </message>
     <message>
         <location filename="../qt/recipients.py" line="547"/>
         <source>Export as CSV file</source>
-        <translation>Als CSV-Datei exportieren  </translation>
+        <translation>Als CSV-Datei exportieren</translation>
     </message>
 </context>
 <context>
@@ -2490,37 +2515,37 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/wizard.py" line="1191"/>
         <source>2. Import wallet information into Bitcoin Safe</source>
-        <translation>2. Wallet-Informationen in Bitcoin Safe importieren  </translation>
+        <translation>2. Wallet-Informationen in Bitcoin Safe importieren</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1193"/>
         <source>Skip step</source>
-        <translation>Schritt überspringen  </translation>
+        <translation>Schritt überspringen</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1195"/>
         <source>Next step</source>
-        <translation>Nächster Schritt  </translation>
+        <translation>Nächster Schritt</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1196"/>
         <source>Next signer</source>
-        <translation>Nächster Unterzeichner  </translation>
+        <translation>Nächster Unterzeichner</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1197"/>
         <source>Previous signer</source>
-        <translation>Vorheriger Unterzeichner  </translation>
+        <translation>Vorheriger Unterzeichner</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1198"/>
         <source>Previous Step</source>
-        <translation>Vorheriger Schritt  </translation>
+        <translation>Vorheriger Schritt</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1201"/>
         <source>Yes, I registered the multisig on the {n} hardware signer</source>
-        <translation>Ja, ich habe das Multisig auf dem {n} Hardware-Unterzeichner registriert  </translation>
+        <translation>Ja, ich habe das Multisig auf dem {n} Hardware-Unterzeichner registriert</translation>
     </message>
 </context>
 <context>
@@ -2536,7 +2561,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="67"/>
         <source>Enter custom Nostr Relays</source>
-        <translation>Benutzerdefinierte Nostr-Relays eingeben  </translation>
+        <translation>Benutzerdefinierte Nostr-Relays eingeben</translation>
     </message>
 </context>
 <context>
@@ -2544,7 +2569,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/sankey_bitcoin.py" line="287"/>
         <source>Fee</source>
-        <translation>Gebühr  </translation>
+        <translation>Gebühr</translation>
     </message>
 </context>
 <context>
@@ -2552,17 +2577,17 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/sankey_widget.py" line="413"/>
         <source>Export svg</source>
-        <translation>SVG exportieren  </translation>
+        <translation>SVG exportieren</translation>
     </message>
     <message>
         <location filename="../qt/sankey_widget.py" line="413"/>
         <source>All Files (*);;Text Files (*.svg)</source>
-        <translation>Alle Dateien (*);;Textdateien (*.svg)  </translation>
+        <translation>Alle Dateien (*);;Textdateien (*.svg)</translation>
     </message>
     <message>
         <location filename="../qt/sankey_widget.py" line="416"/>
         <source>No file selected</source>
-        <translation>Keine Datei ausgewählt  </translation>
+        <translation>Keine Datei ausgewählt</translation>
     </message>
 </context>
 <context>
@@ -2570,7 +2595,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/tutorial_screenshots.py" line="170"/>
         <source>How-to export the wallet information from the hardware signer</source>
-        <translation>Anleitung zum Exportieren der Wallet-Informationen vom Hardware-Unterzeichner  </translation>
+        <translation>Anleitung zum Exportieren der Wallet-Informationen vom Hardware-Unterzeichner</translation>
     </message>
 </context>
 <context>
@@ -2578,7 +2603,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/tutorial_screenshots.py" line="141"/>
         <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-        <translation>Generieren Sie {number} geheime Seed-Wörter auf jedem Hardware-Unterzeichner und schreiben Sie sie auf das Wiederherstellungsblatt  </translation>
+        <translation>Generieren Sie {number} geheime Seed-Wörter auf jedem Hardware-Unterzeichner und schreiben Sie sie auf das Wiederherstellungsblatt</translation>
     </message>
 </context>
 <context>
@@ -2586,7 +2611,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <location filename="../qt/tutorial_screenshots.py" line="219"/>
         <source>Import the multisig information in the hardware signer</source>
-        <translation>Importieren Sie die Multisig-Informationen im Hardware-Unterzeichner  </translation>
+        <translation>Importieren Sie die Multisig-Informationen im Hardware-Unterzeichner</translation>
     </message>
 </context>
 <context>
@@ -2595,7 +2620,8 @@ have transactions linking to other addresses already. Are you sure you want to c
         <location filename="../qt/tutorial_screenshots.py" line="192"/>
         <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-        <translation>Vergleichen Sie die {number} Wörter auf dem Backup-Papier mit dem Hardware-Unterzeichner. Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
+        <translation>Vergleichen Sie die {number} Wörter auf dem Backup-Papier mit dem Hardware-Unterzeichner.
+Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
     </message>
 </context>
 <context>
@@ -2603,22 +2629,22 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/search_tree_view.py" line="411"/>
         <source>Addresses</source>
-        <translation>Adressen  </translation>
+        <translation>Adressen</translation>
     </message>
     <message>
         <location filename="../qt/search_tree_view.py" line="435"/>
         <source>Transactions</source>
-        <translation>Transaktionen  </translation>
+        <translation>Transaktionen</translation>
     </message>
     <message>
         <location filename="../qt/search_tree_view.py" line="459"/>
         <source>UTXOs</source>
-        <translation>UTXOs  </translation>
+        <translation>UTXOs</translation>
     </message>
     <message>
         <location filename="../qt/search_tree_view.py" line="460"/>
         <source>Spent Outputs</source>
-        <translation>Ausgegebene Outputs  </translation>
+        <translation>Ausgegebene Outputs</translation>
     </message>
 </context>
 <context>
@@ -2626,12 +2652,12 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/analyzers.py" line="153"/>
         <source>Missing Seed</source>
-        <translation>Fehlender Seed  </translation>
+        <translation>Fehlender Seed</translation>
     </message>
     <message>
         <location filename="../qt/analyzers.py" line="158"/>
         <source>Invalid seed</source>
-        <translation>Ungültiger Seed  </translation>
+        <translation>Ungültiger Seed</translation>
     </message>
 </context>
 <context>
@@ -2657,24 +2683,24 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/sign_message.py" line="79"/>
         <source>Enter message to be signed at {bip32_path}</source>
-        <translation>Geben Sie die zu signierende Nachricht bei {bip32_path} ein  </translation>
+        <translation>Geben Sie die zu signierende Nachricht bei {bip32_path} ein</translation>
     </message>
     <message>
         <location filename="../qt/sign_message.py" line="82"/>
         <source>Sign message</source>
-        <translation>Nachricht signieren  </translation>
+        <translation>Nachricht signieren</translation>
     </message>
     <message>
         <location filename="../qt/sign_message.py" line="104"/>
         <location filename="../qt/sign_message.py" line="86"/>
         <source>Sign</source>
-        <translation>Signieren  </translation>
+        <translation>Signieren</translation>
     </message>
     <message>
         <location filename="../qt/sign_message.py" line="142"/>
         <location filename="../qt/sign_message.py" line="124"/>
         <source>Signed Message</source>
-        <translation>Signierte Nachricht  </translation>
+        <translation>Signierte Nachricht</translation>
     </message>
     <message>
         <location filename="../qt/sign_message.py" line="133"/>
@@ -2687,22 +2713,22 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../../signer.py" line="317"/>
         <source>Import signed PSBT</source>
-        <translation>Signiertes PSBT importieren  </translation>
+        <translation>Signiertes PSBT importieren</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="319"/>
         <source>OK</source>
-        <translation>OK  </translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="320"/>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation>Bitte fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab  </translation>
+        <translation>Bitte fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="321"/>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation>Fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab  </translation>
+        <translation>Fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab</translation>
     </message>
 </context>
 <context>
@@ -2710,22 +2736,22 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../../signer.py" line="278"/>
         <source>Import signed PSBT</source>
-        <translation>Signiertes PSBT importieren  </translation>
+        <translation>Signiertes PSBT importieren</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="280"/>
         <source>OK</source>
-        <translation>OK  </translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="281"/>
         <source>Please paste your PSBT in here, or drop a file</source>
-        <translation>Bitte fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab  </translation>
+        <translation>Bitte fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="282"/>
         <source>Paste your PSBT in here or drop a file</source>
-        <translation>Fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab  </translation>
+        <translation>Fügen Sie Ihr PSBT hier ein oder legen Sie eine Datei ab</translation>
     </message>
 </context>
 <context>
@@ -2733,7 +2759,7 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../../signer.py" line="233"/>
         <source>Scan QR code</source>
-        <translation>QR-Code scannen  </translation>
+        <translation>QR-Code scannen</translation>
     </message>
 </context>
 <context>
@@ -2741,7 +2767,7 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../../signer.py" line="343"/>
         <source>USB Signing</source>
-        <translation>USB-Signierung  </translation>
+        <translation>USB-Signierung</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="363"/>
@@ -2754,12 +2780,12 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../../signer.py" line="196"/>
         <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-        <translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein. Abbruch  </translation>
+        <translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
     </message>
     <message>
         <location filename="../../signer.py" line="212"/>
         <source>Sign with seed</source>
-        <translation>Mit Samen signieren  </translation>
+        <translation>Mit Samen signieren</translation>
     </message>
 </context>
 <context>
@@ -2772,7 +2798,7 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/wizard.py" line="507"/>
         <source>&quot;{sticker}&quot; on {device_name}</source>
-        <translation>&quot;{sticker}&quot; auf {device_name}  </translation>
+        <translation>&quot;{sticker}&quot; auf {device_name}</translation>
     </message>
 </context>
 <context>
@@ -2780,28 +2806,28 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/export_data.py" line="369"/>
         <source>Please enable the sync tab first</source>
-        <translation>Bitte aktivieren Sie zuerst die Sync-Registerkarte  </translation>
+        <translation>Bitte aktivieren Sie zuerst die Sync-Registerkarte</translation>
     </message>
     <message>
         <location filename="../qt/export_data.py" line="421"/>
         <source>Share with trusted devices</source>
-        <translation>Mit vertrauenswürdigen Geräten teilen  </translation>
+        <translation>Mit vertrauenswürdigen Geräten teilen</translation>
     </message>
     <message>
         <location filename="../qt/export_data.py" line="424"/>
         <source>Share with all devices in {wallet_id}</source>
-        <translation>Mit allen Geräten in {wallet_id} teilen  </translation>
+        <translation>Mit allen Geräten in {wallet_id} teilen</translation>
     </message>
     <message>
         <location filename="../qt/export_data.py" line="426"/>
         <source>Share with single device</source>
-        <translation>Mit einem einzelnen Gerät teilen  </translation>
+        <translation>Mit einem einzelnen Gerät teilen</translation>
     </message>
     <message>
         <location filename="../qt/export_data.py" line="457"/>
         <location filename="../qt/export_data.py" line="433"/>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Bitte aktivieren Sie zuerst die Synchronisierung im Wallet {wallet_id}  </translation>
+        <translation>Bitte aktivieren Sie zuerst die Synchronisierung im Wallet {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -2809,12 +2835,12 @@ If you make a mistake here, your money is lost!</source>
     <message>
         <location filename="../qt/sync_tab.py" line="113"/>
         <source>Label backup and encrypted syncing to trusted devices</source>
-        <translation>Label-Backup und verschlüsselte Synchronisation zu vertrauenswürdigen Geräten  </translation>
+        <translation>Label-Backup und verschlüsselte Synchronisation zu vertrauenswürdigen Geräten</translation>
     </message>
     <message>
         <location filename="../qt/sync_tab.py" line="117"/>
         <source>Open received Transactions and PSBTs</source>
-        <translation>Empfangene Transaktionen und PSBTs öffnen  </translation>
+        <translation>Empfangene Transaktionen und PSBTs öffnen</translation>
     </message>
     <message>
         <location filename="../qt/sync_tab.py" line="131"/>
@@ -2822,17 +2848,20 @@ If you make a mistake here, your money is lost!</source>
 {nsec}
 
 You can restore your labels at a later time with &apos;Import Sync Key&apos;.</source>
-        <translation>Bitte sichern Sie Ihren Synchronisationsschlüssel: {nsec}  Sie können Ihre Labels später mit &apos;Sync Key importieren&apos; wiederherstellen.</translation>
+        <translation>Bitte sichern Sie Ihren Synchronisationsschlüssel: 
+{nsec}
+
+Sie können Ihre Labels später mit &apos;Sync Key importieren&apos; wiederherstellen.</translation>
     </message>
     <message>
         <location filename="../qt/sync_tab.py" line="163"/>
         <source>Opening {name} from {author}</source>
-        <translation>Öffnung {name} von {author}  </translation>
+        <translation>Öffnung {name} von {author}</translation>
     </message>
     <message>
         <location filename="../qt/sync_tab.py" line="171"/>
         <source>{author}: {description}</source>
-        <translation>{author} : {description}  </translation>
+        <translation>{author} : {description}</translation>
     </message>
 </context>
 <context>
@@ -2840,58 +2869,58 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="22"/>
         <source>USB Signer Tools</source>
-        <translation>USB-Signer-Werkzeuge  </translation>
+        <translation>USB-Signer-Werkzeuge</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="43"/>
         <source>Unlock Devices</source>
-        <translation>Geräte entsperren  </translation>
+        <translation>Geräte entsperren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="47"/>
         <source>Unlock</source>
-        <translation>Entsperren  </translation>
+        <translation>Entsperren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="53"/>
         <source>Get xpubs</source>
-        <translation>xpubs erhalten  </translation>
+        <translation>xpubs erhalten</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="60"/>
         <source>XPUBs</source>
-        <translation>XPUBs  </translation>
+        <translation>XPUBs</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="66"/>
         <source>Paste your PSBT in here</source>
-        <translation>Fügen Sie Ihr PSBT ein  </translation>
+        <translation>Fügen Sie Ihr PSBT ein</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="69"/>
         <source>Sign PSBT</source>
-        <translation>PSBT signieren  </translation>
+        <translation>PSBT signieren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="73"/>
         <source>PSBT</source>
-        <translation>PSBT  </translation>
+        <translation>PSBT</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="79"/>
         <source>Paste your text to be signed</source>
-        <translation>Fügen Sie Ihren zu signierenden Text ein  </translation>
+        <translation>Fügen Sie Ihren zu signierenden Text ein</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="83"/>
         <source>Address index</source>
-        <translation>Adressindex  </translation>
+        <translation>Adressindex</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="90"/>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="86"/>
         <source>Sign Message</source>
-        <translation>Nachricht signieren  </translation>
+        <translation>Nachricht signieren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="97"/>
@@ -2902,19 +2931,19 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="105"/>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="101"/>
         <source>Display Address</source>
-        <translation>Adresse anzeigen  </translation>
+        <translation>Adresse anzeigen</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="115"/>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="111"/>
         <source>Wipe Device</source>
-        <translation>Gerät löschen  </translation>
+        <translation>Gerät löschen</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="125"/>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="121"/>
         <source>Show Seed</source>
-        <translation>Seed anzeigen  </translation>
+        <translation>Seed anzeigen</translation>
     </message>
 </context>
 <context>
@@ -2922,7 +2951,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="111"/>
         <source>Untrust device</source>
-        <translation>Gerät nicht vertrauen  </translation>
+        <translation>Gerät nicht vertrauen</translation>
     </message>
 </context>
 <context>
@@ -2930,7 +2959,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <location filename="../qt/tx_export.py" line="60"/>
         <source>Export Transaction</source>
-        <translation>Transaktion exportieren  </translation>
+        <translation>Transaktion exportieren</translation>
     </message>
 </context>
 <context>
@@ -2938,12 +2967,12 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     <message>
         <location filename="../qt/tx_signing_steps.py" line="105"/>
         <source>Create and collect {n}. signature</source>
-        <translation>Erstellen und sammeln Sie die {n}. Unterschrift  </translation>
+        <translation>Erstellen und sammeln Sie die {n}. Unterschrift</translation>
     </message>
     <message>
         <location filename="../qt/tx_signing_steps.py" line="172"/>
         <source>Transaction signed with the private key belonging to {label}</source>
-        <translation>Transaktion signiert mit dem privaten Schlüssel, der zu {label} gehört  </translation>
+        <translation>Transaktion signiert mit dem privaten Schlüssel, der zu {label} gehört</translation>
     </message>
 </context>
 <context>
@@ -2955,38 +2984,42 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 {sync_key}
 
  Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>Ihr Synchronisationsschlüssel lautet: {sync_key} Speichern Sie ihn, und wenn Sie auf &apos;Sync-Key importieren&apos; klicken, sollten Ihre Labels von den Nostr-Relays wiederhergestellt werden.</translation>
+        <translation>Ihr Synchronisationsschlüssel lautet:
+
+{sync_key}
+
+Speichern Sie ihn, und wenn Sie auf &apos;Sync-Key importieren&apos; klicken, sollten Ihre Labels von den Nostr-Relays wiederhergestellt werden.</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="175"/>
         <source>Sync key Export</source>
-        <translation>Sync-Key-Export  </translation>
+        <translation>Sync-Key-Export</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="186"/>
         <source>Export sync key</source>
-        <translation>Sync-Key exportieren  </translation>
+        <translation>Sync-Key exportieren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="188"/>
         <source>Import sync key</source>
-        <translation>Sync-Key importieren  </translation>
+        <translation>Sync-Key importieren</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="190"/>
         <source>Reset sync key</source>
-        <translation>Sync-Key zurücksetzen  </translation>
+        <translation>Sync-Key zurücksetzen</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="192"/>
         <source>Set custom Relay list</source>
-        <translation>Benutzerdefinierte Relay-Liste festlegen  </translation>
+        <translation>Benutzerdefinierte Relay-Liste festlegen</translation>
     </message>
     <message>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="209"/>
         <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="200"/>
         <source>My Device: {id}</source>
-        <translation>Mein Gerät: {id}  </translation>
+        <translation>Mein Gerät: {id}</translation>
     </message>
 </context>
 <context>
@@ -3000,7 +3033,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <location filename="../qt/ui_tx_creator.py" line="239"/>
         <source>Reduce future fees
 by merging address balances</source>
-        <translation>Zukünftige Gebühren reduzieren, indem Adressen zusammengeführt werden</translation>
+        <translation>Zukünftige Gebühren
+reduzieren, indem Adressen zusammengeführt werden</translation>
     </message>
     <message>
         <location filename="../qt/ui_tx_creator.py" line="241"/>
@@ -3026,7 +3060,8 @@ by merging address balances</source>
         <location filename="../qt/ui_tx_creator.py" line="262"/>
         <source>This checkbox automatically checks 
 below {rate}</source>
-        <translation>Dieses Kontrollkästchen prüft automatisch darunter {rate}  </translation>
+        <translation>Dieses Kontrollkästchen prüft automatisch
+darunter {rate}</translation>
     </message>
     <message>
         <location filename="../qt/ui_tx_creator.py" line="365"/>
@@ -3052,7 +3087,8 @@ below {rate}</source>
         <location filename="../qt/ui_tx_creator.py" line="496"/>
         <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-        <translation>Bitte fügen Sie UTXO hier im Format txid:outpoint txid:outpoint ein  </translation>
+        <translation>Bitte fügen Sie UTXO hier im Format txid:outpoint
+txid:outpoint ein</translation>
     </message>
     <message>
         <location filename="../qt/ui_tx_creator.py" line="499"/>
@@ -3395,7 +3431,10 @@ txid:outpoint</source>
 &apos;{tx_text}&apos;
  was done successfully. Please proceed to do the send test: 
 &apos;{next_text}&apos;</source>
-        <translation>Die Testtransaktion &apos;{tx_text}&apos; wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Sendetest fort: &apos;{next_text}&apos;  </translation>
+        <translation>Die Testtransaktion
+&apos;{tx_text}&apos;
+wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Sendetest fort:
+&apos;{next_text}&apos;</translation>
     </message>
     <message>
         <location filename="../qt/wizard.py" line="1746"/>
@@ -3939,7 +3978,8 @@ txid:outpoint</source>
         <location filename="../../network_config.py" line="252"/>
         <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-        <translation>Der Server kann Ihre IP-Adresse den Wallet-Adressen zuordnen. Es ist am besten, Ihren eigenen Server zu verwenden, wie {link}.</translation>
+        <translation>Der Server kann Ihre IP-Adresse den Wallet-Adressen
+zuordnen. Es ist am besten, Ihren eigenen Server zu verwenden, wie {link}.</translation>
     </message>
     <message>
         <location filename="../../network_config.py" line="259"/>
@@ -4044,7 +4084,11 @@ It is best to use your own server, such as {link}.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren  </translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&lt;br/&gt;
+                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;
+                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;
+                 4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platziere   
+                </translation>
     </message>
     <message>
         <location filename="../../pdfrecovery.py" line="259"/>
@@ -4053,7 +4097,11 @@ It is best to use your own server, such as {link}.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können die Hardware-Unterzeichner entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeden an einem anderen sicheren Ort (falls verfügbar) platzieren</translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;
+                2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;
+                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;
+                 4. Sie können die Hardware-Unterzeichner entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeden an einem anderen sicheren Ort (falls verfügbar) platzieren   
+                </translation>
     </message>
     <message>
         <location filename="../../pdfrecovery.py" line="287"/>
@@ -4234,7 +4282,9 @@ It is best to use your own server, such as {link}.</source>
         <source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-        <translation>Bitte vergleichen und bestätigen Sie den Pairing-Code auf Ihrer BitBox02: {code}  </translation>
+        <translation>Bitte vergleichen und bestätigen Sie den Pairing-Code auf Ihrer BitBox02:
+
+{code}</translation>
     </message>
 </context>
 <context>
