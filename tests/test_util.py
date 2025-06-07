@@ -34,7 +34,7 @@ from unittest.mock import patch
 
 import bdkpython as bdk
 from _pytest.logging import LogCaptureFixture
-from bitcoin_tools.util import path_to_rel_home_path, rel_home_path_to_abs_path
+from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import one_time_signal_connection

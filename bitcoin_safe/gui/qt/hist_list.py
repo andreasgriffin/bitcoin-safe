@@ -62,9 +62,9 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
-from bitcoin_tools.gui.qt.satoshis import Satoshis
-from bitcoin_tools.gui.qt.util import confirmation_wait_formatted
-from bitcoin_tools.util import time_logger
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
+from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -192,11 +192,11 @@ class HistList(MyTreeView):
             signals=signals,
             sort_column=HistList.Columns.STATUS,
             sort_order=Qt.SortOrder.DescendingOrder,
+            hidden_columns=hidden_columns,
         )
         self.fx = fx
         self.mempool_data = mempool_data
         self.address_domain = address_domain
-        self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.wallets = wallets
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -577,12 +577,12 @@ class HistList(MyTreeView):
             if not item:
                 return menu
             txid = txids[0]
-            menu.add_action(translate("hist_list", "Details"), partial(self.signals.open_tx_like.emit, txid))
+            menu.add_action(self.tr("Details"), partial(self.signals.open_tx_like.emit, txid))
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", txid)
             if addr_URL:
                 menu.add_action(
-                    translate("hist_list", "View on block explorer"),
+                    self.tr("View on block explorer"),
                     partial(webopen, addr_URL),
                     icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
@@ -595,16 +595,16 @@ class HistList(MyTreeView):
             self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.Columns.TXID])
             # persistent = QPersistentModelIndex(addr_idx)
             # menu.add_action(
-            #     translate("hist_list", "Edit {}").format(addr_column_title),
+            #     self.tr(  "Edit {}").format(addr_column_title),
             #     lambda p=persistent: self.edit(QModelIndex(p)),
             # )
-            # menu.add_action(translate("hist_list", "Request payment"), lambda: self.main_window.receive_at(txid))
+            # menu.add_action(self.tr(  "Request payment"), lambda: self.main_window.receive_at(txid))
             # if not is_multisig and not self.wallet.is_watching_only():
-            #     menu.add_action(translate("hist_list", "Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
-            #     menu.add_action(translate("hist_list", "Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
+            #     menu.add_action(self.tr(  "Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
+            #     menu.add_action(self.tr(  "Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
 
         menu.add_action(
-            translate("hist_list", "Copy as csv"),
+            self.tr("Copy as csv"),
             partial(
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
@@ -613,7 +613,7 @@ class HistList(MyTreeView):
         )
 
         menu.add_action(
-            translate("hist_list", "Save as file"),
+            self.tr("Save as file"),
             partial(self.export_raw_transactions, selected_items),
             icon=svg_tools.get_QIcon("bi--download.svg"),
         )
@@ -634,28 +634,42 @@ class HistList(MyTreeView):
                     menu.addSeparator()
                     if GENERAL_RBF_AVAILABLE:
                         menu.add_action(
-                            translate("hist_list", "Edit with higher fee (RBF)"),
+                            self.tr("Edit with higher fee (RBF)"),
                             partial(self.edit_tx, tx_details),
                         )
                         menu.add_action(
-                            translate("hist_list", "Try cancel transaction (RBF)"),
+                            self.tr("Try cancel transaction (RBF)"),
                             partial(self.cancel_tx, tx_details),
                         )
                     else:
-                        menu.add_action(
-                            translate("hist_list", "Increase fee (RBF)"), partial(self.edit_tx, tx_details)
-                        )
+                        menu.add_action(self.tr("Increase fee (RBF)"), partial(self.edit_tx, tx_details))
 
                 if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
-                    menu.add_action(
-                        translate("hist_list", "Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details)
-                    )
+                    menu.add_action(self.tr("Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details))
+
+                menu.addSeparator()
+
+                is_exclude_tx_ids_in_saving = False
+                if txid in wallet.exclude_tx_ids_in_saving:
+                    is_exclude_tx_ids_in_saving = True
+                action_exclude_tx_ids_in_saving = menu.add_action(
+                    self.tr("Remove on restart"),
+                    partial(self.on_exclude_tx_ids_in_saving, txid, wallet, not is_exclude_tx_ids_in_saving),
+                )
+                action_exclude_tx_ids_in_saving.setCheckable(True)
+                action_exclude_tx_ids_in_saving.setChecked(is_exclude_tx_ids_in_saving)
 
         # run_hook('receive_menu', menu, txids, self.wallet)
         if viewport := self.viewport():
             menu.exec(viewport.mapToGlobal(position))
 
         return menu
+
+    def on_exclude_tx_ids_in_saving(self, txid: str, wallet: Wallet, checked: bool):
+        if checked:
+            wallet.exclude_tx_ids_in_saving.add(txid)
+        elif txid in wallet.exclude_tx_ids_in_saving:
+            wallet.exclude_tx_ids_in_saving.remove(txid)
 
     def get_wallet(self, txid: str) -> Wallet | None:
         for wallet in self.wallets:

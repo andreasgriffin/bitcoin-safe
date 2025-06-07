@@ -30,7 +30,7 @@
 from typing import Optional, Tuple
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from PyQt6 import QtGui, QtWidgets
 from PyQt6.QtWidgets import QWidget
 

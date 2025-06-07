@@ -64,8 +64,8 @@ from functools import partial
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from bitcoin_qr_tools.data import Data
-from bitcoin_tools.gui.qt.util import str_to_qbytearray
-from bitcoin_tools.util import unique_elements
+from bitcoin_safe_lib.gui.qt.util import str_to_qbytearray
+from bitcoin_safe_lib.util import unique_elements
 from PyQt6 import QtCore
 from PyQt6.QtCore import (
     QAbstractItemModel,
@@ -453,10 +453,10 @@ class MyItemDelegate(QStyledItemDelegate):
 class MyTreeView(QTreeView):
     signal_selection_changed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     signal_update: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_finished_update: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     filter_columns: Iterable[int]
     column_alignments: Dict[int, Qt.AlignmentFlag] = {}
-    hidden_columns: List[int] = []
 
     key_column = 0
 
@@ -479,11 +479,13 @@ class MyTreeView(QTreeView):
         editable_columns: Optional[Sequence[int]] = None,
         sort_column: int | None = None,
         sort_order: Qt.SortOrder = Qt.SortOrder.AscendingOrder,
+        hidden_columns: List[int] | None = None,
     ) -> None:
         super().__init__(parent)
         self.signals = signals
         self._source_model = MyStandardItemModel(key_column=self.key_column, parent=self)
         self.config = config
+        self.hidden_columns = hidden_columns if hidden_columns else []
         self.stretch_column = stretch_column
         self.column_widths = column_widths if column_widths else {}
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -1139,6 +1141,8 @@ class MyTreeView(QTreeView):
         # such that on_selection_change is not triggered
         self._currently_updating = False
 
+        self.signal_finished_update.emit()
+
     def update_content(self) -> None:
         super().update()
         logger.debug(f"{self.__class__.__name__} done updating")
@@ -1222,7 +1226,7 @@ class TreeViewWithToolbar(SearchableTab):
         self.searchable_list = searchable_list
 
         # signals
-        self.searchable_list.signal_update.connect(self.update)
+        self.searchable_list.signal_finished_update.connect(self.updateUi)
         # in searchable_list signal_update will be sent after the update. and since this
         # is relevant for the balance to show, i need to update also the balance label
         # which is done in updateUi

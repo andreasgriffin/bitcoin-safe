@@ -32,7 +32,7 @@ import platform
 from typing import Dict, List, Optional
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit

@@ -39,10 +39,10 @@ from urllib.parse import urlparse
 import bdkpython as bdk
 import PIL.Image as PilImage
 from bitcoin_qr_tools.data import ConverterAddress
-from bitcoin_tools.caching import register_cache
-from bitcoin_tools.gui.qt.icons import SvgTools
-from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
-from bitcoin_tools.util import hash_string
+from bitcoin_safe_lib.caching import register_cache
+from bitcoin_safe_lib.gui.qt.icons import SvgTools
+from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
+from bitcoin_safe_lib.util import hash_string
 from PyQt6.QtCore import QByteArray, QCoreApplication, QRectF, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,

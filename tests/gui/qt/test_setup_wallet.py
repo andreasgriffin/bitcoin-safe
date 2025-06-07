@@ -35,8 +35,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from bitcoin_tools.gui.qt.satoshis import Satoshis
-from bitcoin_tools.util import insert_invisible_spaces_for_wordwrap
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest

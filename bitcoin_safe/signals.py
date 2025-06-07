@@ -258,6 +258,7 @@ class Signals(SignalsMin):
 
     request_manual_sync: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
+    apply_txs_to_wallets: TypedPyQtSignal[List[bdk.Transaction]] = pyqtSignal(object)  # type: ignore
 
     # this is for non-wallet bound objects like UitxViewer
     any_wallet_updated: TypedPyQtSignal[UpdateFilter] = pyqtSignal(UpdateFilter)  # type: ignore

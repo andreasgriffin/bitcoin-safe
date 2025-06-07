@@ -30,7 +30,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 import bdkpython as bdk
-from bitcoin_tools.tx_util import serialized_to_hex
+from bitcoin_safe_lib.tx_util import serialized_to_hex
 
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo

@@ -32,7 +32,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from _pytest.logging import LogCaptureFixture
-from bitcoin_tools.util import path_to_rel_home_path, rel_home_path_to_abs_path
+from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 
 # from bitcoin_safe.logging_setup import setup_logging
 from tests.util import MySignalclass, chained_one_time_signal_connections

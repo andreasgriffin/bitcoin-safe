@@ -33,7 +33,7 @@ from typing import List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import unit_fee_str
+from bitcoin_safe_lib.gui.qt.satoshis import unit_fee_str
 from PyQt6.QtCore import QDateTime, QLocale, QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
@@ -472,12 +472,14 @@ class MempoolButtons(BaseBlock):
             self.mempool_data.set_data_from_mempoolspace(force=True)
 
     def refresh(self, fee_rate=None, **kwargs) -> None:
+        logger.debug(f"{self.__class__.__name__} refresh  {fee_rate=}")
         self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
         # if self.fee_rate is None:
         #     self.set_unknown_fee_rate()
         #     return
 
         block_index = self.mempool_data.fee_rate_to_projected_block_index(self.fee_rate)
+        self.set_active(block_index)
 
         for i, button in enumerate(self.buttons):
             block_number = i + 1

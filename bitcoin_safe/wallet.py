@@ -32,7 +32,17 @@ import os
 import random
 from collections import defaultdict
 from time import time
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
+from typing import (
+    Any,
+    Callable,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+)
 
 import bdkpython as bdk
 import numpy as np
@@ -42,8 +52,9 @@ from bitcoin_qr_tools.multipath_descriptor import (
     address_descriptor_from_multipath_descriptor,
     convert_to_multipath_descriptor,
 )
-from bitcoin_tools.gui.qt.satoshis import Satoshis
-from bitcoin_tools.util import (
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
+from bitcoin_safe_lib.util import (
     clean_list,
     hash_string,
     replace_non_alphanumeric,
@@ -82,6 +93,9 @@ from .util import CacheManager, calculate_ema, instance_lru_cache
 logger = logging.getLogger(__name__)
 
 
+LOCAL_TX_LAST_SEEN = 0
+
+
 class InconsistentBDKState(Exception):
     pass
 
@@ -102,6 +116,20 @@ class TxConfirmationStatus(enum.Enum):
             return translate("wallet", "Unconfirmed parent")
         if status == cls.LOCAL:
             return translate("wallet", "Local")
+
+
+def is_local(chain_position: bdk.ChainPosition | None) -> bool:
+    return (
+        isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED)
+        and chain_position.timestamp == LOCAL_TX_LAST_SEEN
+    )
+
+
+def is_in_mempool(chain_position: bdk.ChainPosition | None) -> bool:
+    if chain_position is None:
+        return False
+    local = is_local(chain_position=chain_position)
+    return not local
 
 
 class TxStatus:
@@ -139,13 +167,15 @@ class TxStatus:
     def from_wallet(cls, txid: str, wallet: "Wallet") -> "TxStatus":
         # TODO: remove get_height callback entirely
         txdetails = wallet.get_tx(txid)
+
         if not txdetails:
             return TxStatus(tx=None, chain_position=None, get_height=wallet.get_height, is_in_mempool=False)
+
         return TxStatus(
             tx=txdetails.transaction,
             chain_position=txdetails.chain_position,
             get_height=wallet.get_height,
-            is_in_mempool=wallet.is_in_mempool(txid),
+            is_in_mempool=is_in_mempool(txdetails.chain_position),
         )
 
     def sort_id(self) -> int:
@@ -377,6 +407,7 @@ class DeltaCacheListTransactions:
         self.appended: List[TransactionDetails] = []
         self.removed: List[TransactionDetails] = []
         self.new_state: List[TransactionDetails] = []
+        self.modified: List[TransactionDetails] = []
 
     def was_changed(self) -> Dict[str, List[TransactionDetails]]:
         d = {}
@@ -384,6 +415,8 @@ class DeltaCacheListTransactions:
             d["appended"] = self.appended
         if self.removed:
             d["removed"] = self.removed
+        if self.modified:
+            d["modified"] = self.modified
         return d
 
 
@@ -444,8 +477,11 @@ class BdkWallet(bdk.Wallet, CacheManager):
         if tx.is_coinbase():
             fee = None
         else:
-            fee_amount = self.calculate_fee(tx)  # returns an Amount
-            fee = fee_amount.to_sat()  # convert Amount to satoshis (int)
+            try:
+                fee_amount = self.calculate_fee(tx)  # returns an Amount
+                fee = fee_amount.to_sat()  # convert Amount to satoshis (int)
+            except:
+                fee = None
 
         sent_receive = self.sent_and_received(tx)
 
@@ -482,14 +518,35 @@ class BdkWallet(bdk.Wallet, CacheManager):
         # start_time = time()
         entry.new_state = self.list_transactions(include_raw=include_raw)
 
-        old_ids = [tx.txid for tx in entry.old_state]
-        new_ids = [tx.txid for tx in entry.new_state]
-        appended_ids = set(new_ids) - set(old_ids)
-        removed_ids = set(old_ids) - set(new_ids)
+        old_dict = {tx.txid: tx for tx in entry.old_state}
+        new_dict = {tx.txid: tx for tx in entry.new_state}
+        appended_ids = set(new_dict.keys()) - set(old_dict.keys())
+        removed_ids = set(old_dict.keys()) - set(new_dict.keys())
 
         entry.appended = [tx for tx in entry.new_state if tx.txid in appended_ids]
         entry.removed = [tx for tx in entry.old_state if tx.txid in removed_ids]
 
+        # detect state change
+        entry.modified.clear()
+        for txid, old in old_dict.items():
+            new = new_dict.get(txid)
+            if not new:
+                continue
+            if old.fee != new.fee:
+                entry.modified.append(old)
+                continue
+            if type(old.chain_position) != type(new.chain_position):
+                entry.modified.append(old)
+                continue
+            if (
+                (is_local(old.chain_position) or is_local(new.chain_position))
+                and isinstance(old.chain_position, bdk.ChainPosition.UNCONFIRMED)
+                and isinstance(new.chain_position, bdk.ChainPosition.UNCONFIRMED)
+                and old.chain_position.timestamp != new.chain_position.timestamp
+            ):
+                entry.modified.append(old)
+                continue
+        logger.info(entry.modified)
         return entry
 
     @instance_lru_cache(always_keep=True)
@@ -546,6 +603,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         refresh_wallet=False,
         default_category="default",
         auto_opportunistic_coin_select=False,
+        initial_txs: List[bdk.Transaction] | None = None,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -573,7 +631,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         # end refresh dependent values
 
         self.create_bdkwallet(convert_to_multipath_descriptor(descriptor_str, self.network))
+
         self.client: Optional[Client] = None
+        self.exclude_tx_ids_in_saving: Set[str] = set()
+        if initial_txs:
+            self.apply_unconfirmed_txs(txs=initial_txs)
         self.clear_cache()
         self.mark_all_labeled_addresses_used(include_receiving_addresses=False)
 
@@ -830,7 +892,11 @@ class Wallet(BaseSaveableClass, CacheManager):
             d[k] = self.__dict__[k]
 
         d["descriptor_str"] = self.multipath_descriptor.to_string_with_secret()
-
+        d["initial_txs"] = [
+            serialized_to_hex(tx.transaction.serialize())
+            for tx in self.get_txs().values()
+            if tx.transaction.compute_txid() not in self.exclude_tx_ids_in_saving
+        ]
         return d
 
     @classmethod
@@ -888,6 +954,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         if class_kwargs:
             # must contain "Wallet":{"config": ... }
             dct.update(class_kwargs[cls.__name__])
+
+        if initial_txs := dct.get("initial_txs"):
+            dct["initial_txs"] = [bdk.Transaction(list(hex_to_serialized(tx))) for tx in initial_txs]
 
         return cls(**filtered_for_init(dct, cls))
 
@@ -1918,7 +1987,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         dict_full: Dict[str, FullTxDetail] = self.get_dict_fulltxdetail()
 
         # 1) Split into confirmed vs. unconfirmed using helper
-        confirmed, unconfirmed = self._split_by_confirmation(dict_full)
+        confirmed, unconfirmed, local = self._split_by_confirmation(dict_full)
 
         # 2) Sort confirmed: by height + intra-block parent→child order
         sorted_confirmed: List[FullTxDetail] = self._sort_confirmed_transactions(confirmed)
@@ -1926,26 +1995,34 @@ class Wallet(BaseSaveableClass, CacheManager):
         # 3) Sort unconfirmed: group dependency chains via DFS-topo
         sorted_unconfirmed: List[FullTxDetail] = self._sort_unconfirmed_transactions(unconfirmed)
 
-        # 4) Merge: confirmed first, then unconfirmed
-        all_sorted: List[FullTxDetail] = sorted_confirmed + sorted_unconfirmed
+        # 4) Sort local: group dependency chains via DFS-topo
+        sorted_local: List[FullTxDetail] = self._sort_unconfirmed_transactions(local)
+
+        # 5) Merge: confirmed first, then unconfirmed
+        all_sorted: List[FullTxDetail] = sorted_confirmed + sorted_unconfirmed + sorted_local
         return [fx.tx for fx in all_sorted]
 
     def _split_by_confirmation(
         self, dict_full: Dict[str, FullTxDetail]
-    ) -> Tuple[List[FullTxDetail], List[FullTxDetail]]:
+    ) -> Tuple[List[FullTxDetail], List[FullTxDetail], List[FullTxDetail]]:
         """
         Splits the full-detail mapping into two lists:
         - confirmed: with a confirmed chain position
-        - unconfirmed: awaiting confirmation
+        - mempool: awaiting confirmation
+        - local: local transactions
         """
         confirmed: List[FullTxDetail] = []
         unconfirmed: List[FullTxDetail] = []
+        local: List[FullTxDetail] = []
         for tx_detail in dict_full.values():
             if isinstance(tx_detail.tx.chain_position, bdk.ChainPosition.CONFIRMED):
                 confirmed.append(tx_detail)
             else:
-                unconfirmed.append(tx_detail)
-        return confirmed, unconfirmed
+                if is_local(tx_detail.tx.chain_position):
+                    local.append(tx_detail)
+                else:
+                    unconfirmed.append(tx_detail)
+        return confirmed, unconfirmed, local
 
     def _sort_confirmed_transactions(self, confirmed: List[FullTxDetail]) -> List[FullTxDetail]:
         """
@@ -1983,64 +2060,79 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def _dfs_topo_sort(self, tx_list: List[FullTxDetail]) -> List[FullTxDetail]:
         """
-        Given a homogeneous list of FullTxDetail (either all from the same block
-        or all unconfirmed), builds a dependency graph and performs a DFS-based
-        topological sort to group parents immediately before their children.
+        Return a *full* topological ordering of the given transactions.
+
+        The list ``tx_list`` must be “homogeneous’’—all confirmed in the same
+        block *or* all unconfirmed—so every dependency edge either points to
+        another element of ``tx_list`` or to a transaction outside the list,
+        never across blocks.
+
+        Topological guarantee
+        ---------------------
+        In the returned list **every parent precedes *all* of its children**.
+        (Parents are *not* guaranteed to be *immediately* before their children;
+        sibling sub-trees can interleave.)
+
+        Parameters
+        ----------
+        tx_list : List[FullTxDetail]
+            Transactions to be ordered.
+
+        Returns
+        -------
+        List[FullTxDetail]
+            A list in topological order.
         """
-        # Build a lookup from txid to detail
+        # ─────────────────────────────── build the graph ────────────────────────────
         tx_map: Dict[str, FullTxDetail] = {fx.tx.txid: fx for fx in tx_list}
-        children: Dict[str, List[str]] = defaultdict(list)
+        children: DefaultDict[str, List[str]] = defaultdict(list)
         indegree: Dict[str, int] = {txid: 0 for txid in tx_map}
 
-        # Populate edges: parent_id -> list of child_ids
         for fx in tx_list:
             for inp in fx.inputs.values():
                 if not inp:
                     continue
                 parent_id = inp.outpoint.txid
-                if parent_id in tx_map:
+                if parent_id in tx_map:  # dependency inside list
                     children[parent_id].append(fx.tx.txid)
                     indegree[fx.tx.txid] += 1
 
-        # Roots have no incoming edges
         roots: List[str] = [txid for txid, deg in indegree.items() if deg == 0]
 
+        # ──────────────────────── depth-first post-order walk ───────────────────────
         sorted_order: List[FullTxDetail] = []
-        visited: set = set()
+        visited: Set[str] = set()
 
         def dfs(txid: str) -> None:
             """
-            Depth-first search helper for topological sort.
-            - Marks the current txid as visited to avoid reprocessing (and to break cycles).
-            - Appends the parent transaction before its children, ensuring grouping.
-            - Recursively processes each child in turn.
+            Post-order DFS that appends *after* visiting descendants,
+            yielding a valid topological ordering once the list is reversed.
 
-            Args:
-                txid: The transaction ID to process.
+            Steps
+            -----
+            1. Skip if *txid* already processed (cycle/duplicate guard).
+            2. Recurse on every child in ``children[txid]``.
+            3. Append the current node to ``sorted_order``.
             """
-            if txid in visited:
+            if txid in visited:  # 1 ▸ guard
                 return
             visited.add(txid)
-            # Visit parent
-            sorted_order.append(tx_map[txid])
-            # Recurse into children
-            for child_id in children.get(txid, []):
+
+            for child_id in children.get(txid, []):  # 2 ▸ recurse
                 dfs(child_id)
 
-        # Perform DFS from each root to cover all chains
-        for root in roots:
+            sorted_order.append(tx_map[txid])  # 3 ▸ post-order emit
+
+        # visit each root (deterministic order is nice for testing)
+        for root in sorted(roots):
             dfs(root)
 
+        # post-order → topo order
+        sorted_order.reverse()
         return sorted_order
 
     def is_in_mempool(self, txid: str) -> bool:
-        # TODO: Currently in mempool and is in wallet is the same thing.
-        # In the future I have to differentiate here, if it is a locally saved tx,
-        # or already broadcasted.
-        # But for now I don't have locally saved transactions
-        if txid in self.get_txs():
-            return True
-        return False
+        return TxStatus.from_wallet(txid, self).is_in_mempool
 
     def get_fulltxdetail_and_dependents(self, txid: str, include_root_tx=True) -> List[FullTxDetail]:
         result: List[FullTxDetail] = []
@@ -2108,6 +2200,13 @@ class Wallet(BaseSaveableClass, CacheManager):
                 continue
             return python_utxo
         return None
+
+    def get_local_txs(self) -> Dict[str, TransactionDetails]:
+        return {key: tx for key, tx in self.get_txs().items() if is_local(tx.chain_position)}
+
+    def apply_unconfirmed_txs(self, txs: List[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
+        self.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=tx, last_seen=last_seen) for tx in txs])
+        self.persist()
 
     def close(self) -> None:
         pass

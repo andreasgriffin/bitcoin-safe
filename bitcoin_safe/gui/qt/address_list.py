@@ -59,8 +59,8 @@ from functools import partial
 from typing import Any, Dict, List
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis
-from bitcoin_tools.util import time_logger
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -243,8 +243,6 @@ class AddressList(MyTreeView):
         Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    hidden_columns = [Columns.INDEX]
-
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
     column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
@@ -260,6 +258,7 @@ class AddressList(MyTreeView):
         wallet: Wallet,
         wallet_signals: WalletSignals,
         signals: Signals,
+        hidden_columns: List[int] | None = None,
     ) -> None:
         super().__init__(
             config=config,
@@ -269,6 +268,7 @@ class AddressList(MyTreeView):
             editable_columns=[AddressList.Columns.LABEL],
             sort_column=AddressList.Columns.COIN_BALANCE,
             sort_order=Qt.SortOrder.DescendingOrder,
+            hidden_columns=hidden_columns,
         )
         self.fx = fx
         self.wallet_signals = wallet_signals

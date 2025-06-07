@@ -419,7 +419,7 @@ class ButtonEdit(QWidget):
     def add_open_file_button(
         self,
         callback_open_filepath: Callable | None = None,
-        filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
+        filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transaction (*.tx)"),
     ) -> QPushButton | QToolButton:
 
         button = self.add_button(

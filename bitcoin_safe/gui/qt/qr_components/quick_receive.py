@@ -32,7 +32,7 @@ from functools import partial
 from typing import List
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
-from bitcoin_tools.util import insert_invisible_spaces_for_wordwrap
+from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (

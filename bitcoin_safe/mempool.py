@@ -27,20 +27,20 @@
 # SOFTWARE.
 
 
+import asyncio
 import datetime
 import enum
 import logging
 from math import ceil
 from typing import Any, Dict, List, Optional, Tuple
 
+import aiohttp
 import numpy as np
-import requests
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from bitcoin_safe.gui.qt.util import custom_exception_handler
 from bitcoin_safe.network_config import NetworkConfig, ProxyInfo
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from .config import MIN_RELAY_FEE
 from .signals import TypedPyQtSignalNo
@@ -181,37 +181,41 @@ def fee_to_color(fee, colors=chartColors) -> str:
     return colors[indizes[-1]]
 
 
-def fetch_from_url(url: str, proxies: Dict | None, is_json=True) -> Optional[Any]:
-    logger.debug(f"fetch_json_from_url requests.get({url}, timeout=10)")
+async def fetch_from_url(
+    url: str, proxies: Dict[str, str] | None = None, is_json: bool = True
+) -> Optional[Any]:
+    logger.debug(f"fetch_from_url session.get({url}, timeout=10)")
+
+    # Configure a 10-second total timeout
+    timeout = aiohttp.ClientTimeout(total=10)
+
+    # If you have an HTTP/HTTPS proxy, aiohttp wants e.g. proxy="http://user:pass@host:port"
+    conn_kwargs: dict[str, Any] = {"timeout": timeout}
+    if proxies:
+        # prefer HTTP proxy but fall back to HTTPS
+        proxy_url = proxies.get("http") or proxies.get("https")
+        if proxy_url:
+            conn_kwargs["proxy"] = proxy_url
 
     try:
-        response = requests.get(url, timeout=10, proxies=proxies)
-        # Check if the request was successful (status code 200)
-        if response.status_code == 200:
-            # Parse the JSON response
-            data = response.json() if is_json else response.content
-            return data
-        else:
-            # If the request was unsuccessful, print the status code
-            logger.error(f"Request failed with status code: {response.status_code}")
-            return None
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, **conn_kwargs) as resp:
+                if resp.status == 200:
+                    if is_json:
+                        return await resp.json()
+                    else:
+                        return await resp.read()
+                else:
+                    logger.error(f"Request failed with status code: {resp.status}")
+                    return None
+
+    except asyncio.TimeoutError:
+        logger.error(f"fetch_from_url {url} timed out")
+        return None
     except Exception as e:
         logger.debug(str(e))
-        logger.error(f"fetch_json_from_url {url} failed")
+        logger.error(f"fetch_from_url {url} failed")
         return None
-
-
-def threaded_fetch(url: str, on_success, proxies: Dict | None, is_json=True) -> TaskThread:
-    def do() -> Any:
-        return fetch_from_url(url, is_json=is_json, proxies=proxies)
-
-    def on_error(packed_error_info) -> None:
-        custom_exception_handler(*packed_error_info)
-
-    def on_done(data) -> None:
-        pass
-
-    return TaskThread().add_and_start(do, on_success, on_done, on_error)
 
 
 class TxPrio(enum.Enum):
@@ -220,17 +224,17 @@ class TxPrio(enum.Enum):
     high = enum.auto()
 
 
-class MempoolData(ThreadingManager, QObject):
+class MempoolData(QObject):
     signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
         network_config: NetworkConfig,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager,
     ) -> None:
-        super().__init__(threading_parent=threading_parent)
+        super().__init__()
         self.signals_min = signals_min
+        self.loop_in_thread = LoopInThread()
 
         self.network_config = network_config
         self.mempool_blocks = self._empty_mempool_blocks()
@@ -304,6 +308,9 @@ class MempoolData(ThreadingManager, QObject):
 
         return average_fee_rate * (1 + slack)
 
+    def close(self):
+        self.loop_in_thread.stop()
+
     def set_data_from_mempoolspace(self, force=False) -> None:
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
             logger.debug(
@@ -311,71 +318,53 @@ class MempoolData(ThreadingManager, QObject):
             )
             return None
 
+        self._task_set_data = self.loop_in_thread.run_background(self._set_data_from_mempoolspace())
+
+    async def _set_data_from_mempoolspace(self) -> None:
         self.time_of_data = datetime.datetime.now()
 
-        def on_mempool_blocks(mempool_blocks) -> None:
-            if mempool_blocks:
-                self.mempool_blocks = mempool_blocks
-                logger.info(f"Updated mempool_blocks {mempool_blocks}")
+        urls = [
+            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
+            f"{self.network_config.mempool_url}api/v1/fees/recommended",
+            f"{self.network_config.mempool_url}api/mempool",
+        ]
 
-        self.append_thread(
-            threaded_fetch(
-                f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
-                on_mempool_blocks,
+        coroutines = [
+            fetch_from_url(
+                url,
                 proxies=(
                     ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
                     if self.network_config.proxy_url
                     else None
                 ),
             )
-        )
-        logger.debug(f"started on_mempool_blocks")
+            for url in urls
+        ]
+        results = await self.loop_in_thread.run_parallel(coroutines)
+        if not results:
+            return
+        mempool_blocks, recommended, mempool_dict = results
 
-        def on_recommended(recommended) -> None:
-            if recommended:
-                self.recommended = recommended
-                logger.info(f"Updated recommended {recommended}")
+        if mempool_blocks:
+            self.mempool_blocks = mempool_blocks
+        if recommended:
+            self.recommended = recommended
+        if mempool_dict:
+            self.mempool_dict = mempool_dict
+            logger.info(f"Updated mempool_dict {mempool_dict}")
 
-        self.append_thread(
-            threaded_fetch(
-                f"{self.network_config.mempool_url}api/v1/fees/recommended",
-                on_recommended,
-                proxies=(
-                    ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
-                    if self.network_config.proxy_url
-                    else None
-                ),
-            )
-        )
-        logger.debug(f"started on_recommended")
-
-        def on_mempool_dict(mempool_dict) -> None:
-            if mempool_dict:
-                self.mempool_dict = mempool_dict
-                logger.info(f"Updated mempool_dict {mempool_dict}")
             self.signal_data_updated.emit()
 
-        self.append_thread(
-            threaded_fetch(
-                f"{self.network_config.mempool_url}api/mempool",
-                on_mempool_dict,
+    def fetch_block_tip_height(self) -> int:
+        response = self.loop_in_thread.run_foreground(
+            fetch_from_url(
+                f"{self.network_config.mempool_url}api/blocks/tip/height",
                 proxies=(
                     ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
                     if self.network_config.proxy_url
                     else None
                 ),
             )
-        )
-        logger.debug(f"started on_mempool_dict")
-
-    def fetch_block_tip_height(self) -> int:
-        response = fetch_from_url(
-            f"{self.network_config.mempool_url}api/blocks/tip/height",
-            proxies=(
-                ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
-                if self.network_config.proxy_url
-                else None
-            ),
         )
         return response if response else 0
 

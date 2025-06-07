@@ -29,8 +29,8 @@
 
 import logging
 
-from bitcoin_tools.gui.qt.util import qbytearray_to_str, str_to_qbytearray
-from bitcoin_tools.util import hash_string
+from bitcoin_safe_lib.gui.qt.util import qbytearray_to_str, str_to_qbytearray
+from bitcoin_safe_lib.util import hash_string
 from PyQt6.QtCore import QMimeData, QPoint, QPointF, Qt
 from PyQt6.QtGui import QDragEnterEvent
 from PyQt6.QtWidgets import QApplication
