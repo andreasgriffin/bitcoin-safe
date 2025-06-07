@@ -164,8 +164,6 @@ def test_ema_fee_rate_weights_recent_heavier(
 
     assert wallet.get_ema_fee_rate() == pytest.approx(14.5, abs=0.1)
 
-    return wallet
-
 
 def test_address_balance(
     test_funded_seed_wallet: Wallet,

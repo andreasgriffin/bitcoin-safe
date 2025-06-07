@@ -259,6 +259,8 @@ Content to translate:
                     empty_target_indices.append(i)
 
             # Check count
+            if len(empty_target_indices) == 0:
+                continue
             if len(lang_lines) != len(empty_target_indices):
                 raise ValueError(
                     f"For language '{lang}' in file '{csv_path.name}':\n"
