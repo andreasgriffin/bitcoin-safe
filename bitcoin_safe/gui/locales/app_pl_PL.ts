@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS language="pl">
+<TS>
 <context>
     <name>AbstractSignatureImporter</name>
     <message>
@@ -509,7 +509,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>DragAndDropButtonEdit</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Wszystkie pliki (*);;PSBT (*.psbt);;Transakcja (*.tx)</translation>
     </message>
 </context>
@@ -719,12 +719,48 @@ the sending value {sent}</source>
         <translation>Nie nadawano.</translation>
     </message>
     <message>
-        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-        <translation>Nie można znaleźć portfela dla transakcji {txid}. Najpierw otwórz odpowiedni portfel.</translation>
+        <source>Details</source>
+        <translation>Szczegóły</translation>
+    </message>
+    <message>
+        <source>View on block explorer</source>
+        <translation>Pokaż w eksploratorze bloków</translation>
+    </message>
+    <message>
+        <source>Copy as csv</source>
+        <translation>Kopiuj jako CSV</translation>
+    </message>
+    <message>
+        <source>Save as file</source>
+        <translation>Zapisz jako plik</translation>
+    </message>
+    <message>
+        <source>Edit with higher fee (RBF)</source>
+        <translation>Edytuj z wyższą opłatą (RBF)</translation>
+    </message>
+    <message>
+        <source>Try cancel transaction (RBF)</source>
+        <translation>Spróbuj anulować transakcję (RBF)</translation>
+    </message>
+    <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Zwiększ opłatę (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Odbierz szybciej (CPFP)</translation>
+    </message>
+    <message>
+        <source>Remove on restart</source>
+        <translation>Usuń przy ponownym uruchomieniu</translation>
     </message>
     <message>
         <source>Status</source>
         <translation>Status</translation>
+    </message>
+    <message>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>Nie można znaleźć portfela dla transakcji {txid}. Najpierw otwórz odpowiedni portfel.</translation>
     </message>
     <message>
         <source>Category</source>
@@ -1182,7 +1218,7 @@ Do you want to proceed anyway?</source>
         <translation>Otwórz transakcję/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Wszystkie pliki (*);;PSBT (*.psbt);;Transakcja (*.tx)</translation>
     </message>
     <message>
@@ -2500,6 +2536,10 @@ below {rate}</source>
         <translation>Etykieta: </translation>
     </message>
     <message>
+        <source>Save in wallet</source>
+        <translation>Zapisz w portfelu</translation>
+    </message>
+    <message>
         <source>Transaction to be replaced could not be found in open wallets</source>
         <translation>Nie można znaleźć transakcji do zastąpienia w otwartych portfelach</translation>
     </message>
@@ -3063,34 +3103,6 @@ below {rate}</source>
         <translation>Wszystkie statusy</translation>
     </message>
     <message>
-        <source>View on block explorer</source>
-        <translation>Pokaż w eksploratorze bloków</translation>
-    </message>
-    <message>
-        <source>Copy as csv</source>
-        <translation>Kopiuj jako CSV</translation>
-    </message>
-    <message>
-        <source>Save as file</source>
-        <translation>Zapisz jako plik</translation>
-    </message>
-    <message>
-        <source>Edit with higher fee (RBF)</source>
-        <translation>Edytuj z wyższą opłatą (RBF)</translation>
-    </message>
-    <message>
-        <source>Try cancel transaction (RBF)</source>
-        <translation>Spróbuj anulować transakcję (RBF)</translation>
-    </message>
-    <message>
-        <source>Increase fee (RBF)</source>
-        <translation>Zwiększ opłatę (RBF)</translation>
-    </message>
-    <message>
-        <source>Receive faster (CPFP)</source>
-        <translation>Odbierz szybciej (CPFP)</translation>
-    </message>
-    <message>
         <source>Unused</source>
         <translation>Nieużyte</translation>
     </message>
@@ -3117,10 +3129,6 @@ below {rate}</source>
     <message>
         <source>Change</source>
         <translation>Reszta</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation>Szczegóły</translation>
     </message>
 </context>
 <context>
@@ -3257,7 +3265,7 @@ It is best to use your own server, such as {link}.</source>
         <translation>Otwórz transakcję/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Wszystkie pliki (*);;PSBT (*.psbt);;Transakcja (*.tx)</translation>
     </message>
 </context>

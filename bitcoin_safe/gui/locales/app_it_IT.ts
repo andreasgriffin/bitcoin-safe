@@ -1,2320 +1,1911 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS>
-  <context>
+<context>
     <name>AbstractSignatureImporter</name>
     <message>
-      <location filename="../../signer.py" line="138" />
-      <location filename="../../signer.py" line="109" />
-      <location filename="../../signer.py" line="99" />
-      <source>The txid of the signed psbt doesnt match the original txid</source>
-      <translation>Il txid del psbt firmato non corrisponde al txid originale</translation>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>Il txid del psbt firmato non corrisponde al txid originale</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="144" />
-      <location filename="../../signer.py" line="116" />
-      <source>No additional signatures were added</source>
-      <translation>Non sono state aggiunte firme aggiuntive  </translation>
+        <source>No additional signatures were added</source>
+        <translation>Non sono state aggiunte firme aggiuntive  </translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="125" />
-      <source>bdk libary error. The txid should not be changed during finalizing</source>
-      <translation>Errore della libreria bdk. Il txid non deve essere modificato durante la finalizzazione</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>Errore della libreria bdk. Il txid non deve essere modificato durante la finalizzazione</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="187" />
-      <source>Missing Address</source>
-      <translation>Indirizzo mancante  </translation>
+        <source>Missing Address</source>
+        <translation>Indirizzo mancante  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="198" />
-      <source>Valid Address</source>
-      <translation>Indirizzo valido  </translation>
+        <source>Valid Address</source>
+        <translation>Indirizzo valido  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="200" />
-      <source>Invalid Address</source>
-      <translation>Indirizzo non valido  </translation>
+        <source>Invalid Address</source>
+        <translation>Indirizzo non valido  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressDetailsAdvanced</name>
     <message>
-      <location filename="../qt/address_dialog.py" line="97" />
-      <source>Address descriptor</source>
-      <translation>Descrittore dell'indirizzo</translation>
+        <source>Address descriptor</source>
+        <translation>Descrittore dell&apos;indirizzo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressDialog</name>
     <message>
-      <location filename="../qt/address_dialog.py" line="166" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/address_dialog.py" line="194" />
-      <source>Address of wallet "{id}"</source>
-      <translation>Indirizzo del portafoglio "{id}"</translation>
+        <source>Address of wallet &quot;{id}&quot;</source>
+        <translation>Indirizzo del portafoglio &quot;{id}&quot;</translation>
     </message>
     <message>
-      <location filename="../qt/address_dialog.py" line="275" />
-      <source>Advanced</source>
-      <translation>Avanzato</translation>
+        <source>Advanced</source>
+        <translation>Avanzato</translation>
     </message>
     <message>
-      <location filename="../qt/address_dialog.py" line="276" />
-      <source>Validate</source>
-      <translation>Valida  </translation>
+        <source>Validate</source>
+        <translation>Valida  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressEdit</name>
     <message>
-      <location filename="../qt/address_edit.py" line="78" />
-      <source>Enter address here</source>
-      <translation>Inserisci qui l'indirizzo</translation>
+        <source>Enter address here</source>
+        <translation>Inserisci qui l&apos;indirizzo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressList</name>
     <message>
-      <location filename="../qt/address_list.py" line="380" />
-      <source>Address {address}</source>
-      <translation>Indirizzo {address}</translation>
+        <source>Address {address}</source>
+        <translation>Indirizzo {address}</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="458" />
-      <source>Tx</source>
-      <translation>Tx</translation>
+        <source>change</source>
+        <translation>cambio</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="459" />
-      <source>Type</source>
-      <translation>Tipo</translation>
+        <source>receiving</source>
+        <translation>ricezione</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="460" />
-      <source>Index</source>
-      <translation>Indice</translation>
+        <source>change address</source>
+        <translation>indirizzo di cambio</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="461" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>receiving address</source>
+        <translation>indirizzo di ricezione</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="462" />
-      <source>Category</source>
-      <translation>Categoria</translation>
+        <source>Details</source>
+        <translation>Dettagli</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="463" />
-      <source>Label</source>
-      <translation>Etichetta</translation>
+        <source>View on block explorer</source>
+        <translation>Visualizza su block explorer</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="464" />
-      <source>Balance</source>
-      <translation>Saldo</translation>
+        <source>Copy as csv</source>
+        <translation>Copia come csv</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="465" />
-      <source>Value</source>
-      <translation>Valore</translation>
+        <source>Set category</source>
+        <translation>Imposta categoria</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="522" />
-      <location filename="../qt/address_list.py" line="521" />
-      <source>change</source>
-      <translation>cambio</translation>
+        <source>Tx</source>
+        <translation>Tx</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="526" />
-      <location filename="../qt/address_list.py" line="525" />
-      <source>receiving</source>
-      <translation>ricezione</translation>
+        <source>Type</source>
+        <translation>Tipo</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="534" />
-      <source>change address</source>
-      <translation>indirizzo di cambio</translation>
+        <source>Index</source>
+        <translation>Indice</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="534" />
-      <source>receiving address</source>
-      <translation>indirizzo di ricezione</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="618" />
-      <source>Details</source>
-      <translation>Dettagli</translation>
+        <source>Category</source>
+        <translation>Categoria</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="624" />
-      <source>View on block explorer</source>
-      <translation>Visualizza su block explorer</translation>
+        <source>Label</source>
+        <translation>Etichetta</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="636" />
-      <source>Copy as csv</source>
-      <translation>Copia come csv</translation>
+        <source>Balance</source>
+        <translation>Saldo</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="654" />
-      <source>Set category</source>
-      <translation>Imposta categoria</translation>
+        <source>Value</source>
+        <translation>Valore</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AddressListWithToolbar</name>
     <message>
-      <location filename="../qt/address_list.py" line="722" />
-      <source>Show Filter</source>
-      <translation>Mostra Filtro</translation>
+        <source>Show Filter</source>
+        <translation>Mostra Filtro</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="778" />
-      <source>Generate to selected adddresses</source>
-      <translation>Genera agli indirizzi selezionati</translation>
+        <source>Generate to selected adddresses</source>
+        <translation>Genera agli indirizzi selezionati</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>AmountAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="211" />
-      <source>Amount too small</source>
-      <translation>Importo troppo piccolo  </translation>
+        <source>Amount too small</source>
+        <translation>Importo troppo piccolo  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="214" />
-      <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-      <translation>Importo troppo grande. Si prega di cliccare su una categoria sufficientemente finanziata sulla sinistra, oppure selezionare le monete nella scheda avanzata  </translation>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>Importo troppo grande. Si prega di cliccare su una categoria sufficientemente finanziata sulla sinistra, oppure selezionare le monete nella scheda avanzata  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BTCSpinBox</name>
     <message>
-      <location filename="../qt/spinbox.py" line="96" />
-      <source>Max ≈ {amount}</source>
-      <translation>Max ≈ {amount}</translation>
+        <source>Max ≈ {amount}</source>
+        <translation>Max ≈ {amount}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BackupSeed</name>
     <message>
-      <location filename="../qt/wizard.py" line="814" />
-      <source>Please complete the previous steps.</source>
-      <translation>Si prega di completare i passaggi precedenti.</translation>
+        <source>Please complete the previous steps.</source>
+        <translation>Si prega di completare i passaggi precedenti.</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="868" />
-      <source>Print recovery sheet</source>
-      <translation>Stampa il foglio di recupero</translation>
+        <source>Print recovery sheet</source>
+        <translation>Stampa il foglio di recupero</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="869" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="874" />
-      <source>Print the pdf (it also contains the wallet descriptor)</source>
-      <translation>Stampa il pdf (contiene anche il descrittore del portafoglio)</translation>
+        <source>Print the pdf (it also contains the wallet descriptor)</source>
+        <translation>Stampa il pdf (contiene anche il descrittore del portafoglio)</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="875" />
-      <source>Glue the {number} word seed onto the matching printed pdf.</source>
-      <translation>Incolla il seme di {number} parole sul pdf stampato corrispondente.  </translation>
+        <source>Glue the {number} word seed onto the matching printed pdf.</source>
+        <translation>Incolla il seme di {number} parole sul pdf stampato corrispondente.  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="875" />
-      <source>Glue the {number} word seed onto the printed pdf.</source>
-      <translation>Incolla il seme di {number} parole sul pdf stampato.  </translation>
+        <source>Glue the {number} word seed onto the printed pdf.</source>
+        <translation>Incolla il seme di {number} parole sul pdf stampato.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Balance</name>
     <message>
-      <location filename="../../pythonbdk_types.py" line="405" />
-      <source>Confirmed</source>
-      <translation>Confermato</translation>
+        <source>Confirmed</source>
+        <translation>Confermato</translation>
     </message>
     <message>
-      <location filename="../../pythonbdk_types.py" line="407" />
-      <source>Unconfirmed</source>
-      <translation>Non confermato</translation>
+        <source>Unconfirmed</source>
+        <translation>Non confermato</translation>
     </message>
     <message>
-      <location filename="../../pythonbdk_types.py" line="410" />
-      <source>Unmatured</source>
-      <translation>Non maturo</translation>
+        <source>Unmatured</source>
+        <translation>Non maturo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BaseChat</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/chat.py" line="84" />
-      <source>Could not recognize {file_content} as BitcoinData</source>
-      <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BaseDeviceItem</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="57" />
-      <source>Rename</source>
-      <translation>Rinomina  </translation>
+        <source>Rename</source>
+        <translation>Rinomina  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="65" />
-      <source>Enter a name of device with {npub}</source>
-      <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="68" />
-      <source>Device name</source>
-      <translation>Nome del dispositivo  </translation>
+        <source>Device name</source>
+        <translation>Nome del dispositivo  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
-      <location filename="../qt/keystore_ui.py" line="135" />
-      <source>Help</source>
-      <translation>Aiuto  </translation>
+        <source>Help</source>
+        <translation>Aiuto  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BaseNostrSync</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="296" />
-      <source>Could not recognize {file_content} as BitcoinData</source>
-      <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>Impossibile riconoscere {file_content} come BitcoinData  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="348" />
-      <source>Go to {untrusted}</source>
-      <translation>Vai a {untrusted}  </translation>
+        <source>Go to {untrusted}</source>
+        <translation>Vai a {untrusted}  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="349" />
-      <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-      <translation>Per completare la connessione, accetta la mia richiesta {id} sull'altro dispositivo {other}.  </translation>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>Per completare la connessione, accetta la mia richiesta {id} sull&apos;altro dispositivo {other}.  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="368" />
-      <source>Enter a name of device with {npub}</source>
-      <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Inserisci un nome per il dispositivo con {npub}  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BitcoinDmChatGui</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/bitcoin_dm_chat_gui.py" line="67" />
-      <source>Me</source>
-      <translation>Io</translation>
+        <source>Me</source>
+        <translation>Io</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BitcoinQuickReceive</name>
     <message>
-      <location filename="../qt/bitcoin_quick_receive.py" line="143" />
-      <location filename="../qt/bitcoin_quick_receive.py" line="57" />
-      <source>Quick Receive</source>
-      <translation>Ricezione Veloce</translation>
+        <source>Quick Receive</source>
+        <translation>Ricezione Veloce</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BlockingWaitingDialog</name>
     <message>
-      <location filename="../qt/util.py" line="686" />
-      <source>Please wait</source>
-      <translation>Attendere prego</translation>
+        <source>Please wait</source>
+        <translation>Attendere prego</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ButtonList</name>
     <message>
-      <location filename="../qt/wallet_list.py" line="111" />
-      <source>Open containing folder</source>
-      <translation>Apri cartella contenente  </translation>
+        <source>Open containing folder</source>
+        <translation>Apri cartella contenente  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>BuyHardware</name>
     <message>
-      <location filename="../qt/wizard.py" line="402" />
-      <source>Buy {number} hardware signers                         
+        <source>Buy {number} hardware signers                         
                         &lt;ul&gt;
                             {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-      <translation>Compra {number} firmatari hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe supporta tutti i principali firmatari hardware: &lt;a href="{url}"&gt;Vedi lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+        <translation>Compra {number} firmatari hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe supporta tutti i principali firmatari hardware: &lt;a href=&quot;{url}&quot;&gt;Vedi lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CategoryEditor</name>
     <message>
-      <location filename="../qt/category_list.py" line="132" />
-      <source>KYC Exchange</source>
-      <translation>Scambio KYC  </translation>
+        <source>KYC Exchange</source>
+        <translation>Scambio KYC  </translation>
     </message>
     <message>
-      <location filename="../qt/category_list.py" line="132" />
-      <source>Private</source>
-      <translation>Privato  </translation>
+        <source>Private</source>
+        <translation>Privato  </translation>
     </message>
     <message>
-      <location filename="../qt/category_list.py" line="139" />
-      <source>category</source>
-      <translation>categoria</translation>
+        <source>category</source>
+        <translation>categoria</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Chat</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/chat.py" line="176" />
-      <source>You can only send only PSBTs or transactions</source>
-      <translation>Puoi inviare solo PSBTs o transazioni  </translation>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>Puoi inviare solo PSBTs o transazioni  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ChatGui</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/chat_gui.py" line="90" />
-      <source>Type your message here...</source>
-      <translation>Digita qui il tuo messaggio...  </translation>
+        <source>Type your message here...</source>
+        <translation>Digita qui il tuo messaggio...  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/chat_gui.py" line="91" />
-      <source>Share a PSBT</source>
-      <translation>Condividi un PSBT  </translation>
+        <source>Share a PSBT</source>
+        <translation>Condividi un PSBT  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/chat_gui.py" line="92" />
-      <source>Send</source>
-      <translation>Invia</translation>
+        <source>Send</source>
+        <translation>Invia</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/chat_gui.py" line="104" />
-      <source>Open Transaction/PSBT</source>
-      <translation>Apri Transazione/PSBT</translation>
+        <source>Open Transaction/PSBT</source>
+        <translation>Apri Transazione/PSBT</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/chat_gui.py" line="106" />
-      <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-      <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CloseButton</name>
     <message>
-      <location filename="../qt/util.py" line="435" />
-      <source>Close</source>
-      <translation>Chiudi</translation>
+        <source>Close</source>
+        <translation>Chiudi</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ConfirmedBlock</name>
     <message>
-      <location filename="../qt/block_buttons.py" line="629" />
-      <source>Block {n}</source>
-      <translation>Blocco {n}</translation>
+        <source>Block {n}</source>
+        <translation>Blocco {n}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CustomListWidget</name>
     <message>
-      <location filename="../qt/taglist/custom_list_widget.py" line="440" />
-      <source>Delete Category</source>
-      <translation>Elimina categoria  </translation>
+        <source>Delete Category</source>
+        <translation>Elimina categoria  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DescriptorAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="170" />
-      <source>Missing Descriptor</source>
-      <translation>Descrittore mancante  </translation>
+        <source>Missing Descriptor</source>
+        <translation>Descrittore mancante  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="175" />
-      <source>Invalid Descriptor</source>
-      <translation>Descrittore non valido  </translation>
+        <source>Invalid Descriptor</source>
+        <translation>Descrittore non valido  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DescriptorEdit</name>
     <message>
-      <location filename="../qt/descriptor_edit.py" line="139" />
-      <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-      <translation>Configurazione del portafoglio non completata. Si prega di finire prima di creare un pdf di Backup.</translation>
+        <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
+        <translation>Configurazione del portafoglio non completata. Si prega di finire prima di creare un pdf di Backup.</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_edit.py" line="151" />
-      <source>Descriptor not valid</source>
-      <translation>Descrittore non valido</translation>
+        <source>Descriptor not valid</source>
+        <translation>Descrittore non valido</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DescriptorExport</name>
     <message>
-      <location filename="../qt/descriptor_edit.py" line="70" />
-      <source>Export Descriptor</source>
-      <translation>Esporta Descrittore</translation>
+        <source>Export Descriptor</source>
+        <translation>Esporta Descrittore</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DescriptorUI</name>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="130" />
-      <source>Required Signers</source>
-      <translation>Firmatari Necessari</translation>
+        <source>Required Signers</source>
+        <translation>Firmatari Necessari</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="131" />
-      <source>Scan Addresses ahead</source>
-      <translation>Scansiona indirizzi in anticipo  </translation>
+        <source>Import from Clipboard</source>
+        <translation>Importa dagli appunti</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="133" />
-      <source>Paste or scan your descriptor, if you restore a wallet.</source>
-      <translation>Incolla o scansiona il tuo descrittore, se ripristini un portafoglio.</translation>
+        <source>Input corrected</source>
+        <translation>Input corretto</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="137" />
-      <source>This "descriptor" contains all information to reconstruct the wallet. 
+        <source>Descriptor unchanged</source>
+        <translation>Descrittore invariato  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>Nuovo descrittore inserito  </translation>
+    </message>
+    <message>
+        <source>Scan Addresses ahead</source>
+        <translation>Scansiona indirizzi in anticipo  </translation>
+    </message>
+    <message>
+        <source>Paste or scan your descriptor, if you restore a wallet.</source>
+        <translation>Incolla o scansiona il tuo descrittore, se ripristini un portafoglio.</translation>
+    </message>
+    <message>
+        <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-      <translation>Questo "descrittore" contiene tutte le informazioni per ricostruire il portafoglio. Si prega di fare il backup di questo descrittore per poter recuperare i fondi!</translation>
+        <translation>Questo &quot;descrittore&quot; contiene tutte le informazioni per ricostruire il portafoglio. Si prega di fare il backup di questo descrittore per poter recuperare i fondi!</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="141" />
-      <source>Wallet Properties</source>
-      <translation>Proprietà del portafoglio  </translation>
+        <source>Wallet Properties</source>
+        <translation>Proprietà del portafoglio  </translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="142" />
-      <source>Address Type</source>
-      <translation>Tipo di Indirizzo</translation>
+        <source>Address Type</source>
+        <translation>Tipo di Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="143" />
-      <source>Wallet Descriptor</source>
-      <translation>Descrittore del Portafoglio</translation>
+        <source>Wallet Descriptor</source>
+        <translation>Descrittore del Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="145" />
-      <source>Import</source>
-      <translation>Importa</translation>
+        <source>Import</source>
+        <translation>Importa</translation>
     </message>
     <message>
-      <location filename="../qt/descriptor_ui.py" line="146" />
-      <source>Read QR Code</source>
-      <translation>Leggi codice QR</translation>
+        <source>Read QR Code</source>
+        <translation>Leggi codice QR</translation>
     </message>
-    <message>
-      <location filename="../qt/descriptor_ui.py" line="147" />
-      <source>Import from Clipboard</source>
-      <translation>Importa dagli appunti</translation>
-    </message>
-    <message>
-      <location filename="../qt/descriptor_ui.py" line="460" />
-      <source>Input corrected</source>
-      <translation>Input corretto</translation>
-    </message>
-    <message>
-      <location filename="../qt/descriptor_ui.py" line="481" />
-      <source>Descriptor unchanged</source>
-      <translation>Descrittore invariato  </translation>
-    </message>
-    <message>
-      <location filename="../qt/descriptor_ui.py" line="489" />
-      <source>New descriptor entered</source>
-      <translation>Nuovo descrittore inserito  </translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DeviceDialog</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/dialogs.py" line="103" />
-      <source>Select the detected device</source>
-      <translation>Seleziona il dispositivo rilevato  </translation>
+        <source>Select the detected device</source>
+        <translation>Seleziona il dispositivo rilevato  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DeviceManager</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="278" />
-      <source>Trusted</source>
-      <translation>Fidato  </translation>
+        <source>Trusted</source>
+        <translation>Fidato  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="279" />
-      <source>Untrusted</source>
-      <translation>Non fidato  </translation>
+        <source>Untrusted</source>
+        <translation>Non fidato  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DistributeSeeds</name>
     <message>
-      <location filename="../qt/wizard.py" line="1275" />
-      <source>Place each seed backup and hardware signer in a secure location, such:</source>
-      <translation>Posiziona ogni backup del seme e firmatario hardware in un luogo sicuro, come:</translation>
+        <source>Place each seed backup and hardware signer in a secure location, such:</source>
+        <translation>Posiziona ogni backup del seme e firmatario hardware in un luogo sicuro, come:</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1277" />
-      <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-      <translation>Il backup del seme {j} e il firmatario hardware {j} dovrebbero essere nel luogo {j}</translation>
+        <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
+        <translation>Il backup del seme {j} e il firmatario hardware {j} dovrebbero essere nel luogo {j}</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1279" />
-      <source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-      <translation>Scegli i luoghi sicuri con attenzione, considerando che devi andare a {m} dei {n}, per spendere dal tuo portafoglio multisig.</translation>
+        <source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
+        <translation>Scegli i luoghi sicuri con attenzione, considerando che devi andare a {m} dei {n}, per spendere dal tuo portafoglio multisig.</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1290" />
-      <source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-      <translation>Conserva il backup del seme in un luogo &lt;b&gt;molto&lt;/b&gt; sicuro (come una cassaforte).</translation>
+        <source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
+        <translation>Conserva il backup del seme in un luogo &lt;b&gt;molto&lt;/b&gt; sicuro (come una cassaforte).</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1292" />
-      <source>The seed backup (24 words) give total control over the funds.</source>
-      <translation>Il backup del seme (24 parole) dà il controllo totale sui fondi.</translation>
+        <source>The seed backup (24 words) give total control over the funds.</source>
+        <translation>Il backup del seme (24 parole) dà il controllo totale sui fondi.</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1294" />
-      <source>Store the   hardware signer   in secure location.</source>
-      <translation>Conserva il firmatario hardware in un luogo sicuro.</translation>
+        <source>Store the   hardware signer   in secure location.</source>
+        <translation>Conserva il firmatario hardware in un luogo sicuro.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Downloader</name>
     <message>
-      <location filename="../qt/downloader.py" line="100" />
-      <source>Download Progress</source>
-      <translation>Avanzamento Download</translation>
+        <source>Download Progress</source>
+        <translation>Avanzamento Download</translation>
     </message>
     <message>
-      <location filename="../qt/downloader.py" line="104" />
-      <source>Download {}</source>
-      <translation>Scarica {}</translation>
+        <source>Download {}</source>
+        <translation>Scarica {}</translation>
     </message>
     <message>
-      <location filename="../qt/downloader.py" line="116" />
-      <source>Open download folder: {}</source>
-      <translation>Apri cartella di download: {}</translation>
+        <source>Open download folder: {}</source>
+        <translation>Apri cartella di download: {}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>DragAndDropButtonEdit</name>
     <message>
-      <location filename="../qt/dialog_import.py" line="143" />
-      <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-      <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>Tutti i file (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>EnlargableImageWidgetWithButton</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/qr_widgets.py" line="222" />
-      <source>Enlarge</source>
-      <translation>Ingrandire  </translation>
+        <source>Enlarge</source>
+        <translation>Ingrandire  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ExportDataSimple</name>
     <message>
-      <location filename="../qt/export_data.py" line="658" />
-      <source>Enlarge {} QR</source>
-      <translation>Ingrandisci {} QR</translation>
+        <source>Enlarge {} QR</source>
+        <translation>Ingrandisci {} QR</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="660" />
-      <source>Save as image</source>
-      <translation>Salva come immagine</translation>
+        <source>Save as image</source>
+        <translation>Salva come immagine</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="668" />
-      <source>Export {data_type} to hardware signer</source>
-      <translation>Esporta {data_type} sul firmatario hardware  </translation>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>Esporta {data_type} sul firmatario hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="716" />
-      <source>Image (*.{image_format})</source>
-      <comment>All Files (*.*)</comment>
-      <translation type="unfinished">Immagine (*.{image_format})  </translation>
+        <source>Image (*.{image_format})</source>
+        <translation>Immagine (*.{image_format})  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FeeGroup</name>
     <message>
-      <location filename="../qt/fee_group.py" line="338" />
-      <source>Fee</source>
-      <translation>Commissione</translation>
+        <source>Fee</source>
+        <translation>Commissione</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="339" />
-      <source>Approximate fee rate</source>
-      <translation>Tasso di commissione approssimativo</translation>
+        <source>Approximate fee rate</source>
+        <translation>Tasso di commissione approssimativo</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="345" />
-      <source>in ~{n}. Block</source>
-      <translation>in ~{n}. Blocco</translation>
+        <source>in ~{n}. Block</source>
+        <translation>in ~{n}. Blocco</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="387" />
-      <source>{rate} is the minimum for {rbf}</source>
-      <translation>{rate} è il minimo per {rbf}</translation>
+        <source>{rate} is the minimum for {rbf}</source>
+        <translation>{rate} è il minimo per {rbf}</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="413" />
-      <source>{rate} combined fee rate</source>
-      <translation>{rate} tasso di commissione combinato</translation>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} tasso di commissione combinato</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="419" />
-      <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-      <translation>Questa transazione ha {number} genitori non confermati con un tasso di commissione combinato di {parents_fee_rate}</translation>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>Questa transazione ha {number} genitori non confermati con un tasso di commissione combinato di {parents_fee_rate}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FeeRateWarningBar</name>
     <message>
-      <location filename="../qt/fee_group.py" line="101" />
-      <source>High fee rate!</source>
-      <translation>Tasso di commissione alto!</translation>
+        <source>High fee rate!</source>
+        <translation>Tasso di commissione alto!</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="102" />
-      <source>The high priority mempool fee rate is {rate}</source>
-      <translation>La tariffa prioritaria del mempool è {rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>La tariffa prioritaria del mempool è {rate}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FeeWarningBar</name>
     <message>
-      <location filename="../qt/fee_group.py" line="144" />
-      <source>{sent} is sent!</source>
-      <translation>{sent} è stato inviato!  </translation>
+        <source>{sent} is sent!</source>
+        <translation>{sent} è stato inviato!  </translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="148" />
-      <source>The transaction fee is:
+        <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-      <translation>La tassa di transazione è: {fee}, e {sent} è stato inviato!  </translation>
+        <translation>La tassa di transazione è: {fee}, e {sent} è stato inviato!  </translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="161" />
-      <source>The estimated transaction fee is:
+        <source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-      <translation>La commissione di transazione stimata è: {fee}, che è il {percent}% del valore inviato {sent}</translation>
+        <translation>La commissione di transazione stimata è: {fee}, che è il {percent}% del valore inviato {sent}</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="165" />
-      <source>The transaction fee is:
+        <source>The transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-      <translation>La commissione di transazione è: {fee}, che è il {percent}% del valore inviato {sent}</translation>
+        <translation>La commissione di transazione è: {fee}, che è il {percent}% del valore inviato {sent}</translation>
     </message>
     <message>
-      <location filename="../qt/fee_group.py" line="175" />
-      <source>High fee ratio: {ratio}%.</source>
-      <translation>Rapporto commissioni alto: {ratio}%.</translation>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>Rapporto commissioni alto: {ratio}%.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FileToolButton</name>
     <message>
-      <location filename="../qt/export_data.py" line="232" />
-      <source>Export</source>
-      <translation>Esporta  </translation>
+        <source>Export</source>
+        <translation>Esporta  </translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="234" />
-      <source>Copy {name}</source>
-      <translation>Copia {name}</translation>
+        <source>Copy {name}</source>
+        <translation>Copia {name}</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="236" />
-      <source>Copy TxId</source>
-      <translation>Copia TxId</translation>
+        <source>Copy TxId</source>
+        <translation>Copia TxId</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="237" />
-      <source>Copy JSON</source>
-      <translation>Copia JSON</translation>
+        <source>Copy JSON</source>
+        <translation>Copia JSON</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="305" />
-      <source>Export to file</source>
-      <translation>Esporta in file  </translation>
+        <source>Export to file</source>
+        <translation>Esporta in file  </translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="326" />
-      <source>Not available</source>
-      <translation>Non disponibile</translation>
+        <source>Not available</source>
+        <translation>Non disponibile</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FingerprintAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="107" />
-      <source>Missing Fingerprint</source>
-      <translation>Impronta mancante  </translation>
+        <source>Missing Fingerprint</source>
+        <translation>Impronta mancante  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="118" />
-      <source>Invalid Fingerprint</source>
-      <translation>Impronta non valida  </translation>
+        <source>Invalid Fingerprint</source>
+        <translation>Impronta non valida  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>FloatingButtonBar</name>
     <message>
-      <location filename="../qt/wizard.py" line="232" />
-      <source>Prefill transaction fields</source>
-      <translation>Precompila i campi della transazione  </translation>
+        <source>Prefill transaction fields</source>
+        <translation>Precompila i campi della transazione  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="233" />
-      <source>Create Transaction</source>
-      <translation>Crea Transazione</translation>
+        <source>Create Transaction</source>
+        <translation>Crea Transazione</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="234" />
-      <source>Retry</source>
-      <translation>Riprova  </translation>
+        <source>Retry</source>
+        <translation>Riprova  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="235" />
-      <source>Yes, I see the transaction in the history</source>
-      <translation>Sì, vedo la transazione nella cronologia</translation>
+        <source>Yes, I see the transaction in the history</source>
+        <translation>Sì, vedo la transazione nella cronologia</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="236" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>GenerateSeed</name>
     <message>
-      <location filename="../qt/wizard.py" line="575" />
-      <source>Sticker Label</source>
-      <translation>Etichetta Adesiva  </translation>
+        <source>Sticker Label</source>
+        <translation>Etichetta Adesiva  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="576" />
-      <source>Please enter the name (sticker label) of the hardware signer</source>
-      <translation>Si prega di inserire il nome (etichetta adesiva) del firmatario hardware  </translation>
+        <source>Please enter the name (sticker label) of the hardware signer</source>
+        <translation>Si prega di inserire il nome (etichetta adesiva) del firmatario hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="593" />
-      <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-      <translation>Assicurati che non ci siano altri programmi che accedono al firmatario hardware</translation>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>Assicurati che non ci siano altri programmi che accedono al firmatario hardware</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="598" />
-      <source>The setup didnt complete. Please repeat.</source>
-      <translation>L'installazione non è stata completata. Si prega di ripetere.  </translation>
+        <source>The setup didnt complete. Please repeat.</source>
+        <translation>L&apos;installazione non è stata completata. Si prega di ripetere.  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="602" />
-      <source>Success! Please complete this step with all hardware signers and then click Next.</source>
-      <translation>Successo! Si prega di completare questo passaggio con tutti i firmatari hardware e poi cliccare su Avanti.  </translation>
+        <source>Success! Please complete this step with all hardware signers and then click Next.</source>
+        <translation>Successo! Si prega di completare questo passaggio con tutti i firmatari hardware e poi cliccare su Avanti.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
-      <location filename="../qt/keystore_ui.py" line="197" />
-      <source>Import File or Text</source>
-      <translation>Importa file o testo  </translation>
+        <source>Import File or Text</source>
+        <translation>Importa file o testo  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="199" />
-      <source>Export File</source>
-      <translation>Esporta file  </translation>
+        <source>Export File</source>
+        <translation>Esporta file  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="203" />
-      <location filename="../qt/keystore_ui.py" line="201" />
-      <source>QR Code</source>
-      <translation>Codice QR  </translation>
+        <source>QR Code</source>
+        <translation>Codice QR  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="205" />
-      <source>USB</source>
-      <translation>USB  </translation>
+        <source>USB</source>
+        <translation>USB  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HistList</name>
     <message>
-      <location filename="../qt/hist_list.py" line="406" />
-      <source>Wallet</source>
-      <translation>Portafoglio</translation>
+        <source>Wallet</source>
+        <translation>Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="407" />
-      <source>Status</source>
-      <translation>Stato</translation>
+        <source>Not broadcasted.</source>
+        <translation>Non trasmesso.</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="408" />
-      <source>Category</source>
-      <translation>Categoria</translation>
+        <source>Details</source>
+        <translation>Dettagli</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="409" />
-      <source>Label</source>
-      <translation>Etichetta</translation>
+        <source>View on block explorer</source>
+        <translation>Visualizza su block explorer</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="410" />
-      <source>Amount</source>
-      <translation>Importo</translation>
+        <source>Copy as csv</source>
+        <translation>Copia come csv</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="411" />
-      <source>Balance</source>
-      <translation>Saldo</translation>
+        <source>Save as file</source>
+        <translation>Salva come file  </translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="412" />
-      <source>Txid</source>
-      <translation>Txid</translation>
+        <source>Edit with higher fee (RBF)</source>
+        <translation>Modifica con commissione più alta (RBF)</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="538" />
-      <source>{number} Confirmations</source>
-      <translation>{number} Conferme</translation>
+        <source>Try cancel transaction (RBF)</source>
+        <translation>Prova ad annullare la transazione (RBF)</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="541" />
-      <source>Waiting to be included in a block</source>
-      <translation>In attesa di essere incluso in un blocco</translation>
+        <source>Increase fee (RBF)</source>
+        <translation>Aumenta commissione (RBF)</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="543" />
-      <source>Not broadcasted.</source>
-      <translation>Non trasmesso.</translation>
+        <source>Receive faster (CPFP)</source>
+        <translation>Ricevi più velocemente (CPFP)</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="699" />
-      <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-      <translation>Impossibile trovare il portafoglio per la transazione {txid}. Per favore, apri prima il portafoglio corrispondente.</translation>
+        <source>Remove on restart</source>
+        <translation>Rimuovi al riavvio</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Status</source>
+        <translation>Stato</translation>
+    </message>
+    <message>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>Impossibile trovare il portafoglio per la transazione {txid}. Per favore, apri prima il portafoglio corrispondente.</translation>
+    </message>
+    <message>
+        <source>Category</source>
+        <translation>Categoria</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>Etichetta</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>Importo</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Saldo</translation>
+    </message>
+    <message>
+        <source>Txid</source>
+        <translation>Txid</translation>
+    </message>
+    <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} Conferme</translation>
+    </message>
+    <message>
+        <source>Waiting to be included in a block</source>
+        <translation>In attesa di essere incluso in un blocco</translation>
+    </message>
+</context>
+<context>
     <name>HorizontalImportExportClipboard</name>
     <message>
-      <location filename="../qt/import_export.py" line="199" />
-      <source>Share</source>
-      <translation>Condividi  </translation>
+        <source>Share</source>
+        <translation>Condividi  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HorizontalImportExportFile</name>
     <message>
-      <location filename="../qt/import_export.py" line="163" />
-      <source>File</source>
-      <translation>File  </translation>
+        <source>File</source>
+        <translation>File  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HorizontalImportExportQR</name>
     <message>
-      <location filename="../qt/import_export.py" line="96" />
-      <source>QR</source>
-      <translation>QR  </translation>
+        <source>QR</source>
+        <translation>QR  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HorizontalImportExportUSB</name>
     <message>
-      <location filename="../qt/import_export.py" line="126" />
-      <source>USB</source>
-      <translation>USB  </translation>
+        <source>USB</source>
+        <translation>USB  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>HorizontalImportExportWallet</name>
     <message>
-      <location filename="../qt/import_export.py" line="226" />
-      <source>Seed</source>
-      <translation>Seme</translation>
+        <source>Seed</source>
+        <translation>Seme</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ImportXpubs</name>
     <message>
-      <location filename="../qt/wizard.py" line="788" />
-      <source>2. Import wallet information into Bitcoin Safe</source>
-      <translation>2. Importa le informazioni del portafoglio in Bitcoin Safe</translation>
+        <source>2. Import wallet information into Bitcoin Safe</source>
+        <translation>2. Importa le informazioni del portafoglio in Bitcoin Safe</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="790" />
-      <source>Skip step</source>
-      <translation>Salta il passo</translation>
+        <source>Skip step</source>
+        <translation>Salta il passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="792" />
-      <source>Next step</source>
-      <translation>Prossimo passo</translation>
+        <source>Next step</source>
+        <translation>Prossimo passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="793" />
-      <source>Next signer</source>
-      <translation>Prossimo firmatario  </translation>
+        <source>Next signer</source>
+        <translation>Prossimo firmatario  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="794" />
-      <source>Previous signer</source>
-      <translation>Firmatario precedente  </translation>
+        <source>Previous signer</source>
+        <translation>Firmatario precedente  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="795" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>KeyOriginAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="62" />
-      <source>Missing Key origin</source>
-      <translation>Origine chiave mancante  </translation>
+        <source>Missing Key origin</source>
+        <translation>Origine chiave mancante  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="78" />
-      <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-      <translation>Le informazioni fornite sono per {key_origin_network}. Si prega di fornire xPub per la rete {network}  </translation>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>Le informazioni fornite sono per {key_origin_network}. Si prega di fornire xPub per la rete {network}  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="92" />
-      <source>The provided account {provided_account} differs from the default account {default_account}.</source>
-      <translation>L'account fornito {provided_account} differisce dall'account predefinito {default_account}.  </translation>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>L&apos;account fornito {provided_account} differisce dall&apos;account predefinito {default_account}.  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="101" />
-      <source>Unexpected xpub origin</source>
-      <translation>Origine xpub inattesa</translation>
+        <source>Unexpected xpub origin</source>
+        <translation>Origine xpub inattesa</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>KeyStoreUI</name>
     <message>
-      <location filename="../qt/keystore_ui.py" line="377" />
-      <source>Import fingerprint and xpub</source>
-      <translation>Importa impronta digitale e xpub</translation>
+        <source>Import fingerprint and xpub</source>
+        <translation>Importa impronta digitale e xpub</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="378" />
-      <source>OK</source>
-      <translation>OK</translation>
+        <source>{data_type} cannot be used here.</source>
+        <translation>{data_type} non può essere utilizzato qui.</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="379" />
-      <source>Please paste the exported file (like sparrow-export.json):</source>
-      <translation>Si prega di incollare il file esportato (come sparrow-export.json):  </translation>
+        <source>The xpub is in SLIP132 format. Converting to standard format.</source>
+        <translation>L&apos;xpub è nel formato SLIP132. Conversione al formato standard.</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="380" />
-      <source>Please paste the exported file (like sparrow-export.json)</source>
-      <translation>Si prega di incollare il file esportato (come sparrow-export.json)  </translation>
+        <source>Import</source>
+        <translation>Importa</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="430" />
-      <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-      <translation>Standard per il tipo di indirizzo selezionato {type} è {expected_key_origin}. Si corregga se non si è sicuri.  </translation>
+        <source>Advanced</source>
+        <translation>Avanzato</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="436" />
-      <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
-      <translation>L'origine xPub {key_origin} e l'xPub appartengono insieme. Si prega di scegliere la coppia di origine xPub corretta.</translation>
+        <source>Description</source>
+        <translation>Descrizione</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="470" />
-      <source>{msg}
-Do you want to proceed anyway?</source>
-      <translation>{msg} Vuoi procedere comunque?  </translation>
+        <source>Fingerprint</source>
+        <translation>Impronta digitale</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="501" />
-      <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-      <translation>Nessun dato del firmatario trovato per l'origine Xpub prevista {key_origin}. Se desideri importare un numero di account non predefinito, specifica l'origine Xpub e scansisci di nuovo.</translation>
+        <source>xPub Origin</source>
+        <translation>Origine xPub</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="514" />
-      <source>Please paste descriptors into the descriptor field in the top right.</source>
-      <translation>Incolla i descrittori nel campo descrittore in alto a destra.</translation>
+        <source>xPub</source>
+        <translation>xPub</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="519" />
-      <source>{data_type} cannot be used here.</source>
-      <translation>{data_type} non può essere utilizzato qui.</translation>
+        <source>Seed</source>
+        <translation>Seme</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="530" />
-      <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-      <translation>L'xpub è nel formato SLIP132. Conversione al formato standard.</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="547" />
-      <source>Import</source>
-      <translation>Importa</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="548" />
-      <source>Advanced</source>
-      <translation>Avanzato</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="549" />
-      <source>Description</source>
-      <translation>Descrizione</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="551" />
-      <source>Fingerprint</source>
-      <translation>Impronta digitale</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="554" />
-      <source>xPub Origin</source>
-      <translation>Origine xPub</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="557" />
-      <source>xPub</source>
-      <translation>xPub</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="560" />
-      <source>Seed</source>
-      <translation>Seme</translation>
-    </message>
-    <message>
-      <location filename="../qt/keystore_ui.py" line="564" />
-      <source>Name of signing device: ......
+        <source>Name of signing device: ......
 Location of signing device: .....</source>
-      <translation>Nome del dispositivo di firma: ...... Posizione del dispositivo di firma: .....</translation>
+        <translation>Nome del dispositivo di firma: ...... Posizione del dispositivo di firma: .....</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="581" />
-      <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-      <translation>Assicurati che non ci siano altri programmi che accedono al firmatario hardware</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="601" />
-      <source>Please enter a valid key origin.</source>
-      <translation>Si prega di inserire un'origine chiave valida.  </translation>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>Assicurati che non ci siano altri programmi che accedono al firmatario hardware</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="624" />
-      <source>{xpub} is not a valid public xpub</source>
-      <translation>{xpub} non è un xpub pubblico valido</translation>
+        <source>Please enter a valid key origin.</source>
+        <translation>Si prega di inserire un&apos;origine chiave valida.  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="626" />
-      <source>Please import the information from all hardware signers first</source>
-      <translation>Si prega di importare le informazioni da tutti i firmatari hardware prima  </translation>
+        <source>{xpub} is not a valid public xpub</source>
+        <translation>{xpub} non è un xpub pubblico valido</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Please import the information from all hardware signers first</source>
+        <translation>Si prega di importare le informazioni da tutti i firmatari hardware prima  </translation>
+    </message>
+    <message>
+        <source>Please paste the exported file (like sparrow-export.json):</source>
+        <translation>Si prega di incollare il file esportato (come sparrow-export.json):  </translation>
+    </message>
+    <message>
+        <source>Please paste the exported file (like sparrow-export.json)</source>
+        <translation>Si prega di incollare il file esportato (come sparrow-export.json)  </translation>
+    </message>
+    <message>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>Standard per il tipo di indirizzo selezionato {type} è {expected_key_origin}. Si corregga se non si è sicuri.  </translation>
+    </message>
+    <message>
+        <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
+        <translation>L&apos;origine xPub {key_origin} e l&apos;xPub appartengono insieme. Si prega di scegliere la coppia di origine xPub corretta.</translation>
+    </message>
+    <message>
+        <source>{msg}
+Do you want to proceed anyway?</source>
+        <translation>{msg} Vuoi procedere comunque?  </translation>
+    </message>
+    <message>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>Nessun dato del firmatario trovato per l&apos;origine Xpub prevista {key_origin}. Se desideri importare un numero di account non predefinito, specifica l&apos;origine Xpub e scansisci di nuovo.</translation>
+    </message>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>Incolla i descrittori nel campo descrittore in alto a destra.</translation>
+    </message>
+</context>
+<context>
     <name>KeyStoreUIs</name>
     <message>
-      <location filename="../qt/keystore_uis.py" line="142" />
-      <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-      <translation>Compilando tutti i {number} firmatari con le impronte digitali {fingerprints}  </translation>
+        <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
+        <translation>Compilando tutti i {number} firmatari con le impronte digitali {fingerprints}  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_uis.py" line="204" />
-      <location filename="../qt/keystore_uis.py" line="185" />
-      <location filename="../qt/keystore_uis.py" line="163" />
-      <source>Please import the complete data for Signer {i}!</source>
-      <translation>Si prega di importare i dati completi per il firmatario {i}!  </translation>
+        <source>Please import the complete data for Signer {i}!</source>
+        <translation>Si prega di importare i dati completi per il firmatario {i}!  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_uis.py" line="173" />
-      <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-      <translation>Hai importato la stessa impronta digitale più volte!!! Si prega di utilizzare un dispositivo di firma diverso.  </translation>
+        <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+        <translation>Hai importato la stessa impronta digitale più volte!!! Si prega di utilizzare un dispositivo di firma diverso.  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_uis.py" line="193" />
-      <source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-      <translation>Hai importato lo stesso xpub più volte!!! Si prega di utilizzare un dispositivo di firma diverso.  </translation>
+        <source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
+        <translation>Hai importato lo stesso xpub più volte!!! Si prega di utilizzare un dispositivo di firma diverso.  </translation>
     </message>
     <message>
-      <location filename="../qt/keystore_uis.py" line="214" />
-      <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-      <translation>Le origini chiave importate {key_origins} differiscono! Si prega di ricontrollare se questo era intenzionale.  </translation>
+        <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
+        <translation>Le origini chiave importate {key_origins} differiscono! Si prega di ricontrollare se questo era intenzionale.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>LabelBackup</name>
     <message>
-      <location filename="../qt/wizard.py" line="1372" />
-      <source>Encrypted cloud backup of the address labels and categories</source>
-      <translation>Backup crittografato su cloud delle etichette degli indirizzi e delle categorie  </translation>
+        <source>Encrypted cloud backup of the address labels and categories</source>
+        <translation>Backup crittografato su cloud delle etichette degli indirizzi e delle categorie  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1374" />
-      <source>Backup secret sync key:</source>
-      <translation>Chiave segreta di sincronizzazione del backup:  </translation>
+        <source>Backup secret sync key:</source>
+        <translation>Chiave segreta di sincronizzazione del backup:  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1376" />
-      <source>Multi-computer synchronization and chat</source>
-      <translation>Sincronizzazione tra più computer e chat  </translation>
+        <source>Multi-computer synchronization and chat</source>
+        <translation>Sincronizzazione tra più computer e chat  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1378" />
-      <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-      <translation>Scegli computer fidati nella scheda Sincronizza &amp; Chatta su ogni computer.  </translation>
+        <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
+        <translation>Scegli computer fidati nella scheda Sincronizza &amp; Chatta su ogni computer.  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1378" />
-      <source>Synchronization video</source>
-      <translation>Video di sincronizzazione</translation>
+        <source>Synchronization video</source>
+        <translation>Video di sincronizzazione</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1378" />
-      <source>Collaboration video</source>
-      <translation>Video di collaborazione</translation>
+        <source>Collaboration video</source>
+        <translation>Video di collaborazione</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1387" />
-      <source>Finish</source>
-      <translation>Fine</translation>
+        <source>Finish</source>
+        <translation>Fine</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1388" />
-      <source>Enable</source>
-      <translation>Abilita  </translation>
+        <source>Enable</source>
+        <translation>Abilita  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>LabelTimeEstimation</name>
     <message>
-      <location filename="../qt/block_buttons.py" line="141" />
-      <source>~in {t} min</source>
-      <translation>~in {t} min</translation>
+        <source>~in {t} min</source>
+        <translation>~in {t} min</translation>
     </message>
     <message>
-      <location filename="../qt/block_buttons.py" line="143" />
-      <source>~in {t} hours</source>
-      <translation>~in {t} ore</translation>
+        <source>~in {t} hours</source>
+        <translation>~in {t} ore</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>LicenseDialog</name>
     <message>
-      <location filename="../qt/about_dialog.py" line="50" />
-      <source>License Info</source>
-      <translation>Informazioni sulla licenza</translation>
+        <source>License Info</source>
+        <translation>Informazioni sulla licenza</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>LinkingWarningBar</name>
     <message>
-      <location filename="../qt/warning_bars.py" line="77" />
-      <source>{category} (in wallet {wallet_ids})</source>
-      <translation>{category} (nel portafoglio {wallet_ids})  </translation>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (nel portafoglio {wallet_ids})  </translation>
     </message>
     <message>
-      <location filename="../qt/warning_bars.py" line="90" />
-      <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-      <translation>Questa transazione combina le categorie di monete {categories} e rende queste categorie collegabili!  </translation>
+        <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
+        <translation>Questa transazione combina le categorie di monete {categories} e rende queste categorie collegabili!  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>LoadingWalletTab</name>
     <message>
-      <location filename="../qt/extended_tabwidget.py" line="136" />
-      <source>Loading, please wait...</source>
-      <translation>Caricamento, attendere prego...  </translation>
+        <source>Loading, please wait...</source>
+        <translation>Caricamento, attendere prego...  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-      <location filename="../qt/main.py" line="382" />
-      <source>Close Tab</source>
-      <translation>Chiudi scheda  </translation>
+        <source>Close Tab</source>
+        <translation>Chiudi scheda  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="383" />
-      <source>Close all transactions</source>
-      <translation>Chiudi tutte le transazioni  </translation>
+        <source>&amp;Export</source>
+        <translation>&amp;Esporta  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="571" />
-      <source>&amp;Wallet</source>
-      <translation>&amp;Portafoglio</translation>
+        <source>&amp;Rename Wallet</source>
+        <translation>&amp;Rinomina Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="572" />
-      <source>&amp;New Wallet</source>
-      <translation>&amp;Nuovo Portafoglio</translation>
+        <source>&amp;Change Password</source>
+        <translation>&amp;Cambia Password</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="573" />
-      <source>&amp;Open Wallet</source>
-      <translation>&amp;Apri Portafoglio</translation>
+        <source>&amp;Export Wallet PDF</source>
+        <translation>&amp;Esporta PDF del portafoglio  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="574" />
-      <source>Open &amp;Recent</source>
-      <translation>Apri &amp;Recente</translation>
+        <source>&amp;Generate PDF balance Statement</source>
+        <translation>&amp;Genera estratto conto PDF  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="575" />
-      <source>&amp;Save Current Wallet</source>
-      <translation>&amp;Salva Portafoglio Corrente</translation>
+        <source>Export &amp;Descriptor for hardware signers</source>
+        <translation>Esporta &amp;Descrittore per firmatari hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="576" />
-      <source>&amp;Search</source>
-      <translation>&amp;Ricerca  </translation>
+        <source>&amp;Register Multisig with hardware signers</source>
+        <translation>&amp;Registra Multisig con i firmatari hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="577" />
-      <source>&amp;Change</source>
-      <translation>&amp;Cambia  </translation>
+        <source>Re&amp;fresh</source>
+        <translation>&amp;Aggiorna</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="578" />
-      <source>&amp;Export</source>
-      <translation>&amp;Esporta  </translation>
+        <source>&amp;Tools</source>
+        <translation>&amp;Strumenti  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="579" />
-      <source>&amp;Rename Wallet</source>
-      <translation>&amp;Rinomina Portafoglio</translation>
+        <source>&amp;USB Signer Tools</source>
+        <translation>&amp;Strumenti Firmatario USB  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="580" />
-      <source>&amp;Change Password</source>
-      <translation>&amp;Cambia Password</translation>
+        <source>Close all transactions</source>
+        <translation>Chiudi tutte le transazioni  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="581" />
-      <source>&amp;Export Wallet PDF</source>
-      <translation>&amp;Esporta PDF del portafoglio  </translation>
+        <source>&amp;Load Transaction or PSBT</source>
+        <translation>&amp;Carica Transazione o PSBT</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="582" />
-      <source>&amp;Generate PDF balance Statement</source>
-      <translation>&amp;Genera estratto conto PDF  </translation>
+        <source>From &amp;file</source>
+        <translation>Da &amp;file</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="583" />
-      <source>Export &amp;Descriptor for hardware signers</source>
-      <translation>Esporta &amp;Descrittore per firmatari hardware  </translation>
+        <source>QR &amp;Scanner</source>
+        <translation>QR &amp;Scanner  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="584" />
-      <source>&amp;Register Multisig with hardware signers</source>
-      <translation>&amp;Registra Multisig con i firmatari hardware  </translation>
+        <source>From &amp;text</source>
+        <translation>Da &amp;testo</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="585" />
-      <source>Re&amp;fresh</source>
-      <translation>&amp;Aggiorna</translation>
+        <source>From &amp;QR Code</source>
+        <translation>Da &amp;Codice QR</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="586" />
-      <source>&amp;Tools</source>
-      <translation>&amp;Strumenti  </translation>
+        <source>&amp;Settings</source>
+        <translation>&amp;Impostazioni</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="587" />
-      <source>&amp;USB Signer Tools</source>
-      <translation>&amp;Strumenti Firmatario USB  </translation>
+        <source>&amp;Network Settings</source>
+        <translation>&amp;Impostazioni di rete</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="588" />
-      <source>&amp;Load Transaction or PSBT</source>
-      <translation>&amp;Carica Transazione o PSBT</translation>
+        <source>&amp;Show/Hide Tutorial</source>
+        <translation>&amp;Mostra/Nascondi Tutorial</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="589" />
-      <source>From &amp;file</source>
-      <translation>Da &amp;file</translation>
+        <source>&amp;Languages</source>
+        <translation>&amp;Lingue</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="590" />
-      <source>QR &amp;Scanner</source>
-      <translation>QR &amp;Scanner  </translation>
+        <source>&amp;About</source>
+        <translation>&amp;Informazioni</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="591" />
-      <source>From &amp;text</source>
-      <translation>Da &amp;testo</translation>
+        <source>&amp;Wallet</source>
+        <translation>&amp;Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="592" />
-      <source>From &amp;QR Code</source>
-      <translation>Da &amp;Codice QR</translation>
+        <source>&amp;Version: {}</source>
+        <translation>&amp;Versione: {}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="593" />
-      <source>&amp;Settings</source>
-      <translation>&amp;Impostazioni</translation>
+        <source>&amp;Check for update</source>
+        <translation>&amp;Verifica aggiornamenti</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="594" />
-      <source>&amp;Network Settings</source>
-      <translation>&amp;Impostazioni di rete</translation>
+        <source>&amp;License</source>
+        <translation>&amp;Licenza</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="595" />
-      <source>&amp;Show/Hide Tutorial</source>
-      <translation>&amp;Mostra/Nascondi Tutorial</translation>
+        <source>&amp;Show Logs</source>
+        <translation>&amp;Mostra log  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="597" />
-      <source>&amp;Languages</source>
-      <translation>&amp;Lingue</translation>
+        <source>&amp;Feedback / Contact</source>
+        <translation>Feedback / Contatti</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="602" />
-      <source>&amp;About</source>
-      <translation>&amp;Informazioni</translation>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Contatta tramite Nostr</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="603" />
-      <source>&amp;Version: {}</source>
-      <translation>&amp;Versione: {}</translation>
+        <source>&amp;Open issue in github</source>
+        <translation>Apri segnalazione su github</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="604" />
-      <source>&amp;Check for update</source>
-      <translation>&amp;Verifica aggiornamenti</translation>
+        <source>&amp;Mail feedback</source>
+        <translation>Invia feedback via email</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="605" />
-      <source>&amp;License</source>
-      <translation>&amp;Licenza</translation>
+        <source>&amp;Documentation</source>
+        <translation>Documentazione</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="606" />
-      <source>&amp;Show Logs</source>
-      <translation>&amp;Mostra log  </translation>
+        <source>&amp;Knowledge</source>
+        <translation>Base di conoscenza</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="608" />
-      <source>&amp;Feedback / Contact</source>
-      <translation>Feedback / Contatti</translation>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;Nuovo Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="609" />
-      <source>&amp;Contact via Nostr</source>
-      <translation>Contatta tramite Nostr</translation>
+        <source>Please select the wallet</source>
+        <translation>Si prega di selezionare il portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="610" />
-      <source>&amp;Open issue in github</source>
-      <translation>Apri segnalazione su github</translation>
+        <source>Please select the wallet first.</source>
+        <translation>Si prega di selezionare prima il portafoglio.</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="611" />
-      <source>&amp;Mail feedback</source>
-      <translation>Invia feedback via email</translation>
+        <source>Please select a Multisignature wallet first</source>
+        <translation>Si prega di selezionare prima un portafoglio Multisignature  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="613" />
-      <source>&amp;Documentation</source>
-      <translation>Documentazione</translation>
+        <source>Open Transaction/PSBT</source>
+        <translation>Apri Transazione/PSBT</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="614" />
-      <source>&amp;Knowledge</source>
-      <translation>Base di conoscenza</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>Tutti i file (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="674" />
-      <location filename="../qt/main.py" line="639" />
-      <source>Please select the wallet</source>
-      <translation>Si prega di selezionare il portafoglio</translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="795" />
-      <location filename="../qt/main.py" line="779" />
-      <location filename="../qt/main.py" line="758" />
-      <location filename="../qt/main.py" line="739" />
-      <source>Please select the wallet first.</source>
-      <translation>Si prega di selezionare prima il portafoglio.</translation>
+        <source>Selected file: {file_path}</source>
+        <translation>File selezionato: {file_path}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="761" />
-      <source>Please select a Multisignature wallet first</source>
-      <translation>Si prega di selezionare prima un portafoglio Multisignature  </translation>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>Nessun portafoglio aperto. Si prega di aprire il portafoglio del mittente per modificare questa transazione.  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="804" />
-      <source>Open Transaction/PSBT</source>
-      <translation>Apri Transazione/PSBT</translation>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation>Si prega di aprire il portafoglio del mittente per modificare questa transazione.  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="806" />
-      <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-      <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
+        <source>Could not decode this string</source>
+        <translation>Non è stato possibile decodificare questa stringa  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1219" />
-      <location filename="../qt/main.py" line="809" />
-      <source>No file selected</source>
-      <translation>Nessun file selezionato  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;Apri Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="812" />
-      <source>Selected file: {file_path}</source>
-      <translation>File selezionato: {file_path}</translation>
+        <source>QR Scanner</source>
+        <translation>Scanner QR</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="863" />
-      <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-      <translation>Nessun portafoglio aperto. Si prega di aprire il portafoglio del mittente per modificare questa transazione.  </translation>
+        <source>Open Transaction or PSBT</source>
+        <translation>Apri Transazione o PSBT</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="868" />
-      <source> Please open the sender wallet to edit this transaction.</source>
-      <translation>Si prega di aprire il portafoglio del mittente per modificare questa transazione.  </translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="893" />
-      <source>Could not decode this string</source>
-      <translation>Non è stato possibile decodificare questa stringa  </translation>
+        <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
+        <translation>Incolla qui la tua Transazione Bitcoin o PSBT, o rilascia un file</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="934" />
-      <source>QR Scanner</source>
-      <translation>Scanner QR</translation>
+        <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
+        <translation>Incolla qui la tua Transazione Bitcoin o PSBT o rilascia un file</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="944" />
-      <source>Open Transaction or PSBT</source>
-      <translation>Apri Transazione o PSBT</translation>
+        <source>Transaction {txid}</source>
+        <translation>Transazione {txid}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="945" />
-      <source>OK</source>
-      <translation>OK</translation>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="946" />
-      <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-      <translation>Incolla qui la tua Transazione Bitcoin o PSBT, o rilascia un file</translation>
+        <source>Open Wallet</source>
+        <translation>Apri Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="949" />
-      <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-      <translation>Incolla qui la tua Transazione Bitcoin o PSBT o rilascia un file</translation>
+        <source>Wallet Files (*.wallet);;All Files (*)</source>
+        <translation>File di Portafoglio (*.wallet);;Tutti i File (*)</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="990" />
-      <source>Transaction {txid}</source>
-      <translation>Transazione {txid}</translation>
+        <source>The wallet {file_path} is already open.</source>
+        <translation>Il portafoglio {file_path} è già aperto.</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1108" />
-      <source>PSBT {txid}</source>
-      <translation>PSBT {txid}</translation>
+        <source>Open &amp;Recent</source>
+        <translation>Apri &amp;Recente</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1214" />
-      <source>Open Wallet</source>
-      <translation>Apri Portafoglio</translation>
+        <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
+        <translation>Il portafoglio {file_path} è già aperto. Vuoi aprire comunque il portafoglio?</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1216" />
-      <source>Wallet Files (*.wallet);;All Files (*)</source>
-      <translation>File di Portafoglio (*.wallet);;Tutti i File (*)</translation>
+        <source>Wallet already open</source>
+        <translation>Portafoglio già aperto</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1225" />
-      <source>The wallet {file_path} is already open.</source>
-      <translation>Il portafoglio {file_path} è già aperto.</translation>
+        <source>There is no such file: {file_path}</source>
+        <translation>Non esiste un file: {file_path}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1230" />
-      <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-      <translation>Il portafoglio {file_path} è già aperto. Vuoi aprire comunque il portafoglio?</translation>
+        <source>Please enter the password for {filename}:</source>
+        <translation>Inserisci la password per {filename}:</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1233" />
-      <source>Wallet already open</source>
-      <translation>Portafoglio già aperto</translation>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>Un portafoglio con id {name} è già aperto. Chiudilo prima.</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1240" />
-      <source>There is no such file: {file_path}</source>
-      <translation>Non esiste un file: {file_path}</translation>
+        <source>new</source>
+        <translation>nuovo</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1248" />
-      <source>Please enter the password for {filename}:</source>
-      <translation>Inserisci la password per {filename}:</translation>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>Un portafoglio con id {name} è già aperto.</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1271" />
-      <source>A wallet with id {name} is already open. Please close it first.</source>
-      <translation>Un portafoglio con id {name} è già aperto. Chiudilo prima.</translation>
+        <source>Please complete the wallet setup.</source>
+        <translation>Si prega di completare la configurazione del portafoglio.</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1321" />
-      <source>new</source>
-      <translation>nuovo</translation>
+        <source>Close wallet {id}?</source>
+        <translation>Chiudere il portafoglio {id}?</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1507" />
-      <source>A wallet with id {name} is already open.  </source>
-      <translation>Un portafoglio con id {name} è già aperto.</translation>
+        <source>Close wallet</source>
+        <translation>Chiudi portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1558" />
-      <source>Please complete the wallet setup.</source>
-      <translation>Si prega di completare la configurazione del portafoglio.</translation>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;Salva Portafoglio Corrente</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1673" />
-      <source>Close wallet {id}?</source>
-      <translation>Chiudere il portafoglio {id}?</translation>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>Vuoi salvare il PSBT {id}?  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1673" />
-      <source>Close wallet</source>
-      <translation>Chiudi portafoglio</translation>
+        <source>Save PSBT?</source>
+        <translation>Salvare PSBT?  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1684" />
-      <source>Do you want to save the PSBT {id}?</source>
-      <translation>Vuoi salvare il PSBT {id}?  </translation>
+        <source>Closing tab {name}</source>
+        <translation>Chiusura della scheda {name}</translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1687" />
-      <source>Save PSBT?</source>
-      <translation>Salvare PSBT?  </translation>
+        <source>&amp;Search</source>
+        <translation>&amp;Ricerca  </translation>
     </message>
     <message>
-      <location filename="../qt/main.py" line="1694" />
-      <location filename="../qt/main.py" line="1691" />
-      <source>Closing tab {name}</source>
-      <translation>Chiusura della scheda {name}</translation>
+        <source>&amp;Change</source>
+        <translation>&amp;Cambia  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MempoolButtons</name>
     <message>
-      <location filename="../qt/block_buttons.py" line="463" />
-      <source>Fetch new mempool data</source>
-      <translation>Ottieni nuovi dati dal mempool</translation>
+        <source>Fetch new mempool data</source>
+        <translation>Ottieni nuovi dati dal mempool</translation>
     </message>
     <message>
-      <location filename="../qt/block_buttons.py" line="487" />
-      <source>Next Block</source>
-      <translation>Prossimo Blocco</translation>
+        <source>Next Block</source>
+        <translation>Prossimo Blocco</translation>
     </message>
     <message>
-      <location filename="../qt/block_buttons.py" line="489" />
-      <source>{n}. Block</source>
-      <translation>{n}. Blocco</translation>
+        <source>{n}. Block</source>
+        <translation>{n}. Blocco</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MempoolProjectedBlock</name>
     <message>
-      <location filename="../qt/block_buttons.py" line="552" />
-      <source>Unconfirmed</source>
-      <translation>Non confermato</translation>
+        <source>Unconfirmed</source>
+        <translation>Non confermato</translation>
     </message>
     <message>
-      <location filename="../qt/block_buttons.py" line="569" />
-      <source>~{n}. Block</source>
-      <translation>~{n}. Blocco</translation>
+        <source>~{n}. Block</source>
+        <translation>~{n}. Blocco</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MyTreeView</name>
     <message>
-      <location filename="../qt/my_treeview.py" line="614" />
-      <source>Copy as csv</source>
-      <translation>Copia come csv</translation>
+        <source>Copy as csv</source>
+        <translation>Copia come csv</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="629" />
-      <source>Copy</source>
-      <translation>Copia</translation>
+        <source>Copy</source>
+        <translation>Copia</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="953" />
-      <source>Export csv</source>
-      <translation>Esporta csv</translation>
+        <source>Export csv</source>
+        <translation>Esporta csv</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="953" />
-      <source>All Files (*);;Text Files (*.csv)</source>
-      <translation>Tutti i File (*);;File di Testo (*.csv)</translation>
+        <source>All Files (*);;Text Files (*.csv)</source>
+        <translation>Tutti i File (*);;File di Testo (*.csv)</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="956" />
-      <source>No file selected</source>
-      <translation>Nessun file selezionato  </translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>NetworkSettingsUI</name>
     <message>
-      <location filename="../qt/network_settings/main.py" line="213" />
-      <source>Advanced</source>
-      <translation>Avanzato</translation>
+        <source>Advanced</source>
+        <translation>Avanzato</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="214" />
-      <source>Automatic</source>
-      <translation>Automatico</translation>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="376" />
-      <source>Open Tor proxy configuration documentation</source>
-      <translation>Apri la documentazione di configurazione del proxy Tor  </translation>
+        <source>Port:</source>
+        <translation>Porta:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="396" />
-      <source>Test Connection</source>
-      <translation>Testa Connessione</translation>
+        <source>Mode:</source>
+        <translation>Modalità:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="418" />
-      <source>Network Settings</source>
-      <translation>Impostazioni di rete</translation>
+        <source>IP Address:</source>
+        <translation>Indirizzo IP:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="419" />
-      <source>Blockchain data source</source>
-      <translation>Fonte dati blockchain</translation>
+        <source>Username:</source>
+        <translation>Username:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="425" />
-      <location filename="../qt/network_settings/main.py" line="421" />
-      <source>URL:</source>
-      <translation>URL:</translation>
+        <source>Password:</source>
+        <translation>Password:</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="445" />
-      <location filename="../qt/network_settings/main.py" line="440" />
-      <location filename="../qt/network_settings/main.py" line="438" />
-      <location filename="../qt/network_settings/main.py" line="434" />
-      <location filename="../qt/network_settings/main.py" line="430" />
-      <location filename="../qt/network_settings/main.py" line="426" />
-      <location filename="../qt/network_settings/main.py" line="422" />
-      <source>Press ⬇ arrow key for suggestions</source>
-      <translation>Premere il tasto freccia ⬇ per suggerimenti  </translation>
+        <source>Mempool Instance URL</source>
+        <translation>URL dell&apos;istanza Mempool</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="424" />
-      <source>Enable SSL</source>
-      <translation>Abilita SSL</translation>
+        <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+        <translation>Il proxy non si applica alla funzione di Sincronizzazione e Chat!  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="427" />
-      <source>SSL:</source>
-      <translation>SSL:</translation>
+        <source>Proxy:</source>
+        <translation>Proxy:  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="439" />
-      <location filename="../qt/network_settings/main.py" line="429" />
-      <source>Port:</source>
-      <translation>Porta:</translation>
+        <source>Apply &amp;&amp; Shutdown</source>
+        <translation>Applica &amp;&amp; Spegni  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="431" />
-      <source>Mode:</source>
-      <translation>Modalità:</translation>
+        <source>Automatic</source>
+        <translation>Automatico</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="437" />
-      <location filename="../qt/network_settings/main.py" line="432" />
-      <source>IP Address:</source>
-      <translation>Indirizzo IP:</translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="441" />
-      <source>Username:</source>
-      <translation>Username:</translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="442" />
-      <source>Password:</source>
-      <translation>Password:</translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="444" />
-      <source>Mempool Instance URL</source>
-      <translation>URL dell'istanza Mempool</translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="448" />
-      <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-      <translation>Il proxy non si applica alla funzione di Sincronizzazione e Chat!  </translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="450" />
-      <source>Proxy:</source>
-      <translation>Proxy:  </translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="452" />
-      <source>Apply &amp;&amp; Shutdown</source>
-      <translation>Applica &amp;&amp; Spegni  </translation>
-    </message>
-    <message>
-      <location filename="../qt/network_settings/main.py" line="492" />
-      <source>Responses:
+        <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-      <translation>Risposte:     {name}: {status}     Istanza Mempool: {server}</translation>
+        <translation>Risposte:     {name}: {status}     Istanza Mempool: {server}</translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="504" />
-      <location filename="../qt/network_settings/main.py" line="500" />
-      <source>Please remove the '{scheme}' from the electrum url</source>
-      <translation>Rimuovi '{scheme}' dall'URL di electrum  </translation>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>Rimuovi &apos;{scheme}&apos; dall&apos;URL di electrum  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="510" />
-      <source>Are you sure '{scheme}' is correct in the esplora url?</source>
-      <translation>Sei sicuro che '{scheme}' sia corretto nell'URL di esplora?  </translation>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>Sei sicuro che &apos;{scheme}&apos; sia corretto nell&apos;URL di esplora?  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="516" />
-      <source>The format for tor addresses should be '{scheme}'</source>
-      <translation>Il formato per gli indirizzi tor dovrebbe essere '{scheme}'  </translation>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>Il formato per gli indirizzi tor dovrebbe essere &apos;{scheme}&apos;  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="522" />
-      <source>Please try '{scheme}' at the beginning of the mempool url</source>
-      <translation>Prova '{scheme}' all'inizio dell'URL di mempool  </translation>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>Prova &apos;{scheme}&apos; all&apos;inizio dell&apos;URL di mempool  </translation>
     </message>
     <message>
-      <location filename="../qt/network_settings/main.py" line="578" />
-      <source>Error in server connection.
+        <source>Error in server connection.
 {responses}
 
  Do you want to proceed anyway?</source>
-      <translation>Errore nella connessione al server. 
+        <translation>Errore nella connessione al server. 
 {responses}
 
 Vuoi procedere comunque?</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Apri la documentazione di configurazione del proxy Tor  </translation>
+    </message>
+    <message>
+        <source>Test Connection</source>
+        <translation>Testa Connessione</translation>
+    </message>
+    <message>
+        <source>Network Settings</source>
+        <translation>Impostazioni di rete</translation>
+    </message>
+    <message>
+        <source>Blockchain data source</source>
+        <translation>Fonte dati blockchain</translation>
+    </message>
+    <message>
+        <source>URL:</source>
+        <translation>URL:</translation>
+    </message>
+    <message>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>Premere il tasto freccia ⬇ per suggerimenti  </translation>
+    </message>
+    <message>
+        <source>Enable SSL</source>
+        <translation>Abilita SSL</translation>
+    </message>
+</context>
+<context>
     <name>NewWalletWelcomeScreen</name>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="103" />
-      <source>Create new wallet</source>
-      <translation>Crea nuovo portafoglio</translation>
+        <source>Create new wallet</source>
+        <translation>Crea nuovo portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="212" />
-      <source>Single Signature Wallet</source>
-      <translation>Portafoglio a Firma Singola</translation>
+        <source>Choose Single Signature</source>
+        <translation>Scegli Firma Singola</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="214" />
-      <source>Best for medium-sized funds</source>
-      <translation>Migliore per fondi di medie dimensioni</translation>
+        <source>2 of 3 Multi-Signature Wal</source>
+        <translation>Wal Multi-Firma 2 su 3</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="249" />
-      <location filename="../qt/new_wallet_welcome_screen.py" line="233" />
-      <location filename="../qt/new_wallet_welcome_screen.py" line="216" />
-      <source>Pros:</source>
-      <translation>Pro:</translation>
+        <source>Best for large funds</source>
+        <translation>Migliore per grandi fondi</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="218" />
-      <source>1 seed (24 secret words) is all you need to access your funds</source>
-      <translation>1 seme (24 parole segrete) è tutto ciò di cui hai bisogno per accedere ai tuoi fondi</translation>
+        <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
+        <translation>Se si perde o si ruba 1 seme, tutti i fondi possono essere trasferiti in un nuovo portafoglio con i 2 semi rimanenti + descrittore del portafoglio (codice QR)</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="219" />
-      <source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-      <translation>È necessaria 1 località sicura per conservare il backup del seme (su carta o acciaio)</translation>
+        <source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
+        <translation>Sono necessarie 3 località sicure (ciascuna con 1 backup del seme + descrittore del portafoglio)</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="250" />
-      <location filename="../qt/new_wallet_welcome_screen.py" line="237" />
-      <location filename="../qt/new_wallet_welcome_screen.py" line="221" />
-      <source>Cons:</source>
-      <translation>Contro:</translation>
+        <source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
+        <translation>Il descrittore del portafoglio (codice QR) è necessario per recuperare il portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="223" />
-      <source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-      <translation>Se ti fanno credere di dare il tuo seme agli hacker, i tuoi Bitcoin verranno rubati immediatamente</translation>
+        <source>3 signing devices</source>
+        <translation>3 dispositivi di firma</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="226" />
-      <source>1 signing devices</source>
-      <translation>1 dispositivo di firma</translation>
+        <source>Choose Multi-Signature</source>
+        <translation>Scegli Multi-Firma</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="227" />
-      <source>Choose Single Signature</source>
-      <translation>Scegli Firma Singola</translation>
+        <source>Custom or import existing Wallet</source>
+        <translation>Personalizzare o importare un portafoglio esistente</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="229" />
-      <source>2 of 3 Multi-Signature Wal</source>
-      <translation>Wal Multi-Firma 2 su 3</translation>
+        <source>Customize the wallet to your needs</source>
+        <translation>Personalizza il portafoglio secondo le tue esigenze</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="231" />
-      <source>Best for large funds</source>
-      <translation>Migliore per grandi fondi</translation>
+        <source>Single Signature Wallet</source>
+        <translation>Portafoglio a Firma Singola</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="235" />
-      <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-      <translation>Se si perde o si ruba 1 seme, tutti i fondi possono essere trasferiti in un nuovo portafoglio con i 2 semi rimanenti + descrittore del portafoglio (codice QR)</translation>
+        <source>Less support material online in case of recovery</source>
+        <translation>Meno materiale di supporto online in caso di recupero</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="239" />
-      <source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-      <translation>Sono necessarie 3 località sicure (ciascuna con 1 backup del seme + descrittore del portafoglio)</translation>
+        <source>Create custom wallet</source>
+        <translation>Crea portafoglio personalizzato</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="240" />
-      <source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-      <translation>Il descrittore del portafoglio (codice QR) è necessario per recuperare il portafoglio</translation>
+        <source>Best for medium-sized funds</source>
+        <translation>Migliore per fondi di medie dimensioni</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="244" />
-      <source>3 signing devices</source>
-      <translation>3 dispositivi di firma</translation>
+        <source>Pros:</source>
+        <translation>Pro:</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="245" />
-      <source>Choose Multi-Signature</source>
-      <translation>Scegli Multi-Firma</translation>
+        <source>1 seed (24 secret words) is all you need to access your funds</source>
+        <translation>1 seme (24 parole segrete) è tutto ciò di cui hai bisogno per accedere ai tuoi fondi</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="248" />
-      <source>Custom or import existing Wallet</source>
-      <translation>Personalizzare o importare un portafoglio esistente</translation>
+        <source>1 secure location to store the seed backup (on paper or steel) is needed</source>
+        <translation>È necessaria 1 località sicura per conservare il backup del seme (su carta o acciaio)</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="249" />
-      <source>Customize the wallet to your needs</source>
-      <translation>Personalizza il portafoglio secondo le tue esigenze</translation>
+        <source>Cons:</source>
+        <translation>Contro:</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="250" />
-      <source>Less support material online in case of recovery</source>
-      <translation>Meno materiale di supporto online in caso di recupero</translation>
+        <source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
+        <translation>Se ti fanno credere di dare il tuo seme agli hacker, i tuoi Bitcoin verranno rubati immediatamente</translation>
     </message>
     <message>
-      <location filename="../qt/new_wallet_welcome_screen.py" line="254" />
-      <source>Create custom wallet</source>
-      <translation>Crea portafoglio personalizzato</translation>
+        <source>1 signing devices</source>
+        <translation>1 dispositivo di firma</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>NostrSync</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="410" />
-      <source>Group Chat</source>
-      <translation>Chat di Gruppo  </translation>
+        <source>Group Chat</source>
+        <translation>Chat di Gruppo  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>NostrSyncWithSingleChats</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/nostr_sync.py" line="449" />
-      <source>Chat</source>
-      <translation>Chat  </translation>
+        <source>Chat</source>
+        <translation>Chat  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>NotificationBar</name>
     <message>
-      <location filename="../qt/notification_bar.py" line="147" />
-      <source>Close notification</source>
-      <translation>Chiudi notifica</translation>
+        <source>Close notification</source>
+        <translation>Chiudi notifica</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>NotificationBarRegtest</name>
     <message>
-      <location filename="../qt/notification_bar_regtest.py" line="61" />
-      <source>Change Network</source>
-      <translation>Cambia Rete</translation>
+        <source>Change Network</source>
+        <translation>Cambia Rete</translation>
     </message>
     <message>
-      <location filename="../qt/notification_bar_regtest.py" line="63" />
-      <source>Network = {network}. The coins are worthless!</source>
-      <translation>Rete = {network}. Le monete non hanno valore!</translation>
+        <source>Network = {network}. The coins are worthless!</source>
+        <translation>Rete = {network}. Le monete non hanno valore!</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>PasswordCreation</name>
     <message>
-      <location filename="../qt/dialogs.py" line="156" />
-      <source>Create Password</source>
-      <translation>Crea Password</translation>
+        <source>Create Password</source>
+        <translation>Crea Password</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="162" />
-      <source>Enter your password:</source>
-      <translation>Inserisci la tua password:</translation>
+        <source>Enter your password:</source>
+        <translation>Inserisci la tua password:</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="219" />
-      <location filename="../qt/dialogs.py" line="174" />
-      <source>Show Password</source>
-      <translation>Mostra Password</translation>
+        <source>Show Password</source>
+        <translation>Mostra Password</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="182" />
-      <source>Re-enter your password:</source>
-      <translation>Reinserisci la tua password:</translation>
+        <source>Re-enter your password:</source>
+        <translation>Reinserisci la tua password:</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="201" />
-      <source>Submit</source>
-      <translation>Invia</translation>
+        <source>Submit</source>
+        <translation>Invia</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="215" />
-      <source>Hide Password</source>
-      <translation>Nascondi Password</translation>
+        <source>Hide Password</source>
+        <translation>Nascondi Password</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="232" />
-      <source>Passwords do not match!</source>
-      <translation>Le password non corrispondono!</translation>
+        <source>Passwords do not match!</source>
+        <translation>Le password non corrispondono!</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="233" />
-      <source>Error</source>
-      <translation>Errore</translation>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>PasswordQuestion</name>
     <message>
-      <location filename="../qt/dialogs.py" line="93" />
-      <source>Password Input</source>
-      <translation>Input Password</translation>
+        <source>Password Input</source>
+        <translation>Input Password</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="98" />
-      <source>Please enter your password:</source>
-      <translation>Si prega di inserire la password:</translation>
+        <source>Please enter your password:</source>
+        <translation>Si prega di inserire la password:</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="128" />
-      <location filename="../qt/dialogs.py" line="111" />
-      <source>Show Password</source>
-      <translation>Mostra Password</translation>
+        <source>Show Password</source>
+        <translation>Mostra Password</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="116" />
-      <source>Submit</source>
-      <translation>Invia</translation>
+        <source>Submit</source>
+        <translation>Invia</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="124" />
-      <source>Hide Password</source>
-      <translation>Nascondi Password</translation>
+        <source>Hide Password</source>
+        <translation>Nascondi Password</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>PoisoningWarningBar</name>
     <message>
-      <location filename="../qt/warning_bars.py" line="149" />
-      <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
-      <translation>Attenzione! Questa transazione coinvolge indirizzi ingannevolmente simili. Potrebbe essere un attacco di avvelenamento dell'indirizzo. Gli indirizzi simili sono &lt;br&gt;{addresses}.&lt;br&gt; Controlla attentamente tutti i dettagli della transazione!</translation>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>Attenzione! Questa transazione coinvolge indirizzi ingannevolmente simili. Potrebbe essere un attacco di avvelenamento dell&apos;indirizzo. Gli indirizzi simili sono &lt;br&gt;{addresses}.&lt;br&gt; Controlla attentamente tutti i dettagli della transazione!</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
-      <location filename="../qt/qt_wallet.py" line="160" />
-      <source>Setup wallet</source>
-      <translation>Configura portafoglio</translation>
+        <source>Setup wallet</source>
+        <translation>Configura portafoglio</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QTWallet</name>
     <message>
-      <location filename="../qt/qt_wallet.py" line="441" />
-      <source>Send</source>
-      <translation>Invia</translation>
+        <source>Send</source>
+        <translation>Invia</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="442" />
-      <source>Descriptor</source>
-      <translation>Descrittore</translation>
+        <source>Backup saved to {filename}</source>
+        <translation>Backup salvato in {filename}</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="443" />
-      <source>Sync &amp;&amp; Chat</source>
-      <translation>Sincronizza &amp;&amp; Chatta  </translation>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Backup fallito. Annullamento delle modifiche.</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="444" />
-      <source>History</source>
-      <translation>Cronologia</translation>
+        <source>Cannot move the wallet file, because {file_path} exists</source>
+        <translation>Non è possibile spostare il file del portafoglio, perché {file_path} esiste</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="445" />
-      <source>Receive</source>
-      <translation>Ricevi</translation>
+        <source>Save wallet</source>
+        <translation>Salva portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="447" />
-      <source>Balance</source>
-      <translation>Saldo</translation>
+        <source>All Files (*);;Wallet Files (*.wallet)</source>
+        <translation>Tutti i File (*);;File di Portafoglio (*.wallet)</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="448" />
-      <source>Value</source>
-      <translation>Valore</translation>
+        <source>Are you SURE you don&apos;t want save the wallet {id}?</source>
+        <translation>Sei SICURO di non voler salvare il portafoglio {id}?</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="551" />
-      <source>No changes to apply.</source>
-      <translation>Nessuna modifica da applicare.</translation>
+        <source>Delete wallet</source>
+        <translation>Elimina portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="559" />
-      <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-      <translation>Proseguendo potrebbero cambiare tutti gli indirizzi del portafoglio. Vuoi procedere?  </translation>
+        <source>Password incorrect</source>
+        <translation>Password errata</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="566" />
-      <source>Backup saved to {filename}</source>
-      <translation>Backup salvato in {filename}</translation>
+        <source>Change password</source>
+        <translation>Cambia password</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="568" />
-      <source>Backup failed. Aborting Changes.</source>
-      <translation>Backup fallito. Annullamento delle modifiche.</translation>
+        <source>New password:</source>
+        <translation>Nuova password:</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="637" />
-      <source>Cannot move the wallet file, because {file_path} exists</source>
-      <translation>Non è possibile spostare il file del portafoglio, perché {file_path} esiste</translation>
+        <source>Descriptor</source>
+        <translation>Descrittore</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="682" />
-      <source>Save wallet</source>
-      <translation>Salva portafoglio</translation>
+        <source>Wallet saved</source>
+        <translation>Portafoglio salvato</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="684" />
-      <source>All Files (*);;Wallet Files (*.wallet)</source>
-      <translation>Tutti i File (*);;File di Portafoglio (*.wallet)</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="687" />
-      <source>Are you SURE you don't want save the wallet {id}?</source>
-      <translation>Sei SICURO di non voler salvare il portafoglio {id}?</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="690" />
-      <source>Delete wallet</source>
-      <translation>Elimina portafoglio</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="719" />
-      <source>Password incorrect</source>
-      <translation>Password errata</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="723" />
-      <source>Change password</source>
-      <translation>Cambia password</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="723" />
-      <source>New password:</source>
-      <translation>Nuova password:</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="730" />
-      <source>Wallet saved</source>
-      <translation>Portafoglio salvato</translation>
-    </message>
-    <message>
-      <location filename="../qt/qt_wallet.py" line="757" />
-      <source>The transactions 
+        <source>The transactions 
 {txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-      <translation>Le transazioni {txs} nel portafoglio '{wallet}' sono state rimosse dalla cronologia!!!</translation>
+ in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
+        <translation>Le transazioni {txs} nel portafoglio &apos;{wallet}&apos; sono state rimosse dalla cronologia!!!</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="765" />
-      <source>Do you want to save a copy of these transactions?</source>
-      <translation>Vuoi salvare una copia di queste transazioni?</translation>
+        <source>Do you want to save a copy of these transactions?</source>
+        <translation>Vuoi salvare una copia di queste transazioni?</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="794" />
-      <source>New transaction in wallet '{wallet}':
+        <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
-      <translation>Nuova transazione nel portafoglio '{wallet}': {txs}</translation>
+        <translation>Nuova transazione nel portafoglio &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="801" />
-      <source>{number} new transactions in wallet '{wallet}':
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-      <translation>{number} nuove transazioni nel portafoglio '{wallet}': {txs}</translation>
+        <translation>{number} nuove transazioni nel portafoglio &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="993" />
-      <source>Rename or merge categories</source>
-      <translation>Rinominare o unire le categorie</translation>
+        <source>Rename or merge categories</source>
+        <translation>Rinominare o unire le categorie</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="994" />
-      <source>Choose a new name, or an existing name for merging:</source>
-      <translation>Scegli un nuovo nome, o un nome esistente per la fusione:</translation>
+        <source>Choose a new name, or an existing name for merging:</source>
+        <translation>Scegli un nuovo nome, o un nome esistente per la fusione:</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1012" />
-      <source>The addresses {used_addresses}
+        <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-      <translation>Gli indirizzi {used_addresses} hanno già transazioni collegate ad altri indirizzi. Sei sicuro di voler cambiare categoria?  </translation>
+        <translation>Gli indirizzi {used_addresses} hanno già transazioni collegate ad altri indirizzi. Sei sicuro di voler cambiare categoria?  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1049" />
-      <source>Syncing with {server}</source>
-      <translation>Sincronizzazione con {server}  </translation>
+        <source>Syncing with {server}</source>
+        <translation>Sincronizzazione con {server}  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1056" />
-      <source>Connected to {server}</source>
-      <translation>Connesso a {server}  </translation>
+        <source>Connected to {server}</source>
+        <translation>Connesso a {server}  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1062" />
-      <source>Disconnected from {server}</source>
-      <translation>Disconnesso da {server}  </translation>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sincronizza &amp;&amp; Chatta  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1194" />
-      <source>Click for new address</source>
-      <translation>Clicca per un nuovo indirizzo</translation>
+        <source>Disconnected from {server}</source>
+        <translation>Disconnesso da {server}  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1195" />
-      <source>{num_inputs} Inputs: {inputs}</source>
-      <translation>{num_inputs} Input: {inputs}</translation>
+        <source>Click for new address</source>
+        <translation>Clicca per un nuovo indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1265" />
-      <source>start updating lists</source>
-      <translation>inizio aggiornamento liste  </translation>
+        <source>{num_inputs} Inputs: {inputs}</source>
+        <translation>{num_inputs} Input: {inputs}</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1273" />
-      <source>finished updating lists</source>
-      <translation>aggiornamento liste completato  </translation>
+        <source>start updating lists</source>
+        <translation>inizio aggiornamento liste  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1333" />
-      <location filename="../qt/qt_wallet.py" line="1318" />
-      <source>Export labels</source>
-      <translation>Esporta etichette</translation>
+        <source>finished updating lists</source>
+        <translation>aggiornamento liste completato  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1335" />
-      <location filename="../qt/qt_wallet.py" line="1320" />
-      <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-      <translation>Tutti i File (*);;File JSON (*.jsonl);;File JSON (*.json)</translation>
+        <source>Export labels</source>
+        <translation>Esporta etichette</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1402" />
-      <location filename="../qt/qt_wallet.py" line="1373" />
-      <location filename="../qt/qt_wallet.py" line="1352" />
-      <location filename="../qt/qt_wallet.py" line="1338" />
-      <location filename="../qt/qt_wallet.py" line="1323" />
-      <source>No file selected</source>
-      <translation>Nessun file selezionato  </translation>
+        <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>Tutti i File (*);;File JSON (*.jsonl);;File JSON (*.json)</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1368" />
-      <location filename="../qt/qt_wallet.py" line="1347" />
-      <source>Import labels</source>
-      <translation>Importa etichette</translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1370" />
-      <location filename="../qt/qt_wallet.py" line="1349" />
-      <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-      <translation>Tutti i File (*);;File JSONL (*.jsonl);;File JSON (*.json)</translation>
+        <source>Import labels</source>
+        <translation>Importa etichette</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1411" />
-      <location filename="../qt/qt_wallet.py" line="1389" />
-      <location filename="../qt/qt_wallet.py" line="1361" />
-      <source>Successfully updated {number} Labels</source>
-      <translation>Aggiornato con successo {number} etichette  </translation>
+        <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>Tutti i File (*);;File JSONL (*.jsonl);;File JSON (*.json)</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1397" />
-      <source>Import Electrum Wallet labels</source>
-      <translation>Importa etichette del portafoglio Electrum</translation>
+        <source>History</source>
+        <translation>Cronologia</translation>
     </message>
     <message>
-      <location filename="../qt/qt_wallet.py" line="1399" />
-      <source>All Files (*);;JSON Files (*.json)</source>
-      <translation>Tutti i File (*);;File JSON (*.json)</translation>
+        <source>Successfully updated {number} Labels</source>
+        <translation>Aggiornato con successo {number} etichette  </translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>Importa etichette del portafoglio Electrum</translation>
+    </message>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>Tutti i File (*);;File JSON (*.json)</translation>
+    </message>
+    <message>
+        <source>Receive</source>
+        <translation>Ricevi</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Saldo</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valore</translation>
+    </message>
+    <message>
+        <source>No changes to apply.</source>
+        <translation>Nessuna modifica da applicare.</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>Proseguendo potrebbero cambiare tutti gli indirizzi del portafoglio. Vuoi procedere?  </translation>
+    </message>
+</context>
+<context>
     <name>QrToolButton</name>
     <message>
-      <location filename="../qt/export_data.py" line="890" />
-      <source>QR Code</source>
-      <translation>Codice QR  </translation>
+        <source>QR Code</source>
+        <translation>Codice QR  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ReceiveGroup</name>
     <message>
-      <location filename="../qt/qr_components/quick_receive.py" line="144" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ReceiveTest</name>
     <message>
-      <location filename="../qt/wizard.py" line="893" />
-      <source>Balance = {amount}</source>
-      <translation>Saldo = {amount}  </translation>
+        <source>Balance = {amount}</source>
+        <translation>Saldo = {amount}  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="902" />
-      <source>No wallet setup yet</source>
-      <translation>Nessuna configurazione del portafoglio ancora</translation>
+        <source>No wallet setup yet</source>
+        <translation>Nessuna configurazione del portafoglio ancora</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="978" />
-      <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
+        <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
                     To know if you control the funds, you have to test spending from the wallet. 
@@ -2324,2203 +1915,1742 @@ have transactions linking to other addresses already. Are you sure you want to c
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-      <translation>Ricevi un &lt;b&gt;piccolo&lt;/b&gt; importo (meno di {test_amount}) a un indirizzo di questo portafoglio.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt;                     Per sapere se controlli i fondi, devi testare la spesa dal portafoglio.                      &lt;br&gt;                     Quindi, prima di inviare una quantità sostanziale di Bitcoin al portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Non inviare grandi fondi al portafoglio, ancora. Per favore, completa prima tutti i test di invio!&lt;/b&gt;  </translation>
+        <translation>Ricevi un &lt;b&gt;piccolo&lt;/b&gt; importo (meno di {test_amount}) a un indirizzo di questo portafoglio.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt;                     Per sapere se controlli i fondi, devi testare la spesa dal portafoglio.                      &lt;br&gt;                     Quindi, prima di inviare una quantità sostanziale di Bitcoin al portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Non inviare grandi fondi al portafoglio, ancora. Per favore, completa prima tutti i test di invio!&lt;/b&gt;  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="995" />
-      <source>Next step</source>
-      <translation>Prossimo passo</translation>
+        <source>Next step</source>
+        <translation>Prossimo passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="996" />
-      <source>Check if received</source>
-      <translation>Controlla se ricevuto</translation>
+        <source>Check if received</source>
+        <translation>Controlla se ricevuto</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="997" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RecentlyOpenedWalletsGroup</name>
     <message>
-      <location filename="../qt/wallet_list.py" line="153" />
-      <source>Recently Opened Wallets</source>
-      <translation>Portafogli aperti di recente  </translation>
+        <source>Recently Opened Wallets</source>
+        <translation>Portafogli aperti di recente  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RecipientTabWidget</name>
     <message>
-      <location filename="../qt/recipients.py" line="274" />
-      <source>Wallet "{id}"</source>
-      <translation>Portafoglio "{id}"</translation>
+        <source>Wallet &quot;{id}&quot;</source>
+        <translation>Portafoglio &quot;{id}&quot;</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RecipientWidget</name>
     <message>
-      <location filename="../qt/recipients.py" line="190" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="191" />
-      <source>Label</source>
-      <translation>Etichetta</translation>
+        <source>Label</source>
+        <translation>Etichetta</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="192" />
-      <source>Amount</source>
-      <translation>Importo</translation>
+        <source>Amount</source>
+        <translation>Importo</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="194" />
-      <source>Enter label here</source>
-      <translation>Inserisci qui l'etichetta</translation>
+        <source>Enter label here</source>
+        <translation>Inserisci qui l&apos;etichetta</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="195" />
-      <source>Send max</source>
-      <translation>Invia il massimo</translation>
+        <source>Send max</source>
+        <translation>Invia il massimo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Recipients</name>
     <message>
-      <location filename="../qt/recipients.py" line="460" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="461" />
-      <source>Amount [{unit}]</source>
-      <translation>Importo [{unit}]  </translation>
+        <source>No rows recognized</source>
+        <translation>Nessuna riga riconosciuta  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="462" />
-      <source>Label</source>
-      <translation>Etichetta</translation>
+        <source>{address} is not a valid address!</source>
+        <translation>{address} non è un indirizzo valido!  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="476" />
-      <source>Export csv</source>
-      <translation>Esporta csv</translation>
+        <source>{amount} is not a valid integer!</source>
+        <translation>{amount} non è un intero valido!  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="478" />
-      <source>All Files (*);;Wallet Files (*.csv)</source>
-      <translation>Tutti i File (*);;File di Portafoglio (*.csv)  </translation>
+        <source>Recipients</source>
+        <translation>Destinatari</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="502" />
-      <location filename="../qt/recipients.py" line="481" />
-      <source>No file selected</source>
-      <translation>Nessun file selezionato  </translation>
+        <source>Add Recipient</source>
+        <translation>Aggiungi destinatario  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="497" />
-      <source>Open CSV</source>
-      <translation>Apri CSV  </translation>
+        <source>Import/Export</source>
+        <translation>Importa/Esporta  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="499" />
-      <source>All Files (*);;CSV (*.csv)</source>
-      <translation>Tutti i File (*);;CSV (*.csv)  </translation>
+        <source>Export CSV Template</source>
+        <translation>Esporta Modello CSV  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="512" />
-      <source>Please use the CSV template and include the header row.</source>
-      <translation>Si prega di utilizzare il modello CSV e includere la riga di intestazione.  </translation>
+        <source>Import CSV file</source>
+        <translation>Importa file CSV  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="517" />
-      <source>No rows recognized</source>
-      <translation>Nessuna riga riconosciuta  </translation>
+        <source>Export as CSV file</source>
+        <translation>Esporta come file CSV  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="526" />
-      <source>{address} is not a valid address!</source>
-      <translation>{address} non è un indirizzo valido!  </translation>
+        <source>Amount [{unit}]</source>
+        <translation>Importo [{unit}]  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="532" />
-      <source>{amount} is not a valid integer!</source>
-      <translation>{amount} non è un intero valido!  </translation>
+        <source>Label</source>
+        <translation>Etichetta</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="539" />
-      <source>Recipients</source>
-      <translation>Destinatari</translation>
+        <source>Export csv</source>
+        <translation>Esporta csv</translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="540" />
-      <source>Add Recipient</source>
-      <translation>Aggiungi destinatario  </translation>
+        <source>All Files (*);;Wallet Files (*.csv)</source>
+        <translation>Tutti i File (*);;File di Portafoglio (*.csv)  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="542" />
-      <source>Import/Export</source>
-      <translation>Importa/Esporta  </translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="544" />
-      <source>Export CSV Template</source>
-      <translation>Esporta Modello CSV  </translation>
+        <source>Open CSV</source>
+        <translation>Apri CSV  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="545" />
-      <source>Import CSV file</source>
-      <translation>Importa file CSV  </translation>
+        <source>All Files (*);;CSV (*.csv)</source>
+        <translation>Tutti i File (*);;CSV (*.csv)  </translation>
     </message>
     <message>
-      <location filename="../qt/recipients.py" line="547" />
-      <source>Export as CSV file</source>
-      <translation>Esporta come file CSV  </translation>
+        <source>Please use the CSV template and include the header row.</source>
+        <translation>Si prega di utilizzare il modello CSV e includere la riga di intestazione.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RegisterMultisig</name>
     <message>
-      <location filename="../qt/wizard.py" line="1191" />
-      <source>2. Import wallet information into Bitcoin Safe</source>
-      <translation>2. Importa le informazioni del portafoglio in Bitcoin Safe</translation>
+        <source>2. Import wallet information into Bitcoin Safe</source>
+        <translation>2. Importa le informazioni del portafoglio in Bitcoin Safe</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1193" />
-      <source>Skip step</source>
-      <translation>Salta il passo</translation>
+        <source>Skip step</source>
+        <translation>Salta il passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1195" />
-      <source>Next step</source>
-      <translation>Prossimo passo</translation>
+        <source>Next step</source>
+        <translation>Prossimo passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1196" />
-      <source>Next signer</source>
-      <translation>Prossimo firmatario  </translation>
+        <source>Next signer</source>
+        <translation>Prossimo firmatario  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1197" />
-      <source>Previous signer</source>
-      <translation>Firmatario precedente  </translation>
+        <source>Previous signer</source>
+        <translation>Firmatario precedente  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1198" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1201" />
-      <source>Yes, I registered the multisig on the {n} hardware signer</source>
-      <translation>Sì, ho registrato il multisig sul {n} firmatario hardware</translation>
+        <source>Yes, I registered the multisig on the {n} hardware signer</source>
+        <translation>Sì, ho registrato il multisig sul {n} firmatario hardware</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-      <location filename="../qt/register_multisig.py" line="55" />
-      <source>Register {wallet_name}</source>
-      <translation>Registra {wallet_name}</translation>
+        <source>Register {wallet_name}</source>
+        <translation>Registra {wallet_name}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>RelayDialog</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="67" />
-      <source>Enter custom Nostr Relays</source>
-      <translation>Inserisci relè Nostr personalizzati  </translation>
+        <source>Enter custom Nostr Relays</source>
+        <translation>Inserisci relè Nostr personalizzati  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SankeyBitcoin</name>
     <message>
-      <location filename="../qt/sankey_bitcoin.py" line="287" />
-      <source>Fee</source>
-      <translation>Commissione</translation>
+        <source>Fee</source>
+        <translation>Commissione</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SankeyWidget</name>
     <message>
-      <location filename="../qt/sankey_widget.py" line="413" />
-      <source>Export svg</source>
-      <translation>Esporta svg  </translation>
+        <source>Export svg</source>
+        <translation>Esporta svg  </translation>
     </message>
     <message>
-      <location filename="../qt/sankey_widget.py" line="413" />
-      <source>All Files (*);;Text Files (*.svg)</source>
-      <translation>Tutti i File (*);;File di Testo (*.svg)  </translation>
+        <source>All Files (*);;Text Files (*.svg)</source>
+        <translation>Tutti i File (*);;File di Testo (*.svg)  </translation>
     </message>
     <message>
-      <location filename="../qt/sankey_widget.py" line="416" />
-      <source>No file selected</source>
-      <translation>Nessun file selezionato  </translation>
+        <source>No file selected</source>
+        <translation>Nessun file selezionato  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ScreenshotsExportXpub</name>
     <message>
-      <location filename="../qt/tutorial_screenshots.py" line="170" />
-      <source>How-to export the wallet information from the hardware signer</source>
-      <translation>Come esportare le informazioni del portafoglio dal firmatario hardware  </translation>
+        <source>How-to export the wallet information from the hardware signer</source>
+        <translation>Come esportare le informazioni del portafoglio dal firmatario hardware  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ScreenshotsGenerateSeed</name>
     <message>
-      <location filename="../qt/tutorial_screenshots.py" line="141" />
-      <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-      <translation>Genera {number} parole di seme segreto su ogni firmatario hardware e scrivile sul foglio di recupero  </translation>
+        <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
+        <translation>Genera {number} parole di seme segreto su ogni firmatario hardware e scrivile sul foglio di recupero  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ScreenshotsRegisterMultisig</name>
     <message>
-      <location filename="../qt/tutorial_screenshots.py" line="219" />
-      <source>Import the multisig information in the hardware signer</source>
-      <translation>Importa le informazioni multisig nel firmatario hardware</translation>
+        <source>Import the multisig information in the hardware signer</source>
+        <translation>Importa le informazioni multisig nel firmatario hardware</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ScreenshotsViewSeed</name>
     <message>
-      <location filename="../qt/tutorial_screenshots.py" line="192" />
-      <source>Compare the {number} words on the backup paper to the hardware signer.
+        <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-      <translation>Confronta le {number} parole sul foglio di backup con il firmatario hardware. Se commetti un errore qui, i tuoi soldi sono persi!  </translation>
+        <translation>Confronta le {number} parole sul foglio di backup con il firmatario hardware. Se commetti un errore qui, i tuoi soldi sono persi!  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SearchWallets</name>
     <message>
-      <location filename="../qt/search_tree_view.py" line="411" />
-      <source>Addresses</source>
-      <translation>Indirizzi  </translation>
+        <source>Addresses</source>
+        <translation>Indirizzi  </translation>
     </message>
     <message>
-      <location filename="../qt/search_tree_view.py" line="435" />
-      <source>Transactions</source>
-      <translation>Transazioni  </translation>
+        <source>Transactions</source>
+        <translation>Transazioni  </translation>
     </message>
     <message>
-      <location filename="../qt/search_tree_view.py" line="459" />
-      <source>UTXOs</source>
-      <translation>UTXOs  </translation>
+        <source>UTXOs</source>
+        <translation>UTXOs  </translation>
     </message>
     <message>
-      <location filename="../qt/search_tree_view.py" line="460" />
-      <source>Spent Outputs</source>
-      <translation>Output Spesi  </translation>
+        <source>Spent Outputs</source>
+        <translation>Output Spesi  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SeedAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="153" />
-      <source>Missing Seed</source>
-      <translation>Seme mancante  </translation>
+        <source>Missing Seed</source>
+        <translation>Seme mancante  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="158" />
-      <source>Invalid seed</source>
-      <translation>Seme non valido  </translation>
+        <source>Invalid seed</source>
+        <translation>Seme non valido  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SendTest</name>
     <message>
-      <location filename="../qt/wizard.py" line="1432" />
-      <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-      <translation>Hai già fatto {n} transazioni in uscita. Vuoi saltare questo test di spesa?</translation>
+        <source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
+        <translation>Hai già fatto {n} transazioni in uscita. Vuoi saltare questo test di spesa?</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1435" />
-      <source>Skip spend test?</source>
-      <translation>Salta il test di spesa?</translation>
+        <source>Skip spend test?</source>
+        <translation>Salta il test di spesa?</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1490" />
-      <source>Complete the send test to ensure the hardware signer works!</source>
-      <translation>Completa il test di invio per assicurarti che il firmatario hardware funzioni!</translation>
+        <source>Complete the send test to ensure the hardware signer works!</source>
+        <translation>Completa il test di invio per assicurarti che il firmatario hardware funzioni!</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignMessage</name>
     <message>
-      <location filename="../qt/sign_message.py" line="79" />
-      <source>Enter message to be signed at {bip32_path}</source>
-      <translation>Inserisci il messaggio da firmare a {bip32_path}  </translation>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>Inserisci il messaggio da firmare a {bip32_path}  </translation>
     </message>
     <message>
-      <location filename="../qt/sign_message.py" line="82" />
-      <source>Sign message</source>
-      <translation>Firma il messaggio  </translation>
+        <source>Sign message</source>
+        <translation>Firma il messaggio  </translation>
     </message>
     <message>
-      <location filename="../qt/sign_message.py" line="104" />
-      <location filename="../qt/sign_message.py" line="86" />
-      <source>Sign</source>
-      <translation>Firma  </translation>
+        <source>Sign</source>
+        <translation>Firma  </translation>
     </message>
     <message>
-      <location filename="../qt/sign_message.py" line="142" />
-      <location filename="../qt/sign_message.py" line="124" />
-      <source>Signed Message</source>
-      <translation>Messaggio firmato  </translation>
+        <source>Signed Message</source>
+        <translation>Messaggio firmato  </translation>
     </message>
     <message>
-      <location filename="../qt/sign_message.py" line="133" />
-      <source>Message too short.</source>
-      <translation>Messaggio troppo corto.  </translation>
+        <source>Message too short.</source>
+        <translation>Messaggio troppo corto.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignatureImporterClipboard</name>
     <message>
-      <location filename="../../signer.py" line="317" />
-      <source>Import signed PSBT</source>
-      <translation>Importa PSBT firmato</translation>
+        <source>Import signed PSBT</source>
+        <translation>Importa PSBT firmato</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="319" />
-      <source>OK</source>
-      <translation>OK</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="320" />
-      <source>Please paste your PSBT in here, or drop a file</source>
-      <translation>Incolla qui il tuo PSBT, o rilascia un file</translation>
+        <source>Please paste your PSBT in here, or drop a file</source>
+        <translation>Incolla qui il tuo PSBT, o rilascia un file</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="321" />
-      <source>Paste your PSBT in here or drop a file</source>
-      <translation>Incolla qui il tuo PSBT o rilascia un file</translation>
+        <source>Paste your PSBT in here or drop a file</source>
+        <translation>Incolla qui il tuo PSBT o rilascia un file</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignatureImporterFile</name>
     <message>
-      <location filename="../../signer.py" line="278" />
-      <source>Import signed PSBT</source>
-      <translation>Importa PSBT firmato</translation>
+        <source>Import signed PSBT</source>
+        <translation>Importa PSBT firmato</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="280" />
-      <source>OK</source>
-      <translation>OK</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="281" />
-      <source>Please paste your PSBT in here, or drop a file</source>
-      <translation>Incolla qui il tuo PSBT, o rilascia un file</translation>
+        <source>Please paste your PSBT in here, or drop a file</source>
+        <translation>Incolla qui il tuo PSBT, o rilascia un file</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="282" />
-      <source>Paste your PSBT in here or drop a file</source>
-      <translation>Incolla qui il tuo PSBT o rilascia un file</translation>
+        <source>Paste your PSBT in here or drop a file</source>
+        <translation>Incolla qui il tuo PSBT o rilascia un file</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignatureImporterQR</name>
     <message>
-      <location filename="../../signer.py" line="233" />
-      <source>Scan QR code</source>
-      <translation>Scansiona codice QR</translation>
+        <source>Scan QR code</source>
+        <translation>Scansiona codice QR</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignatureImporterUSB</name>
     <message>
-      <location filename="../../signer.py" line="343" />
-      <source>USB Signing</source>
-      <translation>Firma USB</translation>
+        <source>USB Signing</source>
+        <translation>Firma USB</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="363" />
-      <source>Please do 'Wallet --&gt; Export --&gt; Export for ...' and register the multisignature wallet on the hardware signer.</source>
-      <translation>Si prega di fare 'Portafoglio --&gt; Esporta --&gt; Esporta per ...' e registrare il portafoglio multisignature sul firmatario hardware.</translation>
+        <source>Please do &apos;Wallet --&gt; Export --&gt; Export for ...&apos; and register the multisignature wallet on the hardware signer.</source>
+        <translation>Si prega di fare &apos;Portafoglio --&gt; Esporta --&gt; Esporta per ...&apos; e registrare il portafoglio multisignature sul firmatario hardware.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SignatureImporterWallet</name>
     <message>
-      <location filename="../../signer.py" line="196" />
-      <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-      <translation>Il txid del psbt firmato non corrisponde al txid originale. Interruzione</translation>
+        <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
+        <translation>Il txid del psbt firmato non corrisponde al txid originale. Interruzione</translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="212" />
-      <source>Sign with seed</source>
-      <translation>Firma con il seme  </translation>
+        <source>Sign with seed</source>
+        <translation>Firma con il seme  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StickerTheHardware</name>
     <message>
-      <location filename="../qt/wizard.py" line="503" />
-      <source>Put the following stickers on your hardware:</source>
-      <translation>Applica i seguenti adesivi sul tuo hardware:  </translation>
+        <source>Put the following stickers on your hardware:</source>
+        <translation>Applica i seguenti adesivi sul tuo hardware:  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="507" />
-      <source>"{sticker}" on {device_name}</source>
-      <translation>"{sticker}" su {device_name}  </translation>
+        <source>&quot;{sticker}&quot; on {device_name}</source>
+        <translation>&quot;{sticker}&quot; su {device_name}  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SyncChatToolButton</name>
     <message>
-      <location filename="../qt/export_data.py" line="369" />
-      <source>Please enable the sync tab first</source>
-      <translation>Si prega di abilitare prima la scheda di sincronizzazione</translation>
+        <source>Please enable the sync tab first</source>
+        <translation>Si prega di abilitare prima la scheda di sincronizzazione</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="421" />
-      <source>Share with trusted devices</source>
-      <translation>Condividi con dispositivi fidati</translation>
+        <source>Share with trusted devices</source>
+        <translation>Condividi con dispositivi fidati</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="424" />
-      <source>Share with all devices in {wallet_id}</source>
-      <translation>Condividi con tutti i dispositivi in {wallet_id}</translation>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>Condividi con tutti i dispositivi in {wallet_id}</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="426" />
-      <source>Share with single device</source>
-      <translation>Condividi con un singolo dispositivo</translation>
+        <source>Share with single device</source>
+        <translation>Condividi con un singolo dispositivo</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="457" />
-      <location filename="../qt/export_data.py" line="433" />
-      <source>Please enable syncing in the wallet {wallet_id} first</source>
-      <translation>Si prega di abilitare prima la sincronizzazione nel portafoglio {wallet_id}</translation>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>Si prega di abilitare prima la sincronizzazione nel portafoglio {wallet_id}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>SyncTab</name>
     <message>
-      <location filename="../qt/sync_tab.py" line="113" />
-      <source>Label backup and encrypted syncing to trusted devices</source>
-      <translation>Backup delle etichette e sincronizzazione crittografata ai dispositivi fidati  </translation>
+        <source>Label backup and encrypted syncing to trusted devices</source>
+        <translation>Backup delle etichette e sincronizzazione crittografata ai dispositivi fidati  </translation>
     </message>
     <message>
-      <location filename="../qt/sync_tab.py" line="117" />
-      <source>Open received Transactions and PSBTs</source>
-      <translation>Apri Transazioni e PSBTs ricevuti  </translation>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>Apri Transazioni e PSBTs ricevuti  </translation>
     </message>
     <message>
-      <location filename="../qt/sync_tab.py" line="131" />
-      <source>Please backup your sync key:
+        <source>Please backup your sync key:
 {nsec}
 
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-      <translation>Si prega di fare il backup della propria chiave di sincronizzazione: {nsec} Potrà ripristinare le sue etichette in un secondo momento con 'Importa Chiave di Sincronizzazione'.  </translation>
+You can restore your labels at a later time with &apos;Import Sync Key&apos;.</source>
+        <translation>Si prega di fare il backup della propria chiave di sincronizzazione: {nsec} Potrà ripristinare le sue etichette in un secondo momento con &apos;Importa Chiave di Sincronizzazione&apos;.  </translation>
     </message>
     <message>
-      <location filename="../qt/sync_tab.py" line="163" />
-      <source>Opening {name} from {author}</source>
-      <translation>Apertura di {name} da {author}</translation>
+        <source>Opening {name} from {author}</source>
+        <translation>Apertura di {name} da {author}</translation>
     </message>
     <message>
-      <location filename="../qt/sync_tab.py" line="171" />
-      <source>{author}: {description}</source>
-      <translation>{author}: {description}  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ToolGui</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="22" />
-      <source>USB Signer Tools</source>
-      <translation>Strumenti Firmatario USB  </translation>
+        <source>USB Signer Tools</source>
+        <translation>Strumenti Firmatario USB  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="43" />
-      <source>Unlock Devices</source>
-      <translation>Sblocca dispositivi  </translation>
+        <source>Address index</source>
+        <translation>Indice degli indirizzi  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="47" />
-      <source>Unlock</source>
-      <translation>Sblocca  </translation>
+        <source>Sign Message</source>
+        <translation>Firma messaggio  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="53" />
-      <source>Get xpubs</source>
-      <translation>Ottieni xpubs  </translation>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>Incolla il tuo descrittore di indirizzo, ad es. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="60" />
-      <source>XPUBs</source>
-      <translation>XPUBs  </translation>
+        <source>Display Address</source>
+        <translation>Mostra indirizzo  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="66" />
-      <source>Paste your PSBT in here</source>
-      <translation>Incolla qui il tuo PSBT  </translation>
+        <source>Wipe Device</source>
+        <translation>Cancella Dispositivo  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="69" />
-      <source>Sign PSBT</source>
-      <translation>Firma PSBT  </translation>
+        <source>Show Seed</source>
+        <translation>Mostra Seed  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="73" />
-      <source>PSBT</source>
-      <translation>PSBT</translation>
+        <source>Unlock Devices</source>
+        <translation>Sblocca dispositivi  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="79" />
-      <source>Paste your text to be signed</source>
-      <translation>Incolla qui il tuo testo da firmare  </translation>
+        <source>Unlock</source>
+        <translation>Sblocca  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="83" />
-      <source>Address index</source>
-      <translation>Indice degli indirizzi  </translation>
+        <source>Get xpubs</source>
+        <translation>Ottieni xpubs  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="90" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="86" />
-      <source>Sign Message</source>
-      <translation>Firma messaggio  </translation>
+        <source>XPUBs</source>
+        <translation>XPUBs  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="97" />
-      <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84'/0'/0']xpub/0/0)</source>
-      <translation>Incolla il tuo descrittore di indirizzo, ad es. wpkh([fingerprint/84'/0'/0']xpub/0/0)</translation>
+        <source>Paste your PSBT in here</source>
+        <translation>Incolla qui il tuo PSBT  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="105" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="101" />
-      <source>Display Address</source>
-      <translation>Mostra indirizzo  </translation>
+        <source>Sign PSBT</source>
+        <translation>Firma PSBT  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="115" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="111" />
-      <source>Wipe Device</source>
-      <translation>Cancella Dispositivo  </translation>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="125" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/tool_gui.py" line="121" />
-      <source>Show Seed</source>
-      <translation>Mostra Seed  </translation>
+        <source>Paste your text to be signed</source>
+        <translation>Incolla qui il tuo testo da firmare  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>TrustedDeviceItem</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="111" />
-      <source>Untrust device</source>
-      <translation>Dispositivo non fidato  </translation>
+        <source>Untrust device</source>
+        <translation>Dispositivo non fidato  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>TxExport</name>
     <message>
-      <location filename="../qt/tx_export.py" line="60" />
-      <source>Export Transaction</source>
-      <translation>Esporta transazione  </translation>
+        <source>Export Transaction</source>
+        <translation>Esporta transazione  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>TxSigningSteps</name>
     <message>
-      <location filename="../qt/tx_signing_steps.py" line="105" />
-      <source>Create and collect {n}. signature</source>
-      <translation>Crea e raccogli la {n}. firma  </translation>
+        <source>Create and collect {n}. signature</source>
+        <translation>Crea e raccogli la {n}. firma  </translation>
     </message>
     <message>
-      <location filename="../qt/tx_signing_steps.py" line="172" />
-      <source>Transaction signed with the private key belonging to {label}</source>
-      <translation>Transazione firmata con la chiave privata appartenente a {label}</translation>
+        <source>Transaction signed with the private key belonging to {label}</source>
+        <translation>Transazione firmata con la chiave privata appartenente a {label}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UI</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="171" />
-      <source>Your sync key is:
+        <source>Your sync key is:
 
 {sync_key}
 
- Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-      <translation>La tua chiave di sincronizzazione è: {sync_key} Salvatela, e quando cliccherai su 'importa chiave di sincronizzazione', dovrebbe ripristinare le tue etichette dai relay nostr.  </translation>
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>La tua chiave di sincronizzazione è: {sync_key} Salvatela, e quando cliccherai su &apos;importa chiave di sincronizzazione&apos;, dovrebbe ripristinare le tue etichette dai relay nostr.  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="175" />
-      <source>Sync key Export</source>
-      <translation>Esportazione chiave di sincronizzazione  </translation>
+        <source>Sync key Export</source>
+        <translation>Esportazione chiave di sincronizzazione  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="186" />
-      <source>Export sync key</source>
-      <translation>Esporta chiave di sincronizzazione  </translation>
+        <source>Export sync key</source>
+        <translation>Esporta chiave di sincronizzazione  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="188" />
-      <source>Import sync key</source>
-      <translation>Importa chiave di sincronizzazione  </translation>
+        <source>Import sync key</source>
+        <translation>Importa chiave di sincronizzazione  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="190" />
-      <source>Reset sync key</source>
-      <translation>Reimposta chiave di sincronizzazione  </translation>
+        <source>Reset sync key</source>
+        <translation>Reimposta chiave di sincronizzazione  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="192" />
-      <source>Set custom Relay list</source>
-      <translation>Imposta l'elenco dei Relay personalizzati  </translation>
+        <source>Set custom Relay list</source>
+        <translation>Imposta l&apos;elenco dei Relay personalizzati  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="209" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/ui.py" line="200" />
-      <source>My Device: {id}</source>
-      <translation>Il mio dispositivo: {id}  </translation>
+        <source>My Device: {id}</source>
+        <translation>Il mio dispositivo: {id}  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UITx_Creator</name>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="238" />
-      <source>Select a category that fits the recipient best</source>
-      <translation>Seleziona una categoria che si adatti meglio al destinatario</translation>
+        <source>Select a category that fits the recipient best</source>
+        <translation>Seleziona una categoria che si adatti meglio al destinatario</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="239" />
-      <source>Reduce future fees
-by merging address balances</source>
-      <translation>Riduci le future commissioni unendo i saldi degli indirizzi</translation>
+        <source>Add Inputs</source>
+        <translation>Aggiungi Input</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="241" />
-      <source>Send Category</source>
-      <translation>Categoria di Invio</translation>
+        <source>Load UTXOs</source>
+        <translation>Carica UTXO</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="243" />
-      <source>Advanced</source>
-      <translation>Avanzato</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="244" />
-      <source>Add foreign UTXOs</source>
-      <translation>Aggiungi UTXO esterni</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="245" />
-      <source>Create</source>
-      <translation>Crea  </translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="262" />
-      <source>This checkbox automatically checks 
-below {rate}</source>
-      <translation>Questa casella di controllo controlla automaticamente sotto {rate}</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="365" />
-      <source>Please select an input category on the left, that fits the transaction recipients.</source>
-      <translation>Si prega di selezionare una categoria di input sulla sinistra, che si adatti ai destinatari della transazione.</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="383" />
-      <source>Do you want to continue, even though both coin categories become linkable?</source>
-      <translation>Vuoi continuare, anche se entrambe le categorie di monete diventano collegabili?  </translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="494" />
-      <source>Add Inputs</source>
-      <translation>Aggiungi Input</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="495" />
-      <source>Load UTXOs</source>
-      <translation>Carica UTXO</translation>
-    </message>
-    <message>
-      <location filename="../qt/ui_tx_creator.py" line="496" />
-      <source>Please paste UTXO here in the format  txid:outpoint
+        <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-      <translation>Incolla qui l'UTXO nel formato txid:outpoint txid:outpoint</translation>
+        <translation>Incolla qui l&apos;UTXO nel formato txid:outpoint txid:outpoint</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="499" />
-      <source>Please paste UTXO here</source>
-      <translation>Incolla qui l'UTXO</translation>
+        <source>Please paste UTXO here</source>
+        <translation>Incolla qui l&apos;UTXO</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="683" />
-      <source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
-      <translation>Gli input {inputs} sono in conflitto con questi txid confermati {txids}.</translation>
+        <source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
+        <translation>Gli input {inputs} sono in conflitto con questi txid confermati {txids}.</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_creator.py" line="705" />
-      <source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
-      <translation>Le transazioni dipendenti non confermate {txids} verranno eliminate da questa nuova transazione che stai creando.</translation>
+        <source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
+        <translation>Le transazioni dipendenti non confermate {txids} verranno eliminate da questa nuova transazione che stai creando.</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Reduce future fees
+by merging address balances</source>
+        <translation>Riduci le future commissioni unendo i saldi degli indirizzi</translation>
+    </message>
+    <message>
+        <source>Send Category</source>
+        <translation>Categoria di Invio</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>Avanzato</translation>
+    </message>
+    <message>
+        <source>Add foreign UTXOs</source>
+        <translation>Aggiungi UTXO esterni</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Crea  </translation>
+    </message>
+    <message>
+        <source>This checkbox automatically checks 
+below {rate}</source>
+        <translation>Questa casella di controllo controlla automaticamente sotto {rate}</translation>
+    </message>
+    <message>
+        <source>Please select an input category on the left, that fits the transaction recipients.</source>
+        <translation>Si prega di selezionare una categoria di input sulla sinistra, che si adatti ai destinatari della transazione.</translation>
+    </message>
+    <message>
+        <source>Do you want to continue, even though both coin categories become linkable?</source>
+        <translation>Vuoi continuare, anche se entrambe le categorie di monete diventano collegabili?  </translation>
+    </message>
+</context>
+<context>
     <name>UITx_Viewer</name>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="339" />
-      <source>Inputs</source>
-      <translation>Input</translation>
+        <source>Inputs</source>
+        <translation>Input</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="342" />
-      <source>Recipients</source>
-      <translation>Destinatari</translation>
+        <source>Send</source>
+        <translation>Invia</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="985" />
-      <location filename="../qt/ui_tx_viewer.py" line="347" />
-      <source>Diagram</source>
-      <translation>Diagramma</translation>
+        <source>Label: </source>
+        <translation>Etichetta:  </translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="349" />
-      <source>Edit</source>
-      <translation>Modifica</translation>
+        <source>Save in wallet</source>
+        <translation>Salva nel portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="350" />
-      <source>Receive faster (CPFP)</source>
-      <translation>Ricevi più velocemente (CPFP)</translation>
+        <source>Transaction to be replaced could not be found in open wallets</source>
+        <translation>Impossibile trovare la transazione da sostituire nei portafogli aperti</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="352" />
-      <source>Edit with increased fee (RBF)</source>
-      <translation>Modifica con commissione aumentata (RBF)</translation>
+        <source>Invalid Signatures</source>
+        <translation>Firme non valide</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="354" />
-      <source>Increase fee (RBF)</source>
-      <translation>Aumenta commissione (RBF)</translation>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Trasmissione di {txid} non riuscita. Considera la trasmissione tramite {url}.</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="355" />
-      <source>Previous step</source>
-      <translation>Passo precedente</translation>
+        <source>Import file</source>
+        <translation>Importa file  </translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="356" />
-      <source>Next step</source>
-      <translation>Prossimo passo</translation>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>Il txid del psbt firmato non corrisponde al txid originale</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="357" />
-      <source>Send</source>
-      <translation>Invia</translation>
+        <source>Recipients</source>
+        <translation>Destinatari</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="359" />
-      <source>Label: </source>
-      <translation>Etichetta:  </translation>
+        <source>Diagram</source>
+        <translation>Diagramma</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="441" />
-      <source>Transaction to be replaced could not be found in open wallets</source>
-      <translation>Impossibile trovare la transazione da sostituire nei portafogli aperti</translation>
+        <source>Edit</source>
+        <translation>Modifica</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="511" />
-      <source>Invalid Signatures</source>
-      <translation>Firme non valide</translation>
+        <source>Receive faster (CPFP)</source>
+        <translation>Ricevi più velocemente (CPFP)</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="544" />
-      <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-      <translation>Trasmissione di {txid} non riuscita. Considera la trasmissione tramite {url}.</translation>
+        <source>Edit with increased fee (RBF)</source>
+        <translation>Modifica con commissione aumentata (RBF)</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="658" />
-      <source>Import file</source>
-      <translation>Importa file  </translation>
+        <source>Increase fee (RBF)</source>
+        <translation>Aumenta commissione (RBF)</translation>
     </message>
     <message>
-      <location filename="../qt/ui_tx_viewer.py" line="734" />
-      <source>The txid of the signed psbt doesnt match the original txid</source>
-      <translation>Il txid del psbt firmato non corrisponde al txid originale</translation>
+        <source>Previous step</source>
+        <translation>Passo precedente</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Next step</source>
+        <translation>Prossimo passo</translation>
+    </message>
+</context>
+<context>
     <name>USBDevice</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/device.py" line="340" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/device.py" line="324" />
-      <source>Do you want to restore an existing seed onto the device?</source>
-      <translation>Vuoi ripristinare un seme esistente sul dispositivo?  </translation>
+        <source>Do you want to restore an existing seed onto the device?</source>
+        <translation>Vuoi ripristinare un seme esistente sul dispositivo?  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>USBGui</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="82" />
-      <source>Unlock USB devices</source>
-      <translation>Sblocca dispositivi USB  </translation>
+        <source>Unlock USB devices</source>
+        <translation>Sblocca dispositivi USB  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="83" />
-      <source>Please unlock USB devices</source>
-      <translation>Si prega di sbloccare i dispositivi USB  </translation>
+        <source>Please unlock USB devices</source>
+        <translation>Si prega di sbloccare i dispositivi USB  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="270" />
-      <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-      <translation>La registrazione di portafogli multisig tramite USB non è supportata da {device_type}. Si prega di utilizzare schede sd o scansionare il Codice QR.  </translation>
+        <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
+        <translation>La registrazione di portafogli multisig tramite USB non è supportata da {device_type}. Si prega di utilizzare schede sd o scansionare il Codice QR.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>USBRegisterMultisigWidget</name>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="175" />
-      <source>Register Multisig wallet on hardware signer</source>
-      <translation>Registrare il portafoglio multisig sul firmatario hardware  </translation>
+        <source>Register Multisig wallet on hardware signer</source>
+        <translation>Registrare il portafoglio multisig sul firmatario hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="176" />
-      <source>Register Multisig</source>
-      <translation>Registra Multisig  </translation>
+        <source>Register Multisig</source>
+        <translation>Registra Multisig  </translation>
     </message>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="177" />
-      <source>Help</source>
-      <translation>Aiuto  </translation>
+        <source>Help</source>
+        <translation>Aiuto  </translation>
     </message>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="187" />
-      <source>Successfully registered multisig wallet on hardware signer</source>
-      <translation>Portafoglio multisig registrato con successo sul firmatario hardware  </translation>
+        <source>Successfully registered multisig wallet on hardware signer</source>
+        <translation>Portafoglio multisig registrato con successo sul firmatario hardware  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>USBValidateAddressWidget</name>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="108" />
-      <source>Validate address</source>
-      <translation>Valida indirizzo  </translation>
+        <source>Validate address</source>
+        <translation>Valida indirizzo  </translation>
     </message>
     <message>
-      <location filename="../qt/usb_register_multisig.py" line="109" />
-      <source>Validate receive address:</source>
-      <translation>Valida indirizzo di ricezione:  </translation>
+        <source>Validate receive address:</source>
+        <translation>Valida indirizzo di ricezione:  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UTXOList</name>
     <message>
-      <location filename="../qt/utxo_list.py" line="325" />
-      <source>Wallet</source>
-      <translation>Portafoglio</translation>
+        <source>Wallet</source>
+        <translation>Portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="326" />
-      <source>Outpoint</source>
-      <translation>Outpoint</translation>
+        <source>Outpoint</source>
+        <translation>Outpoint</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="327" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="328" />
-      <source>Category</source>
-      <translation>Categoria</translation>
+        <source>Category</source>
+        <translation>Categoria</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="329" />
-      <source>Label</source>
-      <translation>Etichetta</translation>
+        <source>Label</source>
+        <translation>Etichetta</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="330" />
-      <source>Amount</source>
-      <translation>Importo</translation>
+        <source>Amount</source>
+        <translation>Importo</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UntrustedDeviceItem</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="147" />
-      <source>Trust</source>
-      <translation>Fiducia  </translation>
+        <source>Trust</source>
+        <translation>Fiducia  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_nostr_chat/ui/device_manager.py" line="148" />
-      <source>Trust this device</source>
-      <translation>Fidati di questo dispositivo  </translation>
+        <source>Trust this device</source>
+        <translation>Fidati di questo dispositivo  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UpdateNotificationBar</name>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="116" />
-      <source>Check for Update</source>
-      <translation>Controlla Aggiornamenti</translation>
+        <source>Check for Update</source>
+        <translation>Controlla Aggiornamenti</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="129" />
-      <source>New version available {tag}</source>
-      <translation>Nuova versione disponibile {tag}</translation>
+        <source>New version available {tag}</source>
+        <translation>Nuova versione disponibile {tag}</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="141" />
-      <source>You have already the newest version.</source>
-      <translation>Hai già la versione più recente.</translation>
+        <source>You have already the newest version.</source>
+        <translation>Hai già la versione più recente.</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="144" />
-      <source>No update found</source>
-      <translation>Nessun aggiornamento trovato</translation>
+        <source>No update found</source>
+        <translation>Nessun aggiornamento trovato</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="150" />
-      <source>Could not verify the download. Please try again later.</source>
-      <translation>Non è stato possibile verificare il download. Riprova più tardi.</translation>
+        <source>Could not verify the download. Please try again later.</source>
+        <translation>Non è stato possibile verificare il download. Riprova più tardi.</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="162" />
-      <source>Signature doesn't match!!! Please try again.</source>
-      <translation>La firma non corrisponde!!! Riprova.</translation>
+        <source>Signature doesn&apos;t match!!! Please try again.</source>
+        <translation>La firma non corrisponde!!! Riprova.</translation>
     </message>
     <message>
-      <location filename="../qt/update_notification_bar.py" line="167" />
-      <source>Signature verified.</source>
-      <translation>Firma verificata.</translation>
+        <source>Signature verified.</source>
+        <translation>Firma verificata.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>UtxoListWithToolbar</name>
     <message>
-      <location filename="../qt/utxo_list.py" line="533" />
-      <source>{amount} selected ({number} UTXOs)</source>
-      <translation>{amount} selezionato ({number} UTXOs)  </translation>
+        <source>{amount} selected ({number} UTXOs)</source>
+        <translation>{amount} selezionato ({number} UTXOs)  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ValidateBackup</name>
     <message>
-      <location filename="../qt/wizard.py" line="645" />
-      <source>Yes, I am sure all {number} words are correct</source>
-      <translation>Sì, sono sicuro che tutte le {number} parole siano corrette</translation>
+        <source>Yes, I am sure all {number} words are correct</source>
+        <translation>Sì, sono sicuro che tutte le {number} parole siano corrette</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="647" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>WalletBalanceChart</name>
     <message>
-      <location filename="../qt/wallet_balance_chart.py" line="477" />
-      <source>Balance ({unit})</source>
-      <translation>Saldo ({unit})</translation>
+        <source>Balance ({unit})</source>
+        <translation>Saldo ({unit})</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>WalletIdDialog</name>
     <message>
-      <location filename="../qt/dialogs.py" line="250" />
-      <source>Choose wallet name</source>
-      <translation>Scegli il nome del portafoglio</translation>
+        <source>Choose wallet name</source>
+        <translation>Scegli il nome del portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="257" />
-      <source>Wallet name:</source>
-      <translation>Nome del portafoglio:</translation>
+        <source>Wallet name:</source>
+        <translation>Nome del portafoglio:</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="260" />
-      <source>Type wallet name</source>
-      <translation>Digita il nome del portafoglio</translation>
+        <source>Type wallet name</source>
+        <translation>Digita il nome del portafoglio</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="282" />
-      <location filename="../qt/dialogs.py" line="276" />
-      <source>Error</source>
-      <translation>Errore</translation>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="277" />
-      <source>The wallet {filename} exists already.</source>
-      <translation>Il portafoglio {filename} esiste già.  </translation>
+        <source>The wallet {filename} exists already.</source>
+        <translation>Il portafoglio {filename} esiste già.  </translation>
     </message>
     <message>
-      <location filename="../qt/dialogs.py" line="283" />
-      <source>Please choose a wallet name</source>
-      <translation>Si prega di scegliere un nome per il portafoglio  </translation>
+        <source>Please choose a wallet name</source>
+        <translation>Si prega di scegliere un nome per il portafoglio  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>WalletLabelAndCategoryEdit</name>
     <message>
-      <location filename="../qt/labeledit.py" line="334" />
-      <source>Enter label for recipient address</source>
-      <translation>Inserisci l'etichetta per l'indirizzo del destinatario</translation>
+        <source>Enter label for recipient address</source>
+        <translation>Inserisci l&apos;etichetta per l&apos;indirizzo del destinatario</translation>
     </message>
     <message>
-      <location filename="../qt/labeledit.py" line="336" />
-      <source>Enter label for transaction</source>
-      <translation>Inserisci etichetta per la transazione  </translation>
+        <source>Enter label for transaction</source>
+        <translation>Inserisci etichetta per la transazione  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Wizard</name>
     <message>
-      <location filename="../qt/wizard.py" line="1604" />
-      <source>You must have an initilized wallet first</source>
-      <translation>Devi avere prima un portafoglio inizializzato</translation>
+        <source>You must have an initilized wallet first</source>
+        <translation>Devi avere prima un portafoglio inizializzato</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1650" />
-      <source>All Send tests done successfully.</source>
-      <translation>Tutti i test di invio sono stati eseguiti con successo.  </translation>
+        <source>Generate Seed</source>
+        <translation>Genera Seme</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1653" />
-      <source>The test transaction 
-'{tx_text}'
+        <source>Import signer info</source>
+        <translation>Importa info firmatario</translation>
+    </message>
+    <message>
+        <source>Backup Seed</source>
+        <translation>Backup Seme</translation>
+    </message>
+    <message>
+        <source>Validate Backup</source>
+        <translation>Valida Backup</translation>
+    </message>
+    <message>
+        <source>Receive Test</source>
+        <translation>Test di Ricezione</translation>
+    </message>
+    <message>
+        <source>Put in secure locations</source>
+        <translation>Metti in luoghi sicuri</translation>
+    </message>
+    <message>
+        <source>Register multisig on signers</source>
+        <translation>Registra multisig sui firmatari</translation>
+    </message>
+    <message>
+        <source>Sync &amp; Chat</source>
+        <translation>Sincronizza &amp; Chatta  </translation>
+    </message>
+    <message>
+        <source>Send test {j}</source>
+        <translation>Test di invio {j}</translation>
+    </message>
+    <message>
+        <source>Send test</source>
+        <translation>Test di invio</translation>
+    </message>
+    <message>
+        <source>All Send tests done successfully.</source>
+        <translation>Tutti i test di invio sono stati eseguiti con successo.  </translation>
+    </message>
+    <message>
+        <source>The test transaction 
+&apos;{tx_text}&apos;
  was done successfully. Please proceed to do the send test: 
-'{next_text}'</source>
-      <translation>La transazione di test '{tx_text}' è stata eseguita con successo. Procedi ora con il test di invio: '{next_text}'  </translation>
+&apos;{next_text}&apos;</source>
+        <translation>La transazione di test &apos;{tx_text}&apos; è stata eseguita con successo. Procedi ora con il test di invio: &apos;{next_text}&apos;  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1746" />
-      <source> and </source>
-      <translation> e </translation>
+        <source> and </source>
+        <translation> e </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1752" />
-      <source>Send Test</source>
-      <translation>Test di Invio</translation>
+        <source>Send Test</source>
+        <translation>Test di Invio</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1755" />
-      <source>Sign with {label}</source>
-      <translation>Firma con {label}</translation>
+        <source>Sign with {label}</source>
+        <translation>Firma con {label}</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1765" />
-      <source>The wallet is not funded. Please fund the wallet.</source>
-      <translation>Il portafoglio non è finanziato. Si prega di finanziare il portafoglio.</translation>
+        <source>The wallet is not funded. Please fund the wallet.</source>
+        <translation>Il portafoglio non è finanziato. Si prega di finanziare il portafoglio.</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1833" />
-      <source>Buy hardware signers</source>
-      <translation>Acquista firmatari hardware  </translation>
+        <source>Buy hardware signers</source>
+        <translation>Acquista firmatari hardware  </translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="1834" />
-      <source>Label the hardware signers</source>
-      <translation>Etichetta i firmatari hardware  </translation>
+        <source>Label the hardware signers</source>
+        <translation>Etichetta i firmatari hardware  </translation>
     </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1835" />
-      <source>Generate Seed</source>
-      <translation>Genera Seme</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1836" />
-      <source>Import signer info</source>
-      <translation>Importa info firmatario</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1837" />
-      <source>Backup Seed</source>
-      <translation>Backup Seme</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1838" />
-      <source>Validate Backup</source>
-      <translation>Valida Backup</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1839" />
-      <source>Receive Test</source>
-      <translation>Test di Ricezione</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1840" />
-      <source>Put in secure locations</source>
-      <translation>Metti in luoghi sicuri</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1841" />
-      <source>Register multisig on signers</source>
-      <translation>Registra multisig sui firmatari</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1842" />
-      <source>Sync &amp; Chat</source>
-      <translation>Sincronizza &amp; Chatta  </translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1846" />
-      <source>Send test {j}</source>
-      <translation>Test di invio {j}</translation>
-    </message>
-    <message>
-      <location filename="../qt/wizard.py" line="1848" />
-      <source>Send test</source>
-      <translation>Test di invio</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>XpubAnalyzer</name>
     <message>
-      <location filename="../qt/analyzers.py" line="131" />
-      <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-      <translation>L'xpub è nel formato SLIP132. Conversione al formato standard.</translation>
+        <source>The xpub is in SLIP132 format. Converting to standard format.</source>
+        <translation>L&apos;xpub è nel formato SLIP132. Conversione al formato standard.</translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="132" />
-      <source>Converting format</source>
-      <translation>Conversione formato  </translation>
+        <source>Converting format</source>
+        <translation>Conversione formato  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="142" />
-      <source>Missing xPub</source>
-      <translation>Mancante xPub  </translation>
+        <source>Missing xPub</source>
+        <translation>Mancante xPub  </translation>
     </message>
     <message>
-      <location filename="../qt/analyzers.py" line="147" />
-      <source>Invalid xpub</source>
-      <translation>Xpub non valido  </translation>
+        <source>Invalid xpub</source>
+        <translation>Xpub non valido  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>address_list</name>
     <message>
-      <location filename="../qt/address_list.py" line="194" />
-      <source>All status</source>
-      <translation>Tutto lo stato</translation>
+        <source>All status</source>
+        <translation>Tutto lo stato</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="195" />
-      <source>Unused</source>
-      <translation>Inutilizzato</translation>
+        <source>Unused</source>
+        <translation>Inutilizzato</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="196" />
-      <source>Funded</source>
-      <translation>Finanziato</translation>
+        <source>Funded</source>
+        <translation>Finanziato</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="197" />
-      <source>Used</source>
-      <translation>Usato</translation>
+        <source>Used</source>
+        <translation>Usato</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="198" />
-      <source>Funded or Unused</source>
-      <translation>Finanziato o Inutilizzato</translation>
+        <source>Funded or Unused</source>
+        <translation>Finanziato o Inutilizzato</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="209" />
-      <source>All types</source>
-      <translation>Tutti i tipi</translation>
+        <source>All types</source>
+        <translation>Tutti i tipi</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="210" />
-      <source>Receiving</source>
-      <translation>Ricezione</translation>
+        <source>Receiving</source>
+        <translation>Ricezione</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="211" />
-      <source>Change</source>
-      <translation>Cambio</translation>
+        <source>Change</source>
+        <translation>Cambio</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>basetab</name>
     <message>
-      <location filename="../qt/wizard.py" line="294" />
-      <source>Next step</source>
-      <translation>Prossimo passo</translation>
+        <source>Next step</source>
+        <translation>Prossimo passo</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="295" />
-      <source>Previous Step</source>
-      <translation>Passo Precedente</translation>
+        <source>Previous Step</source>
+        <translation>Passo Precedente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>bitcoin_usb</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/address_types.py" line="200" />
-      <source>No HWI AddressType could be found for {name}</source>
-      <translation>Non è stato possibile trovare un tipo di indirizzo HWI per {name}  </translation>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>Non è stato possibile trovare un tipo di indirizzo HWI per {name}  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/address_types.py" line="242" />
-      <source>derivation_path {value} must start with a /</source>
-      <translation>il percorso di derivazione {value} deve iniziare con un /  </translation>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>Gli errori USB possono apparire a causa della mancanza di file udev. Vuoi installare ora i file udev?  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/address_types.py" line="353" />
-      <source>{value} is not a valid fingerprint</source>
-      <translation>{value} non è un'impronta valida  </translation>
+        <source>Install udev files</source>
+        <translation>Installa file udev  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/address_types.py" line="364" />
-      <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-      <translation>La parte di rete {network_str} dell'origine chiave {key_origin} deve essere indurita con una h  </translation>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>Si prega di riavviare il computer affinché le modifiche abbiano effetto.  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/address_types.py" line="377" />
-      <source>Unknown network/coin type {network_str} in {key_origin}</source>
-      <translation>Tipo di rete/moneta sconosciuto {network_str} in {key_origin}  </translation>
+        <source>Restart computer</source>
+        <translation>Riavvia il computer  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="98" />
-      <source>No USB devices found</source>
-      <translation>Nessun dispositivo USB trovato  </translation>
+        <source>Executing the script</source>
+        <translation>Esecuzione dello script  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="112" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="99" />
-      <source>USB Devices</source>
-      <translation>Dispositivi USB  </translation>
+        <source>No suitable terminal emulator found.</source>
+        <translation>Nessun emulatore di terminale adatto trovato.  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="111" />
-      <source>No device selected</source>
-      <translation>Nessun dispositivo selezionato  </translation>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>il percorso di derivazione {value} deve iniziare con un /  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="336" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="326" />
-      <source>Error</source>
-      <translation>Errore</translation>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} non è un&apos;impronta valida  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="348" />
-      <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-      <translation>Gli errori USB possono apparire a causa della mancanza di file udev. Vuoi installare ora i file udev?  </translation>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>La parte di rete {network_str} dell&apos;origine chiave {key_origin} deve essere indurita con una h  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="358" />
-      <source>Install udev files</source>
-      <translation>Installa file udev  </translation>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>Tipo di rete/moneta sconosciuto {network_str} in {key_origin}  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="370" />
-      <source>Please restart your computer for the changes to take effect.</source>
-      <translation>Si prega di riavviare il computer affinché le modifiche abbiano effetto.  </translation>
+        <source>No USB devices found</source>
+        <translation>Nessun dispositivo USB trovato  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/usb_gui.py" line="372" />
-      <source>Restart computer</source>
-      <translation>Riavvia il computer  </translation>
+        <source>USB Devices</source>
+        <translation>Dispositivi USB  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/udevwrapper.py" line="45" />
-      <source>Executing the script</source>
-      <translation>Esecuzione dello script  </translation>
+        <source>No device selected</source>
+        <translation>Nessun dispositivo selezionato  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/udevwrapper.py" line="68" />
-      <source>No suitable terminal emulator found.</source>
-      <translation>Nessun emulatore di terminale adatto trovato.  </translation>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>constant</name>
     <message>
-      <location filename="../qt/util.py" line="102" />
-      <source>Transaction (*.txn *.psbt);;All files (*)</source>
-      <translation>Transazione (*.txn *.psbt);;Tutti i file (*)</translation>
+        <source>Transaction (*.txn *.psbt);;All files (*)</source>
+        <translation>Transazione (*.txn *.psbt);;Tutti i file (*)</translation>
     </message>
     <message>
-      <location filename="../qt/util.py" line="103" />
-      <source>Partial Transaction (*.psbt)</source>
-      <translation>Transazione Parziale (*.psbt)</translation>
+        <source>Partial Transaction (*.psbt)</source>
+        <translation>Transazione Parziale (*.psbt)</translation>
     </message>
     <message>
-      <location filename="../qt/util.py" line="104" />
-      <source>Complete Transaction (*.txn)</source>
-      <translation>Transazione Completa (*.txn)</translation>
+        <source>Complete Transaction (*.txn)</source>
+        <translation>Transazione Completa (*.txn)</translation>
     </message>
     <message>
-      <location filename="../qt/util.py" line="107" />
-      <source>All files (*)</source>
-      <translation>Tutti i file (*)</translation>
+        <source>All files (*)</source>
+        <translation>Tutti i file (*)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>d</name>
     <message>
-      <location filename="../../wallet_util.py" line="66" />
-      <source>Signer {i}</source>
-      <translation>Firmatario {i}</translation>
+        <source>Signer {i}</source>
+        <translation>Firmatario {i}</translation>
     </message>
     <message>
-      <location filename="../../wallet_util.py" line="68" />
-      <source>Recovery Signer {i}</source>
-      <translation>Firmatario di Recupero {i}</translation>
+        <source>Open file</source>
+        <translation>Apri file</translation>
     </message>
     <message>
-      <location filename="../qt/address_edit.py" line="129" />
-      <source>View on block explorer</source>
-      <translation>Visualizza su block explorer</translation>
+        <source>Read QR code from camera</source>
+        <translation>Leggi il codice QR dalla camera</translation>
     </message>
     <message>
-      <location filename="../qt/util.py" line="821" />
-      <source>Text copied to Clipboard</source>
-      <translation>Testo copiato negli Appunti</translation>
+        <source>Connect to USB signer</source>
+        <translation>Connetti al firmatario USB</translation>
     </message>
     <message>
-      <location filename="../qt/util.py" line="823" />
-      <source>{} copied to Clipboard</source>
-      <translation>{} copiato negli Appunti</translation>
+        <source>Recovery</source>
+        <translation>Recupero  </translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="256" />
-      <source>Import from camera</source>
-      <translation>Importa dalla camera  </translation>
+        <source>Recovery Signer {i}</source>
+        <translation>Firmatario di Recupero {i}</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="287" />
-      <location filename="../qt/buttonedit.py" line="258" />
-      <source>Copy to clipboard</source>
-      <translation>Copia negli appunti</translation>
+        <source>View on block explorer</source>
+        <translation>Visualizza su block explorer</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="366" />
-      <location filename="../qt/buttonedit.py" line="260" />
-      <source>Create PDF</source>
-      <translation>Crea PDF</translation>
+        <source>Text copied to Clipboard</source>
+        <translation>Testo copiato negli Appunti</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="394" />
-      <location filename="../qt/buttonedit.py" line="262" />
-      <source>Create random mnemonic</source>
-      <translation>Crea mnemonico casuale</translation>
+        <source>{} copied to Clipboard</source>
+        <translation>{} copiato negli Appunti</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="432" />
-      <location filename="../qt/buttonedit.py" line="264" />
-      <source>Open file</source>
-      <translation>Apri file</translation>
+        <source>Import from camera</source>
+        <translation>Importa dalla camera  </translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="355" />
-      <source>Read QR code from camera</source>
-      <translation>Leggi il codice QR dalla camera</translation>
+        <source>Copy to clipboard</source>
+        <translation>Copia negli appunti</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="376" />
-      <source>Connect to USB signer</source>
-      <translation>Connetti al firmatario USB</translation>
+        <source>Create PDF</source>
+        <translation>Crea PDF</translation>
     </message>
     <message>
-      <location filename="../qt/keystore_ui.py" line="97" />
-      <source>Recovery</source>
-      <translation>Recupero  </translation>
+        <source>Create random mnemonic</source>
+        <translation>Crea mnemonico casuale</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>data</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/data.py" line="598" />
-      <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-      <translation>Le impronte digitali differiscono. Sono supportate solo impronte digitali uguali, assicurando che tutte le chiavi derivate appartengano allo stesso firmatario!  </translation>
+        <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
+        <translation>Le impronte digitali differiscono. Sono supportate solo impronte digitali uguali, assicurando che tutte le chiavi derivate appartengano allo stesso firmatario!  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>export</name>
     <message>
-      <location filename="../qt/address_list.py" line="181" />
-      <source>Export Labels</source>
-      <translation>Esporta Etichette</translation>
+        <source>Export Labels</source>
+        <translation>Esporta Etichette</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="182" />
-      <source>Export Labels for other wallets (BIP329)</source>
-      <translation>Esporta Etichette per altri portafogli (BIP329)  </translation>
+        <source>Export Labels for other wallets (BIP329)</source>
+        <translation>Esporta Etichette per altri portafogli (BIP329)  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>general</name>
     <message>
-      <location filename="../qt/export_data.py" line="100" />
-      <source>PSBT</source>
-      <translation>PSBT</translation>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
     </message>
     <message>
-      <location filename="../qt/export_data.py" line="102" />
-      <source>Transaction</source>
-      <translation>Transazione</translation>
+        <source>Transaction</source>
+        <translation>Transazione</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>help</name>
     <message>
-      <location filename="../qt/util.py" line="257" />
-      <location filename="../qt/util.py" line="240" />
-      <location filename="../qt/util.py" line="226" />
-      <source>Help</source>
-      <translation>Aiuto  </translation>
+        <source>Help</source>
+        <translation>Aiuto  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>hist_list</name>
     <message>
-      <location filename="../qt/hist_list.py" line="121" />
-      <source>All status</source>
-      <translation>Tutto lo stato</translation>
+        <source>All status</source>
+        <translation>Tutto lo stato</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="122" />
-      <source>Unused</source>
-      <translation>Inutilizzato</translation>
+        <source>Unused</source>
+        <translation>Inutilizzato</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="123" />
-      <source>Funded</source>
-      <translation>Finanziato</translation>
+        <source>Funded</source>
+        <translation>Finanziato</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="124" />
-      <source>Used</source>
-      <translation>Usato</translation>
+        <source>Used</source>
+        <translation>Usato</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="125" />
-      <source>Funded or Unused</source>
-      <translation>Finanziato o Inutilizzato</translation>
+        <source>Funded or Unused</source>
+        <translation>Finanziato o Inutilizzato</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="136" />
-      <source>All types</source>
-      <translation>Tutti i tipi</translation>
+        <source>All types</source>
+        <translation>Tutti i tipi</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="137" />
-      <source>Receiving</source>
-      <translation>Ricezione</translation>
+        <source>Receiving</source>
+        <translation>Ricezione</translation>
     </message>
     <message>
-      <location filename="../qt/hist_list.py" line="138" />
-      <source>Change</source>
-      <translation>Cambio</translation>
+        <source>Change</source>
+        <translation>Cambio</translation>
     </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="580" />
-      <source>Details</source>
-      <translation>Dettagli</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="585" />
-      <source>View on block explorer</source>
-      <translation>Visualizza su block explorer</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="607" />
-      <source>Copy as csv</source>
-      <translation>Copia come csv</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="616" />
-      <source>Save as file</source>
-      <translation>Salva come file  </translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="637" />
-      <source>Edit with higher fee (RBF)</source>
-      <translation>Modifica con commissione più alta (RBF)</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="641" />
-      <source>Try cancel transaction (RBF)</source>
-      <translation>Prova ad annullare la transazione (RBF)</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="646" />
-      <source>Increase fee (RBF)</source>
-      <translation>Aumenta commissione (RBF)</translation>
-    </message>
-    <message>
-      <location filename="../qt/hist_list.py" line="651" />
-      <source>Receive faster (CPFP)</source>
-      <translation>Ricevi più velocemente (CPFP)</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>import</name>
     <message>
-      <location filename="../qt/address_list.py" line="148" />
-      <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-      <translation>Si prega di andare alla scheda Sync e importare lì la propria chiave di sincronizzazione. Le etichette verranno quindi automaticamente ripristinate.  </translation>
+        <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
+        <translation>Si prega di andare alla scheda Sync e importare lì la propria chiave di sincronizzazione. Le etichette verranno quindi automaticamente ripristinate.  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>importer</name>
     <message>
-      <location filename="../../signer.py" line="264" />
-      <source>Import file</source>
-      <translation>Importa file  </translation>
+        <source>Import file</source>
+        <translation>Importa file  </translation>
     </message>
     <message>
-      <location filename="../../signer.py" line="303" />
-      <source>Import Signature</source>
-      <translation>Importa Firma</translation>
+        <source>Import Signature</source>
+        <translation>Importa Firma</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>menu</name>
     <message>
-      <location filename="../qt/address_list.py" line="156" />
-      <location filename="../qt/address_list.py" line="155" />
-      <source>Import Labels</source>
-      <translation>Importa Etichette</translation>
+        <source>Import Labels</source>
+        <translation>Importa Etichette</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="157" />
-      <source>Import Labels (BIP329 / Sparrow)</source>
-      <translation>Importa Etichette (BIP329 / Sparrow)</translation>
+        <source>Import Labels (BIP329 / Sparrow)</source>
+        <translation>Importa Etichette (BIP329 / Sparrow)</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="158" />
-      <source>Import Labels (Electrum Wallet)</source>
-      <translation>Importa Etichette (Portafoglio Electrum)</translation>
+        <source>Import Labels (Electrum Wallet)</source>
+        <translation>Importa Etichette (Portafoglio Electrum)</translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="160" />
-      <source>Restore labels from cloud using an existing sync key</source>
-      <translation>Ripristina etichette dalla nuvem utilizzando una chiave di sincronizzazione esistente  </translation>
+        <source>Restore labels from cloud using an existing sync key</source>
+        <translation>Ripristina etichette dalla nuvem utilizzando una chiave di sincronizzazione esistente  </translation>
     </message>
     <message>
-      <location filename="../qt/address_list.py" line="180" />
-      <source>Export Labels</source>
-      <translation>Esporta Etichette</translation>
+        <source>Export Labels</source>
+        <translation>Esporta Etichette</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>mytreeview</name>
     <message>
-      <location filename="../qt/my_treeview.py" line="1300" />
-      <source>Type to filter</source>
-      <translation>Digita per filtrare</translation>
+        <source>Type to filter</source>
+        <translation>Digita per filtrare</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="1301" />
-      <source>Export as CSV</source>
-      <translation>Esporta come CSV</translation>
+        <source>Export as CSV</source>
+        <translation>Esporta come CSV</translation>
     </message>
     <message>
-      <location filename="../qt/my_treeview.py" line="1302" />
-      <source>Visible columns</source>
-      <translation>Colonne visibili</translation>
+        <source>Visible columns</source>
+        <translation>Colonne visibili</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>net_conf</name>
     <message>
-      <location filename="../../network_config.py" line="240" />
-      <source>This is a private and fast way to connect to the bitcoin network.</source>
-      <translation>Questo è un modo privato e veloce per connettersi alla rete bitcoin.</translation>
+        <source>This is a private and fast way to connect to the bitcoin network.</source>
+        <translation>Questo è un modo privato e veloce per connettersi alla rete bitcoin.</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="300" />
-      <location filename="../../network_config.py" line="252" />
-      <source>The server can associate your IP address with the wallet addresses.
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>Puoi collegare il tuo nodo Bitcoin, come {link}.</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=regtest&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=testnet4&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
+        <translation>Esegui il tuo bitcoind con &quot;bitcoind -chain=signet&quot;  Questo tuttavia è un signet diverso da mutinynet.com.</translation>
+    </message>
+    <message>
+        <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-      <translation>Il server può associare il tuo indirizzo IP agli indirizzi del portafoglio. È meglio usare il proprio server, come {link}.</translation>
+        <translation>Il server può associare il tuo indirizzo IP agli indirizzi del portafoglio. È meglio usare il proprio server, come {link}.</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="259" />
-      <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-      <translation>Puoi impostare {electrum} con un server electrum su {server} e un esploratore di blocchi su {explorer}  </translation>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>Puoi impostare {electrum} con un server electrum su {server} e un esploratore di blocchi su {explorer}  </translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="269" />
-      <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-      <translation>Una buona opzione è {electrum_testnet} e come esploratore di blocchi {explorer_testnet}</translation>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>Una buona opzione è {electrum_testnet} e come esploratore di blocchi {explorer_testnet}</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="278" />
-      <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-      <translation>Una buona opzione è {electrum_testnet4} e come block explorer {explorer_testnet4}. C'è un {faucet} per ottenere monete di test gratuite.</translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>Una buona opzione è {electrum_testnet4} e come block explorer {explorer_testnet4}. C&apos;è un {faucet} per ottenere monete di test gratuite.</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="287" />
-      <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-      <translation>Signet sceglie {electrum} e un esploratore di blocchi su {mempool_url}. C'è un {faucet} per ottenere monete di test gratuite。</translation>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet sceglie {electrum} e un esploratore di blocchi su {mempool_url}. C&apos;è un {faucet} per ottenere monete di test gratuite。</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="307" />
-      <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-      <translation>Puoi configurare {setup} con un server esplora su {server} e un block explorer su {explorer}</translation>
+        <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
+        <translation>Puoi configurare {setup} con un server esplora su {server} e un block explorer su {explorer}</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="318" />
-      <source>There is a {faucet} for free test coins.</source>
-      <translation>C'è un {faucet} per ottenere monete di test gratuite.</translation>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>C&apos;è un {faucet} per ottenere monete di test gratuite.</translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="326" />
-      <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-      <translation>Un server (a volte funzionante) è {link} e un esploratore di blocchi su {explorer}. C'è un {faucet}. </translation>
+        <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
+        <translation>Un server (a volte funzionante) è {link} e un esploratore di blocchi su {explorer}. C&apos;è un {faucet}. </translation>
     </message>
-    <message>
-      <location filename="../../network_config.py" line="340" />
-      <source>You can connect your own Bitcoin node, such as {link}.</source>
-      <translation>Puoi collegare il tuo nodo Bitcoin, come {link}.</translation>
-    </message>
-    <message>
-      <location filename="../../network_config.py" line="344" />
-      <source>Run your bitcoind with "bitcoind -chain=regtest"</source>
-      <translation>Esegui il tuo bitcoind con "bitcoind -chain=regtest"</translation>
-    </message>
-    <message>
-      <location filename="../../network_config.py" line="345" />
-      <source>Run your bitcoind with "bitcoind -chain=test"</source>
-      <translation>Esegui il tuo bitcoind con "bitcoind -chain=test"</translation>
-    </message>
-    <message>
-      <location filename="../../network_config.py" line="346" />
-      <source>Run your bitcoind with "bitcoind -chain=testnet4"</source>
-      <translation>Esegui il tuo bitcoind con "bitcoind -chain=testnet4"</translation>
-    </message>
-    <message>
-      <location filename="../../network_config.py" line="347" />
-      <source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-      <translation>Esegui il tuo bitcoind con "bitcoind -chain=signet"  Questo tuttavia è un signet diverso da mutinynet.com.</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>network_config</name>
     <message>
-      <location filename="../../network_config.py" line="398" />
-      <source>{server_name} via the proxy {proxy}</source>
-      <translation>{server_name} tramite il proxy {proxy}  </translation>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>{server_name} tramite il proxy {proxy}  </translation>
     </message>
     <message>
-      <location filename="../../network_config.py" line="402" />
-      <source>{server_name}</source>
-      <translation>{server_name} </translation>
+        <source>{server_name}</source>
+        <translation>{server_name} </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>open_file</name>
     <message>
-      <location filename="../qt/buttonedit.py" line="407" />
-      <source>Open Transaction/PSBT</source>
-      <translation>Apri Transazione/PSBT</translation>
+        <source>Open Transaction/PSBT</source>
+        <translation>Apri Transazione/PSBT</translation>
     </message>
     <message>
-      <location filename="../qt/buttonedit.py" line="422" />
-      <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-      <translation>Tutti i File (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>Tutti i file (*);;PSBT (*.psbt);;Transazione (*.tx)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>pdf</name>
     <message>
-      <location filename="../../pdf_statement.py" line="160" />
-      <location filename="../../pdfrecovery.py" line="201" />
-      <location filename="../../pdfrecovery.py" line="66" />
-      <source>12 or 24</source>
-      <translation>12 o 24</translation>
+        <source>12 or 24</source>
+        <translation>12 o 24</translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="246" />
-      <source>1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+        <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
+        <translation>{keystore_label}: Impronta: {keystore_fingerprint}, Origine chiave: {keystore_key_origin}, {keystore_xpub}</translation>
+    </message>
+    <message>
+        <source>File not found!</source>
+        <translation>File non trovato!  </translation>
+    </message>
+    <message>
+        <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
+        <translation>{i}. Backup del seme di un Portafoglio Multi-Sig di {threshold} di {m}: &quot;{id}&quot;  </translation>
+    </message>
+    <message>
+        <source>Seed backup of {id}</source>
+        <translation>Backup del seme di {id}  </translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Totale </translation>
+    </message>
+    <message>
+        <source>Category</source>
+        <translation>Categoria</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Indirizzo</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Saldo</translation>
+    </message>
+    <message>
+        <source>Created at {date} with</source>
+        <translation>Creato il {date} con  </translation>
+    </message>
+    <message>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>Riscansionando questo portafoglio, scansionare almeno fino all&apos;indice di indirizzo {max_tip} per scoprire tutti gli indirizzi finanziati.  </translation>
+    </message>
+    <message>
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-      <translation>1. Attacca il 'Foglio di recupero' ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti questo foglio in un luogo sicuro, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere il firmatario hardware o a) insieme al backup di semi cartaceo, o b) in un altro luogo sicuro (se disponibile)  </translation>
+        <translation>1. Attacca il &apos;Foglio di recupero&apos; ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti questo foglio in un luogo sicuro, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere il firmatario hardware o a) insieme al backup di semi cartaceo, o b) in un altro luogo sicuro (se disponibile)  </translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="259" />
-      <source>1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>Chiave di backup per la sincronizzazione delle etichette: {label_sync_nsec}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>Estratto conto di {id}  </translation>
+    </message>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>Estratto conto di &quot;{id}&quot;  </translation>
+    </message>
+    <message>
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-      <translation>1. Attacca il 'Foglio di recupero' ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti ogni foglio in un luogo sicuro diverso, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere i firmatari hardware o a) insieme al backup di semi cartaceo corrispondente, o b) ciascuno in un altro luogo sicuro (se disponibile)</translation>
+        <translation>1. Attacca il &apos;Foglio di recupero&apos; ({number} parole) a questo foglio o duplica le parole 12/24 su questo foglio.&lt;br/&gt;                 2. Piegare questo foglio sulla linea sottostante &lt;br/&gt;                 3. Metti ogni foglio in un luogo sicuro diverso, dove solo tu hai accesso&lt;br/&gt;                 4. Puoi mettere i firmatari hardware o a) insieme al backup di semi cartaceo corrispondente, o b) ciascuno in un altro luogo sicuro (se disponibile)</translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="287" />
-      <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-      <translation>Parole segrete del seme per un firmatario hardware: Mai digitare su un computer. Mai fare una foto.  </translation>
+        <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
+        <translation>Parole segrete del seme per un firmatario hardware: Mai digitare su un computer. Mai fare una foto.  </translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="339" />
-      <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-      <translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Istruzioni per gli eredi:  </translation>
+        <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
+        <translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Istruzioni per gli eredi:  </translation>
     </message>
     <message>
-      <location filename="../../pdf_statement.py" line="263" />
-      <location filename="../../pdfrecovery.py" line="368" />
-      <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-      <translation>Il descrittore del portafoglio (Codice QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ti permette di creare un portafoglio solo visualizzazione per vedere il tuo saldo. Per spendere da esso hai bisogno di {threshold} Semi e del descrittore del portafoglio.  </translation>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
+        <translation>Il descrittore del portafoglio (Codice QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ti permette di creare un portafoglio solo visualizzazione per vedere il tuo saldo. Per spendere da esso hai bisogno di {threshold} Semi e del descrittore del portafoglio.  </translation>
     </message>
     <message>
-      <location filename="../../pdf_statement.py" line="272" />
-      <location filename="../../pdfrecovery.py" line="377" />
-      <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-      <translation>Il descrittore del portafoglio (codice QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ti permette di creare un portafoglio solo visualizzazione per vedere il tuo saldo. Per spenderci devi avere le {number} parole segrete (Seme).</translation>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
+        <translation>Il descrittore del portafoglio (codice QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ti permette di creare un portafoglio solo visualizzazione per vedere il tuo saldo. Per spenderci devi avere le {number} parole segrete (Seme).</translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="404" />
-      <source>Created with</source>
-      <translation>Creato con  </translation>
+        <source>Created with</source>
+        <translation>Creato con  </translation>
     </message>
     <message>
-      <location filename="../../pdfrecovery.py" line="430" />
-      <source>Please fold here!</source>
-      <translation>Si prega di piegare qui!</translation>
+        <source>Please fold here!</source>
+        <translation>Si prega di piegare qui!</translation>
     </message>
-    <message>
-      <location filename="../../pdfrecovery.py" line="439" />
-      <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-      <translation>{keystore_label}: Impronta: {keystore_fingerprint}, Origine chiave: {keystore_key_origin}, {keystore_xpub}</translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="356" />
-      <location filename="../../pdfrecovery.py" line="475" />
-      <source>File not found!</source>
-      <translation>File non trovato!  </translation>
-    </message>
-    <message>
-      <location filename="../../pdfrecovery.py" line="484" />
-      <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-      <translation>{i}. Backup del seme di un Portafoglio Multi-Sig di {threshold} di {m}: "{id}"  </translation>
-    </message>
-    <message>
-      <location filename="../../pdfrecovery.py" line="506" />
-      <source>Seed backup of {id}</source>
-      <translation>Backup del seme di {id}  </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="242" />
-      <source>Total</source>
-      <translation>Totale </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="245" />
-      <source>Category</source>
-      <translation>Categoria</translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="246" />
-      <source>Address</source>
-      <translation>Indirizzo</translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="247" />
-      <source>Balance</source>
-      <translation>Saldo</translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="297" />
-      <source>Created at {date} with</source>
-      <translation>Creato il {date} con  </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="314" />
-      <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-      <translation>Riscansionando questo portafoglio, scansionare almeno fino all'indice di indirizzo {max_tip} per scoprire tutti gli indirizzi finanziati.  </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="325" />
-      <source>Label syncronization backup key: {label_sync_nsec}</source>
-      <translation>Chiave di backup per la sincronizzazione delle etichette: {label_sync_nsec}  </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="386" />
-      <source>Balance Statement of {id}</source>
-      <translation>Estratto conto di {id}  </translation>
-    </message>
-    <message>
-      <location filename="../../pdf_statement.py" line="391" />
-      <source>Balance Statement of "{id}"</source>
-      <translation>Estratto conto di "{id}"  </translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>recipients</name>
     <message>
-      <location filename="../qt/address_edit.py" line="194" />
-      <source>Address Already Used</source>
-      <translation>Indirizzo Già Usato</translation>
+        <source>Address Already Used</source>
+        <translation>Indirizzo Già Usato</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>search_treeview</name>
     <message>
-      <location filename="../qt/search_tree_view.py" line="314" />
-      <source>Type to search...</source>
-      <translation>Digita per cercare...</translation>
+        <source>Type to search...</source>
+        <translation>Digita per cercare...</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>tageditor</name>
     <message>
-      <location filename="../qt/taglist/tag_editor.py" line="146" />
-      <source>Delete {name}</source>
-      <translation>Elimina {name}</translation>
+        <source>Delete {name}</source>
+        <translation>Elimina {name}</translation>
     </message>
     <message>
-      <location filename="../qt/taglist/tag_editor.py" line="149" />
-      <source>Add new {name}</source>
-      <translation>Aggiungi nuovo {name}</translation>
+        <source>Add new {name}</source>
+        <translation>Aggiungi nuovo {name}</translation>
     </message>
     <message>
-      <location filename="../qt/taglist/tag_editor.py" line="223" />
-      <source>This {name} exists already.</source>
-      <translation>Questo {name} esiste già.</translation>
+        <source>This {name} exists already.</source>
+        <translation>Questo {name} esiste già.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>tutorial</name>
     <message>
-      <location filename="../qt/wizard.py" line="304" />
-      <location filename="../qt/tutorial_screenshots.py" line="148" />
-      <source>Never share the {number} secret words with anyone!</source>
-      <translation>Non condividere mai le {number} parole segrete con nessuno!</translation>
+        <source>Never share the {number} secret words with anyone!</source>
+        <translation>Non condividere mai le {number} parole segrete con nessuno!</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="312" />
-      <location filename="../qt/tutorial_screenshots.py" line="152" />
-      <source>Never type them into any computer or cellphone!</source>
-      <translation>Non scriverle mai su nessun computer o cellulare!</translation>
+        <source>Never type them into any computer or cellphone!</source>
+        <translation>Non scriverle mai su nessun computer o cellulare!</translation>
     </message>
     <message>
-      <location filename="../qt/wizard.py" line="317" />
-      <location filename="../qt/tutorial_screenshots.py" line="154" />
-      <source>Never make a picture of them!</source>
-      <translation>Non fare mai una foto di esse!</translation>
+        <source>Never make a picture of them!</source>
+        <translation>Non fare mai una foto di esse!</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>tx</name>
     <message>
-      <location filename="../qt/tx_tools.py" line="69" />
-      <source>Cannot CPFP the transaction because no receiving output could be found</source>
-      <translation>Impossibile eseguire CPFP sulla transazione perché non è stato trovato alcun output di ricezione</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Impossibile eseguire CPFP sulla transazione perché non è stato trovato alcun output di ricezione</translation>
     </message>
     <message>
-      <location filename="../qt/tx_tools.py" line="103" />
-      <source>Speedup of {txid}</source>
-      <translation>Accelerazione di {txid}</translation>
+        <source>Speedup of {txid}</source>
+        <translation>Accelerazione di {txid}</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>usb</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/device.py" line="226" />
-      <source>Pair Bitbox02</source>
-      <translation>Accoppia Bitbox02  </translation>
+        <source>Pair Bitbox02</source>
+        <translation>Accoppia Bitbox02  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_usb/device.py" line="229" />
-      <source>Please compare and confirm the pairing code on your BitBox02:
+        <source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-      <translation>Si prega di confrontare e confermare il codice di accoppiamento sul proprio BitBox02: {code} </translation>
+        <translation>Si prega di confrontare e confermare il codice di accoppiamento sul proprio BitBox02: {code} </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>util</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="100" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="100" />
-      <source>Unknown</source>
-      <translation>Sconosciuto</translation>
+        <source>Unknown</source>
+        <translation>Sconosciuto</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="117" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="117" />
-      <source>{} seconds ago</source>
-      <translation>{} secondi fa</translation>
+        <source>about {} hours ago</source>
+        <translation>circa {} ore fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="119" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="119" />
-      <source>in {} seconds</source>
-      <translation>tra {} secondi</translation>
+        <source>in about {} hours</source>
+        <translation>tra circa {} ore</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="122" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="122" />
-      <source>less than a minute ago</source>
-      <translation>meno di un minuto fa</translation>
+        <source>about 1 day ago</source>
+        <translation>circa 1 giorno fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="124" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="124" />
-      <source>in less than a minute</source>
-      <translation>tra meno di un minuto</translation>
+        <source>in about 1 day</source>
+        <translation>tra circa 1 giorno</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="127" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="127" />
-      <source>about {} minutes ago</source>
-      <translation>circa {} minuti fa</translation>
+        <source>about {} days ago</source>
+        <translation>circa {} giorni fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="129" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="129" />
-      <source>in about {} minutes</source>
-      <translation>tra circa {} minuti</translation>
+        <source>in about {} days</source>
+        <translation>tra circa {} giorni</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="132" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="132" />
-      <source>about 1 hour ago</source>
-      <translation>circa 1 ora fa</translation>
+        <source>about 1 month ago</source>
+        <translation>circa 1 mese fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="134" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="134" />
-      <source>in about 1 hour</source>
-      <translation>tra circa 1 ora</translation>
+        <source>in about 1 month</source>
+        <translation>tra circa 1 mese</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="137" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="137" />
-      <source>about {} hours ago</source>
-      <translation>circa {} ore fa</translation>
+        <source>about {} months ago</source>
+        <translation>circa {} mesi fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="139" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="139" />
-      <source>in about {} hours</source>
-      <translation>tra circa {} ore</translation>
+        <source>in about {} months</source>
+        <translation>tra circa {} mesi</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="142" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="142" />
-      <source>about 1 day ago</source>
-      <translation>circa 1 giorno fa</translation>
+        <source>{} seconds ago</source>
+        <translation>{} secondi fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="144" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="144" />
-      <source>in about 1 day</source>
-      <translation>tra circa 1 giorno</translation>
+        <source>about 1 year ago</source>
+        <translation>circa 1 anno fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="147" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="147" />
-      <source>about {} days ago</source>
-      <translation>circa {} giorni fa</translation>
+        <source>in about 1 year</source>
+        <translation>tra circa 1 anno</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="149" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="149" />
-      <source>in about {} days</source>
-      <translation>tra circa {} giorni</translation>
+        <source>over {} years ago</source>
+        <translation>oltre {} anni fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="152" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="152" />
-      <source>about 1 month ago</source>
-      <translation>circa 1 mese fa</translation>
+        <source>in over {} years</source>
+        <translation>tra oltre {} anni</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="154" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="154" />
-      <source>in about 1 month</source>
-      <translation>tra circa 1 mese</translation>
+        <source>Balance: {amount}</source>
+        <translation>Saldo: {amount}</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="157" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="157" />
-      <source>about {} months ago</source>
-      <translation>circa {} mesi fa</translation>
+        <source>in {} seconds</source>
+        <translation>tra {} secondi</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="159" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="159" />
-      <source>in about {} months</source>
-      <translation>tra circa {} mesi</translation>
+        <source>less than a minute ago</source>
+        <translation>meno di un minuto fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="162" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="162" />
-      <source>about 1 year ago</source>
-      <translation>circa 1 anno fa</translation>
+        <source>in less than a minute</source>
+        <translation>tra meno di un minuto</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="164" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="164" />
-      <source>in about 1 year</source>
-      <translation>tra circa 1 anno</translation>
+        <source>about {} minutes ago</source>
+        <translation>circa {} minuti fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="167" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="167" />
-      <source>over {} years ago</source>
-      <translation>oltre {} anni fa</translation>
+        <source>in about {} minutes</source>
+        <translation>tra circa {} minuti</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/util.py" line="169" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/util.py" line="169" />
-      <source>in over {} years</source>
-      <translation>tra oltre {} anni</translation>
+        <source>about 1 hour ago</source>
+        <translation>circa 1 ora fa</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_tools/gui/qt/satoshis.py" line="181" />
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_safe_lib/gui/qt/satoshis.py" line="181" />
-      <source>Balance: {amount}</source>
-      <translation>Saldo: {amount}</translation>
+        <source>in about 1 hour</source>
+        <translation>tra circa 1 ora</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>utxo_list</name>
     <message>
-      <location filename="../qt/utxo_list.py" line="101" />
-      <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-      <translation>UTXO non confermato è speso dalla transazione {is_spent_by_txid}</translation>
+        <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
+        <translation>UTXO non confermato è speso dalla transazione {is_spent_by_txid}</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="105" />
-      <source>Unconfirmed UTXO</source>
-      <translation>UTXO non confermato</translation>
+        <source>Unconfirmed UTXO</source>
+        <translation>UTXO non confermato</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="254" />
-      <source>Open transaction</source>
-      <translation>Apri transazione</translation>
+        <source>Open transaction</source>
+        <translation>Apri transazione</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="261" />
-      <source>View on block explorer</source>
-      <translation>Visualizza su block explorer</translation>
+        <source>View on block explorer</source>
+        <translation>Visualizza su block explorer</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="280" />
-      <source>Open Address Details</source>
-      <translation>Apri Dettagli Indirizzo</translation>
+        <source>Open Address Details</source>
+        <translation>Apri Dettagli Indirizzo</translation>
     </message>
     <message>
-      <location filename="../qt/utxo_list.py" line="291" />
-      <source>Copy as csv</source>
-      <translation>Copia come csv</translation>
+        <source>Copy as csv</source>
+        <translation>Copia come csv</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>video</name>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="64" />
-      <source>Camera</source>
-      <translation>Camera  </translation>
+        <source>Camera</source>
+        <translation>Camera  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="90" />
-      <source>Camera:</source>
-      <translation>Camera:  </translation>
+        <source>Screen</source>
+        <translation>Schermo  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="96" />
-      <source>Settings</source>
-      <translation>Impostazioni  </translation>
+        <source>Enter RTSP URL</source>
+        <translation>Inserisci URL RTSP  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="104" />
-      <source>Enhance picture for detection</source>
-      <translation>Migliora immagine per rilevamento  </translation>
+        <source>RTSP URL:</source>
+        <translation>URL RTSP:  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="122" />
-      <source>Zoom:</source>
-      <translation>Zoom:  </translation>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="135" />
-      <source>Brightness (reduce for bright displays):</source>
-      <translation>Luminosità (riduci per display luminosi):  </translation>
+        <source>The camera could not be opened</source>
+        <translation>La telecamera non può essere aperta  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="142" />
-      <source>Postprocess</source>
-      <translation>Post-elaborazione  </translation>
+        <source>Camera:</source>
+        <translation>Camera:  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="151" />
-      <source>Show camera controls</source>
-      <translation>Mostra controlli della camera  </translation>
+        <source>Settings</source>
+        <translation>Impostazioni  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="156" />
-      <source>Add RTSP Camera</source>
-      <translation>Aggiungi Camera RTSP  </translation>
+        <source>Enhance picture for detection</source>
+        <translation>Migliora immagine per rilevamento  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="179" />
-      <source>Screen</source>
-      <translation>Schermo  </translation>
+        <source>Zoom:</source>
+        <translation>Zoom:  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="204" />
-      <source>Enter RTSP URL</source>
-      <translation>Inserisci URL RTSP  </translation>
+        <source>Brightness (reduce for bright displays):</source>
+        <translation>Luminosità (riduci per display luminosi):  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="204" />
-      <source>RTSP URL:</source>
-      <translation>URL RTSP:  </translation>
+        <source>Postprocess</source>
+        <translation>Post-elaborazione  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="228" />
-      <source>Error</source>
-      <translation>Errore</translation>
+        <source>Show camera controls</source>
+        <translation>Mostra controlli della camera  </translation>
     </message>
     <message>
-      <location filename="../../../.venv/lib/python3.12/site-packages/bitcoin_qr_tools/gui/video_widget.py" line="228" />
-      <source>The camera could not be opened</source>
-      <translation>La telecamera non può essere aperta  </translation>
+        <source>Add RTSP Camera</source>
+        <translation>Aggiungi Camera RTSP  </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>wallet</name>
     <message>
-      <location filename="../../wallet.py" line="98" />
-      <source>Confirmed</source>
-      <translation>Confermato</translation>
+        <source>Confirmed</source>
+        <translation>Confermato</translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="100" />
-      <source>Unconfirmed</source>
-      <translation>Non confermato</translation>
+        <source>Unconfirmed</source>
+        <translation>Non confermato</translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="102" />
-      <source>Unconfirmed parent</source>
-      <translation>Non confermato genitore</translation>
+        <source>Unconfirmed parent</source>
+        <translation>Non confermato genitore</translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="104" />
-      <source>Local</source>
-      <translation>Locale</translation>
+        <source>Local</source>
+        <translation>Locale</translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="1526" />
-      <source>Unknown</source>
-      <translation>Sconosciuto</translation>
+        <source>Unknown</source>
+        <translation>Sconosciuto</translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="1854" />
-      <source>Change of:</source>
-      <translation>Cambio di:  </translation>
+        <source>Change of:</source>
+        <translation>Cambio di:  </translation>
     </message>
     <message>
-      <location filename="../../wallet.py" line="1860" />
-      <source>Send to:</source>
-      <translation>Inviare a:</translation>
+        <source>Send to:</source>
+        <translation>Inviare a:</translation>
     </message>
-  </context>
+</context>
 </TS>

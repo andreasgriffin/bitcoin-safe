@@ -285,14 +285,13 @@
 <context>
     <name>BuyHardware</name>
     <message>
-        <source>Buy {number} hardware signers                         &#13;
-                        &lt;ul&gt;&#13;
-                            {different_hint} &#13;
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             &#13;
-                        &lt;/ul&gt;&#13;
+        <source>Buy {number} hardware signers                         
+                        &lt;ul&gt;
+                            {different_hint} 
+                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
+                        &lt;/ul&gt;
                            </source>
-        <translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href=&quot;{url}&quot;&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;&#13;
-                           </translation>
+        <translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href=&quot;{url}&quot;&gt;Mostra la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;</translation>
     </message>
 </context>
 <context>
@@ -421,9 +420,9 @@
         <translation>Enganxa o escaneja el teu descriptor, si estàs restaurant una cartera.</translation>
     </message>
     <message>
-        <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. &#13;
+        <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-        <translation>Aquest &quot;descriptor&quot; conté tota la informació per reconstruir la cartera.  Fes-ne una còpia de seguretat per poder recuperar els fons!</translation>
+        <translation>Aquest «descriptor» conté tota la informació per reconstruir la cartera.  Si us plau, fes una còpia de seguretat d&apos;aquest descriptor per poder recuperar els fons!</translation>
     </message>
     <message>
         <source>Wallet Properties</source>
@@ -509,7 +508,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>DragAndDropButtonEdit</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
 </context>
@@ -584,21 +583,21 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>S&apos;ha enviat {sent}!</translation>
     </message>
     <message>
-        <source>The transaction fee is:&#13;
+        <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-        <translation>La comissió de transacció és: {fee}, i s&apos;ha enviat {sent}!</translation>
+        <translation>La comissió de transacció és: {fee}, i s&apos;envien {sent}!</translation>
     </message>
     <message>
-        <source>The estimated transaction fee is:&#13;
-{fee}, which is {percent}% of&#13;
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>La comissió de transacció estimada és: {fee}, que és el {percent}% del valor enviat {sent}</translation>
+        <translation>La comissió de transacció estimada és: {fee}, que representa un {percent}% del valor enviat {sent}</translation>
     </message>
     <message>
-        <source>The transaction fee is:&#13;
-{fee}, which is {percent}% of&#13;
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>La comissió de transacció és: {fee}, que és el {percent}% del valor enviat {sent}</translation>
+        <translation>La comissió de transacció és: {fee}, que representa un {percent}% del valor enviat {sent}</translation>
     </message>
     <message>
         <source>High fee ratio: {ratio}%.</source>
@@ -719,12 +718,48 @@ the sending value {sent}</source>
         <translation>No difosa.</translation>
     </message>
     <message>
-        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-        <translation>No es pot trobar la cartera per a la transacció {txid}. Obre primer la cartera corresponent.</translation>
+        <source>Details</source>
+        <translation>Detalls</translation>
+    </message>
+    <message>
+        <source>View on block explorer</source>
+        <translation>Veure a l&apos;explorador de blocs</translation>
+    </message>
+    <message>
+        <source>Copy as csv</source>
+        <translation>Copia com a CSV</translation>
+    </message>
+    <message>
+        <source>Save as file</source>
+        <translation>Desa com a fitxer</translation>
+    </message>
+    <message>
+        <source>Edit with higher fee (RBF)</source>
+        <translation>Edita amb comissió més alta (RBF)</translation>
+    </message>
+    <message>
+        <source>Try cancel transaction (RBF)</source>
+        <translation>Intenta cancel·lar transacció (RBF)</translation>
+    </message>
+    <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Augmenta comissió (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Rep més ràpid (CPFP)</translation>
+    </message>
+    <message>
+        <source>Remove on restart</source>
+        <translation>Elimina en reiniciar</translation>
     </message>
     <message>
         <source>Status</source>
         <translation>Estat</translation>
+    </message>
+    <message>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>No es pot trobar la cartera per a la transacció {txid}. Obre primer la cartera corresponent.</translation>
     </message>
     <message>
         <source>Category</source>
@@ -879,7 +914,7 @@ the sending value {sent}</source>
         <translation>Seed</translation>
     </message>
     <message>
-        <source>Name of signing device: ......&#13;
+        <source>Name of signing device: ......
 Location of signing device: .....</source>
         <translation>Nom del dispositiu de signatura: ...... Ubicació del dispositiu de signatura: .....</translation>
     </message>
@@ -920,7 +955,7 @@ Location of signing device: .....</source>
         <translation>L&apos;origen xPub {key_origin} i l&apos;xPub van junts. Tria el parell d&apos;origen xPub correcte.</translation>
     </message>
     <message>
-        <source>{msg}&#13;
+        <source>{msg}
 Do you want to proceed anyway?</source>
         <translation>{msg} Vols continuar igualment?</translation>
     </message>
@@ -1182,7 +1217,7 @@ Do you want to proceed anyway?</source>
         <translation>Obre Transacció/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
     <message>
@@ -1418,10 +1453,10 @@ Do you want to proceed anyway?</source>
         <translation>Automàtic</translation>
     </message>
     <message>
-        <source>Responses:&#13;
-    {name}: {status}&#13;
+        <source>Responses:
+    {name}: {status}
     Mempool Instance: {server}</source>
-        <translation>Respostes:     {name}: {status}     Instància Mempool: {server}</translation>
+        <translation>Respostes:     {name}: {status}     Instància de Mempool: {server}</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1440,9 +1475,9 @@ Do you want to proceed anyway?</source>
         <translation>Prova &apos;{scheme}&apos; al principi de l&apos;URL de la mempool</translation>
     </message>
     <message>
-        <source>Error in server connection.&#13;
-{responses}&#13;
-&#13;
+        <source>Error in server connection.
+{responses}
+
  Do you want to proceed anyway?</source>
         <translation>Error en la connexió amb el servidor. {responses}   Vols continuar igualment?</translation>
     </message>
@@ -1721,22 +1756,22 @@ Do you want to proceed anyway?</source>
         <translation>Cartera desada</translation>
     </message>
     <message>
-        <source>The transactions &#13;
-{txs}&#13;
+        <source>The transactions 
+{txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
-        <translation>Les transaccions  {txs}  a la cartera &apos;{wallet}&apos; s&apos;han eliminat de l&apos;historial!!!</translation>
+        <translation>Les transaccions  {txs}  de la cartera &apos;{wallet}&apos; s&apos;han eliminat de l&apos;historial!!!</translation>
     </message>
     <message>
         <source>Do you want to save a copy of these transactions?</source>
         <translation>Vols desar una còpia d&apos;aquestes transaccions?</translation>
     </message>
     <message>
-        <source>New transaction in wallet &apos;{wallet}&apos;:&#13;
+        <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
         <translation>Nova transacció a la cartera &apos;{wallet}&apos;: {txs}</translation>
     </message>
     <message>
-        <source>{number} new transactions in wallet &apos;{wallet}&apos;:&#13;
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
         <translation>{number} noves transaccions a la cartera &apos;{wallet}&apos;: {txs}</translation>
     </message>
@@ -1749,9 +1784,9 @@ Do you want to proceed anyway?</source>
         <translation>Tria un nom nou o un nom existent per fusionar:</translation>
     </message>
     <message>
-        <source>The addresses {used_addresses}&#13;
+        <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-        <translation>Les adreces {used_addresses} ja tenen transaccions que enllacen a altres adreces. Segur que vols canviar la categoria?</translation>
+        <translation>Les adreces {used_addresses} ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar la categoria?</translation>
     </message>
     <message>
         <source>Syncing with {server}</source>
@@ -1867,18 +1902,17 @@ have transactions linking to other addresses already. Are you sure you want to c
         <translation>Encara no s&apos;ha configurat cap cartera</translation>
     </message>
     <message>
-        <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&#13;
-                    &lt;br&gt;&lt;br&gt;&#13;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;&#13;
-                    To know if you control the funds, you have to test spending from the wallet. &#13;
-                    &lt;br&gt;&#13;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     &#13;
-                    &lt;br&gt;&#13;
-                    &lt;br&gt;&#13;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   &#13;
+        <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
+                    &lt;br&gt;&lt;br&gt;
+                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                    To know if you control the funds, you have to test spending from the wallet. 
+                    &lt;br&gt;
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    &lt;br&gt;
+                    &lt;br&gt;
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d&apos;aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar a gastar des de la cartera.                      &lt;br&gt;                     Així que abans d&apos;enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d&apos;enviament!&lt;/b&gt;   &#13;
-                    </translation>
+        <translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d&apos;aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar de gastar des de la cartera.                      &lt;br&gt;                     Així que abans d&apos;enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d&apos;enviament!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1974,7 +2008,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Amount [{unit}]</source>
-        <translation>Quantitat \\[{unit}]</translation>
+        <translation>Quantitat \\\\[{unit}]</translation>
     </message>
     <message>
         <source>Label</source>
@@ -2096,9 +2130,9 @@ have transactions linking to other addresses already. Are you sure you want to c
 <context>
     <name>ScreenshotsViewSeed</name>
     <message>
-        <source>Compare the {number} words on the backup paper to the hardware signer.&#13;
+        <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-        <translation>Compara les {number} paraules del paper de còpia de seguretat amb el signador de maquinari. Si t&apos;equivoques aquí, pots perdre els diners!</translation>
+        <translation>Compara les {number} paraules del paper de còpia de seguretat amb el signador de maquinari. Si t&apos;equivoques aquí, perdràs els teus diners!</translation>
     </message>
 </context>
 <context>
@@ -2150,7 +2184,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignMessage</name>
     <message>
         <source>Enter message to be signed at {bip32_path}</source>
-        <translation>Introdueix el missatge a signar a {bip32\\_path}</translation>
+        <translation>Introdueix el missatge a signar a {bip32\\\\_path}</translation>
     </message>
     <message>
         <source>Sign message</source>
@@ -2259,7 +2293,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Share with all devices in {wallet_id}</source>
-        <translation>Comparteix amb tots els dispositius a {wallet\\_id}</translation>
+        <translation>Comparteix amb tots els dispositius a {wallet\\\\_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -2267,7 +2301,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Habilita primer la sincronització a la cartera {wallet\\_id}</translation>
+        <translation>Habilita primer la sincronització a la cartera {wallet\\\\_id}</translation>
     </message>
 </context>
 <context>
@@ -2281,11 +2315,11 @@ If you make a mistake here, your money is lost!</source>
         <translation>Obre transaccions i PSBTs rebuts</translation>
     </message>
     <message>
-        <source>Please backup your sync key:&#13;
-{nsec}&#13;
-&#13;
+        <source>Please backup your sync key:
+{nsec}
+
 You can restore your labels at a later time with &apos;Import Sync Key&apos;.</source>
-        <translation>Fes una còpia de seguretat de la teva clau de sincronització: {nsec}  Podràs restaurar les teves etiquetes més tard amb &apos;Importa clau de sincronització&apos;.</translation>
+        <translation>Si us plau, fes una còpia de seguretat de la teva clau de sincronització: {nsec}  Podràs restaurar les teves etiquetes més endavant amb «Importa clau de sincronització».</translation>
     </message>
     <message>
         <source>Opening {name} from {author}</source>
@@ -2312,7 +2346,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
-        <translation>Enganxa el teu descriptor d&apos;adreça, p. ex. wpkh(\\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
+        <translation>Enganxa el teu descriptor d&apos;adreça, p. ex. wpkh(\\\\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -2387,12 +2421,12 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
 <context>
     <name>UI</name>
     <message>
-        <source>Your sync key is:&#13;
-&#13;
-{sync_key}&#13;
-&#13;
+        <source>Your sync key is:
+
+{sync_key}
+
  Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
-        <translation>La teva clau de sincronització és:  {sync\\_key}   Desa-la, i quan facis clic a &apos;importa clau de sincronització&apos;, s&apos;haurien de restaurar les teves etiquetes des dels relays Nostr.</translation>
+        <translation>La teva clau de sincronització és:  {sync_key}   Desa-la, i quan facis clic a «importa clau de sincronització», s&apos;haurien de restaurar les teves etiquetes des dels relays nostr.</translation>
     </message>
     <message>
         <source>Sync key Export</source>
@@ -2434,9 +2468,9 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Carrega UTXOs</translation>
     </message>
     <message>
-        <source>Please paste UTXO here in the format  txid:outpoint&#13;
+        <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-        <translation>Enganxa aquí els UTXO en el format  txid\\:outpoint txid\\:outpoint</translation>
+        <translation>Si us plau, enganxa aquí l&apos;UTXO en el format  txid:outpoint txid:outpoint</translation>
     </message>
     <message>
         <source>Please paste UTXO here</source>
@@ -2451,9 +2485,9 @@ txid:outpoint</source>
         <translation>Les transaccions dependents sense confirmar {txids} seran eliminades per aquesta nova transacció que estàs creant.</translation>
     </message>
     <message>
-        <source>Reduce future fees&#13;
+        <source>Reduce future fees
 by merging address balances</source>
-        <translation>Redueix comissions futures fusionant saldos d&apos;adreces</translation>
+        <translation>Redueix les comissions futures fusionant els saldos d&apos;adreces</translation>
     </message>
     <message>
         <source>Send Category</source>
@@ -2472,7 +2506,7 @@ by merging address balances</source>
         <translation>Crea</translation>
     </message>
     <message>
-        <source>This checkbox automatically checks &#13;
+        <source>This checkbox automatically checks 
 below {rate}</source>
         <translation>Aquesta casella es marca automàticament per sota de {rate}</translation>
     </message>
@@ -2498,6 +2532,10 @@ below {rate}</source>
     <message>
         <source>Label: </source>
         <translation>Etiqueta: </translation>
+    </message>
+    <message>
+        <source>Save in wallet</source>
+        <translation>Desa a la cartera</translation>
     </message>
     <message>
         <source>Transaction to be replaced could not be found in open wallets</source>
@@ -2571,7 +2609,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-        <translation>El registre de carteres multisignatura via USB no és compatible amb {device\\_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
+        <translation>El registre de carteres multisignatura via USB no és compatible amb {device\\\\_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
     </message>
 </context>
 <context>
@@ -2787,11 +2825,11 @@ below {rate}</source>
         <translation>Totes les proves d&apos;enviament s&apos;han realitzat amb èxit.</translation>
     </message>
     <message>
-        <source>The test transaction &#13;
-&apos;{tx_text}&apos;&#13;
- was done successfully. Please proceed to do the send test: &#13;
+        <source>The test transaction 
+&apos;{tx_text}&apos;
+ was done successfully. Please proceed to do the send test: 
 &apos;{next_text}&apos;</source>
-        <translation>La transacció de prova  &apos;{tx\\_text}&apos;  s&apos;ha realitzat correctament. Si us plau, procedeix a fer la prova d&apos;enviament:  &apos;{next\\_text}&apos;</translation>
+        <translation>La transacció de prova  &apos;{tx_text}&apos;  s&apos;ha realitzat amb èxit. Si us plau, continua amb la prova d&apos;enviament:  &apos;{next_text}&apos;</translation>
     </message>
     <message>
         <source> and </source>
@@ -2915,7 +2953,7 @@ below {rate}</source>
     </message>
     <message>
         <source>derivation_path {value} must start with a /</source>
-        <translation>derivation\\_path {value} ha de començar amb /</translation>
+        <translation>derivation\\\\_path {value} ha de començar amb /</translation>
     </message>
     <message>
         <source>{value} is not a valid fingerprint</source>
@@ -2923,11 +2961,11 @@ below {rate}</source>
     </message>
     <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>La part de xarxa {network\\_str} de l&apos;origen de clau {key\\_origin} ha d&apos;estar protegida amb una h</translation>
+        <translation>La part de xarxa {network\\\\_str} de l&apos;origen de clau {key\\\\_origin} ha d&apos;estar protegida amb una h</translation>
     </message>
     <message>
         <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>Xarxa/tipus de moneda desconegut {network\\_str} a {key\\_origin}</translation>
+        <translation>Xarxa/tipus de moneda desconegut {network\\\\_str} a {key\\\\_origin}</translation>
     </message>
     <message>
         <source>No USB devices found</source>
@@ -3063,34 +3101,6 @@ below {rate}</source>
         <translation>Tots els estats</translation>
     </message>
     <message>
-        <source>View on block explorer</source>
-        <translation>Veure a l&apos;explorador de blocs</translation>
-    </message>
-    <message>
-        <source>Copy as csv</source>
-        <translation>Copia com a CSV</translation>
-    </message>
-    <message>
-        <source>Save as file</source>
-        <translation>Desa com a fitxer</translation>
-    </message>
-    <message>
-        <source>Edit with higher fee (RBF)</source>
-        <translation>Edita amb comissió més alta (RBF)</translation>
-    </message>
-    <message>
-        <source>Try cancel transaction (RBF)</source>
-        <translation>Intenta cancel·lar transacció (RBF)</translation>
-    </message>
-    <message>
-        <source>Increase fee (RBF)</source>
-        <translation>Augmenta comissió (RBF)</translation>
-    </message>
-    <message>
-        <source>Receive faster (CPFP)</source>
-        <translation>Rep més ràpid (CPFP)</translation>
-    </message>
-    <message>
         <source>Unused</source>
         <translation>Sense usar</translation>
     </message>
@@ -3117,10 +3127,6 @@ below {rate}</source>
     <message>
         <source>Change</source>
         <translation>Canvi</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation>Detalls</translation>
     </message>
 </context>
 <context>
@@ -3206,9 +3212,9 @@ below {rate}</source>
         <translation>Executa bitcoind amb &quot;bitcoind -chain=signet&quot;  Aquest però és un signet diferent de mutinynet.com.</translation>
     </message>
     <message>
-        <source>The server can associate your IP address with the wallet addresses.&#13;
+        <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-        <translation>El servidor pot associar la teva IP amb les adreces de la cartera. És millor utilitzar el teu propi servidor, com {link}.</translation>
+        <translation>El servidor pot associar la teva adreça IP amb les adreces de la cartera. És millor utilitzar el teu propi servidor, com ara {link}.</translation>
     </message>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
@@ -3216,15 +3222,15 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-        <translation>Una bona opció és  {electrum\\_testnet} i com a explorador de blocs {explorer\\_testnet}</translation>
+        <translation>Una bona opció és  {electrum\\\\_testnet} i com a explorador de blocs {explorer\\\\_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-        <translation>Una bona opció és  {electrum\\_testnet4} i com a explorador de blocs {explorer\\_testnet4}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
+        <translation>Una bona opció és  {electrum\\\\_testnet4} i com a explorador de blocs {explorer\\\\_testnet4}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-        <translation>A Signet tria {electrum} i un explorador de blocs a {mempool\\_url}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
+        <translation>A Signet tria {electrum} i un explorador de blocs a {mempool\\\\_url}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
@@ -3257,7 +3263,7 @@ It is best to use your own server, such as {link}.</source>
         <translation>Obre Transacció/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
         <translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
     </message>
 </context>
@@ -3269,7 +3275,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation>{keystore\\_label}: Empremta digital: {keystore\\_fingerprint}, Origen de clau: {keystore\\_key\\_origin}, {keystore\\_xpub}</translation>
+        <translation>{keystore\\\\_label}: Empremta digital: {keystore\\\\_fingerprint}, Origen de clau: {keystore\\\\_key\\\\_origin}, {keystore\\\\_xpub}</translation>
     </message>
     <message>
         <source>File not found!</source>
@@ -3305,20 +3311,19 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation>En tornar a escanejar aquesta cartera, escaneja fins a l&apos;índex d&apos;adreça {max\\_tip} com a mínim per descobrir totes les adreces finançades.</translation>
+        <translation>En tornar a escanejar aquesta cartera, escaneja fins a l&apos;índex d&apos;adreça {max\\\\_tip} com a mínim per descobrir totes les adreces finançades.</translation>
     </message>
     <message>
-        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;&#13;
-                2. Fold this  paper at the line below &lt;br/&gt;&#13;
-                3. Put this paper in a secure location, where only you have access&lt;br/&gt;&#13;
-                4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   &#13;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+                2. Fold this  paper at the line below &lt;br/&gt;
+                3. Put this paper in a secure location, where only you have access&lt;br/&gt;
+                4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Adjunta el &apos;Full de recuperació&apos; ({number} paraules) a aquest paper o copia les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Doblega aquest paper per la línia inferior &lt;br/&gt;                 3. Posa aquest paper en un lloc segur on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar el signador de maquinari a) junt amb la còpia de seguretat en paper, o b) en un altre lloc segur (si en disposes)   &#13;
-                </translation>
+        <translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda aquest paper en un lloc segur, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar el signador de maquinari a) juntament amb la còpia de seguretat de la llavor en paper, o b)   en un altre lloc segur (si en disposes) </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>Clau de còpia de seguretat de sincronització d&apos;etiquetes: {label\\_sync\\_nsec}</translation>
+        <translation>Clau de còpia de seguretat de sincronització d&apos;etiquetes: {label\\\\_sync\\\\_nsec}</translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>
@@ -3329,13 +3334,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Extracte de saldo de &quot;{id}&quot;</translation>
     </message>
     <message>
-        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;&#13;
-                2. Fold this  paper at the line below &lt;br/&gt;&#13;
-                3. Put each paper in a different secure location, where only you have access&lt;br/&gt;&#13;
-                4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   &#13;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+                2. Fold this  paper at the line below &lt;br/&gt;
+                3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
+                4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Adjunta el &apos;Full de recuperació&apos; ({number} paraules) a aquest paper o copia les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Doblega aquest paper per la línia inferior &lt;br/&gt;                 3. Posa cada paper en un lloc segur diferent, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar els signadors de maquinari a) junt amb la còpia de seguretat en paper corresponent, o b) cadascun en un altre lloc segur (si en disposes)   &#13;
-                </translation>
+        <translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda cada paper en un lloc segur diferent, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar els signadors de maquinari a) juntament amb la corresponent còpia de seguretat de la llavor en paper, o b)   cadascun en un altre lloc segur (si en disposes) </translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
@@ -3343,15 +3347,15 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-        <translation>{keystore\\_label} ({keystore\\_fingerprint}): {keystore\\_description}&lt;br/&gt;&lt;br/&gt;Instruccions per als hereus:</translation>
+        <translation>{keystore\\\\_label} ({keystore\\\\_fingerprint}): {keystore\\\\_description}&lt;br/&gt;&lt;br/&gt;Instruccions per als hereus:</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\_descriptor\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo. Per gastar-ne necessites {threshold} Seeds i el descriptor de la cartera.</translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\\\_descriptor\\\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo. Per gastar-ne necessites {threshold} Seeds i el descriptor de la cartera.</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\_descriptor\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\\\_descriptor\\\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
     </message>
     <message>
         <source>Created with</source>
@@ -3424,10 +3428,10 @@ It is best to use your own server, such as {link}.</source>
         <translation>Emparella Bitbox02</translation>
     </message>
     <message>
-        <source>Please compare and confirm the pairing code on your BitBox02:&#13;
-&#13;
+        <source>Please compare and confirm the pairing code on your BitBox02:
+
 {code}</source>
-        <translation>Compara i confirma el codi d&apos;emparellament al teu BitBox02:  {code}</translation>
+        <translation>Si us plau, compara i confirma el codi d&apos;aparellament al teu BitBox02:  {code} </translation>
     </message>
 </context>
 <context>
@@ -3533,7 +3537,7 @@ It is best to use your own server, such as {link}.</source>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-        <translation>El UTXO sense confirmar és gastat per la transacció {is\\_spent\\_by\\_txid}</translation>
+        <translation>El UTXO sense confirmar és gastat per la transacció {is\\\\_spent\\\\_by\\\\_txid}</translation>
     </message>
     <message>
         <source>Unconfirmed UTXO</source>

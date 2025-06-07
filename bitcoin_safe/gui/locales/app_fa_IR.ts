@@ -509,8 +509,8 @@ Please back up this descriptor to be able to recover the funds!</source>
 <context>
     <name>DragAndDropButtonEdit</name>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>تمام فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>همهٔ فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -719,12 +719,48 @@ the sending value {sent}</source>
         <translation>در شبکه پخش نشده است.</translation>
     </message>
     <message>
-        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-        <translation>کیف پول مربوط به تراکنش {txid} یافت نشد. لطفاً ابتدا کیف پول مربوطه را باز کنید.</translation>
+        <source>Details</source>
+        <translation>جزئیات</translation>
+    </message>
+    <message>
+        <source>View on block explorer</source>
+        <translation>مشاهده در کاوش‌گر بلاک</translation>
+    </message>
+    <message>
+        <source>Copy as csv</source>
+        <translation>کپی به‌صورت CSV</translation>
+    </message>
+    <message>
+        <source>Save as file</source>
+        <translation>ذخیره به‌عنوان فایل</translation>
+    </message>
+    <message>
+        <source>Edit with higher fee (RBF)</source>
+        <translation>ویرایش تراکنش با کارمزد بیشتر (RBF)</translation>
+    </message>
+    <message>
+        <source>Try cancel transaction (RBF)</source>
+        <translation>تلاش برای لغو تراکنش (RBF)</translation>
+    </message>
+    <message>
+        <source>Increase fee (RBF)</source>
+        <translation>افزایش کارمزد (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>دریافت سریع‌تر (CPFP)</translation>
+    </message>
+    <message>
+        <source>Remove on restart</source>
+        <translation>حذف در راه‌اندازی دوباره</translation>
     </message>
     <message>
         <source>Status</source>
         <translation>وضعیت</translation>
+    </message>
+    <message>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>کیف پول مربوط به تراکنش {txid} یافت نشد. لطفاً ابتدا کیف پول مربوطه را باز کنید.</translation>
     </message>
     <message>
         <source>Category</source>
@@ -1182,8 +1218,8 @@ Do you want to proceed anyway?</source>
         <translation>باز کردن تراکنش/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>تمام فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>همهٔ فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
     </message>
     <message>
         <source>No file selected</source>
@@ -2500,6 +2536,10 @@ below {rate}</source>
         <translation>برچسب: </translation>
     </message>
     <message>
+        <source>Save in wallet</source>
+        <translation>ذخیره در کیف پول</translation>
+    </message>
+    <message>
         <source>Transaction to be replaced could not be found in open wallets</source>
         <translation>تراکنش جایگزین‌ در کیف پول‌های باز یافت نشد</translation>
     </message>
@@ -3063,34 +3103,6 @@ below {rate}</source>
         <translation>همهٔ وضعیت‌ها</translation>
     </message>
     <message>
-        <source>View on block explorer</source>
-        <translation>مشاهده در کاوش‌گر بلاک</translation>
-    </message>
-    <message>
-        <source>Copy as csv</source>
-        <translation>کپی به‌صورت CSV</translation>
-    </message>
-    <message>
-        <source>Save as file</source>
-        <translation>ذخیره به‌عنوان فایل</translation>
-    </message>
-    <message>
-        <source>Edit with higher fee (RBF)</source>
-        <translation>ویرایش تراکنش با کارمزد بیشتر (RBF)</translation>
-    </message>
-    <message>
-        <source>Try cancel transaction (RBF)</source>
-        <translation>تلاش برای لغو تراکنش (RBF)</translation>
-    </message>
-    <message>
-        <source>Increase fee (RBF)</source>
-        <translation>افزایش کارمزد (RBF)</translation>
-    </message>
-    <message>
-        <source>Receive faster (CPFP)</source>
-        <translation>دریافت سریع‌تر (CPFP)</translation>
-    </message>
-    <message>
         <source>Unused</source>
         <translation>استفاده‌نشده</translation>
     </message>
@@ -3117,10 +3129,6 @@ below {rate}</source>
     <message>
         <source>Change</source>
         <translation>تغییر</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation>جزئیات</translation>
     </message>
 </context>
 <context>
@@ -3257,8 +3265,8 @@ It is best to use your own server, such as {link}.</source>
         <translation>باز کردن تراکنش/PSBT</translation>
     </message>
     <message>
-        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-        <translation>تمام فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>همهٔ فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
     </message>
 </context>
 <context>
