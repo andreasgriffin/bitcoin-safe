@@ -38,8 +38,8 @@ from typing import List, Optional, Sequence, Set, Tuple
 
 import bdkpython as bdk
 import numpy as np
-from bitcoin_tools.gui.qt.satoshis import Satoshis, unit_str
-from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from PyQt6.QtCharts import (
     QChart,
     QChartView,
@@ -282,6 +282,7 @@ class BalanceChart(QWidget):
         # Adding series to the chart
         self.chart.addSeries(self.line_series)
         self.chart.addSeries(self.highlight_series)
+        self.points: List[ChartPoint] = []
 
         # Layout
         self._layout = QVBoxLayout()
@@ -412,13 +413,13 @@ class BalanceChart(QWidget):
 
         buffer_time = (
             (max_timestamp - min_timestamp) * 0.02
-            if (max_timestamp - min_timestamp) > 0
+            if (max_timestamp - min_timestamp) > 10
             else self.default_buffer_time_in_sec
         )
-        self.datetime_axis.setRange(
-            QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)),
-            QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)),
-        )
+        min_x, max_x = QDateTime.fromSecsSinceEpoch(
+            int(min_timestamp - buffer_time)
+        ), QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time))
+        self.datetime_axis.setRange(min_x, max_x)
 
         buffer_factor = 0.1
         self.value_axis.setMin(0)
@@ -490,6 +491,8 @@ class WalletBalanceChart(BalanceChart):
         if not should_update:
             return
 
+        fallback_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
+
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         # Calculate balance
@@ -500,7 +503,7 @@ class WalletBalanceChart(BalanceChart):
             [
                 (
                     transaction_details.get_height(unconfirmed_height=self.wallet.get_height()),
-                    transaction_details.get_datetime(fallback_timestamp=datetime.datetime.now().timestamp()),
+                    transaction_details.get_datetime(fallback_timestamp=fallback_time.timestamp()),
                 )
                 for transaction_details in self.transactions
             ]

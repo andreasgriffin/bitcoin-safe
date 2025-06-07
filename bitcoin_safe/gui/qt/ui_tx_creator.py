@@ -32,8 +32,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 import numpy as np
-from bitcoin_tools.gui.qt.satoshis import format_fee_rate
-from bitcoin_tools.util import clean_list, time_logger
+from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
+from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (

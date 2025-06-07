@@ -41,7 +41,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
-from bitcoin_tools.util import rel_home_path_to_abs_path
+from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import (
     QCoreApplication,
@@ -153,7 +153,6 @@ class MainWindow(QMainWindow):
         self.threading_manager = ThreadingManager(threading_manager_name=self.__class__.__name__)
 
         self.fx = FX(
-            threading_parent=self.threading_manager,
             proxies=(
                 ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
                 if self.config.network_config.proxy_url
@@ -177,7 +176,6 @@ class MainWindow(QMainWindow):
         self.mempool_data = MempoolData(
             network_config=self.config.network_config,
             signals_min=self.signals,
-            threading_parent=self.threading_manager,
         )
         self.mempool_data.set_data_from_mempoolspace()
 
@@ -185,6 +183,7 @@ class MainWindow(QMainWindow):
         # connect the listeners
         self.signals.open_file_path.connect(self.open_file_path)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
+        self.signals.apply_txs_to_wallets.connect(self.apply_txs_to_wallets)
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
 
@@ -803,7 +802,7 @@ class MainWindow(QMainWindow):
                 self,
                 self.tr("Open Transaction/PSBT"),
                 "",
-                self.tr("All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
+                self.tr("All Files (*);;PSBT (*.psbt);;Transaction (*.tx)"),
             )
             if not file_path:
                 logger.info(self.tr("No file selected"))
@@ -819,6 +818,18 @@ class MainWindow(QMainWindow):
             if tx_details:
                 return tx_details
         return None
+
+    def apply_txs_to_wallets(self, txs: List[bdk.Transaction]) -> None:
+        for qt_wallet in self.qt_wallets.values():
+            qt_wallet.apply_txs(txs)
+
+        # identify first wallet which got 1 of the transactions
+        for tx in txs:
+            txid = tx.compute_txid()
+            for qt_wallet in self.qt_wallets.values():
+                if qt_wallet.wallet.get_tx(txid=txid):
+                    self.tab_wallets.setCurrentWidget(qt_wallet)
+                    return
 
     def open_tx_like_in_tab(
         self,
@@ -1725,6 +1736,8 @@ class MainWindow(QMainWindow):
         self.config.save()
         self.save_all_wallets()
 
+        self.mempool_data.close()
+        self.fx.close()
         self.threading_manager.end_threading_manager()
         self.remove_all_qt_wallet()
 

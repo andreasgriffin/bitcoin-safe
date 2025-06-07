@@ -40,6 +40,7 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
@@ -88,6 +89,41 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             qt_wallet.wallet.get_addresses()[0]
             == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
         )
+
+        def check_empty():
+            assert qt_wallet.wallet.get_balance().total == 0
+
+        check_empty()
+
+        def open_tx() -> UITx_Viewer:
+            tx = "0200000000010130e2288abc2259145cbd255a0cc94fe7226d26130b216100a9d631d7f31a5b090100000000fdffffff024894f31c01000000225120a450dee7d2d0f14d720b359f23660fed35c031de2d54e8fb0db8bd9f6b1ee35829ee250000000000220020b7f7e21184e2bacaa6346674bd9f619eb7619f316864d8c82564fde6735e7a3c0247304402203b76bd679a0f6ec4846a791247a5551771db6147a92f42e76ec4c079d3caf60502204f1bed609ee20c271faae2042c1d2727923650aea9439df78da45384e5979f1d01210370a2b7a566702a384ceb8e9f9f4c9ae8a4b4904b832c4de2cf19f3289285e20300000000"
+            main_window.signals.open_tx_like.emit(tx)
+            QApplication.processEvents()
+
+            tx_tab = main_window.tab_wallets.tabData(main_window.tab_wallets.count() - 1)
+            assert isinstance(tx_tab, UITx_Viewer)
+            return tx_tab
+
+        def save_tx_to_local(tx_tab: UITx_Viewer):
+            assert tx_tab.button_save_local_tx.isVisible()
+            tx_tab.save_local_tx()
+            QApplication.processEvents()
+
+            assert qt_wallet.tabs.currentWidget() == qt_wallet.history_tab
+
+            assert qt_wallet.history_list.get_selected_keys() == [
+                "6592209efae6c76e77626ffd62f2a59649a82aa3140f1d592f8e282293ececa3"
+            ]
+
+            for i in range(main_window.tab_wallets.count()):
+                if main_window.tab_wallets.tabData(i) == tx_tab:
+                    main_window.tab_wallets.removeTab(i)
+
+        def open_and_save_tx():
+            tx_tab = open_tx()
+            save_tx_to_local(tx_tab)
+
+        open_and_save_tx()
 
         # if True:
         with CheckedDeletionContext(

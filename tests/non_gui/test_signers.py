@@ -37,7 +37,7 @@ import pytest
 from _pytest.logging import LogCaptureFixture
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
-from bitcoin_tools.tx_util import hex_to_serialized, serialized_to_hex
+from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 

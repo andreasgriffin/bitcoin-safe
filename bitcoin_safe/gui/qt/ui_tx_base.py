@@ -43,7 +43,7 @@ from bitcoin_safe.signal_tracker import SignalTracker
 from ...config import UserConfig
 from ...mempool import MempoolData
 from ...signals import Signals
-from ...wallet import Wallet, get_wallets
+from ...wallet import Wallet, get_wallets, is_local
 from .my_treeview import SearchableTab
 from .recipients import Recipients
 
@@ -122,7 +122,7 @@ class UITx_Base(SearchableTab):
         fee_group: FeeGroup,
         chain_position: bdk.ChainPosition | None,
     ) -> None:
-        if chain_position and chain_position.is_confirmed():
+        if chain_position and (chain_position.is_confirmed() or is_local(chain_position)):
             fee_group.set_cpfp_label(unconfirmed_ancestors=None, this_fee_info=this_fee_info)
             return
 

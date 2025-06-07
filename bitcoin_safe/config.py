@@ -34,7 +34,7 @@ from typing import Any, Dict, List, Optional
 
 import appdirs
 import bdkpython as bdk
-from bitcoin_tools.util import path_to_rel_home_path, rel_home_path_to_abs_path
+from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from packaging import version
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque

@@ -31,7 +31,7 @@ from pathlib import Path
 
 import bdkpython as bdk
 import pytest
-from bitcoin_tools.util import rel_home_path_to_abs_path
+from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.pythonbdk_types import BlockchainType

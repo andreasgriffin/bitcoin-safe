@@ -34,8 +34,8 @@ from math import ceil
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
-from bitcoin_tools.tx_util import hex_to_script
-from bitcoin_tools.util import remove_duplicates_keep_order
+from bitcoin_safe_lib.tx_util import hex_to_script
+from bitcoin_safe_lib.util import remove_duplicates_keep_order
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
 from .pythonbdk_types import (
@@ -265,14 +265,14 @@ class FeeInfo:
             )
 
     @classmethod
-    def combined_fee_info(cls, txs: Iterable[TransactionDetails]) -> "FeeInfo":
-        combined_info = FeeInfo(fee_amount=0, vsize=0, is_estimated=False)
+    def combined_fee_info(cls, txs: Iterable[TransactionDetails]) -> "FeeInfo|None":
+        combined_info: FeeInfo | None = None
         if not txs:
             return combined_info
         for tx in txs:
             info = FeeInfo.from_txdetails(tx)
             if info:
-                combined_info += info
+                combined_info = (combined_info + info) if combined_info else info
         return combined_info
 
 

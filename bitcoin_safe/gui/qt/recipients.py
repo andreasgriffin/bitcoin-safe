@@ -34,8 +34,8 @@ from typing import Any, List
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_tools.gui.qt.satoshis import unit_sat_str, unit_str
-from bitcoin_tools.util import is_int
+from bitcoin_safe_lib.gui.qt.satoshis import unit_sat_str, unit_str
+from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (

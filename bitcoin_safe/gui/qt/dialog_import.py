@@ -140,7 +140,7 @@ class DragAndDropButtonEdit(ButtonEdit):
         parent=None,
         callback_enter=None,
         callback_esc=None,
-        file_filter=translate("DragAndDropButtonEdit", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
+        file_filter=translate("DragAndDropButtonEdit", "All Files (*);;PSBT (*.psbt);;Transaction (*.tx)"),
     ) -> None:
         super().__init__(
             parent=parent,

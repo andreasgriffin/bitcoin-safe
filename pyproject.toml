@@ -12,7 +12,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.3.3"
+version = "1.4.0rc1"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -39,10 +39,10 @@ python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 cryptography = "^45.0.2"
-# bitcoin-nostr-chat = { git = "./../bitcoin-nostr-chat", branch = "bdk1" }  #  "^0.3.3"
-bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "bf578cffaeced13be00c11db6dafe0330ccbff63" }
+bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "3e60f1b3d721f38484764f87d8d9eade5acbf5e3" }
 bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "3aaed6eb9582ca9d5e0e44437a37af11cdb72b30" }  
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "24e4392f0a2e4eb3c4cbf61a4e5b44eeac17fcf4" }  #  "^0.3.3"
+aiohttp = "^3.12.10"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -31,8 +31,8 @@ import logging
 from functools import lru_cache, partial
 from typing import Callable, Generator, Iterable, List, Optional, Tuple
 
-from bitcoin_tools.caching import register_cache
-from bitcoin_tools.gui.qt.util import qbytearray_to_str, str_to_qbytearray
+from bitcoin_safe_lib.caching import register_cache
+from bitcoin_safe_lib.gui.qt.util import qbytearray_to_str, str_to_qbytearray
 from PyQt6.QtCore import (
     QMimeData,
     QModelIndex,

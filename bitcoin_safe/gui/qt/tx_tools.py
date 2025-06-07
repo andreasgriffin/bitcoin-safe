@@ -29,7 +29,7 @@
 import logging
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import format_fee_rate
+from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
@@ -82,8 +82,9 @@ class TxTools:
 
         unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(txids=set([tx_details.txid]))
         unconfirmed_ancestors_fee_info = (
-            FeeInfo.combined_fee_info(txs=unconfirmed_ancestors)
+            unconfirmed_ancestors_fee_info
             if unconfirmed_ancestors
+            and (unconfirmed_ancestors_fee_info := FeeInfo.combined_fee_info(txs=unconfirmed_ancestors))
             else this_tx_fee_info
         )
 

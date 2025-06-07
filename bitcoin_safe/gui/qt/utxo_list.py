@@ -58,8 +58,8 @@ from functools import partial
 from typing import Dict, List, Optional, Tuple, Union
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis
-from bitcoin_tools.util import clean_list, time_logger
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
@@ -176,11 +176,11 @@ class UTXOList(MyTreeView):
             signals=signals,
             sort_column=sort_column if sort_column is not None else UTXOList.Columns.ADDRESS,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
+            hidden_columns=hidden_columns,
         )
         self.outpoints = outpoints
         self.config: UserConfig = config
         self.keep_outpoint_order = keep_outpoint_order
-        self.hidden_columns = hidden_columns if hidden_columns else []
         self.signals = signals
         self.txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] = txout_dict if txout_dict else {}
         self._pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint --> txdetails

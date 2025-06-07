@@ -90,6 +90,7 @@ from ...wallet import (
     Wallet,
     get_wallet_of_address,
     get_wallets,
+    is_in_mempool,
 )
 from .util import (
     Message,
@@ -295,7 +296,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             on_clicked=self.cpfp,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "bi--sd-card.svg")
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -310,6 +310,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             on_clicked=self.go_to_next_index,
             role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
+        self.button_save_local_tx = add_to_buttonbox(
+            self.buttonBox,
+            "",
+            "offline_tx.svg",
+            on_clicked=self.save_local_tx,
+            role=QDialogButtonBox.ButtonRole.NoRole,
+        )
         self.button_send = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -321,7 +328,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self._layout.addWidget(self.buttonBox)
         ##################
 
-        self.button_save_tx.setVisible(False)
         self.button_send.setEnabled(self.data.data_type == DataType.Tx)
 
         self.updateUi()
@@ -357,8 +363,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.button_send.setText(self.tr("Send"))
         self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
         self.label_label.setText(self.tr("Label: "))
+        self.button_save_local_tx.setText(self.tr("Save in wallet"))
         self.category_linking_warning_bar.updateUi()
         self.address_poisoning_warning_bar.updateUi()
+
+    def save_local_tx(self):
+        self.signals.apply_txs_to_wallets.emit([self.extract_tx()])
 
     def extract_tx(self) -> bdk.Transaction:
         if self.data.data_type == DataType.Tx:
@@ -1011,7 +1021,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             tx=tx,
             chain_position=chain_position,
             get_height=self._get_height_from_mempool,
-            is_in_mempool=self.is_in_mempool(tx.compute_txid()),
+            is_in_mempool=is_in_mempool(chain_position=chain_position),
         )
 
     def set_visibility(self, chain_position: bdk.ChainPosition | None) -> None:
@@ -1025,11 +1035,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         logger.debug(
             f"set_visibility {show_send=} {tx_status.can_do_initial_broadcast()=} {self.data.data_type=}"
         )
+        self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool)
         self.button_send.setEnabled(show_send)
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
-        # if is_unconfirmed then it makes sense to also edit it before
-        self.button_save_tx.setHidden(True)
 
         self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
         self.button_cpfp_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())

@@ -32,20 +32,85 @@ import logging
 import operator
 import shlex
 import subprocess
+import xml.dom.minidom as minidom
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from subprocess import CompletedProcess
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
-from bitcoin_tools.util import threadtable
+from bitcoin_safe_lib.util import threadtable
 
 from bitcoin_safe.gui.qt.language_chooser import FLAGS
 
 logger = logging.getLogger(__name__)
 
 
+target_key = "translation"
+location_key = "context"
+source_key = "source"
+
+
 def run_local(cmd) -> CompletedProcess:
     completed_process = subprocess.run(shlex.split(cmd), check=True)
     return completed_process
+
+
+def ts_to_csv(ts_path: Path, csv_path: Path):
+    tree = ET.parse(ts_path)
+    root = tree.getroot()
+
+    rows = []
+
+    for context in root.findall("context"):
+        context_name = context.findtext("name", default="")
+
+        for message in context.findall("message"):
+            source = message.findtext(source_key, default="")
+            translation = message.findtext("translation", default="")
+            location = message.find(location_key)
+            filename = location.get("filename") if location is not None else ""
+            line = location.get("line") if location is not None else ""
+
+            rows.append([context_name, filename, line, source, translation])
+
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["context", "filename", "line", source_key, "translation"])
+        writer.writerows(rows)
+
+
+def csv_to_ts(csv_path: Path, ts_path: Path):
+    root = ET.Element("TS", version="2.1")
+
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        contexts: Dict[str, ET.Element] = {}
+
+        for row in reader:
+            context_name = row["context"]
+            context = contexts.setdefault(context_name, ET.Element("context"))
+            if not context.find("name"):
+                ET.SubElement(context, "name").text = context_name
+
+            message = ET.SubElement(context, "message")
+            if row["filename"]:
+                ET.SubElement(message, "location", filename=row["filename"], line=row["line"])
+            ET.SubElement(message, "source").text = row["source"]
+            ET.SubElement(message, "translation").text = row["translation"]
+
+        for ctx in contexts.values():
+            root.append(ctx)
+
+    # Serialize to string using ElementTree
+    rough_string = ET.tostring(root, encoding="utf-8")
+
+    # Use minidom to pretty-print and preserve raw quotes
+    dom = minidom.parseString(rough_string)
+    pretty_xml = dom.toprettyxml(indent="  ", encoding="utf-8")
+
+    # Write to file without escaped quotes
+    with open(ts_path, "wb") as f:
+        f.write(pretty_xml.replace(b"&quot;", b'"'))
 
 
 # https://www.fincher.org/Utilities/CountryLanguageList.shtml
@@ -139,12 +204,11 @@ Content to translate:
         def process(language):
             ts_file = self._ts_file(language)
             run_local(f"pylupdate6  {' '.join(python_files)} -no-obsolete  -ts {ts_file}")  # -no-obsolete
-            run_local(f"ts2po {ts_file}  -o {ts_file.with_suffix('.po')}")
-            run_local(f"po2csv {ts_file.with_suffix('.po')}  -o {ts_file.with_suffix('.csv')}")
+            ts_to_csv(ts_file, ts_file.with_suffix(".csv"))
             self.sort_csv(
                 ts_file.with_suffix(".csv"),
                 ts_file.with_suffix(".csv"),
-                sort_columns=["target", "location", "source"],
+                sort_columns=[target_key, location_key, source_key],
             )
 
         threadtable(process, self.languages)
@@ -152,17 +216,12 @@ Content to translate:
         self.delete_po_files()
         self.compile()
 
-    @staticmethod
-    def quote_csv(input_file, output_file):
-        # Read the CSV content from the input file
-        with open(input_file, newline="") as infile:
-            reader = csv.reader(infile)
-            rows = list(reader)
-
-        # Write the CSV content with quotes around each item to the output file
-        with open(output_file, "w", newline="") as outfile:
-            writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
-            writer.writerows(rows)
+    def assert_no_escaped_quotes(self, ts_file: Path):
+        with open(ts_file, encoding="utf-8") as f:
+            content = f.read()
+        assert "&#13;" not in content
+        assert '""' not in content
+        assert '\\"' not in content
 
     def csv_to_ts(self):
         for language in self.languages:
@@ -172,10 +231,10 @@ Content to translate:
             self.sort_csv(
                 ts_file.with_suffix(".csv"),
                 ts_file.with_suffix(".csv"),
-                sort_columns=["location", "source", "target"],
+                sort_columns=[location_key, source_key, target_key],
             )
-            run_local(f"csv2po {ts_file.with_suffix('.csv')}  -o {ts_file.with_suffix('.po')}")
-            run_local(f"po2ts {ts_file.with_suffix('.po')}  -o {ts_file}")
+            csv_to_ts(ts_file.with_suffix(".csv"), ts_file)
+            self.assert_no_escaped_quotes(ts_file)
         self.delete_po_files()
         self.compile()
 
@@ -255,10 +314,12 @@ Content to translate:
             for i, row in enumerate(rows):
                 # If 'target' is already populated, we won't overwrite it, so just skip it.
                 # We'll only fill blank targets.
-                if not row["target"].strip():
+                if not row[target_key].strip():
                     empty_target_indices.append(i)
 
             # Check count
+            if len(empty_target_indices) == 0:
+                continue
             if len(lang_lines) != len(empty_target_indices):
                 raise ValueError(
                     f"For language '{lang}' in file '{csv_path.name}':\n"
@@ -270,16 +331,16 @@ Content to translate:
             # Fill the empty targets
             for i_empty, translation_line in zip(empty_target_indices, lang_lines):
                 # Extra safety check: ensure no content was put in after we counted
-                if rows[i_empty]["target"].strip():
+                if rows[i_empty][target_key].strip():
                     raise ValueError(
                         f"Cannot overwrite target in '{csv_path.name}' at row {i_empty+1}. "
                         f"Existing value: '{rows[i_empty]['target']}'"
                     )
-                rows[i_empty]["target"] = translation_line
+                rows[i_empty][target_key] = translation_line
 
             # Write updated rows back to CSV
             with open(csv_path, "w", newline="", encoding="utf-8") as f:
-                fieldnames = ["location", "source", "target"]
+                fieldnames = [location_key, source_key, target_key]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(rows)

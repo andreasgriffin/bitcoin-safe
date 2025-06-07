@@ -35,7 +35,7 @@ from typing import Any, List, Tuple
 import bdkpython as bdk
 import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
-from bitcoin_tools.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
 from bitcoin_usb.address_types import DescriptorInfo
 from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors

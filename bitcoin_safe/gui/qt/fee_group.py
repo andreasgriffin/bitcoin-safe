@@ -31,7 +31,7 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis, format_fee_rate, unit_fee_str
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, format_fee_rate, unit_fee_str
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (

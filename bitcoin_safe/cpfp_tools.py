@@ -50,7 +50,8 @@ class CpfpTools:
                 if tx and tx.chain_position.is_unconfirmed():
                     unconfirmed_txs.append(tx)
 
-        for unconfirmed_tx in unconfirmed_txs:
+        # i am modifying unconfirmed_txs duringt he loop, so the copy() is essential
+        for unconfirmed_tx in unconfirmed_txs.copy():
             # add its unconfirmed parents
             unconfirmed_txs += (
                 self.get_unconfirmed_ancestors(

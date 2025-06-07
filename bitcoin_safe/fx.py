@@ -30,25 +30,32 @@
 import logging
 from typing import Dict
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
-from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.mempool import fetch_from_url
 
-from .mempool import threaded_fetch
 from .signals import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
 
-class FX(QObject, ThreadingManager):
+class FX(QObject):
     signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
-    def __init__(self, proxies: Dict | None, threading_parent: ThreadingManager | None = None) -> None:
-        super().__init__(threading_parent=threading_parent)  # type: ignore
+    def __init__(
+        self,
+        proxies: Dict | None,
+    ) -> None:
+        super().__init__()  # type: ignore
+        self.loop_in_thread = LoopInThread()
         self.proxies = proxies
         self.rates: Dict[str, Dict] = {}
         self.update()
         logger.debug(f"initialized {self.__class__.__name__}")
+
+    def close(self):
+        self.loop_in_thread.stop()
 
     def update_if_needed(self) -> None:
         if self.rates:
@@ -79,16 +86,15 @@ class FX(QObject, ThreadingManager):
         return self.format_dollar(dollar_amount)
 
     def update(self) -> None:
-        def on_success(data) -> None:
-            if not data:
-                logger.debug(f"empty result of https://api.coingecko.com/api/v3/exchange_rates")
-                return
-            self.rates = data.get("rates", {})
-            if self.rates:
-                self.signal_data_updated.emit()
 
-        self.append_thread(
-            threaded_fetch(
-                "https://api.coingecko.com/api/v3/exchange_rates", on_success, proxies=self.proxies
-            )
-        )
+        self._task_set_data = self.loop_in_thread.run_background(self._update())
+
+    async def _update(self) -> None:
+
+        data = await fetch_from_url("https://api.coingecko.com/api/v3/exchange_rates", proxies=self.proxies)
+        if not data:
+            logger.debug(f"empty result of https://api.coingecko.com/api/v3/exchange_rates")
+            return
+        self.rates = data.get("rates", {})
+        if self.rates:
+            self.signal_data_updated.emit()

@@ -36,7 +36,7 @@ from math import ceil
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
-from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
