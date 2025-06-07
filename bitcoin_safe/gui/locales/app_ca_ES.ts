@@ -2008,7 +2008,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     </message>
     <message>
         <source>Amount [{unit}]</source>
-        <translation>Quantitat \\\\[{unit}]</translation>
+        <translation>Quantitat [{unit}]</translation>
     </message>
     <message>
         <source>Label</source>
@@ -2184,7 +2184,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignMessage</name>
     <message>
         <source>Enter message to be signed at {bip32_path}</source>
-        <translation>Introdueix el missatge a signar a {bip32\\\\_path}</translation>
+        <translation>Introdueix el missatge a signar a {bip32_path}</translation>
     </message>
     <message>
         <source>Sign message</source>
@@ -2293,7 +2293,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Share with all devices in {wallet_id}</source>
-        <translation>Comparteix amb tots els dispositius a {wallet\\\\_id}</translation>
+        <translation>Comparteix amb tots els dispositius a {wallet_id}</translation>
     </message>
     <message>
         <source>Share with single device</source>
@@ -2301,7 +2301,7 @@ If you make a mistake here, your money is lost!</source>
     </message>
     <message>
         <source>Please enable syncing in the wallet {wallet_id} first</source>
-        <translation>Habilita primer la sincronització a la cartera {wallet\\\\_id}</translation>
+        <translation>Habilita primer la sincronització a la cartera {wallet_id}</translation>
     </message>
 </context>
 <context>
@@ -2346,7 +2346,7 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
     </message>
     <message>
         <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
-        <translation>Enganxa el teu descriptor d&apos;adreça, p. ex. wpkh(\\\\[fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
+        <translation>Enganxa el teu descriptor d&apos;adreça, p. ex. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
     </message>
     <message>
         <source>Display Address</source>
@@ -2609,7 +2609,7 @@ below {rate}</source>
     </message>
     <message>
         <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-        <translation>El registre de carteres multisignatura via USB no és compatible amb {device\\\\_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
+        <translation>El registre de carteres multisignatura via USB no és compatible amb {device_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
     </message>
 </context>
 <context>
@@ -2953,7 +2953,7 @@ below {rate}</source>
     </message>
     <message>
         <source>derivation_path {value} must start with a /</source>
-        <translation>derivation\\\\_path {value} ha de començar amb /</translation>
+        <translation>derivation_path {value} ha de començar amb /</translation>
     </message>
     <message>
         <source>{value} is not a valid fingerprint</source>
@@ -2961,11 +2961,11 @@ below {rate}</source>
     </message>
     <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>La part de xarxa {network\\\\_str} de l&apos;origen de clau {key\\\\_origin} ha d&apos;estar protegida amb una h</translation>
+        <translation>La part de xarxa {network_str} de l&apos;origen de clau {key_origin} ha d&apos;estar protegida amb una h</translation>
     </message>
     <message>
         <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>Xarxa/tipus de moneda desconegut {network\\\\_str} a {key\\\\_origin}</translation>
+        <translation>Xarxa/tipus de moneda desconegut {network_str} a {key_origin}</translation>
     </message>
     <message>
         <source>No USB devices found</source>
@@ -3222,15 +3222,15 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-        <translation>Una bona opció és  {electrum\\\\_testnet} i com a explorador de blocs {explorer\\\\_testnet}</translation>
+        <translation>Una bona opció és  {electrum_testnet} i com a explorador de blocs {explorer_testnet}</translation>
     </message>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-        <translation>Una bona opció és  {electrum\\\\_testnet4} i com a explorador de blocs {explorer\\\\_testnet4}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
+        <translation>Una bona opció és  {electrum_testnet4} i com a explorador de blocs {explorer_testnet4}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-        <translation>A Signet tria {electrum} i un explorador de blocs a {mempool\\\\_url}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
+        <translation>A Signet tria {electrum} i un explorador de blocs a {mempool_url}. Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
@@ -3275,7 +3275,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation>{keystore\\\\_label}: Empremta digital: {keystore\\\\_fingerprint}, Origen de clau: {keystore\\\\_key\\\\_origin}, {keystore\\\\_xpub}</translation>
+        <translation>{keystore_label}: Empremta digital: {keystore_fingerprint}, Origen de clau: {keystore_key_origin}, {keystore_xpub}</translation>
     </message>
     <message>
         <source>File not found!</source>
@@ -3311,7 +3311,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation>En tornar a escanejar aquesta cartera, escaneja fins a l&apos;índex d&apos;adreça {max\\\\_tip} com a mínim per descobrir totes les adreces finançades.</translation>
+        <translation>En tornar a escanejar aquesta cartera, escaneja fins a l&apos;índex d&apos;adreça {max_tip} com a mínim per descobrir totes les adreces finançades.</translation>
     </message>
     <message>
         <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
@@ -3323,7 +3323,7 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>Clau de còpia de seguretat de sincronització d&apos;etiquetes: {label\\\\_sync\\\\_nsec}</translation>
+        <translation>Clau de còpia de seguretat de sincronització d&apos;etiquetes: {label_sync_nsec}</translation>
     </message>
     <message>
         <source>Balance Statement of {id}</source>
@@ -3347,15 +3347,15 @@ It is best to use your own server, such as {link}.</source>
     </message>
     <message>
         <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-        <translation>{keystore\\\\_label} ({keystore\\\\_fingerprint}): {keystore\\\\_description}&lt;br/&gt;&lt;br/&gt;Instruccions per als hereus:</translation>
+        <translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instruccions per als hereus:</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\\\_descriptor\\\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo. Per gastar-ne necessites {threshold} Seeds i el descriptor de la cartera.</translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo. Per gastar-ne necessites {threshold} Seeds i el descriptor de la cartera.</translation>
     </message>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet\\\\_descriptor\\\\_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
+        <translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
     </message>
     <message>
         <source>Created with</source>
@@ -3537,7 +3537,7 @@ It is best to use your own server, such as {link}.</source>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-        <translation>El UTXO sense confirmar és gastat per la transacció {is\\\\_spent\\\\_by\\\\_txid}</translation>
+        <translation>El UTXO sense confirmar és gastat per la transacció {is_spent_by_txid}</translation>
     </message>
     <message>
         <source>Unconfirmed UTXO</source>

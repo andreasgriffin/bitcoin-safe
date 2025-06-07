@@ -164,6 +164,12 @@ Content to translate:
             writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
             writer.writerows(rows)
 
+    def clean_csv(self, file: Path):
+        with open(str(file), "r", encoding="utf-8") as f:
+            content = f.read().replace("&#13;", "")
+        with open(str(file), "w", encoding="utf-8") as f:
+            f.write(content)
+
     def csv_to_ts(self):
         for language in self.languages:
             ts_file = self._ts_file(language)
@@ -174,6 +180,7 @@ Content to translate:
                 ts_file.with_suffix(".csv"),
                 sort_columns=["location", "source", "target"],
             )
+            self.clean_csv(ts_file.with_suffix(".csv"))
             run_local(f"csv2po {ts_file.with_suffix('.csv')}  -o {ts_file.with_suffix('.po')}")
             run_local(f"po2ts {ts_file.with_suffix('.po')}  -o {ts_file}")
         self.delete_po_files()
