@@ -373,7 +373,7 @@
     <name>ChatGui</name>
     <message>
         <source>Share a PSBT</source>
-        <translation>Teilen Sie ein PSBT  </translation>
+        <translation>Teilen Sie ein PSBT</translation>
     </message>
     <name>ChatGui</name>
     <message>
@@ -385,40 +385,40 @@
     <name>CloseButton</name>
     <message>
         <source>Close</source>
-        <translation>Schließen  </translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
     <name>ConfirmedBlock</name>
     <message>
         <source>Block {n}</source>
-        <translation>Block {n}  </translation>
+        <translation>Block {n}</translation>
     </message>
 </context>
 <context>
     <name>CustomListWidget</name>
     <message>
         <source>Delete Category</source>
-        <translation>Kategorie löschen  </translation>
+        <translation>Kategorie löschen</translation>
     </message>
 </context>
 <context>
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Invalid Descriptor</source>
-        <translation>Ungültiger Deskriptor  </translation>
+        <translation>Ungültiger Deskriptor</translation>
     </message>
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Missing Descriptor</source>
-        <translation>Fehlender Deskriptor  </translation>
+        <translation>Fehlender Deskriptor</translation>
     </message>
 </context>
 <context>
     <name>DescriptorEdit</name>
     <message>
         <source>Descriptor not valid</source>
-        <translation>Fehlender Descriptor  </translation>
+        <translation>Fehlender Descriptor</translation>
     </message>
     <name>DescriptorEdit</name>
     <message>
@@ -430,19 +430,19 @@
     <name>DescriptorExport</name>
     <message>
         <source>Export Descriptor</source>
-        <translation>Ungültiger Descriptor  </translation>
+        <translation>Ungültiger Descriptor</translation>
     </message>
 </context>
 <context>
     <name>DescriptorUI</name>
     <message>
         <source>Address Type</source>
-        <translation>Adresstyp  </translation>
+        <translation>Adresstyp</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Descriptor unchanged</source>
-        <translation>Deskriptor unverändert  </translation>
+        <translation>Deskriptor unverändert</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -462,7 +462,7 @@
     <name>DescriptorUI</name>
     <message>
         <source>New descriptor entered</source>
-        <translation>Neuer Deskriptor eingegeben  </translation>
+        <translation>Neuer Deskriptor eingegeben</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -477,12 +477,12 @@
     <name>DescriptorUI</name>
     <message>
         <source>Required Signers</source>
-        <translation>Erforderliche Unterzeichner  </translation>
+        <translation>Erforderliche Unterzeichner</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Scan Addresses ahead</source>
-        <translation>Adressen im Voraus scannen  </translation>
+        <translation>Adressen im Voraus scannen</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -494,31 +494,31 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>DescriptorUI</name>
     <message>
         <source>Wallet Descriptor</source>
-        <translation>Wallet-Deskriptor  </translation>
+        <translation>Wallet-Deskriptor</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Wallet Properties</source>
-        <translation>Wallet-Eigenschaften  </translation>
+        <translation>Wallet-Eigenschaften</translation>
     </message>
 </context>
 <context>
     <name>DeviceDialog</name>
     <message>
         <source>Select the detected device</source>
-        <translation>Erkanntes Gerät auswählen  </translation>
+        <translation>Erkanntes Gerät auswählen</translation>
     </message>
 </context>
 <context>
     <name>DeviceManager</name>
     <message>
         <source>Trusted</source>
-        <translation>Vertrauenswürdig  </translation>
+        <translation>Vertrauenswürdig</translation>
     </message>
     <name>DeviceManager</name>
     <message>
         <source>Untrusted</source>
-        <translation>Nicht vertrauenswürdig  </translation>
+        <translation>Nicht vertrauenswürdig</translation>
     </message>
 </context>
 <context>
@@ -535,7 +535,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>DistributeSeeds</name>
     <message>
         <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-        <translation>Seed-Backup {j} und Hardware-Signer {j} sollten sich an Ort {j} befinden  </translation>
+        <translation>Seed-Backup {j} und Hardware-Signer {j} sollten sich an Ort {j} befinden</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
@@ -557,17 +557,17 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>Downloader</name>
     <message>
         <source>Download Progress</source>
-        <translation>Download-Fortschritt  </translation>
+        <translation>Download-Fortschritt</translation>
     </message>
     <name>Downloader</name>
     <message>
         <source>Download {}</source>
-        <translation>Download {}  </translation>
+        <translation>Download {}</translation>
     </message>
     <name>Downloader</name>
     <message>
         <source>Open download folder: {}</source>
-        <translation>Download-Ordner öffnen: {}  </translation>
+        <translation>Download-Ordner öffnen: {}</translation>
     </message>
 </context>
 <context>
@@ -581,41 +581,41 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>EnlargableImageWidgetWithButton</name>
     <message>
         <source>Enlarge</source>
-        <translation>Vergrößern  </translation>
+        <translation>Vergrößern</translation>
     </message>
 </context>
 <context>
     <name>ExportDataSimple</name>
     <message>
         <source>Enlarge {} QR</source>
-        <translation>Vergrößern {} QR  </translation>
+        <translation>Vergrößern {} QR</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
         <source>Export {data_type} to hardware signer</source>
-        <translation>Export {data_type} an Hardware-Signer  </translation>
+        <translation>Export {data_type} an Hardware-Signer</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
         <source>Image (*.{image_format})</source>
-        <translation>Bild (*.{image_format})  </translation>
+        <translation>Bild (*.{image_format})</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
         <source>Save as image</source>
-        <translation>Als Bild speichern  </translation>
+        <translation>Als Bild speichern</translation>
     </message>
 </context>
 <context>
     <name>FeeGroup</name>
     <message>
         <source>Approximate fee rate</source>
-        <translation>Ungefähre Gebührenrate  </translation>
+        <translation>Ungefähre Gebührenrate</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>Fee</source>
-        <translation>Gebühr  </translation>
+        <translation>Gebühr</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -625,7 +625,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>FeeGroup</name>
     <message>
         <source>in ~{n}. Block</source>
-        <translation>in ~{n}. Block  </translation>
+        <translation>in ~{n}. Block</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -635,7 +635,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>FeeGroup</name>
     <message>
         <source>{rate} is the minimum for {rbf}</source>
-        <translation>{rate} ist das Minimum für {rbf}  </translation>
+        <translation>{rate} ist das Minimum für {rbf}</translation>
     </message>
 </context>
 <context>
