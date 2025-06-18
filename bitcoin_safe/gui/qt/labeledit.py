@@ -232,7 +232,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
 
         if self.label_type in [LabelType.addr]:
             for wallet in wallets:
-                if wallet.is_my_address(ref):
+                if wallet.is_my_address_with_peek(ref):
                     result.add(wallet)
                 elif wallet.get_label_for_address(ref):
                     result.add(wallet)

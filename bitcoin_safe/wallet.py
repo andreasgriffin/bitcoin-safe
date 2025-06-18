@@ -1249,22 +1249,24 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return reverse_search_used(self._tips[int(is_change)])
 
-    def _get_tip(self, is_change: bool) -> int:
+    def get_tip(self, is_change: bool) -> int:
         keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
         derivation_index = self.bdkwallet.derivation_index(keychain=keychain_kind)
         if derivation_index is None:
-            self._advance_tip_if_necessary(is_change=is_change, target=0)
+            self.advance_tip_if_necessary(is_change=is_change, target=0)
             return 0
         return derivation_index
 
-    def _advance_tip_if_necessary(self, is_change: bool, target: int) -> None:
+    def advance_tip_if_necessary(self, is_change: bool, target: int) -> List[bdk.AddressInfo]:
+        revealed_addresses: List[bdk.AddressInfo] = []
         keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
         max_derived_index = self.bdkwallet.derivation_index(keychain=keychain_kind)
 
         if max_derived_index is None or max_derived_index < target:
-            self.bdkwallet.reveal_addresses_to(keychain=keychain_kind, index=target)
+            revealed_addresses += self.bdkwallet.reveal_addresses_to(keychain=keychain_kind, index=target)
             self.persist()
             logger.info(f"{self.id} Revealed addresses up to {keychain_kind=} {target=}")
+        return revealed_addresses
 
     def search_index_tuple(self, address, forward_search=500) -> Optional[AddressInfoMin]:
         """Looks for the address"""
@@ -1298,13 +1300,13 @@ class Wallet(BaseSaveableClass, CacheManager):
             return None
 
         is_change = address_info_min.is_change()
-        self._advance_tip_if_necessary(is_change=is_change, target=address_info_min.index)
+        self.advance_tip_if_necessary(is_change=is_change, target=address_info_min.index)
 
         return address_info_min
 
     @property
     def tips(self) -> List[int]:
-        return [self._get_tip(b) for b in [False, True]]
+        return [self.get_tip(b) for b in [False, True]]
 
     def get_receiving_addresses(self) -> List[str]:
         return self._get_addresses(is_change=False)
@@ -1701,6 +1703,29 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def is_my_address(self, address: str) -> bool:
         return address in self.get_addresses()
+
+    def get_address_dict_with_peek(
+        self, peek_receive_ahead: int, peek_change_ahead: int
+    ) -> Dict[str, AddressInfoMin]:
+        addresses: Dict[str, AddressInfoMin] = {}
+        for _is_change, _peek_ahead in [(False, peek_receive_ahead), (True, peek_change_ahead)]:
+            address_infos = self._get_addresses_infos(is_change=_is_change)
+            addresses.update({address_info.address: address_info for address_info in address_infos})
+            tip = address_infos[-1].index if address_infos else 0
+
+            for index in range(tip + 1, tip + 1 + _peek_ahead):
+                address_info = self.bdkwallet.peek_address(
+                    keychain=AddressInfoMin.is_change_to_keychain(is_change=_is_change), index=index
+                )
+                addresses[str(address_info.address)] = AddressInfoMin.from_bdk_address_info(address_info)
+        return addresses
+
+    def is_my_address_with_peek(
+        self, address: str, peek_receive_ahead: int = 1000, peek_change_ahead: int = 1000
+    ) -> AddressInfoMin | None:
+        return self.get_address_dict_with_peek(
+            peek_receive_ahead=peek_receive_ahead, peek_change_ahead=peek_change_ahead
+        ).get(address)
 
     def determine_recipient_category(self, utxos: Iterable[PythonUtxo]) -> str:
         "Returns the first category it can determine from the addreses or txids"
@@ -2226,7 +2251,7 @@ def get_wallet(wallet_id: str, signals: Signals) -> Optional[Wallet]:
 
 def get_wallet_of_address(address: str, signals: Signals) -> Optional[Wallet]:
     for wallet in get_wallets(signals):
-        if wallet.is_my_address(address):
+        if wallet.is_my_address_with_peek(address):
             return wallet
     return None
 

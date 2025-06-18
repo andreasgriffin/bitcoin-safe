@@ -301,13 +301,10 @@ class UITx_Creator(UITx_Base):
         fee_rate = self.fee_group.spin_fee_rate.value()
         fee_info = self.estimate_fee_info(fee_rate)
 
-        total_non_change_output_amount = sum(
-            [
-                r.amount
-                for r in self.recipients.recipients
-                if not (self.wallet.is_my_address(r.address) and self.wallet.is_change(r.address))
-            ]
+        total_non_change_output_amount = self._get_total_non_change_output_amount(
+            recipients=self.recipients.recipients, wallet=self.wallet
         )
+
         self.high_fee_warning_label.set_fee_to_send_ratio(
             fee_info=fee_info,
             total_non_change_output_amount=total_non_change_output_amount,

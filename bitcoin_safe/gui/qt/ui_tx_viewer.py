@@ -88,7 +88,6 @@ from ...wallet import (
     TxConfirmationStatus,
     TxStatus,
     Wallet,
-    get_wallet_of_address,
     get_wallets,
     is_in_mempool,
 )
@@ -810,15 +809,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             self.high_fee_warning_label.setVisible(False)
             return
 
-        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
-
-        total_non_change_output_amount = 0
-        for wallet in wallets:
-            for recipient in self.recipients.recipients:
-                if not recipient.address:
-                    continue
-                if not (wallet.is_my_address(recipient.address) and wallet.is_change(recipient.address)):
-                    total_non_change_output_amount += recipient.amount
+        total_non_change_output_amount = self._get_total_non_change_output_amount(
+            recipients=self.recipients.recipients
+        )
 
         self.high_fee_warning_label.set_fee_to_send_ratio(
             fee_info=self.fee_info,
@@ -1130,16 +1123,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             for txout in tx.output()
         ]
 
-        total_non_change_output_amount = 0
-
-        for address, value in out_flows:
-
-            wallet = get_wallet_of_address(address, self.signals)
-            if wallet and wallet.is_my_address(address) and wallet.is_change(address):
-                continue
-            else:
-                total_non_change_output_amount += value
-        return total_non_change_output_amount
+        return self._get_total_non_change_output_amount(
+            recipients=[Recipient(address=address, amount=value) for address, value in out_flows]
+        )
 
     def close(self):
         self.signal_tracker.disconnect_all()

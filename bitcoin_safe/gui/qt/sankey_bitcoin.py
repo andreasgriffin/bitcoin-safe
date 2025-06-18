@@ -49,7 +49,12 @@ from bitcoin_safe.pythonbdk_types import (
     robust_address_str_from_script,
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
-from bitcoin_safe.wallet import Wallet, get_label_from_any_wallet, get_wallets
+from bitcoin_safe.wallet import (
+    Wallet,
+    get_label_from_any_wallet,
+    get_wallet_of_address,
+    get_wallets,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -300,16 +305,10 @@ class SankeyBitcoin(SankeyWidget):
         return True
 
     def get_address_color(self, address: str, wallets: List[Wallet]) -> QColor | None:
-        def get_wallet():
-            for wallet in wallets:
-                if wallet.is_my_address(address):
-                    return wallet
-            return None
-
-        wallet = get_wallet()
+        wallet = get_wallet_of_address(address=address, signals=self.signals)
         if not wallet:
             return None
-        color = AddressEdit.color_address(address, wallet)
+        color = AddressEdit.color_address(address, wallet, signals=self.signals)
         if not color:
             logger.error("This should not happen, since wallet should only be found if the address is mine.")
             return None
