@@ -37,13 +37,13 @@ from PyQt6.QtWidgets import QLayout, QVBoxLayout
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.gui.qt.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import TransactionDetails
+from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.signal_tracker import SignalTracker
 
 from ...config import UserConfig
 from ...mempool import MempoolData
 from ...signals import Signals
-from ...wallet import Wallet, get_wallets, is_local
+from ...wallet import Wallet, get_wallet_of_address, get_wallets, is_local
 from .my_treeview import SearchableTab
 from .recipients import Recipients
 
@@ -133,3 +133,18 @@ class UITx_Base(SearchableTab):
     def updateUi(self) -> None:
         self.high_fee_rate_warning_label.updateUi()
         self.high_fee_warning_label.updateUi()
+
+    def _get_total_non_change_output_amount(self, recipients: List[Recipient], wallet: Wallet | None = None):
+        total_non_change_output_amount = 0
+        for recipient in recipients:
+            if not recipient.address:
+                continue
+            this_wallet = wallet if wallet else get_wallet_of_address(recipient.address, self.signals)
+            if not this_wallet:
+                continue
+            if not (
+                (address_info := this_wallet.is_my_address_with_peek(recipient.address))
+                and address_info.is_change()
+            ):
+                total_non_change_output_amount += recipient.amount
+        return total_non_change_output_amount
