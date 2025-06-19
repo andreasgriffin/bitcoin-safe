@@ -106,7 +106,7 @@ def csv_to_ts(csv_path: Path, ts_path: Path):
 
     # Use minidom to pretty-print and preserve raw quotes
     dom = minidom.parseString(rough_string)
-    pretty_xml = dom.toprettyxml(indent="  ", encoding="utf-8")
+    pretty_xml = dom.toprettyxml(encoding="utf-8")
 
     # Write to file without escaped quotes
     with open(ts_path, "wb") as f:
