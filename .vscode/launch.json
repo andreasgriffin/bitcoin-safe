@@ -1,9 +1,9 @@
 {
   "version": "0.1.0",
   "configurations": [
-    
 
-  {
+
+    {
       "name": "Python: Module",
       "type": "python",
       "request": "launch",
@@ -20,7 +20,7 @@
       "request": "launch",
       "module": "pytest",
       "args": [
-        "-vvv", 
+        "-vvv",
         "--ignore=coding_tests",
         "--ignore=tools",
       ],
@@ -32,7 +32,7 @@
       "type": "python",
       "request": "launch",
       "module": "pytest",
-      "args": [ 
+      "args": [
         // "-vvv", 
         "tests/gui",
         "--ignore=coding_tests",
@@ -40,36 +40,36 @@
         // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-       "justMyCode": false
+      "justMyCode": false
     },
     {
       "name": "Pytest non-gui",
       "type": "python",
       "request": "launch",
       "module": "pytest",
-      "args": [ 
-        "-vvv", 
+      "args": [
+        "-vvv",
         "--ignore=tests/gui",
         "--ignore=tools",
-        "-s",  // Disable all capturing of outputs        
+        "-s", // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-       "justMyCode": false
+      "justMyCode": false
     }, {
       "name": "Pytest: Current File",
       "type": "python",
       "request": "launch",
       "module": "pytest",
-      "args": [ 
-        "-vvv", 
+      "args": [
+        "-vvv",
         "${file}",
-        "-s",  // Disable all capturing of outputs        
+        "-s", // Disable all capturing of outputs        
         "--ignore=tools",
-      ], 
+      ],
       "console": "integratedTerminal",
-       "justMyCode": false
+      "justMyCode": false
     },
-      {
+    {
       "name": "taglist",
       "type": "python",
       "request": "launch",
@@ -90,131 +90,140 @@
       "module": "bitcoin_safe.gui.qt.step_progress_bar",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
-      },{
-        "name": "Translation update",
-        "type": "python",
-        "request": "launch",
-        "program": "tools/build.py",
-        "args": [
-            "--update_translations" 
+    }, {
+      "name": "Translation update",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--update_translations"
       ],
-        "console": "integratedTerminal"
-    },{
+      "console": "integratedTerminal"
+    }, {
       "name": "insert_chatgpt_translations",
       "type": "python",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
-          "--insert_chatgpt_translations" 
-    ],
+        "--insert_chatgpt_translations"
+      ],
       "console": "integratedTerminal"
-  },{
+    }, {
       "name": "Translation csv to ts",
-    "type": "python",
-    "request": "launch",
-    "program": "tools/build.py",
-    "args": [
-        "--csv_to_ts" 
-  ],
-    "console": "integratedTerminal"
-},{
-  "name": "Build",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-      "--targets",   "appimage","deb", "windows", 
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build windows",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-      "--targets",    "windows", 
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build linux",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-      "--targets",    "appimage", "deb",
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build mac",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-      "--targets",    "mac", 
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build Linux (Current Files)",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-    "--targets",  "appimage",  "deb",
-    "--commit",  "None",  
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build Mac (Current Files)",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-    "--targets",  "mac",  
-    "--commit",  "None",  
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Build Windows (Current Files)",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [
-    "--targets",  "windows",  
-    "--commit",  "None",  
-],
-  "console": "integratedTerminal",
-  "preLaunchTask": "Poetry Install" // label of the task
-},{
-  "name": "Sign",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [ 
-      "--sign",
-],
-  "console": "integratedTerminal"
-},{
-  "name": "Lock no cache",
-  "type": "python",
-  "request": "launch",
-  "program": "tools/build.py",
-  "args": [ 
-      "--lock",
-],
-  "console": "integratedTerminal"
-},{
-  "name": "Current File",
-  "type": "python",
-  "request": "launch",
-  "program": "${file}",
-  "console": "integratedTerminal"
-}
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--csv_to_ts"
+      ],
+      "console": "integratedTerminal"
+    }, {
+      "name": "Weblate correct",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--weblate_correct"
+      ],
+      "console": "integratedTerminal"
+    }, {
+      "name": "Build",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "appimage", "deb", "windows",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build windows",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "windows",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build linux",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "appimage", "deb",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build mac",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "mac",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build Linux (Current Files)",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "appimage", "deb",
+        "--commit", "None",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build Mac (Current Files)",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "mac",
+        "--commit", "None",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Build Windows (Current Files)",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "windows",
+        "--commit", "None",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install" // label of the task
+    }, {
+      "name": "Sign",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--sign",
+      ],
+      "console": "integratedTerminal"
+    }, {
+      "name": "Lock no cache",
+      "type": "python",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--lock",
+      ],
+      "console": "integratedTerminal"
+    }, {
+      "name": "Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    }
 
   ]
 }
