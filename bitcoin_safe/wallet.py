@@ -622,7 +622,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
         # refresh dependent values
-        self._tips = _tips if _tips and not refresh_wallet else [0, 0]
+        self._initialization_tips = _tips if _tips and not refresh_wallet else [0, 0]
         self._blockchain_height = _blockchain_height if _blockchain_height and not refresh_wallet else 0
 
         if refresh_wallet and os.path.isfile(self._db_file()):
@@ -803,7 +803,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             "id",
             "gap",
             "_blockchain_height",
-            "_tips",
+            "tips",
             "refresh_wallet",
             "auto_opportunistic_coin_select",
         ]
@@ -884,13 +884,13 @@ class Wallet(BaseSaveableClass, CacheManager):
             "keystores",
             "labels",
             "_blockchain_height",
-            "_tips",
             "refresh_wallet",
             "auto_opportunistic_coin_select",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
 
+        d["_tips"] = self.tips
         d["descriptor_str"] = self.multipath_descriptor.to_string_with_secret()
         d["initial_txs"] = [
             serialized_to_hex(tx.transaction.serialize())
@@ -984,7 +984,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             #     bdk.SqliteDbConfiguration(self._db_file())
             # ),
         )
-        for is_change, tip in enumerate(self._tips):
+        for is_change, tip in enumerate(self._initialization_tips):
             self.bdkwallet.reveal_addresses_to(
                 keychain=AddressInfoMin.is_change_to_keychain(is_change=bool(is_change)), index=tip
             )
@@ -1162,11 +1162,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         address_info = self.bdkwallet.reveal_next_address(keychain=keychain_kind)
         self.persist()
 
-        index = address_info.index
-        self._tips[int(is_change)] = index
-
-        logger.info(f"advanced_tip to {self._tips}  , is_change={is_change}")
-
+        logger.info(f"advanced_tip to {address_info.index}  , is_change={is_change}")
         address = str(address_info.address)
         if address in self.labels.data:
             # if the address is already labeled/categorized, then advance forward
@@ -1247,7 +1243,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     return i
             return 0
 
-        return reverse_search_used(self._tips[int(is_change)])
+        return reverse_search_used(self.tips[int(is_change)])
 
     def get_tip(self, is_change: bool) -> int:
         keychain_kind = AddressInfoMin.is_change_to_keychain(is_change=is_change)
