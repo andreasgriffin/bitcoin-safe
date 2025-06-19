@@ -579,7 +579,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     """If any bitcoin logic (ontop of bdk) has to be done, then here is the
     place."""
 
-    VERSION = "0.3.0"
+    VERSION = "0.3.1"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "KeyStore": KeyStore,
@@ -599,7 +599,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         gap=20,
         labels: Labels | None = None,
         _blockchain_height: int | None = None,
-        _tips: List[int] | None = None,
+        initialization_tips: List[int] | None = None,
         refresh_wallet=False,
         default_category="default",
         auto_opportunistic_coin_select=False,
@@ -622,7 +622,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
         # refresh dependent values
-        self._initialization_tips = _tips if _tips and not refresh_wallet else [0, 0]
+        self._initialization_tips = (
+            initialization_tips if initialization_tips and not refresh_wallet else [0, 0]
+        )
         self._blockchain_height = _blockchain_height if _blockchain_height and not refresh_wallet else 0
 
         if refresh_wallet and os.path.isfile(self._db_file()):
@@ -759,7 +761,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         config: UserConfig,
         labels: Labels | None = None,
         _blockchain_height: int | None = None,
-        _tips: List[int] | None = None,
+        initialization_tips: List[int] | None = None,
         refresh_wallet=False,
         default_category="default",
     ) -> "Wallet":
@@ -788,7 +790,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             config=config,
             labels=labels,
             _blockchain_height=_blockchain_height,
-            _tips=_tips,
+            initialization_tips=initialization_tips,
             refresh_wallet=refresh_wallet,
             default_category=default_category,
         )
@@ -890,7 +892,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         for k in keys:
             d[k] = self.__dict__[k]
 
-        d["_tips"] = self.tips
+        d["initialization_tips"] = self.tips
         d["descriptor_str"] = self.multipath_descriptor.to_string_with_secret()
         d["initial_txs"] = [
             serialized_to_hex(tx.transaction.serialize())
@@ -942,6 +944,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         if version.parse(str(dct["VERSION"])) < version.parse("0.3.0"):
             if dct.get("auto_opportunistic_coin_select"):
                 dct["auto_opportunistic_coin_select"] = False
+
+        if version.parse(str(dct["VERSION"])) < version.parse("0.3.1"):
+            if _tips := dct.get("_tips"):
+                dct["initialization_tips"] = _tips
 
         # now the VERSION is newest, so it can be deleted from the dict
         if "VERSION" in dct:

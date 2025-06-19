@@ -55,6 +55,7 @@ from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
+from bitcoin_safe.gui.qt.tx_util import advance_tip_for_addresses
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarningBar
 from bitcoin_safe.keystore import KeyStore
@@ -927,6 +928,15 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
         outputs: List[bdk.TxOut] = tx.output()
+        advance_tip_for_addresses(
+            addresses=[
+                robust_address_str_from_script(
+                    o.script_pubkey, network=self.network, on_error_return_hex=False
+                )
+                for o in outputs
+            ],
+            signals=self.signals,
+        )
 
         self.recipients.recipients = [
             Recipient(
@@ -1073,6 +1083,15 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         )
 
         outputs: List[bdk.TxOut] = psbt.extract_tx().output()
+        advance_tip_for_addresses(
+            addresses=[
+                robust_address_str_from_script(
+                    o.script_pubkey, network=self.network, on_error_return_hex=False
+                )
+                for o in outputs
+            ],
+            signals=self.signals,
+        )
 
         self.recipients.recipients = [
             Recipient(

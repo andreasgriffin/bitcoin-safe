@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import List, Optional, cast
+from typing import Optional, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -38,7 +38,7 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
-from bitcoin_safe.pythonbdk_types import AddressInfoMin
+from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.util_os import webopen
 
@@ -160,23 +160,6 @@ class AddressEdit(ButtonEdit):
         self.signal_text_change.emit(self.address)
 
     @classmethod
-    def advance_to_address_info(
-        cls, address_info: AddressInfoMin, wallet: Wallet, signals: Signals
-    ) -> List[bdk.AddressInfo]:
-        revealed_address_infos: List[bdk.AddressInfo] = []
-        if address_info.index > wallet.get_tip(is_change=address_info.is_change()):
-            revealed_address_infos += wallet.advance_tip_if_necessary(
-                is_change=address_info.is_change(), target=address_info.index
-            )
-            signals.wallet_signals[wallet.id].updated.emit(
-                UpdateFilter(
-                    addresses=set([str(address_info.address) for address_info in revealed_address_infos]),
-                    reason=UpdateFilterReason.NewAddressRevealed,
-                )
-            )
-        return revealed_address_infos
-
-    @classmethod
     def color_address(cls, address: str, wallet: Wallet, signals: Signals) -> Optional[QtGui.QColor]:
         def get_color(is_change: bool) -> QtGui.QColor:
             if is_change:
@@ -191,7 +174,7 @@ class AddressEdit(ButtonEdit):
             if not address_info:
                 return None
 
-            cls.advance_to_address_info(address_info=address_info, wallet=wallet, signals=signals)
+            advance_tip_to_address_info(address_info=address_info, wallet=wallet, signals=signals)
             return get_color(is_change=address_info.is_change())
 
     def format_address_field(self, wallet: Optional[Wallet]) -> None:
