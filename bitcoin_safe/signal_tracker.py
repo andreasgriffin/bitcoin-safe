@@ -71,7 +71,13 @@ class SignalTools:
         for signal_name in dir(object_with_bound_signals):
             if signal_name in ["destroyed"]:
                 continue
-            signal = getattr(object_with_bound_signals, signal_name)
+
+            # Try to fetch the attribute; if it fails or isn't present, skip it.
+            try:
+                signal = getattr(object_with_bound_signals, signal_name, None)
+            except Exception:
+                continue
+
             if isinstance(signal, pyqtBoundSignal):
                 discon_sig(signal)
 

@@ -1,28 +1,47 @@
 {
     "VERSION": "0.2.0",
     "__class__": "QTWallet",
-    "display_balance": {
-        "VERSION": "0.0.1",
-        "__class__": "Balance",
-        "confirmed": 0,
-        "immature": 0,
-        "trusted_pending": 0,
-        "untrusted_pending": 0
+    "state": {
+        "VERSION": "0.0.0",
+        "__class__": "StateQTWallet",
+        "address_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                2
+            ]
+        },
+        "history_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                1,
+                6,
+                0
+            ]
+        },
+        "utxo_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                2,
+                1
+            ]
+        }
     },
-    "notified_tx_ids": [],
     "tutorial_index": null,
     "wallet": {
-        "VERSION": "0.3.0",
+        "VERSION": "0.3.1",
         "__class__": "Wallet",
-        "_blockchain_height": 4323449,
-        "_tips": [
-            1,
-            0
-        ],
+        "_blockchain_height": 4545665,
         "auto_opportunistic_coin_select": true,
         "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
         "gap": 20,
         "id": "demo-public-testnet",
+        "initialization_tips": [
+            8,
+            2
+        ],
         "keystores": [
             {
                 "VERSION": "0.0.2",
@@ -49,13 +68,79 @@
                 "Private"
             ],
             "data": {
+                "2dd3dcc78df9876cea859e510064cfa42cf1996ff0ad6bc6bcb208105abd6875": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "faucet send some coins",
+                    "ref": "2dd3dcc78df9876cea859e510064cfa42cf1996ff0ad6bc6bcb208105abd6875",
+                    "timestamp": 1750438618.137998,
+                    "type": "tx"
+                },
+                "399528f146a250c100ffc3f867621f04a842d315bf92618bce0ebea0c5eafa0d": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "faucet send more coins",
+                    "ref": "399528f146a250c100ffc3f867621f04a842d315bf92618bce0ebea0c5eafa0d",
+                    "timestamp": 1750438636.322516,
+                    "type": "tx"
+                },
+                "3bb5e02ce74f3827a3c027139d8d6277587f03c0ce8cf71b61594f2ede15089b": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "the money flow diagram looks so nice of this one",
+                    "ref": "3bb5e02ce74f3827a3c027139d8d6277587f03c0ce8cf71b61594f2ede15089b",
+                    "timestamp": 1750438663.915411,
+                    "type": "tx"
+                },
+                "8fbb52e8a5e3d5693131dcc820b418898e72ffa1c27bb898afaad351f2e40e72": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "test transaction to myself",
+                    "ref": "8fbb52e8a5e3d5693131dcc820b418898e72ffa1c27bb898afaad351f2e40e72",
+                    "timestamp": 1750438649.20239,
+                    "type": "tx"
+                },
+                "d0fe3ecd4cb819101141b9868d4ba6b69970f27cb085971be7a6b48e30ba87fd": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "another test transaction",
+                    "ref": "d0fe3ecd4cb819101141b9868d4ba6b69970f27cb085971be7a6b48e30ba87fd",
+                    "timestamp": 1750438674.851724,
+                    "type": "tx"
+                },
+                "f53fcbc03823a64ace1454950a99e1ea8e7a87064a6b2f14473729df457191be": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "faucet send even more coins",
+                    "ref": "f53fcbc03823a64ace1454950a99e1ea8e7a87064a6b2f14473729df457191be",
+                    "timestamp": 1750438638.858891,
+                    "type": "tx"
+                },
                 "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v": {
                     "VERSION": "0.0.3",
                     "__class__": "Label",
                     "category": "Private",
                     "label": null,
                     "ref": "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v",
-                    "timestamp": 1746249085.3734,
+                    "timestamp": 1750438593.196074,
+                    "type": "addr"
+                },
+                "tb1qd3ewnhfyz9zapmfzf292qc9h8fycd86w2e0w5j": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "KYC Exchange",
+                    "label": null,
+                    "ref": "tb1qd3ewnhfyz9zapmfzf292qc9h8fycd86w2e0w5j",
+                    "timestamp": 1750438605.564051,
+                    "type": "addr"
+                },
+                "tb1qdfahrf5tycdsklreukaspu8n6ew44e9z6wrcvn": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "Private",
+                    "label": null,
+                    "ref": "tb1qdfahrf5tycdsklreukaspu8n6ew44e9z6wrcvn",
+                    "timestamp": 1750438605.571176,
                     "type": "addr"
                 },
                 "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm": {
@@ -64,7 +149,7 @@
                     "category": "KYC Exchange",
                     "label": null,
                     "ref": "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm",
-                    "timestamp": 1746249085.312818,
+                    "timestamp": 1750438593.187178,
                     "type": "addr"
                 }
             },

@@ -29,7 +29,8 @@
 
 import logging
 from collections import defaultdict
-from typing import Dict, List, Optional, Set, Tuple
+from time import time
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -836,8 +837,25 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 if not address:
                     continue
                 all_addresses.add(address)
-        poisonous_matches = AddressComparer.poisonous(all_addresses)
-        self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
+
+        def do() -> Any:
+            start_time = time()
+            poisonous_matches = AddressComparer.poisonous(all_addresses)
+            logger.debug(
+                f"AddressComparer.poisonous {len(poisonous_matches)} results in { time()-start_time}s"
+            )
+            return poisonous_matches
+
+        def on_done(poisonous_matches) -> None:
+            logger.debug(f"finished AddressComparer, found {len(poisonous_matches)=}")
+
+        def on_success(poisonous_matches) -> None:
+            self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
+
+        def on_error(packed_error_info) -> None:
+            logger.error(f"AddressComparer error {packed_error_info}")
+
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def set_category_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
         # warn if multiple categories are combined
@@ -1149,5 +1167,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     def close(self):
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
+        self.setVisible(False)
         self.setParent(None)
+        self.sankey_bitcoin.close()
         return super().close()
