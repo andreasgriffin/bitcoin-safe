@@ -48,6 +48,7 @@ from bitcoin_safe.pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_script,
 )
+from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.signals import Signals, UpdateFilter
 from bitcoin_safe.wallet import (
     Wallet,
@@ -69,9 +70,10 @@ class SankeyBitcoin(SankeyWidget):
         self.txouts: List[TxOut] = []
         self.addresses: List[str] = []
         self.txo_dict: Dict[str, PythonUtxo] = {}
+        self.signal_tracker = SignalTracker()
 
-        self.signals.any_wallet_updated.connect(self.refresh)
-        self.signal_on_label_click.connect(self.on_label_click)
+        self.signal_tracker.connect(self.signals.any_wallet_updated, self.refresh)
+        self.signal_tracker.connect(self.signal_on_label_click, self.on_label_click)
 
     def refresh(self, update_filter: UpdateFilter):
         if not self.tx:
@@ -347,3 +349,10 @@ class SankeyBitcoin(SankeyWidget):
             self.signals.open_tx_like.emit(
                 PackagedTxLike(tx_like=outpoint.txid, focus_ui_elements=UiElements.diagram)
             )
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+        self.setVisible(False)
+        self.setParent(None)
+        return super().close()

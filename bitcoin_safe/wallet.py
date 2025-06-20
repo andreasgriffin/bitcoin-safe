@@ -1259,30 +1259,11 @@ class Wallet(BaseSaveableClass, CacheManager):
             logger.info(f"{self.id} Revealed addresses up to {keychain_kind=} {target=}")
         return revealed_addresses
 
-    def search_index_tuple(self, address, forward_search=500) -> Optional[AddressInfoMin]:
-        """Looks for the address"""
-        # first check if the address is already indexed
-        for is_change in [False, True]:
-            addresses = self._get_addresses(is_change=is_change)
-            if address in addresses:
-                return AddressInfoMin(
-                    address, addresses.index(address), AddressInfoMin.is_change_to_keychain(is_change)
-                )
-
-        # if not then search forward
-        for is_change in [False, True]:
-            for index in range(self.tips[int(is_change)] + 1, forward_search + self.tips[int(is_change)] + 1):
-                for is_change in [False, True]:
-                    peek_address = self.bdkwallet.peek_address_str(index=index, is_change=is_change)
-                    if peek_address == address:
-                        return AddressInfoMin(
-                            address, index, keychain=AddressInfoMin.is_change_to_keychain(is_change)
-                        )
-        return None
-
-    def advance_tip_to_address(self, address: str, forward_search=500) -> Optional[AddressInfoMin]:
+    def advance_tip_to_address(self, address: str, forward_search=1000) -> Optional[AddressInfoMin]:
         """Looks for the address and advances the tip to this address"""
-        address_info_min = self.search_index_tuple(address=address, forward_search=forward_search)
+        address_info_min = self.is_my_address_with_peek(
+            address=address, peek_change_ahead=forward_search, peek_receive_ahead=forward_search
+        )
         if not address_info_min:
             return None
 
