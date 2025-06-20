@@ -354,15 +354,6 @@ class BlockchainType(enum.Enum):
         return [cls.Electrum, cls.Esplora]
 
 
-class CBFServerType(enum.Enum):
-    Automatic = enum.auto()
-    Manual = enum.auto()
-
-    @classmethod
-    def from_text(cls, t) -> "CBFServerType":
-        return CBFServerType._member_map_[t]  # type: ignore
-
-
 class Balance(QObject, SaveAllClass):
     VERSION = "0.0.1"
     known_classes = {

@@ -66,7 +66,6 @@ from bitcoin_safe.gui.qt.util import (
 from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
-    get_default_cbf_hosts,
     get_default_port,
     get_default_rpc_hosts,
     get_description,
@@ -80,7 +79,7 @@ from bitcoin_safe.network_utils import (
     get_electrum_server_version,
     get_host_and_port,
 )
-from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
+from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.util_os import webopen
@@ -207,41 +206,6 @@ class NetworkSettingsUI(QDialog):
         self.compactBlockFiltersLayout = QFormLayout(self.compactBlockFiltersTab)
         self.compactBlockFiltersLayout.setFieldGrowthPolicy(
             QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow
-        )
-
-        self.cbf_server_typeComboBox = QComboBox(self.compactBlockFiltersTab)
-        self.cbf_server_typeComboBox.addItem(self.tr("Advanced"), CBFServerType.Manual)
-        self.cbf_server_typeComboBox.addItem(self.tr("Automatic"), CBFServerType.Automatic)
-        self.cbf_server_typeComboBox.setCurrentIndex(1)
-
-        self.cbf_server_typeComboBox_label = QLabel()
-        self.compactBlockFiltersLayout.addRow(
-            self.cbf_server_typeComboBox_label, self.cbf_server_typeComboBox
-        )
-
-        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(
-            network=network,
-            suggestions={
-                network: list(get_default_cbf_hosts(network=network).values()) for network in bdk.Network
-            },
-        )
-        self.compactblockfilters_ip_address_edit.setEnabled(False)
-        self.compactblockfilters_ip_address_edit_label = QLabel()
-        self.compactBlockFiltersLayout.addRow(
-            self.compactblockfilters_ip_address_edit_label, self.compactblockfilters_ip_address_edit
-        )
-
-        self.compactblockfilters_port_edit = QCompleterLineEdit(
-            network=network,
-            suggestions={
-                network: [str(get_default_port(network, server_type=BlockchainType.CompactBlockFilter))]
-                for network in bdk.Network
-            },
-        )
-        self.compactblockfilters_port_edit.setEnabled(False)
-        self.compactblockfilters_port_edit_label = QLabel()
-        self.compactBlockFiltersLayout.addRow(
-            self.compactblockfilters_port_edit_label, self.compactblockfilters_port_edit
         )
 
         self.cbf_description = QLabel()
@@ -401,7 +365,6 @@ class NetworkSettingsUI(QDialog):
         # Signals and Slots
         self.network_combobox.currentIndexChanged.connect(self.on_network_change)
         self.server_type_comboBox.currentIndexChanged.connect(self.set_server_type_comboBox)
-        self.cbf_server_typeComboBox.currentIndexChanged.connect(self.enableIPPortLineEdit)
 
         self.original_network = network
         self.set_ui(network_configs.configs[network.name])
@@ -425,14 +388,6 @@ class NetworkSettingsUI(QDialog):
         self.electrum_url_edit_url_label.setText(self.tr("URL:"))
         self.electrum_url_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
         self.electrum_use_ssl_checkbox_label.setText(self.tr("SSL:"))
-
-        self.compactblockfilters_port_edit_label.setText(self.tr("Port:"))
-        self.compactblockfilters_port_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
-        self.cbf_server_typeComboBox_label.setText(self.tr("Mode:"))
-        self.compactblockfilters_ip_address_edit_label.setText(self.tr("IP Address:"))
-        self.compactblockfilters_ip_address_edit.setPlaceholderText(
-            self.tr("Press ⬇ arrow key for suggestions")
-        )
 
         self.rpc_ip_address_edit_label.setText(self.tr("IP Address:"))
         self.rpc_ip_address_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
@@ -550,7 +505,6 @@ class NetworkSettingsUI(QDialog):
         self.set_ui(self.network_configs.configs[new_network.name])
 
     def _edits_set_network(self, network: bdk.Network):
-        self.compactblockfilters_ip_address_edit.set_network(network)
         self.electrum_url_edit.set_network(network)
         self.esplora_url_edit.set_network(network)
         self.rpc_ip_address_edit.set_network(network)
@@ -560,7 +514,6 @@ class NetworkSettingsUI(QDialog):
         self.proxy_url_edit.set_network(network)
 
     def add_to_completer_memory(self):
-        self.compactblockfilters_ip_address_edit.add_current_to_memory()
         self.electrum_url_edit.add_current_to_memory()
         self.esplora_url_edit.add_current_to_memory()
         self.rpc_ip_address_edit.add_current_to_memory()
@@ -645,14 +598,6 @@ class NetworkSettingsUI(QDialog):
             get_description(network=self.network, server_type=BlockchainType.Electrum)
         )
 
-    def enableIPPortLineEdit(self, index: int):
-        if self.cbf_server_typeComboBox.itemData(index) == CBFServerType.Manual:
-            self.compactblockfilters_ip_address_edit.setEnabled(True)
-            self.compactblockfilters_port_edit.setEnabled(True)
-        else:
-            self.compactblockfilters_ip_address_edit.setEnabled(False)
-            self.compactblockfilters_port_edit.setEnabled(False)
-
     # Properties for all user entries
     @property
     def network(self) -> bdk.Network:
@@ -669,37 +614,6 @@ class NetworkSettingsUI(QDialog):
     @server_type.setter
     def server_type(self, server_type: BlockchainType):
         self.server_type_comboBox.setCurrentText(BlockchainType.to_text(server_type))
-
-    @property
-    def cbf_server_type(self) -> CBFServerType:
-        return self.cbf_server_typeComboBox.currentData()
-
-    @cbf_server_type.setter
-    def cbf_server_type(self, cbf_server_type: CBFServerType):
-        index = self.cbf_server_typeComboBox.findData(cbf_server_type)
-        if index != -1:
-            self.cbf_server_typeComboBox.setCurrentIndex(index)
-            self.enableIPPortLineEdit(index)
-
-    @property
-    def compactblockfilters_ip(self) -> str:
-        return self.compactblockfilters_ip_address_edit.text()
-
-    @compactblockfilters_ip.setter
-    def compactblockfilters_ip(self, ip):
-        self.compactblockfilters_ip_address_edit.setText(ip if ip else "")
-
-    @property
-    def compactblockfilters_port(self) -> int:
-        try:
-            return int(self.compactblockfilters_port_edit.text())
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
-            return self.network_configs.configs[self.network.name].compactblockfilters_port
-
-    @compactblockfilters_port.setter
-    def compactblockfilters_port(self, port):
-        self.compactblockfilters_port_edit.setText(str(port))
 
     @property
     def electrum_url(self) -> str:
