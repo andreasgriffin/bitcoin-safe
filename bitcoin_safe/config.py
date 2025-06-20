@@ -238,11 +238,7 @@ class UserConfig(BaseSaveableClass):
                         del config["cbf_server_type"]  # removed  (and removed type)
 
                 # downgrade: if NetworkConfig.VERSION is doesnt support p2p_listener_type
-                if (
-                    version.parse(str(config["VERSION"]))
-                    <= version.parse("0.1.1")
-                    >= version.parse(NetworkConfig.VERSION)
-                ):
+                if version.parse(NetworkConfig.VERSION) < version.parse("0.2.0"):
                     if "p2p_listener_type" in config:
                         del config["p2p_listener_type"]  # can contain future type P2pListenerType
 
