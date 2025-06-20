@@ -1032,19 +1032,6 @@ class Wallet(BaseSaveableClass, CacheManager):
                     else None
                 ),
             )
-        # elif self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
-        #     folder = f"./compact-filters-{self.id}-{self.config.network.name}"
-        #     blockchain_config = bdk.BlockchainConfig.COMPACT_FILTERS(
-        #         bdk.CompactFiltersConfig(
-        #             [
-        #                 f"{self.config.network_config.compactblockfilters_ip}:{self.config.network_config.compactblockfilters_port}"
-        #             ]
-        #             * 5,
-        #             self.config.network,
-        #             folder,
-        #             start_height,
-        #         )
-        #     )
         elif self.config.network_config.server_type == BlockchainType.RPC:
             raise NotImplementedError("RPC is not available")
             # blockchain_config = bdk.BlockchainConfig.RPC(

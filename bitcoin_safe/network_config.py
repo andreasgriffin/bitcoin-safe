@@ -36,7 +36,7 @@ import bdkpython as bdk
 import socks
 from packaging import version
 
-from bitcoin_safe.pythonbdk_types import BlockchainType, CBFServerType
+from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .html_utils import link
@@ -354,11 +354,10 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
 
 
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.1.0"
+    VERSION = "0.1.1"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "BlockchainType": BlockchainType,
-        "CBFServerType": CBFServerType,
         "Network": bdk.Network,
     }
 
@@ -367,9 +366,6 @@ class NetworkConfig(BaseSaveableClass):
         self.server_type: BlockchainType = (
             BlockchainType.Esplora if network == bdk.Network.BITCOIN else BlockchainType.Electrum
         )
-        self.cbf_server_type: CBFServerType = CBFServerType.Automatic
-        self.compactblockfilters_ip: str = get_default_cbf_hosts(network=network)["default"]
-        self.compactblockfilters_port: int = get_default_port(network, BlockchainType.CompactBlockFilter)
         electrum_config = get_electrum_configs(network)["default"]
         self.electrum_url: str = electrum_config.url
         self.electrum_use_ssl: bool = electrum_config.use_ssl

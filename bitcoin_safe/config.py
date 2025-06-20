@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -212,6 +213,37 @@ class UserConfig(BaseSaveableClass):
         if "VERSION" in dct:
             del dct["VERSION"]
         return dct
+
+    @classmethod
+    def file_migration(cls, file_content: str):
+        "this class can be overwritten in child classes"
+
+        dct = json.loads(file_content)
+
+        # old versions
+        if config := dct.get("network_config"):
+            if version.parse(str(config["VERSION"])) < version.parse("0.1.0"):
+                if "cbf_server_type" in config:
+                    del config["cbf_server_type"]  # removed  (and removed type)
+
+        # newer versions
+        if (
+            (network_configs := dct.get("network_configs"))
+            and (configs := network_configs.get("configs"))
+            and isinstance(configs, dict)
+        ):
+            for config in configs.values():
+                if version.parse(str(config["VERSION"])) <= version.parse("0.1.1"):
+                    if "cbf_server_type" in config:
+                        del config["cbf_server_type"]  # removed  (and removed type)
+
+                # downgrade: if NetworkConfig.VERSION is doesnt support p2p_listener_type
+                if version.parse(NetworkConfig.VERSION) < version.parse("0.2.0"):
+                    if "p2p_listener_type" in config:
+                        del config["p2p_listener_type"]  # can contain future type P2pListenerType
+
+        # in the function above, only default json serilizable things can be set in dct
+        return json.dumps(dct)
 
     @classmethod
     def exists(cls, password=None, file_path=None) -> bool:
