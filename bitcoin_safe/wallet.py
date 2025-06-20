@@ -1189,11 +1189,13 @@ class Wallet(BaseSaveableClass, CacheManager):
         # And you can only start watching new addresses once you detected transactions on them.
         # Thas why this fetching has to be done in a loop
         self.clear_cache()
-        self.get_addresses()
+        addresses = self.get_addresses()
         self.get_height()
         self.bdkwallet.list_output()
         self.get_dict_fulltxdetail()
         self.get_all_txos_dict()
+        if addresses:
+            self.is_my_address_with_peek(addresses[-1])
 
     @instance_lru_cache()
     def get_txs(self) -> Dict[str, TransactionDetails]:
@@ -1715,6 +1717,8 @@ class Wallet(BaseSaveableClass, CacheManager):
     def is_my_address_with_peek(
         self, address: str, peek_receive_ahead: int = 1000, peek_change_ahead: int = 1000
     ) -> AddressInfoMin | None:
+        if not address:
+            return None
         return self.get_address_dict_with_peek(
             peek_receive_ahead=peek_receive_ahead, peek_change_ahead=peek_change_ahead
         ).get(address)
