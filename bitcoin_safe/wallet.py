@@ -1693,9 +1693,11 @@ class Wallet(BaseSaveableClass, CacheManager):
     def is_my_address(self, address: str) -> bool:
         return address in self.get_addresses()
 
+    @instance_lru_cache()
     def get_address_dict_with_peek(
         self, peek_receive_ahead: int, peek_change_ahead: int
     ) -> Dict[str, AddressInfoMin]:
+        start_time = time()
         addresses: Dict[str, AddressInfoMin] = {}
         for _is_change, _peek_ahead in [(False, peek_receive_ahead), (True, peek_change_ahead)]:
             address_infos = self._get_addresses_infos(is_change=_is_change)
@@ -1707,6 +1709,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     keychain=AddressInfoMin.is_change_to_keychain(is_change=_is_change), index=index
                 )
                 addresses[str(address_info.address)] = AddressInfoMin.from_bdk_address_info(address_info)
+        logger.debug(f"{self.id} get_address_dict_with_peek  in { time()-start_time}s")
         return addresses
 
     def is_my_address_with_peek(
