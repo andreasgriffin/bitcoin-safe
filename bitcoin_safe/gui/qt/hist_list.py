@@ -526,18 +526,21 @@ class HistList(MyTreeView):
 
         fee_info = FeeInfo.from_txdetails(tx)
         fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
-        estimated_duration_str = confirmation_wait_formatted(
-            self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
-        )
-        status_text = (
-            tx.get_datetime().strftime("%Y-%m-%d %H:%M")
-            if tx.chain_position.is_confirmed()
-            else estimated_duration_str
-        )
+        status_text = ""
+        if tx.chain_position.is_confirmed():
+            status_text = tx.get_datetime().strftime("%Y-%m-%d %H:%M")
+        else:
+            if status.is_in_mempool:
+                status_text = confirmation_wait_formatted(
+                    self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
+                )
+            else:
+                status_text = self.tr("Local")
+
         if 1 <= status.confirmations() <= 6:
             status_tooltip = self.tr("{number} Confirmations").format(number=status.confirmations())
         elif status.confirmations() <= 0:
-            if wallet.is_in_mempool(txid=tx.txid):
+            if status.is_in_mempool:
                 status_tooltip = self.tr("Waiting to be included in a block")
             else:
                 status_tooltip = self.tr("Not broadcasted.")

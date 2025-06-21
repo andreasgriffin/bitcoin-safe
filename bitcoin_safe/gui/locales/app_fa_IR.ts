@@ -850,6 +850,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Local</source>
+			<translation>لوکال</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Not broadcasted.</source>
 			<translation>در شبکه پخش نشده است.</translation>
 		</message>
@@ -1640,11 +1645,6 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>پیشرفته</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
 			<source>Apply &amp;&amp; Shutdown</source>
 			<translation>اعمال و خاموش کردن</translation>
 		</message>
@@ -1652,11 +1652,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
 			<translation>آیا مطمئنید «{scheme}» در نشانی esplora صحیح است؟</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Automatic</source>
-			<translation>خودکار</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1685,11 +1680,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Mempool Instance URL</source>
 			<translation>نشانی نمونهٔ Mempool</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Mode:</source>
-			<translation>حالت:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
