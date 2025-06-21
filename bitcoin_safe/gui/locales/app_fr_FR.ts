@@ -849,6 +849,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Local</source>
+			<translation>Local  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Not broadcasted.</source>
 			<translation>Non diffusée.</translation>
 		</message>
@@ -1639,11 +1644,6 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Avancé  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
 			<source>Apply &amp;&amp; Shutdown</source>
 			<translation>Appliquer &amp; Éteindre  </translation>
 		</message>
@@ -1651,11 +1651,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
 			<translation>Êtes-vous sûr que '{scheme}' est correct dans l'url esplora ?  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Automatic</source>
-			<translation>Automatique  </translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1684,11 +1679,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Mempool Instance URL</source>
 			<translation>URL de l'instance Mempool  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Mode:</source>
-			<translation>Mode :  </translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>

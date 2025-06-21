@@ -849,6 +849,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Local</source>
+			<translation>ローカル</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Not broadcasted.</source>
 			<translation>ブロードキャストされていません。</translation>
 		</message>
@@ -1639,11 +1644,6 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>詳細</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
 			<source>Apply &amp;&amp; Shutdown</source>
 			<translation>適用 &amp;&amp; シャットダウン  </translation>
 		</message>
@@ -1651,11 +1651,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
 			<translation>esploraのURLの'{scheme}'が正しいことを確認していますか？  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Automatic</source>
-			<translation>接続をテスト</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1687,11 +1682,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Mempool Instance URL</source>
 			<translation>新しいウォレットを作成</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Mode:</source>
-			<translation>ユーザ名：</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>

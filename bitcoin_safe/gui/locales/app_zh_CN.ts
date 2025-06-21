@@ -849,6 +849,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Local</source>
+			<translation>本地</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Not broadcasted.</source>
 			<translation>未广播。</translation>
 		</message>
@@ -1640,11 +1645,6 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>高级</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
 			<source>Apply &amp;&amp; Shutdown</source>
 			<translation>应用&amp;&amp;关闭  </translation>
 		</message>
@@ -1652,11 +1652,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
 			<translation>您确定 '{scheme}' 在 esplora 网址中是正确的吗？</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Automatic</source>
-			<translation>自动</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1688,11 +1683,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Mempool Instance URL</source>
 			<translation>Mempool实例URL</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Mode:</source>
-			<translation>模式：</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
