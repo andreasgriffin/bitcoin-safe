@@ -1,4 +1,7 @@
 name: Spin up a machine
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs: 
