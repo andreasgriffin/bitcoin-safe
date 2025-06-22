@@ -1,12 +1,10 @@
-# pip freeze  | grep -E 'poetry|cleo|crashtest|requests' > requirements-poetry.in
-
 cleo==2.1.0
-crashtest==0.4.1
-poetry==1.8.5
-poetry-core==1.9.1
-poetry-plugin-export==1.8.0
-requests==2.32.3
-requests-toolbelt==1.0.0
-xattr==1.1.0 
 colorama==0.4.6
+crashtest==0.4.1
+poetry==2.1.3
+poetry-core==2.1.3
+poetry-plugin-export==1.9.0
 pywin32-ctypes==0.2.3
+requests==2.32.4
+requests-toolbelt==1.0.0
+xattr==1.1.4

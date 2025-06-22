@@ -1,4 +1,7 @@
 name: Build AppImage and Deb
+permissions:
+  contents: read
+
 
 
 

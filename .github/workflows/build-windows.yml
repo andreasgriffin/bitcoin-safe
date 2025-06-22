@@ -1,4 +1,7 @@
 name: Build Windows 
+permissions:
+  contents: read
+
 
 on:
   workflow_dispatch:
