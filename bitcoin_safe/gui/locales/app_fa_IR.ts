@@ -2991,6 +2991,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>لطفاً ابتدا تراکنش محلی موجود کیف‌پول را حذف کنید.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>مرحلهٔ قبل</translation>
 		</message>
@@ -3016,6 +3021,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>این تراکنش از قبل عمومی شده و دیگر قابل تغییر نیست.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>شناسهٔ تراکنش PSBT امضاشده با شناسه تراکنش اصلی مطابقت ندارد</translation>
 		</message>
@@ -3023,6 +3033,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>تراکنش جایگزین‌ در کیف پول‌های باز یافت نشد</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>کیف‌پول ورودی‌های تراکنش پیدا نشد</translation>
 		</message>
 	</context>
 	<context>

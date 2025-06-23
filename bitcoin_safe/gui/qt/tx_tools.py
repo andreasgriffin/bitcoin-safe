@@ -48,8 +48,8 @@ logger = logging.getLogger(__name__)
 
 class TxTools:
     @classmethod
-    def edit_tx(cls, replace_tx: TransactionDetails, txinfos: TxUiInfos, signals: Signals):
-        if not GENERAL_RBF_AVAILABLE:
+    def edit_tx(cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, signals: Signals):
+        if not GENERAL_RBF_AVAILABLE and replace_tx:
             txinfos.utxos_read_only = True
             txinfos.recipient_read_only = True
             txinfos.replace_tx = replace_tx

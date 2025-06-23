@@ -652,15 +652,18 @@ class HistList(MyTreeView):
 
                 menu.addSeparator()
 
-                is_exclude_tx_ids_in_saving = False
-                if txid in wallet.exclude_tx_ids_in_saving:
-                    is_exclude_tx_ids_in_saving = True
-                action_exclude_tx_ids_in_saving = menu.add_action(
-                    self.tr("Remove on restart"),
-                    partial(self.on_exclude_tx_ids_in_saving, txid, wallet, not is_exclude_tx_ids_in_saving),
-                )
-                action_exclude_tx_ids_in_saving.setCheckable(True)
-                action_exclude_tx_ids_in_saving.setChecked(is_exclude_tx_ids_in_saving)
+                if tx_status.is_local():
+                    is_exclude_tx_ids_in_saving = False
+                    if txid in wallet.exclude_tx_ids_in_saving:
+                        is_exclude_tx_ids_in_saving = True
+                    action_exclude_tx_ids_in_saving = menu.add_action(
+                        self.tr("Remove on restart"),
+                        partial(
+                            self.on_exclude_tx_ids_in_saving, txid, wallet, not is_exclude_tx_ids_in_saving
+                        ),
+                    )
+                    action_exclude_tx_ids_in_saving.setCheckable(True)
+                    action_exclude_tx_ids_in_saving.setChecked(is_exclude_tx_ids_in_saving)
 
         # run_hook('receive_menu', menu, txids, self.wallet)
         if viewport := self.viewport():
