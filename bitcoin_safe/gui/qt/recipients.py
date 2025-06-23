@@ -110,7 +110,6 @@ class RecipientWidget(QWidget):
         self.label_unit = QLabel(unit_str(network=network))
         self.send_max_button = QPushButton()
         self.send_max_button.setCheckable(True)
-        self.send_max_button.setMaximumWidth(80)
         self.send_max_button.clicked.connect(self.on_send_max_button_click)
         self.amount_layout.addWidget(self.amount_spin_box)
         self.amount_layout.addWidget(self.label_unit)
@@ -396,7 +395,6 @@ class Recipients(QWidget):
         self.main_layout.addWidget(self.recipient_list)
 
         self.add_recipient_button = QPushButton("")
-        self.add_recipient_button.setMaximumWidth(150)
         self.add_recipient_button.setIcon(svg_tools.get_QIcon("bi--person-add.svg"))
         self.add_recipient_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.add_recipient_button.clicked.connect(self.add_recipient)
