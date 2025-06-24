@@ -194,6 +194,9 @@ class TxStatus:
     def can_do_initial_broadcast(self) -> bool:
         return self.confirmation_status == TxConfirmationStatus.LOCAL
 
+    def is_local(self) -> bool:
+        return self.confirmation_status == TxConfirmationStatus.LOCAL
+
     def can_rbf(self) -> bool:
         return self.is_unconfirmed() and self.confirmation_status != TxConfirmationStatus.LOCAL
 

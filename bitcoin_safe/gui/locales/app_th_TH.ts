@@ -2989,6 +2989,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>โปรดลบธุรกรรมในเครื่องของกระเป๋าสตางค์ที่มีอยู่ก่อน</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า  </translation>
 		</message>
@@ -3014,6 +3019,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>ไม่สามารถแก้ไขธุรกรรมนี้ได้อีกต่อไป เนื่องจากได้เผยแพร่สู่สาธารณะแล้ว</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม  </translation>
 		</message>
@@ -3021,6 +3031,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>ไม่พบธุรกรรมที่ต้องการแทนที่ในกระเป๋าที่เปิด</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>ไม่พบวอลเล็ตของอินพุตธุรกรรม</translation>
 		</message>
 	</context>
 	<context>

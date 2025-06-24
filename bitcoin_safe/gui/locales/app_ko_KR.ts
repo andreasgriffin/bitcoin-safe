@@ -2989,6 +2989,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>지갑의 기존 로컬 트랜잭션을 먼저 제거해 주세요.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>이전 단계  </translation>
 		</message>
@@ -3014,6 +3019,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>해당 트랜잭션은 이미 공개되어 더 이상 변경할 수 없습니다.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다  </translation>
 		</message>
@@ -3021,6 +3031,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>대체할 트랜잭션을 열린 지갑에서 찾을 수 없음</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>트랜잭션 입력 지갑을 찾을 수 없습니다</translation>
 		</message>
 	</context>
 	<context>

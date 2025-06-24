@@ -273,7 +273,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.buttonBox = QDialogButtonBox()
 
         # Create custom buttons
-        # if i do  on_clicked=  self.edit    it doesnt reliably trigger the signal. Why???
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -281,15 +280,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
         self.button_rbf = add_to_buttonbox(
             self.buttonBox,
             "",
             "pen.svg",
-            on_clicked=self.edit,
+            on_clicked=self.rbf,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
         self.button_cpfp_tx = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -420,7 +417,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.set_next_prev_button_enabledness()
 
-    def get_tx_details(self, txid: str) -> Tuple[TransactionDetails | None, Wallet | None]:
+    def get_tx_details(self, txid: str) -> Tuple[TransactionDetails, Wallet] | Tuple[None, None]:
         for wallet in get_wallets(self.signals):
             tx = wallet.get_tx(txid=txid)
             if tx:
@@ -443,9 +440,44 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
     def edit(self) -> None:
         tx = self.extract_tx()
+        wallets = get_wallets(self.signals)
+        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
+        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
+
+        if GENERAL_RBF_AVAILABLE:
+            TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
+            return
+        else:
+            if wallet:
+                tx_status = TxStatus.from_wallet(txid=tx.compute_txid(), wallet=wallet)
+                if tx_status.is_local():
+                    Message(
+                        self.tr("Please remove the existing local transaction of the wallet first."),
+                        type=MessageType.Error,
+                    )
+                    return
+                else:
+                    Message(
+                        self.tr("The transaction cannot be changed anymore, since it is public already."),
+                        type=MessageType.Error,
+                    )
+                    return
+            # I do not need to consider the tx_details branch, because then wallet is also set
+
+            elif txinfos.main_wallet_id:
+                TxTools.edit_tx(replace_tx=None, txinfos=txinfos, signals=self.signals)
+            else:
+                Message(
+                    self.tr("Wallet of transaction inputs could not be found"),
+                    type=MessageType.Error,
+                )
+
+    def rbf(self) -> None:
+        tx = self.extract_tx()
         txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, get_wallets(self.signals))
         tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
         if tx_details:
+            # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
             TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
         else:
             Message(

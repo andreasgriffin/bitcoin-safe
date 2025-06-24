@@ -2989,6 +2989,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>ကျေးဇူးပြု၍ ဝေါလက်ထဲရှိပြီးသား ဒေသတွင်း ငွေလွှဲစာရင်းကို ပထမဦးစွာ ဖယ်ရှားပါ။</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>ယခင်အဆင့်  </translation>
 		</message>
@@ -3014,6 +3019,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>ဤငွေလွှဲစာရင်းသည် အများသိအောင် ထုတ်ပြန်ထားပြီးသားဖြစ်သောကြောင့် ထပ်မံ ပြောင်းလဲနိုင်တော့ပါ။</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်  </translation>
 		</message>
@@ -3021,6 +3031,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>ဖွင့်ထားသော ဝေါလက်များတွင် အစားထိုးမည့် ငွေလွှဲ မတွေ့ပါ။</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>ငွေလွှဲအဝင်များ၏ ဝေါလက်ကို ရှာမတွေ့ပါ</translation>
 		</message>
 	</context>
 	<context>

@@ -2992,6 +2992,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>Por favor, elimina primero la transacción local existente de la cartera.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>Paso anterior</translation>
 		</message>
@@ -3017,6 +3022,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>La transacción ya es pública, por lo que no se puede modificar.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>El Identificador de Transacción del psbt firmado no coincide con el txid original</translation>
 		</message>
@@ -3024,6 +3034,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>No se pudo encontrar la transacción a reemplazar en las billeteras abiertas</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>No se pudo encontrar la cartera de entradas de la transacción</translation>
 		</message>
 	</context>
 	<context>

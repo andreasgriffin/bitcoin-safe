@@ -340,7 +340,7 @@ Content to translate:
 
             # Write updated rows back to CSV
             with open(csv_path, "w", newline="", encoding="utf-8") as f:
-                fieldnames = [location_key, source_key, target_key]
+                fieldnames = [location_key, "filename", "line", source_key, target_key]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(rows)

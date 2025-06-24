@@ -2992,6 +2992,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>يرجى إزالة المعاملة المحلية الموجودة في المحفظة أولاً.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>خطوة سابقة</translation>
 		</message>
@@ -3017,6 +3022,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>لا يمكن تعديل هذه المعاملة بعد الآن لأنها أصبحت عامة بالفعل.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
 		</message>
@@ -3024,6 +3034,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>لم يتم العثور على المعاملة المراد استبدالها في المحافظ المفتوحة</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>تعذّر العثور على محفظة مدخلات المعاملة</translation>
 		</message>
 	</context>
 	<context>

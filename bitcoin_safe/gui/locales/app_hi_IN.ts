@@ -2992,6 +2992,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please remove the existing local transaction of the wallet first.</source>
+			<translation>कृपया पहले वॉलेट का मौजूदा स्थानीय लेन-देन हटाएँ।</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Previous step</source>
 			<translation>पिछला चरण</translation>
 		</message>
@@ -3017,6 +3022,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The transaction cannot be changed anymore, since it is public already.</source>
+			<translation>यह लेन-देन पहले से सार्वजनिक है, इसलिए अब इसे बदला नहीं जा सकता।</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
 		</message>
@@ -3024,6 +3034,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>खुले वॉलेट्स में प्रतिस्थापित करने हेतु लेनदेन नहीं मिला</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Wallet of transaction inputs could not be found</source>
+			<translation>ट्रांज़ैक्शन इनपुट का वॉलेट नहीं मिला</translation>
 		</message>
 	</context>
 	<context>
