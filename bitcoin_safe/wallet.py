@@ -1993,7 +1993,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         dict_full: Dict[str, FullTxDetail] = self.get_dict_fulltxdetail()
 
         # 1) Split into confirmed vs. unconfirmed using helper
-        confirmed, unconfirmed, initial_transations, local = self._split_by_confirmation(dict_full)
+        confirmed, unconfirmed, initial_transactions, local = self._split_by_confirmation(dict_full)
 
         # 2) Sort confirmed: by height + intra-block parent→child order
         sorted_confirmed: List[FullTxDetail] = self._sort_confirmed_transactions(confirmed)
@@ -2001,15 +2001,15 @@ class Wallet(BaseSaveableClass, CacheManager):
         # 3) Sort unconfirmed: group dependency chains via DFS-topo
         sorted_unconfirmed: List[FullTxDetail] = self._sort_unconfirmed_transactions(unconfirmed)
 
-        # 4) initial_transations: sort according to their original order
-        sorted_initial_transations = self._sort_initial_transactions(initial_transations)
+        # 4) initial_transactions: sort according to their original order
+        sorted_initial_transactions = self._sort_initial_transactions(initial_transactions)
 
         # 5) Sort local: group dependency chains via DFS-topo
         sorted_local: List[FullTxDetail] = self._sort_unconfirmed_transactions(local)
 
         # 6) Merge: confirmed first, then unconfirmed
         all_sorted: List[FullTxDetail] = (
-            sorted_confirmed + sorted_unconfirmed + sorted_initial_transations + sorted_local
+            sorted_confirmed + sorted_unconfirmed + sorted_initial_transactions + sorted_local
         )
         return [fx.tx for fx in all_sorted]
 
@@ -2026,7 +2026,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         confirmed: List[FullTxDetail] = []
         unconfirmed: List[FullTxDetail] = []
-        initial_transations: List[FullTxDetail] = []
+        initial_transactions: List[FullTxDetail] = []
         local: List[FullTxDetail] = []
         for tx_detail in dict_full.values():
             if isinstance(tx_detail.tx.chain_position, bdk.ChainPosition.CONFIRMED):
@@ -2034,12 +2034,12 @@ class Wallet(BaseSaveableClass, CacheManager):
             else:
                 if is_local(tx_detail.tx.chain_position):
                     if tx_detail.txid in initial_transation_ids:
-                        initial_transations.append(tx_detail)
+                        initial_transactions.append(tx_detail)
                     else:
                         local.append(tx_detail)
                 else:
                     unconfirmed.append(tx_detail)
-        return confirmed, unconfirmed, initial_transations, local
+        return confirmed, unconfirmed, initial_transactions, local
 
     def _sort_confirmed_transactions(self, confirmed: List[FullTxDetail]) -> List[FullTxDetail]:
         """
