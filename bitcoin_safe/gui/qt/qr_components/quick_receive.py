@@ -32,6 +32,7 @@ from functools import partial
 from typing import List
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
@@ -48,7 +49,6 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.util import do_copy, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)

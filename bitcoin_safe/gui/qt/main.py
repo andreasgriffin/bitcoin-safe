@@ -41,6 +41,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import (
@@ -91,7 +92,6 @@ from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
-from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util_os import webopen, xdg_open_file

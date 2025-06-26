@@ -33,6 +33,7 @@ from typing import Dict, List, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
@@ -48,7 +49,6 @@ from bitcoin_safe.pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_script,
 )
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.signals import Signals, UpdateFilter
 from bitcoin_safe.wallet import (
     Wallet,
