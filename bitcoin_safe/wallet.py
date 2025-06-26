@@ -639,6 +639,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         self.client: Optional[Client] = None
         self.exclude_tx_ids_in_saving: Set[str] = set()
+        self._initial_txs = initial_txs if initial_txs else []
         if initial_txs:
             self.apply_unconfirmed_txs(txs=initial_txs)
         self.clear_cache()
@@ -899,7 +900,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         d["descriptor_str"] = self.multipath_descriptor.to_string_with_secret()
         d["initial_txs"] = [
             serialized_to_hex(tx.transaction.serialize())
-            for tx in self.get_txs().values()
+            for tx in self.sorted_delta_list_transactions()
             if tx.transaction.compute_txid() not in self.exclude_tx_ids_in_saving
         ]
         return d
@@ -1992,7 +1993,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         dict_full: Dict[str, FullTxDetail] = self.get_dict_fulltxdetail()
 
         # 1) Split into confirmed vs. unconfirmed using helper
-        confirmed, unconfirmed, local = self._split_by_confirmation(dict_full)
+        confirmed, unconfirmed, initial_transactions, local = self._split_by_confirmation(dict_full)
 
         # 2) Sort confirmed: by height + intra-block parent→child order
         sorted_confirmed: List[FullTxDetail] = self._sort_confirmed_transactions(confirmed)
@@ -2000,34 +2001,45 @@ class Wallet(BaseSaveableClass, CacheManager):
         # 3) Sort unconfirmed: group dependency chains via DFS-topo
         sorted_unconfirmed: List[FullTxDetail] = self._sort_unconfirmed_transactions(unconfirmed)
 
-        # 4) Sort local: group dependency chains via DFS-topo
+        # 4) initial_transactions: sort according to their original order
+        sorted_initial_transactions = self._sort_initial_transactions(initial_transactions)
+
+        # 5) Sort local: group dependency chains via DFS-topo
         sorted_local: List[FullTxDetail] = self._sort_unconfirmed_transactions(local)
 
-        # 5) Merge: confirmed first, then unconfirmed
-        all_sorted: List[FullTxDetail] = sorted_confirmed + sorted_unconfirmed + sorted_local
+        # 6) Merge: confirmed first, then unconfirmed
+        all_sorted: List[FullTxDetail] = (
+            sorted_confirmed + sorted_unconfirmed + sorted_initial_transactions + sorted_local
+        )
         return [fx.tx for fx in all_sorted]
 
     def _split_by_confirmation(
         self, dict_full: Dict[str, FullTxDetail]
-    ) -> Tuple[List[FullTxDetail], List[FullTxDetail], List[FullTxDetail]]:
+    ) -> Tuple[List[FullTxDetail], List[FullTxDetail], List[FullTxDetail], List[FullTxDetail]]:
         """
         Splits the full-detail mapping into two lists:
         - confirmed: with a confirmed chain position
         - mempool: awaiting confirmation
         - local: local transactions
         """
+        initial_transation_ids = [tx.compute_txid() for tx in self._initial_txs]
+
         confirmed: List[FullTxDetail] = []
         unconfirmed: List[FullTxDetail] = []
+        initial_transactions: List[FullTxDetail] = []
         local: List[FullTxDetail] = []
         for tx_detail in dict_full.values():
             if isinstance(tx_detail.tx.chain_position, bdk.ChainPosition.CONFIRMED):
                 confirmed.append(tx_detail)
             else:
                 if is_local(tx_detail.tx.chain_position):
-                    local.append(tx_detail)
+                    if tx_detail.txid in initial_transation_ids:
+                        initial_transactions.append(tx_detail)
+                    else:
+                        local.append(tx_detail)
                 else:
                     unconfirmed.append(tx_detail)
-        return confirmed, unconfirmed, local
+        return confirmed, unconfirmed, initial_transactions, local
 
     def _sort_confirmed_transactions(self, confirmed: List[FullTxDetail]) -> List[FullTxDetail]:
         """
@@ -2062,6 +2074,14 @@ class Wallet(BaseSaveableClass, CacheManager):
         for fx in unconfirmed:
             assert not isinstance(fx.tx.chain_position, bdk.ChainPosition.CONFIRMED)
         return self._dfs_topo_sort(unconfirmed)
+
+    def _sort_initial_transactions(self, initial_transactions: List[FullTxDetail]) -> List[FullTxDetail]:
+        initial_transation_id_order = {tx.compute_txid(): i for i, tx in enumerate(self._initial_txs)}
+
+        def sort_key(tx: FullTxDetail) -> int:
+            return initial_transation_id_order.get(tx.txid, 0)
+
+        return sorted(initial_transactions, key=sort_key)
 
     def _dfs_topo_sort(self, tx_list: List[FullTxDetail]) -> List[FullTxDetail]:
         """
@@ -2104,6 +2124,15 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         roots: List[str] = [txid for txid, deg in indegree.items() if deg == 0]
 
+        # ───────────────────── sort roots by lock-time (cluster order) ──────────────
+        roots.sort(
+            key=lambda tid: (
+                tx_map[tid].tx.transaction.lock_time(),  # ➊ primary key
+                tid,  # ➋ deterministic tiebreaker
+            ),
+            reverse=True,
+        )
+
         # ──────────────────────── depth-first post-order walk ───────────────────────
         sorted_order: List[FullTxDetail] = []
         visited: Set[str] = set()
@@ -2129,7 +2158,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             sorted_order.append(tx_map[txid])  # 3 ▸ post-order emit
 
         # visit each root (deterministic order is nice for testing)
-        for root in sorted(roots):
+        for root in roots:
             dfs(root)
 
         # post-order → topo order

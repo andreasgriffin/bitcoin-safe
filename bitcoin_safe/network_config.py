@@ -88,6 +88,7 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
         bdk.Network.BITCOIN: {
             "default": "https://mempool.space/",
             "umbrel": "http://umbrel.local:3006",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/",
         },
         bdk.Network.REGTEST: {
             "default": "http://localhost:8080/",
@@ -97,15 +98,18 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
             "default": "https://mempool.space/testnet/",
             "mempool.space": "https://mempool.space/testnet/",
             "blockstream": "https://blockstream.info/testnet",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/testnet",
         },
         bdk.Network.TESTNET4: {
             "default": "https://mempool.space/testnet4",
             "mempool.space": "https://mempool.space/testnet4",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/testnet4",
         },
         bdk.Network.SIGNET: {
             "default": "https://mempool.space/signet",
             "mempool.space": "https://mempool.space/signet",
             "mutinynet": "https://mutinynet.com",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/signet",
         },
     }
     return d[network]

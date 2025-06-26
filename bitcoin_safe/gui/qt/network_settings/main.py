@@ -90,8 +90,9 @@ logger = logging.getLogger(__name__)
 
 
 def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
+    timeout = 10 if proxies else 2
     try:
-        response = requests.get(f"{url}/api/blocks/tip/height", timeout=2, proxies=proxies)
+        response = requests.get(f"{url}/api/blocks/tip/height", timeout=timeout, proxies=proxies)
         return response.status_code == 200
     except Exception as e:
         logger.warning(f"Mempool.space server connection test failed: {e}")
@@ -99,6 +100,9 @@ def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
 
 
 def test_connection(network_config: NetworkConfig) -> Optional[str]:
+    proxy_info = ProxyInfo.parse(network_config.proxy_url) if network_config.proxy_url else None
+    timeout = 10 if proxy_info else 2
+
     if network_config.server_type == BlockchainType.Electrum:
         try:
             host, port = get_host_and_port(network_config.electrum_url)
@@ -109,7 +113,8 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
                 host=host,
                 port=port,
                 use_ssl=network_config.electrum_use_ssl,
-                proxy_info=ProxyInfo.parse(network_config.proxy_url) if network_config.proxy_url else None,
+                proxy_info=proxy_info,
+                timeout=timeout,
             )
         except Exception as e:
             logger.warning(f"Electrum connection test failed: {e}")
@@ -120,12 +125,8 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
             # Assuming Esplora's REST API for testing connection
             response = requests.get(
                 f"{network_config.esplora_url}/blocks/tip/height",
-                timeout=5,
-                proxies=(
-                    ProxyInfo.parse(network_config.proxy_url).get_requests_proxy_dict()
-                    if network_config.proxy_url
-                    else None
-                ),
+                timeout=timeout,
+                proxies=(proxy_info.get_requests_proxy_dict() if proxy_info else None),
             )
             if response.status_code == 200:
                 return response.json()
@@ -146,7 +147,7 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
                 json=payload,
                 headers=headers,
                 auth=(network_config.rpc_username, network_config.rpc_password),
-                timeout=2,
+                timeout=timeout,
             )
             if response.status_code == 200 and "result" in response.json():
                 return response.json()
