@@ -40,6 +40,7 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -69,7 +70,6 @@ from bitcoin_safe.pythonbdk_types import (
     TransactionDetails,
     python_utxo_balance,
 )
-from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -1500,7 +1500,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_balance_chart.close()
         self.label_syncer.send_all_labels_to_myself()
         self.sync_tab.unsubscribe_all()
-        self.sync_tab.nostr_sync.stop()
         self.sync_tab.close()
         self.tabs.clear()
         self.tabs.close()

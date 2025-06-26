@@ -33,6 +33,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -58,7 +59,6 @@ from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
-from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import MIN_RELAY_FEE, UserConfig

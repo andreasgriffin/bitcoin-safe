@@ -32,13 +32,13 @@ from collections import defaultdict
 from typing import Dict, List, Set
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from PyQt6.QtWidgets import QLayout, QVBoxLayout
 
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.gui.qt.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
-from bitcoin_safe.signal_tracker import SignalTracker
 
 from ...config import UserConfig
 from ...mempool import MempoolData

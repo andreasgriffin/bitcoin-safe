@@ -30,7 +30,8 @@
 import logging
 from typing import List
 
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 

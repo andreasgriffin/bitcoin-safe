@@ -246,3 +246,7 @@ class SyncTab(ControlledGroupbox):
             self.subscribe()
         else:
             self.nostr_sync.unsubscribe()
+
+    def close(self) -> bool:
+        self.nostr_sync.close()
+        return super().close()

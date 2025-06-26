@@ -32,11 +32,11 @@ import logging
 from abc import abstractmethod
 from typing import List, Tuple
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 

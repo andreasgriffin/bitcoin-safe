@@ -39,6 +39,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
     convert_to_multipath_descriptor,
     is_valid_descriptor,
 )
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import QMargins, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -62,7 +63,6 @@ from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
 
 from ...descriptors import (

@@ -34,6 +34,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
@@ -61,7 +62,6 @@ from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarningBar
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
