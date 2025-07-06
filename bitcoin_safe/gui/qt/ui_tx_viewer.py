@@ -63,6 +63,7 @@ from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarning
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
+from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import UserConfig
@@ -76,7 +77,7 @@ from ...pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_script,
 )
-from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter
+from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
 from ...signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -85,14 +86,7 @@ from ...signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from ...wallet import (
-    ToolsTxUiInfo,
-    TxConfirmationStatus,
-    TxStatus,
-    Wallet,
-    get_wallets,
-    is_in_mempool,
-)
+from ...wallet import ToolsTxUiInfo, TxConfirmationStatus, TxStatus, Wallet, get_wallets
 from .util import (
     Message,
     MessageType,
@@ -100,6 +94,7 @@ from .util import (
     block_explorer_URL,
     caught_exception_message,
     clear_layout,
+    sort_id_to_icon,
     svg_tools,
 )
 from .utxo_list import UtxoListWithToolbar
@@ -491,6 +486,18 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             should_update = True
         if should_update or update_filter.outpoints:
             should_update = True
+        if (
+            should_update
+            or update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+            and self.get_tx_status(chain_position=self.chain_position).do_icon_check_on_chain_height_change()
+        ):
+            should_update = True
+        if (
+            should_update
+            or update_filter.reason == UpdateFilterReason.TransactionChange
+            and self.txid() in update_filter.txids
+        ):
+            should_update = True
 
         if not should_update:
             return
@@ -532,6 +539,24 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 fee_info=self.fee_info,
                 chain_position=self.chain_position,
             )
+
+    def set_tab_properties(self, chain_position: bdk.ChainPosition | None):
+        title = ""
+        icon_text = ""
+        txid = self.txid()
+        tooltip = ""
+        if self.data.data_type == DataType.PSBT and isinstance(self.data.data, bdk.Psbt):
+            title = self.tr("PSBT {txid}").format(txid=short_tx_id(txid))
+            tooltip = self.tr("PSBT {txid}").format(txid=txid)
+            icon_text = "bi--qr-code.svg"
+        elif self.data.data_type == DataType.Tx and isinstance(self.data.data, bdk.Transaction):
+            title = self.tr("Transaction {txid}").format(txid=short_tx_id(txid))
+            tooltip = self.tr("Transaction {txid}").format(txid=txid)
+            status = self.get_tx_status(chain_position=chain_position)
+            icon_text = sort_id_to_icon(status.sort_id())
+
+        if title or icon_text or tooltip:
+            self.signals.signal_set_tab_properties.emit(self, title, icon_text, tooltip)
 
     def txid(self) -> str:
         return self.extract_tx().compute_txid()
@@ -954,7 +979,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
-        if chain_position is None:
+        if chain_position is None or isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
             chain_position = self.get_chain_position(tx.compute_txid())
         self.chain_position = chain_position
 
@@ -996,6 +1021,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             for output in outputs
         ]
         self.set_visibility(chain_position=chain_position)
+        self.set_tab_properties(chain_position=chain_position)
         self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
 
         self._set_warning_bars(
@@ -1065,16 +1091,23 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.focus_ui_element = UiElements.none
 
-    def _get_height_from_mempool(self):
-        return self.mempool_data.fetch_block_tip_height()
+    def _get_robust_height(self) -> int:
+        "Tries to geth the height from any wallet.  If none are open then tries mempool"
+        for wallet in get_wallets(self.signals):
+            height = wallet.get_height()
+            logger.debug(f"_get_robust_height {height=} from wallet {wallet.id}")
+            return height
+
+        height = self.mempool_data.fetch_block_tip_height()
+        logger.debug(f"_get_robust_height {height=} from mempool_data")
+        return height
 
     def get_tx_status(self, chain_position: bdk.ChainPosition | None) -> TxStatus:
         tx = self.extract_tx()
         return TxStatus(
             tx=tx,
             chain_position=chain_position,
-            get_height=self._get_height_from_mempool,
-            is_in_mempool=is_in_mempool(chain_position=chain_position),
+            get_height=self._get_robust_height,
         )
 
     def set_visibility(self, chain_position: bdk.ChainPosition | None) -> None:
@@ -1088,7 +1121,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         logger.debug(
             f"set_visibility {show_send=} {tx_status.can_do_initial_broadcast()=} {self.data.data_type=}"
         )
-        self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool)
+        self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool())
         self.button_send.setEnabled(show_send)
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
@@ -1163,6 +1196,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)
+        self.set_tab_properties(chain_position=None)
         self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
         self._set_warning_bars(
             psbt.extract_tx().input(),

@@ -55,7 +55,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
 from bitcoin_safe.html_utils import html_f
@@ -375,26 +375,18 @@ class SearchWallets(SearchTreeView):
             self.search_result_on_click(result_item.parent)
 
         if isinstance(result_item.obj, MyTreeView):
-            result_item.obj.select_row(result_item.obj_key, result_item.obj.key_column)
-        elif isinstance(result_item.obj, SearchableTab):
+            result_item.obj.select_row(
+                result_item.obj_key, result_item.obj.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
+        elif isinstance(result_item.obj, (SearchableTab, QTWallet, UITx_Creator)):
             parent = result_item.obj.parent()
             if parent:
                 tabs = parent.parent()
                 if isinstance(tabs, QTabWidget):
                     tabs.setCurrentWidget(result_item.obj)
-        elif isinstance(result_item.obj, UITx_Creator):
-            parent = result_item.obj.parent()
-            if parent:
-                these_tabs = parent.parent()
-                if isinstance(these_tabs, QTabWidget):
-                    these_tabs.setCurrentWidget(result_item.obj)
-            result_item.obj.tabs_inputs.setCurrentWidget(result_item.obj.tab_inputs_utxos)
-        elif isinstance(result_item.obj, QTWallet):
-            parent = result_item.obj.parent()
-            if parent:
-                wallet_tabs = parent.parent()
-                if isinstance(wallet_tabs, QTabWidget):
-                    wallet_tabs.setCurrentWidget(result_item.obj)
+
+        if isinstance(result_item.obj, UITx_Creator):
+            result_item.obj.widget_utxo_with_toolbar.setVisible(True)
 
     def do_search(self, search_text: str) -> ResultItem:
         def format_result_text(matching_string: str) -> str:

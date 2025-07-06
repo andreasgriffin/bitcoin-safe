@@ -57,8 +57,10 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import (
     Message,
+    MessageType,
     clear_layout,
     do_copy,
     get_icon_path,
@@ -316,12 +318,6 @@ class ButtonEdit(QWidget):
     def setReadOnly(self, value: bool) -> None:
         self.input_field.setReadOnly(value)
 
-    def _exception_callback(self, e: Exception) -> None:
-        if isinstance(e, DecodingException):
-            Message("Could not recognize the input.")
-        else:
-            Message(str(e))
-
     def _result_callback_input_qr_from_camera(self, data: Data) -> None:
         if hasattr(self, "setText"):
             self.setText(str(data.data_as_string()))
@@ -329,6 +325,18 @@ class ButtonEdit(QWidget):
     def input_qr_from_camera(
         self, network: bdk.Network, set_data_as_string=True, close_camera_on_result=True
     ) -> None:
+        def _exception_callback(e: Exception) -> None:
+            if isinstance(e, DecodingException):
+                if question_dialog(self.tr("Could not recognize the input. Do you want to scan again?")):
+                    self.input_qr_from_camera(
+                        network=network,
+                        set_data_as_string=set_data_as_string,
+                        close_camera_on_result=close_camera_on_result,
+                    )
+                else:
+                    return
+            else:
+                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(
@@ -337,7 +345,7 @@ class ButtonEdit(QWidget):
         if set_data_as_string:
             self._temp_bitcoin_video_widget.signal_data.connect(self._result_callback_input_qr_from_camera)
         self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
-        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(self._exception_callback)
+        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(_exception_callback)
         self._temp_bitcoin_video_widget.show()
 
     def add_qr_input_from_camera_button(
