@@ -1102,7 +1102,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             )
             self.history_tab_with_toolbar.sync_button.set_icon_allow_refresh()
 
-        self.signals.signal_set_tab_properties.emit(self.wallet.id, icon_text, tooltip)
+        self.signals.signal_set_tab_properties.emit(self, self.wallet.id, icon_text, tooltip)
 
     def create_list_tab(
         self,

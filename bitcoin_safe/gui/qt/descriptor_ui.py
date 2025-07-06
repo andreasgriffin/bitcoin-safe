@@ -556,9 +556,12 @@ class DescriptorUI(QWidget):
 
     def _exception_callback(self, e: Exception) -> None:
         if isinstance(e, DecodingException):
-            Message("Could not recognize the input.")
+            if question_dialog(self.tr("Could not recognize the input. Do you want to scan again?")):
+                self.on_action_import_qr()
+            else:
+                return
         else:
-            Message(str(e))
+            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
     def create_button_bar(self) -> QDialogButtonBox:
 

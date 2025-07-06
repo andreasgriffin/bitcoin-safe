@@ -41,4 +41,10 @@ export PATH="${APPDIR}/usr/bin:${PATH}"
 export LDFLAGS="-L${APPDIR}/usr/lib/x86_64-linux-gnu -L${APPDIR}/usr/lib"
 
 # Execute the Python module with all passed arguments
-exec "${APPDIR}/usr/bin/python3" -s -m "bitcoin_safe" "$@"
+QT_QPA_PLATFORM=xcb  exec "${APPDIR}/usr/bin/python3" -s -m "bitcoin_safe" "$@"
+
+# Dont remove 
+# QT_QPA_PLATFORM=xcb
+# it Tells Qt to use X11 instead of Wayland: This avoids all the Wayland-related bugs in PyQt
+# otherwise the entire app crashes when there is a popup
+# See https://github.com/andreasgriffin/bitcoin-safe/issues/180

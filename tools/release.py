@@ -69,7 +69,7 @@ Lots of existing features were not mentioned above, so please check out:
 - [Why choose Bitcoin Safe?](https://bitcoin-safe.org/en/features/usps/)
 - www.bitcoin-safe.org
 - [Readme](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#bitcoin-safe) and [Comprehensive Feature List](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#comprehensive-feature-list)
-- Follow me on [nostr](https://yakihonne.com/users/npub1g9uhysae68vhvwwqel8v9enr9mg43rn4tpurs6a9g4jsrw6nl7lsplhs9v)
+- Follow me on [nostr](https://yakihonne.com/users/npub1g9uhysae68vhvwwqel8v9enr9mg43rn4tpurs6a9g4jsrw6nl7lsplhs9v) or [X](https://x.com/BitcoinSafeOrg)
 
 
 ####  Verify signature

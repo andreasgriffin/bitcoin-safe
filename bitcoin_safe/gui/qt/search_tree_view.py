@@ -382,19 +382,9 @@ class SearchWallets(SearchTreeView):
                 tabs = parent.parent()
                 if isinstance(tabs, QTabWidget):
                     tabs.setCurrentWidget(result_item.obj)
-        elif isinstance(result_item.obj, UITx_Creator):
-            parent = result_item.obj.parent()
-            if parent:
-                these_tabs = parent.parent()
-                if isinstance(these_tabs, QTabWidget):
-                    these_tabs.setCurrentWidget(result_item.obj)
-            result_item.obj.tabs_inputs.setCurrentWidget(result_item.obj.tab_inputs_utxos)
-        elif isinstance(result_item.obj, QTWallet):
-            parent = result_item.obj.parent()
-            if parent:
-                wallet_tabs = parent.parent()
-                if isinstance(wallet_tabs, QTabWidget):
-                    wallet_tabs.setCurrentWidget(result_item.obj)
+
+        if isinstance(result_item.obj, UITx_Creator):
+            result_item.obj.widget_utxo_with_toolbar.setVisible(True)
 
     def do_search(self, search_text: str) -> ResultItem:
         def format_result_text(matching_string: str) -> str:

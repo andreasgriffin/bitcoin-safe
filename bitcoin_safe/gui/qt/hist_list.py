@@ -168,8 +168,8 @@ class HistList(MyTreeView):
         Columns.STATUS: Qt.AlignmentFlag.AlignCenter,
         Columns.CATEGORIES: Qt.AlignmentFlag.AlignCenter,
         Columns.LABEL: Qt.AlignmentFlag.AlignVCenter,
-        Columns.AMOUNT: Qt.AlignmentFlag.AlignRight,
-        Columns.BALANCE: Qt.AlignmentFlag.AlignRight,
+        Columns.AMOUNT: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
+        Columns.BALANCE: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
     }
 
     column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
@@ -530,7 +530,7 @@ class HistList(MyTreeView):
         if tx.chain_position.is_confirmed():
             status_text = tx.get_datetime().strftime("%Y-%m-%d %H:%M")
         else:
-            if status.is_in_mempool:
+            if status.is_in_mempool():
                 status_text = confirmation_wait_formatted(
                     self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
                 )
@@ -540,7 +540,7 @@ class HistList(MyTreeView):
         if 1 <= status.confirmations() <= 6:
             status_tooltip = self.tr("{number} Confirmations").format(number=status.confirmations())
         elif status.confirmations() <= 0:
-            if status.is_in_mempool:
+            if status.is_in_mempool():
                 status_tooltip = self.tr("Waiting to be included in a block")
             else:
                 status_tooltip = self.tr("Not broadcasted.")

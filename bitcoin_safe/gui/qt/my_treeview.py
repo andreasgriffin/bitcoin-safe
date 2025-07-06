@@ -134,9 +134,7 @@ def needs_frequent_flag(status: TxStatus | None) -> bool:
     if not status:
         return True
 
-    if status.confirmations() < 6:
-        return True
-    return False
+    return status.do_icon_check_on_chain_height_change()
 
 
 class MyItemDataRole(enum.IntEnum):
@@ -716,7 +714,7 @@ class MyTreeView(QTreeView):
             return
         selection_model.select(QModelIndex(set_current), QItemSelectionModel.SelectionFlag.SelectCurrent)
 
-    def select_row(self, content, column, role: MyItemDataRole = MyItemDataRole.ROLE_KEY) -> None:
+    def select_row(self, content, column, role: MyItemDataRole = MyItemDataRole.ROLE_CLIPBOARD_DATA) -> None:
         return self.select_rows([content], column, role)
 
     def select_rows(

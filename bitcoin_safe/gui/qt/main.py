@@ -39,7 +39,10 @@ from typing import Dict, Iterable, List, Literal, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_qr_tools.gui.bitcoin_video_widget import (
+    BitcoinVideoWidget,
+    DecodingException,
+)
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
@@ -929,14 +932,23 @@ class MainWindow(QMainWindow):
             self.signals.open_tx_like.emit(data.data)
 
     def load_tx_like_from_qr(self) -> None:
-
         self.signals.close_all_video_widgets.emit()
         d = BitcoinVideoWidget()
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         self.attached_widgets.append(d)
         d.signal_data.connect(self._result_callback_load_tx_like_from_qr)
+        d.signal_recognize_exception.connect(self._load_tx_like_from_qr_exception_callback)
         d.show()
         return None
+
+    def _load_tx_like_from_qr_exception_callback(self, e: Exception) -> None:
+        if isinstance(e, DecodingException):
+            if question_dialog(self.tr("Could not recognize the input. Do you want to scan again?")):
+                self.load_tx_like_from_qr()
+            else:
+                return
+        else:
+            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
     def dialog_open_qr_scanner(self) -> None:
         self._qr_scanner = SimpleQrScanner(
@@ -971,6 +983,13 @@ class MainWindow(QMainWindow):
                 return i
         return None
 
+    def get_tx_viewer(self, txid: str) -> UITx_Viewer | None:
+        for i in range(self.tab_wallets.count()):
+            widget = self.tab_wallets.widget(i)
+            if isinstance(widget, UITx_Viewer) and txid == widget.txid():
+                return widget
+        return None
+
     def open_tx_in_tab(
         self, txlike: Union[bdk.Transaction, TransactionDetails], focus_ui_element=UiElements.none
     ) -> Optional[Tuple[SearchableTab, UITx_Viewer]]:
@@ -998,22 +1017,21 @@ class MainWindow(QMainWindow):
             logger.error(f"could not open tx")
             return None
 
-        title = self.tr("Transaction {txid}").format(txid=short_tx_id(tx.compute_txid()))
         data = Data.from_tx(tx, network=self.config.network)
+        existing_tx_viewer = self.get_tx_viewer(txid=tx.compute_txid())
 
         # check if the same tab with exactly the same data is open already
-        tab_idx = self.get_tab_with_title(self.tab_wallets, title)
-        if tab_idx is not None and isinstance(tab_data := self.tab_wallets.tabData(tab_idx), UITx_Viewer):
+        if existing_tx_viewer:
             # if the tab_data is a tx, then just dismiss the tx
-            if tab_data.data.data_type == DataType.Tx:
-                tab_data.set_tab_focus(focus_ui_element=focus_ui_element)
-                self.tab_wallets.setCurrentIndex(tab_idx)
+            if existing_tx_viewer.data.data_type == DataType.Tx:
+                existing_tx_viewer.set_tab_focus(focus_ui_element=focus_ui_element)
+                self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
             # if tab_data is a psbt, then add the signature from tx
-            if tab_data.data.data_type == DataType.PSBT:
-                tab_data.tx_received(tx)
-                tab_data.set_tab_focus(focus_ui_element=focus_ui_element)
-                self.tab_wallets.setCurrentIndex(tab_idx)
+            if existing_tx_viewer.data.data_type == DataType.PSBT:
+                existing_tx_viewer.tx_received(tx)
+                existing_tx_viewer.set_tab_focus(focus_ui_element=focus_ui_element)
+                self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
 
         utxo_list = UTXOList(
@@ -1047,32 +1065,17 @@ class MainWindow(QMainWindow):
             threading_parent=self.threading_manager,
             focus_ui_element=focus_ui_element,
         )
-        viewer.signal_updated_content.connect(self.on_tab_updated_content)
 
         self.tab_wallets.add_tab(
             tab=viewer,
-            icon=svg_tools.get_QIcon("bi--send.svg"),
-            description=title,
+            icon=None,
+            description="",
             focus=True,
             data=viewer,
         )
+        viewer.set_tab_properties(chain_position=chain_position)
 
         return viewer, viewer
-
-    def on_tab_updated_content(self, data: Data):
-        "Update the icons of the tx tabs"
-
-        for index in range(self.tab_wallets.count()):
-            # Get the widget for the current tab
-            tab = self.tab_wallets.widget(index)
-            if isinstance(tab, UITx_Viewer):
-                if tab.data != data:
-                    continue
-
-                if tab.data.data_type == DataType.PSBT:
-                    self.tab_wallets.setTabIcon(index, svg_tools.get_QIcon("bi--qr-code.svg"))
-                elif tab.data.data_type == DataType.Tx:
-                    self.tab_wallets.setTabIcon(index, svg_tools.get_QIcon("bi--send.svg"))
 
     def open_psbt_in_tab(
         self,
@@ -1083,70 +1086,84 @@ class MainWindow(QMainWindow):
 
         logger.debug(f"tx is of type {type(tx)}")
 
-        # converting to TxBuilderResult
-        if isinstance(tx, TxBuilderInfos):
-            if not fee_info and (tx.fee_rate is not None):
-                fee_info = FeeInfo.from_fee_rate(
-                    fee_amount=tx.psbt.fee(),
-                    fee_rate=tx.fee_rate,
-                    is_estimated=False,
-                )
+        try:
 
-            tx = tx.psbt
-            logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
+            # converting to TxBuilderResult
+            if isinstance(tx, TxBuilderInfos):
+                if not fee_info and (tx.fee_rate is not None):
+                    fee_info = FeeInfo.from_fee_rate(
+                        fee_amount=tx.psbt.fee(),
+                        fee_rate=tx.fee_rate,
+                        is_estimated=False,
+                    )
 
-        if isinstance(tx, bdk.Psbt):
-            logger.debug(f"Got a PartiallySignedTransaction")
-            psbt = tx
+                tx = tx.psbt
+                logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
+
+            if isinstance(tx, bdk.Psbt):
+                logger.debug(f"Got a PartiallySignedTransaction")
+                psbt = tx
+                if not fee_info:
+                    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+
+            if isinstance(tx, str):
+                psbt = bdk.Psbt(tx)
+                logger.debug(f"Converted str to {type(tx)}")
+                if not fee_info:
+                    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+
+            if isinstance(tx, TransactionDetails):
+                logger.debug("is bdk.TransactionDetails")
+                raise Exception("cannot handle TransactionDetails")
+
+            if not psbt:
+                logger.error(f"tx could not be converted to a psbt")
+                return None
+
+            data = Data.from_psbt(psbt, network=self.config.network)
+
+            # check if any wallet has all the inputs for the tx, then i can calulate the fee_rate approximately
             if not fee_info:
-                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-
-        if isinstance(tx, str):
-            psbt = bdk.Psbt(tx)
-            logger.debug(f"Converted str to {type(tx)}")
-            if not fee_info:
-                fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-
-        if isinstance(tx, TransactionDetails):
-            logger.debug("is bdk.TransactionDetails")
-            raise Exception("cannot handle TransactionDetails")
-
-        if not psbt:
-            logger.error(f"tx could not be converted to a psbt")
+                for existing_tx_viewer in self.tab_wallets.getAllTabData().values():
+                    if isinstance(existing_tx_viewer, QTWallet):
+                        wallet = existing_tx_viewer.wallet
+                        try:
+                            fee_rate = FeeRate.from_fee_rate(
+                                wallet.bdkwallet.calculate_fee_rate(tx=psbt.extract_tx())
+                            )
+                            fee_amount = psbt.fee()
+                            fee_info = FeeInfo.from_fee_rate(
+                                fee_amount=fee_amount,
+                                fee_rate=fee_rate.to_sats_per_vb(),
+                                is_estimated=False,
+                            )
+                        except:
+                            pass
+        except bdk.ExtractTxError.MissingInputValue as e:
+            Message(
+                self.tr("Could not open PSBT, because it lacks the input UTXOs.")
+                + f"\n{type(e).__name__}\n{e}",
+                type=MessageType.Error,
+            )
+            return None
+        except Exception as e:
+            Message(self.tr("Could not open PSBT") + f"\n{type(e).__name__}\n{e}", type=MessageType.Error)
             return None
 
-        data = Data.from_psbt(psbt, network=self.config.network)
-        title = self.tr("PSBT {txid}").format(txid=short_tx_id(psbt.extract_tx().compute_txid()))
+        if not isinstance(data.data, bdk.Psbt):
+            logger.warning(f"wrong datatype {type(data.data)=}")
+            return None
 
-        # check if any wallet has all the inputs for the tx, then i can calulate the fee_rate approximately
-        if not fee_info:
-            for tab_data in self.tab_wallets.getAllTabData().values():
-                if isinstance(tab_data, QTWallet):
-                    wallet = tab_data.wallet
-                    try:
-                        fee_rate = FeeRate.from_fee_rate(
-                            wallet.bdkwallet.calculate_fee_rate(tx=psbt.extract_tx())
-                        )
-                        fee_amount = psbt.fee()
-                        fee_info = FeeInfo.from_fee_rate(
-                            fee_amount=fee_amount,
-                            fee_rate=fee_rate.to_sats_per_vb(),
-                            is_estimated=False,
-                        )
-                    except:
-                        pass
-
-        # check if the same tab with exactly the same data is open already
-        tab_idx = self.get_tab_with_title(self.tab_wallets, title)
-        if tab_idx is not None and isinstance(tab_data := self.tab_wallets.tabData(tab_idx), UITx_Viewer):
+        existing_tx_viewer = self.get_tx_viewer(txid=data.data.extract_tx().compute_txid())
+        if existing_tx_viewer:
             # if the tab_data is a tx, then just dismiss the psbt (a tx is better than a psbt)
-            if tab_data.data.data_type == DataType.Tx:
-                self.tab_wallets.setCurrentIndex(tab_idx)
+            if existing_tx_viewer.data.data_type == DataType.Tx:
+                self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
             # if tab_data is a psbt, then add the signature from data
-            if tab_data.data.data_type == DataType.PSBT:
-                tab_data.import_untrusted_psbt(psbt)
-                self.tab_wallets.setCurrentIndex(tab_idx)
+            if existing_tx_viewer.data.data_type == DataType.PSBT:
+                existing_tx_viewer.import_untrusted_psbt(psbt)
+                self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
 
         utxo_list = UTXOList(
@@ -1179,15 +1196,15 @@ class MainWindow(QMainWindow):
             parent=self,
             threading_parent=self.threading_manager,
         )
-        viewer.signal_updated_content.connect(self.on_tab_updated_content)
 
         self.tab_wallets.add_tab(
             tab=viewer,
-            icon=svg_tools.get_QIcon("bi--qr-code.svg"),
-            description=title,
+            icon=None,
+            description="",
             focus=True,
             data=viewer,
         )
+        viewer.set_tab_properties(chain_position=None)
 
         return viewer, viewer
 
@@ -1501,15 +1518,14 @@ class MainWindow(QMainWindow):
             return
         self.create_qtwallet_from_qtprotowallet(qt_protowallet)
 
-    def on_set_tab_properties(self, wallet_id: str, icon_name: str, tooltip: str) -> None:
-        qt_wallet = self.qt_wallets.get(wallet_id)
-        if not qt_wallet:
-            return
-
-        idx = self.tab_wallets.indexOf(qt_wallet)
-        if idx != -1:
-            self.tab_wallets.setTabIcon(idx, svg_tools.get_QIcon(icon_name))
-            self.tab_wallets.setTabToolTip(idx, tooltip if tooltip else "")
+    def on_set_tab_properties(self, tab: object, tab_text: str, icon_name: str, tooltip: str) -> None:
+        for idx in range(self.tab_wallets.count()):
+            widget = self.tab_wallets.widget(idx)
+            if widget == tab:
+                self.tab_wallets.setTabText(idx, tab_text)
+                self.tab_wallets.setTabIcon(idx, svg_tools.get_QIcon(icon_name))
+                self.tab_wallets.setTabToolTip(idx, tooltip if tooltip else "")
+                logger.debug(f"on_set_tab_properties {tab_text=} {icon_name=} {tooltip=}")
 
     def add_qt_wallet(
         self, qt_wallet: QTWallet, file_path: str | None = None, password: str | None = None

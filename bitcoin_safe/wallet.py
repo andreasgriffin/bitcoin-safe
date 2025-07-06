@@ -103,7 +103,7 @@ class InconsistentBDKState(Exception):
 class TxConfirmationStatus(enum.Enum):
     CONFIRMED = 1
     UNCONFIRMED = 0
-    UNCONF_PARENT = -1  # this implies UNCONFIRMED
+    UNCONF_PARENT = -1  # this implies UNCONFIRMED  #  currently not used
     LOCAL = -2  # this implies UNCONFIRMED
 
     @classmethod
@@ -128,6 +128,8 @@ def is_local(chain_position: bdk.ChainPosition | None) -> bool:
 def is_in_mempool(chain_position: bdk.ChainPosition | None) -> bool:
     if chain_position is None:
         return False
+    if isinstance(chain_position, bdk.ChainPosition.CONFIRMED):
+        return False
     local = is_local(chain_position=chain_position)
     return not local
 
@@ -138,30 +140,20 @@ class TxStatus:
         tx: bdk.Transaction | None,
         chain_position: bdk.ChainPosition | None,
         get_height: Callable[[], int],
-        is_in_mempool: bool,
-        confirmation_status: Optional[TxConfirmationStatus] = None,
     ) -> None:
         self.tx = tx
         self.get_height = get_height
         self.chain_position = chain_position
-        self.is_in_mempool = is_in_mempool
 
-        # from .util import (
-        #     TX_HEIGHT_FUTURE,
-        #     TX_HEIGHT_INF,
-        #     TX_HEIGHT_LOCAL,
-        #     TX_HEIGHT_UNCONF_PARENT,
-        #     TX_HEIGHT_UNCONFIRMED,
-        # )
-
-        # upgrade/increase the status based on conditions
-        self.confirmation_status = (
-            TxConfirmationStatus.LOCAL if not confirmation_status else confirmation_status
-        )
-        if is_in_mempool:
-            self.confirmation_status = TxConfirmationStatus.UNCONFIRMED
-        if self.chain_position and self.chain_position.is_confirmed():
+        self.confirmation_status = TxConfirmationStatus.LOCAL
+        if isinstance(chain_position, bdk.ChainPosition.CONFIRMED):
             self.confirmation_status = TxConfirmationStatus.CONFIRMED
+
+        if self.confirmation_status == TxConfirmationStatus.LOCAL and self.is_in_mempool():
+            self.confirmation_status = TxConfirmationStatus.UNCONFIRMED
+
+    def is_in_mempool(self):
+        return is_in_mempool(self.chain_position)
 
     @classmethod
     def from_wallet(cls, txid: str, wallet: "Wallet") -> "TxStatus":
@@ -169,17 +161,16 @@ class TxStatus:
         txdetails = wallet.get_tx(txid)
 
         if not txdetails:
-            return TxStatus(tx=None, chain_position=None, get_height=wallet.get_height, is_in_mempool=False)
+            return TxStatus(tx=None, chain_position=None, get_height=wallet.get_height)
 
         return TxStatus(
             tx=txdetails.transaction,
             chain_position=txdetails.chain_position,
             get_height=wallet.get_height,
-            is_in_mempool=is_in_mempool(txdetails.chain_position),
         )
 
     def sort_id(self) -> int:
-        return self.confirmations() if self.confirmations() else self.confirmation_status.value
+        return confirmations if (confirmations := self.confirmations()) else self.confirmation_status.value
 
     def confirmations(self) -> int:
         return (
@@ -202,6 +193,9 @@ class TxStatus:
 
     def can_cpfp(self) -> bool:
         return self.confirmation_status == TxConfirmationStatus.UNCONFIRMED
+
+    def do_icon_check_on_chain_height_change(self) -> bool:
+        return self.confirmations() <= 6
 
 
 def locked(func) -> Any:
@@ -2166,7 +2160,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return sorted_order
 
     def is_in_mempool(self, txid: str) -> bool:
-        return TxStatus.from_wallet(txid, self).is_in_mempool
+        return TxStatus.from_wallet(txid, self).is_in_mempool()
 
     def get_fulltxdetail_and_dependents(self, txid: str, include_root_tx=True) -> List[FullTxDetail]:
         result: List[FullTxDetail] = []

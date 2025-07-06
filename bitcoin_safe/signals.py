@@ -254,7 +254,7 @@ class Signals(SignalsMin):
     open_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore   # str= filepath
     add_qt_wallet: "TypedPyQtSignal[QTWallet, str | None, str | None]" = pyqtSignal(object, object, object)  # type: ignore # object = qt_wallet, file_path, password
     close_qt_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore # str = wallet_id
-    signal_set_tab_properties: TypedPyQtSignal[str, str, str] = pyqtSignal(str, str, str)  # type: ignore  # wallet_id, icon: icon_name, tooltip: str | None
+    signal_set_tab_properties: TypedPyQtSignal[object, str, str, str] = pyqtSignal(object, str, str, str)  # type: ignore  # tab:QWidget, tab_text:str, icon: icon_name, tooltip: str | None
 
     request_manual_sync: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
