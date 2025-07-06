@@ -47,7 +47,7 @@ from .helpers import Shutter, do_modal_click, main_window_context
 logger = logging.getLogger(__name__)
 
 
-@pytest.mark.marker_qt
+@pytest.mark.marker_qt_2
 def test_signature_import_of_psbt_without_utxos(
     qapp: QApplication,
     qtbot: QtBot,
