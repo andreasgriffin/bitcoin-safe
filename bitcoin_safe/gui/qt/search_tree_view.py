@@ -378,7 +378,7 @@ class SearchWallets(SearchTreeView):
             result_item.obj.select_row(
                 result_item.obj_key, result_item.obj.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
             )
-        elif isinstance(result_item.obj, (SearchableTab, QTWallet)):
+        elif isinstance(result_item.obj, (SearchableTab, QTWallet, UITx_Creator)):
             parent = result_item.obj.parent()
             if parent:
                 tabs = parent.parent()

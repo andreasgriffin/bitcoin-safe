@@ -98,11 +98,17 @@ def test_signature_import_of_psbt_without_utxos(
         widget_import_export = uitx_viewer.tx_singning_steps.stacked_widget.widget(0)
         assert isinstance(widget_import_export, HorizontalImportExportAll)
 
+        dialog_was_opened = False
+
         def text_entry(dialog: ImportDialog) -> None:
             shutter.save(dialog)
+            nonlocal dialog_was_opened
+            dialog_was_opened = True
 
             dialog.text_edit.setText(signed_psbt)
             assert dialog.button_ok
+
+            shutter.save(dialog)
             dialog.button_ok.click()
 
         assert widget_import_export.file
@@ -128,3 +134,4 @@ def test_signature_import_of_psbt_without_utxos(
 
         # end
         shutter.save(main_window)
+        qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
