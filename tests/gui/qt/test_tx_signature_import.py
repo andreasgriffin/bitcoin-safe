@@ -118,7 +118,10 @@ def test_signature_import_of_psbt_without_utxos(
             widget_import_export.file.button_import.buttons[0].click, text_entry, qtbot, cls=ImportDialog
         )
 
+        qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
+
         # let ui tx update with the new info
+        QApplication.processEvents()
 
         assert uitx_viewer.button_send.isEnabled()
         assert uitx_viewer.button_edit_tx.isEnabled()
@@ -135,4 +138,3 @@ def test_signature_import_of_psbt_without_utxos(
 
         # end
         shutter.save(main_window)
-        qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
