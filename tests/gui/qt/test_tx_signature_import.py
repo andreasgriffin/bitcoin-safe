@@ -72,7 +72,9 @@ def test_signature_import_of_psbt_without_utxos(
         signed_psbt = "70736274ff0100710100000001e88787d87ed34e206cab8eb1fb6cbe2d4ff1e9d0a7b4178f6fdffe1ea4feb3090000000000fdffffff02fe19000000000000160014e72b555f9e9a1ca15dd410a252a81984bd078b881b0e000000000000160014506183a3f7e5d1233c7df87ce0e23d13bd389285d7f203000022020260cb18caa635c6d8bd7e5f6de1efc6dc34ec8e969d71562d51f8068b703453bc463043022006706c689b59e0de113c45422775e1778cb1a801df09f1f2e092a11b3e1b06c9021f2e45dde2ff6adc3bb02e503c8c051d539240d36731685bceb1005623dee46801000000"
         main_window.open_tx_like_in_tab(original_psbt_with_utxos)
 
-        QApplication.processEvents()
+        qtbot.waitUntil(
+            lambda: isinstance(main_window.tab_wallets.currentWidget(), UITx_Viewer), timeout=10000
+        )
 
         uitx_viewer = list(main_window.tab_wallets.getAllTabData().values())[-1]
         assert isinstance(uitx_viewer, UITx_Viewer)
@@ -117,7 +119,6 @@ def test_signature_import_of_psbt_without_utxos(
         )
 
         # let ui tx update with the new info
-        QApplication.processEvents()
 
         assert uitx_viewer.button_send.isEnabled()
         assert uitx_viewer.button_edit_tx.isEnabled()
