@@ -55,7 +55,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
 from bitcoin_safe.html_utils import html_f
@@ -375,8 +375,10 @@ class SearchWallets(SearchTreeView):
             self.search_result_on_click(result_item.parent)
 
         if isinstance(result_item.obj, MyTreeView):
-            result_item.obj.select_row(result_item.obj_key, result_item.obj.key_column)
-        elif isinstance(result_item.obj, SearchableTab):
+            result_item.obj.select_row(
+                result_item.obj_key, result_item.obj.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
+        elif isinstance(result_item.obj, (SearchableTab, QTWallet)):
             parent = result_item.obj.parent()
             if parent:
                 tabs = parent.parent()

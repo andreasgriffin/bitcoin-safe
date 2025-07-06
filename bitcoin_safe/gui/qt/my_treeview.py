@@ -714,8 +714,8 @@ class MyTreeView(QTreeView):
             return
         selection_model.select(QModelIndex(set_current), QItemSelectionModel.SelectionFlag.SelectCurrent)
 
-    def select_row(self, content, column, role: MyItemDataRole = MyItemDataRole.ROLE_CLIPBOARD_DATA) -> None:
-        return self.select_rows([content], column, role)
+    def select_row(self, content, column, role: MyItemDataRole = MyItemDataRole.ROLE_KEY) -> None:
+        return self.select_rows([content], column, role=role)
 
     def select_rows(
         self,
