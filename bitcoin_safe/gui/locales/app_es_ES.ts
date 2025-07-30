@@ -9,7 +9,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation/>
+			<translation>La entrada es incompatible con la PSBT que se va a firmar.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -320,7 +320,7 @@
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No se pudo reconocer la entrada. ¿Quieres escanear de nuevo?</translation>
 		</message>
 	</context>
 	<context>
@@ -454,7 +454,7 @@
 		<name>DescriptorUI</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No se pudo reconocer la entrada. ¿Quieres escanear de nuevo?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1444,17 +1444,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT</source>
-			<translation/>
+			<translation>No se pudo abrir la PSBT</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation/>
+			<translation>No se pudo abrir la PSBT porque faltan los UTXO de entrada.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No se pudo reconocer la entrada. ¿Quieres escanear de nuevo?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2641,7 +2641,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No se pudo reconocer la entrada. ¿Quieres escanear de nuevo?</translation>
 		</message>
 		<name>SignatureImporterQR</name>
 		<message>

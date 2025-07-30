@@ -9,7 +9,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation/>
+			<translation>L'entrada és incompatible amb la PSBT que s'ha de signar.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -320,7 +320,7 @@
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
 		</message>
 	</context>
 	<context>
@@ -454,7 +454,7 @@
 		<name>DescriptorUI</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1444,17 +1444,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT</source>
-			<translation/>
+			<translation>No s'ha pogut obrir la PSBT</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation/>
+			<translation>No s'ha pogut obrir la PSBT, perquè falten els UTXO d'entrada.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2638,7 +2638,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
 		</message>
 		<name>SignatureImporterQR</name>
 		<message>

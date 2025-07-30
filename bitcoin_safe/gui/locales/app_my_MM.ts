@@ -9,7 +9,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation/>
+			<translation>ထည့်သွင်းချက်သည် လက်မှတ်ရေးထိုးရန်ရှိသော PSBT နှင့် မကိုက်ညီပါ။</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -320,7 +320,7 @@
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
 		</message>
 	</context>
 	<context>
@@ -454,7 +454,7 @@
 		<name>DescriptorUI</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1444,17 +1444,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT</source>
-			<translation/>
+			<translation>PSBT ကို ဖွင့်၍ မရပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation/>
+			<translation>အဝင် UTXO မရှိသောကြောင့် PSBT ကို ဖွင့်၍ မရပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2638,7 +2638,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
 		</message>
 		<name>SignatureImporterQR</name>
 		<message>

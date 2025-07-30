@@ -9,7 +9,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation/>
+			<translation>입력이 서명할 PSBT와 호환되지 않습니다.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -320,7 +320,7 @@
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
 		</message>
 	</context>
 	<context>
@@ -454,7 +454,7 @@
 		<name>DescriptorUI</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1444,17 +1444,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT</source>
-			<translation/>
+			<translation>PSBT를 열 수 없습니다</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation/>
+			<translation>입력 UTXO가 없어 PSBT를 열 수 없습니다.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2638,7 +2638,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
 		</message>
 		<name>SignatureImporterQR</name>
 		<message>

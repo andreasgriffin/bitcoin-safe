@@ -9,7 +9,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation/>
+			<translation>Die Eingabe ist mit der zu signierenden PSBT nicht kompatibel.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -320,7 +320,7 @@
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
 		</message>
 	</context>
 	<context>
@@ -455,7 +455,7 @@
 		<name>DescriptorUI</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1453,17 +1453,17 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT</source>
-			<translation/>
+			<translation>PSBT konnte nicht geöffnet werden</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation/>
+			<translation>PSBT konnte nicht geöffnet werden, da die Eingabe-UTXOs fehlen.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2659,7 +2659,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation/>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
 		</message>
 		<name>SignatureImporterQR</name>
 		<message>
