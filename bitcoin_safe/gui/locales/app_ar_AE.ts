@@ -8,6 +8,11 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
+			<source>The input is incompatible with the PSBT to be signed.</source>
+			<translation/>
+		</message>
+		<name>AbstractSignatureImporter</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
 		</message>
@@ -312,6 +317,13 @@
 		</message>
 	</context>
 	<context>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
@@ -438,6 +450,11 @@
 		<message>
 			<source>Address Type</source>
 			<translation>نوع العنوان</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1426,6 +1443,21 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not open PSBT</source>
+			<translation/>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
+			<translation/>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation/>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>هل تريد حفظ PSBT {id}؟  </translation>
 		</message>
@@ -1483,11 +1515,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>فتح المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1563,11 +1590,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>لا يوجد ملف بهذا الاسم: {مسار_الملف}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>معاملة {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2618,6 +2640,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterQR</name>
 		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterQR</name>
+		<message>
 			<source>Scan QR code</source>
 			<translation>مسح رمز الاستجابة السريعة</translation>
 		</message>
@@ -2992,6 +3019,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>PSBT {txid}</source>
+			<translation>PSBT {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>يرجى إزالة المعاملة المحلية الموجودة في المحفظة أولاً.</translation>
 		</message>
@@ -3034,6 +3066,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>لم يتم العثور على المعاملة المراد استبدالها في المحافظ المفتوحة</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Transaction {txid}</source>
+			<translation>معاملة {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
