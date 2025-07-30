@@ -4,12 +4,17 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
-			<translation>Aucune signature supplémentaire n'a été ajoutée  </translation>
+			<translation>Aucune signature supplémentaire n'a été ajoutée</translation>
+		</message>
+		<name>AbstractSignatureImporter</name>
+		<message>
+			<source>The input is incompatible with the PSBT to be signed.</source>
+			<translation>L'entrée est incompatible avec la PSBT à signer.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original  </translation>
+			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -21,110 +26,110 @@
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
-			<translation>Adresse invalide  </translation>
+			<translation>Adresse invalide</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Missing Address</source>
-			<translation>Adresse manquante  </translation>
+			<translation>Adresse manquante</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Valid Address</source>
-			<translation>Adresse valide  </translation>
+			<translation>Adresse valide</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Address descriptor</source>
-			<translation>Descripteur d'adresse  </translation>
+			<translation>Descripteur d'adresse</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Address of wallet "{id}"</source>
-			<translation>Adresse du portefeuille "{id}"  </translation>
+			<translation>Adresse du portefeuille "{id}"</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Advanced</source>
-			<translation>Avancé  </translation>
+			<translation>Avancé</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Validate</source>
-			<translation>Valider  </translation>
+			<translation>Valider</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressEdit</name>
 		<message>
 			<source>Enter address here</source>
-			<translation>Entrez l'adresse ici  </translation>
+			<translation>Entrez l'adresse ici</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressList</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Address {address}</source>
-			<translation>Adresse {address}  </translation>
+			<translation>Adresse {address}</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Balance</source>
-			<translation>Solde  </translation>
+			<translation>Solde</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Category</source>
-			<translation>Catégorie  </translation>
+			<translation>Catégorie</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>Copier en CSV  </translation>
+			<translation>Copier en CSV</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Details</source>
-			<translation>Détails  </translation>
+			<translation>Détails</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Index</source>
-			<translation>Index  </translation>
+			<translation>Index</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Set category</source>
-			<translation>Définir une catégorie  </translation>
+			<translation>Définir une catégorie</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Tx</source>
-			<translation>Tx  </translation>
+			<translation>Tx</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Type</source>
-			<translation>Type  </translation>
+			<translation>Type</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -134,160 +139,160 @@
 		<name>AddressList</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>Voir sur l'explorateur de blocs  </translation>
+			<translation>Voir sur l'explorateur de blocs</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>change</source>
-			<translation>change  </translation>
+			<translation>change</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>change address</source>
-			<translation>adresse de changement  </translation>
+			<translation>adresse de changement</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>receiving</source>
-			<translation>réception  </translation>
+			<translation>réception</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>receiving address</source>
-			<translation>adresse de réception  </translation>
+			<translation>adresse de réception</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
 			<source>Generate to selected adddresses</source>
-			<translation>Générer aux adresses sélectionnées  </translation>
+			<translation>Générer aux adresses sélectionnées</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
 			<source>Show Filter</source>
-			<translation>Afficher le filtre  </translation>
+			<translation>Afficher le filtre</translation>
 		</message>
 	</context>
 	<context>
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-			<translation>Montant trop grand. Veuillez cliquer sur une catégorie suffisamment financée à gauche, ou sélectionnez les pièces dans l'onglet avancé  </translation>
+			<translation>Montant trop grand. Veuillez cliquer sur une catégorie suffisamment financée à gauche, ou sélectionnez les pièces dans l'onglet avancé</translation>
 		</message>
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too small</source>
-			<translation>Montant trop petit  </translation>
+			<translation>Montant trop petit</translation>
 		</message>
 	</context>
 	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>Max ≈ {amount}  </translation>
+			<translation>Max ≈ {montant}</translation>
 		</message>
 	</context>
 	<context>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Collez le mot de semence {number} sur le PDF imprimé correspondant.  </translation>
+			<translation>Collez le mot de semence {number} sur le PDF imprimé correspondant.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Collez le mot de semence {number} sur le PDF imprimé.  </translation>
+			<translation>Collez le mot de semence {number} sur le PDF imprimé.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Please complete the previous steps.</source>
-			<translation>Veuillez compléter les étapes précédentes.  </translation>
+			<translation>Veuillez compléter les étapes précédentes.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Print recovery sheet</source>
-			<translation>Imprimer la feuille de récupération  </translation>
+			<translation>Imprimer la feuille de récupération</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Imprimer le PDF (contient également le descripteur du portefeuille)  </translation>
+			<translation>Imprimer le PDF (contient également le descripteur du portefeuille)</translation>
 		</message>
 	</context>
 	<context>
 		<name>Balance</name>
 		<message>
 			<source>Confirmed</source>
-			<translation>Confirmé  </translation>
+			<translation>Confirmé</translation>
 		</message>
 		<name>Balance</name>
 		<message>
 			<source>Unconfirmed</source>
-			<translation>Non confirmé  </translation>
+			<translation>Non confirmé</translation>
 		</message>
 		<name>Balance</name>
 		<message>
 			<source>Unmatured</source>
-			<translation>Non mûri  </translation>
+			<translation>Non mûri</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseChat</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>Impossible de reconnaître {file_content} comme BitcoinData  </translation>
+			<translation>Impossible de reconnaître {file_content} comme BitcoinData</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Device name</source>
-			<translation>Nom de l'appareil  </translation>
+			<translation>Nom de l'appareil</translation>
 		</message>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>Entrez un nom de dispositif avec {npub}  </translation>
+			<translation>Entrez un nom de dispositif avec {npub}</translation>
 		</message>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Rename</source>
-			<translation>Renommer  </translation>
+			<translation>Renommer</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>Aide  </translation>
+			<translation>Aide</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>Impossible de reconnaître {file_content} comme BitcoinData  </translation>
+			<translation>Impossible de reconnaître {file_content} comme BitcoinData</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>Entrez un nom de dispositif avec {npub}  </translation>
+			<translation>Entrez un nom de dispositif avec {npub}</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Go to {untrusted}</source>
-			<translation>Aller à {untrusted}  </translation>
+			<translation>Aller à {untrusted}</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>To complete the connection, accept my {id} request on the other device {other}.</source>
-			<translation>Pour compléter la connexion, acceptez ma demande {id} sur l'autre appareil {other}.  </translation>
+			<translation>Pour compléter la connexion, acceptez ma demande {id} sur l'autre appareil {other}.</translation>
 		</message>
 	</context>
 	<context>
@@ -301,21 +306,28 @@
 		<name>BitcoinQuickReceive</name>
 		<message>
 			<source>Quick Receive</source>
-			<translation>Réception rapide  </translation>
+			<translation>Réception rapide</translation>
 		</message>
 	</context>
 	<context>
 		<name>BlockingWaitingDialog</name>
 		<message>
 			<source>Please wait</source>
-			<translation>Veuillez attendre  </translation>
+			<translation>Veuillez attendre</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Impossible de reconnaître l'entrée. Voulez-vous scanner à nouveau ?</translation>
 		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
-			<translation>Ouvrir le dossier contenant  </translation>
+			<translation>Ouvrir le dossier contenant</translation>
 		</message>
 	</context>
 	<context>
@@ -334,65 +346,65 @@
 		<name>CategoryEditor</name>
 		<message>
 			<source>KYC Exchange</source>
-			<translation>Échange KYC  </translation>
+			<translation>Échange KYC</translation>
 		</message>
 		<name>CategoryEditor</name>
 		<message>
 			<source>Private</source>
-			<translation>Privé  </translation>
+			<translation>Privé</translation>
 		</message>
 		<name>CategoryEditor</name>
 		<message>
 			<source>category</source>
-			<translation>catégorie  </translation>
+			<translation>catégorie</translation>
 		</message>
 	</context>
 	<context>
 		<name>Chat</name>
 		<message>
 			<source>You can only send only PSBTs or transactions</source>
-			<translation>Vous pouvez seulement envoyer des PSBT ou des transactions  </translation>
+			<translation>Vous pouvez seulement envoyer des PSBT ou des transactions</translation>
 		</message>
 	</context>
 	<context>
 		<name>ChatGui</name>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-			<translation>Tous les fichiers (*);;PSBT (*.psbt);;Transaction (*.tx)  </translation>
+			<translation>Tous les fichiers (*);;PSBT (*.psbt);;Transaction (*.tx)</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>Ouvrir Transaction/PSBT  </translation>
+			<translation>Ouvrir Transaction/PSBT</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Send</source>
-			<translation>Envoyer  </translation>
+			<translation>Envoyer</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Share a PSBT</source>
-			<translation>Partager un PSBT  </translation>
+			<translation>Partager un PSBT</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Type your message here...</source>
-			<translation>Tapez votre message ici...  </translation>
+			<translation>Tapez votre message ici...</translation>
 		</message>
 	</context>
 	<context>
 		<name>CloseButton</name>
 		<message>
 			<source>Close</source>
-			<translation>Fermer  </translation>
+			<translation>Fermer</translation>
 		</message>
 	</context>
 	<context>
 		<name>ConfirmedBlock</name>
 		<message>
 			<source>Block {n}</source>
-			<translation>Bloc {n}  </translation>
+			<translation>Bloc {n}</translation>
 		</message>
 	</context>
 	<context>
@@ -438,6 +450,11 @@
 		<message>
 			<source>Address Type</source>
 			<translation>Type d'adresse  </translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Impossible de reconnaître l'entrée. Voulez-vous scanner à nouveau ?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1426,6 +1443,21 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not open PSBT</source>
+			<translation>Impossible d'ouvrir la PSBT</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
+			<translation>Impossible d'ouvrir la PSBT, car il manque les UTXO d'entrée.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Impossible de reconnaître l'entrée. Voulez-vous scanner à nouveau ?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>Voulez-vous sauvegarder le PSBT {id} ?  </translation>
 		</message>
@@ -1483,11 +1515,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>Ouvrir Portefeuille  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1563,11 +1590,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>Il n'y a pas de fichier : {file_path}  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>Transaction {txid}  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2615,6 +2637,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterQR</name>
 		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Impossible de reconnaître l'entrée. Voulez-vous scanner à nouveau ?</translation>
+		</message>
+		<name>SignatureImporterQR</name>
+		<message>
 			<source>Scan QR code</source>
 			<translation>Scanner le code QR  </translation>
 		</message>
@@ -2989,6 +3016,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>PSBT {txid}</source>
+			<translation>PSBT {txid}  </translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Veuillez d'abord supprimer la transaction locale existante du portefeuille.</translation>
 		</message>
@@ -3031,6 +3063,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>La transaction à remplacer est introuvable dans les portefeuilles ouverts</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Transaction {txid}</source>
+			<translation>Transaction {txid}  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

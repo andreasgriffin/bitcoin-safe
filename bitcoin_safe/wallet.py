@@ -552,15 +552,10 @@ class BdkWallet(bdk.Wallet, CacheManager):
 
     @instance_lru_cache(always_keep=True)
     def get_address_of_txout(self, txout: TxOut) -> Optional[str]:
-        if txout.value == 0:
-            # this can happen if it is an input of a coinbase TX
-            try:
-                return str(bdk.Address.from_script(txout.script_pubkey, self.network()))
-            except Exception as e:
-                logger.debug(f"{self.__class__.__name__}: {e}")
-                return None
-        else:
-            return str(bdk.Address.from_script(txout.script_pubkey, self.network()))
+        res = robust_address_str_from_script(
+            txout.script_pubkey, network=self.network(), on_error_return_hex=False
+        )
+        return res if res else None
 
 
 class WalletInputsInconsistentError(Exception):

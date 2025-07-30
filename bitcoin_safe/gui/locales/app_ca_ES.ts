@@ -8,6 +8,11 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
+			<source>The input is incompatible with the PSBT to be signed.</source>
+			<translation>L'entrada és incompatible amb la PSBT que s'ha de signar.</translation>
+		</message>
+		<name>AbstractSignatureImporter</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>El txid del PSBT signat no coincideix amb el txid original</translation>
 		</message>
@@ -312,6 +317,13 @@
 		</message>
 	</context>
 	<context>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
@@ -438,6 +450,11 @@
 		<message>
 			<source>Address Type</source>
 			<translation>Tipus d'adreça</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1426,6 +1443,21 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not open PSBT</source>
+			<translation>No s'ha pogut obrir la PSBT</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
+			<translation>No s'ha pogut obrir la PSBT, perquè falten els UTXO d'entrada.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>Vols desar el PSBT {id}?</translation>
 		</message>
@@ -1483,11 +1515,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>Obre cartera</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1563,11 +1590,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>No existeix el fitxer: {file_path}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>Transacció {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2615,6 +2637,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterQR</name>
 		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
+		</message>
+		<name>SignatureImporterQR</name>
+		<message>
 			<source>Scan QR code</source>
 			<translation>Escaneja codi QR</translation>
 		</message>
@@ -2989,6 +3016,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>PSBT {txid}</source>
+			<translation>PSBT {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Si us plau, elimineu primer la transacció local existent del moneder.</translation>
 		</message>
@@ -3031,6 +3063,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>No s'ha pogut trobar la transacció a substituir en les carteres obertes</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Transaction {txid}</source>
+			<translation>Transacció {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

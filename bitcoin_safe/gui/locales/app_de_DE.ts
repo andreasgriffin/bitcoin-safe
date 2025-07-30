@@ -8,6 +8,11 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
+			<source>The input is incompatible with the PSBT to be signed.</source>
+			<translation>Die Eingabe ist mit der zu signierenden PSBT nicht kompatibel.</translation>
+		</message>
+		<name>AbstractSignatureImporter</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein</translation>
 		</message>
@@ -312,6 +317,13 @@
 		</message>
 	</context>
 	<context>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
@@ -439,6 +451,11 @@
 		<message>
 			<source>Address Type</source>
 			<translation>Adresstyp</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1435,6 +1452,21 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT konnte nicht geöffnet werden</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
+			<translation>PSBT konnte nicht geöffnet werden, da die Eingabe-UTXOs fehlen.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>Möchten Sie das PSBT {id} speichern?</translation>
 		</message>
@@ -1492,11 +1524,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>Open Wallet</source>
 			<translation>Wallet öffnen</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1572,11 +1599,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>Es gibt keine solche Datei: {file_path}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>Transaktion {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2636,6 +2658,11 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 	<context>
 		<name>SignatureImporterQR</name>
 		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
+		</message>
+		<name>SignatureImporterQR</name>
+		<message>
 			<source>Scan QR code</source>
 			<translation>QR-Code scannen</translation>
 		</message>
@@ -3020,6 +3047,11 @@ automatisch darunter {rate}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>PSBT {txid}</source>
+			<translation>PSBT {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Bitte entferne zuerst die vorhandene lokale Transaktion des Wallets.</translation>
 		</message>
@@ -3062,6 +3094,11 @@ automatisch darunter {rate}</translation>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>Die zu ersetzende Transaktion konnte in geöffneten Wallets nicht gefunden werden</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Transaction {txid}</source>
+			<translation>Transaktion {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

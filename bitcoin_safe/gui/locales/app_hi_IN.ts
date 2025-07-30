@@ -8,6 +8,11 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
+			<source>The input is incompatible with the PSBT to be signed.</source>
+			<translation>इनपुट जिस PSBT पर हस्ताक्षर होने हैं, उसके साथ असंगत है।</translation>
+		</message>
+		<name>AbstractSignatureImporter</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
 		</message>
@@ -312,6 +317,13 @@
 		</message>
 	</context>
 	<context>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>इनपुट को पहचान नहीं सके। क्या आप फिर से स्कैन करना चाहते हैं?</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
@@ -438,6 +450,11 @@
 		<message>
 			<source>Address Type</source>
 			<translation>पता प्रकार</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>इनपुट को पहचान नहीं सके। क्या आप फिर से स्कैन करना चाहते हैं?</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1426,6 +1443,21 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT खोली नहीं जा सकी</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
+			<translation>PSBT खोली नहीं जा सकी, क्योंकि इनपुट UTXO उपलब्ध नहीं हैं।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>इनपुट को पहचान नहीं सके। क्या आप फिर से स्कैन करना चाहते हैं?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>क्या आप PSBT {id} को सहेजना चाहते हैं?  </translation>
 		</message>
@@ -1483,11 +1515,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>वॉलेट खोलें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1563,11 +1590,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>ऐसी कोई फ़ाइल नहीं है: {file_path}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>लेन-देन {txid}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2618,6 +2640,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterQR</name>
 		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>इनपुट को पहचान नहीं सके। क्या आप फिर से स्कैन करना चाहते हैं?</translation>
+		</message>
+		<name>SignatureImporterQR</name>
+		<message>
 			<source>Scan QR code</source>
 			<translation>QR कोड स्कैन करें</translation>
 		</message>
@@ -2992,6 +3019,11 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>PSBT {txid}</source>
+			<translation>PSBT {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>कृपया पहले वॉलेट का मौजूदा स्थानीय लेन-देन हटाएँ।</translation>
 		</message>
@@ -3034,6 +3066,11 @@ below {rate}</source>
 		<message>
 			<source>Transaction to be replaced could not be found in open wallets</source>
 			<translation>खुले वॉलेट्स में प्रतिस्थापित करने हेतु लेनदेन नहीं मिला</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Transaction {txid}</source>
+			<translation>लेन-देन {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
