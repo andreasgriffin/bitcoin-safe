@@ -336,7 +336,8 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         keystore_uis_with_unexpected_origin = self.get_keystore_uis_with_unexpected_origin()
         for keystore_ui in keystore_uis_with_unexpected_origin:
             if not question_dialog(
-                f"The key derivation path {keystore_ui.key_origin} of {keystore_ui.label} is not the default {keystore_ui.get_expected_key_origin()} for the address type {keystore_ui.get_address_type().name}. Do you want to proceed anyway?"
+                f"The key derivation path {keystore_ui.key_origin} of {keystore_ui.label} is not the default {keystore_ui.get_expected_key_origin()} for the address type {keystore_ui.get_address_type().name}. Do you want to proceed anyway?",
+                true_button=self.tr("Proceed anyway"),
             ):
                 return False
         return True

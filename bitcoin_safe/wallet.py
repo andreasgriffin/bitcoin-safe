@@ -103,8 +103,9 @@ class InconsistentBDKState(Exception):
 class TxConfirmationStatus(enum.Enum):
     CONFIRMED = 1
     UNCONFIRMED = 0
-    UNCONF_PARENT = -1  # this implies UNCONFIRMED  #  currently not used
     LOCAL = -2  # this implies UNCONFIRMED
+    PSBT = -10
+    DRAFT = -100
 
     @classmethod
     def to_str(cls, status: "TxConfirmationStatus") -> str:
@@ -112,10 +113,12 @@ class TxConfirmationStatus(enum.Enum):
             return translate("wallet", "Confirmed")
         if status == cls.UNCONFIRMED:
             return translate("wallet", "Unconfirmed")
-        if status == cls.UNCONF_PARENT:
-            return translate("wallet", "Unconfirmed parent")
         if status == cls.LOCAL:
             return translate("wallet", "Local")
+        if status == cls.PSBT:
+            return translate("wallet", "PSBT")
+        if status == cls.DRAFT:
+            return translate("wallet", "Draft")
 
 
 def is_local(chain_position: bdk.ChainPosition | None) -> bool:
@@ -140,16 +143,17 @@ class TxStatus:
         tx: bdk.Transaction | None,
         chain_position: bdk.ChainPosition | None,
         get_height: Callable[[], int],
+        fallback_confirmation_status: TxConfirmationStatus = TxConfirmationStatus.LOCAL,
     ) -> None:
         self.tx = tx
         self.get_height = get_height
         self.chain_position = chain_position
 
-        self.confirmation_status = TxConfirmationStatus.LOCAL
+        self.confirmation_status = fallback_confirmation_status
         if isinstance(chain_position, bdk.ChainPosition.CONFIRMED):
             self.confirmation_status = TxConfirmationStatus.CONFIRMED
 
-        if self.confirmation_status == TxConfirmationStatus.LOCAL and self.is_in_mempool():
+        if self.confirmation_status.value <= TxConfirmationStatus.UNCONFIRMED.value and self.is_in_mempool():
             self.confirmation_status = TxConfirmationStatus.UNCONFIRMED
 
     def is_in_mempool(self):
@@ -179,8 +183,11 @@ class TxStatus:
             else 0
         )
 
+    def is_confirmed(self) -> bool:
+        return self.confirmation_status == TxConfirmationStatus.CONFIRMED
+
     def is_unconfirmed(self) -> bool:
-        return self.confirmation_status != TxConfirmationStatus.CONFIRMED
+        return self.confirmation_status == TxConfirmationStatus.UNCONFIRMED
 
     def can_do_initial_broadcast(self) -> bool:
         return self.confirmation_status == TxConfirmationStatus.LOCAL
@@ -189,10 +196,13 @@ class TxStatus:
         return self.confirmation_status == TxConfirmationStatus.LOCAL
 
     def can_rbf(self) -> bool:
-        return self.is_unconfirmed() and self.confirmation_status != TxConfirmationStatus.LOCAL
+        return self.is_unconfirmed()
 
     def can_cpfp(self) -> bool:
         return self.confirmation_status == TxConfirmationStatus.UNCONFIRMED
+
+    def can_edit(self) -> bool:
+        return self.confirmation_status.value <= TxConfirmationStatus.LOCAL.value
 
     def do_icon_check_on_chain_height_change(self) -> bool:
         return self.confirmations() <= 6
@@ -318,10 +328,7 @@ class ProtoWallet(BaseSaveableClass):
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def dump(self) -> Any:
         super().dump()
@@ -464,6 +471,18 @@ class BdkWallet(bdk.Wallet, CacheManager):
 
         return result
 
+    @instance_lru_cache()
+    @time_logger
+    def list_unspent_outpoints(self, include_spent=False) -> List[str]:
+        start_time = time()
+        result = [
+            str(OutPoint.from_bdk(output.outpoint))
+            for output in super().list_output()
+            if include_spent or not output.is_spent
+        ]
+        logger.debug(f"self.bdkwallet.list_output {len(result)} results in { time()-start_time}s")
+        return result
+
     def get_tx_details(self, canonical_tx: bdk.CanonicalTx) -> TransactionDetails:
         tx = canonical_tx.transaction
         txid = tx.compute_txid()
@@ -571,7 +590,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     """If any bitcoin logic (ontop of bdk) has to be done, then here is the
     place."""
 
-    VERSION = "0.3.1"
+    VERSION = "0.3.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "KeyStore": KeyStore,
@@ -594,7 +613,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         initialization_tips: List[int] | None = None,
         refresh_wallet=False,
         default_category="default",
-        auto_opportunistic_coin_select=False,
         initial_txs: List[bdk.Transaction] | None = None,
         **kwargs,
     ) -> None:
@@ -611,7 +629,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.gap = gap
         self.keystores = keystores
         self.config: UserConfig = config
-        self.auto_opportunistic_coin_select = auto_opportunistic_coin_select
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
         # refresh dependent values
         self._initialization_tips = (
@@ -800,7 +817,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             "_blockchain_height",
             "tips",
             "refresh_wallet",
-            "auto_opportunistic_coin_select",
         ]
         for k in keys:
             if this[k] != other[k]:
@@ -880,7 +896,6 @@ class Wallet(BaseSaveableClass, CacheManager):
             "labels",
             "_blockchain_height",
             "refresh_wallet",
-            "auto_opportunistic_coin_select",
         ]
         for k in keys:
             d[k] = self.__dict__[k]
@@ -904,7 +919,6 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
             if "labels" in dct:
                 # no real migration. Just delete old data
@@ -942,10 +956,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             if _tips := dct.get("_tips"):
                 dct["initialization_tips"] = _tips
 
-        # now the VERSION is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "Wallet":
@@ -1187,6 +1198,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.bdkwallet.list_output()
         self.get_dict_fulltxdetail()
         self.get_all_txos_dict()
+        self.set_categories_of_used_addresses()
         if addresses:
             self.is_my_address_with_peek(addresses[-1])
 
@@ -1291,6 +1303,9 @@ class Wallet(BaseSaveableClass, CacheManager):
     def is_change(self, address: str) -> bool:
         return address in self.get_change_addresses()
 
+    def is_receive(self, address: str) -> bool:
+        return address in self.get_receiving_addresses()
+
     def _get_address_info_min(self, address: str, keychain: bdk.KeychainKind) -> Optional[AddressInfoMin]:
         "(is_change, index)"
         if keychain == bdk.KeychainKind.EXTERNAL:
@@ -1370,6 +1385,16 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.get_dict_fulltxdetail()
         return self.cache_address_to_txids.get(address, set())
 
+    def set_categories_of_used_addresses(self):
+        for utxo in self.get_all_txos_dict(include_not_mine=False).values():
+            if not self.labels.get_category_raw(utxo.address):
+                categories = self.get_categories_for_txid(utxo.outpoint.txid)
+                if not categories:
+                    continue
+                category = categories[0]
+                self.labels.set_addr_category(ref=utxo.address, category=category)
+                logger.info(f"Set {category=} for {utxo.address=}")
+
     @instance_lru_cache()
     @time_logger
     def get_dict_fulltxdetail(self) -> Dict[str, FullTxDetail]:
@@ -1381,10 +1406,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         """
         start_time = time()
         delta_txs = self.bdkwallet.list_delta_transactions(access_marker="get_dict_fulltxdetail")
+        cache_dict_fulltxdetail = self.cache_dict_fulltxdetail.copy()
 
         # if transactions were removed (reorg or other), then recalculate everything
-        if delta_txs.removed or not self.cache_dict_fulltxdetail:
-            self.cache_dict_fulltxdetail = {}
+        if delta_txs.removed or not cache_dict_fulltxdetail:
+            cache_dict_fulltxdetail = {}
             txs = delta_txs.new_state
         else:
             txs = delta_txs.appended
@@ -1397,7 +1423,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         def process_outputs(tx: TransactionDetails) -> Tuple[str, FullTxDetail]:
             fulltxdetail = FullTxDetail.fill_received(tx, self.bdkwallet.get_address_of_txout)
-            if fulltxdetail.txid in self.cache_dict_fulltxdetail:
+            if fulltxdetail.txid in cache_dict_fulltxdetail:
                 if not tx.transaction.is_coinbase():
                     logger.error(f"Trying to add a tx with txid {fulltxdetail.txid} twice.")
             return fulltxdetail.txid, fulltxdetail
@@ -1405,13 +1431,13 @@ class Wallet(BaseSaveableClass, CacheManager):
         def process_inputs(tx: TransactionDetails) -> Tuple[str, FullTxDetail]:
             "this must be done AFTER process_outputs"
             txid = tx.txid
-            fulltxdetail = self.cache_dict_fulltxdetail[txid]
-            fulltxdetail.fill_inputs(self.cache_dict_fulltxdetail)
+            fulltxdetail = cache_dict_fulltxdetail[txid]
+            fulltxdetail.fill_inputs(cache_dict_fulltxdetail)
             return txid, fulltxdetail
 
         key_value_pairs = list(map(process_outputs, txs))
 
-        self.cache_dict_fulltxdetail.update(key_value_pairs)
+        cache_dict_fulltxdetail.update(key_value_pairs)
         for txid, fulltxdetail in key_value_pairs:
             append_dicts(txid, list(fulltxdetail.outputs.values()))
 
@@ -1427,6 +1453,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         if txs:
             logger.debug(f"get_dict_fulltxdetail  with {len(txs)} txs in {time()-  start_time}")
 
+        self.cache_dict_fulltxdetail = cache_dict_fulltxdetail
         return self.cache_dict_fulltxdetail
 
     @instance_lru_cache(always_keep=False)
@@ -1738,8 +1765,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         # check inputs consistent
         prev_outpoints = [
-            str(OutPoint.from_bdk(prev_out.previous_output))
-            for prev_out in txinfos.replace_tx.transaction.input()
+            str(OutPoint.from_bdk(prev_out.previous_output)) for prev_out in txinfos.replace_tx.input()
         ]
         utxos = [utxo for utxo in txinfos.utxo_dict.values() if str(utxo.outpoint) in prev_outpoints]
         assert len(prev_outpoints) == len(
@@ -1749,10 +1775,10 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         # check recipients    consistent
         recipient_addresses = [r.address for r in txinfos.recipients]
-        assert len(txinfos.replace_tx.transaction.output()) >= len(
+        assert len(txinfos.replace_tx.output()) >= len(
             txinfos.recipients
         ), "Inconsistent TxUiInfos:too many recipients"
-        for output in txinfos.replace_tx.transaction.output():
+        for output in txinfos.replace_tx.output():
             output_address = str(bdk.Address.from_script(script=output.script_pubkey, network=self.network))
             if output_address in self.get_receiving_addresses():
                 assert (
@@ -1761,7 +1787,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         try:
             tx_builder = bdk.BumpFeeTxBuilder(
-                txid=txinfos.replace_tx.txid, fee_rate=FeeRate.from_float_sats_vB(txinfos.fee_rate)
+                txid=txinfos.replace_tx.compute_txid(), fee_rate=FeeRate.from_float_sats_vB(txinfos.fee_rate)
             )
             # if the fee is too low bdk will throw an exception here
             psbt = tx_builder.finish(self.bdkwallet)
@@ -1808,7 +1834,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             txinfos.spend_all_utxos = True
 
         tx_builder = bdk.TxBuilder()
-        tx_builder.add_global_xpubs()
+        # without add_global_xpubs some Hardware signers cannot recognize that they are part of this psbt
+        # https://github.com/bitcoindevkit/bdk-ffi/issues/572
+        tx_builder = tx_builder.add_global_xpubs()
         if txinfos.fee_rate is not None:
             tx_builder = tx_builder.fee_rate(FeeRate.from_float_sats_vB(txinfos.fee_rate))
 
@@ -1868,7 +1896,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             fee_rate=txinfos.fee_rate,
         )
 
-        self.set_psbt_output_categories(
+        self.set_addresses_category_if_unused(
             recipient_category=recipient_category,
             addresses=[
                 self.bdkwallet.get_address_of_txout(TxOut.from_bdk(txout))
@@ -1881,20 +1909,28 @@ class Wallet(BaseSaveableClass, CacheManager):
         # self._label_txid_by_recipient_labels(builder_infos)
         return builder_infos
 
-    def set_addr_category_if_unused(self, category: str, address: str) -> None:
+    def set_addr_category_if_unused(self, category: str, address: str) -> str | None:
         "sets the address category, if the category was unassigned"
         if address and self.is_my_address(address) and not self.address_is_used(address):
             # old self.labels.get_category(address, default_value="not_set_category") == "not_set_category":
             self.labels.set_addr_category(address, category=category)
+            return address
+        return None
 
-    def set_psbt_output_categories(
+    def set_addresses_category_if_unused(
         self, recipient_category: str | None, addresses: Iterable[str | None]
-    ) -> None:
+    ) -> List[str]:
+        assigned_addresses: List[str] = []
         if not recipient_category:
-            return
+            return assigned_addresses
         for address in addresses:
-            if address:
-                self.set_addr_category_if_unused(category=recipient_category, address=address)
+            if address and (
+                assigned_address := self.set_addr_category_if_unused(
+                    category=recipient_category, address=address
+                )
+            ):
+                assigned_addresses.append(assigned_address)
+        return assigned_addresses
 
     def _set_recipient_address_labels(self, recipients: List[Recipient]) -> None:
         # set label for the recipient output
@@ -2196,10 +2232,12 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return calculate_ema(fee_rates, n=min(n, len(all_txs)), weights=weights)
 
-    def get_category_python_utxo_dict(self) -> Dict[str, List[PythonUtxo]]:
+    def get_category_python_txo_dict(self, include_spent=False) -> Dict[str, List[PythonUtxo]]:
         category_python_utxo_dict: Dict[str, List[PythonUtxo]] = {}
 
-        for python_utxo in self.get_all_utxos():
+        for python_utxo in self.get_all_txos_dict().values():
+            if not include_spent and python_utxo.is_spent_by_txid:
+                continue
             category = self.labels.get_category(python_utxo.address)
             if not category:
                 continue
@@ -2248,6 +2286,8 @@ def get_wallet(wallet_id: str, signals: Signals) -> Optional[Wallet]:
 
 
 def get_wallet_of_address(address: str, signals: Signals) -> Optional[Wallet]:
+    if not address:
+        return None
     for wallet in get_wallets(signals):
         if wallet.is_my_address_with_peek(address):
             return wallet
@@ -2297,6 +2337,14 @@ def get_label_from_any_wallet(
         if label:
             return label
     return None
+
+
+def get_tx_details(txid: str, signals: Signals) -> Tuple[TransactionDetails, Wallet] | Tuple[None, None]:
+    for wallet in get_wallets(signals):
+        tx = wallet.get_tx(txid=txid)
+        if tx:
+            return tx, wallet
+    return None, None
 
 
 ###########

@@ -86,6 +86,7 @@ from .util import (
     add_to_buttonbox,
     create_tool_button,
     generate_help_button,
+    set_no_margins,
 )
 
 logger = logging.getLogger(__name__)
@@ -106,7 +107,8 @@ class BaseHardwareSignerInteractionWidget(QWidget):
         super().__init__(parent)
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self._layout = QVBoxLayout(self)
-        self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        set_no_margins(self._layout)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         # add the buttons
         self.buttonBox = QDialogButtonBox()
@@ -549,16 +551,16 @@ class KeyStoreUI(QObject):
         self.label_description.setText(self.tr("Description"))
 
         self.label_fingerprint.setText(self.tr("Fingerprint"))
-        self.edit_fingerprint.input_field.setObjectName(self.label_fingerprint.text())
+        self.edit_fingerprint.input_field.display_name = self.label_fingerprint.text()
 
         self.label_key_origin.setText(self.tr("xPub Origin"))
-        self.edit_key_origin_input.setObjectName(self.label_key_origin.text())
+        self.edit_key_origin_input.display_name = self.label_key_origin.text()
 
         self.label_xpub.setText(self.tr("xPub"))
-        self.edit_xpub.input_field.setObjectName(self.label_xpub.text())
+        self.edit_xpub.input_field.display_name = self.label_xpub.text()
 
         self.label_seed.setText(self.tr("Seed"))
-        self.edit_seed.input_field.setObjectName(self.label_seed.text())
+        self.edit_seed.input_field.display_name = self.label_seed.text()
 
         self.textEdit_description.setPlaceholderText(
             self.tr(

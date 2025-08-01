@@ -3,7 +3,7 @@
     "tasks": [{
         "label": "Poetry Install",
         "type": "shell",
-        "command": "${command:python.interpreterPath} -m poetry install",
+        "command": "${command:python.interpreterPath} -m pip install poetry && ${command:python.interpreterPath} -m poetry install",
         "options": {
             "cwd": "${workspaceFolder}" // Ensures command runs in the project root
         },

@@ -186,6 +186,7 @@ class ClassSerializer:
 class BaseSaveableClass:
     known_classes: Dict[str, Any] = {"Network": bdk.Network}
     VERSION = "0.0.0"
+    _version_from_dump: str | None = None
 
     @abstractmethod
     def dump(self) -> Dict:
@@ -196,9 +197,12 @@ class BaseSaveableClass:
         return d
 
     @classmethod
-    @abstractmethod
     def from_dump_migration(cls, dct: Dict[str, Any]):
-        "this class should be overwritten in child classes"
+        cls._version_from_dump = dct["VERSION"]
+
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
         return dct
 
     @classmethod

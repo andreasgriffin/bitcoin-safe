@@ -28,6 +28,7 @@
 
 import json
 import logging
+import math
 import os
 from datetime import datetime, timedelta
 from functools import lru_cache, wraps
@@ -65,9 +66,13 @@ def calculate_ema(
 
     alpha = 2 / (n + 1)
     adjusted_weights = weights if weights else [1] * len(values)
-    adjusted_weights = np.array(adjusted_weights) / np.max(
-        adjusted_weights
-    )  # Adjust weights to ensure alpha * w <= 1
+    adjusted_weights = np.array(adjusted_weights)
+    # Normalize weights while guarding against division by zero
+    max_weight = np.max(adjusted_weights)
+    if max_weight == 0:
+        adjusted_weights = np.ones_like(adjusted_weights)
+    else:
+        adjusted_weights = adjusted_weights / max_weight
 
     ema = values[0]  # Initialize EMA with the first data point
     for weight, value in zip(adjusted_weights, values):
@@ -178,3 +183,13 @@ class CacheManager:
         for f, wrapped in self._instance_cache.items():
             if f.__name__ == method.__name__:
                 wrapped.cache_clear()
+
+
+def required_precision(min_value: float, max_value: float, min_prec: int = 0, max_prec: int = 10) -> int:
+    diff = abs(max_value - min_value)
+    if diff == 0:
+        return min_prec
+    # how many places until the difference shows up as ≥ 1 in the last digit
+    d = math.ceil(-math.log10(diff))
+    # clamp to sensible bounds
+    return max(min_prec, min(d, max_prec))

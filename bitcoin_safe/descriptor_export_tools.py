@@ -61,7 +61,7 @@ class DescriptorExportTools:
 { multipath_descriptor.to_single_descriptors()[0] }"""
 
     @staticmethod
-    def _get_passport_str(wallet_id: str, descriptor_str: str, hardware_signer_name="Passport") -> str:
+    def _get_passport_str(wallet_id: str, descriptor_str: str, hardware_signer_name="") -> str:
         infos = DescriptorInfo.from_str(descriptor_str)
         signer_infos = [
             SignerInfo(
@@ -78,12 +78,6 @@ class DescriptorExportTools:
             address_type_short_name=infos.address_type.short_name.upper(),
             signer_infos=signer_infos,
         ).to_custom_str(hardware_signer_name=hardware_signer_name)
-
-    @classmethod
-    def _get_keystone_str(cls, wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
-        return cls._get_passport_str(
-            wallet_id=wallet_id, descriptor_str=descriptor_str, hardware_signer_name="Keystone"
-        )
 
     @classmethod
     def _get_coldcard_str_legacy(cls, wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
@@ -127,14 +121,10 @@ class DescriptorExportTools:
             return str(multipath_descriptor)
         elif descriptor_export_type.name == DescriptorExportTypes.coldcard.name:
             return cls._get_coldcard_str(wallet_id=wallet_id, multipath_descriptor=multipath_descriptor)
-        elif descriptor_export_type.name == DescriptorExportTypes.passport.name:
+        elif descriptor_export_type.name == DescriptorExportTypes.default.name:
             return cls._get_passport_str(
                 wallet_id=wallet_id,
                 descriptor_str=str(multipath_descriptor),
-            )
-        elif descriptor_export_type.name == DescriptorExportTypes.keystone.name:
-            return cls._get_keystone_str(
-                wallet_id=wallet_id, descriptor_str=str(multipath_descriptor), network=network
             )
         elif descriptor_export_type.name == DescriptorExportTypes.specterdiy.name:
             return cls._get_specter_diy_str(wallet_id=wallet_id, descriptor_str=str(multipath_descriptor))

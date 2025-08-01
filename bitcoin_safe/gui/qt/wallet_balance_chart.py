@@ -61,7 +61,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
-from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors
+from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -332,9 +332,7 @@ class BalanceChart(QWidget):
 
         self.chart.setBackgroundVisible(False)
         # let the view widget itself be transparent
-        self.chart_view.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        # ensure the style sheet takes effect
-        self.chart_view.setStyleSheet("background: transparent;")
+        set_translucent(self.chart_view)
 
         if isinstance(chart_layout := self.chart.layout(), QGraphicsLayout):
             # chart_layout has its own margin and it is difficult to set its color

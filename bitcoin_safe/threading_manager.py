@@ -33,7 +33,7 @@ import threading
 from collections import deque
 from threading import Lock
 from types import TracebackType
-from typing import Any, Callable, NamedTuple, Optional, Tuple
+from typing import Any, Callable, NamedTuple, Optional, Tuple, cast
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 
@@ -63,7 +63,10 @@ class Worker(QObject):
     def __init__(self, task: Task) -> None:
         super().__init__()
         self.task: Task = task
-        self.thread_name = str(self.task.do)
+        self.thread_name = f"{self.task.do}  {id(self)}"
+
+        if self.thread_name:
+            self.setObjectName(f"Worker {self.thread_name}")
 
     @pyqtSlot()
     def run_task(self) -> None:
@@ -86,7 +89,7 @@ class Worker(QObject):
 class TaskThread(QThread):
     """Manages execution of tasks in separate threads."""
 
-    signal_stop_threat: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_stop_thread = cast(TypedPyQtSignal[object], pyqtSignal(object))  # self
 
     def __init__(self, enable_threading: bool = ENABLE_THREADING) -> None:
         super().__init__()
@@ -104,6 +107,8 @@ class TaskThread(QThread):
     def thread_name(self, value: str | None):
         logger.debug(f"setting thread_name of {self.__class__.__name__} to {value}")
         self._thread_name = value
+        if value:
+            self.setObjectName(f"TaskThread {value}")
 
     def __str__(self) -> str:
         return str(self.thread_name)
@@ -170,10 +175,10 @@ class TaskThread(QThread):
             self.cancelled = True
             self.quit()
             self.wait()
-            self.signal_stop_threat.emit(self.thread_name if self.thread_name else "")
+            self.signal_stop_thread.emit(self)
+            logger.debug(f"done my_quit of {self.thread_name}")
         except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
-            logger.error(f"An error during the shutdown of {self.thread_name}")
+            logger.error(f"An error during the shutdown of {self.thread_name}: {e}")
 
 
 class NoThread:
@@ -221,22 +226,27 @@ class ThreadingManager:
     def append_thread(self, thread: TaskThread) -> None:
         with self.lock:
             self._taskthreads.append(thread)
-            thread.signal_stop_threat.connect(self.remove_thread)
+            thread.signal_stop_thread.connect(self.remove_thread)
             logger.debug(
                 f"Appended thread {thread.thread_name} to {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
-    def remove_thread(self, thread_name: str | None) -> None:
+    def remove_thread(self, thread: object) -> None:
+        if not isinstance(thread, TaskThread):
+            logger.error(f"{thread=} has wrong type {type(thread)=}")
+            return
+
+        logger.debug(
+            f"Start remove_thread {thread.thread_name}. Currently there are {len(self._taskthreads)=}"
+        )
         with self.lock:
-            for thread in list(self._taskthreads):
-                # if not thread.thread_name:
-                #     # remove empty threads
-                #     # (unclear why thread_name is set to None when threads are done)
-                #     self.taskthreads.remove(thread)
-                if thread.thread_name == thread_name:
-                    self._taskthreads.remove(thread)
+            if thread.isRunning():
+                logger.error(f"Cannot remove {thread=} with {thread.thread_name=} because it is running")
+                return
+            if thread in self._taskthreads:
+                self._taskthreads.remove(thread)
             logger.debug(
-                f"Removed thread {thread_name} from {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
+                f"Removed thread {thread.thread_name} from {self.threading_manager_name}, Number of threads = {len(self._taskthreads)} {[str(thread) for thread in  self._taskthreads]}"
             )
 
     def stop_and_wait_all(self) -> None:

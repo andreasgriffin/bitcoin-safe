@@ -39,5 +39,10 @@ class SubtextType(enum.Enum):
 @dataclass
 class CategoryInfo:
     category: str
+    address_count: int
+    utxo_count: int
+    txo_count: int
+    txo_balance: int
+    utxo_balance: int
     text_click_new_address: str = ""
     text_balance: str = ""

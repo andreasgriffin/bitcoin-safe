@@ -43,7 +43,7 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
@@ -112,7 +112,7 @@ def test_wallet_send(
             fund_wallet()
 
             def import_recipients() -> None:
-                qt_wallet.tabs.setCurrentWidget(qt_wallet.send_tab)
+                qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
                 shutter.save(main_window)
                 qt_wallet.uitx_creator.recipients.add_recipient_button.click()
                 shutter.save(main_window)
@@ -188,7 +188,7 @@ def test_wallet_send(
                 signer_ui = widget.wallet_importers.signer_ui
                 assert isinstance(signer_ui, SignerUI)
                 for button in signer_ui.findChildren(QPushButton):
-                    assert button.text() == "Sign with seed"
+                    assert button.text() == f"Seed of '{qt_wallet.wallet.id}'"
                     assert button.isVisible()
                     button.click()
 

@@ -320,7 +320,7 @@ Content to translate:
             # Check count
             if len(empty_target_indices) == 0:
                 continue
-            if len(lang_lines) != len(empty_target_indices):
+            if len(lang_lines) > len(empty_target_indices):
                 raise ValueError(
                     f"For language '{lang}' in file '{csv_path.name}':\n"
                     f" - The CSV has {len(empty_target_indices)} empty targets.\n"

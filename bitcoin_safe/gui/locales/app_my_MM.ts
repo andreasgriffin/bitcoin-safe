@@ -54,11 +54,6 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
-			<source>Address of wallet "{id}"</source>
-			<translation>"{id}" ပိုက်ဆံအိတ်ရဲ့ လိပ်စာ  </translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
 			<source>Advanced</source>
 			<translation>အဆင့်မြင့်  </translation>
 		</message>
@@ -143,6 +138,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Wallet</source>
+			<translation>ပိုက်ဆံအိတ်  </translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>change</source>
 			<translation>ပြောင်းလဲ  </translation>
 		</message>
@@ -165,13 +165,23 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
+			<source>Create new Address</source>
+			<translation>လိပ်စာအသစ် ဖန်တီးရန်</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
 			<source>Generate to selected adddresses</source>
 			<translation>ရွေးချယ်ထားသောလိပ်စာများသို့ ထုတ်လုပ်ပါ  </translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Show Filter</source>
-			<translation>စစ်ထုတ်ပြသခြင်း  </translation>
+			<source>Manage Categories</source>
+			<translation>အမျိုးအစားများကို စီမံရန်</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
+			<source>for</source>
+			<translation>အတွက်</translation>
 		</message>
 	</context>
 	<context>
@@ -191,6 +201,28 @@
 		<message>
 			<source>Max ≈ {amount}</source>
 			<translation>အမြင့်မားဆုံး ≈ {amount}  </translation>
+		</message>
+	</context>
+	<context>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Please backup your sync key.</source>
+			<translation>သင်၏ စင့်ကီးကို အရန်သိမ်းဆည်းပါ။</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Restore labels</source>
+			<translation>တံဆိပ်များ ပြန်လည်ရယူရန်</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Save sync key</source>
+			<translation>စင့်ကီးကို သိမ်းဆည်းပါ</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
+			<translation>ပိုက်ဆံအိတ် {wallet_id} ၏ စင့်ကီး:  {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -322,6 +354,18 @@
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
 		</message>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>ထပ်မံ စကန်လုပ်ပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonExplorerIcon</name>
+		<message>
+			<source>Open in the block explorer</source>
+			<translation>Block Explorer တွင်ဖွင့်ရန်</translation>
+		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
@@ -343,20 +387,93 @@
 		</message>
 	</context>
 	<context>
-		<name>CategoryEditor</name>
+		<name>CPFPIcon</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC လဲလှယ်ရေး</translation>
+			<source>CPFP with this fee rate</source>
+			<translation>ဤ ကုန်ကျစရိတ်နှုန်းဖြင့် CPFP ပြုလုပ်ရန်</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryComboBox</name>
 		<message>
-			<source>Private</source>
-			<translation>ပုဂ္ဂလိက  </translation>
+			<source>Add category</source>
+			<translation>အမျိုးအစား ထည့်ရန်</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryList</name>
 		<message>
-			<source>category</source>
+			<source>Addresses</source>
+			<translation>လိပ်စာများ  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Balance</source>
+			<translation>လက်ကျန်ငွေ  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Category</source>
 			<translation>အုပ်စု  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Color</source>
+			<translation>အရောင်</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received </source>
+			<translation>လက်ခံရရှိသည်</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Tx Outputs</source>
+			<translation>Tx အထွက်များ</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>UTXOs</source>
+			<translation>UTXOs  </translation>
+		</message>
+	</context>
+	<context>
+		<name>CategoryManager</name>
+		<message>
+			<source>Add Category</source>
+			<translation>အမျိုးအစား ထည့်ရန်</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Change category</source>
+			<translation>အမျိုးအစား ပြောင်းရန်</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Manage Categories of {wallet_id}</source>
+			<translation>{wallet_id} ၏ အမျိုးအစားများကို စီမံရန်</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Merge</source>
+			<translation>ပေါင်းစည်းရန်</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Rename</source>
+			<translation>အမည်ပြောင်းရန်  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+			<translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change their category?</source>
+			<translation>လိပ်စာ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ဆက်နွယ်သော ငွေလွှဲမှုများ ရှိပြီးသား ဖြစ်သည်။ ၎င်းတို့၏ အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
 		</message>
 	</context>
 	<context>
@@ -394,24 +511,71 @@
 		</message>
 	</context>
 	<context>
-		<name>CloseButton</name>
+		<name>ColumnFee</name>
 		<message>
-			<source>Close</source>
-			<translation>ပိတ်ပါ  </translation>
+			<source>Confirmed</source>
+			<translation>အတည်ပြုပါ  </translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Confirming...</source>
+			<translation>အတည်ပြုနေသည်...</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool Fees</source>
+			<translation>Mempool ကုန်ကျစရိတ်များ</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool position</source>
+			<translation>Mempool ထဲရှိ အနေအထား</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Priority</source>
+			<translation>ဦးစားပေးမှု</translation>
 		</message>
 	</context>
 	<context>
-		<name>ConfirmedBlock</name>
+		<name>ColumnInputs</name>
 		<message>
-			<source>Block {n}</source>
-			<translation>ဘလော့ခ် {n}  </translation>
+			<source>Add foreign UTXOs</source>
+			<translation>ပြင်ပသော UTXOs ထည့်ပါ  </translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Input total:</source>
+			<translation>ထည့်သွင်းစုစုပေါင်း:</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Select specific UTXOs</source>
+			<translation>သီးသန့် UTXO များကို ရွေးချယ်ပါ</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Sending source</source>
+			<translation>ပေးပို့ရင်းမြစ်</translation>
 		</message>
 	</context>
 	<context>
-		<name>CustomListWidget</name>
+		<name>ColumnRecipients</name>
 		<message>
-			<source>Delete Category</source>
-			<translation>အုပ်စုဖျက်ပါ  </translation>
+			<source>Sending total:</source>
+			<translation>ပို့ပေးမည့် စုစုပေါင်း:</translation>
+		</message>
+	</context>
+	<context>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Diagram</source>
+			<translation>နမူနာ  </translation>
+		</message>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Export svg</source>
+			<translation>svg ထုတ်ပို့ပါ  </translation>
 		</message>
 	</context>
 	<context>
@@ -429,8 +593,74 @@
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
+			<source>Copy to clipboard</source>
+			<translation>ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
 			<source>Descriptor not valid</source>
 			<translation>Descriptor မမှန်ကန်ပါ  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export</source>
+			<translation>တင်ပို့ပါ  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export QR</source>
+			<translation>QR ထုတ်ပို့ရန်</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import</source>
+			<translation>တင်သွင်းပါ  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import from Clipboard</source>
+			<translation>clipboard မှတင်သွင်းပါ</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Paste or scan your descriptor, if you restore a wallet.</source>
+			<translation>ပိုက်ဆံအိတ်တစ်ခုကိုပြန်လည်ရယူပါက သင့်ရဲ့ descriptor ကိုကပ်ရောက်ပါကဒီ "descriptor" သည် ပိုက်ဆံအိတ်ကိုပြန်လည်တည်ဆောက်ရန်အချက်အလက်အားလုံးပါဝင်သည်။  ငွေကိုပြန်လည်ရယူရန်ဤ descriptor ကိုအရန်ပြန်ပေးပါ။  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Read QR Code</source>
+			<translation>QR Code ဖတ်ပါ</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Recovery Sheet</source>
+			<translation>ပြန်လည်ရယူရေး စာရွက်</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Register with hardware signers</source>
+			<translation>ဟာ့ဒ်ဝဲ စာချုပ်ထိုးစက်များနှင့် မှတ်ပုံတင်ရန်</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>ထပ်မံ စကန်လုပ်ရန်</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>This "descriptor" contains all information to reconstruct the wallet. 
+Please back up this descriptor to be able to recover the funds!</source>
+			<translation>Descriptor ကိုမပြောင်းလဲပါ  </translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -453,23 +683,8 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Descriptor unchanged</source>
 			<translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import</source>
-			<translation>တင်သွင်းပါ  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>clipboard မှတင်သွင်းပါ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -483,16 +698,6 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>ပိုက်ဆံအိတ်တစ်ခုကိုပြန်လည်ရယူပါက သင့်ရဲ့ descriptor ကိုကပ်ရောက်ပါကဒီ "descriptor" သည် ပိုက်ဆံအိတ်ကိုပြန်လည်တည်ဆောက်ရန်အချက်အလက်အားလုံးပါဝင်သည်။  ငွေကိုပြန်လည်ရယူရန်ဤ descriptor ကိုအရန်ပြန်ပေးပါ။  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>QR Code ဖတ်ပါ</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Required Signers</source>
 			<translation>လိုအပ်သောလက်မှတ်သားများ  </translation>
 		</message>
@@ -500,12 +705,6 @@
 		<message>
 			<source>Scan Addresses ahead</source>
 			<translation>လိပ်စာများကိုတိုင်းတာပါ  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
-Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Descriptor ကိုမပြောင်းလဲပါ  </translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -594,6 +793,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>EditWithFeeIcon</name>
+		<message>
+			<source>Edit with this fee rate</source>
+			<translation>ဤ ကုန်ကျစရိတ်နှုန်းဖြင့် တည်းဖြတ်ရန်</translation>
+		</message>
+	</context>
+	<context>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
@@ -623,20 +829,40 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels</source>
+			<translation>တံဆိပ်များထုတ်ပို့ပါ  </translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels for other wallets (BIP329)</source>
+			<translation>အခြားပိုက်ဆံအိတ်များအတွက်တံဆိပ်များထုတ်ပို့ပါ (BIP329)  </translation>
+		</message>
+	</context>
+	<context>
 		<name>FeeGroup</name>
 		<message>
-			<source>Approximate fee rate</source>
-			<translation>ခန့်မှန်းထားသောကြေးနန်း  </translation>
+			<source>Approximate rate</source>
+			<translation>ခန့်မှန်းနှုန်း</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>Fee</source>
-			<translation>အခကြေးငွေ</translation>
+			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
+Click to learn more about CPFP (Child Pays For Parent).</source>
+			<translation>ဤ لین‌ဒ‌င်တွင် အတည်မပြုရသေးသော မိဘ لین‌ဒ‌င် {number} ခု ရှိပြီး စုစုပေါင်း ကုန်ကျစရိတ်နှုန်းမှာ {parents_fee_rate} ဖြစ်သည်။ CPFP (Child Pays For Parent) အကြောင်း ပိုမိုလေ့လာရန် နှိပ်ပါ။</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-			<translation>ဤငွေလွှဲတွင် မအတည်ပြုထားသေးသော မိခင်ငွေလွှဲများ {number} ခုရှိပြီး ပေါင်းစပ်ကြေးနှုန်းမှာ {parents_fee_rate} ဖြစ်သည်</translation>
+			<source>Transaction fee rate</source>
+			<translation>လင်ဒင်း ကုန်ကျစရိတ်နှုန်း</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>You can replace the previously broadcasted transaction
+with a new transaction if it has a higher fee rate.
+Click here to learn more about RBF (Replace-by-Fee).</source>
+			<translation>ပိုမိုမြင့်မားသော ကုန်ကျစရိတ်နှုန်းရှိပါက ယခင် ထုတ်လွှင့်ထားသော لین‌ဒ‌င်ကို အသစ်ဖြင့် အစားထိုးနိုင်သည်။ RBF (Replace‑by‑Fee) အကြောင်း သိရန် ဤနေရာကို နှိပ်ပါ။</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -645,13 +871,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} combined fee rate</source>
-			<translation>{rate} ပေါင်းစပ်ကြေးနှုန်း</translation>
+			<source>{cpfp} total: {rate}</source>
+			<translation>{cpfp} စုစုပေါင်း: {rate}</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} is the minimum for {rbf}</source>
-			<translation>{rate} သည် {rbf} အတွက်အနည်းဆုံးဖြစ်သည်  </translation>
+			<source>{rbf} min.: {rate}</source>
+			<translation>{rbf} အနိမ့်ဆုံး: {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -696,6 +922,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{sent} is sent!</source>
 			<translation>{sent} ပေးပို့ခဲ့သည်!  </translation>
+		</message>
+	</context>
+	<context>
+		<name>FiatSpinBox</name>
+		<message>
+			<source>Max ≈ {amount}</source>
+			<translation>အမြင့်မားဆုံး ≈ {amount}  </translation>
 		</message>
 	</context>
 	<context>
@@ -851,16 +1084,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Edit with higher fee (RBF)</source>
-			<translation>ပိုကြွေးဖြင့်ပြင်ဆင်ပါ (RBF)  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>ကြေးတိုးပါ (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Label</source>
 			<translation>တံဆိပ်  </translation>
 		</message>
@@ -876,11 +1099,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>ပိုမိုလျင်မြန်စွာ လက်ခံပါ (CPFP)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Remove on restart</source>
 			<translation>ပြန်စသည့်အခါ ဖယ်ရှားပါ</translation>
 		</message>
@@ -893,11 +1111,6 @@ the sending value {sent}</source>
 		<message>
 			<source>Status</source>
 			<translation>အခြေအနေ  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>ငွေလွှဲကိုဖျက်ပစ်ဖို့ကြိုးစားပါ (RBF)  </translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -958,6 +1171,28 @@ the sending value {sent}</source>
 		<message>
 			<source>Seed</source>
 			<translation>မျိုးစေ့  </translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels</source>
+			<translation>တံဆိပ်များတင်သွင်းပါ  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (BIP329 / Sparrow)</source>
+			<translation>တံဆိပ်များ တင်သွင်းပါ (BIP329 / Sparrow)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (Electrum Wallet)</source>
+			<translation>Electrum Wallet အတွက်တံဆိပ်များတင်သွင်းပါ  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Restore labels from cloud using an existing sync key</source>
+			<translation>ရှိပြီးသား sync key ဖြင့်တိုက်ရိုက်အဝေးမှတံဆိပ်များပြန်ယူပါ  </translation>
 		</message>
 	</context>
 	<context>
@@ -1146,6 +1381,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
+			<source>Proceed anyway</source>
+			<translation>မည်သို့မျှ ဆက်လက်လုပ်ဆောင်ရန်</translation>
+		</message>
+		<name>KeyStoreUIs</name>
+		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
 			<translation>သင့်သည်လက်ဗွေရာကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။  </translation>
 		</message>
@@ -1323,8 +1563,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Network Settings</source>
-			<translation>&amp;ကွန်ယက်ဆက်တင်များ  </translation>
+			<source>&amp;Manage Categories</source>
+			<translation>&amp;အမျိုးအစားများ စီမံရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1413,6 +1653,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close</source>
+			<translation>ပိတ်ပါ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close Tab</source>
 			<translation>တက်ဘ်ကိုပိတ်ပါ  </translation>
 		</message>
@@ -1458,6 +1703,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
+			<translation>လတ်တလော bitcoin p2p ယာဉ်ကြောကို စောင့်ကြည့်နေရာ: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
+			<translation>လတ်တလော bitcoin p2p ယာဉ်ကြောကို စောင့်ကြည့်နေရာ: {ip} (proxy {proxy} မှတစ်ဆင့်)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>{id} PSBT ကိုသိမ်းချင်ပါသလား?  </translation>
 		</message>
@@ -1480,6 +1735,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>စာသားမှ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network</source>
+			<translation>p2p bitcoin ကွန်ယက် စောင့်ကြည့်နေသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+			<translation>proxy {proxy} မှတစ်ဆင့် p2p bitcoin ကွန်ယက်ကို စောင့်ကြည့်နေသည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1515,6 +1780,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Open anyway</source>
+			<translation>မည်သို့မျှ ဖွင့်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1568,6 +1838,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Reveal in file explorer</source>
+			<translation>ဖိုင် အစ်ပလိုရာတွင် ပြရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Save</source>
+			<translation>သိမ်းဆည်းရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Save PSBT?</source>
 			<translation>PSBT သိမ်းပါ?  </translation>
 		</message>
@@ -1575,6 +1855,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>ရွေးထားသောဖိုင်: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected</source>
+			<translation>အခြေအနေ: ချိတ်ဆက်ပြီး</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected via proxy</source>
+			<translation>အခြေအနေ: proxy မှတစ်ဆင့် ချိတ်ဆက်ပြီး</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Disconnected</source>
+			<translation>အခြေအနေ: ချိတ်ဆက်ဖြုတ်ထားသည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1590,6 +1885,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>{file_path} ဖိုင်မတည်ရှိပါ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip}</source>
+			<translation>ချိတ်ဆက်ရန် စမ်းသပ်မည့် လိပ်စာ: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip} via proxy {proxy}</source>
+			<translation>proxy {proxy} မှတစ်ဆင့် ချိတ်ဆက်ရန် စမ်းသပ်မည့် လိပ်စာ: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Trying to connect to bitcoin node...</source>
+			<translation>bitcoin node သို့ ချိတ်ဆက်ရန် ကြိုးပမ်းနေသည်...</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1610,8 +1920,23 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
+			<source>Block {n}</source>
+			<translation>ဘလော့ခ် {n}  </translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>Confirmations</source>
+			<translation>အတည်ပြုချက်များ</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
 			<source>Fetch new mempool data</source>
 			<translation>mempool ဒေတာအသစ်ရယူပါ</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>First confirmation</source>
+			<translation>ပထမအတည်ပြုချက်</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -1622,18 +1947,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n} ဘလော့ခ်  </translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>အတည်မပြုရသေးပါ  </translation>
-		</message>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>~{n}. Block</source>
-			<translation>~{n} ဘလော့ခ်  </translation>
 		</message>
 	</context>
 	<context>
@@ -1676,8 +1989,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Automatic</source>
+			<translation>အလိုအလျောက်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Bitcoin network monitoring</source>
+			<translation>Bitcoin ကွန်ယက် စောင့်ကြည့်မှု</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Blockchain data source</source>
 			<translation>Blockchain ဒေတာရင်းမြစ်  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click here for an example of a Tor proxy configuration.</source>
+			<translation>Tor proxy ပြင်ဆင်သတ်မှတ်မှု အတုအကွဲကို ကြည့်ရန် ဤနေရာကို နှိပ်ပါ။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click to open the mempool url</source>
+			<translation>mempool URL ကို ဖွင့်ရန် နှိပ်ပါ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Connect to a different peer</source>
+			<translation>အခြား peer သို့ ချိတ်ဆက်ရန်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Deactive</source>
+			<translation>ပိတ်ရန်</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1699,6 +2042,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Inital node</source>
+			<translation>မူလ node</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Mempool Instance URL</source>
 			<translation>Mempool Instance URL  </translation>
 		</message>
@@ -1706,11 +2054,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Network Settings</source>
 			<translation>ကွန်ယက်ဆက်တင်များ  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Open Tor proxy configuration documentation</source>
-			<translation>Tor proxy configuration စာရွက်ကို ဖွင့်ပါ  </translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1766,6 +2109,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
+			<translation>မူလ node သည် လက်ခံနားထောင်ရန်နှင့် အခြား bitcoin node များကို ရှာဖွေဖော်ထုတ်ရန် အသုံးပြုသည်။ အထူးသီးသန့် မအသုံးမပြုပါ။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
 			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!  </translation>
 		</message>
@@ -1778,6 +2126,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Username:</source>
 			<translation>အသုံးပြုသူအမည်:  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>host:port</source>
+			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -1909,15 +2262,57 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Enable</source>
+			<translation>ဖွင့်ပါ  </translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>Network ဆက်တင်များကို ဖွင့်ရန်</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Receive instant notifications for transactions</source>
+			<translation>လင်ဒင်းများအတွက် ချက်ချင်း အသိပေးချက်များ လက်ခံရန်</translation>
+		</message>
+	</context>
+	<context>
+		<name>NotificationBarRecipient</name>
+		<message>
+			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>ပိုက်ဆံအိတ် လိပ်စာ: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+		</message>
+	</context>
+	<context>
 		<name>NotificationBarRegtest</name>
 		<message>
-			<source>Change Network</source>
-			<translation>ကွန်ယက်ပြောင်းပါ  </translation>
+			<source>Get {testnet} coins</source>
+			<translation>{testnet} coins ရယူရန်</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
 			<translation>ကွန်ယက် = {network}။ ငွေကြေးများမတန်ဖိုးရှိပါ။  </translation>
+		</message>
+		<name>NotificationBarRegtest</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>Network ဆက်တင်များကို ဖွင့်ရန်</translation>
+		</message>
+	</context>
+	<context>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>ဤ လင်ဒင်း {txid} သည် ရေးထိုးပြီးပြီ ဖြစ်ပြီး {wallet} ပိုက်ဆံအိတ်တွင် ရှိနေသည်</translation>
+		</message>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}.
+The serializations of both differ, which could be caused by different collected signatures.</source>
+			<translation>ဤ လင်ဒင်း {txid} သည် ရေးထိုးပြီးပြီ ဖြစ်ပြီး {wallet} ပိုက်ဆံအိတ်တွင် ရှိနေသည်။ နှစ်ခု၏ စီရီယလိုင်ဇေးရှင်းများ ကွာခြားနေပြီး၊ စုဆောင်းထားသော လက်မှတ်များ ကွာခြားမှုကြောင့် ဖြစ်နိုင်သည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -2026,11 +2421,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Are you SURE you don't want save the wallet {id}?</source>
-			<translation>{id} ပိုက်ဆံအိတ်ကိုမသိမ်းချင်ဘူးလား သေချာပါသလား?  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
 		</message>
@@ -2056,23 +2446,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Choose a new name, or an existing name for merging:</source>
-			<translation>အမည်အသစ်ရွေးပါ သို့မဟုတ်ပေါင်းစပ်ရန်ရှိပြီးသားအမည်ရွေးပါ:  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Click for new address</source>
-			<translation>အသစ်လိပ်စာကိုနှိပ်ပါ  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Connected to {server}</source>
 			<translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Delete wallet</source>
-			<translation>ပိုက်ဆံအိတ်ဖျက်ပါ  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2088,6 +2463,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
 			<translation>ဤငွေလွှဲများ၏ကော်ပီကိုသိမ်းချင်ပါသလား?  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Don't save wallet</source>
+			<translation>ပိုက်ဆံအိတ် မသိမ်းပါနှင့်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2108,6 +2488,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Import labels</source>
 			<translation>တံဆိပ်များတင်သွင်းပါ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Keep existing</source>
+			<translation>ရှိပြီးသားကို ထိန်းသိမ်းပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2132,13 +2517,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Overwrite existing</source>
+			<translation>ရှိပြီးသားကို အစားထိုးရေးသားရန်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Password incorrect</source>
 			<translation>စကားဝှက်မှားနေပါသည်  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-			<translation>ဆက်လက်လုပ်ဆောင်ပါက ပိုက်ဆံအိတ်လိပ်စာများအားလုံးပြောင်းလဲနိုင်သည်။ ဆက်လက်လုပ်ဆောင်ချင်ပါသလား?  </translation>
+			<source>Proceed</source>
+			<translation>ဆက်လုပ်ရန်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Proceeding will potentially change all wallet addresses.</source>
+			<translation>ဆက်လုပ်ပါက ပိုက်ဆံအိတ် လိပ်စာများ အားလုံး ပြောင်းလဲနိုင်ပါသည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2147,8 +2542,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Rename or merge categories</source>
-			<translation>အုပ်စုများအမည်ပြောင်းပါ သို့မဟုတ် ပေါင်းစပ်ပါ  </translation>
+			<source>Save transactions</source>
+			<translation>လင်ဒင်းများ သိမ်းရန်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2177,12 +2572,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The addresses {used_addresses}
-have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
@@ -2195,8 +2584,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Wallet not saved yet</source>
+			<translation>ပိုက်ဆံအိတ် ကို အခုထိ မသိမ်းရသေးပါ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Wallet saved</source>
 			<translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Wallet was not saved.</source>
+			<translation>ပိုက်ဆံအိတ်ကို မသိမ်းနိုင်ခဲ့ပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2207,11 +2606,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>start updating lists</source>
 			<translation>စာရင်းအသစ်အသစ်များစတင်ပါ  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{num_inputs} Inputs: {inputs}</source>
-			<translation>{num_inputs} ဝင်ငွေ: {inputs}  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2228,10 +2622,39 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Quick Receive</source>
+			<translation>အမြန်လက်ခံပါ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>RBFIcon</name>
+		<message>
+			<source>RBF with this fee rate</source>
+			<translation>ဤ ကုန်ကျစရိတ်နှုန်းဖြင့် RBF</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
 			<translation>လိပ်စာ  </translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Copy address to clipboard</source>
+			<translation>လိပ်စာကို clipboard သို့ ကော်ပီကူးရန်</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Get next address</source>
+			<translation>နောက်လိပ်စာ ရယူရန်</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Magnify QR code</source>
+			<translation>QR ကုဒ် အရွယ်တင်ကြည့်ရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -2283,13 +2706,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
-		<name>RecipientTabWidget</name>
-		<message>
-			<source>Wallet "{id}"</source>
-			<translation>ပိုက်ဆံအိတ် "{id}"  </translation>
-		</message>
-	</context>
-	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -2314,6 +2730,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Send max</source>
 			<translation>အများဆုံးပေးပို့ပါ  </translation>
+		</message>
+		<name>RecipientWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>တန်ဖိုး</translation>
 		</message>
 	</context>
 	<context>
@@ -2341,6 +2762,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Amount [{unit}]</source>
 			<translation>ပမာဏ [{unit}]  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Export</source>
+			<translation>တင်ပို့ပါ  </translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2396,6 +2822,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Recipients</source>
 			<translation>လက်ခံသူများ  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Recipients ({count})</source>
+			<translation>လက်ခံသူများ ({count})</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2564,6 +2995,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>Settings</name>
+		<message>
+			<source>Interface Settings</source>
+			<translation>အသုံးပြုမှုမျက်နှာပြင် ဆက်တင်များ</translation>
+		</message>
+		<name>Settings</name>
+		<message>
+			<source>Network Settings</source>
+			<translation>ကွန်ယက်ဆက်တင်များ  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -2661,8 +3104,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Sign with seed</source>
-			<translation>မျိုးစေ့ဖြင့်လက်မှတ်ထိုးပါ  </translation>
+			<source>Seed of '{wallet_id}'</source>
+			<translation>'{wallet_id}' ၏ Seed</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -2724,14 +3167,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Opening {name} from {author}</source>
 			<translation>{name} ကို {author} မှဖွင့်ပါ  </translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Please backup your sync key:
-{nsec}
-
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-			<translation>{nsec} အတွက်သင်၏ sync key ကိုအရန်ပါ။ 'Sync Key တင်သွင်းပါ' ကိုနှိပ်ပါက သင့်တံဆိပ်များကိုပြန်ယူပါ။  </translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -2838,8 +3273,19 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}</source>
-			<translation>{label} ပိုင်ရှင်၏ပုဂ္ဂိုလ်ရေးသော့နှင့်ငွေလွှဲလက်မှတ်ပါ  </translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
+		</message>
+		<name>TxSigningSteps</name>
+		<message>
+			<source>Transaction signed with the private key belonging to {label}
+
+Signatures:
+{signatures}
+
+
+</source>
+			<translation>{label} သို့ ဆိုင်သော private key ဖြင့် လင်ဒင်းကို စာချုပ်ထိုးပြီး  လက်မှတ်များ: {signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -2891,13 +3337,9 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>ပြင်ပသော UTXOs ထည့်ပါ  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Advanced</source>
-			<translation>အဆင့်မြင့်  </translation>
+			<source>Additional inputs may be added 
+below {rate} to consolidate UTXOs and reduce future fees</source>
+			<translation>အနာဂတ် ကုန်ကျစရိတ် လျှော့ချရန်နှင့် UTXO များကို ပေါင်းစည်းရန် {rate} ထက်အောက်တွင်  ထည့်သွင်းများကို ထပ်မံ ထည့်နိုင်ပါသည်</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2932,19 +3374,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Reduce future fees
-by merging address balances</source>
-			<translation>လိပ်စာများကိုပေါင်းစပ်ပြီးအနာဂတ်ကောက်ချက်ကိုလျှော့ချပါ။  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select a category that fits the recipient best</source>
-			<translation>လက်ခံသူအတွက်အကောင်းဆုံးကိုက်ညီသောအုပ်စုရွေးပါ  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Send Category</source>
-			<translation>အုပ်စုကိုပို့ပါ  </translation>
+			<source>Reduce future fees by merging UTXOs below {rate}</source>
+			<translation>{rate} ထက်အောက်ရှိ UTXO များကို ပေါင်းစည်း၍ အနာဂတ် ကုန်ကျစရိတ် လျှော့ချပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2956,48 +3387,12 @@ by merging address balances</source>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
 			<translation>သင့်မှတ်ဉာဏ်အသစ်တွင်ဖယ်ရှားမည့်အတည်မပြုရသောငွေလွှဲများသည် {txids} ဖြစ်သည်။  </translation>
 		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>This checkbox automatically checks 
-below {rate}</source>
-			<translation>ဒီစစ်ထုတ်ချက်ကို {rate} အောက်တွင်အလိုအလျောက်စစ်ဆေးပါ။  </translation>
-		</message>
 	</context>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Diagram</source>
-			<translation>နမူနာ  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit</source>
-			<translation>ပြင်ဆင်ပါ  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit with increased fee (RBF)</source>
-			<translation>RBF ဖြင့်အကြွေးပိုထည့်ပြီးပြင်ဆင်ပါ  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-			<translation>{txid} ကို ထုတ်လွှင့်မှု မအောင်မြင်ပါ။ {url} မှတဆင့် ထုတ်လွှင့်ကြည့်ပါ။</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Import file</source>
 			<translation>ဖိုင်တင်သွင်းပါ  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>ကြေးတိုးပါ (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Inputs</source>
-			<translation>ဝင်ငွေ  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3021,6 +3416,12 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please open a wallet first to broadcast the transaction.
+Or you can broadcast via {url}</source>
+			<translation>လင်ဒင်းကို ထုတ်လွှင့်ရန် အရင်ဆုံး ပိုက်ဆံအိတ်တစ်ခု ဖွင့်ပါ။ သို့မဟုတ် {url} မှတစ်ဆင့် ထုတ်လွှင့်နိုင်သည်</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>ကျေးဇူးပြု၍ ဝေါလက်ထဲရှိပြီးသား ဒေသတွင်း ငွေလွှဲစာရင်းကို ပထမဦးစွာ ဖယ်ရှားပါ။</translation>
 		</message>
@@ -3028,16 +3429,6 @@ below {rate}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>ယခင်အဆင့်  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>ပိုမိုလျင်မြန်စွာ လက်ခံပါ (CPFP)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Recipients</source>
-			<translation>လက်ခံသူများ  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3058,11 +3449,6 @@ below {rate}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction to be replaced could not be found in open wallets</source>
-			<translation>ဖွင့်ထားသော ဝေါလက်များတွင် အစားထိုးမည့် ငွေလွှဲ မတွေ့ပါ။</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3158,6 +3544,11 @@ below {rate}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Value</source>
+			<translation>တန်ဖိုး</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -3444,8 +3835,8 @@ below {rate}</source>
 		</message>
 		<name>address_list</name>
 		<message>
-			<source>Used</source>
-			<translation>အသုံးပြုပြီး</translation>
+			<source>Used and empty</source>
+			<translation>အသုံးပြုပြီး နှင့် ဗလာ</translation>
 		</message>
 	</context>
 	<context>
@@ -3535,6 +3926,53 @@ below {rate}</source>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
 			<translation>{value} သည်တရားဝင်လက်ဗွေမဟုတ်ပါ။  </translation>
+		</message>
+	</context>
+	<context>
+		<name>category</name>
+		<message>
+			<source>Add Category</source>
+			<translation>အမျိုးအစား ထည့်ရန်</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Category name:</source>
+			<translation>အမျိုးအစား အမည်:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Enter new category name...</source>
+			<translation>အမျိုးအစား အမည်အသစ် အရိုက်ထည့်ပါ...</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>KYC Exchange</source>
+			<translation>KYC လဲလှယ်ရေး</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Merge Categories</source>
+			<translation>အမျိုးအစားများ ပေါင်းစည်းရန်</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>New category name:</source>
+			<translation>အမျိုးအစား အသစ်အမည်:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Private</source>
+			<translation>ပုဂ္ဂလိက  </translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Rename Category</source>
+			<translation>အမျိုးအစား အမည်ပြောင်းရန်</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Resulting category:</source>
+			<translation>ထွက်လာမည့် အမျိုးအစား:</translation>
 		</message>
 	</context>
 	<context>
@@ -3634,18 +4072,6 @@ below {rate}</source>
 		</message>
 	</context>
 	<context>
-		<name>export</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>တံဆိပ်များထုတ်ပို့ပါ  </translation>
-		</message>
-		<name>export</name>
-		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>အခြားပိုက်ဆံအိတ်များအတွက်တံဆိပ်များထုတ်ပို့ပါ (BIP329)  </translation>
-		</message>
-	</context>
-	<context>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
@@ -3723,33 +4149,6 @@ below {rate}</source>
 		<message>
 			<source>Import file</source>
 			<translation>ဖိုင်တင်သွင်းပါ  </translation>
-		</message>
-	</context>
-	<context>
-		<name>menu</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>တံဆိပ်များထုတ်ပို့ပါ  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels</source>
-			<translation>တံဆိပ်များတင်သွင်းပါ  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>တံဆိပ်များ တင်သွင်းပါ (BIP329 / Sparrow)</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Electrum Wallet အတွက်တံဆိပ်များတင်သွင်းပါ  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>ရှိပြီးသား sync key ဖြင့်တိုက်ရိုက်အဝေးမှတံဆိပ်များပြန်ယူပါ  </translation>
 		</message>
 	</context>
 	<context>
@@ -3864,6 +4263,16 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Open Transaction/PSBT</source>
 			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>p2p</name>
+		<message>
+			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+to detect newly broadcasted transactions immediately.
+This does not reveal anything about your wallet.
+Click here to learn more.</source>
+			<translation>Bitcoin node တစ်ခုကဲ့သို့ Bitcoin p2p ယာဉ်ကြောကို ပက်ဆစ်စွာ နားထောင်ပြီး,  အသစ်ထုတ်လွှင့်သည့် လင်ဒင်းများကို ချက်ချင်း ရှာဖွေနိုင်ပါသည်။ ဤလုပ်ဆောင်မှုသည် သင်၏ ပိုက်ဆံအိတ်အကြောင်း မည်သည့်အချက်အလက်မျှ မဖော်ထုတ်ပါ။ ဆက်လက်လေ့လာရန် ဒါကိုနှိပ်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -4001,23 +4410,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
-		<name>tageditor</name>
-		<message>
-			<source>Add new {name}</source>
-			<translation>{name} အသစ်ထည့်ပါ  </translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>Delete {name}</source>
-			<translation>{name} ကိုဖျက်ပါ  </translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>This {name} exists already.</source>
-			<translation>ဤ {name} ရှိပြီးသားဖြစ်ပါသည်။</translation>
-		</message>
-	</context>
-	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4065,6 +4457,55 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Balance: {amount}</source>
 			<translation>အမည်မသိ  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>CPFP = Child Pay For Parent,
+will append a new transaction to the old one.
+If the average fee rate of both transactions is high enough
+it will speed up confirmation of both transactions.</source>
+			<translation>CPFP = Child Pay For Parent သည် အဟောင်း လင်ဒင်းနောက်သို့ လင်ဒင်းအသစ်တစ်ခု ထပ်ဆင့်တပ်မည်။ လင်ဒင်းနှစ်ခု၏ ပျမ်းမျှ ကုန်ကျစရိတ်နှုန်း များလုံလောက်ပါက နှစ်ခုစလုံး၏ အတည်ပြုမှု မြန်ဆန်စေပါသည်။</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Cancel with RBF,
+will create a new transaction 
+with you as a recipient and a higher fee
+to replace the old transaction.
+There is no guarantee this will work!!!</source>
+			<translation>RBF ဖြင့် ဖျက်သိမ်းရာတွင်  သင့်ကို လက်ခံသူအဖြစ် သတ်မှတ်ပြီး ကုန်ကျစရိတ် မြင့်သည့် လင်ဒင်းအသစ်တစ်ခုကို ဖန်တီးကာ အဟောင်းကို အစားထိုးမည် ဖြစ်သည်။ ၎င်းအောင်မြင်မည်ဟု အာမခံချက် မရှိပါ!!!</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit</source>
+			<translation>ပြင်ဆင်ပါ  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit (RBF)</source>
+			<translation>တည်းဖြတ် (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Prefill the sending dialog with this transactions information.</source>
+			<translation>ဤ လင်ဒင်း၏ အချက်အလက်များဖြင့် ပို့ရန် dialog ကို ကြိုတင်ဖြည့်ပါ။</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Process faster (CPFP)</source>
+			<translation>ပိုမို မြန်ဆန်စေပါ (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>RBF = Replace By Fee,
+will create a new transaction with a higher fee
+to speed up the confirmation.</source>
+			<translation>RBF = Replace By Fee သည် အတည်ပြု زمانیမြန်စေရန် ကုန်ကျစရိတ်ပိုမိုမြင့်သော လင်ဒင်းအသစ်ကို ဖန်တီးသည်။</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel transaction (RBF)</source>
+			<translation>ငွေလွှဲကိုဖျက်ပစ်ဖို့ကြိုးစားပါ (RBF)  </translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4299,8 +4740,18 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>Draft</source>
+			<translation>မူကြမ်း</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>Local</source>
 			<translation>ဒေသဆိုင်ရာ  </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>PSBT</source>
+			<translation>PSBT  </translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -4311,11 +4762,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Unconfirmed</source>
 			<translation>အတည်မပြုရ  </translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed parent</source>
-			<translation>အတည်မပြုသေးသည့် မူရင်း</translation>
 		</message>
 		<name>wallet</name>
 		<message>

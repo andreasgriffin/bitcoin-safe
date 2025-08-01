@@ -34,13 +34,13 @@ from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.network_config import MIN_RELAY_FEE
+from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
 
 from ...psbt_util import FeeInfo
 from ...pythonbdk_types import Recipient, TransactionDetails
 from ...signals import Signals
-from ...wallet import TxStatus, Wallet, get_wallets
+from ...wallet import TxStatus, Wallet, get_tx_details, get_wallets
 from .util import Message
 
 logger = logging.getLogger(__name__)
@@ -48,28 +48,52 @@ logger = logging.getLogger(__name__)
 
 class TxTools:
     @classmethod
-    def edit_tx(cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, signals: Signals):
+    def edit_tx(cls, replace_tx: bdk.Transaction | None, txinfos: TxUiInfos, signals: Signals):
         if not GENERAL_RBF_AVAILABLE and replace_tx:
             txinfos.utxos_read_only = True
             txinfos.recipient_read_only = True
             txinfos.replace_tx = replace_tx
+
+        txinfos.hide_UTXO_selection = False
         signals.open_tx_like.emit(txinfos)
 
     @classmethod
-    def can_cpfp(cls, tx: bdk.Transaction, tx_status: TxStatus, wallet: Wallet) -> bool:
+    def can_cpfp(
+        cls,
+        tx_status: TxStatus,
+        signals: Signals,
+        wallet: Wallet | None = None,
+    ) -> bool:
+        tx = tx_status.tx
+        if not tx:
+            return False
         if not tx_status.can_cpfp():
             return False
+
+        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
+        if not wallet:
+            return False
+
         utxo = wallet.get_cpfp_utxos(tx=tx)
         return bool(utxo)
 
     @classmethod
-    def cpfp_tx(cls, tx_details: TransactionDetails, wallet: Wallet, signals: Signals) -> None:
+    def cpfp_tx(
+        cls,
+        tx_details: TransactionDetails,
+        wallet: Wallet,
+        signals: Signals,
+        fee_rate: float | None = None,
+        target_total_unconfirmed_fee_rate: float | None = None,
+    ) -> None:
         utxo = wallet.get_cpfp_utxos(tx=tx_details.transaction)
         if not utxo:
             Message(translate("tx", "Cannot CPFP the transaction because no receiving output could be found"))
             return
 
         txinfos = TxUiInfos()
+        txinfos.utxos_read_only = True
+        txinfos.hide_UTXO_selection = False
         txinfos.fill_utxo_dict_from_utxos(utxos=[utxo])
 
         this_tx_fee_info = FeeInfo.estimate_from_num_inputs(
@@ -80,24 +104,35 @@ class TxTools:
 
         cpfp_tools = CpfpTools(wallets=get_wallets(signals))
 
-        unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(txids=set([tx_details.txid]))
-        unconfirmed_ancestors_fee_info = (
-            unconfirmed_ancestors_fee_info
-            if unconfirmed_ancestors
-            and (unconfirmed_ancestors_fee_info := FeeInfo.combined_fee_info(txs=unconfirmed_ancestors))
-            else this_tx_fee_info
-        )
+        if fee_rate is None:
+            unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(txids=set([tx_details.txid]))
+            unconfirmed_ancestors_fee_info = (
+                unconfirmed_ancestors_fee_info
+                if unconfirmed_ancestors
+                and (unconfirmed_ancestors_fee_info := FeeInfo.combined_fee_info(txs=unconfirmed_ancestors))
+                else this_tx_fee_info
+            )
 
-        new_tx_fee_info, goal_total_fee_info = cpfp_tools.get_fee_info_of_new_tx(
-            unconfirmed_ancestors_fee_info=unconfirmed_ancestors_fee_info,
-            new_tx_vsize=this_tx_fee_info.vsize,
-            target_total_unconfirmed_fee_rate=unconfirmed_ancestors_fee_info.fee_rate() + MIN_RELAY_FEE,
-        )
+            new_tx_fee_info, goal_total_fee_info = cpfp_tools.get_fee_info_of_new_tx(
+                unconfirmed_ancestors_fee_info=unconfirmed_ancestors_fee_info,
+                new_tx_vsize=this_tx_fee_info.vsize,
+                target_total_unconfirmed_fee_rate=max(
+                    unconfirmed_ancestors_fee_info.fee_rate() + MIN_RELAY_FEE,
+                    (
+                        target_total_unconfirmed_fee_rate
+                        if target_total_unconfirmed_fee_rate is not None
+                        else MIN_RELAY_FEE
+                    ),
+                ),
+            )
 
-        txinfos.fee_rate = new_tx_fee_info.fee_rate()
-        logger.info(
-            f"Choosing feerate {format_fee_rate( txinfos.fee_rate, network=wallet.config.network)} to bump the existing unconfirmed transactions from {format_fee_rate(unconfirmed_ancestors_fee_info.fee_rate(), network=wallet.config.network)} to {format_fee_rate(goal_total_fee_info.fee_rate(), network=wallet.config.network)}"
-        )
+            txinfos.fee_rate = new_tx_fee_info.fee_rate()
+            logger.info(
+                f"Choosing feerate {format_fee_rate( txinfos.fee_rate, network=wallet.config.network)} to bump the existing unconfirmed transactions from {format_fee_rate(unconfirmed_ancestors_fee_info.fee_rate(), network=wallet.config.network)} to {format_fee_rate(goal_total_fee_info.fee_rate(), network=wallet.config.network)}"
+            )
+        else:
+            txinfos.fee_rate = fee_rate
+
         txinfos.recipients = [
             Recipient(
                 address=str(wallet.get_address().address),

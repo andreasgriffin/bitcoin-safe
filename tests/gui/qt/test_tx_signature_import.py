@@ -39,7 +39,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
-from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.signer import SignatureImporterFile
 
 from .helpers import Shutter, do_modal_click, main_window_context

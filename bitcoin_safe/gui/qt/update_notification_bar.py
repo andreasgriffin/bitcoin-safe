@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from packaging import version
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
@@ -53,7 +53,7 @@ from ...signature_manager import (
     KnownGPGKeys,
     SignatureVerifyer,
 )
-from .util import Message, MessageType
+from .util import Message, MessageType, set_margins
 
 logger = logging.getLogger(__name__)
 
@@ -71,19 +71,10 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         self.proxies = proxies
-        self.download_container = QWidget()
-        self.download_container_layout = QHBoxLayout(self.download_container)
-        current_margins = self.download_container_layout.contentsMargins()
-        self.download_container_layout.setContentsMargins(
-            current_margins.left(), 1, current_margins.right(), 0
-        )  # Left, Top, Right, Bottom margins
-        self.download_container_layout.setSpacing(self.download_container_layout.spacing() // 2)
-
         super().__init__(
             text="",
             optional_button_text="",
             callback_optional_button=self.check,
-            additional_widget=self.download_container,
             has_close_button=True,
             parent=parent,
             threading_parent=threading_parent,
@@ -95,6 +86,19 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         self.verifyer = SignatureVerifyer(list_of_known_keys=[self.key], proxies=self.proxies)
         self.assets: List[Asset] = []
         self.setVisible(False)
+
+        self.download_container = QWidget()
+        self.download_container_layout = QHBoxLayout(self.download_container)
+
+        set_margins(
+            self.download_container_layout,
+            {
+                Qt.Edge.TopEdge: 1,
+                Qt.Edge.BottomEdge: 5,
+            },
+        )
+        self.download_container_layout.setSpacing(self.download_container_layout.spacing() // 2)
+        self.add_styled_widget(self.download_container)
 
         self.refresh()
         self.signals_min.language_switch.connect(self.refresh)
@@ -125,7 +129,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         self.download_container.setVisible(bool(self.assets))
         if self.assets:
             if self.is_new_version_available():
-                self.textLabel.setText(
+                self.icon_label.setText(
                     self.tr("New version available {tag}").format(tag=self.get_asset_tag())
                 )
                 self.optionalButton.setVisible(False)
@@ -138,10 +142,10 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
                     downloader.finished.connect(self.on_download_finished)
                     self.download_container_layout.addWidget(downloader)
             else:
-                self.textLabel.setText(self.tr("You have already the newest version."))
+                self.icon_label.setText(self.tr("You have already the newest version."))
                 self.optionalButton.setVisible(True)
         else:
-            self.textLabel.setText(self.tr("No update found"))
+            self.icon_label.setText(self.tr("No update found"))
             self.optionalButton.setVisible(True)
 
     def on_download_finished(self, download_thread: DownloadThread) -> None:
@@ -164,7 +168,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             self.setVisible(False)
             return
 
-        self.textLabel.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
+        self.icon_label.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
 
         # overwrite the download_thread.filename so the show-button still works
         download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)

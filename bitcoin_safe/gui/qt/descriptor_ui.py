@@ -30,20 +30,12 @@
 import logging
 from typing import Optional, Tuple, cast
 
-from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import (
-    BitcoinVideoWidget,
-    DecodingException,
-)
-from bitcoin_qr_tools.multipath_descriptor import (
-    convert_to_multipath_descriptor,
-    is_valid_descriptor,
-)
+from bitcoin_qr_tools.data import Data
+from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_usb.address_types import get_address_types
-from PyQt6.QtCore import QMargins, Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QApplication,
     QComboBox,
     QDialogButtonBox,
     QGridLayout,
@@ -53,7 +45,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QSizePolicy,
     QSpinBox,
-    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -61,16 +52,11 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
-from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
-from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
 from bitcoin_safe.threading_manager import ThreadingManager
 
-from ...descriptors import (
-    AddressType,
-    from_multisig_wallet_export,
-    get_default_address_type,
-)
-from ...signals import SignalsMin, TypedPyQtSignalNo
+from ...descriptors import AddressType, get_default_address_type
+from ...signals import Signals, TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 
@@ -85,17 +71,18 @@ class DescriptorUI(QWidget):
     def __init__(
         self,
         protowallet: ProtoWallet,
-        signals_min: SignalsMin,
+        signals: Signals,
+        threading_parent: ThreadingManager,
         wallet: Optional[Wallet] = None,
-        threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__()
         self.signal_tracker = SignalTracker()
+        self.threading_parent = threading_parent
         self._layout = QVBoxLayout(self)
         # if we are in the wallet setp process, then wallet = None
         self.protowallet = protowallet
         self.wallet = wallet
-        self.signals_min = signals_min
+        self.signals = signals
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
@@ -108,7 +95,7 @@ class DescriptorUI(QWidget):
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=self.get_editable_protowallet,
             get_address_type=self.get_address_type_from_ui,
-            signals_min=signals_min,
+            signals_min=signals,
             slow_hwi_listing=True,
         )
         self._layout.addWidget(self.keystore_uis)
@@ -121,7 +108,7 @@ class DescriptorUI(QWidget):
 
         self.box_button_bar = self.create_button_bar()
         self.updateUi()
-        signals_min.language_switch.connect(self.updateUi)
+        signals.language_switch.connect(self.updateUi)
 
     def get_editable_protowallet(self):
         return self.protowallet
@@ -129,22 +116,10 @@ class DescriptorUI(QWidget):
     def updateUi(self) -> None:
         self.label_signers.setText(self.tr("Required Signers"))
         self.label_gap.setText(self.tr("Scan Addresses ahead"))
-        self.edit_descriptor.input_field.setPlaceholderText(
-            self.tr("Paste or scan your descriptor, if you restore a wallet.")
-        )
-
-        self.edit_descriptor.setToolTip(
-            self.tr(
-                'This "descriptor" contains all information to reconstruct the wallet. \nPlease back up this descriptor to be able to recover the funds!'
-            )
-        )
         self.box_wallet_type.setTitle(self.tr("Wallet Properties"))
         self.label_address_type.setText(self.tr("Address Type"))
         self.groupBox_wallet_descriptor.setTitle(self.tr("Wallet Descriptor"))
-
-        self.import_button.setText(self.tr("Import"))
-        self.action_import_qr.setText(self.tr("Read QR Code"))
-        self.action_import_clipbard.setText(self.tr("Import from Clipboard"))
+        self.edit_descriptor.updateUi()
 
     def set_protowallet(self, protowallet: ProtoWallet) -> None:
         self.protowallet = protowallet
@@ -273,13 +248,13 @@ class DescriptorUI(QWidget):
         try:
             multipath_descriptor = self.protowallet.to_multipath_descriptor()
             if multipath_descriptor:
-                self.edit_descriptor.setText(multipath_descriptor.to_string_with_secret())
+                self.edit_descriptor.edit.setText(multipath_descriptor.to_string_with_secret())
             else:
-                self.edit_descriptor.setText("")
+                self.edit_descriptor.edit.setText("")
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            self.edit_descriptor.setText("")
-        self.edit_descriptor.format_and_apply_validator()
+            self.edit_descriptor.edit.setText("")
+        self.edit_descriptor.edit.format_and_apply_validator()
 
     def disable_fields(self) -> None:
         self.comboBox_address_type.setEnabled(not self.no_edit_mode)
@@ -327,10 +302,14 @@ class DescriptorUI(QWidget):
         box_wallet_type_and_descriptor = QWidget(self)
         box_wallet_type_and_descriptor_layout = QHBoxLayout(box_wallet_type_and_descriptor)
 
-        current_margins = box_wallet_type_and_descriptor_layout.contentsMargins()
-        box_wallet_type_and_descriptor_layout.setContentsMargins(
-            QMargins(0, 0, 0, current_margins.bottom())
-        )  # Smaller margins (left, top, right, bottom)
+        set_margins(
+            box_wallet_type_and_descriptor_layout,
+            {
+                Qt.Edge.LeftEdge: 0,
+                Qt.Edge.TopEdge: 0,
+                Qt.Edge.RightEdge: 0,
+            },
+        )
 
         # Removed the unnecessary parent widgets. Using QGroupBox directly as the container.
         self.box_wallet_type = QGroupBox()
@@ -392,47 +371,17 @@ class DescriptorUI(QWidget):
         self.groupBox_wallet_descriptor.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
-        # below is an example how to highlight the box
-        # groupBox_wallet_descriptor.setStyleSheet("""
-        # QGroupBox {
-        #         font-weight: bold;
-        #         border: 2px solid red;
-        #         border-radius: 5px;
-        #         margin-top: 12px;
-        # }
-        # QGroupBox::title {
-        #         color: red;
-        #         subcontrol-origin: margin;
-        #         left: 10px;
-        #         padding: 0 5px 0 5px;
-        # }
-        # """)
         self.horizontalLayout_4 = QVBoxLayout(self.groupBox_wallet_descriptor)
-        language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
+        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
         self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
-            signals_min=self.signals_min,
+            signals=self.signals,
             wallet=self.wallet,
             signal_update=language_switch,
-            threading_parent=threading_parent,
+            threading_parent=self.threading_parent,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
-
-        # import button
-        self.import_button = QToolButton()
-        self.import_button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        self.import_button_menu = Menu(self)
-        self.import_button.setMenu(self.import_button_menu)
-        self.import_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        # self.import_button.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
-        self.horizontalLayout_4.addWidget(self.import_button)
-        self.action_import_qr = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_qr, icon=svg_tools.get_QIcon("camera.svg")
-        )
-        self.action_import_clipbard = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_from_clipboard, icon=svg_tools.get_QIcon("clip.svg")
-        )
 
         box_wallet_type_and_descriptor_layout.addWidget(self.groupBox_wallet_descriptor)
 
@@ -447,7 +396,7 @@ class DescriptorUI(QWidget):
         if not data:
             logger.debug(f"{user_input} could not be decoded into data")
             return
-        corrected_descriptor = self._data_to_descriptor(data)
+        corrected_descriptor = self.edit_descriptor._data_to_descriptor(data)
         if not corrected_descriptor:
             logger.debug(f"data could not be decoded into a descriptor")
             return
@@ -458,14 +407,15 @@ class DescriptorUI(QWidget):
                     f"The input was non-standard, and was auto-corrected to\n{corrected_descriptor}\n Do you want to proceed?",
                 ).format(autocorrected_descriptor=corrected_descriptor),
                 title=self.tr("Input corrected"),
-                buttons=QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Yes,
+                true_button=QMessageBox.StandardButton.Ok,
+                false_button=QMessageBox.StandardButton.Cancel,
             ):
-                self.edit_descriptor.input_field.clear()
-                self.edit_descriptor.reset_formatting()
+                self.edit_descriptor.edit.input_field.clear()
+                self.edit_descriptor.edit.reset_formatting()
                 return
             else:
-                self.edit_descriptor.input_field.setText(corrected_descriptor)
-                self.edit_descriptor.reset_formatting()
+                self.edit_descriptor.edit.input_field.setText(corrected_descriptor)
+                self.edit_descriptor.edit.reset_formatting()
                 logger.debug(
                     f"autocorrection {str(user_input)[:10]=} --> {str(corrected_descriptor)[:10]=} denied"
                 )
@@ -487,7 +437,8 @@ class DescriptorUI(QWidget):
                     f"Fill signer information based on the new descriptor?",
                 ),
                 title=self.tr("New descriptor entered"),
-                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+                true_button=QMessageBox.StandardButton.Ok,
+                false_button=QMessageBox.StandardButton.No,
             ):
                 return
 
@@ -517,51 +468,6 @@ class DescriptorUI(QWidget):
             except Exception as e:
                 logger.debug(f"{e}")
         return None
-
-    def _data_to_descriptor(self, data: Data) -> str | None:
-        if data.data_type in [DataType.Descriptor]:
-            return str(
-                convert_to_multipath_descriptor(
-                    descriptor_str=data.data_as_string(), network=self.protowallet.network
-                )
-            )
-        if data.data_type in [DataType.MultiPathDescriptor]:
-            return data.data_as_string()
-        if data.data_type in [DataType.MultisigWalletExport] and isinstance(
-            data.data, ConverterMultisigWalletExport
-        ):
-            return from_multisig_wallet_export(
-                data.data, network=self.protowallet.network
-            ).to_string_with_secret()
-
-        return None
-
-    def on_action_import_from_clipboard(self):
-        clipboard = QApplication.clipboard()
-        if clipboard:
-            self.edit_descriptor.input_field.setText(clipboard.text())
-
-    def _on_signal_data(self, data: Data):
-        text = self._data_to_descriptor(data)
-        if text:
-            self.edit_descriptor.input_field.setText(text)
-
-    def on_action_import_qr(self):
-        self._temp_bitcoin_video_widget = BitcoinVideoWidget(
-            network=self.protowallet.network, close_on_result=True
-        )
-        self._temp_bitcoin_video_widget.signal_data.connect(self._on_signal_data)
-        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(self._exception_callback)
-        self._temp_bitcoin_video_widget.show()
-
-    def _exception_callback(self, e: Exception) -> None:
-        if isinstance(e, DecodingException):
-            if question_dialog(self.tr("Could not recognize the input. Do you want to scan again?")):
-                self.on_action_import_qr()
-            else:
-                return
-        else:
-            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
     def create_button_bar(self) -> QDialogButtonBox:
 

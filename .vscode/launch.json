@@ -91,6 +91,13 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }, {
+      "name": "p2p",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.p2p",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, {
       "name": "Translation update",
       "type": "python",
       "request": "launch",

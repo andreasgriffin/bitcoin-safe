@@ -327,7 +327,10 @@ class ButtonEdit(QWidget):
     ) -> None:
         def _exception_callback(e: Exception) -> None:
             if isinstance(e, DecodingException):
-                if question_dialog(self.tr("Could not recognize the input. Do you want to scan again?")):
+                if question_dialog(
+                    self.tr("Could not recognize the input. Do you want to scan again?"),
+                    true_button=self.tr("Scan again"),
+                ):
                     self.input_qr_from_camera(
                         network=network,
                         set_data_as_string=set_data_as_string,
@@ -405,7 +408,6 @@ class ButtonEdit(QWidget):
 
     def addResetButton(self, get_reset_text) -> SquareButton:
         return self.add_button("bi--arrow-clockwise.svg", partial(self.setText, get_reset_text()), "Reset")
-        # button.setStyleSheet("background-color: white;")
 
     def _on_click_add_open_file_button(
         self, callback_open_filepath: Callable | None = None, filter=None
@@ -446,9 +448,11 @@ class ButtonEdit(QWidget):
         return self.open_file_button
 
     def format_as_error(self, value: bool) -> None:
+        self.input_field.setObjectName(f"{id(self)}")
+
         if value:
             self.input_field.setStyleSheet(
-                f"{self.input_field.__class__.__name__}" + " { background-color: #ff6c54; }"
+                f"#{self.input_field.objectName()} {{ background-color: #ff6c54; }}"
             )
         else:
             self.input_field.setStyleSheet("")

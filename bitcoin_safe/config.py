@@ -26,23 +26,24 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import json
 import logging
 import os
+import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import appdirs
 import bdkpython as bdk
 from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from packaging import version
+from PyQt6.QtCore import QCoreApplication
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.util import current_project_dir
 
-from .execute_config import DEFAULT_MAINNET
+from .execute_config import DEFAULT_LANG_CODE, DEFAULT_MAINNET
 from .network_config import (
     NetworkConfig,
     NetworkConfigs,
@@ -63,12 +64,13 @@ RECENT_WALLET_MAXLEN = 15
 
 class UserConfig(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes, "NetworkConfigs": NetworkConfigs}
-    VERSION = "0.2.0"
+    VERSION = "0.2.3"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
     config_dir = Path(appdirs.user_config_dir(app_name))
     config_file = config_dir / (app_name + ".conf")
+    window_properties_config_file = config_dir / (app_name + "_window_properties.conf")
 
     fee_ranges = {
         bdk.Network.BITCOIN: [1.0, 1000],
@@ -79,6 +81,7 @@ class UserConfig(BaseSaveableClass):
     }
 
     def __init__(self) -> None:
+        super().__init__()
         self.network_configs = NetworkConfigs()
         self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET4
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
@@ -88,7 +91,10 @@ class UserConfig(BaseSaveableClass):
         self.recently_open_wallets: Dict[bdk.Network, UniqueDeque[str]] = {
             network: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network
         }
-        self.language_code: Optional[str] = None
+        self.language_code: str = DEFAULT_LANG_CODE
+        self.currency: str = "USD"
+        self.rates: Dict[str, Dict[str, Any]] = {}
+        self.last_tab_title: str = ""
 
     def clean_recently_open_wallet(self):
         this_deque = self.recently_open_wallets[self.network]
@@ -122,6 +128,7 @@ class UserConfig(BaseSaveableClass):
 
         # for better portability between computers we make this relative to the home folder
         d["data_dir"] = str(path_to_rel_home_path(self.data_dir))
+        d["rates"] = self.rates
 
         d["recently_open_wallets"] = {
             network.name: list(v) for network, v in self.recently_open_wallets.items()
@@ -155,7 +162,6 @@ class UserConfig(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
             network_config_testnet_3: NetworkConfig = dct["network_config"]
             dct["network_configs"] = {network.name: NetworkConfig(network=network) for network in bdk.Network}
@@ -209,10 +215,17 @@ class UserConfig(BaseSaveableClass):
                     network_config_testnet_4.server_type = network_config_testnet_3.server_type
                     network_config_testnet_4.proxy_url = network_config_testnet_3.proxy_url
 
-        # now the VERSION is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.2.2"):
+            old_path = (
+                cls.config_dir.parent
+                / QCoreApplication.organizationName()
+                / f"{QCoreApplication.applicationName()}.conf"
+            )
+            if old_path.exists():
+                os.makedirs(cls.window_properties_config_file.parent, exist_ok=True)
+                shutil.move(old_path, str(cls.window_properties_config_file))
+
+        return super().from_dump_migration(dct=dct)
 
     @classmethod
     def file_migration(cls, file_content: str):

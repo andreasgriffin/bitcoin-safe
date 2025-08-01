@@ -84,6 +84,7 @@ class SankeyWidget(QWidget):
     def __init__(self, show_tooltips=True, parent: QWidget | None = None) -> None:
         super().__init__(parent=parent)
         self.show_tooltips = show_tooltips
+        self.setEnabled(False)  #  set() wasnt called yet
 
         self.colors: Dict[FlowIndex, QColor] = {}
         self.labels: Dict[FlowIndex, str] | None = None
@@ -178,6 +179,7 @@ class SankeyWidget(QWidget):
 
         self.node_width = 0
         self.x_offset = 0
+        self.setEnabled(True)  #  set() was called
 
     @staticmethod
     def _find_best_positions(thicknesses: List[float], available_space: float) -> List[float]:
@@ -369,6 +371,8 @@ class SankeyWidget(QWidget):
         painter.end()
 
     def paintEvent(self, a0: Optional[QPaintEvent]) -> None:
+        if not self.isEnabled():
+            return
         painter = QPainter(self)
         self.draw_content(painter)
 
@@ -408,9 +412,12 @@ class SankeyWidget(QWidget):
                     self.signal_on_label_click.emit(flow_index)
                     break
 
-    def export_to_svg(self) -> None:
+    def export_to_svg(
+        self,
+    ) -> None:
+        default_filename = "diagram.svg"
         file_path, _ = QFileDialog.getSaveFileName(
-            self, self.tr("Export svg"), "", self.tr("All Files (*);;Text Files (*.svg)")
+            self, self.tr("Export svg"), default_filename, self.tr("All Files (*);;Text Files (*.svg)")
         )
         if not file_path:
             logger.info(self.tr("No file selected"))

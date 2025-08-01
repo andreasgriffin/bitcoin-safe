@@ -27,15 +27,17 @@
 # SOFTWARE.
 
 
+import enum
 import logging
-from dataclasses import dataclass
-from typing import Any, Dict, Literal
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-import socks
 from packaging import version
 
+from bitcoin_safe.mempool_data import MempoolData
+from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
@@ -44,37 +46,7 @@ from .i18n import translate
 
 logger = logging.getLogger(__name__)
 
-MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
-
-
-@dataclass
-class ProxyInfo:
-    host: str | None
-    port: int | None
-    scheme: str = "socks5h"
-
-    def get_socks_scheme(self) -> Literal[1] | Literal[2]:
-        if self.scheme == "socks4":
-            return socks.SOCKS4
-        return socks.SOCKS5
-
-    def get_url(self):
-        return f"{self.scheme}://{self.host}:{self.port}"
-
-    def get_url_no_h(self):
-        return f"{self.scheme[:-1] if self.scheme.endswith('h') else self.scheme}://{self.host}:{self.port}"
-
-    def get_requests_proxy_dict(self):
-        return {"http": self.get_url(), "https": self.get_url()}
-
-    @classmethod
-    def parse(cls, proxy_url: str):
-        # Prepend "socks5h://" if the proxy string does not contain a scheme
-        if "://" not in proxy_url:
-            proxy_url = f"{cls.scheme}://{proxy_url}"  # Default to SOCKS5 with remote DNS
-        parsed_proxy = urlparse(proxy_url)
-        return cls(host=parsed_proxy.hostname, port=parsed_proxy.port, scheme=parsed_proxy.scheme)
 
 
 def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:
@@ -177,7 +149,7 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
             bdk.Network.BITCOIN: 8333,
             bdk.Network.REGTEST: 18444,
             bdk.Network.TESTNET: 18333,
-            bdk.Network.TESTNET4: 18333,
+            bdk.Network.TESTNET4: 48333,
             bdk.Network.SIGNET: 38333,
         }
         return d[network]
@@ -238,6 +210,37 @@ def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
     return d[network]
 
 
+def get_default_p2p_node_urls(network: bdk.Network) -> Dict[str, str]:
+    d = {
+        bdk.Network.BITCOIN: {
+            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "umbrel": f"umbrel.local:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+        },
+        bdk.Network.REGTEST: {
+            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+        },  # you can use https://github.com/ngutech21/nigiri-mempool/
+        bdk.Network.TESTNET: {
+            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+        },
+        bdk.Network.TESTNET4: {
+            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+        },
+        bdk.Network.SIGNET: {
+            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+        },
+    }
+    return d[network]
+
+
+def get_testnet_faucet(network: bdk.Network) -> str | None:
+    d = {
+        bdk.Network.TESTNET: "https://bitcoinfaucet.uo1.net/",
+        bdk.Network.TESTNET4: "https://faucet.testnet4.dev/",
+        bdk.Network.SIGNET: "https://signet25.bublina.eu.org/",
+    }
+    return d.get(network)
+
+
 def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     if server_type == BlockchainType.CompactBlockFilter:
         d = {
@@ -285,7 +288,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                 ).format(
                     electrum_testnet4=link(get_electrum_configs(bdk.Network.TESTNET4)["mempool.space"].url),
                     explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET4)["mempool.space"]),
-                    faucet=link("https://faucet.testnet4.dev/", "faucet"),
+                    faucet=link(get_testnet_faucet(network=network), "faucet"),
                 )
             ),
             bdk.Network.SIGNET: translate(
@@ -294,7 +297,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             ).format(
                 electrum=link(get_electrum_configs(bdk.Network.SIGNET)["mempool.space"].url),
                 mempool_url=link(get_mempool_url(bdk.Network.SIGNET)["mempool.space"]),
-                faucet=link("https://signet25.bublina.eu.org/", "faucet"),
+                faucet=link(get_testnet_faucet(network=network), "faucet"),
             ),
         }
         return d[network]
@@ -323,7 +326,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                     "net_conf",
                     "There is a {faucet} for free test coins.",
                 ).format(
-                    faucet=link("https://faucet.testnet4.dev/", "faucet"),
+                    faucet=link(get_testnet_faucet(network=network), "faucet"),
                 )
             ),
             bdk.Network.SIGNET: (
@@ -333,7 +336,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                 ).format(
                     link=link(get_esplora_urls(bdk.Network.SIGNET)["mutinynet"]),
                     explorer=link("https://mutinynet.com/"),
-                    faucet=link("https://faucet.mutinynet.com", "faucet"),
+                    faucet=link(get_testnet_faucet(network=network), "faucet"),
                 )
             ),
         }
@@ -357,15 +360,77 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     raise ValueError(f"Could not get description for {network, server_type}")
 
 
+@dataclass(frozen=True)
+class Peer:
+    host: str
+    port: int
+
+    @classmethod
+    def parse(cls, url: str, network: bdk.Network) -> "Peer":
+        """
+        Parse any of these forms:
+        - IPv4                ("192.168.1.1")
+        - IPv4:port           ("192.168.1.1:8080")
+        - IPv6 (bracketed or not)
+        - [IPv6]:port         ("[2001:db8::1]:8080")
+        - onion.onion[:port]  ("abcd1234.onion" or "abcd1234.onion:80")
+        - i2p.i2p[:port]      ("xyzabcd.i2p:443")
+        Returns (hostname, port) where port is an int or None.
+        """
+        # If it already has a scheme (e.g. "http://…"), urlparse will parse it normally.
+        # Otherwise, prefix "http://" so urlparse treats the entire string as netloc.
+        prefix = "" if "://" in url else "http://"
+        parsed = urlparse(prefix + url)
+
+        host = parsed.hostname
+        port = parsed.port  # int or None
+
+        assert host is not None
+        if port is None:
+            port = get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)
+        return Peer(host=host, port=port)
+
+    def __str__(self) -> str:
+        host = self.host
+        port = self.port
+        if ":" in host and not host.startswith("["):  # likely an IPv6 address
+            host = f"[{host}]"
+        return f"{host}:{port}"
+
+
+class Peers(list[Peer]):
+    pass
+
+
+@dataclass
+class ConnectionInfo:
+    peer: Peer
+    proxy_info: ProxyInfo | None
+
+
+class P2pListenerType(enum.Enum):
+    automatic = enum.auto()
+    inital = enum.auto()
+    deactive = enum.auto()
+
+
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.1.1"
+    VERSION = "0.2.3"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "BlockchainType": BlockchainType,
         "Network": bdk.Network,
+        P2pListenerType.__name__: P2pListenerType,
+        MempoolData.__name__: MempoolData,
     }
 
-    def __init__(self, network: bdk.Network) -> None:
+    def __init__(
+        self,
+        network: bdk.Network,
+        discovered_peers: Peers | List[Peer] | None = None,
+        mempool_data: MempoolData | None = None,
+    ) -> None:
+        super().__init__()
         self.network = network
         self.server_type: BlockchainType = (
             BlockchainType.Esplora if network == bdk.Network.BITCOIN else BlockchainType.Electrum
@@ -382,6 +447,10 @@ class NetworkConfig(BaseSaveableClass):
 
         self.mempool_url: str = get_mempool_url(network)["default"]
         self.proxy_url: str | None = None
+        self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
+        self.p2p_inital_url: str = get_default_p2p_node_urls(network=network)["default"]
+        self.discovered_peers: Peers | List[Peer] = discovered_peers if discovered_peers else Peers()
+        self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
     def description_short(self):
         server_name = ""
@@ -405,6 +474,9 @@ class NetworkConfig(BaseSaveableClass):
         d = super().dump()
         d.update(self.__dict__)
 
+        # overwrite the dict value
+        d["discovered_peers"] = Peers() + [asdict(peer) for peer in self.discovered_peers]
+
         return d
 
     @classmethod
@@ -413,6 +485,10 @@ class NetworkConfig(BaseSaveableClass):
 
         u = cls(**filtered_for_init(dct, cls))
 
+        dct["discovered_peers"] = [
+            Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("discovered_peers", [])
+        ]
+
         for k, v in dct.items():
             if v is not None:  # only overwrite the default value, if there is a value
                 setattr(u, k, v)
@@ -420,7 +496,6 @@ class NetworkConfig(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             dct["_network"] = dct["network"]
             del dct["network"]
@@ -437,11 +512,17 @@ class NetworkConfig(BaseSaveableClass):
                 # blank out the fields.  let the user choose themself.
                 dct["server_type"] = BlockchainType.Electrum
                 dct["electrum_url"] = ""
+        if version.parse(str(dct["VERSION"])) < version.parse("0.2.2"):
+            # existing users might have had set the network settings paranoid
+            # and would not like to have P2pListenerType enabled
+            # Therefore I deactivate it for migrations
+            # New users who are paranoid, can deactivate p2p_listener_type
+            # together when they set an electrum server
+            dct["p2p_listener_type"] = P2pListenerType.deactive
+        if version.parse(str(dct["VERSION"])) < version.parse("0.2.3"):
+            dct["mempool_data"] = res if (res := dct.get("mempool_data")) else None
 
-        # now the VERSION is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
 
 class NetworkConfigs(BaseSaveableClass):
@@ -472,10 +553,7 @@ class NetworkConfigs(BaseSaveableClass):
             if bdk.Network.TESTNET4.name not in dct["configs"]:
                 dct["configs"][bdk.Network.TESTNET4.name] = NetworkConfig(network=bdk.Network.TESTNET4)
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def dump(self) -> Dict:
         d = super().dump()

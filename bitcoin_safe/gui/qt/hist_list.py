@@ -63,19 +63,11 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
 from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import (
-    QBrush,
-    QColor,
-    QDragEnterEvent,
-    QDragMoveEvent,
-    QDropEvent,
-    QFont,
-    QFontMetrics,
-    QStandardItem,
-)
+from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
@@ -84,9 +76,10 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import Balance, Recipient, TransactionDetails
+from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.util_os import webopen
@@ -94,7 +87,7 @@ from bitcoin_safe.util_os import webopen
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
-from .category_list import CategoryEditor
+from .drag_info import AddressDragInfo
 from .my_treeview import (
     MyItemDataRole,
     MySortModel,
@@ -103,8 +96,15 @@ from .my_treeview import (
     TreeViewWithToolbar,
     needs_frequent_flag,
 )
-from .taglist import AddressDragInfo
-from .util import Message, MessageType, block_explorer_URL, sort_id_to_icon
+from .util import (
+    ButtonInfoType,
+    Message,
+    MessageType,
+    block_explorer_URL,
+    button_info,
+    category_color,
+    sort_id_to_icon,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +139,12 @@ class AddressTypeFilter(IntEnum):
         }[self]
 
 
-class HistList(MyTreeView):
+class HistList(MyTreeView[str]):
+    VERSION = "0.0.0"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
+
     signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
 
     show_change: AddressTypeFilter
@@ -179,10 +184,12 @@ class HistList(MyTreeView):
         fx: FX,
         config: UserConfig,
         signals: Signals,
-        mempool_data: MempoolData,
-        wallets: List[Wallet],
-        hidden_columns: List[int] | None = None,
+        mempool_manager: MempoolManager,
+        wallets: List[Wallet] | None = None,
         address_domain: List[str] | None = None,
+        hidden_columns: List[int] | None = None,
+        selected_ids: List[str] | None = None,
+        _scroll_position=0,
     ) -> None:
         super().__init__(
             config=config,
@@ -193,12 +200,15 @@ class HistList(MyTreeView):
             sort_column=HistList.Columns.STATUS,
             sort_order=Qt.SortOrder.DescendingOrder,
             hidden_columns=hidden_columns,
+            selected_ids=selected_ids,
+            _scroll_position=_scroll_position,
         )
         self.fx = fx
-        self.mempool_data = mempool_data
+        self._signal_tracker_wallet_signals = SignalTracker()
+        self.mempool_manager = mempool_manager
         self.address_domain = address_domain
         self.signals = signals
-        self.wallets = wallets
+        self.wallets = wallets if wallets else []
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setSortingEnabled(True)
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
@@ -232,10 +242,28 @@ class HistList(MyTreeView):
             custom_drag_keys_to_file_paths=self.drag_keys_to_file_paths,
         )
         self.setModel(self.proxy)
-        self.update_content()
+        self.set_wallets(self.wallets)
+
+    def set_wallets(self, wallets: List[Wallet]):
+        self._signal_tracker_wallet_signals.disconnect_all()
+        self.wallets = wallets
+
         for wallet in self.wallets:
-            self.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
-        self.signals.language_switch.connect(self.update)
+            self._signal_tracker_wallet_signals.connect(
+                self.signals.wallet_signals[wallet.id].updated, self.update_with_filter
+            )
+
+        self.update_content()
+
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["address_domain"] = self.address_domain
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "MyTreeView":
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+        return cls(**filtered_for_init(dct, cls))
 
     def get_file_data(self, txid: str) -> Optional[Data]:
         for wallet in get_wallets(self.signals):
@@ -280,62 +308,7 @@ class HistList(MyTreeView):
             return True
         return False
 
-    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
-        super().dragEnterEvent(e)
-        if not e or e.isAccepted():
-            return
-
-        mime_data = e.mimeData()
-        if mime_data and self._acceptable_mime_data(mime_data):
-            e.acceptProposedAction()
-        else:
-            e.ignore()
-
-    def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
-        super().dragMoveEvent(event)
-        if not event or event.isAccepted():
-            return
-
-        mime_data = event.mimeData()
-        if mime_data and self._acceptable_mime_data(mime_data):
-            event.acceptProposedAction()
-        else:
-            event.ignore()
-
-    def dropEvent(self, e: QDropEvent | None) -> None:
-        # handle dropped files
-        super().dropEvent(e)
-        if not e or e.isAccepted():
-            return
-
-        index = self.indexAt(e.position().toPoint())
-        if not index.isValid():
-            # Handle the case where the drop is not on a valid index
-            return
-
-        mime_data = e.mimeData()
-        if mime_data:
-            json_mime_data = self.get_json_mime_data(mime_data)
-            if json_mime_data is not None:
-                model = self.model()
-                hit_address = model.data(model.index(index.row(), self.key_column))
-                if json_mime_data.get("type") == "drag_tag":
-                    if hit_address is not None:
-                        drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                        # logger.debug(f"drag_info {drag_info}")
-                        self.signal_tag_dropped.emit(drag_info)
-                    e.accept()
-                    return
-
-            elif mime_data.hasUrls():
-                # Iterate through the list of dropped file URLs
-                for url in mime_data.urls():
-                    # Convert URL to local file path
-                    self.signals.open_file_path.emit(url.toLocalFile())
-
-        e.ignore()
-
-    def on_double_click(self, idx: QModelIndex) -> None:
+    def on_double_click(self, source_idx: QModelIndex) -> None:
         txid = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
         wallet = self.get_wallet(txid=txid)
         if not wallet:
@@ -532,7 +505,7 @@ class HistList(MyTreeView):
         else:
             if status.is_in_mempool():
                 status_text = confirmation_wait_formatted(
-                    self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
+                    self.mempool_manager.fee_rate_to_projected_block_index(fee_rate)
                 )
             else:
                 status_text = self.tr("Local")
@@ -549,8 +522,9 @@ class HistList(MyTreeView):
 
         _item = [self._source_model.item(row, col) for col in self.Columns]
         item = [entry for entry in _item if entry]
-        if needs_frequent_flag(status=status):
-            item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
+        item[self.key_column].setData(
+            needs_frequent_flag(status=status), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+        )
         item[self.Columns.STATUS].setText(status_text)
         item[self.Columns.STATUS].setData(status_text, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.STATUS].setIcon(svg_tools.get_QIcon(sort_id_to_icon(status.sort_id())))
@@ -559,7 +533,7 @@ class HistList(MyTreeView):
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORIES].setText(category)
         item[self.Columns.CATEGORIES].setData(categories, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.CATEGORIES].setBackground(CategoryEditor.color(category))
+        item[self.Columns.CATEGORIES].setBackground(category_color(category))
 
     def create_menu(self, position: QPoint) -> Menu:
         menu = Menu()
@@ -573,7 +547,7 @@ class HistList(MyTreeView):
         selected_items = [item for item in _selected_items if item]
         txids = [item.text() for item in selected_items if item]
         if not multi_select:
-            idx = self.indexAt(position)
+            idx = self._p2s(self.indexAt(position))
             if not idx.isValid():
                 return menu
             item = self.item_from_index(idx)
@@ -596,13 +570,7 @@ class HistList(MyTreeView):
             # ).text()
             # addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
             self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.Columns.TXID])
-            # persistent = QPersistentModelIndex(addr_idx)
-            # menu.add_action(
-            #     self.tr(  "Edit {}").format(addr_column_title),
-            #     lambda p=persistent: self.edit(QModelIndex(p)),
-            # )
-            # menu.add_action(self.tr(  "Request payment"), lambda: self.main_window.receive_at(txid))
-            # if not is_multisig and not self.wallet.is_watching_only():
+
             #     menu.add_action(self.tr(  "Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
             #     menu.add_action(self.tr(  "Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
 
@@ -622,7 +590,7 @@ class HistList(MyTreeView):
         )
 
         if not multi_select:
-            idx = self.indexAt(position)
+            idx = self._p2s(self.indexAt(position))
             if not idx.isValid():
                 return menu
             item = self.item_from_index(idx)
@@ -637,18 +605,22 @@ class HistList(MyTreeView):
                     menu.addSeparator()
                     if GENERAL_RBF_AVAILABLE:
                         menu.add_action(
-                            self.tr("Edit with higher fee (RBF)"),
-                            partial(self.edit_tx, tx_details),
-                        )
-                        menu.add_action(
-                            self.tr("Try cancel transaction (RBF)"),
+                            button_info(ButtonInfoType.cancel_with_rbf).text,
                             partial(self.cancel_tx, tx_details),
+                            icon=button_info(ButtonInfoType.cancel_with_rbf).icon,
                         )
-                    else:
-                        menu.add_action(self.tr("Increase fee (RBF)"), partial(self.edit_tx, tx_details))
+                    menu.add_action(
+                        button_info(ButtonInfoType.rbf).text,
+                        partial(self.edit_tx, tx_details),
+                        icon=button_info(ButtonInfoType.rbf).icon,
+                    )
 
                 if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
-                    menu.add_action(self.tr("Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details))
+                    menu.add_action(
+                        button_info(ButtonInfoType.cpfp).text,
+                        partial(self.cpfp_tx, tx_details),
+                        icon=button_info(ButtonInfoType.cpfp).icon,
+                    )
 
                 menu.addSeparator()
 
@@ -687,7 +659,7 @@ class HistList(MyTreeView):
         wallet = self.get_wallet(txid=tx.compute_txid())
         if not wallet:
             return False
-        return TxTools.can_cpfp(tx=tx, wallet=wallet, tx_status=tx_status)
+        return TxTools.can_cpfp(wallet=wallet, tx_status=tx_status, signals=self.signals)
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
         wallet = self.get_wallet(txid=tx_details.transaction.compute_txid())
@@ -702,7 +674,7 @@ class HistList(MyTreeView):
             self.config.network,
             get_wallets(self.signals),
         )
-        TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
+        TxTools.edit_tx(replace_tx=tx_details.transaction, txinfos=txinfos, signals=self.signals)
 
     def cancel_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
@@ -757,7 +729,7 @@ class HistList(MyTreeView):
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=MyItemDataRole.ROLE_KEY)
 
-    def on_edited(self, idx: QModelIndex, edit_key: str, *, text: str) -> None:
+    def on_edited(self, source_idx: QModelIndex, edit_key: str, text: str) -> None:
         txid = edit_key
 
         wallet = self.get_wallet(txid=txid)
@@ -780,6 +752,7 @@ class HistList(MyTreeView):
 
     def close(self) -> bool:
         self.setParent(None)
+        self._signal_tracker_wallet_signals.disconnect_all()
         return super().close()
 
 
@@ -802,8 +775,15 @@ class RefreshButton(QPushButton):
 
 
 class HistListWithToolbar(TreeViewWithToolbar):
+    VERSION = "0.0.0"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+        HistList.__name__: HistList,
+    }
+
     def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget | None = None) -> None:
         super().__init__(hist_list, config, parent=parent)
+        self.default_export_csv_filename = "history_export.csv"
         self.hist_list = hist_list
         self.create_layout()
 
@@ -814,6 +794,16 @@ class HistListWithToolbar(TreeViewWithToolbar):
         for wallet in self.hist_list.wallets:
             self.hist_list.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
 
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["hist_list"] = self.hist_list
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "TreeViewWithToolbar":
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+        return cls(**filtered_for_init(dct, cls))
+
     def update_with_filter(self, update_filter: UpdateFilter):
         self.updateUi()
 
@@ -821,17 +811,6 @@ class HistListWithToolbar(TreeViewWithToolbar):
         super().updateUi()
         if self.balance_label:
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
-
-            if self.hist_list.signals and not self.hist_list.address_domain:
-                if self.hist_list.signals:
-                    balance_total = Satoshis(value=0, network=self.config.network)
-                    for wallet in self.hist_list.wallets:
-                        display_balance = self.hist_list.signals.wallet_signals[
-                            wallet.id
-                        ].get_display_balance.emit()
-                        if isinstance(display_balance, Balance):
-                            balance_total += Satoshis(display_balance.total, self.config.network)
-
             self.balance_label.setText(balance_total.format_as_balance())
 
     def create_toolbar_with_menu(self, title) -> None:

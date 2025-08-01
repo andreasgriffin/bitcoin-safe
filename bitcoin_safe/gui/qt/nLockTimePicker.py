@@ -80,7 +80,8 @@ class CheckBoxGroupBox(QWidget):
         # Create the checkbox
         self.checkbox = QCheckBox()
         self.checkbox.stateChanged.connect(self.toggleGroupBox)
-        self.checkbox.setStyleSheet("margin-bottom: 0px;")  # Adjust margin as needed
+        self.setObjectName(f"{id(self)}")
+        self.setStyleSheet(f"#{self.objectName()}  {{ margin-bottom: 0px; }}")
 
         # Create the group box
         self.groupBox = QGroupBox()

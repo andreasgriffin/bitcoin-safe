@@ -329,7 +329,10 @@ def close_wallet(
     # check that you cannot go further without import xpub
     def password_creation(dialog: QMessageBox) -> None:
         shutter.save(dialog)
-        dialog.button(QMessageBox.StandardButton.Yes).click()
+        for button in dialog.buttons():
+            if button.text() == "Close":
+                button.click()
+                break
 
     index = main_window.tab_wallets.indexOf(main_window.qt_wallets[wallet_name])
 
