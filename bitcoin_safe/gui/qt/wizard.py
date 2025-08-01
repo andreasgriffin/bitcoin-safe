@@ -652,7 +652,7 @@ class ValidateBackup(BaseTab):
 class ImportXpubs(BaseTab):
 
     def _callback(self, tutorial_widget: TutorialWidget) -> None:
-        self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_tab)
+        self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_ui)
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
         )

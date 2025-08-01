@@ -470,6 +470,8 @@ class ButtonEdit(QWidget):
         self.setToolTip(analysis.msg if error else "")
 
     def close(self) -> bool:
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)

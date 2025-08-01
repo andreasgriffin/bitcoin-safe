@@ -137,10 +137,7 @@ class QTProtoWallet(QtWalletBase):
             parent=parent,
         )
 
-        (
-            self.wallet_descriptor_tab,
-            self.wallet_descriptor_ui,
-        ) = self.create_and_add_settings_tab(protowallet)
+        self.wallet_descriptor_ui = self.create_and_add_settings_tab(protowallet)
 
         self.tabs.setVisible(False)
 
@@ -158,7 +155,7 @@ class QTProtoWallet(QtWalletBase):
     def get_keystore_labels(self) -> List[str]:
         return [self.protowallet.signer_name(i) for i in range(len(self.protowallet.keystores))]
 
-    def create_and_add_settings_tab(self, protowallet: ProtoWallet) -> Tuple[QWidget, DescriptorUI]:
+    def create_and_add_settings_tab(self, protowallet: ProtoWallet) -> DescriptorUI:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
             protowallet=protowallet,
@@ -173,7 +170,7 @@ class QTProtoWallet(QtWalletBase):
 
         wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.on_apply_setting_changes)
         wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(self.on_cancel_wallet_creation)
-        return wallet_descriptor_ui, wallet_descriptor_ui
+        return wallet_descriptor_ui
 
     def on_cancel_wallet_creation(self):
         self.signal_close_wallet.emit(self.protowallet.id)
@@ -291,10 +288,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         ) = self._create_addresses_tab(self.tabs, address_list_with_toolbar=address_list_with_toolbar)
 
         self.uitx_creator = self._create_send_tab(uitx_creator=uitx_creator)
-        (
-            self.wallet_descriptor_tab,
-            self.wallet_descriptor_ui,
-        ) = self.create_and_add_settings_tab()
+        self.wallet_descriptor_ui = self.create_and_add_settings_tab()
 
         self.sync_tab, self.sync_tab_widget, self.label_syncer = self.add_sync_tab()
 
@@ -482,7 +476,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def updateUi(self) -> None:
         self.tabs.setTabText(self.tabs.indexOf(self.uitx_creator), self.tr("Send"))
-        self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_tab), self.tr("Descriptor"))
+        self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_ui), self.tr("Descriptor"))
         self.tabs.setTabText(self.tabs.indexOf(self.sync_tab_widget), self.tr("Sync && Chat"))
         self.tabs.setTabText(self.tabs.indexOf(self.history_tab), self.tr("History"))
         self.tabs.setTabText(self.tabs.indexOf(self.address_tab), self.tr("Receive"))
@@ -547,7 +541,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def file_path(self, value: Optional[str]) -> None:
         self._file_path = value
 
-    def create_and_add_settings_tab(self) -> Tuple[QWidget, DescriptorUI]:
+    def create_and_add_settings_tab(self) -> DescriptorUI:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
             protowallet=self.wallet.as_protowallet(),
@@ -565,7 +559,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.on_qtwallet_apply_setting_changes
         )
         wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
-        return wallet_descriptor_ui, wallet_descriptor_ui
+        return wallet_descriptor_ui
 
     def on_qtwallet_apply_setting_changes(self):
         # save old status, such that the backup has all old data (inlcuding the "SyncTab" in the data_dump)
@@ -1441,7 +1435,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.history_tab.close()
         self.history_tab.searchable_list = None
         self.history_list_with_toolbar.close()
-        self.wallet_descriptor_tab.close()
         self.wallet_descriptor_ui.close()
         self.uitx_creator.close()
         self.wallet_balance_chart.close()

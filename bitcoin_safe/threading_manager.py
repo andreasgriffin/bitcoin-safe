@@ -266,3 +266,4 @@ class ThreadingManager:
 
         if self.threading_parent and self in self.threading_parent.threading_manager_children:
             self.threading_parent.threading_manager_children.remove(self)
+            self.threading_parent = None

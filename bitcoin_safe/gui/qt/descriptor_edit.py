@@ -117,7 +117,7 @@ class DescriptorInputField(AnalyzerTextEdit):
         return size
 
 
-class DescriptorEdit(QWidget, ThreadingManager):
+class DescriptorEdit(ThreadingManager, QWidget):
     signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
@@ -128,18 +128,18 @@ class DescriptorEdit(QWidget, ThreadingManager):
         wallet: Optional[Wallet] = None,
         signal_update: TypedPyQtSignalNo | None = None,
     ) -> None:
-        QWidget.__init__(
-            self,
-        )
-        ThreadingManager.__init__(self, threading_parent=threading_parent)
+        super().__init__(threading_parent=threading_parent)
         self.edit = ButtonEdit(
             input_field=DescriptorInputField(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
             signals_min=signals,
-            threading_parent=self,
             close_all_video_widgets=signals.close_all_video_widgets,
+            parent=self,
         )
+        self._dialog: QWidget | None = None
+        self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
+
         self._hardware_signer_interaction: RegisterMultisigInteractionWidget | None = None
         self._layout = QVBoxLayout(self)
         set_no_margins(self._layout)
@@ -295,24 +295,33 @@ class DescriptorEdit(QWidget, ThreadingManager):
             return
 
         try:
-            dialog = DescriptorExport(
+            self._dialog = DescriptorExport(
                 descriptor=convert_to_multipath_descriptor(self.edit.text().strip(), self.network),
                 signals_min=self.signals,
                 parent=self,
                 network=self.network,
-                threading_parent=self.threading_parent,
+                threading_parent=self,
                 wallet_id=self.wallet.id if self.wallet is not None else "Multisig",
             )
-            dialog.show()
-            dialog.raise_()
+            self._dialog.show()
+            self._dialog.raise_()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"Could not create a DescriptorExport for {self.__class__.__name__}: {e}")
             return
 
     def close(self):
+        self.end_threading_manager()
+        self.edit.close()
         self.signal_tracker.disconnect_all()
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
+        if self._dialog:
+            self._dialog.close()
+        if self._hardware_signer_interaction:
+            self._hardware_signer_interaction.close()
         SignalTools.disconnect_all_signals_from(self)
+        self.setParent(None)
         return super().close()
 
     def show_register_multisig(self) -> None:

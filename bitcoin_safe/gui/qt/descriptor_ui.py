@@ -77,7 +77,6 @@ class DescriptorUI(QWidget):
     ) -> None:
         super().__init__()
         self.signal_tracker = SignalTracker()
-        self.threading_parent = threading_parent
         self._layout = QVBoxLayout(self)
         # if we are in the wallet setp process, then wallet = None
         self.protowallet = protowallet
@@ -298,7 +297,7 @@ class DescriptorUI(QWidget):
                 if default_address_type in address_type_names:
                     self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
 
-    def create_wallet_type_and_descriptor(self, threading_parent: ThreadingManager | None = None) -> None:
+    def create_wallet_type_and_descriptor(self, threading_parent: ThreadingManager) -> None:
         box_wallet_type_and_descriptor = QWidget(self)
         box_wallet_type_and_descriptor_layout = QHBoxLayout(box_wallet_type_and_descriptor)
 
@@ -378,7 +377,7 @@ class DescriptorUI(QWidget):
             signals=self.signals,
             wallet=self.wallet,
             signal_update=language_switch,
-            threading_parent=self.threading_parent,
+            threading_parent=threading_parent,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addWidget(self.edit_descriptor)
@@ -486,8 +485,8 @@ class DescriptorUI(QWidget):
         return self.button_box
 
     def close(self):
+        self.edit_descriptor.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
-        self.edit_descriptor.close()
         self.setParent(None)
         return super().close()
