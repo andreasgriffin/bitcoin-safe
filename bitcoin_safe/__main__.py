@@ -44,6 +44,9 @@ def main() -> None:
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
 
+    app.setOrganizationName("Bitcoin Safe")
+    app.setApplicationName("Bitcoin Safe")
+
     check_compatibility()
 
     if is_gnome_dark_mode():

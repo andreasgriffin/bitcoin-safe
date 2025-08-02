@@ -54,11 +54,6 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
-			<source>Address of wallet "{id}"</source>
-			<translation>آدرس کیف پول "{id}"</translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
 			<source>Advanced</source>
 			<translation>پیشرفته</translation>
 		</message>
@@ -143,6 +138,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Wallet</source>
+			<translation>کیف پول</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>change</source>
 			<translation>تغییر</translation>
 		</message>
@@ -165,13 +165,23 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
+			<source>Create new Address</source>
+			<translation>ایجاد آدرس جدید</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
 			<source>Generate to selected adddresses</source>
 			<translation>تولید برای آدرس‌های انتخاب‌شده</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Show Filter</source>
-			<translation>نمایش فیلتر</translation>
+			<source>Manage Categories</source>
+			<translation>مدیریت دسته‌بندی‌ها</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
+			<source>for</source>
+			<translation>برای</translation>
 		</message>
 	</context>
 	<context>
@@ -191,6 +201,28 @@
 		<message>
 			<source>Max ≈ {amount}</source>
 			<translation>حداکثر ≈ {amount}</translation>
+		</message>
+	</context>
+	<context>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Please backup your sync key.</source>
+			<translation>لطفاً از کلید همگام‌سازی خود نسخه پشتیبان بگیرید.</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Restore labels</source>
+			<translation>بازیابی برچسب‌ها</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Save sync key</source>
+			<translation>ذخیره کلید همگام‌سازی</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
+			<translation>کلید همگام‌سازی کیف‌پول {wallet_id}:  {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -322,6 +354,18 @@
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟</translation>
 		</message>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>اسکن مجدد</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonExplorerIcon</name>
+		<message>
+			<source>Open in the block explorer</source>
+			<translation>باز کردن در مرورگر بلاک</translation>
+		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
@@ -344,20 +388,93 @@
 		</message>
 	</context>
 	<context>
-		<name>CategoryEditor</name>
+		<name>CPFPIcon</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>صرافی KYC</translation>
+			<source>CPFP with this fee rate</source>
+			<translation>CPFP با این نرخ کارمزد</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryComboBox</name>
 		<message>
-			<source>Private</source>
-			<translation>خصوصی</translation>
+			<source>Add category</source>
+			<translation>افزودن دسته‌بندی</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryList</name>
 		<message>
-			<source>category</source>
+			<source>Addresses</source>
+			<translation>آدرس‌ها</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Balance</source>
+			<translation>موجودی</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Category</source>
 			<translation>دسته</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Color</source>
+			<translation>رنگ</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received </source>
+			<translation>دریافت شد</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Tx Outputs</source>
+			<translation>خروجی‌های تراکنش</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>UTXOs</source>
+			<translation>UTXOها</translation>
+		</message>
+	</context>
+	<context>
+		<name>CategoryManager</name>
+		<message>
+			<source>Add Category</source>
+			<translation>افزودن دسته‌بندی</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Change category</source>
+			<translation>تغییر دسته‌بندی</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Manage Categories of {wallet_id}</source>
+			<translation>مدیریت دسته‌بندی‌های {wallet_id}</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Merge</source>
+			<translation>ادغام</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Rename</source>
+			<translation>تغییر نام</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+			<translation>آدرس‌های {used_addresses} از قبل تراکنش‌هایی دارند که به آدرس‌های دیگر پیوند می‌خورند. مطمئنید می‌خواهید دسته را تغییر دهید؟</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change their category?</source>
+			<translation>آدرس‌های {used_addresses} از قبل تراکنش‌هایی مرتبط با آدرس‌های دیگر دارند. آیا مطمئنید می‌خواهید دسته‌بندی آن‌ها را تغییر دهید؟</translation>
 		</message>
 	</context>
 	<context>
@@ -395,24 +512,71 @@
 		</message>
 	</context>
 	<context>
-		<name>CloseButton</name>
+		<name>ColumnFee</name>
 		<message>
-			<source>Close</source>
-			<translation>بستن</translation>
+			<source>Confirmed</source>
+			<translation>تأییدشده</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Confirming...</source>
+			<translation>در حال تأیید...</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool Fees</source>
+			<translation>کارمزدهای مم‌پول</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool position</source>
+			<translation>جایگاه در مم‌پول</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Priority</source>
+			<translation>اولویت</translation>
 		</message>
 	</context>
 	<context>
-		<name>ConfirmedBlock</name>
+		<name>ColumnInputs</name>
 		<message>
-			<source>Block {n}</source>
-			<translation>بلاک {n}</translation>
+			<source>Add foreign UTXOs</source>
+			<translation>افزودن UTXOهای خارجی</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Input total:</source>
+			<translation>مجموع ورودی‌ها:</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Select specific UTXOs</source>
+			<translation>انتخاب UTXOهای مشخص</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Sending source</source>
+			<translation>مبدأ ارسال</translation>
 		</message>
 	</context>
 	<context>
-		<name>CustomListWidget</name>
+		<name>ColumnRecipients</name>
 		<message>
-			<source>Delete Category</source>
-			<translation>حذف دسته</translation>
+			<source>Sending total:</source>
+			<translation>مجموع ارسالی:</translation>
+		</message>
+	</context>
+	<context>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Diagram</source>
+			<translation>نمودار</translation>
+		</message>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Export svg</source>
+			<translation>خروجی‌ SVG</translation>
 		</message>
 	</context>
 	<context>
@@ -430,8 +594,74 @@
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
+			<source>Copy to clipboard</source>
+			<translation>کپی به کلیپ‌بورد</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
 			<source>Descriptor not valid</source>
 			<translation>توصیف‌گر معتبر نیست</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export</source>
+			<translation>خروجی‌گرفتن</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export QR</source>
+			<translation>صادر کردن QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import</source>
+			<translation>وارد کردن</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import from Clipboard</source>
+			<translation>وارد کردن از کلیپ‌بورد</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Paste or scan your descriptor, if you restore a wallet.</source>
+			<translation>در صورت بازیابی کیف پول، توصیف‌گر خود را جای‌گذاری یا اسکن کنید.</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>لطفاً ابتدا یک کیف پول چندامضایی انتخاب کنید</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Read QR Code</source>
+			<translation>خواندن کد QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Recovery Sheet</source>
+			<translation>برگه بازیابی</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Register with hardware signers</source>
+			<translation>ثبت‌نام با امضاکنندگان سخت‌افزاری</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>اسکن دوباره</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>This "descriptor" contains all information to reconstruct the wallet. 
+Please back up this descriptor to be able to recover the funds!</source>
+			<translation>این «توصیف‌گر» تمام اطلاعات لازم برای بازسازی کیف پول را در خود دارد. لطفاً برای بازیابی کیف‌پول، این توصیف‌گر را ذخیره و پشتیبان‌گیری کنید!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -454,23 +684,8 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Descriptor unchanged</source>
 			<translation>توصیف‌گر بدون تغییر</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import</source>
-			<translation>وارد کردن</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>وارد کردن از کلیپ‌بورد</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -484,16 +699,6 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>در صورت بازیابی کیف پول، توصیف‌گر خود را جای‌گذاری یا اسکن کنید.</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>خواندن کد QR</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Required Signers</source>
 			<translation>امضاکنندگان موردنیاز</translation>
 		</message>
@@ -501,12 +706,6 @@
 		<message>
 			<source>Scan Addresses ahead</source>
 			<translation>اسکن آدرس‌های بعدی</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
-Please back up this descriptor to be able to recover the funds!</source>
-			<translation>این «توصیف‌گر» تمام اطلاعات لازم برای بازسازی کیف پول را در خود دارد. لطفاً برای بازیابی کیف‌پول، این توصیف‌گر را ذخیره و پشتیبان‌گیری کنید!</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -595,6 +794,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>EditWithFeeIcon</name>
+		<message>
+			<source>Edit with this fee rate</source>
+			<translation>ویرایش با این نرخ کارمزد</translation>
+		</message>
+	</context>
+	<context>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
@@ -624,20 +830,40 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels</source>
+			<translation>خروجی برچسب‌ها</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels for other wallets (BIP329)</source>
+			<translation>خروجی‌گرفتن برچسب‌ها برای کیف پول‌های دیگر (BIP329)</translation>
+		</message>
+	</context>
+	<context>
 		<name>FeeGroup</name>
 		<message>
-			<source>Approximate fee rate</source>
-			<translation>نرخ تقریبی کارمزد</translation>
+			<source>Approximate rate</source>
+			<translation>نرخ تقریبی</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>Fee</source>
-			<translation>کارمزد</translation>
+			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
+Click to learn more about CPFP (Child Pays For Parent).</source>
+			<translation>این تراکنش دارای {number} تراکنش والدِ تأییدنشده است با مجموع نرخ کارمزد {parents_fee_rate}. برای آشنایی بیشتر با CPFP (Child Pays For Parent) کلیک کنید.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-			<translation>این تراکنش {number} یک تراکنش مبنای تأییدنشده با نرخ کارمزد تجمیعی {parents_fee_rate} دارد</translation>
+			<source>Transaction fee rate</source>
+			<translation>نرخ کارمزد تراکنش</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>You can replace the previously broadcasted transaction
+with a new transaction if it has a higher fee rate.
+Click here to learn more about RBF (Replace-by-Fee).</source>
+			<translation>اگر نرخ کارمزدِ بالاتری داشته باشد، می‌توانید تراکنش پخش‌شده‌ی قبلی را با یک تراکنش جدید جایگزین کنید. برای آشنایی بیشتر با RBF (Replace‑by‑Fee) اینجا کلیک کنید।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -646,13 +872,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} combined fee rate</source>
-			<translation>نرخ تجمیعی کارمزد {rate}</translation>
+			<source>{cpfp} total: {rate}</source>
+			<translation>{cpfp} مجموع: {rate}</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} is the minimum for {rbf}</source>
-			<translation>{rate} حداقل مقدار برای {rbf} است</translation>
+			<source>{rbf} min.: {rate}</source>
+			<translation>{rbf} حداقل: {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -697,6 +923,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{sent} is sent!</source>
 			<translation>{sent} ارسال شد!</translation>
+		</message>
+	</context>
+	<context>
+		<name>FiatSpinBox</name>
+		<message>
+			<source>Max ≈ {amount}</source>
+			<translation>حداکثر ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -852,16 +1085,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Edit with higher fee (RBF)</source>
-			<translation>ویرایش تراکنش با کارمزد بیشتر (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>افزایش کارمزد (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Label</source>
 			<translation>برچسب</translation>
 		</message>
@@ -877,11 +1100,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>دریافت سریع‌تر (CPFP)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Remove on restart</source>
 			<translation>حذف در راه‌اندازی دوباره</translation>
 		</message>
@@ -894,11 +1112,6 @@ the sending value {sent}</source>
 		<message>
 			<source>Status</source>
 			<translation>وضعیت</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>تلاش برای لغو تراکنش (RBF)</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -959,6 +1172,28 @@ the sending value {sent}</source>
 		<message>
 			<source>Seed</source>
 			<translation>سید</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels</source>
+			<translation>وارد کردن برچسب‌ها</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (BIP329 / Sparrow)</source>
+			<translation>وارد کردن برچسب‌ها (BIP329 / Sparrow)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (Electrum Wallet)</source>
+			<translation>وارد کردن برچسب‌ها (کیف پول Electrum)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Restore labels from cloud using an existing sync key</source>
+			<translation>بازیابی برچسب‌ها از فضای ابری با استفاده از کلید همگام‌سازی موجود</translation>
 		</message>
 	</context>
 	<context>
@@ -1147,6 +1382,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
+			<source>Proceed anyway</source>
+			<translation>ادامه دادن به هر حال</translation>
+		</message>
+		<name>KeyStoreUIs</name>
+		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
 			<translation>شما یک اثرانگشت را چندین بار وارد کردید!!! لطفاً از دستگاه امضاکننده متفاوتی استفاده کنید.</translation>
 		</message>
@@ -1324,8 +1564,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Network Settings</source>
-			<translation>تنظیمات &amp;شبکه</translation>
+			<source>&amp;Manage Categories</source>
+			<translation>&amp;مدیریت دسته‌بندی‌ها</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1414,6 +1654,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close</source>
+			<translation>بستن</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close Tab</source>
 			<translation>بستن تب</translation>
 		</message>
@@ -1459,6 +1704,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
+			<translation>در حال حاضر ترافیک p2p بیت‌کوین در: {ip} در حال پایش است</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
+			<translation>در حال حاضر ترافیک p2p بیت‌کوین در: {ip} از طریق پروکسی {proxy} در حال پایش است</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>آیا می‌خواهید PSBT {id} را ذخیره کنید؟</translation>
 		</message>
@@ -1481,6 +1736,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>از &amp;متن</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network</source>
+			<translation>پایش شبکه p2p بیت‌کوین</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+			<translation>پایش شبکه p2p بیت‌کوین از طریق پروکسی {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1516,6 +1781,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>باز کردن کیف پول</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Open anyway</source>
+			<translation>باز کردن به هر حال</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1569,6 +1839,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Reveal in file explorer</source>
+			<translation>نمایش در مرورگر فایل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Save</source>
+			<translation>ذخیره</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Save PSBT?</source>
 			<translation>ذخیرهٔ PSBT؟</translation>
 		</message>
@@ -1576,6 +1856,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>فایل انتخاب‌شده: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected</source>
+			<translation>وضعیت: متصل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected via proxy</source>
+			<translation>وضعیت: متصل از طریق پروکسی</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Disconnected</source>
+			<translation>وضعیت: قطع اتصال</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1591,6 +1886,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>چنین فایلی وجود ندارد: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip}</source>
+			<translation>تلاش برای اتصال به: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip} via proxy {proxy}</source>
+			<translation>تلاش برای اتصال به: {ip} از طریق پروکسی {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Trying to connect to bitcoin node...</source>
+			<translation>در حال تلاش برای اتصال به نود بیت‌کوین...</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1611,8 +1921,23 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
+			<source>Block {n}</source>
+			<translation>بلاک {n}</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>Confirmations</source>
+			<translation>تأییدها</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
 			<source>Fetch new mempool data</source>
 			<translation>دریافت داده‌های جدید ممپول</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>First confirmation</source>
+			<translation>اولین تأیید</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -1623,18 +1948,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>بلاک {n}.</translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>تأییدنشده</translation>
-		</message>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>~{n}. Block</source>
-			<translation>بلاک ~{n}.</translation>
 		</message>
 	</context>
 	<context>
@@ -1677,8 +1990,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Automatic</source>
+			<translation>خودکار</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Bitcoin network monitoring</source>
+			<translation>پایش شبکه بیت‌کوین</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Blockchain data source</source>
 			<translation>منبع دادهٔ بلاکچین</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click here for an example of a Tor proxy configuration.</source>
+			<translation>برای نمونه‌ای از پیکربندی پروکسی Tor اینجا کلیک کنید.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click to open the mempool url</source>
+			<translation>برای باز کردن نشانی mempool کلیک کنید</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Connect to a different peer</source>
+			<translation>اتصال به همتای دیگر</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Deactive</source>
+			<translation>غیرفعال کردن</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1700,6 +2043,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Inital node</source>
+			<translation>گره اولیه</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Mempool Instance URL</source>
 			<translation>نشانی نمونهٔ Mempool</translation>
 		</message>
@@ -1707,11 +2055,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Network Settings</source>
 			<translation>تنظیمات شبکه</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Open Tor proxy configuration documentation</source>
-			<translation>باز کردن مستندات پیکربندی پروکسی Tor</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1767,6 +2110,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
+			<translation>گره اولیه برای شنود و همچنین کشف گره‌های بیت‌کوین دیگر استفاده می‌شود. به‌صورت انحصاری استفاده نمی‌شود.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
 			<translation>پروکسی شامل قابلیت Sync&amp;Chat نمی‌شود!</translation>
 		</message>
@@ -1779,6 +2127,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Username:</source>
 			<translation>نام کاربری:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>host:port</source>
+			<translation>میزبان:پورت</translation>
 		</message>
 	</context>
 	<context>
@@ -1910,15 +2263,57 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Enable</source>
+			<translation>فعال‌سازی</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>باز کردن تنظیمات شبکه</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Receive instant notifications for transactions</source>
+			<translation>دریافت اعلان‌های فوری برای تراکنش‌ها</translation>
+		</message>
+	</context>
+	<context>
+		<name>NotificationBarRecipient</name>
+		<message>
+			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>نشانی کیف‌پول: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+		</message>
+	</context>
+	<context>
 		<name>NotificationBarRegtest</name>
 		<message>
-			<source>Change Network</source>
-			<translation>تغییر شبکه</translation>
+			<source>Get {testnet} coins</source>
+			<translation>دریافت سکه‌های {testnet}</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
 			<translation>شبکه = {network}. بیتکوین‌های این شبکه بی‌ارزش‌اند!</translation>
+		</message>
+		<name>NotificationBarRegtest</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>باز کردن تنظیمات شبکه</translation>
+		</message>
+	</context>
+	<context>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>این تراکنش {txid} از قبل امضا شده و در کیف‌پول {wallet} است</translation>
+		</message>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}.
+The serializations of both differ, which could be caused by different collected signatures.</source>
+			<translation>این تراکنش {txid} از قبل امضا شده و در کیف‌پول {wallet} است. سریال‌سازی‌های هر دو متفاوت است که می‌تواند ناشی از تفاوت در امضاهای جمع‌آوری‌شده باشد.</translation>
 		</message>
 	</context>
 	<context>
@@ -2027,11 +2422,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Are you SURE you don't want save the wallet {id}?</source>
-			<translation>مطمئنید نمی‌خواهید کیف پول {id} را ذخیره کنید؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>پشتیبان‌گیری ناموفق. اعمال تغییرات لغو شد.</translation>
 		</message>
@@ -2057,23 +2447,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Choose a new name, or an existing name for merging:</source>
-			<translation>نام جدید یا نام موجود برای ادغام را انتخاب کنید:</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Click for new address</source>
-			<translation>برای آدرس جدید کلیک کنید</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Connected to {server}</source>
 			<translation>متصل به {server}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Delete wallet</source>
-			<translation>حذف کیف پول</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2089,6 +2464,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
 			<translation>آیا می‌خواهید نسخه‌ای از این تراکنش‌ها ذخیره کنید؟</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Don't save wallet</source>
+			<translation>کیف‌پول را ذخیره نکن</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2109,6 +2489,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Import labels</source>
 			<translation>وارد کردن برچسب‌ها</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Keep existing</source>
+			<translation>موجود را نگه‌دار</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2133,13 +2518,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Overwrite existing</source>
+			<translation>موجود را بازنویسی کن</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Password incorrect</source>
 			<translation>گذرواژه نادرست</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-			<translation>در ادامه ممکن است همهٔ آدرس‌های کیف پول را تغییر دهید. آیا می‌خواهید ادامه دهید؟</translation>
+			<source>Proceed</source>
+			<translation>ادامه</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Proceeding will potentially change all wallet addresses.</source>
+			<translation>ادامه دادن ممکن است همه نشانی‌های کیف‌پول را تغییر دهد.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2148,8 +2543,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Rename or merge categories</source>
-			<translation>تغییر نام یا ادغام دسته‌ها</translation>
+			<source>Save transactions</source>
+			<translation>ذخیره تراکنش‌ها</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2178,12 +2573,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The addresses {used_addresses}
-have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>آدرس‌های {used_addresses} از قبل تراکنش‌هایی دارند که به آدرس‌های دیگر پیوند می‌خورند. مطمئنید می‌خواهید دسته را تغییر دهید؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
@@ -2196,8 +2585,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Wallet not saved yet</source>
+			<translation>کیف‌پول هنوز ذخیره نشده است</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Wallet saved</source>
 			<translation>کیف پول ذخیره شد</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Wallet was not saved.</source>
+			<translation>کیف‌پول ذخیره نشد.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2208,11 +2607,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>start updating lists</source>
 			<translation>شروع به‌روزرسانی فهرست‌ها</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{num_inputs} Inputs: {inputs}</source>
-			<translation>{num_inputs} ورودی: {inputs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2229,10 +2623,39 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Quick Receive</source>
+			<translation>دریافت سریع</translation>
+		</message>
+	</context>
+	<context>
+		<name>RBFIcon</name>
+		<message>
+			<source>RBF with this fee rate</source>
+			<translation>RBF با این نرخ کارمزد</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
 			<translation>آدرس</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Copy address to clipboard</source>
+			<translation>کپی نشانی به کلیپ‌بورد</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Get next address</source>
+			<translation>دریافت نشانی بعدی</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Magnify QR code</source>
+			<translation>بزرگ‌نمایی کد QR</translation>
 		</message>
 	</context>
 	<context>
@@ -2285,13 +2708,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
-		<name>RecipientTabWidget</name>
-		<message>
-			<source>Wallet "{id}"</source>
-			<translation>کیف پول «{id}»</translation>
-		</message>
-	</context>
-	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -2316,6 +2732,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Send max</source>
 			<translation>ارسال تمام موجودی</translation>
+		</message>
+		<name>RecipientWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>مقدار</translation>
 		</message>
 	</context>
 	<context>
@@ -2343,6 +2764,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Amount [{unit}]</source>
 			<translation>مقدار [{unit}]</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Export</source>
+			<translation>خروجی‌گرفتن</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2398,6 +2824,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Recipients</source>
 			<translation>گیرندگان</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Recipients ({count})</source>
+			<translation>گیرندگان ({count})</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2566,6 +2997,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>Settings</name>
+		<message>
+			<source>Interface Settings</source>
+			<translation>تنظیمات رابط کاربری</translation>
+		</message>
+		<name>Settings</name>
+		<message>
+			<source>Network Settings</source>
+			<translation>تنظیمات شبکه</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -2663,8 +3106,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Sign with seed</source>
-			<translation>امضا با سید</translation>
+			<source>Seed of '{wallet_id}'</source>
+			<translation>سید '{wallet_id}'</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -2726,14 +3169,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Opening {name} from {author}</source>
 			<translation>در حال باز کردن {name} از {author}</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Please backup your sync key:
-{nsec}
-
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-			<translation>لطفاً کلید همگام‌سازی خود را پشتیبان بگیرید: {nsec}  می‌توانید بعداً برچسب‌های خود را با «وارد کردن کلید همگام‌سازی» بازیابی کنید.</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -2840,8 +3275,19 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}</source>
-			<translation>تراکنش با کلید خصوصی متعلق به {label} امضا شد</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>ورودی {i}: با پرچم {sighash_type} امضا شد ، امضا: {signature}</translation>
+		</message>
+		<name>TxSigningSteps</name>
+		<message>
+			<source>Transaction signed with the private key belonging to {label}
+
+Signatures:
+{signatures}
+
+
+</source>
+			<translation>تراکنش با کلید خصوصی متعلق به {label} امضا شد  امضاها: {signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -2893,13 +3339,9 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>افزودن UTXOهای خارجی</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Advanced</source>
-			<translation>پیشرفته</translation>
+			<source>Additional inputs may be added 
+below {rate} to consolidate UTXOs and reduce future fees</source>
+			<translation>ممکن است  ورودی‌های اضافی زیر {rate} اضافه شود تا UTXOها تجمیع و کارمزدهای آینده کاهش یابد</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2934,19 +3376,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Reduce future fees
-by merging address balances</source>
-			<translation>با ادغام موجودی آدرس‌ها کارمزدهای آینده را کاهش دهید</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select a category that fits the recipient best</source>
-			<translation>دسته‌ای را انتخاب کنید که بیشترین تطابق را با گیرنده دارد</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Send Category</source>
-			<translation>دستهٔ ارسال</translation>
+			<source>Reduce future fees by merging UTXOs below {rate}</source>
+			<translation>با ادغام UTXOهای زیر {rate} کارمزدهای آینده را کاهش دهید</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2958,48 +3389,12 @@ by merging address balances</source>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
 			<translation>تراکنش‌های وابستهٔ تأییدنشده {txids} با تراکنش جدیدی که ایجاد می‌کنید حذف خواهند شد.</translation>
 		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>This checkbox automatically checks 
-below {rate}</source>
-			<translation>این چک‌باکس به‌طور خودکار زیر {rate} را علامت می‌زند</translation>
-		</message>
 	</context>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Diagram</source>
-			<translation>نمودار</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit</source>
-			<translation>ویرایش</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit with increased fee (RBF)</source>
-			<translation>ویرایش با کارمزد بالاتر (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-			<translation>پخش {txid} در شبکه ناموفق بود. پخش از طریق {url} را در نظر بگیرید</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Import file</source>
 			<translation>وارد کردن فایل</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>افزایش کارمزد (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Inputs</source>
-			<translation>ورودی‌ها</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3023,6 +3418,12 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please open a wallet first to broadcast the transaction.
+Or you can broadcast via {url}</source>
+			<translation>لطفاً ابتدا یک کیف‌پول باز کنید تا تراکنش را پخش کنید. یا می‌توانید از طریق {url} پخش کنید</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>لطفاً ابتدا تراکنش محلی موجود کیف‌پول را حذف کنید.</translation>
 		</message>
@@ -3030,16 +3431,6 @@ below {rate}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>مرحلهٔ قبل</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>دریافت سریع‌تر (CPFP)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Recipients</source>
-			<translation>گیرندگان</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3060,11 +3451,6 @@ below {rate}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>شناسهٔ تراکنش PSBT امضاشده با شناسه تراکنش اصلی مطابقت ندارد</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction to be replaced could not be found in open wallets</source>
-			<translation>تراکنش جایگزین‌ در کیف پول‌های باز یافت نشد</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3160,6 +3546,11 @@ below {rate}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>نقطهٔ خروجی</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Value</source>
+			<translation>مقدار</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -3446,8 +3837,8 @@ below {rate}</source>
 		</message>
 		<name>address_list</name>
 		<message>
-			<source>Used</source>
-			<translation>استفاده‌شده</translation>
+			<source>Used and empty</source>
+			<translation>استفاده‌شده و خالی</translation>
 		</message>
 	</context>
 	<context>
@@ -3537,6 +3928,53 @@ below {rate}</source>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
 			<translation>{value} یک فینگرپرینت معتبر نیست</translation>
+		</message>
+	</context>
+	<context>
+		<name>category</name>
+		<message>
+			<source>Add Category</source>
+			<translation>افزودن دسته‌بندی</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Category name:</source>
+			<translation>نام دسته‌بندی:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Enter new category name...</source>
+			<translation>نام دسته‌بندی جدید را وارد کنید...</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>KYC Exchange</source>
+			<translation>صرافی KYC</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Merge Categories</source>
+			<translation>ادغام دسته‌بندی‌ها</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>New category name:</source>
+			<translation>نام دسته‌بندی جدید:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Private</source>
+			<translation>خصوصی</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Rename Category</source>
+			<translation>تغییر نام دسته‌بندی</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Resulting category:</source>
+			<translation>دسته‌بندی حاصل:</translation>
 		</message>
 	</context>
 	<context>
@@ -3636,18 +4074,6 @@ below {rate}</source>
 		</message>
 	</context>
 	<context>
-		<name>export</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>خروجی‌گرفتن برچسب‌ها</translation>
-		</message>
-		<name>export</name>
-		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>خروجی‌گرفتن برچسب‌ها برای کیف پول‌های دیگر (BIP329)</translation>
-		</message>
-	</context>
-	<context>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
@@ -3725,33 +4151,6 @@ below {rate}</source>
 		<message>
 			<source>Import file</source>
 			<translation>وارد کردن فایل</translation>
-		</message>
-	</context>
-	<context>
-		<name>menu</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>خروجی برچسب‌ها</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels</source>
-			<translation>وارد کردن برچسب‌ها</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>وارد کردن برچسب‌ها (BIP329 / Sparrow)</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>وارد کردن برچسب‌ها (کیف پول Electrum)</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>بازیابی برچسب‌ها از فضای ابری با استفاده از کلید همگام‌سازی موجود</translation>
 		</message>
 	</context>
 	<context>
@@ -3866,6 +4265,16 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Open Transaction/PSBT</source>
 			<translation>باز کردن تراکنش/PSBT</translation>
+		</message>
+	</context>
+	<context>
+		<name>p2p</name>
+		<message>
+			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+to detect newly broadcasted transactions immediately.
+This does not reveal anything about your wallet.
+Click here to learn more.</source>
+			<translation>به‌صورت غیرفعال به ترافیک p2p بیت‌کوین گوش کنید (مانند یک گره بیت‌کوین)،  تا تراکنش‌های تازه پخش‌شده فوراً شناسایی شوند. این کار هیچ اطلاعاتی دربارهٔ کیف‌پول شما فاش نمی‌کند. برای کسب اطلاعات بیشتر اینجا کلیک کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -4005,23 +4414,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
-		<name>tageditor</name>
-		<message>
-			<source>Add new {name}</source>
-			<translation>افزودن {name} جدید</translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>Delete {name}</source>
-			<translation>حذف {name}</translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>This {name} exists already.</source>
-			<translation>این {name} از قبل وجود دارد.</translation>
-		</message>
-	</context>
-	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4069,6 +4461,55 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Balance: {amount}</source>
 			<translation>موجودی: {amount}</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>CPFP = Child Pay For Parent,
+will append a new transaction to the old one.
+If the average fee rate of both transactions is high enough
+it will speed up confirmation of both transactions.</source>
+			<translation>CPFP = Child Pay For Parent، یک تراکنش جدید را به تراکنش قدیمی می‌افزاید. اگر نرخ کارمزد میانگینِ هر دو به اندازه کافی بالا باشد، تأیید هر دو سریع‌تر می‌شود.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Cancel with RBF,
+will create a new transaction 
+with you as a recipient and a higher fee
+to replace the old transaction.
+There is no guarantee this will work!!!</source>
+			<translation>لغو با RBF،  یک تراکنش جدید با شما به‌عنوان گیرنده و با کارمزدی بالاتر ایجاد می‌کند تا تراکنش قدیمی را جایگزین کند. هیچ تضمینی برای موفقیت وجود ندارد!!!</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit</source>
+			<translation>ویرایش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit (RBF)</source>
+			<translation>ویرایش (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Prefill the sending dialog with this transactions information.</source>
+			<translation>گفت‌وگوی ارسال را با اطلاعات این تراکنش از پیش پر کنید.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Process faster (CPFP)</source>
+			<translation>پردازش سریع‌تر (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>RBF = Replace By Fee,
+will create a new transaction with a higher fee
+to speed up the confirmation.</source>
+			<translation>RBF = Replace By Fee، برای تسریع تأیید، تراکنش جدیدی با کارمزدی بالاتر ایجاد می‌کند.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel transaction (RBF)</source>
+			<translation>تلاش برای لغو تراکنش (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4303,8 +4744,18 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>Draft</source>
+			<translation>پیش‌نویس</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>Local</source>
 			<translation>لوکال</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>PSBT</source>
+			<translation>PSBT</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -4315,11 +4766,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Unconfirmed</source>
 			<translation>تأییدنشده</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed parent</source>
-			<translation>مبنای تأییدنشده</translation>
 		</message>
 		<name>wallet</name>
 		<message>

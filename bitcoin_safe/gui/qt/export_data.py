@@ -42,7 +42,7 @@ from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
 from nostr_sdk import PublicKey
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
@@ -178,19 +178,17 @@ class FileToolButton(QToolButton):
 
     def _fill_menu(self):
         self._menu.clear()
-        self._menu.blockSignals(True)
+        with QSignalBlocker(self._menu):
 
-        if self.data.data_type in [DataType.Descriptor] and isinstance(self.data.data, bdk.Descriptor):
-            self.fill_file_menu_descriptor_export_actions(
-                self._menu,
-                self.wallet_id if self.wallet_id else "descriptor",
-                multipath_descriptor=self.data.data,
-                network=self.network,
-            )
-        else:
-            self.fill_file_menu_export_actions(self._menu)
-
-        self._menu.blockSignals(False)
+            if self.data.data_type in [DataType.Descriptor] and isinstance(self.data.data, bdk.Descriptor):
+                self.fill_file_menu_descriptor_export_actions(
+                    self._menu,
+                    self.wallet_id if self.wallet_id else "descriptor",
+                    multipath_descriptor=self.data.data,
+                    network=self.network,
+                )
+            else:
+                self.fill_file_menu_export_actions(self._menu)
 
     def export_to_file(self, default_filename=None) -> Optional[str]:
         default_suffix = "txt"
@@ -266,58 +264,58 @@ class FileToolButton(QToolButton):
         multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
     ):
-        menu.blockSignals(True)
-        menu.clear()
+        with QSignalBlocker(menu):
+            menu.clear()
 
-        for export_type in DescriptorExportTypes.as_list():
-            menu.add_action(
-                get_export_display_name(export_type=export_type),
-                partial(
-                    self._save_file,
-                    wallet_id=wallet_id,
-                    multipath_descriptor=multipath_descriptor,
-                    network=network,
-                    descripor_type=export_type,
-                ),
-                icon=get_export_icon(export_type=export_type),
+            for export_type in DescriptorExportTypes.as_list():
+                menu.add_action(
+                    get_export_display_name(export_type=export_type),
+                    partial(
+                        self._save_file,
+                        wallet_id=wallet_id,
+                        multipath_descriptor=multipath_descriptor,
+                        network=network,
+                        descripor_type=export_type,
+                    ),
+                    icon=get_export_icon(export_type=export_type),
+                )
+            menu.addSeparator()
+            self.action_copy_data = menu.add_action(
+                "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
             )
-        menu.addSeparator()
-        self.action_copy_data = menu.add_action(
-            "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
-        )
-        self.action_copy_txid = menu.add_action(
-            "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
-        )
-        self.action_copy_txid.setVisible(False)
-        self.action_json = menu.add_action("", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg"))
-        self.action_json.setVisible(False)
-
-        menu.blockSignals(False)
+            self.action_copy_txid = menu.add_action(
+                "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
+            )
+            self.action_copy_txid.setVisible(False)
+            self.action_json = menu.add_action(
+                "", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg")
+            )
+            self.action_json.setVisible(False)
 
     def fill_file_menu_export_actions(
         self,
         menu: Menu,
     ):
         file_icon = svg_tools.get_QIcon("bi--download.svg")
-        menu.blockSignals(True)
-        menu.clear()
-        menu.add_action(
-            self.tr("Export to file"),
-            self.export_to_file,
-            icon=file_icon,
-        )
+        with QSignalBlocker(menu):
+            menu.clear()
+            menu.add_action(
+                self.tr("Export to file"),
+                self.export_to_file,
+                icon=file_icon,
+            )
 
-        menu.addSeparator()
+            menu.addSeparator()
 
-        self.action_copy_data = menu.add_action(
-            "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
-        )
-        self.action_copy_txid = menu.add_action(
-            "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
-        )
-        self.action_json = menu.add_action("", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg"))
-
-        menu.blockSignals(False)
+            self.action_copy_data = menu.add_action(
+                "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
+            )
+            self.action_copy_txid = menu.add_action(
+                "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
+            )
+            self.action_json = menu.add_action(
+                "", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg")
+            )
 
     def copy_if_available(self, s: Optional[str]) -> None:
         if s:
@@ -379,34 +377,32 @@ class SyncChatToolButton(QToolButton):
         if not self.sync_tabs:
             return
 
-        self._menu.blockSignals(True)
+        with QSignalBlocker(self._menu):
 
-        # Create a menu for the button
-        self.action_share_with_all_devices.clear()
-        self.menu_share_with_single_devices.clear()
-        for wallet_id, sync_tab in self.sync_tabs.items():
-            action_alldevices = partial(
-                self._share_with_device,
-                wallet_id=wallet_id,
-                sync_tab=sync_tab,
-                receiver_public_key_bech32=None,
-            )
-            self.action_share_with_all_devices[wallet_id] = menu.add_action("", action_alldevices)
-
-            self.menu_share_with_single_devices[wallet_id] = menu.add_menu("")
-            for member in sync_tab.nostr_sync.group_chat.members:
-                action = partial(
+            # Create a menu for the button
+            self.action_share_with_all_devices.clear()
+            self.menu_share_with_single_devices.clear()
+            for wallet_id, sync_tab in self.sync_tabs.items():
+                action_alldevices = partial(
                     self._share_with_device,
                     wallet_id=wallet_id,
                     sync_tab=sync_tab,
-                    receiver_public_key_bech32=member.to_bech32(),
+                    receiver_public_key_bech32=None,
                 )
-                self.menu_share_with_single_devices[wallet_id].add_action(
-                    f"{ sync_tab.nostr_sync.chat.get_alias(member)  }", action
-                )
-            menu.addSeparator()
+                self.action_share_with_all_devices[wallet_id] = menu.add_action("", action_alldevices)
 
-        menu.blockSignals(False)
+                self.menu_share_with_single_devices[wallet_id] = menu.add_menu("")
+                for member in sync_tab.nostr_sync.group_chat.members:
+                    action = partial(
+                        self._share_with_device,
+                        wallet_id=wallet_id,
+                        sync_tab=sync_tab,
+                        receiver_public_key_bech32=member.to_bech32(),
+                    )
+                    self.menu_share_with_single_devices[wallet_id].add_action(
+                        f"{ sync_tab.nostr_sync.chat.get_alias(member)  }", action
+                    )
+                menu.addSeparator()
 
     def _set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None) -> None:
         self.data = data
@@ -472,15 +468,14 @@ class QrComboBox(QComboBox):
         self.setMaximumWidth(150)
 
     def fill_qr_menu_export_actions(self, qr_types: List[QrExportType]):
-        self.blockSignals(True)
-        self.clear()
-        for qr_type in qr_types:
-            self.addItem(
-                get_export_icon(qr_type),
-                get_export_display_name(qr_type),
-                userData=qr_type,
-            )
-        self.blockSignals(False)
+        with QSignalBlocker(self):
+            self.clear()
+            for qr_type in qr_types:
+                self.addItem(
+                    get_export_icon(qr_type),
+                    get_export_display_name(qr_type),
+                    userData=qr_type,
+                )
 
     def setCurrentQrType(self, value: QrExportType):
         for i in range(self.count()):
@@ -745,17 +740,11 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
                     wallet_id=self.wallet_id, descriptor_str=data.data_as_string()
                 )
             ]
-        elif qr_export_type.name == DescriptorQrExportTypes.passport.name:
+        elif qr_export_type.name == DescriptorQrExportTypes.default.name:
             assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_passport_str(
                 wallet_id=self.wallet_id,
                 descriptor_str=data.data_as_string(),
-            )
-            return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
-        elif qr_export_type.name == DescriptorQrExportTypes.keystone.name:
-            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
-            passport_str = DescriptorExportTools._get_keystone_str(
-                wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
         elif qr_export_type.name == DescriptorQrExportTypes.coldcard_legacy.name:
@@ -870,16 +859,14 @@ class QrToolButton(QToolButton):
 
     def _fill_menu(self):
         self._menu.clear()
-        self._menu.blockSignals(True)
+        with QSignalBlocker(self._menu):
 
-        for qr_type in self.export_qr_widget.qr_types:
-            self._menu.add_action(
-                get_export_display_name(qr_type),
-                partial(self._show_export_widget, qr_type),
-                icon=get_export_icon(qr_type),
-            )
-
-        self._menu.blockSignals(False)
+            for qr_type in self.export_qr_widget.qr_types:
+                self._menu.add_action(
+                    get_export_display_name(qr_type),
+                    partial(self._show_export_widget, qr_type),
+                    icon=get_export_icon(qr_type),
+                )
 
     def set_data(self, data: Data):
         self.export_qr_widget.set_data(data)

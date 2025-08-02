@@ -113,7 +113,7 @@ class SeedWarningBar(NotificationBar):
         self.optionalButton.setVisible(False)
 
     def setText(self, value: Optional[str]):
-        self.textLabel.setText(value if value else "")
+        self.icon_label.setText(value if value else "")
 
 
 class ScreenshotsGenerateSeed(ScreenshotsTutorial):

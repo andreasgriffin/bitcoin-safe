@@ -44,7 +44,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.category_list import CategoryEditor
+from bitcoin_safe.gui.qt.util import category_color
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.wallet import (
@@ -135,8 +135,8 @@ class LabelAndCategoryEdit(QWidget):
         )  # Horizontal layout to place the input field and buttons side by side
 
         # Add the input field and buttons layout to the main layout
-        self.main_layout.addWidget(self.category_edit)
         self.main_layout.addWidget(self.label_edit)
+        self.main_layout.addWidget(self.category_edit)
 
         # Ensure there's no spacing that could affect the alignment
         self.main_layout.setSpacing(0)
@@ -156,7 +156,7 @@ class LabelAndCategoryEdit(QWidget):
         background_color = None
 
         if self.category_edit.text():
-            background_color = CategoryEditor.color(self.category_edit.text())
+            background_color = category_color(self.category_edit.text())
             palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
         else:
             palette = (self.category_edit.style() or QStyle()).standardPalette()

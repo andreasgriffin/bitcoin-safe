@@ -58,7 +58,7 @@ class LinkingWarningBar(NotificationBar):
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
-        self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.setVisible(False)
         self.updateUi()
@@ -93,7 +93,7 @@ class LinkingWarningBar(NotificationBar):
 
     def updateUi(self) -> None:
         super().updateUi()
-        self.textLabel.setText(self.get_warning_text(self.category_dict))
+        self.icon_label.setText(self.get_warning_text(self.category_dict))
 
 
 class PoisoningWarningBar(NotificationBar):
@@ -109,7 +109,7 @@ class PoisoningWarningBar(NotificationBar):
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
-        self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.setVisible(False)
         self.updateUi()
@@ -152,4 +152,4 @@ class PoisoningWarningBar(NotificationBar):
 
     def updateUi(self) -> None:
         super().updateUi()
-        self.textLabel.setText(self.get_warning_text(self.poisonous_matches))
+        self.icon_label.setText(self.get_warning_text(self.poisonous_matches))

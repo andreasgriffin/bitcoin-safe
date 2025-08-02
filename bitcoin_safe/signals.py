@@ -43,6 +43,7 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
+    cast,
 )
 
 import bdkpython as bdk
@@ -50,7 +51,7 @@ from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
 from PyQt6.QtCore import pyqtSignal
 
 from bitcoin_safe.category_info import CategoryInfo
-from bitcoin_safe.pythonbdk_types import Balance, OutPoint
+from bitcoin_safe.pythonbdk_types import OutPoint
 
 from .typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
@@ -64,14 +65,11 @@ class UpdateFilterReason(Enum):
     Unknown = enum.auto()
     UserReplacedAddress = enum.auto()
     NewAddressRevealed = enum.auto()
-    CategoryAssigned = enum.auto()
-    CategoryAdded = enum.auto()
-    CategoryRenamed = enum.auto()
-    CategoryDeleted = enum.auto()
+    CategoryChange = enum.auto()
     GetUnusedCategoryAddress = enum.auto()
     RefreshCaches = enum.auto()
     CreatePSBT = enum.auto()
-    TxCreator = enum.auto()
+    UnusedAddressesCategorySet = enum.auto()
     TransactionChange = enum.auto()
     ForceRefresh = enum.auto()
     ChainHeightAdvanced = enum.auto()
@@ -197,6 +195,7 @@ class SingularSignalFunction(Generic[T]):
 
 class SignalsMin(NostrSignalsMin):
     close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    currency_switch = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self) -> None:
         super().__init__()
@@ -220,7 +219,6 @@ class WalletSignals(SignalsMin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.get_display_balance = SingularSignalFunction[Balance](name="get_display_balance")
         self.get_category_infos = SingularSignalFunction[list[CategoryInfo]](name="get_category_infos")
 
 
@@ -259,6 +257,7 @@ class Signals(SignalsMin):
     request_manual_sync: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
     signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
     apply_txs_to_wallets: TypedPyQtSignal[List[bdk.Transaction]] = pyqtSignal(object)  # type: ignore
+    signal_close_tabs_with_txids = cast(TypedPyQtSignal[list], pyqtSignal(list))
 
     # this is for non-wallet bound objects like UitxViewer
     any_wallet_updated: TypedPyQtSignal[UpdateFilter] = pyqtSignal(UpdateFilter)  # type: ignore

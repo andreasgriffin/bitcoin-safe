@@ -29,7 +29,7 @@
 
 import logging
 from functools import partial
-from typing import List
+from typing import Dict
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -45,7 +45,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.psbt_util import PubKeyInfo
+from bitcoin_safe.psbt_util import PartialSig
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .gui.qt.dialog_import import ImportDialog
@@ -64,14 +64,14 @@ class AbstractSignatureImporter(QObject):
         self,
         network: bdk.Network,
         signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
         key_label: str = "",
-        pub_keys_without_signature: List[PubKeyInfo] | None = None,
     ) -> None:
         super().__init__()
         self.network = network
+        self.signatures = signatures
         self.signature_available = signature_available
         self.key_label = key_label
-        self.pub_keys_without_signature = pub_keys_without_signature
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         pass
@@ -161,18 +161,20 @@ class SignatureImporterWallet(AbstractSignatureImporter):
     keystore_type = KeyStoreImporterTypes.seed
 
     def __init__(
-        self, wallet: Wallet, network: bdk.Network, signature_available: bool = False, key_label: str = ""
+        self,
+        wallet: Wallet,
+        network: bdk.Network,
+        signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
+        key_label: str = "",
     ) -> None:
         super().__init__(
             network=network,
             signature_available=signature_available,
+            signatures=signatures,
             key_label=key_label,
-            pub_keys_without_signature=[
-                PubKeyInfo(keystore.fingerprint, label=keystore.label)
-                for keystore in wallet.keystores
-                if keystore.mnemonic
-            ],
         )
+        self.wallet_id = wallet.id
 
         receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
         self.software_signers = [
@@ -214,7 +216,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
 
     @property
     def label(self) -> str:
-        return self.tr("Sign with seed")
+        return self.tr("Seed of '{wallet_id}'").format(wallet_id=self.wallet_id)
 
 
 class SignatureImporterQR(AbstractSignatureImporter):
@@ -225,15 +227,15 @@ class SignatureImporterQR(AbstractSignatureImporter):
         network: bdk.Network,
         close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
         key_label: str = "",
-        pub_keys_without_signature=None,
         label: str | None = None,
     ) -> None:
         super().__init__(
             network=network,
             signature_available=signature_available,
+            signatures=signatures,
             key_label=key_label,
-            pub_keys_without_signature=pub_keys_without_signature,
         )
         self._label = label if label else self.tr("Scan QR code")
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
@@ -274,15 +276,15 @@ class SignatureImporterFile(SignatureImporterQR):
         network: bdk.Network,
         close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
         key_label: str = "",
-        pub_keys_without_signature=None,
         label: str = translate("importer", "Import file"),
     ) -> None:
         super().__init__(
             network=network,
             signature_available=signature_available,
+            signatures=signatures,
             key_label=key_label,
-            pub_keys_without_signature=pub_keys_without_signature,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
         )
@@ -313,15 +315,15 @@ class SignatureImporterClipboard(SignatureImporterFile):
         network: bdk.Network,
         close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
         key_label: str = "",
-        pub_keys_without_signature=None,
         label: str = translate("importer", "Import Signature"),
     ) -> None:
         super().__init__(
             network=network,
             signature_available=signature_available,
+            signatures=signatures,
             key_label=key_label,
-            pub_keys_without_signature=pub_keys_without_signature,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
         )
@@ -351,16 +353,16 @@ class SignatureImporterUSB(SignatureImporterQR):
         network: bdk.Network,
         close_all_video_widgets: TypedPyQtSignalNo,
         signature_available: bool = False,
+        signatures: Dict[int, PartialSig] | None = None,
         key_label: str = "",
-        pub_keys_without_signature=None,
         label: str | None = None,
     ) -> None:
         label = label if label else self.tr("USB Signing")
         super().__init__(
             network=network,
             signature_available=signature_available,
+            signatures=signatures,
             key_label=key_label,
-            pub_keys_without_signature=pub_keys_without_signature,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
         )

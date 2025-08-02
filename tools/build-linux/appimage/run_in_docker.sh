@@ -40,8 +40,8 @@ info "downloading some dependencies."
 download_if_not_exist "$BUILD_CACHEDIR/functions.sh" "https://raw.githubusercontent.com/AppImage/pkg2appimage/$PKG2APPIMAGE_COMMIT/functions.sh"
 verify_hash "$BUILD_CACHEDIR/functions.sh" "8f67711a28635b07ce539a9b083b8c12d5488c00003d6d726c7b134e553220ed"
 
-download_if_not_exist "$BUILD_CACHEDIR/appimagetool" "https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage"
-verify_hash "$BUILD_CACHEDIR/appimagetool" "df3baf5ca5facbecfc2f3fa6713c29ab9cefa8fd8c1eac5d283b79cab33e4acb"
+download_if_not_exist "$BUILD_CACHEDIR/appimagetool" "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+verify_hash "$BUILD_CACHEDIR/appimagetool" "363dafac070b65cc36ca024b74db1f043c6f5cd7be8fca760e190dce0d18d684"
 
 download_if_not_exist "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz"
 verify_hash "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" "56bfef1fdfc1221ce6720e43a661e3eb41785dd914ce99698d8c7896af4bdaa1"
@@ -236,8 +236,6 @@ export TZ=UTC
 find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
 
 
-
-
 info "creating the AppImage."
 (
     cd "$BUILDDIR"
@@ -248,13 +246,13 @@ info "creating the AppImage."
     "$BUILD_CACHEDIR/appimagetool_copy" --appimage-extract
     # We build a small wrapper for mksquashfs that removes the -mkfs-time option
     # as it conflicts with SOURCE_DATE_EPOCH.
-    mv "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs" "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs_orig"
-    cat > "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs" << EOF
+    mv "$BUILDDIR/squashfs-root/usr/bin/mksquashfs" "$BUILDDIR/squashfs-root/usr/bin/mksquashfs_orig"
+    cat > "$BUILDDIR/squashfs-root/usr/bin/mksquashfs" << EOF
 #!/bin/sh
 args=\$(echo "\$@" | sed -e 's/-mkfs-time 0//')
-"$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs_orig" \$args
+"$BUILDDIR/squashfs-root/usr/bin/mksquashfs_orig" \$args
 EOF
-    chmod +x "$BUILDDIR/squashfs-root/usr/lib/appimagekit/mksquashfs"
+    chmod +x "$BUILDDIR/squashfs-root/usr/bin/mksquashfs"
     env VERSION="$VERSION" ARCH=x86_64 ./squashfs-root/AppRun --no-appstream --verbose "$APPDIR" "$APPIMAGE"
 )
 

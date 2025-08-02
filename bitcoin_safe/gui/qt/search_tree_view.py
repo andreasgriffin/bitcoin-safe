@@ -31,10 +31,11 @@ import logging
 import sys
 from typing import Callable, List, Optional
 
-from PyQt6.QtCore import QEvent, QModelIndex, QObject, QPoint, Qt
+from PyQt6.QtCore import QEvent, QItemSelectionModel, QModelIndex, QObject, QPoint, Qt
 from PyQt6.QtGui import (
     QKeyEvent,
     QPainter,
+    QShortcut,
     QStandardItem,
     QStandardItemModel,
     QTextDocument,
@@ -55,9 +56,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView, SearchableTab
+from bitcoin_safe.gui.qt.my_treeview import MyTreeView, SearchableTab
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals
@@ -105,7 +106,9 @@ class SearchHTMLDelegate(QStyledItemDelegate):
 
 
 class ResultItem:
-    def __init__(self, text: str, parent: Optional["ResultItem"] = None, obj=None, obj_key=None) -> None:
+    def __init__(
+        self, text: str, parent: Optional["ResultItem"] = None, obj=None, obj_key: str | None = None
+    ) -> None:
         self.text = text
         self.obj = obj
         self.obj_key = obj_key
@@ -306,6 +309,17 @@ class SearchTreeView(QWidget):
         if window:
             window.installEventFilter(self)
 
+        self.key_sequence_search_next = "F3"
+        self.shortcut_search_next = QShortcut(self.key_sequence_search_next, self)
+        self.shortcut_search_next.setContext(Qt.ShortcutContext.ApplicationShortcut)
+        self.shortcut_search_next.activated.connect(self.on_search_next)
+
+        # Shift+F3 → previous
+        self.key_sequence_search_previous = "Shift+F3"
+        self.shortcut_search_previous = QShortcut(self.key_sequence_search_previous, self)
+        self.shortcut_search_previous.setContext(Qt.ShortcutContext.ApplicationShortcut)
+        self.shortcut_search_previous.activated.connect(self.on_search_previous)
+
     def on_double_click(self, result_item: ResultItem) -> None:
         "Here is what is done on the 2. click of a double click"
         self.popup.hide()
@@ -349,6 +363,60 @@ class SearchTreeView(QWidget):
                 self.position_popup()
         return super().eventFilter(obj, event)
 
+    def on_search_next(self):
+        if not self.tree_view.isVisible():
+            return
+
+        model = self.tree_view.model()
+        if model is None or model.rowCount() == 0:
+            return
+
+        # find the starting point
+        current = self.tree_view.currentIndex()
+        if not current.isValid():
+            # nothing selected yet → pick the very first visible item
+            next_index = model.index(0, 0, QModelIndex())
+        else:
+            # this gives you the next *visible* row in the view
+            next_index = self.tree_view.indexBelow(current)
+
+        if next_index.isValid():
+            sel = self.tree_view.selectionModel()
+            if not sel:
+                return
+            self.tree_view.setCurrentIndex(next_index)
+            sel.select(next_index, QItemSelectionModel.SelectionFlag.ClearAndSelect)
+            self.tree_view.scrollTo(next_index)
+            self.tree_view.handle_item_clicked(next_index)
+
+    def on_search_previous(self):
+        if not self.tree_view.isVisible():
+            return
+        model = self.tree_view.model()
+        if model is None or model.rowCount() == 0:
+            return
+
+        current = self.tree_view.currentIndex()
+        if not current.isValid():
+            # find the very last visible index
+            idx = model.index(0, 0, QModelIndex())
+            nxt = self.tree_view.indexBelow(idx)
+            while nxt.isValid():
+                idx = nxt
+                nxt = self.tree_view.indexBelow(idx)
+            prev_index = idx
+        else:
+            prev_index = self.tree_view.indexAbove(current)
+
+        if prev_index.isValid():
+            sel = self.tree_view.selectionModel()
+            if not sel:
+                return
+            self.tree_view.setCurrentIndex(prev_index)
+            sel.select(prev_index, QItemSelectionModel.SelectionFlag.ClearAndSelect)
+            self.tree_view.scrollTo(prev_index)
+            self.tree_view.handle_item_clicked(prev_index)
+
 
 class SearchWallets(SearchTreeView):
     def __init__(
@@ -375,9 +443,8 @@ class SearchWallets(SearchTreeView):
             self.search_result_on_click(result_item.parent)
 
         if isinstance(result_item.obj, MyTreeView):
-            result_item.obj.select_row(
-                result_item.obj_key, result_item.obj.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
-            )
+            if result_item.obj_key is not None:
+                result_item.obj.select_row_by_clipboard(result_item.obj_key, scroll_to_last=True)
         elif isinstance(result_item.obj, (SearchableTab, QTWallet, UITx_Creator)):
             parent = result_item.obj.parent()
             if parent:
@@ -386,7 +453,7 @@ class SearchWallets(SearchTreeView):
                     tabs.setCurrentWidget(result_item.obj)
 
         if isinstance(result_item.obj, UITx_Creator):
-            result_item.obj.widget_utxo_with_toolbar.setVisible(True)
+            result_item.obj.set_utxo_list_visible(True)
 
     def do_search(self, search_text: str) -> ResultItem:
         def format_result_text(matching_string: str) -> str:
@@ -488,7 +555,7 @@ if __name__ == "__main__":
 
             self.central_widget_layout = QVBoxLayout(self.central_widget)
 
-            self.search_tree_view = SearchTreeView(demo_do_search, on_click=demo_on_click)
+            self.search_tree_view = SearchTreeView(demo_do_search, on_click=demo_on_click, parent=self)
             self.central_widget_layout.addWidget(self.search_tree_view)
             self.central_widget_layout.addWidget(QPushButton("dummy"))
 

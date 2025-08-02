@@ -34,20 +34,20 @@ from typing import List
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
-    QPushButton,
     QScrollArea,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import do_copy, svg_tools
+from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
+from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -59,9 +59,6 @@ class TitledComponent(QWidget):
         super().__init__(parent=parent)
         self._layout = QVBoxLayout(self)
         self._layout.setSpacing(3)
-
-        # 1) Give this widget a unique objectName
-        self.setObjectName("titledComponent")
 
         self.title = QLabel(title, self)
         self._radius = 20
@@ -79,31 +76,19 @@ class TitledComponent(QWidget):
 
         self._layout.addWidget(self.title)
 
-        # 1) Give this widget a unique objectName
-        self.setObjectName("titledComponent")
-
         # 2) Enable CSS painting
         self.setAutoFillBackground(False)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
-        # 3) Apply a stylesheet that only matches #titledComponent
+        self.setObjectName(str(id(self)))
         self.setStyleSheet(
             f"""
-            /* only the widget with objectName 'titledComponent' */
-            #titledComponent {{
+            #{self.objectName()} {{
                 background-color: {hex_color};
                 border-radius: 10px;
             }}
         """
         )
-
-
-class FlatSquareButton(QPushButton):
-    def __init__(self, qicon: QIcon, parent) -> None:
-        super().__init__(parent)
-        self.setIcon(qicon)
-        self.setFlat(True)
-        self.setFixedSize(QSize(24, 24))
 
 
 class ReceiveGroup(TitledComponent):
@@ -134,19 +119,25 @@ class ReceiveGroup(TitledComponent):
         self._layout.addWidget(button_group_widget)
         button_group_widget_layout.addStretch()
 
-        force_new_button = FlatSquareButton(
+        self.force_new_button = FlatSquareButton(
             qicon=svg_tools.get_QIcon("reset-update.svg"), parent=button_group_widget
         )
-        force_new_button.clicked.connect(partial(self.signal_set_address_as_used.emit, address_info))
-        button_group_widget_layout.addWidget(force_new_button)
+        self.force_new_button.clicked.connect(partial(self.signal_set_address_as_used.emit, address_info))
+        button_group_widget_layout.addWidget(self.force_new_button)
 
-        copy_button = FlatSquareButton(qicon=svg_tools.get_QIcon("bi--copy.svg"), parent=button_group_widget)
-        copy_button.clicked.connect(partial(do_copy, text=address_info.address, title=self.tr("Address")))
-        button_group_widget_layout.addWidget(copy_button)
+        self.copy_button = FlatSquareButton(
+            qicon=svg_tools.get_QIcon("bi--copy.svg"), parent=button_group_widget
+        )
+        self.copy_button.clicked.connect(
+            partial(do_copy, text=address_info.address, title=self.tr("Address"))
+        )
+        button_group_widget_layout.addWidget(self.copy_button)
 
-        qr_button = FlatSquareButton(qicon=svg_tools.get_QIcon("bi--qr-code.svg"), parent=button_group_widget)
-        qr_button.clicked.connect(self.qr_code.enlarge_image)
-        button_group_widget_layout.addWidget(qr_button)
+        self.qr_button = FlatSquareButton(
+            qicon=svg_tools.get_QIcon("bi--qr-code.svg"), parent=button_group_widget
+        )
+        self.qr_button.clicked.connect(self.qr_code.enlarge_image)
+        button_group_widget_layout.addWidget(self.qr_button)
 
         button_group_widget_layout.addStretch()
 
@@ -167,6 +158,11 @@ class ReceiveGroup(TitledComponent):
     @property
     def category(self) -> str:
         return self.title.text()
+
+    def updateUi(self):
+        self.force_new_button.setToolTip(self.tr("Get next address"))
+        self.copy_button.setToolTip(self.tr("Copy address to clipboard"))
+        self.qr_button.setToolTip(self.tr("Magnify QR code"))
 
 
 class QuickReceive(QWidget):
@@ -193,17 +189,11 @@ class QuickReceive(QWidget):
         self.scroll_area.setWidget(self.content_widget)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
 
-        # — make backgrounds transparent —
-        # 1) content widget (the inner holder)
-        self.content_widget.setAutoFillBackground(False)
-        self.content_widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.content_widget.setStyleSheet("background: transparent;")
+        set_translucent(self.content_widget)
 
         # 2) scroll‐area viewport (where it actually paints)
         if viewport := self.scroll_area.viewport():
-            viewport.setAutoFillBackground(False)
-            viewport.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-            viewport.setStyleSheet("background: transparent;")
+            set_translucent(viewport)
 
         # Main Layout
         main_layout = QVBoxLayout(self)
@@ -242,3 +232,8 @@ class QuickReceive(QWidget):
         self.clear_boxes()
         self.setParent(None)
         return super().close()
+
+    def updateUi(self):
+        self.label_title.setText(self.tr("Quick Receive"))
+        for gb in self.group_boxes:
+            gb.updateUi()

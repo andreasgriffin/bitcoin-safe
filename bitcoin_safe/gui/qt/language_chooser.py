@@ -26,12 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 import os
 from functools import partial
 from typing import Dict, List, Optional
 
+import bitcoin_safe_lib.caching
 from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, Qt, QTranslator
 from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import (
@@ -44,10 +44,11 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.execute_config import DEFAULT_LANG_CODE
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+from ...execute_config import DEFAULT_LANG_CODE
 
 logger = logging.getLogger(__name__)
 
@@ -113,13 +114,20 @@ FLAGS = {
 }
 
 
+def create_language_combobox(languages: Dict[str, str]) -> QComboBox:
+    cb = QComboBox()
+    for lang, name in languages.items():
+        icon = LanguageChooser.create_flag_icon(FLAGS[lang]) if lang in FLAGS else QIcon()
+        cb.addItem(icon, name, lang)
+    return cb
+
+
 class LanguageDialog(QDialog):
     def __init__(self, languages: Dict[str, str], parent=None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Select Language")
         self._layout = QVBoxLayout(self)
-        self.comboBox = QComboBox()
-        self.setupComboBox(languages)
+        self.comboBox = create_language_combobox(languages)
         self._layout.addWidget(self.comboBox)
 
         # Add dialog buttons
@@ -143,11 +151,6 @@ class LanguageDialog(QDialog):
         y = (rect.height() - dialog_size.height()) // 2
         self.move(x, y)
 
-    def setupComboBox(self, languages: Dict[str, str]) -> None:
-        for lang, name in languages.items():
-            icon = LanguageChooser.create_flag_icon(FLAGS[lang]) if lang in FLAGS else QIcon()
-            self.comboBox.addItem(icon, name, lang)
-
     def choose_language(self) -> Optional[str]:
         if self.exec() == QDialog.DialogCode.Accepted:
             return self.comboBox.currentData()
@@ -157,17 +160,25 @@ class LanguageDialog(QDialog):
 
 class LanguageChooser(QObject):
     def __init__(
-        self, parent: QWidget, config: UserConfig, signals_language_switch: List[TypedPyQtSignalNo]
+        self,
+        config: UserConfig,
+        signals_language_switch: List[TypedPyQtSignalNo],
+        signals_currency_switch: TypedPyQtSignalNo,
+        parent: QWidget | None,
     ) -> None:
         super().__init__(parent)
         self.config = config
         self.signals_language_switch = signals_language_switch
+        self.signals_currency_switch = signals_currency_switch
         self.installed_translators: List[QTranslator] = []
-        self.current_language_code: str = DEFAULT_LANG_CODE
 
         # Start with default language (English) in the list
         self.availableLanguages = {"en_US": QLocale("en_US").nativeLanguageName()}
         logger.debug(f"initialized {self.__class__.__name__}")
+
+    def set_currency(self, currency: str):
+        self.config.currency = currency.lower()
+        self.signals_currency_switch.emit()
 
     @staticmethod
     def create_flag_icon(unicode_flag: str, size: int = 32) -> QIcon:
@@ -189,7 +200,7 @@ class LanguageChooser(QObject):
         return QIcon(pixmap)
 
     def get_current_lang_code(self) -> str:
-        return self.current_language_code
+        return self.config.language_code
 
     def default_lang(self) -> str:
         return list(self.availableLanguages.keys())[0]
@@ -272,8 +283,10 @@ class LanguageChooser(QObject):
         # qt_zh_CN.qm
 
         self._install_translator(f"app_{langCode}", str(self.config.locales_path))
+        self.config.language_code = langCode
         QLocale.setDefault(QLocale(langCode))
-        self.current_language_code = langCode
+        # the currency_strings are cached, and we need to clear this conversion cache
+        bitcoin_safe_lib.caching.clear_cache()
 
     def switchLanguage(self, langCode) -> None:
         self.set_language(langCode)

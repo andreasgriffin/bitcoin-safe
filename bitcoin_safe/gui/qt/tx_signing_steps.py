@@ -120,6 +120,8 @@ class TxSigningSteps(StepProgressContainer):
         first_non_signed_index = None
         # fill ui
         for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
+            if not signature_importer_list:
+                continue
             self.set_custom_widget(
                 self._get_idx(i, 0), self.create_export_import_widget(signature_importer_list)
             )
@@ -153,33 +155,47 @@ class TxSigningSteps(StepProgressContainer):
             self.set_current_index(self.current_index() - 1)
 
     def create_export_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
-        widget = HorizontalImportExportAll(
-            psbt=self.psbt,
-            network=self.network,
-            signals_min=self.signals_min,
-            threading_parent=self.threading_parent,
-            signature_importers=signature_importers,
-            sync_tabs={
-                wallet_id: qt_wallet.sync_tab
-                for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
-            },
-        )
-        return widget
+        if not signature_importers:
+            return QWidget()
 
-    def create_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
-        if signature_importers[0].signature_available:
+        if any(_importer.signature_available for _importer in signature_importers):
+            text = ""
+            for _importer in signature_importers:
+                signatures_formatted: str = ""
+                if _importer.signatures:
+                    signatures_formatted += "\n".join(
+                        [
+                            self.tr(
+                                "Input {i}: Signed with flag {sighash_type} , Signature: {signature}"
+                            ).format(
+                                i=i,
+                                sighash_type=partial_sig.sighash_type,
+                                signature=partial_sig.signature,
+                            )
+                            for i, partial_sig in _importer.signatures.items()
+                        ]
+                    )
+
+                text += self.tr(
+                    "Transaction signed with the private key belonging to {label}\n\nSignatures:\n{signatures}\n\n\n"
+                ).format(label=signature_importers[0].key_label, signatures=signatures_formatted)
+
             return SignedUI(
-                self.tr("Transaction signed with the private key belonging to {label}").format(
-                    label=signature_importers[0].key_label
-                ),
+                text,
                 self.psbt,
                 self.network,
             )
         else:
-            return HorizontalImporters(
-                signature_importers,
-                self.psbt,
-                self.network,
+            return HorizontalImportExportAll(
+                psbt=self.psbt,
+                network=self.network,
+                signals_min=self.signals_min,
+                threading_parent=self.threading_parent,
+                signature_importers=signature_importers,
+                sync_tabs={
+                    wallet_id: qt_wallet.sync_tab
+                    for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
+                },
             )
 
 

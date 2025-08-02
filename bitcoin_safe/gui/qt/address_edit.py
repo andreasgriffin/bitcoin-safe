@@ -202,7 +202,8 @@ class AddressEdit(ButtonEdit):
                 f"Address {address} was used already. Would you like to get a fresh receiving address?",
             ),
             title=translate("recipients", "Address Already Used"),
-            buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            true_button=QMessageBox.StandardButton.Yes,
+            false_button=QMessageBox.StandardButton.No,
         ):
             old_category = wallet.labels.get_category(address)
             self.address = str(wallet.get_unused_category_address(category=old_category).address)

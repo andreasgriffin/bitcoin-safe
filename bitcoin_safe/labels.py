@@ -31,6 +31,7 @@ import copy
 import enum
 import json
 import logging
+from collections import defaultdict
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional, Union
 
@@ -172,10 +173,7 @@ class Label(SaveAllClass):
                 #
                 dct["timestamp"] = dct["timestamp"] if dct["timestamp"] else datetime.now().timestamp()
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Label):
@@ -297,6 +295,14 @@ class Labels(BaseSaveableClass):
     def get_default_category(self) -> str:
         return self.categories[0] if self.categories else self.default_category
 
+    def get_category_dict_raw(self, filter_type: LabelType | None) -> Dict[str | None, List[Label]]:
+        d: Dict[str | None, List[Label]] = defaultdict(list)
+        for label in self.data.values():
+            if filter_type and label.type != filter_type:
+                continue
+            d[label.category].append(label)
+        return d
+
     def dump(self) -> Dict:
         d = super().dump()
 
@@ -326,7 +332,6 @@ class Labels(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             if "data" in dct:
                 #
@@ -341,11 +346,7 @@ class Labels(BaseSaveableClass):
                 dct["data"] = {
                     k: Label(**v, timestamp=datetime.now().timestamp()) for k, v in dct["data"].items()
                 }
-
-        # now the VERSION is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def export_bip329_jsonlines(self) -> str:
         list_of_dict = [item.to_bip329() for item in self.data.values()]

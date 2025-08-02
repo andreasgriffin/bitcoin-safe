@@ -47,6 +47,7 @@ from .pythonbdk_types import (
 )
 
 logger = logging.getLogger(__name__)
+VSIZE_OF_ZERO_FEE_TX = 200
 
 
 def parse_redeem_script(script_hex: str) -> Tuple[int, List[str]]:
@@ -178,29 +179,45 @@ class FeeRate(bdk.FeeRate):
 
 
 class FeeInfo:
-    def __init__(self, fee_amount: int, vsize: int, is_estimated: bool) -> None:
-        """_summary_
-
-        Args:
-            fee_amount (int): _description_
-            vsize (int): transaction.vsize()
-            is_estimated (bool, optional): _description_. Defaults to False.
-        """
+    def __init__(
+        self, fee_amount: int, vsize: int, fee_amount_is_estimated: bool, vsize_is_estimated: bool
+    ) -> None:
         self.fee_amount = fee_amount
         self.vsize = vsize
-        self.is_estimated = is_estimated
+        self.fee_amount_is_estimated = fee_amount_is_estimated
+        self.vsize_is_estimated = vsize_is_estimated
 
     def fee_rate(self) -> float:
         return self.fee_amount / self.vsize
 
-    @classmethod
-    def from_fee_rate(cls, fee_amount: int, fee_rate: float, is_estimated: bool) -> "FeeInfo|None":
-        vsize = int(fee_amount / fee_rate)
-        return FeeInfo(fee_amount=fee_amount, vsize=vsize, is_estimated=is_estimated)
+    def fee_rate_is_estimated(self):
+        return self.any_is_estimated()
+
+    def any_is_estimated(self):
+        return self.vsize_is_estimated or self.fee_amount_is_estimated
 
     @classmethod
-    def from_fee_rate_and_vsize(cls, vsize: int, fee_rate: float, is_estimated: bool) -> "FeeInfo":
-        return FeeInfo(fee_amount=int(vsize * fee_rate), vsize=vsize, is_estimated=is_estimated)
+    def from_fee_rate(
+        cls, fee_amount: int, fee_rate: float, fee_amount_is_estimated: bool, fee_rate_is_estimated: bool
+    ) -> "FeeInfo|None":
+        vsize = int(fee_amount / fee_rate) if fee_rate > 0 else VSIZE_OF_ZERO_FEE_TX
+        return FeeInfo(
+            fee_amount=fee_amount,
+            vsize=vsize,
+            fee_amount_is_estimated=fee_amount_is_estimated,
+            vsize_is_estimated=fee_rate_is_estimated or fee_amount_is_estimated,
+        )
+
+    @classmethod
+    def from_fee_rate_and_vsize(
+        cls, vsize: int, fee_rate: float, fee_rate_is_estimated: bool, vsize_is_estimated: bool
+    ) -> "FeeInfo":
+        return FeeInfo(
+            fee_amount=int(vsize * fee_rate),
+            vsize=vsize,
+            vsize_is_estimated=vsize_is_estimated,
+            fee_amount_is_estimated=fee_rate_is_estimated or vsize_is_estimated,
+        )
 
     @classmethod
     def from_txdetails(cls, tx_details: TransactionDetails) -> "FeeInfo|None":
@@ -210,7 +227,9 @@ class FeeInfo:
             # it is also possible that the blockchain client (rpc) doesnt provide this
             # info for an incoming tx, so the field is also None
             return None
-        return FeeInfo(fee, tx_details.transaction.vsize(), is_estimated=False)
+        return FeeInfo(
+            fee, tx_details.transaction.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False
+        )
 
     @classmethod
     def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> "FeeInfo":
@@ -229,14 +248,15 @@ class FeeInfo:
 
         # for the input where i can determine the (m,n) use them:
         full_input_mn_tuples = [inp._get_m_of_n() for inp in simple_psbt.inputs]
-        input_mn_tuples = [mn for mn in full_input_mn_tuples if mn]
+        fallback_mn = (1, 1)
+        input_mn_tuples = [(mn if mn else fallback_mn) for mn in full_input_mn_tuples]
 
         # Estimate the size of the transaction
         # This part requires the transaction size estimation logic, which might need information about inputs and outputs
         # For simplicity, let's assume you have a function estimate_tx_size(psbt_data) that can estimate the size
         vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())))
 
-        return FeeInfo(psbt.fee(), vsize, is_estimated=True)
+        return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
 
     @classmethod
     def estimate_from_num_inputs(
@@ -254,14 +274,15 @@ class FeeInfo:
                 include_signatures=include_signatures,
             )
         )
-        return FeeInfo(ceil(fee_rate * vsize), vsize, is_estimated=True)
+        return FeeInfo(ceil(fee_rate * vsize), vsize, vsize_is_estimated=True, fee_amount_is_estimated=True)
 
     def __add__(self, other: "FeeInfo") -> "FeeInfo":
         if isinstance(other, FeeInfo):
             return FeeInfo(
                 fee_amount=self.fee_amount + other.fee_amount,
                 vsize=self.vsize + other.vsize,
-                is_estimated=self.is_estimated or other.is_estimated,
+                vsize_is_estimated=self.vsize_is_estimated or other.vsize_is_estimated,
+                fee_amount_is_estimated=self.fee_amount_is_estimated or other.fee_amount_is_estimated,
             )
 
     @classmethod
@@ -291,12 +312,18 @@ class PubKeyInfo:
 
 
 @dataclass
+class PartialSig:
+    signature: str
+    sighash_type: str
+
+
+@dataclass
 class SimpleInput:
     txin: bdk.TxIn
     witness_script: Optional[str] = None
     # partial_sigs example: {"0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": "304402202976966c2996b3c17005342eebb60133741286460b135020dcb4f2089629d851022044402ada00dc6acb4040f44099f537a138f4558cb10f874656d9d544a19b0f6e"}
     # {pubkey: signature}
-    partial_sigs: Dict[str, str] = field(default_factory=dict)
+    partial_sigs: Dict[str, PartialSig] = field(default_factory=dict)
     final_script_sig: Optional[str] = None
     final_script_witness: Optional[str] = None
     pubkeys: List[PubKeyInfo] = field(default_factory=list)
@@ -322,7 +349,13 @@ class SimpleInput:
         self = cls(
             txin,
             witness_script=input_data.get("witness_script"),
-            partial_sigs={k: v.get("sig") for k, v in input_data.get("partial_sigs", {}).items()},
+            partial_sigs={
+                k: PartialSig(
+                    sighash_type=v.get("sighash_type"),
+                    signature=v.get("signature"),
+                )
+                for k, v in input_data.get("partial_sigs", {}).items()
+            },
             final_script_sig=input_data.get("final_script_sig"),
             final_script_witness=input_data.get("final_script_witness"),
             non_witness_utxo=input_data.get("non_witness_utxo"),
@@ -334,7 +367,7 @@ class SimpleInput:
             hash160_preimages=input_data.get("hash160_preimages", {}),
             hash256_preimages=input_data.get("hash256_preimages", {}),
             tap_key_sig=input_data.get("tap_key_sig"),
-            tap_script_sigs=input_data.get("tap_script_sigs", {}),
+            tap_script_sigs={k: v for k, v in input_data.get("tap_script_sigs", [])},
             tap_scripts=input_data.get("tap_scripts", []),
             tap_key_origins=input_data.get("tap_key_origins", []),
             tap_internal_key=input_data.get("tap_internal_key"),

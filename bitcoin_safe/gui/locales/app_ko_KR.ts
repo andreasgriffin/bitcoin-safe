@@ -54,11 +54,6 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
-			<source>Address of wallet "{id}"</source>
-			<translation>지갑 "{id}"의 주소  </translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
 			<source>Advanced</source>
 			<translation>고급  </translation>
 		</message>
@@ -143,6 +138,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Wallet</source>
+			<translation>지갑  </translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>change</source>
 			<translation>변경  </translation>
 		</message>
@@ -165,13 +165,23 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
+			<source>Create new Address</source>
+			<translation>새 주소 생성</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
 			<source>Generate to selected adddresses</source>
 			<translation>선택한 주소로 생성  </translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Show Filter</source>
-			<translation>필터 표시  </translation>
+			<source>Manage Categories</source>
+			<translation>카테고리 관리</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
+			<source>for</source>
+			<translation>대상</translation>
 		</message>
 	</context>
 	<context>
@@ -191,6 +201,28 @@
 		<message>
 			<source>Max ≈ {amount}</source>
 			<translation>최대 {amount}</translation>
+		</message>
+	</context>
+	<context>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Please backup your sync key.</source>
+			<translation>동기화 키를 백업해 주세요.</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Restore labels</source>
+			<translation>레이블 복원</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Save sync key</source>
+			<translation>동기화 키 저장</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
+			<translation>지갑 {wallet_id}의 동기화 키:  {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -322,6 +354,18 @@
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
 		</message>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>다시 스캔</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonExplorerIcon</name>
+		<message>
+			<source>Open in the block explorer</source>
+			<translation>블록 탐색기에서 열기</translation>
+		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
@@ -343,20 +387,93 @@
 		</message>
 	</context>
 	<context>
-		<name>CategoryEditor</name>
+		<name>CPFPIcon</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC 거래소  </translation>
+			<source>CPFP with this fee rate</source>
+			<translation>이 수수료율로 CPFP</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryComboBox</name>
 		<message>
-			<source>Private</source>
-			<translation>개인</translation>
+			<source>Add category</source>
+			<translation>카테고리 추가</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryList</name>
 		<message>
-			<source>category</source>
+			<source>Addresses</source>
+			<translation>주소들</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Balance</source>
+			<translation>잔액  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Category</source>
 			<translation>카테고리  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Color</source>
+			<translation>색상</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received </source>
+			<translation>수신됨</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Tx Outputs</source>
+			<translation>트랜잭션 출력</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>UTXOs</source>
+			<translation>UTXOs  </translation>
+		</message>
+	</context>
+	<context>
+		<name>CategoryManager</name>
+		<message>
+			<source>Add Category</source>
+			<translation>카테고리 추가</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Change category</source>
+			<translation>카테고리 변경</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Manage Categories of {wallet_id}</source>
+			<translation>{wallet_id}의 카테고리 관리</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Merge</source>
+			<translation>병합</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Rename</source>
+			<translation>이름 변경  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+			<translation>주소 {used_addresses}에는 이미 다른 주소와 연결된 트랜잭션이 있습니다. 범주를 변경하시겠습니까?  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change their category?</source>
+			<translation>주소 {used_addresses}에는 이미 다른 주소와 연결되는 트랜잭션이 있습니다. 정말로 해당 카테고리를 변경하시겠습니까?</translation>
 		</message>
 	</context>
 	<context>
@@ -394,24 +511,71 @@
 		</message>
 	</context>
 	<context>
-		<name>CloseButton</name>
+		<name>ColumnFee</name>
 		<message>
-			<source>Close</source>
-			<translation>닫기  </translation>
+			<source>Confirmed</source>
+			<translation>승인됨</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Confirming...</source>
+			<translation>컨펌 중...</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool Fees</source>
+			<translation>멤풀 수수료</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool position</source>
+			<translation>멤풀 위치</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Priority</source>
+			<translation>우선순위</translation>
 		</message>
 	</context>
 	<context>
-		<name>ConfirmedBlock</name>
+		<name>ColumnInputs</name>
 		<message>
-			<source>Block {n}</source>
-			<translation>블록 {n}  </translation>
+			<source>Add foreign UTXOs</source>
+			<translation>외부 UTXO 추가  </translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Input total:</source>
+			<translation>입력 총액:</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Select specific UTXOs</source>
+			<translation>특정 UTXO 선택</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Sending source</source>
+			<translation>보내는 원본</translation>
 		</message>
 	</context>
 	<context>
-		<name>CustomListWidget</name>
+		<name>ColumnRecipients</name>
 		<message>
-			<source>Delete Category</source>
-			<translation>카테고리 삭제  </translation>
+			<source>Sending total:</source>
+			<translation>보내는 총액:</translation>
+		</message>
+	</context>
+	<context>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Diagram</source>
+			<translation>도표  </translation>
+		</message>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Export svg</source>
+			<translation>svg 내보내기  </translation>
 		</message>
 	</context>
 	<context>
@@ -429,8 +593,74 @@
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
+			<source>Copy to clipboard</source>
+			<translation>클립보드에 복사  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
 			<source>Descriptor not valid</source>
 			<translation>유효하지 않은 설명자  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export</source>
+			<translation>내보내기  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export QR</source>
+			<translation>QR 내보내기</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import</source>
+			<translation>가져오기  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import from Clipboard</source>
+			<translation>클립보드에서 가져오기</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Paste or scan your descriptor, if you restore a wallet.</source>
+			<translation>지갑을 복원하는 경우 디스크립터를 붙여넣거나 스캔하세요.</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>먼저 멀티 서명 지갑을 선택하세요  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Read QR Code</source>
+			<translation>QR 코드 읽기</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Recovery Sheet</source>
+			<translation>복구 시트</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Register with hardware signers</source>
+			<translation>하드웨어 서명기기로 등록</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>다시 스캔</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>This "descriptor" contains all information to reconstruct the wallet. 
+Please back up this descriptor to be able to recover the funds!</source>
+			<translation>이 "디스크립트"에는 지갑을 재구성하는 모든 정보가 포함되어 있습니다. 자금을 복구할 수 있도록 이 디스크립트를 백업하세요!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -453,23 +683,8 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Descriptor unchanged</source>
 			<translation>디스크립터 변경 없음</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import</source>
-			<translation>가져오기  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>클립보드에서 가져오기</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -483,16 +698,6 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>지갑을 복원하는 경우 디스크립터를 붙여넣거나 스캔하세요.</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>QR 코드 읽기</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Required Signers</source>
 			<translation>필요한 서명 기계  </translation>
 		</message>
@@ -500,12 +705,6 @@
 		<message>
 			<source>Scan Addresses ahead</source>
 			<translation>앞으로 주소 검색  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
-Please back up this descriptor to be able to recover the funds!</source>
-			<translation>이 "디스크립트"에는 지갑을 재구성하는 모든 정보가 포함되어 있습니다. 자금을 복구할 수 있도록 이 디스크립트를 백업하세요!</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -594,6 +793,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>EditWithFeeIcon</name>
+		<message>
+			<source>Edit with this fee rate</source>
+			<translation>이 수수료율로 수정</translation>
+		</message>
+	</context>
+	<context>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
@@ -623,20 +829,40 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels</source>
+			<translation>명칭 내보내기  </translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels for other wallets (BIP329)</source>
+			<translation>다른 지갑용 명칭 내보내기 (BIP329)  </translation>
+		</message>
+	</context>
+	<context>
 		<name>FeeGroup</name>
 		<message>
-			<source>Approximate fee rate</source>
-			<translation>대략적인 수수료율  </translation>
+			<source>Approximate rate</source>
+			<translation>대략적인 수수료율</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>Fee</source>
-			<translation>수수료  </translation>
+			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
+Click to learn more about CPFP (Child Pays For Parent).</source>
+			<translation>이 트랜잭션에는 확인되지 않은 부모 트랜잭션이 {number}개 있으며 총 수수료율은 {parents_fee_rate}입니다. CPFP(Child Pays For Parent)에 대해 자세히 알아보려면 클릭하세요.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-			<translation>이 거래에는 미확인 부모 트랜잭션이 {number}개 있으며, 통합 수수료율은 {parents_fee_rate}입니다</translation>
+			<source>Transaction fee rate</source>
+			<translation>트랜잭션 수수료율</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>You can replace the previously broadcasted transaction
+with a new transaction if it has a higher fee rate.
+Click here to learn more about RBF (Replace-by-Fee).</source>
+			<translation>더 높은 수수료율이면, 이전에 브로드캐스트한 트랜잭션을 새 트랜잭션으로 대체할 수 있습니다. RBF(Replace‑by‑Fee)에 대해 자세히 보려면 여기를 클릭하세요.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -645,13 +871,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} combined fee rate</source>
-			<translation>{rate} 통합 수수료율</translation>
+			<source>{cpfp} total: {rate}</source>
+			<translation>{cpfp} 합계: {rate}</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} is the minimum for {rbf}</source>
-			<translation>{rate}은 {rbf}를 위한 최소 비율입니다.</translation>
+			<source>{rbf} min.: {rate}</source>
+			<translation>{rbf} 최소: {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -696,6 +922,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{sent} is sent!</source>
 			<translation>{sent}가 전송되었습니다!  </translation>
+		</message>
+	</context>
+	<context>
+		<name>FiatSpinBox</name>
+		<message>
+			<source>Max ≈ {amount}</source>
+			<translation>최대 {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -851,16 +1084,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Edit with higher fee (RBF)</source>
-			<translation>높은 수수료로 편집 (RBF)  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>수수료 올리기 (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Label</source>
 			<translation>명칭  </translation>
 		</message>
@@ -876,11 +1099,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>더 빨리 받기 (CPFP)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Remove on restart</source>
 			<translation>재시작 시 제거</translation>
 		</message>
@@ -893,11 +1111,6 @@ the sending value {sent}</source>
 		<message>
 			<source>Status</source>
 			<translation>상태  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>트랜잭션 취소하기 (RBF)</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -958,6 +1171,28 @@ the sending value {sent}</source>
 		<message>
 			<source>Seed</source>
 			<translation>시드  </translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels</source>
+			<translation>명칭 가져오기  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (BIP329 / Sparrow)</source>
+			<translation>명칭 가져오기 (BIP329 / Sparrow)  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (Electrum Wallet)</source>
+			<translation>명칭 가져오기 (Electrum 지갑)  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Restore labels from cloud using an existing sync key</source>
+			<translation>기존 동기화 키를 사용하여 클라우드에서 명칭 복원  </translation>
 		</message>
 	</context>
 	<context>
@@ -1146,6 +1381,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
+			<source>Proceed anyway</source>
+			<translation>그래도 진행</translation>
+		</message>
+		<name>KeyStoreUIs</name>
+		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
 			<translation>동일한 지문을 여러 번 가져왔습니다! 다른 서명 장치를 사용하세요.</translation>
 		</message>
@@ -1323,8 +1563,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Network Settings</source>
-			<translation>&amp;네트워크 설정  </translation>
+			<source>&amp;Manage Categories</source>
+			<translation>&amp;카테고리 관리</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1413,6 +1653,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close</source>
+			<translation>닫기  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close Tab</source>
 			<translation>탭 닫기  </translation>
 		</message>
@@ -1458,6 +1703,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
+			<translation>현재 다음에서 비트코인 p2p 트래픽을 모니터링 중: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
+			<translation>현재 다음에서 비트코인 p2p 트래픽을 모니터링 중: {ip} (프록시 {proxy} 경유)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>PSBT {id}를 저장하시겠습니까?  </translation>
 		</message>
@@ -1480,6 +1735,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>&amp;텍스트에서  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network</source>
+			<translation>비트코인 p2p 네트워크 모니터링</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+			<translation>프록시 {proxy}를 통해 비트코인 p2p 네트워크 모니터링</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1515,6 +1780,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>지갑 열기  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Open anyway</source>
+			<translation>그래도 열기</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1568,6 +1838,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Reveal in file explorer</source>
+			<translation>파일 탐색기에서 표시</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Save</source>
+			<translation>저장</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Save PSBT?</source>
 			<translation>PSBT를 저장하시겠습니까?</translation>
 		</message>
@@ -1575,6 +1855,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>선택된 파일: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected</source>
+			<translation>상태: 연결됨</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected via proxy</source>
+			<translation>상태: 프록시를 통해 연결됨</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Disconnected</source>
+			<translation>상태: 연결 해제됨</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1590,6 +1885,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>해당 파일이 없습니다: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip}</source>
+			<translation>다음에 연결 시도: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip} via proxy {proxy}</source>
+			<translation>프록시 {proxy}를 통해 {ip}에 연결 시도</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Trying to connect to bitcoin node...</source>
+			<translation>비트코인 노드에 연결을 시도 중...</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1610,8 +1920,23 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
+			<source>Block {n}</source>
+			<translation>블록 {n}  </translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>Confirmations</source>
+			<translation>확인 수</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
 			<source>Fetch new mempool data</source>
 			<translation>새 멤풀 데이터 가져오기</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>First confirmation</source>
+			<translation>첫 번째 확인</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -1622,18 +1947,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}번째 블록  </translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>미확인  </translation>
-		</message>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>~{n}. Block</source>
-			<translation>~{n}번째 블록  </translation>
 		</message>
 	</context>
 	<context>
@@ -1676,8 +1989,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Automatic</source>
+			<translation>자동</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Bitcoin network monitoring</source>
+			<translation>비트코인 네트워크 모니터링</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Blockchain data source</source>
 			<translation>블록체인 데이터 소스  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click here for an example of a Tor proxy configuration.</source>
+			<translation>Tor 프록시 구성 예시는 여기를 클릭하세요.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click to open the mempool url</source>
+			<translation>클릭하여 mempool URL 열기</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Connect to a different peer</source>
+			<translation>다른 피어에 연결</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Deactive</source>
+			<translation>비활성화</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1699,6 +2042,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Inital node</source>
+			<translation>초기 노드</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Mempool Instance URL</source>
 			<translation>Mempool 인스턴스 URL  </translation>
 		</message>
@@ -1706,11 +2054,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Network Settings</source>
 			<translation>네트워크 설정  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Open Tor proxy configuration documentation</source>
-			<translation>Tor 프록시 구성 문서를 열기  </translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1766,6 +2109,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
+			<translation>초기 노드는 수신(리스닝) 및 다른 비트코인 노드를 발견하는 데 사용됩니다. 독점적으로 사용되지는 않습니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
 			<translation>프록시는 Sync&amp;Chat 기능에 적용되지 않습니다!  </translation>
 		</message>
@@ -1778,6 +2126,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Username:</source>
 			<translation>사용자 이름:  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>host:port</source>
+			<translation>호스트:포트</translation>
 		</message>
 	</context>
 	<context>
@@ -1909,15 +2262,57 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Enable</source>
+			<translation>활성화  </translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>네트워크 설정 열기</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Receive instant notifications for transactions</source>
+			<translation>거래 즉시 알림 받기</translation>
+		</message>
+	</context>
+	<context>
+		<name>NotificationBarRecipient</name>
+		<message>
+			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>지갑 주소: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+		</message>
+	</context>
+	<context>
 		<name>NotificationBarRegtest</name>
 		<message>
-			<source>Change Network</source>
-			<translation>네트워크 변경  </translation>
+			<source>Get {testnet} coins</source>
+			<translation>{testnet} 코인 받기</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
 			<translation>네트워크 = {network}. 코인은 가치가 없습니다!</translation>
+		</message>
+		<name>NotificationBarRegtest</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>네트워크 설정 열기</translation>
+		</message>
+	</context>
+	<context>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>이 트랜잭션 {txid}은(는) 이미 서명되었고 지갑 {wallet}에 있습니다</translation>
+		</message>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}.
+The serializations of both differ, which could be caused by different collected signatures.</source>
+			<translation>이 트랜잭션 {txid}은(는) 이미 서명되었고 지갑 {wallet}에 있습니다. 두 트랜잭션의 직렬화가 서로 다릅니다. 이는 수집된 서명이 달라서 발생할 수 있습니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -2026,11 +2421,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Are you SURE you don't want save the wallet {id}?</source>
-			<translation>지갑 {id}을 저장하지 않으시겠습니까?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>백업 실패. 변경 중단.  </translation>
 		</message>
@@ -2056,23 +2446,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Choose a new name, or an existing name for merging:</source>
-			<translation>새 이름을 선택하거나 병합을 위해 기존 이름을 선택하세요:  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Click for new address</source>
-			<translation>새 주소를 클릭하세요  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Connected to {server}</source>
 			<translation>{server}에 연결됨  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Delete wallet</source>
-			<translation>지갑 삭제  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2088,6 +2463,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
 			<translation>이 트랜잭션들의 사본을 저장하시겠습니까?  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Don't save wallet</source>
+			<translation>지갑 저장하지 않기</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2108,6 +2488,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Import labels</source>
 			<translation>명칭 가져오기  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Keep existing</source>
+			<translation>기존 유지</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2132,13 +2517,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Overwrite existing</source>
+			<translation>기존 덮어쓰기</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Password incorrect</source>
 			<translation>비밀번호가 틀렸습니다  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-			<translation>진행하면 모든 지갑 주소가 변경될 수 있습니다. 계속하시겠습니까?  </translation>
+			<source>Proceed</source>
+			<translation>진행</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Proceeding will potentially change all wallet addresses.</source>
+			<translation>계속하면 지갑의 모든 주소가 변경될 수 있습니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2147,8 +2542,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Rename or merge categories</source>
-			<translation>카테고리 이름 변경 또는 병합  </translation>
+			<source>Save transactions</source>
+			<translation>거래 저장</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2177,12 +2572,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The addresses {used_addresses}
-have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>주소 {used_addresses}에는 이미 다른 주소와 연결된 트랜잭션이 있습니다. 범주를 변경하시겠습니까?  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
@@ -2195,8 +2584,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Wallet not saved yet</source>
+			<translation>지갑이 아직 저장되지 않았습니다</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Wallet saved</source>
 			<translation>지갑이 저장됨</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Wallet was not saved.</source>
+			<translation>지갑이 저장되지 않았습니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2207,11 +2606,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>start updating lists</source>
 			<translation>리스트 업데이트 시작  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{num_inputs} Inputs: {inputs}</source>
-			<translation>{num_inputs} 입력: {inputs}  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2228,10 +2622,39 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Quick Receive</source>
+			<translation>빠른 수신  </translation>
+		</message>
+	</context>
+	<context>
+		<name>RBFIcon</name>
+		<message>
+			<source>RBF with this fee rate</source>
+			<translation>이 수수료율로 RBF</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
 			<translation>주소  </translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Copy address to clipboard</source>
+			<translation>주소를 클립보드에 복사</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Get next address</source>
+			<translation>다음 주소 받기</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Magnify QR code</source>
+			<translation>QR 코드 확대</translation>
 		</message>
 	</context>
 	<context>
@@ -2283,13 +2706,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
-		<name>RecipientTabWidget</name>
-		<message>
-			<source>Wallet "{id}"</source>
-			<translation>지갑 "{id}"  </translation>
-		</message>
-	</context>
-	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -2314,6 +2730,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Send max</source>
 			<translation>최대 금액 보내기</translation>
+		</message>
+		<name>RecipientWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>값</translation>
 		</message>
 	</context>
 	<context>
@@ -2341,6 +2762,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Amount [{unit}]</source>
 			<translation>금액 [{unit}]  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Export</source>
+			<translation>내보내기  </translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2396,6 +2822,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Recipients</source>
 			<translation>수령인  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Recipients ({count})</source>
+			<translation>수신자 ({count})</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2564,6 +2995,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>Settings</name>
+		<message>
+			<source>Interface Settings</source>
+			<translation>인터페이스 설정</translation>
+		</message>
+		<name>Settings</name>
+		<message>
+			<source>Network Settings</source>
+			<translation>네트워크 설정  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -2661,8 +3104,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Sign with seed</source>
-			<translation>씨드로 서명  </translation>
+			<source>Seed of '{wallet_id}'</source>
+			<translation>'{wallet_id}'의 시드</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -2724,14 +3167,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Opening {name} from {author}</source>
 			<translation>{name}을 {author}로부터 열기</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Please backup your sync key:
-{nsec}
-
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-			<translation>동기화 키를 백업하세요: {nsec} 나중에 'Import Sync Key'를 클릭하면 명칭을 복원할 수 있습니다.  </translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -2838,8 +3273,19 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}</source>
-			<translation>{label} 비밀키로 트랜잭션 서명</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
+		</message>
+		<name>TxSigningSteps</name>
+		<message>
+			<source>Transaction signed with the private key belonging to {label}
+
+Signatures:
+{signatures}
+
+
+</source>
+			<translation>{label}에 속한 개인키로 트랜잭션 서명 완료  서명들: {signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -2891,13 +3337,9 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>외부 UTXO 추가  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Advanced</source>
-			<translation>고급  </translation>
+			<source>Additional inputs may be added 
+below {rate} to consolidate UTXOs and reduce future fees</source>
+			<translation>향후 수수료를 줄이기 위해 UTXO를 통합하도록 {rate} 이하에서  추가 입력을 추가할 수 있습니다</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2932,19 +3374,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Reduce future fees
-by merging address balances</source>
-			<translation>주소 잔액을 병합하여 미래의 수수료를 줄입니다  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select a category that fits the recipient best</source>
-			<translation>받는 사람에게 가장 적합한 카테고리 선택  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Send Category</source>
-			<translation>카테고리 보내기  </translation>
+			<source>Reduce future fees by merging UTXOs below {rate}</source>
+			<translation>{rate} 이하의 UTXO를 병합하여 향후 수수료를 줄이세요</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2956,48 +3387,12 @@ by merging address balances</source>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
 			<translation>이 새 트랜잭션을 생성함으로써 미확인 의존 트랜잭션 {txids}가 제거됩니다.  </translation>
 		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>This checkbox automatically checks 
-below {rate}</source>
-			<translation>이 체크박스는 자동으로 {rate} 아래를 체크합니다  </translation>
-		</message>
 	</context>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Diagram</source>
-			<translation>도표  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit</source>
-			<translation>편집  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit with increased fee (RBF)</source>
-			<translation>증가된 수수료로 수정하기 (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-			<translation>{txid} 전송 실패했습니다. {url}을 통해 전송해 보십시오.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Import file</source>
 			<translation>파일 가져오기  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>수수료 올리기 (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Inputs</source>
-			<translation>입력  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3021,6 +3416,12 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please open a wallet first to broadcast the transaction.
+Or you can broadcast via {url}</source>
+			<translation>먼저 지갑을 열어 트랜잭션을 브로드캐스트하세요. 또는 {url}을 통해 브로드캐스트할 수 있습니다</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>지갑의 기존 로컬 트랜잭션을 먼저 제거해 주세요.</translation>
 		</message>
@@ -3028,16 +3429,6 @@ below {rate}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>이전 단계  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>더 빨리 받기 (CPFP)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Recipients</source>
-			<translation>수령인</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3058,11 +3449,6 @@ below {rate}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction to be replaced could not be found in open wallets</source>
-			<translation>대체할 트랜잭션을 열린 지갑에서 찾을 수 없음</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3158,6 +3544,11 @@ below {rate}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>아웃포인트  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Value</source>
+			<translation>값</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -3444,8 +3835,8 @@ below {rate}</source>
 		</message>
 		<name>address_list</name>
 		<message>
-			<source>Used</source>
-			<translation>사용됨  </translation>
+			<source>Used and empty</source>
+			<translation>사용됨 및 비어 있음</translation>
 		</message>
 	</context>
 	<context>
@@ -3535,6 +3926,53 @@ below {rate}</source>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
 			<translation>{value}는 유효한 지문이 아닙니다  </translation>
+		</message>
+	</context>
+	<context>
+		<name>category</name>
+		<message>
+			<source>Add Category</source>
+			<translation>카테고리 추가</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Category name:</source>
+			<translation>카테고리 이름:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Enter new category name...</source>
+			<translation>새로운 카테고리 이름 입력...</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>KYC Exchange</source>
+			<translation>KYC 거래소  </translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Merge Categories</source>
+			<translation>카테고리 병합</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>New category name:</source>
+			<translation>새 카테고리 이름:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Private</source>
+			<translation>개인</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Rename Category</source>
+			<translation>카테고리 이름 변경</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Resulting category:</source>
+			<translation>결과 카테고리:</translation>
 		</message>
 	</context>
 	<context>
@@ -3634,18 +4072,6 @@ below {rate}</source>
 		</message>
 	</context>
 	<context>
-		<name>export</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>명칭 내보내기  </translation>
-		</message>
-		<name>export</name>
-		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>다른 지갑용 명칭 내보내기 (BIP329)  </translation>
-		</message>
-	</context>
-	<context>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
@@ -3723,33 +4149,6 @@ below {rate}</source>
 		<message>
 			<source>Import file</source>
 			<translation>파일 가져오기  </translation>
-		</message>
-	</context>
-	<context>
-		<name>menu</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>명칭 내보내기  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels</source>
-			<translation>명칭 가져오기  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>명칭 가져오기 (BIP329 / Sparrow)  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>명칭 가져오기 (Electrum 지갑)  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>기존 동기화 키를 사용하여 클라우드에서 명칭 복원  </translation>
 		</message>
 	</context>
 	<context>
@@ -3864,6 +4263,16 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Open Transaction/PSBT</source>
 			<translation>트랜잭션/PSBT 열기  </translation>
+		</message>
+	</context>
+	<context>
+		<name>p2p</name>
+		<message>
+			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+to detect newly broadcasted transactions immediately.
+This does not reveal anything about your wallet.
+Click here to learn more.</source>
+			<translation>(비트코인 노드처럼) 비트코인 p2p 트래픽을 수동으로 수신하여  새로 브로드캐스트된 트랜잭션을 즉시 감지합니다. 이는 지갑에 대해 아무것도 노출하지 않습니다. 자세히 알아보려면 클릭하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -4001,23 +4410,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
-		<name>tageditor</name>
-		<message>
-			<source>Add new {name}</source>
-			<translation>새 {name} 추가  </translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>Delete {name}</source>
-			<translation>{name} 삭제  </translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>This {name} exists already.</source>
-			<translation>이 {name}은 이미 존재합니다.</translation>
-		</message>
-	</context>
-	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4065,6 +4457,55 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Balance: {amount}</source>
 			<translation>잔액: {amount}  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>CPFP = Child Pay For Parent,
+will append a new transaction to the old one.
+If the average fee rate of both transactions is high enough
+it will speed up confirmation of both transactions.</source>
+			<translation>CPFP = Child Pay For Parent, 기존 거래에 새 거래를 덧붙입니다. 두 거래의 평균 수수료율이 충분히 높다면 둘 다의 컨펌이 빨라집니다.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Cancel with RBF,
+will create a new transaction 
+with you as a recipient and a higher fee
+to replace the old transaction.
+There is no guarantee this will work!!!</source>
+			<translation>RBF로 취소하면  귀하를 수신자로 하고 더 높은 수수료를 가진 새 거래를 만들어 기존 거래를 대체합니다. 이 방법이 작동한다는 보장은 없습니다!!!</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit</source>
+			<translation>편집  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit (RBF)</source>
+			<translation>편집 (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Prefill the sending dialog with this transactions information.</source>
+			<translation>이 거래의 정보를 사용해 보내기 대화상자를 미리 채우기.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Process faster (CPFP)</source>
+			<translation>더 빠르게 처리 (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>RBF = Replace By Fee,
+will create a new transaction with a higher fee
+to speed up the confirmation.</source>
+			<translation>RBF = Replace By Fee, 확인을 빠르게 하도록 더 높은 수수료의 새 거래를 만듭니다.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel transaction (RBF)</source>
+			<translation>트랜잭션 취소하기 (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4299,8 +4740,18 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>Draft</source>
+			<translation>초안</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>Local</source>
 			<translation>로컬  </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>PSBT</source>
+			<translation>PSBT  </translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -4311,11 +4762,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Unconfirmed</source>
 			<translation>미확인  </translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed parent</source>
-			<translation>미확인 부모  </translation>
 		</message>
 		<name>wallet</name>
 		<message>

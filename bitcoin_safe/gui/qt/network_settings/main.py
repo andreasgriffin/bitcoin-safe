@@ -33,19 +33,19 @@ from typing import Dict, Optional, Tuple
 import bdkpython as bdk
 import numpy as np
 import requests
-import socks  # Import the socks module from PySocks
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QKeyEvent
+from PyQt6.QtGui import QColor, QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
-    QDialog,
     QDialogButtonBox,
     QFormLayout,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
@@ -54,11 +54,11 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.notification_bar_activate_p2p import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
     Message,
     adjust_bg_color_for_darkmode,
     ensure_scheme,
-    generate_help_website_open,
     get_host_and_port,
     remove_scheme,
     svg_tools,
@@ -66,6 +66,10 @@ from bitcoin_safe.gui.qt.util import (
 from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
+    P2pListenerType,
+    Peers,
+    get_default_cbf_hosts,
+    get_default_p2p_node_urls,
     get_default_port,
     get_default_rpc_hosts,
     get_description,
@@ -85,6 +89,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.util_os import webopen
 
 from ....signals import TypedPyQtSignalNo
+from ..icon_label import IconLabel
 
 logger = logging.getLogger(__name__)
 
@@ -164,8 +169,7 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
     raise Exception(f"Invalud {network_config.server_type}")
 
 
-class NetworkSettingsUI(QDialog):
-    signal_apply_and_restart: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
+class NetworkSettingsUI(QWidget):
     signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
     signal_cancel: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
@@ -207,6 +211,31 @@ class NetworkSettingsUI(QDialog):
         self.compactBlockFiltersLayout = QFormLayout(self.compactBlockFiltersTab)
         self.compactBlockFiltersLayout.setFieldGrowthPolicy(
             QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow
+        )
+
+        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: list(get_default_cbf_hosts(network=network).values()) for network in bdk.Network
+            },
+        )
+        self.compactblockfilters_ip_address_edit.setEnabled(False)
+        self.compactblockfilters_ip_address_edit_label = QLabel()
+        self.compactBlockFiltersLayout.addRow(
+            self.compactblockfilters_ip_address_edit_label, self.compactblockfilters_ip_address_edit
+        )
+
+        self.compactblockfilters_port_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: [str(get_default_port(network, server_type=BlockchainType.CompactBlockFilter))]
+                for network in bdk.Network
+            },
+        )
+        self.compactblockfilters_port_edit.setEnabled(False)
+        self.compactblockfilters_port_edit_label = QLabel()
+        self.compactBlockFiltersLayout.addRow(
+            self.compactblockfilters_port_edit_label, self.compactblockfilters_port_edit
         )
 
         self.cbf_description = QLabel()
@@ -312,16 +341,53 @@ class NetworkSettingsUI(QDialog):
         # mempool
         self.groupbox_blockexplorer = QGroupBox()
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
-        button_mempool = QPushButton(self)
-        button_mempool.setIcon(svg_tools.get_QIcon("block-explorer.svg"))
-        button_mempool.clicked.connect(self.on_button_mempool_clicked)
+        self.button_mempool = QPushButton(self)
+        self.button_mempool.setIcon(svg_tools.get_QIcon("block-explorer.svg"))
+        self.button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
         )
-        self.groupbox_blockexplorer_layout.addWidget(button_mempool)
+        self.groupbox_blockexplorer_layout.addWidget(self.button_mempool)
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self._layout.addWidget(self.groupbox_blockexplorer)
+
+        # p2p listener
+        self.groupbox_p2p = QGroupBox()
+        self.groupbox_p2p_layout = QGridLayout(self.groupbox_p2p)
+
+        self.p2p_typeComboBox = QComboBox()
+        self.p2p_typeComboBox.addItem(self.tr("Automatic"), P2pListenerType.automatic)
+        self.p2p_typeComboBox.addItem(self.tr("Inital node"), P2pListenerType.inital)
+        self.p2p_typeComboBox.addItem(self.tr("Deactive"), P2pListenerType.deactive)
+        self.p2p_typeComboBox.setCurrentIndex(0)
+        self.p2p_typeComboBox.currentIndexChanged.connect(self.on_p2p_type_combobox_Changed)
+
+        self.p2p_inital_url_edit = QCompleterLineEdit(
+            network=network,
+            suggestions={
+                network: list(get_default_p2p_node_urls(network).values()) for network in bdk.Network
+            },
+        )
+        self.p2p_listener_inital_label = QLabel()
+        self.p2p_listener_inital_label.setWordWrap(True)
+        self.p2p_listener_status_label = QLabel()
+
+        self._layout.addWidget(self.groupbox_p2p)
+        self.p2p_listener_icon_label_help = IconLabel()
+        self.p2p_listener_icon_label_help.textLabel.setVisible(False)
+        self.p2p_listener_icon_label_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.p2p_listener_refresh_button = QPushButton()
+        self.p2p_listener_refresh_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.p2p_listener_refresh_button.setIcon(svg_tools.get_QIcon("bi--arrow-clockwise.svg"))
+        self.p2p_listener_refresh_button.setToolTip(self.tr("Connect to a different peer"))
+
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_icon_label_help, 1, 0)
+        self.groupbox_p2p_layout.addWidget(self.p2p_typeComboBox, 1, 1, 1, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 1, 3)
+        self.groupbox_p2p_layout.addWidget(self.p2p_inital_url_edit, 2, 1, 1, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_inital_label, 3, 1, 1, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_status_label, 4, 1, 1, 2)
 
         # proxy
         self.groupbox_proxy = QGroupBox()
@@ -332,15 +398,9 @@ class NetworkSettingsUI(QDialog):
             suggestions={network: ["127.0.0.1:9050"] for network in bdk.Network},
         )
         self.proxy_url_edit.textChanged.connect(self.on_proxy_url_changed)
-        self.proxy_url_edit_label = QLabel()
+        self.proxy_url_edit_label = IconLabel()
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit_label)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit)
-        self.proxy_help_button = generate_help_website_open(
-            "https://bitcoin-safe.org/en/knowledge/tor-config/",
-            title="",
-            tooltip=self.tr("Open Tor proxy configuration documentation"),
-        )
-        self.groupbox_proxy_layout.addWidget(self.proxy_help_button)
 
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
@@ -366,14 +426,28 @@ class NetworkSettingsUI(QDialog):
         # Signals and Slots
         self.network_combobox.currentIndexChanged.connect(self.on_network_change)
         self.server_type_comboBox.currentIndexChanged.connect(self.set_server_type_comboBox)
+        self.p2p_typeComboBox.currentIndexChanged.connect(self.on_p2p_type_combobox_Changed)
 
         self.original_network = network
-        self.set_ui(network_configs.configs[network.name])
+        self.update_ui_from_config()  # uses self.original_network
 
         self._edits_set_network(self.network)
         if self.signals:
             self.signals.language_switch.connect(self.updateUi)
         self.updateUi()
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        self.update_ui_from_config()
+
+    def update_ui_from_config(self):
+        self.set_ui(self.network_configs.configs[self.original_network.name])
+
+    def on_p2p_type_combobox_Changed(self):
+        enabled = self.p2p_typeComboBox.currentData() == P2pListenerType.inital
+
+        self.p2p_inital_url_edit.setVisible(enabled)
+        self.p2p_listener_inital_label.setVisible(enabled)
 
     def on_button_mempool_clicked(self):
         return webopen(self.edit_mempool_url.text())
@@ -381,6 +455,7 @@ class NetworkSettingsUI(QDialog):
     def updateUi(self):
         self.setWindowTitle(self.tr("Network Settings"))
         self.groupbox_connection.setTitle(self.tr("Blockchain data source"))
+        self.button_mempool.setToolTip(self.tr("Click to open the mempool url"))
 
         self.esplora_url_edit_label.setText(self.tr("URL:"))
         self.esplora_url_edit.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
@@ -400,14 +475,30 @@ class NetworkSettingsUI(QDialog):
         self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance URL"))
         self.edit_mempool_url.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
 
-        self.proxy_warning_label.textLabel.setText(
+        self.proxy_warning_label.icon_label.setText(
             self.tr("The proxy does not apply to the Sync&Chat feature!")
         )
         self.proxy_url_edit_label.setText(self.tr("Proxy:"))
+        self.proxy_url_edit_label.set_icon_as_help(
+            tooltip=self.tr("Click here for an example of a Tor proxy configuration."),
+            click_url="https://bitcoin-safe.org/en/knowledge/tor-config/",
+        )
         if ok_button := self.button_box.button(QDialogButtonBox.StandardButton.Ok):
             ok_button.setText(self.tr("Apply && Shutdown"))
-
         self.proxy_warning_label.updateUi()
+        self.p2p_listener_icon_label_help.set_icon_as_help(
+            tooltip=get_p2p_tooltip_text(),
+            click_url="https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/",
+        )
+
+        self.groupbox_p2p.setTitle(self.tr("Bitcoin network monitoring"))
+        self.p2p_inital_url_edit.setPlaceholderText(self.tr("host:port"))
+        self.p2p_listener_inital_label.setText(
+            self.tr(
+                "The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively."
+            )
+        )
+        self.on_p2p_type_combobox_Changed()
 
     def on_electrum_url_editing_finished(self):
         def get_use_ssl(url: str):
@@ -513,6 +604,7 @@ class NetworkSettingsUI(QDialog):
         self.rpc_password_edit.set_network(network)
         self.edit_mempool_url.set_network(network)
         self.proxy_url_edit.set_network(network)
+        self.p2p_inital_url_edit.set_network(network)
 
     def add_to_completer_memory(self):
         self.electrum_url_edit.add_current_to_memory()
@@ -543,13 +635,11 @@ class NetworkSettingsUI(QDialog):
 
         self.network_configs.configs[self.network.name] = new_network_config
 
-        self.close()
         self.signal_apply_and_shutdown.emit(new_network)
 
     def on_cancel_click(self):
-        self.set_ui(self.network_configs.configs[self.original_network.name])
+        self.update_ui_from_config()
         self.signal_cancel.emit()
-        self.close()
 
     # Override keyPressEvent method
     def keyPressEvent(self, a0: QKeyEvent | None):
@@ -618,7 +708,7 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def electrum_url(self) -> str:
-        text = self.electrum_url_edit.text()
+        text = self.electrum_url_edit.text().strip()
         return remove_scheme(text)
 
     @electrum_url.setter
@@ -635,7 +725,7 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def esplora_url(self) -> str:
-        url = self.esplora_url_edit.text()
+        url = self.esplora_url_edit.text().strip()
         return ensure_scheme(url)
 
     @esplora_url.setter
@@ -664,7 +754,7 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def rpc_username(self) -> str:
-        return self.rpc_username_edit.text()
+        return self.rpc_username_edit.text().strip()
 
     @rpc_username.setter
     def rpc_username(self, username: str):
@@ -680,7 +770,7 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def mempool_url(self) -> str:
-        url = self.edit_mempool_url.text()
+        url = self.edit_mempool_url.text().strip()
         url = url if url.endswith("/") else f"{url}/"
         url = url.replace("api/", "") if url.endswith("api/") else url
         return ensure_scheme(url)
@@ -691,10 +781,41 @@ class NetworkSettingsUI(QDialog):
 
     @property
     def proxy_url(self) -> str | None:
-        text = self.proxy_url_edit.text()
+        text = self.proxy_url_edit.text().strip()
         return text if text else None
 
     @proxy_url.setter
     def proxy_url(self, url: str | None):
         self.proxy_url_edit.setText(url if url else "")
         self.on_proxy_url_changed()
+
+    @property
+    def p2p_inital_url(self) -> str | None:
+        text = self.p2p_inital_url_edit.text().strip()
+        return text if text else None
+
+    @p2p_inital_url.setter
+    def p2p_inital_url(self, url: str | None):
+        self.p2p_inital_url_edit.setText(url if url else "")
+
+    @property
+    def p2p_listener_type(self) -> P2pListenerType:
+        return self.p2p_typeComboBox.currentData()
+
+    @p2p_listener_type.setter
+    def p2p_listener_type(self, state: P2pListenerType):
+        index = self.p2p_typeComboBox.findData(state)
+        if index >= 0:
+            self.p2p_typeComboBox.setCurrentIndex(index)
+
+    @property
+    def discovered_peers(self) -> Peers:
+        # dummy because this is not supposed to be set in the UI, but present in NetworkConfig
+        # removing this dummy results in an error during setting the ui
+        return Peers()
+
+    @discovered_peers.setter
+    def discovered_peers(self, peer: Peers):
+        # dummy because this is not supposed to be set in the UI, but present in NetworkConfig
+        # removing this dummy results in an error during setting the ui
+        pass

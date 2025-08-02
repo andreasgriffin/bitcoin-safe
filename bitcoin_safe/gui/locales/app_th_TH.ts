@@ -54,11 +54,6 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
-			<source>Address of wallet "{id}"</source>
-			<translation>ที่อยู่ของกระเป๋าเงิน "{id}"  </translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
 			<source>Advanced</source>
 			<translation>ขั้นสูง  </translation>
 		</message>
@@ -143,6 +138,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Wallet</source>
+			<translation>กระเป๋าเงิน  </translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>change</source>
 			<translation>เปลี่ยน  </translation>
 		</message>
@@ -165,13 +165,23 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
+			<source>Create new Address</source>
+			<translation>สร้างที่อยู่ใหม่</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
 			<source>Generate to selected adddresses</source>
 			<translation>สร้างไปยังที่อยู่ที่เลือก  </translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Show Filter</source>
-			<translation>แสดงตัวกรอง  </translation>
+			<source>Manage Categories</source>
+			<translation>จัดการหมวดหมู่</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
+			<source>for</source>
+			<translation>สำหรับ</translation>
 		</message>
 	</context>
 	<context>
@@ -191,6 +201,28 @@
 		<message>
 			<source>Max ≈ {amount}</source>
 			<translation>สูงสุด ≈ {amount}  </translation>
+		</message>
+	</context>
+	<context>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Please backup your sync key.</source>
+			<translation>โปรดสำรองคีย์ซิงค์ของคุณ</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Restore labels</source>
+			<translation>กู้คืนป้ายกำกับ</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Save sync key</source>
+			<translation>บันทึกคีย์ซิงค์</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
+			<translation>คีย์ซิงค์ของกระเป๋าสตางค์ {wallet_id}:  {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -322,6 +354,18 @@
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ไม่สามารถจดจำอินพุตได้ ต้องการสแกนอีกครั้งไหม?</translation>
 		</message>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>สแกนอีกครั้ง</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonExplorerIcon</name>
+		<message>
+			<source>Open in the block explorer</source>
+			<translation>เปิดในตัวสำรวจบล็อก</translation>
+		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
@@ -343,20 +387,93 @@
 		</message>
 	</context>
 	<context>
-		<name>CategoryEditor</name>
+		<name>CPFPIcon</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>แลกเปลี่ยน KYC</translation>
+			<source>CPFP with this fee rate</source>
+			<translation>ทำ CPFP ด้วยอัตราค่าธรรมเนียมนี้</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryComboBox</name>
 		<message>
-			<source>Private</source>
-			<translation>ส่วนตัว  </translation>
+			<source>Add category</source>
+			<translation>เพิ่มหมวดหมู่</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryList</name>
 		<message>
-			<source>category</source>
+			<source>Addresses</source>
+			<translation>ที่อยู่  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Balance</source>
+			<translation>ยอดเงิน  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Category</source>
 			<translation>หมวดหมู่  </translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Color</source>
+			<translation>สี</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received </source>
+			<translation>ได้รับแล้ว</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Tx Outputs</source>
+			<translation>เอาต์พุตของธุรกรรม</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>UTXOs</source>
+			<translation>UTXOs  </translation>
+		</message>
+	</context>
+	<context>
+		<name>CategoryManager</name>
+		<message>
+			<source>Add Category</source>
+			<translation>เพิ่มหมวดหมู่</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Change category</source>
+			<translation>เปลี่ยนหมวดหมู่</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Manage Categories of {wallet_id}</source>
+			<translation>จัดการหมวดหมู่ของ {wallet_id}</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Merge</source>
+			<translation>ผสาน</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Rename</source>
+			<translation>เปลี่ยนชื่อ  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+			<translation>ที่อยู่ {used_addresses} มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?  </translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change their category?</source>
+			<translation>ที่อยู่ {used_addresses} มีธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นอยู่แล้ว แน่ใจหรือไม่ว่าต้องการเปลี่ยนหมวดหมู่ของมัน?</translation>
 		</message>
 	</context>
 	<context>
@@ -394,24 +511,71 @@
 		</message>
 	</context>
 	<context>
-		<name>CloseButton</name>
+		<name>ColumnFee</name>
 		<message>
-			<source>Close</source>
-			<translation>ปิด  </translation>
+			<source>Confirmed</source>
+			<translation>ยืนยัน  </translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Confirming...</source>
+			<translation>กำลังยืนยัน...</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool Fees</source>
+			<translation>ค่าธรรมเนียมในเมมพูล</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool position</source>
+			<translation>ตำแหน่งในเมมพูล</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Priority</source>
+			<translation>ลำดับความสำคัญ</translation>
 		</message>
 	</context>
 	<context>
-		<name>ConfirmedBlock</name>
+		<name>ColumnInputs</name>
 		<message>
-			<source>Block {n}</source>
-			<translation>บล็อก {n}  </translation>
+			<source>Add foreign UTXOs</source>
+			<translation>เพิ่ม UTXOs ต่างประเทศ  </translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Input total:</source>
+			<translation>ยอดรวมอินพุต:</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Select specific UTXOs</source>
+			<translation>เลือก UTXO เฉพาะ</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Sending source</source>
+			<translation>แหล่งที่มาของการส่ง</translation>
 		</message>
 	</context>
 	<context>
-		<name>CustomListWidget</name>
+		<name>ColumnRecipients</name>
 		<message>
-			<source>Delete Category</source>
-			<translation>ลบหมวดหมู่  </translation>
+			<source>Sending total:</source>
+			<translation>ยอดรวมที่ส่ง:</translation>
+		</message>
+	</context>
+	<context>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Diagram</source>
+			<translation>แผนภูมิ  </translation>
+		</message>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Export svg</source>
+			<translation>ส่งออก svg  </translation>
 		</message>
 	</context>
 	<context>
@@ -429,8 +593,74 @@
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
+			<source>Copy to clipboard</source>
+			<translation>คัดลอกไปยังคลิปบอร์ด  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>ไม่สามารถจดจำอินพุตได้ ต้องการสแกนอีกครั้งไหม?</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
 			<source>Descriptor not valid</source>
 			<translation>ตัวบ่งชี้ไม่ถูกต้อง  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export</source>
+			<translation>ส่งออก  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export QR</source>
+			<translation>ส่งออก QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import</source>
+			<translation>นำเข้า  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import from Clipboard</source>
+			<translation>นำเข้าจากคลิปบอร์ด</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Paste or scan your descriptor, if you restore a wallet.</source>
+			<translation>วางหรือสแกนตัวบ่งชี้ของคุณ ถ้าคุณกู้คืนกระเป๋าเงิน  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>โปรดเลือกกระเป๋าเงิน Multisignature ก่อน  </translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Read QR Code</source>
+			<translation>อ่านรหัส QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Recovery Sheet</source>
+			<translation>แผ่นกู้คืน</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Register with hardware signers</source>
+			<translation>ลงทะเบียนกับอุปกรณ์ลงนามฮาร์ดแวร์</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>สแกนอีกครั้ง</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>This "descriptor" contains all information to reconstruct the wallet. 
+Please back up this descriptor to be able to recover the funds!</source>
+			<translation>"ตัวบ่งชี้" นี้มีข้อมูลทั้งหมดเพื่อสร้างกระเป๋าเงินใหม่ กรุณาสำรองตัวบ่งชี้นี้เพื่อสามารถกู้คืนเงินได้!  </translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -453,23 +683,8 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ไม่สามารถจดจำอินพุตได้ ต้องการสแกนอีกครั้งไหม?</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Descriptor unchanged</source>
 			<translation>ตัวบ่งชี้ไม่มีการเปลี่ยนแปลง  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import</source>
-			<translation>นำเข้า  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>นำเข้าจากคลิปบอร์ด</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -483,16 +698,6 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>วางหรือสแกนตัวบ่งชี้ของคุณ ถ้าคุณกู้คืนกระเป๋าเงิน  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>อ่านรหัส QR</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Required Signers</source>
 			<translation>ต้องการผู้ลงนาม  </translation>
 		</message>
@@ -500,12 +705,6 @@
 		<message>
 			<source>Scan Addresses ahead</source>
 			<translation>สแกนที่อยู่ข้างหน้า  </translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
-Please back up this descriptor to be able to recover the funds!</source>
-			<translation>"ตัวบ่งชี้" นี้มีข้อมูลทั้งหมดเพื่อสร้างกระเป๋าเงินใหม่ กรุณาสำรองตัวบ่งชี้นี้เพื่อสามารถกู้คืนเงินได้!  </translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -594,6 +793,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>EditWithFeeIcon</name>
+		<message>
+			<source>Edit with this fee rate</source>
+			<translation>แก้ไขด้วยอัตราค่าธรรมเนียมนี้</translation>
+		</message>
+	</context>
+	<context>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
@@ -623,20 +829,40 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels</source>
+			<translation>ส่งออกป้ายกำกับ  </translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels for other wallets (BIP329)</source>
+			<translation>ส่งออกป้ายกำกับสำหรับกระเป๋าเงินอื่น (BIP329)  </translation>
+		</message>
+	</context>
+	<context>
 		<name>FeeGroup</name>
 		<message>
-			<source>Approximate fee rate</source>
-			<translation>อัตราค่าธรรมเนียมโดยประมาณ  </translation>
+			<source>Approximate rate</source>
+			<translation>อัตราโดยประมาณ</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>Fee</source>
-			<translation>ค่าธรรมเนียม  </translation>
+			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
+Click to learn more about CPFP (Child Pays For Parent).</source>
+			<translation>ธุรกรรมนี้มีธุรกรรมหลักที่ยังไม่ยืนยันจำนวน {number} รายการ โดยมีอัตราค่าธรรมเนียมรวม {parents_fee_rate} คลิกเพื่อเรียนรู้เพิ่มเติมเกี่ยวกับ CPFP (Child Pays For Parent)</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-			<translation>ธุรกรรมนี้มีธุรกรรมหลักที่ยังไม่ยืนยัน {number} รายการ โดยมีอัตราค่าธรรมเนียมรวม {parents_fee_rate}</translation>
+			<source>Transaction fee rate</source>
+			<translation>อัตราค่าธรรมเนียมของธุรกรรม</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>You can replace the previously broadcasted transaction
+with a new transaction if it has a higher fee rate.
+Click here to learn more about RBF (Replace-by-Fee).</source>
+			<translation>คุณสามารถแทนที่ธุรกรรมที่ได้เผยแพร่ไปแล้วด้วยธุรกรรมใหม่ หากมีอัตราค่าธรรมเนียมสูงกว่า คลิกที่นี่เพื่อเรียนรู้เพิ่มเติมเกี่ยวกับ RBF (Replace‑by‑Fee)</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -645,13 +871,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} combined fee rate</source>
-			<translation>{rate} อัตราค่าธรรมเนียมรวม</translation>
+			<source>{cpfp} total: {rate}</source>
+			<translation>{cpfp} ทั้งหมด: {rate}</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} is the minimum for {rbf}</source>
-			<translation>{rate} เป็นขั้นต่ำสำหรับ {rbf}  </translation>
+			<source>{rbf} min.: {rate}</source>
+			<translation>{rbf} ขั้นต่ำ: {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -696,6 +922,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{sent} is sent!</source>
 			<translation>{sent} ถูกส่ง!  </translation>
+		</message>
+	</context>
+	<context>
+		<name>FiatSpinBox</name>
+		<message>
+			<source>Max ≈ {amount}</source>
+			<translation>สูงสุด ≈ {amount}  </translation>
 		</message>
 	</context>
 	<context>
@@ -851,16 +1084,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Edit with higher fee (RBF)</source>
-			<translation>แก้ไขด้วยค่าธรรมเนียมที่สูงขึ้น (RBF)  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Label</source>
 			<translation>ป้ายกำกับ  </translation>
 		</message>
@@ -876,11 +1099,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>รับเร็วขึ้น (CPFP)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Remove on restart</source>
 			<translation>ลบเมื่อเริ่มระบบใหม่</translation>
 		</message>
@@ -893,11 +1111,6 @@ the sending value {sent}</source>
 		<message>
 			<source>Status</source>
 			<translation>สถานะ  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>ลองยกเลิกธุรกรรม (RBF)  </translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -958,6 +1171,28 @@ the sending value {sent}</source>
 		<message>
 			<source>Seed</source>
 			<translation>เมล็ดพันธุ์  </translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels</source>
+			<translation>นำเข้าป้ายกำกับ  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (BIP329 / Sparrow)</source>
+			<translation>นำเข้าป้ายกำกับ (BIP329 / Sparrow)  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (Electrum Wallet)</source>
+			<translation>นำเข้าป้ายกำกับ (Electrum Wallet)  </translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Restore labels from cloud using an existing sync key</source>
+			<translation>กู้คืนป้ายกำกับจากคลาวด์โดยใช้กุญแจซิงค์ที่มีอยู่  </translation>
 		</message>
 	</context>
 	<context>
@@ -1146,6 +1381,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
+			<source>Proceed anyway</source>
+			<translation>ดำเนินการต่อไป</translation>
+		</message>
+		<name>KeyStoreUIs</name>
+		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
 			<translation>คุณนำเข้าลายนิ้วมือเดียวกันหลายครั้ง!!! กรุณาใช้อุปกรณ์ลงนามที่ต่างกัน  </translation>
 		</message>
@@ -1323,8 +1563,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Network Settings</source>
-			<translation>&amp;การตั้งค่าเครือข่าย  </translation>
+			<source>&amp;Manage Categories</source>
+			<translation>&amp;จัดการหมวดหมู่</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1413,6 +1653,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close</source>
+			<translation>ปิด  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close Tab</source>
 			<translation>ปิดแท็บ  </translation>
 		</message>
@@ -1458,6 +1703,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
+			<translation>ขณะนี้กำลังตรวจสอบทราฟฟิก bitcoin แบบ p2p ที่: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
+			<translation>ขณะนี้กำลังตรวจสอบทราฟฟิก bitcoin แบบ p2p ที่: {ip} ผ่านพร็อกซี {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>คุณต้องการบันทึก PSBT {id} หรือไม่?  </translation>
 		</message>
@@ -1480,6 +1735,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>จาก &amp;ข้อความ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network</source>
+			<translation>กำลังตรวจสอบเครือข่าย bitcoin แบบ p2p</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+			<translation>กำลังตรวจสอบเครือข่าย bitcoin แบบ p2p ผ่านพร็อกซี {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1515,6 +1780,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>เปิดกระเป๋าเงิน  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Open anyway</source>
+			<translation>เปิดต่อไป</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1568,6 +1838,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Reveal in file explorer</source>
+			<translation>แสดงในตัวสำรวจไฟล์</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Save</source>
+			<translation>บันทึก</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Save PSBT?</source>
 			<translation>บันทึก PSBT?  </translation>
 		</message>
@@ -1575,6 +1855,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>ไฟล์ที่เลือก: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected</source>
+			<translation>สถานะ: เชื่อมต่อแล้ว</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected via proxy</source>
+			<translation>สถานะ: เชื่อมต่อผ่านพร็อกซี</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Disconnected</source>
+			<translation>สถานะ: ตัดการเชื่อมต่อ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1590,6 +1885,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>ไม่มีไฟล์ดังกล่าว: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip}</source>
+			<translation>ลองเชื่อมต่อไปที่: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip} via proxy {proxy}</source>
+			<translation>ลองเชื่อมต่อไปที่: {ip} ผ่านพร็อกซี {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Trying to connect to bitcoin node...</source>
+			<translation>กำลังพยายามเชื่อมต่อกับโหนดบิตคอยน์...</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1610,8 +1920,23 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
+			<source>Block {n}</source>
+			<translation>บล็อก {n}  </translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>Confirmations</source>
+			<translation>การยืนยัน</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
 			<source>Fetch new mempool data</source>
 			<translation>ดึงข้อมูลเมมพูลใหม่</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>First confirmation</source>
+			<translation>การยืนยันครั้งแรก</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -1622,18 +1947,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n} บล็อก  </translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>ยังไม่ได้ยืนยัน  </translation>
-		</message>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>~{n}. Block</source>
-			<translation>~{n} บล็อก  </translation>
 		</message>
 	</context>
 	<context>
@@ -1676,8 +1989,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Automatic</source>
+			<translation>อัตโนมัติ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Bitcoin network monitoring</source>
+			<translation>การเฝ้าติดตามเครือข่ายบิตคอยน์</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Blockchain data source</source>
 			<translation>แหล่งข้อมูลบล็อกเชน  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click here for an example of a Tor proxy configuration.</source>
+			<translation>คลิกที่นี่เพื่อดูตัวอย่างการตั้งค่าพร็อกซี Tor</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click to open the mempool url</source>
+			<translation>คลิกเพื่อเปิด URL ของเมมพูล</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Connect to a different peer</source>
+			<translation>เชื่อมต่อกับเพียร์อื่น</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Deactive</source>
+			<translation>ปิดการใช้งาน</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1699,6 +2042,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Inital node</source>
+			<translation>โหนดเริ่มต้น</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Mempool Instance URL</source>
 			<translation>URL ของ Mempool Instance  </translation>
 		</message>
@@ -1706,11 +2054,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Network Settings</source>
 			<translation>การตั้งค่าเครือข่าย  </translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Open Tor proxy configuration documentation</source>
-			<translation>เปิดเอกสารการกำหนดค่าพร็อกซี Tor  </translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1766,6 +2109,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
+			<translation>โหนดเริ่มต้นใช้สำหรับรับฟังและค้นหาโหนดบิตคอยน์อื่น ๆ เพิ่มเติม ไม่ได้ใช้แบบเอกสิทธิ์เฉพาะ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
 			<translation>Proxy ไม่ใช้กับฟีเจอร์ Sync&amp;Chat!  </translation>
 		</message>
@@ -1778,6 +2126,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Username:</source>
 			<translation>ชื่อผู้ใช้:  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>host:port</source>
+			<translation>โฮสต์:พอร์ต</translation>
 		</message>
 	</context>
 	<context>
@@ -1909,15 +2262,57 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Enable</source>
+			<translation>เปิดใช้งาน  </translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>เปิดการตั้งค่าเครือข่าย</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Receive instant notifications for transactions</source>
+			<translation>รับการแจ้งเตือนธุรกรรมแบบทันที</translation>
+		</message>
+	</context>
+	<context>
+		<name>NotificationBarRecipient</name>
+		<message>
+			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>ที่อยู่ของกระเป๋าสตางค์: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+		</message>
+	</context>
+	<context>
 		<name>NotificationBarRegtest</name>
 		<message>
-			<source>Change Network</source>
-			<translation>เปลี่ยนเครือข่าย  </translation>
+			<source>Get {testnet} coins</source>
+			<translation>รับเหรียญ {testnet}</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
 			<translation>เครือข่าย = {network} เหรียญไม่มีค่า!  </translation>
+		</message>
+		<name>NotificationBarRegtest</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>เปิดการตั้งค่าเครือข่าย</translation>
+		</message>
+	</context>
+	<context>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>ธุรกรรม {txid} นี้ถูกลงนามแล้วและอยู่ในกระเป๋า {wallet}</translation>
+		</message>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}.
+The serializations of both differ, which could be caused by different collected signatures.</source>
+			<translation>ธุรกรรม {txid} นี้ถูกลงนามแล้วและอยู่ในกระเป๋า {wallet} การซีเรียไลซ์ของทั้งสองแตกต่างกัน ซึ่งอาจเกิดจากลายเซ็นที่รวบรวมต่างกัน</translation>
 		</message>
 	</context>
 	<context>
@@ -2026,11 +2421,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Are you SURE you don't want save the wallet {id}?</source>
-			<translation>คุณแน่ใจหรือไม่ว่าคุณไม่ต้องการบันทึกกระเป๋าเงิน {id}?  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>การสำรองข้อมูลล้มเหลว ยกเลิกการเปลี่ยนแปลง  </translation>
 		</message>
@@ -2056,23 +2446,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Choose a new name, or an existing name for merging:</source>
-			<translation>เลือกชื่อใหม่หรือชื่อที่มีอยู่สำหรับการรวม:  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Click for new address</source>
-			<translation>คลิกเพื่อที่อยู่ใหม่  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Connected to {server}</source>
 			<translation>เชื่อมต่อกับ {server}  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Delete wallet</source>
-			<translation>ลบกระเป๋าเงิน  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2088,6 +2463,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
 			<translation>คุณต้องการบันทึกสำเนาของธุรกรรมเหล่านี้หรือไม่?  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Don't save wallet</source>
+			<translation>ไม่ต้องบันทึกกระเป๋า</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2108,6 +2488,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Import labels</source>
 			<translation>นำเข้าป้ายกำกับ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Keep existing</source>
+			<translation>เก็บของเดิมไว้</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2132,13 +2517,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Overwrite existing</source>
+			<translation>เขียนทับของเดิม</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Password incorrect</source>
 			<translation>รหัสผ่านไม่ถูกต้อง  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-			<translation>การดำเนินการต่อไปนี้อาจเปลี่ยนที่อยู่กระเป๋าเงินทั้งหมด คุณต้องการดำเนินการต่อหรือไม่?  </translation>
+			<source>Proceed</source>
+			<translation>ดำเนินการต่อ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Proceeding will potentially change all wallet addresses.</source>
+			<translation>การดำเนินการต่ออาจเปลี่ยนที่อยู่ทั้งหมดของกระเป๋าได้</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2147,8 +2542,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Rename or merge categories</source>
-			<translation>เปลี่ยนชื่อหรือรวมหมวดหมู่  </translation>
+			<source>Save transactions</source>
+			<translation>บันทึกธุรกรรม</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2177,12 +2572,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The addresses {used_addresses}
-have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>ที่อยู่ {used_addresses} มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
@@ -2195,8 +2584,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Wallet not saved yet</source>
+			<translation>ยังไม่ได้บันทึกกระเป๋า</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Wallet saved</source>
 			<translation>บันทึกกระเป๋าเงินแล้ว  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Wallet was not saved.</source>
+			<translation>ไม่ได้บันทึกกระเป๋า</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2207,11 +2606,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>start updating lists</source>
 			<translation>เริ่มอัปเดตรายการ  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{num_inputs} Inputs: {inputs}</source>
-			<translation>{num_inputs} อินพุต: {inputs}  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2228,10 +2622,39 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Quick Receive</source>
+			<translation>รับด่วน</translation>
+		</message>
+	</context>
+	<context>
+		<name>RBFIcon</name>
+		<message>
+			<source>RBF with this fee rate</source>
+			<translation>RBF ด้วยอัตราค่าธรรมเนียมนี้</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
 			<translation>ที่อยู่  </translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Copy address to clipboard</source>
+			<translation>คัดลอกที่อยู่ไปยังคลิปบอร์ด</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Get next address</source>
+			<translation>รับที่อยู่ถัดไป</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Magnify QR code</source>
+			<translation>ขยายรหัส QR</translation>
 		</message>
 	</context>
 	<context>
@@ -2283,13 +2706,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
-		<name>RecipientTabWidget</name>
-		<message>
-			<source>Wallet "{id}"</source>
-			<translation>กระเป๋าเงิน "{id}"  </translation>
-		</message>
-	</context>
-	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -2314,6 +2730,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Send max</source>
 			<translation>ส่งสูงสุด  </translation>
+		</message>
+		<name>RecipientWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
 		</message>
 	</context>
 	<context>
@@ -2341,6 +2762,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Amount [{unit}]</source>
 			<translation>จำนวนเงิน [{unit}]  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Export</source>
+			<translation>ส่งออก  </translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2396,6 +2822,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Recipients</source>
 			<translation>ผู้รับ  </translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Recipients ({count})</source>
+			<translation>ผู้รับ ({count})</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2564,6 +2995,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>Settings</name>
+		<message>
+			<source>Interface Settings</source>
+			<translation>การตั้งค่าส่วนติดต่อผู้ใช้</translation>
+		</message>
+		<name>Settings</name>
+		<message>
+			<source>Network Settings</source>
+			<translation>การตั้งค่าเครือข่าย  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -2661,8 +3104,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Sign with seed</source>
-			<translation>ลงนามด้วยเมล็ดพันธุ์  </translation>
+			<source>Seed of '{wallet_id}'</source>
+			<translation>ซี้ดของ '{wallet_id}'</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -2724,14 +3167,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Opening {name} from {author}</source>
 			<translation>กำลังเปิด {name} จาก {author}  </translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Please backup your sync key:
-{nsec}
-
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-			<translation>โปรดสำรองกุญแจซิงค์ของคุณ: {nsec} คุณสามารถกู้คืนป้ายกำกับของคุณในภายหลังด้วย 'Import Sync Key'  </translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -2838,8 +3273,19 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}</source>
-			<translation>ธุรกรรมที่ลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}  </translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>อินพุต {i}: ลงนามด้วยแฟล็ก {sighash_type} , ลายเซ็น: {signature}</translation>
+		</message>
+		<name>TxSigningSteps</name>
+		<message>
+			<source>Transaction signed with the private key belonging to {label}
+
+Signatures:
+{signatures}
+
+
+</source>
+			<translation>ธุรกรรมถูกลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}  ลายเซ็น: {signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -2891,13 +3337,9 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>เพิ่ม UTXOs ต่างประเทศ  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Advanced</source>
-			<translation>ขั้นสูง  </translation>
+			<source>Additional inputs may be added 
+below {rate} to consolidate UTXOs and reduce future fees</source>
+			<translation>อาจเพิ่มอินพุตเพิ่มเติมได้  ต่ำกว่า {rate} เพื่อรวม UTXO และลดค่าธรรมเนียมในอนาคต</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2932,19 +3374,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Reduce future fees
-by merging address balances</source>
-			<translation>ลดค่าธรรมเนียมในอนาคตโดยการรวมยอดคงเหลือของที่อยู่  </translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select a category that fits the recipient best</source>
-			<translation>เลือกหมวดหมู่ที่เหมาะสมที่สุดกับผู้รับ</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Send Category</source>
-			<translation>ส่งหมวดหมู่  </translation>
+			<source>Reduce future fees by merging UTXOs below {rate}</source>
+			<translation>ลดค่าธรรมเนียมในอนาคตโดยรวม UTXO ที่ต่ำกว่า {rate}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2956,48 +3387,12 @@ by merging address balances</source>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
 			<translation>ธุรกรรมที่ขึ้นอยู่และยังไม่ยืนยัน {txids} จะถูกลบโดยธุรกรรมใหม่ที่คุณกำลังสร้าง  </translation>
 		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>This checkbox automatically checks 
-below {rate}</source>
-			<translation>ช่องนี้จะตรวจสอบโดยอัตโนมัติด้านล่าง {rate}  </translation>
-		</message>
 	</context>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Diagram</source>
-			<translation>แผนภูมิ  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit</source>
-			<translation>แก้ไข  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit with increased fee (RBF)</source>
-			<translation>แก้ไขด้วยค่าธรรมเนียมที่สูงขึ้น (RBF)  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-			<translation>ไม่สามารถเผยแพร่ {txid} ได้ โปรดลองเผยแพร่ผ่าน {url}</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Import file</source>
 			<translation>นำเข้าไฟล์  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Inputs</source>
-			<translation>อินพุต  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3021,6 +3416,12 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please open a wallet first to broadcast the transaction.
+Or you can broadcast via {url}</source>
+			<translation>โปรดเปิดกระเป๋าก่อนเพื่อกระจายธุรกรรม หรือคุณสามารถกระจายผ่าน {url}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>โปรดลบธุรกรรมในเครื่องของกระเป๋าสตางค์ที่มีอยู่ก่อน</translation>
 		</message>
@@ -3028,16 +3429,6 @@ below {rate}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>รับเร็วขึ้น (CPFP)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Recipients</source>
-			<translation>ผู้รับ  </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3058,11 +3449,6 @@ below {rate}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction to be replaced could not be found in open wallets</source>
-			<translation>ไม่พบธุรกรรมที่ต้องการแทนที่ในกระเป๋าที่เปิด</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3158,6 +3544,11 @@ below {rate}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -3444,8 +3835,8 @@ below {rate}</source>
 		</message>
 		<name>address_list</name>
 		<message>
-			<source>Used</source>
-			<translation>ใช้งานแล้ว  </translation>
+			<source>Used and empty</source>
+			<translation>ใช้แล้วและว่างเปล่า</translation>
 		</message>
 	</context>
 	<context>
@@ -3535,6 +3926,53 @@ below {rate}</source>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
 			<translation>{value} ไม่ใช่ลายนิ้วมือที่ถูกต้อง  </translation>
+		</message>
+	</context>
+	<context>
+		<name>category</name>
+		<message>
+			<source>Add Category</source>
+			<translation>เพิ่มหมวดหมู่</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Category name:</source>
+			<translation>ชื่อหมวดหมู่:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Enter new category name...</source>
+			<translation>ป้อนชื่อหมวดหมู่ใหม่...</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>KYC Exchange</source>
+			<translation>แลกเปลี่ยน KYC</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Merge Categories</source>
+			<translation>ผสานหมวดหมู่</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>New category name:</source>
+			<translation>ชื่อหมวดหมู่ใหม่:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Private</source>
+			<translation>ส่วนตัว  </translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Rename Category</source>
+			<translation>เปลี่ยนชื่อหมวดหมู่</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Resulting category:</source>
+			<translation>หมวดหมู่ที่ได้:</translation>
 		</message>
 	</context>
 	<context>
@@ -3634,18 +4072,6 @@ below {rate}</source>
 		</message>
 	</context>
 	<context>
-		<name>export</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>ส่งออกป้ายกำกับ  </translation>
-		</message>
-		<name>export</name>
-		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>ส่งออกป้ายกำกับสำหรับกระเป๋าเงินอื่น (BIP329)  </translation>
-		</message>
-	</context>
-	<context>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
@@ -3723,33 +4149,6 @@ below {rate}</source>
 		<message>
 			<source>Import file</source>
 			<translation>นำเข้าไฟล์  </translation>
-		</message>
-	</context>
-	<context>
-		<name>menu</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>ส่งออกป้ายกำกับ  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels</source>
-			<translation>นำเข้าป้ายกำกับ  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>นำเข้าป้ายกำกับ (BIP329 / Sparrow)  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>นำเข้าป้ายกำกับ (Electrum Wallet)  </translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>กู้คืนป้ายกำกับจากคลาวด์โดยใช้กุญแจซิงค์ที่มีอยู่  </translation>
 		</message>
 	</context>
 	<context>
@@ -3864,6 +4263,16 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Open Transaction/PSBT</source>
 			<translation>เปิดธุรกรรม/PSBT  </translation>
+		</message>
+	</context>
+	<context>
+		<name>p2p</name>
+		<message>
+			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+to detect newly broadcasted transactions immediately.
+This does not reveal anything about your wallet.
+Click here to learn more.</source>
+			<translation>ฟังทราฟฟิกบิตคอยน์แบบ p2p แบบพาสซีฟ (เหมือนโหนดบิตคอยน์),  เพื่อให้ตรวจจับธุรกรรมที่เพิ่งกระจายได้ทันที การทำเช่นนี้ไม่เปิดเผยข้อมูลใด ๆ เกี่ยวกับกระเป๋าของคุณ คลิกที่นี่เพื่อเรียนรู้เพิ่มเติม</translation>
 		</message>
 	</context>
 	<context>
@@ -4001,23 +4410,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
-		<name>tageditor</name>
-		<message>
-			<source>Add new {name}</source>
-			<translation>เพิ่ม {name} ใหม่</translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>Delete {name}</source>
-			<translation>ลบ {name}  </translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>This {name} exists already.</source>
-			<translation>{name} นี้มีอยู่แล้ว  </translation>
-		</message>
-	</context>
-	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4065,6 +4457,55 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Balance: {amount}</source>
 			<translation>ยอดเงิน: {amount}  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>CPFP = Child Pay For Parent,
+will append a new transaction to the old one.
+If the average fee rate of both transactions is high enough
+it will speed up confirmation of both transactions.</source>
+			<translation>CPFP = Child Pay For Parent จะผนวกธุรกรรมใหม่เข้ากับธุรกรรมเก่า หากอัตราค่าธรรมเนียมเฉลี่ยของทั้งสองสูงพอ การยืนยันของทั้งสองจะเร็วขึ้น</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Cancel with RBF,
+will create a new transaction 
+with you as a recipient and a higher fee
+to replace the old transaction.
+There is no guarantee this will work!!!</source>
+			<translation>ยกเลิกด้วย RBF จะสร้างธุรกรรมใหม่  โดยมีคุณเป็นผู้รับและมีค่าธรรมเนียมสูงกว่าเพื่อแทนที่ธุรกรรมเก่า ทั้งนี้ไม่รับประกันว่าจะได้ผล!!!</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit</source>
+			<translation>แก้ไข  </translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit (RBF)</source>
+			<translation>แก้ไข (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Prefill the sending dialog with this transactions information.</source>
+			<translation>เติมข้อมูลกล่องโต้ตอบการส่งล่วงหน้าด้วยข้อมูลของธุรกรรมนี้</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Process faster (CPFP)</source>
+			<translation>ประมวลผลเร็วขึ้น (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>RBF = Replace By Fee,
+will create a new transaction with a higher fee
+to speed up the confirmation.</source>
+			<translation>RBF = Replace By Fee จะสร้างธุรกรรมใหม่ที่มีค่าธรรมเนียมสูงกว่าเพื่อเร่งการยืนยัน</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel transaction (RBF)</source>
+			<translation>ลองยกเลิกธุรกรรม (RBF)  </translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4299,8 +4740,18 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>Draft</source>
+			<translation>ฉบับร่าง</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>Local</source>
 			<translation>ท้องถิ่น  </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>PSBT</source>
+			<translation>PSBT  </translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -4311,11 +4762,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Unconfirmed</source>
 			<translation>ยังไม่ยืนยัน  </translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed parent</source>
-			<translation>บิดามารดาที่ยังไม่ยืนยัน  </translation>
 		</message>
 		<name>wallet</name>
 		<message>

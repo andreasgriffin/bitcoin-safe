@@ -32,8 +32,19 @@ import logging
 import platform
 import sys
 import traceback
+from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Iterable, List, Literal, Optional, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Tuple,
+    Union,
+)
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -63,6 +74,7 @@ from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLayout,
@@ -70,8 +82,8 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSizePolicy,
-    QStyle,
     QSystemTrayIcon,
+    QTabWidget,
     QToolButton,
     QToolTip,
     QVBoxLayout,
@@ -119,6 +131,10 @@ TX_ICONS: List[str] = [
 ]
 
 
+ELECTRUM_SERVER_DELAY_MEMPOOL_TX = 1000
+ELECTRUM_SERVER_DELAY_BLOCK = 2000
+
+
 def get_icon_path(icon_basename: str) -> str:
     return resource_path("gui", "icons", icon_basename)
 
@@ -144,26 +160,22 @@ svg_tools_generated_hardware_signer = SvgTools(
 )
 
 
-def block_explorer_URL(mempool_url: str, kind: Literal["tx", "addr"], item: str) -> Optional[str]:
+def block_explorer_URL(
+    mempool_url: str, kind: Literal["tx", "addr", "block", "mempool"], item: str | int
+) -> Optional[str]:
     explorer_url, explorer_dict = mempool_url, {
         "tx": "tx/",
         "addr": "address/",
+        "block": "block/",
+        "mempool": "mempool-block/",
     }
     kind_str = explorer_dict.get(kind)
     if kind_str is None:
         return None
     if explorer_url[-1] != "/":
         explorer_url += "/"
-    url_parts = [explorer_url, kind_str, item]
+    url_parts = [explorer_url, kind_str, str(item)]
     return "".join(url_parts)
-
-
-def block_explorer_URL_of_projected_block(mempool_url: str, block_index: int) -> Optional[str]:
-    explorer_url = mempool_url
-    if explorer_url[-1] != "/":
-        explorer_url += "/"
-    explorer_url = explorer_url.replace("/api", "")
-    return f"{explorer_url}mempool-block/{block_index}"
 
 
 class QtWalletBase(QWidget):
@@ -223,28 +235,12 @@ def center_in_widget(
     return outer_layout
 
 
-def generate_help_website_open(url: str, title=translate("help", "Help"), tooltip: str = "") -> QPushButton:
-    # add the help buttonbox
-    button_help = QPushButton()
-    button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    button_help.setText(title)
-    button_help.setToolTip(tooltip)
-    button_help.setIcon(
-        (button_help.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion)
-    )
-
-    button_help.clicked.connect(partial(open_website, url))
-    return button_help
-
-
 def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) -> QPushButton:
     # add the help buttonbox
     button_help = QPushButton()
     button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     button_help.setText(title)
-    button_help.setIcon(
-        (button_help.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion)
-    )
+    button_help.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
 
     def show_screenshot_tutorial():
         help_widget.setWindowTitle(title)
@@ -252,17 +248,6 @@ def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) 
 
     button_help.clicked.connect(show_screenshot_tutorial)
     return button_help
-
-
-def generate_help_message_button(message, title=translate("help", "Help")) -> QPushButton:
-    msg_box = QMessageBox()
-    msg_box.setWindowTitle(title)
-    msg_box.setIcon(QMessageBox.Icon.Information)  # Set icon to Information which is often used for Help
-    msg_box.setText(message)
-    msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)  # Add OK button
-
-    help_button = generate_help_button(msg_box, title=title)
-    return help_button
 
 
 class AspectRatioSvgWidget(QWidget):
@@ -418,23 +403,6 @@ def add_to_buttonbox(
     if on_clicked:
         button.clicked.connect(on_clicked)
     return button
-
-
-class Buttons(QHBoxLayout):
-    def __init__(self, *buttons):
-        QHBoxLayout.__init__(self)
-        self.addStretch(1)
-        for b in buttons:
-            if b is None:
-                continue
-            self.addWidget(b)
-
-
-class CloseButton(QPushButton):
-    def __init__(self, dialog):
-        QPushButton.__init__(self, self.tr("Close"))
-        self.clicked.connect(dialog.close)
-        self.setDefault(True)
 
 
 class MessageType(enum.Enum):
@@ -1042,3 +1010,143 @@ def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
     a = int(c1.alpha() * (1 - t) + c2.alpha() * t)
 
     return QColor(r, g, b, a)
+
+
+def set_no_margins(layout: QLayout) -> None:
+    layout.setContentsMargins(0, 0, 0, 0)
+
+
+def set_current_tab_by_text(tabs: QTabWidget, text: str):
+
+    for i in range(tabs.count()):
+        if tabs.tabText(i) == text:
+            tabs.setCurrentIndex(i)
+            break
+
+
+def set_translucent(widget: QWidget):
+    """
+    — make backgrounds transparent —
+    """
+    widget.setObjectName(f"widget{id(widget)}")
+    widget.setAutoFillBackground(False)
+    widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+    widget.setStyleSheet(
+        f"""
+        #{widget.objectName()} {{
+            background: transparent;
+        }}
+    """
+    )
+
+
+def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int]) -> None:
+    """
+    Set one or more margins on a QLayout, each to its own value.
+
+    :param layout:  the layout whose contents-margins you want to adjust
+    :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge}
+                    to the new margin (in pixels) for that edge
+    """
+    cm = layout.contentsMargins()
+    left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
+
+    for edge, val in margins.items():
+        if edge == Qt.Edge.LeftEdge:
+            left = val
+        elif edge == Qt.Edge.TopEdge:
+            top = val
+        elif edge == Qt.Edge.RightEdge:
+            right = val
+        elif edge == Qt.Edge.BottomEdge:
+            bottom = val
+        else:
+            raise ValueError(f"Unsupported edge: {edge!r}")
+
+    layout.setContentsMargins(left, top, right, bottom)
+
+
+class HLine(QFrame):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        # we still use HLine for semantics & size hints…
+        self.setFrameShape(QFrame.Shape.HLine)
+        self.setFrameShadow(QFrame.Shadow.Plain)
+        self.setLineWidth(1)
+
+        self.setObjectName(f"{id(self)}")
+
+        # …but override its look entirely
+        self.setStyleSheet(
+            f"""
+            #{self.objectName()} {{
+                background-color: rgba(128, 128, 128, 0.6);
+                max-height: 1px;
+                border: none;
+            }}
+        """
+        )
+
+
+class ButtonInfoType(enum.Enum):
+    edit = enum.auto()
+    rbf = enum.auto()
+    cpfp = enum.auto()
+    cancel_with_rbf = enum.auto()
+
+
+@dataclass
+class ButtonInfo:
+    text: str
+    tooltip: str
+    icon_name: str
+
+    @property
+    def icon(self) -> QIcon:
+        return svg_tools.get_QIcon(self.icon_name)
+
+
+def button_info(name: ButtonInfoType) -> ButtonInfo:
+    if name == ButtonInfoType.edit:
+        return ButtonInfo(
+            text=translate("util", "Edit"),
+            tooltip=translate("util", "Prefill the sending dialog with this transactions information."),
+            icon_name="pen.svg",
+        )
+    if name == ButtonInfoType.rbf:
+        return ButtonInfo(
+            text=translate("util", "Edit (RBF)"),
+            tooltip=translate(
+                "util",
+                "RBF = Replace By Fee,"
+                "\nwill create a new transaction with a higher fee"
+                "\nto speed up the confirmation.",
+            ),
+            icon_name="rbf.svg",
+        )
+    if name == ButtonInfoType.cpfp:
+        return ButtonInfo(
+            text=translate("util", "Process faster (CPFP)"),
+            tooltip=translate(
+                "util",
+                "CPFP = Child Pay For Parent,"
+                "\nwill append a new transaction to the old one."
+                "\nIf the average fee rate of both transactions is high enough"
+                "\nit will speed up confirmation of both transactions.",
+            ),
+            icon_name="cpfp.svg",
+        )
+    if name == ButtonInfoType.cancel_with_rbf:
+        return ButtonInfo(
+            text=translate("util", "Try cancel transaction (RBF)"),
+            tooltip=translate(
+                "util",
+                "Cancel with RBF,"
+                "\nwill create a new transaction "
+                "\nwith you as a recipient and a higher fee"
+                "\nto replace the old transaction."
+                "\nThere is no guarantee this will work!!!",
+            ),
+            icon_name="pen.svg",
+        )

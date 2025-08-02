@@ -54,11 +54,6 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
-			<source>Address of wallet "{id}"</source>
-			<translation>Adres portfela "{id}"</translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
 			<source>Advanced</source>
 			<translation>Zaawansowane</translation>
 		</message>
@@ -143,6 +138,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Wallet</source>
+			<translation>Portfel</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>change</source>
 			<translation>zmień</translation>
 		</message>
@@ -165,13 +165,23 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
+			<source>Create new Address</source>
+			<translation>Utwórz nowy adres</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
 			<source>Generate to selected adddresses</source>
 			<translation>Generuj na wybrane adresy</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Show Filter</source>
-			<translation>Pokaż filtr</translation>
+			<source>Manage Categories</source>
+			<translation>Zarządzaj kategoriami</translation>
+		</message>
+		<name>AddressListWithToolbar</name>
+		<message>
+			<source>for</source>
+			<translation>dla</translation>
 		</message>
 	</context>
 	<context>
@@ -191,6 +201,28 @@
 		<message>
 			<source>Max ≈ {amount}</source>
 			<translation>Maks ≈ {amount}</translation>
+		</message>
+	</context>
+	<context>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Please backup your sync key.</source>
+			<translation>Zrób kopię zapasową klucza synchronizacji.</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Restore labels</source>
+			<translation>Przywróć etykiety</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Save sync key</source>
+			<translation>Zapisz klucz synchronizacji</translation>
+		</message>
+		<name>BackupNsecNotificationBar</name>
+		<message>
+			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
+			<translation>Klucz synchronizacji portfela {wallet_id}:  {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -322,6 +354,18 @@
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>Nie udało się rozpoznać danych wejściowych. Zeskanować ponownie?</translation>
 		</message>
+		<name>ButtonEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>Skanuj ponownie</translation>
+		</message>
+	</context>
+	<context>
+		<name>ButtonExplorerIcon</name>
+		<message>
+			<source>Open in the block explorer</source>
+			<translation>Otwórz w eksploratorze bloków</translation>
+		</message>
 	</context>
 	<context>
 		<name>ButtonList</name>
@@ -344,20 +388,93 @@
 		</message>
 	</context>
 	<context>
-		<name>CategoryEditor</name>
+		<name>CPFPIcon</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>Giełda wymagająca KYC</translation>
+			<source>CPFP with this fee rate</source>
+			<translation>CPFP z tą stawką opłat</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryComboBox</name>
 		<message>
-			<source>Private</source>
-			<translation>Prywatny</translation>
+			<source>Add category</source>
+			<translation>Dodaj kategorię</translation>
 		</message>
-		<name>CategoryEditor</name>
+	</context>
+	<context>
+		<name>CategoryList</name>
 		<message>
-			<source>category</source>
-			<translation>kategoria</translation>
+			<source>Addresses</source>
+			<translation>Adresy</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Balance</source>
+			<translation>Saldo</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Category</source>
+			<translation>Kategoria</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Color</source>
+			<translation>Kolor</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received </source>
+			<translation>Otrzymano</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Tx Outputs</source>
+			<translation>Wyjścia transakcji</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>UTXOs</source>
+			<translation>UTXO</translation>
+		</message>
+	</context>
+	<context>
+		<name>CategoryManager</name>
+		<message>
+			<source>Add Category</source>
+			<translation>Dodaj kategorię</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Change category</source>
+			<translation>Zmień kategorię</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Manage Categories of {wallet_id}</source>
+			<translation>Zarządzaj kategoriami {wallet_id}</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Merge</source>
+			<translation>Scal</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>Rename</source>
+			<translation>Zmień nazwę</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+			<translation>Adresy {used_addresses} mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić kategorię?</translation>
+		</message>
+		<name>CategoryManager</name>
+		<message>
+			<source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change their category?</source>
+			<translation>Adresy {used_addresses} mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić ich kategorię?</translation>
 		</message>
 	</context>
 	<context>
@@ -395,24 +512,71 @@
 		</message>
 	</context>
 	<context>
-		<name>CloseButton</name>
+		<name>ColumnFee</name>
 		<message>
-			<source>Close</source>
-			<translation>Zamknij</translation>
+			<source>Confirmed</source>
+			<translation>Potwierdzona</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Confirming...</source>
+			<translation>Trwa potwierdzanie...</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool Fees</source>
+			<translation>Opłaty w mempoolu</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Mempool position</source>
+			<translation>Pozycja w mempoolu</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Priority</source>
+			<translation>Priorytet</translation>
 		</message>
 	</context>
 	<context>
-		<name>ConfirmedBlock</name>
+		<name>ColumnInputs</name>
 		<message>
-			<source>Block {n}</source>
-			<translation>Blok {n}</translation>
+			<source>Add foreign UTXOs</source>
+			<translation>Dodaj zewnętrzne UTXO</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Input total:</source>
+			<translation>Suma wejść:</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Select specific UTXOs</source>
+			<translation>Wybierz konkretne UTXO</translation>
+		</message>
+		<name>ColumnInputs</name>
+		<message>
+			<source>Sending source</source>
+			<translation>Źródło wysyłki</translation>
 		</message>
 	</context>
 	<context>
-		<name>CustomListWidget</name>
+		<name>ColumnRecipients</name>
 		<message>
-			<source>Delete Category</source>
-			<translation>Usuń kategorię</translation>
+			<source>Sending total:</source>
+			<translation>Suma wysyłki:</translation>
+		</message>
+	</context>
+	<context>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Diagram</source>
+			<translation>Diagram</translation>
+		</message>
+		<name>ColumnSankey</name>
+		<message>
+			<source>Export svg</source>
+			<translation>Eksportuj SVG</translation>
 		</message>
 	</context>
 	<context>
@@ -430,8 +594,74 @@
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
+			<source>Copy to clipboard</source>
+			<translation>Skopiuj do schowka</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Could not recognize the input. Do you want to scan again?</source>
+			<translation>Nie udało się rozpoznać danych wejściowych. Zeskanować ponownie?</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
 			<source>Descriptor not valid</source>
 			<translation>Deskryptor nieprawidłowy</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export</source>
+			<translation>Eksportuj</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Export QR</source>
+			<translation>Eksportuj QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import</source>
+			<translation>Importuj</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Import from Clipboard</source>
+			<translation>Zaimportuj ze schowka</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Paste or scan your descriptor, if you restore a wallet.</source>
+			<translation>Wklej lub zeskanuj swój deskryptor, jeśli przywracasz portfel.</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Najpierw wybierz portfel wielopodpisowy</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Read QR Code</source>
+			<translation>Odczytaj kod QR</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Recovery Sheet</source>
+			<translation>Arkusz odzyskiwania</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Register with hardware signers</source>
+			<translation>Zarejestruj z urządzeniami sprzętowymi do podpisu</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>Scan again</source>
+			<translation>Skanuj ponownie</translation>
+		</message>
+		<name>DescriptorEdit</name>
+		<message>
+			<source>This "descriptor" contains all information to reconstruct the wallet. 
+Please back up this descriptor to be able to recover the funds!</source>
+			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela.  Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -454,23 +684,8 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>Nie udało się rozpoznać danych wejściowych. Zeskanować ponownie?</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Deskryptor niezmieniony</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import</source>
-			<translation>Importuj</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>Zaimportuj ze schowka</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -484,16 +699,6 @@
 		</message>
 		<name>DescriptorUI</name>
 		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>Wklej lub zeskanuj swój deskryptor, jeśli przywracasz portfel.</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>Odczytaj kod QR</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
 			<source>Required Signers</source>
 			<translation>Wymagani podpisujący</translation>
 		</message>
@@ -501,12 +706,6 @@
 		<message>
 			<source>Scan Addresses ahead</source>
 			<translation>Skanuj kolejne adresy</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
-Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela.  Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -595,6 +794,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>EditWithFeeIcon</name>
+		<message>
+			<source>Edit with this fee rate</source>
+			<translation>Edytuj z tym wskaźnikiem opłat</translation>
+		</message>
+	</context>
+	<context>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
@@ -624,20 +830,40 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 	</context>
 	<context>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels</source>
+			<translation>Eksportuj etykiety</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Export Labels for other wallets (BIP329)</source>
+			<translation>Eksportuj etykiety dla innych portfeli (BIP329)</translation>
+		</message>
+	</context>
+	<context>
 		<name>FeeGroup</name>
 		<message>
-			<source>Approximate fee rate</source>
-			<translation>Przybliżona stawka opłaty</translation>
+			<source>Approximate rate</source>
+			<translation>Przybliżona stawka</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>Fee</source>
-			<translation>Opłata</translation>
+			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
+Click to learn more about CPFP (Child Pays For Parent).</source>
+			<translation>Ta transakcja ma {number} niepotwierdzonych transakcji nadrzędnych o łącznej stawce opłat {parents_fee_rate}. Kliknij, aby dowiedzieć się więcej o CPFP (Child Pays For Parent).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
-			<translation>Ta transakcja ma {number} niepotwierdzonych rodziców z łączną stawką opłaty {parents_fee_rate}</translation>
+			<source>Transaction fee rate</source>
+			<translation>Stawka opłaty transakcyjnej</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>You can replace the previously broadcasted transaction
+with a new transaction if it has a higher fee rate.
+Click here to learn more about RBF (Replace-by-Fee).</source>
+			<translation>Możesz zastąpić wcześniej rozgłoszoną transakcję nową, jeśli ma wyższą stawkę opłaty. Kliknij tutaj, aby dowiedzieć się więcej o RBF (Replace‑by‑Fee).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -646,13 +872,13 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} combined fee rate</source>
-			<translation>{rate} łączna stawka opłaty</translation>
+			<source>{cpfp} total: {rate}</source>
+			<translation>{cpfp} łącznie: {rate}</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rate} is the minimum for {rbf}</source>
-			<translation>{rate} to minimum dla {rbf}</translation>
+			<source>{rbf} min.: {rate}</source>
+			<translation>{rbf} min.: {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -697,6 +923,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{sent} is sent!</source>
 			<translation>Wysłano {sent}!</translation>
+		</message>
+	</context>
+	<context>
+		<name>FiatSpinBox</name>
+		<message>
+			<source>Max ≈ {amount}</source>
+			<translation>Maks ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -852,16 +1085,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Edit with higher fee (RBF)</source>
-			<translation>Edytuj z wyższą opłatą (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>Zwiększ opłatę (RBF)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Label</source>
 			<translation>Etykieta</translation>
 		</message>
@@ -877,11 +1100,6 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>Odbierz szybciej (CPFP)</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Remove on restart</source>
 			<translation>Usuń przy ponownym uruchomieniu</translation>
 		</message>
@@ -894,11 +1112,6 @@ the sending value {sent}</source>
 		<message>
 			<source>Status</source>
 			<translation>Status</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>Spróbuj anulować transakcję (RBF)</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -959,6 +1172,28 @@ the sending value {sent}</source>
 		<message>
 			<source>Seed</source>
 			<translation>Seed</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels</source>
+			<translation>Importuj etykiety</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (BIP329 / Sparrow)</source>
+			<translation>Importuj etykiety (BIP329 / Sparrow)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import Labels (Electrum Wallet)</source>
+			<translation>Importuj etykiety (Portfel Electrum)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Restore labels from cloud using an existing sync key</source>
+			<translation>Przywróć etykiety z chmury przy użyciu istniejącego klucza synchronizacji</translation>
 		</message>
 	</context>
 	<context>
@@ -1147,6 +1382,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
+			<source>Proceed anyway</source>
+			<translation>Kontynuuj mimo to</translation>
+		</message>
+		<name>KeyStoreUIs</name>
+		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
 			<translation>Zaimportowano ten sam odcisk palca wiele razy!!! Użyj innego urządzenia podpisującego.</translation>
 		</message>
@@ -1324,8 +1564,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Network Settings</source>
-			<translation>&amp;Ustawienia sieci</translation>
+			<source>&amp;Manage Categories</source>
+			<translation>&amp;Zarządzaj kategoriami</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1414,6 +1654,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close</source>
+			<translation>Zamknij</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close Tab</source>
 			<translation>Zamknij kartę</translation>
 		</message>
@@ -1459,6 +1704,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
+			<translation>Obecnie monitorowanie ruchu p2p bitcoina pod adresem: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
+			<translation>Obecnie monitorowanie ruchu p2p bitcoina pod adresem: {ip} przez proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Do you want to save the PSBT {id}?</source>
 			<translation>Czy chcesz zapisać PSBT {id}?</translation>
 		</message>
@@ -1481,6 +1736,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Z &amp;tekstu</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network</source>
+			<translation>Monitorowanie sieci bitcoin p2p</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+			<translation>Monitorowanie sieci bitcoin p2p przez proxy {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1516,6 +1781,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Open Wallet</source>
 			<translation>Otwórz portfel</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Open anyway</source>
+			<translation>Otwórz mimo to</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1569,6 +1839,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Pokaż w eksploratorze plików</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Save</source>
+			<translation>Zapisz</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Save PSBT?</source>
 			<translation>Zapisać PSBT?</translation>
 		</message>
@@ -1576,6 +1856,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>Wybrany plik: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected</source>
+			<translation>Status: Połączono</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Connected via proxy</source>
+			<translation>Status: Połączono przez proxy</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Status: Disconnected</source>
+			<translation>Status: Rozłączono</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1591,6 +1886,21 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>There is no such file: {file_path}</source>
 			<translation>Nie ma takiego pliku: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip}</source>
+			<translation>Spróbuj połączyć się z: {ip}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Try connecting to: {ip} via proxy {proxy}</source>
+			<translation>Spróbuj połączyć się z: {ip} przez proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Trying to connect to bitcoin node...</source>
+			<translation>Próba połączenia z węzłem bitcoina...</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1611,8 +1921,23 @@ Do you want to proceed anyway?</source>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
+			<source>Block {n}</source>
+			<translation>Blok {n}</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>Confirmations</source>
+			<translation>Potwierdzenia</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
 			<source>Fetch new mempool data</source>
 			<translation>Pobierz nowe dane mempoola</translation>
+		</message>
+		<name>MempoolButtons</name>
+		<message>
+			<source>First confirmation</source>
+			<translation>Pierwsze potwierdzenie</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -1623,18 +1948,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. blok</translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>Niepotwierdzony</translation>
-		</message>
-		<name>MempoolProjectedBlock</name>
-		<message>
-			<source>~{n}. Block</source>
-			<translation>~{n}. blok</translation>
 		</message>
 	</context>
 	<context>
@@ -1677,8 +1990,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Automatic</source>
+			<translation>Automatyczny</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Bitcoin network monitoring</source>
+			<translation>Monitorowanie sieci Bitcoina</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Blockchain data source</source>
 			<translation>Źródło danych blockchain</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click here for an example of a Tor proxy configuration.</source>
+			<translation>Kliknij tutaj, aby zobaczyć przykład konfiguracji proxy Tor.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Click to open the mempool url</source>
+			<translation>Kliknij, aby otworzyć adres URL mempoola</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Connect to a different peer</source>
+			<translation>Połącz z innym węzłem</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Deactive</source>
+			<translation>Dezaktywuj</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1700,6 +2043,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Inital node</source>
+			<translation>Węzeł początkowy</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Mempool Instance URL</source>
 			<translation>URL instancji mempoola</translation>
 		</message>
@@ -1707,11 +2055,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Network Settings</source>
 			<translation>Ustawienia sieci</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Open Tor proxy configuration documentation</source>
-			<translation>Otwórz dokumentację konfiguracji proxy Tor</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -1767,6 +2110,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
+			<translation>Węzeł początkowy służy do nasłuchiwania oraz odkrywania innych węzłów bitcoina. Nie jest używany na wyłączność.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
 			<translation>Proxy nie dotyczy funkcji Sync&amp;Chat!</translation>
 		</message>
@@ -1779,6 +2127,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Username:</source>
 			<translation>Nazwa użytkownika:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>host:port</source>
+			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -1910,15 +2263,57 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Enable</source>
+			<translation>Włącz</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>Otwórz ustawienia sieci</translation>
+		</message>
+		<name>NotificationBarP2P</name>
+		<message>
+			<source>Receive instant notifications for transactions</source>
+			<translation>Otrzymuj natychmiastowe powiadomienia o transakcjach</translation>
+		</message>
+	</context>
+	<context>
+		<name>NotificationBarRecipient</name>
+		<message>
+			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>Adres portfela: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+		</message>
+	</context>
+	<context>
 		<name>NotificationBarRegtest</name>
 		<message>
-			<source>Change Network</source>
-			<translation>Zmień sieć</translation>
+			<source>Get {testnet} coins</source>
+			<translation>Pobierz monety {testnet}</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
 			<translation>Sieć = {network}. Monety są bezwartościowe!</translation>
+		</message>
+		<name>NotificationBarRegtest</name>
+		<message>
+			<source>Open Network Settings</source>
+			<translation>Otwórz ustawienia sieci</translation>
+		</message>
+	</context>
+	<context>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>Ta transakcja {txid} została już podpisana i znajduje się w portfelu {wallet}</translation>
+		</message>
+		<name>PSBTAlreadyBroadcastedBar</name>
+		<message>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}.
+The serializations of both differ, which could be caused by different collected signatures.</source>
+			<translation>Ta transakcja {txid} została już podpisana i znajduje się w portfelu {wallet}. Serializacje obu różnią się, co może wynikać z różnych zebranych podpisów.</translation>
 		</message>
 	</context>
 	<context>
@@ -2027,11 +2422,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Are you SURE you don't want save the wallet {id}?</source>
-			<translation>Czy NA PEWNO nie chcesz zapisać portfela {id}?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>Nie udało się utworzyć kopii zapasowej. Anulowanie zmian.</translation>
 		</message>
@@ -2057,23 +2447,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Choose a new name, or an existing name for merging:</source>
-			<translation>Wybierz nową nazwę lub istniejącą nazwę do połączenia:</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Click for new address</source>
-			<translation>Kliknij, aby uzyskać nowy adres</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Connected to {server}</source>
 			<translation>Połączono z {server}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Delete wallet</source>
-			<translation>Usuń portfel</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2089,6 +2464,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
 			<translation>Czy chcesz zapisać kopię tych transakcji?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Don't save wallet</source>
+			<translation>Nie zapisuj portfela</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2109,6 +2489,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Import labels</source>
 			<translation>Importuj etykiety</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Keep existing</source>
+			<translation>Zachowaj istniejące</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2133,13 +2518,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Overwrite existing</source>
+			<translation>Nadpisz istniejące</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Password incorrect</source>
 			<translation>Hasło nieprawidłowe</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-			<translation>Kontynuacja może zmienić wszystkie adresy portfela. Czy chcesz kontynuować?</translation>
+			<source>Proceed</source>
+			<translation>Kontynuuj</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Proceeding will potentially change all wallet addresses.</source>
+			<translation>Kontynuacja może spowodować zmianę wszystkich adresów portfela.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2148,8 +2543,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Rename or merge categories</source>
-			<translation>Zmień nazwę lub połącz kategorie</translation>
+			<source>Save transactions</source>
+			<translation>Zapisz transakcje</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2178,12 +2573,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The addresses {used_addresses}
-have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>Adresy {used_addresses} mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić kategorię?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
@@ -2196,8 +2585,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Wallet not saved yet</source>
+			<translation>Portfel nie został jeszcze zapisany</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Wallet saved</source>
 			<translation>Portfel zapisany</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Wallet was not saved.</source>
+			<translation>Portfel nie został zapisany.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2208,11 +2607,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>start updating lists</source>
 			<translation>rozpoczęto aktualizację list</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{num_inputs} Inputs: {inputs}</source>
-			<translation>{num_inputs} Wejścia: {inputs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2229,10 +2623,39 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Quick Receive</source>
+			<translation>Szybki odbiór</translation>
+		</message>
+	</context>
+	<context>
+		<name>RBFIcon</name>
+		<message>
+			<source>RBF with this fee rate</source>
+			<translation>RBF z tą stawką opłat</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
 			<translation>Adres</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Copy address to clipboard</source>
+			<translation>Skopiuj adres do schowka</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Get next address</source>
+			<translation>Pobierz następny adres</translation>
+		</message>
+		<name>ReceiveGroup</name>
+		<message>
+			<source>Magnify QR code</source>
+			<translation>Powiększ kod QR</translation>
 		</message>
 	</context>
 	<context>
@@ -2285,13 +2708,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
-		<name>RecipientTabWidget</name>
-		<message>
-			<source>Wallet "{id}"</source>
-			<translation>Portfel "{id}"</translation>
-		</message>
-	</context>
-	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -2316,6 +2732,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Send max</source>
 			<translation>Wyślij maks</translation>
+		</message>
+		<name>RecipientWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Wartość</translation>
 		</message>
 	</context>
 	<context>
@@ -2343,6 +2764,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Amount [{unit}]</source>
 			<translation>Kwota [{unit}]</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Export</source>
+			<translation>Eksportuj</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2398,6 +2824,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Recipients</source>
 			<translation>Odbiorcy</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
+			<source>Recipients ({count})</source>
+			<translation>Odbiorcy ({count})</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2566,6 +2997,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>Settings</name>
+		<message>
+			<source>Interface Settings</source>
+			<translation>Ustawienia interfejsu</translation>
+		</message>
+		<name>Settings</name>
+		<message>
+			<source>Network Settings</source>
+			<translation>Ustawienia sieci</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -2663,8 +3106,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Sign with seed</source>
-			<translation>Podpisz seedem</translation>
+			<source>Seed of '{wallet_id}'</source>
+			<translation>Ziarno '{wallet_id}'</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -2726,14 +3169,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Opening {name} from {author}</source>
 			<translation>Otwieranie {name} od {author}</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Please backup your sync key:
-{nsec}
-
-You can restore your labels at a later time with 'Import Sync Key'.</source>
-			<translation>Zrób kopię zapasową klucza synchronizacji: {nsec}  Etykiety możesz przywrócić później za pomocą 'Importuj klucz synchronizacji'.</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -2840,8 +3275,19 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}</source>
-			<translation>Transakcja podpisana kluczem prywatnym należącym do {label}</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Wejście {i}: Podpisano z flagą {sighash_type} , Podpis: {signature}</translation>
+		</message>
+		<name>TxSigningSteps</name>
+		<message>
+			<source>Transaction signed with the private key belonging to {label}
+
+Signatures:
+{signatures}
+
+
+</source>
+			<translation>Transakcja podpisana kluczem prywatnym należącym do {label}  Podpisy: {signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -2893,13 +3339,9 @@ You can restore your labels at a later time with 'Import Sync Key'.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Dodaj zewnętrzne UTXO</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Advanced</source>
-			<translation>Zaawansowane</translation>
+			<source>Additional inputs may be added 
+below {rate} to consolidate UTXOs and reduce future fees</source>
+			<translation>Dodatkowe wejścia można dodać  poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2934,19 +3376,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Reduce future fees
-by merging address balances</source>
-			<translation>Zmniejsz przyszłe opłaty, łącząc salda adresów</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select a category that fits the recipient best</source>
-			<translation>Wybierz kategorię najlepiej pasującą do odbiorcy</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Send Category</source>
-			<translation>Wyślij kategorię</translation>
+			<source>Reduce future fees by merging UTXOs below {rate}</source>
+			<translation>Zmniejsz przyszłe opłaty przez łączenie UTXO poniżej {rate}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -2958,48 +3389,12 @@ by merging address balances</source>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
 			<translation>Niepotwierdzone zależne transakcje {txids} zostaną usunięte przez tworzoną przez Ciebie nową transakcję.</translation>
 		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>This checkbox automatically checks 
-below {rate}</source>
-			<translation>To pole wyboru automatycznie zaznacza poniżej {rate}</translation>
-		</message>
 	</context>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Diagram</source>
-			<translation>Diagram</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit</source>
-			<translation>Edytuj</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Edit with increased fee (RBF)</source>
-			<translation>Edytuj z podwyższoną opłatą (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
-			<translation>Nie udało się rozgłosić {txid}. Rozważ rozgłoszenie przez {url}</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Import file</source>
 			<translation>Importuj plik</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Increase fee (RBF)</source>
-			<translation>Zwiększ opłatę (RBF)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Inputs</source>
-			<translation>Wejścia</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3023,6 +3418,12 @@ below {rate}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Please open a wallet first to broadcast the transaction.
+Or you can broadcast via {url}</source>
+			<translation>Aby rozgłosić transakcję, najpierw otwórz portfel. Możesz też rozgłosić przez {url}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Najpierw usuń istniejącą lokalną transakcję portfela.</translation>
 		</message>
@@ -3030,16 +3431,6 @@ below {rate}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>Poprzedni krok</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Receive faster (CPFP)</source>
-			<translation>Odbierz szybciej (CPFP)</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Recipients</source>
-			<translation>Odbiorcy</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3060,11 +3451,6 @@ below {rate}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>Txid podpisanego PSBT nie zgadza się z oryginalnym txid</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction to be replaced could not be found in open wallets</source>
-			<translation>Nie można znaleźć transakcji do zastąpienia w otwartych portfelach</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3160,6 +3546,11 @@ below {rate}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Value</source>
+			<translation>Wartość</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -3446,8 +3837,8 @@ below {rate}</source>
 		</message>
 		<name>address_list</name>
 		<message>
-			<source>Used</source>
-			<translation>Użyte</translation>
+			<source>Used and empty</source>
+			<translation>Użyte i puste</translation>
 		</message>
 	</context>
 	<context>
@@ -3537,6 +3928,53 @@ below {rate}</source>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
 			<translation>{value} nie jest prawidłowym odciskiem palca</translation>
+		</message>
+	</context>
+	<context>
+		<name>category</name>
+		<message>
+			<source>Add Category</source>
+			<translation>Dodaj kategorię</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Category name:</source>
+			<translation>Nazwa kategorii:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Enter new category name...</source>
+			<translation>Wpisz nową nazwę kategorii...</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>KYC Exchange</source>
+			<translation>Giełda wymagająca KYC</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Merge Categories</source>
+			<translation>Scal kategorie</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>New category name:</source>
+			<translation>Nowa nazwa kategorii:</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Private</source>
+			<translation>Prywatny</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Rename Category</source>
+			<translation>Zmień nazwę kategorii</translation>
+		</message>
+		<name>category</name>
+		<message>
+			<source>Resulting category:</source>
+			<translation>Kategoria wynikowa:</translation>
 		</message>
 	</context>
 	<context>
@@ -3636,18 +4074,6 @@ below {rate}</source>
 		</message>
 	</context>
 	<context>
-		<name>export</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>Eksportuj etykiety</translation>
-		</message>
-		<name>export</name>
-		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Eksportuj etykiety dla innych portfeli (BIP329)</translation>
-		</message>
-	</context>
-	<context>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
@@ -3725,33 +4151,6 @@ below {rate}</source>
 		<message>
 			<source>Import file</source>
 			<translation>Importuj plik</translation>
-		</message>
-	</context>
-	<context>
-		<name>menu</name>
-		<message>
-			<source>Export Labels</source>
-			<translation>Eksportuj etykiety</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels</source>
-			<translation>Importuj etykiety</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importuj etykiety (BIP329 / Sparrow)</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importuj etykiety (Portfel Electrum)</translation>
-		</message>
-		<name>menu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>Przywróć etykiety z chmury przy użyciu istniejącego klucza synchronizacji</translation>
 		</message>
 	</context>
 	<context>
@@ -3866,6 +4265,16 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Open Transaction/PSBT</source>
 			<translation>Otwórz transakcję/PSBT</translation>
+		</message>
+	</context>
+	<context>
+		<name>p2p</name>
+		<message>
+			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+to detect newly broadcasted transactions immediately.
+This does not reveal anything about your wallet.
+Click here to learn more.</source>
+			<translation>Pasywnie nasłuchuj ruchu p2p bitcoina (jak węzeł bitcoina),  aby natychmiast wykrywać nowo rozgłoszone transakcje. Nie ujawnia to nic o Twoim portfelu. Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 	</context>
 	<context>
@@ -4005,23 +4414,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
-		<name>tageditor</name>
-		<message>
-			<source>Add new {name}</source>
-			<translation>Dodaj nowy {name}</translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>Delete {name}</source>
-			<translation>Usuń {name}</translation>
-		</message>
-		<name>tageditor</name>
-		<message>
-			<source>This {name} exists already.</source>
-			<translation>Ten {name} już istnieje.</translation>
-		</message>
-	</context>
-	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4069,6 +4461,55 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Balance: {amount}</source>
 			<translation>Saldo: {amount}</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>CPFP = Child Pay For Parent,
+will append a new transaction to the old one.
+If the average fee rate of both transactions is high enough
+it will speed up confirmation of both transactions.</source>
+			<translation>CPFP = Child Pay For Parent, dołączy nową transakcję do starej. Jeśli średni wskaźnik opłat obu transakcji będzie wystarczająco wysoki, przyspieszy to potwierdzenie obu.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Cancel with RBF,
+will create a new transaction 
+with you as a recipient and a higher fee
+to replace the old transaction.
+There is no guarantee this will work!!!</source>
+			<translation>Anulowanie z RBF utworzy nową transakcję  z Tobą jako odbiorcą i z wyższą opłatą, aby zastąpić starą transakcję. Nie ma gwarancji, że to zadziała!!!</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit</source>
+			<translation>Edytuj</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Edit (RBF)</source>
+			<translation>Edytuj (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Prefill the sending dialog with this transactions information.</source>
+			<translation>Wypełnij okno wysyłania danymi tej transakcji.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Process faster (CPFP)</source>
+			<translation>Szybsze przetwarzanie (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>RBF = Replace By Fee,
+will create a new transaction with a higher fee
+to speed up the confirmation.</source>
+			<translation>RBF = Replace By Fee, utworzy nową transakcję z wyższą opłatą, aby przyspieszyć potwierdzenie.</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel transaction (RBF)</source>
+			<translation>Spróbuj anulować transakcję (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4303,8 +4744,18 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>Draft</source>
+			<translation>Szkic</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>Local</source>
 			<translation>Lokalna</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>PSBT</source>
+			<translation>PSBT</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -4315,11 +4766,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>Unconfirmed</source>
 			<translation>Niepotwierdzona</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed parent</source>
-			<translation>Niepotwierdzony rodzic</translation>
 		</message>
 		<name>wallet</name>
 		<message>

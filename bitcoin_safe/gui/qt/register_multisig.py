@@ -35,10 +35,11 @@ from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
 from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
-from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
+from bitcoin_safe.signals import Signals
 from bitcoin_safe.threading_manager import ThreadingManager
+from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -46,31 +47,33 @@ logger = logging.getLogger(__name__)
 class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     def __init__(
         self,
-        qt_wallet: QTWallet | None,
+        signals: Signals | None,
+        wallet: Wallet | None,
         threading_parent: ThreadingManager,
         parent: QWidget | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
         super().__init__(parent=parent)
+        self.wallet = wallet
+        self.signals = signals
         self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
-        self.qt_wallet = qt_wallet
 
         ## help
         screenshots = ScreenshotsRegisterMultisig()
         self.add_help_button(screenshots)
 
-        if self.qt_wallet:
+        if self.wallet and self.signals:
             data = Data(
-                data=self.qt_wallet.wallet.multipath_descriptor,
+                data=self.wallet.multipath_descriptor,
                 data_type=DataType.Descriptor,
-                network=self.qt_wallet.wallet.network,
+                network=self.wallet.network,
             )
 
             # qr
             self.export_qr_button = QrToolButton(
                 data=data,
-                signals_min=self.qt_wallet.signals,
-                network=self.qt_wallet.wallet.network,
+                signals_min=self.signals,
+                network=self.wallet.network,
                 threading_parent=threading_parent,
                 parent=self,
                 wallet_name=wallet_name,
@@ -79,16 +82,16 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
 
             ## hwi
 
-            addresses = self.qt_wallet.wallet.get_addresses()
+            addresses = self.wallet.get_addresses()
             index = 0
             address = addresses[index] if len(addresses) > index else ""
             self.usb_widget = USBRegisterMultisigWidget(
-                network=self.qt_wallet.wallet.network,
-                signals=self.qt_wallet.signals,
+                network=self.wallet.network,
+                signals=self.signals,
             )
             self.usb_widget.set_descriptor(
-                keystores=self.qt_wallet.wallet.keystores,
-                descriptor=self.qt_wallet.wallet.multipath_descriptor,
+                keystores=self.wallet.keystores,
+                descriptor=self.wallet.multipath_descriptor,
                 expected_address=address,
                 kind=bdk.KeychainKind.EXTERNAL,
                 address_index=index,
@@ -99,8 +102,8 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             ## file
             self.button_export_file = FileToolButton(
                 data=data,
-                wallet_id=self.qt_wallet.wallet.id,
-                network=self.qt_wallet.wallet.network,
+                wallet_id=self.wallet.id,
+                network=self.wallet.network,
                 parent=self,
             )
             self.add_button(self.button_export_file)

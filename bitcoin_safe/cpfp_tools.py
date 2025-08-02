@@ -47,7 +47,7 @@ class CpfpTools:
         for txid in txids:
             for wallet in self.wallets:
                 tx = wallet.get_tx(txid)
-                if tx and tx.chain_position.is_unconfirmed():
+                if tx and not tx.chain_position.is_confirmed():
                     unconfirmed_txs.append(tx)
 
         # i am modifying unconfirmed_txs duringt he loop, so the copy() is essential
@@ -73,13 +73,17 @@ class CpfpTools:
         target_total_unconfirmed_fee_rate: float,
     ) -> Tuple[FeeInfo, FeeInfo]:
         new_tx_fee_info_wrong_fee = FeeInfo.from_fee_rate_and_vsize(
-            fee_rate=unconfirmed_ancestors_fee_info.fee_rate(), vsize=new_tx_vsize, is_estimated=True
+            fee_rate=unconfirmed_ancestors_fee_info.fee_rate(),
+            vsize=new_tx_vsize,
+            fee_rate_is_estimated=unconfirmed_ancestors_fee_info.fee_rate_is_estimated(),
+            vsize_is_estimated=True,
         )
 
         goal_total_fee_info = FeeInfo.from_fee_rate_and_vsize(
             fee_rate=target_total_unconfirmed_fee_rate,
             vsize=unconfirmed_ancestors_fee_info.vsize + new_tx_fee_info_wrong_fee.vsize,
-            is_estimated=True,
+            fee_rate_is_estimated=True,
+            vsize_is_estimated=True,
         )
 
         new_tx_fee_info = FeeInfo(
@@ -88,6 +92,7 @@ class CpfpTools:
                 - unconfirmed_ancestors_fee_info.fee_amount
             ),
             vsize=new_tx_fee_info_wrong_fee.vsize,
-            is_estimated=True,
+            fee_amount_is_estimated=True,
+            vsize_is_estimated=True,
         )
         return new_tx_fee_info, goal_total_fee_info

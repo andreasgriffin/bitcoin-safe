@@ -39,7 +39,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
 from .helpers import Shutter, main_window_context
 
@@ -78,10 +78,10 @@ def test_psbt_warning_poision_mainnet(
             assert tab.address_poisoning_warning_bar.isVisible()
             assert (
                 "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack."
-                in tab.address_poisoning_warning_bar.textLabel.text()
+                in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             )
             for expected_fragment in expected_fragments:
-                assert expected_fragment in tab.address_poisoning_warning_bar.textLabel.text()
+                assert expected_fragment in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             # end
             shutter.save(main_window)
             tab.close()
@@ -168,15 +168,15 @@ def test_psbt_warning_poision(
             assert tab.address_poisoning_warning_bar.isVisible()
             assert (
                 "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack."
-                in tab.address_poisoning_warning_bar.textLabel.text()
+                in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             )
             assert (
                 "bcrt1<u>q</u>lelfnq4c7asm6p556fw32e5kcgxsply7vls9hvcgfv83pyhtt0l<u>s</u><u>c</u><u>s</u><u>6</u><u>q</u><u>a</u><u>0</u>"
-                in tab.address_poisoning_warning_bar.textLabel.text()
+                in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             )
             assert (
                 "bcrt1<u>q</u>tsk0skze8qqd4juleyhtqq7sm03pe5v<u>s</u><u>7</u><u>s</u><u>6</u><u>q</u><u>a</u><u>0</u>"
-                in tab.address_poisoning_warning_bar.textLabel.text()
+                in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             )
 
             # end

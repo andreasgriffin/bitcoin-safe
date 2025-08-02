@@ -31,6 +31,7 @@ import logging
 from typing import List
 
 import bdkpython as bdk
+from bitcoin_safe_lib.tx_util import serialized_to_hex
 
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
@@ -70,3 +71,8 @@ def advance_tip_for_addresses(addresses: List[str], signals: Signals) -> List[bd
                 address_info=address_info, wallet=wallet, signals=signals
             )
     return address_infos
+
+
+def are_txs_identical(tx1: bdk.Transaction, tx2: bdk.Transaction) -> bool:
+
+    return serialized_to_hex(tx1.serialize()) == serialized_to_hex(tx2.serialize())

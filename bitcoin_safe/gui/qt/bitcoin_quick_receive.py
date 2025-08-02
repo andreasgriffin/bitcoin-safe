@@ -125,7 +125,10 @@ class BitcoinQuickReceive(
             should_update
             or update_filter.refresh_all
             or update_filter.reason
-            in [UpdateFilterReason.CategoryAdded, UpdateFilterReason.AddressMarkedUsed]
+            in [
+                UpdateFilterReason.CategoryChange,
+                UpdateFilterReason.AddressMarkedUsed,
+            ]
         ):
             should_update = True
         if should_update or set(self.addresses).intersection(update_filter.addresses):
@@ -140,7 +143,6 @@ class BitcoinQuickReceive(
         super().update()
 
         # reset title & snapshot old tips
-        self.label_title.setText(self.tr("Quick Receive"))
         old_tips = self.wallet.tips
 
         # 1) grab old boxes and clear the list
@@ -185,3 +187,5 @@ class BitcoinQuickReceive(
                     reason=UpdateFilterReason.GetUnusedCategoryAddress,
                 )
             )
+
+        self.updateUi()

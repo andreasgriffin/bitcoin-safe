@@ -65,7 +65,7 @@ from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
-from .util import svg_tools
+from .util import set_margins, svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -651,8 +651,15 @@ class TutorialWidget(QWidget):
         self.callback_on_set_current_widget: Optional[Callable] = None
 
         self._layout = QVBoxLayout(self)
-        current_margins = self._layout.contentsMargins()
-        self._layout.setContentsMargins(5, current_margins.top(), 5, 5)  # Left, Top, Right, Bottom margins
+
+        set_margins(
+            self._layout,
+            {
+                Qt.Edge.RightEdge: 5,
+                Qt.Edge.BottomEdge: 5,
+                Qt.Edge.LeftEdge: 5,
+            },
+        )
 
         self._layout.addWidget(widget)
         self._layout.addWidget(button_box)

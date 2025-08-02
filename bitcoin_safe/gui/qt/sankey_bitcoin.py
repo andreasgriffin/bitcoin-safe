@@ -243,7 +243,7 @@ class SankeyBitcoin(SankeyWidget):
                 continue
 
         # handle cases where i have sufficient info to still construct a diagram
-        if (None in in_flows) and fee_info and not fee_info.is_estimated:
+        if (None in in_flows) and fee_info and not fee_info.fee_amount_is_estimated:
             num_unknown_inputs = in_flows.count(None)
             missing_inflows = (
                 sum(out_flows) + fee_info.fee_amount - sum([v for v in in_flows if v is not None])

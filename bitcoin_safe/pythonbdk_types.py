@@ -35,11 +35,11 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.tx_util import serialized_to_hex
+from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from packaging import version
 from PyQt6.QtCore import QObject
 
-from .storage import BaseSaveableClass, SaveAllClass
+from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 logger = logging.getLogger(__name__)
 
@@ -53,21 +53,12 @@ def is_address(a: str, network: bdk.Network) -> bool:
     return True
 
 
+@dataclass
 class Recipient:
-    def __init__(
-        self, address: str, amount: int, label: Optional[str] = None, checked_max_amount=False
-    ) -> None:
-        self.address = address
-        self.amount = amount
-        self.label = label
-        self.checked_max_amount = checked_max_amount
-
-    def __hash__(self) -> int:
-        "Necessary for the caching"
-        return hash(self.__dict__)
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.__dict__})"
+    address: str
+    amount: int
+    label: Optional[str] = None
+    checked_max_amount: bool = False
 
     def clone(self) -> "Recipient":
         return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
@@ -115,7 +106,7 @@ def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
 
 class TxOut(bdk.TxOut):
     def __key__(self) -> Tuple:
-        return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
+        return self.seralized_tuple()
 
     def __hash__(self) -> int:
         "Necessary for the caching"
@@ -126,6 +117,9 @@ class TxOut(bdk.TxOut):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__key__()})"
+
+    def seralized_tuple(self) -> Tuple[str, int]:
+        return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
@@ -141,13 +135,44 @@ class TxOut(bdk.TxOut):
             )
         return False
 
+    @classmethod
+    def from_seralized_tuple(cls, seralized_tuple: Tuple[str, int]) -> "TxOut":
+        script_pubkey, value = seralized_tuple
+        return TxOut(script_pubkey=bdk.Script(list(hex_to_serialized(script_pubkey))), value=(value))
 
-class PythonUtxo:
-    def __init__(self, address: str, outpoint: OutPoint, txout: TxOut) -> None:
-        self.outpoint = outpoint
-        self.txout = txout
-        self.address = address
-        self.is_spent_by_txid: Optional[str] = None
+
+@dataclass
+class PythonUtxo(BaseSaveableClass):
+    "A wrapper around tx_builder to collect even more infos"
+
+    VERSION = "0.0.0"
+    known_classes = {**BaseSaveableClass.known_classes, OutPoint.__name__: OutPoint, TxOut.__name__: TxOut}
+
+    address: str
+    outpoint: OutPoint
+    txout: TxOut
+    is_spent_by_txid: Optional[str] = None
+
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["address"] = self.address
+        d["outpoint"] = str(self.outpoint)
+        d["txout"] = self.txout.__key__()
+        d["is_spent_by_txid"] = self.is_spent_by_txid
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        dct["outpoint"] = OutPoint.from_str(dct["outpoint"])
+        dct["txout"] = TxOut.from_seralized_tuple(dct["txout"])
+        return cls(**filtered_for_init(dct, cls))
+
+    def __hash__(self) -> int:
+        # Leverage Python’s tuple‐hashing;
+        # this requires that OutPoint and TxOut themselves be hashable
+        return hash((self.address, str(self.outpoint), self.txout, self.is_spent_by_txid))
 
 
 def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
@@ -280,10 +305,7 @@ class AddressInfoMin(SaveAllClass):
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
@@ -415,10 +437,7 @@ class Balance(QObject, SaveAllClass):
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
 
 def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=True) -> str:

@@ -33,31 +33,44 @@ from typing import Dict, List, Set
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
-from PyQt6.QtWidgets import QLayout, QVBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout
 
 from bitcoin_safe.cpfp_tools import CpfpTools
-from bitcoin_safe.gui.qt.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
+from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.ui_tx.fee_group import (
+    FeeGroup,
+    FeeRateWarningBar,
+    FeeWarningBar,
+)
+from bitcoin_safe.gui.qt.ui_tx.recipients import Recipients
+from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
+from bitcoin_safe.pythonbdk_types import OutPoint, Recipient, TransactionDetails
 
-from ...config import UserConfig
-from ...mempool import MempoolData
-from ...signals import Signals
-from ...wallet import Wallet, get_wallet_of_address, get_wallets, is_local
-from .my_treeview import SearchableTab
-from .recipients import Recipients
+from ....config import UserConfig
+from ....mempool_manager import MempoolManager
+from ....signals import Signals
+from ....wallet import TxStatus, Wallet, get_wallet_of_address, get_wallets, is_local
+from ..my_treeview import SearchableTab
 
 logger = logging.getLogger(__name__)
 
 
 class UITx_Base(SearchableTab):
     def __init__(
-        self, config: UserConfig, signals: Signals, mempool_data: MempoolData, parent=None, **kwargs
+        self,
+        fx: FX,
+        config: UserConfig,
+        signals: Signals,
+        mempool_manager: MempoolManager,
+        parent=None,
+        **kwargs,
     ) -> None:
         super().__init__(parent=parent, **kwargs)
+        self.fx = fx
         self.signal_tracker = SignalTracker()
         self.signals = signals
-        self.mempool_data = mempool_data
+        self.mempool_manager = mempool_manager
         self.config = config
 
         self._layout = QVBoxLayout(self)
@@ -70,21 +83,20 @@ class UITx_Base(SearchableTab):
         self.high_fee_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_warning_label)
 
-    def create_recipients(
-        self,
-        layout: QLayout,
-        parent=None,
-        allow_edit=True,
-    ) -> Recipients:
-        recipients = Recipients(
-            self.signals,
-            network=self.config.network,
-            allow_edit=allow_edit,
-        )
+        # category_linking_warning_bar
+        self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
+        self._layout.addWidget(self.category_linking_warning_bar)
 
-        layout.addWidget(recipients)
-        recipients.setMinimumWidth(250)
-        return recipients
+    def _get_robust_height(self) -> int:
+        "Tries to geth the height from any wallet.  If none are open then tries mempool"
+        for wallet in get_wallets(self.signals):
+            height = wallet.get_height()
+            logger.debug(f"_get_robust_height {height=} from wallet {wallet.id}")
+            return height
+
+        height = self.mempool_manager.fetch_block_tip_height()
+        logger.debug(f"_get_robust_height {height=} from mempool_manager")
+        return height
 
     @staticmethod
     def get_category_dict_of_addresses(addresses: List[str], wallets: List[Wallet]) -> Dict[str, Set[str]]:
@@ -133,18 +145,67 @@ class UITx_Base(SearchableTab):
     def updateUi(self) -> None:
         self.high_fee_rate_warning_label.updateUi()
         self.high_fee_warning_label.updateUi()
+        self.category_linking_warning_bar.updateUi()
 
     def _get_total_non_change_output_amount(self, recipients: List[Recipient], wallet: Wallet | None = None):
-        total_non_change_output_amount = 0
+        total_amount = 0
+        change_amount = 0
         for recipient in recipients:
+            total_amount += recipient.amount
+
             if not recipient.address:
                 continue
+
             this_wallet = wallet if wallet else get_wallet_of_address(recipient.address, self.signals)
             if not this_wallet:
                 continue
-            if not (
-                (address_info := this_wallet.is_my_address_with_peek(recipient.address))
-                and address_info.is_change()
-            ):
-                total_non_change_output_amount += recipient.amount
-        return total_non_change_output_amount
+
+            if not (address_info := this_wallet.is_my_address_with_peek(recipient.address)):
+                continue
+
+            if address_info.is_change():
+                change_amount += recipient.amount
+                continue
+
+        return total_amount - change_amount
+
+    def set_category_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
+        # warn if multiple categories are combined
+        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
+
+        category_dict: Dict[str, Set[str]] = defaultdict(set[str])
+        for wallet in wallets:
+            addresses = [
+                wallet.get_address_of_outpoint(outpoint) for outpoint in outpoints
+            ] + recipient_addresses
+            this_category_dict = self.get_category_dict_of_addresses(
+                [address for address in addresses if address], wallets=[wallet]
+            )
+            for k, v in this_category_dict.items():
+                category_dict[k].update(v)
+
+        self.category_linking_warning_bar.set_category_dict(category_dict)
+
+    def _set_warning_bars(
+        self,
+        outpoints: List[OutPoint],
+        recipient_addresses: List[str],
+        tx_status: TxStatus,
+    ):
+        self.set_category_warning_bar(outpoints=outpoints, recipient_addresses=recipient_addresses)
+
+    def _update_high_fee_warning_label(
+        self, recipients: Recipients, fee_info: FeeInfo | None, tx_status: TxStatus
+    ):
+        total_non_change_output_amount = self._get_total_non_change_output_amount(
+            recipients=recipients.recipients
+        )
+
+        self.high_fee_warning_label.set_fee_to_send_ratio(
+            fee_info=fee_info,
+            total_non_change_output_amount=total_non_change_output_amount,
+            network=self.config.network,
+            # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
+            force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in recipients.recipients]),
+            tx_status=tx_status,
+        )
