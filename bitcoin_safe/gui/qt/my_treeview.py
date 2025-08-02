@@ -958,7 +958,8 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
                     index, QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows
                 )
                 content_index = index
-        else:
+
+        if not model.rowCount():
             # schedule selection for next update
             self._selected_ids_for_next_update = list(content_list)
             self._selected_ids_role_for_next_update = role
