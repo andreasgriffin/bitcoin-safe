@@ -205,6 +205,8 @@ def do_modal_click(
     timeout=5000,
     timer_delay=500,
 ) -> None:
+    dialog_was_opened = False
+
     def click() -> None:
         QApplication.processEvents()
         print("\nwaiting for is_dialog_open")
@@ -219,6 +221,8 @@ def do_modal_click(
         print("is_dialog_open = True")
         print("Do on_open")
         on_open(dialog)
+        nonlocal dialog_was_opened
+        dialog_was_opened = True
 
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
@@ -228,8 +232,8 @@ def do_modal_click(
     else:
         qtbot.mouseClick(click_pushbutton, button)
 
-    qtbot.wait(timer_delay)
     QApplication.processEvents()
+    qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
 
 
 def get_called_args_message_box(

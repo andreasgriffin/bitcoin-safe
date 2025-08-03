@@ -129,8 +129,6 @@ def test_wizard(
 
         w = main_window.welcome_screen.pushButton_singlesig
 
-        dialog_was_opened = False
-
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
@@ -138,12 +136,8 @@ def test_wizard(
 
             dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
             shutter.save(main_window)
-            nonlocal dialog_was_opened
-            dialog_was_opened = True
 
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
-
-        qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
 
         qt_protowallet = main_window.tab_wallets.get_data_for_tab(
             get_tab_with_title(main_window.tab_wallets, title=wallet_name)
