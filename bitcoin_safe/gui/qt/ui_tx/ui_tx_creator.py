@@ -220,14 +220,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.splitter.addWidget(self.column_recipients)
         self.splitter.addWidget(self.column_fee)
         # Make sure it never collapses:
-        self.splitter.setSizes([1, 10, 1])
-        self.splitter.setCollapsible(self.splitter.indexOf(self.column_inputs), True)
-        self.splitter.setCollapsible(self.splitter.indexOf(self.column_recipients), False)
-        self.splitter.setCollapsible(self.splitter.indexOf(self.column_fee), False)
-        # # No stretch: this pane won't grow or shrink
-        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_inputs), 2)
-        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_recipients), 1)
-        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_fee), 0)
+        self.reset_splitter_sizes()
 
         self.column_inputs.checkBox_auto_opportunistic_coin_select.setChecked(opportunistic_coin_select)
         self.column_inputs.checkBox_manual_coin_select.setChecked(manual_coin_select)
@@ -252,6 +245,17 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         # must be after setting signals, to trigger signals when adding a recipient
         self.recipients.add_recipient()
+
+    def reset_splitter_sizes(self):
+
+        self.splitter.setSizes([1, 10, 1])
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_inputs), True)
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_recipients), False)
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_fee), False)
+        # # No stretch: this pane won't grow or shrink
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_inputs), 2)
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_recipients), 1)
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_fee), 0)
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()
@@ -336,7 +340,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if not self._was_shown:
             self._was_shown = True
             if self.initial_tx_ui_infos:
-                self.set_ui(tx_ui_infos=self.initial_tx_ui_infos)
+                try:
+                    # the initial_tx_ui_infos can cause problems since the wallet
+                    # state can have changed in the meantime, such that it requires full rbf
+                    self.set_ui(tx_ui_infos=self.initial_tx_ui_infos)
+                except Exception as e:
+                    logger.error(f"error in loading initial_tx_ui_infos { str(e)}")
+                    self.clear_ui()
             else:
                 self.clear_ui()
 
@@ -835,7 +845,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 except Exception:
                     pass
             else:
-                assert txinfos.replace_tx, "No replace_tx available in bdk."
+                assert (
+                    txinfos.replace_tx
+                ), f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
                 replace_txid = txinfos.replace_tx.compute_txid()
                 replace_tx_details, wallet = get_tx_details(txid=replace_txid, signals=self.signals)
                 if not replace_tx_details:
@@ -894,6 +906,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if tx_ui_infos.hide_UTXO_selection is not None:
             self.column_inputs.checkBox_manual_coin_select.setChecked(not tx_ui_infos.hide_UTXO_selection)
 
+        self.reset_splitter_sizes()
         self.utxo_list.update_content()
         if tx_ui_infos.utxo_dict:
             # first select the correct categories

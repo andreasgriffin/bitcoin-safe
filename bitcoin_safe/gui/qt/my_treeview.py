@@ -937,6 +937,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         role: MyItemDataRole,
         clear_previous_selection=True,
         scroll_to_last=False,
+        retry_next_time=True,
     ) -> None:
         model = self.proxy
         # if the selection was unsuccessfull, then save the selection also for the next update
@@ -958,7 +959,8 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
                     index, QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows
                 )
                 content_index = index
-        else:
+
+        if not model.rowCount() or (retry_next_time and content_index is None):
             # schedule selection for next update
             self._selected_ids_for_next_update = list(content_list)
             self._selected_ids_role_for_next_update = role
