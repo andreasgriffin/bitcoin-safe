@@ -213,6 +213,8 @@ def do_modal_click(
 
         try:
             dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
+            nonlocal dialog_was_opened
+            dialog_was_opened = True
         except Exception as e:
             logger.error(f"Failed to get {cls.__name__}")
             raise e
@@ -221,8 +223,6 @@ def do_modal_click(
         print("is_dialog_open = True")
         print("Do on_open")
         on_open(dialog)
-        nonlocal dialog_was_opened
-        dialog_was_opened = True
 
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
