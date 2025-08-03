@@ -232,7 +232,8 @@ def test_wallet_send(
                 shutter.save(main_window)
                 qt_wallet_tab = main_window.tab_wallets.getCurrentTabData()
                 assert isinstance(qt_wallet_tab, QTWallet)
-                assert qt_wallet_tab.history_list._source_model.rowCount() == 1
+                QApplication.processEvents()
+                assert qt_wallet_tab.history_list._source_model.rowCount() == 2
 
             send_tx()
 
