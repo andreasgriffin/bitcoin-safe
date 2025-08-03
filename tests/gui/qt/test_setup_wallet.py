@@ -126,6 +126,7 @@ def test_wizard(
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
+        shutter.save(main_window)
 
         w = main_window.welcome_screen.pushButton_singlesig
 

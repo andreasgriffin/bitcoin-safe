@@ -108,6 +108,7 @@ class Shutter:
     def save(self, widget: QWidget, delay: float = 0.2) -> None:
         QApplication.processEvents()
         sleep(delay)
+        QApplication.processEvents()
         self.save_screenshot(widget, self.qtbot, self.name)
 
     @staticmethod
