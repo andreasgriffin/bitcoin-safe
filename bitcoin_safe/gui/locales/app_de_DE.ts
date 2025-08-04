@@ -222,7 +222,7 @@
     <name>BackupNsecNotificationBar</name>
     <message>
         <source>Sync key of wallet {wallet_id}:  {nsec}</source>
-        <translation>Sync‑Schlüssel der Wallet {wallet_id}:  {nsec}</translation>
+        <translation>Sync‑Schlüssel der Wallet {wallet_id}: {nsec}</translation>
     </message>
 </context>
 <context>
@@ -435,7 +435,7 @@
     <name>CategoryList</name>
     <message>
         <source>UTXOs</source>
-        <translation>UTXOs</translation>
+        <translation>UTXO&apos;s</translation>
     </message>
 </context>
 <context>
@@ -1503,12 +1503,12 @@ Möchten Sie trotzdem fortfahren?</translation>
     <name>MainWindow</name>
     <message>
         <source>&amp;About</source>
-        <translation>Über</translation>
+        <translation>&amp;Über</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Change</source>
-        <translation>Ändern</translation>
+        <translation>&amp;Änderung</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -3274,7 +3274,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
     <name>ToolGui</name>
     <message>
         <source>XPUBs</source>
-        <translation>XPUBs</translation>
+        <translation>XPUB&apos;s</translation>
     </message>
 </context>
 <context>
