@@ -29,7 +29,7 @@
 
 import hashlib
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import bdkpython as bdk
 import nostr_sdk
@@ -40,14 +40,78 @@ from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QColor
+from PyQt6.QtWidgets import QPushButton
 
+from bitcoin_safe.descriptor_export_tools import shorten_filename
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
-from bitcoin_safe.gui.qt.util import Message
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.util import (
+    Message,
+    adjust_bg_color_for_darkmode,
+    save_file_dialog,
+    svg_tools,
+)
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.storage import filtered_for_init
+from bitcoin_safe.wallet import filename_clean
 
 logger = logging.getLogger(__name__)
+
+
+class BackupNsecNotificationBar(NotificationBar):
+    def __init__(self) -> None:
+        super().__init__(
+            text="",
+            optional_button_text="Save",
+            has_close_button=True,
+            callback_optional_button=self.on_optional_button,
+        )
+        self.nsec = ""
+        self.wallet_id = ""
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
+        self.optionalButton.setIcon(svg_tools.get_QIcon("bi--download.svg"))
+        self.set_icon(svg_tools.get_QIcon("bi--download.svg"))
+        self.setVisible(False)
+        self.icon_label.textLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+
+        self.import_button = QPushButton()
+        self.import_button.setIcon(svg_tools.get_QIcon("bi--upload.svg"))
+        self.add_styled_widget(self.import_button)
+
+    def on_optional_button(self):
+        filename = save_file_dialog(
+            name_filters=["Text (*.txt)", "All Files (*.*)"],
+            default_suffix="txt",
+            default_filename=shorten_filename(
+                filename_clean(f"Sync key {self.wallet_id}", file_extension=".txt"), max_total_length=20
+            ),
+            window_title=f"Save Label backup key",
+        )
+
+        if not filename:
+            return None
+
+        with open(filename, "w") as file:
+            file.write(
+                self.tr("Sync key of wallet {wallet_id}:  {nsec}").format(
+                    wallet_id=self.wallet_id, nsec=self.nsec
+                )
+            )
+        return filename
+
+    def setText(self, value: Optional[str]):
+        self.icon_label.textLabel.setText(value if value else "")
+
+    def set_nsec(self, nsec: str, wallet_id: str) -> None:
+        self.nsec = nsec
+        self.wallet_id = wallet_id
+        self.setText(self.tr("Please backup your sync key.").format(nsec=nsec))
+        self.setHidden(False)
+
+    def updateUi(self):
+        self.import_button.setText(self.tr("Restore labels"))
+        self.optionalButton.setText(self.tr("Save sync key"))
 
 
 class SyncTab(ControlledGroupbox):
@@ -68,8 +132,8 @@ class SyncTab(ControlledGroupbox):
 
         self.groupbox_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        self.checkbox.stateChanged.connect(self.checkbox_state_changed)
-        self.checkbox.clicked.connect(self.publish_key_if_clicked)
+        self.backup_nsec_notificationbar = BackupNsecNotificationBar()
+        self.groupbox_layout.addWidget(self.backup_nsec_notificationbar)
 
         self.nostr_sync = (
             nostr_sync
@@ -95,6 +159,23 @@ class SyncTab(ControlledGroupbox):
         self.nostr_sync.chat.signal_attachement_clicked.connect(self.open_file_object)
         self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
         self.signals.language_switch.connect(self.updateUi)
+        self.backup_nsec_notificationbar.import_button.clicked.connect(self.import_nsec)
+        self.checkbox.stateChanged.connect(self.on_checkbox_state_changed)
+        self.checkbox.clicked.connect(self.publish_key_if_clicked)
+
+    def set_wallet_id(self, wallet_id: str):
+        self.backup_nsec_notificationbar.wallet_id = wallet_id
+
+    def on_checkbox_state_changed(self, value) -> None:
+        if not self.checkbox.isChecked():
+            return
+        self.backup_nsec_notificationbar.set_nsec(
+            nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
+            wallet_id=self.backup_nsec_notificationbar.wallet_id,
+        )
+
+    def import_nsec(self):
+        self.nostr_sync.ui.signal_set_keys.emit()
 
     @staticmethod
     def get_icon_basename(enabled: bool) -> str:
@@ -115,6 +196,7 @@ class SyncTab(ControlledGroupbox):
     def updateUi(self) -> None:
         self.checkbox.setText(self.get_checkbox_text())
         self.checkbox_auto_open_psbts.setText(self.tr("Open received Transactions and PSBTs"))
+        self.backup_nsec_notificationbar.updateUi()
 
     def unsubscribe_all(self) -> None:
         if self.enabled():
@@ -123,17 +205,6 @@ class SyncTab(ControlledGroupbox):
     def finish_init_after_signal_connection(self) -> None:
         if self.enabled():
             self.on_enable(self.enabled())
-
-    def checkbox_state_changed(self, state) -> None:
-        self.on_enable(state == Qt.CheckState.Checked.value)
-        if state == Qt.CheckState.Checked.value:
-            Message(
-                self.tr(
-                    "Please backup your sync key:\n{nsec}\n\nYou can restore your labels at a later time with 'Import Sync Key'."
-                ).format(
-                    nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
-                )
-            )
 
     def subscribe(self) -> None:
         self.nostr_sync.subscribe()
@@ -246,3 +317,7 @@ class SyncTab(ControlledGroupbox):
             self.subscribe()
         else:
             self.nostr_sync.unsubscribe()
+
+    def close(self) -> bool:
+        self.nostr_sync.close()
+        return super().close()

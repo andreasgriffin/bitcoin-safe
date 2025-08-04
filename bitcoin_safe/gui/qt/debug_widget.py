@@ -55,7 +55,7 @@ class DebugWidget(QWidget):
         sizePolicyText = f"{indent}SP: H-{self._cleaned_size_policy(sizePolicy.horizontalPolicy())}, V-{self._cleaned_size_policy(sizePolicy.verticalPolicy())}"
         # sizeText = f"{indent}Size: Min {widget.minimumWidth()}x{widget.minimumHeight()}, Max {widget.maximumWidth()}x{widget.maximumHeight()}"
         sizeText = f"{indent}sizeHint: {widget.sizeHint()}"
-        classNameText = f"{indent}Class: {widget.__class__.__name__}"
+        classNameText = f"{indent}{widget.objectName()} ({widget.__class__.__name__})"
 
         # Margins (for QLayout if exists)
         layout = widget.layout()

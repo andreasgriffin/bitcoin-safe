@@ -56,7 +56,7 @@ from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.gui.qt.wizard import (
     BackupSeed,
@@ -361,7 +361,7 @@ def test_wizard(
 
                 shutter.save(main_window)
 
-                assert qt_wallet.tabs.currentWidget() == qt_wallet.send_tab
+                assert qt_wallet.tabs.currentWidget() == qt_wallet.uitx_creator
                 box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
                 shutter.save(main_window)
                 assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
@@ -375,7 +375,7 @@ def test_wizard(
                     == "#8af296"
                 )
                 fee_info = qt_wallet.uitx_creator.estimate_fee_info(
-                    qt_wallet.uitx_creator.fee_group.spin_fee_rate.value()
+                    qt_wallet.uitx_creator.column_fee.fee_group.spin_fee_rate.value()
                 )
                 assert qt_wallet.uitx_creator.recipients.recipients[0].amount == amount - fee_info.fee_amount
                 assert qt_wallet.uitx_creator.recipients.recipients[0].checked_max_amount
@@ -397,10 +397,10 @@ def test_wizard(
                 assert [recipient.amount for recipient in viewer.recipients.recipients] == [999890]
                 assert viewer.fee_info
                 assert round(viewer.fee_info.fee_rate(), 1) == 1.0
-                assert not viewer.fee_group.allow_edit
-                assert viewer.fee_group.spin_fee_rate.value() == 1.0
-                assert viewer.fee_group.cpfp_fee_label.isVisible()
-                assert not viewer.fee_group.approximate_fee_label.isVisible()
+                assert not viewer.column_fee.fee_group.allow_edit
+                assert viewer.column_fee.fee_group.spin_fee_rate.value() == 1.0
+                assert viewer.column_fee.fee_group.cpfp_fee_label.isVisible()
+                assert not viewer.column_fee.fee_group.approximate_fee_label.isVisible()
 
                 assert not viewer.button_next.isVisible()
                 assert viewer.button_send.isVisible()
@@ -421,7 +421,7 @@ def test_wizard(
                 assert isinstance(widget, HorizontalImportExportAll)
                 assert isinstance(widget.wallet_importers.signer_ui, SignerUI)
                 for button in widget.wallet_importers.signer_ui.findChildren(QPushButton):
-                    assert button.text() == "Sign with seed"
+                    assert button.text() == f"Seed of '{wallet_name}'"
                     assert button.isVisible()
                     button.click()
 
@@ -487,7 +487,7 @@ def test_wizard(
 
         def check_utxo_list():
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
-            qt_wallet.uitx_creator.tabs_inputs.setCurrentWidget(qt_wallet.uitx_creator.tab_inputs_utxos)
+            qt_wallet.uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
             QCoreApplication.processEvents()
 
             utxo_list = qt_wallet.uitx_creator.utxo_list

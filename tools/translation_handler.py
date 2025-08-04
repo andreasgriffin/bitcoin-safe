@@ -106,7 +106,7 @@ def csv_to_ts(csv_path: Path, ts_path: Path):
 
     # Use minidom to pretty-print and preserve raw quotes
     dom = minidom.parseString(rough_string)
-    pretty_xml = dom.toprettyxml(indent="  ", encoding="utf-8")
+    pretty_xml = dom.toprettyxml(encoding="utf-8")
 
     # Write to file without escaped quotes
     with open(ts_path, "wb") as f:
@@ -320,7 +320,7 @@ Content to translate:
             # Check count
             if len(empty_target_indices) == 0:
                 continue
-            if len(lang_lines) != len(empty_target_indices):
+            if len(lang_lines) > len(empty_target_indices):
                 raise ValueError(
                     f"For language '{lang}' in file '{csv_path.name}':\n"
                     f" - The CSV has {len(empty_target_indices)} empty targets.\n"
@@ -340,7 +340,7 @@ Content to translate:
 
             # Write updated rows back to CSV
             with open(csv_path, "w", newline="", encoding="utf-8") as f:
-                fieldnames = [location_key, source_key, target_key]
+                fieldnames = [location_key, "filename", "line", source_key, target_key]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(rows)

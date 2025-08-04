@@ -1,4 +1,7 @@
 name: Build Windows Test Signing
+permissions:
+  contents: read
+
 
 env:
   commitHash: ''

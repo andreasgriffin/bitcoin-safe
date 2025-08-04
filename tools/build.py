@@ -520,6 +520,11 @@ if __name__ == "__main__":
     )
     parser.add_argument("--csv_to_ts", action="store_true", help="Overwrites the ts files with csv as source")
     parser.add_argument(
+        "--weblate_correct",
+        action="store_true",
+        help="Equal to --update_translations and --csv_to_ts. It ensures special characters are restored, which were lost by weblate, by ts-->csv-->ts",
+    )
+    parser.add_argument(
         "--lock",
         action="store_true",
         help="poetry lock --no-update --no-cache. This is important to ensure all hashes are included in the lockfile. ",
@@ -555,6 +560,10 @@ if __name__ == "__main__":
     if args.insert_chatgpt_translations:
         translation_handler = TranslationHandler(module_name="bitcoin_safe")
         translation_handler.insert_chatgpt_translations()
+    if args.weblate_correct:
+        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler.update_translations_from_py()
+        translation_handler.csv_to_ts()
 
     if args.sign:
         builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)

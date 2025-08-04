@@ -60,28 +60,30 @@ from typing import Any, Dict, List
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from bitcoin_safe_lib.util import time_logger
-from PyQt6.QtCore import QModelIndex, QPoint, Qt, pyqtSignal
-from PyQt6.QtGui import (
-    QBrush,
-    QColor,
-    QDragEnterEvent,
-    QDragMoveEvent,
-    QDropEvent,
-    QFont,
-    QStandardItem,
-)
+from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QBrush, QColor, QDropEvent, QFont, QStandardItem
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
     QHBoxLayout,
+    QLabel,
+    QMenu,
     QPushButton,
+    QTreeView,
     QWidget,
 )
 
+from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
+from bitcoin_safe.gui.qt.category_manager.category_manager import AddressDragInfo
+from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.pythonbdk_types import Balance
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.util_os import webopen
 
 from ...config import UserConfig
@@ -96,8 +98,8 @@ from ...signals import (
     WalletSignals,
 )
 from ...wallet import TxStatus, Wallet
-from .category_list import CategoryEditor
 from .my_treeview import (
+    DropRule,
     MyItemDataRole,
     MySortModel,
     MyStandardItemModel,
@@ -105,11 +107,11 @@ from .my_treeview import (
     TreeViewWithToolbar,
     needs_frequent_flag,
 )
-from .taglist import AddressDragInfo
 from .util import (
     ColorScheme,
     Message,
     block_explorer_URL,
+    category_color,
     create_color_circle,
     do_copy,
     sort_id_to_icon,
@@ -118,25 +120,23 @@ from .util import (
 logger = logging.getLogger(__name__)
 
 
-class ImportLabelMenu:
-    def __init__(self, upper_menu: Menu, wallet_signals: WalletSignals) -> None:
+class ImportLabelMenu(Menu):
+    def __init__(self, wallet_signals: WalletSignals) -> None:
+        super().__init__()
         self.wallet_signals = wallet_signals
-        self.import_label_menu = upper_menu.add_menu(
-            "",
-        )
 
-        self.action_import = self.import_label_menu.add_action(
+        self.action_import = self.add_action(
             "", self.wallet_signals.import_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
-        self.action_bip329_import = self.import_label_menu.add_action(
+        self.action_bip329_import = self.add_action(
             "", self.wallet_signals.import_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
-        self.action_electrum_import = self.import_label_menu.add_action(
+        self.action_electrum_import = self.add_action(
             "",
             self.wallet_signals.import_electrum_wallet_labels.emit,
             icon=svg_tools.get_QIcon("bi--upload.svg"),
         )
-        self.action_nostr_import = self.import_label_menu.add_action(
+        self.action_nostr_import = self.add_action(
             "",
             self.import_nostr_labels,
             icon=svg_tools.get_QIcon("bi--cloud.svg"),
@@ -152,34 +152,30 @@ class ImportLabelMenu:
         )
 
     def updateUi(self) -> None:
-        self.import_label_menu.setTitle(translate("menu", "Import Labels"))
-        self.action_import.setText(translate("menu", "Import Labels"))
-        self.action_bip329_import.setText(translate("menu", "Import Labels (BIP329 / Sparrow)"))
-        self.action_electrum_import.setText(translate("menu", "Import Labels (Electrum Wallet)"))
-        self.action_nostr_import.setText(
-            translate("menu", "Restore labels from cloud using an existing sync key")
-        )
+        self.setTitle(self.tr("Import Labels"))
+        self.action_import.setText(self.tr("Import Labels"))
+        self.action_bip329_import.setText(self.tr("Import Labels (BIP329 / Sparrow)"))
+        self.action_electrum_import.setText(self.tr("Import Labels (Electrum Wallet)"))
+        self.action_nostr_import.setText(self.tr("Restore labels from cloud using an existing sync key"))
 
 
-class ExportLabelMenu:
-    def __init__(self, upper_menu: Menu, wallet_signals: WalletSignals) -> None:
+class ExportLabelMenu(Menu):
+    def __init__(self, wallet_signals: WalletSignals) -> None:
+        super().__init__()
         self.wallet_signals = wallet_signals
-        self.export_label_menu = upper_menu.add_menu(
-            "",
-        )
 
-        self.action_export_full = self.export_label_menu.add_action(
+        self.action_export_full = self.add_action(
             "", self.wallet_signals.export_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
-        self.action_bip329 = self.export_label_menu.add_action(
+        self.action_bip329 = self.add_action(
             "", self.wallet_signals.export_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         self.updateUi()
 
     def updateUi(self) -> None:
-        self.export_label_menu.setTitle(translate("menu", "Export Labels"))
-        self.action_export_full.setText(translate("export", "Export Labels"))
-        self.action_bip329.setText(translate("export", "Export Labels for other wallets (BIP329)"))
+        self.setTitle(self.tr("Export Labels"))
+        self.action_export_full.setText(self.tr("Export Labels"))
+        self.action_bip329.setText(self.tr("Export Labels for other wallets (BIP329)"))
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -194,7 +190,7 @@ class AddressUsageStateFilter(IntEnum):
             self.ALL: translate("address_list", "All status"),
             self.UNUSED: translate("address_list", "Unused"),
             self.FUNDED: translate("address_list", "Funded"),
-            self.USED_AND_EMPTY: translate("address_list", "Used"),
+            self.USED_AND_EMPTY: translate("address_list", "Used and empty"),
             self.FUNDED_OR_UNUSED: translate("address_list", "Funded or Unused"),
         }[self]
 
@@ -212,11 +208,12 @@ class AddressTypeFilter(IntEnum):
         }[self]
 
 
-class AddressList(MyTreeView):
+class AddressList(MyTreeView[str]):
     signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
 
     class Columns(MyTreeView.BaseColumnsEnum):
         NUM_TXS = enum.auto()
+        WALLET_ID = enum.auto()
         TYPE = enum.auto()
         INDEX = enum.auto()
         ADDRESS = enum.auto()
@@ -234,6 +231,7 @@ class AddressList(MyTreeView):
     ]
     column_alignments = {
         Columns.NUM_TXS: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.WALLET_ID: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.TYPE: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.INDEX: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.ADDRESS: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
@@ -255,10 +253,11 @@ class AddressList(MyTreeView):
         self,
         fx: FX,
         config: UserConfig,
-        wallet: Wallet,
-        wallet_signals: WalletSignals,
         signals: Signals,
+        wallets: List[Wallet] | None = None,
         hidden_columns: List[int] | None = None,
+        selected_ids: List[str] | None = None,
+        _scroll_position=0,
     ) -> None:
         super().__init__(
             config=config,
@@ -269,14 +268,17 @@ class AddressList(MyTreeView):
             sort_column=AddressList.Columns.COIN_BALANCE,
             sort_order=Qt.SortOrder.DescendingOrder,
             hidden_columns=hidden_columns,
+            selected_ids=selected_ids,
+            _scroll_position=_scroll_position,
         )
         self.fx = fx
-        self.wallet_signals = wallet_signals
-        self.wallet = wallet
+        self.wallets: Dict[str, Wallet] = {}
+        self._signal_tracker_wallet_signals = SignalTracker()
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-        self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
-        self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
+        self.current_change_filter = AddressTypeFilter.ALL
+        self.current_used_filter = AddressUsageStateFilter.ALL
+        self.current_category_filter: str | None = None
         self._source_model = MyStandardItemModel(
             key_column=self.key_column,
             parent=self,
@@ -289,114 +291,196 @@ class AddressList(MyTreeView):
             source_model=self._source_model,
             sort_role=MyItemDataRole.ROLE_SORT_ORDER,
         )
+        self.set_wallets(wallets=wallets)
+
         ColorScheme.update_from_widget(self)
+
         self.setModel(self.proxy)
         self.setSortingEnabled(True)  # Allow user to sort by clicking column headers
         self.updateUi()
 
         # signals
-        self.wallet_signals.updated.connect(self.update_with_filter)
-        self.wallet_signals.language_switch.connect(self.updateUi)
         self.fx.signal_data_updated.connect(self.on_update_fx_rates)
 
-    def updateUi(self) -> None:
+    def _set_wallets(self, wallets: List[Wallet] | None):
+        self._signal_tracker_wallet_signals.disconnect_all()
+
+        self.wallets.clear()
+        self.wallets.update({wallet.id: wallet for wallet in wallets} if wallets else {})
+        for wallet_id in self.wallets.keys():
+            wallet_signals = self.signals.wallet_signals.get(wallet_id)
+            if not wallet_signals:
+                continue
+            self._signal_tracker_wallet_signals.connect(wallet_signals.updated, self.update_with_filter)
+
+    def set_wallets(self, wallets: List[Wallet] | None):
+        self._set_wallets(wallets=wallets)
         self.update_content()
 
-    def dragEnterEvent(self, e: QDragEnterEvent | None) -> None:
-        super().dragEnterEvent(e)
-        if not e or e.isAccepted():
-            return
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        return d
 
-        if (mime_data := e.mimeData()) and self.get_json_mime_data(mime_data) is not None:
-            e.acceptProposedAction()
-        else:
-            e.ignore()
+    def get_drop_rules(self) -> List[DropRule]:
 
-    def dragMoveEvent(self, event: QDragMoveEvent | None) -> None:
-        super().dragMoveEvent(event)
-        if not event:
-            return
-        if event.isAccepted():
-            return
+        # ─── “drag_tag” JSON only ON items ─────────────────────────────────
+        def mime_pred_tag(md: QMimeData) -> bool:
+            d = self.get_json_mime_data(md)
+            return bool(d and d.get("type") == "drag_tag" and isinstance(d.get("tag"), (list, str)))
 
-        if (mime_data := event.mimeData()) and (
-            json_mime_data := self.get_json_mime_data(mime_data)
-        ) is not None:
-            event.acceptProposedAction()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event: QDropEvent) -> None:  # type: ignore[override]
-        # handle dropped files
-        super().dropEvent(event)
-        if event.isAccepted():
-            return
-
-        index = self.indexAt(event.position().toPoint())
-        if not index.isValid():
-            # Handle the case where the drop is not on a valid index
-            return
-
-        if (mime_data := event.mimeData()) and (
-            json_mime_data := self.get_json_mime_data(mime_data)
-        ) is not None:
-            model = self.model()
-            hit_address = model.data(model.index(index.row(), self.Columns.ADDRESS))
-            if json_mime_data.get("type") == "drag_tag":
-                if hit_address is not None:
-                    drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                    self.signal_tag_dropped.emit(drag_info)
-                event.accept()
+        def handler_tag(view: QTreeView, e: QDropEvent, source_idx: QModelIndex) -> None:
+            md = e.mimeData()
+            if not md:
+                e.ignore()
+                return
+            d = self.get_json_mime_data(md)
+            if not isinstance(d, dict):
+                e.ignore()
+                return
+            tag = d["tag"]
+            # if it's a singleton list, unwrap it:
+            if isinstance(tag, list) and len(tag) == 1:
+                tag = tag[0]
+            if not isinstance(tag, str | None):
+                e.ignore()
                 return
 
-            elif mime_data.hasUrls():
-                # Iterate through the list of dropped file URLs
-                for url in mime_data.urls():
-                    # Convert URL to local file path
-                    self.signals.open_file_path.emit(url.toLocalFile())
-        event.ignore()
-
-    def on_double_click(self, idx: QModelIndex) -> None:
-        addr = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
-        self.wallet_signals.show_address.emit(addr, self.wallet.id)
-
-    def get_address(self, force_new=False, category: str | None = None) -> bdk.AddressInfo:
-        if force_new:
-            address_info = self.wallet.get_address(force_new=force_new)
-            address = str(address_info.address)
-            self.wallet.labels.set_addr_category(address, category, timestamp="now")
-            self.wallet_signals.updated.emit(
-                UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.NewAddressRevealed)
+            # lookup the hit‐address under the drop index
+            hit_address = self._source_model.data(
+                self._source_model.index(source_idx.row(), self.Columns.ADDRESS)
             )
+            if hit_address is not None:
+                info = AddressDragInfo([tag], [hit_address])
+                self.signal_tag_dropped.emit(info)
+                e.acceptProposedAction()
+            else:
+                e.ignore()
+
+        return super().get_drop_rules() + [
+            DropRule(
+                mime_pred=mime_pred_tag,
+                allowed_positions=[
+                    QAbstractItemView.DropIndicatorPosition.OnItem,
+                ],
+                handler=handler_tag,
+            ),
+        ]
+
+    def get_wallet(self, row: int) -> None | Wallet:
+        item = self._source_model.item(row, self.Columns.WALLET_ID)
+        if not item:
+            return None
+        wallet_id = item.data(role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        if not wallet_id:
+            return None
+        return self.wallets.get(wallet_id)
+
+    def on_double_click(self, source_idx: QModelIndex) -> None:
+        addr = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
+        if not addr or not (wallet := self.get_wallet(source_idx.row())):
+            return
+        wallet_signals = self.signals.wallet_signals.get(wallet.id)
+        if not wallet_signals:
+            return
+        wallet_signals.show_address.emit(addr, wallet.id)
+
+    def get_address(
+        self,
+        wallet: Wallet,
+        force_new=False,
+        category: str | None = None,
+    ) -> bdk.AddressInfo:
+        if force_new:
+            address_info = wallet.get_address(force_new=force_new)
+            address = str(address_info.address)
+            wallet.labels.set_addr_category(address, category, timestamp="now")
+
+            if wallet_signals := self.signals.wallet_signals.get(wallet.id):
+                wallet_signals.updated.emit(
+                    UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.NewAddressRevealed)
+                )
         else:
-            address_info = self.wallet.get_unused_category_address(category)
+            address_info = wallet.get_unused_category_address(category)
             address = str(address_info.address)
 
             if self.signals:
-                self.signals.wallet_signals[self.wallet.id].updated.emit(
+                self.signals.wallet_signals[wallet.id].updated.emit(
                     UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.GetUnusedCategoryAddress)
                 )
 
         do_copy(address, title=self.tr("Address {address}").format(address=address))
-        self.select_row(address, self.Columns.ADDRESS)
+        self.select_row_by_key(address, scroll_to_last=True)
         return address_info
 
-    def toggle_change(self, state: int) -> None:
-        if state == self.show_change:
+    def set_filter_change(self, state: int) -> None:
+        if state == self.current_change_filter:
             return
-        self.show_change = AddressTypeFilter(state)
-        self.update_content()
 
-    def toggle_used(self, state: int) -> None:
-        if state == self.show_used:
+        self.current_change_filter = AddressTypeFilter(state)
+        self.update_base_hidden_rows()
+        self.filter()
+
+    def set_filter_used(self, state: int) -> None:
+        if state == self.current_used_filter:
             return
-        self.show_used = AddressUsageStateFilter(state)
-        self.update_content()
+        self.current_used_filter = AddressUsageStateFilter(state)
+        self.update_base_hidden_rows()
+        self.filter()
+
+    def set_filter_category(self, category_info: CategoryInfo | None) -> None:
+        if (category_info is None and self.current_category_filter is None) or (
+            category_info and category_info.category == self.current_category_filter
+        ):
+            return
+        self.current_category_filter = category_info.category if category_info else None
+        self.update_base_hidden_rows()
+        self.filter()
+
+    def update_base_hidden_rows(self):
+        self.base_hidden_rows.clear()
+
+        hidden_rows_type = set()
+        hidden_rows_used = set()
+        hidden_rows_category = set()
+
+        for row in range(self._source_model.rowCount()):
+            address = self._source_model.data(self._source_model.index(row, self.Columns.ADDRESS))
+            if not (wallet := self.get_wallet(row)):
+                continue
+
+            if self.current_change_filter == AddressTypeFilter.RECEIVING and not wallet.is_receive(address):
+                hidden_rows_type.add(row)
+            elif self.current_change_filter == AddressTypeFilter.CHANGE and not wallet.is_change(address):
+                hidden_rows_type.add(row)
+
+            balance = wallet.get_addr_balance(address).total
+            is_used = wallet.address_is_used(address)
+            is_used_and_empty = is_used and balance == 0
+            if self.current_used_filter == AddressUsageStateFilter.UNUSED and is_used:
+                hidden_rows_used.add(row)
+            if self.current_used_filter == AddressUsageStateFilter.FUNDED and (balance == 0):
+                hidden_rows_used.add(row)
+            if self.current_used_filter == AddressUsageStateFilter.USED_AND_EMPTY and not is_used_and_empty:
+                hidden_rows_used.add(row)
+            if self.current_used_filter == AddressUsageStateFilter.FUNDED_OR_UNUSED and (
+                (balance == 0) and is_used
+            ):
+                hidden_rows_used.add(row)
+
+            if (
+                self.current_category_filter
+                and wallet.labels.get_category(address) != self.current_category_filter
+            ):
+                hidden_rows_category.add(row)
+
+        self.base_hidden_rows.update(hidden_rows_type)
+        self.base_hidden_rows.update(hidden_rows_used)
+        self.base_hidden_rows.update(hidden_rows_category)
 
     def on_update_fx_rates(self):
         addresses_with_balance = []
 
-        model = self.sourceModel()
+        model = self._source_model
         for row in range(model.rowCount()):
             address = model.data(model.index(row, self.Columns.ADDRESS))
             balance = model.data(
@@ -417,7 +501,7 @@ class AddressList(MyTreeView):
         self._before_update_content()
         remaining_addresses = set(update_filter.addresses)
 
-        model = self.sourceModel()
+        model = self._source_model
         log_info = []
         # Select rows with an ID in id_list
         for row in range(model.rowCount()):
@@ -439,30 +523,33 @@ class AddressList(MyTreeView):
                 remaining_addresses = remaining_addresses - set([address])
 
         # get_maximum_index
-        # address_infos_min = max([self.wallet.get_address_info_min( address) for address in remaining_addresses ])
+        # address_infos_min = max([wallet.get_address_info_min( address) for address in remaining_addresses ])
         # max_index =
 
         # sometimes additional addresses are updated,
         # i can add them here without recreating the whole model
         if remaining_addresses:
-            for address in set(self.wallet.get_addresses()).intersection(remaining_addresses):
-                log_info.append((0, str(address)[:6]))  # no sensitive info in log
-                self.append_address(address)
-                remaining_addresses = remaining_addresses - set([address])
+            for wallet in self.wallets.values():
+                for address in set(wallet.get_addresses()).intersection(remaining_addresses):
+                    log_info.append((0, str(address)[:6]))  # no sensitive info in log
+                    self.append_address(wallet=wallet, address=address)
+                    remaining_addresses = remaining_addresses - set([address])
 
         logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
     def get_headers(self) -> Dict["AddressList.Columns", str]:
+        currency_symbol = self.fx.get_currency_symbol()
         return {
             self.Columns.NUM_TXS: self.tr("Tx"),
+            self.Columns.WALLET_ID: self.tr("Wallet"),
             self.Columns.TYPE: self.tr("Type"),
             self.Columns.INDEX: self.tr("Index"),
             self.Columns.ADDRESS: self.tr("Address"),
             self.Columns.CATEGORY: self.tr("Category"),
             self.Columns.LABEL: self.tr("Label"),
             self.Columns.COIN_BALANCE: self.tr("Balance"),
-            self.Columns.FIAT_BALANCE: "$ " + self.tr("Value"),
+            self.Columns.FIAT_BALANCE: currency_symbol + " " + self.tr("Value"),
         }
 
     def update_content(self) -> None:
@@ -471,34 +558,17 @@ class AddressList(MyTreeView):
         logger.debug(f"{self.__class__.__name__} update")
         self._before_update_content()
 
-        current_selected_key = self.get_role_data_for_current_item(
-            col=self.key_column, role=MyItemDataRole.ROLE_KEY
-        )
-        if self.show_change == AddressTypeFilter.RECEIVING:
-            addr_list = self.wallet.get_receiving_addresses()
-        elif self.show_change == AddressTypeFilter.CHANGE:
-            addr_list = self.wallet.get_change_addresses()
-        else:
-            addr_list = self.wallet.get_addresses()
         self._source_model.clear()
         self.update_headers(self.get_headers())
-        for address in addr_list:
-            self.append_address(address)
+        for wallet in self.wallets.values():
+            for address in wallet.get_addresses():
+                self.append_address(wallet, address)
 
+        self.update_base_hidden_rows()
         self._after_update_content()
         super().update_content()
 
-    def append_address(self, address: str) -> None:
-        balance = self.wallet.get_addr_balance(address).total
-        is_used_and_empty = self.wallet.address_is_used(address) and balance == 0
-        if self.show_used == AddressUsageStateFilter.UNUSED and (balance or is_used_and_empty):
-            return
-        if self.show_used == AddressUsageStateFilter.FUNDED and balance == 0:
-            return
-        if self.show_used == AddressUsageStateFilter.USED_AND_EMPTY and not is_used_and_empty:
-            return
-        if self.show_used == AddressUsageStateFilter.FUNDED_OR_UNUSED and is_used_and_empty:
-            return
+    def append_address(self, wallet: Wallet, address: str) -> None:
         labels = [""] * len(self.Columns)
         labels[self.Columns.ADDRESS] = address
         item = [QStandardItem(e) for e in labels]
@@ -511,9 +581,11 @@ class AddressList(MyTreeView):
         self.set_editability(item)
         # setup column 0
 
-        address_info_min = self.wallet.get_address_info_min(address)
+        address_info_min = wallet.get_address_info_min(address)
         if address_info_min:
             sort_tuple = (address_info_min.address_path()[0], -address_info_min.address_path()[1])
+            item[self.Columns.WALLET_ID].setText(wallet.id)
+            item[self.Columns.WALLET_ID].setData(wallet.id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
             item[self.Columns.INDEX].setText(str(address_info_min.index))
             item[self.Columns.INDEX].setData(address_info_min.index, MyItemDataRole.ROLE_CLIPBOARD_DATA)
             item[self.Columns.INDEX].setData(sort_tuple, MyItemDataRole.ROLE_SORT_ORDER)
@@ -541,55 +613,58 @@ class AddressList(MyTreeView):
     def refresh_row(self, key: str, row: int) -> None:
         assert row is not None
         address = key
-        label = self.wallet.get_label_for_address(address)
-        category = self.wallet.labels.get_category(address)
+        wallet = self.get_wallet(row)
+        if not wallet:
+            return
 
-        txids = self.wallet.get_involved_txids(address)
-        fulltxdetails = [self.wallet.get_dict_fulltxdetail().get(txid) for txid in txids]
+        label = wallet.get_label_for_address(address)
+        category = wallet.labels.get_category(address)
+
+        txids = wallet.get_involved_txids(address)
+        fulltxdetails = [wallet.get_dict_fulltxdetail().get(txid) for txid in txids]
         txs_involed = [fulltxdetail.tx for fulltxdetail in fulltxdetails if fulltxdetail]
 
-        statuses = [TxStatus.from_wallet(tx.txid, self.wallet) for tx in txs_involed]
+        statuses = [TxStatus.from_wallet(tx.txid, wallet) for tx in txs_involed]
         min_status = sorted(statuses, key=lambda status: status.sort_id())[0] if statuses else None
         icon_path = sort_id_to_icon(min_status.sort_id()) if min_status else None
         num = len(txs_involed)
 
-        balance = self.wallet.get_addr_balance(address).total
-        balance_text = str(Satoshis(balance, self.wallet.network))
+        balance = wallet.get_addr_balance(address).total
+        balance_text = str(Satoshis(balance, wallet.network))
         # create item
 
-        dollar_amount = self.fx.to_fiat("usd", balance)
+        fiat_value = self.fx.btc_to_fiat(balance)
         fiat_balance_str = (
-            self.fx.format_dollar(dollar_amount, prepend_dollar_sign=False)
-            if dollar_amount is not None
-            else ""
+            self.fx.fiat_to_str(fiat_value, use_currency_symbol=False) if fiat_value is not None else ""
         )
         _item = [self._source_model.item(row, col) for col in self.Columns]
-        item = [entry for entry in _item if entry]
-        if needs_frequent_flag(status=min_status):
-            item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
-        item[self.Columns.LABEL].setText(label)
-        item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.CATEGORY].setText(category if category else "")
-        item[self.Columns.CATEGORY].setData(category, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.CATEGORY].setBackground(CategoryEditor.color(category))
-        item[self.Columns.COIN_BALANCE].setText(balance_text)
+        items = [entry for entry in _item if entry]
+        items[self.key_column].setData(
+            needs_frequent_flag(status=min_status), role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG
+        )
+        items[self.Columns.LABEL].setText(label)
+        items[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.CATEGORY].setText(category if category else "")
+        items[self.Columns.CATEGORY].setData(category, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.CATEGORY].setBackground(category_color(category))
+        items[self.Columns.COIN_BALANCE].setText(balance_text)
         color = (
             self.palette().color(self.foregroundRole()) if balance else QColor(255 // 2, 255 // 2, 255 // 2)
         )
-        item[self.Columns.COIN_BALANCE].setForeground(QBrush(color))
-        item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
-        item[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
-        item[self.Columns.FIAT_BALANCE].setForeground(QBrush(color))
-        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.FIAT_BALANCE].setData(dollar_amount, MyItemDataRole.ROLE_SORT_ORDER)
+        items[self.Columns.COIN_BALANCE].setForeground(QBrush(color))
+        items[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
+        items[self.Columns.COIN_BALANCE].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.FIAT_BALANCE].setText(fiat_balance_str)
+        items[self.Columns.FIAT_BALANCE].setForeground(QBrush(color))
+        items[self.Columns.FIAT_BALANCE].setData(fiat_value, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.FIAT_BALANCE].setData(fiat_value, MyItemDataRole.ROLE_SORT_ORDER)
         # item[self.Columns.NUM_TXS].setText("%d" % num)
-        item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
-        item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.NUM_TXS].setData(
+        items[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
+        items[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.NUM_TXS].setData(
             min_status.sort_id() if min_status else -1, MyItemDataRole.ROLE_SORT_ORDER
         )
-        item[self.Columns.NUM_TXS].setIcon(svg_tools.get_QIcon(icon_path))
+        items[self.Columns.NUM_TXS].setIcon(svg_tools.get_QIcon(icon_path))
 
         # calculated_width = QFontMetrics(self.font()).horizontalAdvance(balance_text)
         # current_width = self.header().sectionSize(self.Columns.ADDRESS)
@@ -599,24 +674,21 @@ class AddressList(MyTreeView):
 
     def create_menu(self, position: QPoint) -> Menu:
         menu = Menu()
-        # is_multisig = isinstance(self.wallet, Multisig_Wallet)
+        # is_multisig = isinstance(wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.ADDRESS)
-        if not selected:
+        selected_items = [item for idx in selected if (item := self.item_from_index(idx))]
+        if not selected_items:
             return menu
-        multi_select = len(selected) > 1
-        selected_items = [self.item_from_index(item) for item in selected]
-        addrs = [item.text() for item in selected_items if item]
+        multi_select = len(selected_items) > 1
+        addrs = [item.text() for item in selected_items]
         if not multi_select:
-            idx = self.indexAt(position)
-            if not idx.isValid():
-                return menu
-            item = self.item_from_index(idx)
-            if not item:
-                return menu
             addr = addrs[0]
-            menu.add_action(
-                self.tr("Details"), partial(self.wallet_signals.show_address.emit, addr, self.wallet.id)
-            )
+
+            wallet = self.get_wallet(selected_items[0].index().row())
+            if wallet and (wallet_signals := self.signals.wallet_signals.get(wallet.id)):
+                menu.add_action(
+                    self.tr("Details"), partial(wallet_signals.show_address.emit, addr, wallet.id)
+                )
 
             addr_URL = block_explorer_URL(self.config.network_config.mempool_url, "addr", addr)
             if addr_URL:
@@ -626,11 +698,12 @@ class AddressList(MyTreeView):
                     icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
 
-            menu.addSeparator()
-            self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.key_column])
-
-        self._add_category_menu(menu, addrs)
         menu.addSeparator()
+        self._add_category_menu(menu, addrs)
+
+        if selected and not multi_select:
+            menu.addSeparator()
+            self.add_copy_menu(menu, selected[0], include_columns_even_if_hidden=[self.key_column])
 
         menu.add_action(
             self.tr("Copy as csv"),
@@ -640,9 +713,9 @@ class AddressList(MyTreeView):
             ),
             icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
+
         menu.addSeparator()
-        self.export_label_menu = ExportLabelMenu(menu, wallet_signals=self.wallet_signals)
-        self.import_label_menu = ImportLabelMenu(menu, wallet_signals=self.wallet_signals)
+        self._context_menu_import_export = self.recreate_export_import_menu(menu)
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
         if viewport := self.viewport():
@@ -650,16 +723,52 @@ class AddressList(MyTreeView):
 
         return menu
 
+    def recreate_export_import_menu(self, menu: QMenu, position: int | None = None) -> List[QMenu]:
+        # 1) Remove any old export/import sub‑menus
+        for action in list(menu.actions()):
+            sub = action.menu()
+            if isinstance(sub, (ExportLabelMenu, ImportLabelMenu)):
+                menu.removeAction(action)
+
+        # 2) Build the fresh list of sub‑menus
+        new_menus: list[QMenu] = []
+        for wallet_id in self.wallets.keys():
+            wallet_signals = self.signals.wallet_signals.get(wallet_id)
+            if not wallet_signals:
+                continue
+            export_menu = ExportLabelMenu(wallet_signals=wallet_signals)
+            import_menu = ImportLabelMenu(wallet_signals=wallet_signals)
+            new_menus += [export_menu, import_menu]
+
+        # 3) Insert (or append) the new menus in one place
+        existing_actions = menu.actions()
+        if position is None:
+            position = len(existing_actions)
+        if 0 <= position < len(existing_actions):
+            # If inserting in the middle, insert each submenu BEFORE the same anchor action,
+            # iterating in reverse so they end up in the correct order.
+            anchor = existing_actions[position]
+            for submenu in reversed(new_menus):
+                menu.insertMenu(anchor, submenu)
+        else:
+            # Otherwise just append them at the end
+            for submenu in new_menus:
+                menu.addMenu(submenu)
+
+        return new_menus
+
     def _add_category_menu(self, menu: Menu, addresses: List[str]):
         category_menu = menu.add_menu(self.tr("Set category"))
 
-        for category in self.wallet.labels.categories:
+        categories = sum([wallet.labels.categories for wallet in self.wallets.values()], [])
+
+        for category in categories:
             # When the user selects the action, emit the drop signal with the category and address.
             action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], addresses))
             category_menu.add_action(
                 category,
                 action,
-                icon=create_color_circle(CategoryEditor.color(category)),
+                icon=create_color_circle(category_color(category)),
             )
 
         return menu
@@ -669,49 +778,122 @@ class AddressList(MyTreeView):
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=MyItemDataRole.ROLE_KEY)
 
-    def on_edited(self, idx, edit_key, *, text) -> None:
-        self.wallet.labels.set_addr_label(edit_key, text, timestamp="now")
+    def on_edited(self, source_idx: QModelIndex, edit_key: str, text: str) -> None:
+        wallet = self.get_wallet(source_idx.row())
+        if not wallet:
+            return
+        wallet.labels.set_addr_label(edit_key, text, timestamp="now")
         categories = []
-        if not self.wallet.labels.get_category_raw(edit_key):
+        if not wallet.labels.get_category_raw(edit_key):
             # also fix the category to have consitency across wallets via the labelsyncer
-            category = self.wallet.labels.get_category(edit_key)
+            category = wallet.labels.get_category(edit_key)
             categories += [category]
-            self.wallet.labels.set_addr_category(edit_key, category, timestamp="now")
-        self.wallet_signals.updated.emit(
-            UpdateFilter(
-                addresses=[edit_key],
-                categories=categories,
-                txids=self.wallet.get_involved_txids(edit_key),
-                reason=UpdateFilterReason.UserInput,
+            wallet.labels.set_addr_category(edit_key, category, timestamp="now")
+
+        if wallet_signals := self.signals.wallet_signals.get(wallet.id):
+            wallet_signals.updated.emit(
+                UpdateFilter(
+                    addresses=[edit_key],
+                    categories=categories,
+                    txids=wallet.get_involved_txids(edit_key),
+                    reason=UpdateFilterReason.UserInput,
+                )
             )
-        )
+
+    def close(self) -> bool:
+        self.setParent(None)
+        self._signal_tracker_wallet_signals.disconnect_all()
+        return super().close()
 
 
 class AddressListWithToolbar(TreeViewWithToolbar):
+    VERSION = "0.0.0"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+        AddressList.__name__: AddressList,
+    }
+
     def __init__(
         self,
         address_list: AddressList,
         config: UserConfig,
+        category_core: CategoryCore | None = None,
         parent: QWidget | None = None,
-        signals: Signals | None = None,
     ) -> None:
-        super().__init__(address_list, config, parent=parent)
-        self.signals = signals
+        super().__init__(address_list, config, toolbar_is_visible=True, parent=parent)
+        self.default_export_csv_filename = (
+            f"category_export_{','.join([wallet_id for wallet_id in  address_list.wallets.keys()])}.csv"
+        )
+        self.category_core = category_core
         self.address_list: AddressList = address_list
         self.change_button = QComboBox(self)
-        self.change_button.currentIndexChanged.connect(self.address_list.toggle_change)
-        for addr_type in AddressTypeFilter.__members__.values():
-            self.change_button.addItem(addr_type.ui_text())
+        self.change_button.currentIndexChanged.connect(self.address_list.set_filter_change)
+        for addr_type in AddressTypeFilter:
+            self.change_button.addItem(addr_type.ui_text(), addr_type)
+
         self.used_button = QComboBox(self)
-        self.used_button.currentIndexChanged.connect(self.address_list.toggle_used)
-        for addr_usage_state in AddressUsageStateFilter.__members__.values():
-            self.used_button.addItem(addr_usage_state.ui_text())
+        self.used_button.currentIndexChanged.connect(self.address_list.set_filter_used)
+        for addr_usage_state in AddressUsageStateFilter:
+            self.used_button.addItem(addr_usage_state.ui_text(), addr_usage_state)
+
+        self.button_create_address = QPushButton()
+        self.button_create_address.setIcon(svg_tools.get_QIcon("bi--plus-lg.svg"))
+        self.button_create_address.clicked.connect(self.on_create_address)
+        self.button_create_address_label = QLabel()
+
+        self.category_combobox = CategoryComboBox(category_core=self.category_core)
 
         self.create_layout()
         self.updateUi()
 
-        self.address_list.wallet_signals.language_switch.connect(self.updateUi)
-        self.address_list.wallet_signals.updated.connect(self.update_with_filter)
+        self.address_list.signals.language_switch.connect(self.updateUi)
+        self.address_list.signals.any_wallet_updated.connect(self.update_with_filter)
+        self.category_combobox.currentIndexChanged.connect(self.on_change_category_menu)
+
+    def set_category_core(self, category_core: CategoryCore | None):
+        self.category_core = category_core
+        self.category_combobox.set_category_core(category_core=category_core)
+        self._menu_import_export = self.address_list.recreate_export_import_menu(self.menu)
+
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["address_list"] = self.address_list
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "AddressListWithToolbar":
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+        return cls(**filtered_for_init(dct, cls))
+
+    def on_create_address(self, wallet_id: str | None = None):
+        if not self.category_core:
+            return
+        category = self.category_combobox.currentText()
+        if category not in self.category_core.wallet.labels.categories:
+            return
+
+        wallet_id = list(self.address_list.wallets.keys())[0] if self.address_list.wallets else None
+        wallet = self.address_list.wallets.get(wallet_id) if wallet_id else None
+        if not wallet:
+            return
+
+        self.address_list.get_address(force_new=True, category=category, wallet=wallet)
+
+    def on_change_category_menu(self, index: int):
+        if index < 0:
+            return
+        data = self.category_combobox.itemData(index)
+        if data is None or isinstance(data, CategoryInfo):
+            self.address_list.set_filter_category(data)
+            self.set_visibilities()
+
+    def set_visibilities(self):
+        if not self.category_core:
+            return
+
+        self.button_create_address.setEnabled(
+            self.category_combobox.currentText() in self.category_core.wallet.labels.categories
+        )
 
     def update_with_filter(self, update_filter: UpdateFilter):
         self.updateUi()
@@ -719,24 +901,23 @@ class AddressListWithToolbar(TreeViewWithToolbar):
     def updateUi(self) -> None:
         super().updateUi()
 
-        self.action_show_filter.setText(self.tr("Show Filter"))
-        self.menu_import_labels.updateUi()
-        self.menu_export_labels.updateUi()
+        self.set_visibilities()
+
+        for action in list(self.menu.actions()):
+            sub = action.menu()
+            if isinstance(sub, (ExportLabelMenu, ImportLabelMenu)):
+                sub.updateUi()
+
+        self.button_create_address.setText(self.tr("Create new Address"))
+        self.button_create_address_label.setText(self.tr("for"))
+        self.action_manage_categories.setText(self.tr("Manage Categories"))
 
         if self.balance_label:
-            balance = self.address_list.wallet.get_balance()
-            if self.signals:
-                display_balance = self.signals.wallet_signals[
-                    self.address_list.wallet.id
-                ].get_display_balance.emit()
-                if display_balance:
-                    balance = display_balance
-
-            self.balance_label.setText(balance.format_short(self.address_list.wallet.network))
-            self.balance_label.setToolTip(balance.format_long(self.address_list.wallet.network))
-
-    def toggle_toolbar(self, config=None) -> None:
-        super().toggle_toolbar(config=config if config else self.config)
+            balance = Balance()
+            for wallet in self.address_list.wallets.values():
+                balance += wallet.get_balance()
+            self.balance_label.setText(balance.format_short(self.config.network))
+            self.balance_label.setToolTip(balance.format_long(self.config.network))
 
     def _mine_to_selected_addresses(self) -> None:
         selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
@@ -755,8 +936,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
                 params=[1, address],
             )
             logger.info(f"{response}")
-        if self.signals:
-            self.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
+        self.address_list.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
 
     def create_toolbar_with_menu(self, title) -> None:
         super().create_toolbar_with_menu(title=title)
@@ -765,9 +945,13 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         font.setPointSize(12)
         self.balance_label.setFont(font)
 
-        self.action_show_filter = self.menu.addToggle("", self.toggle_toolbar)
-        self.menu_export_labels = ExportLabelMenu(self.menu, wallet_signals=self.address_list.wallet_signals)
-        self.menu_import_labels = ImportLabelMenu(self.menu, wallet_signals=self.address_list.wallet_signals)
+        self.menu.addSeparator()
+        self.action_manage_categories = self.menu.add_action(
+            "",
+        )
+
+        self.menu.addSeparator()
+        self._menu_import_export = self.address_list.recreate_export_import_menu(self.menu)
 
         if (
             self.config
@@ -782,12 +966,17 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         hbox = self.create_toolbar_buttons()
         self.toolbar.insertLayout(self.toolbar.count() - 1, hbox)
 
+        # category
+        self.toolbar.insertWidget(0, self.button_create_address)
+        self.toolbar.insertWidget(1, self.button_create_address_label)
+        self.toolbar.insertWidget(2, self.category_combobox)
+
     def create_toolbar_buttons(self) -> QHBoxLayout:
 
         hbox = QHBoxLayout()
         buttons = [self.change_button, self.used_button]
         for b in buttons:
-            b.setVisible(False)
+            b.setVisible(True)
             hbox.addWidget(b)
         self.toolbar_buttons = buttons
         return hbox

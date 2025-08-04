@@ -34,7 +34,7 @@ if __name__ == "__main__":
             self.setCentralWidget(self.network_settings_ui)
             self.setWindowTitle("Demo App")
 
-            self.network_settings_ui.signal_apply_and_restart.connect(self.save_and_close)
+            self.network_settings_ui.signal_apply_and_shutdown.connect(self.save_and_close)
             self.network_settings_ui.signal_cancel.connect(self.close)
 
         def save_and_close(self, network: bdk.Network):

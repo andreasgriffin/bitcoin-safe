@@ -28,12 +28,16 @@
 
 
 import logging
+from typing import Callable
 
 import bdkpython as bdk
 from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QPushButton
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.network_config import get_testnet_faucet
 from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.util_os import webopen
 
 from .util import adjust_bg_color_for_darkmode, svg_tools
 
@@ -41,25 +45,41 @@ logger = logging.getLogger(__name__)
 
 
 class NotificationBarRegtest(NotificationBar):
-    def __init__(self, open_network_settings, network: bdk.Network, signals_min: SignalsMin) -> None:
+    def __init__(
+        self, callback_open_network_setting: Callable, network: bdk.Network, signals_min: SignalsMin
+    ) -> None:
         super().__init__(
             text="",
             optional_button_text="",
-            callback_optional_button=open_network_settings,
+            callback_optional_button=callback_open_network_setting,
             has_close_button=True,
         )
         self.network = network
         self.signals_min = signals_min
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
+        color = adjust_bg_color_for_darkmode(QColor("lightblue"))
+        self.set_background_color(color)
         self.set_icon(svg_tools.get_QIcon(f"bitcoin-{network.name.lower()}.svg"))
+        self.optionalButton.setHidden(False)
+
+        self.faucet = get_testnet_faucet(network=self.network)
+
+        self.faucet_button = QPushButton()
+        self.faucet_button.clicked.connect(self.open_faucet)
+        if self.faucet:
+            self.add_styled_widget(self.faucet_button)
 
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
 
+    def open_faucet(self):
+        if self.faucet:
+            webopen(self.faucet)
+
     def updateUi(self) -> None:
         super().updateUi()
-        self.optionalButton.setText(self.tr("Change Network"))
-        self.textLabel.setText(
+        self.faucet_button.setText(self.tr("Get {testnet} coins").format(testnet=self.network.name.lower()))
+        self.optionalButton.setText(self.tr("Open Network Settings"))
+        self.icon_label.setText(
             self.tr("Network = {network}. The coins are worthless!").format(
                 network=self.network.name.capitalize()
             )

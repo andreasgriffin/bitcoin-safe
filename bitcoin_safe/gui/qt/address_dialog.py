@@ -34,16 +34,25 @@ import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
-from bitcoin_safe.gui.qt.recipients import RecipientTabWidget
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.sign_message import SignMessage
+from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import set_no_margins, svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
-from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
@@ -51,7 +60,6 @@ from ...descriptors import get_address_bip32_path
 from ...signals import Signals, SignalsMin
 from ...wallet import Wallet
 from .hist_list import HistList
-from .util import Buttons, CloseButton
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +97,11 @@ class AddressDetailsAdvanced(QWidget):
 
         #     form_layout.addRow(self.tr("Script Pubkey"), pubkey_e)
 
-        der_path_e = ButtonEdit(close_all_video_widgets=close_all_video_widgets, text=address_path_str)
+        der_path_e = ButtonEdit(
+            close_all_video_widgets=close_all_video_widgets,
+            text=address_path_str,
+            input_field=AnalyzerTextEdit(),
+        )
         der_path_e.add_copy_button()
         der_path_e.setFixedHeight(50)
         der_path_e.setReadOnly(True)
@@ -158,7 +170,7 @@ class AddressDialog(QWidget):
         signals: Signals,
         wallet: Wallet,
         address: str,
-        mempool_data: MempoolData,
+        mempool_manager: MempoolManager,
         threading_parent: ThreadingManager | None,
         parent=None,
     ) -> None:
@@ -166,7 +178,7 @@ class AddressDialog(QWidget):
         self.setWindowTitle(self.tr("Address"))
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
 
-        self.mempool_data = mempool_data
+        self.mempool_manager = mempool_manager
         self.address = address
         self.bdk_address = bdk.Address(address, network=wallet.network)
         self.fx = fx
@@ -182,21 +194,26 @@ class AddressDialog(QWidget):
         upper_widget = QWidget()
         # upper_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.upper_widget_layout = QHBoxLayout(upper_widget)
-        self.upper_widget_layout.setContentsMargins(0, 0, 0, 0)
+        set_no_margins(self.upper_widget_layout)
 
         vbox.addWidget(upper_widget)
 
-        self.recipient_tabs = RecipientTabWidget(
+        self.recipient_tabs = QTabWidget(self)
+        self.recipient_box = RecipientBox(
             network=wallet.network,
             allow_edit=False,
             parent=self,
             signals=self.signals,
-            tab_string=self.tr('Address of wallet "{id}"'),
+            fx=fx,
+            show_header_bar=False,
+            groupbox_style=False,
         )
-        self.recipient_tabs.address = self.address
+        self.recipient_tabs.addTab(self.recipient_box, "")
+        self.recipient_box.notification_bar.set_wallet_id(wallet_id=wallet.id)
+        self.recipient_box.address = self.address
         label = wallet.labels.get_label(self.address)
-        self.recipient_tabs.label = label if label else ""
-        self.recipient_tabs.amount = wallet.get_addr_balance(self.address).total
+        self.recipient_box.label = label if label else ""
+        self.recipient_box.amount = wallet.get_addr_balance(self.address).total
 
         self.upper_widget_layout.addWidget(self.recipient_tabs)
 
@@ -245,7 +262,7 @@ class AddressDialog(QWidget):
             fx=self.fx,
             config=self.config,
             signals=self.signals,
-            mempool_data=self.mempool_data,
+            mempool_manager=self.mempool_manager,
             wallets=[self.wallet],
             hidden_columns=[
                 HistList.Columns.TXID,
@@ -255,7 +272,11 @@ class AddressDialog(QWidget):
         )
         vbox.addWidget(self.hist_list)
 
-        vbox.addLayout(Buttons(CloseButton(self)))
+        close_button = QPushButton(self)
+        close_button.clicked.connect(self.close)
+        close_button.setDefault(True)
+        vbox.addWidget(close_button)
+
         self.setupUi()
 
         self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
@@ -271,7 +292,8 @@ class AddressDialog(QWidget):
             self.close()
 
     def setupUi(self) -> None:
-        self.recipient_tabs.updateUi()
+        self.recipient_box.updateUi()
+        self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.recipient_box), self.tr("Address"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))
 

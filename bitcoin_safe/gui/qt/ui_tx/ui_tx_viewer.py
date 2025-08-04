@@ -28,17 +28,23 @@
 
 
 import logging
-from collections import defaultdict
-from typing import Dict, List, Optional, Set, Tuple
+from functools import partial
+from time import time
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSizePolicy,
+    QSplitter,
     QVBoxLayout,
     QWidget,
 )
@@ -47,26 +53,29 @@ from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.client import Client
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
-from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
-from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
-from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
-from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar, PoisoningWarningBar
+from bitcoin_safe.gui.qt.tx_util import advance_tip_for_addresses
+from bitcoin_safe.gui.qt.ui_tx.toggle_button_group import ToggleButtonGroup
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
+from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
+from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
+from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
-from ...config import UserConfig
-from ...mempool import MempoolData
-from ...psbt_util import FeeInfo, PubKeyInfo, SimpleInput, SimplePSBT
-from ...pythonbdk_types import (
+from ....config import UserConfig
+from ....mempool_manager import MempoolManager
+from ....psbt_util import FeeInfo, PubKeyInfo, SimpleInput, SimplePSBT
+from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
@@ -74,8 +83,8 @@ from ...pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_script,
 )
-from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter
-from ...signer import (
+from ....signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
+from ....signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
     SignatureImporterFile,
@@ -83,27 +92,70 @@ from ...signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from ...wallet import (
+from ....wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
     TxStatus,
     Wallet,
-    get_wallet_of_address,
+    get_tx_details,
     get_wallets,
-    is_in_mempool,
 )
-from .util import (
+from ..util import (
+    HLine,
     Message,
     MessageType,
     add_to_buttonbox,
-    block_explorer_URL,
+    adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
-    svg_tools,
+    set_margins,
+    set_no_margins,
+    sort_id_to_icon,
 )
-from .utxo_list import UtxoListWithToolbar
+from ..utxo_list import UtxoListWithToolbar
+from .columns import BaseColumn, ColumnFee, ColumnInputs, ColumnRecipients, ColumnSankey
 
 logger = logging.getLogger(__name__)
+
+
+class PSBTAlreadyBroadcastedBar(NotificationBar):
+    def __init__(self) -> None:
+        super().__init__(
+            text="",
+            optional_button_text="",
+            has_close_button=True,
+        )
+        color = adjust_bg_color_for_darkmode(QColor("lightblue"))
+        self.set_background_color(color)
+
+        self.optionalButton.setVisible(False)
+
+        self.setVisible(False)
+
+    def set(self, wallet_tx_details: TransactionDetails | None, wallet: Wallet | None, data: Data):
+        if isinstance(data.data, bdk.Psbt) and wallet_tx_details and wallet:
+            self.setHidden(False)
+            self.icon_label.setText(
+                self.tr("This transaction {txid} was already signed and is in wallet {wallet}").format(
+                    txid=short_tx_id(wallet_tx_details.txid), wallet=html_f(wallet.id, bf=True)
+                )
+            )
+            return
+        if isinstance(data.data, bdk.Transaction) and wallet_tx_details and wallet:
+            if serialized_to_hex(wallet_tx_details.transaction.serialize()) != serialized_to_hex(
+                data.data.serialize()
+            ):
+                self.setHidden(False)
+                self.icon_label.setText(
+                    self.tr(
+                        "This transaction {txid} was already signed and is in wallet {wallet}."
+                        "\nThe serializations of both differ, which could be caused by different collected signatures."
+                    ).format(txid=short_tx_id(wallet_tx_details.txid), wallet=html_f(wallet.id, bf=True))
+                )
+                return
+
+        self.setHidden(True)
+        self.icon_label.setText("")
 
 
 class UITx_Viewer(UITx_Base, ThreadingManager):
@@ -117,7 +169,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         fx: FX,
         widget_utxo_with_toolbar: UtxoListWithToolbar,
         network: bdk.Network,
-        mempool_data: MempoolData,
+        mempool_manager: MempoolManager,
         data: Data,
         client: Client | None = None,
         fee_info: FeeInfo | None = None,
@@ -127,10 +179,11 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         focus_ui_element: UiElements = UiElements.none,
     ) -> None:
         super().__init__(
+            fx=fx,
             parent=parent,
             config=config,
             signals=signals,
-            mempool_data=mempool_data,
+            mempool_manager=mempool_manager,
             threading_parent=threading_parent,
         )
         self.focus_ui_element = focus_ui_element
@@ -144,13 +197,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
 
-        # category_linking_warning_bar
-        self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
-        self._layout.addWidget(self.category_linking_warning_bar)
-
         # address_poisoning
         self.address_poisoning_warning_bar = PoisoningWarningBar(signals_min=self.signals)
         self._layout.addWidget(self.address_poisoning_warning_bar)
+
+        # PSBTAlreadyBroadcastedBar
+        self.psbt_already_broadcasted_bar = PSBTAlreadyBroadcastedBar()
+        self._layout.addWidget(self.psbt_already_broadcasted_bar)
 
         # tx label
         self.container_label = QWidget(self)
@@ -171,90 +224,94 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         # upper widget
         self.upper_widget = QWidget()
         self.upper_widget_layout = QHBoxLayout(self.upper_widget)
-        self.upper_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        set_no_margins(self.upper_widget_layout)
         self._layout.addWidget(self.upper_widget)
+        self._layout.addWidget(HLine())
 
         # in out
-        self.tabs_inputs_outputs = ExtendedTabWidget[object](parent=self)
-        self.tabs_inputs_outputs.setObjectName(f"member of {self.__class__.__name__}")
+        self.splitter = QSplitter()
+        self.splitter.setObjectName(f"member of {self.__class__.__name__}")
         # button = QPushButton("Edit")
         # button.setFixedHeight(button.sizeHint().height())
         # button.setIcon(QIcon(icon_path("pen.svg")))
         # button.setIconSize(QSize(16, 16))  # 24x24 pixels
         # button.clicked.connect(lambda: self.edit())
         # self.tabs_inputs_outputs.set_top_right_widget(button)
-        self.upper_widget_layout.addWidget(self.tabs_inputs_outputs)
+        self.upper_widget_layout.addWidget(self.splitter)
 
         # inputs
-        self.tab_inputs = QWidget()
-        self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
-        self.tabs_inputs_outputs.addTab(
-            self.tab_inputs, description="", icon=svg_tools.get_QIcon("bi--inputs.svg")
+        self.column_inputs = ColumnInputs(
+            category_list=None,
+            widget_utxo_with_toolbar=widget_utxo_with_toolbar,
+            fx=self.fx,
         )
-        self.tab_inputs_layout.addWidget(widget_utxo_with_toolbar)
+        set_margins(
+            self.column_inputs._layout,
+            {
+                Qt.Edge.LeftEdge: 0,
+            },
+        )
+        self.splitter.addWidget(self.column_inputs)
 
         # outputs
-        self.tab_outputs = QWidget()
-        self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
-        self.tabs_inputs_outputs.addTab(
-            self.tab_outputs, description="", icon=svg_tools.get_QIcon("bi--recipients.svg")
+        self.column_recipients = ColumnRecipients(fx=fx, signals=self.signals, allow_edit=False)
+        set_margins(
+            self.column_recipients._layout,
+            {
+                Qt.Edge.LeftEdge: 0,
+            },
         )
-        self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
+        self.recipients = self.column_recipients.recipients
+        self.splitter.addWidget(self.column_recipients)
 
-        self.recipients = self.create_recipients(
-            self.tab_outputs_layout,
-            allow_edit=False,
-        )
+        self.header_button_group = ToggleButtonGroup(self)
 
         # sankey
-        self.sankey_bitcoin = SankeyBitcoin(network=self.network, signals=self.signals)
-
-        # right side bar
-        self.right_sidebar = QWidget()
-        self.right_sidebar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
-        self.right_sidebar_layout = QVBoxLayout(self.right_sidebar)
-        self.right_sidebar_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self.upper_widget_layout.addWidget(self.right_sidebar)
-
-        # QSizePolicy.Policy.Fixed: The widget has a fixed size and cannot be resized.
-        # QSizePolicy.Policy.Minimum: The widget can be shrunk to its minimum size hint.
-        # QSizePolicy.Policy.Maximum: The widget can be expanded up to its maximum size hint.
-        # QSizePolicy.Policy.Preferred: The widget can be resized, but it prefers to be the size of its size hint.
-        # QSizePolicy.Policy.Expanding: The widget can be resized and prefers to expand to take up as much space as possible.
-        # QSizePolicy.Policy.MinimumExpanding: The widget can be resized and tries to be as small as possible but can expand if necessary.
-        # QSizePolicy.Policy.Ignored: The widget's size hint is ignored and it can be any size.
+        self.column_sankey = ColumnSankey(fx=self.fx, signals=self.signals, parent=self)
+        set_margins(
+            self.column_sankey._layout,
+            {
+                Qt.Edge.LeftEdge: 0,
+            },
+        )
+        self.splitter.addWidget(self.column_sankey)
 
         # fee_rate
-        self.fee_group = FeeGroup(
-            self.mempool_data,
-            fx,
-            self.config,
+        self.column_fee = ColumnFee(
+            signals=signals,
+            mempool_manager=self.mempool_manager,
+            fx=fx,
             fee_info=fee_info,
             allow_edit=False,
             is_viewer=True,
-            chain_position=chain_position,
-            url=block_explorer_URL(config.network_config.mempool_url, "tx", self.extract_tx().compute_txid()),
+            tx_status=self.get_tx_status(chain_position=chain_position),
         )
-        self.right_sidebar_layout.addWidget(
-            self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter
-        )
+        self.column_fee.header_widget.h_laylout.insertWidget(0, self.header_button_group)
+        self.splitter.addWidget(self.column_fee)
+
+        self.splitter.setSizes([1, 10, 1, 1])
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_inputs), True)
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_recipients), False)
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_sankey), True)
+        self.splitter.setCollapsible(self.splitter.indexOf(self.column_fee), False)
+        # # No stretch: this pane won't grow or shrink
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_inputs), 2)
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_recipients), 1)
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_sankey), 1)
+        self.splitter.setStretchFactor(self.splitter.indexOf(self.column_fee), 0)
+
+        self.set_tab_focus(UiElements.default if focus_ui_element == UiElements.none else focus_ui_element)
 
         # progress bar  import export  flow container
         self.tx_singning_steps_container = QWidget()
-        self.tx_singning_steps_container.setMaximumHeight(400)
+        self.tx_singning_steps_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.tx_singning_steps_container_layout = QVBoxLayout(self.tx_singning_steps_container)
-        self.tx_singning_steps_container_layout.setContentsMargins(
-            0, 0, 0, 0
-        )  # Left, Top, Right, Bottom margins
+        set_no_margins(self.tx_singning_steps_container_layout)
         self._layout.addWidget(self.tx_singning_steps_container)
         self.tx_singning_steps: Optional[TxSigningSteps] = None
 
         # # txid and block explorers
         # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
-        self.export_widget_container = QWidget()
-        self.export_widget_container_layout = QVBoxLayout(self.export_widget_container)
-        self.export_widget_container_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self.export_widget_container.setMaximumHeight(220)
         self.export_data_simple = TxExport(
             data=self.data,
             network=self.network,
@@ -263,8 +320,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             parent=self,
             sync_tabs=self.get_synctabs(),
         )
-        self.export_widget_container_layout.addWidget(self.export_data_simple)
-        self._layout.addWidget(self.export_widget_container)
+        self._layout.addWidget(self.export_data_simple)
 
         # buttons
 
@@ -272,27 +328,24 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.buttonBox = QDialogButtonBox()
 
         # Create custom buttons
-        # if i do  on_clicked=  self.edit    it doesnt reliably trigger the signal. Why???
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            "pen.svg",
+            button_info(ButtonInfoType.edit).icon,
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
         self.button_rbf = add_to_buttonbox(
             self.buttonBox,
             "",
-            "pen.svg",
-            on_clicked=self.edit,
+            button_info(ButtonInfoType.rbf).icon,
+            on_clicked=self.rbf,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        # I can just call self.edit(), because the TX Creator  should automatically detect that it must increase fee to rbf
         self.button_cpfp_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            "",
+            button_info(ButtonInfoType.cpfp).icon,
             on_clicked=self.cpfp,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
@@ -332,6 +385,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.updateUi()
         self.reload(UpdateFilter(refresh_all=True))
+        self.fill_button_group()
         self.utxo_list.update_content()
 
         # signals
@@ -339,33 +393,129 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.reload)
+        self.signals.currency_switch.connect(self.update_all_totals)
+        self.utxo_list.signal_finished_update.connect(self.update_all_totals)
+        self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
+        self.column_fee.fee_group.mempool_buttons.signal_cpfp_icon.connect(self._on_cpfp_icon)
+        self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon.connect(
+            self._on_edit_with_fee_icon
+        )
+
+    def _on_edit_with_fee_icon(self, index: int) -> None:
+        rate = self.mempool_manager.median_block_fee_rate(
+            index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
+        )
+        self.edit(new_fee_rate=rate)
+
+    def _on_rbf_icon(self, index: int) -> None:
+        rate = self.mempool_manager.median_block_fee_rate(
+            index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
+        )
+        self.rbf(new_fee_rate=rate)
+
+    def _on_cpfp_icon(self, index: int) -> None:
+        rate = self.mempool_manager.median_block_fee_rate(
+            index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
+        )
+        self.cpfp(fee_rate=rate)
+
+    def update_recipients_totals(self):
+        amount = self._get_total_non_change_output_amount(
+            self.recipients.recipients,
+        )
+        self.column_recipients.totals.set_amount(amount)
+        self.column_sankey.totals.set_amount(amount)
+
+    def get_total(self) -> int | None:
+        fee_info = self.fee_info if self.fee_info else self._fetch_cached_feeinfo(self.txid())
+        fee_amount = None
+
+        if fee_info and not fee_info.fee_amount_is_estimated:
+            fee_amount = fee_info.fee_amount
+
+        if isinstance(self.data.data, bdk.Psbt):
+            fee_amount = self.data.data.fee()
+
+        if fee_amount is not None:
+            outputs = sum(txout.value for txout in self.extract_tx().output())
+            return outputs + fee_amount
+
+        return None
+
+    def update_sending_source_totals(self):
+
+        total = self.get_total()
+        self.column_inputs.totals.set_amount(total)
+        self.column_sankey.totals.set_amount(total, alignment=Qt.Edge.LeftEdge)
+
+    def update_all_totals(self):
+        self.update_sending_source_totals()
+        self.update_recipients_totals()
+        self.column_fee.updateUi()
+
+    def fill_button_group(self):
+        self.header_button_group.clear()
+
+        for i in range(self.splitter.count()):
+            widget = self.splitter.widget(i)
+            if not isinstance(widget, BaseColumn) or not widget.is_available():
+                continue
+            if isinstance(widget, ColumnFee):
+                continue
+            button = QPushButton()
+            button.setText(widget.header_widget.label_title.text())
+            button.setIcon(svg_tools.get_QIcon(widget.header_widget.icon_name))
+            self.header_button_group.addButton(button)
+            if not widget.isHidden():
+                self.header_button_group.setCurrentButton(button)
+            button.clicked.connect(partial(self.focus_tab, widget))
+
+    def focus_tab(self, focus_widget: BaseColumn):
+        for i in range(self.splitter.count()):
+            widget = self.splitter.widget(i)
+            if not isinstance(widget, BaseColumn):
+                continue
+            if isinstance(widget, ColumnFee):
+                continue
+            widget.setHidden(focus_widget != widget)
+            if focus_widget == widget:
+                self.header_button_group.setCurrentIndex(i)
+
+        focus_widget.header_widget.h_laylout.insertWidget(0, self.header_button_group)
+        focus_widget.header_widget.label_title.setVisible(False)
+        focus_widget.header_widget.icon.setVisible(False)
+
+        if focus_widget == self.column_sankey:
+            self.update_all_totals()
 
     def updateUi(self) -> None:
-        self.tabs_inputs_outputs.setTabText(
-            self.tabs_inputs_outputs.indexOf(self.tab_inputs), self.tr("Inputs")
-        )
-        self.tabs_inputs_outputs.setTabText(
-            self.tabs_inputs_outputs.indexOf(self.tab_outputs), self.tr("Recipients")
-        )
-        index = self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin)
-        if index >= 0:
-            self.tabs_inputs_outputs.setTabText(
-                self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin), self.tr("Diagram")
-            )
-        self.button_edit_tx.setText(self.tr("Edit"))
-        self.button_cpfp_tx.setText(self.tr("Receive faster (CPFP)"))
-        if GENERAL_RBF_AVAILABLE:
-            self.button_rbf.setText(self.tr("Edit with increased fee (RBF)"))
-        else:
-            self.button_rbf.setText(self.tr("Increase fee (RBF)"))
+        super().updateUi()
+        edits: List[Tuple[ButtonInfoType, QPushButton]] = [
+            (ButtonInfoType.edit, self.button_edit_tx),
+            (ButtonInfoType.cpfp, self.button_cpfp_tx),
+            (ButtonInfoType.rbf, self.button_rbf),
+        ]
+        for info_type, edit in edits:
+            edit.setText(button_info(info_type).text)
+            edit.setToolTip(button_info(info_type).tooltip)
+
         self.button_previous.setText(self.tr("Previous step"))
         self.button_next.setText(self.tr("Next step"))
         self.button_send.setText(self.tr("Send"))
         self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
         self.label_label.setText(self.tr("Label: "))
         self.button_save_local_tx.setText(self.tr("Save in wallet"))
-        self.category_linking_warning_bar.updateUi()
         self.address_poisoning_warning_bar.updateUi()
+        self.column_inputs.updateUi()
+        self.column_recipients.updateUi()
+        self.column_fee.updateUi()
+        self.column_sankey.updateUi()
+        self.column_fee.header_widget.syncWith(
+            self.column_inputs.header_widget,
+            self.column_recipients.header_widget,
+            self.column_sankey.header_widget,
+        )
+        self.update_all_totals()
 
     def save_local_tx(self):
         self.signals.apply_txs_to_wallets.emit([self.extract_tx()])
@@ -419,44 +569,81 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.set_next_prev_button_enabledness()
 
-    def get_tx_details(self, txid: str) -> Tuple[TransactionDetails | None, Wallet | None]:
-        for wallet in get_wallets(self.signals):
-            tx = wallet.get_tx(txid=txid)
-            if tx:
-                return tx, wallet
-        return None, None
-
-    def can_cpfp(self, tx_status: TxStatus) -> bool:
+    def cpfp(
+        self, fee_rate: float | None = None, target_total_unconfirmed_fee_rate: float | None = None
+    ) -> None:
         tx = self.extract_tx()
-        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
-        if not wallet:
-            return False
-        return TxTools.can_cpfp(tx=tx, wallet=wallet, tx_status=tx_status)
-
-    def cpfp(self) -> None:
-        tx = self.extract_tx()
-        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
+        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=self.signals)
         if not wallet or not tx_details:
             return
-        TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
+        TxTools.cpfp_tx(
+            tx_details=tx_details,
+            wallet=wallet,
+            signals=self.signals,
+            fee_rate=fee_rate,
+            target_total_unconfirmed_fee_rate=target_total_unconfirmed_fee_rate,
+        )
 
-    def edit(self) -> None:
+    def edit(self, new_fee_rate: float | None = None) -> None:
+        tx = self.extract_tx()
+        wallets = get_wallets(self.signals)
+        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
+        if new_fee_rate is not None:
+            txinfos.fee_rate = new_fee_rate
+
+        if GENERAL_RBF_AVAILABLE:
+            TxTools.edit_tx(replace_tx=tx, txinfos=txinfos, signals=self.signals)
+            return
+        else:
+            tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=self.signals)
+            if wallet:
+                tx_status = TxStatus.from_wallet(txid=tx.compute_txid(), wallet=wallet)
+                if tx_status.is_local():
+                    Message(
+                        self.tr("Please remove the existing local transaction of the wallet first."),
+                        type=MessageType.Error,
+                    )
+                    return
+                else:
+                    Message(
+                        self.tr("The transaction cannot be changed anymore, since it is public already."),
+                        type=MessageType.Error,
+                    )
+                    return
+            # I do not need to consider the tx_details branch, because then wallet is also set
+
+            elif txinfos.main_wallet_id:
+                TxTools.edit_tx(replace_tx=None, txinfos=txinfos, signals=self.signals)
+            else:
+                Message(
+                    self.tr("Wallet of transaction inputs could not be found"),
+                    type=MessageType.Error,
+                )
+
+    def rbf(self, new_fee_rate: float | None = None) -> None:
         tx = self.extract_tx()
         txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, get_wallets(self.signals))
-        tx_details, wallet = self.get_tx_details(txid=tx.compute_txid())
-        if tx_details:
-            TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, signals=self.signals)
-        else:
-            Message(
-                self.tr("Transaction to be replaced could not be found in open wallets"),
-                type=MessageType.Error,
-            )
+        if new_fee_rate is not None:
+            txinfos.fee_rate = new_fee_rate
+        TxTools.edit_tx(replace_tx=tx, txinfos=txinfos, signals=self.signals)
 
     def reload(self, update_filter: UpdateFilter) -> None:
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
         if should_update or update_filter.outpoints:
+            should_update = True
+        if (
+            should_update
+            or update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
+            and self.get_tx_status(chain_position=self.chain_position).do_icon_check_on_chain_height_change()
+        ):
+            should_update = True
+        if (
+            should_update
+            or update_filter.reason == UpdateFilterReason.TransactionChange
+            and self.txid() in update_filter.txids
+        ):
             should_update = True
 
         if not should_update:
@@ -500,6 +687,24 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 chain_position=self.chain_position,
             )
 
+    def set_tab_properties(self, chain_position: bdk.ChainPosition | None):
+        title = ""
+        icon_text = ""
+        txid = self.txid()
+        tooltip = ""
+        if self.data.data_type == DataType.PSBT and isinstance(self.data.data, bdk.Psbt):
+            title = self.tr("PSBT {txid}").format(txid=short_tx_id(txid))
+            tooltip = self.tr("PSBT {txid}").format(txid=txid)
+            icon_text = "bi--qr-code.svg"
+        elif self.data.data_type == DataType.Tx and isinstance(self.data.data, bdk.Transaction):
+            title = self.tr("Transaction {txid}").format(txid=short_tx_id(txid))
+            tooltip = self.tr("Transaction {txid}").format(txid=txid)
+            status = self.get_tx_status(chain_position=chain_position)
+            icon_text = sort_id_to_icon(status.sort_id())
+
+        if title or icon_text or tooltip:
+            self.signals.signal_set_tab_properties.emit(self, title, icon_text, tooltip)
+
     def txid(self) -> str:
         return self.extract_tx().compute_txid()
 
@@ -524,7 +729,13 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                     ),
                 )
         else:
-            logger.error("No blockchain set")
+            Message(
+                self.tr(
+                    "Please open a wallet first to broadcast the transaction."
+                    "\nOr you can broadcast via {url}"
+                ).format(url="https://blockstream.info/tx/push"),
+                type=MessageType.Error,
+            )
 
         return False
 
@@ -549,13 +760,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         success = self._broadcast(tx)
         if success:
             logger.info(f"Successfully broadcasted tx {tx.compute_txid()[:4]=}")
-        else:
-            Message(
-                self.tr("Failed to broadcast {txid}. Consider broadcasting via {url}").format(
-                    txid=self.data.data.compute_txid(), url="https://blockstream.info/tx/push"
-                ),
-                type=MessageType.Error,
-            )
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
@@ -637,6 +841,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                         result.append(wallet)
             return result
 
+        def get_pubkey_dict(pubkeys_of_inp: List[List[PubKeyInfo]]) -> Dict[str, PubKeyInfo]:
+            pubkeys = {}
+            for l in pubkeys_of_inp:
+                for _pubkey in l:
+                    if _pubkey.fingerprint not in pubkeys:
+                        pubkeys[_pubkey.fingerprint] = _pubkey
+            return pubkeys
+
         simple_psbt = SimplePSBT.from_psbt(psbt)
         simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
 
@@ -644,62 +856,72 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         wallets: List[Wallet] = get_wallets(self.signals)
 
-        pub_keys_without_signature = sum(
-            [input.get_pub_keys_without_signature() for inputs in wallet_inputs.values() for input in inputs],
-            [],
-        )
-
         for wallet_id, inputs in wallet_inputs.items():
             if not inputs:
                 continue
             m, n = inputs[0].get_estimated_m_of_n()
-            pubkeys_with_signature = inputs[0].get_pub_keys_with_signature()
+
+            pubkeys_with_signature = get_pubkey_dict([inp.get_pub_keys_with_signature() for inp in inputs])
+            pubkeys_without_signature = get_pubkey_dict(
+                [inp.get_pub_keys_without_signature() for inp in inputs]
+            )
 
             # only add a maximum of m *(all_signature_importers) for each wallet
             for i in range(m):
                 l = signature_importers.setdefault(f"{wallet_id}.{i}", [])
-                if i < len(pubkeys_with_signature):
+                if pubkeys_with_signature:
+                    fingerprint, pubkey_info = pubkeys_with_signature.popitem()
+
+                    signatures = {}
+                    for inp in inputs:
+                        if (
+                            pubkey_info.pubkey
+                            and (sig := inp.partial_sigs.get(pubkey_info.pubkey))
+                            and inp in simple_psbt.inputs
+                        ):
+                            signatures[simple_psbt.inputs.index(inp)] = sig
 
                     l.append(
                         SignatureImporterFile(
                             self.network,
                             signature_available=True,
-                            key_label=pubkeys_with_signature[i].fingerprint,
+                            signatures=signatures,
+                            key_label=fingerprint,
                             label=self.tr("Import file"),
                             close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
                     )
-                else:
-                    # for missing required signatures
-                    if inputs[0].pubkeys:
-                        # check if any wallet has keys for this fingerprint
-                        for wallet_with_seed in get_wallets_with_seed(
-                            [pubkey.fingerprint for inp in inputs for pubkey in inp.pubkeys]
-                        ):
-                            l.append(
-                                SignatureImporterWallet(
-                                    wallet_with_seed,
-                                    self.network,
-                                    signature_available=False,
-                                    key_label=wallet_id,
-                                )
-                            )
+                    continue
 
-                    for cls in [
-                        SignatureImporterQR,
-                        SignatureImporterFile,
-                        SignatureImporterClipboard,
-                        SignatureImporterUSB,
-                    ]:
-                        l.append(
-                            cls(
-                                self.network,
-                                signature_available=False,
-                                key_label=wallet_id,
-                                pub_keys_without_signature=pub_keys_without_signature,
-                                close_all_video_widgets=self.signals.close_all_video_widgets,
-                            )
+                # check if any wallet has keys for this fingerprint
+                for wallet_with_seed in get_wallets_with_seed(
+                    [fingerprint for fingerprint in pubkeys_without_signature.keys()]
+                ):
+                    l.append(
+                        SignatureImporterWallet(
+                            wallet_with_seed,
+                            self.network,
+                            signature_available=False,
+                            key_label=wallet_id,
                         )
+                    )
+                    # 1 seed signer is enough
+                    break
+
+                for cls in [
+                    SignatureImporterQR,
+                    SignatureImporterFile,
+                    SignatureImporterClipboard,
+                    SignatureImporterUSB,
+                ]:
+                    l.append(
+                        cls(
+                            self.network,
+                            signature_available=False,
+                            key_label=wallet_id,
+                            close_all_video_widgets=self.signals.close_all_video_widgets,
+                        )
+                    )
         # connect signals
         for importers in signature_importers.values():
             for importer in importers:
@@ -792,17 +1014,20 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         return False
 
     def _set_warning_bars(
-        self, txins: List[bdk.TxIn], recipient_addresses: List[str], chain_position: bdk.ChainPosition | None
+        self,
+        outpoints: List[OutPoint],
+        recipient_addresses: List[str],
+        tx_status: TxStatus,
     ):
-        self.set_poisoning_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
-        self.set_category_warning_bar(txins=txins, recipient_addresses=recipient_addresses)
-
-        tx_status = self.get_tx_status(chain_position=chain_position)
+        super()._set_warning_bars(
+            outpoints=outpoints, recipient_addresses=recipient_addresses, tx_status=tx_status
+        )
+        self.set_poisoning_warning_bar(outpoints=outpoints, recipient_addresses=recipient_addresses)
         self.update_high_fee_warning_label(confirmation_status=tx_status.confirmation_status)
         self.high_fee_rate_warning_label.update_fee_rate_warning(
             confirmation_status=tx_status.confirmation_status,
             fee_rate=self.fee_info.fee_rate() if self.fee_info else None,
-            max_reasonable_fee_rate=self.mempool_data.max_reasonable_fee_rate(),
+            max_reasonable_fee_rate=self.mempool_manager.max_reasonable_fee_rate(),
         )
 
     def update_high_fee_warning_label(self, confirmation_status: TxConfirmationStatus):
@@ -810,28 +1035,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             self.high_fee_warning_label.setVisible(False)
             return
 
-        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
-
-        total_non_change_output_amount = 0
-        for wallet in wallets:
-            for recipient in self.recipients.recipients:
-                if not recipient.address:
-                    continue
-                if not (wallet.is_my_address(recipient.address) and wallet.is_change(recipient.address)):
-                    total_non_change_output_amount += recipient.amount
-
-        self.high_fee_warning_label.set_fee_to_send_ratio(
+        self._update_high_fee_warning_label(
+            recipients=self.recipients,
             fee_info=self.fee_info,
-            total_non_change_output_amount=total_non_change_output_amount,
-            network=self.config.network,
-            # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
-            force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in self.recipients.recipients]),
-            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
+            tx_status=self.column_fee.fee_group.mempool_buttons.tx_status,
         )
 
-    def set_poisoning_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
+    def set_poisoning_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
         # warn if multiple categories are combined
-        outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in txins]
         wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
 
         all_addresses = set(recipient_addresses)
@@ -842,26 +1053,25 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                 if not address:
                     continue
                 all_addresses.add(address)
-        poisonous_matches = AddressComparer.poisonous(all_addresses)
-        self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
 
-    def set_category_warning_bar(self, txins: List[bdk.TxIn], recipient_addresses: List[str]):
-        # warn if multiple categories are combined
-        outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in txins]
-        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
-
-        category_dict: Dict[str, Set[str]] = defaultdict(set[str])
-        for wallet in wallets:
-            addresses = [
-                wallet.get_address_of_outpoint(outpoint) for outpoint in outpoints
-            ] + recipient_addresses
-            this_category_dict = self.get_category_dict_of_addresses(
-                [address for address in addresses if address], wallets=[wallet]
+        def do() -> Any:
+            start_time = time()
+            poisonous_matches = AddressComparer.poisonous(all_addresses)
+            logger.debug(
+                f"AddressComparer.poisonous {len(poisonous_matches)} results in { time()-start_time}s"
             )
-            for k, v in this_category_dict.items():
-                category_dict[k].update(v)
+            return poisonous_matches
 
-        self.category_linking_warning_bar.set_category_dict(category_dict)
+        def on_done(poisonous_matches) -> None:
+            logger.debug(f"finished AddressComparer, found {len(poisonous_matches)=}")
+
+        def on_success(poisonous_matches) -> None:
+            self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
+
+        def on_error(packed_error_info) -> None:
+            logger.error(f"AddressComparer error {packed_error_info}")
+
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
         "This only should be done for tx, not psbt, since the PSBT.extract_tx size is too low"
@@ -870,7 +1080,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         for wallet_ in wallets:
             txdetails = wallet_.get_tx(tx.compute_txid())
             if txdetails and txdetails.fee:
-                return FeeInfo(fee_amount=txdetails.fee, vsize=tx.vsize(), is_estimated=False)
+                return FeeInfo(
+                    fee_amount=txdetails.fee,
+                    vsize=tx.vsize(),
+                    vsize_is_estimated=False,
+                    fee_amount_is_estimated=False,
+                )
 
         #  try via utxos
         pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
@@ -889,7 +1104,12 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         total_output_value = sum([txout.value for txout in tx.output()])
         fee_amount = total_input_value - total_output_value
-        return FeeInfo(fee_amount=fee_amount, vsize=tx.vsize(), is_estimated=not tx_has_final_size)
+        return FeeInfo(
+            fee_amount=fee_amount,
+            vsize=tx.vsize(),
+            fee_amount_is_estimated=False,
+            vsize_is_estimated=not tx_has_final_size,
+        )
 
     def get_chain_position(self, txid: str) -> bdk.ChainPosition | None:
         for wallet in get_wallets(self.signals):
@@ -906,34 +1126,35 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.compute_txid())
-        if fee_info is None or fee_info.is_estimated:
+        if fee_info is None or fee_info.any_is_estimated():
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
-        if chain_position is None:
+        if chain_position is None or isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
             chain_position = self.get_chain_position(tx.compute_txid())
         self.chain_position = chain_position
 
+        tx_status = self.get_tx_status(chain_position=chain_position)
+
         # no Fee is unknown if no fee_info was given
-        self.fee_group.groupBox_Fee.setVisible(fee_info is not None)
+        self.column_fee.setVisible(fee_info is not None)
         if fee_info is not None:
-            self.fee_group.set_fee_infos(
+            self.column_fee.fee_group.set_fee_infos(
                 fee_info=fee_info,
-                url=block_explorer_URL(self.config.network_config.mempool_url, "tx", tx.compute_txid()),
-                chain_position=chain_position,
-                chain_height=self._get_height(),
-            )
-            # calcualte the fee warning. However since in a tx I don't know what is a change address,
-            # it is not possible to give  fee warning for the sent (vs. change) amount
-            self.high_fee_warning_label.set_fee_to_send_ratio(
-                fee_info=fee_info,
-                total_non_change_output_amount=self.get_total_non_change_output_amount(tx),
-                network=self.config.network,
-                chain_position=chain_position,
+                tx_status=tx_status,
             )
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
         outputs: List[bdk.TxOut] = tx.output()
+        advance_tip_for_addresses(
+            addresses=[
+                robust_address_str_from_script(
+                    o.script_pubkey, network=self.network, on_error_return_hex=False
+                )
+                for o in outputs
+            ],
+            signals=self.signals,
+        )
 
         self.recipients.recipients = [
             Recipient(
@@ -943,17 +1164,20 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             for output in outputs
         ]
         self.set_visibility(chain_position=chain_position)
+        self.set_psbt_already_broadcasted_bar()
+        self.set_tab_properties(chain_position=chain_position)
+        self.update_all_totals()
         self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
 
         self._set_warning_bars(
-            txins=tx.input(),
+            outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
-            chain_position=chain_position,
+            tx_status=tx_status,
         )
         self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
         self.label_line_edit.updateUi()
         self.label_line_edit.autofill_label_and_category()
-        self.container_label.setHidden(False)
+        self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
 
     def _get_python_txos(self):
@@ -974,14 +1198,9 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         txo_dict: Dict[str, PythonUtxo] | None = None,
     ):
 
-        # remove old tab_sankey
-        tab_index = self.tabs_inputs_outputs.indexOf(self.sankey_bitcoin)
-        if tab_index >= 0:
-            self.tabs_inputs_outputs.removeTab(tab_index)
-
         def do() -> bool:
             try:
-                return self.sankey_bitcoin.set_tx(tx, fee_info=fee_info, txo_dict=txo_dict)
+                return self.column_sankey.sankey_bitcoin.set_tx(tx, fee_info=fee_info, txo_dict=txo_dict)
             except Exception as e:
                 logger.warning(str(e))
             return False
@@ -990,11 +1209,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             pass
 
         def on_success(success) -> None:
-            if success:
-                self.tabs_inputs_outputs.addTab(
-                    self.sankey_bitcoin, icon=svg_tools.get_QIcon("flows.svg"), description=self.tr("Diagram")
-                )
-                self.set_tab_focus(self.focus_ui_element)
+            self.fill_button_group()
 
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
@@ -1006,27 +1221,28 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
     def set_tab_focus(self, focus_ui_element: UiElements):
         self.focus_ui_element = focus_ui_element
         if self.focus_ui_element == UiElements.default:
-            self.tabs_inputs_outputs.setCurrentWidget(self.tab_inputs)
+            self.focus_tab(self.column_recipients)
         if self.focus_ui_element == UiElements.diagram:
-            self.tabs_inputs_outputs.setCurrentWidget(self.sankey_bitcoin)
+            self.focus_tab(self.column_sankey)
 
         self.focus_ui_element = UiElements.none
-
-    def _get_height_from_mempool(self):
-        return self.mempool_data.fetch_block_tip_height()
 
     def get_tx_status(self, chain_position: bdk.ChainPosition | None) -> TxStatus:
         tx = self.extract_tx()
         return TxStatus(
             tx=tx,
             chain_position=chain_position,
-            get_height=self._get_height_from_mempool,
-            is_in_mempool=is_in_mempool(chain_position=chain_position),
+            get_height=self._get_robust_height,
+            fallback_confirmation_status=(
+                TxConfirmationStatus.PSBT
+                if self.data.data_type == DataType.PSBT
+                else TxConfirmationStatus.LOCAL
+            ),
         )
 
     def set_visibility(self, chain_position: bdk.ChainPosition | None) -> None:
         is_psbt = self.data.data_type == DataType.PSBT
-        self.export_widget_container.setVisible(not is_psbt)
+        self.export_data_simple.setVisible(not is_psbt)
         self.tx_singning_steps_container.setVisible(is_psbt)
 
         tx_status = self.get_tx_status(chain_position=chain_position)
@@ -1035,15 +1251,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         logger.debug(
             f"set_visibility {show_send=} {tx_status.can_do_initial_broadcast()=} {self.data.data_type=}"
         )
-        self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool)
+        self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool())
         self.button_send.setEnabled(show_send)
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
 
-        self.button_edit_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
-        self.button_cpfp_tx.setVisible(tx_status.is_unconfirmed() and not tx_status.can_rbf())
+        self.button_edit_tx.setVisible(tx_status.can_edit())
         self.button_rbf.setVisible(tx_status.can_rbf())
-        self.button_cpfp_tx.setVisible(self.can_cpfp(tx_status=tx_status))
+        self.button_cpfp_tx.setVisible(TxTools.can_cpfp(tx_status=tx_status, signals=self.signals))
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
@@ -1064,8 +1279,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         # check if any new signatures were added. If not tell the user
 
         self.data = Data.from_psbt(psbt, network=self.network)
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(psbt.extract_tx().compute_txid())
-
+        tx = psbt.extract_tx()
+        txid = tx.compute_txid()
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(txid)
+        tx_status = self.get_tx_status(chain_position=None)
         # do not use calc_fee_info here, because calc_fee_info is for final tx only.
 
         # if still no fee_info  available, then estimate it
@@ -1074,12 +1291,21 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         self.fee_info = fee_info
 
-        self.fee_group.set_fee_infos(
+        self.column_fee.fee_group.set_fee_infos(
             fee_info=fee_info,
-            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
+            tx_status=tx_status,
         )
 
-        outputs: List[bdk.TxOut] = psbt.extract_tx().output()
+        outputs: List[bdk.TxOut] = tx.output()
+        advance_tip_for_addresses(
+            addresses=[
+                robust_address_str_from_script(
+                    o.script_pubkey, network=self.network, on_error_return_hex=False
+                )
+                for o in outputs
+            ],
+            signals=self.signals,
+        )
 
         self.recipients.recipients = [
             Recipient(
@@ -1089,29 +1315,26 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             for output in outputs
         ]
 
-        # set fee warning
-        self.high_fee_warning_label.set_fee_to_send_ratio(
-            fee_info=fee_info,
-            total_non_change_output_amount=self.get_total_non_change_output_amount(psbt.extract_tx()),
-            network=self.network,
-            # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
-            force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in self.recipients.recipients]),
-            chain_position=self.fee_group.visible_mempool_buttons.chain_position,
-        )
-
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)
+        self.set_psbt_already_broadcasted_bar()
+        self.set_tab_properties(chain_position=None)
+        self.update_all_totals()
         self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
         self._set_warning_bars(
-            psbt.extract_tx().input(),
+            outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
-            chain_position=None,
+            tx_status=tx_status,
         )
         txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
         txo_dict.update(self._get_python_txos())
-        self.set_sankey(psbt.extract_tx(), fee_info=fee_info, txo_dict=txo_dict)
+        self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
         self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
+
+    def set_psbt_already_broadcasted_bar(self):
+        tx, wallet = get_tx_details(self.txid(), signals=self.signals)
+        self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
 
     def handle_cpfp(
         self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None
@@ -1120,29 +1343,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
             this_fee_info=this_fee_info,
-            fee_group=self.fee_group,
+            fee_group=self.column_fee.fee_group,
             chain_position=chain_position,
         )
-
-    def get_total_non_change_output_amount(self, tx: bdk.Transaction) -> int:
-        out_flows: List[Tuple[str, int]] = [
-            (robust_address_str_from_script(txout.script_pubkey, network=self.network), txout.value)
-            for txout in tx.output()
-        ]
-
-        total_non_change_output_amount = 0
-
-        for address, value in out_flows:
-
-            wallet = get_wallet_of_address(address, self.signals)
-            if wallet and wallet.is_my_address(address) and wallet.is_change(address):
-                continue
-            else:
-                total_non_change_output_amount += value
-        return total_non_change_output_amount
 
     def close(self):
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
+        self.setVisible(False)
         self.setParent(None)
+        self.column_sankey.close()
         return super().close()

@@ -38,6 +38,7 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
+from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.util_os import webopen
 
@@ -158,14 +159,23 @@ class AddressEdit(ButtonEdit):
 
         self.signal_text_change.emit(self.address)
 
-    @staticmethod
-    def color_address(address: str, wallet: Wallet) -> Optional[QtGui.QColor]:
-        if wallet.is_my_address(address):
-            if wallet.is_change(address):
+    @classmethod
+    def color_address(cls, address: str, wallet: Wallet, signals: Signals) -> Optional[QtGui.QColor]:
+        def get_color(is_change: bool) -> QtGui.QColor:
+            if is_change:
                 return ColorScheme.YELLOW.as_color(background=True)
             else:
                 return ColorScheme.GREEN.as_color(background=True)
-        return None
+
+        if wallet.is_my_address(address):
+            return get_color(is_change=wallet.is_change(address))
+        else:
+            address_info = wallet.is_my_address_with_peek(address=address)
+            if not address_info:
+                return None
+
+            advance_tip_to_address_info(address_info=address_info, wallet=wallet, signals=signals)
+            return get_color(is_change=address_info.is_change())
 
     def format_address_field(self, wallet: Optional[Wallet]) -> None:
         palette = QtGui.QPalette()
@@ -173,7 +183,7 @@ class AddressEdit(ButtonEdit):
 
         background_color = None
         if wallet:
-            background_color = self.color_address(self.address, wallet)
+            background_color = self.color_address(self.address, wallet, signals=self.signals)
 
         if background_color:
             palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
@@ -192,7 +202,8 @@ class AddressEdit(ButtonEdit):
                 f"Address {address} was used already. Would you like to get a fresh receiving address?",
             ),
             title=translate("recipients", "Address Already Used"),
-            buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            true_button=QMessageBox.StandardButton.Yes,
+            false_button=QMessageBox.StandardButton.No,
         ):
             old_category = wallet.labels.get_category(address)
             self.address = str(wallet.get_unused_category_address(category=old_category).address)

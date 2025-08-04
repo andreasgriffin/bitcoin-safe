@@ -206,3 +206,10 @@ def make_psbt(
 
     psbt_for_signing = bdk.Psbt(psbt.serialize())
     return psbt_for_signing
+
+
+def test_calculate_ema_zero_weights():
+    from bitcoin_safe.util import calculate_ema
+
+    result = calculate_ema([1, 2, 3], n=3, weights=[0, 0, 0])
+    assert result == 2.25

@@ -108,6 +108,7 @@ class Shutter:
     def save(self, widget: QWidget, delay: float = 0.2) -> None:
         QApplication.processEvents()
         sleep(delay)
+        QApplication.processEvents()
         self.save_screenshot(widget, self.qtbot, self.name)
 
     @staticmethod
@@ -205,12 +206,16 @@ def do_modal_click(
     timeout=5000,
     timer_delay=500,
 ) -> None:
+    dialog_was_opened = False
+
     def click() -> None:
         QApplication.processEvents()
         print("\nwaiting for is_dialog_open")
 
         try:
             dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
+            nonlocal dialog_was_opened
+            dialog_was_opened = True
         except Exception as e:
             logger.error(f"Failed to get {cls.__name__}")
             raise e
@@ -228,8 +233,8 @@ def do_modal_click(
     else:
         qtbot.mouseClick(click_pushbutton, button)
 
-    qtbot.wait(timer_delay)
     QApplication.processEvents()
+    qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
 
 
 def get_called_args_message_box(
@@ -329,7 +334,10 @@ def close_wallet(
     # check that you cannot go further without import xpub
     def password_creation(dialog: QMessageBox) -> None:
         shutter.save(dialog)
-        dialog.button(QMessageBox.StandardButton.Yes).click()
+        for button in dialog.buttons():
+            if button.text() == "Close":
+                button.click()
+                break
 
     index = main_window.tab_wallets.indexOf(main_window.qt_wallets[wallet_name])
 

@@ -25,6 +25,7 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import enum
 import logging
 from abc import abstractmethod
@@ -32,9 +33,9 @@ from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
-from PyQt6.QtCore import QStringListModel, Qt, pyqtSignal
-from PyQt6.QtGui import QFocusEvent, QKeyEvent
-from PyQt6.QtWidgets import QCompleter, QLineEdit, QTextEdit, QWidget
+from PyQt6.QtCore import QRect, QStringListModel, Qt, pyqtSignal
+from PyQt6.QtGui import QFocusEvent, QKeyEvent, QPainter, QPaintEvent, QPalette
+from PyQt6.QtWidgets import QApplication, QCompleter, QLineEdit, QTextEdit, QWidget
 
 from ...signals import TypedPyQtSignalNo
 
@@ -99,6 +100,42 @@ class AnalyzerLineEdit(QLineEdit):
     def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
         self._smart_state: Optional[BaseAnalyzer] = None
+        self.display_name = ""
+
+    def setReadOnly(self, a0: bool):
+        super().setReadOnly(a0)
+        super().setFrame(not a0)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus if a0 else Qt.FocusPolicy.StrongFocus)
+        self.update()
+
+    def paintEvent(self, a0: QPaintEvent | None) -> None:
+        if not self.isReadOnly():
+            return super().paintEvent(a0)
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+
+        # current base color
+        curr_bg = self.palette().color(QPalette.ColorRole.Base)
+        # the “true default” base color from the application
+        default_bg = QApplication.palette().color(QPalette.ColorRole.Base)
+
+        # only fill if someone has customized it
+        if curr_bg != default_bg:
+            painter.fillRect(self.rect(), curr_bg)
+
+        # draw text in the usual way
+        painter.setPen(self.palette().color(QPalette.ColorRole.Text))
+        m = self.textMargins()
+        text_rect = QRect(
+            m.left(),
+            m.top(),
+            self.width() - (m.left() + m.right()),
+            self.height() - (m.top() + m.bottom()),
+        )
+        painter.drawText(
+            text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self.displayText()
+        )
 
     def setAnalyzer(self, smart_state: BaseAnalyzer):
         """Set a custom validator."""
@@ -127,6 +164,7 @@ class AnalyzerTextEdit(QTextEdit):
     def __init__(self, text: Optional[str] = None, parent: Optional[QWidget] = None) -> None:
         super().__init__(text, parent)
         self._smart_state: Optional[BaseAnalyzer] = None
+        self.display_name = ""
 
     def setAnalyzer(self, smart_state: BaseAnalyzer):
         """Set a custom validator."""

@@ -33,6 +33,7 @@ from typing import Dict, List, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtGui import QColor
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
@@ -49,7 +50,12 @@ from bitcoin_safe.pythonbdk_types import (
     robust_address_str_from_script,
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
-from bitcoin_safe.wallet import Wallet, get_label_from_any_wallet, get_wallets
+from bitcoin_safe.wallet import (
+    Wallet,
+    get_label_from_any_wallet,
+    get_wallet_of_address,
+    get_wallets,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -64,9 +70,10 @@ class SankeyBitcoin(SankeyWidget):
         self.txouts: List[TxOut] = []
         self.addresses: List[str] = []
         self.txo_dict: Dict[str, PythonUtxo] = {}
+        self.signal_tracker = SignalTracker()
 
-        self.signals.any_wallet_updated.connect(self.refresh)
-        self.signal_on_label_click.connect(self.on_label_click)
+        self.signal_tracker.connect(self.signals.any_wallet_updated, self.refresh)
+        self.signal_tracker.connect(self.signal_on_label_click, self.on_label_click)
 
     def refresh(self, update_filter: UpdateFilter):
         if not self.tx:
@@ -236,7 +243,7 @@ class SankeyBitcoin(SankeyWidget):
                 continue
 
         # handle cases where i have sufficient info to still construct a diagram
-        if (None in in_flows) and fee_info and not fee_info.is_estimated:
+        if (None in in_flows) and fee_info and not fee_info.fee_amount_is_estimated:
             num_unknown_inputs = in_flows.count(None)
             missing_inflows = (
                 sum(out_flows) + fee_info.fee_amount - sum([v for v in in_flows if v is not None])
@@ -300,16 +307,10 @@ class SankeyBitcoin(SankeyWidget):
         return True
 
     def get_address_color(self, address: str, wallets: List[Wallet]) -> QColor | None:
-        def get_wallet():
-            for wallet in wallets:
-                if wallet.is_my_address(address):
-                    return wallet
-            return None
-
-        wallet = get_wallet()
+        wallet = get_wallet_of_address(address=address, signals=self.signals)
         if not wallet:
             return None
-        color = AddressEdit.color_address(address, wallet)
+        color = AddressEdit.color_address(address, wallet, signals=self.signals)
         if not color:
             logger.error("This should not happen, since wallet should only be found if the address is mine.")
             return None
@@ -348,3 +349,10 @@ class SankeyBitcoin(SankeyWidget):
             self.signals.open_tx_like.emit(
                 PackagedTxLike(tx_like=outpoint.txid, focus_ui_elements=UiElements.diagram)
             )
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        SignalTools.disconnect_all_signals_from(self)
+        self.setVisible(False)
+        self.setParent(None)
+        return super().close()

@@ -132,7 +132,7 @@ class GitHubAssetDownloader:
     def _get_assets(self, api_url) -> List[Asset]:
         try:
             logger.debug(f"Get assets from {api_url}")
-            response = requests.get(api_url, timeout=2, proxies=self.proxies)
+            response = requests.get(api_url, timeout=10 if self.proxies else 2, proxies=self.proxies)
             response.raise_for_status()
             assets = response.json().get("assets", [])
 
@@ -302,7 +302,7 @@ class SignatureVerifyer:
 
     @staticmethod
     def _download_file(download_url: str, filename: Path, proxies: Dict | None) -> Path:
-        sig_response = requests.get(download_url, timeout=2, proxies=proxies)
+        sig_response = requests.get(download_url, timeout=10 if proxies else 2, proxies=proxies)
         sig_response.raise_for_status()
         with open(filename, "wb") as f:
             f.write(sig_response.content)

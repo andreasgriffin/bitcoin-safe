@@ -32,14 +32,15 @@ import json
 import logging
 import os
 import shutil
-from dataclasses import dataclass, field
+import threading
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -47,7 +48,6 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QGridLayout,
     QHBoxLayout,
-    QInputDialog,
     QLabel,
     QMessageBox,
     QSplitter,
@@ -56,31 +56,38 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.category_info import CategoryInfo, SubtextType
+from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
+from bitcoin_safe.gui.qt.category_manager.category_manager import CategoryManager
 from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
-from bitcoin_safe.gui.qt.my_treeview import SearchableTab, TreeViewWithToolbar
+from bitcoin_safe.gui.qt.my_treeview import (
+    MyItemDataRole,
+    SearchableTab,
+    TreeViewWithToolbar,
+)
 from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
-from bitcoin_safe.gui.qt.ui_tx_creator import UITx_Creator
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.labels import LabelType
 from bitcoin_safe.pythonbdk_types import (
     Balance,
     TransactionDetails,
     python_utxo_balance,
 )
-from bitcoin_safe.signal_tracker import SignalTools
-from bitcoin_safe.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
 from ...execute_config import ENABLE_THREADING, ENABLE_TIMERS
-from ...mempool import MempoolData
+from ...mempool_manager import MempoolManager
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...wallet import (
+    LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
     Wallet,
@@ -89,21 +96,24 @@ from ...wallet import (
 )
 from .address_list import AddressList, AddressListWithToolbar
 from .bitcoin_quick_receive import BitcoinQuickReceive
-from .category_list import CategoryEditor
 from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion, question_dialog
 from .hist_list import HistList, HistListWithToolbar
-from .taglist import AddressDragInfo
 from .util import (
     Message,
     MessageType,
     caught_exception_message,
     custom_exception_handler,
+    set_current_tab_by_text,
 )
-from .utxo_list import UTXOList, UtxoListWithToolbar
 from .wallet_balance_chart import WalletBalanceChart
 
 logger = logging.getLogger(__name__)
+
+
+MINIMUM_INTERVAL_SYNC_REGULARLY = (
+    5 * 60
+)  # in seconds  .  A high value is OK here because the p2p monitoring will inform of any new txs instantly
 
 
 class QTProtoWallet(QtWalletBase):
@@ -127,10 +137,7 @@ class QTProtoWallet(QtWalletBase):
             parent=parent,
         )
 
-        (
-            self.wallet_descriptor_tab,
-            self.wallet_descriptor_ui,
-        ) = self.create_and_add_settings_tab(protowallet)
+        self.wallet_descriptor_ui = self.create_and_add_settings_tab(protowallet)
 
         self.tabs.setVisible(False)
 
@@ -148,11 +155,11 @@ class QTProtoWallet(QtWalletBase):
     def get_keystore_labels(self) -> List[str]:
         return [self.protowallet.signer_name(i) for i in range(len(self.protowallet.keystores))]
 
-    def create_and_add_settings_tab(self, protowallet: ProtoWallet) -> Tuple[QWidget, DescriptorUI]:
+    def create_and_add_settings_tab(self, protowallet: ProtoWallet) -> DescriptorUI:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
             protowallet=protowallet,
-            signals_min=self.signals,
+            signals=self.signals,
             threading_parent=self,
         )
         self.tabs.addTab(
@@ -163,7 +170,7 @@ class QTProtoWallet(QtWalletBase):
 
         wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.on_apply_setting_changes)
         wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(self.on_cancel_wallet_creation)
-        return wallet_descriptor_ui, wallet_descriptor_ui
+        return wallet_descriptor_ui
 
     def on_cancel_wallet_creation(self):
         self.signal_close_wallet.emit(self.protowallet.id)
@@ -196,44 +203,15 @@ class ProgressSignal:
         self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
 
 
-@dataclass
-class StateTreeView(SaveAllClass):
-    VERSION = "0.0.0"
-    known_classes = {
-        **BaseSaveableClass.known_classes,
-    }
-
-    hidden_columns: List[int] = field(default_factory=list)
-
-    @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]):
-        return dct
-
-
-@dataclass
-class StateQTWallet(SaveAllClass):
-    VERSION = "0.0.0"
-    known_classes = {
-        **BaseSaveableClass.known_classes,
-        StateTreeView.__name__: StateTreeView,
-    }
-
-    history_list: StateTreeView = field(default_factory=StateTreeView)
-    address_list: StateTreeView = field(default_factory=StateTreeView)
-    utxo_list: StateTreeView = field(default_factory=StateTreeView)
-
-    @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]):
-        return dct
-
-
 class QTWallet(QtWalletBase, BaseSaveableClass):
     VERSION = "0.2.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
         "Wallet": Wallet,
         "Balance": Balance,
-        StateQTWallet.__name__: StateQTWallet,
+        HistListWithToolbar.__name__: HistListWithToolbar,
+        AddressListWithToolbar.__name__: AddressListWithToolbar,
+        UITx_Creator.__name__: UITx_Creator,
     }
 
     signal_settext_balance_label: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
@@ -244,7 +222,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         wallet: Wallet,
         config: UserConfig,
         signals: Signals,
-        mempool_data: MempoolData,
+        mempool_manager: MempoolManager,
         fx: FX,
         sync_tab: SyncTab | None = None,
         password: str | None = None,
@@ -252,7 +230,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         threading_parent: ThreadingManager | None = None,
         notified_tx_ids: Iterable[str] | None = None,
         tutorial_index: int | None = None,
-        state: StateQTWallet | None = None,
+        history_list_with_toolbar: HistListWithToolbar | None = None,
+        address_list_with_toolbar: AddressListWithToolbar | None = None,
+        uitx_creator: UITx_Creator | None = None,
+        last_tab_title: str = "",
         parent=None,
     ) -> None:
         super().__init__(
@@ -262,7 +243,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             tutorial_index=tutorial_index,
             parent=parent,
         )
-        self.mempool_data = mempool_data
+        self.mempool_manager = mempool_manager
         self.wallet = self.set_wallet(wallet)
         self.password = password
         self.fx = fx
@@ -271,6 +252,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
         self.notified_tx_ids = set(notified_tx_ids if notified_tx_ids else [])
+        self.fill_cache_lock = threading.Lock()
+        self.category_core = CategoryCore(wallet=self.wallet, signals=self.signals)
 
         self._last_syncing_start = datetime.datetime.now()
         self._syncing_delay = timedelta(seconds=0)
@@ -287,45 +270,33 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 parent=self,
             )
         )
+        self.sync_tab.set_wallet_id(self.wallet.id)
 
         ########### create tabs
         (
             self.history_tab,
             self.history_list,
             self.wallet_balance_chart,
-            self.history_tab_with_toolbar,
-        ) = self._create_hist_tab(self.tabs, state_history_list=state.history_list if state else None)
+            self.history_list_with_toolbar,
+        ) = self._create_hist_tab(self.tabs, history_list_with_toolbar=history_list_with_toolbar)
 
         (
             self.address_tab,
             self.address_list,
-            self.address_tab_category_editor,
+            self.category_manager,
             self.address_list_with_toolbar,
-        ) = self._create_addresses_tab(self.tabs, state_address_list=state.address_list if state else None)
+        ) = self._create_addresses_tab(self.tabs, address_list_with_toolbar=address_list_with_toolbar)
 
-        self.send_tab, self.uitx_creator = self._create_send_tab(
-            self.tabs, state_utxo_list=state.utxo_list if state else None
-        )
-
-        (
-            self.wallet_descriptor_tab,
-            self.wallet_descriptor_ui,
-        ) = self.create_and_add_settings_tab()
+        self.uitx_creator = self._create_send_tab(uitx_creator=uitx_creator)
+        self.wallet_descriptor_ui = self.create_and_add_settings_tab()
 
         self.sync_tab, self.sync_tab_widget, self.label_syncer = self.add_sync_tab()
 
         self.create_status_bar(self, self.outer_layout)
-
         self.update_status_visualization(self.sync_status)
-        self.tabs.setCurrentIndex(0)
-
-        self.address_list.signal_tag_dropped.connect(self.set_category)
-        self.address_tab_category_editor.list_widget.signal_addresses_dropped.connect(self.set_category)
-        self.address_tab_category_editor.delete_button.signal_addresses_dropped.connect(self.set_category)
-        self.address_tab_category_editor.list_widget.signal_tag_deleted.connect(self.delete_category)
-        self.address_tab_category_editor.list_widget.signal_tag_renamed.connect(self.rename_category)
 
         self.updateUi()
+        set_current_tab_by_text(self.tabs, last_tab_title)
         self.quick_receive.update_content(UpdateFilter(refresh_all=True))
 
         #### connect signals
@@ -342,6 +313,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_signals.import_electrum_wallet_labels.connect(
             self.import_electrum_wallet_labels,
         )
+        self.signal_tracker.connect(self.signals.language_switch, self.wallet_signals.language_switch.emit)
+        self.signal_tracker.connect(self.signals.currency_switch, self.wallet_signals.currency_switch.emit)
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_display_balance)
 
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
@@ -356,15 +330,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         d["sync_tab"] = self.sync_tab.dump()
         d["tutorial_index"] = self.tutorial_index
         d["notified_tx_ids"] = list(self.notified_tx_ids)
-        d["state"] = self.get_state().dump()
-        return d
+        d["history_list_with_toolbar"] = self.history_list_with_toolbar.dump()
+        d["address_list_with_toolbar"] = self.address_list_with_toolbar.dump()
+        d["uitx_creator"] = self.uitx_creator.dump()
+        d["last_tab_title"] = self.tabs.tabText(self.tabs.currentIndex())
 
-    def get_state(self) -> StateQTWallet:
-        history_list = StateTreeView(hidden_columns=self.history_list.hidden_columns)
-        utxo_list = StateTreeView(hidden_columns=self.uitx_creator.utxo_list.hidden_columns)
-        address_list = StateTreeView(hidden_columns=self.address_list.hidden_columns)
-        s = StateQTWallet(history_list=history_list, utxo_list=utxo_list, address_list=address_list)
-        return s
+        return d
 
     @classmethod
     def from_file(
@@ -372,7 +343,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         file_path: str,
         config: UserConfig,
         signals: Signals,
-        mempool_data: MempoolData,
+        mempool_manager: MempoolManager,
         fx: FX,
         password: str | None = None,
         threading_parent: ThreadingManager | None = None,
@@ -385,14 +356,49 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 "QTWallet": {
                     "config": config,
                     "signals": signals,
-                    "mempool_data": mempool_data,
+                    "mempool_manager": mempool_manager,
                     "fx": fx,
                     "file_path": file_path,
                     "threading_parent": threading_parent,
                 },
+                "HistList": {
+                    "config": config,
+                    "signals": signals,
+                    "mempool_manager": mempool_manager,
+                    "fx": fx,
+                },
+                "HistListWithToolbar": {
+                    "config": config,
+                },
+                "UTXOList": {
+                    "config": config,
+                    "signals": signals,
+                    "fx": fx,
+                },
+                "UtxoListWithToolbar": {
+                    "config": config,
+                },
+                "AddressList": {
+                    "config": config,
+                    "signals": signals,
+                    "fx": fx,
+                },
+                "AddressListWithToolbar": {
+                    "config": config,
+                },
                 "SyncTab": {
                     "signals": signals,
                     "network": config.network,
+                },
+                "UITx_Creator": {
+                    "signals": signals,
+                    "config": config,
+                    "mempool_manager": mempool_manager,
+                    "fx": fx,
+                },
+                "CategoryList": {
+                    "signals": signals,
+                    "config": config,
                 },
             },
         )
@@ -417,19 +423,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         # in the function above, only default json serilizable things can be set in dct
         return json.dumps(dct)
-
-    @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
-        # if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
-        #     if "labels" in dct:
-        #         # no real migration. Just delete old data
-        #         del dct["labels"]
-
-        # now the VERSION is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
 
     @classmethod
     def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
@@ -465,7 +458,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         else:
             logger.warning(f"No class_kwargs given for {cls.__name__}.from_dump")
 
-        return cls(**filtered_for_init(dct, cls))
+        instance = cls(**filtered_for_init(dct, cls))
+        return instance
 
     @property
     def wallet_signals(self) -> WalletSignals:
@@ -481,19 +475,21 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.update_display_balance()
 
     def updateUi(self) -> None:
-        self.tabs.setTabText(self.tabs.indexOf(self.send_tab), self.tr("Send"))
-        self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_tab), self.tr("Descriptor"))
+        self.tabs.setTabText(self.tabs.indexOf(self.uitx_creator), self.tr("Send"))
+        self.tabs.setTabText(self.tabs.indexOf(self.wallet_descriptor_ui), self.tr("Descriptor"))
         self.tabs.setTabText(self.tabs.indexOf(self.sync_tab_widget), self.tr("Sync && Chat"))
         self.tabs.setTabText(self.tabs.indexOf(self.history_tab), self.tr("History"))
         self.tabs.setTabText(self.tabs.indexOf(self.address_tab), self.tr("Receive"))
 
         self.balance_label_title.setText(self.tr("Balance"))
         self.fiat_value_label_title.setText(self.tr("Value"))
+        self.category_manager.updateUi()
+        self.quick_receive.updateUi()
 
     def update_display_balance(self):
         balance_total = Satoshis(self.wallet.get_balance().total, self.config.network)
         self.balance_label.setText(balance_total.str_with_unit())
-        self.fiat_value_label.setText(self.fx.to_fiat_str(currency="USD", amount=balance_total.value))
+        self.fiat_value_label.setText(self.fx.btc_to_fiat_str(amount=balance_total.value))
 
     def stop_sync_timer(self) -> None:
         self.timer_sync_retry.stop()
@@ -545,11 +541,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def file_path(self, value: Optional[str]) -> None:
         self._file_path = value
 
-    def create_and_add_settings_tab(self) -> Tuple[QWidget, DescriptorUI]:
+    def create_and_add_settings_tab(self) -> DescriptorUI:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
             protowallet=self.wallet.as_protowallet(),
-            signals_min=self.signals,
+            signals=self.signals,
             wallet=self.wallet,
             threading_parent=self,
         )
@@ -563,7 +559,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.on_qtwallet_apply_setting_changes
         )
         wallet_descriptor_ui.signal_qtwallet_cancel_setting_changes.connect(self.cancel_setting_changes)
-        return wallet_descriptor_ui, wallet_descriptor_ui
+        return wallet_descriptor_ui
 
     def on_qtwallet_apply_setting_changes(self):
         # save old status, such that the backup has all old data (inlcuding the "SyncTab" in the data_dump)
@@ -587,7 +583,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             pass
         elif worst.type == WalletDifferenceType.ImpactOnAddresses:
             if not question_dialog(
-                self.tr("Proceeding will potentially change all wallet addresses. Do you want to proceed?")
+                self.tr("Proceeding will potentially change all wallet addresses."),
+                true_button=self.tr("Proceed"),
             ):
                 return
 
@@ -606,7 +603,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             new_wallet,
             self.config,
             self.signals,
-            self.mempool_data,
+            self.mempool_manager,
             self.fx,
             file_path=self.file_path,
             password=self.password,
@@ -714,11 +711,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     f"{os.path.join(self.config.wallet_dir, filename_clean(self.wallet.id))}",
                     self.tr("All Files (*);;Wallet Files (*.wallet)"),
                 )
-                if not self._file_path and question_dialog(
-                    text=self.tr("Are you SURE you don't want save the wallet {id}?").format(
-                        id=self.wallet.id
-                    ),
-                    title=self.tr("Delete wallet"),
+                if not self._file_path and not question_dialog(
+                    text=self.tr("Wallet was not saved.").format(id=self.wallet.id),
+                    title=self.tr("Wallet not saved yet"),
+                    true_button=self.tr("Save wallet"),
+                    false_button=self.tr("Don't save wallet"),
                 ):
                     logger.info("No file selected")
                     return None
@@ -794,7 +791,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         ).emit_with(self.signals.notification)
         if question_dialog(
             message_content + "\n" + self.tr("Do you want to save a copy of these transactions?"),
-            buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            true_button=self.tr("Save transactions"),
+            false_button=QMessageBox.StandardButton.No,
         ):
             folder_path = QFileDialog.getExistingDirectory(
                 self, "Select Folder to save the removed transactions"
@@ -809,6 +807,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
                     data.write_to_filedescriptor(fd)
                     logger.info(f"Exported {tx.txid} to {filename}")
+        else:
+            self.signals.signal_close_tabs_with_txids.emit(
+                [tx.transaction.compute_txid() for tx in removed_txs]
+            )
 
         self.notified_tx_ids -= set([tx.txid for tx in removed_txs])
         # all the lists must be updated
@@ -856,9 +858,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.wallet.clear_cache()
 
         def do() -> Any:
-            self.wallet.fill_commonly_used_caches()
+            if not self.fill_cache_lock.acquire(blocking=False):
+                logger.info(f"Skipped fill_commonly_used_caches because fill_cache_lock blocked")
+                return False
 
-        def on_done(result) -> None:
+            try:
+                self.wallet.fill_commonly_used_caches()
+            finally:
+                self.fill_cache_lock.release()
+                return True
+
+        def on_done(filled_caches: bool) -> None:
+            if not filled_caches:
+                logger.info(f"{filled_caches=} so we skip the updating")
+                return
             delta_txs = self.get_delta_txs()
             change_dict = delta_txs.was_changed()
             formatted_dict = {k: [tx.txid for tx in v] for k, v in change_dict.items()}
@@ -895,43 +908,25 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _create_send_tab(
         self,
-        tabs: QTabWidget,
-        state_utxo_list: StateTreeView | None,
-    ) -> Tuple[SearchableTab, UITx_Creator]:
-        utxo_list = UTXOList(
-            self.config,
-            self.signals,
-            outpoints=[],
-            hidden_columns=(
-                state_utxo_list.hidden_columns
-                if state_utxo_list
-                else [
-                    UTXOList.Columns.OUTPOINT,
-                    UTXOList.Columns.WALLET_ID,
-                ]
-            ),
-            sort_column=UTXOList.Columns.CATEGORY,
-            sort_order=Qt.SortOrder.AscendingOrder,
-        )
+        uitx_creator: UITx_Creator | None = None,
+    ) -> UITx_Creator:
 
-        toolbar_list = UtxoListWithToolbar(utxo_list, self.config, parent=tabs)
-
-        uitx_creator = UITx_Creator(
-            wallet=self.wallet,
-            mempool_data=self.mempool_data,
-            fx=self.fx,
-            categories=self.wallet.labels.categories,
-            widget_utxo_with_toolbar=toolbar_list,
-            utxo_list=utxo_list,
-            config=self.config,
-            signals=self.signals,
-            parent=self,
-        )
+        if uitx_creator:
+            uitx_creator.set_category_core(category_core=self.category_core)
+        else:
+            uitx_creator = UITx_Creator(
+                wallet_id=self.wallet.id,
+                mempool_manager=self.mempool_manager,
+                fx=self.fx,
+                config=self.config,
+                signals=self.signals,
+                parent=self,
+                category_core=self.category_core,
+            )
         self.tabs.addTab(uitx_creator, svg_tools.get_QIcon("bi--send.svg"), "")
 
         uitx_creator.signal_create_tx.connect(self.create_psbt)
-
-        return uitx_creator, uitx_creator
+        return uitx_creator
 
     def create_psbt(self, txinfos: TxUiInfos) -> None:
 
@@ -971,7 +966,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 )
                 self.wallet_signals.updated.emit(update_filter)
                 self.signals.open_tx_like.emit(builder_infos)
-
                 self.uitx_creator.clear_ui()
             except Exception as e:
                 caught_exception_message(e)
@@ -999,78 +993,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signals.get_wallets, self.get_wallet, slot_name=self.wallet.id)
         self.signal_tracker.connect(self.signals.get_qt_wallets, self.get_qt_wallet, slot_name=self.wallet.id)
         self.signal_tracker.connect(
-            self.wallet_signals.get_display_balance,
-            self.wallet.get_balance,
-            slot_name=self.wallet.id,
-        )
-        self.signal_tracker.connect(
             self.wallet_signals.get_category_infos,
             self.get_category_infos,
             slot_name=self.wallet.id,
         )
         return wallet
-
-    def rename_category(self, old_category: str, new_category: str) -> None:
-        affected_keys = self.wallet.labels.rename_category(old_category, new_category)
-        # add addresses with no category
-        affected_keys += [a for a in self.wallet.get_addresses() if self.wallet.labels.get_category(a)]
-        affected_keys = list(set(affected_keys))
-        self.wallet_signals.updated.emit(
-            UpdateFilter(
-                addresses=affected_keys,
-                categories=([old_category, new_category]),
-                txids=affected_keys,
-                reason=UpdateFilterReason.CategoryRenamed,
-            )
-        )
-
-    def delete_category(self, category: str) -> None:
-        # Show dialog and get input
-        text, ok = QInputDialog.getText(
-            self,
-            self.tr("Rename or merge categories"),
-            self.tr("Choose a new name, or an existing name for merging:"),
-            text=category,
-        )
-        if ok and text:
-            new_category = text
-        else:
-            # just rename it with the same name
-            new_category = category
-
-        self.rename_category(category, new_category)
-
-    def set_category(self, address_drag_info: AddressDragInfo) -> None:
-        apply_addresses = address_drag_info.addresses
-        used_addresses = [
-            address for address in address_drag_info.addresses if self.wallet.address_is_used(address=address)
-        ]
-        if used_addresses:
-            if question_dialog(
-                text=self.tr(
-                    "The addresses {used_addresses}\nhave transactions linking to other addresses already. Are you sure you want to change the category?"
-                ).format(used_addresses="\n   " + "\n   ".join(used_addresses))
-            ):
-                apply_addresses = address_drag_info.addresses
-            else:
-                return
-
-        for address in apply_addresses:
-            for category in address_drag_info.tags:
-                self.wallet.labels.set_addr_category(address, category, timestamp="now")
-
-        txids: Set[str] = set()
-        for address in apply_addresses:
-            txids = txids.union(self.wallet.get_involved_txids(address))
-
-        self.wallet_signals.updated.emit(
-            UpdateFilter(
-                addresses=apply_addresses,
-                categories=address_drag_info.tags,
-                txids=txids,
-                reason=UpdateFilterReason.UserInput,
-            )
-        )
 
     def create_status_bar(self, tab: QWidget, outer_layout) -> None:
         pass
@@ -1083,7 +1010,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         tooltip = ""
         if sync_status == SyncStatus.syncing:
             icon_text = "status_waiting.svg"
-            self.history_tab_with_toolbar.sync_button.set_icon_is_syncing()
+            self.history_list_with_toolbar.sync_button.set_icon_is_syncing()
             tooltip = self.tr("Syncing with {server}").format(
                 server=self.config.network_config.description_short()
             )
@@ -1094,15 +1021,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             tooltip = self.tr("Connected to {server}").format(
                 server=self.config.network_config.description_short()
             )
-            self.history_tab_with_toolbar.sync_button.set_icon_allow_refresh()
+            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
         else:
             icon_text = "status_disconnected.svg"
             tooltip = self.tr("Disconnected from {server}").format(
                 server=self.config.network_config.description_short()
             )
-            self.history_tab_with_toolbar.sync_button.set_icon_allow_refresh()
+            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
 
-        self.signals.signal_set_tab_properties.emit(self.wallet.id, icon_text, tooltip)
+        self.signals.signal_set_tab_properties.emit(self, self.wallet.id, icon_text, tooltip)
 
     def create_list_tab(
         self,
@@ -1130,9 +1057,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         return searchable_tab
 
     def _create_hist_tab(
-        self,
-        tabs: QTabWidget,
-        state_history_list: StateTreeView | None,
+        self, tabs: QTabWidget, history_list_with_toolbar: HistListWithToolbar | None
     ) -> Tuple[SearchableTab, HistList, WalletBalanceChart, HistListWithToolbar]:
         tab = SearchableTab(parent=tabs)
         tab.setObjectName(f"created as HistList tab containrer")
@@ -1142,28 +1067,31 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         splitter = QSplitter(orientation=Qt.Orientation.Vertical)
         tab_layout.addWidget(splitter)
 
-        l = HistList(
-            fx=self.fx,
-            config=self.config,
-            signals=self.signals,
-            wallets=[self.wallet],
-            hidden_columns=(
-                state_history_list.hidden_columns
-                if state_history_list
-                else [
-                    HistList.Columns.WALLET_ID,
-                    HistList.Columns.BALANCE,
-                    HistList.Columns.TXID,
-                ]
-            ),
-            mempool_data=self.mempool_data,
+        if history_list_with_toolbar:
+            history_list_with_toolbar.hist_list.set_wallets(wallets=[self.wallet])
+        else:
+            l = HistList(
+                fx=self.fx,
+                config=self.config,
+                signals=self.signals,
+                wallets=[self.wallet],
+                hidden_columns=(
+                    [
+                        HistList.Columns.WALLET_ID,
+                        HistList.Columns.BALANCE,
+                        HistList.Columns.TXID,
+                    ]
+                ),
+                mempool_manager=self.mempool_manager,
+            )
+            history_list_with_toolbar = HistListWithToolbar(l, self.config, parent=tabs)
+
+        history_list_with_toolbar.hist_list.signal_selection_changed.connect(
+            self.on_hist_list_selection_changed
         )
-        l.signal_selection_changed.connect(self.on_hist_list_selection_changed)
 
-        treeview_with_toolbar = HistListWithToolbar(l, self.config, parent=tabs)
-
-        list_widget = self.create_list_tab(treeview_with_toolbar, tabs)
-        tab.searchable_list = l
+        list_widget = self.create_list_tab(history_list_with_toolbar, tabs)
+        tab.searchable_list = history_list_with_toolbar.searchable_list
 
         top_widget = QWidget()
         top_widget_layout = QHBoxLayout(top_widget)
@@ -1223,66 +1151,80 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         splitter.setSizes(
             [self.quick_receive.minimumHeight(), self.height() - self.quick_receive.minimumHeight()]
         )
-        return tab, l, wallet_balance_chart, treeview_with_toolbar
+        return tab, history_list_with_toolbar.hist_list, wallet_balance_chart, history_list_with_toolbar
 
     def on_hist_chart_click(self, tx_details: TransactionDetails):
-        self.history_list.select_rows(content_list=[tx_details.txid], column=self.history_list.key_column)
+        self.history_list.select_rows(
+            content_list=[tx_details.txid],
+            column=self.history_list.key_column,
+            role=MyItemDataRole.ROLE_KEY,
+            scroll_to_last=True,
+        )
 
     def get_category_infos(self) -> List[CategoryInfo]:
 
-        category_python_utxo_dict = self.wallet.get_category_python_utxo_dict()
+        category_python_txo_dict = self.wallet.get_category_python_txo_dict(include_spent=True)
 
-        return [
-            CategoryInfo(
+        category_infos: List[CategoryInfo] = []
+        address_category_dict_raw = self.wallet.labels.get_category_dict_raw(filter_type=LabelType.addr)
+
+        for category in self.wallet.labels.categories:
+            txos = category_python_txo_dict.get(category, [])
+            utxos = [txo for txo in txos if not txo.is_spent_by_txid]
+            txo_balance = python_utxo_balance(txos)
+            utxo_balance = python_utxo_balance(utxos)
+            item = CategoryInfo(
                 category=category,
-                text_click_new_address=self.tr("Click for new address"),
-                text_balance=self.tr("{num_inputs} Inputs: {inputs}").format(
-                    num_inputs=len(category_python_utxo_dict.get(category, [])),
-                    inputs=Satoshis(
-                        python_utxo_balance(category_python_utxo_dict.get(category, [])), self.wallet.network
-                    ).str_with_unit(),
-                ),
+                address_count=len(address_category_dict_raw[category]),
+                txo_balance=txo_balance,
+                utxo_balance=utxo_balance,
+                txo_count=len(txos),
+                utxo_count=len(utxos),
             )
-            for category in self.wallet.labels.categories
-        ]
+            category_infos.append(item)
+        return category_infos
 
     def _create_addresses_tab(
         self,
         tabs: QTabWidget,
-        state_address_list: StateTreeView | None,
-    ) -> Tuple[SearchableTab, AddressList, CategoryEditor, AddressListWithToolbar]:
-        l = AddressList(
-            fx=self.fx,
-            config=self.config,
-            wallet=self.wallet,
-            wallet_signals=self.wallet_signals,
-            signals=self.signals,
-            hidden_columns=(
-                state_address_list.hidden_columns if state_address_list else [AddressList.Columns.INDEX]
-            ),
-        )
-        treeview_with_toolbar = AddressListWithToolbar(l, self.config, parent=tabs, signals=self.signals)
+        address_list_with_toolbar: AddressListWithToolbar | None = None,
+    ) -> Tuple[SearchableTab, AddressList, CategoryManager, AddressListWithToolbar]:
 
-        address_tab_category_editor = CategoryEditor(
-            self.wallet_signals, subtext_type=SubtextType.click_new_address
+        category_manager = CategoryManager(
+            config=self.config, category_core=self.category_core, wallet_id=self.wallet.id
         )
-        address_tab_category_editor.signal_category_added.connect(self.on_add_category)
 
-        address_tab_category_editor.list_widget.signal_tag_clicked.connect(self.create_new_address)
+        if address_list_with_toolbar:
+            address_list_with_toolbar.address_list.set_wallets(wallets=[self.wallet])
+            address_list_with_toolbar.set_category_core(self.category_core)
+        else:
+            l = AddressList(
+                fx=self.fx,
+                config=self.config,
+                wallets=[self.wallet],
+                signals=self.signals,
+                hidden_columns=([AddressList.Columns.WALLET_ID, AddressList.Columns.INDEX]),
+            )
+            address_list_with_toolbar = AddressListWithToolbar(
+                address_list=l,
+                config=self.config,
+                category_core=self.category_core,
+                parent=tabs,
+            )
+        address_list_with_toolbar.address_list.signal_tag_dropped.connect(category_manager.set_category)
+        category_manager.category_list.signal_addresses_dropped.connect(category_manager.set_category)
 
-        address_tab_category_editor.setMaximumWidth(150)
-        tab = self.create_list_tab(
-            treeview_with_toolbar, tabs, horizontal_widgets_left=[address_tab_category_editor]
-        )
+        address_list_with_toolbar.action_manage_categories.triggered.connect(category_manager.show)
+
+        tab = self.create_list_tab(address_list_with_toolbar, tabs)
 
         tabs.insertTab(1, tab, svg_tools.get_QIcon("ic--baseline-call-received.svg"), "")
-        return tab, l, address_tab_category_editor, treeview_with_toolbar
-
-    def create_new_address(self, category) -> None:
-        self.address_list.get_address(force_new=True, category=category)
-
-    def on_add_category(self, category: str) -> None:
-        self.wallet.labels.add_category(category)
+        return (
+            tab,
+            address_list_with_toolbar.address_list,
+            category_manager,
+            address_list_with_toolbar,
+        )
 
     def set_sync_status(self, new: SyncStatus) -> None:
         self.sync_status = new
@@ -1295,7 +1237,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_done(self, result) -> None:
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
-        interval_timer_sync_regularly = max(int(self._syncing_delay.total_seconds() * 200), 30)  # in sec
+        interval_timer_sync_regularly = max(
+            int(self._syncing_delay.total_seconds() * 200), MINIMUM_INTERVAL_SYNC_REGULARLY
+        )  # in sec
         self.timer_sync_regularly.setInterval(interval_timer_sync_regularly * 1000)
         logger.info(
             f"Syncing took {self._syncing_delay} --> set the interval_timer_sync_regularly to {interval_timer_sync_regularly}s"
@@ -1425,10 +1369,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         with open(file_path, "r") as file:
             lines = file.read()
 
-        force_overwrite = bool(
+        force_overwrite = not bool(
             question_dialog(
-                "Do you want to overwrite all labels?",
-                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+                "Do you want to keep existing labels?",
+                true_button=self.tr("Keep existing"),
+                false_button=self.tr("Overwrite existing"),
             )
         )
 
@@ -1465,42 +1410,36 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         keys = self.history_list.get_selected_keys()
         self.wallet_balance_chart.highlight_txids(txids=set(keys))
 
-    def apply_txs(self, txs: List[bdk.Transaction]):
-        self.wallet.apply_unconfirmed_txs(txs)
+    def apply_txs(self, txs: List[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
+        self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
         self.wallet_signals.updated.emit(
             UpdateFilter(refresh_all=True, reason=UpdateFilterReason.TransactionChange)
         )
         self.tabs.setCurrentWidget(self.history_tab)
 
         self._rows_after_hist_list_update = [tx.compute_txid() for tx in txs]
-        self.history_list.signal_finished_update.connect(self.select_row_after_hist_list_update)
 
-    def select_row_after_hist_list_update(self):
-        "Single time called on signal_finished_update"
-        try:
-            self.history_list.select_rows(self._rows_after_hist_list_update, self.history_list.key_column)
-            self.history_list.signal_finished_update.disconnect(self.select_row_after_hist_list_update)
-        except:
-            pass
+        self.history_list.select_rows(
+            self._rows_after_hist_list_update,
+            self.history_list.key_column,
+            role=MyItemDataRole.ROLE_KEY,
+            scroll_to_last=True,
+        )
 
     def close(self) -> bool:
         # crucial is to explicitly close everything that has a wallet attached
         self.stop_sync_timer()
-        self.address_tab_category_editor.close()
         self.quick_receive.close()
         self.address_tab.close()
         self.address_list_with_toolbar.close()
         self.history_tab.close()
         self.history_tab.searchable_list = None
-        self.history_tab_with_toolbar.close()
-        self.wallet_descriptor_tab.close()
+        self.history_list_with_toolbar.close()
         self.wallet_descriptor_ui.close()
-        self.send_tab.close()
         self.uitx_creator.close()
         self.wallet_balance_chart.close()
         self.label_syncer.send_all_labels_to_myself()
         self.sync_tab.unsubscribe_all()
-        self.sync_tab.nostr_sync.stop()
         self.sync_tab.close()
         self.tabs.clear()
         self.tabs.close()

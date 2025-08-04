@@ -1,27 +1,47 @@
 {
     "VERSION": "0.2.0",
     "__class__": "QTWallet",
-    "display_balance": {
-        "VERSION": "0.0.1",
-        "__class__": "Balance",
-        "confirmed": 0,
-        "immature": 0,
-        "trusted_pending": 0,
-        "untrusted_pending": 0
+    "state": {
+        "VERSION": "0.0.0",
+        "__class__": "StateQTWallet",
+        "address_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                2
+            ]
+        },
+        "history_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                1,
+                6,
+                0
+            ]
+        },
+        "utxo_list": {
+            "VERSION": "0.0.0",
+            "__class__": "StateTreeView",
+            "hidden_columns": [
+                2,
+                1
+            ]
+        }
     },
     "tutorial_index": null,
     "wallet": {
-        "VERSION": "0.3.0",
+        "VERSION": "0.3.1",
         "__class__": "Wallet",
-        "_blockchain_height": 2073014,
-        "_tips": [
-            2,
-            0
-        ],
+        "_blockchain_height": 257217,
         "auto_opportunistic_coin_select": true,
         "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
         "gap": 20,
-        "id": "demo-public-signet",
+        "id": "demo-public-signet",         
+        "initialization_tips": [
+            10,
+            2
+        ],
         "keystores": [
             {
                 "VERSION": "0.0.2",
@@ -48,13 +68,79 @@
                 "Private"
             ],
             "data": {
+                "707e9af9db5771d8567ff46ac0c695a6fbc34b60640d5f597daac116b197a1f7": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "from faucet",
+                    "ref": "707e9af9db5771d8567ff46ac0c695a6fbc34b60640d5f597daac116b197a1f7",
+                    "timestamp": 1750436821.439823,
+                    "type": "tx"
+                },
+                "a756a5f81e96aa7a4b5db024931fccc916d0a808d763bd66d688b8be289aba62": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "send again to myself",
+                    "ref": "a756a5f81e96aa7a4b5db024931fccc916d0a808d763bd66d688b8be289aba62",
+                    "timestamp": 1750436851.959768,
+                    "type": "tx"
+                },
+                "c981bd99051bbc07ee48dda1a0cdc0b061e03d97873ed6289286cc38713002f9": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "faucet donated more",
+                    "ref": "c981bd99051bbc07ee48dda1a0cdc0b061e03d97873ed6289286cc38713002f9",
+                    "timestamp": 1750438473.488016,
+                    "type": "tx"
+                },
+                "cc5001cd4785ded13234ee46681fd8233fed6e9ba969c77bc68c280052dad5b0": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "from faucet",
+                    "ref": "cc5001cd4785ded13234ee46681fd8233fed6e9ba969c77bc68c280052dad5b0",
+                    "timestamp": 1750436924.657408,
+                    "type": "tx"
+                },
+                "ce1e55a3611a2a08b894ad0e54245c23e4d678761d383e66e13a71085b2ddd6e": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "send to myself",
+                    "ref": "ce1e55a3611a2a08b894ad0e54245c23e4d678761d383e66e13a71085b2ddd6e",
+                    "timestamp": 1750436830.191254,
+                    "type": "tx"
+                },
+                "f66786803f52436c0e7f5e48240e1f4860fa49c7d101c469d246dbc4c604e896": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "label": "pay merchant",
+                    "ref": "f66786803f52436c0e7f5e48240e1f4860fa49c7d101c469d246dbc4c604e896",
+                    "timestamp": 1750436868.127307,
+                    "type": "tx"
+                },
+                "tb1q2k73txxj5zqclt3qwxg8kjnxgzp0xfnszpyrrm": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "Private",
+                    "label": null,
+                    "ref": "tb1q2k73txxj5zqclt3qwxg8kjnxgzp0xfnszpyrrm",
+                    "timestamp": 1750438584.202963,
+                    "type": "addr"
+                },
                 "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v": {
                     "VERSION": "0.0.3",
                     "__class__": "Label",
                     "category": "Private",
                     "label": null,
                     "ref": "tb1q45jympdfyfluktqmkda5g6vgyyza4ug54cgf9v",
-                    "timestamp": 1746249892.124667,
+                    "timestamp": 1750436743.782424,
+                    "type": "addr"
+                },
+                "tb1q9wue6952jwe3kxyzgx5kz2ctus5mfa5dxehfhx": {
+                    "VERSION": "0.0.3",
+                    "__class__": "Label",
+                    "category": "KYC Exchange",
+                    "label": null,
+                    "ref": "tb1q9wue6952jwe3kxyzgx5kz2ctus5mfa5dxehfhx",
+                    "timestamp": 1750438584.196014,
                     "type": "addr"
                 },
                 "tb1qf45vu6275sm4wy96q5xeqmzg75f88tlplnrtxv": {
@@ -72,7 +158,7 @@
                     "category": "KYC Exchange",
                     "label": null,
                     "ref": "tb1qqugr58xv76s75e2ta6ty5spq6gxyr7c9307tfm",
-                    "timestamp": 1746249813.261018,
+                    "timestamp": 1750436743.773254,
                     "type": "addr"
                 }
             },

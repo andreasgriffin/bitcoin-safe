@@ -652,7 +652,7 @@ class ValidateBackup(BaseTab):
 class ImportXpubs(BaseTab):
 
     def _callback(self, tutorial_widget: TutorialWidget) -> None:
-        self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_tab)
+        self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_ui)
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
         )
@@ -995,6 +995,8 @@ class ReceiveTest(BaseTab):
         self.next_button.setText(self.tr("Next step"))
         self.check_button.setText(self.tr("Check if received"))
         self.cancel_button.setText(self.tr("Previous Step"))
+        if self.quick_receive:
+            self.quick_receive.updateUi()
 
 
 # class SingleEnabledTab(BaseTab):
@@ -1129,9 +1131,10 @@ class RegisterMultisig(BaseTab):
         for label in self.refs.qtwalletbase.get_keystore_labels():
 
             hardware_signer_interaction = RegisterMultisigInteractionWidget(
-                qt_wallet=self.refs.qt_wallet,
+                wallet=self.refs.qt_wallet.wallet if self.refs.qt_wallet else None,
                 threading_parent=self,
                 parent=widget,
+                signals=self.refs.qt_wallet.signals if self.refs.qt_wallet else None,
                 wallet_name=self.refs.qt_wallet.wallet.id if self.refs.qt_wallet else "Multisig",
             )
             self.hardware_signer_tabs.addTab(
@@ -1324,9 +1327,8 @@ class LabelBackup(BaseTab):
         )
         self.icon.setMaximumWidth(300)
         self.icon.setMaximumHeight(300)
-        left_widget_layout.addLayout(center_in_widget([self.icon], left_widget))
-
-        left_widget_layout.addLayout(center_in_widget([self.checkbox], left_widget))
+        left_widget_layout.addWidget(self.icon, alignment=Qt.AlignmentFlag.AlignCenter)
+        left_widget_layout.addWidget(self.checkbox, alignment=Qt.AlignmentFlag.AlignCenter)
 
         right_widget = QWidget()
         right_widget_layout = QVBoxLayout(right_widget)
@@ -1433,7 +1435,8 @@ class SendTest(BaseTab):
                     "You made {n} outgoing transactions already. Would you like to skip this spend test?"
                 ).format(n=len(spend_txos)),
                 title=self.tr("Skip spend test?"),
-                buttons=QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+                true_button=QMessageBox.StandardButton.Yes,
+                false_button=QMessageBox.StandardButton.No,
             ):
                 self.refs.go_to_next_index()
                 return
@@ -1606,11 +1609,26 @@ class Wizard(WizardBase):
     def toggle_tutorial(self) -> None:
 
         if self.get_wallet_tutorial_index() is None:
-            self.qtwalletbase.tutorial_index = self.step_bar.number_of_steps - 1
+            self.qtwalletbase.tutorial_index = self.index_of_step(self.guess_current_step())
+            self.set_current_index(self.qtwalletbase.tutorial_index)
+
         else:
             self.qtwalletbase.tutorial_index = None
 
         self.set_visibilities()
+
+    def guess_current_step(self) -> TutorialStep:
+        step = TutorialStep.buy
+        if self.qt_wallet:
+            step = TutorialStep.backup_seed
+
+            if self.qt_wallet.wallet.get_balance().total > 0:
+                step = TutorialStep.send
+
+            if self.qt_wallet.sync_tab.enabled():
+                step = TutorialStep.sync
+
+        return step
 
     def get_latest_send_test_in_tx_history(
         self, steps: List[TutorialStep], wallet: Wallet
@@ -1807,7 +1825,7 @@ class Wizard(WizardBase):
         if not self.qt_wallet:
             return
 
-        self.wallet_tabs.setCurrentWidget(self.qt_wallet.send_tab)
+        self.wallet_tabs.setCurrentWidget(self.qt_wallet.uitx_creator)
 
         # use the current_step, but if I highlighted another signing
         if self.current_step() in self.get_send_tests_steps():
@@ -1824,7 +1842,7 @@ class Wizard(WizardBase):
         for i in range(self.qt_wallet.tabs.count()):
             tab_widget = self.qt_wallet.tabs.widget(i)
             if tab_widget:
-                tab_widget.setHidden(tab_widget != self.qt_wallet.send_tab)
+                tab_widget.setHidden(tab_widget != self.qt_wallet.uitx_creator)
         self.open_tx(test_number)
 
     def updateUi(self) -> None:

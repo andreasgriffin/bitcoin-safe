@@ -170,7 +170,7 @@ class AnalyzerIndicator(QWidget):
 
     def update_label_text(self) -> None:
         """Update text label to show text of all line edits formatted with their object names."""
-        titles = [f"{le.objectName()}:" for le in self.line_edits]
+        titles = [f"{le.display_name}:" for le in self.line_edits]
         self.title_label.setText("\n".join(titles))
 
         texts: List[str] = [le.text() for le in self.line_edits]
@@ -198,8 +198,11 @@ if __name__ == "__main__":
     def validate_input(line_edit: Union[AnalyzerLineEdit, AnalyzerTextEdit], analyzer: CustomIntAnalyzer):
         """Update the line edit style based on validation."""
         analysis = analyzer.analyze(line_edit.text(), 0)
+
+        line_edit.setObjectName(f"{id(line_edit)}")
+
         if analysis.state == AnalyzerState.Warning:
-            line_edit.setStyleSheet(f"{line_edit.__class__.__name__}" + " { background-color: #ff6c54; }")
+            line_edit.setStyleSheet(f"#{line_edit.objectName()} {{ background-color: #ff6c54; }}")
         else:
             line_edit.setStyleSheet(f"")
 

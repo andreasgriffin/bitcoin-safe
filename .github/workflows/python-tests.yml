@@ -1,4 +1,6 @@
 name: Python Tests with PyQt6
+permissions:
+  contents: read
 
 on:
   push:

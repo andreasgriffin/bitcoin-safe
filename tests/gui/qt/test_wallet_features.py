@@ -51,9 +51,9 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
 from bitcoin_safe.gui.qt.export_data import FileToolButton
-from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
+from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
 from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
 
@@ -421,15 +421,15 @@ def test_wallet_features_multisig(
             menu_action_load_tx_from_qr()
 
             def menu_action_network_settings() -> None:
-                def callback(dialog: NetworkSettingsUI) -> None:
+                def callback(dialog: Settings) -> None:
                     shutter.save(dialog)
                     dialog.close()
 
                 do_modal_click(
-                    main_window.menu_action_network_settings,
+                    main_window.menu_settings,
                     callback,
                     qtbot,
-                    cls=NetworkSettingsUI,
+                    cls=Settings,
                 )
 
             menu_action_network_settings()

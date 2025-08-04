@@ -27,19 +27,20 @@
 # SOFTWARE.
 
 import logging
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
 import bdkpython as bdk
-from bitcoin_safe_lib.tx_util import serialized_to_hex
+from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 
-from bitcoin_safe.mempool import MempoolData
+from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
-    TransactionDetails,
     UtxosForInputs,
     robust_address_str_from_script,
 )
@@ -51,7 +52,13 @@ def short_tx_id(txid: str) -> str:
     return f"{txid[:4]}...{txid[-4:]}"
 
 
-def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_vsize: float, mempool_data: MempoolData) -> FeeInfo:
+def calc_minimum_rbf_fee_info(
+    fee_amount: int,
+    fee_amount_is_estimated: bool,
+    new_tx_vsize: float,
+    vsize_is_estimated: bool,
+    mempool_manager: MempoolManager,
+) -> FeeInfo:
     """
     see https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki
 
@@ -69,30 +76,62 @@ def calc_minimum_rbf_fee_info(fee_amount: int, new_tx_vsize: float, mempool_data
     # 3.
     new_absolute_fee += fee_amount
     # 4.
-    new_absolute_fee += new_tx_vsize * mempool_data.get_min_relay_fee_rate()
-    return FeeInfo(fee_amount=int(new_absolute_fee), vsize=int(new_tx_vsize), is_estimated=True)
+    new_absolute_fee += new_tx_vsize * mempool_manager.get_min_relay_fee_rate()
+    return FeeInfo(
+        fee_amount=int(new_absolute_fee),
+        vsize=int(new_tx_vsize),
+        vsize_is_estimated=vsize_is_estimated,
+        fee_amount_is_estimated=fee_amount_is_estimated,
+    )
 
 
-class TxUiInfos:
+@dataclass
+class TxUiInfos(BaseSaveableClass):
     "A wrapper around tx_builder to collect even more infos"
 
-    def __init__(self) -> None:
-        self.utxo_dict: Dict[OutPoint, PythonUtxo] = (
-            {}
-        )  # {outpoint_string:utxo} It is Ok if outpoint_string:None
-        self.fee_rate: Optional[float] = None
-        self.opportunistic_merge_utxos = True
-        self.spend_all_utxos = False
-        self.main_wallet_id: Optional[str] = None
+    VERSION = "0.0.0"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+        PythonUtxo.__name__: PythonUtxo,
+        Recipient.__name__: Recipient,
+        OutPoint.__name__: OutPoint,
+    }
 
-        self.recipients: List[Recipient] = []
+    # {outpoint_string:utxo} It is Ok if outpoint_string:None
+    utxo_dict: Dict[OutPoint, PythonUtxo] = field(default_factory=dict)
+    fee_rate: float | None = None
+    opportunistic_merge_utxos = True
+    spend_all_utxos = False
+    main_wallet_id: Optional[str] = None
 
-        # self.exclude_fingerprints_from_signing :List[str]=[]
+    recipients: List[Recipient] = field(default_factory=list)
+    hide_UTXO_selection: bool | None = None
+    recipient_read_only: bool = False
+    utxos_read_only: bool = False
+    replace_tx: bdk.Transaction | None = None
 
-        self.hide_UTXO_selection = False
-        self.recipient_read_only = False
-        self.utxos_read_only = False
-        self.replace_tx: TransactionDetails | None = None
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["fee_rate"] = self.fee_rate
+        d["recipients"] = [asdict(r) for r in self.recipients]
+        d["recipient_read_only"] = self.recipient_read_only
+        d["utxos_read_only"] = self.utxos_read_only
+        d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
+        d["utxo_dict"] = {str(k): v for k, v in self.utxo_dict.items()}
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        if replace_tx := dct.get("replace_tx"):
+            dct["replace_tx"] = bdk.Transaction(list(hex_to_serialized(replace_tx)))
+        dct["recipients"] = [Recipient(**filtered_for_init(r, Recipient)) for r in dct.get("recipients", [])]
+
+        if isinstance(utxo_dict := dct.get("utxo_dict"), dict):
+            dct["utxo_dict"] = {OutPoint.from_str(k): v for k, v in utxo_dict.items()}
+
+        return cls(**filtered_for_init(dct, cls))
 
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)

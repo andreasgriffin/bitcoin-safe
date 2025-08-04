@@ -1,23 +1,28 @@
-[build-system]
-requires = [ "setuptools>=65.0.0", "wheel", "poetry-core", "poetry-version-plugin", "packaging>=20.0", "pyinstaller-hooks-contrib>=2024.11"]
-build-backend = "setuptools.build_meta"
-
 [tool.black]
 line-length = 110
-
-
 
 
 [tool.poetry]
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.4.0rc1"
+version = "1.5.0rc1"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
 readme = "README.md"
 homepage = "https://www.bitcoin-safe.org"
+
+
+packages = [
+    { include = "bitcoin_safe" }      
+]
+include = [ 
+    { path = "bitcoin_safe/gui/icons/*",        format = ["sdist", "wheel"] }, 
+    { path = "bitcoin_safe/gui/screenshots/**",  format = ["sdist", "wheel"] },
+    { path = "bitcoin_safe/gui/locales/**",      format = ["sdist", "wheel"] },
+    { path = "bitcoin_safe/gui/demo_wallets/**", format = ["sdist", "wheel"] },
+]
 
 [tool.poetry-version-plugin]
 source = "init"
@@ -39,10 +44,14 @@ python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 cryptography = "^45.0.2"
-bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "3e60f1b3d721f38484764f87d8d9eade5acbf5e3" }
-bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "3aaed6eb9582ca9d5e0e44437a37af11cdb72b30" }  
+bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "c1b8ab7d8645992c72780ad02abf66084680af4b" }
+bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "93fc45a78fbc024602f367d4b0bb2b88e0f10d4e" }  
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "24e4392f0a2e4eb3c4cbf61a4e5b44eeac17fcf4" }  #  "^0.3.3"
-aiohttp = "^3.12.10"
+bitcoin-safe-lib =  ">=0.1.6"
+aiohttp = "^3.12.13"
+aiohttp-socks = "^0.10.1"
+
+
 
 
 [tool.poetry.group.dev.dependencies]
@@ -56,10 +65,10 @@ snakeviz = "^2.2.0"
 pyprof2calltree = "^1.4.5"
 pytest-xvfb = "^3.0.0"
 tomlkit = "^0.13.2"
-poetry = "^1.8.4"
-pyinstaller = "^6.11.0"
-poetry-plugin-export = "^1.8.0"
+poetry = "^2.1.3"
+poetry-plugin-export = "^1.9.0"
 objgraph = "^3.6.2"
+prettytable = "^3.16.0"
 
 
 
@@ -80,3 +89,10 @@ markers = [
     "marker_qt_1: marks tests as marker_qt_1 (deselect by default)",
     "marker_qt_2: marks tests as marker_qt_2 (deselect by default)"
 ]
+
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

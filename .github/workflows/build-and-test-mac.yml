@@ -1,4 +1,7 @@
 name: Build and Test MacOS DMG
+permissions:
+  contents: read
+
 
 on:
   workflow_dispatch:

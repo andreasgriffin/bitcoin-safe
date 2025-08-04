@@ -81,10 +81,7 @@ class KeyStoreImporterType(SaveAllClass):
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
 
 class KeyStoreImporterTypes:
@@ -252,7 +249,6 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        "this class should be overwritten in child classes"
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             if "derivation_path" in dct:
                 dct["key_origin"] = dct["derivation_path"]
@@ -262,10 +258,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             if "derivation_path" in dct:
                 dct["network"] = bdk.Network.REGTEST
 
-        # now the version is newest, so it can be deleted from the dict
-        if "VERSION" in dct:
-            del dct["VERSION"]
-        return dct
+        return super().from_dump_migration(dct=dct)
 
     def from_other_keystore(self, other_keystore: "KeyStore") -> None:
         for k, v in other_keystore.__dict__.items():

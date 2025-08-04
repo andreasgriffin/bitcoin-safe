@@ -165,20 +165,6 @@ class PyTestBDKSetup:
     wallets: List[bdk.Wallet]
 
 
-# def get_blockchain_config(bitcoin_core: Path, network: bdk.Network) -> bdk.BlockchainConfig.RPC:
-#     return bdk.BlockchainConfig.RPC(
-#         bdk.RpcConfig(
-#             url=f"127.0.0.1:{BITCOIN_PORT}",
-#             auth=bdk.Auth.USER_PASS(RPC_USER, RPC_PASSWORD),
-#             network=network,
-#             wallet_name=str(uuid4()),
-#             sync_params=bdk.RpcSyncParams(
-#                 start_script_count=0, start_time=0, force_start_time=False, poll_rate_sec=10
-#             ),
-#         )
-#     )
-
-
 def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.REGTEST) -> PyTestBDKSetup:
     # blockchain_config = get_blockchain_config(bitcoin_core, network=network)
 

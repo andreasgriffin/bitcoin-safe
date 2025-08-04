@@ -40,7 +40,7 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
@@ -110,6 +110,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             QApplication.processEvents()
 
             assert qt_wallet.tabs.currentWidget() == qt_wallet.history_tab
+            QApplication.processEvents()
 
             assert qt_wallet.history_list.get_selected_keys() == [
                 "6592209efae6c76e77626ffd62f2a59649a82aa3140f1d592f8e282293ececa3"

@@ -34,6 +34,7 @@ import bdkpython as bdk
 from bdkpython import bdk
 from bitcoin_qr_tools.data import Data, DecodingException
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent, QTextCharFormat
 from PyQt6.QtWidgets import (
@@ -56,15 +57,16 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
+from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import (
     Message,
+    MessageType,
     clear_layout,
     do_copy,
     get_icon_path,
     svg_tools,
 )
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import TypedPyQtSignal
@@ -316,12 +318,6 @@ class ButtonEdit(QWidget):
     def setReadOnly(self, value: bool) -> None:
         self.input_field.setReadOnly(value)
 
-    def _exception_callback(self, e: Exception) -> None:
-        if isinstance(e, DecodingException):
-            Message("Could not recognize the input.")
-        else:
-            Message(str(e))
-
     def _result_callback_input_qr_from_camera(self, data: Data) -> None:
         if hasattr(self, "setText"):
             self.setText(str(data.data_as_string()))
@@ -329,6 +325,21 @@ class ButtonEdit(QWidget):
     def input_qr_from_camera(
         self, network: bdk.Network, set_data_as_string=True, close_camera_on_result=True
     ) -> None:
+        def _exception_callback(e: Exception) -> None:
+            if isinstance(e, DecodingException):
+                if question_dialog(
+                    self.tr("Could not recognize the input. Do you want to scan again?"),
+                    true_button=self.tr("Scan again"),
+                ):
+                    self.input_qr_from_camera(
+                        network=network,
+                        set_data_as_string=set_data_as_string,
+                        close_camera_on_result=close_camera_on_result,
+                    )
+                else:
+                    return
+            else:
+                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(
@@ -337,7 +348,7 @@ class ButtonEdit(QWidget):
         if set_data_as_string:
             self._temp_bitcoin_video_widget.signal_data.connect(self._result_callback_input_qr_from_camera)
         self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
-        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(self._exception_callback)
+        self._temp_bitcoin_video_widget.signal_recognize_exception.connect(_exception_callback)
         self._temp_bitcoin_video_widget.show()
 
     def add_qr_input_from_camera_button(
@@ -397,7 +408,6 @@ class ButtonEdit(QWidget):
 
     def addResetButton(self, get_reset_text) -> SquareButton:
         return self.add_button("bi--arrow-clockwise.svg", partial(self.setText, get_reset_text()), "Reset")
-        # button.setStyleSheet("background-color: white;")
 
     def _on_click_add_open_file_button(
         self, callback_open_filepath: Callable | None = None, filter=None
@@ -438,9 +448,11 @@ class ButtonEdit(QWidget):
         return self.open_file_button
 
     def format_as_error(self, value: bool) -> None:
+        self.input_field.setObjectName(f"{id(self)}")
+
         if value:
             self.input_field.setStyleSheet(
-                f"{self.input_field.__class__.__name__}" + " { background-color: #ff6c54; }"
+                f"#{self.input_field.objectName()} {{ background-color: #ff6c54; }}"
             )
         else:
             self.input_field.setStyleSheet("")
@@ -458,6 +470,8 @@ class ButtonEdit(QWidget):
         self.setToolTip(analysis.msg if error else "")
 
     def close(self) -> bool:
+        if self._temp_bitcoin_video_widget:
+            self._temp_bitcoin_video_widget.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
