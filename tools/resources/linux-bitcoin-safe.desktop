@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Bitcoin Safe
+Name=Bitcoin-Safe
 Exec=org.bitcoin-safe.bitcoin-safe %F
 Icon=bitcoin-safe
 Categories=Utility;
 Comment=A bitcoin wallet for the entire family.
-StartupWMClass=Bitcoin Safe
+StartupWMClass=Bitcoin-Safe
