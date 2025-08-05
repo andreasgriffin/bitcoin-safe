@@ -43,7 +43,7 @@ from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
+from tests.gui.qt.test_setup_wallet import close_wallet, save_wallet
 
 from ...setup_fulcrum import Faucet
 from .helpers import (
@@ -51,7 +51,6 @@ from .helpers import (
     Shutter,
     close_wallet,
     do_modal_click,
-    get_tab_with_title,
     main_window_context,
     save_wallet,
 )
@@ -96,8 +95,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
-        w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        qt_protowallet = main_window.tab_wallets.get_data_for_tab(w)
+        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
 
         def test_block_change_signals() -> None:
@@ -189,14 +187,12 @@ def test_custom_wallet_setup_custom_single_sig(
                 ),
             )
 
-            assert main_window.tab_wallets.count() == 1, "there should be only 1 wallet open"
+            assert len(main_window.tab_wallets.root.child_nodes) == 1, "there should be only 1 wallet open"
 
         do_save_wallet()
 
         # get the new qt wallet
-        qt_wallet = main_window.tab_wallets.get_data_for_tab(
-            get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        )
+        qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
 
         def do_all(qt_wallet: QTWallet):

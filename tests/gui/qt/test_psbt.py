@@ -72,7 +72,8 @@ def test_psbt_warning_poision_mainnet(
             main_window.open_tx_like_in_tab(tx)
             shutter.save(main_window)
 
-            tab = main_window.tab_wallets.widget(1)
+            node = main_window.tab_wallets.root.child_nodes[1]
+            tab = node.data
             assert isinstance(tab, UITx_Viewer)
 
             assert tab.address_poisoning_warning_bar.isVisible()
@@ -84,7 +85,7 @@ def test_psbt_warning_poision_mainnet(
                 assert expected_fragment in tab.address_poisoning_warning_bar.icon_label.textLabel.text()
             # end
             shutter.save(main_window)
-            tab.close()
+            node.removeNode()
 
         # https://mempool.space/tx/152a5dea805f95d6f83e50a9fd082630f542a52a076ebabdb295723eaf53fa30
         do_tx(
@@ -160,9 +161,7 @@ def test_psbt_warning_poision(
             main_window.open_tx_like_in_tab(psbt)
             shutter.save(main_window)
 
-            i = main_window.get_tab_with_title(main_window.tab_wallets, "PSBT 8109...a65a")
-            assert i is not None
-            tab = main_window.tab_wallets.widget(i)
+            tab = main_window.tab_wallets.root.findNodeByTitle("PSBT 8109...a65a").data
             assert isinstance(tab, UITx_Viewer)
 
             assert tab.address_poisoning_warning_bar.isVisible()

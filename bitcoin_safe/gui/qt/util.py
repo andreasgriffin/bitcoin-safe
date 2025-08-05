@@ -83,7 +83,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSystemTrayIcon,
-    QTabWidget,
     QToolButton,
     QToolTip,
     QVBoxLayout,
@@ -1014,14 +1013,6 @@ def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
 
 def set_no_margins(layout: QLayout) -> None:
     layout.setContentsMargins(0, 0, 0, 0)
-
-
-def set_current_tab_by_text(tabs: QTabWidget, text: str):
-
-    for i in range(tabs.count()):
-        if tabs.tabText(i) == text:
-            tabs.setCurrentIndex(i)
-            break
 
 
 def set_translucent(widget: QWidget):

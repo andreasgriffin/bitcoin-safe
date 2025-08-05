@@ -396,6 +396,9 @@ class SidebarNode(QFrame, Generic[TT]):
     def findNodeByWidget(self, widget: QWidget) -> Optional["SidebarNode[TT]"]:
         return self._find(lambda n: n.widget is widget)
 
+    def findNodeByTitle(self, title: str) -> Optional["SidebarNode[TT]"]:
+        return self._find(lambda n: n.title == title)
+
     def set_collapsed(self, value: bool, emit: bool = True) -> None:
         new_expanded = not value
         if getattr(self, "expanded", None) == new_expanded:
@@ -704,6 +707,9 @@ class SidebarNode(QFrame, Generic[TT]):
             if n:
                 return n
         return None
+
+    def currentWidget(self) -> QWidget | None:
+        return node.widget if (node := self.currentChildNode()) else None
 
 
 class SidebarTree(QWidget, Generic[TT]):

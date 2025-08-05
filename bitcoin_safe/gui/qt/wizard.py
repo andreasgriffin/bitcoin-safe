@@ -37,6 +37,7 @@ from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -269,13 +270,14 @@ class BaseTab(QObject, ThreadingManager):
         )
         super().__init__(parent=refs.container, threading_parent=self.threading_parent)  # type: ignore
 
+        self.signal_tracker = SignalTracker()
         self.buttonbox, self.buttonbox_buttons = create_button_box(
             self.refs.go_to_next_index,
             self.refs.go_to_previous_index,
             ok_text="",
             cancel_text="",
         )
-        self.refs.qtwalletbase.signals.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.refs.qtwalletbase.signals.language_switch, self.updateUi)
 
     @property
     def button_next(self) -> QPushButton:
@@ -319,6 +321,13 @@ class BaseTab(QObject, ThreadingManager):
 
     def set_visibilities(self, should_be_visible: bool):
         pass
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        self.setParent(None)
+        self.end_threading_manager()
+        del self.refs
+        SignalTools.disconnect_all_signals_from(self)
 
 
 class BuyHardware(BaseTab):
@@ -799,6 +808,11 @@ class ImportXpubs(BaseTab):
 
             # previous button
             self.button_previous.setVisible(self.keystore_uis.currentIndex() == 0)
+
+    def close(self):
+        super().close()
+        if self.keystore_uis:
+            self.keystore_uis.close()
 
 
 class BackupSeed(BaseTab):
@@ -1414,7 +1428,7 @@ class Wizard(WizardBase):
         self.qtwalletbase = qtwalletbase
         self.qt_wallet = qt_wallet
         if qt_wallet and qt_wallet.tutorial_index is not None:
-            qt_wallet.tutorial_index = max(qt_wallet.tutorial_index, TutorialStep.backup_seed.value)
+            qt_wallet.tutorial_index = max(qt_wallet.tutorial_index, TutorialStep.import_xpub.value)
 
         self.qtwalletbase.tabs.addChildNode(self.node)
 
@@ -1789,11 +1803,14 @@ class Wizard(WizardBase):
 
         self.step_container.set_labels([labels[key] for key in self.tab_generators if key in labels])
 
-    def _clear_tab_generators(self) -> None:
-        for g in self.tab_generators.values():
-            del g.refs
-            g.setParent(None)
-        self.tab_generators.clear()
+    def _clear_widgets_and_tab_generators(self) -> None:
+        while self.widgets:
+            k, widget = self.widgets.popitem()
+            widget.close()
+
+        while self.tab_generators:
+            k, g = self.tab_generators.popitem()
+            g.close()
 
     def close(self) -> bool:
         self.step_container.close()
@@ -1802,7 +1819,6 @@ class Wizard(WizardBase):
         self.qtwalletbase.outer_layout.removeWidget(self)
         self.floating_button_box.setParent(None)
         self.floating_button_box.close()
-        self.widgets.clear()
-        self._clear_tab_generators()
+        self._clear_widgets_and_tab_generators()
         self.setParent(None)
         return super().close()

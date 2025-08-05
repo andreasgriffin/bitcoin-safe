@@ -80,7 +80,6 @@ from .helpers import (
     close_wallet,
     do_modal_click,
     get_called_args_message_box,
-    get_tab_with_title,
     main_window_context,
     save_wallet,
     type_text_in_edit,
@@ -139,9 +138,7 @@ def test_wizard(
 
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
-        qt_protowallet = main_window.tab_wallets.get_data_for_tab(
-            get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        )
+        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
         wizard: Wizard = qt_protowallet.wizard
 
@@ -296,9 +293,7 @@ def test_wizard(
 
         ######################################################
         # now that the qt wallet is created i have to reload the
-        qt_wallet = main_window.get_qt_wallet(
-            tab=get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        )
+        qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert qt_wallet
         wizard = qt_wallet.wizard
 
@@ -361,7 +356,7 @@ def test_wizard(
 
                 shutter.save(main_window)
 
-                assert qt_wallet.tabs.currentWidget() == qt_wallet.uitx_creator
+                assert qt_wallet.uitx_creator.isVisible()
                 box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
                 shutter.save(main_window)
                 assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
@@ -388,7 +383,7 @@ def test_wizard(
 
             def page_sign() -> None:
                 shutter.save(main_window)
-                viewer = main_window.tab_wallets.getCurrentTabData()
+                viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(viewer, UITx_Viewer)
                 assert [recipient.address for recipient in viewer.recipients.recipients] == [
                     "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"

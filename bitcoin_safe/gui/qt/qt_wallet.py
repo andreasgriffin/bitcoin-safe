@@ -930,7 +930,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             uitx_creator.set_category_core(category_core=self.category_core)
         else:
             uitx_creator = UITx_Creator(
-                wallet_id=self.wallet.id,
                 mempool_manager=self.mempool_manager,
                 fx=self.fx,
                 config=self.config,

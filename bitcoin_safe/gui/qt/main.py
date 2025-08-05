@@ -69,7 +69,6 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
-    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -900,7 +899,7 @@ class MainWindow(QMainWindow):
         qt_wallet.wallet.set_wallet_id(new_wallet_id)
 
         # tab text
-        node = self.tab_wallets.root.findNodeByWidget(qt_wallet)
+        node = self.tab_wallets.root.findNodeByTitle(old_id)
         if node:
             node.setTitle(new_wallet_id)
 
@@ -1214,12 +1213,6 @@ class MainWindow(QMainWindow):
         tx_dialog.show()
         tx_dialog.raise_()
         return tx_dialog
-
-    def get_tab_with_title(self, tab_widget: QTabWidget, title) -> Optional[int]:
-        for i in range(tab_widget.count()):
-            if title == tab_widget.tabText(i):
-                return i
-        return None
 
     def get_tx_viewer(self, txid: str) -> UITx_Viewer | None:
         for root in self.tab_wallets.roots:
@@ -1976,6 +1969,7 @@ class MainWindow(QMainWindow):
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
 
         node.removeNode()
+        del node.data
 
         if isinstance(tab_data, ThreadingManager):
             # this is necessary to ensure the closeevent

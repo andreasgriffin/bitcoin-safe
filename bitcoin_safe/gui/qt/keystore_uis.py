@@ -31,6 +31,7 @@ import logging
 from typing import Callable, List, Optional
 
 from bitcoin_qr_tools.data import SignerInfo
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QTabBar
@@ -89,6 +90,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         self.tab_bar = OrderTrackingTabBar()
         self.setTabBar(self.tab_bar)
         self.setMovable(True)
+        self.signal_tracker = SignalTracker()
         self.signals_min = signals_min
         self.slow_hwi_listing = slow_hwi_listing
 
@@ -122,8 +124,8 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         for ui in self.getAllTabData().values():
             ui.edit_seed.input_field.textChanged.connect(self.ui_keystore_ui_change)
 
-        self.signals_min.language_switch.connect(self.updateUi)
-        self.tab_bar.signal_new_tab_order.connect(self.on_tab_order_changed)
+        self.signal_tracker.connect(self.signals_min.language_switch, self.updateUi)
+        self.signal_tracker.connect(self.tab_bar.signal_new_tab_order, self.on_tab_order_changed)
 
     def on_tab_order_changed(self, new_order: list[int]):
         if len(new_order) != len(self.protowallet.keystores):
@@ -341,3 +343,12 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             ):
                 return False
         return True
+
+    def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        for tab in self.getAllTabData().values():
+            tab.close()
+
+        SignalTools.disconnect_all_signals_from(self)
+
+        return super().close()
