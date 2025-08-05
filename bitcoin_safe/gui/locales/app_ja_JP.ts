@@ -59,6 +59,11 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
+			<source>Close</source>
+			<translation>閉じる</translation>
+		</message>
+		<name>AddressDialog</name>
+		<message>
 			<source>Validate</source>
 			<translation>有効性を確認</translation>
 		</message>
@@ -613,8 +618,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
-			<source>Export QR</source>
-			<translation>QR をエクスポート</translation>
+			<source>Export for hardware signers</source>
+			<translation>ハードウェア署名デバイス向けにエクスポート</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1136,6 +1141,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} 回の確認</translation>
+		</message>
+	</context>
+	<context>
+		<name>HistListWithToolbar</name>
+		<message>
+			<source>&amp;Generate PDF balance Statement</source>
+			<translation>&amp;PDF残高明細書を生成  </translation>
 		</message>
 	</context>
 	<context>
@@ -2947,20 +2959,17 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
-		<name>SearchWallets</name>
+		<name>SearchTreeView</name>
 		<message>
-			<source>Addresses</source>
-			<translation>アドレス  </translation>
+			<source>Type to search...</source>
+			<translation>検索するには入力してください...</translation>
 		</message>
+	</context>
+	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
 			<translation>使用済みアウトプット  </translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>Transactions</source>
-			<translation>取引  </translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
@@ -3779,6 +3788,13 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>WizardBase</name>
+		<message>
+			<source>Wizard</source>
+			<translation>ウィザード</translation>
+		</message>
+	</context>
+	<context>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
@@ -4403,13 +4419,6 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>アドレスは既に使用されています</translation>
-		</message>
-	</context>
-	<context>
-		<name>search_treeview</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>検索するには入力してください...</translation>
 		</message>
 	</context>
 	<context>

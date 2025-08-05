@@ -59,6 +59,11 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
+			<source>Close</source>
+			<translation>Schließen</translation>
+		</message>
+		<name>AddressDialog</name>
+		<message>
 			<source>Validate</source>
 			<translation>Validieren</translation>
 		</message>
@@ -616,8 +621,8 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du s
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
-			<source>Export QR</source>
-			<translation>QR exportieren</translation>
+			<source>Export for hardware signers</source>
+			<translation>Export für Hardware-Signaturgeräte</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1148,6 +1153,13 @@ des gesendeten Werts {sent} entspricht</translation>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} Bestätigungen</translation>
+		</message>
+	</context>
+	<context>
+		<name>HistListWithToolbar</name>
+		<message>
+			<source>&amp;Generate PDF balance Statement</source>
+			<translation>&amp;PDF-Kontostandsauszug generieren</translation>
 		</message>
 	</context>
 	<context>
@@ -2970,20 +2982,17 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		</message>
 	</context>
 	<context>
-		<name>SearchWallets</name>
+		<name>SearchTreeView</name>
 		<message>
-			<source>Addresses</source>
-			<translation>Adressen</translation>
+			<source>Type to search...</source>
+			<translation>Zum Suchen tippen...</translation>
 		</message>
+	</context>
+	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
 			<translation>Ausgegebene Outputs</translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>Transactions</source>
-			<translation>Transaktionen</translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
@@ -3818,6 +3827,13 @@ Alternativ kannst du über {url} senden</translation>
 		</message>
 	</context>
 	<context>
+		<name>WizardBase</name>
+		<message>
+			<source>Wizard</source>
+			<translation>Assistent</translation>
+		</message>
+	</context>
+	<context>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
@@ -4451,13 +4467,6 @@ Klicke hier, um mehr zu erfahren.</translation>
 		<message>
 			<source>Address Already Used</source>
 			<translation>Adresse bereits verwendet</translation>
-		</message>
-	</context>
-	<context>
-		<name>search_treeview</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>Zum Suchen tippen...</translation>
 		</message>
 	</context>
 	<context>

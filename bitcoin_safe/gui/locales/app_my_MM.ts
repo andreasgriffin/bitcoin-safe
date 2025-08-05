@@ -59,6 +59,11 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
+			<source>Close</source>
+			<translation>ပိတ်ပါ  </translation>
+		</message>
+		<name>AddressDialog</name>
+		<message>
 			<source>Validate</source>
 			<translation>အတည်ပြုပါ  </translation>
 		</message>
@@ -613,8 +618,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
-			<source>Export QR</source>
-			<translation>QR ထုတ်ပို့ရန်</translation>
+			<source>Export for hardware signers</source>
+			<translation>ဟာ့ဒ်ဝဲ လက်မှတ်ရေးစက်များအတွက် တင်ပို့</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1136,6 +1141,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} အတည်ပြုချက်များ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>HistListWithToolbar</name>
+		<message>
+			<source>&amp;Generate PDF balance Statement</source>
+			<translation>&amp;PDF လက်ကျန်စာရင်း ထုတ်ပေးပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -2944,20 +2956,17 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
-		<name>SearchWallets</name>
+		<name>SearchTreeView</name>
 		<message>
-			<source>Addresses</source>
-			<translation>လိပ်စာများ  </translation>
+			<source>Type to search...</source>
+			<translation>ရှာဖွေရန်ရိုက်ထည့်ပါ...  </translation>
 		</message>
+	</context>
+	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
 			<translation>သုံးစွဲပြီးသား Outputs  </translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>Transactions</source>
-			<translation>ငွေလွှဲများ  </translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
@@ -3776,6 +3785,13 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>WizardBase</name>
+		<message>
+			<source>Wizard</source>
+			<translation>လမ်းညွှန်</translation>
+		</message>
+	</context>
+	<context>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
@@ -4400,13 +4416,6 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>လိပ်စာကိုသုံးပြီးဖြစ်သည်  </translation>
-		</message>
-	</context>
-	<context>
-		<name>search_treeview</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>ရှာဖွေရန်ရိုက်ထည့်ပါ...  </translation>
 		</message>
 	</context>
 	<context>
