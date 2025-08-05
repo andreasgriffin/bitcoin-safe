@@ -34,7 +34,7 @@ from typing import List, Tuple
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
@@ -44,6 +44,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from ...config import UserConfig
 from ...signals import Signals
 from ...wallet import ProtoWallet
+from .sidebar.sidebar_tree import SidebarNode
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +90,9 @@ class QtWalletBase(WrapperQWidget, ThreadingManager):
         )  # Left, Top, Right, Bottom margins
 
         # add the tab_widget for  history, utx, send tabs
-        self.tabs = QTabWidget(self)
+        self.tabs = SidebarNode[object](title="", widget=None, data=self, closable=True)
 
-        self.outer_layout.addWidget(self.tabs)
+        # self.outer_layout.addWidget(self.tabs)
 
     @abstractmethod
     def get_mn_tuple(self) -> Tuple[int, int]:

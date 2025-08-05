@@ -182,8 +182,9 @@ class DescriptorEdit(ThreadingManager, QWidget):
         self.action_copy = self.export_button_menu.add_action(
             text="", slot=self._on_copy_descriptor, icon=svg_tools.get_QIcon("bi--copy.svg")
         )
-        self.action_export_qr = self.export_button_menu.add_action(
-            text="", slot=self.show_export_widget, icon=svg_tools.get_QIcon("bi--qr-code.svg")
+        self.action_export_hardware_signers = self.export_button_menu.add_action(
+            text="",
+            slot=self.show_export_widget,
         )
 
         # pdf button
@@ -211,7 +212,7 @@ class DescriptorEdit(ThreadingManager, QWidget):
         self.action_import_qr.setText(self.tr("Read QR Code"))
         self.action_import_clipbard.setText(self.tr("Import from Clipboard"))
         self.export_button.setText(self.tr("Export"))
-        self.action_export_qr.setText(self.tr("Export QR"))
+        self.action_export_hardware_signers.setText(self.tr("Export for hardware signers"))
         self.action_copy.setText(self.tr("Copy to clipboard"))
         self.edit.input_field.setPlaceholderText(
             self.tr("Paste or scan your descriptor, if you restore a wallet.")

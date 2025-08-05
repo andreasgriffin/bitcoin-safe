@@ -59,6 +59,11 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
+			<source>Close</source>
+			<translation>ปิด  </translation>
+		</message>
+		<name>AddressDialog</name>
+		<message>
 			<source>Validate</source>
 			<translation>ตรวจสอบความถูกต้อง  </translation>
 		</message>
@@ -613,8 +618,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
-			<source>Export QR</source>
-			<translation>ส่งออก QR</translation>
+			<source>Export for hardware signers</source>
+			<translation>ส่งออกสำหรับอุปกรณ์ลงนามแบบฮาร์ดแวร์</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1136,6 +1141,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} การยืนยัน  </translation>
+		</message>
+	</context>
+	<context>
+		<name>HistListWithToolbar</name>
+		<message>
+			<source>&amp;Generate PDF balance Statement</source>
+			<translation>&amp;สร้างคำแถลงยอดคงเหลือ PDF  </translation>
 		</message>
 	</context>
 	<context>
@@ -2944,20 +2956,17 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
-		<name>SearchWallets</name>
+		<name>SearchTreeView</name>
 		<message>
-			<source>Addresses</source>
-			<translation>ที่อยู่  </translation>
+			<source>Type to search...</source>
+			<translation>พิมพ์เพื่อค้นหา...  </translation>
 		</message>
+	</context>
+	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
 			<translation>การใช้จ่ายที่ใช้แล้ว  </translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>Transactions</source>
-			<translation>ธุรกรรม  </translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
@@ -3776,6 +3785,13 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>WizardBase</name>
+		<message>
+			<source>Wizard</source>
+			<translation>ตัวช่วยสร้าง</translation>
+		</message>
+	</context>
+	<context>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
@@ -4400,13 +4416,6 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>ที่อยู่ที่ใช้แล้ว  </translation>
-		</message>
-	</context>
-	<context>
-		<name>search_treeview</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>พิมพ์เพื่อค้นหา...  </translation>
 		</message>
 	</context>
 	<context>

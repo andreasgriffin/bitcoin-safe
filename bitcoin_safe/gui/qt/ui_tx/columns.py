@@ -248,6 +248,10 @@ class ColumnSankey(BaseColumn):
     def is_available(self) -> bool:
         return self.sankey_bitcoin.isEnabled()
 
+    def close(self):
+        self.sankey_bitcoin.close()
+        return super().close()
+
 
 class ColumnFee(BaseColumn):
 
@@ -265,7 +269,7 @@ class ColumnFee(BaseColumn):
     ) -> None:
         super().__init__(parent=parent, fx=fx)
 
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
 
         set_margins(
             self._layout,

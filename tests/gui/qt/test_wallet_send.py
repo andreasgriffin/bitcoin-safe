@@ -157,7 +157,7 @@ def test_wallet_send(
                     qt_wallet.uitx_creator.button_ok.click()
                 shutter.save(main_window)
 
-                ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
+                ui_tx_viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(ui_tx_viewer, UITx_Viewer)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
@@ -202,7 +202,7 @@ def test_wallet_send(
             def send_tx() -> None:
                 shutter.save(main_window)
 
-                ui_tx_viewer = main_window.tab_wallets.getCurrentTabData()
+                ui_tx_viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(ui_tx_viewer, UITx_Viewer)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
@@ -230,7 +230,7 @@ def test_wallet_send(
                     ui_tx_viewer.button_send.click()
 
                 shutter.save(main_window)
-                qt_wallet_tab = main_window.tab_wallets.getCurrentTabData()
+                qt_wallet_tab = main_window.tab_wallets.currentNode().parent_node.data
                 assert isinstance(qt_wallet_tab, QTWallet)
                 QApplication.processEvents()
                 assert qt_wallet_tab.history_list._source_model.rowCount() == 2

@@ -94,7 +94,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         fx: FX,
         config: UserConfig,
         signals: Signals,
-        wallet_id: str = "",
         category_core: CategoryCore | None = None,
         opportunistic_coin_select: bool = False,
         manual_coin_select: bool = False,
@@ -108,7 +107,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         self.wallet: Wallet | None = category_core.wallet if category_core else None
         self._was_shown = False
-        self.wallet_id = wallet_id
         self.initial_tx_ui_infos = tx_ui_infos
         self._signal_tracker_wallet_signals = SignalTracker()
 
@@ -259,7 +257,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()
-        d["wallet_id"] = self.wallet_id
         d["opportunistic_coin_select"] = (
             self.column_inputs.checkBox_auto_opportunistic_coin_select.isChecked()
         )
@@ -276,10 +273,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def set_category_core(self, category_core: CategoryCore | None):
         self._signal_tracker_wallet_signals.disconnect_all()
-        if category_core and self.wallet_id and category_core.wallet.id != self.wallet_id:
-            raise ValueError(
-                f"Cannot set a different wallet than {self.wallet_id} to prevent inconsistencies"
-            )
         self.category_list.set_category_core(category_core)
         self.wallet = category_core.wallet if category_core else None
         if self.wallet and (_wallet_signals := self.signals.wallet_signals.get(self.wallet.id)):

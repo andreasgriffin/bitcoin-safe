@@ -28,6 +28,7 @@
 
 
 import logging
+import platform
 
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
@@ -46,6 +47,9 @@ class HeaderWidget(HeightSyncedWidget):
         super().__init__(parent=parent)
 
         self._layout = QVBoxLayout(self)
+        if platform.system().lower() == "darwin":
+            self._layout.setSpacing(0)
+        set_no_margins(self._layout)
 
         self.h_laylout = QHBoxLayout()
         set_no_margins(self._layout)

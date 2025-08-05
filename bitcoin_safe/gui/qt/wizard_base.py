@@ -31,7 +31,9 @@ import logging
 from typing import List
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
+from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.threading_manager import ThreadingManager
 
@@ -40,7 +42,7 @@ from .step_progress_bar import StepProgressContainer
 logger = logging.getLogger(__name__)
 
 
-class WizardBase(StepProgressContainer):
+class WizardBase(QWidget):
     def __init__(
         self,
         step_labels: List[str],
@@ -54,7 +56,8 @@ class WizardBase(StepProgressContainer):
         use_resizing_stacked_widget=True,
         threading_parent: ThreadingManager | None = None,
     ) -> None:
-        super().__init__(
+        super().__init__()
+        self.step_container = StepProgressContainer(
             step_labels,
             signals_min,
             current_index,
@@ -66,8 +69,11 @@ class WizardBase(StepProgressContainer):
             use_resizing_stacked_widget,
             threading_parent,
         )
+        self._layout = QVBoxLayout(self)
+        self._layout.addWidget(self.step_container)
 
         self.signal_tracker = SignalTracker()
+        self.node = SidebarNode[object](title=self.tr("Wizard"), data=self, widget=self)
 
     def set_visibilities(self) -> None:
         pass

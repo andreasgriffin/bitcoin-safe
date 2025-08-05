@@ -83,7 +83,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSystemTrayIcon,
-    QTabWidget,
     QToolButton,
     QToolTip,
     QVBoxLayout,
@@ -1016,14 +1015,6 @@ def set_no_margins(layout: QLayout) -> None:
     layout.setContentsMargins(0, 0, 0, 0)
 
 
-def set_current_tab_by_text(tabs: QTabWidget, text: str):
-
-    for i in range(tabs.count()):
-        if tabs.tabText(i) == text:
-            tabs.setCurrentIndex(i)
-            break
-
-
 def set_translucent(widget: QWidget):
     """
     — make backgrounds transparent —
@@ -1070,22 +1061,25 @@ class HLine(QFrame):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
-        # we still use HLine for semantics & size hints…
-        self.setFrameShape(QFrame.Shape.HLine)
-        self.setFrameShadow(QFrame.Shadow.Plain)
-        self.setLineWidth(1)
+        # Let QSS paint the background
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        # Behave like a horizontal separator: expand X, fixed thin height
+        self.setFrameShape(QFrame.Shape.NoFrame)  # override built-in line painting
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.setFixedHeight(1)
 
         self.setObjectName(f"{id(self)}")
 
-        # …but override its look entirely
+        # Pure background (no border), thin line effect via height=1
         self.setStyleSheet(
             f"""
             #{self.objectName()} {{
                 background-color: rgba(128, 128, 128, 0.6);
-                max-height: 1px;
-                border: none;
+                margin: 0px;
+                padding: 0px;
             }}
-        """
+            """
         )
 
 

@@ -37,6 +37,7 @@ from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -49,7 +50,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSpacerItem,
-    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -97,6 +97,7 @@ from .util import (
     get_icon_path,
     one_time_signal_connection,
     open_website,
+    set_no_margins,
     svg_tools,
     svg_widget_hardware_signer,
 )
@@ -240,7 +241,6 @@ class TabInfo:
     def __init__(
         self,
         container: StepProgressContainer,
-        wallet_tabs: QTabWidget,
         qtwalletbase: QtWalletBase,
         go_to_next_index: Callable,
         go_to_previous_index: Callable,
@@ -250,7 +250,7 @@ class TabInfo:
         qt_wallet: QTWallet | None = None,
     ) -> None:
         self.container = container
-        self.wallet_tabs = wallet_tabs
+        self.wallet_tabs = qtwalletbase.tabs
         self.qtwalletbase = qtwalletbase
         self.go_to_next_index = go_to_next_index
         self.go_to_previous_index = go_to_previous_index
@@ -270,13 +270,14 @@ class BaseTab(QObject, ThreadingManager):
         )
         super().__init__(parent=refs.container, threading_parent=self.threading_parent)  # type: ignore
 
+        self.signal_tracker = SignalTracker()
         self.buttonbox, self.buttonbox_buttons = create_button_box(
             self.refs.go_to_next_index,
             self.refs.go_to_previous_index,
             ok_text="",
             cancel_text="",
         )
-        self.refs.qtwalletbase.signals.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.refs.qtwalletbase.signals.language_switch, self.updateUi)
 
     @property
     def button_next(self) -> QPushButton:
@@ -317,6 +318,16 @@ class BaseTab(QObject, ThreadingManager):
             + html_f(translate("tutorial", "Never make a picture of them!"), p=True, size=12, color="red"),
             add_html_and_body=True,
         )
+
+    def set_visibilities(self, should_be_visible: bool):
+        pass
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        self.setParent(None)
+        self.end_threading_manager()
+        del self.refs
+        SignalTools.disconnect_all_signals_from(self)
 
 
 class BuyHardware(BaseTab):
@@ -379,9 +390,7 @@ class BuyHardware(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
 
         self.updateUi()
         return tutorial_widget
@@ -484,9 +493,7 @@ class StickerTheHardware(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
 
         self.updateUi()
         return tutorial_widget
@@ -552,9 +559,7 @@ class GenerateSeed(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -629,9 +634,7 @@ class ValidateBackup(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -652,10 +655,11 @@ class ValidateBackup(BaseTab):
 class ImportXpubs(BaseTab):
 
     def _callback(self, tutorial_widget: TutorialWidget) -> None:
-        self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_ui)
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
-        )
+        self.widget_layout.addWidget(self.keystore_uis)
+        # self.refs.wallet_tabs.setCurrentWidget(self.refs.qtwalletbase.wallet_descriptor_ui)
+        # tutorial_widget.synchronize_visiblity(
+        #     VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
+        # )
 
     def _create_wallet(self) -> None:
         if not self.keystore_uis:
@@ -674,8 +678,8 @@ class ImportXpubs(BaseTab):
     def create(self) -> TutorialWidget:
 
         widget = QWidget()
-        widget_layout = QVBoxLayout(widget)
-        widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.widget_layout = QVBoxLayout(widget)
+        self.widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         self.label_import = QLabel()
         # handle protowallet and qt_wallet differently:
@@ -697,7 +701,6 @@ class ImportXpubs(BaseTab):
             )
             self.set_current_signer(0)
             self.keystore_uis.setMovable(False)
-            widget_layout.addWidget(self.keystore_uis)
 
             # hide the next button
             self.button_next.setHidden(True)
@@ -719,9 +722,9 @@ class ImportXpubs(BaseTab):
         )
 
         tutorial_widget.set_callback(partial(self._callback, tutorial_widget))
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
-        )
+        # tutorial_widget.synchronize_visiblity(
+        #     VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
+        # )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -806,6 +809,11 @@ class ImportXpubs(BaseTab):
             # previous button
             self.button_previous.setVisible(self.keystore_uis.currentIndex() == 0)
 
+    def close(self):
+        super().close()
+        if self.keystore_uis:
+            self.keystore_uis.close()
+
 
 class BackupSeed(BaseTab):
 
@@ -852,9 +860,9 @@ class BackupSeed(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(
+        #     VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
+        # )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -958,9 +966,7 @@ class ReceiveTest(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -999,117 +1005,11 @@ class ReceiveTest(BaseTab):
             self.quick_receive.updateUi()
 
 
-# class SingleEnabledTab(BaseTab):
-#     def create(self) -> TutorialWidget:
-
-
-#         widget = QWidget()
-#         widget_layout = QVBoxLayout(widget)
-#         widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-
-#         self.hardware_signer_tabs = DataTabWidget(data_type=HardwareSignerInteractionWidget)
-#         widget_layout.addWidget(self.hardware_signer_tabs)
-#         for label in self.refs.qtwalletbase.get_keystore_labels():
-#             hardware_signer_interaction = HardwareSignerInteractionWidget()
-#             self.hardware_signer_tabs.addTab(
-#                 hardware_signer_interaction,
-#                 icon=icon_for_label(label),
-#                 description=label,
-#                 data=hardware_signer_interaction,
-#             )
-
-#         widget_layout.addWidget(self.hardware_signer_tabs)
-
-#         # hide the next button
-#         self.button_next.setHidden(True)
-#         # and add the prev signer button
-#         self.buttonbox_buttons.append(self.button_previous_signer)
-#         self.buttonbox.addButton(self.button_previous_signer, QDialogButtonBox.ButtonRole.RejectRole)
-#         self.button_previous_signer.clicked.connect(self.previous_signer)
-#         # and add the next signer button
-#         self.buttonbox_buttons.append(self.button_next_signer)
-#         self.buttonbox.addButton(self.button_next_signer, QDialogButtonBox.ButtonRole.AcceptRole)
-#         self.button_next_signer.clicked.connect(self.next_signer)
-
-#         tutorial_widget = TutorialWidget(
-#             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
-#         )
-
-#         def callback() -> None:
-#             self.updateUi()
-#             tutorial_widget.synchronize_visiblity(
-#                 VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-#             )
-
-#         tutorial_widget.set_callback(callback)
-#         tutorial_widget.synchronize_visiblity(
-#             VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-#         )
-#         tutorial_widget.synchronize_visiblity(
-#             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
-#         )
-
-#         self.updateUi()
-#         self.set_current_signer(0)
-#         return tutorial_widget
-
-#     def set_current_signer(self, value: int):
-#         if value>= self.hardware_signer_tabs.count():
-#             return
-#         self.hardware_signer_tabs.setCurrentIndex(value)
-#         for i in range(self.hardware_signer_tabs.count()):
-#             self.hardware_signer_tabs.setTabEnabled(i, value == i)
-#         self.updateUi()
-
-#     def next_signer(self):
-#         if self.hardware_signer_tabs.currentIndex() + 1 < self.hardware_signer_tabs.count():
-#             self.set_current_signer(self.hardware_signer_tabs.currentIndex() + 1)
-
-#     def previous_signer(self):
-#         if self.hardware_signer_tabs.currentIndex() - 1 >= 0:
-#             self.set_current_signer(self.hardware_signer_tabs.currentIndex() - 1)
-
-#     def updateUi(self) -> None:
-#         super().updateUi()
-#         self.label_import.setText(self.tr("2. Import wallet information into Bitcoin Safe"))
-#         if self.refs.qt_wallet:
-#             self.custom_yes_button.setText(self.tr("Skip step"))
-#         else:
-#             self.custom_yes_button.setText(self.tr("Next step"))
-#         self.button_next_signer.setText(self.tr("Next signer"))
-#         self.button_previous_signer.setText(self.tr("Previous signer"))
-#         self.button_previous.setText(self.tr("Previous Step"))
-
-#         self.custom_yes_button.setText(
-#             self.tr("Yes, I registered the multisig on the {n} hardware signer").format(
-#                 n=self.num_keystores()
-#             )
-#         )
-#         for i in range(self.hardware_signer_tabs.count()):
-#             hardware_signer_interaction = self.hardware_signer_tabs.tabData(
-#                 i
-#             )
-#             hardware_signer_interaction.updateUi()
-
-#         self.custom_yes_button.setVisible(
-#             self.hardware_signer_tabs.currentIndex() == self.hardware_signer_tabs.count() - 1
-#         )
-#         self.button_next_signer.setVisible(
-#             self.hardware_signer_tabs.currentIndex() != self.hardware_signer_tabs.count() - 1
-#         )
-#         self.button_previous_signer.setVisible(self.hardware_signer_tabs.currentIndex() > 0)
-
-#         # previous button
-#         self.button_previous.setVisible(self.hardware_signer_tabs.currentIndex() == 0)
-
-
 class RegisterMultisig(BaseTab):
 
     def _callback(self, tutorial_widget: TutorialWidget) -> None:
         self.updateUi()
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
 
     def create(self) -> TutorialWidget:
 
@@ -1162,9 +1062,7 @@ class RegisterMultisig(BaseTab):
         )
 
         tutorial_widget.set_callback(partial(self._callback, tutorial_widget))
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -1258,9 +1156,7 @@ class DistributeSeeds(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -1350,9 +1246,7 @@ class LabelBackup(BaseTab):
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)
-        )
+        # tutorial_widget.synchronize_visiblity(            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=False)        )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
@@ -1409,9 +1303,16 @@ class SendTest(BaseTab):
         self.test_number = test_number
         self.tx_text = tx_text
 
+    def set_visibilities(self, should_be_visible: bool):
+        if self.refs.qt_wallet and not should_be_visible:
+            self.refs.qt_wallet.send_node.setWidget(self.refs.qt_wallet.uitx_creator)
+
     def _callback(self) -> None:
         if not self.refs.qt_wallet:
             return
+
+        self.widget_layout.addWidget(self.refs.qt_wallet.uitx_creator)
+        self.refs.qt_wallet.uitx_creator.setVisible(True)
         if self.refs.qt_wallet.sync_status in [SyncStatus.unknown, SyncStatus.unsynced]:
             logger.debug(
                 f"Skipping tutorial callback  for send test, because {self.refs.qt_wallet.wallet.id} sync_status={ self.refs.qt_wallet.sync_status}"
@@ -1446,11 +1347,16 @@ class SendTest(BaseTab):
     def create(self) -> TutorialWidget:
 
         widget = QWidget()
-        widget_layout = QHBoxLayout(widget)
-        widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self.widget_layout = QVBoxLayout(widget)
+        set_no_margins(self.widget_layout)
 
-        add_centered_icons(["bi--send.svg"], widget_layout, max_sizes=[(50, 80)])
-        if (layout_item := widget_layout.itemAt(0)) and (sub_widget := layout_item.widget()):
+        upper_widget = QWidget()
+        self.widget_layout.addWidget(upper_widget)
+        upper_widget_layout = QHBoxLayout(upper_widget)
+        set_no_margins(upper_widget_layout)
+
+        add_centered_icons(["bi--send.svg"], upper_widget_layout, max_sizes=[(50, 80)])
+        if (layout_item := upper_widget_layout.itemAt(0)) and (sub_widget := layout_item.widget()):
             sub_widget.setMaximumWidth(150)
 
         inner_widget = QWidget()
@@ -1458,7 +1364,7 @@ class SendTest(BaseTab):
         self.label = QLabel()
         inner_widget_layout.addWidget(self.label)
 
-        widget_layout.addWidget(inner_widget)
+        upper_widget_layout.addWidget(inner_widget)
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
@@ -1466,9 +1372,9 @@ class SendTest(BaseTab):
         tutorial_widget.setMinimumHeight(50)  # otherwise self.label isnt visible
 
         tutorial_widget.set_callback(self._callback)
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
-        )
+        # tutorial_widget.synchronize_visiblity(
+        #     VisibilityOption(self.refs.wallet_tabs, on_focus_set_visible=bool(self.refs.qt_wallet))
+        # )
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(
                 self.refs.floating_button_box, on_focus_set_visible=True, on_unfocus_set_visible=False
@@ -1477,6 +1383,7 @@ class SendTest(BaseTab):
         tutorial_widget.synchronize_visiblity(
             VisibilityOption(tutorial_widget.button_box, on_focus_set_visible=False)
         )
+
         if self.refs.qt_wallet:
             tutorial_widget.synchronize_visiblity(
                 VisibilityOption(self.refs.qt_wallet.uitx_creator.button_box, on_focus_set_visible=False)
@@ -1509,7 +1416,6 @@ class Wizard(WizardBase):
     def __init__(
         self,
         qtwalletbase: QtWalletBase,
-        wallet_tabs: QTabWidget,
         max_test_fund=1_000_000,
         qt_wallet: QTWallet | None = None,
     ) -> None:
@@ -1521,6 +1427,11 @@ class Wizard(WizardBase):
         logger.debug(f"__init__ {self.__class__.__name__}")
         self.qtwalletbase = qtwalletbase
         self.qt_wallet = qt_wallet
+        if qt_wallet and qt_wallet.tutorial_index is not None:
+            qt_wallet.tutorial_index = max(qt_wallet.tutorial_index, TutorialStep.import_xpub.value)
+
+        self.qtwalletbase.tabs.addChildNode(self.node)
+
         m, n = self.qtwalletbase.get_mn_tuple()
 
         # floating_button_box
@@ -1532,11 +1443,10 @@ class Wizard(WizardBase):
             self.qtwalletbase.signals,
         )
         self.floating_button_box.fill()
-        self.qtwalletbase.outer_layout.addWidget(self.floating_button_box)
+        self._layout.addWidget(self.floating_button_box)
 
         refs = TabInfo(
-            container=self,
-            wallet_tabs=wallet_tabs,
+            container=self.step_container,
             qtwalletbase=qtwalletbase,
             go_to_next_index=self.go_to_next_index,
             go_to_previous_index=self.go_to_previous_index,
@@ -1547,16 +1457,20 @@ class Wizard(WizardBase):
         )
 
         self.tab_generators: Dict[TutorialStep, BaseTab] = {
-            TutorialStep.buy: BuyHardware(refs=refs, threading_parent=self),
-            TutorialStep.sticker: StickerTheHardware(refs=refs, threading_parent=self),
-            TutorialStep.generate: GenerateSeed(refs=refs, threading_parent=self),
-            TutorialStep.import_xpub: ImportXpubs(refs=refs, threading_parent=self),
-            TutorialStep.backup_seed: BackupSeed(refs=refs, threading_parent=self),
+            TutorialStep.buy: BuyHardware(refs=refs, threading_parent=self.step_container),
+            TutorialStep.sticker: StickerTheHardware(refs=refs, threading_parent=self.step_container),
+            TutorialStep.generate: GenerateSeed(refs=refs, threading_parent=self.step_container),
+            TutorialStep.import_xpub: ImportXpubs(refs=refs, threading_parent=self.step_container),
+            TutorialStep.backup_seed: BackupSeed(refs=refs, threading_parent=self.step_container),
         }
         if n > 1:
-            self.tab_generators[TutorialStep.register] = RegisterMultisig(refs=refs, threading_parent=self)
+            self.tab_generators[TutorialStep.register] = RegisterMultisig(
+                refs=refs, threading_parent=self.step_container
+            )
 
-        self.tab_generators[TutorialStep.receive] = ReceiveTest(refs=refs, threading_parent=self)
+        self.tab_generators[TutorialStep.receive] = ReceiveTest(
+            refs=refs, threading_parent=self.step_container
+        )
 
         for test_number, tutoral_step in enumerate(self.get_send_tests_steps()):
             self.tab_generators[tutoral_step] = SendTest(
@@ -1564,16 +1478,17 @@ class Wizard(WizardBase):
                 test_number=test_number,
                 tx_text=self.tx_text(test_number),
                 refs=refs,
-                threading_parent=self,
+                threading_parent=self.step_container,
             )
 
-        self.tab_generators[TutorialStep.distribute] = DistributeSeeds(refs=refs, threading_parent=self)
-        self.tab_generators[TutorialStep.sync] = LabelBackup(refs=refs, threading_parent=self)
+        self.tab_generators[TutorialStep.distribute] = DistributeSeeds(
+            refs=refs, threading_parent=self.step_container
+        )
+        self.tab_generators[TutorialStep.sync] = LabelBackup(refs=refs, threading_parent=self.step_container)
 
-        self.wallet_tabs = wallet_tabs
         self.max_test_fund = max_test_fund
 
-        self.qtwalletbase.outer_layout.insertWidget(0, self)
+        # self.qtwalletbase.outer_layout.insertWidget(0, self)
 
         self.widgets: Dict[TutorialStep, TutorialWidget] = {
             key: generator.create() for key, generator in self.tab_generators.items()
@@ -1581,13 +1496,13 @@ class Wizard(WizardBase):
 
         # set_custom_widget  from StepProgressContainer
         for i, widget in enumerate(self.widgets.values()):
-            self.set_custom_widget(i, widget)
+            self.step_container.set_custom_widget(i, widget)
 
         if self.qtwalletbase.tutorial_index is not None:
             self.set_current_index(self.qtwalletbase.tutorial_index)
             # save after every step
 
-        self.signal_set_current_widget.connect(self._save)
+        self.step_container.signal_set_current_widget.connect(self._save)
         self.signal_step_change.connect(self.qtwalletbase.set_tutorial_index)
 
         self.updateUi()
@@ -1675,11 +1590,12 @@ class Wizard(WizardBase):
             )
 
         # only increase the index, if the index is not ahead already
-        if self.current_index() < self.index_of_step(latest_step) + 1:
+        if self.step_container.current_index() < self.index_of_step(latest_step) + 1:
             self.set_current_index(self.index_of_step(latest_step) + 1)
+            self.node.select()
 
     def current_step(self) -> TutorialStep:
-        return self.get_step_of_index(self.current_index())
+        return self.get_step_of_index(self.step_container.current_index())
 
     def index_of_step(self, step: TutorialStep) -> int:
         return [step for step in TutorialStep if step in self.tab_generators].index(step)
@@ -1706,37 +1622,59 @@ class Wizard(WizardBase):
         return self.get_wallet_tutorial_index() != None
 
     def set_visibilities(self) -> None:
-        self.setVisible(self.should_be_visible)
+        self.node.setVisible(self.should_be_visible)
+        if self.node.parent_node:
+            for child in self.node.parent_node.child_nodes:
+                if child != self.node:
+                    child.setVisible(not self.should_be_visible)
 
         if self.should_be_visible:
-            self.signal_widget_focus.emit(self.widgets[self.current_step()])
+            self.step_container.signal_widget_focus.emit(self.widgets[self.current_step()])
         else:
-            self.wallet_tabs.setVisible(True)
+            # self.qtwalletbase.tabs.setVisible(True)
             self.floating_button_box.setVisible(False)
             if self.qt_wallet:
                 self.qt_wallet.uitx_creator.button_box.setVisible(True)
+
+        for tab in self.tab_generators.values():
+            tab.set_visibilities(self.should_be_visible)
 
     def num_keystores(self) -> int:
         return self.qtwalletbase.get_mn_tuple()[1]
 
     def set_current_index(self, index: int) -> None:
-        super().set_current_index(index)
+        self.step_container.set_current_index(index)
         self.signal_step_change.emit(index)
 
     def go_to_previous_index(self) -> None:
-        logger.info(f"go_to_previous_index: Old index {self.current_index()} = {self.current_step()}")
-        self.set_current_index(max(self.current_index() - 1, 0))
-        logger.info(f"go_to_previous_index: Switched index {self.current_index()} = {self.current_step()}")
+        logger.info(
+            f"go_to_previous_index: Old index {self.step_container.current_index()} = {self.current_step()}"
+        )
+        self.set_current_index(max(self.step_container.current_index() - 1, 0))
+        logger.info(
+            f"go_to_previous_index: Switched index {self.step_container.current_index()} = {self.current_step()}"
+        )
 
     def go_to_next_index(self) -> None:
-        if self.step_bar.current_index + 1 >= self.step_bar.number_of_steps:
+        if self.step_container.step_bar.current_index + 1 >= self.step_container.step_bar.number_of_steps:
             self.set_wallet_tutorial_index(None)
             self.set_visibilities()
+            if self.qt_wallet:
+                self.qt_wallet.tabs.select()
 
             return
-        logger.info(f"go_to_next_index: Old index {self.current_index()} = {self.current_step()}")
-        self.set_current_index(min(self.step_bar.current_index + 1, self.step_bar.number_of_steps - 1))
-        logger.info(f"go_to_next_index: Switched index {self.current_index()} = {self.current_step()}")
+        logger.info(
+            f"go_to_next_index: Old index {self.step_container.current_index()} = {self.current_step()}"
+        )
+        self.set_current_index(
+            min(
+                self.step_container.step_bar.current_index + 1,
+                self.step_container.step_bar.number_of_steps - 1,
+            )
+        )
+        logger.info(
+            f"go_to_next_index: Switched index {self.step_container.current_index()} = {self.current_step()}"
+        )
 
     def get_send_tests_steps(self) -> List[TutorialStep]:
         m, n = self.qtwalletbase.get_mn_tuple()
@@ -1825,13 +1763,11 @@ class Wizard(WizardBase):
         if not self.qt_wallet:
             return
 
-        self.wallet_tabs.setCurrentWidget(self.qt_wallet.uitx_creator)
-
         # use the current_step, but if I highlighted another signing
         if self.current_step() in self.get_send_tests_steps():
             test_number = self.get_send_tests_steps().index(self.current_step())
         else:
-            hightligted_step = self.get_step_of_index(self.current_highlighted_index())
+            hightligted_step = self.get_step_of_index(self.step_container.current_highlighted_index())
             if hightligted_step in self.get_send_tests_steps():
                 test_number = self.get_send_tests_steps().index(hightligted_step)
             else:
@@ -1839,10 +1775,9 @@ class Wizard(WizardBase):
                 return
 
         # set all tabs except the send as hidden
-        for i in range(self.qt_wallet.tabs.count()):
-            tab_widget = self.qt_wallet.tabs.widget(i)
-            if tab_widget:
-                tab_widget.setHidden(tab_widget != self.qt_wallet.uitx_creator)
+        # for tab in self.qt_wallet.tabs.child_nodes:
+        #     if tab.widget:
+        #         tab.widget.setHidden(tab.widget != self.qt_wallet.uitx_creator)
         self.open_tx(test_number)
 
     def updateUi(self) -> None:
@@ -1866,21 +1801,24 @@ class Wizard(WizardBase):
                 else self.tr("Send test")
             )
 
-        self.set_labels([labels[key] for key in self.tab_generators if key in labels])
+        self.step_container.set_labels([labels[key] for key in self.tab_generators if key in labels])
 
-    def _clear_tab_generators(self) -> None:
-        for g in self.tab_generators.values():
-            del g.refs
-            g.setParent(None)
-        self.tab_generators.clear()
+    def _clear_widgets_and_tab_generators(self) -> None:
+        while self.widgets:
+            k, widget = self.widgets.popitem()
+            widget.close()
+
+        while self.tab_generators:
+            k, g = self.tab_generators.popitem()
+            g.close()
 
     def close(self) -> bool:
-        self.clear_widgets()
+        self.step_container.close()
+        self.step_container.clear_widgets()
         self.qtwalletbase.outer_layout.removeWidget(self.floating_button_box)
         self.qtwalletbase.outer_layout.removeWidget(self)
         self.floating_button_box.setParent(None)
         self.floating_button_box.close()
-        self.widgets.clear()
-        self._clear_tab_generators()
+        self._clear_widgets_and_tab_generators()
         self.setParent(None)
         return super().close()

@@ -122,9 +122,9 @@ class TaskThread(QThread):
         cancel: Optional[Callable[[], None]] = None,
     ) -> "TaskThread":
 
-        # if not self.enable_threading:
-        #     NoThread().add_and_start(do, on_success, on_done, on_error)
-        #     return self
+        if not self.enable_threading:
+            NoThread().add_and_start(do, on_success, on_done, on_error)
+            return self
 
         self.cancelled = False
 
@@ -252,7 +252,7 @@ class ThreadingManager:
     def stop_and_wait_all(self) -> None:
         while self.threading_manager_children:
             child = self.threading_manager_children.pop()
-            child.end_threading_manager()
+            child.stop_and_wait_all()
 
         # Wait for all threads to finish
         while self._taskthreads:
@@ -262,8 +262,19 @@ class ThreadingManager:
 
     def end_threading_manager(self) -> None:
         logger.debug(f"end_threading_manager of {self.__class__.__name__}")
-        self.stop_and_wait_all()
+
+        while self.threading_manager_children:
+            child = self.threading_manager_children.pop()
+            child.end_threading_manager()
+
+        # Wait for all threads to finish
+        while self._taskthreads:
+            taskthread = self._taskthreads.pop()
+            logger.debug(f"stop taskthreads {taskthread}")
+            taskthread.stop()
 
         if self.threading_parent and self in self.threading_parent.threading_manager_children:
             self.threading_parent.threading_manager_children.remove(self)
             self.threading_parent = None
+
+        logger.debug(f"finished end_threading_manager of {self.__class__.__name__}")

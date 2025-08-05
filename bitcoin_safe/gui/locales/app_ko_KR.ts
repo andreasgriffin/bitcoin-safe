@@ -59,6 +59,11 @@
 		</message>
 		<name>AddressDialog</name>
 		<message>
+			<source>Close</source>
+			<translation>닫기  </translation>
+		</message>
+		<name>AddressDialog</name>
+		<message>
 			<source>Validate</source>
 			<translation>유효성 검사  </translation>
 		</message>
@@ -613,8 +618,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
-			<source>Export QR</source>
-			<translation>QR 내보내기</translation>
+			<source>Export for hardware signers</source>
+			<translation>하드웨어 서명 장치용 내보내기</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1136,6 +1141,13 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} 확인  </translation>
+		</message>
+	</context>
+	<context>
+		<name>HistListWithToolbar</name>
+		<message>
+			<source>&amp;Generate PDF balance Statement</source>
+			<translation>&amp;PDF 잔액 증명서 생성</translation>
 		</message>
 	</context>
 	<context>
@@ -2944,20 +2956,17 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
-		<name>SearchWallets</name>
+		<name>SearchTreeView</name>
 		<message>
-			<source>Addresses</source>
-			<translation>주소들</translation>
+			<source>Type to search...</source>
+			<translation>검색하려면 입력하세요...  </translation>
 		</message>
+	</context>
+	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
 			<translation>사용된 출력  </translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>Transactions</source>
-			<translation>트랜잭션  </translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
@@ -3776,6 +3785,13 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>WizardBase</name>
+		<message>
+			<source>Wizard</source>
+			<translation>마법사</translation>
+		</message>
+	</context>
+	<context>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
@@ -4400,13 +4416,6 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>이미 사용된 주소  </translation>
-		</message>
-	</context>
-	<context>
-		<name>search_treeview</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>검색하려면 입력하세요...  </translation>
 		</message>
 	</context>
 	<context>

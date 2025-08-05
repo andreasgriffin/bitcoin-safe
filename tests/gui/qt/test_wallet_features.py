@@ -55,7 +55,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
-from tests.gui.qt.test_setup_wallet import close_wallet, get_tab_with_title, save_wallet
+from tests.gui.qt.test_setup_wallet import close_wallet, save_wallet
 
 from ...non_gui.test_signers import test_seeds
 from ...setup_fulcrum import Faucet
@@ -64,7 +64,6 @@ from .helpers import (
     Shutter,
     close_wallet,
     do_modal_click,
-    get_tab_with_title,
     main_window_context,
     save_wallet,
 )
@@ -109,12 +108,13 @@ def test_wallet_features_multisig(
 
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
-        assert len(main_window.qt_protowallets) == 1
+        count_qt_protowallets = 0
+        for child in main_window.tab_wallets.root.child_nodes:
+            count_qt_protowallets += 1 if isinstance(child.data, QTProtoWallet) else 0
+        assert count_qt_protowallets == 1
 
-        w = get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        qt_protowallet = main_window.tab_wallets.get_data_for_tab(w)
+        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
-        assert qt_protowallet == list(main_window.qt_protowallets.values())[0]
 
         def test_block_change_signals() -> None:
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
@@ -212,14 +212,12 @@ def test_wallet_features_multisig(
             )
 
             assert wallet_file.exists()
-            assert main_window.tab_wallets.count() == 1, "there should be only 1 wallet open"
+            assert len(main_window.tab_wallets.root.child_nodes) == 1, "there should be only 1 wallet open"
 
         do_save_wallet()
 
         # get the new qt wallet
-        qt_wallet = main_window.tab_wallets.get_data_for_tab(
-            get_tab_with_title(main_window.tab_wallets, title=wallet_name)
-        )
+        qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
         assert len(main_window.qt_wallets) == 1
         assert qt_wallet == list(main_window.qt_wallets.values())[0]

@@ -85,7 +85,9 @@ def setup_logging() -> None:
     root_logger.setLevel(logging.DEBUG)
     root_logger.addHandler(console_handler)
     root_logger.addHandler(file_handler)
-    root_logger.addHandler(OpenLogHandler(file_path=log_file))
+    open_log_handler = OpenLogHandler(file_path=log_file)
+    open_log_handler.setFormatter(relative_path_formatter)
+    root_logger.addHandler(open_log_handler)
     root_logger.addHandler(mail_handler)
     root_logger.propagate = True
 

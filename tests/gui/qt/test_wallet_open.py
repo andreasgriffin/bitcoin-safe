@@ -100,9 +100,10 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             main_window.signals.open_tx_like.emit(tx)
             QApplication.processEvents()
 
-            tx_tab = main_window.tab_wallets.tabData(main_window.tab_wallets.count() - 1)
-            assert isinstance(tx_tab, UITx_Viewer)
-            return tx_tab
+            for child in main_window.tab_wallets.root.child_nodes:
+                if isinstance(child.widget, UITx_Viewer):
+                    return child.widget
+            raise Exception("no UITx_Viewer found")
 
         def save_tx_to_local(tx_tab: UITx_Viewer):
             assert tx_tab.button_save_local_tx.isVisible()
@@ -116,9 +117,9 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                 "6592209efae6c76e77626ffd62f2a59649a82aa3140f1d592f8e282293ececa3"
             ]
 
-            for i in range(main_window.tab_wallets.count()):
-                if main_window.tab_wallets.tabData(i) == tx_tab:
-                    main_window.tab_wallets.removeTab(i)
+            for child in main_window.tab_wallets.root.child_nodes:
+                if isinstance(child.widget, UITx_Viewer):
+                    child.removeNode()
 
         def open_and_save_tx():
             tx_tab = open_tx()

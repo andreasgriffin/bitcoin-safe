@@ -33,6 +33,7 @@ from typing import Callable, Iterable, List, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
@@ -659,6 +660,14 @@ class KeyStoreUI(QObject):
             mnemonic = keystore.mnemonic if keystore.mnemonic else ""
             if self.edit_seed.text() != mnemonic:
                 self.edit_seed.setText(mnemonic)
+
+    def close(self):
+        SignalTools.disconnect_all_signals_from(self)
+        self.edit_seed.close()
+        self.edit_key_origin.close()
+        self.edit_fingerprint.close()
+        self.edit_key_origin_input.close()
+        self.edit_xpub.close()
 
 
 class SignedUI(QWidget):

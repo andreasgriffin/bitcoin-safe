@@ -470,7 +470,6 @@ class VerticalButtonGroup(InvisibleScrollArea):
         super().__init__(parent)
         self._layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setMinimumWidth(size + 30)
         # if button_count > 1:
         #     self.setMinimumHeight(size + 20)
 
@@ -490,6 +489,13 @@ class VerticalButtonGroup(InvisibleScrollArea):
             self.buttons.append(button)
             self._layout.addWidget(button)
             self._layout.setAlignment(button, Qt.AlignmentFlag.AlignCenter)
+
+        self.set_size(size=size)
+
+    def set_size(self, size: int):
+        self.setMinimumWidth(size + 30)
+        for button in self.buttons:
+            button.set_size(size=size)
 
     def set_active(self, index: int, exclusive=True):
         for i, button in enumerate(self.buttons):
@@ -534,15 +540,14 @@ class MempoolButtons(VerticalButtonGroup):
         signals: Signals,
         fee_rate: float = 1,
         max_button_count=4,
-        size=SIZE_MEMPOOL_BLOCK,
         parent=None,
     ) -> None:
         super().__init__(
             network=mempool_manager.network_config.network,
             button_count=max_button_count,
-            size=size,
+            size=self._tx_status_to_size(tx_status=tx_status),
             parent=parent,
-            border_radius=int(5 / 100 * size),
+            border_radius=int(5 / 100 * self._tx_status_to_size(tx_status=tx_status)),
             clickable=tx_status.confirmation_status in [TxConfirmationStatus.DRAFT],
         )
         self.tx_status = tx_status
@@ -577,6 +582,10 @@ class MempoolButtons(VerticalButtonGroup):
             button.signal_edit_with_fee_icon.connect(self.signal_edit_with_fee_icon)
             button.signal_explorer_explorer_icon.connect(self.signal_explorer_explorer_icon)
         self.mempool_manager.signal_data_updated.connect(self.refresh)
+
+    @staticmethod
+    def _tx_status_to_size(tx_status: TxStatus) -> int:
+        return SIZE_CONFIRMED_BLOCK if tx_status.is_confirmed() else SIZE_MEMPOOL_BLOCK
 
     def calculate_button_indices(self, include_index: int):
         button_indices = {include_index}
@@ -655,8 +664,13 @@ class MempoolButtons(VerticalButtonGroup):
 
         self.set_visibilities(block_index=block_index)
 
-    def refresh(self, tx_status: TxStatus | None = None, fee_rate=None) -> None:
+    def refresh(
+        self,
+        tx_status: TxStatus | None = None,
+        fee_rate=None,
+    ) -> None:
         self.tx_status = tx_status if tx_status else self.tx_status
+        self.set_size(size=self._tx_status_to_size(self.tx_status))
 
         if self.tx_status.chain_position and isinstance(
             self.tx_status.chain_position, bdk.ChainPosition.CONFIRMED
@@ -730,7 +744,6 @@ class MempoolButtons(VerticalButtonGroup):
                 button.label_fee_range.setVisible(button.index == block_index)
             elif self.tx_status.confirmation_status == TxConfirmationStatus.CONFIRMED:
                 button.setVisible(button.index == block_index)
-                button.set_size(SIZE_CONFIRMED_BLOCK)
                 button.explorer_explorer_icon.setVisible(True)
 
     def _on_button_click(self, i: int) -> None:

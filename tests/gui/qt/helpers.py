@@ -53,7 +53,6 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
-    QTabWidget,
     QTextEdit,
     QWidget,
 )
@@ -288,23 +287,6 @@ def type_text_in_edit(text: str, edit: Union[QLineEdit, QTextEdit]) -> None:
         QApplication.processEvents()
 
 
-def get_tab_with_title(tabs: QTabWidget, title: str, timeout: int = 10) -> Optional[QWidget]:
-    """
-    Returns the tab with the specified title from a QTabWidget.
-
-    :param tabs: The QTabWidget instance containing the tabs.
-    :param title: The title of the tab to find.
-    :return: The QWidget of the tab with the specified title, or None if not found.
-    """
-    for i in range(timeout + 1):
-        QApplication.processEvents()
-        for index in range(tabs.count()):
-            if tabs.tabText(index).lower() == title.lower():
-                return tabs.widget(index)
-        sleep(1)
-    return None
-
-
 def save_wallet(
     test_config: UserConfig,
     wallet_name: str,
@@ -339,9 +321,10 @@ def close_wallet(
                 button.click()
                 break
 
-    index = main_window.tab_wallets.indexOf(main_window.qt_wallets[wallet_name])
+    node = main_window.tab_wallets.root.findNodeByTitle(wallet_name)
 
-    do_modal_click(lambda: main_window.close_tab(index), password_creation, qtbot, cls=QMessageBox)
+    do_modal_click(lambda: main_window.close_tab(node), password_creation, qtbot, cls=QMessageBox)
+    gc.collect()
 
 
 def clean_and_shorten(input_string, max_filename_len=50):

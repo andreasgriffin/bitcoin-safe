@@ -272,10 +272,10 @@ class AddressDialog(QWidget):
         )
         vbox.addWidget(self.hist_list)
 
-        close_button = QPushButton(self)
-        close_button.clicked.connect(self.close)
-        close_button.setDefault(True)
-        vbox.addWidget(close_button)
+        self.close_button = QPushButton(self)
+        self.close_button.clicked.connect(self.close)
+        self.close_button.setDefault(True)
+        vbox.addWidget(self.close_button)
 
         self.setupUi()
 
@@ -296,6 +296,7 @@ class AddressDialog(QWidget):
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.recipient_box), self.tr("Address"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_validate), self.tr("Validate"))
+        self.close_button.setText(self.tr("Close"))
 
     def closeEvent(self, a0: QCloseEvent | None):
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close

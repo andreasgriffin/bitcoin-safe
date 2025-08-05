@@ -644,6 +644,7 @@ class TutorialWidget(QWidget):
         buttonbox_always_visible=False,
     ) -> None:
         super().__init__()
+        self.widget = widget
         self.container = container
         self.button_box = button_box
         self.visibility_options: List[VisibilityOption] = []

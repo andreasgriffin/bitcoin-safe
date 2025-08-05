@@ -76,7 +76,7 @@ def test_signature_import_of_psbt_without_utxos(
             lambda: isinstance(main_window.tab_wallets.currentWidget(), UITx_Viewer), timeout=10000
         )
 
-        uitx_viewer = list(main_window.tab_wallets.getAllTabData().values())[-1]
+        uitx_viewer = main_window.tab_wallets.root.child_nodes[-1].data
         assert isinstance(uitx_viewer, UITx_Viewer)
         assert uitx_viewer.tx_singning_steps
 

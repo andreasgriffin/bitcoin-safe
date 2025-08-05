@@ -239,8 +239,6 @@ class HorizontalImportExportAll(QWidget):
     ) -> None:
         super().__init__(parent=parent)
         self._layout = QHBoxLayout(self)
-        org_spacing = self._layout.spacing()
-        self._layout.setSpacing(max(org_spacing, 40))
         signals_min.language_switch.connect(self.updateUi)
 
         # qr
@@ -275,6 +273,7 @@ class HorizontalImportExportAll(QWidget):
             else None
         )
         if self.usb:
+            self._layout.addStretch()
             self._layout.addWidget(self.usb)
 
         # file
@@ -293,12 +292,14 @@ class HorizontalImportExportAll(QWidget):
             else None
         )
         if self.file:
+            self._layout.addStretch()
             self._layout.addWidget(self.file)
 
         # clipboard
         self.clipboard = HorizontalImportExportClipboard(
             psbt=psbt, network=network, signature_importers=file_signers, sync_tabs=sync_tabs
         )
+        self._layout.addStretch()
         self._layout.addWidget(self.clipboard)
 
         # seed
@@ -317,6 +318,7 @@ class HorizontalImportExportAll(QWidget):
             else None
         )
         if self.wallet_importers:
+            self._layout.addStretch()
             self._layout.addWidget(self.wallet_importers)
 
     def updateUi(self):

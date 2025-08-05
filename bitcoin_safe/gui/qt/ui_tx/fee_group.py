@@ -39,7 +39,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import (
 )
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QGroupBox, QLabel, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -64,12 +64,7 @@ from ..util import (
     set_margins,
     set_no_margins,
 )
-from .mempool_buttons import (
-    SIZE_CONFIRMED_BLOCK,
-    SIZE_MEMPOOL_BLOCK,
-    MempoolButtons,
-    SmallTitleLabel,
-)
+from .mempool_buttons import MempoolButtons, SmallTitleLabel
 
 logger = logging.getLogger(__name__)
 
@@ -226,7 +221,6 @@ class FeeGroup(QObject):
         # add the groupBox_Fee
         self.groupBox_Fee = QGroupBox()
         self.groupBox_Fee_layout = QVBoxLayout(self.groupBox_Fee)
-        self.groupBox_Fee.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.groupBox_Fee.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.groupBox_Fee_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         set_margins(
@@ -242,7 +236,6 @@ class FeeGroup(QObject):
             max_button_count=1 if tx_status.is_confirmed() else 4,
             decimal_precision=decimal_precision,
             tx_status=tx_status,
-            size=SIZE_CONFIRMED_BLOCK if tx_status.is_confirmed() else SIZE_MEMPOOL_BLOCK,
             signals=signals,
         )
         self.groupBox_Fee_layout.addWidget(self.mempool_buttons, alignment=Qt.AlignmentFlag.AlignHCenter)
@@ -281,7 +274,6 @@ class FeeGroup(QObject):
         )
         self.spin_fee_rate.setReadOnly(not allow_edit)
         self.spin_fee_rate.setDecimals(decimal_precision)  # Set the number of decimal places
-        # self.spin_fee_rate.setMaximumWidth(55)
         if fee_rate:
             self.set_spin_fee_value(fee_rate)
         self.update_spin_fee_range()
