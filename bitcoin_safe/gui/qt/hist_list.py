@@ -58,7 +58,7 @@ import os
 import tempfile
 from enum import IntEnum
 from functools import partial
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -781,6 +781,8 @@ class HistListWithToolbar(TreeViewWithToolbar):
         HistList.__name__: HistList,
     }
 
+    signal_export_pdf_statement = cast(TypedPyQtSignal[str], pyqtSignal(str))  #  wallet_id
+
     def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget | None = None) -> None:
         super().__init__(hist_list, config, parent=parent)
         self.default_export_csv_filename = "history_export.csv"
@@ -812,14 +814,23 @@ class HistListWithToolbar(TreeViewWithToolbar):
         if self.balance_label:
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
             self.balance_label.setText(balance_total.format_as_balance())
+        self.action_export_pdf_statement.setText(self.tr("&Generate PDF balance Statement"))
 
     def create_toolbar_with_menu(self, title) -> None:
         super().create_toolbar_with_menu(title=title)
+
+        self.action_export_pdf_statement = self.menu.add_action(
+            "", self._do_export_pdf_statement, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
+        )
 
         font = QFont()
         font.setPointSize(12)
         if self.balance_label:
             self.balance_label.setFont(font)
+
+    def _do_export_pdf_statement(self):
+        for wallet in self.hist_list.wallets:
+            self.signal_export_pdf_statement.emit(wallet.id)
 
     def on_hide_toolbar(self) -> None:
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter

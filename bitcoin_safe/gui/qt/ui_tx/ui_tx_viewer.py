@@ -51,7 +51,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE, IS_PRODUCTION
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
@@ -455,6 +455,11 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
     def fill_button_group(self):
         self.header_button_group.clear()
+        if not IS_PRODUCTION:
+            button = QPushButton()
+            button.setText("refresh")
+            button.clicked.connect(partial(self.reload, UpdateFilter(refresh_all=True)))
+            self.header_button_group.addButton(button)
 
         for i in range(self.splitter.count()):
             widget = self.splitter.widget(i)
@@ -1214,9 +1219,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
 
-        self.append_thread(
-            TaskThread(enable_threading=False).add_and_start(do, on_success, on_done, on_error)
-        )
+        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def set_tab_focus(self, focus_ui_element: UiElements):
         self.focus_ui_element = focus_ui_element
@@ -1348,9 +1351,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         )
 
     def close(self):
+        self.column_sankey.close()
+        self.end_threading_manager()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)
         self.setParent(None)
-        self.column_sankey.close()
         return super().close()

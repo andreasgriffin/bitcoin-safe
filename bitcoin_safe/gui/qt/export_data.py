@@ -166,7 +166,7 @@ class FileToolButton(QToolButton):
         self.network = network
         self.button_prefix = button_prefix
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -350,7 +350,7 @@ class SyncChatToolButton(QToolButton):
         self.button_prefix = button_prefix
         self._set_data(data=data, sync_tabs=sync_tabs)
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -841,7 +841,7 @@ class QrToolButton(QToolButton):
         )
         self.export_qr_widget.set_minimum_size_as_floating_window()
 
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)

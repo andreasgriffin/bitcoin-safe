@@ -814,11 +814,11 @@ class Wallet(BaseSaveableClass, CacheManager):
         keys = [
             "id",
             "gap",
-            "_blockchain_height",
-            "tips",
-            "refresh_wallet",
         ]
         for k in keys:
+            if k not in this or k not in other:
+                logger.error(f"This should not happen!!! Please fix")
+                continue
             if this[k] != other[k]:
                 differences.append(
                     WalletDifference(

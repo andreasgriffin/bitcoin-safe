@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
@@ -96,13 +96,14 @@ class NewWalletWelcomeScreen(QWidget):
         self.signal_onclick_custom_signature.emit()
         self.signal_remove_me.emit(self)
 
-    def add_new_wallet_welcome_tab(self, main_tabs: DataTabWidget[object]) -> None:
-        main_tabs.add_tab(
-            tab=self,
-            icon=svg_tools.get_QIcon("file.svg"),
-            description=self.tr("Create new wallet"),
-            focus=True,
-            data=self,
+    def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
+        main_tabs.root.addChildNode(
+            SidebarNode(
+                icon=svg_tools.get_QIcon("file.svg"),
+                title=self.tr("Create new wallet"),
+                data=self,
+                widget=self,
+            )
         )
 
     def create_ui(self) -> None:

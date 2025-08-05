@@ -327,7 +327,7 @@ class NotificationBarRecipient(NotificationBar):
         self.signals_min = signals_min
         self.wallet_id: str | None = None
 
-        self.set_icon(svg_tools.get_QIcon(f"bi--person.svg"))
+        self.set_icon(svg_tools.get_QIcon(f"bi--person-no-left-margin.svg"))
 
         self.closeButton.setFlat(True)
 
@@ -382,6 +382,10 @@ class RecipientBox(QWidget):
         self.notification_bar.setHidden(not show_header_bar)
         self._layout.addWidget(self.notification_bar)
         self._layout.addWidget(self.recipient_widget)
+        set_margins(
+            self.recipient_widget.form_layout,
+            {Qt.Edge.LeftEdge: self.notification_bar._layout.contentsMargins().left()},
+        )
 
         # connect signals
         self.notification_bar.closeButton.clicked.connect(self.on_close)
@@ -476,7 +480,6 @@ class Recipients(QWidget):
         fx: FX | None,
         header_widget: HeaderWidget,
         allow_edit=True,
-        use_header_bar=False,
     ) -> None:
         super().__init__()
         self.signals = signals
