@@ -110,7 +110,7 @@ class KeyStoreImporterTypes:
         "seed",
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
-        "logo.svg",
+        "logo-black.svg",
         networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.TESTNET4, bdk.Network.SIGNET],
     )  # add networks here to make the seed option visible
 
