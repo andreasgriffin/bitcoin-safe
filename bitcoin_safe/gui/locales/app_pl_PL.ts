@@ -425,7 +425,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>Otrzymano</translation>
+			<translation>Otrzymano </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -661,7 +661,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela.  Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
+			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela. Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -2034,7 +2034,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Błąd połączenia z serwerem. {responses}   Czy mimo to chcesz kontynuować?</translation>
+			<translation>Błąd połączenia z serwerem. {responses} Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2091,7 +2091,7 @@ Do you want to proceed anyway?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Odpowiedzi:     {name}: {status}     Instancja Mempool: {server}</translation>
+			<translation>Odpowiedzi: {name}: {status} Instancja Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2576,7 +2576,7 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Transakcje  {txs}  w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
+			<translation>Transakcje {txs} w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3287,7 +3287,10 @@ Signatures:
 
 
 </source>
-			<translation>Transakcja podpisana kluczem prywatnym należącym do {label}  Podpisy: {signatures}</translation>
+			<translation>Transakcja podpisana kluczem prywatnym należącym do {label} Podpisy: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3328,7 +3331,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Twój klucz synchronizacji to:  {sync_key}   Zapisz go, a gdy klikniesz 'importuj klucz synchronizacji', powinien przywrócić Twoje etykiety z przekaźników Nostr.</translation>
+			<translation>Twój klucz synchronizacji to: {sync_key} Zapisz go, a gdy klikniesz 'importuj klucz synchronizacji', powinien przywrócić Twoje etykiety z przekaźników Nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3341,7 +3344,7 @@ Signatures:
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>Dodatkowe wejścia można dodać  poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
+			<translation>Dodatkowe wejścia można dodać poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3367,7 +3370,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>Wklej tutaj UTXO w formacie  txid:outpoint txid:outpoint</translation>
+			<translation>Wklej tutaj UTXO w formacie txid:outpoint txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3759,7 +3762,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>Testowa transakcja '{tx_text}' została wykonana pomyślnie. Przejdź do testu wysyłki:  '{next_text}'</translation>
+			<translation>Testowa transakcja '{tx_text}' została wykonana pomyślnie. Przejdź do testu wysyłki: '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4274,7 +4277,7 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Pasywnie nasłuchuj ruchu p2p bitcoina (jak węzeł bitcoina),  aby natychmiast wykrywać nowo rozgłoszone transakcje. Nie ujawnia to nic o Twoim portfelu. Kliknij tutaj, aby dowiedzieć się więcej.</translation>
+			<translation>Pasywnie nasłuchuj ruchu p2p bitcoina (jak węzeł bitcoina), aby natychmiast wykrywać nowo rozgłoszone transakcje. Nie ujawnia to nic o Twoim portfelu. Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 	</context>
 	<context>
@@ -4453,7 +4456,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Porównaj i zatwierdź kod parowania na swoim BitBox02:  {code}</translation>
+			<translation>Porównaj i zatwierdź kod parowania na swoim BitBox02: {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4477,7 +4480,7 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Anulowanie z RBF utworzy nową transakcję  z Tobą jako odbiorcą i z wyższą opłatą, aby zastąpić starą transakcję. Nie ma gwarancji, że to zadziała!!!</translation>
+			<translation>Anulowanie z RBF utworzy nową transakcję z Tobą jako odbiorcą i z wyższą opłatą, aby zastąpić starą transakcję. Nie ma gwarancji, że to zadziała!!!</translation>
 		</message>
 		<name>util</name>
 		<message>

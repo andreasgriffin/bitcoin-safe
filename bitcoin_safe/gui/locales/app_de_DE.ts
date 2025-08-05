@@ -4,22 +4,22 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
-			<translation>Keine zusätzlichen Signaturen hinzugefügt</translation>
+			<translation>Es wurden keine weiteren Unterschriften hinzugefügt</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation>Die Eingabe ist mit der zu signierenden PSBT nicht kompatibel.</translation>
+			<translation>Die Eingabe ist mit dem zu signierenden PSBT nicht kompatibel.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein</translation>
+			<translation>Die txid der signierten psbt stimmt nicht mit der ursprünglichen txid überein</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk-Bibliotheksfehler. Die txid darf beim Finalisieren nicht geändert werden</translation>
+			<translation>bdk-Bibliotheksfehler. Die Transaktions-ID (txid) sollte während der Finalisierung nicht geändert werden</translation>
 		</message>
 	</context>
 	<context>
@@ -55,12 +55,12 @@
 		<name>AddressDialog</name>
 		<message>
 			<source>Advanced</source>
-			<translation>Erweitert</translation>
+			<translation>Fortgeschritten</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Validate</source>
-			<translation>Überprüfen</translation>
+			<translation>Validieren</translation>
 		</message>
 	</context>
 	<context>
@@ -222,7 +222,7 @@
 		<name>BackupNsecNotificationBar</name>
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
-			<translation>Sync‑Schlüssel der Wallet {wallet_id}:  {nsec}</translation>
+			<translation>Sync‑Schlüssel der Wallet {wallet_id}: {nsec}</translation>
 		</message>
 	</context>
 	<context>
@@ -425,7 +425,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>Empfangen</translation>
+			<translation>Empfangen </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -435,7 +435,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs</translation>
+			<translation>UTXO's</translation>
 		</message>
 	</context>
 	<context>
@@ -475,7 +475,8 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie 
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>Die Adressen {used_addresses} haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du sicher, dass du ihre Kategorie ändern möchtest?</translation>
+			<translation>Die Adressen {used_addresses}
+haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du sicher, dass du ihre Kategorie ändern möchtest?</translation>
 		</message>
 	</context>
 	<context>
@@ -853,7 +854,8 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<message>
 			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
 Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>Diese Transaktion hat {number} unbestätigte Parent‑Transaktionen mit einem gesamten Gebührensatz von {parents_fee_rate}. Klicken, um mehr über CPFP (Child Pays For Parent) zu erfahren.</translation>
+			<translation>Diese Transaktion hat {number} unbestätigte Parent‑Transaktionen mit einem gesamten Gebührensatz von {parents_fee_rate}.
+Klicken, um mehr über CPFP (Child Pays For Parent) zu erfahren.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -865,7 +867,9 @@ Click to learn more about CPFP (Child Pays For Parent).</source>
 			<source>You can replace the previously broadcasted transaction
 with a new transaction if it has a higher fee rate.
 Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>Sie können die zuvor ausgestrahlte Transaktion durch eine neue ersetzen, wenn diese einen höheren Gebührensatz hat. Klicken Sie hier, um mehr über RBF (Replace‑by‑Fee) zu erfahren.</translation>
+			<translation>Sie können die zuvor ausgestrahlte Transaktion
+durch eine neue ersetzen, wenn diese einen höheren Gebührensatz hat.
+Klicken Sie hier, um mehr über RBF (Replace‑by‑Fee) zu erfahren.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1499,12 +1503,12 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;About</source>
-			<translation>Über</translation>
+			<translation>&amp;Über</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Change</source>
-			<translation>Ändern</translation>
+			<translation>&amp;Änderung</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2327,7 +2331,8 @@ Mempool-Instanz: {server}</translation>
 		<message>
 			<source>This transaction {txid} was already signed and is in wallet {wallet}.
 The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>Diese Transaktion {txid} wurde bereits signiert und befindet sich in der Wallet {wallet}. Die Serialisierungen beider unterscheiden sich; das kann durch unterschiedliche gesammelte Signaturen verursacht sein.</translation>
+			<translation>Diese Transaktion {txid} wurde bereits signiert und befindet sich in der Wallet {wallet}.
+Die Serialisierungen beider unterscheiden sich; das kann durch unterschiedliche gesammelte Signaturen verursacht sein.</translation>
 		</message>
 	</context>
 	<context>
@@ -3269,7 +3274,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs</translation>
+			<translation>XPUB's</translation>
 		</message>
 	</context>
 	<context>
@@ -3306,7 +3311,13 @@ Signatures:
 
 
 </source>
-			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert  Signaturen: {signatures}</translation>
+			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert
+
+Signaturen:
+{signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3364,7 +3375,8 @@ Speichern Sie ihn, und wenn Sie auf 'Sync-Key importieren' klicken, sollten Ihre
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>Zusätzliche Inputs können  unterhalb von {rate} hinzugefügt werden, um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
+			<translation>Zusätzliche Inputs können unterhalb von {rate} hinzugefügt werden,
+um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3444,7 +3456,8 @@ txid:outpoint ein</translation>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Bitte zuerst eine Wallet öffnen, um die Transaktion zu senden. Alternativ kannst du über {url} senden</translation>
+			<translation>Bitte zuerst eine Wallet öffnen, um die Transaktion zu senden.
+Alternativ kannst du über {url} senden</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4302,7 +4315,10 @@ Es ist am besten, Ihren eigenen Server zu verwenden, wie {link}.</translation>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Passiv den Bitcoin‑p2p‑Traffic abhören (wie ein Bitcoin‑Knoten),  um neu ausgestrahlte Transaktionen sofort zu erkennen. Das verrät nichts über deine Wallet. Klicke hier, um mehr zu erfahren.</translation>
+			<translation>Passiv den Bitcoin‑p2p‑Traffic abhören (wie ein Bitcoin‑Knoten),
+um neu ausgestrahlte Transaktionen sofort zu erkennen.
+Das verrät nichts über deine Wallet.
+Klicke hier, um mehr zu erfahren.</translation>
 		</message>
 	</context>
 	<context>
@@ -4501,7 +4517,10 @@ Click here to learn more.</source>
 will append a new transaction to the old one.
 If the average fee rate of both transactions is high enough
 it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, hängt eine neue Transaktion an die alte an. Ist der durchschnittliche Gebührensatz beider Transaktionen hoch genug, beschleunigt das die Bestätigung beider.</translation>
+			<translation>CPFP = Child Pay For Parent,
+hängt eine neue Transaktion an die alte an.
+Ist der durchschnittliche Gebührensatz beider Transaktionen hoch genug,
+beschleunigt das die Bestätigung beider.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4510,7 +4529,11 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Mit RBF abbrechen erstellt eine neue Transaktion  mit dir als Empfänger und höheren Gebühren, um die alte zu ersetzen. Es gibt keine Garantie, dass das funktioniert!!!</translation>
+			<translation>Mit RBF stornieren,
+wird eine neue Transaktion erstellt
+mit Ihnen als Empfänger und einer höheren Gebühr,
+um die alte Transaktion zu ersetzen.
+Es gibt keine Garantie, dass dies funktioniert!!!</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4537,7 +4560,9 @@ There is no guarantee this will work!!!</source>
 			<source>RBF = Replace By Fee,
 will create a new transaction with a higher fee
 to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, erstellt eine neue Transaktion mit höherer Gebühr, um die Bestätigung zu beschleunigen.</translation>
+			<translation>RBF = Replace By Fee,
+erstellt eine neue Transaktion mit höherer Gebühr,
+um die Bestätigung zu beschleunigen.</translation>
 		</message>
 		<name>util</name>
 		<message>
