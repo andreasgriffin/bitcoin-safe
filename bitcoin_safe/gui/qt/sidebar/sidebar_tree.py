@@ -42,6 +42,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -85,6 +86,11 @@ class SidebarRow(QWidget):
         self._layout = QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
         self._layout.setSpacing(0)
+
+        # --- keep trailing buttons always visible; let main button shrink
+        sidebar_btn.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
+        sidebar_btn.setMinimumWidth(0)  # allow squeezing below size hint
+
         self.sidebar_btn = sidebar_btn
         self._layout.addWidget(self.sidebar_btn)
         self.square_buttons: List[QWidget] = []
@@ -1038,7 +1044,7 @@ if __name__ == "__main__":
         # ---------- Menu actions ----------
         def _add_wallet(self):
             self.wallet_counter += 1
-            wallet_name = f"Wallet {chr(ord('A') + self.wallet_counter - 1)}"
+            wallet_name = f"Wallet {chr(ord('A') + self.wallet_counter - 1)} with long name"
             wallet_node = self._mk_wallet_node(wallet_name)
             self.root.addChildNode(wallet_node)
             # auto-select first tab
