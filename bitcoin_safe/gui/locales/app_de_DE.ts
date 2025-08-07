@@ -1550,7 +1550,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Export Wallet PDF</translation>
+			<translation>&amp; Export Wallet PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1660,7 +1660,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Wallet</source>
-			<translation>&amp;Wallet</translation>
+			<translation>&amp; Wallet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2997,7 +2997,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs</translation>
+			<translation>UTXO's</translation>
 		</message>
 	</context>
 	<context>

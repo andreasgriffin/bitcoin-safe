@@ -388,7 +388,8 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-			<translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href="{url}"&gt;Mostra la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;</translation>
+			<translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href="{url}"&gt;Mostra la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
 		</message>
 	</context>
 	<context>
@@ -429,7 +430,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>Rebut</translation>
+			<translation>Rebut </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -439,7 +440,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs</translation>
+			<translation>UTXO's</translation>
 		</message>
 	</context>
 	<context>
@@ -665,7 +666,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Aquest «descriptor» conté tota la informació per reconstruir la cartera.  Si us plau, fes una còpia de seguretat d'aquest descriptor per poder recuperar els fons!</translation>
+			<translation>Aquest «descriptor» conté tota la informació per reconstruir la cartera. Si us plau, fes una còpia de seguretat d'aquest descriptor per poder recuperar els fons!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -2045,7 +2046,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Error en la connexió amb el servidor. {responses}   Vols continuar igualment?</translation>
+			<translation>Error en la connexió amb el servidor. {responses} Vols continuar igualment?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2587,7 +2588,7 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Les transaccions  {txs}  de la cartera '{wallet}' s'han eliminat de l'historial!!!</translation>
+			<translation>Les transaccions {txs} de la cartera '{wallet}' s'han eliminat de l'historial!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2707,7 +2708,8 @@ The serializations of both differ, which could be caused by different collected 
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar de gastar des de la cartera.                      &lt;br&gt;                     Així que abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d'enviament!&lt;/b&gt;</translation>
+			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar de gastar des de la cartera.                      &lt;br&gt;                     Així que abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d'enviament!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
@@ -2971,7 +2973,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs</translation>
+			<translation>UTXO's</translation>
 		</message>
 	</context>
 	<context>
@@ -3257,7 +3259,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs</translation>
+			<translation>XPUB's</translation>
 		</message>
 	</context>
 	<context>
@@ -3294,7 +3296,10 @@ Signatures:
 
 
 </source>
-			<translation>Transacció signada amb la clau privada pertanyent a {label}  Signatures: {signatures}</translation>
+			<translation>Transacció signada amb la clau privada pertanyent a {label} Signatures: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3335,7 +3340,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>La teva clau de sincronització és:  {sync_key}   Desa-la, i quan facis clic a «importa clau de sincronització», s'haurien de restaurar les teves etiquetes des dels relays nostr.</translation>
+			<translation>La teva clau de sincronització és: {sync_key} Desa-la, i quan facis clic a «importa clau de sincronització», s'haurien de restaurar les teves etiquetes des dels relays nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3348,7 +3353,7 @@ Signatures:
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>Es poden afegir  entrades addicionals per sota de {rate} per consolidar UTXOs i reduir les comissions futures</translation>
+			<translation>Es poden afegir entrades addicionals per sota de {rate} per consolidar UTXOs i reduir les comissions futures</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3766,7 +3771,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>La transacció de prova  '{tx_text}'  s'ha realitzat amb èxit. Si us plau, continua amb la prova d'enviament:  '{next_text}'</translation>
+			<translation>La transacció de prova '{tx_text}' s'ha realitzat amb èxit. Si us plau, continua amb la prova d'enviament: '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4288,7 +4293,7 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Escolta passivament el trànsit p2p de bitcoin (com un node de bitcoin),  per detectar immediatament les transaccions acabades d’emetre. Això no revela res sobre la teva cartera. Fes clic aquí per saber-ne més.</translation>
+			<translation>Escolta passivament el trànsit p2p de bitcoin (com un node de bitcoin), per detectar immediatament les transaccions acabades d’emetre. Això no revela res sobre la teva cartera. Fes clic aquí per saber-ne més.</translation>
 		</message>
 	</context>
 	<context>
@@ -4299,7 +4304,8 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda cada paper en un lloc segur diferent, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar els signadors de maquinari a) juntament amb la corresponent còpia de seguretat de la llavor en paper, o b)   cadascun en un altre lloc segur (si en disposes) </translation>
+			<translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda cada paper en un lloc segur diferent, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar els signadors de maquinari a) juntament amb la corresponent còpia de seguretat de la llavor en paper, o b)   cadascun en un altre lloc segur (si en disposes)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4308,7 +4314,8 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda aquest paper en un lloc segur, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar el signador de maquinari a) juntament amb la còpia de seguretat de la llavor en paper, o b)   en un altre lloc segur (si en disposes) </translation>
+			<translation>1. Adjunta el «Full de recuperació» ({number} paraules) a aquest paper o duplica les 12/24 paraules en aquest paper.&lt;br/&gt;                 2. Plega aquest paper per la línia següent &lt;br/&gt;                 3. Guarda aquest paper en un lloc segur, on només tu hi tinguis accés&lt;br/&gt;                 4. Pots guardar el signador de maquinari a) juntament amb la còpia de seguretat de la llavor en paper, o b)   en un altre lloc segur (si en disposes)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4458,7 +4465,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Si us plau, compara i confirma el codi d'aparellament al teu BitBox02:  {code} </translation>
+			<translation>Si us plau, compara i confirma el codi d'aparellament al teu BitBox02: {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4482,7 +4489,7 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Cancel·la amb RBF, crearà una transacció nova  amb tu com a destinatari i una comissió més alta per substituir l’antiga. No hi ha cap garantia que funcioni!!!</translation>
+			<translation>Cancel·la amb RBF, crearà una transacció nova amb tu com a destinatari i una comissió més alta per substituir l’antiga. No hi ha cap garantia que funcioni!!!</translation>
 		</message>
 		<name>util</name>
 		<message>
