@@ -30,12 +30,12 @@
 import logging
 from typing import List
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import ThreadingManager
 
 from .step_progress_bar import StepProgressContainer
 
@@ -47,6 +47,7 @@ class WizardBase(QWidget):
         self,
         step_labels: List[str],
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         current_index: int = 0,
         collapsible_current_active=False,
         clickable=True,
@@ -54,21 +55,21 @@ class WizardBase(QWidget):
         parent=None,
         sub_indices: List[int] | None = None,
         use_resizing_stacked_widget=True,
-        threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__()
         self.step_container = StepProgressContainer(
-            step_labels,
-            signals_min,
-            current_index,
-            collapsible_current_active,
-            clickable,
-            use_checkmark_icon,
-            parent,
-            sub_indices,
-            use_resizing_stacked_widget,
-            threading_parent,
+            step_labels=step_labels,
+            signals_min=signals_min,
+            current_index=current_index,
+            collapsible_current_active=collapsible_current_active,
+            clickable=clickable,
+            use_checkmark_icon=use_checkmark_icon,
+            parent=parent,
+            sub_indices=sub_indices,
+            use_resizing_stacked_widget=use_resizing_stacked_widget,
+            loop_in_thread=loop_in_thread,
         )
+        self.loop_in_thread = loop_in_thread
         self._layout = QVBoxLayout(self)
         self._layout.addWidget(self.step_container)
 

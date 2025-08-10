@@ -32,6 +32,7 @@ from typing import Optional, Tuple, cast
 
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -53,7 +54,6 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
-from bitcoin_safe.threading_manager import ThreadingManager
 
 from ...descriptors import AddressType, get_default_address_type
 from ...signals import Signals, TypedPyQtSignalNo
@@ -72,7 +72,7 @@ class DescriptorUI(QWidget):
         self,
         protowallet: ProtoWallet,
         signals: Signals,
-        threading_parent: ThreadingManager,
+        loop_in_thread: LoopInThread,
         wallet: Optional[Wallet] = None,
     ) -> None:
         super().__init__()
@@ -85,7 +85,7 @@ class DescriptorUI(QWidget):
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
-        self.create_wallet_type_and_descriptor(threading_parent=threading_parent)
+        self.create_wallet_type_and_descriptor(loop_in_thread=loop_in_thread)
 
         self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
 
@@ -297,7 +297,7 @@ class DescriptorUI(QWidget):
                 if default_address_type in address_type_names:
                     self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
 
-    def create_wallet_type_and_descriptor(self, threading_parent: ThreadingManager) -> None:
+    def create_wallet_type_and_descriptor(self, loop_in_thread: LoopInThread) -> None:
         box_wallet_type_and_descriptor = QWidget(self)
         box_wallet_type_and_descriptor_layout = QHBoxLayout(box_wallet_type_and_descriptor)
 
@@ -377,7 +377,7 @@ class DescriptorUI(QWidget):
             signals=self.signals,
             wallet=self.wallet,
             signal_update=language_switch,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addWidget(self.edit_descriptor)

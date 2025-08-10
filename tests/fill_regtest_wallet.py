@@ -81,11 +81,9 @@ def send_rpc_command(ip: str, port: Union[str, int], username: str, password: st
 
 def mine_coins(rpc_ip, rpc_username, rpc_password, wallet, blocks=101, always_new_addresses=False):
     """Mine some blocks to generate coins for the wallet."""
-    address = str(
-        wallet.get_address(
-            bdk.AddressIndex.NEW() if always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
-        ).address
-    )
+    address = wallet.get_address(
+        bdk.AddressIndex.NEW() if always_new_addresses else bdk.AddressIndex.LAST_UNUSED()
+    ).address.as_string()
     print(f"Mining {blocks} blocks to {address}")
     ip, port = rpc_ip.split(":")
     response = send_rpc_command(
@@ -136,7 +134,7 @@ def create_complex_transactions(
 
             # Finish and sign transaction
             tx_final = tx_builder.finish(wallet)
-            psbt2 = bdk.Psbt(tx_final.psbt.serialize())
+            psbt2 = bdk.PartiallySignedTransaction(tx_final.psbt.serialize())
             wallet.sign(psbt2, None)
             final_tx = psbt2.extract_tx()
 
@@ -144,7 +142,7 @@ def create_complex_transactions(
             blockchain.broadcast(final_tx)
 
             print(
-                f"Broadcast tx {final_tx.compute_txid()} to addresses {[recieve_address_info.index for recieve_address_info in recieve_address_infos]}"
+                f"Broadcast tx {final_tx.txid()} to addresses {[recieve_address_info.index for recieve_address_info in recieve_address_infos]}"
             )
             if np.random.random() < 0.2:
                 mine_coins(

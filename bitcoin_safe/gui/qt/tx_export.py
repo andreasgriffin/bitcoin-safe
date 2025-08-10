@@ -31,6 +31,7 @@ import logging
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import (
@@ -41,7 +42,6 @@ from bitcoin_safe.gui.qt.export_data import (
 from bitcoin_safe.gui.qt.keystore_ui import BaseHardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         data: Data | None,
         network: bdk.Network,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager,
+        loop_in_thread: LoopInThread,
         sync_tabs: dict[str, SyncTab] | None = None,
         parent: QWidget | None = None,
     ) -> None:
@@ -68,7 +68,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
             data=self.data,
             signals_min=signals_min,
             network=network,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             parent=self,
         )
         self.add_button(self.export_qr_button)

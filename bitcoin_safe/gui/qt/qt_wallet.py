@@ -32,13 +32,13 @@ import json
 import logging
 import os
 import shutil
-import threading
 from datetime import timedelta
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from packaging import version
@@ -78,12 +78,11 @@ from bitcoin_safe.pythonbdk_types import (
     python_utxo_balance,
 )
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
-from ...execute_config import DEFAULT_LANG_CODE, ENABLE_THREADING, ENABLE_TIMERS
+from ...execute_config import DEFAULT_LANG_CODE, ENABLE_TIMERS
 from ...mempool_manager import MempoolManager
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
@@ -125,14 +124,12 @@ class QTProtoWallet(QtWalletBase):
         protowallet: ProtoWallet,
         config: UserConfig,
         signals: Signals,
-        threading_parent: ThreadingManager | None = None,
         tutorial_index: int | None = None,
         parent=None,
     ) -> None:
         super().__init__(
             config=config,
             signals=signals,
-            threading_parent=threading_parent,
             tutorial_index=tutorial_index,
             parent=parent,
         )
@@ -159,7 +156,7 @@ class QTProtoWallet(QtWalletBase):
         wallet_descriptor_ui = DescriptorUI(
             protowallet=protowallet,
             signals=self.signals,
-            threading_parent=self,
+            loop_in_thread=self.loop_in_thread,
         )
         settings_node = SidebarNode[object](
             widget=wallet_descriptor_ui,
@@ -228,7 +225,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         sync_tab: SyncTab | None = None,
         password: str | None = None,
         file_path: str | None = None,
-        threading_parent: ThreadingManager | None = None,
         notified_tx_ids: Iterable[str] | None = None,
         tutorial_index: int | None = None,
         history_list_with_toolbar: HistListWithToolbar | None = None,
@@ -240,7 +236,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         super().__init__(
             signals=signals,
             config=config,
-            threading_parent=threading_parent,
             tutorial_index=tutorial_index,
             parent=parent,
         )
@@ -253,7 +248,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
         self.notified_tx_ids = set(notified_tx_ids if notified_tx_ids else [])
-        self.fill_cache_lock = threading.Lock()
         self.category_core = CategoryCore(wallet=self.wallet, signals=self.signals)
 
         self._last_syncing_start = datetime.datetime.now()
@@ -349,7 +343,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         mempool_manager: MempoolManager,
         fx: FX,
         password: str | None = None,
-        threading_parent: ThreadingManager | None = None,
     ) -> "QTWallet":
         return super()._from_file(
             filename=file_path,
@@ -362,7 +355,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     "mempool_manager": mempool_manager,
                     "fx": fx,
                     "file_path": file_path,
-                    "threading_parent": threading_parent,
                 },
                 "HistList": {
                     "config": config,
@@ -555,7 +547,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             protowallet=self.wallet.as_protowallet(),
             signals=self.signals,
             wallet=self.wallet,
-            threading_parent=self,
+            loop_in_thread=self.loop_in_thread,
         )
         settings_node = SidebarNode[object](
             data=wallet_descriptor_ui,
@@ -617,7 +609,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.fx,
             file_path=self.file_path,
             password=self.password,
-            threading_parent=self.threading_parent,
             parent=self,
         )
 
@@ -862,7 +853,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def refresh_caches_and_ui_lists(
         self,
-        enable_threading=ENABLE_THREADING,
         force_ui_refresh=True,
         chain_height_advanced=False,
         clear_cache=True,
@@ -872,15 +862,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if clear_cache:
             self.wallet.clear_cache()
 
-        def do() -> Any:
-            if not self.fill_cache_lock.acquire(blocking=False):
-                logger.info(f"Skipped fill_commonly_used_caches because fill_cache_lock blocked")
-                return False
-
+        async def do() -> Any:
             try:
                 self.wallet.fill_commonly_used_caches()
             finally:
-                self.fill_cache_lock.release()
                 return True
 
         def on_done(filled_caches: bool) -> None:
@@ -917,8 +902,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         def on_error(packed_error_info) -> None:
             custom_exception_handler(*packed_error_info)
 
-        self.append_thread(
-            TaskThread(enable_threading=enable_threading).add_and_start(do, on_success, on_done, on_error)
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=on_done,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}refresh_caches_and_ui_lists",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
         )
 
     def _create_send_tab(
@@ -947,7 +937,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def create_psbt(self, txinfos: TxUiInfos) -> None:
 
-        def do() -> Union[TxBuilderInfos, Exception]:
+        async def do() -> Union[TxBuilderInfos, Exception]:
             try:
                 return self.wallet.create_psbt(txinfos)
             except Exception as e:
@@ -995,7 +985,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         def on_error(packed_error_info) -> None:
             self.wallet_signals.finished_psbt_creation.emit()
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=on_done,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}create_psbt",
+            multiple_strategy=MultipleStrategy.QUEUE,
+        )
 
     def get_wallet(self) -> Wallet:
         return self.wallet
@@ -1266,7 +1263,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_on_change_sync_status.emit(new)
         QApplication.processEvents()
 
-    def _sync(self) -> Any:
+    async def _sync(self) -> Any:
         self.wallet.sync()
 
     def _sync_on_done(self, result) -> None:
@@ -1329,10 +1326,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.set_sync_status(SyncStatus.syncing)
 
         self._last_syncing_start = datetime.datetime.now()
-        self.append_thread(
-            TaskThread().add_and_start(
-                self._sync, self._sync_on_success, self._sync_on_done, self._sync_on_error
-            )
+
+        self.loop_in_thread.run_task(
+            self._sync(),
+            on_done=self._sync_on_done,
+            on_success=self._sync_on_success,
+            on_error=self._sync_on_error,
+            key=f"{id(self)}sync",
+            multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
         )
 
     def get_editable_protowallet(self) -> ProtoWallet:

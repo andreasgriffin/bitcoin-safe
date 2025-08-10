@@ -385,7 +385,7 @@ class FeeGroup(QObject):
             url = "https://learnmeabitcoin.com/technical/transaction/fee/#rbf"
             self.rbf_fee_label.setText(
                 (
-                    self.tr("{rbf} min.: {rate}").format(
+                    self.tr("{rbf} min: {rate}").format(
                         rate=fee_rate,
                         rbf=link(url, "RBF"),
                     )

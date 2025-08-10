@@ -41,6 +41,7 @@ from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
@@ -61,7 +62,6 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import filename_clean
@@ -551,7 +551,7 @@ class HorizontalImportExportGroups(QWidget):
         self.group_seed.setVisible(False)
 
 
-class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
+class ExportDataSimple(HorizontalImportExportGroups):
     signal_set_qr_images: TypedPyQtSignal[List[str]] = pyqtSignal(list)  # type: ignore
     signal_close = pyqtSignal()
     signal_show = pyqtSignal()
@@ -568,7 +568,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         enable_file=True,
         enable_usb=True,
         enable_clipboard=True,
-        threading_parent: ThreadingManager | None = None,
+        loop_in_thread: LoopInThread | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
         super().__init__(
@@ -577,8 +577,8 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             enable_file=enable_file,
             enable_usb=enable_usb,
             enable_clipboard=enable_clipboard,
-            threading_parent=threading_parent,
         )
+        self.loop_in_thread = loop_in_thread
         self.network = network
         self.sync_tabs = sync_tabs if sync_tabs else {}
         self.signals_min = signals_min
@@ -765,7 +765,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
             return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
 
     def lazy_load_qr(self, data: Data) -> None:
-        def do() -> Any:
+        async def do() -> Any:
             fragments = self.generate_qr_fragments(data=data)
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
@@ -784,7 +784,15 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
                 # self.qr_label can reference a destroyed c++ object
                 self.signal_set_qr_images.emit(result)
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        if self.loop_in_thread:
+            self.loop_in_thread.run_task(
+                do(),
+                on_done=on_done,
+                on_success=on_success,
+                on_error=on_error,
+                key=f"{id(self)}lazy_load_qr",
+                multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+            )
 
     def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> Optional[str]:
         if not isinstance(self.data.data, bdk.Descriptor):
@@ -820,7 +828,7 @@ class QrToolButton(QToolButton):
         data: Data,
         network: bdk.Network,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         parent: QWidget | None = None,
         button_prefix: str = "",
         wallet_name: str = "MultiSig",
@@ -836,7 +844,7 @@ class QrToolButton(QToolButton):
             enable_file=False,
             enable_qr=True,
             network=network,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             wallet_name=wallet_name,
         )
         self.export_qr_widget.set_minimum_size_as_floating_window()

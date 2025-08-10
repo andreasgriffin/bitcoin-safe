@@ -34,6 +34,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -68,7 +69,6 @@ from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -158,7 +158,7 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
         self.icon_label.setText("")
 
 
-class UITx_Viewer(UITx_Base, ThreadingManager):
+class UITx_Viewer(UITx_Base):
     signal_updated_content: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
     signal_edit_tx: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
@@ -175,7 +175,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         fee_info: FeeInfo | None = None,
         chain_position: bdk.ChainPosition | None = None,
         parent=None,
-        threading_parent: ThreadingManager | None = None,
         focus_ui_element: UiElements = UiElements.none,
     ) -> None:
         super().__init__(
@@ -184,7 +183,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             config=config,
             signals=signals,
             mempool_manager=mempool_manager,
-            threading_parent=threading_parent,
         )
         self.focus_ui_element = focus_ui_element
         self.data = data
@@ -316,7 +314,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             data=self.data,
             network=self.network,
             signals_min=self.signals,
-            threading_parent=self,
+            loop_in_thread=self.loop_in_thread,
             parent=self,
             sync_tabs=self.get_synctabs(),
         )
@@ -332,7 +330,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             self.buttonBox,
             "",
             button_info(ButtonInfoType.edit).icon,
-            on_clicked=self.edit,
+            on_clicked=partial(self.edit, None),
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_rbf = add_to_buttonbox(
@@ -657,22 +655,10 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
         if self.data.data_type == DataType.PSBT:
             self.set_psbt(self.data.data, fee_info=self.fee_info)
-
-            # TODO: Check if I can remove the threading here. Or if it becomes too slow for big transactions
-            def do() -> bdk.Transaction | None:
-                if not isinstance(self.data.data, bdk.Psbt):
-                    return None
+            if isinstance(self.data.data, bdk.Psbt):
                 result = self.data.data.finalize()
-                return result.psbt.extract_tx() if result.could_finalize else None
-
-            def on_done(result) -> None:
-                pass
-
-            def on_error(packed_error_info) -> None:
-                pass
-
-            def on_success(finalized_tx: bdk.Transaction) -> None:
-                if finalized_tx and isinstance(self.data.data, bdk.Psbt):
+                finalized_tx = result.psbt.extract_tx() if result.could_finalize else None
+                if finalized_tx:
                     assert (
                         finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid()
                     ), "error. The txid should not be changed during finalizing/reloading"
@@ -682,8 +668,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                         chain_position=self.chain_position,
                     )
                     return
-
-            self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
         elif self.data.data_type == DataType.Tx:
             self.set_tx(
@@ -953,7 +937,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             psbt=self.data.data,
             network=self.network,
             signals=self.signals,
-            threading_parent=self,
+            loop_in_thread=self.loop_in_thread,
         )
 
         self.tx_singning_steps_container_layout.addWidget(tx_singning_steps)
@@ -1059,7 +1043,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
                     continue
                 all_addresses.add(address)
 
-        def do() -> Any:
+        async def do() -> Any:
             start_time = time()
             poisonous_matches = AddressComparer.poisonous(all_addresses)
             logger.debug(
@@ -1076,7 +1060,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.error(f"AddressComparer error {packed_error_info}")
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=on_done,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}set_poisoning_warning_bar",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
         "This only should be done for tx, not psbt, since the PSBT.extract_tx size is too low"
@@ -1203,7 +1194,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         txo_dict: Dict[str, PythonUtxo] | None = None,
     ):
 
-        def do() -> bool:
+        async def do() -> bool:
             try:
                 return self.column_sankey.sankey_bitcoin.set_tx(tx, fee_info=fee_info, txo_dict=txo_dict)
             except Exception as e:
@@ -1219,7 +1210,14 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=on_done,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}set_sankey",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def set_tab_focus(self, focus_ui_element: UiElements):
         self.focus_ui_element = focus_ui_element
@@ -1352,7 +1350,6 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
 
     def close(self):
         self.column_sankey.close()
-        self.end_threading_manager()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)

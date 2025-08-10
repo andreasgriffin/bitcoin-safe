@@ -133,9 +133,14 @@ class TxTools:
         else:
             txinfos.fee_rate = fee_rate
 
+        categories = wallet.get_categories_for_txid(tx_details.txid)
         txinfos.recipients = [
             Recipient(
-                address=str(wallet.get_address().address),
+                address=str(
+                    wallet.get_unused_category_address(
+                        category=categories[0] if categories else wallet.labels.default_category
+                    ).address
+                ),
                 label=translate("tx", "Speedup of {txid}").format(txid=short_tx_id(tx_details.txid)),
                 checked_max_amount=True,
                 amount=0,

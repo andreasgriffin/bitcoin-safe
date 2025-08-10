@@ -39,6 +39,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
     convert_to_multipath_descriptor,
     is_valid_descriptor,
 )
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -62,7 +63,6 @@ from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWid
 from bitcoin_safe.gui.qt.util import Message, MessageType, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import Signals, SignalsMin
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
@@ -81,7 +81,7 @@ class DescriptorExport(QDialog):
         signals_min: SignalsMin,
         network: bdk.Network,
         parent=None,
-        threading_parent: ThreadingManager | None = None,
+        loop_in_thread: LoopInThread | None = None,
         wallet_id: str = "MultiSig",
     ):
         super().__init__(parent)
@@ -96,7 +96,7 @@ class DescriptorExport(QDialog):
             enable_clipboard=False,
             enable_usb=False,
             network=network,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             wallet_name=wallet_id,
         )
         self.export_widget.set_minimum_size_as_floating_window()
@@ -117,18 +117,18 @@ class DescriptorInputField(AnalyzerTextEdit):
         return size
 
 
-class DescriptorEdit(ThreadingManager, QWidget):
+class DescriptorEdit(QWidget):
     signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
     def __init__(
         self,
         network: bdk.Network,
         signals: Signals,
-        threading_parent: ThreadingManager,
+        loop_in_thread: LoopInThread,
         wallet: Optional[Wallet] = None,
         signal_update: TypedPyQtSignalNo | None = None,
     ) -> None:
-        super().__init__(threading_parent=threading_parent)
+        super().__init__()
         self.edit = ButtonEdit(
             input_field=DescriptorInputField(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
@@ -137,6 +137,7 @@ class DescriptorEdit(ThreadingManager, QWidget):
             close_all_video_widgets=signals.close_all_video_widgets,
             parent=self,
         )
+        self.loop_in_thread = loop_in_thread
         self._dialog: QWidget | None = None
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
 
@@ -301,7 +302,7 @@ class DescriptorEdit(ThreadingManager, QWidget):
                 signals_min=self.signals,
                 parent=self,
                 network=self.network,
-                threading_parent=self,
+                loop_in_thread=self.loop_in_thread,
                 wallet_id=self.wallet.id if self.wallet is not None else "Multisig",
             )
             self._dialog.show()
@@ -312,7 +313,7 @@ class DescriptorEdit(ThreadingManager, QWidget):
             return
 
     def close(self):
-        self.end_threading_manager()
+        self.loop_in_thread.stop()
         self.edit.close()
         self.signal_tracker.disconnect_all()
         if self._temp_bitcoin_video_widget:
@@ -337,7 +338,7 @@ class DescriptorEdit(ThreadingManager, QWidget):
 
         self._hardware_signer_interaction = RegisterMultisigInteractionWidget(
             wallet=self.wallet,
-            threading_parent=self,
+            loop_in_thread=self.loop_in_thread,
             wallet_name=self.wallet.id,
             signals=self.signals,
         )

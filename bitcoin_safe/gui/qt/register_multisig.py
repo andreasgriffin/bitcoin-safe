@@ -31,6 +31,7 @@ import logging
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
@@ -38,7 +39,6 @@ from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         self,
         signals: Signals | None,
         wallet: Wallet | None,
-        threading_parent: ThreadingManager,
+        loop_in_thread: LoopInThread,
         parent: QWidget | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
@@ -74,7 +74,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 data=data,
                 signals_min=self.signals,
                 network=self.wallet.network,
-                threading_parent=threading_parent,
+                loop_in_thread=loop_in_thread,
                 parent=self,
                 wallet_name=wallet_name,
             )

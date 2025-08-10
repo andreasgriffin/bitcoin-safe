@@ -41,4 +41,7 @@ class AttachedWidgets(deque):
         for widget in list(self):
             if isinstance(widget, cls):
                 widget.close()
-                self.remove(widget)
+                try:
+                    self.remove(widget)
+                except:
+                    pass

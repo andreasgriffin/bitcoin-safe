@@ -31,6 +31,7 @@ import logging
 from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import DataGroupBox, HorizontalImportExportGroups
@@ -46,7 +47,6 @@ from bitcoin_safe.signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from bitcoin_safe.threading_manager import ThreadingManager
 
 logger = logging.getLogger(__name__)
 
@@ -95,8 +95,8 @@ class TxSigningSteps(StepProgressContainer):
         psbt: bdk.Psbt,
         network: bdk.Network,
         signals: Signals,
+        loop_in_thread: LoopInThread,
         parent: QWidget | None = None,
-        threading_parent: ThreadingManager | None = None,
     ) -> None:
         step_labels = []
         self.sub_indices: List[int] = []
@@ -109,7 +109,7 @@ class TxSigningSteps(StepProgressContainer):
             parent=parent,
             use_resizing_stacked_widget=False,
             signals_min=signals,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
         )
 
         self.psbt = psbt
@@ -190,7 +190,7 @@ class TxSigningSteps(StepProgressContainer):
                 psbt=self.psbt,
                 network=self.network,
                 signals_min=self.signals_min,
-                threading_parent=self.threading_parent,
+                loop_in_thread=self.loop_in_thread,
                 signature_importers=signature_importers,
                 sync_tabs={
                     wallet_id: qt_wallet.sync_tab

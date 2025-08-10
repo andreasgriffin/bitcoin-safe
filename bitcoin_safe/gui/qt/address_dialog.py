@@ -32,6 +32,7 @@ import typing
 
 import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
@@ -53,7 +54,6 @@ from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import set_no_margins, svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool_manager import MempoolManager
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...descriptors import get_address_bip32_path
@@ -74,7 +74,7 @@ class AddressDetailsAdvanced(QWidget):
         address_path_str: str,
         close_all_video_widgets: TypedPyQtSignalNo,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
@@ -118,7 +118,7 @@ class AddressDetailsAdvanced(QWidget):
             close_all_video_widgets=close_all_video_widgets,
             parent=self,
             grid_layout=form_layout,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             signals_min=signals_min,
         )
 
@@ -171,7 +171,7 @@ class AddressDialog(QWidget):
         wallet: Wallet,
         address: str,
         mempool_manager: MempoolManager,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         parent=None,
     ) -> None:
         super().__init__(parent, Qt.WindowType.Window)
@@ -228,7 +228,7 @@ class AddressDialog(QWidget):
                 kind=address_info.keychain,
                 address_index=address_info.index,
                 signals_min=self.signals,
-                threading_parent=threading_parent,
+                loop_in_thread=loop_in_thread,
             )
             if address_info
             else None

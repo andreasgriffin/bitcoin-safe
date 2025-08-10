@@ -32,6 +32,7 @@ from collections import defaultdict
 from typing import Dict, List, Set
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from PyQt6.QtWidgets import QVBoxLayout
 
@@ -69,6 +70,7 @@ class UITx_Base(SearchableTab):
         super().__init__(parent=parent, **kwargs)
         self.fx = fx
         self.signal_tracker = SignalTracker()
+        self.loop_in_thread = LoopInThread()
         self.signals = signals
         self.mempool_manager = mempool_manager
         self.config = config
@@ -209,3 +211,7 @@ class UITx_Base(SearchableTab):
             force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in recipients.recipients]),
             tx_status=tx_status,
         )
+
+    def close(self) -> bool:
+        self.loop_in_thread.stop()
+        return super().close()
