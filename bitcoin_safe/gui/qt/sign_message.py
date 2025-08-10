@@ -32,6 +32,7 @@ import typing
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QWidget
@@ -42,7 +43,6 @@ from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import SignalsMin, TypedPyQtSignal
@@ -60,7 +60,7 @@ class SignMessage(QWidget):
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: TypedPyQtSignalNo,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         parent: typing.Optional["QWidget"],
         grid_layout: QGridLayout | None = None,
     ) -> None:
@@ -97,7 +97,7 @@ class SignMessage(QWidget):
             data=self.get_data(),
             signals_min=signals_min,
             network=network,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             parent=self,
         )
         self.sign_qr_button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)

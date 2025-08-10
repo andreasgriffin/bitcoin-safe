@@ -32,6 +32,7 @@ from typing import Iterable
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGroupBox, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
 
@@ -48,7 +49,6 @@ from bitcoin_safe.signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from bitcoin_safe.threading_manager import ThreadingManager
 
 from ...signals import SignalsMin
 from .sync_tab import SyncTab
@@ -62,7 +62,7 @@ class HorizontalImportExportQR(QGroupBox):
         psbt: bdk.Psbt,
         network: bdk.Network,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         signature_importers: Iterable[SignatureImporterQR],
         parent: QWidget | None = None,
     ) -> None:
@@ -76,7 +76,7 @@ class HorizontalImportExportQR(QGroupBox):
             data=Data.from_psbt(psbt, network=network),
             network=network,
             signals_min=signals_min,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
             parent=parent,
             button_prefix="1. ",
         )
@@ -233,7 +233,7 @@ class HorizontalImportExportAll(QWidget):
         network: bdk.Network,
         sync_tabs: dict[str, SyncTab] | None,
         signals_min: SignalsMin,
-        threading_parent: ThreadingManager | None,
+        loop_in_thread: LoopInThread | None,
         signature_importers: Iterable[AbstractSignatureImporter],
         parent: QWidget | None = None,
     ) -> None:
@@ -252,7 +252,7 @@ class HorizontalImportExportAll(QWidget):
                 psbt=psbt,
                 network=network,
                 signals_min=signals_min,
-                threading_parent=threading_parent,
+                loop_in_thread=loop_in_thread,
                 signature_importers=qr_signers,
             )
             if qr_signers

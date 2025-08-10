@@ -36,8 +36,9 @@ from math import ceil
 from typing import Callable, Dict, List, Optional
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -74,7 +75,6 @@ from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import Wallet
 from bitcoin_safe.wallet_util import signer_name
@@ -260,16 +260,12 @@ class TabInfo:
         self.max_test_fund = max_test_fund
 
 
-class BaseTab(QObject, ThreadingManager):
-    def __init__(self, refs: TabInfo, threading_parent: ThreadingManager | None = None) -> None:
+class BaseTab(QObject):
+    def __init__(self, refs: TabInfo, loop_in_thread: LoopInThread) -> None:
         self.refs = refs
-        self.threading_parent = (
-            threading_parent
-            if threading_parent
-            else (self.refs.qt_wallet if self.refs.qt_wallet else self.refs.qtwalletbase)
-        )
-        super().__init__(parent=refs.container, threading_parent=self.threading_parent)  # type: ignore
+        super().__init__(parent=refs.container)
 
+        self.loop_in_thread = loop_in_thread
         self.signal_tracker = SignalTracker()
         self.buttonbox, self.buttonbox_buttons = create_button_box(
             self.refs.go_to_next_index,
@@ -325,9 +321,7 @@ class BaseTab(QObject, ThreadingManager):
     def close(self):
         self.signal_tracker.disconnect_all()
         self.setParent(None)
-        self.end_threading_manager()
         del self.refs
-        SignalTools.disconnect_all_signals_from(self)
 
 
 class BuyHardware(BaseTab):
@@ -1032,7 +1026,7 @@ class RegisterMultisig(BaseTab):
 
             hardware_signer_interaction = RegisterMultisigInteractionWidget(
                 wallet=self.refs.qt_wallet.wallet if self.refs.qt_wallet else None,
-                threading_parent=self,
+                loop_in_thread=self.loop_in_thread,
                 parent=widget,
                 signals=self.refs.qt_wallet.signals if self.refs.qt_wallet else None,
                 wallet_name=self.refs.qt_wallet.wallet.id if self.refs.qt_wallet else "Multisig",
@@ -1296,9 +1290,9 @@ class SendTest(BaseTab):
         test_number: int,
         tx_text: str,
         refs: TabInfo,
-        threading_parent: ThreadingManager | None = None,
+        loop_in_thread: LoopInThread,
     ) -> None:
-        super().__init__(refs, threading_parent=threading_parent)
+        super().__init__(refs, loop_in_thread=loop_in_thread)
         self.test_label = test_label
         self.test_number = test_number
         self.tx_text = tx_text
@@ -1422,7 +1416,7 @@ class Wizard(WizardBase):
         super().__init__(
             step_labels=[""] * 3,
             signals_min=qtwalletbase.signals,
-            threading_parent=qt_wallet if qt_wallet else qtwalletbase,
+            loop_in_thread=qt_wallet.loop_in_thread if qt_wallet else qtwalletbase.loop_in_thread,
         )  # initialize with 3 steps (doesnt matter)
         logger.debug(f"__init__ {self.__class__.__name__}")
         self.qtwalletbase = qtwalletbase
@@ -1457,20 +1451,18 @@ class Wizard(WizardBase):
         )
 
         self.tab_generators: Dict[TutorialStep, BaseTab] = {
-            TutorialStep.buy: BuyHardware(refs=refs, threading_parent=self.step_container),
-            TutorialStep.sticker: StickerTheHardware(refs=refs, threading_parent=self.step_container),
-            TutorialStep.generate: GenerateSeed(refs=refs, threading_parent=self.step_container),
-            TutorialStep.import_xpub: ImportXpubs(refs=refs, threading_parent=self.step_container),
-            TutorialStep.backup_seed: BackupSeed(refs=refs, threading_parent=self.step_container),
+            TutorialStep.buy: BuyHardware(refs=refs, loop_in_thread=self.loop_in_thread),
+            TutorialStep.sticker: StickerTheHardware(refs=refs, loop_in_thread=self.loop_in_thread),
+            TutorialStep.generate: GenerateSeed(refs=refs, loop_in_thread=self.loop_in_thread),
+            TutorialStep.import_xpub: ImportXpubs(refs=refs, loop_in_thread=self.loop_in_thread),
+            TutorialStep.backup_seed: BackupSeed(refs=refs, loop_in_thread=self.loop_in_thread),
         }
         if n > 1:
             self.tab_generators[TutorialStep.register] = RegisterMultisig(
-                refs=refs, threading_parent=self.step_container
+                refs=refs, loop_in_thread=self.loop_in_thread
             )
 
-        self.tab_generators[TutorialStep.receive] = ReceiveTest(
-            refs=refs, threading_parent=self.step_container
-        )
+        self.tab_generators[TutorialStep.receive] = ReceiveTest(refs=refs, loop_in_thread=self.loop_in_thread)
 
         for test_number, tutoral_step in enumerate(self.get_send_tests_steps()):
             self.tab_generators[tutoral_step] = SendTest(
@@ -1478,13 +1470,13 @@ class Wizard(WizardBase):
                 test_number=test_number,
                 tx_text=self.tx_text(test_number),
                 refs=refs,
-                threading_parent=self.step_container,
+                loop_in_thread=self.loop_in_thread,
             )
 
         self.tab_generators[TutorialStep.distribute] = DistributeSeeds(
-            refs=refs, threading_parent=self.step_container
+            refs=refs, loop_in_thread=self.loop_in_thread
         )
-        self.tab_generators[TutorialStep.sync] = LabelBackup(refs=refs, threading_parent=self.step_container)
+        self.tab_generators[TutorialStep.sync] = LabelBackup(refs=refs, loop_in_thread=self.loop_in_thread)
 
         self.max_test_fund = max_test_fund
 

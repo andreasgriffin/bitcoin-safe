@@ -778,6 +778,11 @@ class SidebarTree(QWidget, Generic[TT]):
         self.v_layout.addStretch()
         self.scroll_area.setWidget(self.container)
 
+        # make the container itself emit customContextMenuRequested
+        self.container.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.container.customContextMenuRequested.connect(self._on_context_menu_requested)
+        self.scroll_area.setWidget(self.container)
+
         # --- NEW: Wrap the left side in a QWidget with a QVBoxLayout
         #          so other widgets (e.g., a SearchTreeView) can be inserted above the sidebar
         self.left_panel = QWidget(self)

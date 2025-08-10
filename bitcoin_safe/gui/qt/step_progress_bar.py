@@ -34,6 +34,7 @@ from functools import partial
 from math import ceil
 from typing import Callable, List, Optional, Union
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -62,7 +63,6 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.util import create_button_box
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from .util import set_margins, svg_tools
@@ -446,7 +446,7 @@ class AutoResizingStackedWidget(QWidget):
         return self.widgets.index(widget) if widget in self.widgets else -1
 
 
-class StepProgressContainer(ThreadingManager, QWidget):
+class StepProgressContainer(QWidget):
     signal_set_current_widget: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
     signal_widget_focus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
     signal_widget_unfocus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
@@ -455,6 +455,7 @@ class StepProgressContainer(ThreadingManager, QWidget):
         self,
         step_labels: List[str],
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         current_index: int = 0,
         collapsible_current_active=False,
         clickable=True,
@@ -462,10 +463,12 @@ class StepProgressContainer(ThreadingManager, QWidget):
         parent=None,
         sub_indices: List[int] | None = None,
         use_resizing_stacked_widget=True,
-        threading_parent: ThreadingManager | None = None,
         hide_steps_if_only_1=True,
     ) -> None:
-        super().__init__(parent=parent, threading_parent=threading_parent)
+        super().__init__(
+            parent=parent,
+        )
+        self.loop_in_thread = loop_in_thread
         self.signals_min = signals_min
         self.step_bar = StepProgressBar(
             len(step_labels),
@@ -623,7 +626,6 @@ class StepProgressContainer(ThreadingManager, QWidget):
             self.signal_widget_focus.emit(widget)
 
     def close(self) -> bool:
-        self.end_threading_manager()
         self.clear_widgets()
         return super().close()
 
@@ -738,6 +740,7 @@ class StepProgressContainerWithButtons(StepProgressContainer):
         self,
         step_labels: List[str],
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         current_index: int = 0,
         collapsible_current_active=False,
         clickable=True,
@@ -745,7 +748,6 @@ class StepProgressContainerWithButtons(StepProgressContainer):
         parent=None,
         sub_indices: List[int] | None = None,
         use_resizing_stacked_widget=True,
-        threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
             signals_min=signals_min,
@@ -757,7 +759,7 @@ class StepProgressContainerWithButtons(StepProgressContainer):
             parent=parent,
             sub_indices=sub_indices,
             use_resizing_stacked_widget=use_resizing_stacked_widget,
-            threading_parent=threading_parent,
+            loop_in_thread=loop_in_thread,
         )
 
         for i in range(len(step_labels)):
@@ -806,6 +808,7 @@ if __name__ == "__main__":
     class DemoApp(QWidget):
         def __init__(self) -> None:
             super().__init__()
+            loop_in_thread = LoopInThread()
 
             # Create the StepProgressContainer with the desired steps
             self.step_progress_container = StepProgressContainerWithButtons(
@@ -813,7 +816,7 @@ if __name__ == "__main__":
                 current_index=1,
                 sub_indices=[0, 2],
                 signals_min=SignalsMin(),
-                threading_parent=None,
+                loop_in_thread=loop_in_thread,
             )
             self.step_progress_container.step_bar.set_enumeration_alphabet(["1.1", "1", "2.1", "2"])
 

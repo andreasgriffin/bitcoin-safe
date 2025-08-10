@@ -28,19 +28,6 @@
 
 
 
-### Fully featured - Easy and Powerful
-
-| **Multisig setup wizard**          | **Create a PSBT, sign and broadcast**                     |
-|--------------------------------|----------------------------|
-| ![](docs/multisig-setup.gif) |  ![](docs/send.gif) |
-| **Transaction exploring via a diagram**          | **Type-to-search in all wallets**                    |
-| ![](docs/explorer.gif) |  ![](docs/global-search.gif) |
-|   **Automatic Label Synchronization**      | **Multiparty Multisig collaboration**                  |
-| ![](docs/label-sync.gif)  |   ![](docs/psbt-share.gif) |
-|   **Coin Categories**      |                 |
-| ![](docs/category-drag-and-drop.gif)  |   |
-
-
 
 ### Available on all platforms
 | ![Windows](docs/tx-win.png) | ![Mac OS X](docs/tx-mac.png) | ![Linux](docs/tx-linux.png) |

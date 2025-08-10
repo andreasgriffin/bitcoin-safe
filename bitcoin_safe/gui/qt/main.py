@@ -44,6 +44,7 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import (
     DecodingException,
 )
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_usb.tool_gui import ToolGui
@@ -107,7 +108,6 @@ from bitcoin_safe.p2p.p2p_client import ConnectionInfo, Peer
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
-from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util_os import show_file_in_explorer, webopen, xdg_open_file
 
@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
         self.password_cache = PasswordCache()
 
         self.signals = Signals()
-        self.threading_manager = ThreadingManager(threading_manager_name=self.__class__.__name__)
+        self.loop_in_thread = LoopInThread()
 
         self.fx = FX(config=self.config)
         self.fx.signal_data_updated.connect(self.update_fx_rate_in_config)
@@ -349,7 +349,7 @@ class MainWindow(QMainWindow):
 
         # 1) Configure QSettings to use your app’s name/org
         self.qsettings = QSettings(
-            str(self.config.window_properties_config_file.absolute()), QSettings.Format.NativeFormat, self
+            str(self.config.window_properties_config_file.absolute()), QSettings.Format.IniFormat, self
         )
 
         # 2) Restore geometry (size+pos) if we saved it before
@@ -409,7 +409,7 @@ class MainWindow(QMainWindow):
 
         self.update_notification_bar = UpdateNotificationBar(
             signals_min=self.signals,
-            threading_parent=self.threading_manager,
+            loop_in_thread=self.loop_in_thread,
             proxies=(
                 ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
                 if self.config.network_config.proxy_url
@@ -996,7 +996,7 @@ class MainWindow(QMainWindow):
             qt_wallet.signals,
             parent=self,
             network=self.config.network,
-            threading_parent=self.threading_manager,
+            loop_in_thread=self.loop_in_thread,
             wallet_id=qt_wallet.wallet.id,
         )
         self.attached_widgets.append(d)
@@ -1296,7 +1296,6 @@ class MainWindow(QMainWindow):
             client=self.get_client_of_any_wallet(),
             data=data,
             parent=self,
-            threading_parent=self.threading_manager,
             focus_ui_element=focus_ui_element,
         )
 
@@ -1424,7 +1423,6 @@ class MainWindow(QMainWindow):
             client=self.get_client_of_any_wallet(),
             data=data,
             parent=self,
-            threading_parent=self.threading_manager,
         )
 
         self.tab_wallets.root.addChildNode(
@@ -1489,7 +1487,6 @@ class MainWindow(QMainWindow):
                     signals=self.signals,
                     mempool_manager=self.mempool_manager,
                     fx=self.fx,
-                    threading_parent=self.threading_manager,
                 )
             except Exception as e:
                 return e
@@ -1605,7 +1602,6 @@ class MainWindow(QMainWindow):
             self.fx,
             file_path=file_path,
             password=password,
-            threading_parent=self.threading_manager,
             tutorial_index=tutorial_index,
         )
 
@@ -1677,7 +1673,6 @@ class MainWindow(QMainWindow):
             config=self.config,
             signals=self.signals,
             protowallet=protowallet,
-            threading_parent=self.threading_manager,
         )
 
         qt_protowallet.tabs.setIcon(svg_tools.get_QIcon("file.svg"))
@@ -1881,7 +1876,7 @@ class MainWindow(QMainWindow):
             address=addr,
             mempool_manager=self.mempool_manager,
             parent=parent,
-            threading_parent=self.threading_manager,
+            loop_in_thread=self.loop_in_thread,
         )
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         self.attached_widgets.append(d)
@@ -1939,6 +1934,8 @@ class MainWindow(QMainWindow):
             self._remove_qt_wallet(qt_wallet)
 
     def close_tab(self, node: SidebarNode[TT]) -> None:
+        if not node.closable and not node.widget == self.welcome_screen:
+            return
         tab_data = node.data
         if isinstance(tab_data, QTWallet):
             if not question_dialog(
@@ -1971,11 +1968,6 @@ class MainWindow(QMainWindow):
         node.removeNode()
         del node.data
 
-        if isinstance(tab_data, ThreadingManager):
-            # this is necessary to ensure the closeevent
-            # and with it the thread cleanup is called
-            tab_data.end_threading_manager()
-
         # other events
         self.event_wallet_tab_closed()
 
@@ -2001,7 +1993,7 @@ class MainWindow(QMainWindow):
 
         self.mempool_manager.close()
         self.fx.close()
-        self.threading_manager.end_threading_manager()
+        self.loop_in_thread.stop()
         self.remove_all_qt_wallet()
         if self.p2p_listener:
             self.p2p_listener.stop()
@@ -2017,6 +2009,7 @@ class MainWindow(QMainWindow):
         # 3) On close, save both geometry and (optionally) window state
         self.qsettings.setValue("window/geometry", self.saveGeometry())
         self.qsettings.setValue("window/state", self.saveState())
+        self.qsettings.sync()
 
         logger.info(f"Finished close handling of {self.__class__.__name__}")
         super().closeEvent(a0)

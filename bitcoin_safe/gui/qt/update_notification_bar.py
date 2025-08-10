@@ -35,6 +35,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from packaging import version
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
@@ -42,7 +43,6 @@ from PyQt6.QtWidgets import QHBoxLayout, QWidget
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
 from ...html_utils import html_f
@@ -58,7 +58,7 @@ from .util import Message, MessageType, set_margins
 logger = logging.getLogger(__name__)
 
 
-class UpdateNotificationBar(NotificationBar, ThreadingManager):
+class UpdateNotificationBar(NotificationBar):
     signal_on_success: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
 
     key = KnownGPGKeys.andreasgriffin
@@ -66,9 +66,9 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
     def __init__(
         self,
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         proxies: Dict | None,
         parent=None,
-        threading_parent: ThreadingManager | None = None,
     ) -> None:
         self.proxies = proxies
         super().__init__(
@@ -77,8 +77,8 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             callback_optional_button=self.check,
             has_close_button=True,
             parent=parent,
-            threading_parent=threading_parent,
         )
+        self.loop_in_thread = loop_in_thread
         self.signals_min = signals_min
         refresh_icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.optionalButton.setIcon(refresh_icon)
@@ -217,7 +217,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         return filtered_assets
 
     def check(self) -> None:
-        def do() -> Any:
+        async def do() -> Any:
             return GitHubAssetDownloader(self.key.repository, proxies=self.proxies).get_assets_latest()
 
         def on_done(result) -> None:
@@ -233,7 +233,14 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
         def on_error(packed_error_info) -> None:
             logger.error(f"error in fetching update info {packed_error_info}")
 
-        self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=on_done,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}lazy_load_qr",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def check_and_make_visible(self) -> None:
         self.check()

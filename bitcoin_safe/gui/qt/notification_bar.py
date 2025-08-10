@@ -59,9 +59,8 @@ class NotificationBar(QWidget):
         callback_optional_button: Optional[Callable] = None,
         has_close_button: bool = True,
         parent=None,
-        **kwargs,
     ) -> None:
-        super().__init__(parent, **kwargs)
+        super().__init__(parent)
         self._layout = QHBoxLayout(self)
         self.color: QColor | None = None
         self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
