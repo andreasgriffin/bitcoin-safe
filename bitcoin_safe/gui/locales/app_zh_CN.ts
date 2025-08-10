@@ -881,8 +881,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rbf} min.: {rate}</source>
-			<translation>{rbf} 最低：{rate}</translation>
+			<source>{rbf} min: {rate}</source>
+			<translation>{rbf} 最小值：{rate}</translation>
 		</message>
 	</context>
 	<context>

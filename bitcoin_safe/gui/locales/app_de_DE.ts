@@ -888,8 +888,8 @@ Klicken Sie hier, um mehr über RBF (Replace‑by‑Fee) zu erfahren.</translati
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>{rbf} min.: {rate}</source>
-			<translation>{rbf} min.: {rate}</translation>
+			<source>{rbf} min: {rate}</source>
+			<translation>{rbf} Minimum: {rate}</translation>
 		</message>
 	</context>
 	<context>
