@@ -161,12 +161,13 @@ class SyncTab(ControlledGroupbox):
         self.signals.language_switch.connect(self.updateUi)
         self.backup_nsec_notificationbar.import_button.clicked.connect(self.import_nsec)
         self.checkbox.stateChanged.connect(self.on_checkbox_state_changed)
-        self.checkbox.clicked.connect(self.publish_key_if_clicked)
 
     def set_wallet_id(self, wallet_id: str):
         self.backup_nsec_notificationbar.wallet_id = wallet_id
 
     def on_checkbox_state_changed(self, value) -> None:
+        self.on_enable(self.enabled())
+
         if not self.checkbox.isChecked():
             return
         self.backup_nsec_notificationbar.set_nsec(
@@ -174,20 +175,17 @@ class SyncTab(ControlledGroupbox):
             wallet_id=self.backup_nsec_notificationbar.wallet_id,
         )
 
+        logger.info(
+            f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
+        )
+        self.nostr_sync.publish_my_key_in_protocol(force=True)
+
     def import_nsec(self):
         self.nostr_sync.ui.signal_set_keys.emit()
 
     @staticmethod
     def get_icon_basename(enabled: bool) -> str:
         return "bi--cloud.svg" if enabled else "bi--cloud-slash.svg"
-
-    def publish_key_if_clicked(self):
-        # just in case the relay lost the publish key message. I republish here
-        if self.checkbox.isChecked():
-            logger.info(
-                f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
-            )
-            self.nostr_sync.publish_my_key_in_protocol(force=True)
 
     @classmethod
     def get_checkbox_text(cls):
