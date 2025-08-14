@@ -52,7 +52,8 @@ class HeaderWidget(HeightSyncedWidget):
         set_no_margins(self._layout)
 
         self.h_laylout = QHBoxLayout()
-        set_no_margins(self._layout)
+        if platform.system().lower() == "darwin":
+            self.h_laylout.setSpacing(max(self.h_laylout.spacing(), 7))
         self.label_title = QLabel()
         self.icon = QLabel()
         self.icon_name = ""
