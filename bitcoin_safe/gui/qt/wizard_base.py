@@ -76,7 +76,10 @@ class WizardBase(QWidget):
 
         self.signal_tracker = SignalTracker()
         self.node = SidebarNode[object](
-            title=self.tr("Wizard"), data=self, widget=self, icon=svg_tools.get_QIcon("bi--stars.svg")
+            title=self.tr("Wizard"),
+            data=self,
+            widget=self,
+            icon=svg_tools.get_QIcon("bi--stars.svg"),
         )
 
     def set_visibilities(self) -> None:

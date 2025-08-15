@@ -617,6 +617,11 @@ class MainWindow(QMainWindow):
             )
             self.action_reveal_file_explorer.setShortcut(self.key_sequence_reveral_wallet_in_file_explorer)
 
+            menu.addSeparator()
+            self.context_menu_action_toggle_tutorial = menu.add_action(
+                self.menu_action_toggle_tutorial.text(), slot=self.toggle_tutorial
+            )
+
         menu.exec(position)
 
     def reveal_wallet_in_file_explorer(self, qt_wallet: QTWallet | None):
@@ -845,7 +850,7 @@ class MainWindow(QMainWindow):
         self.menu_settings.setTitle(self.tr("&Settings"))
         self.menu_action_settings_ui.setText(self.tr("&Settings"))
         self.menu_action_category_manager.setText(self.tr("&Manage Categories"))
-        self.menu_action_toggle_tutorial.setText(self.tr("&Show/Hide Tutorial"))
+        self.menu_action_toggle_tutorial.setText(self.tr("&Show/Hide Wizard"))
         languages = "&Languages"
         local_languages = self.tr("&Languages")
         if local_languages != languages:

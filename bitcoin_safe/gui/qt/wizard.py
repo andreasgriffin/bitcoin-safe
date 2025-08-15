@@ -1425,6 +1425,7 @@ class Wizard(WizardBase):
             qt_wallet.tutorial_index = max(qt_wallet.tutorial_index, TutorialStep.import_xpub.value)
 
         self.qtwalletbase.tabs.addChildNode(self.node)
+        self.node.setHidable(bool(self.qt_wallet))
 
         m, n = self.qtwalletbase.get_mn_tuple()
 
@@ -1496,6 +1497,7 @@ class Wizard(WizardBase):
 
         self.step_container.signal_set_current_widget.connect(self._save)
         self.signal_step_change.connect(self.qtwalletbase.set_tutorial_index)
+        self.node.hideClicked.connect(self.on_hide_clicked)
 
         self.updateUi()
         self.set_visibilities()
@@ -1505,6 +1507,9 @@ class Wizard(WizardBase):
             self.qtwalletbase.signals.wallet_signals[self.qt_wallet.wallet.id].updated.connect(
                 self.on_utxo_update
             )
+
+    def on_hide_clicked(self, obj: object):
+        self.toggle_tutorial()
 
     def _save(self, widget):
         if self.qt_wallet:

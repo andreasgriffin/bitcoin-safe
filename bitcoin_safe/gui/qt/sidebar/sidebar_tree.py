@@ -29,6 +29,7 @@
 
 import logging
 import sys
+from functools import partial
 from typing import Callable, Generic, List, Optional, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.util import is_dark_mode
@@ -203,8 +204,12 @@ class SidebarNode(QFrame, Generic[TT]):
 
     # PyQt only supports built-ins; use 'object' here to carry the node itself.
     closeClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
+    hideClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
     nodeSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
     nodeToggled = cast(TypedPyQtSignal[object, bool], pyqtSignal(object, bool))
+
+    close_icon_name = "close.svg"
+    hide_icon_name = "close.svg"
 
     def __init__(
         self,
@@ -214,6 +219,7 @@ class SidebarNode(QFrame, Generic[TT]):
         hide_header: bool = False,
         icon: Optional[QIcon] = None,
         closable: bool = False,
+        hidable: bool = False,
         collapsible: bool = True,
         auto_collapse_siblings: bool = False,
         show_expand_button: bool = False,
@@ -235,6 +241,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.widget = widget
         self.icon = icon
         self.closable = closable
+        self.hidable = hidable
         self.hide_header = hide_header
         self.collapsible = collapsible
         self.auto_collapse_siblings = auto_collapse_siblings
@@ -283,6 +290,10 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def setClosable(self, closable: bool) -> None:
         self.closable = closable
+        self._rebuild_trailing_buttons()
+
+    def setHidable(self, hidable: bool) -> None:
+        self.hidable = hidable
         self._rebuild_trailing_buttons()
 
     def setCollapsible(self, collapsible: bool) -> None:
@@ -470,9 +481,15 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.square_buttons.clear()
 
         if self.closable:
-            close_btn = FlatSquareButton(svg_tools.get_QIcon("close.svg"))
-            close_btn.clicked.connect(lambda: self.closeClicked.emit(self))
+            close_btn = FlatSquareButton(svg_tools.get_QIcon(self.close_icon_name))
+            close_btn.clicked.connect(partial(self.closeClicked.emit, self))
             self.header_row.add_square_button(close_btn)
+
+        if self.hidable:
+            hide_btn = FlatSquareButton(svg_tools.get_QIcon(self.hide_icon_name))
+            hide_btn.clicked.connect(partial(self.hideClicked.emit, self))
+            hide_btn.clicked.connect(partial(self.setVisible, False))
+            self.header_row.add_square_button(hide_btn)
 
         # Recreate toggle button if desired (order: ... [toggle])
         if self.show_expand_button and self.child_nodes and self.collapsible:
