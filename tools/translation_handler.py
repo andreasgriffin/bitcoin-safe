@@ -266,7 +266,7 @@ Content to translate:
 
         with open(translation_file, "r", encoding="utf-8") as f:
             for raw_line in f:
-                line = raw_line.rstrip("\n")
+                line = raw_line.replace("\\", "").rstrip("\n")
                 if not line:
                     continue
                 if line in self.languages:

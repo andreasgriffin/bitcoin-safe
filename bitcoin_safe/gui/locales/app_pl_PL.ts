@@ -3485,6 +3485,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>Ręczna instalacja reguł udev</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>Skopiuj i wklej poniższy skrypt w terminalu, aby zainstalować reguły udev:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>Uruchom ponownie komputer, aby zmiany odniosły skutek.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>Odblokuj urządzenia USB</translation>
 		</message>
@@ -3492,6 +3507,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Rejestrowanie portfeli multisig przez USB nie jest obsługiwane przez {device_type}. Użyj kart SD lub zeskanuj kod QR.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>Uruchom ponownie komputer</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3907,16 +3927,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Nie znaleziono odpowiedniego emulatora terminala.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>Uruchom ponownie komputer, aby zmiany odniosły skutek.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>Uruchom ponownie komputer</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

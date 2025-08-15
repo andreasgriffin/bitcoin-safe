@@ -3483,6 +3483,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>udev नियमों को मैन्युअल रूप से इंस्टॉल करें</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>कृपया udev नियम इंस्टॉल करने के लिए नीचे दिया गया स्क्रिप्ट टर्मिनल में कॉपी और पेस्ट करें:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>कृपया परिवर्तनों को लागू करने के लिए अपने कंप्यूटर को पुनरारंभ करें।  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>कृपया यूएसबी उपकरणों को अनलॉक करें  </translation>
 		</message>
@@ -3490,6 +3505,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB के माध्यम से मल्टीसिग वॉलेट्स का पंजीकरण {device_type} द्वारा समर्थित नहीं है। कृपया sd-कार्ड्स का उपयोग करें या QR कोड स्कैन करें। </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>कंप्यूटर पुनरारंभ करें  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3905,16 +3925,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>कृपया परिवर्तनों को लागू करने के लिए अपने कंप्यूटर को पुनरारंभ करें।  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>कंप्यूटर पुनरारंभ करें  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

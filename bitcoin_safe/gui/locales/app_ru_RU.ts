@@ -3483,6 +3483,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>Ручная установка правил udev</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>Скопируйте и вставьте следующий скрипт в терминал, чтобы установить правила udev:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>Пожалуйста, перезагрузите ваш компьютер, чтобы изменения вступили в силу.  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>Пожалуйста, разблокируйте USB устройства  </translation>
 		</message>
@@ -3490,6 +3505,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Регистрация мультиподписных кошельков через USB не поддерживается {device_type}. Пожалуйста, используйте sd-карты или отсканируйте QR-код.  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>Перезагрузить компьютер  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3905,16 +3925,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Не найден подходящий эмулятор терминала.  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>Пожалуйста, перезагрузите ваш компьютер, чтобы изменения вступили в силу.  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>Перезагрузить компьютер  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
