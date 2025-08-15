@@ -1626,8 +1626,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>&amp;Mostra/Amaga tutorial</translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;Mostra/Amaga l’assistent</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

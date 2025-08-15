@@ -1625,8 +1625,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>&amp;Afficher/Masquer le tutoriel  </translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;Afficher/Masquer l’assistant</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

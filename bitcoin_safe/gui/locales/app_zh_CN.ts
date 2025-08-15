@@ -1626,8 +1626,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>&amp;显示/隐藏教程</translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;显示/隐藏向导</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

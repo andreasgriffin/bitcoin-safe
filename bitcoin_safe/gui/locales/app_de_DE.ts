@@ -1550,7 +1550,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp; Export Wallet PDF</translation>
+			<translation>&amp;Export Wallet PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1639,8 +1639,8 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>Tutorial anzeigen/verbergen</translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;Assistent anzeigen/ausblenden</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1660,7 +1660,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Wallet</source>
-			<translation>&amp; Wallet</translation>
+			<translation>&amp;Wallet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
