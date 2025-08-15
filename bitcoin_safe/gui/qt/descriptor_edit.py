@@ -41,6 +41,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
 )
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
@@ -57,7 +58,6 @@ from bitcoin_safe.descriptors import from_multisig_wallet_export
 from bitcoin_safe.gui.qt.analyzers import DescriptorAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.util import Message, MessageType, do_copy, svg_tools

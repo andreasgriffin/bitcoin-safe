@@ -31,13 +31,13 @@ import logging
 from typing import Callable
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QPushButton
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.network_config import get_testnet_faucet
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.util_os import webopen
 
 from .util import adjust_bg_color_for_darkmode, svg_tools
 

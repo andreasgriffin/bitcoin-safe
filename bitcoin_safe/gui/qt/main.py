@@ -46,7 +46,9 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import (
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
+from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
 from bitcoin_usb.tool_gui import ToolGui
 from packaging import version
 from PyQt6.QtCore import (
@@ -109,7 +111,6 @@ from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe.util_os import show_file_in_explorer, webopen, xdg_open_file
 
 from ...config import UserConfig
 from ...fx import FX
@@ -123,7 +124,7 @@ from ...wallet import LOCAL_TX_LAST_SEEN, ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
-from .dialogs import PasswordQuestion, WalletIdDialog, question_dialog
+from .dialogs import PasswordQuestion, WalletIdDialog
 from .loading_wallet_tab import LoadingWalletTab
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase

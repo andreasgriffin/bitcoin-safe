@@ -32,13 +32,13 @@ from typing import Callable, List, Optional
 
 from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QTabBar
 
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet_util import signer_name

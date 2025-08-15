@@ -37,12 +37,12 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import (
     BitcoinVideoWidget,
     DecodingException,
 )
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PartialSig

@@ -29,12 +29,12 @@
 import logging
 from typing import Optional, Tuple
 
+from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.util_os import webopen
 
 from .util import set_no_margins
 

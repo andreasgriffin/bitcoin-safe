@@ -34,6 +34,7 @@ from typing import Callable, Iterable, List, Optional, Tuple, Union, cast
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
@@ -68,7 +69,6 @@ from bitcoin_safe.gui.qt.custom_edits import (
     QCompleterLineEdit,
 )
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -730,8 +730,8 @@ class SignerUI(QWidget):
             self.layout_keystore_buttons.addWidget(button)
 
             # forward the signal_signature_added from each signer to self.signal_signature_added
-            signer.signal_signature_added.connect(self.signal_signature_added.emit)
-            signer.signal_final_tx_received.connect(self.signal_tx_received.emit)
+            signer.signal_signature_added.connect(self.signal_signature_added)
+            signer.signal_final_tx_received.connect(self.signal_tx_received)
 
 
 class SignerUIHorizontal(QWidget):
@@ -760,5 +760,5 @@ class SignerUIHorizontal(QWidget):
             self.layout_keystore_buttons.addWidget(button)
 
             # forward the signal_signature_added from each signer to self.signal_signature_added
-            signer.signal_signature_added.connect(self.signal_signature_added.emit)
-            signer.signal_final_tx_received.connect(self.signal_tx_received.emit)
+            signer.signal_signature_added.connect(self.signal_signature_added)
+            signer.signal_final_tx_received.connect(self.signal_tx_received)

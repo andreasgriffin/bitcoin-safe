@@ -66,6 +66,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
 from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
@@ -82,7 +83,6 @@ from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.util_os import webopen
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
@@ -790,11 +790,14 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.create_layout()
 
         self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
-        self.sync_button.clicked.connect(self.hist_list.signals.request_manual_sync.emit)
+        self.sync_button.clicked.connect(self._on_sync_button_clicked)
         self.toolbar.insertWidget(0, self.sync_button)
         self.hist_list.signals.language_switch.connect(self.updateUi)
         for wallet in self.hist_list.wallets:
             self.hist_list.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
+
+    def _on_sync_button_clicked(self):
+        self.hist_list.signals.request_manual_sync.emit()
 
     def dump(self) -> Dict[str, Any]:
         d = super().dump()

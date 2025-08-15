@@ -31,7 +31,7 @@ import logging
 import urllib.parse
 from typing import List
 
-from bitcoin_safe.util_os import open_mailto_link, webopen
+from bitcoin_safe_lib.util_os import open_mailto_link, webopen
 
 logger = logging.getLogger(__name__)
 

@@ -32,6 +32,7 @@ from functools import partial
 from pathlib import Path
 from typing import Iterable, List, Optional
 
+from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QMouseEvent, QPainter
 from PyQt6.QtWidgets import (
@@ -51,7 +52,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.util_os import show_file_in_explorer
 
 
 class ButtonStyleDelegate(QStyledItemDelegate):
@@ -164,7 +164,7 @@ class RecentlyOpenedWalletsGroup(QGroupBox):
         self.signal_recently_open_wallet_changed.connect(
             self.on_signal_recently_open_wallet_changed
         )  # for visibility
-        self.wallet_list.signal_file_path_clicked.connect(self.signal_open_wallet.emit)
+        self.wallet_list.signal_file_path_clicked.connect(self.signal_open_wallet)
 
     def set_visibility(self):
         self.setHidden(self.wallet_list.count() == 0)

@@ -76,6 +76,7 @@
   - 1-click fee selection and mempool block preview
   - Automatic merging of utxos when fees are low
   - Highlighting of own addresses 
+  - Address poisoning detection and warning
 
 - **Security and Reliability**
   

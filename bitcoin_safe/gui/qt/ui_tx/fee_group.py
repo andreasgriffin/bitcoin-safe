@@ -303,7 +303,7 @@ class FeeGroup(QObject):
         # signals
         if allow_edit:
             self.mempool_buttons.signal_click_median_fee.connect(self.on_mempool_button_clicked)
-        self.spin_fee_rate.valueChanged.connect(self.signal_fee_rate_change.emit)
+        self.spin_fee_rate.valueChanged.connect(self._on_spin_fee_rate_valueChanged)
         self.mempool_buttons.mempool_manager.signal_data_updated.connect(self.updateUi)
 
         # refresh
@@ -313,6 +313,9 @@ class FeeGroup(QObject):
         signals.currency_switch.connect(self.on_currency_switch)
 
         self.mempool_buttons.signal_explorer_explorer_icon.connect(self._on_explorer_explorer_icon)
+
+    def _on_spin_fee_rate_valueChanged(self, value: float):
+        self.signal_fee_rate_change.emit(value)
 
     def _on_explorer_explorer_icon(self, index: int) -> None:
         if self.mempool_buttons.tx_status.is_confirmed():

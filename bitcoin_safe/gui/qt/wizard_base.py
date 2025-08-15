@@ -35,6 +35,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.signals import SignalsMin
 
 from .step_progress_bar import StepProgressContainer
@@ -74,7 +75,9 @@ class WizardBase(QWidget):
         self._layout.addWidget(self.step_container)
 
         self.signal_tracker = SignalTracker()
-        self.node = SidebarNode[object](title=self.tr("Wizard"), data=self, widget=self)
+        self.node = SidebarNode[object](
+            title=self.tr("Wizard"), data=self, widget=self, icon=svg_tools.get_QIcon("bi--stars.svg")
+        )
 
     def set_visibilities(self) -> None:
         pass
