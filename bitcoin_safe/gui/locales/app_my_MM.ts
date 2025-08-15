@@ -1625,8 +1625,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>&amp;သင်ခန်းစာပြသမှုကိုဖွင့်/ပိတ်ပါ  </translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;ဝီဇာဒ်ကို ပြ/ဖျောက်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

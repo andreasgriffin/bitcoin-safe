@@ -1626,8 +1626,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Show/Hide Tutorial</source>
-			<translation>&amp;Pokaż/Ukryj samouczek</translation>
+			<source>&amp;Show/Hide Wizard</source>
+			<translation>&amp;Pokaż/Ukryj kreatora</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
