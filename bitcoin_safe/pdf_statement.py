@@ -36,6 +36,7 @@ import bdkpython as bdk
 import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_safe_lib.util_os import xdg_open_file
 from bitcoin_usb.address_types import DescriptorInfo
 from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
@@ -53,7 +54,6 @@ from reportlab.platypus import (
 
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import pilimage_to_reportlab, register_font, white_space
-from bitcoin_safe.util_os import xdg_open_file
 
 from .wallet import Wallet
 

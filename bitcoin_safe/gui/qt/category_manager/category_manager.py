@@ -30,6 +30,7 @@
 import logging
 from typing import List, Set
 
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
@@ -43,7 +44,6 @@ from bitcoin_safe.gui.qt.category_manager.category_list import (
     CategoryList,
     CategoryListWithToolbar,
 )
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.drag_info import AddressDragInfo
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.labels import LabelType

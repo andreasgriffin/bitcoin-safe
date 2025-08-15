@@ -35,8 +35,9 @@ import tempfile
 from pathlib import Path
 from types import TracebackType
 
+from bitcoin_safe_lib.util_os import xdg_open_file
+
 from bitcoin_safe import __version__
-from bitcoin_safe.util_os import xdg_open_file
 
 from .simple_mailer import compose_email
 
@@ -51,13 +52,16 @@ def remove_absolute_paths(line: str) -> str:
 
 
 def get_system_info_as_text() -> str:
+    distro_name = "Unknown"
+    distro_version = ""
+
     if hasattr(platform, "freedesktop_os_release"):
-        os_release_info = platform.freedesktop_os_release()
-        distro_name = os_release_info.get("NAME", "Unknown")
-        distro_version = os_release_info.get("VERSION", "")
-    else:
-        distro_name = "Unknown"
-        distro_version = ""
+        try:
+            os_release_info = platform.freedesktop_os_release()
+            distro_name = os_release_info.get("NAME", "Unknown")
+            distro_version = os_release_info.get("VERSION", "")
+        except:
+            pass
 
     body = "\n\nSystem Info:\n"
     body += f"OS: {platform.platform()}\n"

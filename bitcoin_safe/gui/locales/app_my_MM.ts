@@ -3480,6 +3480,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>udev စည်းမျဉ်းများကို ကိုယ်တိုင် ထည့်သွင်းရန်</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>udev စည်းမျဉ်းများကို ထည့်သွင်းရန် Terminal ထဲတွင် အောက်ပါ script ကို ကူးယူပြီး ပွားထည့်ပါ:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>USB ကိရိယာများကိုဖွင့်ပါ  </translation>
 		</message>
@@ -3487,6 +3502,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>{device_type} မှတဆင့် multisig ပိုက်ဆံအိတ်များကို USB မှတဆင့်မှတ်ပုံတင်ရန်မ</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3902,16 +3922,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

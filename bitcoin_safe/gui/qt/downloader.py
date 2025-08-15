@@ -33,6 +33,7 @@ from pathlib import Path
 from typing import Dict
 
 import requests
+from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
@@ -44,7 +45,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.util_os import show_file_in_explorer
 
 from ...signals import TypedPyQtSignalNo
 

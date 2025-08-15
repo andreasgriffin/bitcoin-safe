@@ -32,6 +32,8 @@ from typing import Optional, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util_os import webopen
 from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QSizePolicy
@@ -40,12 +42,10 @@ from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
 from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
-from bitcoin_safe.util_os import webopen
 
 from ...i18n import translate
 from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
 from ...wallet import Wallet, get_wallet_of_address
-from .dialogs import question_dialog
 from .util import ColorScheme, block_explorer_URL, get_icon_path
 
 logger = logging.getLogger(__name__)

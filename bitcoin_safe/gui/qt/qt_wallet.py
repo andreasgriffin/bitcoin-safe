@@ -41,6 +41,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -97,7 +98,7 @@ from ...wallet import (
 from .address_list import AddressList, AddressListWithToolbar
 from .bitcoin_quick_receive import BitcoinQuickReceive
 from .descriptor_ui import DescriptorUI
-from .dialogs import PasswordCreation, PasswordQuestion, question_dialog
+from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
 from .util import (
     Message,
@@ -301,7 +302,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # all others I can connect automatically
         self.signal_tracker.connect(self.signal_on_change_sync_status, self.update_status_visualization)
         self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
-        self.wallet_signals.updated.connect(self.signals.any_wallet_updated.emit)
+        self.wallet_signals.updated.connect(self.signals.any_wallet_updated)
         self.wallet_signals.updated.connect(self.on_updated)
         self.wallet_signals.export_labels.connect(self.export_labels)
         self.wallet_signals.export_bip329_labels.connect(self.export_bip329_labels)
@@ -310,8 +311,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_signals.import_electrum_wallet_labels.connect(
             self.import_electrum_wallet_labels,
         )
-        self.signal_tracker.connect(self.signals.language_switch, self.wallet_signals.language_switch.emit)
-        self.signal_tracker.connect(self.signals.currency_switch, self.wallet_signals.currency_switch.emit)
+        self.signal_tracker.connect(self.signals.language_switch, self.wallet_signals.language_switch)
+        self.signal_tracker.connect(self.signals.currency_switch, self.wallet_signals.currency_switch)
         self.signal_tracker.connect(self.signals.currency_switch, self.update_display_balance)
 
         self._start_sync_retry_timer()

@@ -34,6 +34,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -51,7 +52,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
 
@@ -64,9 +64,9 @@ logger = logging.getLogger(__name__)
 
 
 class DescriptorUI(QWidget):
-    signal_qtwallet_apply_setting_changes: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_qtwallet_cancel_setting_changes: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_qtwallet_cancel_wallet_creation: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_qtwallet_apply_setting_changes = pyqtSignal()
+    signal_qtwallet_cancel_setting_changes = pyqtSignal()
+    signal_qtwallet_cancel_wallet_creation = pyqtSignal()
 
     def __init__(
         self,
@@ -475,11 +475,11 @@ class DescriptorUI(QWidget):
             QDialogButtonBox.StandardButton.Apply | QDialogButtonBox.StandardButton.Discard
         )
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Apply):
-            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes.emit)
+            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes)
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes.emit)
+            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes)
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation.emit)
+            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation)
 
         self._layout.addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
         return self.button_box

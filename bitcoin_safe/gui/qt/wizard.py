@@ -39,6 +39,7 @@ import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -59,7 +60,6 @@ from bitcoin_safe.execute_config import DEFAULT_LANG_CODE
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.keystore_ui import (
     HardwareSignerInteractionWidget,
     icon_for_label,
@@ -1425,6 +1425,7 @@ class Wizard(WizardBase):
             qt_wallet.tutorial_index = max(qt_wallet.tutorial_index, TutorialStep.import_xpub.value)
 
         self.qtwalletbase.tabs.addChildNode(self.node)
+        self.node.setHidable(bool(self.qt_wallet))
 
         m, n = self.qtwalletbase.get_mn_tuple()
 
@@ -1496,6 +1497,7 @@ class Wizard(WizardBase):
 
         self.step_container.signal_set_current_widget.connect(self._save)
         self.signal_step_change.connect(self.qtwalletbase.set_tutorial_index)
+        self.node.hideClicked.connect(self.on_hide_clicked)
 
         self.updateUi()
         self.set_visibilities()
@@ -1505,6 +1507,9 @@ class Wizard(WizardBase):
             self.qtwalletbase.signals.wallet_signals[self.qt_wallet.wallet.id].updated.connect(
                 self.on_utxo_update
             )
+
+    def on_hide_clicked(self, obj: object):
+        self.toggle_tutorial()
 
     def _save(self, widget):
         if self.qt_wallet:
@@ -1617,7 +1622,15 @@ class Wizard(WizardBase):
         self.node.setVisible(self.should_be_visible)
         if self.node.parent_node:
             for child in self.node.parent_node.child_nodes:
-                if child != self.node:
+                if child == self.node:
+                    continue
+                #  only non_wizard nodes
+                always_visible = (
+                    [self.qt_wallet.hist_node, self.qt_wallet.settings_node] if self.qt_wallet else []
+                )
+                if child in always_visible:
+                    child.setVisible(True)
+                else:
                     child.setVisible(not self.should_be_visible)
 
         if self.should_be_visible:

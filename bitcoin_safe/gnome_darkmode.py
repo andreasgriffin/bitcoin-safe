@@ -31,10 +31,9 @@ import os
 import subprocess
 import sys
 
+from bitcoin_safe_lib.util_os import linux_env
 from PyQt6.QtGui import QColor, QPalette
 from PyQt6.QtWidgets import QApplication
-
-from bitcoin_safe.util_os import linux_env
 
 logger = logging.getLogger(__name__)
 

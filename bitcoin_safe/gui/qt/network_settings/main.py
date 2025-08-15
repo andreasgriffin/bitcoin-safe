@@ -33,6 +33,8 @@ from typing import Dict, Optional, Tuple
 import bdkpython as bdk
 import numpy as np
 import requests
+from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import (
@@ -52,7 +54,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
-from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_activate_p2p import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
@@ -86,7 +87,6 @@ from bitcoin_safe.network_utils import (
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.util_os import webopen
 
 from ....signals import TypedPyQtSignalNo
 from ..icon_label import IconLabel

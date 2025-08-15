@@ -3483,6 +3483,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>udev ルールを手動でインストール</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>udev ルールをインストールするには、次のスクリプトをターミナルにコピー＆ペーストしてください：</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>変更が有効になるようにコンピュータを再起動してください。  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>USBデバイスをアンロックしてください  </translation>
 		</message>
@@ -3490,6 +3505,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB 経由でのマルチシグウォレットの登録は {device_type} によってサポートされていません。sdカードを使用するか、QR コードをスキャンしてください。 </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>コンピュータを再起動する  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3905,16 +3925,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>適切なターミナルエミュレータが見つかりませんでした。  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>変更が有効になるようにコンピュータを再起動してください。  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>コンピュータを再起動する  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

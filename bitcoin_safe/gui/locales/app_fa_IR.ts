@@ -3482,6 +3482,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>نصب دستی قوانین udev</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>لطفاً برای نصب قوانین udev اسکریپت زیر را در ترمینال کپی و پیست کنید:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>لطفاً برای اعمال تغییرات رایانهٔ خود را راه‌اندازی مجدد کنید.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>لطفاً دستگاه‌های USB را قفل‌گشایی کنید</translation>
 		</message>
@@ -3489,6 +3504,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>ثبت کیف پول‌های چندامضایی از طریق USB توسط {device_type} پشتیبانی نمی‌شود. لطفاً از کارت SD استفاده کنید یا کد QR را اسکن کنید.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>راه‌اندازی مجدد رایانه</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3904,16 +3924,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>شبیه‌ساز ترمینال مناسب پیدا نشد.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>لطفاً برای اعمال تغییرات رایانهٔ خود را راه‌اندازی مجدد کنید.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>راه‌اندازی مجدد رایانه</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

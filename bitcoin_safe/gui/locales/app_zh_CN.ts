@@ -3489,6 +3489,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>手动安装 udev 规则</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>请将以下脚本复制粘贴到终端中以安装 udev 规则：</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>请重启计算机以使更改生效。  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>请解锁USB设备  </translation>
 		</message>
@@ -3496,6 +3511,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>通过 USB 注册多签钱包不受 {device_type} 支持。请使用 sd 卡或扫描二维码。  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>重启计算机  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3911,16 +3931,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>未找到合适的终端仿真器。  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>请重启计算机以使更改生效。  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>重启计算机  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

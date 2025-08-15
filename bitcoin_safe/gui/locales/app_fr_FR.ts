@@ -3480,6 +3480,21 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>Installer manuellement les règles udev</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>Veuillez copier-coller le script suivant dans un terminal pour installer les règles udev :</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>Veuillez redémarrer votre ordinateur pour que les modifications prennent effet.  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>Veuillez déverrouiller les appareils USB  </translation>
 		</message>
@@ -3487,6 +3502,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>L'enregistrement de portefeuilles multisig via USB n'est pas pris en charge par {device_type}. Veuillez utiliser des cartes SD ou scanner le code QR.  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>Redémarrer l'ordinateur  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3902,16 +3922,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Aucun émulateur de terminal adapté trouvé.  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>Veuillez redémarrer votre ordinateur pour que les modifications prennent effet.  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>Redémarrer l'ordinateur  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

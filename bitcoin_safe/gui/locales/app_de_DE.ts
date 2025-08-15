@@ -3519,6 +3519,21 @@ Alternativ kannst du über {url} senden</translation>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Manually install udev rules</source>
+			<translation>udev-Regeln manuell installieren</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+			<translation>Bitte das folgende Skript in ein Terminal kopieren und einfügen, um die udev-Regeln zu installieren:</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Please restart your computer for the changes to take effect.</source>
+			<translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please unlock USB devices</source>
 			<translation>Bitte entsperren Sie die USB-Geräte</translation>
 		</message>
@@ -3526,6 +3541,11 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Die Registrierung von Multisig-Wallets über USB wird von {device_type} nicht unterstützt. Bitte verwenden Sie SD-Karten oder scannen Sie den QR-Code.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Restart computer</source>
+			<translation>Computer neu starten</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3944,16 +3964,6 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Kein geeigneter Terminal-Emulator gefunden.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>Bitte starten Sie Ihren Computer neu, damit die Änderungen wirksam werden.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>Computer neu starten</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
