@@ -29,9 +29,19 @@
 
 IS_PRODUCTION = True  # change this for testing
 
+DEMO_MODE = False
 DEFAULT_MAINNET = IS_PRODUCTION
 ENABLE_THREADING = True
 ENABLE_TIMERS = True
 DEFAULT_LANG_CODE = "en_US"
 MEMPOOL_SCHEDULE_TIMER = 10 * 60 * 1000 if IS_PRODUCTION else 1 * 60 * 1000
 GENERAL_RBF_AVAILABLE = False
+
+
+if IS_PRODUCTION:
+    if not ENABLE_TIMERS:
+        raise ValueError("Timers must be enabled for production")
+    if not ENABLE_THREADING:
+        raise ValueError("Threading must be enabled for production")
+    if DEMO_MODE:
+        raise ValueError("Cannot be in demo mode for production")

@@ -254,6 +254,7 @@ class FeeGroup(QObject):
         self.cpfp_fee_label = IconLabel()
         self.cpfp_fee_label_currency = QLabel()
         self.cpfp_fee_label.textLabel.setWordWrap(True)
+        self.cpfp_fee_label.textLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.form.addRow(self.cpfp_fee_label, self.cpfp_fee_label_currency)
 
         self.form.set_row_visibility_of_widget(self.rbf_fee_label, visible=False)

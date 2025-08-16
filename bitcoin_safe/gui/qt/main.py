@@ -78,7 +78,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
@@ -336,7 +336,7 @@ class MainWindow(QMainWindow):
 
     def set_title(self) -> None:
         title = "Bitcoin Safe"
-        if self.config.network != bdk.Network.BITCOIN:
+        if self.config.network != bdk.Network.BITCOIN and not DEMO_MODE:
             title += f" - {self.config.network.name}"
         if qt_wallet := self.get_qt_wallet():
             title += f" - {qt_wallet.wallet.id}"
@@ -619,7 +619,9 @@ class MainWindow(QMainWindow):
 
             menu.addSeparator()
             self.context_menu_action_toggle_tutorial = menu.add_action(
-                self.menu_action_toggle_tutorial.text(), slot=self.toggle_tutorial
+                self.menu_action_toggle_tutorial.text(),
+                slot=self.toggle_tutorial,
+                icon=svg_tools.get_QIcon("stars4.svg"),
             )
 
         menu.exec(position)
@@ -743,7 +745,9 @@ class MainWindow(QMainWindow):
             icon=svg_tools.get_QIcon("bi--gear.svg"),
         )
         self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
-        self.menu_action_toggle_tutorial = self.menu_settings.add_action("", self.toggle_tutorial)
+        self.menu_action_toggle_tutorial = self.menu_settings.add_action(
+            text="", slot=self.toggle_tutorial, icon=svg_tools.get_QIcon("stars4.svg")
+        )
 
         # menu about
         self.menu_about = self.menubar.add_menu("")

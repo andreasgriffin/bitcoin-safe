@@ -52,7 +52,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE, IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE, GENERAL_RBF_AVAILABLE, IS_PRODUCTION
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
@@ -453,7 +453,7 @@ class UITx_Viewer(UITx_Base):
 
     def fill_button_group(self):
         self.header_button_group.clear()
-        if not IS_PRODUCTION:
+        if not IS_PRODUCTION and not DEMO_MODE:
             button = QPushButton()
             button.setText("refresh")
             button.clicked.connect(partial(self.reload, UpdateFilter(refresh_all=True)))
@@ -886,6 +886,8 @@ class UITx_Viewer(UITx_Base):
                 for wallet_with_seed in get_wallets_with_seed(
                     [fingerprint for fingerprint in pubkeys_without_signature.keys()]
                 ):
+                    if DEMO_MODE:
+                        break
                     l.append(
                         SignatureImporterWallet(
                             wallet_with_seed,

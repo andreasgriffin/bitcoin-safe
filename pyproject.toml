@@ -45,7 +45,7 @@ numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 cryptography = "^45.0.2"
 bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", rev = "5977d4b92746dd1c0bad81bd5d2d90d67b15196a" }
-bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "00fb86752e2c308774f196686c77e579dce90be6" }  
+bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "2e6970956967ba00bdad93b41e877b1c005c5f3e" }  
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", rev = "d3670ae544906eb7aa73345638988ded2eeb420d" }  #  "^0.3.3"
 bitcoin-safe-lib = "^0.2.6"
 aiohttp = "^3.12.13"
