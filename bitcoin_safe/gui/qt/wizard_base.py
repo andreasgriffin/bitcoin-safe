@@ -79,7 +79,7 @@ class WizardBase(QWidget):
             title=self.tr("Wizard"),
             data=self,
             widget=self,
-            icon=svg_tools.get_QIcon("bi--stars.svg"),
+            icon=svg_tools.get_QIcon("stars4.svg"),
         )
 
     def set_visibilities(self) -> None:

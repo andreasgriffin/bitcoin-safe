@@ -619,7 +619,9 @@ class MainWindow(QMainWindow):
 
             menu.addSeparator()
             self.context_menu_action_toggle_tutorial = menu.add_action(
-                self.menu_action_toggle_tutorial.text(), slot=self.toggle_tutorial
+                self.menu_action_toggle_tutorial.text(),
+                slot=self.toggle_tutorial,
+                icon=svg_tools.get_QIcon("stars4.svg"),
             )
 
         menu.exec(position)
@@ -743,7 +745,9 @@ class MainWindow(QMainWindow):
             icon=svg_tools.get_QIcon("bi--gear.svg"),
         )
         self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
-        self.menu_action_toggle_tutorial = self.menu_settings.add_action("", self.toggle_tutorial)
+        self.menu_action_toggle_tutorial = self.menu_settings.add_action(
+            text="", slot=self.toggle_tutorial, icon=svg_tools.get_QIcon("stars4.svg")
+        )
 
         # menu about
         self.menu_about = self.menubar.add_menu("")
