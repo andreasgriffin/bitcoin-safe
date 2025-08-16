@@ -1151,7 +1151,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         if not address_info:
             address_info = self.get_address(force_new=True, is_change=is_change)
 
-        self.labels.set_addr_category(str(address_info.address), category, timestamp="now")
+        self.labels.set_addr_category(str(address_info.address), category, timestamp="old")
         return address_info
 
     def get_force_new_address(self, is_change) -> bdk.AddressInfo:
@@ -1392,7 +1392,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                 if not categories:
                     continue
                 category = categories[0]
-                self.labels.set_addr_category(ref=utxo.address, category=category)
+                self.labels.set_addr_category(ref=utxo.address, category=category, timestamp="old")
                 logger.info(f"Set {category=} for {utxo.address=}")
 
     @instance_lru_cache()
@@ -1913,7 +1913,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         "sets the address category, if the category was unassigned"
         if address and self.is_my_address(address) and not self.address_is_used(address):
             # old self.labels.get_category(address, default_value="not_set_category") == "not_set_category":
-            self.labels.set_addr_category(address, category=category)
+            self.labels.set_addr_category(address, category=category, timestamp="old")
             return address
         return None
 

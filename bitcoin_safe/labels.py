@@ -80,7 +80,7 @@ class Label(SaveAllClass):
         self,
         type: LabelType,
         ref: str,
-        timestamp: float,
+        timestamp: Union[Literal["now", "old"], float],
         label: Optional[str] = None,
         origin: Optional[str] = None,
         spendable: Optional[bool] = None,
@@ -93,7 +93,21 @@ class Label(SaveAllClass):
         self.origin = origin
         self.spendable = spendable
         self.category = category
-        self.timestamp = timestamp
+        self.timestamp = self._to_timestamp(timestamp)
+
+    @staticmethod
+    def _to_timestamp(timestamp: Union[Literal["now", "old"], float]) -> float:
+        if timestamp == "now":
+            return datetime.now().timestamp()
+        elif timestamp == "old":
+            return 0.1
+        else:
+            return timestamp
+
+    def set_timestamp(self, timestamp: Union[Literal["now", "old"], float]):
+        new_timestamp = self._to_timestamp(timestamp=timestamp)
+        if new_timestamp > self.timestamp:
+            self.timestamp = new_timestamp
 
     def to_bip329(self) -> Dict[str, Any]:
         d: Dict[str, Any] = {}
@@ -113,7 +127,9 @@ class Label(SaveAllClass):
         return d
 
     @classmethod
-    def from_bip329(cls, d: Dict[str, Any], timestamp: Union[Literal["now"], float] = "now") -> "Label":
+    def from_bip329(
+        cls, d: Dict[str, Any], timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> "Label":
         """
         Can import bip329,
         Also uses additional fields (like timestamp)
@@ -234,29 +250,28 @@ class Labels(BaseSaveableClass):
         return item.timestamp
 
     def set_label(
-        self, type: LabelType, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now"
+        self, type: LabelType, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
         label = self.data.get(ref)
-        timestamp = datetime.now().timestamp() if timestamp == "now" else timestamp
+
         if not label:
             self.data[ref] = label = Label(type, ref, timestamp)
 
         label.label = label_value
-        label.timestamp = timestamp
+        label.set_timestamp(timestamp)
 
         if all(value is None for value in [label.category, label.spendable, label.label, label.origin]):
             del self.data[ref]
 
     def set_category(
-        self, type: LabelType, ref: str, category, timestamp: Union[Literal["now"], float] = "now"
+        self, type: LabelType, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
         label = self.data.get(ref)
-        timestamp = datetime.now().timestamp() if timestamp == "now" else timestamp
         if not label:
             self.data[ref] = label = Label(type, ref, timestamp)
 
         label.category = category
-        label.timestamp = timestamp
+        label.set_timestamp(timestamp)
 
         if all(value is None for value in [label.category, label.spendable, label.label, label.origin]):
             del self.data[ref]
@@ -264,32 +279,44 @@ class Labels(BaseSaveableClass):
         if category and category not in self.categories:
             self.categories.append(category)
 
-    def set_tx_label(self, label_value, value, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_tx_label(
+        self, label_value, value, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_label(LabelType.tx, label_value, value, timestamp=timestamp)
 
-    def set_addr_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_addr_label(
+        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_label(LabelType.addr, ref, label_value, timestamp=timestamp)
 
     def set_pubkey_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now"
+        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
         return self.set_label(LabelType.pubkey, ref, label_value, timestamp=timestamp)
 
-    def set_input_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_input_label(
+        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_label(LabelType.input, ref, label_value, timestamp=timestamp)
 
     def set_output_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now"
+        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
         return self.set_label(LabelType.output, ref, label_value, timestamp=timestamp)
 
-    def set_xpub_label(self, ref: str, label_value, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_xpub_label(
+        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_label(LabelType.xpub, ref, label_value, timestamp=timestamp)
 
-    def set_addr_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_addr_category(
+        self, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_category(LabelType.addr, ref, category, timestamp=timestamp)
 
-    def set_tx_category(self, ref: str, category, timestamp: Union[Literal["now"], float] = "now") -> None:
+    def set_tx_category(
+        self, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
+    ) -> None:
         return self.set_category(LabelType.tx, ref, category, timestamp=timestamp)
 
     def get_default_category(self) -> str:
@@ -353,7 +380,7 @@ class Labels(BaseSaveableClass):
         return list_of_dict_to_jsonlines(list_of_dict)
 
     def import_bip329_jsonlines(
-        self, jsonlines: str, fill_categories=True, timestamp: Union[Literal["now"], float] = "now"
+        self, jsonlines: str, fill_categories=True, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> Dict[str, Label]:
         list_of_dict = jsonlines_to_list_of_dict(jsonlines)
         labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
@@ -364,7 +391,7 @@ class Labels(BaseSaveableClass):
         file_content: str,
         network: bdk.Network,
         fill_categories=True,
-        timestamp: Union[Literal["now"], float] = "now",
+        timestamp: Union[Literal["now", "old"], float] = "now",
     ) -> Dict[str, Label]:
         electrum_dict = json.loads(file_content)
         list_of_dict = []
@@ -432,7 +459,7 @@ class Labels(BaseSaveableClass):
                 not item.category and old_category == self.default_category
             ):
                 item.category = new_category
-                item.timestamp = datetime.now().timestamp()
+                item.set_timestamp(datetime.now().timestamp())
                 affected_keys.append(key)
 
         if old_category in self.categories:
@@ -448,7 +475,7 @@ class Labels(BaseSaveableClass):
             if item.category and item.category == category:
                 affected_keys.append(key)
                 item.category = self.get_default_category()
-                item.timestamp = datetime.now().timestamp()
+                item.set_timestamp(datetime.now().timestamp())
 
         if category in self.categories:
             idx = self.categories.index(category)
