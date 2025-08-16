@@ -886,6 +886,8 @@ class UITx_Viewer(UITx_Base):
                 for wallet_with_seed in get_wallets_with_seed(
                     [fingerprint for fingerprint in pubkeys_without_signature.keys()]
                 ):
+                    if DEMO_MODE:
+                        break
                     l.append(
                         SignatureImporterWallet(
                             wallet_with_seed,
