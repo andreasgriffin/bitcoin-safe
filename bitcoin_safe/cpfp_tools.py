@@ -55,7 +55,7 @@ class CpfpTools:
             # add its unconfirmed parents
             unconfirmed_txs += (
                 self.get_unconfirmed_ancestors(
-                    txids=set(txin.previous_output.txid for txin in unconfirmed_tx.transaction.input()),
+                    txids=set(str(txin.previous_output.txid) for txin in unconfirmed_tx.transaction.input()),
                 )
                 or []
             )

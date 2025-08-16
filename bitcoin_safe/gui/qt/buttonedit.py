@@ -28,7 +28,7 @@
 
 import logging
 from functools import partial
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Union, cast
 
 import bdkpython as bdk
 from bdkpython import bdk
@@ -186,7 +186,7 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    signal_data: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
+    signal_data = cast(TypedPyQtSignal[Data], pyqtSignal(Data))
 
     def __init__(
         self,
@@ -483,7 +483,7 @@ if __name__ == "__main__":
     import sys
 
     class My(QObject):
-        close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+        close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def example_callback() -> None:
         print("Button clicked!")

@@ -54,7 +54,7 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.storage import filtered_for_init
-from bitcoin_safe.wallet import filename_clean
+from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
 

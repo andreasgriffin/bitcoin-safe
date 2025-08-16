@@ -194,7 +194,7 @@ class SingularSignalFunction(Generic[T]):
 
 
 class SignalsMin(NostrSignalsMin):
-    close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
     currency_switch = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self) -> None:
@@ -203,19 +203,19 @@ class SignalsMin(NostrSignalsMin):
 
 
 class WalletSignals(SignalsMin):
-    updated: TypedPyQtSignal[UpdateFilter] = pyqtSignal(UpdateFilter)  # type: ignore
-    completions_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore  # type: ignore
+    updated = cast(TypedPyQtSignal[UpdateFilter], pyqtSignal(UpdateFilter))
+    completions_updated = cast(TypedPyQtSignalNo, pyqtSignal())
 
-    show_address: TypedPyQtSignal[str, str] = pyqtSignal(str, str)  # type: ignore   # address, wallet_id
-    show_utxo: TypedPyQtSignal[OutPoint] = pyqtSignal(object)  # type: ignore
+    show_address = cast(TypedPyQtSignal[str, str], pyqtSignal(str, str))  # address, wallet_id
+    show_utxo = cast(TypedPyQtSignal[OutPoint], pyqtSignal(object))
 
-    export_bip329_labels: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    export_labels: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    import_labels: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    import_bip329_labels: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    import_electrum_wallet_labels: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    export_bip329_labels = cast(TypedPyQtSignalNo, pyqtSignal())
+    export_labels = cast(TypedPyQtSignalNo, pyqtSignal())
+    import_labels = cast(TypedPyQtSignalNo, pyqtSignal())
+    import_bip329_labels = cast(TypedPyQtSignalNo, pyqtSignal())
+    import_electrum_wallet_labels = cast(TypedPyQtSignalNo, pyqtSignal())
 
-    finished_psbt_creation: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    finished_psbt_creation = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self) -> None:
         super().__init__()
@@ -240,27 +240,29 @@ class Signals(SignalsMin):
     I immediately break the rule however for pyqtSignal, which is a function call
     """
 
-    open_file_path: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
-    open_tx_like: TypedPyQtSignal[Any] = pyqtSignal(object)  # type: ignore
-    event_wallet_tab_closed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    event_wallet_tab_added: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    open_file_path = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    open_tx_like = cast(TypedPyQtSignal[Any], pyqtSignal(object))
+    event_wallet_tab_closed = cast(TypedPyQtSignalNo, pyqtSignal())
+    event_wallet_tab_added = cast(TypedPyQtSignalNo, pyqtSignal())
 
-    chain_data_changed: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore # the string is the reason
+    chain_data_changed = cast(TypedPyQtSignal[str], pyqtSignal(str))  # the string is the reason
     notification: "TypedPyQtSignal[Message]" = pyqtSignal(object)  # type: ignore # should be a Message instance
 
-    show_network_settings: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    open_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore   # str= filepath
+    show_network_settings = cast(TypedPyQtSignalNo, pyqtSignal())
+    open_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))  # str= filepath
     add_qt_wallet: "TypedPyQtSignal[QTWallet, str | None, str | None]" = pyqtSignal(object, object, object)  # type: ignore # object = qt_wallet, file_path, password
-    close_qt_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore # str = wallet_id
-    signal_set_tab_properties: TypedPyQtSignal[object, str, str, str] = pyqtSignal(object, str, str, str)  # type: ignore  # tab:QWidget, tab_text:str, icon: icon_name, tooltip: str | None
+    close_qt_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))  # str = wallet_id
+    signal_set_tab_properties = cast(
+        TypedPyQtSignal[object, str, str, str], pyqtSignal(object, str, str, str)
+    )  # tab:QWidget, wallet_id, icon: icon_name, tooltip: str | None
 
-    request_manual_sync: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
-    apply_txs_to_wallets: TypedPyQtSignal[List[bdk.Transaction]] = pyqtSignal(object)  # type: ignore
+    request_manual_sync = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_broadcast_tx = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
+    apply_txs_to_wallets = cast(TypedPyQtSignal[List[bdk.Transaction]], pyqtSignal(object))
     signal_close_tabs_with_txids = cast(TypedPyQtSignal[list], pyqtSignal(list))
 
     # this is for non-wallet bound objects like UitxViewer
-    any_wallet_updated: TypedPyQtSignal[UpdateFilter] = pyqtSignal(UpdateFilter)  # type: ignore
+    any_wallet_updated = cast(TypedPyQtSignal[UpdateFilter], pyqtSignal(UpdateFilter))
 
     def __init__(self) -> None:
         super().__init__()

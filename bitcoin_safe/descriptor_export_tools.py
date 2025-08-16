@@ -38,7 +38,7 @@ from bitcoin_usb.address_types import DescriptorInfo
 
 from bitcoin_safe.gui.qt.util import save_file_dialog
 from bitcoin_safe.hardware_signers import DescriptorExportType, DescriptorExportTypes
-from bitcoin_safe.wallet import filename_clean
+from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
 

@@ -60,7 +60,7 @@ def output_addresses_values(
     for output in transaction.output():
         try:
             add = "" if output.value == 0 else str(bdk.Address.from_script(output.script_pubkey, network))
-            value = output.value
+            value = output.value.to_sat()
         except:
             add = ""
             value = None

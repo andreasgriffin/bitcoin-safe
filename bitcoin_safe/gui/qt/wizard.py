@@ -177,7 +177,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
     def _catch_tx(self, tx: bdk.Transaction) -> None:
         self.set_status(self.TxSendStatus.finalized)
-        logger.info(f"tx {tx.compute_txid()[:4]=} is assumed to be the send test")
+        logger.info(f"tx {str(tx.compute_txid())[:4]=} is assumed to be the send test")
 
     def create_tx(self) -> None:
         # before do _create_tx, setup a 1 time connection

@@ -30,7 +30,7 @@
 import csv
 import logging
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -468,10 +468,10 @@ class RecipientBox(QWidget):
 
 
 class Recipients(QWidget):
-    signal_added_recipient: TypedPyQtSignal[RecipientBox] = pyqtSignal(RecipientBox)  # type: ignore
-    signal_removed_recipient: TypedPyQtSignal[RecipientBox] = pyqtSignal(RecipientBox)  # type: ignore
-    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = pyqtSignal(RecipientWidget)  # type: ignore
-    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = pyqtSignal(RecipientWidget)  # type: ignore
+    signal_added_recipient = cast(TypedPyQtSignal[RecipientBox], pyqtSignal(RecipientBox))
+    signal_removed_recipient = cast(TypedPyQtSignal[RecipientBox], pyqtSignal(RecipientBox))
+    signal_clicked_send_max_button = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_amount_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
 
     def __init__(
         self,

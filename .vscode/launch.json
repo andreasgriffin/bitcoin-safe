@@ -97,7 +97,16 @@
       "module": "bitcoin_safe.p2p",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
-    }, {
+    }, 
+    {
+      "name": "cbf",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.cbf",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }, 
+    {
       "name": "Translation update",
       "type": "python",
       "request": "launch",

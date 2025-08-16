@@ -38,7 +38,7 @@ from packaging import version
 
 from bitcoin_safe.mempool_data import MempoolData
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.pythonbdk_types import BlockchainType, IpAddress
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .html_utils import link
@@ -136,10 +136,6 @@ def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
 
 
 def get_default_rpc_hosts(network: bdk.Network) -> Dict[str, str]:
-    return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
-
-
-def get_default_cbf_hosts(network: bdk.Network) -> Dict[str, str]:
     return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
 
 
@@ -242,16 +238,19 @@ def get_testnet_faucet(network: bdk.Network) -> str | None:
 
 
 def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
+    default_description = translate(
+        "net_conf",
+        "Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.<br>If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.",
+    )
     if server_type == BlockchainType.CompactBlockFilter:
         d = {
-            bdk.Network.BITCOIN: translate(
-                "net_conf", "This is a private and fast way to connect to the bitcoin network."
-            ),
-            bdk.Network.REGTEST: "",
-            bdk.Network.TESTNET: "",
-            bdk.Network.TESTNET4: "",
-            bdk.Network.SIGNET: "",
+            bdk.Network.BITCOIN: default_description,
+            bdk.Network.REGTEST: default_description,
+            bdk.Network.TESTNET: default_description,
+            bdk.Network.TESTNET4: default_description,
+            bdk.Network.SIGNET: default_description,
         }
+
         return d[network]
     elif server_type == BlockchainType.Electrum:
         d = {
@@ -397,6 +396,9 @@ class Peer:
             host = f"[{host}]"
         return f"{host}:{port}"
 
+    def to_bdk(self, v2_transport=False) -> bdk.Peer:
+        return bdk.Peer(address=IpAddress.from_host(self.host), port=self.port, v2_transport=v2_transport)
+
 
 class Peers(list[Peer]):
     pass
@@ -418,8 +420,8 @@ class NetworkConfig(BaseSaveableClass):
     VERSION = "0.2.3"
     known_classes = {
         **BaseSaveableClass.known_classes,
-        "BlockchainType": BlockchainType,
-        "Network": bdk.Network,
+        BlockchainType.__name__: BlockchainType,
+        bdk.Network.__name__: bdk.Network,
         P2pListenerType.__name__: P2pListenerType,
         MempoolData.__name__: MempoolData,
     }
@@ -432,9 +434,7 @@ class NetworkConfig(BaseSaveableClass):
     ) -> None:
         super().__init__()
         self.network = network
-        self.server_type: BlockchainType = (
-            BlockchainType.Esplora if network == bdk.Network.BITCOIN else BlockchainType.Electrum
-        )
+        self.server_type: BlockchainType = BlockchainType.CompactBlockFilter
         electrum_config = get_electrum_configs(network)["default"]
         self.electrum_url: str = electrum_config.url
         self.electrum_use_ssl: bool = electrum_config.use_ssl
@@ -451,6 +451,8 @@ class NetworkConfig(BaseSaveableClass):
         self.p2p_inital_url: str = get_default_p2p_node_urls(network=network)["default"]
         self.discovered_peers: Peers | List[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
+
+        self.cbf_connections: int = 2
 
     def description_short(self):
         server_name = ""
@@ -478,6 +480,13 @@ class NetworkConfig(BaseSaveableClass):
         d["discovered_peers"] = Peers() + [asdict(peer) for peer in self.discovered_peers]
 
         return d
+
+    def get_p2p_initial_peer(self) -> Peer | None:
+        return (
+            Peer.parse(self.p2p_inital_url, network=self.network)
+            if self.p2p_inital_url and self.p2p_listener_type == P2pListenerType.inital
+            else None
+        )
 
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfig":
@@ -527,7 +536,7 @@ class NetworkConfig(BaseSaveableClass):
 
 class NetworkConfigs(BaseSaveableClass):
     VERSION = "0.1.0"
-    known_classes = {**BaseSaveableClass.known_classes, "NetworkConfig": NetworkConfig}
+    known_classes = {**BaseSaveableClass.known_classes, NetworkConfig.__name__: NetworkConfig}
 
     def __init__(self, configs: dict[str, NetworkConfig] | None = None) -> None:
         super().__init__()

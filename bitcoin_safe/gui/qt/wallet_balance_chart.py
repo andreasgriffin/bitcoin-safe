@@ -34,7 +34,7 @@ import platform
 import random
 import sys
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Set, Tuple
+from typing import List, Optional, Sequence, Set, Tuple, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -117,7 +117,7 @@ def find_nearest_point(
 
 
 class TrackingChartView(QChartView):
-    signal_click: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    signal_click = cast(TypedPyQtSignal[int], pyqtSignal(int))
 
     def __init__(
         self,
@@ -436,7 +436,7 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    signal_click_transaction: TypedPyQtSignal[TransactionDetails] = pyqtSignal(TransactionDetails)  # type: ignore
+    signal_click_transaction = cast(TypedPyQtSignal[TransactionDetails], pyqtSignal(TransactionDetails))
 
     def __init__(
         self,

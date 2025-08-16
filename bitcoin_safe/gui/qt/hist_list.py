@@ -69,7 +69,13 @@ from bitcoin_safe_lib.util import time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
-from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
+from PyQt6.QtWidgets import (
+    QAbstractItemView,
+    QFileDialog,
+    QProgressBar,
+    QPushButton,
+    QWidget,
+)
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
@@ -145,7 +151,7 @@ class HistList(MyTreeView[str]):
         **BaseSaveableClass.known_classes,
     }
 
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
+    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -656,13 +662,13 @@ class HistList(MyTreeView[str]):
         return None
 
     def can_cpfp(self, tx: bdk.Transaction, tx_status: TxStatus) -> bool:
-        wallet = self.get_wallet(txid=tx.compute_txid())
+        wallet = self.get_wallet(txid=str(tx.compute_txid()))
         if not wallet:
             return False
         return TxTools.can_cpfp(wallet=wallet, tx_status=tx_status, signals=self.signals)
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
-        wallet = self.get_wallet(txid=tx_details.transaction.compute_txid())
+        wallet = self.get_wallet(txid=str(tx_details.transaction.compute_txid()))
         if not wallet:
             return
         TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
@@ -684,7 +690,7 @@ class HistList(MyTreeView[str]):
             get_wallets(self.signals),
         )
 
-        txid = tx_details.transaction.compute_txid()
+        txid = str(tx_details.transaction.compute_txid())
         wallet = self.get_wallet(txid=txid)
         if not wallet:
             Message(
@@ -792,6 +798,15 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
         self.sync_button.clicked.connect(self._on_sync_button_clicked)
         self.toolbar.insertWidget(0, self.sync_button)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setMinimumWidth(300)
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setVisible(False)
+        self.set_progressbar(progress=0, text="0%", tooltip="")
+        self.toolbar.insertWidget(1, self.progress_bar)
+
+        # signals
         self.hist_list.signals.language_switch.connect(self.updateUi)
         for wallet in self.hist_list.wallets:
             self.hist_list.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
@@ -839,3 +854,9 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.update()
+
+    def set_progressbar(self, progress: int, text: str, tooltip: str):
+        self.progress_bar.setVisible(progress < 100)
+        self.progress_bar.setValue(progress)
+        self.progress_bar.setFormat(text)
+        self.progress_bar.setToolTip(tooltip)

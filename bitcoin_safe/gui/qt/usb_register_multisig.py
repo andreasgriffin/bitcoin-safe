@@ -144,7 +144,7 @@ class USBValidateAddressWidget(QWidget):
 
 
 class USBRegisterMultisigWidget(USBValidateAddressWidget):
-    signal_end_hwi_blocker: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_end_hwi_blocker = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self, network: bdk.Network, signals: Signals) -> None:
         screenshots = ScreenshotsRegisterMultisig()
