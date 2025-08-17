@@ -1526,6 +1526,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Community forum</source>
+			<translation>&amp;커뮤니티 포럼</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Contact via Nostr</source>
 			<translation>Nostr로 연락하기</translation>
 		</message>

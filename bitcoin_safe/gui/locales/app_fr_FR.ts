@@ -1526,6 +1526,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Community forum</source>
+			<translation>&amp;Forum de la communauté</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Contact via Nostr</source>
 			<translation>Contacter via Nostr</translation>
 		</message>

@@ -1,8 +1,6 @@
 {
   "version": "0.1.0",
   "configurations": [
-
-
     {
       "name": "Python: Module",
       "type": "python",
@@ -25,6 +23,7 @@
         "--ignore=tools",
       ],
       "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
       //  "justMyCode": false
     },
     {
@@ -40,7 +39,8 @@
         // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-      "justMyCode": false
+      "justMyCode": false,
+      "preLaunchTask": "Poetry Install",
     },
     {
       "name": "Pytest non-gui",
@@ -54,7 +54,8 @@
         "-s", // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
-      "justMyCode": false
+      "justMyCode": false,
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Pytest: Current File",
       "type": "python",
@@ -67,36 +68,35 @@
         "--ignore=tools",
       ],
       "console": "integratedTerminal",
-      "justMyCode": false
+      "justMyCode": false,
+      "preLaunchTask": "Poetry Install",
     },
     {
-      "name": "taglist",
-      "type": "python",
-      "request": "launch",
-      "module": "bitcoin_safe.gui.qt.taglist",
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    }, {
       "name": "network settings",
       "type": "python",
       "request": "launch",
       "module": "bitcoin_safe.gui.qt.network_settings",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    }, {
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "step_progress_bar",
       "type": "python",
       "request": "launch",
       "module": "bitcoin_safe.gui.qt.step_progress_bar",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    }, {
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "p2p",
       "type": "python",
       "request": "launch",
       "module": "bitcoin_safe.p2p",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Translation update",
       "type": "python",
@@ -105,7 +105,8 @@
       "args": [
         "--update_translations"
       ],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "insert_chatgpt_translations",
       "type": "python",
@@ -114,8 +115,10 @@
       "args": [
         "--insert_chatgpt_translations"
       ],
-      "console": "integratedTerminal"
-    }, {
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Translation csv to ts",
       "type": "python",
       "request": "launch",
@@ -123,8 +126,10 @@
       "args": [
         "--csv_to_ts"
       ],
-      "console": "integratedTerminal"
-    }, {
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Weblate correct",
       "type": "python",
       "request": "launch",
@@ -132,8 +137,10 @@
       "args": [
         "--weblate_correct"
       ],
-      "console": "integratedTerminal"
-    }, {
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Build",
       "type": "python",
       "request": "launch",
@@ -142,8 +149,9 @@
         "--targets", "appimage", "deb", "windows",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
-    }, {
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Build windows",
       "type": "python",
       "request": "launch",
@@ -152,8 +160,9 @@
         "--targets", "windows",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
-    }, {
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Build linux",
       "type": "python",
       "request": "launch",
@@ -162,7 +171,7 @@
         "--targets", "appimage", "deb",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build mac",
       "type": "python",
@@ -172,8 +181,9 @@
         "--targets", "mac",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
-    }, {
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Build Linux (Current Files)",
       "type": "python",
       "request": "launch",
@@ -183,7 +193,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build Mac (Current Files)",
       "type": "python",
@@ -194,7 +204,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build Windows (Current Files)",
       "type": "python",
@@ -205,7 +215,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install" // label of the task
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Sign",
       "type": "python",
@@ -214,8 +224,10 @@
       "args": [
         "--sign",
       ],
-      "console": "integratedTerminal"
-    }, {
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
+    },
+    {
       "name": "Lock no cache",
       "type": "python",
       "request": "launch",
@@ -223,13 +235,15 @@
       "args": [
         "--lock",
       ],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
     }, {
       "name": "Current File",
       "type": "python",
       "request": "launch",
       "program": "${file}",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
     }
 
   ]

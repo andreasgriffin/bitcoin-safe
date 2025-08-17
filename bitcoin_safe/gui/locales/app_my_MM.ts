@@ -1526,6 +1526,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Community forum</source>
+			<translation>&amp;အသိုင်းအဝိုင်း ဖိုရမ်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Contact via Nostr</source>
 			<translation>Nostr မှတဆင့် ဆက်သွယ်ရန်</translation>
 		</message>
