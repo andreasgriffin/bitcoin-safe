@@ -3391,6 +3391,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>غيّر معدل الرسوم</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>إنشاء  </translation>
 		</message>
@@ -3401,8 +3406,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>الإبقاء على معدل الرسوم</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>تحميل UTXOs</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>يُرجى تغيير معدل الرسوم ليكون على الأقل {minimum}، وإلا فلن تتمكن من بثّها.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

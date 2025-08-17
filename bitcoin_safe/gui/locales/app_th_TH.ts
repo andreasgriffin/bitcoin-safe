@@ -3388,6 +3388,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>เปลี่ยนอัตราค่าธรรมเนียม</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>สร้าง  </translation>
 		</message>
@@ -3398,8 +3403,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>คงอัตราค่าธรรมเนียมไว้</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>โหลด UTXOs  </translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>โปรดเปลี่ยนอัตราค่าธรรมเนียมให้ไม่น้อยกว่า {minimum} มิฉะนั้นคุณจะไม่สามารถกระจายธุรกรรมนั้นได้</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

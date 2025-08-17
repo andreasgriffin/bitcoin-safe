@@ -3388,6 +3388,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>Modifier le taux de frais</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>Créer  </translation>
 		</message>
@@ -3398,8 +3403,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>Conserver le taux de frais</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Charger les UTXOs  </translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>Veuillez modifier le taux de frais pour qu’il soit au moins de {minimum}, sinon vous ne pourrez pas la diffuser.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

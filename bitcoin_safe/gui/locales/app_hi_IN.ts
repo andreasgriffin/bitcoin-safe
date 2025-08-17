@@ -3391,6 +3391,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>शुल्क दर बदलें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>बनाएं  </translation>
 		</message>
@@ -3401,8 +3406,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>शुल्क दर बनाए रखें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOs लोड करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>कृपया शुल्क दर को कम से कम {minimum} तक बदलें, नहीं तो आप इसे प्रसारित नहीं कर पाएँगे।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
