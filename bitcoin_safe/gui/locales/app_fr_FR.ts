@@ -3201,6 +3201,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>Installer les règles udev</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT  </translation>
 		</message>
@@ -3485,6 +3490,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>Aucun périphérique USB trouvé. Cela peut être dû à l’absence de règles udev.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>Aucun appareil sélectionné  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>Veuillez copier-coller le script suivant dans un terminal pour installer les règles udev :</translation>
 		</message>
@@ -3507,6 +3522,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>Redémarrer l'ordinateur  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>Appareils USB  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3912,11 +3932,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>Aucun appareil USB trouvé  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Aucun appareil sélectionné  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
