@@ -3201,6 +3201,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>ติดตั้งกฎ udev</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT  </translation>
 		</message>
@@ -3485,6 +3490,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>ไม่พบอุปกรณ์ USB อาจเกิดจากไม่มีกฎ udev.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>ไม่ได้เลือกอุปกรณ์  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>กรุณาคัดลอกและวางสคริปต์ต่อไปนี้ลงในเทอร์มินัลเพื่อทำการติดตั้งกฎ udev:</translation>
 		</message>
@@ -3507,6 +3522,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>รีสตาร์ทคอมพิวเตอร์  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>อุปกรณ์ USB  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3912,11 +3932,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>ไม่พบอุปกรณ์ USB  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>ไม่ได้เลือกอุปกรณ์  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

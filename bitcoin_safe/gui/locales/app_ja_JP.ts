@@ -3204,6 +3204,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>udev ルールをインストール</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3488,6 +3493,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>USB デバイスが見つかりません。udev ルールが不足している可能性があります。</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>デバイスが選択されていません  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>udev ルールをインストールするには、次のスクリプトをターミナルにコピー＆ペーストしてください：</translation>
 		</message>
@@ -3510,6 +3525,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>コンピュータを再起動する  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>USBデバイス  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3915,11 +3935,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>USBデバイスが見つかりません  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>デバイスが選択されていません  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

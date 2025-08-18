@@ -3204,6 +3204,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>udev नियम स्थापित करें</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3488,6 +3493,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>कोई USB डिवाइस नहीं मिला। यह udev नियमों के गायब होने के कारण हो सकता है।</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>कोई उपकरण चयनित नहीं  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>कृपया udev नियम इंस्टॉल करने के लिए नीचे दिया गया स्क्रिप्ट टर्मिनल में कॉपी और पेस्ट करें:</translation>
 		</message>
@@ -3510,6 +3525,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>कंप्यूटर पुनरारंभ करें  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>USB उपकरण  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3915,11 +3935,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>USB उपकरण नहीं मिले  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>कोई उपकरण चयनित नहीं  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

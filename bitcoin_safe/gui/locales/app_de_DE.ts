@@ -1550,7 +1550,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Export Wallet PDF</translation>
+			<translation>&amp; Export Wallet PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1660,7 +1660,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Wallet</source>
-			<translation>&amp;Wallet</translation>
+			<translation>&amp; Wallet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3227,6 +3227,11 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>udev-Regeln installieren</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3524,6 +3529,16 @@ Alternativ kannst du über {url} senden</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>Keine USB-Geräte gefunden. Möglicherweise fehlen die udev-Regeln.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>Kein Gerät ausgewählt</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>Bitte das folgende Skript in ein Terminal kopieren und einfügen, um die udev-Regeln zu installieren:</translation>
 		</message>
@@ -3546,6 +3561,11 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Computer neu starten</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>USB-Geräte</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3954,11 +3974,6 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>No USB devices found</source>
 			<translation>Keine USB-Geräte gefunden</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Kein Gerät ausgewählt</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

@@ -3201,6 +3201,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>udev 규칙 설치</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT  </translation>
 		</message>
@@ -3485,6 +3490,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>USB 장치를 찾을 수 없습니다. 누락된 udev 규칙 때문일 수 있습니다.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>장치가 선택되지 않음  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>udev 규칙을 설치하려면 다음 스크립트를 터미널에 복사하여 붙여넣으세요:</translation>
 		</message>
@@ -3507,6 +3522,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>컴퓨터 재시작  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>USB 장치  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3912,11 +3932,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>USB 장치를 찾을 수 없음  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>장치가 선택되지 않음  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

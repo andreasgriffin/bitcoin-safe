@@ -3203,6 +3203,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>نصب قوانین udev</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3487,6 +3492,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>هیچ دستگاه USB پیدا نشد. ممکن است به‌دلیل نبود قوانین udev باشد.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>هیچ دستگاهی انتخاب نشد</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>لطفاً برای نصب قوانین udev اسکریپت زیر را در ترمینال کپی و پیست کنید:</translation>
 		</message>
@@ -3509,6 +3524,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>راه‌اندازی مجدد رایانه</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>دستگاه‌های USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3914,11 +3934,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>هیچ دستگاه USB یافت نشد</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>هیچ دستگاهی انتخاب نشد</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>

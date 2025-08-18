@@ -3201,6 +3201,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
+			<source>Install udev rules</source>
+			<translation>udev စည်းမျဉ်းများကို ထည့်သွင်းပါ</translation>
+		</message>
+		<name>ToolGui</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT  </translation>
 		</message>
@@ -3485,6 +3490,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>No USB devices found. It could be due to missing udev rules.</source>
+			<translation>USB ကိရိယာများ မတွေ့ပါ။ udev စည်းမျဉ်းများ မရှိသည့်အတွက် ဖြစ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>No device selected</source>
+			<translation>ကိရိယာမရွေးရသေးပါ  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>udev စည်းမျဉ်းများကို ထည့်သွင်းရန် Terminal ထဲတွင် အောက်ပါ script ကို ကူးယူပြီး ပွားထည့်ပါ:</translation>
 		</message>
@@ -3507,6 +3522,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>USB Devices</source>
+			<translation>USB ကိရိယာများ  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3912,11 +3932,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>No USB devices found</source>
 			<translation>USB ကိရိယာများမတွေ့ပါ။  </translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No device selected</source>
-			<translation>ကိရိယာမရွေးရသေးပါ  </translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
