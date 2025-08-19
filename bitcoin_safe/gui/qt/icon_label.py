@@ -82,8 +82,13 @@ class IconLabel(QWidget):
     def set_icon(self, icon: Optional[QIcon], sizes: Tuple[int | None, int | None] = (None, None)) -> None:
         self.icon_label.setVisible(bool(icon))
         if icon:
-            pixmap_sizes = [(s if s else self.textLabel.sizeHint().height()) for s in sizes]
+            # compute single-line text height (font metrics)
+            fm = self.textLabel.fontMetrics()
+            line_height = fm.height()
+
+            pixmap_sizes = [s if s else line_height for s in sizes]
             self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes)))
+            self.icon_label.setFixedSize(QSize(*pixmap_sizes))
 
     def on_icon_click(self):
         if not self.click_url:

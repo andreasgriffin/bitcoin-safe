@@ -29,9 +29,14 @@
 
 import datetime
 import json
+from time import sleep
 
-from bitcoin_safe.labels import Label, Labels, LabelType
+from bitcoin_safe.config import UserConfig
+from bitcoin_safe.labels import AUTOMATIC_TIMESTAMP, Label, Labels, LabelType
 from bitcoin_safe.util import clean_lines
+from bitcoin_safe.wallet import Wallet
+
+from .utils import create_multisig_protowallet
 
 
 def test_label_export():
@@ -223,3 +228,89 @@ def test_import():
 
     cleaned_s = "\n".join(clean_lines(s.strip().splitlines()))
     assert cleaned_s == labels.export_bip329_jsonlines()
+
+
+def test_label_timestamp_correctly(test_config: UserConfig):
+    """Automatic category setting also sets a timestamp. It is crucial that the automatic timestamp is in the far past, such that
+    when exchaning labels with another wallet with manual timestamps, the manual ones superceed the automatic ones.
+    """
+
+    def set_timestamps(w: Wallet):
+        address_info_manual = w.get_address(force_new=True)
+        w.labels.set_category(type=LabelType.addr, ref=str(address_info_manual.address), category="manual")
+        assert (
+            timestamp_manual := w.labels.get_timestamp(str(address_info_manual.address))
+        ) and timestamp_manual > AUTOMATIC_TIMESTAMP
+
+        address_info_manual2 = w.get_unused_category_address("manual")
+        w.labels.set_addr_label(str(address_info_manual2.address), "test")
+        assert (
+            timestamp_manual2 := w.labels.get_timestamp(str(address_info_manual2.address))
+        ) and timestamp_manual2 > AUTOMATIC_TIMESTAMP
+
+    def check_timestamps_behavior_correct(w: Wallet):
+        address_info_auto = w.get_unused_category_address("manual")
+        assert w.labels.get_timestamp(str(address_info_auto.address)) == AUTOMATIC_TIMESTAMP
+
+        assert (
+            timestamp_manual := w.labels.get_timestamp("bcrt1q9mvd906xneqp0228uc8rh2nmewvuy87cf4n939")
+        ) and timestamp_manual > AUTOMATIC_TIMESTAMP
+
+        assert w.labels.get_label("bcrt1qzkdd9hcph3l2w29jfklwewctxp0hxnnlemtu47") == "test"
+        assert (
+            timestamp_manual2 := w.labels.get_timestamp("bcrt1qzkdd9hcph3l2w29jfklwewctxp0hxnnlemtu47")
+        ) and timestamp_manual2 > AUTOMATIC_TIMESTAMP
+
+    protowallet = create_multisig_protowallet(
+        threshold=1,
+        signers=1,
+        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        wallet_id="w org",
+        network=test_config.network,
+    )
+
+    w_org = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    for i in range(4):
+        w_org.get_force_new_address(is_change=False)
+
+    w_org.set_addresses_category_if_unused("manual", addresses=w_org.get_addresses())
+
+    set_timestamps(w_org)
+    check_timestamps_behavior_correct(w_org)
+
+    w_org_exported = w_org.labels.dumps_data_jsonlines()
+
+    #
+    sleep(0.1)
+
+    protowallet2 = create_multisig_protowallet(
+        threshold=1,
+        signers=1,
+        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        wallet_id="w 2",
+        network=test_config.network,
+    )
+    w_copy = Wallet.from_protowallet(protowallet=protowallet2, config=test_config)
+    for i in range(4):
+        w_copy.get_force_new_address(is_change=False)
+
+    w_copy.set_addresses_category_if_unused("should_be_overwritten", addresses=w_org.get_addresses())
+
+    w_copy_exported = w_copy.labels.dumps_data_jsonlines()
+
+    # import into w org
+    w_org.labels.import_dumps_data(w_copy_exported)
+
+    # should have no effect
+    check_timestamps_behavior_correct(w_org)
+
+    # importing into w_copy  should work
+    w_copy.labels.import_dumps_data(w_org_exported)
+
+    check_timestamps_behavior_correct(w_copy)
+
+    eorg = w_org.labels.dumps_data_jsonline_list()
+    ecopy = w_copy.labels.dumps_data_jsonline_list()
+    assert len(eorg) == len(ecopy)
+    for e1, e2 in zip(eorg, ecopy):
+        assert e1 == e2

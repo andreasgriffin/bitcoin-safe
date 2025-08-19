@@ -52,6 +52,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
+from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
 
@@ -114,7 +115,12 @@ class DescriptorUI(QWidget):
 
     def updateUi(self) -> None:
         self.label_signers.setText(self.tr("Required Signers"))
-        self.label_gap.setText(self.tr("Scan Addresses ahead"))
+        self.label_gap.textLabel.setText(self.tr("Scan Addresses ahead"))
+        self.label_gap.set_icon_as_help(
+            tooltip=self.tr(
+                "While scanning the blockchain the wallet will create additional addresses to discover transactions\nDefault 20"
+            )
+        )
         self.box_wallet_type.setTitle(self.tr("Wallet Properties"))
         self.label_address_type.setText(self.tr("Address Type"))
         self.groupBox_wallet_descriptor.setTitle(self.tr("Wallet Descriptor"))
@@ -351,8 +357,8 @@ class DescriptorUI(QWidget):
         form_wallet_type.addWidget(self.comboBox_address_type, 2, 1, 1, 3)
 
         # box_gap
-        self.label_gap = QLabel()
-        self.label_gap.setWordWrap(True)
+        self.label_gap = IconLabel()
+        self.label_gap.textLabel.setWordWrap(True)
 
         self.spin_gap = QSpinBox()
         self.spin_gap.setMinimum(20)

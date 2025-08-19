@@ -473,7 +473,9 @@ class MyItemDelegate(QStyledItemDelegate):
         super().initStyleOption(option, index)
         if not option:
             return
-        option.displayAlignment = self.tv.column_alignments.get(index.column(), Qt.AlignmentFlag.AlignLeft)
+        option.displayAlignment = self.tv.column_alignments.get(
+            index.column(), Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
 
     def createEditor(
         self, parent: Optional[QWidget], option: QStyleOptionViewItem, index: QtCore.QModelIndex
