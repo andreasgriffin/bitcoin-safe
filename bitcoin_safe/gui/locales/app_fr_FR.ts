@@ -721,6 +721,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 			<source>Wallet Properties</source>
 			<translation>Propriétés du portefeuille  </translation>
 		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
+Default 20</source>
+			<translation>Lors de l’analyse de la blockchain, le portefeuille créera des adresses supplémentaires pour découvrir les transactions Par défaut 20</translation>
+		</message>
 	</context>
 	<context>
 		<name>DeviceDialog</name>
@@ -1530,6 +1536,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Donate</source>
+			<translation>&amp;Donner</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;Quitter</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Export</source>
 			<translation>&amp;Exporter  </translation>
 		</message>
@@ -1565,6 +1581,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lightning</source>
+			<translation>&amp;Lightning</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;Charger Transaction ou PSBT  </translation>
 		</message>
@@ -1582,6 +1603,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Nouveau Portefeuille  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Onchain</source>
+			<translation>&amp;Onchain</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

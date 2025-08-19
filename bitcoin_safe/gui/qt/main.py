@@ -78,7 +78,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE, DONATION_ADDRESS, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
@@ -116,7 +116,12 @@ from ...config import UserConfig
 from ...fx import FX
 from ...mempool_manager import MempoolManager
 from ...psbt_util import FeeInfo, FeeRate, SimplePSBT
-from ...pythonbdk_types import BlockchainType, TransactionDetails, get_prev_outpoints
+from ...pythonbdk_types import (
+    BlockchainType,
+    Recipient,
+    TransactionDetails,
+    get_prev_outpoints,
+)
 from ...signals import Signals, UpdateFilter
 from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
@@ -768,6 +773,8 @@ class MainWindow(QMainWindow):
         self.add_menu_knowledge_items(self.menu_knowledge)
         self.menu_feedback = self.menu_about.add_menu("")
         self.add_feedback_menu_items(self.menu_feedback)
+        self.menu_donate = self.menu_about.add_menu("")
+        self.add_menu_donate_items(self.menu_donate)
 
         # assigning menu bar
         self.setMenuBar(self.menubar)
@@ -802,6 +809,17 @@ class MainWindow(QMainWindow):
         self.action_knowledge_website = menu_knowledge.add_action(
             "", partial(webopen, "https://bitcoin-safe.org/en/knowledge/")
         )
+
+    def add_menu_donate_items(self, menu: Menu):
+        self.action_donate_lightning = menu.add_action(
+            "", partial(webopen, "https://bitcoin-safe.org/en/donate/")
+        )
+        self.action_donate_onchain = menu.add_action("", self.prefill_donate_onchain)
+
+    def prefill_donate_onchain(self):
+        txinfos = TxUiInfos()
+        txinfos.recipients.append(Recipient(DONATION_ADDRESS, 0, label="Donation to Bitcoin Safe"))
+        self.signals.open_tx_like.emit(txinfos)
 
     def add_feedback_menu_items(self, menu_feedback: Menu):
         self.action_mail_feedback = menu_feedback.add_action("", mail_feedback)
@@ -872,6 +890,10 @@ class MainWindow(QMainWindow):
 
         self.menu_knowledge.setTitle(self.tr("&Documentation"))
         self.action_knowledge_website.setText(self.tr("&Knowledge"))
+
+        self.menu_donate.setTitle(self.tr("&Donate"))
+        self.action_donate_lightning.setText(self.tr("&Lightning"))
+        self.action_donate_onchain.setText(self.tr("&Onchain"))
 
         self.notification_bar_testnet.updateUi()
         self.update_notification_bar.updateUi()
@@ -962,7 +984,7 @@ class MainWindow(QMainWindow):
         self.tray.setToolTip("Bitcoin Safe")
 
         menu = Menu(self)
-        menu.add_action(text="&Exit", slot=self.close)
+        menu.add_action(text=self.tr("&Exit"), slot=self.close)
 
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(self.onTrayIconActivated)

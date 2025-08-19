@@ -721,6 +721,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 			<source>Wallet Properties</source>
 			<translation>คุณสมบัติของกระเป๋าเงิน  </translation>
 		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
+Default 20</source>
+			<translation>ขณะสแกนบล็อกเชน กระเป๋าจะสร้างที่อยู่เพิ่มเติมเพื่อค้นหาธุรกรรม ค่าเริ่มต้น 20</translation>
+		</message>
 	</context>
 	<context>
 		<name>DeviceDialog</name>
@@ -1530,6 +1536,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Donate</source>
+			<translation>&amp;บริจาค</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;ออก</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Export</source>
 			<translation>&amp;ส่งออก  </translation>
 		</message>
@@ -1565,6 +1581,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lightning</source>
+			<translation>&amp;ไลท์นิง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;โหลดธุรกรรมหรือ PSBT  </translation>
 		</message>
@@ -1582,6 +1603,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;กระเป๋าเงินใหม่  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Onchain</source>
+			<translation>&amp;ออนเชน</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

@@ -33,7 +33,7 @@ import json
 import logging
 from collections import defaultdict
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -49,6 +49,9 @@ from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 
 logger = logging.getLogger(__name__)
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
+
+
+AUTOMATIC_TIMESTAMP = 0.1
 
 
 class Key(enum.Enum):
@@ -100,7 +103,7 @@ class Label(SaveAllClass):
         if timestamp == "now":
             return datetime.now().timestamp()
         elif timestamp == "old":
-            return 0.1
+            return AUTOMATIC_TIMESTAMP
         else:
             return timestamp
 
@@ -405,23 +408,65 @@ class Labels(BaseSaveableClass):
         labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
-    def _should_overwrite(self, new_label: Label, old_label: Optional[Label]) -> bool:
+    def _should_overwrite(
+        self, new_label: Label, old_label: Optional[Label], tiebreaker: Optional[bool]
+    ) -> bool:
         if not old_label:
             return True
         if not new_label.timestamp:
             return False
         if not old_label.timestamp:
             return True
+        if new_label.timestamp == old_label.timestamp and tiebreaker is not None:
+            return tiebreaker
         return new_label.timestamp > old_label.timestamp
 
+    @staticmethod
+    def get_timestamp_range(
+        labels: Iterable[Label], exclude_automatic=True
+    ) -> Tuple[float | None, float | None]:
+        earliest_timestamp: float | None = None
+        latest_timestamp: float | None = None
+        for label in labels:
+            if label.timestamp:
+                if exclude_automatic and label.timestamp <= AUTOMATIC_TIMESTAMP:
+                    continue
+                earliest_timestamp = (
+                    min(earliest_timestamp, label.timestamp) if earliest_timestamp else label.timestamp
+                )
+                latest_timestamp = (
+                    max(latest_timestamp, label.timestamp) if latest_timestamp else label.timestamp
+                )
+        return earliest_timestamp, latest_timestamp
+
+    def _should_overwrite_mine_when_tie(self, new_labels: List[Label]) -> None | bool:
+        my_earliest_timestamp, _ = self.get_timestamp_range(self.data.values())
+        other_earliest_timestamp, _ = self.get_timestamp_range(new_labels)
+
+        if not other_earliest_timestamp:
+            return False
+        if not my_earliest_timestamp:
+            return True
+
+        # prefer the labels with the oldest (non_automatic) entries
+        return False if my_earliest_timestamp < other_earliest_timestamp else True
+
     def import_labels(
-        self, labels: List[Label], fill_categories=True, force_overwrite=False
+        self,
+        labels: List[Label],
+        fill_categories=True,
+        force_overwrite=False,
     ) -> Dict[str, Label]:
         changed_data: Dict[str, Label] = {}
 
+        tiebreaker = self._should_overwrite_mine_when_tie(new_labels=labels)
+
         for label in labels:
+            old_label = self.data.get(label.ref)
+
             if self.data.get(label.ref) != label and (
-                force_overwrite or self._should_overwrite(new_label=label, old_label=self.data.get(label.ref))
+                force_overwrite
+                or self._should_overwrite(new_label=label, old_label=old_label, tiebreaker=tiebreaker)
             ):
                 self.data[label.ref] = label
                 changed_data[label.ref] = label

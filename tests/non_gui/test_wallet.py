@@ -28,60 +28,21 @@
 
 
 import logging
-from typing import List, Optional
 
 import bdkpython as bdk
 import pytest
-from bitcoin_usb.software_signer import derive
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.keystore import KeyStore
-from bitcoin_safe.wallet import ProtoWallet, Wallet, WalletInputsInconsistentError
+from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError
 
-from .test_signers import bacon_seed, test_seeds
+from .test_signers import bacon_seed
+from .utils import (
+    create_keystore,
+    create_multisig_protowallet,
+    create_test_seed_keystores,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Network.REGTEST) -> KeyStore:
-    mnemonic = str(bdk.Mnemonic.from_string(seed_str))
-    key_origin = key_origin
-    xpub, fingerprint = derive(mnemonic, key_origin, network)
-
-    return KeyStore(
-        xpub,
-        fingerprint,
-        key_origin,
-        label,
-        network=network,
-        mnemonic=seed_str,
-        description=label,
-    )
-
-
-def create_test_seed_keystores(
-    signers: int, key_origins: List[str], network=bdk.Network.REGTEST, test_seed_offset=0
-) -> List[KeyStore]:
-    keystores: List[KeyStore] = []
-    for i, seed_str in enumerate(test_seeds[test_seed_offset : test_seed_offset + signers]):
-        keystores.append(
-            create_keystore(seed_str=seed_str, key_origin=key_origins[i], label=f"{i}", network=network)
-        )
-    return keystores
-
-
-def create_multisig_protowallet(
-    threshold: int, signers: int, key_origins: List[str], wallet_id="some id", network=bdk.Network.REGTEST
-) -> ProtoWallet:
-
-    keystores: List[Optional[KeyStore]] = create_test_seed_keystores(signers, key_origins, network)  # type: ignore
-
-    return ProtoWallet(
-        threshold=threshold,
-        keystores=keystores,
-        network=network,
-        wallet_id=wallet_id,
-    )
 
 
 def test_protowallet_import_export_keystores(test_config: UserConfig):

@@ -721,6 +721,12 @@ Please back up this descriptor to be able to recover the funds!</source>
 			<source>Wallet Properties</source>
 			<translation>वॉलेट गुण  </translation>
 		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
+Default 20</source>
+			<translation>ब्लॉकचेन को स्कैन करते समय वॉलेट लेनदेन खोजने के लिए अतिरिक्त पते बनाएगा डिफ़ॉल्ट 20</translation>
+		</message>
 	</context>
 	<context>
 		<name>DeviceDialog</name>
@@ -1530,6 +1536,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Donate</source>
+			<translation>&amp;दान करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;बाहर निकलें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Export</source>
 			<translation>&amp;निर्यात  </translation>
 		</message>
@@ -1565,6 +1581,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lightning</source>
+			<translation>&amp;लाइटनिंग</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;लोड ट्रांजैक्शन या PSBT</translation>
 		</message>
@@ -1582,6 +1603,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;नया वॉलेट</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Onchain</source>
+			<translation>&amp;ऑनचेन</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
