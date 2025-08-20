@@ -459,9 +459,22 @@ class MainWindow(QMainWindow):
                 f"Trigger syncing because {widget} has frequent flag somewhere and {block_hash} received via the p2p network"
             )
             QTimer.singleShot(ELECTRUM_SERVER_DELAY_BLOCK, self.sync_all)
+        elif widget := self.any_has_no_txs():
+            # the electrum server processing blocks is slower than the bitcoin nodes, such that I have to delay syncing
+            logger.info(
+                f"Trigger syncing because {widget} has no txs and {block_hash} received via the p2p network"
+            )
+            QTimer.singleShot(ELECTRUM_SERVER_DELAY_BLOCK, self.sync_all)
         else:
             # trigger no needless syncing
             pass
+
+    def any_has_no_txs(self) -> QWidget | None:
+        for root in self.tab_wallets.roots:
+            if isinstance((_qt_wallet := root.data), QTWallet):
+                if not _qt_wallet.wallet.sorted_delta_list_transactions():
+                    return _qt_wallet
+        return None
 
     def any_needs_frequent_flag(self) -> QWidget | None:
         for root in self.tab_wallets.roots:
@@ -822,6 +835,13 @@ class MainWindow(QMainWindow):
         self.signals.open_tx_like.emit(txinfos)
 
     def add_feedback_menu_items(self, menu_feedback: Menu):
+        self.action_chorus = menu_feedback.add_action(
+            "",
+            partial(
+                webopen,
+                "https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki",
+            ),
+        )
         self.action_mail_feedback = menu_feedback.add_action("", mail_feedback)
         self.action_open_issue_github = menu_feedback.add_action(
             "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/issues/new")
@@ -884,6 +904,7 @@ class MainWindow(QMainWindow):
         self.menu_show_logs.setText(self.tr("&Show Logs"))
 
         self.menu_feedback.setTitle(self.tr("&Feedback / Contact"))
+        self.action_chorus.setText(self.tr("&Community forum"))
         self.action_contact_via_nostr.setText(self.tr("&Contact via Nostr"))
         self.action_open_issue_github.setText(self.tr("&Open issue in github"))
         self.action_mail_feedback.setText(self.tr("&Mail feedback"))

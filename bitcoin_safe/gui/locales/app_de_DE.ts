@@ -1540,6 +1540,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Community forum</source>
+			<translation>&amp;Community-Forum</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Contact via Nostr</source>
 			<translation>Kontakt über Nostr</translation>
 		</message>
