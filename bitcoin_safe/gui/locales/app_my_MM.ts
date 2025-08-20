@@ -3388,6 +3388,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>ကြေးနှုန်း ပြောင်းရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>ဖန်တီးပါ  </translation>
 		</message>
@@ -3398,8 +3403,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>ကြေးနှုန်း အတိုင်းထားရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOs တင်ပါ  </translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>ကျေးဇူးပြု၍ ကြေးနှုန်းကို အနည်းဆုံး {minimum} ဖြစ်အောင် ပြောင်းပါ၊ မဟုတ်လျှင် ၎င်းကို ပို့မနိုင်ပါ။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

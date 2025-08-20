@@ -3425,6 +3425,11 @@ um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>Gebührensatz ändern</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>Erstellen</translation>
 		</message>
@@ -3435,8 +3440,19 @@ um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>Gebührensatz beibehalten</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOs laden</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>Bitte ändere den Gebührensatz auf mindestens {minimum}, sonst kannst du sie nicht senden.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

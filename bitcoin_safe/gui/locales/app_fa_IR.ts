@@ -3390,6 +3390,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Change fee rate</source>
+			<translation>تغییر نرخ کارمزد</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Create</source>
 			<translation>ساخت</translation>
 		</message>
@@ -3400,8 +3405,19 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Keep fee rate</source>
+			<translation>حفظ نرخ کارمزد</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>بارگیری UTXOها</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Please change the fee rate to be at least {minimum},
+otherwise you will not be able to broadcast it.</source>
+			<translation>لطفاً نرخ کارمزد را حداقل به {minimum} تغییر دهید، در غیر این صورت نمی‌توانید آن را پخش کنید.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

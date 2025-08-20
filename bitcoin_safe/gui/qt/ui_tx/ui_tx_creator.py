@@ -518,6 +518,17 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         tx_ui_infos = self.get_tx_ui_infos()
         wallets = get_wallets(self.signals)
 
+        if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < MIN_RELAY_FEE:
+            if question_dialog(
+                self.tr(
+                    "Please change the fee rate to be at least {minimum},\notherwise you will not be able to broadcast it."
+                ).format(minimum=format_fee_rate(MIN_RELAY_FEE, network=self.config.network)),
+                true_button=self.tr("Change fee rate"),
+                false_button=self.tr("Keep fee rate"),
+            ):
+                self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+                return
+
         # warn if multiple categories are combined
         category_dict = self.get_category_dict_of_addresses(
             [utxo.address for utxo in tx_ui_infos.utxo_dict.values()], wallets=wallets
