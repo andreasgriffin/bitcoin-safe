@@ -473,13 +473,15 @@
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>Adresy {used_addresses} mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić kategorię?</translation>
+			<translation>Adresy {used_addresses}
+mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić kategorię?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>Adresy {used_addresses} mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić ich kategorię?</translation>
+			<translation>Adresy {used_addresses}
+mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić ich kategorię?</translation>
 		</message>
 	</context>
 	<context>
@@ -666,7 +668,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela. Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
+			<translation>Ten "deskryptor" zawiera wszystkie informacje potrzebne do odtworzenia portfela.
+Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -726,7 +729,8 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-			<translation>Podczas skanowania blockchain portfel utworzy dodatkowe adresy, aby wykryć transakcje Domyślnie 20</translation>
+			<translation>Podczas skanowania blockchain portfel utworzy dodatkowe adresy, aby wykryć transakcje
+Domyślnie 20</translation>
 		</message>
 	</context>
 	<context>
@@ -862,7 +866,8 @@ Default 20</source>
 		<message>
 			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
 Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>Ta transakcja ma {number} niepotwierdzonych transakcji nadrzędnych o łącznej stawce opłat {parents_fee_rate}. Kliknij, aby dowiedzieć się więcej o CPFP (Child Pays For Parent).</translation>
+			<translation>Ta transakcja ma {number} niepotwierdzonych transakcji nadrzędnych o łącznej stawce opłat {parents_fee_rate}.
+Kliknij, aby dowiedzieć się więcej o CPFP (Child Pays For Parent).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -874,7 +879,9 @@ Click to learn more about CPFP (Child Pays For Parent).</source>
 			<source>You can replace the previously broadcasted transaction
 with a new transaction if it has a higher fee rate.
 Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>Możesz zastąpić wcześniej rozgłoszoną transakcję nową, jeśli ma wyższą stawkę opłaty. Kliknij tutaj, aby dowiedzieć się więcej o RBF (Replace‑by‑Fee).</translation>
+			<translation>Możesz zastąpić wcześniej rozgłoszoną transakcję
+nową, jeśli ma wyższą stawkę opłaty.
+Kliknij tutaj, aby dowiedzieć się więcej o RBF (Replace‑by‑Fee).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -915,20 +922,25 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 			<source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-			<translation>Szacowana opłata transakcyjna: {fee}, co stanowi {percent}% wysyłanej kwoty {sent}</translation>
+			<translation>Szacowana opłata transakcyjna:
+{fee}, co stanowi {percent}%
+wysyłanej kwoty {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>Opłata transakcyjna wynosi: {fee}, a wysłano {sent}!</translation>
+			<translation>Opłata transakcyjna wynosi:
+{fee}, a wysłano {sent}!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
 			<source>The transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-			<translation>Opłata transakcyjna wynosi: {fee}, co stanowi {percent}% wysyłanej kwoty {sent}</translation>
+			<translation>Opłata transakcyjna wynosi:
+{fee}, co stanowi {percent}%
+wysyłanej kwoty {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1298,7 +1310,8 @@ the sending value {sent}</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>Nazwa urządzenia podpisującego: ...... Lokalizacja urządzenia podpisującego: .....</translation>
+			<translation>Nazwa urządzenia podpisującego: ......
+Lokalizacja urządzenia podpisującego: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1379,7 +1392,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} Czy mimo to chcesz kontynuować?</translation>
+			<translation>{msg}
+Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1588,7 +1602,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Lightning</source>
-			<translation>&amp;Lightning</translation>
+			<translation>&amp; Lightning</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1613,7 +1627,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Onchain</source>
-			<translation>&amp;Onchain</translation>
+			<translation>&amp; Onchain</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2077,7 +2091,10 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Błąd połączenia z serwerem. {responses} Czy mimo to chcesz kontynuować?</translation>
+			<translation>Błąd połączenia z serwerem.
+{responses}
+
+Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2134,7 +2151,9 @@ Do you want to proceed anyway?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Odpowiedzi: {name}: {status} Instancja Mempool: {server}</translation>
+			<translation>Odpowiedzi: {name}:
+{status}
+Instancja Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2356,7 +2375,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This transaction {txid} was already signed and is in wallet {wallet}.
 The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>Ta transakcja {txid} została już podpisana i znajduje się w portfelu {wallet}. Serializacje obu różnią się, co może wynikać z różnych zebranych podpisów.</translation>
+			<translation>Ta transakcja {txid} została już podpisana i znajduje się w portfelu {wallet}.
+Serializacje obu różnią się, co może wynikać z różnych zebranych podpisów.</translation>
 		</message>
 	</context>
 	<context>
@@ -2547,7 +2567,8 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>Nowa transakcja w portfelu '{wallet}': {txs}</translation>
+			<translation>Nowa transakcja w portfelu '{wallet}':
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2619,7 +2640,9 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Transakcje {txs} w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
+			<translation>Transakcje
+{txs}
+w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2655,7 +2678,8 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>{number} nowych transakcji w portfelu '{wallet}': {txs}</translation>
+			<translation>{number} nowych transakcji w portfelu '{wallet}':
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -2985,7 +3009,8 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Porównaj {number} słów na papierowej kopii z podpisującym sprzętowym. Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
+			<translation>Porównaj {number} słów na papierowej kopii z podpisującym sprzętowym.
+Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		</message>
 	</context>
 	<context>
@@ -3332,7 +3357,9 @@ Signatures:
 
 
 </source>
-			<translation>Transakcja podpisana kluczem prywatnym należącym do {label} Podpisy: {signatures}
+			<translation>Transakcja podpisana kluczem prywatnym należącym do {label} Podpisy:
+
+{signatures}
 
 
 </translation>
@@ -3376,7 +3403,11 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Twój klucz synchronizacji to: {sync_key} Zapisz go, a gdy klikniesz 'importuj klucz synchronizacji', powinien przywrócić Twoje etykiety z przekaźników Nostr.</translation>
+			<translation>Twój klucz synchronizacji to:
+
+{sync_key}
+
+Zapisz go, a gdy klikniesz 'importuj klucz synchronizacji', powinien przywrócić Twoje etykiety z przekaźników Nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3389,7 +3420,8 @@ Signatures:
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>Dodatkowe wejścia można dodać poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
+			<translation>Dodatkowe wejścia można dodać
+poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3420,7 +3452,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you will not be able to broadcast it.</source>
-			<translation>Proszę zmienić stawkę opłaty na co najmniej {minimum}, w przeciwnym razie nie będzie można jej rozgłosić.</translation>
+			<translation>Proszę zmienić stawkę opłaty na co najmniej {minimum},
+w przeciwnym razie nie będzie można jej rozgłosić.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3431,7 +3464,8 @@ otherwise you will not be able to broadcast it.</source>
 		<message>
 			<source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>Wklej tutaj UTXO w formacie txid:outpoint txid:outpoint</translation>
+			<translation>Wklej tutaj UTXO w formacie txid:outpoint
+txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3484,7 +3518,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Aby rozgłosić transakcję, najpierw otwórz portfel. Możesz też rozgłosić przez {url}</translation>
+			<translation>Aby rozgłosić transakcję, najpierw otwórz portfel.
+Możesz też rozgłosić przez {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3858,7 +3893,10 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>Testowa transakcja '{tx_text}' została wykonana pomyślnie. Przejdź do testu wysyłki: '{next_text}'</translation>
+			<translation>Testowa transakcja
+'{tx_text}'
+została wykonana pomyślnie. Przejdź do testu wysyłki:
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4306,7 +4344,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>Serwer może powiązać Twój adres IP z adresami portfela. Najlepiej używać własnego serwera, np. {link}.</translation>
+			<translation>Serwer może powiązać Twój adres IP z adresami portfela.
+Najlepiej używać własnego serwera, np. {link}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -4365,7 +4404,10 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Pasywnie nasłuchuj ruchu p2p bitcoina (jak węzeł bitcoina), aby natychmiast wykrywać nowo rozgłoszone transakcje. Nie ujawnia to nic o Twoim portfelu. Kliknij tutaj, aby dowiedzieć się więcej.</translation>
+			<translation>Pasywnie nasłuchuj ruchu p2p bitcoina (jak węzeł bitcoina),
+aby natychmiast wykrywać nowo rozgłoszone transakcje.
+Nie ujawnia to nic o Twoim portfelu.
+Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 	</context>
 	<context>
@@ -4537,7 +4579,9 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Porównaj i zatwierdź kod parowania na swoim BitBox02: {code}</translation>
+			<translation>Porównaj i zatwierdź kod parowania na swoim BitBox02:
+
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4552,7 +4596,10 @@ Click here to learn more.</source>
 will append a new transaction to the old one.
 If the average fee rate of both transactions is high enough
 it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, dołączy nową transakcję do starej. Jeśli średni wskaźnik opłat obu transakcji będzie wystarczająco wysoki, przyspieszy to potwierdzenie obu.</translation>
+			<translation>CPFP = Child Pay For Parent,
+dołączy nową transakcję do starej.
+Jeśli średni wskaźnik opłat obu transakcji będzie
+wystarczająco wysoki, przyspieszy to potwierdzenie obu.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4561,7 +4608,11 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Anulowanie z RBF utworzy nową transakcję z Tobą jako odbiorcą i z wyższą opłatą, aby zastąpić starą transakcję. Nie ma gwarancji, że to zadziała!!!</translation>
+			<translation>Anulowanie z RBF
+utworzy nową transakcję z
+Tobą jako odbiorcą i z wyższą opłatą,
+aby zastąpić starą transakcję.
+Nie ma gwarancji, że to zadziała!!!</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4588,7 +4639,9 @@ There is no guarantee this will work!!!</source>
 			<source>RBF = Replace By Fee,
 will create a new transaction with a higher fee
 to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, utworzy nową transakcję z wyższą opłatą, aby przyspieszyć potwierdzenie.</translation>
+			<translation>RBF = Replace By Fee,
+utworzy nową transakcję z wyższą opłatą,
+aby przyspieszyć potwierdzenie.</translation>
 		</message>
 		<name>util</name>
 		<message>

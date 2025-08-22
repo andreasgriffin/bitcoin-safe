@@ -726,7 +726,8 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-			<translation>Durante la scansione della blockchain il portafoglio creerà indirizzi aggiuntivi per scoprire le transazioni Predefinito 20</translation>
+			<translation>Durante la scansione della blockchain il portafoglio creerà indirizzi aggiuntivi per scoprire le transazioni
+Predefinito 20</translation>
 		</message>
 	</context>
 	<context>
@@ -1588,7 +1589,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Lightning</source>
-			<translation>&amp;Lightning</translation>
+			<translation>&amp; Lightning</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1613,7 +1614,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Onchain</source>
-			<translation>&amp;Onchain</translation>
+			<translation>&amp; Onchain</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3423,7 +3424,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you will not be able to broadcast it.</source>
-			<translation>Per favore modifica il tasso della commissione ad almeno {minimum}, altrimenti non potrai trasmetterla.</translation>
+			<translation>Per favore modifica il tasso della commissione ad almeno {minimum},
+altrimenti non potrai trasmetterla.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

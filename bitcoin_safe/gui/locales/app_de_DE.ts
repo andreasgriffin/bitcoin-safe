@@ -729,7 +729,8 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-			<translation>Während des Scannens der Blockchain erstellt die Wallet zusätzliche Adressen, um Transaktionen zu entdecken Standard 20</translation>
+			<translation>Während des Scannens der Blockchain erstellt die Wallet zusätzliche Adressen, um Transaktionen
+zu entdecken Standard 20</translation>
 		</message>
 	</context>
 	<context>
@@ -1601,7 +1602,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Lightning</source>
-			<translation>&amp;Lightning</translation>
+			<translation>&amp; Lightning</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1626,7 +1627,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Onchain</source>
-			<translation>&amp;Onchain</translation>
+			<translation>&amp; Onchain</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3452,7 +3453,8 @@ um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you will not be able to broadcast it.</source>
-			<translation>Bitte ändere den Gebührensatz auf mindestens {minimum}, sonst kannst du sie nicht senden.</translation>
+			<translation>Bitte ändere den Gebührensatz auf mindestens {minimum},
+sonst kannst du sie nicht senden.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
