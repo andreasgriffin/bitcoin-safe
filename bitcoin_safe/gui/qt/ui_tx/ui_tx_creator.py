@@ -612,14 +612,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if utxos_for_input.spend_all_utxos or not utxos_for_input.utxos:
             return utxos_for_input
 
-        utxo_values = np.array([utxo.txout.value for utxo in utxos_for_input.utxos])
+        utxo_values = np.array([utxo.txout.value.to_sat() for utxo in utxos_for_input.utxos])
         sort_filter: List[int] = (np.argsort(utxo_values)[::-1]).tolist()  # type: ignore
 
         selected_utxos: List[PythonUtxo] = []
         for i in sort_filter:
             utxo = utxos_for_input.utxos[i]
             selected_utxos.append(utxo)
-            if sum([utxo.txout.value for utxo in selected_utxos]) >= send_value:
+            if sum([utxo.txout.value.to_sat() for utxo in selected_utxos]) >= send_value:
                 break
 
         return UtxosForInputs(
@@ -722,12 +722,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def get_total_input_value(self) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
+        total_input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values() if utxo])
         return total_input_value
 
     def get_total_change_amount(self, include_max_checked=False) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
+        total_input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values() if utxo])
 
         total_output_value = sum(
             [
@@ -852,7 +852,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 assert (
                     txinfos.replace_tx
                 ), f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
-                replace_txid = txinfos.replace_tx.compute_txid()
+                replace_txid = str(txinfos.replace_tx.compute_txid())
                 replace_tx_details, wallet = get_tx_details(txid=replace_txid, signals=self.signals)
                 if not replace_tx_details:
                     logger.error(f"Could not get tx_details of {replace_txid=} for rbf")
@@ -890,7 +890,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
         if txinfos.spend_all_utxos:
             utxos = list(self.get_tx_ui_infos().utxo_dict.values())
-            parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+            parent_txids = set(str(utxo.outpoint.txid) for utxo in utxos)
 
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
@@ -918,7 +918,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             categories: Set[str] = set()
             if self.wallet:
                 for utxo in tx_ui_infos.utxo_dict.keys():
-                    categories = categories.union(self.wallet.get_categories_for_txid(utxo.txid))
+                    categories = categories.union(self.wallet.get_categories_for_txid(str(utxo.txid)))
             self.category_list.select_rows(
                 categories,
                 column=self.category_list.key_column,

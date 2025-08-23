@@ -28,6 +28,7 @@
 
 
 import logging
+from typing import cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -54,10 +55,10 @@ logger = logging.getLogger(__name__)
 
 
 class NewWalletWelcomeScreen(QWidget):
-    signal_onclick_multisig_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_onclick_single_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_onclick_custom_signature: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_remove_me: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    signal_onclick_multisig_signature = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_onclick_single_signature = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_onclick_custom_signature = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_remove_me = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
 
     def __init__(
         self,

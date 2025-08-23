@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QPushButton,
     QSizePolicy,
+    QSpinBox,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
@@ -69,7 +70,6 @@ from bitcoin_safe.network_config import (
     NetworkConfigs,
     P2pListenerType,
     Peers,
-    get_default_cbf_hosts,
     get_default_p2p_node_urls,
     get_default_port,
     get_default_rpc_hosts,
@@ -163,15 +163,13 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
             return None
 
     elif network_config.server_type == BlockchainType.CompactBlockFilter:
-        # This case might require a different approach depending on how you intend to connect to the p2p network.
-        # This is a placeholder as testing p2p connections is more complex and out of scope for this example.
-        raise Exception("Not implemented yet")
+        return "CompactBlockFilter"
     raise Exception(f"Invalud {network_config.server_type}")
 
 
 class NetworkSettingsUI(QWidget):
-    signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
-    signal_cancel: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_apply_and_shutdown = cast(TypedPyQtSignal[bdk.Network], pyqtSignal(bdk.Network))
+    signal_cancel = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,
@@ -198,7 +196,7 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_connection_layout = QVBoxLayout(self.groupbox_connection)
 
         self.server_type_comboBox = QComboBox(self)
-        for blockchain_type in BlockchainType.active_types():
+        for blockchain_type in BlockchainType.active_types(network=network):
             self.server_type_comboBox.addItem(BlockchainType.to_text(blockchain_type))
 
         self.groupbox_connection_layout.addWidget(self.server_type_comboBox)
@@ -208,41 +206,22 @@ class NetworkSettingsUI(QWidget):
 
         # Compact Block Filters
         self.compactBlockFiltersTab = QWidget()
-        self.compactBlockFiltersLayout = QFormLayout(self.compactBlockFiltersTab)
-        self.compactBlockFiltersLayout.setFieldGrowthPolicy(
-            QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow
-        )
+        self.compactBlockFiltersLayout = QGridLayout(self.compactBlockFiltersTab)
 
-        self.compactblockfilters_ip_address_edit = QCompleterLineEdit(
-            network=network,
-            suggestions={
-                network: list(get_default_cbf_hosts(network=network).values()) for network in bdk.Network
-            },
-        )
-        self.compactblockfilters_ip_address_edit.setEnabled(False)
-        self.compactblockfilters_ip_address_edit_label = QLabel()
-        self.compactBlockFiltersLayout.addRow(
-            self.compactblockfilters_ip_address_edit_label, self.compactblockfilters_ip_address_edit
-        )
+        self.cbf_connection_label = IconLabel()
+        self.cbf_connection_label.textLabel.setVisible(True)
+        self.cbf_connection_label.set_icon_as_help(tooltip="")
+        self.compactBlockFiltersLayout.addWidget(self.cbf_connection_label, 0, 0)
 
-        self.compactblockfilters_port_edit = QCompleterLineEdit(
-            network=network,
-            suggestions={
-                network: [str(get_default_port(network, server_type=BlockchainType.CompactBlockFilter))]
-                for network in bdk.Network
-            },
-        )
-        self.compactblockfilters_port_edit.setEnabled(False)
-        self.compactblockfilters_port_edit_label = QLabel()
-        self.compactBlockFiltersLayout.addRow(
-            self.compactblockfilters_port_edit_label, self.compactblockfilters_port_edit
-        )
+        self.cbf_connections_edit = QSpinBox()
+        self.cbf_connections_edit.setRange(2, 16)  # values for kyoto
+        self.compactBlockFiltersLayout.addWidget(self.cbf_connections_edit, 0, 1)
 
         self.cbf_description = QLabel()
         self.cbf_description.setWordWrap(True)
         self.cbf_description.setTextFormat(Qt.TextFormat.RichText)
         self.cbf_description.setOpenExternalLinks(True)  # Enable opening links
-        self.compactBlockFiltersLayout.addRow("", self.cbf_description)
+        self.compactBlockFiltersLayout.addWidget(self.cbf_description, 1, 0, 1, 2)
 
         self.stackedWidget.addWidget(self.compactBlockFiltersTab)
 
@@ -500,6 +479,11 @@ class NetworkSettingsUI(QWidget):
         )
         self.on_p2p_type_combobox_Changed()
 
+        self.cbf_connection_label.set_icon_as_help(
+            tooltip=self.tr("More connections increase privacy but reduce syncing speed.")
+        )
+        self.cbf_connection_label.textLabel.setText(self.tr("Number of p2p connections:"))
+
     def on_electrum_url_editing_finished(self):
         def get_use_ssl(url: str):
             for electrum_config in get_electrum_configs(self.network).values():
@@ -591,7 +575,7 @@ class NetworkSettingsUI(QWidget):
             self.stackedWidget.setCurrentWidget(self.rpcTab)
 
     def on_network_change(self, new_index: int):
-        new_network = self.network_combobox.itemData(new_index)
+        new_network: bdk.Network = self.network_combobox.itemData(new_index)
 
         self._edits_set_network(new_network)
         self.set_ui(self.network_configs.configs[new_network.name])
@@ -605,6 +589,12 @@ class NetworkSettingsUI(QWidget):
         self.edit_mempool_url.set_network(network)
         self.proxy_url_edit.set_network(network)
         self.p2p_inital_url_edit.set_network(network)
+
+        prev_text = self.server_type_comboBox.currentText()
+        self.server_type_comboBox.clear()
+        for blockchain_type in BlockchainType.active_types(network=network):
+            self.server_type_comboBox.addItem(BlockchainType.to_text(blockchain_type))
+        self.server_type_comboBox.setCurrentText(prev_text)
 
     def add_to_completer_memory(self):
         self.electrum_url_edit.add_current_to_memory()
@@ -739,6 +729,18 @@ class NetworkSettingsUI(QWidget):
     @rpc_ip.setter
     def rpc_ip(self, ip: str):
         self.rpc_ip_address_edit.setText(ip if ip else "")
+
+    @property
+    def cbf_connections(self) -> int:
+        try:
+            return int(self.cbf_connections_edit.value())
+        except Exception as e:
+            logger.debug(f"{self.__class__.__name__}: {e}")
+            return self.network_configs.configs[self.network.name].cbf_connections
+
+    @cbf_connections.setter
+    def cbf_connections(self, value: int):
+        self.cbf_connections_edit.setValue(value)
 
     @property
     def rpc_port(self) -> int:

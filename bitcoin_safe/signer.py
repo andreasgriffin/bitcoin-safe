@@ -29,7 +29,7 @@
 
 import logging
 from functools import partial
-from typing import Dict
+from typing import Dict, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -56,8 +56,8 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractSignatureImporter(QObject):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
-    signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
+    signal_signature_added = cast(TypedPyQtSignal[bdk.Psbt], pyqtSignal(bdk.Psbt))
+    signal_final_tx_received = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
     keystore_type = KeyStoreImporterTypes.clipboard
 
     def __init__(
@@ -125,7 +125,7 @@ class AbstractSignatureImporter(QObject):
                     self.signal_final_tx_received.emit(finalized_tx)
                     return
 
-                logger.debug(f"psbt updated {psbt2.extract_tx().compute_txid()[:4]=}")
+                logger.debug(f"psbt updated {str(psbt2.extract_tx().compute_txid())[:4]=}")
                 self.signal_signature_added.emit(psbt2)
 
             elif data.data_type == DataType.Tx:

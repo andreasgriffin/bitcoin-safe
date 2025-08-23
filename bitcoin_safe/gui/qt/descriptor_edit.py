@@ -27,7 +27,7 @@
 # SOFTWARE.
 
 import logging
-from typing import Optional
+from typing import Optional, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
@@ -73,7 +73,7 @@ logger = logging.getLogger(__name__)
 
 
 class DescriptorExport(QDialog):
-    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    aboutToClose = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
 
     def __init__(
         self,
@@ -118,7 +118,7 @@ class DescriptorInputField(AnalyzerTextEdit):
 
 
 class DescriptorEdit(QWidget):
-    signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_descriptor_change = cast(TypedPyQtSignal[str], pyqtSignal(str))
 
     def __init__(
         self,
