@@ -90,7 +90,7 @@
        width="138"
        height="258"
        rx="20"
-       stroke="#000000"
+       stroke="currentColor"
        stroke-width="2"
        id="rect5395"
        style="fill:none;stroke-width:5.95467;stroke-dasharray:none"
@@ -99,13 +99,13 @@
        y="-127.91856"
        width="44"
        height="40"
-       stroke="#000000"
+       stroke="currentColor"
        stroke-width="2"
        id="rect5397"
        style="fill:none;stroke-width:5.95467;stroke-dasharray:none"
        clip-path="url(#clipPath5812)" /></g><path
      d="m 33.683707,53.88244 v -11.611 l 9.3837,-4.033 v -18.081 l 9.3278,-4.076 v 29.692 z m 42.0728,0.098 v -11.596 l -9.3837,-4.048 v -18.081 l -9.3278,-4.048 v 29.664 z m -21.0084,-4.145 -18.6554,8.151 18.6414,8.095 18.7115,-8.137 z"
-     fill="#000000"
+     fill="currentColor"
      fill-opacity="0.1"
      id="path5399"
      clip-path="url(#clipPath5806)"
@@ -132,9 +132,9 @@
      id="g870"
      transform="matrix(0,0.3358707,-0.3358707,0,58.12531,5.7222657)"
      style="stroke-width:5.95467"><path
-       style="color:#000000;fill:#000000;-inkscape-stroke:none"
+       style="color:currentColor;fill:currentColor;-inkscape-stroke:none"
        d="m 5.9394531,-90.896484 c -12.6779319,0 -22.9765621,10.300583 -22.9765621,22.978515 V 150.08203 c 0,12.67793 10.2986302,22.97656 22.9765621,22.97656 H 103.93945 c 12.67794,0 22.97852,-10.29863 22.97852,-22.97656 V -67.917969 c 0,-12.677932 -10.30058,-22.978515 -22.97852,-22.978515 z m 0,5.955078 H 103.93945 c 9.48205,0 17.02344,7.541391 17.02344,17.023437 V 150.08203 c 0,9.48205 -7.54139,17.02149 -17.02344,17.02149 H 5.9394531 c -9.4820459,0 -17.0214841,-7.53944 -17.0214841,-17.02149 V -67.917969 c 0,-9.482046 7.5394382,-17.023437 17.0214841,-17.023437 z"
        id="rect866" /><path
-       style="color:#000000;fill:#000000;-inkscape-stroke:none"
+       style="color:currentColor;fill:currentColor;-inkscape-stroke:none"
        d="m 29.707031,-130.89648 v 2.97851 42.976564 h 49.953125 v -45.955074 z m 5.953125,5.95507 h 38.046875 v 34.044926 H 35.660156 Z"
        id="rect868" /></g></svg>

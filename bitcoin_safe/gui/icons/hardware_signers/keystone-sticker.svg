@@ -17,7 +17,7 @@
   <sodipodi:namedview
      id="namedview1578"
      pagecolor="#ffffff"
-     bordercolor="#000000"
+     bordercolor="currentColor"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -38,7 +38,7 @@
      y="14.184067"
      width="178.59436"
      height="220.31233"
-     stroke="#000000"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="4.30933"
      id="rect1570"
@@ -68,7 +68,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.2645px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;stroke-width:3.40613">Label</tspan></text>
   </g>
   <rect
-     style="fill:none;fill-opacity:0.522581;stroke:#000000;stroke-width:6.15956;stroke-linecap:round;stroke-linejoin:bevel"
+     style="fill:none;fill-opacity:0.522581;stroke:currentColor;stroke-width:6.15956;stroke-linecap:round;stroke-linejoin:bevel"
      id="rect346"
      width="198.60599"
      height="260.50513"
@@ -80,18 +80,18 @@
      y="173.11281"
      width="147.55902"
      height="48.684174"
-     stroke="#000000"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="4.30933"
      id="rect910"
      ry="5.0857778"
-     style="fill:#000000;fill-opacity:0.25;stroke:none;stroke-width:1.85588;stroke-dasharray:none" />
+     style="fill:currentColor;fill-opacity:0.25;stroke:none;stroke-width:1.85588;stroke-dasharray:none" />
   <rect
      x="30.175417"
      y="115.11282"
      width="147.55902"
      height="48.684174"
-     stroke="#000000"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="4.30933"
      id="rect959"

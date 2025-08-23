@@ -76,7 +76,13 @@ from ...hardware_signers import (
 )
 from ...signals import SignalsMin
 from .sync_tab import SyncTab
-from .util import Message, MessageType, do_copy, save_file_dialog
+from .util import (
+    Message,
+    MessageType,
+    do_copy,
+    save_file_dialog,
+    svg_tools_hardware_signer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +153,7 @@ def get_export_icon(export_type: Union[DescriptorExportType, QrExportType]) -> Q
     filtered_hardware_signers = HardwareSigners.filtered_by([export_type])  # type:ignore
     if filtered_hardware_signers:
         filtered_hardware_signer = filtered_hardware_signers[0]
-        return QIcon(filtered_hardware_signer.icon_path)
+        return svg_tools_hardware_signer.get_QIcon(filtered_hardware_signer.icon_name)
     else:
         return QIcon()
 

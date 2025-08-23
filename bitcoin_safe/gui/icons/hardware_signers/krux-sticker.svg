@@ -17,7 +17,7 @@
   <sodipodi:namedview
      id="namedview1578"
      pagecolor="#ffffff"
-     bordercolor="#000000"
+     bordercolor="currentColor"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -38,7 +38,7 @@
      y="181"
      width="68"
      height="28"
-     stroke="black"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="2"
      id="rect1568" />
@@ -47,7 +47,7 @@
      y="181"
      width="68"
      height="28"
-     stroke="black"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="2"
      id="rect1570" />
@@ -56,13 +56,13 @@
      y="41"
      width="158"
      height="118"
-     stroke="black"
+     stroke="currentColor"
      stroke-opacity="0.25"
      stroke-width="2"
      id="rect1572" />
   <path
      d="M30 2H170V-2H30V2ZM198 30V270H202V30H198ZM170 298H30V302H170V298ZM2 270V30H-2V270H2ZM30 298C14.536 298 2 285.464 2 270H-2C-2 287.673 12.3269 302 30 302V298ZM198 270C198 285.464 185.464 298 170 298V302C187.673 302 202 287.673 202 270H198ZM170 2C185.464 2 198 14.536 198 30H202C202 12.3269 187.673 -2 170 -2V2ZM30 -2C12.3269 -2 -2 12.3269 -2 30H2C2 14.536 14.536 2 30 2V-2Z"
-     fill="black"
+     fill="currentColor"
      id="path1574" />
   <g
      id="g358"
