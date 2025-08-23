@@ -111,8 +111,12 @@ class HardwareSigner:
         return f"{self.name}-register-multisig-decriptor.png"
 
     @property
+    def icon_name(self):
+        return f"{self.name}-icon.svg"
+
+    @property
     def icon_path(self):
-        return get_hardware_signer_path(f"{self.name}-icon.svg")
+        return get_hardware_signer_path(self.icon_name)
 
     @property
     def image_path(self):
