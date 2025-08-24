@@ -52,7 +52,6 @@ from bitcoin_safe.gui.qt.sign_message import SignMessage
 from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import set_no_margins, svg_tools
-from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
@@ -250,9 +249,7 @@ class AddressDialog(QWidget):
             else None
         )
         if self.tab_validate:
-            self.recipient_tabs.addTab(
-                self.tab_validate, svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename), ""
-            )
+            self.recipient_tabs.addTab(self.tab_validate, "")
 
         self.qr_code = QRAddress()
         self.qr_code.set_address(self.bdk_address)

@@ -42,6 +42,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util import time_logger
 from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -100,12 +101,7 @@ from .bitcoin_quick_receive import BitcoinQuickReceive
 from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
-from .util import (
-    Message,
-    MessageType,
-    caught_exception_message,
-    custom_exception_handler,
-)
+from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
 
 logger = logging.getLogger(__name__)
@@ -769,6 +765,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_descriptor_ui.protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_all_ui_from_protowallet()
 
+    @time_logger
     def get_delta_txs(self, access_marker="notifications") -> DeltaCacheListTransactions:
         delta_txs = self.wallet.bdkwallet.list_delta_transactions(access_marker=access_marker)
         return delta_txs
@@ -852,65 +849,38 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.hanlde_removed_txs(delta_txs.removed)
         self.handle_appended_txs(delta_txs.appended)
 
+    @time_logger
     def refresh_caches_and_ui_lists(
         self,
         force_ui_refresh=True,
         chain_height_advanced=False,
-        clear_cache=True,
     ) -> None:
         # before the wallet UI updates, we have to refresh the wallet caches to make the UI update faster
-        logger.debug("refresh_caches_and_ui_lists")
-        if clear_cache:
-            self.wallet.clear_cache()
 
-        async def do() -> Any:
-            try:
-                self.wallet.fill_commonly_used_caches()
-            finally:
-                return True
+        self.wallet.fill_commonly_used_caches_min()
 
-        def on_done(filled_caches: bool) -> None:
-            if not filled_caches:
-                logger.info(f"{filled_caches=} so we skip the updating")
-                return
-            delta_txs = self.get_delta_txs()
-            change_dict = delta_txs.was_changed()
-            formatted_dict = {k: [tx.txid for tx in v] for k, v in change_dict.items()}
-            logger.debug(f"{len(formatted_dict)=}")
-            if force_ui_refresh or change_dict:
-                self.handle_delta_txs(delta_txs)
+        delta_txs = self.get_delta_txs()
+        change_dict = delta_txs.was_changed()
+        formatted_dict = {k: [tx.txid for tx in v] for k, v in change_dict.items()}
+        logger.debug(f"{len(formatted_dict)=}")
+        if force_ui_refresh or change_dict:
+            self.handle_delta_txs(delta_txs)
 
-                # now do the UI
-                logger.debug("start refresh ui")
-
-                self.wallet_signals.updated.emit(
-                    UpdateFilter(
-                        refresh_all=True,
-                        reason=(
-                            UpdateFilterReason.TransactionChange
-                            if change_dict
-                            else UpdateFilterReason.ForceRefresh
-                        ),
-                    )
-                )
-            elif chain_height_advanced:
-                self.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.ChainHeightAdvanced))
-
-        def on_success(result) -> None:
             # now do the UI
-            logger.debug("on_success refresh ui")
+            logger.debug("start refresh ui")
 
-        def on_error(packed_error_info) -> None:
-            custom_exception_handler(*packed_error_info)
-
-        self.loop_in_thread.run_task(
-            do(),
-            on_done=on_done,
-            on_success=on_success,
-            on_error=on_error,
-            key=f"{id(self)}refresh_caches_and_ui_lists",
-            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
-        )
+            self.wallet_signals.updated.emit(
+                UpdateFilter(
+                    refresh_all=True,
+                    reason=(
+                        UpdateFilterReason.TransactionChange
+                        if change_dict
+                        else UpdateFilterReason.ForceRefresh
+                    ),
+                )
+            )
+        elif chain_height_advanced:
+            self.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.ChainHeightAdvanced))
 
     def _create_send_tab(
         self,

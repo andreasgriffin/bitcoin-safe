@@ -38,7 +38,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QShowEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
@@ -56,6 +56,7 @@ from bitcoin_safe.execute_config import DEMO_MODE, GENERAL_RBF_AVAILABLE, IS_PRO
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
+from bitcoin_safe.gui.qt.my_treeview import needs_frequent_flag
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.tx_export import TxExport
@@ -191,6 +192,8 @@ class UITx_Viewer(UITx_Base):
         self.client = client
         self.utxo_list = widget_utxo_with_toolbar.utxo_list
         self.chain_position = chain_position
+        self._forced_update = False
+        self._pending_update = True
 
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
@@ -630,7 +633,33 @@ class UITx_Viewer(UITx_Base):
             txinfos.fee_rate = new_fee_rate
         TxTools.edit_tx(replace_tx=tx, txinfos=txinfos, signals=self.signals)
 
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        if a0 and a0.isAccepted() and self._pending_update:
+            self._forced_update = True
+            self.reload(UpdateFilter(refresh_all=True))
+            self._forced_update = False
+
+    def maybe_defer_update(self) -> bool:
+        """Returns whether we should defer an update/refresh."""
+        defer = (
+            not self._forced_update
+            and not self.isVisible()
+            and not needs_frequent_flag(self.get_tx_status(chain_position=self.chain_position))
+        )
+        # side-effect: if we decide to defer update, the state will become stale:
+        self._pending_update = defer
+        if not defer:
+            self._forced_update = False
+        return defer
+
     def reload(self, update_filter: UpdateFilter) -> None:
+        # update the tab icons no matter what, since the chain_height can advance, needing a change in the icon
+        self.set_tab_properties(chain_position=self.chain_position)
+
+        if self.maybe_defer_update():
+            return
+
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True

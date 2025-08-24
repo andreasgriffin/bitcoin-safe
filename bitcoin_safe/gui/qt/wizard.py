@@ -94,7 +94,6 @@ from .util import (
     center_in_widget,
     create_button_box,
     generate_help_button,
-    get_icon_path,
     one_time_signal_connection,
     open_website,
     set_no_margins,
@@ -1279,7 +1278,7 @@ class LabelBackup(BaseTab):
         icon_basename = SyncTab.get_icon_basename(
             enabled=bool(self.refs.qt_wallet and self.refs.qt_wallet.sync_tab.enabled())
         )
-        self.icon.load(get_icon_path(icon_basename))
+        self.icon.setSvgContent(svg_content=svg_tools.get_svg_content(icon_basename=icon_basename))
         self.checkbox.setChecked(self.refs.qt_wallet.sync_tab.enabled() if self.refs.qt_wallet else False)
 
 

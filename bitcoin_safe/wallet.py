@@ -1188,19 +1188,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         return [a for a in output_addresses if a]
 
     @time_logger
-    def fill_commonly_used_caches(self) -> None:
-        # you have to repeat fetching new tx when you start watching new addresses
-        # And you can only start watching new addresses once you detected transactions on them.
-        # Thas why this fetching has to be done in a loop
+    def fill_commonly_used_caches_min(self) -> None:
         self.clear_cache()
-        addresses = self.get_addresses()
-        self.get_height()
-        self.bdkwallet.list_output()
-        self.get_dict_fulltxdetail()
-        self.get_all_txos_dict()
+        self.get_addresses()
         self.set_categories_of_used_addresses()
-        if addresses:
-            self.is_my_address_with_peek(addresses[-1])
 
     @instance_lru_cache()
     def get_txs(self) -> Dict[str, TransactionDetails]:

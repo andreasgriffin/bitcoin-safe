@@ -1391,6 +1391,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         # this MUST be after the selection,
         # such that on_selection_change is not triggered
         self._currently_updating = False
+        self._forced_update = False
 
         self.signal_finished_update.emit()
 

@@ -850,7 +850,7 @@ class MainWindow(QMainWindow):
             "",
             partial(
                 webopen,
-                "https://yakihonne.com/users/npub1g9uhysae68vhvwwqel8v9enr9mg43rn4tpurs6a9g4jsrw6nl7lsplhs9v",
+                "https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g",
             ),
         )
 

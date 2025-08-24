@@ -112,8 +112,9 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
             "electrum.blockstream.info": ElectrumConfig("electrum.blockstream.info:60002", True),  # testnet3
         },
         bdk.Network.TESTNET4: {
-            "default": ElectrumConfig("mempool.space:40002", True),  # Testnet4
-            "mempool.space": ElectrumConfig("mempool.space:40002", True),  # Testnet4
+            "default": ElectrumConfig("blackie.c3-soft.com:57010", True),
+            "blackie": ElectrumConfig("blackie.c3-soft.com:57010", True),
+            "mempool.space": ElectrumConfig("mempool.space:40002", True),
         },
         bdk.Network.SIGNET: {
             "default": ElectrumConfig("mempool.space:60602", True),
