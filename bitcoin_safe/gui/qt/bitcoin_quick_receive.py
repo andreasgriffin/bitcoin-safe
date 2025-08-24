@@ -60,6 +60,7 @@ class BitcoinQuickReceive(
         self.signals_min = signals_min
         self.limit_to_categories = limit_to_categories
         self._pending_update = False
+        self._forced_update = False
 
         # fixed height
         self.setFixedHeight(220)

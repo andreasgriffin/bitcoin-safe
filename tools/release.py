@@ -62,15 +62,11 @@ def get_default_description(latest_tag: str):
 
 - 
 
+### Check out 
 
-### 🔋Batteries included🔋
-Lots of existing features were not mentioned above, so please check out:
-
-- [Why choose Bitcoin Safe?](https://bitcoin-safe.org/en/features/usps/)
 - www.bitcoin-safe.org
-- [Readme](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#bitcoin-safe) and [Comprehensive Feature List](https://github.com/andreasgriffin/bitcoin-safe?tab=readme-ov-file#comprehensive-feature-list)
-- Follow me on [nostr](https://yakihonne.com/users/npub1g9uhysae68vhvwwqel8v9enr9mg43rn4tpurs6a9g4jsrw6nl7lsplhs9v) or [X](https://x.com/BitcoinSafeOrg)
-
+- 🌍 Community forum: [chorus](https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki)
+- Follow on [nostr](https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g) or [X](https://x.com/BitcoinSafeOrg)
 
 ####  Verify signature
 
