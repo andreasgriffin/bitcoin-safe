@@ -100,7 +100,7 @@ def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
     return True
 
 
-@dataclass
+@dataclass(slots=True)
 class TestWalletConfig:
     utxo_value_private: int
     utxo_value_kyc: int
@@ -108,7 +108,7 @@ class TestWalletConfig:
     num_kyc: int
 
 
-@dataclass
+@dataclass(slots=True)
 class TestCoinControlConfig:
     opportunistic_merge_utxos: bool
     python_random_seed: int = 0

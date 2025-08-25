@@ -74,7 +74,7 @@ class WalletDifferenceType(enum.Enum):
     ImpactOnAddresses = 100
 
 
-@dataclass
+@dataclass(slots=True)
 class WalletDifference:
     type: WalletDifferenceType
     key: str
@@ -82,7 +82,7 @@ class WalletDifference:
     other_value: Any
 
 
-@dataclass
+@dataclass(slots=True)
 class WalletDifferences(list[WalletDifference]):
 
     def has_impact_on_addresses(self) -> bool:

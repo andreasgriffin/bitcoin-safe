@@ -630,7 +630,7 @@ class StepProgressContainer(QWidget):
         return super().close()
 
 
-@dataclass
+@dataclass(slots=True)
 class VisibilityOption:
     widget: QWidget
     on_focus_set_visible: bool

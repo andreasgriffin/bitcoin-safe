@@ -57,6 +57,9 @@ def main() -> None:
     app.exec()
 
 
+# py-spy record -o prof.speedscope.json --format speedscope --rate 20 --native -- python -m bitcoin_safe
+# open in https://www.speedscope.app/
+
 if __name__ == "__main__":
     args = parse_args()
 

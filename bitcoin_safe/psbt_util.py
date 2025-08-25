@@ -43,7 +43,7 @@ from .pythonbdk_types import (
     PythonUtxo,
     TransactionDetails,
     TxOut,
-    robust_address_str_from_script,
+    robust_address_str_from_txout,
 )
 
 logger = logging.getLogger(__name__)
@@ -311,13 +311,13 @@ class PubKeyInfo:
         self.label = label
 
 
-@dataclass
+@dataclass(slots=True)
 class PartialSig:
     signature: str
     sighash_type: str
 
 
-@dataclass
+@dataclass(slots=True)
 class SimpleInput:
     txin: bdk.TxIn
     witness_script: Optional[str] = None
@@ -448,7 +448,7 @@ class SimpleInput:
         return {str(prev_out): non_witness_utxo_prev_out}
 
 
-@dataclass
+@dataclass(slots=True)
 class SimpleOutput:
     value: int = 0
     script_pubkey: str = ""
@@ -483,7 +483,7 @@ class SimpleOutput:
         return TxOut(value=self.value, script_pubkey=hex_to_script(self.script_pubkey))
 
 
-@dataclass
+@dataclass(slots=True)
 class SimplePSBT:
     txid: str
     inputs: List[SimpleInput] = field(default_factory=list)
@@ -549,7 +549,7 @@ class SimplePSBT:
 
         python_txos = [
             PythonUtxo(
-                address=robust_address_str_from_script(script_pubkey=txout.script_pubkey, network=network),
+                address=robust_address_str_from_txout(txout, network=network),
                 txout=txout,
                 outpoint=OutPoint(vout=vout, txid=self.txid),
             )

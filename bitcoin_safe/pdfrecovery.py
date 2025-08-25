@@ -79,7 +79,7 @@ class FontType(Enum):
     BUILTIN = "builtin"
 
 
-@dataclass
+@dataclass(slots=True)
 class FontInfo:
     font_name: str
     font_type: FontType

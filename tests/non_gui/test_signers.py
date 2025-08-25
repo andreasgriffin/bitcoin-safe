@@ -158,7 +158,7 @@ def dummy_instance_with_close_all_video_widgets() -> My:
     return My()
 
 
-@dataclass
+@dataclass(slots=True)
 class PyTestBDKSetup:
     network: bdk.Network
     descriptors: List[bdk.Descriptor]

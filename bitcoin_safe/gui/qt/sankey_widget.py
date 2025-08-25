@@ -66,7 +66,7 @@ class FlowType(enum.Enum):
     OutFlow = enum.auto()
 
 
-@dataclass
+@dataclass(slots=True)
 class FlowIndex:
     flow_type: FlowType
     i: int

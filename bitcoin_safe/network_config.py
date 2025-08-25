@@ -87,7 +87,7 @@ def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
     return d[network]
 
 
-@dataclass
+@dataclass(slots=True)
 class ElectrumConfig:
     url: str
     use_ssl: bool
@@ -403,7 +403,7 @@ class Peers(list[Peer]):
     pass
 
 
-@dataclass
+@dataclass(slots=True)
 class ConnectionInfo:
     peer: Peer
     proxy_info: ProxyInfo | None

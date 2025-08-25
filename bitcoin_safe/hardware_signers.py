@@ -41,7 +41,7 @@ from bitcoin_safe.gui.qt.util import (
 logger = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class DescriptorExportType:
     name: str
     display_name: str
@@ -86,7 +86,7 @@ class SignMessageRequestQrExportTypes:
         ]
 
 
-@dataclass
+@dataclass(slots=True)
 class HardwareSigner:
     name: str
     display_name: str
