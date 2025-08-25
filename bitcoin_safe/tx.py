@@ -41,8 +41,9 @@ from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
+    TxOut,
     UtxosForInputs,
-    robust_address_str_from_script,
+    robust_address_str_from_txout,
 )
 
 logger = logging.getLogger(__name__)
@@ -189,7 +190,7 @@ def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, 
             {
                 "value": out.value,
                 "script_pubkey": serialized_to_hex(out.script_pubkey.to_bytes()),
-                "address": robust_address_str_from_script(out.script_pubkey, network=network),
+                "address": robust_address_str_from_txout(TxOut.from_bdk(out), network=network),
             }
         )
 

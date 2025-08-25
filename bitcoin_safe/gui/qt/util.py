@@ -749,7 +749,7 @@ class ColorScheme:
     def has_dark_background(widget: QWidget):
         background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
         rgb = background_color.getRgb()[0:3]
-        brightness = sum([c for c in rgb if c])
+        brightness = sum(c for c in rgb if c)
         return brightness < (255 * 3 / 2)
 
     @staticmethod

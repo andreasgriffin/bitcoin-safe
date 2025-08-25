@@ -31,14 +31,14 @@ from typing import List, Tuple
 
 import bdkpython as bdk
 
-from ..psbt_util import robust_address_str_from_script
+from bitcoin_safe.pythonbdk_types import TxOut, robust_address_str_from_txout
 
 logger = logging.getLogger(__name__)
 
 
 def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: List[str]) -> bool:
     for output in tx.output():
-        address = robust_address_str_from_script(script_pubkey=output.script_pubkey, network=network)
+        address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
         if address in address_filter:
             return True
     return False

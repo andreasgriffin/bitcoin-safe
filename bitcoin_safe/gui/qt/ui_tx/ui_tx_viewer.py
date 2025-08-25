@@ -81,8 +81,9 @@ from ....pythonbdk_types import (
     PythonUtxo,
     Recipient,
     TransactionDetails,
+    TxOut,
     get_prev_outpoints,
-    robust_address_str_from_script,
+    robust_address_str_from_txout,
 )
 from ....signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
 from ....signer import (
@@ -1129,7 +1130,7 @@ class UITx_Viewer(UITx_Base):
                 return None
             total_input_value += python_txo.txout.value
 
-        total_output_value = sum([txout.value for txout in tx.output()])
+        total_output_value = sum(txout.value for txout in tx.output())
         fee_amount = total_input_value - total_output_value
         return FeeInfo(
             fee_amount=fee_amount,
@@ -1172,12 +1173,10 @@ class UITx_Viewer(UITx_Base):
             )
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
-        outputs: List[bdk.TxOut] = tx.output()
+        outputs = [TxOut.from_bdk(txout) for txout in tx.output()]
         advance_tip_for_addresses(
             addresses=[
-                robust_address_str_from_script(
-                    o.script_pubkey, network=self.network, on_error_return_hex=False
-                )
+                robust_address_str_from_txout(o, network=self.network, on_error_return_hex=False)
                 for o in outputs
             ],
             signals=self.signals,
@@ -1185,7 +1184,7 @@ class UITx_Viewer(UITx_Base):
 
         self.recipients.recipients = [
             Recipient(
-                address=robust_address_str_from_script(output.script_pubkey, self.network),
+                address=robust_address_str_from_txout(output, self.network),
                 amount=output.value,
             )
             for output in outputs
@@ -1328,12 +1327,10 @@ class UITx_Viewer(UITx_Base):
             tx_status=tx_status,
         )
 
-        outputs: List[bdk.TxOut] = tx.output()
+        outputs = [TxOut.from_bdk(txout) for txout in tx.output()]
         advance_tip_for_addresses(
             addresses=[
-                robust_address_str_from_script(
-                    o.script_pubkey, network=self.network, on_error_return_hex=False
-                )
+                robust_address_str_from_txout(o, network=self.network, on_error_return_hex=False)
                 for o in outputs
             ],
             signals=self.signals,
@@ -1341,7 +1338,7 @@ class UITx_Viewer(UITx_Base):
 
         self.recipients.recipients = [
             Recipient(
-                address=str(bdk.Address.from_script(output.script_pubkey, self.network)),
+                address=robust_address_str_from_txout(output, self.network),
                 amount=output.value,
             )
             for output in outputs
