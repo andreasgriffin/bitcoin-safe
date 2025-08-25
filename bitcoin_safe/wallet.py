@@ -477,7 +477,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
         start_time = time()
         result = [
             str(OutPoint.from_bdk(output.outpoint))
-            for output in super().list_output()
+            for output in self.list_output()
             if include_spent or not output.is_spent
         ]
         logger.debug(f"self.bdkwallet.list_output {len(result)} results in { time()-start_time}s")
@@ -549,10 +549,10 @@ class BdkWallet(bdk.Wallet, CacheManager):
             if not new:
                 continue
             if old.fee != new.fee:
-                entry.modified.append(old)
+                entry.modified.append(new)
                 continue
             if type(old.chain_position) != type(new.chain_position):
-                entry.modified.append(old)
+                entry.modified.append(new)
                 continue
             if (
                 (is_local(old.chain_position) or is_local(new.chain_position))
@@ -560,7 +560,7 @@ class BdkWallet(bdk.Wallet, CacheManager):
                 and isinstance(new.chain_position, bdk.ChainPosition.UNCONFIRMED)
                 and old.chain_position.timestamp != new.chain_position.timestamp
             ):
-                entry.modified.append(old)
+                entry.modified.append(new)
                 continue
         logger.info(entry.modified)
         return entry
@@ -1404,9 +1404,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             cache_dict_fulltxdetail = {}
             txs = delta_txs.new_state
         else:
-            txs = delta_txs.appended
+            txs = delta_txs.appended + delta_txs.modified
 
-        def append_dicts(txid, python_utxos: List[Optional[PythonUtxo]]) -> None:
+        def append_dicts(txid, python_utxos: Iterable[Optional[PythonUtxo]]) -> None:
             for python_utxo in python_utxos:
                 if not python_utxo:
                     continue
@@ -1439,7 +1439,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         # threadtable_batched: 4.1 s , this should perform best, however bdk is probably the bottleneck and not-multithreading capable
         key_value_pairs = list(map(process_inputs, txs))
         for txid, fulltxdetail in key_value_pairs:
-            append_dicts(txid, list(fulltxdetail.inputs.values()))
+            append_dicts(txid, fulltxdetail.inputs.values())
 
         if txs:
             logger.debug(f"get_dict_fulltxdetail  with {len(txs)} txs in {time()-  start_time}")
@@ -1667,7 +1667,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             logger.warning("No utxos or categories for coin selection")
             return utxos_for_input
 
-        total_sent_value = sum([recipient.amount for recipient in txinfos.recipients])
+        total_sent_value = sum(recipient.amount for recipient in txinfos.recipients)
 
         # check if you should spend all utxos, then there is no coin selection necessary
         if utxos_for_input.spend_all_utxos:
@@ -1833,6 +1833,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         utxos_for_input = self.handle_opportunistic_merge_utxos(txinfos)
         selected_outpoints = [OutPoint.from_bdk(utxo.outpoint) for utxo in utxos_for_input.utxos]
+        set_selected_outpoints = set(selected_outpoints)
         # bdk doesnt seem to shuffle the inputs, so I do it here
         random.shuffle(selected_outpoints)
 
@@ -1850,7 +1851,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             unspendable_outpoints = [
                 utxo.outpoint
                 for utxo in self.bdkwallet.list_output()
-                if OutPoint.from_bdk(utxo.outpoint) not in selected_outpoints
+                if OutPoint.from_bdk(utxo.outpoint) not in set_selected_outpoints
             ]
             tx_builder = tx_builder.unspendable(unspendable_outpoints)
 
@@ -2342,24 +2343,24 @@ def get_tx_details(txid: str, signals: Signals) -> Tuple[TransactionDetails, Wal
 
 
 class ToolsTxUiInfo:
+
     @staticmethod
     def fill_txo_dict_from_outpoints(
         txuiinfos: TxUiInfos, outpoints: List[OutPoint], wallets: List[Wallet]
     ) -> None:
-        "Will include the txo even if it is spent already  (useful for rbf)"
-
-        outpoint_dict = {
-            outpoint_str: (python_utxo, wallet)
-            for wallet in wallets
-            for outpoint_str, python_utxo in wallet.get_all_txos_dict().items()
-        }
-        for outpoint in outpoints:
-            if not str(outpoint) in outpoint_dict:
-                logger.warning(f"no python_utxo found for outpoint {outpoint} ")
-                continue
-            python_utxo, wallet = outpoint_dict[str(outpoint)]
-            txuiinfos.main_wallet_id = wallet.id
-            txuiinfos.utxo_dict[outpoint] = python_utxo
+        wanted = {str(op) for op in outpoints}
+        for wallet in wallets:
+            txos_dict = wallet.get_all_txos_dict()
+            hits = wanted & txos_dict.keys()
+            for op_str in hits:
+                pyutxo = txos_dict[op_str]
+                txuiinfos.main_wallet_id = wallet.id
+                txuiinfos.utxo_dict[pyutxo.outpoint] = pyutxo
+                wanted.remove(op_str)
+            if not wanted:
+                break
+        for op_str in wanted:
+            logger.warning(f"no python_utxo found for outpoint {op_str} ")
 
     @staticmethod
     def fill_utxo_dict_from_categories(
@@ -2422,7 +2423,7 @@ class ToolsTxUiInfo:
         # outputs
         checked_max_amount = len(tx.output()) == 1  # if there is only 1 recipient, there is no change address
         for txout in tx.output():
-            out_address = robust_address_str_from_script(txout.script_pubkey, network)
+            out_address = robust_address_str_from_txout(TxOut.from_bdk(txout), network)
             txinfos.recipients.append(
                 Recipient(out_address, txout.value, checked_max_amount=checked_max_amount)
             )

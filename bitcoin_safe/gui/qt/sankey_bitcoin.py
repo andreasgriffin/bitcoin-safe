@@ -47,7 +47,7 @@ from bitcoin_safe.pythonbdk_types import (
     PythonUtxo,
     TxOut,
     get_prev_outpoints,
-    robust_address_str_from_script,
+    robust_address_str_from_txout,
 )
 from bitcoin_safe.signals import Signals, UpdateFilter
 from bitcoin_safe.wallet import (
@@ -165,7 +165,7 @@ class SankeyBitcoin(SankeyWidget):
         out_flows: List[int] = [txout.value for txout in self.txouts]
         for vout, txout in enumerate(self.txouts):
             flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=vout)
-            address = robust_address_str_from_script(txout.script_pubkey, network=self.network)
+            address = robust_address_str_from_txout(txout, network=self.network)
             self.addresses.append(address)
 
             label = get_label_from_any_wallet(
@@ -245,9 +245,7 @@ class SankeyBitcoin(SankeyWidget):
         # handle cases where i have sufficient info to still construct a diagram
         if (None in in_flows) and fee_info and not fee_info.fee_amount_is_estimated:
             num_unknown_inputs = in_flows.count(None)
-            missing_inflows = (
-                sum(out_flows) + fee_info.fee_amount - sum([v for v in in_flows if v is not None])
-            )
+            missing_inflows = sum(out_flows) + fee_info.fee_amount - sum(v for v in in_flows if v is not None)
             # if there is only 1 input unknown, I can still construct a diagram, if the fee is known
             if num_unknown_inputs == 1:
                 for vout, in_flow in enumerate(in_flows):
@@ -274,7 +272,7 @@ class SankeyBitcoin(SankeyWidget):
                         flow_index = FlowIndex(flow_type=FlowType.InFlow, i=vout)
                         colors[flow_index] = QColor("#00000000")
 
-                if sum(out_flows) + fee_info.fee_amount != sum([v for v in in_flows if v is not None]):
+                if sum(out_flows) + fee_info.fee_amount != sum(v for v in in_flows if v is not None):
                     logger.warning(
                         f"Error in sankey bitcoin widget.  There should be enough info to construct a partial diagram."
                     )

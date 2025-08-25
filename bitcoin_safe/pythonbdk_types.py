@@ -31,6 +31,7 @@ import datetime
 import enum
 import logging
 from dataclasses import dataclass
+from functools import cached_property, lru_cache
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
@@ -65,8 +66,9 @@ class Recipient:
 
 
 class OutPoint(bdk.OutPoint):
-    def __key__(self) -> Tuple:
-        return tuple(v for k, v in sorted(self.__dict__.items()))
+
+    def __key__(self) -> tuple[str, int]:
+        return (self.txid, self.vout)
 
     def __hash__(self) -> int:
         "Necessary for the caching"
@@ -105,12 +107,24 @@ def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
 
 
 class TxOut(bdk.TxOut):
-    def __key__(self) -> Tuple:
-        return self.seralized_tuple()
+    @cached_property
+    def spk_bytes(self) -> bytes:
+        return bytes(self.script_pubkey.to_bytes())
+
+    @cached_property
+    def spk_hex(self) -> str:
+        return serialized_to_hex(self.spk_bytes)
+
+    def __key__(self) -> tuple[str, int]:
+        # use cached hex + value
+        return (self.spk_hex, self.value)
 
     def __hash__(self) -> int:
-        "Necessary for the caching"
-        return hash(self.__key__())
+        # hash on bytes (fast) + value
+        return hash((self.value, self.spk_bytes))
+
+    def seralized_tuple(self) -> tuple[str, int]:
+        return (self.spk_hex, self.value)
 
     def __str__(self) -> str:
         return str(self.__key__())
@@ -118,22 +132,14 @@ class TxOut(bdk.TxOut):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__key__()})"
 
-    def seralized_tuple(self) -> Tuple[str, int]:
-        return (serialized_to_hex(self.script_pubkey.to_bytes()), self.value)
+    def __eq__(self, other) -> bool:
+        return isinstance(other, TxOut) and (self.value == other.value and self.spk_bytes == other.spk_bytes)
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
         if isinstance(tx_out, TxOut):
             return tx_out
         return TxOut(value=tx_out.value, script_pubkey=tx_out.script_pubkey)
-
-    def __eq__(self, other) -> bool:
-        if isinstance(other, TxOut):
-            return (self.value, serialized_to_hex(self.script_pubkey.to_bytes())) == (
-                other.value,
-                serialized_to_hex(other.script_pubkey.to_bytes()),
-            )
-        return False
 
     @classmethod
     def from_seralized_tuple(cls, seralized_tuple: Tuple[str, int]) -> "TxOut":
@@ -172,11 +178,11 @@ class PythonUtxo(BaseSaveableClass):
     def __hash__(self) -> int:
         # Leverage Python’s tuple‐hashing;
         # this requires that OutPoint and TxOut themselves be hashable
-        return hash((self.address, str(self.outpoint), self.txout, self.is_spent_by_txid))
+        return hash((self.address, self.outpoint, self.txout, self.is_spent_by_txid))
 
 
 def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
-    return sum([python_utxo.txout.value for python_utxo in python_utxos])
+    return sum(python_utxo.txout.value for python_utxo in python_utxos)
 
 
 class UtxosForInputs:
@@ -243,15 +249,14 @@ class FullTxDetail:
         res = FullTxDetail(tx)
         txid = tx.txid
         for vout, txout in enumerate(tx.transaction.output()):
-            address = get_address_of_txout(TxOut.from_bdk(txout))
+            this_txout = TxOut.from_bdk(txout)
+            address = get_address_of_txout(this_txout)
             if not address:
                 if not tx.transaction.is_coinbase():
-                    logger.error(
-                        f"Could not calculate the address of {TxOut.from_bdk(txout)}. This should not happen."
-                    )
+                    logger.error(f"Could not calculate the address of {this_txout}. This should not happen.")
                 continue
             out_point = OutPoint(txid=txid, vout=vout)
-            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=TxOut.from_bdk(txout))
+            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=this_txout)
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
         return res
@@ -277,20 +282,16 @@ class FullTxDetail:
 
     def sum_outputs(self, address_domain: List[str]) -> int:
         return sum(
-            [
-                python_utxo.txout.value
-                for python_utxo in self.outputs.values()
-                if python_utxo and python_utxo.address in address_domain
-            ]
+            python_utxo.txout.value
+            for python_utxo in self.outputs.values()
+            if python_utxo and python_utxo.address in address_domain
         )
 
     def sum_inputs(self, address_domain: List[str]) -> int:
         return sum(
-            [
-                python_utxo.txout.value
-                for python_utxo in self.inputs.values()
-                if python_utxo and python_utxo.address in address_domain
-            ]
+            python_utxo.txout.value
+            for python_utxo in self.inputs.values()
+            if python_utxo and python_utxo.address in address_domain
         )
 
 
@@ -413,7 +414,7 @@ class Balance(QObject, SaveAllClass):
     def format_long(self, network: bdk.Network) -> str:
 
         details = [
-            f"{title}: {Satoshis (value, network=network).str_with_unit()}"
+            f"{title}: {Satoshis(value, network=network).str_with_unit()}"
             for title, value in [
                 (self.tr("Confirmed"), self.confirmed),
                 (
@@ -440,7 +441,9 @@ class Balance(QObject, SaveAllClass):
         return super().from_dump_migration(dct=dct)
 
 
-def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_return_hex=True) -> str:
+def robust_address_str_from_script(
+    script_pubkey: bdk.Script, network: bdk.Network, on_error_return_hex=True
+) -> str:
     try:
         return str(bdk.Address.from_script(script_pubkey, network))
     except Exception as e:
@@ -449,6 +452,13 @@ def robust_address_str_from_script(script_pubkey: bdk.Script, network, on_error_
             return serialized_to_hex(script_pubkey.to_bytes())
         else:
             return ""
+
+
+@lru_cache(maxsize=200_000)
+def robust_address_str_from_txout(txout: TxOut, network: bdk.Network, on_error_return_hex=True) -> str:
+    return robust_address_str_from_script(
+        script_pubkey=txout.script_pubkey, network=network, on_error_return_hex=on_error_return_hex
+    )
 
 
 if __name__ == "__main__":

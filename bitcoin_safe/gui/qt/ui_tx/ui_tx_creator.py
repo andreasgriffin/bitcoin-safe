@@ -619,7 +619,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         for i in sort_filter:
             utxo = utxos_for_input.utxos[i]
             selected_utxos.append(utxo)
-            if sum([utxo.txout.value for utxo in selected_utxos]) >= send_value:
+            if sum(utxo.txout.value for utxo in selected_utxos) >= send_value:
                 break
 
         return UtxosForInputs(
@@ -722,19 +722,17 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def get_total_input_value(self) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
+        total_input_value = sum(utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo)
         return total_input_value
 
     def get_total_change_amount(self, include_max_checked=False) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo])
+        total_input_value = sum(utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo)
 
         total_output_value = sum(
-            [
-                recipient.amount
-                for recipient in txinfos.recipients
-                if (recipient.checked_max_amount and include_max_checked) or not recipient.checked_max_amount
-            ]
+            recipient.amount
+            for recipient in txinfos.recipients
+            if (recipient.checked_max_amount and include_max_checked) or not recipient.checked_max_amount
         )  # this includes the old value of the spinbox
 
         total_change_amount = total_input_value - total_output_value
@@ -837,7 +835,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                         for fulltx in self.wallet.get_fulltxdetail_and_dependents(utxo.is_spent_by_txid)
                     ]
 
-            fee_amount = sum([(_tx_details.fee or 0) for _tx_details in txs_to_be_replaced])
+            fee_amount = sum((_tx_details.fee or 0) for _tx_details in txs_to_be_replaced)
 
             # because BumpFeeTxBuilder cannot build tx with too low fee,
             # we have to raise errors, if fee cannot be calculated

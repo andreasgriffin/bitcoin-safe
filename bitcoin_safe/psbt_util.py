@@ -43,7 +43,7 @@ from .pythonbdk_types import (
     PythonUtxo,
     TransactionDetails,
     TxOut,
-    robust_address_str_from_script,
+    robust_address_str_from_txout,
 )
 
 logger = logging.getLogger(__name__)
@@ -549,7 +549,7 @@ class SimplePSBT:
 
         python_txos = [
             PythonUtxo(
-                address=robust_address_str_from_script(script_pubkey=txout.script_pubkey, network=network),
+                address=robust_address_str_from_txout(txout, network=network),
                 txout=txout,
                 outpoint=OutPoint(vout=vout, txid=self.txid),
             )

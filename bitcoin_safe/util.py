@@ -33,7 +33,19 @@ import os
 from datetime import datetime, timedelta
 from functools import lru_cache, wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Concatenate,
+    Dict,
+    Iterable,
+    List,
+    ParamSpec,
+    Protocol,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import numpy as np
 
@@ -139,25 +151,37 @@ def jsonlines_to_list_of_dict(jsonlines: str) -> list[Dict]:
     return [json.loads(line) for line in clean_lines(jsonlines.splitlines())]
 
 
-# Custom instance cache decorator
-def instance_lru_cache(always_keep=False):
-    def decorator(func):
+P = ParamSpec("P")
+R = TypeVar("R")
+
+
+class _CacheHost(Protocol):
+    _instance_cache: Dict[Callable[..., Any], Callable[..., Any]]
+    _cached_instance_methods_always_keep: List[Callable[..., Any]]
+    _cached_instance_methods: List[Callable[..., Any]]
+
+
+T = TypeVar("T", bound=_CacheHost)
+
+
+def instance_lru_cache(
+    always_keep: bool = False,
+) -> Callable[[Callable[Concatenate[T, P], R]], Callable[Concatenate[T, P], R]]:
+    def decorator(func: Callable[Concatenate[T, P], R]) -> Callable[Concatenate[T, P], R]:
         @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            is_method_in_cache = func in self._instance_cache
+        def wrapper(self: T, *args: P.args, **kwargs: P.kwargs) -> R:
+            cache = self._instance_cache
+            is_method_in_cache = func in cache
             if not is_method_in_cache:
-                self._instance_cache[func] = lru_cache(maxsize=None)(func.__get__(self))
-
-                if always_keep:
-                    self._cached_instance_methods_always_keep.append(self._instance_cache[func])
-                else:
-                    self._cached_instance_methods.append(self._instance_cache[func])
-
-            result = self._instance_cache[func](*args, **kwargs)
-            if not is_method_in_cache:
-                logger.debug(
-                    f"filled cache {func} with {len(result) if isinstance(result, (list, dict, tuple, set)) else type(result)}"
-                )
+                # __get__ typing is tricky; result is a bound function (*P)->R.
+                cached = lru_cache(maxsize=None)(func.__get__(self))  # type: ignore[misc]
+                cache[func] = cached
+                (
+                    self._cached_instance_methods_always_keep
+                    if always_keep
+                    else self._cached_instance_methods
+                ).append(cached)
+            result: R = cache[func](*args, **kwargs)
             return result
 
         return wrapper
