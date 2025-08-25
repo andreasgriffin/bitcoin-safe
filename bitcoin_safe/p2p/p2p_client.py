@@ -95,7 +95,7 @@ CF_CHECKPT_CMD = "cfcheckpt"
 CFILTER_CMD = "cfilter"
 
 
-@dataclass(slots=True)
+@dataclass
 class InventoryItem:
     type: InventoryType
     payload: str

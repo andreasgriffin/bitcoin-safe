@@ -66,13 +66,13 @@ class FlowType(enum.Enum):
     OutFlow = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class FlowIndex:
     flow_type: FlowType
     i: int
 
     def __hash__(self) -> int:
-        return hash(tuple(self.__dict__.items()))
+        return hash((self.flow_type, self.i))
 
 
 class SankeyWidget(QWidget):

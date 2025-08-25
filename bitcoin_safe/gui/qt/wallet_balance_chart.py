@@ -228,7 +228,7 @@ class TrackingChartView(QChartView):
         super().mousePressEvent(event)
 
 
-@dataclass(slots=True)
+@dataclass
 class ChartPoint:
     x: float
     y: float

@@ -49,7 +49,7 @@ class AnalyzerState(enum.IntEnum):
     Invalid = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class AnalyzerMessage:
     msg: str
     state: AnalyzerState

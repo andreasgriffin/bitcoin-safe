@@ -1090,7 +1090,7 @@ class ButtonInfoType(enum.Enum):
     cancel_with_rbf = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class ButtonInfo:
     text: str
     tooltip: str

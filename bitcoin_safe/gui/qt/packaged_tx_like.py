@@ -47,7 +47,7 @@ class UiElements(enum.Enum):
     diagram = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class PackagedTxLike:
     tx_like: TransactionDetails | bdk.Transaction | bdk.Psbt | TxBuilderInfos | TxUiInfos | bytes | str
     focus_ui_elements: UiElements = UiElements.none

@@ -46,7 +46,7 @@ gnupg = None
 logger = logging.getLogger(__name__)
 
 
-@dataclass(slots=True)
+@dataclass
 class FilenameInfo:
     app_name: str
     extension: str
@@ -99,7 +99,7 @@ class FilenameInfo:
         return None
 
 
-@dataclass(slots=True)
+@dataclass
 class SimpleGPGKey:
     key: str
     repository: str  # org/repo_name
@@ -116,7 +116,7 @@ class SimpleGPGKey:
         return None
 
 
-@dataclass(slots=True)
+@dataclass
 class Asset:
     tag: str
     url: str
@@ -513,7 +513,7 @@ class SignatureSigner(GPGSignatureVerifyer):
         return files
 
 
-@dataclass(slots=True)
+@dataclass
 class KnownGPGKeys:
 
     andreasgriffin = SimpleGPGKey(

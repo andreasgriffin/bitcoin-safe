@@ -35,7 +35,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-@dataclass(slots=True)
+@dataclass
 class FuzzyMatch:
     identical: bool
     score: int

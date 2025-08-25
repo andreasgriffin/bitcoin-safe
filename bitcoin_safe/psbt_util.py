@@ -311,13 +311,13 @@ class PubKeyInfo:
         self.label = label
 
 
-@dataclass(slots=True)
+@dataclass
 class PartialSig:
     signature: str
     sighash_type: str
 
 
-@dataclass(slots=True)
+@dataclass
 class SimpleInput:
     txin: bdk.TxIn
     witness_script: Optional[str] = None
@@ -448,7 +448,7 @@ class SimpleInput:
         return {str(prev_out): non_witness_utxo_prev_out}
 
 
-@dataclass(slots=True)
+@dataclass
 class SimpleOutput:
     value: int = 0
     script_pubkey: str = ""
@@ -483,7 +483,7 @@ class SimpleOutput:
         return TxOut(value=self.value, script_pubkey=hex_to_script(self.script_pubkey))
 
 
-@dataclass(slots=True)
+@dataclass
 class SimplePSBT:
     txid: str
     inputs: List[SimpleInput] = field(default_factory=list)

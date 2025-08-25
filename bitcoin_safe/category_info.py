@@ -36,7 +36,7 @@ class SubtextType(enum.Enum):
     balance = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class CategoryInfo:
     category: str
     address_count: int

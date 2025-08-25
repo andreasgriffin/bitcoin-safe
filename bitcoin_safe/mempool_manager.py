@@ -192,7 +192,7 @@ class BlockType(enum.Enum):
     confirmed = enum.auto()
 
 
-@dataclass(slots=True)
+@dataclass
 class BlockInfo:
     block_type: BlockType
     min_fee: float = MIN_RELAY_FEE
