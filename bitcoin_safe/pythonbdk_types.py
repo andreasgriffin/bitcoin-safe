@@ -31,7 +31,7 @@ import datetime
 import enum
 import logging
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import bdkpython as bdk
@@ -107,31 +107,24 @@ def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
 
 
 class TxOut(bdk.TxOut):
+    @cached_property
+    def spk_bytes(self) -> bytes:
+        return bytes(self.script_pubkey.to_bytes())
 
-    def _spk_bytes(self) -> bytes:
-        b = getattr(self, "_spk_bytes", None)
-        if b is None:
-            b = bytes(self.script_pubkey.to_bytes())
-            setattr(self, "_spk_bytes", b)
-        return b
-
-    def _spk_hex(self) -> str:
-        h = getattr(self, "_spk_hex", None)
-        if h is None:
-            h = serialized_to_hex(self._spk_bytes())
-            setattr(self, "_spk_hex", h)
-        return h
+    @cached_property
+    def spk_hex(self) -> str:
+        return serialized_to_hex(self.spk_bytes)
 
     def __key__(self) -> tuple[str, int]:
         # use cached hex + value
-        return (self._spk_hex(), self.value)
+        return (self.spk_hex, self.value)
 
     def __hash__(self) -> int:
         # hash on bytes (fast) + value
-        return hash((self.value, self._spk_bytes()))
+        return hash((self.value, self.spk_bytes))
 
     def seralized_tuple(self) -> tuple[str, int]:
-        return (self._spk_hex(), self.value)
+        return (self.spk_hex, self.value)
 
     def __str__(self) -> str:
         return str(self.__key__())
@@ -140,9 +133,7 @@ class TxOut(bdk.TxOut):
         return f"{self.__class__.__name__}({self.__key__()})"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, TxOut) and (
-            self.value == other.value and self._spk_bytes() == other._spk_bytes()
-        )
+        return isinstance(other, TxOut) and (self.value == other.value and self.spk_bytes == other.spk_bytes)
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
