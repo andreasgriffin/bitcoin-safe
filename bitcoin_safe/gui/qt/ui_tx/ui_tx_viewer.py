@@ -224,7 +224,7 @@ class UITx_Viewer(UITx_Base):
         self._layout.addWidget(self.container_label)
 
         # upper widget
-        self.upper_widget = QWidget()
+        self.upper_widget = QWidget(self)
         self.upper_widget_layout = QHBoxLayout(self.upper_widget)
         set_no_margins(self.upper_widget_layout)
         self._layout.addWidget(self.upper_widget)
@@ -305,7 +305,7 @@ class UITx_Viewer(UITx_Base):
         self.set_tab_focus(UiElements.default if focus_ui_element == UiElements.none else focus_ui_element)
 
         # progress bar  import export  flow container
-        self.tx_singning_steps_container = QWidget()
+        self.tx_singning_steps_container = QWidget(self)
         self.tx_singning_steps_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.tx_singning_steps_container_layout = QVBoxLayout(self.tx_singning_steps_container)
         set_no_margins(self.tx_singning_steps_container_layout)
@@ -391,7 +391,7 @@ class UITx_Viewer(UITx_Base):
         self.utxo_list.update_content()
 
         # signals
-        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(self.signals.language_switch, self._on_lang_switch)
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.reload)
@@ -402,6 +402,11 @@ class UITx_Viewer(UITx_Base):
         self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon.connect(
             self._on_edit_with_fee_icon
         )
+
+    def _on_lang_switch(self):
+        self.updateUi()
+        # this must be after  updateUi because it takes the button text from other elements
+        self.fill_button_group()
 
     def _on_edit_with_fee_icon(self, index: int) -> None:
         rate = self.mempool_manager.median_block_fee_rate(
@@ -522,6 +527,7 @@ class UITx_Viewer(UITx_Base):
             self.column_recipients.header_widget,
             self.column_sankey.header_widget,
         )
+        self.export_data_simple.updateUi()
         self.update_all_totals()
 
     def save_local_tx(self):
@@ -1027,7 +1033,6 @@ class UITx_Viewer(UITx_Base):
             self.set_psbt(import_psbt)
 
     def is_in_mempool(self, txid: str) -> bool:
-        # TODO: Currently in mempool and is in wallet is the same thing. In the future I have to differentiate here
         wallets = get_wallets(self.signals)
         for wallet in wallets:
             if wallet.is_in_mempool(txid):

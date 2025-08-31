@@ -85,6 +85,12 @@ class TxExport(BaseHardwareSignerInteractionWidget):
 
         self.updateUi()
 
+    def updateUi(self) -> None:
+        self.export_qr_button.updateUi()
+        self.button_export_file.updateUi()
+        self.button_sync_share.updateUi()
+        super().updateUi()
+
     def set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None = None):
         self.export_qr_button.set_data(data=data)
         self.button_export_file.set_data(data=data)

@@ -520,7 +520,7 @@ class HorizontalImportExportGroups(QWidget):
         if enable_qr:
             self._layout.addWidget(self.group_qr)
 
-        self.group_qr_buttons = QWidget()
+        self.group_qr_buttons = QWidget(self)
         self.group_qr_buttons_layout = QVBoxLayout(self.group_qr_buttons)
         self.group_qr_buttons_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.group_qr._layout.addWidget(self.group_qr_buttons)
