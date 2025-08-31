@@ -286,6 +286,7 @@ class Faucet:
         self.client.transaction_broadcast(tx)
         time.sleep(1)
         self.sync()
+        return tx
 
     def sync(self):
         request = self.bdk_wallet.start_full_scan()
