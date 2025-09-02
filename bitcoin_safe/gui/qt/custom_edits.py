@@ -273,3 +273,7 @@ class QCompleterLineEdit(AnalyzerLineEdit):
     def focusOutEvent(self, a0: QFocusEvent | None) -> None:
         super().focusOutEvent(a0)
         self.signal_focus_out.emit()
+
+    def close(self) -> bool:
+        self._smart_state = None
+        return super().close()
