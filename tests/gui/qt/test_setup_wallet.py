@@ -315,6 +315,14 @@ def test_wizard(
 
             page_backup()
 
+            def switch_language() -> None:
+                main_window.language_chooser.switchLanguage("zh_CN")
+                shutter.save(main_window)
+                main_window.language_chooser.switchLanguage("en_US")
+                shutter.save(main_window)
+
+            switch_language()
+
             def page_receive() -> None:
                 shutter.save(main_window)
                 step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
