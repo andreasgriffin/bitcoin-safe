@@ -1656,6 +1656,7 @@ class MainWindow(QMainWindow):
             file_path=file_path,
             password=password,
             tutorial_index=tutorial_index,
+            parent=self,
         )
 
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
@@ -1966,6 +1967,7 @@ class MainWindow(QMainWindow):
         for root in self.tab_wallets.roots:
             if root.data == qt_wallet:
                 root.removeNode()
+                root.data = None
 
         self.add_recently_open_wallet(qt_wallet.file_path)
 

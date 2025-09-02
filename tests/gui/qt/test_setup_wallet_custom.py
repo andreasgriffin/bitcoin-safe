@@ -30,12 +30,13 @@
 import inspect
 import logging
 from datetime import datetime
+from unittest.mock import patch
 
 import bdkpython as bdk
 import pytest
 from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication, QDialogButtonBox
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
@@ -233,13 +234,75 @@ def test_custom_wallet_setup_custom_single_sig(
             switch_language()
 
         do_all(qt_wallet)
+        QApplication.processEvents()
+        wallet_name = qt_wallet.wallet.id
+
+        def replace_descriptor() -> QTWallet:
+            descriptor = "wpkh([e53c8089/84'/1'/0']tpubDDg6DvnYDvUcRW3a5HeHoFCpKZYDm4qhKP7ccArDsSBSvBjc4d7AMdijAbekZ4c7NaP1zKWZ4qgHYzbQ6gv2Sge4MWWp96zhhAkjvge22FW/<0;1>/*)#uduv7uyw"
+
+            def on_fill_question(dialog: QMessageBox) -> None:
+                # question 2
+                shutter.save(dialog)
+                assert "Fill" in dialog.text()
+
+                shutter.save(main_window)
+
+                dialog.button(QMessageBox.StandardButton.Ok).click()
+
+            do_modal_click(
+                lambda: qt_wallet.wallet_descriptor_ui.edit_descriptor.edit.input_field.setText(descriptor),
+                on_fill_question,
+                qtbot,
+                cls=QMessageBox,
+            )
+
+            def on_proceed_question(dialog: QMessageBox) -> None:
+                # question 2
+                shutter.save(dialog)
+                assert "Proceeding will potentially change all wallet addresses" in dialog.text()
+
+                shutter.save(main_window)
+
+                button = dialog.buttons()[0]
+                assert button.text() == "Proceed"
+                button.click()
+
+            with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
+
+                do_modal_click(
+                    qt_wallet.wallet_descriptor_ui.button_box.button(
+                        QDialogButtonBox.StandardButton.Apply
+                    ).click,
+                    on_proceed_question,
+                    qtbot,
+                    cls=QMessageBox,
+                )
+
+                QApplication.processEvents()
+
+                assert mock_message.call_count == 1
+                called_args, called_kwargs = mock_message.call_args
+                assert "Backup saved to" in called_args[0]
+
+            QApplication.processEvents()
+
+            new_wallet: QTWallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
+            assert new_wallet.wallet.get_addresses()[0] == "bcrt1qpmhcdhv2nyajtajpmwt74rqw7g38r6tyvtkctp"
+
+            return new_wallet
 
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
-            # if True:
-            wallet_id = qt_wallet.wallet.id
+            new_wallet = replace_descriptor()
             del qt_wallet
+
+        with CheckedDeletionContext(
+            qt_wallet=new_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
+        ):
+            # if True:
+            wallet_id = new_wallet.wallet.id
+            del new_wallet
 
             close_wallet(
                 shutter=shutter,
