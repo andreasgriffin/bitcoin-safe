@@ -606,7 +606,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.fx,
             file_path=self.file_path,
             password=self.password,
-            parent=self,
+            parent=self.parent(),
         )
 
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)
