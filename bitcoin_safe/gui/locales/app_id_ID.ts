@@ -1502,7 +1502,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>Harap buka dompet pengirim untuk mengedit transaksi ini.</translation>
+			<translation> Harap buka dompet pengirim untuk mengedit transaksi ini.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3463,7 +3463,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Label:</translation>
+			<translation>Label: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3775,7 +3775,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>dan</translation>
+			<translation> dan </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
