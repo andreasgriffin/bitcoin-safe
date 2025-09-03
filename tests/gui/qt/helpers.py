@@ -34,7 +34,6 @@ import os
 import platform
 import re
 import shutil
-import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -161,10 +160,6 @@ class Shutter:
 def fund_wallet(qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int) -> str:
     addr = str(qt_wallet.wallet.get_address().address)
     faucet.send(addr, amount=amount)
-    # to allow previous sync to finish
-    time.sleep(0.1)
-    QApplication.processEvents()
-
     counter = 0
     while qt_wallet.wallet.get_balance().total == 0:
         with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
