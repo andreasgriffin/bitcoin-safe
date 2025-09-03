@@ -40,20 +40,12 @@ from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import (
-    QApplication,
-    QDialogButtonBox,
-    QMessageBox,
-    QPushButton,
-    QWidget,
-)
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox, QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
-from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
@@ -82,6 +74,7 @@ from .helpers import (
     get_called_args_message_box,
     main_window_context,
     save_wallet,
+    sign_tx,
     type_text_in_edit,
 )
 
@@ -405,33 +398,7 @@ def test_wizard(
                 assert viewer.column_fee.fee_group.cpfp_fee_label.isVisible()
                 assert not viewer.column_fee.fee_group.approximate_fee_label.isVisible()
 
-                assert not viewer.button_next.isVisible()
-                assert viewer.button_send.isVisible()
-                assert not viewer.button_send.isEnabled()
-                shutter.save(main_window)
-
-                assert viewer.tx_singning_steps
-                importers = list(viewer.tx_singning_steps.signature_importer_dict.values())[0]
-                assert [importer.__class__.__name__ for importer in importers] == [
-                    "SignatureImporterWallet",
-                    "SignatureImporterQR",
-                    "SignatureImporterFile",
-                    "SignatureImporterClipboard",
-                    "SignatureImporterUSB",
-                ]
-                assert viewer.tx_singning_steps
-                widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
-                assert isinstance(widget, HorizontalImportExportAll)
-                assert isinstance(widget.wallet_importers.signer_ui, SignerUI)
-                for button in widget.wallet_importers.signer_ui.findChildren(QPushButton):
-                    assert button.text() == f"Seed of '{wallet_name}'"
-                    assert button.isVisible()
-                    button.click()
-
-                # send it away now
-                shutter.save(main_window)
-
-                assert viewer.button_send.isVisible()
+                sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
 
                 with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
                     with qtbot.waitSignal(

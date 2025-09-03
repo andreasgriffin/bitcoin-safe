@@ -284,8 +284,10 @@ class Faucet:
 
         tx = psbt_for_signing.extract_tx()
         self.client.transaction_broadcast(tx)
-        time.sleep(1)
+        # let fulcrum index the tx
+        time.sleep(2)
         self.sync()
+        return tx
 
     def sync(self):
         request = self.bdk_wallet.start_full_scan()

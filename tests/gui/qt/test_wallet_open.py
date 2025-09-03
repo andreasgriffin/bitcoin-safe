@@ -40,11 +40,18 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt import address_dialog
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
-from .helpers import CheckedDeletionContext, Shutter, close_wallet, main_window_context
+from .helpers import (
+    CheckedDeletionContext,
+    Shutter,
+    close_wallet,
+    get_widget_top_level,
+    main_window_context,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -85,10 +92,23 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         shutter.save(main_window)
         # check wallet address
-        assert (
-            qt_wallet.wallet.get_addresses()[0]
-            == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
-        )
+        wallet_address = qt_wallet.wallet.get_addresses()[0]
+        assert wallet_address == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
+
+        def check_open_address_dialog():
+            prev_count = len(main_window.attached_widgets)
+            main_window.show_address(wallet_address, qt_wallet.wallet.id)
+            d = get_widget_top_level(address_dialog.AddressDialog, qtbot)
+            assert d
+            QTest.qWaitForWindowExposed(d)
+            assert d.address == wallet_address
+            assert len(main_window.attached_widgets) == prev_count + 1
+            shutter.save(d)
+            d.close()
+            QApplication.processEvents()
+            qtbot.waitUntil(lambda: d not in main_window.attached_widgets)
+
+        check_open_address_dialog()
 
         def check_empty():
             assert qt_wallet.wallet.get_balance().total == 0

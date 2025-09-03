@@ -47,7 +47,13 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
-from .helpers import CheckedDeletionContext, Shutter, close_wallet, main_window_context
+from .helpers import (
+    CheckedDeletionContext,
+    Shutter,
+    close_wallet,
+    fund_wallet,
+    main_window_context,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +67,6 @@ def test_wallet_send(
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
-    amount: int = int(1e6),
 ) -> None:
     frame = inspect.currentframe()
     assert frame
@@ -93,23 +98,7 @@ def test_wallet_send(
             # check wallet address
             assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
 
-            def fund_wallet() -> None:
-                # to be able to import a recipient list with amounts
-                # i need to fund the wallet first
-                faucet.send(str(qt_wallet.wallet.get_address().address), amount=10000000)
-                counter = 0
-                while qt_wallet.wallet.get_balance().total == 0:
-                    with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-                        qt_wallet.sync()
-
-                    shutter.save(main_window)
-                    counter += 1
-                    if counter > 20:
-                        raise Exception(
-                            f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
-                        )
-
-            fund_wallet()
+            fund_wallet(qt_wallet=qt_wallet, amount=10000000, qtbot=qtbot, faucet=faucet)
 
             def import_recipients() -> None:
                 qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)

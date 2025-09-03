@@ -60,8 +60,13 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation
+from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
+from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+
+from ...setup_fulcrum import Faucet
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +155,68 @@ class Shutter:
                 )
         else:
             link_name.symlink_to(test_config.config_dir)
+
+
+def fund_wallet(
+    qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int, address: str | None = None
+) -> str:
+    address = address if address else str(qt_wallet.wallet.get_address().address)
+    faucet.send(address, amount=amount)
+    counter = 0
+    while qt_wallet.wallet.get_balance().total == 0:
+        with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+            qt_wallet.sync()
+        counter += 1
+        if counter > 20:
+            raise Exception(
+                f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
+            )
+    return address
+
+
+def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:
+
+    assert not viewer.button_next.isVisible()
+    assert viewer.button_send.isVisible()
+    assert not viewer.button_send.isEnabled()
+    shutter.save(viewer)
+
+    assert viewer.tx_singning_steps
+    importers = list(viewer.tx_singning_steps.signature_importer_dict.values())[0]
+    assert [importer.__class__.__name__ for importer in importers] == [
+        "SignatureImporterWallet",
+        "SignatureImporterQR",
+        "SignatureImporterFile",
+        "SignatureImporterClipboard",
+        "SignatureImporterUSB",
+    ]
+
+    assert viewer.tx_singning_steps
+    widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
+    assert isinstance(widget, HorizontalImportExportAll)
+    signer_ui = widget.wallet_importers.signer_ui
+    assert isinstance(signer_ui, SignerUI)
+    for button in signer_ui.findChildren(QPushButton):
+        assert button.text() == f"Seed of '{qt_wallet.wallet.id}'"
+        assert button.isVisible()
+        with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
+            button.click()
+
+    assert viewer.button_send.isVisible()
+
+    # send it away now
+    shutter.save(viewer)
+
+
+def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:
+
+    # send it away now
+    shutter.save(viewer)
+
+    with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+        viewer.button_send.click()
+
+        shutter.save(viewer)
 
 
 def _get_widget_top_level(cls: Type[T], title: str | None = None) -> Optional[T]:
