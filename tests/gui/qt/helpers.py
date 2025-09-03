@@ -157,9 +157,11 @@ class Shutter:
             link_name.symlink_to(test_config.config_dir)
 
 
-def fund_wallet(qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int) -> str:
-    addr = str(qt_wallet.wallet.get_address().address)
-    faucet.send(addr, amount=amount)
+def fund_wallet(
+    qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int, address: str | None = None
+) -> str:
+    address = address if address else str(qt_wallet.wallet.get_address().address)
+    faucet.send(address, amount=amount)
     counter = 0
     while qt_wallet.wallet.get_balance().total == 0:
         with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
@@ -169,7 +171,7 @@ def fund_wallet(qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int) 
             raise Exception(
                 f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
             )
-    return addr
+    return address
 
 
 def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:

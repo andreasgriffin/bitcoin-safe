@@ -67,7 +67,6 @@ def test_wallet_send(
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
-    amount: int = int(1e6),
 ) -> None:
     frame = inspect.currentframe()
     assert frame
@@ -99,7 +98,7 @@ def test_wallet_send(
             # check wallet address
             assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
 
-            fund_wallet(qt_wallet=qt_wallet, amount=amount, qtbot=qtbot, faucet=faucet)
+            fund_wallet(qt_wallet=qt_wallet, amount=10000000, qtbot=qtbot, faucet=faucet)
 
             def import_recipients() -> None:
                 qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
