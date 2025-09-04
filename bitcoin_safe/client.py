@@ -27,33 +27,153 @@
 # SOFTWARE.
 
 
+import enum
 import logging
-from typing import Union
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Union, cast
 
 import bdkpython as bdk
-import socks  # Requires PySocks or similar package.
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from bitcoin_usb.address_types import DescriptorInfo
+from PyQt6.QtCore import QObject, pyqtSignal
 
-from bitcoin_safe.network_config import ElectrumConfig
-from bitcoin_safe.network_utils import (
-    ProxyInfo,
-    clean_electrum_url,
-    get_electrum_blockheight,
-    get_host_and_port,
-)
+from bitcoin_safe.cbf.cbf_sync import CbfSync
+from bitcoin_safe.descriptors import min_blockheight
+from bitcoin_safe.network_config import ElectrumConfig, Peer
+from bitcoin_safe.network_utils import ProxyInfo, clean_electrum_url
+from bitcoin_safe.signals import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
-class Client:
+class SyncStatus(enum.Enum):
+    unknown = enum.auto()
+    unsynced = enum.auto()
+    syncing = enum.auto()
+    synced = enum.auto()
+    error = enum.auto()
+
+
+@dataclass
+class ProgressInfo:
+    progress: float = field(metadata={"description": "Between 0 and 1"})
+    passed_time: timedelta
+    remaining_time: timedelta
+    status_msg: str
+
+
+class Client(QObject):
+    signal_update = cast(TypedPyQtSignal[bdk.Update], pyqtSignal(bdk.Update))
+    signal_sync_status = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))
+    signal_progress = cast(TypedPyQtSignal[ProgressInfo], pyqtSignal(ProgressInfo))
+
     def __init__(
         self,
-        client: Union[bdk.ElectrumClient, bdk.EsploraClient],
+        client: Union[bdk.ElectrumClient, bdk.EsploraClient, CbfSync],
         electrum_config: ElectrumConfig | None,
         proxy_info: ProxyInfo | None,
     ) -> None:
+        super().__init__()
         self.client = client
         self.proxy_info = proxy_info
         self.electrum_config = electrum_config
+
+        self.signal_tracker = SignalTracker()
+        self.start_time = datetime.now()
+        self.progress: float = 0  # a number   "Between 0 and 1"
+        self.status_msg = ""
+
+        if isinstance(client, CbfSync):
+            self.signal_tracker.connect(client.signal_update, self.apply_update)
+            self.signal_tracker.connect(client.log_info, self._on_cbf_log_info)
+            self.signal_tracker.connect(client.log_warning, self._on_cbf_log_warning)
+
+            self.status_msg = self.tr("Connecting to nodes")
+            self.signal_sync_status.emit(SyncStatus.syncing)
+            self.signal_progress.emit(
+                ProgressInfo(
+                    progress=0,
+                    passed_time=timedelta(hours=0),
+                    remaining_time=timedelta(hours=1),
+                    status_msg=self.status_msg,
+                )
+            )
+
+    def _on_cbf_log_warning(self, warning: bdk.Warning):
+        if isinstance(warning, (bdk.Warning.NEED_CONNECTIONS, bdk.Warning.COULD_NOT_CONNECT)):
+            self.status_msg = self.tr("Connecting to nodes")
+        elif isinstance(warning, bdk.Warning.EMPTY_PEER_DATABASE):
+            self.status_msg = self.tr("Discovering nodes")
+        else:
+            self.status_msg = warning.__class__.__name__
+
+        # if isinstance(warning, bdk.Warning.NEED_CONNECTIONS):
+        #     self.signal_sync_status.emit(SyncStatus.syncing)
+
+    @property
+    def passed_time(self):
+        return datetime.now() - self.start_time
+
+    @property
+    def remaining_time(
+        self,
+    ):
+        if self.progress == 0:
+            return self.passed_time
+        return timedelta(
+            seconds=self.passed_time.total_seconds() / max(0.001, self.progress) * (1 - self.progress)
+        )
+
+    @property
+    def progress_info(self):
+        return ProgressInfo(
+            progress=self.progress,
+            passed_time=self.passed_time,
+            remaining_time=self.remaining_time,
+            status_msg=self.status_msg,
+        )
+
+    def _on_cbf_log_info(self, info: bdk.Info):
+        if isinstance(info, bdk.Info.NEW_CHAIN_HEIGHT):
+            self.progress = 0.05
+            self.status_msg = self.tr("New chain height {height}").format(height=info.height)
+            self.signal_progress.emit(self.progress_info)
+
+        elif isinstance(info, bdk.Info.PROGRESS):
+            self.progress = info.progress / 100
+            self.signal_progress.emit(self.progress_info)
+
+        elif isinstance(info, bdk.Info.CONNECTIONS_MET):
+            pass
+            # self.signal_sync_status.emit(SyncStatus.syncing)
+
+        elif isinstance(info, bdk.Info.STATE_UPDATE):
+            if info.node_state == bdk.NodeState.BEHIND:
+                self.status_msg = self.tr("Syncing")
+            elif info.node_state == bdk.NodeState.FILTER_HEADERS_SYNCED:
+                self.status_msg = self.tr("Synced the filter headers")
+            elif info.node_state == bdk.NodeState.FILTERS_SYNCED:
+                self.status_msg = self.tr("Filters synced")
+            elif info.node_state == bdk.NodeState.TRANSACTIONS_SYNCED:
+                self.status_msg = self.tr("Transactions synced")
+            elif info.node_state == bdk.NodeState.HEADERS_SYNCED:
+                self.status_msg = self.tr("Headers synced")
+            else:
+                self.status_msg = ""
+
+    def apply_update(self, update: bdk.Update):
+        self.progress = 1
+        self.status_msg = ""
+        self.signal_update.emit(update)
+        self.signal_progress.emit(self.progress_info)
+        self.signal_sync_status.emit(SyncStatus.synced)
+
+    def needs_progress_bar(
+        self,
+    ) -> bool:
+        return isinstance(self.client, CbfSync)
 
     @classmethod
     def from_electrum(cls, url: str, use_ssl: bool, proxy_info: ProxyInfo | None) -> "Client":
@@ -71,38 +191,68 @@ class Client:
         client = bdk.EsploraClient(url=url, proxy=(proxy_info.get_url_no_h() if proxy_info else None))
         return cls(client=client, electrum_config=None, proxy_info=proxy_info)
 
+    @classmethod
+    def from_cbf(
+        cls,
+        initial_peer: Peer | None,
+        bdkwallet: bdk.Wallet,
+        multipath_descriptor: bdk.Descriptor,
+        proxy_info: ProxyInfo | None,
+        data_dir: Path,
+        cbf_connections: int,
+        wallet_id: str,
+        is_new_wallet=False,
+    ):
+        client = CbfSync(wallet_id=wallet_id)
+        client.build_node(
+            data_dir=data_dir,
+            wallet=bdkwallet,
+            peers=[initial_peer.to_bdk()] if initial_peer else [],
+            proxy_info=proxy_info,
+            recovery_height=min_blockheight(
+                DescriptorInfo.from_str(str(multipath_descriptor)).address_type, network=bdkwallet.network()
+            ),
+            cbf_connections=cbf_connections,
+            is_new_wallet=is_new_wallet,
+        )
+        return cls(client=client, proxy_info=proxy_info, electrum_config=None)
+
     def broadcast(self, tx: bdk.Transaction):
         if isinstance(self.client, bdk.ElectrumClient):
             return self.client.transaction_broadcast(tx)
         elif isinstance(self.client, bdk.EsploraClient):
             return self.client.broadcast(tx)
+        elif isinstance(self.client, CbfSync):
+            assert self.client.client, "Not initialized"
+            return self.client.client.broadcast(tx)
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
 
-    def get_height(self) -> int:
+    def full_scan(self, full_request: bdk.FullScanRequest, stop_gap: int):
         if isinstance(self.client, bdk.ElectrumClient):
-            #   ElectrumClient doesnt have  get_height
-            # https://github.com/bitcoindevkit/bdk-ffi/issues/547#issuecomment-2471384856
-            assert self.electrum_config, "self.electrum_config not set"
-            hostname, port = get_host_and_port(self.electrum_config.url)
-            assert hostname is not None, f"Could not extract the hostname from {self.electrum_config.url}"
-            assert port is not None, f"Could not extract the port from {self.electrum_config.url}"
-            height = get_electrum_blockheight(
-                host=hostname, port=port, use_ssl=self.electrum_config.use_ssl, proxy_info=self.proxy_info
-            )
-            assert height is not None, "Server did not return block height"
-            return height
-        elif isinstance(self.client, bdk.EsploraClient):
-            return self.client.get_height()
-        else:
-            raise NotImplementedError(f"Client is of type {type(self.client)}")
-
-    def full_scan(self, full_request: bdk.FullScanRequest, stop_gap: int) -> bdk.Update:
-        if isinstance(self.client, bdk.ElectrumClient):
-            return self.client.full_scan(
+            self.signal_sync_status.emit(SyncStatus.syncing)
+            self.start_time = datetime.now()
+            update = self.client.full_scan(
                 request=full_request, stop_gap=stop_gap, batch_size=100, fetch_prev_txouts=True
             )
+            self.apply_update(update)
         elif isinstance(self.client, bdk.EsploraClient):
-            return self.client.full_scan(request=full_request, stop_gap=stop_gap, parallel_requests=2)
+            self.signal_sync_status.emit(SyncStatus.syncing)
+            self.start_time = datetime.now()
+            update = self.client.full_scan(request=full_request, stop_gap=stop_gap, parallel_requests=2)
+            self.apply_update(update)
+        elif isinstance(self.client, CbfSync):
+            return
         else:
             raise ValueError("Unknown blockchain client type.")
+
+    def close(self):
+        self.signal_tracker.disconnect_all()
+        if isinstance(self.client, bdk.ElectrumClient):
+            pass
+        elif isinstance(self.client, bdk.EsploraClient):
+            pass
+        elif isinstance(self.client, CbfSync):
+            self.client.shutdown_node()
+        else:
+            raise NotImplementedError(f"Client is of type {type(self.client)}")

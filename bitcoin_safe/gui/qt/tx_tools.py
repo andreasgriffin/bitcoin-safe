@@ -70,7 +70,7 @@ class TxTools:
         if not tx_status.can_cpfp():
             return False
 
-        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
+        tx_details, wallet = get_tx_details(txid=str(tx.compute_txid()), signals=signals)
         if not wallet:
             return False
 

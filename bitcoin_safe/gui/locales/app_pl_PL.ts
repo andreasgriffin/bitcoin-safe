@@ -519,6 +519,48 @@ mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Łączenie z węzłami</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Wykrywanie węzłów</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Filtry zsynchronizowane</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Nagłówki zsynchronizowane</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Nowa wysokość łańcucha {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Nagłówki filtrów zsynchronizowane</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>Synchronizowanie</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>Transakcje zsynchronizowane</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1706,6 +1748,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>Adres już użyty</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Wszystkie pliki (*);;PSBT (*.psbt);;Transakcja (*.tx)</translation>
 		</message>
@@ -1723,6 +1770,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Close all transactions</source>
 			<translation>Zamknij wszystkie transakcje</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>Zamknij mimo to</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1793,6 +1845,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Z &amp;tekstu</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Ukryj w zasobniku systemowym</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1913,6 +1970,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>Wybrany plik: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Pokaż/Ukryj</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2113,8 +2175,18 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Więcej połączeń zwiększa prywatność, ale zmniejsza szybkość synchronizacji.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Ustawienia sieci</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>Liczba połączeń p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2592,6 +2664,11 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Czas, który upłynął: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Kontynuuj</translation>
 		</message>
@@ -2680,6 +2757,11 @@ w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 {txs}</source>
 			<translation>{number} nowych transakcji w portfelu '{wallet}':
 {txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Zakończono {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3259,11 +3341,6 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
-			<source>Install udev rules</source>
-			<translation>Zainstaluj reguły udev</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3577,16 +3654,6 @@ Możesz też rozgłosić przez {url}</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Nie znaleziono urządzeń USB. Może to wynikać z braku reguł udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Nie wybrano urządzenia</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>Skopiuj i wklej poniższy skrypt w terminalu, aby zainstalować reguły udev:</translation>
 		</message>
@@ -3609,11 +3676,6 @@ Możesz też rozgłosić przez {url}</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Uruchom ponownie komputer</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Urządzenia USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4025,6 +4087,11 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>Nie wybrano urządzenia</translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Nie znaleziono odpowiedniego emulatora terminala.</translation>
 		</message>
@@ -4317,6 +4384,11 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>Uruchom bitcoind z "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4351,11 +4423,6 @@ Najlepiej używać własnego serwera, np. {link}.</translation>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>Dostępny jest {faucet} z darmowymi monetami testowymi.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>To prywatny i szybki sposób łączenia z siecią Bitcoin.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

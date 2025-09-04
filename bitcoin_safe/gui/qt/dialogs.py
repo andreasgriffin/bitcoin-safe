@@ -54,8 +54,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.util import filename_clean
 
-from ...wallet import filename_clean
 from .util import create_button_box
 
 logger = logging.getLogger(__name__)

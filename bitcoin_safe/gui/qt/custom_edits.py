@@ -30,7 +30,7 @@ import enum
 import logging
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import QRect, QStringListModel, Qt, pyqtSignal
@@ -203,7 +203,7 @@ class AnalyzerTextEdit(QTextEdit):
 
 
 class QCompleterLineEdit(AnalyzerLineEdit):
-    signal_focus_out: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_focus_out = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,

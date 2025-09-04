@@ -52,8 +52,8 @@ logger = logging.getLogger(__name__)
 
 
 class AddressEdit(ButtonEdit):
-    signal_text_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
-    signal_bip21_input: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
+    signal_text_change = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_bip21_input = cast(TypedPyQtSignal[Data], pyqtSignal(Data))
 
     def __init__(
         self,

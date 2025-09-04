@@ -516,6 +516,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Conectando a nodos</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Descubriendo nodos</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Filtros sincronizados</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Encabezados sincronizados</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Nueva altura de cadena {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Encabezados de filtros sincronizados</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>Sincronizando</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>Transacciones sincronizadas</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1691,6 +1733,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>Dirección ya utilizada</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Todos los archivos (*);;PSBT (*.psbt);;Transacción (*.tx)</translation>
 		</message>
@@ -1708,6 +1755,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Close all transactions</source>
 			<translation>Cerrar todas las transacciones  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>Cerrar de todos modos</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1778,6 +1830,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Desde &amp;texto</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Ocultar en la bandeja</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1898,6 +1955,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>Archivo seleccionado: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Mostrar/Ocultar</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2098,8 +2160,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Más conexiones aumentan la privacidad pero reducen la velocidad de sincronización.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Ajustes de Red</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>Número de conexiones p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2573,6 +2645,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Tiempo transcurrido: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Continuar</translation>
 		</message>
@@ -2658,6 +2735,11 @@ The serializations of both differ, which could be caused by different collected 
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
 			<translation>{number} nuevas transacciones en la cartera '{wallet}': {txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Finalizado {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3235,11 +3317,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
-			<source>Install udev rules</source>
-			<translation>Instalar reglas de udev</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3540,16 +3617,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>No se han encontrado dispositivos USB. Podría deberse a la falta de reglas de udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Ningún dispositivo seleccionado  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>Copie y pegue el siguiente script en una terminal para instalar las reglas de udev:</translation>
 		</message>
@@ -3572,11 +3639,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>Reiniciar computadora  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositivos USB  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3985,6 +4047,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>Ningún dispositivo seleccionado  </translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>No se encontró un emulador de terminal adecuado.  </translation>
 		</message>
@@ -4277,6 +4344,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>Ejecuta tu bitcoind con "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4310,11 +4382,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>Hay un {faucet} para obtener monedas de prueba gratis.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>Esta es una forma privada y rápida de conectarse a la red bitcoin.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

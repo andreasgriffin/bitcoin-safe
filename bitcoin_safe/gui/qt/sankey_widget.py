@@ -32,7 +32,7 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, cast
 
 from PyQt6.QtCore import QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -76,7 +76,7 @@ class FlowIndex:
 
 
 class SankeyWidget(QWidget):
-    signal_on_label_click: TypedPyQtSignal[FlowIndex] = pyqtSignal(FlowIndex)  # type: ignore
+    signal_on_label_click = cast(TypedPyQtSignal[FlowIndex], pyqtSignal(FlowIndex))
 
     center_color = ColorScheme.Purple.as_color()
     border_color = ColorScheme.Purple.as_color()

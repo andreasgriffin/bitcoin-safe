@@ -27,10 +27,11 @@
 # SOFTWARE.
 
 
+import logging
 import os
 from functools import partial
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional, cast
 
 from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QPoint, QSize, Qt, pyqtSignal
@@ -52,6 +53,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.typestubs import TypedPyQtSignal
+
+logger = logging.getLogger(__name__)
 
 
 class ButtonStyleDelegate(QStyledItemDelegate):
@@ -118,7 +121,7 @@ class ButtonList(QListWidget):
 
 
 class WalletList(ButtonList):
-    signal_file_path_clicked: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_file_path_clicked = cast(TypedPyQtSignal[str], pyqtSignal(str))
 
     def __init__(self, hide_extension=True, *args, **kwargs):
         super().__init__(*args, **kwargs)

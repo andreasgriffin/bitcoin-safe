@@ -49,7 +49,9 @@ from .pythonbdk_types import (
 logger = logging.getLogger(__name__)
 
 
-def short_tx_id(txid: str) -> str:
+def short_tx_id(txid: str | bdk.Txid) -> str:
+    if isinstance(txid, bdk.Txid):
+        txid = str(txid)
     return f"{txid[:4]}...{txid[-4:]}"
 
 
@@ -126,7 +128,7 @@ class TxUiInfos(BaseSaveableClass):
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         if replace_tx := dct.get("replace_tx"):
-            dct["replace_tx"] = bdk.Transaction(list(hex_to_serialized(replace_tx)))
+            dct["replace_tx"] = bdk.Transaction(hex_to_serialized(replace_tx))
         dct["recipients"] = [Recipient(**filtered_for_init(r, Recipient)) for r in dct.get("recipients", [])]
 
         if isinstance(utxo_dict := dct.get("utxo_dict"), dict):
@@ -176,7 +178,7 @@ def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, 
     for inp in tx.input():
         inputs.append(
             {
-                "previous_output": {"txid": inp.previous_output.txid, "vout": inp.previous_output.vout},
+                "previous_output": {"txid": str(inp.previous_output.txid), "vout": inp.previous_output.vout},
                 "script_sig": serialized_to_hex(inp.script_sig.to_bytes()),
                 "sequence": inp.sequence,
                 "witness": [serialized_to_hex(witness) for witness in inp.witness],
@@ -188,7 +190,7 @@ def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, 
     for out in tx.output():
         outputs.append(
             {
-                "value": out.value,
+                "value": out.value.to_sat(),
                 "script_pubkey": serialized_to_hex(out.script_pubkey.to_bytes()),
                 "address": robust_address_str_from_txout(TxOut.from_bdk(out), network=network),
             }
@@ -196,7 +198,7 @@ def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, 
 
     # Construct the transaction dictionary
     tx_dict = {
-        "txid": tx.compute_txid(),
+        "txid": str(tx.compute_txid()),
         "weight": tx.weight(),
         "size": tx.total_size(),
         "vsize": tx.vsize(),
