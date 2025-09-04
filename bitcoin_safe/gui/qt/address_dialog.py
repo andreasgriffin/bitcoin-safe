@@ -190,7 +190,7 @@ class AddressDialog(QWidget):
         vbox = QVBoxLayout()
         self.setLayout(vbox)
 
-        upper_widget = QWidget()
+        upper_widget = QWidget(self)
         # upper_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.upper_widget_layout = QHBoxLayout(upper_widget)
         set_no_margins(self.upper_widget_layout)

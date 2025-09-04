@@ -464,7 +464,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.toggle_btn: Optional[FlatSquareButton] = None
         self._rebuild_trailing_buttons()
 
-        self.content = QWidget()
+        self.content = QWidget(self)
         self.content_layout = QVBoxLayout(self.content)
         self.content_layout.setContentsMargins(0, 0, 0, 0)
         self.content_layout.setSpacing(0)
@@ -766,7 +766,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.stack = QStackedWidget()
+        self.stack = QStackedWidget(self)
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
         pal = self.stack.palette()

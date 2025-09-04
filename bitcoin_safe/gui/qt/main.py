@@ -983,8 +983,7 @@ class MainWindow(QMainWindow):
                 last_qt_wallet_involved = qt_wallet
 
         if last_qt_wallet_involved:
-            self.tab_wallets.setCurrentWidget(last_qt_wallet_involved)
-            last_qt_wallet_involved.tabs.setCurrentWidget(last_qt_wallet_involved.history_tab)
+            last_qt_wallet_involved.hist_node.select()
             last_qt_wallet_involved.history_list.select_row_by_key(
                 transaction.compute_txid(), scroll_to_last=True
             )

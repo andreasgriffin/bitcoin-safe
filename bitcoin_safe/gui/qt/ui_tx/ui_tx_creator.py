@@ -158,7 +158,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.searchable_list = self.utxo_list
 
-        self.outer_widget_sub = QWidget()
+        self.outer_widget_sub = QWidget(self)
         self.outer_widget_sub_layout = QHBoxLayout(self.outer_widget_sub)
         self.outer_widget_sub_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         self._layout.addWidget(self.outer_widget_sub)

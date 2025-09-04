@@ -85,8 +85,9 @@ class InventoryType(enum.Enum):
     MSG_BLOCK = 2  # A full block message (inv points to a serialized block)
     MSG_FILTERED_BLOCK = 3  # A filtered (merkle) block; nodes ask for only relevant transactions
     MSG_CMPCT_BLOCK = 4  # A compact block, containing short IDs for transactions to save bandwidth
-    MSG_WITNESS_BLOCK = 5  # A block including witness data (SegWit-enabled)
-    MSG_WITNESS_TX = 6  # A transaction including witness data (SegWit tx)
+    # BIP144: witness types use the high "witness flag" bit (1 << 30)
+    MSG_WITNESS_TX = 0x40000001
+    MSG_WITNESS_BLOCK = 0x40000002
 
 
 # Compact‑filter specific (BIP 157/158) – command names
@@ -496,15 +497,26 @@ class P2PClient(QObject):
         await self._send_raw("tx", raw)
 
     async def getdata(self, inventory: Inventory) -> None:
-        """Request a transaction by its hash (hex, big-endian)."""
+        """
+        Request data for the given inventory, *preferring witness* encodings
+        (BIP144) when asking for txs/blocks.
+        """
         if not self.writer:
-            logger.debug("Writer not initialised – cannot request tx")
+            logger.debug("Writer not initialised – cannot request data")
             return
 
-        await self._send_raw(
-            "getdata",
-            self._serialize_inv(inventory),
-        )
+        # Upgrade legacy INV types to their witness equivalents where applicable.
+        upgraded = Inventory()
+        for item in inventory:
+            if item.type == InventoryType.MSG_TX:
+                new_type = InventoryType.MSG_WITNESS_TX
+            elif item.type == InventoryType.MSG_BLOCK:
+                new_type = InventoryType.MSG_WITNESS_BLOCK
+            else:
+                new_type = item.type
+            upgraded.append(InventoryItem(type=new_type, payload=item.payload))
+
+        await self._send_raw("getdata", self._serialize_inv(upgraded))
 
     async def request_headers(self, *hashes_be: str) -> None:
         if not hashes_be:

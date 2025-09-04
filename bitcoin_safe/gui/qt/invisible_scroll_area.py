@@ -37,7 +37,7 @@ class InvisibleScrollArea(QScrollArea):
         self.setObjectName(f"{id(self)}")
         self.setStyleSheet(f"#{self.objectName()}  {{ background: transparent; border: none; }}")
 
-        self.content_widget = QWidget()
+        self.content_widget = QWidget(self)
         self.content_widget.setObjectName(f"{id(self.content_widget)}")
         self.content_widget.setStyleSheet(
             f"#{self.content_widget.objectName()}  {{ background: transparent; border: none; }}"

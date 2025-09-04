@@ -346,7 +346,7 @@ class BlockButton(QPushButton):
         ]
 
         layout = center_in_widget(self.labels, self, direction="v")
-        widget_icons = QWidget()
+        widget_icons = QWidget(self)
         widget_icons.setMinimumHeight(0)
         widget_icons_layout = QHBoxLayout(widget_icons)
         set_no_margins(widget_icons_layout)

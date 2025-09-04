@@ -75,7 +75,7 @@ class BaseColumn(QWidget):
 
         self._layout = QVBoxLayout(self)
 
-        self.header_widget = HeaderWidget()
+        self.header_widget = HeaderWidget(self)
         self._layout.addWidget(self.header_widget)
 
         # bottom bar
@@ -128,7 +128,7 @@ class ColumnInputs(BaseColumn):
         self.checkBox_auto_opportunistic_coin_select = QCheckBox()
 
         if category_list:
-            upper_widget = QWidget()
+            upper_widget = QWidget(self)
             upper_widget_layout = QVBoxLayout(upper_widget)
             set_margins(
                 upper_widget_layout,
@@ -148,7 +148,7 @@ class ColumnInputs(BaseColumn):
         else:
             self.checkBox_manual_coin_select.setHidden(True)
 
-        self.lower_widget_utxo_selection = QWidget()
+        self.lower_widget_utxo_selection = QWidget(self)
         lower_widget_layout = QVBoxLayout(self.lower_widget_utxo_selection)
         set_margins(
             lower_widget_layout,

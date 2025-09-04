@@ -1079,11 +1079,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         list_widget = self.create_list_tab(history_list_with_toolbar, tabs)
         tab.searchable_list = history_list_with_toolbar.searchable_list
 
-        top_widget = QWidget()
+        top_widget = QWidget(self)
         top_widget_layout = QHBoxLayout(top_widget)
         top_widget_layout.setContentsMargins(0, 0, 0, 0)
 
-        chart_container = QWidget()
+        chart_container = QWidget(self)
         chart_container_layout = QVBoxLayout(chart_container)
         chart_container_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -1098,7 +1098,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         wallet_balance_chart.signal_click_transaction.connect(self.on_hist_chart_click)
 
-        balance_group = QWidget()
+        balance_group = QWidget(self)
         self.balance_label_title = QLabel()
         self.balance_label = QLabel()
         self.fiat_value_label_title = QLabel()
@@ -1417,11 +1417,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_balance_chart.highlight_txids(txids=set(keys))
 
     def apply_txs(self, txs: List[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
-        self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
+        applied_txs = self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
+        if not applied_txs:
+            return
+        self.hist_node.select()
         self.wallet_signals.updated.emit(
             UpdateFilter(refresh_all=True, reason=UpdateFilterReason.TransactionChange)
         )
-        self.tabs.setCurrentWidget(self.history_tab)
 
         self._rows_after_hist_list_update = [tx.compute_txid() for tx in txs]
 

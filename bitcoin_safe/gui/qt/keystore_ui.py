@@ -234,13 +234,13 @@ class KeyStoreUI(QObject):
         self.tab = QWidget()
         self.tab_layout = QHBoxLayout(self.tab)
 
-        self.tabs_import_type = QTabWidget()
+        self.tabs_import_type = QTabWidget(self.tab)
         self.tab_layout.addWidget(self.tabs_import_type)
 
-        self.tab_import = QWidget()
+        self.tab_import = QWidget(self.tab)
         self.tab_import_layout = QVBoxLayout(self.tab_import)
         self.tabs_import_type.addTab(self.tab_import, "")
-        self.tab_manual = QWidget()
+        self.tab_manual = QWidget(self.tab_import)
         self.tabs_import_type.addTab(self.tab_manual, "")
 
         self.label_fingerprint = QLabel()

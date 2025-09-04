@@ -646,9 +646,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.client: Optional[Client] = None
         self.exclude_tx_ids_in_saving: Set[str] = set()
         self._initial_txs = initial_txs if initial_txs else []
-        if initial_txs:
-            self.apply_unconfirmed_txs(txs=initial_txs)
         self.clear_cache()
+        if initial_txs:
+            # must appear after clear_cache such that the caches are defined
+            self.apply_unconfirmed_txs(txs=initial_txs)
         self.mark_all_labeled_addresses_used(include_receiving_addresses=False)
 
     def persist(self) -> None:
@@ -2257,9 +2258,25 @@ class Wallet(BaseSaveableClass, CacheManager):
     def get_local_txs(self) -> Dict[str, TransactionDetails]:
         return {key: tx for key, tx in self.get_txs().items() if is_local(tx.chain_position)}
 
-    def apply_unconfirmed_txs(self, txs: List[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
-        self.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=tx, last_seen=last_seen) for tx in txs])
+    def apply_unconfirmed_txs(
+        self, txs: List[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
+    ) -> List[bdk.UnconfirmedTx]:
+        applied_txs: List[bdk.UnconfirmedTx] = []
+        for tx in txs:
+            wallet_tx = self.get_tx(str(tx.compute_txid()))
+            if (
+                wallet_tx
+                and isinstance(wallet_tx.chain_position, bdk.ChainPosition.UNCONFIRMED)
+                and wallet_tx.chain_position.timestamp
+                and wallet_tx.chain_position.timestamp >= last_seen
+            ):
+                # no need to add txs that are already in there
+                continue
+            applied_txs.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
+
+        self.bdkwallet.apply_unconfirmed_txs(applied_txs)
         self.persist()
+        return applied_txs
 
     def close(self) -> None:
         pass
