@@ -61,7 +61,8 @@ jobs:
                                 libxrender-dev \
                                 libxi-dev \
                                 libxkbcommon-dev \
-                                libxkbcommon-x11-dev  
+                                libxkbcommon-x11-dev \
+                                osslsigncode
 
       - name: Install Python dependencies
         run: |
@@ -119,6 +120,5 @@ jobs:
 
       - name: Compare signed and unsigned files
         if: ${{ github.event.inputs.signing-policy-slug != '' }}
-        run: |          
-          poetry run python tools/build-wine/ensure-signed-file-integrity.py  dist/  signpath-signed/
+        run: tools/build-wine/verify_signed_executables.sh dist signpath-signed portable setup
           
