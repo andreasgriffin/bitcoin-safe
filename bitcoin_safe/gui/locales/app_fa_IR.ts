@@ -430,7 +430,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>دریافت شد</translation>
+			<translation>دریافت شد </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
