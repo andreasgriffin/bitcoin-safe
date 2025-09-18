@@ -120,7 +120,27 @@ if ! [ -x "$(command -v realpath)" ]; then
 fi
 
 
-export SOURCE_DATE_EPOCH=1530212462
+# Use a reproducible build timestamp derived from the source tree when available.
+# Fall back to a constant epoch if the repository metadata is unavailable (e.g. tarball release).
+if [ -z "${SOURCE_DATE_EPOCH:-}" ]; then
+    # When the caller has not set SOURCE_DATE_EPOCH explicitly we try to infer a
+    # deterministic value: locate the repository root (relative to this script),
+    # read the commit timestamp of HEAD, and reuse that as our canonical build
+    # time.  This makes repeated builds with the same source revision resolve to
+    # the same clock value while still allowing upstream environments to supply
+    # their own timestamp when required.
+    _tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if command -v git >/dev/null 2>&1 && git -C "${_tools_dir}/.." rev-parse >/dev/null 2>&1; then
+        SOURCE_DATE_EPOCH="$(git -C "${_tools_dir}/.." log -1 --format=%ct 2>/dev/null || true)"
+    fi
+    if [ -z "${SOURCE_DATE_EPOCH:-}" ]; then
+        # The hard-coded epoch gives us a stable fallback for source archives
+        # (which ship without the .git metadata needed for the logic above).
+        SOURCE_DATE_EPOCH=1530212462
+    fi
+    unset _tools_dir
+fi
+export SOURCE_DATE_EPOCH
 export ZERO_AR_DATE=1 # for macOS
 export PYTHONHASHSEED=22
 # Set the build type, overridden by wine build

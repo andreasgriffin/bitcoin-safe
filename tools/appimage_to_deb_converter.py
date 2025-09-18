@@ -30,6 +30,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Iterable
 
 
 class Appimage2debConverter:
@@ -66,6 +67,35 @@ class Appimage2debConverter:
         self.desktop_name = desktop_name if desktop_name is not None else package_name
         self.desktop_icon_name = desktop_icon_name
         self.desktop_categories = desktop_categories
+        self._source_date_epoch = self._resolve_source_date_epoch()
+
+    @staticmethod
+    def _resolve_source_date_epoch() -> int:
+        """Return a deterministic timestamp for normalizing file metadata."""
+
+        epoch = os.environ.get("SOURCE_DATE_EPOCH")
+        if epoch:
+            try:
+                return int(epoch)
+            except ValueError:
+                pass
+        # Fallback value shared with other build scripts for archive releases.
+        return 1530212462
+
+    def _normalized_env(self) -> dict[str, str]:
+        env = os.environ.copy()
+        env.setdefault("TZ", "UTC")
+        env["SOURCE_DATE_EPOCH"] = str(self._source_date_epoch)
+        return env
+
+    def _touch_all(self, paths: Iterable[Path]) -> None:
+        for path in paths:
+            try:
+                os.utime(path, ns=(self._source_date_epoch * 1_000_000_000,) * 2, follow_symlinks=False)
+            except (FileNotFoundError, PermissionError, NotImplementedError):
+                # If the filesystem refuses to update a particular entry we still
+                # want the rest of the tree to be normalized.
+                continue
 
     def _extract_appimage(self, extract_dir: Path) -> Path:
         # Ensure the AppImage is executable.
@@ -79,22 +109,19 @@ class Appimage2debConverter:
         if not extracted_folder.exists():
             raise Exception("Extraction failed: 'squashfs-root' not found.")
 
-        # Set timestamps using the find command and touch.
-        # Prepare environment with TZ set to UTC
-        env = os.environ.copy()
-        env["TZ"] = "UTC"
+        # Normalize the timestamps of the extracted files so the Debian
+        # package data tarball does not encode wall-clock values.
         find_command = [
             "find",
             str(extracted_folder),
             "-exec",
             "touch",
             "-h",
-            "-d",
-            "2000-11-11T11:11:11+00:00",
+            f"--date=@{self._source_date_epoch}",
             "{}",
             "+",
         ]
-        subprocess.run(find_command, check=True)
+        subprocess.run(find_command, check=True, env=self._normalized_env())
 
         return extracted_folder
 
@@ -169,9 +196,21 @@ exit 0
         desktop_file_path.write_text(desktop_content)
 
     def _build_deb(self, package_root: Path) -> None:
-        result = subprocess.run(["dpkg-deb", "--build", str(package_root), str(self.output_deb)])
+        result = subprocess.run(
+            ["dpkg-deb", "--build", "--root-owner-group", str(package_root), str(self.output_deb)],
+            env=self._normalized_env(),
+        )
         if result.returncode != 0:
             raise Exception("Failed to build the deb package.")
+
+    def _normalize_package_tree(self, package_root: Path) -> None:
+        """Update timestamps for every entry inside the staging directory."""
+
+        entries = [package_root]
+        # We iterate deterministically so repeated calls touch entries in the
+        # same order regardless of filesystem enumeration.
+        entries.extend(sorted(package_root.rglob("*")))
+        self._touch_all(entries)
 
     def convert(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -194,6 +233,8 @@ exit 0
 
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
+
+            self._normalize_package_tree(package_root)
 
             print("Building deb package...")
             self._build_deb(package_root)

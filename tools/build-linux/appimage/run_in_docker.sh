@@ -224,6 +224,11 @@ done
 # rm -rf "$PYDIR"/site-packages/PyQt6/Qt.so
 
 
+# Remove embedded VCS metadata which is not required at runtime and makes builds
+# sensitive to git pack/index ordering.
+find "$APPDIR" -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
+find "$APPDIR" -type f \( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \) -delete
+
 # these are deleted as they were not deterministic; and are not needed anyway
 find "$APPDIR" -path '*/__pycache__*' -delete
 # although note that *.dist-info might be needed by certain packages...
@@ -233,7 +238,7 @@ rm -rf "$PYDIR"/site-packages/*.egg-info/
 
 
 export TZ=UTC
-find -exec touch -h -d '2000-11-11T11:11:11+00:00' {} +
+find -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
 
 
 info "creating the AppImage."
