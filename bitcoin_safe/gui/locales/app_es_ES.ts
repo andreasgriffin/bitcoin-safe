@@ -4,7 +4,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
-			<translation>No se añadieron firmas adicionales  </translation>
+			<translation>No se añadieron firmas adicionales</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -26,17 +26,17 @@
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
-			<translation>Dirección inválida  </translation>
+			<translation>Dirección inválida</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Missing Address</source>
-			<translation>Dirección faltante  </translation>
+			<translation>Dirección faltante</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Valid Address</source>
-			<translation>Dirección válida  </translation>
+			<translation>Dirección válida</translation>
 		</message>
 	</context>
 	<context>
@@ -65,7 +65,7 @@
 		<name>AddressDialog</name>
 		<message>
 			<source>Validate</source>
-			<translation>Validar  </translation>
+			<translation>Validar</translation>
 		</message>
 	</context>
 	<context>
@@ -193,12 +193,12 @@
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-			<translation>Cantidad demasiado grande. Por favor, haga clic en una categoría con fondos suficientes a la izquierda, o seleccione las monedas en la pestaña avanzada  </translation>
+			<translation>Cantidad demasiado grande. Por favor, haga clic en una categoría con fondos suficientes a la izquierda, o seleccione las monedas en la pestaña avanzada</translation>
 		</message>
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too small</source>
-			<translation>Cantidad demasiado pequeña  </translation>
+			<translation>Cantidad demasiado pequeña</translation>
 		</message>
 	</context>
 	<context>
@@ -234,12 +234,12 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Pegue la semilla de {number} palabras en el pdf impreso correspondiente.  </translation>
+			<translation>Pegue la semilla de {number} palabras en el pdf impreso correspondiente.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Pegue la semilla de {number} palabras en el pdf impreso.  </translation>
+			<translation>Pegue la semilla de {number} palabras en el pdf impreso.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
@@ -283,7 +283,7 @@
 		<name>BaseChat</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>No se pudo reconocer {file_content} como BitcoinData  </translation>
+			<translation>No se pudo reconocer {file_content} como BitcoinData</translation>
 		</message>
 	</context>
 	<context>
@@ -307,14 +307,14 @@
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>Ayuda  </translation>
+			<translation>Ayuda</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>No se pudo reconocer {file_content} como BitcoinData  </translation>
+			<translation>No se pudo reconocer {file_content} como BitcoinData</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
@@ -324,12 +324,12 @@
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Go to {untrusted}</source>
-			<translation>Ir a {untrusted}  </translation>
+			<translation>Ir a {untrusted}</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>To complete the connection, accept my {id} request on the other device {other}.</source>
-			<translation>Para completar la conexión, acepta mi solicitud de {id} en el otro dispositivo {other}.  </translation>
+			<translation>Para completar la conexión, acepta mi solicitud de {id} en el otro dispositivo {other}.</translation>
 		</message>
 	</context>
 	<context>
@@ -376,7 +376,7 @@
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
-			<translation>Abrir carpeta contenedora  </translation>
+			<translation>Abrir carpeta contenedora</translation>
 		</message>
 	</context>
 	<context>
@@ -388,7 +388,8 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-			<translation>Comprar {number} firmantes de hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe soporta todos los principales firmantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+			<translation>Comprar {number} firmantes de hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe soporta todos los principales firmantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
 		</message>
 	</context>
 	<context>
@@ -409,7 +410,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Addresses</source>
-			<translation>Direcciones  </translation>
+			<translation>Direcciones</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -429,7 +430,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>Recibido</translation>
+			<translation>Recibido </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -439,7 +440,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
@@ -472,7 +473,7 @@
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>Las direcciones {used_addresses} ya tienen transacciones vinculadas a otras direcciones. ¿Está seguro de que desea cambiar la categoría?  </translation>
+			<translation>Las direcciones {used_addresses} ya tienen transacciones vinculadas a otras direcciones. ¿Está seguro de que desea cambiar la categoría?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
@@ -485,7 +486,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>Chat</name>
 		<message>
 			<source>You can only send only PSBTs or transactions</source>
-			<translation>Solo puede enviar PSBTs o transacciones  </translation>
+			<translation>Solo puede enviar PSBTs o transacciones</translation>
 		</message>
 	</context>
 	<context>
@@ -507,12 +508,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ChatGui</name>
 		<message>
 			<source>Share a PSBT</source>
-			<translation>Compartir un PSBT  </translation>
+			<translation>Compartir un PSBT</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Type your message here...</source>
-			<translation>Escribe tu mensaje aquí...  </translation>
+			<translation>Escribe tu mensaje aquí...</translation>
 		</message>
 	</context>
 	<context>
@@ -580,19 +581,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnSankey</name>
 		<message>
 			<source>Export svg</source>
-			<translation>Exportar svg  </translation>
+			<translation>Exportar svg</translation>
 		</message>
 	</context>
 	<context>
 		<name>DescriptorAnalyzer</name>
 		<message>
 			<source>Invalid Descriptor</source>
-			<translation>Descriptor inválido  </translation>
+			<translation>Descriptor inválido</translation>
 		</message>
 		<name>DescriptorAnalyzer</name>
 		<message>
 			<source>Missing Descriptor</source>
-			<translation>Descriptor faltante  </translation>
+			<translation>Descriptor faltante</translation>
 		</message>
 	</context>
 	<context>
@@ -614,7 +615,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Export</source>
-			<translation>Exportar  </translation>
+			<translation>Exportar</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -639,7 +640,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>Seleccione primero una cartera Multifirma  </translation>
+			<translation>Seleccione primero una cartera Multifirma</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -689,7 +690,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Descriptor unchanged</source>
-			<translation>Descriptor sin cambios  </translation>
+			<translation>Descriptor sin cambios</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -699,7 +700,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>New descriptor entered</source>
-			<translation>Nuevo descriptor introducido  </translation>
+			<translation>Nuevo descriptor introducido</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -709,7 +710,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Scan Addresses ahead</source>
-			<translation>Escaneo de direcciones adelante  </translation>
+			<translation>Escaneo de direcciones adelante</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -719,7 +720,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet Properties</source>
-			<translation>Propiedades de la cartera  </translation>
+			<translation>Propiedades de la cartera</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -732,19 +733,19 @@ Default 20</source>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Select the detected device</source>
-			<translation>Seleccionar el dispositivo detectado  </translation>
+			<translation>Seleccionar el dispositivo detectado</translation>
 		</message>
 	</context>
 	<context>
 		<name>DeviceManager</name>
 		<message>
 			<source>Trusted</source>
-			<translation>Confiado  </translation>
+			<translation>Confiado</translation>
 		</message>
 		<name>DeviceManager</name>
 		<message>
 			<source>Untrusted</source>
-			<translation>No confiado  </translation>
+			<translation>No confiado</translation>
 		</message>
 	</context>
 	<context>
@@ -783,12 +784,12 @@ Default 20</source>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
-			<translation>Progreso de la descarga  </translation>
+			<translation>Progreso de la descarga</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
 			<source>Download {}</source>
-			<translation>Descargar {}  </translation>
+			<translation>Descargar {}</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
@@ -814,7 +815,7 @@ Default 20</source>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
-			<translation>Ampliar  </translation>
+			<translation>Ampliar</translation>
 		</message>
 	</context>
 	<context>
@@ -826,12 +827,12 @@ Default 20</source>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Export {data_type} to hardware signer</source>
-			<translation>Exportar {data_type} al firmante de hardware  </translation>
+			<translation>Exportar {data_type} al firmante de hardware</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Image (*.{image_format})</source>
-			<translation>Imagen (*.{image_format})  </translation>
+			<translation>Imagen (*.{image_format})</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
@@ -848,7 +849,7 @@ Default 20</source>
 		<name>ExportLabelMenu</name>
 		<message>
 			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Exportar etiquetas para otras carteras (BIP329)  </translation>
+			<translation>Exportar etiquetas para otras carteras (BIP329)</translation>
 		</message>
 	</context>
 	<context>
@@ -920,7 +921,7 @@ the sending value {sent}</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>La tarifa de la transacción es: {fee}, y {sent} está enviado!  </translation>
+			<translation>La tarifa de la transacción es: {fee}, y {sent} está enviado!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -932,7 +933,7 @@ the sending value {sent}</source>
 		<name>FeeWarningBar</name>
 		<message>
 			<source>{sent} is sent!</source>
-			<translation>¡{sent} está enviado!  </translation>
+			<translation>¡{sent} está enviado!</translation>
 		</message>
 	</context>
 	<context>
@@ -961,12 +962,12 @@ the sending value {sent}</source>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export</source>
-			<translation>Exportar  </translation>
+			<translation>Exportar</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export to file</source>
-			<translation>Exportar a archivo  </translation>
+			<translation>Exportar a archivo</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -978,12 +979,12 @@ the sending value {sent}</source>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Invalid Fingerprint</source>
-			<translation>Huella digital inválida  </translation>
+			<translation>Huella digital inválida</translation>
 		</message>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Missing Fingerprint</source>
-			<translation>Huella digital faltante  </translation>
+			<translation>Huella digital faltante</translation>
 		</message>
 	</context>
 	<context>
@@ -995,7 +996,7 @@ the sending value {sent}</source>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Prefill transaction fields</source>
-			<translation>Precargar campos de transacción  </translation>
+			<translation>Precargar campos de transacción</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
@@ -1005,7 +1006,7 @@ the sending value {sent}</source>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Retry</source>
-			<translation>Reintentar  </translation>
+			<translation>Reintentar</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
@@ -1022,44 +1023,44 @@ the sending value {sent}</source>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Ingrese el nombre (etiqueta adhesiva) del firmante de hardware  </translation>
+			<translation>Ingrese el nombre (etiqueta adhesiva) del firmante de hardware</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Sticker Label</source>
-			<translation>Etiqueta adhesiva  </translation>
+			<translation>Etiqueta adhesiva</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>¡Éxito! Por favor, complete este paso con todos los firmantes de hardware y luego haga clic en Siguiente.  </translation>
+			<translation>¡Éxito! Por favor, complete este paso con todos los firmantes de hardware y luego haga clic en Siguiente.</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>The setup didnt complete. Please repeat.</source>
-			<translation>La configuración no se completó. Por favor, repita.  </translation>
+			<translation>La configuración no se completó. Por favor, repita.</translation>
 		</message>
 	</context>
 	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
-			<translation>Exportar archivo  </translation>
+			<translation>Exportar archivo</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Import File or Text</source>
-			<translation>Importar archivo o texto  </translation>
+			<translation>Importar archivo o texto</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>QR Code</source>
-			<translation>Código QR  </translation>
+			<translation>Código QR</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
@@ -1116,7 +1117,7 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Save as file</source>
-			<translation>Guardar como archivo  </translation>
+			<translation>Guardar como archivo</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1153,35 +1154,35 @@ the sending value {sent}</source>
 		<name>HistListWithToolbar</name>
 		<message>
 			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Generar estado de cuenta PDF  </translation>
+			<translation>&amp;Generar estado de cuenta PDF</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportClipboard</name>
 		<message>
 			<source>Share</source>
-			<translation>Compartir  </translation>
+			<translation>Compartir</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
 			<source>File</source>
-			<translation>Archivo  </translation>
+			<translation>Archivo</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
 			<source>QR</source>
-			<translation>QR  </translation>
+			<translation>QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
@@ -1210,7 +1211,7 @@ the sending value {sent}</source>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>Restaurar etiquetas desde la nube usando una clave de sincronización existente  </translation>
+			<translation>Restaurar etiquetas desde la nube usando una clave de sincronización existente</translation>
 		</message>
 	</context>
 	<context>
@@ -1222,7 +1223,7 @@ the sending value {sent}</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next signer</source>
-			<translation>Siguiente firmante  </translation>
+			<translation>Siguiente firmante</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1237,7 +1238,7 @@ the sending value {sent}</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>Firmante anterior  </translation>
+			<translation>Firmante anterior</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1249,17 +1250,17 @@ the sending value {sent}</source>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
-			<translation>Origen de clave faltante  </translation>
+			<translation>Origen de clave faltante</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided account {provided_account} differs from the default account {default_account}.</source>
-			<translation>La cuenta proporcionada {provided_account} difiere de la cuenta predeterminada {default_account}.  </translation>
+			<translation>La cuenta proporcionada {provided_account} difiere de la cuenta predeterminada {default_account}.</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-			<translation>La información proporcionada es para {key_origin_network}. Por favor, proporciona xPub para la red {network}  </translation>
+			<translation>La información proporcionada es para {key_origin_network}. Por favor, proporciona xPub para la red {network}</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -1317,12 +1318,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please enter a valid key origin.</source>
-			<translation>Por favor, introduzca un origen de clave válido.  </translation>
+			<translation>Por favor, introduzca un origen de clave válido.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please import the information from all hardware signers first</source>
-			<translation>Por favor, importa la información de todos los firmantes de hardware primero  </translation>
+			<translation>Por favor, importa la información de todos los firmantes de hardware primero</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1332,12 +1333,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json)</source>
-			<translation>Por favor, pega el archivo exportado (como sparrow-export.json)  </translation>
+			<translation>Por favor, pega el archivo exportado (como sparrow-export.json)</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json):</source>
-			<translation>Por favor, pega el archivo exportado (como sparrow-export.json):  </translation>
+			<translation>Por favor, pega el archivo exportado (como sparrow-export.json):</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1347,7 +1348,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-			<translation>El estándar para el tipo de dirección seleccionado {type} es {expected_key_origin}. Por favor, corríjalo si no está seguro.  </translation>
+			<translation>El estándar para el tipo de dirección seleccionado {type} es {expected_key_origin}. Por favor, corríjalo si no está seguro.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1378,7 +1379,7 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} ¿Desea proceder de todos modos?  </translation>
+			<translation>{msg} ¿Desea proceder de todos modos?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1390,12 +1391,12 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>Rellenando todos los {number} firmantes con las huellas {fingerprints}  </translation>
+			<translation>Rellenando todos los {number} firmantes con las huellas {fingerprints}</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Please import the complete data for Signer {i}!</source>
-			<translation>¡Por favor, importa los datos completos para el firmante {i}!  </translation>
+			<translation>¡Por favor, importa los datos completos para el firmante {i}!</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -1405,29 +1406,29 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>¡Importaste la misma huella digital varias veces!!! Por favor, usa un dispositivo de firma diferente.  </translation>
+			<translation>¡Importaste la misma huella digital varias veces!!! Por favor, usa un dispositivo de firma diferente.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>¡Importaste el mismo xpub varias veces!!! Por favor, usa un dispositivo de firma diferente.  </translation>
+			<translation>¡Importaste el mismo xpub varias veces!!! Por favor, usa un dispositivo de firma diferente.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-			<translation>¡Tus orígenes de clave importados {key_origins} difieren! Por favor, verifica doblemente si eso es lo que querías.  </translation>
+			<translation>¡Tus orígenes de clave importados {key_origins} difieren! Por favor, verifica doblemente si eso es lo que querías.</translation>
 		</message>
 	</context>
 	<context>
 		<name>LabelBackup</name>
 		<message>
 			<source>Backup secret sync key:</source>
-			<translation>Clave de sincronización secreta de copia de seguridad:  </translation>
+			<translation>Clave de sincronización secreta de copia de seguridad:</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Elija computadoras de confianza en la pestaña Sincronizar &amp; Chatear en cada computadora.  </translation>
+			<translation>Elija computadoras de confianza en la pestaña Sincronizar &amp; Chatear en cada computadora.</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1437,12 +1438,12 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Enable</source>
-			<translation>Habilitar  </translation>
+			<translation>Habilitar</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Copia de seguridad encriptada en la nube de las etiquetas y categorías de direcciones  </translation>
+			<translation>Copia de seguridad encriptada en la nube de las etiquetas y categorías de direcciones</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1452,7 +1453,7 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Multi-computer synchronization and chat</source>
-			<translation>Sincronización entre múltiples computadoras y chat  </translation>
+			<translation>Sincronización entre múltiples computadoras y chat</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1483,26 +1484,26 @@ Do you want to proceed anyway?</source>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-			<translation>¡Esta transacción combina las categorías de monedas {categories} y hace que estas categorías sean enlazables!  </translation>
+			<translation>¡Esta transacción combina las categorías de monedas {categories} y hace que estas categorías sean enlazables!</translation>
 		</message>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>{category} (in wallet {wallet_ids})</source>
-			<translation>{category} (en la cartera {wallet_ids})  </translation>
+			<translation>{category} (en la cartera {wallet_ids})</translation>
 		</message>
 	</context>
 	<context>
 		<name>LoadingWalletTab</name>
 		<message>
 			<source>Loading, please wait...</source>
-			<translation>Cargando, por favor espere...  </translation>
+			<translation>Cargando, por favor espere...</translation>
 		</message>
 	</context>
 	<context>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>Por favor, abra la cartera del remitente para editar esta transacción.  </translation>
+			<translation> Por favor, abra la cartera del remitente para editar esta transacción.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1512,7 +1513,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Change</source>
-			<translation>&amp;Cambiar  </translation>
+			<translation>&amp;Cambiar</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1552,12 +1553,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export</source>
-			<translation>&amp;Exportar  </translation>
+			<translation>&amp;Exportar</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Exportar PDF de la cartera  </translation>
+			<translation>&amp;Exportar PDF de la cartera</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1567,7 +1568,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Generar estado de cuenta PDF  </translation>
+			<translation>&amp;Generar estado de cuenta PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1627,7 +1628,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
-			<translation>&amp;Registrar Multifirma con firmantes de hardware  </translation>
+			<translation>&amp;Registrar Multifirma con firmantes de hardware</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1642,7 +1643,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
-			<translation>&amp;Buscar  </translation>
+			<translation>&amp;Buscar</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1652,7 +1653,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Show Logs</source>
-			<translation>&amp;Mostrar registros  </translation>
+			<translation>&amp;Mostrar registros</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1662,12 +1663,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Tools</source>
-			<translation>&amp;Herramientas  </translation>
+			<translation>&amp;Herramientas</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;Herramientas de firmante USB  </translation>
+			<translation>&amp;Herramientas de firmante USB</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1682,7 +1683,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Una cartera con id {name} ya está abierta.</translation>
+			<translation>Una cartera con id {name} ya está abierta.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1702,12 +1703,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close Tab</source>
-			<translation>Cerrar pestaña  </translation>
+			<translation>Cerrar pestaña</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close all transactions</source>
-			<translation>Cerrar todas las transacciones  </translation>
+			<translation>Cerrar todas las transacciones</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1727,7 +1728,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not decode this string</source>
-			<translation>No se pudo decodificar esta cadena  </translation>
+			<translation>No se pudo decodificar esta cadena</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1757,12 +1758,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Do you want to save the PSBT {id}?</source>
-			<translation>¿Desea guardar el PSBT {id}?  </translation>
+			<translation>¿Desea guardar el PSBT {id}?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>Exportar &amp;Descriptor para firmantes de hardware  </translation>
+			<translation>Exportar &amp;Descriptor para firmantes de hardware</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1792,12 +1793,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>No file selected</source>
-			<translation>No se ha seleccionado ningún archivo  </translation>
+			<translation>No se ha seleccionado ningún archivo</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-			<translation>No hay cartera abierta. Por favor, abra la cartera del remitente para editar esta transacción.  </translation>
+			<translation>No hay cartera abierta. Por favor, abra la cartera del remitente para editar esta transacción.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1852,7 +1853,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>Seleccione primero una cartera Multifirma  </translation>
+			<translation>Seleccione primero una cartera Multifirma</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1867,7 +1868,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>QR &amp;Scanner</source>
-			<translation>QR &amp;Escáner  </translation>
+			<translation>QR &amp;Escáner</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1892,7 +1893,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Save PSBT?</source>
-			<translation>¿Guardar PSBT?  </translation>
+			<translation>¿Guardar PSBT?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1947,7 +1948,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet Files (*.wallet);;All Files (*)</source>
-			<translation>Archivos de Cartera (*.wallet);;Todos los Archivos (*)  </translation>
+			<translation>Archivos de Cartera (*.wallet);;Todos los Archivos (*)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1996,7 +1997,7 @@ Do you want to proceed anyway?</source>
 		<name>MyTreeView</name>
 		<message>
 			<source>All Files (*);;Text Files (*.csv)</source>
-			<translation>Todos los Archivos (*);;Archivos de Texto (*.csv)  </translation>
+			<translation>Todos los Archivos (*);;Archivos de Texto (*.csv)</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -2011,19 +2012,19 @@ Do you want to proceed anyway?</source>
 		<name>MyTreeView</name>
 		<message>
 			<source>Export csv</source>
-			<translation>Exportar csv  </translation>
+			<translation>Exportar csv</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>No file selected</source>
-			<translation>No se ha seleccionado ningún archivo  </translation>
+			<translation>No se ha seleccionado ningún archivo</translation>
 		</message>
 	</context>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>Aplicar &amp;&amp; Apagar  </translation>
+			<translation>Aplicar &amp;&amp; Apagar</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2124,12 +2125,12 @@ Do you want to proceed anyway?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
-			<translation>Presione la tecla de flecha ⬇ para sugerencias  </translation>
+			<translation>Presione la tecla de flecha ⬇ para sugerencias</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Proxy:</source>
-			<translation>Proxy:  </translation>
+			<translation>Proxy:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2161,7 +2162,7 @@ Do you want to proceed anyway?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>¡El proxy no se aplica a la función de Sincronización y Chat!  </translation>
+			<translation>¡El proxy no se aplica a la función de Sincronización y Chat!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2290,14 +2291,14 @@ Do you want to proceed anyway?</source>
 		<name>NostrSync</name>
 		<message>
 			<source>Group Chat</source>
-			<translation>Chat Grupal  </translation>
+			<translation>Chat Grupal</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSyncWithSingleChats</name>
 		<message>
 			<source>Chat</source>
-			<translation>Chat  </translation>
+			<translation>Chat</translation>
 		</message>
 	</context>
 	<context>
@@ -2311,7 +2312,7 @@ Do you want to proceed anyway?</source>
 		<name>NotificationBarP2P</name>
 		<message>
 			<source>Enable</source>
-			<translation>Habilitar  </translation>
+			<translation>Habilitar</translation>
 		</message>
 		<name>NotificationBarP2P</name>
 		<message>
@@ -2463,7 +2464,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
-			<translation>Todos los Archivos (*);;Archivos de Cartera (*.wallet)  </translation>
+			<translation>Todos los Archivos (*);;Archivos de Cartera (*.wallet)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2493,7 +2494,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Connected to {server}</source>
-			<translation>Conectado a {server}  </translation>
+			<translation>Conectado a {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2503,7 +2504,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Disconnected from {server}</source>
-			<translation>Desconectado de {server}  </translation>
+			<translation>Desconectado de {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2549,7 +2550,7 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>Nueva transacción en la cartera '{wallet}': {txs}  </translation>
+			<translation>Nueva transacción en la cartera '{wallet}': {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2559,7 +2560,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>No file selected</source>
-			<translation>No se ha seleccionado ningún archivo  </translation>
+			<translation>No se ha seleccionado ningún archivo</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2594,7 +2595,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Save wallet</source>
-			<translation>Guardar cartera  </translation>
+			<translation>Guardar cartera</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2604,17 +2605,17 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Successfully updated {number} Labels</source>
-			<translation>Se actualizaron correctamente {number} etiquetas  </translation>
+			<translation>Se actualizaron correctamente {number} etiquetas</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Sync &amp;&amp; Chat</source>
-			<translation>Sincronizar &amp;&amp; Chatear  </translation>
+			<translation>Sincronizar &amp;&amp; Chatear</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Syncing with {server}</source>
-			<translation>Sincronizando con {server}  </translation>
+			<translation>Sincronizando con {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2646,12 +2647,12 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>finished updating lists</source>
-			<translation>listas actualizadas  </translation>
+			<translation>listas actualizadas</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>start updating lists</source>
-			<translation>comenzando la actualización de listas  </translation>
+			<translation>comenzando la actualización de listas</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2664,7 +2665,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QrToolButton</name>
 		<message>
 			<source>QR Code</source>
-			<translation>Código QR  </translation>
+			<translation>Código QR</translation>
 		</message>
 	</context>
 	<context>
@@ -2707,7 +2708,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>ReceiveTest</name>
 		<message>
 			<source>Balance = {amount}</source>
-			<translation>Saldo = {amount}  </translation>
+			<translation>Saldo = {amount}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -2741,14 +2742,15 @@ The serializations of both differ, which could be caused by different collected 
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Recibe una &lt;b&gt;pequeña&lt;/b&gt; cantidad (menos de {test_amount}) a una dirección de este monedero. &lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar los gastos desde el monedero. &lt;br&gt; Así que antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes. &lt;br&gt; &lt;br&gt; &lt;b&gt;¡NO envíes grandes fondos al monedero todavía. Por favor, completa primero todas las pruebas de envío!&lt;/b&gt;</translation>
+			<translation>Recibe una &lt;b&gt;pequeña&lt;/b&gt; cantidad (menos de {test_amount}) a una dirección de este monedero. &lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar los gastos desde el monedero. &lt;br&gt; Así que antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes. &lt;br&gt; &lt;br&gt; &lt;b&gt;¡NO envíes grandes fondos al monedero todavía. Por favor, completa primero todas las pruebas de envío!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
 			<source>Recently Opened Wallets</source>
-			<translation>Carteras abiertas recientemente  </translation>
+			<translation>Carteras abiertas recientemente</translation>
 		</message>
 	</context>
 	<context>
@@ -2787,7 +2789,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>Recipients</name>
 		<message>
 			<source>Add Recipient</source>
-			<translation>Agregar destinatario  </translation>
+			<translation>Agregar destinatario</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2797,47 +2799,47 @@ The serializations of both differ, which could be caused by different collected 
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;CSV (*.csv)</source>
-			<translation>Todos los Archivos (*);;CSV (*.csv)  </translation>
+			<translation>Todos los Archivos (*);;CSV (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.csv)</source>
-			<translation>Todos los Archivos (*);;Archivos de Cartera (*.csv)  </translation>
+			<translation>Todos los Archivos (*);;Archivos de Cartera (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Amount [{unit}]</source>
-			<translation>Cantidad [{unit}]  </translation>
+			<translation>Cantidad [{unit}]</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export</source>
-			<translation>Exportar  </translation>
+			<translation>Exportar</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export CSV Template</source>
-			<translation>Exportar Plantilla CSV  </translation>
+			<translation>Exportar Plantilla CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export as CSV file</source>
-			<translation>Exportar como archivo CSV  </translation>
+			<translation>Exportar como archivo CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export csv</source>
-			<translation>Exportar csv  </translation>
+			<translation>Exportar csv</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import CSV file</source>
-			<translation>Importar archivo CSV  </translation>
+			<translation>Importar archivo CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import/Export</source>
-			<translation>Importar/Exportar  </translation>
+			<translation>Importar/Exportar</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2847,22 +2849,22 @@ The serializations of both differ, which could be caused by different collected 
 		<name>Recipients</name>
 		<message>
 			<source>No file selected</source>
-			<translation>No se ha seleccionado ningún archivo  </translation>
+			<translation>No se ha seleccionado ningún archivo</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>No rows recognized</source>
-			<translation>No se reconocieron filas  </translation>
+			<translation>No se reconocieron filas</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Open CSV</source>
-			<translation>Abrir CSV  </translation>
+			<translation>Abrir CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Please use the CSV template and include the header row.</source>
-			<translation>Por favor, usa la plantilla CSV e incluye la fila de encabezado.  </translation>
+			<translation>Por favor, usa la plantilla CSV e incluye la fila de encabezado.</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -2877,12 +2879,12 @@ The serializations of both differ, which could be caused by different collected 
 		<name>Recipients</name>
 		<message>
 			<source>{address} is not a valid address!</source>
-			<translation>¡{address} no es una dirección válida!  </translation>
+			<translation>¡{address} no es una dirección válida!</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>{amount} is not a valid integer!</source>
-			<translation>¡{amount} no es un entero válido!  </translation>
+			<translation>¡{amount} no es un entero válido!</translation>
 		</message>
 	</context>
 	<context>
@@ -2894,7 +2896,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next signer</source>
-			<translation>Siguiente firmante  </translation>
+			<translation>Siguiente firmante</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
@@ -2909,7 +2911,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>Firmante anterior  </translation>
+			<translation>Firmante anterior</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
@@ -2933,7 +2935,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>RelayDialog</name>
 		<message>
 			<source>Enter custom Nostr Relays</source>
-			<translation>Introduzca Relés Nostr personalizados  </translation>
+			<translation>Introduzca Relés Nostr personalizados</translation>
 		</message>
 	</context>
 	<context>
@@ -2947,31 +2949,31 @@ The serializations of both differ, which could be caused by different collected 
 		<name>SankeyWidget</name>
 		<message>
 			<source>All Files (*);;Text Files (*.svg)</source>
-			<translation>Todos los archivos (*);;Archivos de texto (*.svg)  </translation>
+			<translation>Todos los archivos (*);;Archivos de texto (*.svg)</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>Export svg</source>
-			<translation>Exportar svg  </translation>
+			<translation>Exportar svg</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>No file selected</source>
-			<translation>No se ha seleccionado ningún archivo  </translation>
+			<translation>No se ha seleccionado ningún archivo</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsExportXpub</name>
 		<message>
 			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>Cómo exportar la información de la cartera desde el firmante de hardware  </translation>
+			<translation>Cómo exportar la información de la cartera desde el firmante de hardware</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsGenerateSeed</name>
 		<message>
 			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>Genere {number} palabras de semilla secreta en cada firmante de hardware y escríbalas en la hoja de recuperación  </translation>
+			<translation>Genere {number} palabras de semilla secreta en cada firmante de hardware y escríbalas en la hoja de recuperación</translation>
 		</message>
 	</context>
 	<context>
@@ -2986,7 +2988,7 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Compara las {number} palabras en el papel de respaldo con el firmante de hardware. Si cometes un error aquí, ¡tu dinero se perderá!  </translation>
+			<translation>Compara las {number} palabras en el papel de respaldo con el firmante de hardware. Si cometes un error aquí, ¡tu dinero se perderá!</translation>
 		</message>
 	</context>
 	<context>
@@ -3000,24 +3002,24 @@ If you make a mistake here, your money is lost!</source>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
-			<translation>Salidas Gastadas  </translation>
+			<translation>Salidas Gastadas</translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Invalid seed</source>
-			<translation>Semilla inválida  </translation>
+			<translation>Semilla inválida</translation>
 		</message>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Missing Seed</source>
-			<translation>Semilla faltante  </translation>
+			<translation>Semilla faltante</translation>
 		</message>
 	</context>
 	<context>
@@ -3053,27 +3055,27 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
-			<translation>Ingrese el mensaje a firmar en {bip32_path}  </translation>
+			<translation>Ingrese el mensaje a firmar en {bip32_path}</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Message too short.</source>
-			<translation>Mensaje demasiado corto.  </translation>
+			<translation>Mensaje demasiado corto.</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Sign</source>
-			<translation>Firmar  </translation>
+			<translation>Firmar</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Sign message</source>
-			<translation>Firmar mensaje  </translation>
+			<translation>Firmar mensaje</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>Mensaje firmado  </translation>
+			<translation>Mensaje firmado</translation>
 		</message>
 	</context>
 	<context>
@@ -3160,12 +3162,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" en {device_name}  </translation>
+			<translation>"{sticker}" en {device_name}</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>Put the following stickers on your hardware:</source>
-			<translation>Coloca las siguientes pegatinas en tu hardware:  </translation>
+			<translation>Coloca las siguientes pegatinas en tu hardware:</translation>
 		</message>
 	</context>
 	<context>
@@ -3199,12 +3201,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>Copia de seguridad de etiquetas y sincronización encriptada a dispositivos de confianza  </translation>
+			<translation>Copia de seguridad de etiquetas y sincronización encriptada a dispositivos de confianza</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>Abrir transacciones y PSBTs recibidos  </translation>
+			<translation>Abrir transacciones y PSBTs recibidos</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -3221,17 +3223,17 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
-			<translation>Índice de dirección  </translation>
+			<translation>Índice de dirección</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Display Address</source>
-			<translation>Mostrar dirección  </translation>
+			<translation>Mostrar dirección</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Get xpubs</source>
-			<translation>Obtener xpubs  </translation>
+			<translation>Obtener xpubs</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3246,7 +3248,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your PSBT in here</source>
-			<translation>Pega tu PSBT aquí  </translation>
+			<translation>Pega tu PSBT aquí</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3256,68 +3258,68 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your text to be signed</source>
-			<translation>Pega tu texto para firmar  </translation>
+			<translation>Pega tu texto para firmar</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Show Seed</source>
-			<translation>Mostrar Semilla  </translation>
+			<translation>Mostrar Semilla</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign Message</source>
-			<translation>Firmar mensaje  </translation>
+			<translation>Firmar mensaje</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign PSBT</source>
-			<translation>Firmar PSBT  </translation>
+			<translation>Firmar PSBT</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>USB Signer Tools</source>
-			<translation>Herramientas de firmante USB  </translation>
+			<translation>Herramientas de firmante USB</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock</source>
-			<translation>Desbloquear  </translation>
+			<translation>Desbloquear</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock Devices</source>
-			<translation>Desbloquear dispositivos  </translation>
+			<translation>Desbloquear dispositivos</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Wipe Device</source>
-			<translation>Limpiar dispositivo  </translation>
+			<translation>Limpiar dispositivo</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs  </translation>
+			<translation>XPUBs</translation>
 		</message>
 	</context>
 	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
-			<translation>Dispositivo no confiable  </translation>
+			<translation>Dispositivo no confiable</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxExport</name>
 		<message>
 			<source>Export Transaction</source>
-			<translation>Exportar transacción  </translation>
+			<translation>Exportar transacción</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Create and collect {n}. signature</source>
-			<translation>Crear y recoger la {n}. firma  </translation>
+			<translation>Crear y recoger la {n}. firma</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -3333,39 +3335,42 @@ Signatures:
 
 
 </source>
-			<translation>Transacción firmada con la clave privada perteneciente a {label}  Firmas: {signatures}</translation>
+			<translation>Transacción firmada con la clave privada perteneciente a {label} Firmas: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
 		<name>UI</name>
 		<message>
 			<source>Export sync key</source>
-			<translation>Exportar clave de sincronización  </translation>
+			<translation>Exportar clave de sincronización</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Import sync key</source>
-			<translation>Importar clave de sincronización  </translation>
+			<translation>Importar clave de sincronización</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>My Device: {id}</source>
-			<translation>Mi dispositivo: {id}  </translation>
+			<translation>Mi dispositivo: {id}</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>Restablecer clave de sincronización  </translation>
+			<translation>Restablecer clave de sincronización</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Set custom Relay list</source>
-			<translation>Establecer lista personalizada de Relay  </translation>
+			<translation>Establecer lista personalizada de Relay</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Sync key Export</source>
-			<translation>Exportación de clave de sincronización  </translation>
+			<translation>Exportación de clave de sincronización</translation>
 		</message>
 		<name>UI</name>
 		<message>
@@ -3374,7 +3379,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Su clave de sincronización es: {sync_key} Guárdela, y cuando haga clic en 'importar clave de sincronización', debería restaurar sus etiquetas de los relevos de nostr.  </translation>
+			<translation>Su clave de sincronización es: {sync_key} Guárdela, y cuando haga clic en 'importar clave de sincronización', debería restaurar sus etiquetas de los relevos de nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3387,7 +3392,7 @@ Signatures:
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>Pueden añadirse  entradas adicionales por debajo de {rate} para consolidar UTXOs y reducir comisiones futuras</translation>
+			<translation>Pueden añadirse entradas adicionales por debajo de {rate} para consolidar UTXOs y reducir comisiones futuras</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3397,12 +3402,12 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Create</source>
-			<translation>Crear  </translation>
+			<translation>Crear</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Do you want to continue, even though both coin categories become linkable?</source>
-			<translation>¿Desea continuar, aunque ambas categorías de monedas se vuelvan enlazables?  </translation>
+			<translation>¿Desea continuar, aunque ambas categorías de monedas se vuelvan enlazables?</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3456,7 +3461,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
-			<translation>Importar archivo  </translation>
+			<translation>Importar archivo</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3466,7 +3471,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Etiqueta:  </translation>
+			<translation>Etiqueta: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3529,7 +3534,7 @@ Or you can broadcast via {url}</source>
 		<name>USBDevice</name>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
-			<translation>¿Desea restaurar una semilla existente en el dispositivo?  </translation>
+			<translation>¿Desea restaurar una semilla existente en el dispositivo?</translation>
 		</message>
 	</context>
 	<context>
@@ -3546,7 +3551,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No device selected</source>
-			<translation>Ningún dispositivo seleccionado  </translation>
+			<translation>Ningún dispositivo seleccionado</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3556,66 +3561,66 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>Por favor, reinicia tu computadora para que los cambios tengan efecto.  </translation>
+			<translation>Por favor, reinicia tu computadora para que los cambios tengan efecto.</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Please unlock USB devices</source>
-			<translation>Por favor, desbloquee los dispositivos USB  </translation>
+			<translation>Por favor, desbloquee los dispositivos USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-			<translation>Registrar carteras multisig a través de USB no es compatible con {device_type}. Por favor, use tarjetas sd o escanee el código QR.  </translation>
+			<translation>Registrar carteras multisig a través de USB no es compatible con {device_type}. Por favor, use tarjetas sd o escanee el código QR.</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Restart computer</source>
-			<translation>Reiniciar computadora  </translation>
+			<translation>Reiniciar computadora</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>Dispositivos USB  </translation>
+			<translation>Dispositivos USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Unlock USB devices</source>
-			<translation>Desbloquear dispositivos USB  </translation>
+			<translation>Desbloquear dispositivos USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>Ayuda  </translation>
+			<translation>Ayuda</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig</source>
-			<translation>Registrar Multisig  </translation>
+			<translation>Registrar Multisig</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig wallet on hardware signer</source>
-			<translation>Registrar la billetera multisig en el firmante de hardware </translation>
+			<translation>Registrar la billetera multisig en el firmante de hardware</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>Cartera multisig registrada exitosamente en el firmante de hardware  </translation>
+			<translation>Cartera multisig registrada exitosamente en el firmante de hardware</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate address</source>
-			<translation>Validar dirección  </translation>
+			<translation>Validar dirección</translation>
 		</message>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate receive address:</source>
-			<translation>Validar dirección de recepción:  </translation>
+			<translation>Validar dirección de recepción:</translation>
 		</message>
 	</context>
 	<context>
@@ -3659,12 +3664,12 @@ Or you can broadcast via {url}</source>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
-			<translation>Confianza  </translation>
+			<translation>Confianza</translation>
 		</message>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust this device</source>
-			<translation>Confía en este dispositivo  </translation>
+			<translation>Confía en este dispositivo</translation>
 		</message>
 	</context>
 	<context>
@@ -3676,7 +3681,7 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Could not verify the download. Please try again later.</source>
-			<translation>No se pudo verificar la descarga. Inténtelo de nuevo más tarde.  </translation>
+			<translation>No se pudo verificar la descarga. Inténtelo de nuevo más tarde.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -3691,12 +3696,12 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
-			<translation>¡La firma no coincide! Inténtelo de nuevo.  </translation>
+			<translation>¡La firma no coincide! Inténtelo de nuevo.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature verified.</source>
-			<translation>Firma verificada.  </translation>
+			<translation>Firma verificada.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -3708,7 +3713,7 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>{amount} seleccionado ({number} UTXOs)  </translation>
+			<translation>{amount} seleccionado ({number} UTXOs)</translation>
 		</message>
 	</context>
 	<context>
@@ -3744,12 +3749,12 @@ Or you can broadcast via {url}</source>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Please choose a wallet name</source>
-			<translation>Por favor, elija un nombre para la cartera  </translation>
+			<translation>Por favor, elija un nombre para la cartera</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>The wallet {filename} exists already.</source>
-			<translation>La cartera {filename} ya existe.  </translation>
+			<translation>La cartera {filename} ya existe.</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
@@ -3771,19 +3776,19 @@ Or you can broadcast via {url}</source>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for transaction</source>
-			<translation>Ingrese etiqueta para transacción  </translation>
+			<translation>Ingrese etiqueta para transacción</translation>
 		</message>
 	</context>
 	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>y</translation>
+			<translation> y </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>All Send tests done successfully.</source>
-			<translation>Todas las pruebas de envío se realizaron con éxito.  </translation>
+			<translation>Todas las pruebas de envío se realizaron con éxito.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3793,7 +3798,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Buy hardware signers</source>
-			<translation>Comprar firmantes de hardware  </translation>
+			<translation>Comprar firmantes de hardware</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3808,7 +3813,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Label the hardware signers</source>
-			<translation>Etiquetar los firmantes de hardware  </translation>
+			<translation>Etiquetar los firmantes de hardware</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3848,7 +3853,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Sync &amp; Chat</source>
-			<translation>Sincronizar &amp; Chatear  </translation>
+			<translation>Sincronizar &amp; Chatear</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3856,7 +3861,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>La transacción de prueba '{tx_text}' se realizó con éxito. Por favor, procede a hacer la prueba de envío: '{next_text}'  </translation>
+			<translation>La transacción de prueba '{tx_text}' se realizó con éxito. Por favor, procede a hacer la prueba de envío: '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3885,17 +3890,17 @@ Or you can broadcast via {url}</source>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
-			<translation>Convertir formato  </translation>
+			<translation>Convertir formato</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Invalid xpub</source>
-			<translation>Xpub inválido  </translation>
+			<translation>Xpub inválido</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Missing xPub</source>
-			<translation>Falta xPub  </translation>
+			<translation>Falta xPub</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
@@ -3966,57 +3971,57 @@ Or you can broadcast via {url}</source>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Executing the script</source>
-			<translation>Ejecutando el script  </translation>
+			<translation>Ejecutando el script</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Install udev files</source>
-			<translation>Instalar archivos udev  </translation>
+			<translation>Instalar archivos udev</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No HWI AddressType could be found for {name}</source>
-			<translation>No se pudo encontrar un tipo de dirección HWI para {name}  </translation>
+			<translation>No se pudo encontrar un tipo de dirección HWI para {name}</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No USB devices found</source>
-			<translation>No se encontraron dispositivos USB  </translation>
+			<translation>No se encontraron dispositivos USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No suitable terminal emulator found.</source>
-			<translation>No se encontró un emulador de terminal adecuado.  </translation>
+			<translation>No se encontró un emulador de terminal adecuado.</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-			<translation>La parte de la red {network_str} del origen de la clave {key_origin} debe ser endurecida con una h  </translation>
+			<translation>La parte de la red {network_str} del origen de la clave {key_origin} debe ser endurecida con una h</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>Dispositivos USB  </translation>
+			<translation>Dispositivos USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-			<translation>Los errores USB pueden aparecer debido a archivos udev faltantes. ¿Quieres instalar archivos udev ahora?  </translation>
+			<translation>Los errores USB pueden aparecer debido a archivos udev faltantes. ¿Quieres instalar archivos udev ahora?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Unknown network/coin type {network_str} in {key_origin}</source>
-			<translation>Tipo de red/moneda desconocido {network_str} en {key_origin}  </translation>
+			<translation>Tipo de red/moneda desconocido {network_str} en {key_origin}</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>derivation_path {value} must start with a /</source>
-			<translation>El path de derivación {value} debe comenzar con un /  </translation>
+			<translation>El path de derivación {value} debe comenzar con un /</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
-			<translation>{value} no es una huella válida  </translation>
+			<translation>{value} no es una huella válida</translation>
 		</message>
 	</context>
 	<context>
@@ -4038,7 +4043,7 @@ Or you can broadcast via {url}</source>
 		<name>category</name>
 		<message>
 			<source>KYC Exchange</source>
-			<translation>Intercambio KYC  </translation>
+			<translation>Intercambio KYC</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4053,7 +4058,7 @@ Or you can broadcast via {url}</source>
 		<name>category</name>
 		<message>
 			<source>Private</source>
-			<translation>Privado  </translation>
+			<translation>Privado</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4070,22 +4075,22 @@ Or you can broadcast via {url}</source>
 		<name>constant</name>
 		<message>
 			<source>All files (*)</source>
-			<translation>Todos los archivos (*)  </translation>
+			<translation>Todos los archivos (*)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Complete Transaction (*.txn)</source>
-			<translation>Transacción Completa (*.txn)  </translation>
+			<translation>Transacción Completa (*.txn)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Partial Transaction (*.psbt)</source>
-			<translation>Transacción Parcial (*.psbt)  </translation>
+			<translation>Transacción Parcial (*.psbt)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Transaction (*.txn *.psbt);;All files (*)</source>
-			<translation>Transacción (*.txn *.psbt);;Todos los archivos (*)  </translation>
+			<translation>Transacción (*.txn *.psbt);;Todos los archivos (*)</translation>
 		</message>
 	</context>
 	<context>
@@ -4112,7 +4117,7 @@ Or you can broadcast via {url}</source>
 		<name>d</name>
 		<message>
 			<source>Import from camera</source>
-			<translation>Importar desde cámara  </translation>
+			<translation>Importar desde cámara</translation>
 		</message>
 		<name>d</name>
 		<message>
@@ -4127,7 +4132,7 @@ Or you can broadcast via {url}</source>
 		<name>d</name>
 		<message>
 			<source>Recovery</source>
-			<translation>Recuperación  </translation>
+			<translation>Recuperación</translation>
 		</message>
 		<name>d</name>
 		<message>
@@ -4159,7 +4164,7 @@ Or you can broadcast via {url}</source>
 		<name>data</name>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-			<translation>Las huellas dactilares difieren. Solo se admiten huellas dactilares iguales, asegurando que todas las claves derivadas pertenezcan al mismo firmante!  </translation>
+			<translation>Las huellas dactilares difieren. Solo se admiten huellas dactilares iguales, asegurando que todas las claves derivadas pertenezcan al mismo firmante!</translation>
 		</message>
 	</context>
 	<context>
@@ -4178,7 +4183,7 @@ Or you can broadcast via {url}</source>
 		<name>help</name>
 		<message>
 			<source>Help</source>
-			<translation>Ayuda  </translation>
+			<translation>Ayuda</translation>
 		</message>
 	</context>
 	<context>
@@ -4227,7 +4232,7 @@ Or you can broadcast via {url}</source>
 		<name>import</name>
 		<message>
 			<source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-			<translation>Por favor, vaya a la pestaña de sincronización e importe su clave de sincronización allí. Luego las etiquetas serán restauradas automáticamente.  </translation>
+			<translation>Por favor, vaya a la pestaña de sincronización e importe su clave de sincronización allí. Luego las etiquetas serán restauradas automáticamente.</translation>
 		</message>
 	</context>
 	<context>
@@ -4239,7 +4244,7 @@ Or you can broadcast via {url}</source>
 		<name>importer</name>
 		<message>
 			<source>Import file</source>
-			<translation>Importar archivo  </translation>
+			<translation>Importar archivo</translation>
 		</message>
 	</context>
 	<context>
@@ -4263,7 +4268,7 @@ Or you can broadcast via {url}</source>
 		<name>net_conf</name>
 		<message>
 			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>Un servidor (a veces funciona) es {link} y un explorador de bloques en {explorer}. Hay un {faucet}.  </translation>
+			<translation>Un servidor (a veces funciona) es {link} y un explorador de bloques en {explorer}. Hay un {faucet}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -4324,7 +4329,7 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>Puedes configurar {electrum} con un servidor electrum en {server} y un explorador de bloques en {explorer}  </translation>
+			<translation>Puedes configurar {electrum} con un servidor electrum en {server} y un explorador de bloques en {explorer}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -4336,12 +4341,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>
-			<translation>{server_name}  </translation>
+			<translation>{server_name}</translation>
 		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name} via the proxy {proxy}</source>
-			<translation>{server_name} a través del proxy {proxy}  </translation>
+			<translation>{server_name} a través del proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -4363,7 +4368,7 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Escucha pasivamente el tráfico p2p de bitcoin (como un nodo de bitcoin),  para detectar inmediatamente las transacciones recién difundidas. Esto no revela nada sobre tu cartera. Haz clic aquí para saber más.</translation>
+			<translation>Escucha pasivamente el tráfico p2p de bitcoin (como un nodo de bitcoin), para detectar inmediatamente las transacciones recién difundidas. Esto no revela nada sobre tu cartera. Haz clic aquí para saber más.</translation>
 		</message>
 	</context>
 	<context>
@@ -4374,7 +4379,8 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)</translation>
+			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4383,7 +4389,8 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca este papel en un lugar seguro, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner el firmante de hardware ya sea a) junto con la copia de seguridad de semillas en papel, o b) en otro lugar seguro (si está disponible)</translation>
+			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca este papel en un lugar seguro, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner el firmante de hardware ya sea a) junto con la copia de seguridad de semillas en papel, o b) en otro lugar seguro (si está disponible)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4403,12 +4410,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of "{id}"</source>
-			<translation>Estado de cuenta de "{id}" </translation>
+			<translation>Estado de cuenta de "{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of {id}</source>
-			<translation>Estado de cuenta de {id}  </translation>
+			<translation>Estado de cuenta de {id}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4418,27 +4425,27 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Created at {date} with</source>
-			<translation>Creado el {date} con  </translation>
+			<translation>Creado el {date} con</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created with</source>
-			<translation>Creado con  </translation>
+			<translation>Creado con</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>File not found!</source>
-			<translation>¡Archivo no encontrado!  </translation>
+			<translation>¡Archivo no encontrado!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
-			<translation>Clave de respaldo de sincronización de etiquetas: {label_sync_nsec}  </translation>
+			<translation>Clave de respaldo de sincronización de etiquetas: {label_sync_nsec}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-			<translation>Al volver a escanear esta cartera, escanee al menos hasta el índice de dirección {max_tip} para descubrir todas las direcciones financiadas.  </translation>
+			<translation>Al volver a escanear esta cartera, escanee al menos hasta el índice de dirección {max_tip} para descubrir todas las direcciones financiadas.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4448,12 +4455,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-			<translation>Palabras semilla secretas para un firmante de hardware: Nunca teclear en un ordenador. Nunca hacer una foto.  </translation>
+			<translation>Palabras semilla secretas para un firmante de hardware: Nunca teclear en un ordenador. Nunca hacer una foto.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Seed backup of {id}</source>
-			<translation>Copia de seguridad de semilla de {id}  </translation>
+			<translation>Copia de seguridad de semilla de {id}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4463,27 +4470,27 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-			<translation>El descriptor de la cartera (Código QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; le permite crear una cartera de solo visualización para ver su saldo. Para gastar de ella necesita {threshold} Semillas y el descriptor de la cartera.  </translation>
+			<translation>El descriptor de la cartera (Código QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; le permite crear una cartera de solo visualización para ver su saldo. Para gastar de ella necesita {threshold} Semillas y el descriptor de la cartera.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Total</source>
-			<translation>Total </translation>
+			<translation>Total</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-			<translation>{i}. Copia de seguridad de semilla de una Cartera Multi-Firma de {threshold} de {m}: "{id}"  </translation>
+			<translation>{i}. Copia de seguridad de semilla de una Cartera Multi-Firma de {threshold} de {m}: "{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-			<translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instrucciones para los herederos:  </translation>
+			<translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instrucciones para los herederos:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-			<translation>{keystore_label}: Huella digital: {keystore_fingerprint}, Origen de la clave: {keystore_key_origin}, {keystore_xpub}  </translation>
+			<translation>{keystore_label}: Huella digital: {keystore_fingerprint}, Origen de la clave: {keystore_key_origin}, {keystore_xpub}</translation>
 		</message>
 	</context>
 	<context>
@@ -4526,14 +4533,14 @@ Click here to learn more.</source>
 		<name>usb</name>
 		<message>
 			<source>Pair Bitbox02</source>
-			<translation>Emparejar Bitbox02  </translation>
+			<translation>Emparejar Bitbox02</translation>
 		</message>
 		<name>usb</name>
 		<message>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Por favor, compare y confirme el código de emparejamiento en su BitBox02: {code}  </translation>
+			<translation>Por favor, compare y confirme el código de emparejamiento en su BitBox02: {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4557,7 +4564,7 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Cancelar con RBF creará una nueva transacción  contigo como destinatario y con una comisión mayor para reemplazar la anterior. ¡¡¡No hay garantía de que funcione!!!</translation>
+			<translation>Cancelar con RBF creará una nueva transacción contigo como destinatario y con una comisión mayor para reemplazar la anterior. ¡¡¡No hay garantía de que funcione!!!</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -4743,32 +4750,32 @@ to speed up the confirmation.</source>
 		<name>video</name>
 		<message>
 			<source>Add RTSP Camera</source>
-			<translation>Agregar cámara RTSP  </translation>
+			<translation>Agregar cámara RTSP</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Brightness (reduce for bright displays):</source>
-			<translation>Brillo (reducir para pantallas brillantes):  </translation>
+			<translation>Brillo (reducir para pantallas brillantes):</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera</source>
-			<translation>Cámara  </translation>
+			<translation>Cámara</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera:</source>
-			<translation>Cámara:  </translation>
+			<translation>Cámara:</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enhance picture for detection</source>
-			<translation>Mejorar imagen para detección  </translation>
+			<translation>Mejorar imagen para detección</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enter RTSP URL</source>
-			<translation>Introduzca la URL RTSP  </translation>
+			<translation>Introduzca la URL RTSP</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -4778,44 +4785,44 @@ to speed up the confirmation.</source>
 		<name>video</name>
 		<message>
 			<source>Postprocess</source>
-			<translation>Postproceso  </translation>
+			<translation>Postproceso</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>RTSP URL:</source>
-			<translation>URL RTSP:  </translation>
+			<translation>URL RTSP:</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Screen</source>
-			<translation>Pantalla  </translation>
+			<translation>Pantalla</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Settings</source>
-			<translation>Configuración  </translation>
+			<translation>Configuración</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Show camera controls</source>
-			<translation>Mostrar controles de cámara  </translation>
+			<translation>Mostrar controles de cámara</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>The camera could not be opened</source>
-			<translation>No se pudo abrir la cámara  </translation>
+			<translation>No se pudo abrir la cámara</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Zoom:</source>
-			<translation>Zoom:  </translation>
+			<translation>Zoom:</translation>
 		</message>
 	</context>
 	<context>
 		<name>wallet</name>
 		<message>
 			<source>Change of:</source>
-			<translation>Cambio de:  </translation>
+			<translation>Cambio de:</translation>
 		</message>
 		<name>wallet</name>
 		<message>
