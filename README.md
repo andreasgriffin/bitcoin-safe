@@ -222,6 +222,21 @@ nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0
   python3 -m bitcoin_safe
   ``` -->
 
+
+
+
+### Verifying the binaries
+
+- In Linux the appimage and deb file hashes should match perfectly with your own built version.
+- The Windows exe files are signed, and therefore the signature needs to be stripped. 
+```sh
+osslsigncode remove-signature -in signed-binary.exe -out binary-stripped.exe
+```
+`binary-stripped.exe` hash will match the hash of your built version.
+
+
+
+
 ### Qt designer
 
 Qt componets can be explored with the qt designer:
@@ -232,6 +247,8 @@ source .env-qt-designer/bin/activate
 pip install pyqt6-tools 
 pyqt6-tools designer 
 ```
+
+
 
 ## Code signing policy
 
