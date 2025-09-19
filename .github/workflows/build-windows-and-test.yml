@@ -1,0 +1,249 @@
+name: Build Windows and test
+permissions:
+  contents: read
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      commitHash:
+        description: 'Enter the commit hash to build (empty = the main branch or the branch that triggered the workflow)'
+        required: false
+        type: string
+      signing-policy-slug:
+        description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      # 1) clone the default branch with full history
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2) if a SHA was provided, fetch it and switch to it
+      - name: Fetch and checkout custom commit
+        if: ${{ github.event.inputs.commitHash != '' }}
+        run: |
+          # this will succeed as long as the commit is reachable from ANY branch on the remote
+          git fetch origin ${{ github.event.inputs.commitHash }}
+          git checkout ${{ github.event.inputs.commitHash }}
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup xvfb (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+                                libxkbcommon-x11-0 \
+                                libxcb-icccm4 \
+                                libxcb-image0 \
+                                libxcb-keysyms1 \
+                                libxcb-randr0 \
+                                libxcb-render-util0 \
+                                libxcb-xinerama0 \
+                                libxcb-xinput0 \
+                                libxcb-xfixes0 \
+                                libxcb-shape0 \
+                                libglib2.0-0 \
+                                libgl1-mesa-dev \
+                                '^libxcb.*-dev' \
+                                libx11-xcb-dev \
+                                libglu1-mesa-dev \
+                                libxrender-dev \
+                                libxi-dev \
+                                libxkbcommon-dev \
+                                libxkbcommon-x11-dev \
+                                osslsigncode
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+          
+      - name: Run build script
+        run: poetry run python tools/build.py --targets windows --commit None
+
+
+      - name: Check for portable EXE file
+        run: |
+          if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
+            echo "Portable EXE file is missing"
+            exit 1
+          fi
+
+      - name: Check for setup EXE file
+        run: |
+          if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
+            echo "Setup EXE file is missing"
+            exit 1
+          fi
+
+      - name: Upload EXE Files from dist/
+        id: upload-unsigned-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*  # zip everything in the folder
+
+      - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
+        id: signpath-io
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
+          project-slug: 'bitcoin-safe'
+          signing-policy-slug: '${{ github.event.inputs.signing-policy-slug }}'
+          github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
+          artifact-configuration-slug: 'Win'
+          wait-for-completion: true
+          output-artifact-directory: 'signpath-signed'
+
+      - name: Upload Signed EXE Files from signpath-signed/
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        id: upload-signed-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signpath-signed
+          path: signpath-signed/*  # zip everything in the folder
+
+
+      - name: Compare signed and unsigned files
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        run: |
+          tools/build-wine/verify_signed_executables.sh dist signpath-signed portable setup
+
+  test-portable:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Download signed portable artifact
+        if: ${{ github.event.inputs.signing-policy-slug != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: signpath-signed
+          path: artifacts
+
+      - name: Download unsigned portable artifact
+        if: ${{ github.event.inputs.signing-policy-slug == '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: artifacts
+
+      - name: Extract portable artifacts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $artifactRoot = Resolve-Path 'artifacts'
+          Write-Host "Extracting archives under $artifactRoot"
+          Get-ChildItem -Path $artifactRoot -Filter *.zip -Recurse | ForEach-Object {
+            $destination = Join-Path $_.DirectoryName $_.BaseName
+            Write-Host "Expanding $($_.FullName) to $destination"
+            Expand-Archive -Path $_.FullName -DestinationPath $destination -Force
+          }
+
+      - name: Launch portable EXE and verify startup
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $logFile = "test_portable.log"
+          if (Test-Path $logFile) {
+            Remove-Item $logFile -Force
+          }
+
+          function Write-Log([string]$Message) {
+            $timestamp = Get-Date -Format o
+            "$timestamp $Message" | Tee-Object -FilePath $logFile -Append
+          }
+
+          $portableExe = Get-ChildItem -Path (Resolve-Path 'artifacts') -Recurse -Filter '*portable*.exe' | Select-Object -First 1
+          if (-not $portableExe) {
+            throw 'No portable executable found in the downloaded artifacts.'
+          }
+          Write-Log "Found portable executable at $($portableExe.FullName)"
+
+          $process = $null
+          $screenshotPath = Join-Path (Get-Location) 'windows_portable_screenshot.png'
+          $appDataLogPath = Join-Path $env:APPDATA 'bitcoin_safe\bitcoin_safe.log'
+          $workspaceLogPath = Join-Path (Get-Location) 'bitcoin_safe.log'
+
+          try {
+            Write-Log "Starting portable executable..."
+            $process = Start-Process -FilePath $portableExe.FullName -WorkingDirectory $portableExe.DirectoryName -PassThru
+            Write-Log "Started process with Id $($process.Id)"
+
+            try {
+              $null = $process.WaitForInputIdle(30000)
+            } catch {
+              Write-Log "WaitForInputIdle threw an exception: $($_.Exception.Message)"
+            }
+
+            Start-Sleep -Seconds 30
+            $process.Refresh()
+            if ($process.HasExited) {
+              throw "Portable executable exited prematurely with code $($process.ExitCode)."
+            }
+            Write-Log "Portable executable is running."
+
+            Write-Log "Capturing screenshot..."
+            Add-Type -AssemblyName System.Drawing
+            Add-Type -AssemblyName System.Windows.Forms
+            $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bitmap = New-Object System.Drawing.Bitmap($bounds.Width, $bounds.Height)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+            $bitmap.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
+            $graphics.Dispose()
+            $bitmap.Dispose()
+            Write-Log "Screenshot saved to $screenshotPath"
+
+            $logEntryFound = $false
+            for ($i = 0; $i -lt 30; $i++) {
+              if (Test-Path $appDataLogPath) {
+                $content = Get-Content -Path $appDataLogPath -Raw
+                if ($content -match 'pyzbar could be loaded successfully') {
+                  $logEntryFound = $true
+                  break
+                }
+              }
+              Start-Sleep -Seconds 2
+            }
+
+            if (-not $logEntryFound) {
+              throw "Did not find 'pyzbar could be loaded successfully' in $appDataLogPath"
+            }
+            Write-Log "Verified 'pyzbar could be loaded successfully' in application log."
+
+          } finally {
+            if ($process -and -not $process.HasExited) {
+              Write-Log "Stopping process $($process.Id)."
+              Stop-Process -Id $process.Id -Force
+              Start-Sleep -Seconds 5
+            }
+            if (Test-Path $appDataLogPath) {
+              Copy-Item -Path $appDataLogPath -Destination $workspaceLogPath -Force
+            }
+          }
+
+          Write-Log "Portable executable launch verification completed successfully."
+
+      - name: Upload Windows portable test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: |
+            test_portable.log
+            windows_portable_screenshot.png
+            bitcoin_safe.log
+          

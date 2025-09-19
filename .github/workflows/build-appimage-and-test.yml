@@ -1,4 +1,4 @@
-name: Build AppImage and Deb
+name: Build AppImage, Deb and test
 permissions:
   contents: read
 

@@ -1,4 +1,4 @@
-name: Build Windows Test Signing
+name: dummy-windows-test-sign
 permissions:
   contents: read
 
