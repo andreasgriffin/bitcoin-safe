@@ -59,7 +59,7 @@ function DoCodeSignMaybe { # ARGS: infoName fileOrDirName
     codesign -f -v $deep -s "$CODESIGN_CERT" $hardened_arg "$file" || fail "Could not code sign ${infoName}"
 }
 
-VERSION=$(git describe --tags --dirty --always)
+VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 
 DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"

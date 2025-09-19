@@ -12,7 +12,7 @@ set -e
 
 pushd "$WINEPREFIX/drive_c/$NAME_ROOT"
 
-VERSION=$(git describe --tags --dirty --always)
+VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 info "Last commit: $VERSION"
 
