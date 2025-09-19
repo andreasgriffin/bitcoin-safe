@@ -239,6 +239,7 @@ jobs:
           Write-Log "Portable executable launch verification completed successfully."
 
       - name: Upload Windows portable test artifacts
+        if: always()  # This ensures the step runs regardless of previous failures    
         uses: actions/upload-artifact@v4
         with:
           name: test-artifacts
