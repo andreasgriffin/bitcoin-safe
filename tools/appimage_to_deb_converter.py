@@ -197,7 +197,16 @@ exit 0
 
     def _build_deb(self, package_root: Path) -> None:
         result = subprocess.run(
-            ["dpkg-deb", "--build", "--root-owner-group", str(package_root), str(self.output_deb)],
+            [
+                "dpkg-deb",
+                "--build",
+                "-Zxz",
+                "-z6",
+                "--uniform-compression",
+                "--root-owner-group",
+                str(package_root),
+                str(self.output_deb),
+            ],
             env=self._normalized_env(),
         )
         if result.returncode != 0:

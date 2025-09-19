@@ -283,7 +283,7 @@ move_and_overwrite() {
 
 list_dirty_files() {
     # Retrieve the current git version including tags and state
-    local temp_version=$(git describe --tags --dirty --always)
+    local temp_version=$(git describe --tags --dirty --always --abbrev=20)
 
     # Check if the string 'dirty' is in the version
     if [[ "$temp_version" == *dirty* ]]; then

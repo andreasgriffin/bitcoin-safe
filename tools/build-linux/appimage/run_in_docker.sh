@@ -25,7 +25,7 @@ PYTHON_VERSION=3.12.3
 PY_VER_MAJOR="3.12"  # as it appears in fs paths
 PKG2APPIMAGE_COMMIT="a9c85b7e61a3a883f4a35c41c5decb5af88b6b5d"
 
-VERSION=$(git describe --tags --dirty --always)
+VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 APPIMAGE="$DISTDIR/bitcoin_safe-$VERSION-x86_64.AppImage"
 

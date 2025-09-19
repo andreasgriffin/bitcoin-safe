@@ -6,3 +6,4 @@ Icon=bitcoin-safe
 Categories=Utility;
 Comment=A bitcoin wallet for the entire family.
 StartupWMClass=Bitcoin Safe
+

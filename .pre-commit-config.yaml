@@ -7,6 +7,11 @@ repos:
         language: system
         types: [python]
         files: '\.py$'
+      - id: ensure-desktop-newline
+        name: Ensure desktop files end with newline
+        entry: python tools/ensure_desktop_newline.py
+        language: system
+        files: ^tools/resources/linux-bitcoin-safe\.desktop$
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2  # Use the specified version of isort

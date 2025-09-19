@@ -216,7 +216,7 @@ mkdir -p dmg-package
 mkdir -p dist
 
 
-VERSION=$(git describe --tags --dirty --always)
+VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 
 
