@@ -9,7 +9,12 @@ on:
       commitHash:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
-        type: string 
+        type: string
+      skip_build_and_test_release_tag:
+        description: 'Release tag to download prebuilt macOS artifacts instead of building (leave empty to build)'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   build:
@@ -22,8 +27,10 @@ jobs:
         include:
           - os: macos-14
             artifact_name: dmgs-arm64
+            arch: arm64
           - os: macos-13
             artifact_name: dmgs-x86_64
+            arch: x86_64
     steps:
       # 1) clone the default branch with full history
       - name: Checkout default branch
@@ -40,20 +47,24 @@ jobs:
           git checkout ${{ github.event.inputs.commitHash }}           
 
       - name: Set up Python environment
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Install Python dependencies
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
           pip install poetry
-          poetry install  
-  
+          poetry install
+
       - name: Run build script
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: poetry run python tools/build.py --targets mac --commit None
 
       - name: Check for DMG file
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.dmg')" ]; then
             echo "DMG file is missing"
@@ -61,6 +72,7 @@ jobs:
           fi
 
       - name: Upload DMG Files from dist/
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
@@ -80,10 +92,34 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: dmgs
+
+      - name: Download release DMG for ${{ matrix.arch }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dmgs
+          gh release download "${{ github.event.inputs.skip_build_and_test_release_tag }}" \
+            --dir dmgs \
+            --repo "${{ github.repository }}" \
+            --pattern "*-${{ matrix.arch }}.dmg"
+          shopt -s nullglob
+          for archive in dmgs/*.zip; do
+            unzip -o "$archive" -d dmgs
+          done
+          for archive in dmgs/*.tar.gz dmgs/*.tgz; do
+            tar -xzf "$archive" -C dmgs
+          done
+          if ! find dmgs -type f -name '*.dmg' -print -quit | grep -q .; then
+            echo "DMG not found in downloaded release artifacts"
+            exit 1
+          fi
 
       - name: Start DMG file on ${{ matrix.arch }}
         run: |

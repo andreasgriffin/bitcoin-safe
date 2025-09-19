@@ -11,7 +11,12 @@ on:
       commitHash:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
-        type: string 
+        type: string
+      skip_build_and_test_release_tag:
+        description: 'Release tag to download prebuilt Linux artifacts instead of building (leave empty to build)'
+        required: false
+        default: ''
+        type: string
 
 
 jobs:
@@ -34,12 +39,13 @@ jobs:
           git checkout ${{ github.event.inputs.commitHash }}
           
       - name: Set up Python environment
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Setup xvfb (Linux)
-        if: runner.os == 'Linux'
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && runner.os == 'Linux' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb \
@@ -64,16 +70,19 @@ jobs:
                                 libxkbcommon-x11-dev 
 
       - name: Install Python dependencies
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
           pip install poetry
-          poetry install  
-          
+          poetry install
+
       - name: Run build script
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: poetry run python tools/build.py --targets appimage deb --commit None
 
 
       - name: Check for AppImage file
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
             echo "AppImage file is missing"
@@ -81,6 +90,7 @@ jobs:
           fi
 
       - name: Check for deb file
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.deb')" ]; then
             echo "deb file is missing"
@@ -88,7 +98,9 @@ jobs:
           fi
 
 
+
       - name: Upload AppImage artifact
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -107,10 +119,42 @@ jobs:
       XDG_RUNTIME_DIR: /tmp/runtime-bitcoin-safe
     steps:
       - name: Download build artifacts
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: artifacts
+
+      - name: Download release artifacts
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          gh release download "${{ github.event.inputs.skip_build_and_test_release_tag }}" \
+            --dir artifacts \
+            --repo "${{ github.repository }}"
+          shopt -s nullglob
+          for archive in artifacts/*.zip; do
+            unzip -o "$archive" -d artifacts
+          done
+          for archive in artifacts/*.tar.gz artifacts/*.tgz; do
+            tar -xzf "$archive" -C artifacts
+          done
+
+      - name: Verify downloaded Linux artifacts
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        run: |
+          set -euo pipefail
+          if ! find artifacts -type f -name '*.AppImage' -print -quit | grep -q .; then
+            echo "AppImage not found in downloaded release artifacts"
+            exit 1
+          fi
+          if ! find artifacts -type f -name '*.deb' -print -quit | grep -q .; then
+            echo "deb package not found in downloaded release artifacts"
+            exit 1
+          fi
 
       - name: Install runtime dependencies
         run: |
