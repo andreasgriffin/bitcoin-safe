@@ -202,7 +202,6 @@ exit 0
                 "--build",
                 "-Zxz",
                 "-z6",
-                "--threads-max=1",
                 "--uniform-compression",
                 "--root-owner-group",
                 str(package_root),
