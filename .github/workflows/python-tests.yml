@@ -44,6 +44,7 @@ jobs:
                                libxcb-xfixes0 \
                                libxcb-shape0 \
                                libglib2.0-0 \
+                               libegl1 \
                                libgl1-mesa-dev \
                                '^libxcb.*-dev' \
                                libx11-xcb-dev \
