@@ -1,0 +1,268 @@
+name: Build AppImage and Deb
+permissions:
+  contents: read
+
+
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      commitHash:
+        description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
+        required: false
+        type: string 
+
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+ 
+      # 1) clone the default branch with full history
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2) if a SHA was provided, fetch it and switch to it
+      - name: Fetch and checkout custom commit
+        if: ${{ github.event.inputs.commitHash != '' }}
+        run: |
+          # this will succeed as long as the commit is reachable from ANY branch on the remote
+          git fetch origin ${{ github.event.inputs.commitHash }}
+          git checkout ${{ github.event.inputs.commitHash }}
+          
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup xvfb (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+                                libxkbcommon-x11-0 \
+                                libxcb-icccm4 \
+                                libxcb-image0 \
+                                libxcb-keysyms1 \
+                                libxcb-randr0 \
+                                libxcb-render-util0 \
+                                libxcb-xinerama0 \
+                                libxcb-xinput0 \
+                                libxcb-xfixes0 \
+                                libxcb-shape0 \
+                                libglib2.0-0 \
+                                libgl1-mesa-dev \
+                                '^libxcb.*-dev' \
+                                libx11-xcb-dev \
+                                libglu1-mesa-dev \
+                                libxrender-dev \
+                                libxi-dev \
+                                libxkbcommon-dev \
+                                libxkbcommon-x11-dev 
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+          
+      - name: Run build script
+        run: poetry run python tools/build.py --targets appimage deb --commit None
+
+
+      - name: Check for AppImage file
+        run: |
+          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
+            echo "AppImage file is missing"
+            exit 1
+          fi
+
+      - name: Check for deb file
+        run: |
+          if [ -z "$(find dist -type f -name '*.deb')" ]; then
+            echo "deb file is missing"
+            exit 1
+          fi
+
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        package: [appimage, deb]
+    env:
+      DISPLAY: ":99"
+      QTWEBENGINE_DISABLE_SANDBOX: "1"
+      XDG_RUNTIME_DIR: /tmp/runtime-bitcoin-safe
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: artifacts
+
+      - name: Install runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            xvfb \
+            libfuse2 \
+            xdotool \
+            x11-apps \
+            imagemagick \
+            dbus-x11 \
+            libxkbcommon-x11-0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-xinerama0 \
+            libxcb-xinput0 \
+            libxcb-xfixes0 \
+            libxcb-shape0 \
+            libglib2.0-0 \
+            libgl1 \
+            libglu1-mesa \
+            libxrender1 \
+            libxi6 \
+            libxkbcommon0
+          mkdir -p "$XDG_RUNTIME_DIR"
+          chmod 700 "$XDG_RUNTIME_DIR"
+
+      - name: Start Xvfb
+        run: |
+          Xvfb "$DISPLAY" -screen 0 1280x720x24 &
+          echo $! > xvfb.pid
+          sleep 3
+
+      - name: Start D-Bus session
+        run: |
+          eval "$(dbus-launch --sh-syntax)"
+          echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" >> "$GITHUB_ENV"
+          echo "DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID" >> "$GITHUB_ENV"
+          echo "$DBUS_SESSION_BUS_PID" > dbus-session.pid
+
+      - name: Prepare AppImage executable
+        if: matrix.package == 'appimage'
+        run: |
+          APPIMAGE=$(find artifacts -type f -name '*.AppImage' | head -n 1)
+          if [ -z "$APPIMAGE" ]; then
+            echo "No AppImage found"
+            exit 1
+          fi
+          chmod +x "$APPIMAGE"
+          echo "$APPIMAGE" > package_path.txt
+
+      - name: Install deb package
+        if: matrix.package == 'deb'
+        run: |
+          DEB_FILE=$(find artifacts -type f -name '*.deb' | head -n 1)
+          if [ -z "$DEB_FILE" ]; then
+            echo "No deb package found"
+            exit 1
+          fi
+          sudo dpkg -i "$DEB_FILE" || (sudo apt-get install -f -y && sudo dpkg -i "$DEB_FILE")
+          if [ ! -x "/opt/bitcoin-safe/AppRun" ]; then
+            echo "Expected executable /opt/bitcoin-safe/AppRun not found"
+            ls -R /opt || true
+            exit 1
+          fi
+          echo "/opt/bitcoin-safe/AppRun" > package_path.txt
+
+      - name: Launch application
+        run: |
+          APP_CMD=$(cat package_path.txt)
+          echo "Launching $APP_CMD"
+          LOG_FILE="run-${{ matrix.package }}.log"
+          touch "$LOG_FILE"
+          "$APP_CMD" >>"$LOG_FILE" 2>&1 &
+          echo $! > app_launch.pid
+          # Give the application some time to start and create its UI
+          sleep 20
+
+      - name: Verify application startup
+        run: |
+          LOG_PATH="$HOME/.config/bitcoin_safe/bitcoin_safe.log"
+          echo "Waiting for Bitcoin Safe log at $LOG_PATH"
+          for i in $(seq 1 30); do
+            if [ -f "$LOG_PATH" ]; then
+              break
+            fi
+            sleep 2
+          done
+          if [ ! -f "$LOG_PATH" ]; then
+            echo "Log file not found at $LOG_PATH"
+            exit 1
+          fi
+          for i in $(seq 1 30); do
+            if grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
+              echo "Found expected pyzbar log entry"
+              break
+            fi
+            sleep 2
+          done
+          if ! grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
+            echo "Expected log entry not found"
+            tail -n 100 "$LOG_PATH" || true
+            exit 1
+          fi
+          PROCESS_COUNT=$(ps aux | grep -i 'bitcoin' | grep -i 'safe' | grep -v grep | wc -l)
+          if [ "$PROCESS_COUNT" -eq 0 ]; then
+            echo "Bitcoin Safe process does not appear to be running"
+            ps aux
+            exit 1
+          fi
+
+      - name: Capture screenshot
+        run: |
+          xwd -root -silent -display "$DISPLAY" -out "screenshot-${{ matrix.package }}.xwd"
+          convert "screenshot-${{ matrix.package }}.xwd" "screenshot-${{ matrix.package }}.png" || true
+
+      - name: Stop application
+        run: |
+          if [ -f app_launch.pid ]; then
+            kill "$(cat app_launch.pid)" 2>/dev/null || true
+          fi
+          pkill -f 'Bitcoin Safe' || true
+          pkill -f 'bitcoin_safe' || true
+
+      - name: Stop background services
+        if: always()
+        run: |
+          if [ -f dbus-session.pid ]; then
+            kill "$(cat dbus-session.pid)" 2>/dev/null || true
+          fi
+          if [ -f xvfb.pid ]; then
+            kill "$(cat xvfb.pid)" 2>/dev/null || true
+          fi
+
+      - name: Collect test artifacts
+        if: always()
+        run: |
+          mkdir -p test-artifacts
+          cp run-${{ matrix.package }}.log test-artifacts/ || true
+          cp "screenshot-${{ matrix.package }}.xwd" test-artifacts/ || true
+          cp "screenshot-${{ matrix.package }}.png" test-artifacts/ || true
+          LOG_PATH="$HOME/.config/bitcoin_safe/bitcoin_safe.log"
+          if [ -f "$LOG_PATH" ]; then
+            cp "$LOG_PATH" "test-artifacts/bitcoin_safe-${{ matrix.package }}.log"
+          fi
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.package }}
+          path: test-artifacts
