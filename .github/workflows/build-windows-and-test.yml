@@ -219,8 +219,14 @@ jobs:
 
           $process = $null
           $screenshotPath = Join-Path (Get-Location) 'windows_portable_screenshot.png'
-          $appDataLogPath = Join-Path $env:APPDATA 'bitcoin_safe\bitcoin_safe.log'
           $workspaceLogPath = Join-Path (Get-Location) 'bitcoin_safe.log'
+
+          if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
+            throw 'LOCALAPPDATA environment variable is not set; cannot resolve bitcoin_safe.log path.'
+          }
+
+          $expectedLogPath = Join-Path $env:LOCALAPPDATA 'bitcoin_safe\bitcoin_safe\bitcoin_safe.log'
+          $resolvedLogPath = $null
 
           try {
             Write-Log "Starting portable executable..."
@@ -254,9 +260,10 @@ jobs:
 
             $logEntryFound = $false
             for ($i = 0; $i -lt 30; $i++) {
-              if (Test-Path $appDataLogPath) {
-                $content = Get-Content -Path $appDataLogPath -Raw
+              if (Test-Path $expectedLogPath) {
+                $content = Get-Content -Path $expectedLogPath -Raw -ErrorAction SilentlyContinue
                 if ($content -match 'pyzbar could be loaded successfully') {
+                  $resolvedLogPath = $expectedLogPath
                   $logEntryFound = $true
                   break
                 }
@@ -265,7 +272,7 @@ jobs:
             }
 
             if (-not $logEntryFound) {
-              throw "Did not find 'pyzbar could be loaded successfully' in $appDataLogPath"
+              throw "Did not find 'pyzbar could be loaded successfully' in $expectedLogPath"
             }
             Write-Log "Verified 'pyzbar could be loaded successfully' in application log."
 
@@ -275,8 +282,11 @@ jobs:
               Stop-Process -Id $process.Id -Force
               Start-Sleep -Seconds 5
             }
-            if (Test-Path $appDataLogPath) {
-              Copy-Item -Path $appDataLogPath -Destination $workspaceLogPath -Force
+            if ($resolvedLogPath -and (Test-Path $resolvedLogPath)) {
+              Write-Log "Copying application log from $resolvedLogPath to $workspaceLogPath"
+              Copy-Item -Path $resolvedLogPath -Destination $workspaceLogPath -Force
+            } else {
+              Write-Log "Application log could not be located for copying."
             }
           }
 
