@@ -2077,7 +2077,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>خطا در اتصال به سرور. {responses}   آیا با این حال ادامه می‌دهید؟</translation>
+			<translation>خطا در اتصال به سرور. {responses} آیا با این حال ادامه می‌دهید؟</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2619,7 +2619,7 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>تراکنش‌های  {txs}  در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
+			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3332,7 +3332,10 @@ Signatures:
 
 
 </source>
-			<translation>تراکنش با کلید خصوصی متعلق به {label} امضا شد  امضاها: {signatures}</translation>
+			<translation>تراکنش با کلید خصوصی متعلق به {label} امضا شد امضاها: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3373,7 +3376,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>کلید همگام‌سازی شما:  {sync_key}   آن را ذخیره کنید و وقتی «وارد کردن کلید همگام‌سازی» را بزنید، برچسب‌های شما از رله‌های Nostr بازیابی خواهد شد.</translation>
+			<translation>کلید همگام‌سازی شما: {sync_key} آن را ذخیره کنید و وقتی «وارد کردن کلید همگام‌سازی» را بزنید، برچسب‌های شما از رله‌های Nostr بازیابی خواهد شد.</translation>
 		</message>
 	</context>
 	<context>
@@ -3386,7 +3389,7 @@ Signatures:
 		<message>
 			<source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>ممکن است  ورودی‌های اضافی زیر {rate} اضافه شود تا UTXOها تجمیع و کارمزدهای آینده کاهش یابد</translation>
+			<translation>ممکن است ورودی‌های اضافی زیر {rate} اضافه شود تا UTXOها تجمیع و کارمزدهای آینده کاهش یابد</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4362,7 +4365,7 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>به‌صورت غیرفعال به ترافیک p2p بیت‌کوین گوش کنید (مانند یک گره بیت‌کوین)،  تا تراکنش‌های تازه پخش‌شده فوراً شناسایی شوند. این کار هیچ اطلاعاتی دربارهٔ کیف‌پول شما فاش نمی‌کند. برای کسب اطلاعات بیشتر اینجا کلیک کنید.</translation>
+			<translation>به‌صورت غیرفعال به ترافیک p2p بیت‌کوین گوش کنید (مانند یک گره بیت‌کوین)، تا تراکنش‌های تازه پخش‌شده فوراً شناسایی شوند. این کار هیچ اطلاعاتی دربارهٔ کیف‌پول شما فاش نمی‌کند. برای کسب اطلاعات بیشتر اینجا کلیک کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -4534,7 +4537,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>لطفاً کد جفت‌سازی روی BitBox02 خود را مقایسه و تأیید کنید:  {code}</translation>
+			<translation>لطفاً کد جفت‌سازی روی BitBox02 خود را مقایسه و تأیید کنید: {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4558,7 +4561,7 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>لغو با RBF،  یک تراکنش جدید با شما به‌عنوان گیرنده و با کارمزدی بالاتر ایجاد می‌کند تا تراکنش قدیمی را جایگزین کند. هیچ تضمینی برای موفقیت وجود ندارد!!!</translation>
+			<translation>لغو با RBF، یک تراکنش جدید با شما به‌عنوان گیرنده و با کارمزدی بالاتر ایجاد می‌کند تا تراکنش قدیمی را جایگزین کند. هیچ تضمینی برای موفقیت وجود ندارد!!!</translation>
 		</message>
 		<name>util</name>
 		<message>

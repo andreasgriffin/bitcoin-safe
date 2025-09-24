@@ -1572,7 +1572,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp; Export Wallet PDF</translation>
+			<translation>&amp;Export Wallet PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1602,7 +1602,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Lightning</source>
-			<translation>&amp; Lightning</translation>
+			<translation>&amp;Lightning</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1627,7 +1627,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Onchain</source>
-			<translation>&amp; Onchain</translation>
+			<translation>&amp;Onchain</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1692,7 +1692,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Wallet</source>
-			<translation>&amp; Wallet</translation>
+			<translation>&amp;Wallet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
