@@ -388,7 +388,8 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-			<translation>Beli {number} penanda tangan perangkat keras                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe mendukung semua penanda tangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;</translation>
+			<translation>Beli {number} penanda tangan perangkat keras                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe mendukung semua penanda tangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
 		</message>
 	</context>
 	<context>
@@ -429,7 +430,7 @@
 		<name>CategoryList</name>
 		<message>
 			<source>Received </source>
-			<translation>Diterima</translation>
+			<translation>Diterima </translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1682,7 +1683,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Dompet dengan id {name} sudah terbuka.</translation>
+			<translation>Dompet dengan id {name} sudah terbuka.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2076,7 +2077,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Kesalahan dalam koneksi server. {responses}   Apakah Anda ingin melanjutkan saja?</translation>
+			<translation>Kesalahan dalam koneksi server. {responses} Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2738,7 +2739,8 @@ The serializations of both differ, which could be caused by different collected 
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dari dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Jangan kirim dana besar ke dompet dulu. Harap selesaikan semua tes pengiriman terlebih dahulu!&lt;/b&gt;</translation>
+			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dari dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Jangan kirim dana besar ke dompet dulu. Harap selesaikan semua tes pengiriman terlebih dahulu!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3330,7 +3332,10 @@ Signatures:
 
 
 </source>
-			<translation>Transaksi ditandatangani dengan kunci pribadi milik {label}  Tanda tangan: {signatures}</translation>
+			<translation>Transaksi ditandatangani dengan kunci pribadi milik {label} Tanda tangan: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3371,7 +3376,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Kunci sinkronisasi Anda adalah:  {sync_key}   Simpan, dan saat Anda klik 'impor kunci sinkronisasi', itu akan memulihkan label Anda dari nostr relays.</translation>
+			<translation>Kunci sinkronisasi Anda adalah: {sync_key} Simpan, dan saat Anda klik 'impor kunci sinkronisasi', itu akan memulihkan label Anda dari nostr relays.</translation>
 		</message>
 	</context>
 	<context>
@@ -4371,7 +4376,8 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Lampirkan 'Lembar Pemulihan' ({number} kata) ke kertas ini atau duplikatkan 12/24 kata ke kertas ini.&lt;br/&gt;                 2. Lipat kertas ini pada garis di bawah &lt;br/&gt;                 3. Letakkan setiap kertas di lokasi aman yang berbeda, hanya Anda yang memiliki akses&lt;br/&gt;                 4. Anda dapat menempatkan penanda tangan perangkat keras a) bersama dengan cadangan seed kertas yang sesuai, atau b) masing-masing di lokasi aman lainnya (jika tersedia)</translation>
+			<translation>1. Lampirkan 'Lembar Pemulihan' ({number} kata) ke kertas ini atau duplikatkan 12/24 kata ke kertas ini.&lt;br/&gt;                 2. Lipat kertas ini pada garis di bawah &lt;br/&gt;                 3. Letakkan setiap kertas di lokasi aman yang berbeda, hanya Anda yang memiliki akses&lt;br/&gt;                 4. Anda dapat menempatkan penanda tangan perangkat keras a) bersama dengan cadangan seed kertas yang sesuai, atau b) masing-masing di lokasi aman lainnya (jika tersedia)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4380,7 +4386,8 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Lampirkan 'Lembar Pemulihan' ({number} kata) ke kertas ini atau duplikatkan 12/24 kata ke kertas ini.&lt;br/&gt;                 2. Lipat kertas ini pada garis di bawah &lt;br/&gt;                 3. Letakkan kertas ini di lokasi aman, hanya Anda yang memiliki akses&lt;br/&gt;                 4. Anda dapat menempatkan penanda tangan perangkat keras a) bersama dengan cadangan seed kertas, atau b) di lokasi aman lainnya (jika tersedia)</translation>
+			<translation>1. Lampirkan 'Lembar Pemulihan' ({number} kata) ke kertas ini atau duplikatkan 12/24 kata ke kertas ini.&lt;br/&gt;                 2. Lipat kertas ini pada garis di bawah &lt;br/&gt;                 3. Letakkan kertas ini di lokasi aman, hanya Anda yang memiliki akses&lt;br/&gt;                 4. Anda dapat menempatkan penanda tangan perangkat keras a) bersama dengan cadangan seed kertas, atau b) di lokasi aman lainnya (jika tersedia)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4530,7 +4537,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Harap bandingkan dan konfirmasi kode pasangan di BitBox02 Anda:  {code}</translation>
+			<translation>Harap bandingkan dan konfirmasi kode pasangan di BitBox02 Anda: {code}</translation>
 		</message>
 	</context>
 	<context>
