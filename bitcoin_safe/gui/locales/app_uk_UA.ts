@@ -3431,7 +3431,7 @@ otherwise you will not be able to broadcast it.</source>
     <message>
         <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-        <translation>Будь ласка, вставте тут UTXO у форматі  txid:outpoint txid:outpoint</translation>
+        <translation>Будь ласка, вставте тут UTXO у форматі txid:outpoint txid:outpoint</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
