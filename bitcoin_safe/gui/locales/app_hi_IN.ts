@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>लेन-देन की संख्या</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>श्रेणी सेट करें</translation>
 		</message>
@@ -428,8 +433,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
+			<source>Current Balance</source>
+			<translation>वर्तमान शेष राशि</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>खर्च किए गए और बिना खर्च किए लेन-देन आउटपुट की संख्या</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>बिना खर्च किए लेन-देन आउटपुट की संख्या</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
 			<translation>प्राप्त</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>कुल प्राप्त (संभवतः पहले ही फिर से खर्च किया जा चुका है)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1065,11 +1090,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>राशि</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>बैलेंस</translation>
 		</message>
@@ -1087,6 +1107,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>सीएसवी के रूप में कॉपी करें</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>शेष राशि में बदलाव</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1125,6 +1150,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>लेन-देन आईडी</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>लेन-देन पहचानकर्ता</translation>
 		</message>
@@ -1147,6 +1177,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} पुष्टिकरण</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3040,13 +3075,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>इंटरफ़ेस सेटिंग्स</translation>
+			<source>General</source>
+			<translation>सामान्य</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>नेटवर्क सेटिंग्स</translation>
+			<source>Network</source>
+			<translation>नेटवर्क</translation>
 		</message>
 	</context>
 	<context>
@@ -3475,6 +3510,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>RBF के लिए सभी आवश्यक लेन-देन विवरण उपलब्ध नहीं हैं</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}</translation>
 		</message>
@@ -3503,11 +3543,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>भेजें</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>यह लेन-देन पहले से सार्वजनिक है, इसलिए अब इसे बदला नहीं जा सकता।</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3643,6 +3678,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>आउटपॉइंट</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>लेन-देन की स्थिति</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>टीएक्स</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

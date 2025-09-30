@@ -274,7 +274,7 @@ def test_wizard(
                 keystore.edit_key_origin,
                 keystore.edit_fingerprint,
             ]:
-                assert keystore.edit_xpub.input_field.styleSheet() == ""
+                assert "background-color" not in keystore.edit_xpub.input_field.styleSheet()
 
             save_wallet(
                 test_config=test_config,

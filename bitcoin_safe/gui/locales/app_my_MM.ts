@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>စာရင်းအရ လုပ်ဆောင်ချက်အရေအတွက်</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>အုပ်စုခွဲခြားခြင်း  </translation>
 		</message>
@@ -428,8 +433,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>လက်ခံရရှိသည်</translation>
+			<source>Current Balance</source>
+			<translation>လက်ရှိ အစာရင်းအငြိမ်း</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>အသုံးပြုပြီးသားနှင့် အသုံးမပြုရသေးသော လုပ်ဆောင်ချက်အထွက်အရေအတွက်</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>အသုံးမပြုရသေးသော လုပ်ဆောင်ချက်အထွက်အရေအတွက်</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>လက်ခံပြီး</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>လက်ခံထားသောစုစုပေါင်း (ထပ်မံအသုံးပြုပြီးသားဖြစ်နိုင်သည်)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1065,11 +1090,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>ပမာဏ  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>လက်ကျန်ငွေ  </translation>
 		</message>
@@ -1087,6 +1107,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>csv အဖြစ်ကော်ပီလုပ်ပါ  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>ငွေလက်ကျန် အပြောင်းအလဲ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1125,6 +1150,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>လုပ်ဆောင်ချက် ID</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>Txid  </translation>
 		</message>
@@ -1147,6 +1177,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} အတည်ပြုချက်များ  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3037,13 +3072,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>အသုံးပြုမှုမျက်နှာပြင် ဆက်တင်များ</translation>
+			<source>General</source>
+			<translation>အထွေထွေ</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>ကွန်ယက်ဆက်တင်များ  </translation>
+			<source>Network</source>
+			<translation>ကွန်ယက်</translation>
 		</message>
 	</context>
 	<context>
@@ -3472,6 +3507,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>RBF အတွက်လိုအပ်သော လုပ်ဆောင်ချက်အသေးစိတ် အားလုံးမရရှိနိုင်ပါ</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}  </translation>
 		</message>
@@ -3500,11 +3540,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>ပို့ပါ</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>ဤငွေလွှဲစာရင်းသည် အများသိအောင် ထုတ်ပြန်ထားပြီးသားဖြစ်သောကြောင့် ထပ်မံ ပြောင်းလဲနိုင်တော့ပါ။</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3640,6 +3675,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>လုပ်ဆောင်ချက် အခြေအနေ</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

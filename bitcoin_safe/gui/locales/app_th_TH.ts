@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>จำนวนธุรกรรม</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>กำหนดประเภท  </translation>
 		</message>
@@ -428,8 +433,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>ได้รับแล้ว</translation>
+			<source>Current Balance</source>
+			<translation>ยอดคงเหลือปัจจุบัน</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>จำนวนเอาต์พุตธุรกรรมที่ใช้แล้วและยังไม่ได้ใช้</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>จำนวนเอาต์พุตธุรกรรมที่ยังไม่ได้ใช้</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>ได้รับ</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>จำนวนที่ได้รับทั้งหมด (อาจถูกใช้ไปแล้วอีกครั้ง)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1065,11 +1090,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>จำนวนเงิน  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>ยอดเงิน  </translation>
 		</message>
@@ -1087,6 +1107,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>คัดลอกเป็น csv  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>การเปลี่ยนแปลงยอดคงเหลือ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1125,6 +1150,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>รหัสธุรกรรม</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>Txid  </translation>
 		</message>
@@ -1147,6 +1177,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} การยืนยัน  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3037,13 +3072,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>การตั้งค่าส่วนติดต่อผู้ใช้</translation>
+			<source>General</source>
+			<translation>ทั่วไป</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>การตั้งค่าเครือข่าย  </translation>
+			<source>Network</source>
+			<translation>เครือข่าย</translation>
 		</message>
 	</context>
 	<context>
@@ -3472,6 +3507,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>ไม่มีรายละเอียดธุรกรรมที่จำเป็นทั้งหมดสำหรับ RBF</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}  </translation>
 		</message>
@@ -3500,11 +3540,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>ส่ง  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>ไม่สามารถแก้ไขธุรกรรมนี้ได้อีกต่อไป เนื่องจากได้เผยแพร่สู่สาธารณะแล้ว</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3640,6 +3675,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>สถานะธุรกรรม</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx  </translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>거래 수</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>카테고리 설정  </translation>
 		</message>
@@ -428,8 +433,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
+			<source>Current Balance</source>
+			<translation>현재 잔액</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>사용된 및 미사용 거래 출력 수</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>미사용 거래 출력 수</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
 			<translation>수신됨</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>총 수신액 (이미 다시 사용되었을 수 있음)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1065,11 +1090,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>금액  </translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>잔액  </translation>
 		</message>
@@ -1087,6 +1107,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>csv로 복사  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>잔액 변화</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1125,6 +1150,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>거래 ID</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>Txid  </translation>
 		</message>
@@ -1147,6 +1177,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} 확인  </translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3037,13 +3072,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>인터페이스 설정</translation>
+			<source>General</source>
+			<translation>일반</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>네트워크 설정  </translation>
+			<source>Network</source>
+			<translation>네트워크</translation>
 		</message>
 	</context>
 	<context>
@@ -3472,6 +3507,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>RBF에 필요한 모든 거래 세부 정보가 제공되지 않음</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}  </translation>
 		</message>
@@ -3500,11 +3540,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>보내기  </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>해당 트랜잭션은 이미 공개되어 더 이상 변경할 수 없습니다.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3640,6 +3675,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>아웃포인트  </translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>거래 상태</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx  </translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

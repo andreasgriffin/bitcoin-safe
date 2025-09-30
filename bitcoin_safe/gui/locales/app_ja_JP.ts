@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>取引数</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>カテゴリを設定</translation>
 		</message>
@@ -428,8 +433,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>受信</translation>
+			<source>Current Balance</source>
+			<translation>現在の残高</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>使用済みおよび未使用のトランザクション出力数</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>未使用のトランザクション出力数</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>受信済み</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>受信合計（すでに再度使用されている可能性あり）</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1065,11 +1090,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>金額</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>残高</translation>
 		</message>
@@ -1087,6 +1107,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>CSV形式でコピー</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>残高の変動</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1125,6 +1150,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>トランザクションID</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>トランザクションID</translation>
 		</message>
@@ -1147,6 +1177,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} 回の確認</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3040,13 +3075,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>インターフェース設定</translation>
+			<source>General</source>
+			<translation>一般</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>SSLを有効にする</translation>
+			<source>Network</source>
+			<translation>ネットワーク</translation>
 		</message>
 	</context>
 	<context>
@@ -3475,6 +3510,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>RBFに必要なすべての取引詳細は利用できません</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>ウォレットファイル (.wallet)</translation>
 		</message>
@@ -3503,11 +3543,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>送信</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>このトランザクションはすでに公開されているため、これ以上変更できません。</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3643,6 +3678,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>アウトポイント</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>取引状況</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx（トランザクション）</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

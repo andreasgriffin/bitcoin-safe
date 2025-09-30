@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>Numero di transazioni</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>Imposta categoria</translation>
 		</message>
@@ -429,8 +434,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>Ricevuto </translation>
+			<source>Current Balance</source>
+			<translation>Saldo attuale</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>Numero di output di transazioni spesi e non spesi</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>Numero di output di transazioni non spesi</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>Ricevuto</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>Totale ricevuto (forse già speso nuovamente)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1067,11 +1092,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>Importo</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>Saldo</translation>
 		</message>
@@ -1089,6 +1109,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>Copia come csv</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>Variazione saldo</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1127,6 +1152,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>ID transazione</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>Txid</translation>
 		</message>
@@ -1149,6 +1179,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} Conferme</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3043,13 +3078,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>Impostazioni interfaccia</translation>
+			<source>General</source>
+			<translation>Generale</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>Impostazioni di rete</translation>
+			<source>Network</source>
+			<translation>Rete</translation>
 		</message>
 	</context>
 	<context>
@@ -3482,6 +3517,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>Non tutti i dettagli necessari della transazione sono disponibili per RBF</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}</translation>
 		</message>
@@ -3510,11 +3550,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>Invia</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>La transazione non può più essere modificata poiché è già pubblica.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3650,6 +3685,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>Stato della transazione</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>

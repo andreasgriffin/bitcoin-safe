@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>تعداد تراکنش‌ها</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>تعیین دسته</translation>
 		</message>
@@ -429,8 +434,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>دریافت شد </translation>
+			<source>Current Balance</source>
+			<translation>موجودی فعلی</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>تعداد خروجی‌های تراکنش خرج‌شده و خرج‌نشده</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>تعداد خروجی‌های تراکنش خرج‌نشده</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>دریافت شده</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>مجموع دریافتی (ممکن است دوباره خرج شده باشد)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1066,11 +1091,6 @@ the sending value {sent}</source>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>مقدار</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>موجودی</translation>
 		</message>
@@ -1088,6 +1108,11 @@ the sending value {sent}</source>
 		<message>
 			<source>Copy as csv</source>
 			<translation>کپی به‌صورت CSV</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>تغییر موجودی</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1126,6 +1151,11 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>شناسه تراکنش</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>شناسه تراکنش (Txid)</translation>
 		</message>
@@ -1148,6 +1178,11 @@ the sending value {sent}</source>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} تأیید</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3039,13 +3074,13 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>تنظیمات رابط کاربری</translation>
+			<source>General</source>
+			<translation>عمومی</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>تنظیمات شبکه</translation>
+			<source>Network</source>
+			<translation>شبکه</translation>
 		</message>
 	</context>
 	<context>
@@ -3477,6 +3512,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>تمام جزئیات مورد نیاز تراکنش برای RBF در دسترس نیست</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}</translation>
 		</message>
@@ -3505,11 +3545,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Send</source>
 			<translation>ارسال</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>این تراکنش از قبل عمومی شده و دیگر قابل تغییر نیست.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3645,6 +3680,16 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>نقطهٔ خروجی</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>وضعیت تراکنش</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>تراکنش</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
