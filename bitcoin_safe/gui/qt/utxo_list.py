@@ -83,6 +83,7 @@ from .my_treeview import (
     MyTreeView,
     QItemSelectionModel,
     TreeViewWithToolbar,
+    header_item,
     needs_frequent_flag,
 )
 from .util import ColorScheme, block_explorer_URL, category_color, sort_id_to_icon
@@ -320,7 +321,7 @@ class UTXOList(MyTreeView[OutPoint]):
         address = None
         satoshis = None
         if python_utxo:
-            satoshis = Satoshis(python_utxo.txout.value, self.config.network)
+            satoshis = Satoshis(python_utxo.value, self.config.network)
             address = python_utxo.address
         else:
             txout = self.txout_dict.get(str(outpoint))
@@ -329,18 +330,18 @@ class UTXOList(MyTreeView[OutPoint]):
                 address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
-    def get_headers(self) -> Dict["UTXOList.Columns", str]:
+    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
         currency_symbol = self.fx.get_currency_symbol()
         return {
-            self.Columns.STATUS: ("Tx"),
-            self.Columns.WALLET_ID: self.tr("Wallet"),
-            self.Columns.OUTPOINT: self.tr("Outpoint"),
-            self.Columns.ADDRESS: self.tr("Address"),
-            self.Columns.CATEGORY: self.tr("Category"),
-            self.Columns.LABEL: self.tr("Label"),
-            self.Columns.AMOUNT: self.tr("Amount"),
+            self.Columns.STATUS: header_item(self.tr("Tx"), tooltip=self.tr("Transaction status")),
+            self.Columns.WALLET_ID: header_item(self.tr("Wallet")),
+            self.Columns.OUTPOINT: header_item(self.tr("Outpoint")),
+            self.Columns.ADDRESS: header_item(self.tr("Address")),
+            self.Columns.CATEGORY: header_item(self.tr("Category")),
+            self.Columns.LABEL: header_item(self.tr("Label")),
+            self.Columns.AMOUNT: header_item(self.tr("Amount")),
             # self.Columns.PARENTS: self.tr("Parents"),
-            self.Columns.FIAT_BALANCE: currency_symbol + " " + self.tr("Value"),
+            self.Columns.FIAT_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
         }
 
     @time_logger
@@ -498,7 +499,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 )
                 items[self.Columns.ADDRESS].setBackground(color)
 
-        balance = satoshis.value if satoshis else (python_utxo.txout.value if python_utxo else None)
+        balance = satoshis.value if satoshis else (python_utxo.value if python_utxo else None)
         if balance is not None:
             fiat_value = self.fx.btc_to_fiat(balance)
             fiat_balance_str = (

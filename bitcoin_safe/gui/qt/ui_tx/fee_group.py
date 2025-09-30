@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import List, Optional
+from typing import Dict, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import (
@@ -407,14 +407,14 @@ class FeeGroup(QObject):
             self.rbf_fee_label_currency.setText(unit)
 
     def set_cpfp_label(
-        self, unconfirmed_ancestors: List[TransactionDetails] | None, this_fee_info: FeeInfo
+        self, unconfirmed_ancestors: Dict[str, TransactionDetails] | None, this_fee_info: FeeInfo
     ) -> None:
 
         self.form.set_row_visibility_of_widget(self.cpfp_fee_label, bool(unconfirmed_ancestors))
         if not unconfirmed_ancestors:
             return
 
-        unconfirmed_parents_fee_info = FeeInfo.combined_fee_info(txs=unconfirmed_ancestors)
+        unconfirmed_parents_fee_info = FeeInfo.combined_fee_info(txs=unconfirmed_ancestors.values())
         if not unconfirmed_parents_fee_info:
             self.form.set_row_visibility_of_widget(self.cpfp_fee_label, False)
             return
@@ -466,6 +466,7 @@ class FeeGroup(QObject):
         self,
         fee_info: FeeInfo,
         tx_status: TxStatus,
+        can_rbf_safely: bool,
     ) -> None:
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit
@@ -474,10 +475,7 @@ class FeeGroup(QObject):
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
-        self.mempool_buttons.refresh(
-            fee_rate=fee_rate,
-            tx_status=tx_status,
-        )
+        self.mempool_buttons.refresh(fee_rate=fee_rate, tx_status=tx_status, can_rbf_safely=can_rbf_safely)
 
         self.set_fee_info(fee_info)
 

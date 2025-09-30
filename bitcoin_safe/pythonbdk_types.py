@@ -72,17 +72,24 @@ class OutPoint(bdk.OutPoint):
 
     def __hash__(self) -> int:
         "Necessary for the caching"
-        return hash(self.__key__())
+        try:
+            return self._cached_hash
+        except AttributeError:
+            h = hash(self.__key__())
+            self._cached_hash: int = h
+            return h
 
-    def __str__(self) -> str:
+    @lru_cache(maxsize=200_000)
+    def __str__(self) -> str:  # type: ignore
         return f"{self.txid}:{self.vout}"
 
-    def __repr__(self) -> str:
+    @lru_cache(maxsize=200_000)
+    def __repr__(self) -> str:  # type: ignore
         return str(f"{self.__class__.__name__}({self.txid},{self.vout})")
 
     def __eq__(self, other) -> bool:
         if isinstance(other, OutPoint):
-            return (self.txid, self.vout) == (other.txid, other.vout)
+            return hash(self) == hash(other)
         return False
 
     @classmethod
@@ -106,6 +113,10 @@ def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
     return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
 
 
+def _is_taproot_script(script_bytes: bytes) -> bool:
+    return len(script_bytes) == 34 and script_bytes[:2] == b"\x51\x20"
+
+
 class TxOut(bdk.TxOut):
     @cached_property
     def spk_bytes(self) -> bytes:
@@ -121,15 +132,22 @@ class TxOut(bdk.TxOut):
 
     def __hash__(self) -> int:
         # hash on bytes (fast) + value
-        return hash((self.value, self.spk_bytes))
+        try:
+            return self._cached_hash
+        except AttributeError:
+            h = hash((self.value, self.spk_bytes))
+            self._cached_hash: int = h
+            return h
 
     def seralized_tuple(self) -> tuple[str, int]:
         return (self.spk_hex, self.value)
 
-    def __str__(self) -> str:
+    @lru_cache(maxsize=200_000)
+    def __str__(self) -> str:  # type: ignore
         return str(self.__key__())
 
-    def __repr__(self) -> str:
+    @lru_cache(maxsize=200_000)
+    def __repr__(self) -> str:  # type: ignore
         return f"{self.__class__.__name__}({self.__key__()})"
 
     def __eq__(self, other) -> bool:
@@ -180,9 +198,13 @@ class PythonUtxo(BaseSaveableClass):
         # this requires that OutPoint and TxOut themselves be hashable
         return hash((self.address, self.outpoint, self.txout, self.is_spent_by_txid))
 
+    @cached_property
+    def value(self):
+        return self.txout.value
+
 
 def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
-    return sum(python_utxo.txout.value for python_utxo in python_utxos)
+    return sum(python_utxo.value for python_utxo in python_utxos)
 
 
 class UtxosForInputs:
@@ -208,6 +230,10 @@ class TransactionDetails:
     sent: int
     txid: str
     chain_position: bdk.ChainPosition
+
+    @cached_property
+    def vsize(self):
+        return self.transaction.vsize()
 
     def get_height(self, unconfirmed_height: int) -> int:
         if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
@@ -244,13 +270,13 @@ class FullTxDetail:
 
     @classmethod
     def fill_received(
-        cls, tx: TransactionDetails, get_address_of_txout: Callable[[TxOut], str | None]
+        cls, tx: TransactionDetails, get_address_of_txout: Callable[[str, int, TxOut], str | None]
     ) -> "FullTxDetail":
         res = FullTxDetail(tx)
         txid = tx.txid
         for vout, txout in enumerate(tx.transaction.output()):
             this_txout = TxOut.from_bdk(txout)
-            address = get_address_of_txout(this_txout)
+            address = get_address_of_txout(txid, vout, this_txout)
             if not address:
                 if not tx.transaction.is_coinbase():
                     logger.error(f"Could not calculate the address of {this_txout}. This should not happen.")
@@ -282,14 +308,14 @@ class FullTxDetail:
 
     def sum_outputs(self, address_domain: List[str]) -> int:
         return sum(
-            python_utxo.txout.value
+            python_utxo.value
             for python_utxo in self.outputs.values()
             if python_utxo and python_utxo.address in address_domain
         )
 
     def sum_inputs(self, address_domain: List[str]) -> int:
         return sum(
-            python_utxo.txout.value
+            python_utxo.value
             for python_utxo in self.inputs.values()
             if python_utxo and python_utxo.address in address_domain
         )
@@ -316,7 +342,12 @@ class AddressInfoMin(SaveAllClass):
 
     def __hash__(self) -> int:
         "Necessary for the caching"
-        return hash(self.__key__())
+        try:
+            return self._cached_hash
+        except AttributeError:
+            h = hash(self.__key__())
+            self._cached_hash: int = h
+            return h
 
     @classmethod
     def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo) -> "AddressInfoMin":

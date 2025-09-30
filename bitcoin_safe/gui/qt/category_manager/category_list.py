@@ -48,6 +48,7 @@ from bitcoin_safe.gui.qt.my_treeview import (
     MyStandardItemModel,
     MyTreeView,
     TreeViewWithToolbar,
+    header_item,
 )
 from bitcoin_safe.gui.qt.util import category_color, create_color_circle
 from bitcoin_safe.storage import BaseSaveableClass
@@ -156,15 +157,21 @@ class CategoryList(MyTreeView[CategoryInfo]):
         self.category_core = category_core
         self.update_content()
 
-    def get_headers(self) -> Dict["CategoryList.Columns", str]:
+    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
         return {
-            self.Columns.ADDRESS_COUNT: self.tr("Addresses"),
-            self.Columns.UTXO_COUNT: self.tr("UTXOs"),
-            self.Columns.TXO_COUNT: self.tr("Tx Outputs"),
-            self.Columns.COLOR: self.tr("Color"),
-            self.Columns.CATEGORY: self.tr("Category"),
-            self.Columns.TXO_BALANCE: self.tr("Received "),
-            self.Columns.UTXO_BALANCE: self.tr("Balance"),
+            self.Columns.ADDRESS_COUNT: header_item(self.tr("Addresses")),
+            self.Columns.UTXO_COUNT: header_item(
+                self.tr("UTXOs"), tooltip=self.tr("Number of unspent transaction outputs")
+            ),
+            self.Columns.TXO_COUNT: header_item(
+                self.tr("Tx Outputs"), tooltip=self.tr("Number of spent and unspent transaction outputs")
+            ),
+            self.Columns.COLOR: header_item(self.tr("Color")),
+            self.Columns.CATEGORY: header_item(self.tr("Category")),
+            self.Columns.TXO_BALANCE: header_item(
+                self.tr("Received"), tooltip=self.tr("Total received (possibly already spent again)")
+            ),
+            self.Columns.UTXO_BALANCE: header_item(self.tr("Balance"), tooltip=self.tr("Current Balance")),
         }
 
     @time_logger

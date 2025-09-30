@@ -553,6 +553,7 @@ class MempoolButtons(VerticalButtonGroup):
         self.tx_status = tx_status
         self.mempool_manager = mempool_manager
         self.signals = signals
+        self.can_rbf_safely = False
 
         self.info_past_days = BetweenBlockInfoBox()
         self._layout.insertWidget(0, self.info_past_days)
@@ -666,10 +667,12 @@ class MempoolButtons(VerticalButtonGroup):
 
     def refresh(
         self,
+        can_rbf_safely: bool | None = None,
         tx_status: TxStatus | None = None,
         fee_rate=None,
     ) -> None:
         self.tx_status = tx_status if tx_status else self.tx_status
+        self.can_rbf_safely = can_rbf_safely if can_rbf_safely is not None else self.can_rbf_safely
         self.set_size(size=self._tx_status_to_size(self.tx_status))
 
         if self.tx_status.chain_position and isinstance(
@@ -731,12 +734,12 @@ class MempoolButtons(VerticalButtonGroup):
             ]:
                 button.setVisible(button.index <= block_index)
                 button.edit_with_fee_icon.setVisible(
-                    (button.index < block_index) and self.tx_status.can_edit()
+                    (button.index < block_index) and TxTools.can_edit_safely(tx_status=self.tx_status)
                 )
                 button.label_fee_range.setVisible(button.index == block_index)
             elif self.tx_status.confirmation_status == TxConfirmationStatus.UNCONFIRMED:
                 button.setVisible(button.index <= block_index)
-                button.rbf_icon.setVisible((button.index < block_index) and self.tx_status.can_rbf())
+                button.rbf_icon.setVisible((button.index < block_index) and self.can_rbf_safely)
                 button.cpfp_icon.setVisible(
                     (button.index < block_index)
                     and TxTools.can_cpfp(tx_status=self.tx_status, signals=self.signals)

@@ -162,7 +162,7 @@ def test_button_edit_format_as_error(button_edit: ButtonEdit):
     button_edit.format_as_error(True)
     assert "background-color" in button_edit.input_field.styleSheet()
     button_edit.format_as_error(False)
-    assert button_edit.input_field.styleSheet() == ""
+    assert "background-color" not in button_edit.input_field.styleSheet()
 
 
 def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit):
@@ -171,7 +171,7 @@ def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit):
     with patch.object(BaseAnalyzer, "analyze", return_value=AnalyzerMessage("", AnalyzerState.Valid)):
         button_edit.input_field.setAnalyzer(analyzer)
         button_edit.format_and_apply_validator()
-        assert button_edit.input_field.styleSheet() == ""
+        assert "background-color" not in button_edit.input_field.styleSheet()
 
 
 def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit):
@@ -290,7 +290,7 @@ def test_button_edit_method_delegation(button_edit: ButtonEdit):
 def test_button_edit_format_and_apply_validator_no_analyzer(button_edit: ButtonEdit):
     with patch.object(button_edit.input_field, "analyzer", return_value=None):
         button_edit.format_and_apply_validator()
-        assert button_edit.input_field.styleSheet() == ""
+        assert "background-color" not in button_edit.input_field.styleSheet()
 
 
 def test_button_edit_add_reset_button(button_edit: ButtonEdit, qtbot: QtBot):

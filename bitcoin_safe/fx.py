@@ -28,6 +28,7 @@
 
 
 import logging
+from functools import lru_cache
 from typing import Any, Dict, Tuple
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -57,22 +58,30 @@ class FX(QObject):
     def get_locale() -> QLocale:
         return QLocale()
 
-    def get_currency_locale(self, currency_iso_code: str | None = None) -> QLocale | None:
-        currency_iso_code = currency_iso_code if currency_iso_code else self.config.currency
+    @staticmethod
+    @lru_cache(maxsize=200_000)
+    def _get_currency_locale(currency_iso_code: str) -> QLocale | None:
         # look through every country’s locale to find the currency_symbol
         for country in QLocale.Country:
             if country == QLocale.Country.AnyCountry:
                 continue
             currency_loc = QLocale(QLocale.Language.AnyLanguage, country)
-            if self.get_currency_iso(currency_loc) == currency_iso_code.upper():
+            if FX._get_currency_iso(currency_loc) == currency_iso_code.upper():
                 return currency_loc
         return None
+
+    @staticmethod
+    def _get_currency_iso(currency_loc: QLocale):
+        return currency_loc.currencySymbol(QLocale.CurrencySymbolFormat.CurrencyIsoCode).upper()
+
+    def get_currency_locale(self, currency_iso_code: str | None = None) -> QLocale | None:
+        return self._get_currency_locale(currency_iso_code if currency_iso_code else self.config.currency)
 
     def get_currency_iso(self, currency_loc: QLocale | None = None):
         currency_loc = currency_loc if currency_loc else self.get_currency_locale()
         if not currency_loc:
             return self.config.currency.upper()
-        return currency_loc.currencySymbol(QLocale.CurrencySymbolFormat.CurrencyIsoCode).upper()
+        return self._get_currency_iso(currency_loc)
 
     def get_currency_symbol(self, currency_loc: QLocale | None = None):
         currency_loc = currency_loc if currency_loc else self.get_currency_locale()

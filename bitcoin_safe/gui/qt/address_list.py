@@ -105,6 +105,7 @@ from .my_treeview import (
     MyStandardItemModel,
     MyTreeView,
     TreeViewWithToolbar,
+    header_item,
     needs_frequent_flag,
 )
 from .util import (
@@ -230,7 +231,7 @@ class AddressList(MyTreeView[str]):
         Columns.COIN_BALANCE,
     ]
     column_alignments = {
-        Columns.NUM_TXS: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.NUM_TXS: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.WALLET_ID: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.TYPE: Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.INDEX: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
@@ -538,18 +539,18 @@ class AddressList(MyTreeView[str]):
         logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
-    def get_headers(self) -> Dict["AddressList.Columns", str]:
+    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
         currency_symbol = self.fx.get_currency_symbol()
         return {
-            self.Columns.NUM_TXS: self.tr("Tx"),
-            self.Columns.WALLET_ID: self.tr("Wallet"),
-            self.Columns.TYPE: self.tr("Type"),
-            self.Columns.INDEX: self.tr("Index"),
-            self.Columns.ADDRESS: self.tr("Address"),
-            self.Columns.CATEGORY: self.tr("Category"),
-            self.Columns.LABEL: self.tr("Label"),
-            self.Columns.COIN_BALANCE: self.tr("Balance"),
-            self.Columns.FIAT_BALANCE: currency_symbol + " " + self.tr("Value"),
+            self.Columns.NUM_TXS: header_item(self.tr("Tx"), tooltip=self.tr("Number of transactions")),
+            self.Columns.WALLET_ID: header_item(self.tr("Wallet")),
+            self.Columns.TYPE: header_item(self.tr("Type")),
+            self.Columns.INDEX: header_item(self.tr("Index")),
+            self.Columns.ADDRESS: header_item(self.tr("Address")),
+            self.Columns.CATEGORY: header_item(self.tr("Category")),
+            self.Columns.LABEL: header_item(self.tr("Label")),
+            self.Columns.COIN_BALANCE: header_item(self.tr("Balance")),
+            self.Columns.FIAT_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
         }
 
     def update_content(self) -> None:

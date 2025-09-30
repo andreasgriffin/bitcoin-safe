@@ -145,7 +145,7 @@ def test_ema_fee_rate_weights_recent_heavier(
 
     # test that it takes in account the icoming txs, if a fee is known
     txdetails = wallet.sorted_delta_list_transactions()
-    txdetails[0].fee = 21 * txdetails[0].transaction.vsize()
+    txdetails[0].fee = 21 * txdetails[0].vsize
     assert wallet.get_ema_fee_rate() == 21
 
     # send_tx clears the cache and resets the previous tx

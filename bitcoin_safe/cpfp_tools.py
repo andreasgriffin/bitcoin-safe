@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import List, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -42,29 +42,37 @@ class CpfpTools:
     def __init__(self, wallets: List[Wallet]) -> None:
         self.wallets = wallets
 
-    def get_unconfirmed_ancestors(self, txids: Set[str]) -> List[TransactionDetails] | None:
-        unconfirmed_txs: List[TransactionDetails] = []
+    def get_unconfirmed_ancestors(
+        self,
+        txids: Set[str],
+        known_ancestors: Dict[str, TransactionDetails],
+    ) -> Dict[str, TransactionDetails]:
         for txid in txids:
+            # already processed?
+            if txid in known_ancestors:
+                continue
+
+            # find tx once across wallets
+            tx = None
             for wallet in self.wallets:
                 tx = wallet.get_tx(txid)
-                if tx and not tx.chain_position.is_confirmed():
-                    unconfirmed_txs.append(tx)
+                if tx:
+                    break
 
-        # i am modifying unconfirmed_txs duringt he loop, so the copy() is essential
-        for unconfirmed_tx in unconfirmed_txs.copy():
-            # add its unconfirmed parents
-            unconfirmed_txs += (
-                self.get_unconfirmed_ancestors(
-                    txids=set(txin.previous_output.txid for txin in unconfirmed_tx.transaction.input()),
-                )
-                or []
-            )
-        if not unconfirmed_txs:
-            return None
+            # nothing to do if missing or confirmed
+            if not tx or tx.chain_position.is_confirmed():
+                continue
 
-        # the following removes already all with duplicate txids
-        tx_dict = {tx.txid: tx for tx in unconfirmed_txs}
-        return list(tx_dict.values())
+            # record BEFORE recursing to prevent duplicate work / cycles
+            known_ancestors[tx.txid] = tx
+
+            # recurse into parents (prune already-known to limit fan-out)
+            parents = {txin.previous_output.txid for txin in tx.transaction.input()}
+            parents.difference_update(known_ancestors.keys())
+            if parents:
+                self.get_unconfirmed_ancestors(parents, known_ancestors)
+
+        return known_ancestors
 
     def get_fee_info_of_new_tx(
         self,

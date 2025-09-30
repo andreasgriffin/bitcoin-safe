@@ -38,7 +38,7 @@ from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
 
 from ...psbt_util import FeeInfo
-from ...pythonbdk_types import Recipient, TransactionDetails
+from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
 from ...signals import Signals
 from ...wallet import TxStatus, Wallet, get_tx_details, get_wallets
 from .util import Message
@@ -47,8 +47,81 @@ logger = logging.getLogger(__name__)
 
 
 class TxTools:
+
     @classmethod
-    def edit_tx(cls, replace_tx: bdk.Transaction | None, txinfos: TxUiInfos, signals: Signals):
+    def can_edit_safely(
+        cls,
+        tx_status: TxStatus,
+    ) -> bool:
+        return tx_status.can_edit()
+
+    @classmethod
+    def can_cancel(
+        cls,
+        tx_status: TxStatus,
+    ) -> bool:
+        return GENERAL_RBF_AVAILABLE and tx_status.can_rbf()
+
+    @classmethod
+    def can_rbf_safely(
+        cls,
+        tx: bdk.Transaction,
+        tx_status: TxStatus,
+    ) -> bool:
+        """Return True if the transaction can safely be replaced via RBF.
+
+        If an output might be a Silent Payment output it returns False.
+
+        Silent payment burn protection
+        Explanation: Silent payments outputs are dependent on all inputs of the tx
+        if any input is changed, but the SP output is left untouched, the output becomes: undetectable for the receiver and unspendable if the replaces transaction is not known
+        ref https://github.com/spesmilo/electrum/pull/9900#issuecomment-3318598185  and https://github.com/sparrowwallet/sparrow/issues/1434#issuecomment-3345317202
+
+        """
+        if not tx_status.can_rbf():
+            return False
+
+        if not GENERAL_RBF_AVAILABLE:
+            # prevents changing inputs
+            return True
+
+        at_least_1_taproot_output = any(
+            _is_taproot_script(bytes(output.script_pubkey.to_bytes())) for output in tx.output()
+        )
+
+        if at_least_1_taproot_output and not tx.is_explicitly_rbf():
+            # this could be a Silent Payment tx
+            return False
+
+        return True
+
+    @classmethod
+    def edit_tx(
+        cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals
+    ):
+        if not cls.can_edit_safely(
+            tx_status=tx_status,
+        ):
+            # cannot be done safely
+            return
+
+        if not GENERAL_RBF_AVAILABLE and replace_tx:
+            txinfos.utxos_read_only = True
+            txinfos.recipient_read_only = True
+            txinfos.replace_tx = replace_tx.transaction
+
+        txinfos.hide_UTXO_selection = False
+        signals.open_tx_like.emit(txinfos)
+
+    @classmethod
+    def rbf_tx(cls, replace_tx: bdk.Transaction, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals):
+        if not cls.can_rbf_safely(
+            tx=replace_tx,
+            tx_status=tx_status,
+        ):
+            # cannot be done safely
+            return
+
         if not GENERAL_RBF_AVAILABLE and replace_tx:
             txinfos.utxos_read_only = True
             txinfos.recipient_read_only = True
@@ -70,9 +143,10 @@ class TxTools:
         if not tx_status.can_cpfp():
             return False
 
-        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
         if not wallet:
-            return False
+            tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
+            if not wallet:
+                return False
 
         utxo = wallet.get_cpfp_utxos(tx=tx)
         return bool(utxo)
@@ -105,11 +179,17 @@ class TxTools:
         cpfp_tools = CpfpTools(wallets=get_wallets(signals))
 
         if fee_rate is None:
-            unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(txids=set([tx_details.txid]))
+            unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(
+                txids=set([tx_details.txid]), known_ancestors={}
+            )
             unconfirmed_ancestors_fee_info = (
                 unconfirmed_ancestors_fee_info
                 if unconfirmed_ancestors
-                and (unconfirmed_ancestors_fee_info := FeeInfo.combined_fee_info(txs=unconfirmed_ancestors))
+                and (
+                    unconfirmed_ancestors_fee_info := FeeInfo.combined_fee_info(
+                        txs=unconfirmed_ancestors.values()
+                    )
+                )
                 else this_tx_fee_info
             )
 

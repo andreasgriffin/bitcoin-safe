@@ -206,7 +206,7 @@ class SankeyBitcoin(SankeyWidget):
             if outpoint_str in outpoint_dict:
                 python_utxo, wallet = outpoint_dict[outpoint_str]
                 address = python_utxo.address
-                value = python_utxo.txout.value
+                value = python_utxo.value
                 in_flows.append(value)
 
                 # add labels and colors
@@ -232,7 +232,7 @@ class SankeyBitcoin(SankeyWidget):
                 if color:
                     colors[flow_index] = color
             elif outpoint_str in self.txo_dict:
-                value = self.txo_dict[outpoint_str].txout.value
+                value = self.txo_dict[outpoint_str].value
                 in_flows.append(value)
                 labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
                     value=value, label=None, address=None, count=len(prev_outpoints)

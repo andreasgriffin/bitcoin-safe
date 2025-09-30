@@ -227,9 +227,7 @@ class FeeInfo:
             # it is also possible that the blockchain client (rpc) doesnt provide this
             # info for an incoming tx, so the field is also None
             return None
-        return FeeInfo(
-            fee, tx_details.transaction.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False
-        )
+        return FeeInfo(fee, tx_details.vsize, vsize_is_estimated=False, fee_amount_is_estimated=False)
 
     @classmethod
     def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> "FeeInfo":

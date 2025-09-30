@@ -118,6 +118,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Number of transactions</source>
+			<translation>Anzahl der Transaktionen</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Set category</source>
 			<translation>Kategorie festlegen</translation>
 		</message>
@@ -429,8 +434,28 @@
 		</message>
 		<name>CategoryList</name>
 		<message>
-			<source>Received </source>
-			<translation>Empfangen </translation>
+			<source>Current Balance</source>
+			<translation>Aktueller Kontostand</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of spent and unspent transaction outputs</source>
+			<translation>Anzahl ausgegebener und nicht ausgegebener Transaktionsausgänge</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Number of unspent transaction outputs</source>
+			<translation>Anzahl nicht ausgegebener Transaktionsausgänge</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Received</source>
+			<translation>Empfangen</translation>
+		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Total received (possibly already spent again)</source>
+			<translation>Insgesamt empfangen (möglicherweise bereits wieder ausgegeben)</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1078,11 +1103,6 @@ des gesendeten Werts {sent} entspricht</translation>
 	<context>
 		<name>HistList</name>
 		<message>
-			<source>Amount</source>
-			<translation>Betrag</translation>
-		</message>
-		<name>HistList</name>
-		<message>
 			<source>Balance</source>
 			<translation>Saldo</translation>
 		</message>
@@ -1100,6 +1120,11 @@ des gesendeten Werts {sent} entspricht</translation>
 		<message>
 			<source>Copy as csv</source>
 			<translation>Als CSV kopieren</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Delta Balance</source>
+			<translation>Saldoänderung</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1138,6 +1163,11 @@ des gesendeten Werts {sent} entspricht</translation>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Transaction id</source>
+			<translation>Transaktions-ID</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Txid</source>
 			<translation>Txid</translation>
 		</message>
@@ -1160,6 +1190,11 @@ des gesendeten Werts {sent} entspricht</translation>
 		<message>
 			<source>{number} Confirmations</source>
 			<translation>{number} Bestätigungen</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>Δ</source>
+			<translation>Δ</translation>
 		</message>
 	</context>
 	<context>
@@ -3064,13 +3099,13 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 	<context>
 		<name>Settings</name>
 		<message>
-			<source>Interface Settings</source>
-			<translation>Interface‑Einstellungen</translation>
+			<source>General</source>
+			<translation>Allgemein</translation>
 		</message>
 		<name>Settings</name>
 		<message>
-			<source>Network Settings</source>
-			<translation>Netzwerkeinstellungen</translation>
+			<source>Network</source>
+			<translation>Netzwerk</translation>
 		</message>
 	</context>
 	<context>
@@ -3512,6 +3547,11 @@ txid:outpoint ein</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>Not all necessary transaction details are available for RBF</source>
+			<translation>Nicht alle notwendigen Transaktionsdetails sind für RBF verfügbar</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>PSBT {txid}</source>
 			<translation>PSBT {txid}</translation>
 		</message>
@@ -3541,11 +3581,6 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Send</source>
 			<translation>Senden</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The transaction cannot be changed anymore, since it is public already.</source>
-			<translation>Die Transaktion kann nicht mehr geändert werden, da sie bereits öffentlich ist.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3681,6 +3716,16 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Outpoint</source>
 			<translation>Coinreferenz</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Transaction status</source>
+			<translation>Transaktionsstatus</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Tx</source>
+			<translation>Tx</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
