@@ -108,8 +108,8 @@ class Settings(QTabWidget):
     def updateUi(self) -> None:
         self.network_settings_ui.updateUi()
         self.langauge_ui.updateUi()
-        self.setTabText(self.indexOf(self.network_settings_ui), self.tr("Network Settings"))
-        self.setTabText(self.indexOf(self.langauge_ui), self.tr("Interface Settings"))
+        self.setTabText(self.indexOf(self.network_settings_ui), self.tr("Network"))
+        self.setTabText(self.indexOf(self.langauge_ui), self.tr("General"))
         # self.setTabText(self.indexOf(self.category_tab), self.tr("Category Manager"))
 
     def keyPressEvent(self, a0: QKeyEvent | None):

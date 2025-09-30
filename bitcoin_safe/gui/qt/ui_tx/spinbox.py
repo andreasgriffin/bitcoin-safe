@@ -73,7 +73,10 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
             """
         else:
             # restore default look
-            return ""
+            return f"""
+                #{self.objectName()} {{ 
+                }} 
+            """
 
     def setReadOnly(self, r: bool):
         # first, tell the base class about it

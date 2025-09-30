@@ -612,14 +612,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if utxos_for_input.spend_all_utxos or not utxos_for_input.utxos:
             return utxos_for_input
 
-        utxo_values = np.array([utxo.txout.value for utxo in utxos_for_input.utxos])
+        utxo_values = np.array([utxo.value for utxo in utxos_for_input.utxos])
         sort_filter: List[int] = (np.argsort(utxo_values)[::-1]).tolist()  # type: ignore
 
         selected_utxos: List[PythonUtxo] = []
         for i in sort_filter:
             utxo = utxos_for_input.utxos[i]
             selected_utxos.append(utxo)
-            if sum(utxo.txout.value for utxo in selected_utxos) >= send_value:
+            if sum(utxo.value for utxo in selected_utxos) >= send_value:
                 break
 
         return UtxosForInputs(
@@ -722,12 +722,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def get_total_input_value(self) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum(utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo)
+        total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
         return total_input_value
 
     def get_total_change_amount(self, include_max_checked=False) -> int:
         txinfos = self.get_tx_ui_infos()
-        total_input_value = sum(utxo.txout.value for utxo in txinfos.utxo_dict.values() if utxo)
+        total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
 
         total_output_value = sum(
             recipient.amount
@@ -877,7 +877,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             )
 
             self.column_fee.fee_group.set_rbf_label(txinfos.fee_rate)
-            self.column_fee.fee_group.set_fee_infos(fee_info=fee_info, tx_status=self.get_tx_status())
+            self.column_fee.fee_group.set_fee_infos(
+                fee_info=fee_info, tx_status=self.get_tx_status(), can_rbf_safely=False
+            )  # False since, RBF doesnt apply for PSBT
 
             self.add_outpoints([python_utxo.outpoint for python_utxo in txinfos.utxo_dict.values()])
         else:

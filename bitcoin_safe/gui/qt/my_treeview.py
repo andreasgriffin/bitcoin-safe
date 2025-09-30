@@ -75,7 +75,6 @@ from typing import (
     Set,
     Type,
     TypeVar,
-    Union,
     cast,
 )
 
@@ -153,6 +152,13 @@ def needs_frequent_flag(status: TxStatus | None) -> bool:
         return True
 
     return status.do_icon_check_on_chain_height_change()
+
+
+def header_item(text: str, tooltip: str | None = None) -> QStandardItem:
+    item = QStandardItem(text)
+    if tooltip:
+        item.setToolTip(tooltip)
+    return item
 
 
 class MyItemDataRole(enum.IntEnum):
@@ -473,9 +479,7 @@ class MyItemDelegate(QStyledItemDelegate):
         super().initStyleOption(option, index)
         if not option:
             return
-        option.displayAlignment = self.tv.column_alignments.get(
-            index.column(), Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-        )
+        option.displayAlignment = self.tv.column_alignment(index.column())
 
     def createEditor(
         self, parent: Optional[QWidget], option: QStyleOptionViewItem, index: QtCore.QModelIndex
@@ -993,9 +997,12 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
                 self._scroll_position = index.row()
                 break
 
+    def column_alignment(self, index: int) -> Qt.AlignmentFlag:
+        return self.column_alignments.get(index, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+
     def update_headers(
         self,
-        headers: Union[Dict[Any, str], Iterable[str]],
+        headers: Dict[BaseColumnsEnum, QStandardItem],
     ) -> None:
         if not isinstance(header := self.header(), QHeaderView):
             return
@@ -1003,11 +1010,21 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         current_column = header.sortIndicatorSection()
         current_order = header.sortIndicatorOrder()
 
-        # headers is either a list of column names, or a dict: (col_idx->col_name)
-        if not isinstance(headers, dict):  # convert to dict
-            headers = dict(enumerate(headers))
-        col_names = [headers[col_idx] for col_idx in sorted(headers.keys())]
-        self._source_model.setHorizontalHeaderLabels(col_names)
+        sorted_keys = sorted(headers.keys())
+        self._source_model.setHorizontalHeaderLabels([headers[key].text() for key in sorted_keys])
+        # set tooltips for headers
+        for i, key in enumerate(sorted_keys):
+            item = headers[key]
+            self._source_model.setHeaderData(
+                i, Qt.Orientation.Horizontal, item.toolTip(), Qt.ItemDataRole.ToolTipRole
+            )
+            self._source_model.setHeaderData(
+                i,
+                Qt.Orientation.Horizontal,
+                self.column_alignment(key.value),
+                Qt.ItemDataRole.TextAlignmentRole,
+            )
+
         header.setSortIndicator(current_column, current_order)
         self.sortByColumn(current_column, current_order)
         header.setStretchLastSection(False)
@@ -1431,8 +1448,8 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
     def set_allow_edit(self, allow_edit: bool):
         self.allow_edit = allow_edit
 
-    def get_headers(self) -> Dict[Any, str]:
-        return {col: col.name for col in self.Columns}
+    def get_headers(self) -> Dict[BaseColumnsEnum, QStandardItem]:
+        return {col: header_item(col.name) for col in self.Columns}
 
     def set_column_hidden(self, col: BaseColumnsEnum, hide: bool):
         self.setColumnHidden(col.value, hide)
@@ -1552,7 +1569,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
             return
         for column in self.searchable_list.Columns:
             action = self.menu_hiddden_columns.add_action(
-                self.searchable_list.get_headers().get(column, ""),
+                self.searchable_list.get_headers().get(column, QStandardItem()).text(),
                 partial(self.searchable_list.toggle_column_hidden, column),
             )
             action.setCheckable(True)

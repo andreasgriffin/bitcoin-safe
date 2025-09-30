@@ -455,7 +455,7 @@ class ButtonEdit(QWidget):
                 f"#{self.input_field.objectName()} {{ background-color: #ff6c54; }}"
             )
         else:
-            self.input_field.setStyleSheet("")
+            self.input_field.setStyleSheet(f"#{self.input_field.objectName()} {{  }}")
 
     def format_and_apply_validator(self) -> None:
         analyzer = self.input_field.analyzer()

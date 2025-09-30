@@ -123,11 +123,11 @@ class UITx_Base(SearchableTab):
 
     def get_unconfirmed_ancestors(
         self, txids: Set[str], wallets: List[Wallet] | None = None
-    ) -> List[TransactionDetails] | None:
+    ) -> Dict[str, TransactionDetails]:
         wallets = wallets if wallets else get_wallets(self.signals)
 
         cpfp_tools = CpfpTools(wallets=wallets)
-        return cpfp_tools.get_unconfirmed_ancestors(txids=txids)
+        return cpfp_tools.get_unconfirmed_ancestors(txids=txids, known_ancestors={})
 
     def set_fee_group_cpfp_label(
         self,

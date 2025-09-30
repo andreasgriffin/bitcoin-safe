@@ -60,7 +60,6 @@ from enum import IntEnum
 from functools import partial
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
 
-import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
@@ -72,14 +71,13 @@ from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
-from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
+from bitcoin_safe.pythonbdk_types import FullTxDetail, Recipient, TransactionDetails
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -94,6 +92,7 @@ from .my_treeview import (
     MyStandardItemModel,
     MyTreeView,
     TreeViewWithToolbar,
+    header_item,
     needs_frequent_flag,
 )
 from .util import (
@@ -374,15 +373,15 @@ class HistList(MyTreeView[str]):
 
         self._after_update_content()
 
-    def get_headers(self) -> Dict["HistList.Columns", str]:
+    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
         return {
-            self.Columns.WALLET_ID: self.tr("Wallet"),
-            self.Columns.STATUS: self.tr("Status"),
-            self.Columns.CATEGORIES: self.tr("Category"),
-            self.Columns.LABEL: self.tr("Label"),
-            self.Columns.AMOUNT: self.tr("Amount"),
-            self.Columns.BALANCE: self.tr("Balance"),
-            self.Columns.TXID: self.tr("Txid"),
+            self.Columns.WALLET_ID: header_item(self.tr("Wallet")),
+            self.Columns.STATUS: header_item(self.tr("Status")),
+            self.Columns.CATEGORIES: header_item(self.tr("Category")),
+            self.Columns.LABEL: header_item(self.tr("Label")),
+            self.Columns.AMOUNT: header_item(self.tr("Δ"), tooltip=self.tr("Delta Balance")),
+            self.Columns.BALANCE: header_item(self.tr("Balance")),
+            self.Columns.TXID: header_item(self.tr("Txid"), tooltip=self.tr("Transaction id")),
         }
 
     def _init_row(
@@ -599,26 +598,32 @@ class HistList(MyTreeView[str]):
             txid = txids[0]
 
             wallet = self.get_wallet(txid=txid)
-            if wallet and (tx_details := wallet.get_tx(txid=txid)):
+            if wallet and (tx_details := wallet.get_dict_fulltxdetail().get(txid)):
                 tx_status = TxStatus.from_wallet(txid, wallet)
-                if tx_status and tx_status.can_rbf():
-                    menu.addSeparator()
-                    if GENERAL_RBF_AVAILABLE:
-                        menu.add_action(
-                            button_info(ButtonInfoType.cancel_with_rbf).text,
-                            partial(self.cancel_tx, tx_details),
-                            icon=button_info(ButtonInfoType.cancel_with_rbf).icon,
-                        )
+                menu.addSeparator()
+                if TxTools.can_cancel(tx_status=tx_status):
+                    menu.add_action(
+                        button_info(ButtonInfoType.cancel_with_rbf).text,
+                        partial(self.cancel_tx, tx_details.tx),
+                        icon=button_info(ButtonInfoType.cancel_with_rbf).icon,
+                    )
+                if TxTools.can_edit_safely(tx_status=tx_status):
                     menu.add_action(
                         button_info(ButtonInfoType.rbf).text,
-                        partial(self.edit_tx, tx_details),
+                        partial(self.edit_tx, tx_details, tx_status),
+                        icon=button_info(ButtonInfoType.rbf).icon,
+                    )
+                if TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status):
+                    menu.add_action(
+                        button_info(ButtonInfoType.rbf).text,
+                        partial(self.rbf_tx, tx_details, tx_status),
                         icon=button_info(ButtonInfoType.rbf).icon,
                     )
 
-                if tx_status and self.can_cpfp(tx=tx_details.transaction, tx_status=tx_status):
+                if TxTools.can_cpfp(wallet=wallet, tx_status=tx_status, signals=self.signals):
                     menu.add_action(
                         button_info(ButtonInfoType.cpfp).text,
-                        partial(self.cpfp_tx, tx_details),
+                        partial(self.cpfp_tx, tx_details.tx),
                         icon=button_info(ButtonInfoType.cpfp).icon,
                     )
 
@@ -655,26 +660,37 @@ class HistList(MyTreeView[str]):
                 return wallet
         return None
 
-    def can_cpfp(self, tx: bdk.Transaction, tx_status: TxStatus) -> bool:
-        wallet = self.get_wallet(txid=tx.compute_txid())
-        if not wallet:
-            return False
-        return TxTools.can_cpfp(wallet=wallet, tx_status=tx_status, signals=self.signals)
-
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
         wallet = self.get_wallet(txid=tx_details.transaction.compute_txid())
         if not wallet:
             return
         TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
 
-    def edit_tx(self, tx_details: TransactionDetails) -> None:
+    def rbf_tx(
+        self,
+        tx_details: FullTxDetail,
+        tx_status: TxStatus,
+    ) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
-            tx_details.transaction,
-            FeeInfo.from_txdetails(tx_details),
+            tx_details.tx.transaction,
+            FeeInfo.from_txdetails(tx_details.tx),
             self.config.network,
             get_wallets(self.signals),
         )
-        TxTools.edit_tx(replace_tx=tx_details.transaction, txinfos=txinfos, signals=self.signals)
+        TxTools.rbf_tx(replace_tx=tx_details, tx_status=tx_status, txinfos=txinfos, signals=self.signals)
+
+    def edit_tx(
+        self,
+        tx_details: FullTxDetail,
+        tx_status: TxStatus,
+    ) -> None:
+        txinfos = ToolsTxUiInfo.from_tx(
+            tx_details.tx.transaction,
+            FeeInfo.from_txdetails(tx_details.tx),
+            self.config.network,
+            get_wallets(self.signals),
+        )
+        TxTools.edit_tx(replace_tx=tx_details, tx_status=tx_status, txinfos=txinfos, signals=self.signals)
 
     def cancel_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(

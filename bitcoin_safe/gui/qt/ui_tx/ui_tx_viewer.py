@@ -52,7 +52,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import DEMO_MODE, GENERAL_RBF_AVAILABLE, IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
@@ -99,6 +99,7 @@ from ....wallet import (
     TxConfirmationStatus,
     TxStatus,
     Wallet,
+    get_fulltxdetail,
     get_tx_details,
     get_wallets,
 )
@@ -597,48 +598,61 @@ class UITx_Viewer(UITx_Base):
             target_total_unconfirmed_fee_rate=target_total_unconfirmed_fee_rate,
         )
 
-    def edit(self, new_fee_rate: float | None = None) -> None:
+    def _infos_for_edit_or_rbf(self, new_fee_rate: float | None = None):
         tx = self.extract_tx()
         wallets = get_wallets(self.signals)
         txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 
-        if GENERAL_RBF_AVAILABLE:
-            TxTools.edit_tx(replace_tx=tx, txinfos=txinfos, signals=self.signals)
-            return
-        else:
-            tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=self.signals)
-            if wallet:
-                tx_status = TxStatus.from_wallet(txid=tx.compute_txid(), wallet=wallet)
-                if tx_status.is_local():
-                    Message(
-                        self.tr("Please remove the existing local transaction of the wallet first."),
-                        type=MessageType.Error,
-                    )
-                    return
-                else:
-                    Message(
-                        self.tr("The transaction cannot be changed anymore, since it is public already."),
-                        type=MessageType.Error,
-                    )
-                    return
-            # I do not need to consider the tx_details branch, because then wallet is also set
+        txid = tx.compute_txid()
+        tx_details, wallet = get_fulltxdetail(txid=txid, signals=self.signals)
 
-            elif txinfos.main_wallet_id:
-                TxTools.edit_tx(replace_tx=None, txinfos=txinfos, signals=self.signals)
-            else:
-                Message(
-                    self.tr("Wallet of transaction inputs could not be found"),
-                    type=MessageType.Error,
-                )
+        if not wallet and txinfos.main_wallet_id:
+            wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
+        return txid, wallet, tx_details, txinfos
+
+    def edit(self, new_fee_rate: float | None = None) -> None:
+        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
+
+        if not wallet:
+            Message(
+                self.tr("Wallet of transaction inputs could not be found"),
+                type=MessageType.Error,
+            )
+            return
+
+        tx_status = TxStatus.from_wallet(txid=txid, wallet=wallet)
+        if tx_details and tx_status.is_local():
+            Message(
+                self.tr("Please remove the existing local transaction of the wallet first."),
+                type=MessageType.Error,
+            )
+        else:
+            TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, tx_status=tx_status, signals=self.signals)
 
     def rbf(self, new_fee_rate: float | None = None) -> None:
-        tx = self.extract_tx()
-        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, get_wallets(self.signals))
-        if new_fee_rate is not None:
-            txinfos.fee_rate = new_fee_rate
-        TxTools.edit_tx(replace_tx=tx, txinfos=txinfos, signals=self.signals)
+        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
+
+        if not wallet and txinfos.main_wallet_id:
+            wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
+
+        if not wallet:
+            Message(
+                self.tr("Wallet of transaction inputs could not be found"),
+                type=MessageType.Error,
+            )
+            return
+
+        if not tx_details:
+            Message(
+                self.tr("Not all necessary transaction details are available for RBF"),
+                type=MessageType.Error,
+            )
+            return
+
+        tx_status = TxStatus.from_wallet(txid=txid, wallet=wallet)
+        TxTools.rbf_tx(replace_tx=tx_details, txinfos=txinfos, tx_status=tx_status, signals=self.signals)
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
@@ -1133,7 +1147,7 @@ class UITx_Viewer(UITx_Base):
                 return None
             if python_txo.txout.value is None:
                 return None
-            total_input_value += python_txo.txout.value
+            total_input_value += python_txo.value
 
         total_output_value = sum(txout.value for txout in tx.output())
         fee_amount = total_input_value - total_output_value
@@ -1172,9 +1186,13 @@ class UITx_Viewer(UITx_Base):
         # no Fee is unknown if no fee_info was given
         self.column_fee.setVisible(fee_info is not None)
         if fee_info is not None:
+            tx_details, wallet = get_fulltxdetail(txid=self.txid(), signals=self.signals)
             self.column_fee.fee_group.set_fee_infos(
                 fee_info=fee_info,
                 tx_status=tx_status,
+                can_rbf_safely=bool(
+                    tx_details and TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status)
+                ),
             )
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
@@ -1282,6 +1300,7 @@ class UITx_Viewer(UITx_Base):
         self.tx_singning_steps_container.setVisible(is_psbt)
 
         tx_status = self.get_tx_status(chain_position=chain_position)
+        tx_details, wallet = get_fulltxdetail(txid=self.txid(), signals=self.signals)
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
         logger.debug(
@@ -1292,8 +1311,10 @@ class UITx_Viewer(UITx_Base):
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
 
-        self.button_edit_tx.setVisible(tx_status.can_edit())
-        self.button_rbf.setVisible(tx_status.can_rbf())
+        self.button_edit_tx.setVisible(TxTools.can_edit_safely(tx_status=tx_status))
+        self.button_rbf.setVisible(
+            bool(tx_details and TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status))
+        )
         self.button_cpfp_tx.setVisible(TxTools.can_cpfp(tx_status=tx_status, signals=self.signals))
         self.set_next_prev_button_enabledness()
 
@@ -1328,8 +1349,7 @@ class UITx_Viewer(UITx_Base):
         self.fee_info = fee_info
 
         self.column_fee.fee_group.set_fee_infos(
-            fee_info=fee_info,
-            tx_status=tx_status,
+            fee_info=fee_info, tx_status=tx_status, can_rbf_safely=False  # Since RBF doesnt apply for PSBT
         )
 
         outputs = [TxOut.from_bdk(txout) for txout in tx.output()]
