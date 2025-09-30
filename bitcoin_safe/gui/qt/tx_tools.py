@@ -99,10 +99,7 @@ class TxTools:
     def edit_tx(
         cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals
     ):
-        if not tx_status.can_edit():
-            return
-
-        if replace_tx and not cls.can_edit_safely(
+        if not cls.can_edit_safely(
             tx_status=tx_status,
         ):
             # cannot be done safely
@@ -118,9 +115,6 @@ class TxTools:
 
     @classmethod
     def rbf_tx(cls, replace_tx: bdk.Transaction, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals):
-        if not tx_status.can_rbf():
-            return
-
         if not cls.can_rbf_safely(
             tx=replace_tx,
             tx_status=tx_status,
