@@ -869,12 +869,12 @@ Default 20</source>
 		<name>ExportLabelMenu</name>
 		<message>
 			<source>Export Labels</source>
-			<translation>Exporter les étiquettes  </translation>
+			<translation>Exporter les étiquettes</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
 			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Exporter les étiquettes pour d'autres portefeuilles (BIP329)  </translation>
+			<translation>Exporter les étiquettes pour d'autres portefeuilles (BIP329)</translation>
 		</message>
 	</context>
 	<context>
@@ -904,7 +904,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		<name>FeeGroup</name>
 		<message>
 			<source>in ~{n}. Block</source>
-			<translation>dans ~{n}. Bloc  </translation>
+			<translation>dans ~{n}. Bloc</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -972,88 +972,88 @@ the sending value {sent}</source>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy JSON</source>
-			<translation>Copier JSON  </translation>
+			<translation>Copier JSON</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy TxId</source>
-			<translation>Copier TxId  </translation>
+			<translation>Copier TxId</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy {name}</source>
-			<translation>Copier {name}  </translation>
+			<translation>Copier {name}</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export</source>
-			<translation>Exporter  </translation>
+			<translation>Exporter</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export to file</source>
-			<translation>Exporter vers un fichier  </translation>
+			<translation>Exporter vers un fichier</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Not available</source>
-			<translation>Non disponible  </translation>
+			<translation>Non disponible</translation>
 		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Invalid Fingerprint</source>
-			<translation>Empreinte invalide  </translation>
+			<translation>Empreinte invalide</translation>
 		</message>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Missing Fingerprint</source>
-			<translation>Empreinte manquante  </translation>
+			<translation>Empreinte manquante</translation>
 		</message>
 	</context>
 	<context>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Create Transaction</source>
-			<translation>Créer une transaction  </translation>
+			<translation>Créer une transaction</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Prefill transaction fields</source>
-			<translation>Pré-remplir les champs de transaction  </translation>
+			<translation>Pré-remplir les champs de transaction</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Retry</source>
-			<translation>Réessayer  </translation>
+			<translation>Réessayer</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Yes, I see the transaction in the history</source>
-			<translation>Oui, je vois la transaction dans l'historique  </translation>
+			<translation>Oui, je vois la transaction dans l'historique</translation>
 		</message>
 	</context>
 	<context>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel  </translation>
+			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Veuillez entrer le nom (étiquette autocollante) du signataire matériel  </translation>
+			<translation>Veuillez entrer le nom (étiquette autocollante) du signataire matériel</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Sticker Label</source>
-			<translation>Étiquette autocollante  </translation>
+			<translation>Étiquette autocollante</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
@@ -1070,29 +1070,29 @@ the sending value {sent}</source>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
-			<translation>Exporter un fichier  </translation>
+			<translation>Exporter un fichier</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Import File or Text</source>
-			<translation>Importer un fichier ou un texte  </translation>
+			<translation>Importer un fichier ou un texte</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>QR Code</source>
-			<translation>Code QR  </translation>
+			<translation>Code QR</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
-			<translation>Solde  </translation>
+			<translation>Solde</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1102,12 +1102,12 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Category</source>
-			<translation>Catégorie  </translation>
+			<translation>Catégorie</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>Copier en CSV  </translation>
+			<translation>Copier en CSV</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1117,17 +1117,17 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Details</source>
-			<translation>Détails  </translation>
+			<translation>Détails</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Local</source>
-			<translation>Local  </translation>
+			<translation>Local</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1142,12 +1142,12 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Save as file</source>
-			<translation>Sauvegarder en fichier  </translation>
+			<translation>Sauvegarder en fichier</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Status</source>
-			<translation>Statut  </translation>
+			<translation>Statut</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1157,12 +1157,12 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Txid</source>
-			<translation>Txid  </translation>
+			<translation>Txid</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>Voir sur l'explorateur de blocs  </translation>
+			<translation>Voir sur l'explorateur de blocs</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1172,12 +1172,12 @@ the sending value {sent}</source>
 		<name>HistList</name>
 		<message>
 			<source>Wallet</source>
-			<translation>Portefeuille  </translation>
+			<translation>Portefeuille</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>{number} Confirmations</source>
-			<translation>{number} Confirmations  </translation>
+			<translation>{number} Confirmations</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1189,103 +1189,103 @@ the sending value {sent}</source>
 		<name>HistListWithToolbar</name>
 		<message>
 			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Générer le relevé de solde PDF  </translation>
+			<translation>&amp;Générer le relevé de solde PDF</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportClipboard</name>
 		<message>
 			<source>Share</source>
-			<translation>Partager  </translation>
+			<translation>Partager</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
 			<source>File</source>
-			<translation>Fichier  </translation>
+			<translation>Fichier</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
 			<source>QR</source>
-			<translation>QR  </translation>
+			<translation>QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
 			<source>Seed</source>
-			<translation>Graine  </translation>
+			<translation>Graine</translation>
 		</message>
 	</context>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Import Labels</source>
-			<translation>Importer des étiquettes  </translation>
+			<translation>Importer des étiquettes</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importer des étiquettes (BIP329 / Sparrow)  </translation>
+			<translation>Importer des étiquettes (BIP329 / Sparrow)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importer des étiquettes (Electrum Wallet)  </translation>
+			<translation>Importer des étiquettes (Electrum Wallet)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>Restaurer les étiquettes depuis le cloud en utilisant une clé de synchronisation existante  </translation>
+			<translation>Restaurer les étiquettes depuis le cloud en utilisant une clé de synchronisation existante</translation>
 		</message>
 	</context>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
 			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe  </translation>
+			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next signer</source>
-			<translation>Signataire suivant  </translation>
+			<translation>Signataire suivant</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next step</source>
-			<translation>Étape suivante  </translation>
+			<translation>Étape suivante</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>Signataire précédent  </translation>
+			<translation>Signataire précédent</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Skip step</source>
-			<translation>Sauter l'étape  </translation>
+			<translation>Sauter l'étape</translation>
 		</message>
 	</context>
 	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
-			<translation>Origine de clé manquante  </translation>
+			<translation>Origine de clé manquante</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -1295,7 +1295,7 @@ the sending value {sent}</source>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-			<translation>Les informations fournies sont pour {key_origin_network}. Veuillez fournir xPub pour le réseau {network}  </translation>
+			<translation>Les informations fournies sont pour {key_origin_network}. Veuillez fournir xPub pour le réseau {network}</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -1307,27 +1307,27 @@ the sending value {sent}</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Advanced</source>
-			<translation>Avancé  </translation>
+			<translation>Avancé</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Description</source>
-			<translation>Description  </translation>
+			<translation>Description</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Fingerprint</source>
-			<translation>Empreinte  </translation>
+			<translation>Empreinte</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import</source>
-			<translation>Importer  </translation>
+			<translation>Importer</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import fingerprint and xpub</source>
-			<translation>Importer l'empreinte et xpub  </translation>
+			<translation>Importer l'empreinte et xpub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1343,12 +1343,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>OK</source>
-			<translation>OK  </translation>
+			<translation>OK</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel  </translation>
+			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1358,7 +1358,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please import the information from all hardware signers first</source>
-			<translation>Veuillez d'abord importer les informations de tous les signataires matériels  </translation>
+			<translation>Veuillez d'abord importer les informations de tous les signataires matériels</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1368,7 +1368,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json)</source>
-			<translation>Veuillez coller le fichier exporté (comme sparrow-export.json)  </translation>
+			<translation>Veuillez coller le fichier exporté (comme sparrow-export.json)</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1378,7 +1378,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Seed</source>
-			<translation>Graine  </translation>
+			<translation>Graine</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1398,12 +1398,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>xPub</source>
-			<translation>xPub  </translation>
+			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>xPub Origin</source>
-			<translation>Origine xPub  </translation>
+			<translation>Origine xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1419,14 +1419,14 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{xpub} is not a valid public xpub</source>
-			<translation>{xpub} n'est pas un xpub public valide  </translation>
+			<translation>{xpub} n'est pas un xpub public valide</translation>
 		</message>
 	</context>
 	<context>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>Remplir tous les {number} signataires avec les empreintes {fingerprints}  </translation>
+			<translation>Remplir tous les {number} signataires avec les empreintes {fingerprints}</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -1473,17 +1473,17 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Enable</source>
-			<translation>Activer  </translation>
+			<translation>Activer</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Sauvegarde cloud cryptée des étiquettes d'adresse et des catégories  </translation>
+			<translation>Sauvegarde cloud cryptée des étiquettes d'adresse et des catégories</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Finish</source>
-			<translation>Terminer  </translation>
+			<translation>Terminer</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>

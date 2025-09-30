@@ -393,7 +393,8 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-			<translation>Купіть {number} апаратних підписувачів                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe підтримує всі основні апаратні підписувачі: &lt;a href="{url}"&gt;Див. повний список&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;</translation>
+			<translation>Купіть {number} апаратних підписувачів                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe підтримує всі основні апаратні підписувачі: &lt;a href="{url}"&gt;Див. повний список&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
 		</message>
 	</context>
 	<context>
@@ -690,7 +691,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Цей «дескриптор» містить усю інформацію для відновлення гаманця.  Будь ласка, зробіть резервну копію цього дескриптора, щоб мати змогу відновити кошти!</translation>
+			<translation>Цей «дескриптор» містить усю інформацію для відновлення гаманця. Будь ласка, зробіть резервну копію цього дескриптора, щоб мати змогу відновити кошти!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1537,7 +1538,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>Будь ласка, відкрийте гаманець відправника, щоб редагувати цю транзакцію.</translation>
+			<translation> Будь ласка, відкрийте гаманець відправника, щоб редагувати цю транзакцію.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1717,7 +1718,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Гаманець з id {name} уже відкрито.</translation>
+			<translation>Гаманець з id {name} уже відкрито.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2111,7 +2112,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Помилка підключення до сервера. {responses}   Продовжити попри це?</translation>
+			<translation>Помилка підключення до сервера. {responses} Продовжити попри це?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2653,7 +2654,7 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Транзакції  {txs}  у гаманці «{wallet}» були видалені з історії!!!</translation>
+			<translation>Транзакції {txs} у гаманці «{wallet}» були видалені з історії!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2773,7 +2774,8 @@ The serializations of both differ, which could be caused by different collected 
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Навіщо?&lt;/b&gt; &lt;br&gt;                     Щоб знати, що ви контролюєте кошти, потрібно протестувати витрати з гаманця.                      &lt;br&gt;                     Тож перш ніж надсилати значну суму біткоїнів у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; зробити витрату з гаманця та протестувати всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки що НЕ надсилайте великі суми в гаманець. Спершу завершіть усі тести відправлення!&lt;/b&gt;</translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Навіщо?&lt;/b&gt; &lt;br&gt;                     Щоб знати, що ви контролюєте кошти, потрібно протестувати витрати з гаманця.                      &lt;br&gt;                     Тож перш ніж надсилати значну суму біткоїнів у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; зробити витрату з гаманця та протестувати всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки що НЕ надсилайте великі суми в гаманець. Спершу завершіть усі тести відправлення!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3365,7 +3367,10 @@ Signatures:
 
 
 </source>
-			<translation>Транзакцію підписано приватним ключем, що належить {label}  Підпис(и): {signatures}</translation>
+			<translation>Транзакцію підписано приватним ключем, що належить {label} Підпис(и): {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3406,7 +3411,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Ваш ключ синхронізації:  {sync_key}   Збережіть його, і коли натиснете «імпорт ключа синхронізації», ваші мітки мають відновитися з ретрансляторів nostr.</translation>
+			<translation>Ваш ключ синхронізації: {sync_key} Збережіть його, і коли натиснете «імпорт ключа синхронізації», ваші мітки мають відновитися з ретрансляторів nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3461,7 +3466,7 @@ otherwise you will not be able to broadcast it.</source>
 		<message>
 			<source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>Будь ласка, вставте тут UTXO у форматі  txid:outpoint txid:outpoint</translation>
+			<translation>Будь ласка, вставте тут UTXO у форматі txid:outpoint txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3498,7 +3503,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Мітка:</translation>
+			<translation>Мітка: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3820,7 +3825,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>та</translation>
+			<translation> та </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3898,7 +3903,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>Тестова транзакція  «{tx_text}»  виконана успішно. Будь ласка, перейдіть до тесту відправлення:  «{next_text}»</translation>
+			<translation>Тестова транзакція «{tx_text}» виконана успішно. Будь ласка, перейдіть до тесту відправлення: «{next_text}»</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4405,7 +4410,7 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Пасивно слухайте p2p-трафік біткоїна (як біткоїн-вузол),  щоб миттєво виявляти щойно розіслані транзакції. Це нічого не розкриває про ваш гаманець. Натисніть тут, щоб дізнатися більше.</translation>
+			<translation>Пасивно слухайте p2p-трафік біткоїна (як біткоїн-вузол), щоб миттєво виявляти щойно розіслані транзакції. Це нічого не розкриває про ваш гаманець. Натисніть тут, щоб дізнатися більше.</translation>
 		</message>
 	</context>
 	<context>
@@ -4416,7 +4421,8 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Прикріпіть «Аркуш відновлення» ({number} слів) до цього аркуша або перепишіть 12/24 слова на цей аркуш.&lt;br/&gt;                 2. Складіть цей аркуш по нижній лінії &lt;br/&gt;                 3. Покладіть кожен аркуш у різне безпечне місце, куди маєте доступ лише ви&lt;br/&gt;                 4. Апаратні підписувачі можна покласти або а) разом із відповідною паперовою резервною копією сіда, або б)   кожен  ще в інше безпечне місце (за наявності)</translation>
+			<translation>1. Прикріпіть «Аркуш відновлення» ({number} слів) до цього аркуша або перепишіть 12/24 слова на цей аркуш.&lt;br/&gt;                 2. Складіть цей аркуш по нижній лінії &lt;br/&gt;                 3. Покладіть кожен аркуш у різне безпечне місце, куди маєте доступ лише ви&lt;br/&gt;                 4. Апаратні підписувачі можна покласти або а) разом із відповідною паперовою резервною копією сіда, або б)   кожен  ще в інше безпечне місце (за наявності)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4425,7 +4431,8 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Прикріпіть «Аркуш відновлення» ({number} слів) до цього аркуша або перепишіть 12/24 слова на цей аркуш.&lt;br/&gt;                 2. Складіть цей аркуш по нижній лінії &lt;br/&gt;                 3. Покладіть цей аркуш у безпечне місце, куди маєте доступ лише ви&lt;br/&gt;                 4. Апаратний підписувач можна покласти або а) разом із паперовою резервною копією сіда, або б)   в інше безпечне місце (за наявності)</translation>
+			<translation>1. Прикріпіть «Аркуш відновлення» ({number} слів) до цього аркуша або перепишіть 12/24 слова на цей аркуш.&lt;br/&gt;                 2. Складіть цей аркуш по нижній лінії &lt;br/&gt;                 3. Покладіть цей аркуш у безпечне місце, куди маєте доступ лише ви&lt;br/&gt;                 4. Апаратний підписувач можна покласти або а) разом із паперовою резервною копією сіда, або б)   в інше безпечне місце (за наявності)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4575,7 +4582,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Будь ласка, порівняйте та підтвердьте код спарювання на вашому BitBox02:  {code}</translation>
+			<translation>Будь ласка, порівняйте та підтвердьте код спарювання на вашому BitBox02: {code}</translation>
 		</message>
 	</context>
 	<context>
